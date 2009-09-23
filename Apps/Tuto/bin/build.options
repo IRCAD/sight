@@ -1,0 +1,19 @@
+TYPE 	= 'bundle'
+VERSION = '0-1'
+
+BUNDLES = [ 
+    'io_0-1'             	,
+    'gui_0-1'            	,
+    'dataReg_0-1'        	,
+    'servicesReg_0-1'    	,
+    'visu_0-1'           	,
+    'launcher_0-1'       	,
+    'ioVTK_0-1'          	,
+    'ioData_0-1'         	,
+    'vtkSimpleNegato_0-1'	,
+    'vtkSimpleMesh_0-1'  	,
+    'uiIO_0-1'				,
+    'opVTKMesh_0-1'
+ ]
+
+

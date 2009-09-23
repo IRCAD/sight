@@ -1,0 +1,75 @@
+<plugin id="TutoConfigurations">
+<extension id="tutoComChannelConfig" implements="::fwData::TriangularMesh">
+
+    <object id="meshExemple2" type="::fwData::TriangularMesh">
+
+        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+            <name>tutoComChannel</name>
+            <icon>Bundles/Tuto_0-1/tuto.ico</icon>
+            <minSize width="720" height="600"/>
+            <views>
+                <view guiContainerId="900"/>
+                <view guiContainerId="901" minWidth="400" minHeight="100"/>
+                <view guiContainerId="902" minWidth="400" minHeight="100"/>
+            </views>
+            <menus>
+                <menu uid="menu_File"/>
+            </menus>
+        </service>
+        
+        <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
+            <action uid="action_openFile"/>
+            <action uid="action_saveFile"/>
+            <separator/>
+            <action uid="action_quit"/>
+        </service>
+
+        <service uid="action_openFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="OpenFile" shortcut="Ctrl+O" autoComChannel="no" >
+            <start uid="myReaderPathFile"/>
+        </service>
+        <service uid="action_saveFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="SaveFile" shortcut="Ctrl+S" autoComChannel="no" >
+            <start uid="myWriterPathFile"/>
+        </service>
+        <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" >
+        	<type mode="reader"/>
+        </service>
+        
+        <service uid="myWriterPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" >
+            <type mode="writer"/>
+        </service>	 
+     
+        <!-- service de visu pour la première fenêtre-->		
+        <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto1" autoComChannel="yes" >
+            <masterSlaveRelation>master</masterSlaveRelation>
+            <win guiContainerId="900"/>
+        </service>
+
+        <!-- service de visu pour la seconde fenêtre-->
+        <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto2" autoComChannel="yes" >
+            <masterSlaveRelation>slave</masterSlaveRelation>
+            <win guiContainerId="901"/>
+        </service>
+        
+        <!-- service de visu pour la seconde fenêtre-->
+        <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto3" autoComChannel="yes" >
+            <masterSlaveRelation>master</masterSlaveRelation>
+            <win guiContainerId="902"/>
+        </service>
+        
+        <start type="::gui::aspect::IAspect" />
+        
+        <start uid="myRenderingTuto1"/>	
+        <start uid="myRenderingTuto2"/>						
+        <start uid="myRenderingTuto3"/>						
+        
+        <stop uid="myRenderingTuto3"/>
+        <stop uid="myRenderingTuto2"/>
+        <stop uid="myRenderingTuto1"/>
+        
+        <stop type="::gui::aspect::IAspect" />
+
+    </object>
+</extension>
+</plugin>

@@ -1,0 +1,10 @@
+TYPE="exec"
+
+TEST="yes"
+
+LIB		= ['fwCore_0-1']
+CLASSTEST =  [ 'testfwTools' , 'testfwToolsClassFactory' ]
+#CLASSTEST =  [ 'testfwTools' ]
+CONSOLE = "yes"
+
+USE=[ 'boost', 'python' ]

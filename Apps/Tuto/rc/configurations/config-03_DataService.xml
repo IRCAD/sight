@@ -1,0 +1,42 @@
+<plugin id="TutoConfigurations">
+<extension id="tutoDataServiceConfig" implements="::fwData::Image">
+    <object id="imageExemple1" type="::fwData::Image">
+
+        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+            <name>tutoDataService</name>
+            <icon>Bundles/Tuto_0-1/tuto.ico</icon>
+            <minSize width="720" height="600"/>
+            <views>
+                <view guiContainerId="900" />
+            </views>
+            <menus>
+                <menu uid="menu_File"/>
+            </menus>
+        </service>
+
+        <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
+            <action uid="action_openFile"/>
+            <separator/>
+            <action uid="action_quit"/>
+        </service>
+
+        <service uid="action_openFile" name="OpenFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" shortcut="Ctrl+O" autoComChannel="no" >
+            <start uid="myReaderPathFile"/>
+        </service>
+        <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+        
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" />
+                
+        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" >
+            <win guiContainerId="900"/>
+        </service>
+
+        <start type="::gui::aspect::IAspect" />
+        <start uid="myRenderingTuto"/>						
+        
+        <stop uid="myRenderingTuto"/>
+        <stop type="::gui::aspect::IAspect" />
+
+    </object>
+</extension>
+</plugin>

@@ -1,0 +1,14 @@
+<plugin id="visu" class="::visu::Plugin" >
+	
+	<library name="visu" />
+	
+	<requirement id="servicesReg" />
+
+	<point id="::fwRender::IRender">
+		<implements>::fwServices::IService</implements>
+	</point>
+
+</plugin>
+
+
+

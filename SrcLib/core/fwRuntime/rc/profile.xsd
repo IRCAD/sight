@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="profile" type="ProfileType" />
+
+<xs:complexType name="ProfileType">
+  <xs:sequence>
+    <xs:element name="activate" type="ActivateType" minOccurs="1" maxOccurs="unbounded" />
+    <xs:element name="start" type="StartType" minOccurs="1" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="ActivateType">
+	<xs:sequence>
+		<xs:element name="disable-extension-point" type="DisableExtensionPointType" minOccurs="0" maxOccurs="unbounded" />
+		<xs:element name="disable-extension" type="DisableExtensionType" minOccurs="0" maxOccurs="unbounded" />
+		<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:string" use="required"/>
+	<xs:attribute name="version" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="ParamType">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+	<xs:attribute name="value" type="xs:string"/>
+</xs:complexType>
+
+<xs:complexType name="DisableExtensionPointType">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="DisableExtensionType">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="StartType">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+</xs:complexType>
+
+</xs:schema>

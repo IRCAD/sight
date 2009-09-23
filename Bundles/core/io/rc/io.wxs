@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
+  <Module Id="io" Guid="12345678-8DEE-4410-990A-1802896C5303" Language="0" Version="1.2.3">
+
+    <Package Id="12345678-8DEE-4410-990A-1802896C5303" InstallerVersion="200"
+      Languages="1033" Manufacturer="Acme" SummaryCodepage="1252" AdminImage="no" ShortNames="no" />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='IRCAD' Name='IRCAD'>
+          <Directory Id='INSTALLDIR' Name='$(var.SOFTWARE)' LongName='$(var.SOFTWARE) $(var.VERSION)'>
+
+			<Directory Id='BUNDLESDIR' Name='Bundles'>
+				<Directory Id='B303' Name='303' LongName='io_0-0'>
+					<Component Id='io' Guid='11112222-83F1-4F22-985B-FDB3C8ABD403'>
+						<File Id="X303a"		Name="303a.xsd"		LongName="baseTypes.xsd" Source="../../CommonLib/Bundles/io_0-0/baseTypes.xsd" />
+						<File Id="X303b"		Name="303b.xsd"		LongName="defaultCompositeObjectReaderCfg.xsd" Source="../../CommonLib/Bundles/io_0-0/defaultCompositeObjectReaderCfg.xsd" />
+						<File Id="X303c"		Name="303c.xsd"		LongName="Image.xsd" Source="../../CommonLib/Bundles/io_0-0/Image.xsd" />
+						<File Id="P303"		Name="303.xml"		LongName="plugin.xml" Source="../../CommonLib/Bundles/io_0-0/plugin.xml" />
+						<File Id="DLL303"	Name="303.dll"		LongName="io_0-0_win32_cl7-1.dll" Source="../../CommonLib/Bundles/io_0-0/io_0-0_win32_cl7-1.dll" />
+					</Component>
+						
+					<Directory Id='C303' Name='mfoRC'>
+						<Component Id='mfoRC' Guid='11112222-83F1-4F22-985B-ADB3C8ABD403'>
+							<File Id="XSD303a"	Name="303a.xsd"		LongName="dictionary.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.xsd" />
+							<File Id="XSD303b"	Name="303b.xsd"		LongName="dictionaryorgan.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionaryorgan.xsd" />
+							<File Id="XSD303c"	Name="303c.xsd"		LongName="types.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/types.xsd" />
+							
+							<File Id="X303za"	Name="303za.xsd" 	LongName="acquisition.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/acquisition.xsd" />
+							<File Id="X303zd"	Name="303zd.xsd" 	LongName="frame.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/frame.xsd" />
+							<File Id="X303ze"	Name="303ze.xsd" 	LongName="image.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/image.xsd" />
+							<File Id="X303zf"	Name="303zf.xsd" 	LongName="link.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/link.xsd" />
+							<File Id="X303zg"	Name="303zg.xsd" 	LongName="patient.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/patient.xsd" />
+							<File Id="X303zh"	Name="303zh.xsd" 	LongName="pipeline.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/pipeline.xsd" />
+							<File Id="X303zi"	Name="303zi.xsd" 	LongName="processobject.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/processobject.xsd" />
+							<File Id="X303zj"	Name="303zj.xsd" 	LongName="processobjectparameter.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/processobjectparameter.xsd" />
+							<File Id="X303zk"	Name="303zk.xsd" 	LongName="reconstruction.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/reconstruction.xsd" />
+							<File Id="X303zl"	Name="303zl.xsd" 	LongName="study.xsd" Source="../../CommonLib/Bundles/io_0-0/mfoRC/study.xsd" />
+							
+							<File Id="XML303a"	Name="303a.xml"		LongName="dictionary.Artery.Artery.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Artery.Artery.xml" />
+							<File Id="XML303b"	Name="303b.xml"		LongName="dictionary.BiliarySystem.BiliarySystem.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.BiliarySystem.BiliarySystem.xml" />
+							<File Id="XML303c"	Name="303c.xml"		LongName="dictionary.Bladder.Bladder.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Bladder.Bladder.xml" />
+							<File Id="XML303d"	Name="303d.xml"		LongName="dictionary.Bone.Bone.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Bone.Bone.xml" />
+							<File Id="XML303e"	Name="303e.xml"		LongName="dictionary.Bronchus.Bronchus.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Bronchus.Bronchus.xml" />
+							<File Id="XML303f"	Name="303f.xml"		LongName="dictionary.Calcium.Calcium.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Calcium.Calcium.xml" />
+							<File Id="XML303g"	Name="303g.xml"		LongName="dictionary.Colon.Colon.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Colon.Colon.xml" />
+							<File Id="XML303h"	Name="303h.xml"		LongName="dictionary.Cyst.Cyst.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Cyst.Cyst.xml" />
+							<File Id="XML303i"	Name="303i.xml"		LongName="dictionary.Duodenum.Duodenum.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Duodenum.Duodenum.xml" />
+							<File Id="XML303j"	Name="303j.xml"		LongName="dictionary.Gallbladder.Gallbladder.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Gallbladder.Gallbladder.xml" />
+							<File Id="XML303k"	Name="303k.xml"		LongName="dictionary.Heart.Heart.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Heart.Heart.xml" />
+							<File Id="XML303l"	Name="303l.xml"		LongName="dictionary.Kidneys.Kidneys.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Kidneys.Kidneys.xml" />
+							<File Id="XML303m"	Name="303m.xml"		LongName="dictionary.Landmark.Landmark.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Landmark.Landmark.xml" />
+							<File Id="XML303n"	Name="303n.xml"		LongName="dictionary.__LeftKidney.__LeftKidney.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__LeftKidney.__LeftKidney.xml" />
+							<File Id="XML303o"	Name="303o.xml"		LongName="dictionary.__LeftLung.__LeftLung.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__LeftLung.__LeftLung.xml" />
+							<File Id="XML303p"	Name="303p.xml"		LongName="dictionary.__LeftSurrenalGland.__LeftSurrenalGland.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__LeftSurrenalGland.__LeftSurrenalGland.xml" />
+							<File Id="XML303q"	Name="303q.xml"		LongName="dictionary.Liver.Liver.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Liver.Liver.xml" />
+							<File Id="XML303r"	Name="303r.xml"		LongName="dictionary.__LiverCyst.__LiverCyst.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__LiverCyst.__LiverCyst.xml" />
+							<File Id="XML303s"	Name="303s.xml"		LongName="dictionary.__LiverTumor.__LiverTumor.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__LiverTumor.__LiverTumor.xml" />
+							<File Id="XML303t"	Name="303t.xml"		LongName="dictionary.Lungs.Lungs.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Lungs.Lungs.xml" />
+							<File Id="XML303u"	Name="303u.xml"		LongName="dictionary.Muscles.Muscles.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Muscles.Muscles.xml" />
+							<File Id="XML303v"	Name="303v.xml"		LongName="dictionary.Object.Object.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Object.Object.xml" />
+							<File Id="XML303w"	Name="303w.xml"		LongName="dictionary.Oesophagus.Oesophagus.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Oesophagus.Oesophagus.xml" />
+							<File Id="XML303x"	Name="303x.xml"		LongName="dictionary.Pancreas.Pancreas.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Pancreas.Pancreas.xml" />
+							<File Id="XML303y"	Name="303y.xml"		LongName="dictionary.ParathyroidGland.ParathyroidGland.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.ParathyroidGland.ParathyroidGland.xml" />
+							<File Id="XML303z"	Name="303z.xml"		LongName="dictionary.PortalVein.PortalVein.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.PortalVein.PortalVein.xml" />
+							<File Id="XML303aa"	Name="303aa.xml"	LongName="dictionary.Prostate.Prostate.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Prostate.Prostate.xml" />
+							<File Id="XML303ab"	Name="303ab.xml"	LongName="dictionary.__RightKidney.__RightKidney.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__RightKidney.__RightKidney.xml" />
+							<File Id="XML303ac"	Name="303ac.xml"	LongName="dictionary.__RightLung.__RightLung.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__RightLung.__RightLung.xml" />
+							<File Id="XML303ad"	Name="303ad.xml"	LongName="dictionary.__RightSurrenalGland.__RightSurrenalGland.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.__RightSurrenalGland.__RightSurrenalGland.xml" />
+							<File Id="XML303ae"	Name="303ae.xml"	LongName="dictionary.Skin.Skin.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Skin.Skin.xml" />
+							<File Id="XML303af"	Name="303af.xml"	LongName="dictionary.SmallIntestin.SmallIntestin.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.SmallIntestin.SmallIntestin.xml" />
+							<File Id="XML303ag"	Name="303ag.xml"	LongName="dictionary.Spleen.Spleen.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Spleen.Spleen.xml" />
+							<File Id="XML303ah"	Name="303ah.xml"	LongName="dictionary.Stomach.Stomach.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Stomach.Stomach.xml" />
+							<File Id="XML303ai"	Name="303ai.xml"	LongName="dictionary.SurrenalGland.SurrenalGland.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.SurrenalGland.SurrenalGland.xml" />
+							<File Id="XML303aj"	Name="303aj.xml"	LongName="dictionary.ThyroidGland.ThyroidGland.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.ThyroidGland.ThyroidGland.xml" />
+							<File Id="XML303ak"	Name="303ak.xml"	LongName="dictionary.Trachea.Trachea.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Trachea.Trachea.xml" />
+							<File Id="XML303al"	Name="303al.xml"	LongName="dictionary.Tumor.Tumor.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Tumor.Tumor.xml" />
+							<File Id="XML303am"	Name="303am.xml"	LongName="dictionary.Ureter.Ureter.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.Ureter.Ureter.xml" />
+							<File Id="XML303an"	Name="303an.xml"	LongName="dictionary.VenaCava.VenaCava.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.VenaCava.VenaCava.xml" />
+							<File Id="XML303ao"	Name="303ao.xml"	LongName="dictionary.VenousSystem.VenousSystem.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.VenousSystem.VenousSystem.xml" />
+							<File Id="XML303ap"	Name="303ap.xml"	LongName="dictionary.xml" Source="../../CommonLib/Bundles/io_0-0/mfoRC/dictionary.xml" />
+						</Component>
+					</Directory>
+				</Directory>
+            </Directory>
+			<Component Id='copy303' Guid='11112222-83F1-4F22-985B-FDB3C8ABD603'>
+					<CopyFile Id="cp303" FileId="DLL303" DestinationName="303.dll" DestinationLongName="io_0-0_win32_cl7-1.dll" />
+			</Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+  </Module>
+</Wix>

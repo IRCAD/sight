@@ -1,0 +1,10 @@
+TYPE	= 'shared'
+USE		= ['boost', 'libxml2']
+LIB		= ['fwCore_0-1']
+VERSION = '0-3'
+
+# Special glitch under linux.
+import os
+import sys
+if os.name == 'posix' and sys.platform == 'darwin' :
+	STDLIB = ['dl']

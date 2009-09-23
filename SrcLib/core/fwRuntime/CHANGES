@@ -1,0 +1,102 @@
+* 24-05-2005 *
+
+	+ Added a new runtime::getBundleResourcePath function.
+	
+
+* 20-05-2005 *
+
+	+ When defining an extension, use "implements" instead of "point" to
+	  declare the extension point to connect to.
+	  
+	- Bug fixed. When starting a bundle, and exception is raised to notify
+	  when no matching bundle has been found.
+	  
+	  
+* 18-05-2005 *
+
+	+ Added a new "requirement" declaration in the plugin descriptor.
+	  This allows to declare which bundles must start their dynamic
+	  libraries before one can load its libraries too. This has been
+	  designed to avoid the system to load automatically dynamic libraries
+	  before a bundle tries, avoiding some conflicts during C++
+	  initializations.
+	  
+
+* 03-05-2005 *
+
+	+ Added a new global operation to retrieve configuration elements
+	  contributed by extensions directly.
+	  See runtime::getAllConfigurationElementsForPoint for details.
+	
+	~ The runtime::Shp class hase been removed. Now boost::shared_ptr
+	  is directly used instead. The migration will be as simple as
+	  replacing every "Shp" by "shared_ptr" in your code.
+
+
+* 28-04-2005 *
+
+	+ runtime::loadBundles now normalizes the directory path before
+	  trying to explore this path for bundles. This asserts that the
+	  specified path form is valid.
+
+
+* 26-04-2005 *
+
+	+ Added method for creating an executable instance from a configuration
+	  element instance.
+
+	~ Changes in ExtensionPoint class.
+	  Added pointer to the bundle.
+	  Added support for XML schema path attribute.
+	  Added method to enumerate all contributed extensions.
+	  
+	~ Code clean-up.
+	
+	- In class Runtime, getExtensionForPoint has been removed.
+	  
+
+* 22-04-2005 *
+
+	- Bug fixed.
+	  The runtime rejected several extensions that didn't have an
+      identifier (actually, identifier on extensions are optionnal).
+    
+    ~ ConfigurationElement interface changed.
+      The old "getAttributeValue" is now "getSafeAttributeValue". A new
+      "getAttributeValue" has been added. See releated documentation
+      for futher information.
+
+* 20-04-2005 *
+
+	- Bug fixed.
+	  While loading bundles, the runtime crashed due to a miss handled
+	  pointer.
+	  
+
+* 14-04-2005 *
+
+	+ Added iterator for configuration element's children.
+	
+	
+* 13-04-2005 *
+
+	+ Creation of a change log file located at the root directory of the project.
+	
+	+ Generalisation of the use of shared pointers. This may need a deep
+	  update of your code. See "include/runtime/Shp.hpp" to see how does
+	  the shared pointer type look like.
+	
+	+ Generalisation of the iterator use to access nested collection of
+	  objects. This involves a deep update of your code too. You should
+	  have a look at "include/runtime/iterators.hpp" as a start point to
+	  understand the new iterator architecture. This architecture provides
+	  the acces to native stl iterators.
+	  
+	~ "loadBundles" has been removed from runtime::Runtime class. Now you
+	  must use "runtime::io::loadBundles" instead. You will find theis function's
+	  declaration in "include/runtime/io/operations.hpp".
+	  
+	- When exploring a bundle repository for "plugin.xml" files, a exception
+	  was raised when a supposed bundle directory did not containt a
+	  "plugin.xml" file. Now a warning message is sent to std::cerr. This
+	  could be improved by the use of a logging architecture.

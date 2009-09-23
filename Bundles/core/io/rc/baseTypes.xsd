@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+
+	
+	
+ <xsd:complexType name="StringFieldXSDType">
+        <xsd:sequence>
+		<xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+	<xsd:attribute name="id" type="xsd:string" />
+  </xsd:complexType>
+
+
+<xsd:element name="StringField" type="StringFieldXSDType"/>
+  
+  
+	
+ <xsd:complexType name="FloatFieldXSDType">
+        <xsd:sequence>
+		<xsd:element name="value" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+	<xsd:attribute name="id" type="xsd:string" />
+  </xsd:complexType>
+
+ <xsd:element  name="FloatField"  type="FloatFieldXSDType"/>
+  
+
+<!-- predeclaration needed to manage  processContents="strict" ceacuse a Field can contain a Field -->
+<xsd:element name="Field" type="FieldXSDType"/>
+
+ <xsd:complexType name="FieldXSDType">
+        <xsd:sequence>
+	<xsd:any minOccurs="0" maxOccurs="unbounded" processContents="strict"/>
+        </xsd:sequence>
+	<xsd:attribute name="label" type="xsd:string" />
+	<xsd:attribute name="id" type="xsd:string" />
+  </xsd:complexType>
+  
+  
+  
+  
+  
+ <xsd:simpleType name="DynamicTypeValueXSDType">
+        <xsd:restriction base="xsd:string">
+		<xsd:enumeration value="unsigned char"/>
+		<xsd:enumeration value="unsigned short"/>
+		<xsd:enumeration value="unsigned int"/>
+		<xsd:enumeration value="unsigned long"/>
+		<xsd:enumeration value="signed char"/>
+		<xsd:enumeration value="signed short"/>
+		<xsd:enumeration value="signed int"/>
+		<xsd:enumeration value="signed long"/>
+		<xsd:enumeration value="float"/>
+		<xsd:enumeration value="double"/>
+		<xsd:enumeration value="UNSPECIFIED TYPE"/>
+	</xsd:restriction>
+</xsd:simpleType>
+
+
+<xsd:complexType name="DynamicTypeXSDType">
+		<xsd:sequence>
+		  <xsd:element name="DynamicType" type="DynamicTypeValueXSDType"/>	 
+		</xsd:sequence>
+</xsd:complexType>  
+
+<xsd:complexType name="GenericContainerXSDType">
+	<xsd:sequence>
+		<xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
+		<xsd:element name="item" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:complexType name="FloatContainerXSDType">
+	<xsd:sequence>
+		<xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
+		<xsd:element name="item" type="xsd:float" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="IntegerContainerXSDType">
+	<xsd:sequence>
+		<xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
+		<xsd:element name="item" type="xsd:integer" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+</xsd:complexType>
+
+
+</xsd:schema>
+

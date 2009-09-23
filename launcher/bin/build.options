@@ -1,0 +1,14 @@
+#USE   = ['wx','boost','python']
+USE   = ['wx','boost']
+LIB   =  ['fwRuntime_0-3','fwCore_0-1','fwServices_0-1','fwTools_0-1']
+VERSION = '0-1'
+TYPE  = 'exec'
+RESRC = 'yes'
+#DEF   = ['NEED_CHOOSELANG_UI']
+import sys
+import os
+if sys.platform == 'darwin' :
+    USE += ['libxml2']
+elif os.name == 'posix' :
+    STDLIB = ['tiff','iconv']
+    STDLIB+=['icuuc','icudata','icui18n']

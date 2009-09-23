@@ -1,0 +1,5 @@
+TYPE='shared'
+LIB = ['fwData_0-1','fwCore_0-1','fwDataIO_0-2','fwTools_0-1','fwComEd_0-1']
+VERSION = '0-1'
+USE = ['boost','vtk']
+LOGLEVEL = 'info'

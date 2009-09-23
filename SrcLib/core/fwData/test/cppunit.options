@@ -1,0 +1,40 @@
+
+CLASSTEST=[
+    'AcquisitionTest',
+    'BooleanTest',
+    'CameraTest',
+    'ColorTest',
+    'CompositeTest',
+    'DictionaryOrganTest',
+    'DictionaryTest',
+    'EdgeTest',
+    'FloatTest',
+    'GenericFieldTest',
+    'GraphTest',
+    'ImageTest',
+    'IntegerTest',
+    'MaterialTest',
+    'ModelTest',
+    'ObjectTest',
+    'PatientTest',
+    'ProcessObjectTest',
+    'ReconstructionTest',
+    'RegionTest',
+    'StringTest',
+    'StudyTest',
+    'TransfertFunctionPointTest',
+    'TransfertFunctionTest',
+    'TransformationMatrix3DTest',
+    'VideoTest',
+# TODO: 
+#    'DownCastIteratorTest',
+#    'GenericFieldTest',
+#    'PipelineTest',
+# probleme avec ImageTest::Buffer
+]
+
+
+
+USE = ['boost']
+LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1']
+CONSOLE = 'yes'

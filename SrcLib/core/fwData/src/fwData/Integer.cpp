@@ -1,0 +1,33 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
+ * published by the Free Software Foundation.  
+ * ****** END LICENSE BLOCK ****** */
+
+#include <string>
+
+#include <fwTools/ClassRegistrar.hpp>
+
+#include "fwData/Object.hpp"
+#include "fwData/GenericField.hpp"
+#include "fwData/Integer.hpp"
+
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Integer, ::fwData::Integer );
+
+namespace fwData
+{
+//------------------------------------------------------------------------------
+
+Integer::Integer( const int value ) throw()
+:	GenericField< int >( std::string( "Integer" ), value )
+{}
+
+//------------------------------------------------------------------------------
+
+Integer::~Integer() throw()
+{}
+
+//------------------------------------------------------------------------------
+
+} // namespace fwData

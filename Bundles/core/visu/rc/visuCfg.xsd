@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?> 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="extension" type="ExtensionType"/>
+
+<xs:complexType name="ExtensionType">
+  <xs:sequence>
+    <xs:element name="service" type="VisualizationServiceType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:anyAttribute processContents="skip" />
+</xs:complexType>
+
+<xs:complexType name="VisualizationServiceType">
+  <xs:sequence>
+    <xs:element name="service" type="DelegateType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="clockRateMSeconds" type="xs:integer" />  
+</xs:complexType>
+
+<xs:complexType name="DelegateType">
+  <xs:attribute name="config" type="xs:string" use="required" />
+  <xs:attribute name="type" type="xs:string" use="required" />
+</xs:complexType>
+
+</xs:schema>

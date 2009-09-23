@@ -1,0 +1,12 @@
+<plugin id="io" class="io::Plugin">
+
+	<library name="io"/>
+	
+	<point id="::io::IReader" >
+		<implements>::fwServices::IService</implements>
+	</point>
+	<point id="::io::IWriter" >
+		<implements>::fwServices::IService</implements>
+	</point>
+	
+</plugin>

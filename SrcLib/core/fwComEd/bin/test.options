@@ -1,0 +1,6 @@
+TYPE="exec"
+USE=[ 'boost' , 'libxml2','python']
+LIB=[ 'fwServices_0-1','fwData_0-1','fwTools_0-1','fwCore_0-1','fwRuntime_0-3' ,'command','observer']
+LOGLEVEL = 'info'
+CONSOLE = 'yes'
+

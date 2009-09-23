@@ -1,0 +1,34 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+
+<xsd:include schemaLocation="baseTypes.xsd"/>	
+	
+<xsd:complexType name="ImageType">
+	<xsd:sequence>
+		<xsd:element name="Dimension" type="xsd:positiveInteger"/>
+		<xsd:element name="PixelType" type="DynamicTypeXSDType"/>
+		<xsd:element name="ManagesBuff" >
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:positiveInteger">
+					<xsd:maxExclusive value="2"/>
+				</xsd:restriction>
+        		</xsd:simpleType>
+		</xsd:element >
+		<xsd:element name="Spacing"	type="FloatContainerXSDType"/>
+		<xsd:element name="Origin"  	type="IntegerContainerXSDType"/>
+		<xsd:element name="Size"    	type="IntegerContainerXSDType"/>
+		<xsd:element name="Filename" 	type="xsd:string"/>
+		<xsd:element name="WindowCenter" type="xsd:integer"/>
+		<xsd:element name= "WindowWidth" type="xsd:integer"/>
+		<xsd:element name="RescaleIntercept" type="xsd:integer"/>
+		<xsd:element name="Buffer"/>
+		<xsd:element name="Field" type="FieldXSDType" minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="id" type="xsd:string" />
+</xsd:complexType>
+
+<xsd:element name="Image" type="ImageType"/>
+
+	
+
+</xsd:schema>

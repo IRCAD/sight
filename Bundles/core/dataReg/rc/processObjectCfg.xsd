@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?> 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="extension" type="ExtensionType"/>
+
+<!--
+<xs:complexType name="ExtensionType">
+  <xs:sequence>
+    <xs:element name="config" type="ObjectType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:anyAttribute processContents="skip" />
+</xs:complexType>
+-->
+
+<xs:complexType name="ExtensionType">
+  <xs:sequence>
+    <xs:element name="object" type="ProcessObjectType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+   <xs:anyAttribute processContents="skip" />
+</xs:complexType>
+
+<xs:complexType name="ProcessObjectType">
+  <xs:sequence>
+    <xs:element name="inputs" type="ProcessObjectInputType" minOccurs="0" maxOccurs="1" />
+    <xs:element name="outputs" type="ProcessObjectOutputType" minOccurs="0" maxOccurs="1" />
+  <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="type" type="xs:string" />  
+  <xs:attribute name="id" type="xs:string" />  
+   <xs:attribute name="config" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="ProcessObjectInputType">
+  <xs:sequence>
+    <xs:element name="object" type="ProcessObjectIOType" minOccurs="0" maxOccurs="unbounded"  />
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ProcessObjectOutputType">
+  <xs:sequence>
+    <xs:element name="object" type="ProcessObjectIOType" minOccurs="0" maxOccurs="unbounded"  />
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ProcessObjectIOType">
+ <xs:sequence>
+  <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+ </xs:sequence>
+  <xs:attribute name="id" type="xs:string" use="required" />
+  <xs:attribute name="type" type="xs:string" use="required" />
+  <xs:attribute name="config" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="ServiceType" >
+	<xs:sequence>
+		<xs:element name="service" type="DelegateType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+  	<xs:attribute name="type" type="xs:string" use="required" />
+	<xs:anyAttribute processContents="skip" />	
+</xs:complexType>
+
+<xs:complexType name="DelegateType" >
+	<xs:sequence>
+		<xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+	</xs:sequence>
+  	<xs:attribute name="type" type="xs:string" />
+	<xs:anyAttribute processContents="skip" />	
+</xs:complexType>
+
+</xs:schema>

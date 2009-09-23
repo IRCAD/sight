@@ -1,0 +1,18 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+LOGLEVEL = 'info'
+USE     = ['boost','vtk','wx']
+LIB     = [
+    'fwTools_0-1',
+    'fwRuntime_0-3',
+    'fwData_0-1',
+    'fwDataIO_0-2',
+    'fwServices_0-1',
+    'fwCore_0-1',
+    'fwComEd_0-1',
+    'vtkIO_0-1',
+    'fwWX_0-1',
+    ]
+BUNDLES = ['io_0-1']
+
+

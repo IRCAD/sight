@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-06-13 13:59+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: C:/Dev/Bundles/ui/src/ui/Frame.cpp:38
+msgid "/Frame"
+msgstr ""
+
+#. /< the path in the user configuration for frtame settings
+#: C:/Dev/Bundles/ui/src/ui/Frame.cpp:39
+msgid "Location"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ActionManager.cpp:34
+msgid "/Shortcuts"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ActionManager.cpp:135
+msgid " "
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ActionManager.cpp:135
+#: C:/Dev/Bundles/ui/src/ui/action/ActionManager.cpp:136
+msgid "_"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ActionManager.cpp:136
+msgid "/"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ShortcutEditor.cpp:251
+msgid "Hit keys on your keyboard to change the shortcut."
+msgstr ""
+
+#. Creates the controls.
+#: C:/Dev/Bundles/ui/src/ui/action/ShortcutEditor.cpp:408
+msgid "Shortcuts"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ShortcutEditor.cpp:410
+msgid "&Edit..."
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ShortcutEditor.cpp:411
+msgid "&Clear"
+msgstr ""
+
+#. Initializes the shortcut list.
+#: C:/Dev/Bundles/ui/src/ui/action/ShortcutEditor.cpp:414
+msgid "Name"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/action/ShortcutEditor.cpp:415
+msgid "Value"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/utility/WindowLocation.cpp:28
+msgid "unknown"
+msgstr ""
+
+#. /< the unknown state literal
+#: C:/Dev/Bundles/ui/src/ui/utility/WindowLocation.cpp:29
+msgid "iconized"
+msgstr ""
+
+#. /< the iconized state literal
+#: C:/Dev/Bundles/ui/src/ui/utility/WindowLocation.cpp:30
+msgid "maximized"
+msgstr ""
+
+#. /< the maximized state literal
+#: C:/Dev/Bundles/ui/src/ui/utility/WindowLocation.cpp:31
+msgid "full screen"
+msgstr ""
+
+#. Matches the given window location.
+#: C:/Dev/Bundles/ui/src/ui/utility/WindowLocation.cpp:99
+msgid "([0-9]+)x([0-9]+)([+\\-][0-9]+)([+\\-][0-9]+)"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/utility/WindowLocation.cpp:209
+#, possible-c-format
+msgid "%ix%i%+i%+i"
+msgstr ""
+
+#: C:/Dev/Bundles/ui/src/ui/view/SampleView.cpp:43
+msgid "ui::view::SampleView"
+msgstr ""

@@ -1,0 +1,3 @@
+// runtime - copyright (C) 2004-2005 IRCAD.
+// 
+// author	Guillaume Brocker

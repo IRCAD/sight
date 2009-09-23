@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="plugin" type="PluginType"/>
+
+<xs:complexType name="PluginType">
+  <xs:choice  minOccurs="0" maxOccurs="unbounded" >
+    <xs:element name="library" type="LibraryType" />
+    <xs:element name="requirement" type="RequirementType"  />
+	<xs:element name="extension-point" type="ExtensionPointType" />
+	<xs:element name="extension" type="ExtensionType" />
+	<xs:element name="point" type="PointType" />
+  </xs:choice>
+  <xs:attribute name="id" type="xs:string" use="required"/>
+  <xs:attribute name="class" type="xs:string" />
+  <xs:attribute name="version" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="RequirementType">
+  <xs:attribute name="id" type="xs:string" use="required" />
+  <xs:attribute name="version" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="LibraryType">
+  <xs:attribute name="name" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="PointType">
+ <xs:sequence>
+    <xs:element name="implements" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="id" type="xs:string" use="required"/>
+  <xs:attribute name="schema" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="ExtensionPointType">
+  <xs:attribute name="id" type="xs:string" use="required"/>
+  <xs:attribute name="schema" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="ExtensionType">
+  <xs:sequence>
+    <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip" />
+  </xs:sequence>
+  <xs:attribute name="id" type="xs:string" />
+  <xs:attribute name="implements" type="xs:string" use="required" />
+</xs:complexType>
+
+</xs:schema>

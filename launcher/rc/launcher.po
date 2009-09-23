@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-06-13 13:59+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: C:/Dev/launcher/src/launcher/App.cpp:41
+#: C:/Dev/launcher/src/launcher/App.cpp:88
+msgid "launcher"
+msgstr ""
+
+#: C:/Dev/launcher/src/launcher/App.cpp:49
+#: C:/Dev/launcher/src/launcher/App.cpp:120
+msgid "Exception Caught"
+msgstr ""
+
+#: C:/Dev/launcher/src/launcher/App.cpp:86
+msgid "./share/locale"
+msgstr ""
+
+#: C:/Dev/launcher/src/launcher/App.cpp:89
+msgid "runtime"
+msgstr ""
+
+#: C:/Dev/launcher/src/launcher/App.cpp:152
+#, possible-c-format
+msgid "A valid profile is required to start the application. The file %s"
+msgstr ""
+
+#: C:/Dev/launcher/src/launcher/App.cpp:154
+msgid " does not exist."
+msgstr ""
+
+#: C:/Dev/launcher/src/launcher/App.cpp:167
+msgid "profile.xml"
+msgstr ""

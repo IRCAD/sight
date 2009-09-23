@@ -1,0 +1,11 @@
+TYPE = 'exec'
+LIB  = ['fwData_0-1','observer','xmlmfo_0-1','mfo_0-2','COMMedTar','IPOP','fwTools_0-1','fwCore_0-1','fwDataIO_0-2','fwServices_0-1','fwComEd_0-1','fwRuntime_0-3','command','itkIO_0-1']
+USE  = ['boost','itk','libxml2' ] #'wx'
+USEVISIBILITY ='no'
+CONSOLE = 'yes'
+
+LOGLEVEL = 'info'
+
+CLASSTEST=['testdataIOTriangualrMesh'] #'testdataIOGraph'
+#CLASSTEST=['testdataIO']
+

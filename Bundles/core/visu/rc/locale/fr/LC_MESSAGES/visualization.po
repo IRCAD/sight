@@ -1,0 +1,59 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-06-13 14:27+0200\n"
+"PO-Revision-Date: 2008-06-13 22:45+0100\n"
+"Last-Translator: Johan Moreau <Johan.Moreau@laposte.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:158
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:159
+#, possible-c-format
+msgid "%d"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:234
+msgid "-0000"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:235
+msgid "+0000"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:236
+msgid "    "
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:244
+msgid "0\\%"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:245
+msgid "20\\%"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:246
+msgid "40\\%"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:247
+msgid "60\\%"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:248
+msgid "80\\%"
+msgstr ""
+
+#: C:/Dev/Bundles/visualization/src/visu/widgets/TFGraphWidget.cpp:249
+msgid "100\\%"
+msgstr ""
+

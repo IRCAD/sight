@@ -1,0 +1,29 @@
+msgid "TFZoomPanel::SendEvent"
+msgstr ""
+
+msgid "Windowing"
+msgstr ""
+
+msgid "Slices Position"
+msgstr ""
+
+msgid "Min"
+msgstr ""
+
+msgid "Max"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Width"
+msgstr ""
+
+msgid "Axial"
+msgstr ""
+
+msgid "Frontal"
+msgstr ""
+
+msgid "Sagittal"
+msgstr ""

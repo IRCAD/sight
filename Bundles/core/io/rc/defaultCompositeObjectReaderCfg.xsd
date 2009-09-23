@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?> 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="extension" type="ExtensionType"/>
+
+<xs:complexType name="ExtensionType">
+  <xs:sequence>
+    <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:anyAttribute processContents="skip" />
+</xs:complexType>
+
+<xs:complexType name="ServiceType">
+  <xs:sequence>
+    <xs:element name="input" type="ProcessObjectIOType" minOccurs="0" maxOccurs="unbounded" />
+    <xs:element name="output" type="ProcessObjectIOType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="id" type="xs:string" use="required" />
+</xs:complexType>
+
+<xs:complexType name="ProcessObjectIOType">
+  <xs:attribute name="id" type="xs:string" use="required" />
+  <xs:attribute name="filename" type="xs:string" use="required"/>
+  <xs:attribute name="type" type="xs:string" />
+</xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,9 @@
+TYPE	= 'shared'
+USE		= ['boost']
+import os
+if os.name == 'nt':
+	USE	+= ['log4cxx']
+	DEF = ['USE_LOG4CXX']
+
+VERSION	= '0-1'
+TEST   = 'yes'
