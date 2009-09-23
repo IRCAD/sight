@@ -1,9 +1,0 @@
-USE 	= ['wx','vtk','boost']
-LIB		= ['fwRuntime_0-3','fwServices_0-1','fwTools_0-1','fwCore_0-1']
-#LIB		= ['fwRuntime_0-3','fwServices_0-1','fwTools_0-1','fwCore_0-1','fwWX_0-1']
-
-LOGLEVEL = 'trace'
-TYPE	= 'shared'
-VERSION	= '0-1'
-
-
