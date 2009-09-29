@@ -64,15 +64,15 @@ public:
 			//are considerer to be equal
 			//return ( !((*f1)==(*f2)) ) && (f1->stringizedKey() < f2->stringizedKey() );
 #ifdef CLASSFACTORYORDERDEBUG
-			OSLM_TRACE ( "FactoryWeakOrderer:");
-			OSLM_TRACE ( "  f1 " << getString(f1->baseClassId()) << "-"
-							  << getString(f1->subClassId())  << "-"
-							  << getString(f1->keyId() )      << " keyVal="
+			SLM_TRACE ( "FactoryWeakOrderer:");
+			OSLM_TRACE ( "  f1 " << getString(f1->baseClassId()) << "#"
+							  << getString(f1->subClassId())    << "#"
+							  << getString(f1->keyId() )        << " #keyVal="
 							  << f1->stringizedKey() );
-			OSLM_TRACE ( "  f2 " << getString(f2->baseClassId()) << "-"
-							  << getString(f2->subClassId())  << "-"
-							  << getString(f2->keyId() )      << " keyVal="
-							  << f2->stringizedKey() );
+			OSLM_TRACE ( "  f2 " << getString(f2->baseClassId()) << "#"
+								 << getString(f2->subClassId())  << "#"
+								 << getString(f2->keyId() )      << " #keyVal="
+							     << f2->stringizedKey() );
 #endif
 			bool result;
 

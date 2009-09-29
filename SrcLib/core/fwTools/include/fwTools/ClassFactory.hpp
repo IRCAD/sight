@@ -125,26 +125,29 @@ public:
 	 virtual bool operator<(const IClassFactory &other) const
 	 {
 #ifdef CLASSFACTORYORDERDEBUG
-		 OSLM_TRACE("op<");
+		 SLM_TRACE("test op<");
 #endif
-			if ( keyComparatorLess( this->baseClassId() , other.baseClassId()) ) {return true;}
+			if ( keyComparatorLess( this->baseClassId(), other.baseClassId()) ) {return true;}
+			if ( keyComparatorLess( other.baseClassId(), this->baseClassId())  ){return false;}
 #ifdef CLASSFACTORYORDERDEBUG
-			OSLM_TRACE("base");
+			SLM_TRACE("bases are equals");
 #endif
-			if ( keyComparatorLess( this->subClassId() 	, other.subClassId() ) ) {return true;}
+			if ( keyComparatorLess( this->subClassId(), other.subClassId() ) ) {return true;}
+			if ( keyComparatorLess( other.subClassId(), this->subClassId() ) ) {return false;}
 #ifdef CLASSFACTORYORDERDEBUG
-			OSLM_TRACE("sub");
+			SLM_TRACE("subclasses are equals");
 #endif
-			if ( keyComparatorLess( this->keyId() 		, other.keyId()      ) ) {return true;}
+			if ( keyComparatorLess( this->keyId() 	, other.keyId()      ) ) {return true;}
+			if ( keyComparatorLess( other.keyId()   , this->keyId()      ) ) {return false;}
 #ifdef CLASSFACTORYORDERDEBUG
-			OSLM_TRACE("key");
+			SLM_TRACE("key type are equals");
 #endif
 			if (  dynamic_cast< const ConcreteFactory *>(&other) ) // same factory Base-Sub-KeyType type
 			{
 				const ConcreteFactory &concreteFactory =  dynamic_cast< const ConcreteFactory &>(other);
 				const Key &otherKey = concreteFactory.keyValue();
 #ifdef CLASSFACTORYORDERDEBUG
-				OSLM_TRACE("keyLower" <<  isMyKeyLower(otherKey) );
+				SLM_TRACE("keyLower" <<  isMyKeyLower(otherKey) );
 #endif
 				return isMyKeyLower(otherKey);
 			}
