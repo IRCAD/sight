@@ -10,10 +10,11 @@
 #include <fwData/ProcessObject.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Video.hpp>
+#include <fwData/TriangularMesh.hpp>
 
 #include "dataReg/Plugin.hpp"
 
-namespace fwDataReg
+namespace dataReg
 {
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::dataReg::Plugin");
@@ -23,15 +24,14 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-	// HACK ???? data lib should be loaded !!!
-	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::ProcessObject,  	::fwData::ProcessObject);
+	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::ProcessObject,  ::fwData::ProcessObject);
 	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::Image, 			::fwData::Image );
 	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::Composite, 		::fwData::Composite );
 	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::Video, 			::fwData::Video );
-	// etc ?not necessary to declare ohter data ?
+	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::TriangularMesh, ::fwData::TriangularMesh );
 }
 
 void Plugin::stop() throw()
 {}
 
-} // namespace operators
+} // namespace dataReg

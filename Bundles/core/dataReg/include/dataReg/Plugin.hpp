@@ -11,7 +11,7 @@
 
 #include "dataReg/config.hpp"
 
-namespace fwDataReg
+namespace dataReg
 {
 
 /**
@@ -36,6 +36,6 @@ struct DATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 
 };
 
-} // namespace fwDataReg
+} // namespace dataReg
 
 #endif //_DATAREG_PLUGIN_HPP_
