@@ -20,5 +20,6 @@
     <!-- The vtkSimpleNegato bundle contains the visualization service of medical images using the VTK library. -->
     <activate id="vtkSimpleNegato" version="0-1" />
 
+    <start id="dataReg" />
     <start id="gui" />   
 </profile>

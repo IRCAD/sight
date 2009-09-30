@@ -9,37 +9,12 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwCore/base.hpp>
-#include <fwData/Object.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 
 #include "gui/Plugin.hpp"
 #include "gui/Manager.hpp"
-#include "gui/App.hpp"
 
-#include "gui/action/NothingAction.hpp"
-#include "gui/action/RunRootObjectServiceAction.hpp"
-#include "gui/action/SelectConfigurationAction.hpp"
-#include "gui/action/TestAction.hpp"
-#include "gui/action/CloseAction.hpp"
-#include "gui/action/QuitAction.hpp"
-#include "gui/action/StarterActionService.hpp"
-#include "gui/action/FullScreenActionService.hpp"
-
-#include "gui/sample/ITestService.hpp"
-#include "gui/sample/DummyTest.hpp"
-
-#include "gui/aspect/IAspect.hpp"
-#include "gui/aspect/DefaultAspect.hpp"
-#include "gui/aspect/IMenu.hpp"
-#include "gui/aspect/DefaultMenu.hpp"
-#include "gui/aspect/IToolBar.hpp"
-#include "gui/aspect/DefaultToolBar.hpp"
-#include "gui/view/IView.hpp"
-#include "gui/view/DefaultView.hpp"
-
-#include "gui/editor/IEditor.hpp"
-#include "gui/editor/DummyEditor.hpp"
 
 namespace gui
 {
@@ -49,41 +24,14 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 Plugin::~Plugin() throw()
 {}
 
+//-----------------------------------------------------------------------------
+
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-	// registration of basic action services.
-	REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::NothingAction , ::fwTools::Object ) ;
-	REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::RunRootObjectServiceAction , ::fwTools::Object ) ;
-	REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::CloseAction , ::fwTools::Object ) ;
-	REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::QuitAction , ::fwTools::Object ) ;
-	REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::SelectConfigurationAction , ::fwTools::Object ) ;
-	REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::TestAction , ::fwTools::Object ) ;
-	REGISTER_SERVICE( ::gui::action::IAction, ::gui::action::StarterActionService, ::fwTools::Object );
-	REGISTER_SERVICE( ::gui::action::IAction, ::gui::action::FullScreenActionService, ::fwTools::Object );
-
-	// registration of basic editor services.
-	REGISTER_SERVICE( ::gui::editor::IEditor , ::gui::editor::DummyEditor , ::fwTools::Object ) ;
-
-	// registration of basic view service.
-	REGISTER_SERVICE( ::gui::view::IView , ::gui::view::DefaultView , ::fwTools::Object ) ;
-	// registration of basic aspect service.
-	REGISTER_SERVICE( ::gui::aspect::IAspect , ::gui::aspect::DefaultAspect , ::fwTools::Object ) ;
-	// registration of basic menu service.
-	REGISTER_SERVICE( ::gui::aspect::IMenu , ::gui::aspect::DefaultMenu , ::fwTools::Object ) ;
-	// registration of basic toolbar service.
-	REGISTER_SERVICE( ::gui::aspect::IToolBar , ::gui::aspect::DefaultToolBar , ::fwTools::Object ) ;
-
-	// registration of basic example service.
-	REGISTER_SERVICE( ::gui::sample::ITestService , ::gui::sample::DummyTest , ::fwTools::Object ) ;
-
-
-
 	SLM_TRACE("starting gui bundle");
-
 
 	// verify if the command line and profile.xml are well formed
 	startMethodPreconditionTest();
-
 
 	if ( ( wxTheApp && wxTheApp->wxAppConsole::argc <= 3 ) || !wxTheApp )
 	{
@@ -127,6 +75,8 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 		::wxEntry( argcc , argvv ) ;
 	}
 }
+
+//-----------------------------------------------------------------------------
 
 void Plugin::startMethodPreconditionTest()
 {
@@ -173,7 +123,9 @@ void Plugin::startMethodPreconditionTest()
 
 }
 
+//-----------------------------------------------------------------------------
+
 void Plugin::stop() throw()
 {}
 
-} // namespace operators
+} // namespace gui

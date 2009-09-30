@@ -52,7 +52,7 @@ bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt 
 	}
 	assert( !objectType.empty() ) ;
 	// Object id
-	 ::boost::shared_ptr< ::fwRuntime::Extension > ext = ::fwRuntime::findExtension( objectType ) ;
+	::boost::shared_ptr< ::fwRuntime::Extension > ext = ::fwRuntime::findExtension( objectType ) ;
 	if( ext )
 	{
 		assert( ext );
@@ -61,19 +61,16 @@ bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt 
 	}
 
 	::boost::shared_ptr< ::fwTools::Object > obj = ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >(objectType) ;
-	// Hack to create ::fwTools::Object : do not work with previous code line ????
-	if( objectType == ::fwCore::getClassname< ::fwTools::Object >() )
-	{
-		obj = ::fwTools::Factory::New< ::fwTools::Object >();
-	}
+	OSLM_ASSERT("root object " << objectType << " not created", obj);
+
 	stream << "Object type = " << objectType << (_elt->hasAttribute("id") ? " (id = " + _elt->getExistingAttributeValue("id") + ")" : " No id" ) ;
 	// Object uid
 	stream << (_elt->hasAttribute("uid") ? " (uid = " + _elt->getExistingAttributeValue("uid") + ")" : " No uid" ) ;
 
 	// Validation of the overall structure : object/service/start/update + object specificity
-	 ::boost::shared_ptr< ::fwRuntime::ExtensionPoint > extPt = ::fwRuntime::findExtensionPoint( objectType ) ;
-   if( extPt )
-   {
+	::boost::shared_ptr< ::fwRuntime::ExtensionPoint > extPt = ::fwRuntime::findExtensionPoint( objectType ) ;
+	if( extPt )
+	{
 	  ::boost::shared_ptr< ::fwRuntime::io::Validator > validator = extPt->getExtensionValidator() ;
 	   stream << " : " ;
 	   if( validator )
@@ -195,9 +192,9 @@ bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt 
 		}
 		stream << std::endl;
 	}
-   // Validation of start/update elements
+	// Validation of start/update elements
 	OSLM_INFO( std::endl << stream.str() ) ;
-   return validity ;
+	return validity ;
 }
 
 bool checkService( std::string implementationId , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt , ::std::stringstream &stream)

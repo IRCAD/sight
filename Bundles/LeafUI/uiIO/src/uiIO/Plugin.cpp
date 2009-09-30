@@ -6,10 +6,6 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/helper.hpp>
-#include <fwServices/macros.hpp>
-
-#include "uiIO/editor/IOSelectorService.hpp"
 #include "uiIO/Plugin.hpp"
 
 namespace uiIO
@@ -17,8 +13,7 @@ namespace uiIO
 
 //-----------------------------------------------------------------------------
 
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("::uiIO::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiIO::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -28,9 +23,7 @@ Plugin::~Plugin() throw()
 //-----------------------------------------------------------------------------
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
-{
-	REGISTER_SERVICE( ::gui::editor::IEditor , ::uiIO::editor::IOSelectorService , ::fwTools::Object ) ;
-}
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -39,4 +32,4 @@ void Plugin::stop() throw()
 
 //-----------------------------------------------------------------------------
 
-} // namespace operators
+} // namespace uiIO

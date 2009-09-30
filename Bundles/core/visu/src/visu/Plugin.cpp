@@ -6,8 +6,6 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "visu/Plugin.hpp"
 
 namespace visu
@@ -24,4 +22,4 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 void Plugin::stop() throw()
 {}
 
-} // namespace operators
+} // namespace visu

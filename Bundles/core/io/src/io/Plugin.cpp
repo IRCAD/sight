@@ -6,26 +6,20 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-
-#include "io/IReader.hpp"
-#include "io/IWriter.hpp"
 #include "io/Plugin.hpp"
-
 
 namespace io
 {
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("io::Plugin");
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("io::Plugin");
 
 Plugin::~Plugin() throw()
 {}
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
-{
-
-}
+{}
 
 void Plugin::stop() throw()
 {}
 
-} // namespace operators
+} // namespace io

@@ -6,16 +6,6 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwCore/base.hpp>
-
-#include <fwTools/Object.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
-
-
-
-#include "opVTKMesh/action/VTKMeshCreation.hpp"
 #include "opVTKMesh/Plugin.hpp"
 
 namespace opVTKMesh
@@ -23,8 +13,7 @@ namespace opVTKMesh
 
 //-----------------------------------------------------------------------------
 
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("::opVTKMesh::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::opVTKMesh::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -34,9 +23,7 @@ Plugin::~Plugin() throw()
 //-----------------------------------------------------------------------------
 
 void Plugin::start() throw( ::fwRuntime::RuntimeException )
-{
-	REGISTER_SERVICE( ::gui::action::IAction , ::opVTKMesh::action::VTKMeshCreation , ::fwTools::Object ) ;
-}
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -45,4 +32,4 @@ void Plugin::stop() throw()
 
 //-----------------------------------------------------------------------------
 
-} // namespace operators
+} // namespace opVTKMesh

@@ -18,5 +18,6 @@
     <activate id="uiIO" version="0-1" />
     <activate id="vtkSimpleNegato" version="0-1" />
 
+    <start id="dataReg" />
     <start id="gui" />   
 </profile>

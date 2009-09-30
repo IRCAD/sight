@@ -1,4 +1,4 @@
-<plugin id="vtkSimpleNegato" class="vtkSimpleNegato::Plugin" >
+<plugin id="vtkSimpleNegato" class="::vtkSimpleNegato::Plugin" >
 	<library name="vtkSimpleNegato" />
 
 

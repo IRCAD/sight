@@ -4,13 +4,8 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/ProcessObject.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Video.hpp>
-#include <fwData/TriangularMesh.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwData/Object.hpp>
 
 #include "dataReg/Plugin.hpp"
 
@@ -24,11 +19,8 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::ProcessObject,  ::fwData::ProcessObject);
-	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::Image, 			::fwData::Image );
-	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::Composite, 		::fwData::Composite );
-	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::Video, 			::fwData::Video );
-	REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object,  ::fwData::TriangularMesh, ::fwData::TriangularMesh );
+	//Hack: force link with fwData
+	::fwData::Object obj;
 }
 
 void Plugin::stop() throw()
