@@ -1,22 +1,23 @@
-<profile name="tutoComChannel">
+﻿<profile name="tutoComChannel">
 
-	<activate id="dataReg" version="0-1" />
-	<activate id="servicesReg" version="0-1" />
-	<activate id="io" version="0-1" />
-	<activate id="visu" version="0-1" />
+    <!-- Basic bundles list. -->
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    <activate id="io" version="0-1" />
+    <activate id="visu" version="0-1" />
 
-	<activate id="gui" version="0-1" >
-		<param id="startingMode" value="windows" />
-		<param id="rootObject" value="::fwData::TriangularMesh" />
-		<param id="config" value="tutoComChannelConfig" />
-		<param id="configFile" value="./Bundles/Tuto_0-1/configurations/config-04_ComChannel.xml" />
-	</activate>
-	
-	<activate id="ioVTK" version="0-1" />
-	<activate id="ioData" version="0-1" />
-	<activate id="uiIO" version="0-1" />
- 	<activate id="vtkSimpleMesh" version="0-1" />
- 	
+    <activate id="gui" version="0-1" >
+        <param id="startingMode" value="windows" />
+        <param id="rootObject" value="::fwData::TriangularMesh" />
+        <param id="config" value="tutoComChannelConfig" />
+        <param id="configFile" value="./Bundles/Tuto_0-1/configurations/config-04_ComChannel.xml" />
+    </activate>
 
-	<start id="gui" />
+    <!-- Specific bundles list. -->
+    <activate id="ioVTK" version="0-1" />
+    <activate id="ioData" version="0-1" />
+    <activate id="uiIO" version="0-1" />
+    <activate id="vtkSimpleMesh" version="0-1" />
+
+    <start id="gui" />   
 </profile>
