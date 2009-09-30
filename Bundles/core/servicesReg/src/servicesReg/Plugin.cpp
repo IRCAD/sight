@@ -6,6 +6,7 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwComEd/ImageMsg.hpp>
 
 #include "servicesReg/Plugin.hpp"
 
@@ -18,6 +19,8 @@ Plugin::~Plugin() throw()
 {
     //Hack: force link with fwServices
     ::fwServices::ObjectServiceRegistry::getDefault();
+    //Hack: force link with fwcomEd
+    ::fwComEd::ImageMsg im;
 }
 
 void Plugin::start() throw( ::fwRuntime::RuntimeException )
