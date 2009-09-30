@@ -17,18 +17,29 @@ namespace fwTools {
 
 /**
  * @class 	TBKClassFactory
+ * @brief   an inheritance hierarchy helper for ClassFactory
+ * @tparam  BASECLASS the type of base class
+ * @tparam	KEYTYPE the type of the
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
- * @todo 	Complete doxygen
+ *
+ * This class is an helper/factorization for ClassFactory class which use 3 templates, BASECLASS, SUBCLASS, KEYTYPE.
+ * This class inherit TBClassFactory<BASECLASS> and is responsible to store the keyType Identifier ( using a std::type_info)
+ * and the value of the key.
+ * Several method are provided to manipulate the key. Note that key value is stored using a const reference to allow manipulation
+ * of non-copiable class like std::type_info
+ *
  */
-template <class BASECLASS , class KEY>
+template <class BASECLASS , class KEYTYPE>
 class  TBKClassFactory : public TBClassFactory<BASECLASS>
 {
 public:
 
+	/// the type of base class
 	typedef BASECLASS BaseClass;
 
-	typedef KEY		  Key;
+	/// the type of the Key
+	typedef KEYTYPE		  KeyType;
 
 	/**
 	 * @brief Default destructor : do nothing.
@@ -37,19 +48,22 @@ public:
 
 
 	/**
-	 * @brief	Return the key type indentifier
+	 * @brief	get the key type identifier
+	 * @return the key type identifier as a std::type_info
 	 */
 	virtual const std::type_info &keyId() const
 	{
-		return typeid(KEY);
+		return typeid(KeyType);
 	}
 
 
     /**
 	 * @brief 	Inform if the action produced by the factory can Handle de the given Object
-	 * @return 	true iff Class can Handle the Object. i.e test if object and OBJECT have the same type_info
+	 * @param[in] key the key value to evaluate
+	 * @return 	true iff this class can Handle the given key i.e if the key have the same value
+	 * @note comparison is performed using fwTools::keyComparatorEquality() you can Use template specialization to change ordering policy
 	 */
-	virtual bool canHandle(const KEY &key) const
+	virtual bool canHandle(const KeyType &key) const
 	{
 		#ifdef _WIN32
 			#pragma warning( disable : 4800 )
@@ -65,8 +79,11 @@ public:
 
     /**
 	 * @brief 	Inform if the key stored in factory is lower than the given key
+	 * @param[in] key the key value to evaluate
+	 * @return 	true if the stored key value is lower than the given one
+	 * @note comparison is performed using fwTools::keyComparatorLess() . you can Use template specialization to change ordering policy
 	 */
-	virtual bool isMyKeyLower(const KEY &key) const
+	virtual bool isMyKeyLower(const KeyType &key) const
 	{
 		#ifdef _WIN32
 			#pragma warning( disable : 4800 )
@@ -81,13 +98,15 @@ public:
 
 	/**
 	 * @brief 	Construction is delegated to derived classes
+	 * @return an instance of a specialized class (=SubClass) of  BaseClass
 	 */
 	virtual ::boost::shared_ptr< BaseClass > create() const = 0;
 
 	/**
 	 * @brief 	Return key value
+	 * @return a const reference on the key value ( due to allowing management of non-copiable class)
 	 */
-	virtual const KEY &keyValue() const
+	virtual const KeyType &keyValue() const
 	{
 		return m_keyValue;
 	}
@@ -95,6 +114,7 @@ public:
 
 	/**
 	 * @brief 	Return stringized key
+	 * @return a string representation of the stored key ( using fwTools::getString() )
 	 */
 	 std::string stringizedKey() const
 	 {
@@ -106,11 +126,13 @@ public:
 
 protected :
 
-	/// Constructor : only derived base class can be instantiated
-	TBKClassFactory(const KEY &key) : m_keyValue(key), m_keyStringized( ::fwTools::getString<KEY>(m_keyValue) )
+	/**
+	 * @brief Constructor : only derived base class can be instantiated
+	 */
+	TBKClassFactory(const KeyType &key) : m_keyValue(key), m_keyStringized( ::fwTools::getString<KEYTYPE>(m_keyValue) )
 	{};
 
-	const KEY & m_keyValue;
+	const KeyType & m_keyValue;
 	std::string m_keyStringized;
 
 private :

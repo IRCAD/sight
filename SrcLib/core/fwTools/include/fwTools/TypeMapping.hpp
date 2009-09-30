@@ -35,6 +35,8 @@ struct isMappingSingleMPLHelper;
 //
 /**
  * @brief 	Create a type (T) binding/mapping with a KeyType ( std::string, ipop::PixelType etc...
+ * @tparam TSingle_or_TSEQ a sequence or 1 element type to test
+ * @tparam KeyType_or_KeyTypeContainer to keys (sequence or single one)
  * @return 	true iff the value of the KeyType can deal with the specified type T
  * @author	IRCAD (Research and Development Team).
  *
@@ -71,20 +73,25 @@ bool isMapping(const KeyType_or_KeyTypeContainer &key)
 
 
 /**
- * @brief 	This function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
+ * @brief 	an isMapping() helper : This function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType> is not specialized
+ * This class is intended to avoid developer to forgive the specialization of isMapping<TYPE>
  * @class	isMappingSingleMPLHelper.
+ * @tparam  T the type to test
+ * @tparam  KeyType the type to match
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
- * @todo	complete doxygen
  */
 template< class T, class KeyType >
 struct isMappingSingleMPLHelper
 {
-	/// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
+	/**
+	 * @brief
+	 */
+	//this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
 	static bool evaluate(const KeyType &key)
 	{
 		BOOST_STATIC_ASSERT(sizeof(T) == 0);  // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
-		// ** if the compilation trap here its because you have not specializated
+		// ** if the compilation trap here its because you have not specialized
 		// ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
 		std::string msg("isMapping<TYPE>::(const KEYTYPE &key) not specializated for TYPE and/or KEYTYPE!!!");
 		throw std::invalid_argument(msg);
@@ -117,9 +124,9 @@ bool isMappingMulti(const KeyTypeContainer& keys)
 
 /**
  * @class	EmptyListMapping.
+ * @brief an helper to isMapping() using iterator
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
- * @todo	complete doxygen
  */
 template<  class KeyTypeContainer >
 struct EmptyListMapping
@@ -136,9 +143,10 @@ struct EmptyListMapping
 
 /**
  * @class	isMappingMultiMPLHelper.
+ * @brief an helper to isMapping() using iterator : this class is called when TSEQ is a sequence. it is recursivelly called with head element
+ * removed from TSEQ
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
- * @todo	complete doxygen
  */
 template< class TSEQ, class KeyTypeContainer >
 struct

@@ -31,8 +31,8 @@ class IClassFactory;
 
 
 /**
- * @brief 	Class which store all factories for combinaison BASECLASS,SUBCLASS,KEY
- * @note 	This class is a singleton.
+ * @brief 	Class which store all factories for combination BASECLASS,SUBCLASS,KEY
+ * @note 	This class is a singleton
  * @class	ClassFactoryRegistry.
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
@@ -56,6 +56,11 @@ public:
 	typedef std::vector<ManagedElement > ManagedElementContainer;
 
 
+	/**
+	 * @brief define a order between factory.
+	 * The ordering is defined as a lexical ordering with tuple ( BASECLASS,SUBCLASS,KEYTYPE ). element of tuple are
+	 * compared using their string representation
+	 */
 	struct FactoryWeakOrderer
 	{
 		bool operator()(::boost::shared_ptr<IClassFactory> f1, ::boost::shared_ptr<IClassFactory> f2) const
@@ -170,7 +175,7 @@ protected :
 
 
 
-
+	/// the container for the factories
 	FactoryContainer m_registry;
 
 	/// Container BaseClass-SubClass-KeyType Info

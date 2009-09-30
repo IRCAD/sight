@@ -18,9 +18,10 @@ namespace fwTools
 
 /**
  * @class 	System
+ * @brief Provide a system to get a Temporary folder which allow multi-user, multi-instance separation
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
- * @todo	Complete doxygen
+ * @todo  change "fwDumpFolder" to "localTemp"
  */
 class FWTOOLS_CLASS_API System
 {
@@ -32,13 +33,19 @@ class FWTOOLS_CLASS_API System
 		FWTOOLS_API static const boost::shared_ptr< System > getDefault() throw();
 
 		/**
-		 * @brief	Return the folder where are dumped images = TempFolder / PIDOFTDVPM ...
+		 * @brief	Return the folder where are dumped data = TempFolder / PIDOFTPROCESS ...
+		 * The Dump folder change to each new instance of the application
+		 * @return path equal to getTemporaryFolder()/getPID()
 		 */
 		FWTOOLS_API boost::filesystem::path getDumpFolder() throw();
 
 
 		/**
-		 * @brief 	Return the temporary folder containing all DumpFolder
+		 * @brief 	Return <b>the temporary folder</b> containing all DumpFolder
+		 * The Folder used look like <tt>ROOT/fwDumpFolder-USERNAME</tt> directory. The USERNAME is get from our
+		 * variable environement
+		 * \li Under Linux ROOT is <tt>/tmp</tt> directory.
+		 * \li Under Windows ROOT is obtain form \%TMP% or \%TEMP% env. if they do not exist then it will try ROOT=D:\\ then ROOT=C:\\
 		 */
 		FWTOOLS_API static boost::filesystem::path getTemporaryFolder() throw();
 
@@ -49,6 +56,7 @@ class FWTOOLS_CLASS_API System
 
 		/**
 		 * @brief 	Recursively erase the DumpFolder for the process given by its pid
+		 * @note no existing pid are ignored
 		 */
 		FWTOOLS_API void eraseDumpFolder(int pid) const;
 

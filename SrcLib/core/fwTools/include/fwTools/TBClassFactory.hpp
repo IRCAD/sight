@@ -13,9 +13,14 @@ namespace fwTools {
 
 /**
  * @class 	TBClassFactory
+ * @brief   an inheritance hierarchy helper for ClassFactory
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
- * @todo 	Complete doxygen
+ *
+ * This class is an helper/factorization for ClassFactory class which use 3 templates, BASECLASS, SUBCLASS, KEYTYPE.
+ * This class is responsible to store the baseClass Identifier ( using a std::type_info) and define the main API for subclass instance creation
+ * ( method create() )
+ *
  */
 template <class BASECLASS >
 class  TBClassFactory : public IClassFactory
@@ -36,7 +41,8 @@ public:
 
 
 	/**
-	 * @brief	Return the baseclass identifier
+	 * @brief	get the baseclass identifier
+	 * @return the baseclass identifier as a std::type_info
 	 */
 	virtual const std::type_info &baseClassId() const
 	{
@@ -45,6 +51,7 @@ public:
 
 	/**
 	 * @brief 	Construction is delegated to derived classes
+	 * @return an instance of a specialized class (=SubClass) of  BaseClass
 	 */
 	virtual ::boost::shared_ptr< BaseClass > create() const = 0;
 
