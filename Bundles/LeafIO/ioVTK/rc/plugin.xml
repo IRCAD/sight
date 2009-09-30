@@ -1,4 +1,4 @@
-<plugin id="ioVTK" class="ioVTK::Plugin" >
+<plugin id="ioVTK" class="::ioVTK::Plugin" >
 	<library name="ioVTK" />
 
 	<requirement id="io" />

@@ -1,4 +1,4 @@
-<plugin id="ioData" class="ioData::Plugin" >
+<plugin id="ioData" class="::ioData::Plugin" >
 	<library name="ioData" />
 
 	<requirement id="io" />
