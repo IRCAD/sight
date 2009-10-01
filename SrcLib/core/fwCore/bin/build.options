@@ -6,4 +6,3 @@ if os.name == 'nt':
 	DEF = ['USE_LOG4CXX']
 
 VERSION	= '0-1'
-TEST   = 'yes'

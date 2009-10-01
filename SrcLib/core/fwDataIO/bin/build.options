@@ -8,6 +8,4 @@ USE  = ['boost','libxml2','z'] # 'wx'
 
 LOGLEVEL = 'debug'
 
-TEST='yes'
-
 VERSION	= '0-2'
