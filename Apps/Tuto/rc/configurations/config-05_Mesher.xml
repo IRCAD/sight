@@ -1,9 +1,12 @@
 <plugin id="MesherConfiguration">
-  <extension id="MesherConfig" implements="::fwData::Composite">
-  <object id="MesherConfig" type="::fwData::Composite">
-  
-<!--  Creation de la fenetre principale -->
 
+    <extension id="MesherConfig" implements="::fwData::Composite">
+  
+    <!--  Composite data creation. -->
+    <object id="MesherConfig" type="::fwData::Composite">
+  
+        <!-- Service associated to the Composite data :
+        main window creation. -->
         <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
             <name>Mesher</name>
             <icon>Bundles/Tuto_0-1/tuto.ico</icon>
@@ -19,89 +22,101 @@
         </service>
 
 
-<!-- Creation du menu. -->
-    <service name="File" uid="menuFile" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
-      <action uid="actionOpenImageFile"/>
-      <action uid="actionSaveImageFile"/>
-      <separator/>
-      <action uid="actionOpenMeshFile"/>
-      <action uid="actionSaveMeshFile"/>
-      <separator/> 
-      <action uid="actionQuit"/>
-    </service>         
+        <!-- Service associated to the Composite data :
+        menu creation. -->
+        <service name="File" uid="menuFile" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
+            <action uid="actionOpenImageFile"/>
+            <action uid="actionSaveImageFile"/>
+            <separator/>
+            <action uid="actionOpenMeshFile"/>
+            <action uid="actionSaveMeshFile"/>
+            <separator/> 
+            <action uid="actionQuit"/>
+        </service>         
 
-    <service name="Mesher" uid="menuMesher" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
-      <action uid="actionCreateVTKMesh"/>
-    </service> 
+        <service name="Mesher" uid="menuMesher" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
+            <action uid="actionCreateVTKMesh"/>
+        </service> 
     
-    <service uid="actionQuit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+        <service uid="actionQuit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
 
-<!-- Creation des services pour le menu. -->
-<!-- Action relatif au image -->
-
-    <service uid="actionOpenImageFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Open image file" autoComChannel="no" >
-      <start uid="readerPathImageFile"/>
-    </service>
+        <!-- Service associated to the Composite data :
+        menu services creation.
+        Actions in relationship with images and meshes-->
+        <service uid="actionOpenImageFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Open image file" autoComChannel="no" >
+            <start uid="readerPathImageFile"/>
+        </service>
     
-    <service uid="actionSaveImageFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Save image file" autoComChannel="no" >
-      <start uid="writerImageFile"/>
-    </service> 
+        <service uid="actionSaveImageFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Save image file" autoComChannel="no" >
+            <start uid="writerImageFile"/>
+        </service> 
     
-    <service uid="actionOpenMeshFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Open mesh file" autoComChannel="no" >
-      <start uid="readerPathMeshFile"/>
-    </service>
+        <service uid="actionOpenMeshFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Open mesh file" autoComChannel="no" >
+            <start uid="readerPathMeshFile"/>
+        </service>
     
-    <service uid="actionSaveMeshFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Save mesh file" autoComChannel="no" >
-      <start uid="writerMeshFile"/>
-    </service>       
+        <service uid="actionSaveMeshFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Save mesh file" autoComChannel="no" >
+            <start uid="writerMeshFile"/>
+        </service>       
     
-	<service uid="actionCreateVTKMesh" type="::gui::action::IAction" implementation="::opVTKMesh::action::VTKMeshCreation" name="Compute Mesh (VTK)" autoComChannel="no" >
-    	<image uid="myImage"/>
-    	<mesh uid="myMesh"/>
-    </service>
+        <service uid="actionCreateVTKMesh" type="::gui::action::IAction" implementation="::opVTKMesh::action::VTKMeshCreation" name="Compute Mesh (VTK)" autoComChannel="no" >
+            <image uid="myImage"/>
+            <mesh uid="myMesh"/>
+        </service>
                           
 
-<!-- creation de la vue image. -->
-   <object id="myImage" uid="myImage" type="::fwData::Image">
+        <!-- Image object creation 
+        Services contained between the tags <object> and </object>
+        are associated to the Image data. -->
+        <object id="myImage" uid="myImage" type="::fwData::Image">
+
+            <!-- Services associated to the Image data :
+            Visualization, reading and writing service creation. -->
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" >
+                <win guiContainerId="900"/>
+            </service>
+
+            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
+                <win guiContainerId="900"/>
+                <type mode="reader"/>
+            </service>
+
+            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerImageFile" autoComChannel="no" >
+                <win guiContainerId="900"/>
+                <type mode="writer"/>
+            </service>
+
+        </object>       
+
+        <!-- TriangularMesh objet creation. 
+        Services contained between the tags <object> and </object> 
+        are associated to the TriangularMesh data. -->
+        <object id="myMesh" uid="myMesh" type="::fwData::TriangularMesh">
              
-      <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" >
-        <win guiContainerId="900"/>
-      </service>
-      
-      
-      <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
-        <win guiContainerId="900"/>
-        <type mode="reader"/>
-      </service>
-      
-      <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerImageFile" autoComChannel="no" >
-        <win guiContainerId="900"/>
-        <type mode="writer"/>
-      </service>
-          
-    </object>       
-    
-<!-- Creation de la vue Mesh. -->
-     <object id="myMesh" uid="myMesh" type="::fwData::TriangularMesh">
+            <!-- Services associated to the TriangularMesh data :
+            Visualization, reading and writing service creation. -->
+            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes" >
+                <masterSlaveRelation>master</masterSlaveRelation>
+                <win guiContainerId="901"/>
+            </service>
                  
-       <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes" >
-            <masterSlaveRelation>master</masterSlaveRelation>
-            <win guiContainerId="901"/>
-        </service>
-                 
-      <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathMeshFile" autoComChannel="no" >
-        <win guiContainerId="901"/>
-        <type mode="reader"/>
-      </service>
+            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathMeshFile" autoComChannel="no" >
+                <win guiContainerId="901"/>
+                <type mode="reader"/>
+            </service>
       
-      <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerMeshFile" autoComChannel="no" >
-        <win guiContainerId="901"/>
-        <type mode="writer"/>
-      </service>
+            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerMeshFile" autoComChannel="no" >
+                <win guiContainerId="901"/>
+                <type mode="writer"/>
+            </service>
                  
-    </object> 
+        </object> 
     
-    
+    <!-- In order to start the different services,
+    it does not need to follow the objects creation order.
+    Note that the services associated to the Image and TriangularMesh data
+    are not started between the tags corresponding to these two data definitions
+    but, before the end of the Composite data definition. -->
     <start type="::gui::aspect::IAspect" />
     <start uid="RenderingImage" />
     <start uid="RenderingMesh" />
