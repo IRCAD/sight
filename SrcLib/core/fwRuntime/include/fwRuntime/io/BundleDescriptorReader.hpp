@@ -122,7 +122,6 @@ private:
 	 * @param	node	a pointer to the xml document node that represents a requirement
 	 * @param	bundle	a pointer to the bundle the extension will be attached to
 	 * @return	a pair with the created extension point and extensions
-	 * @author Jean-Baptiste Fasquel
 	 */
 	static std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_ptr<Extension> > > processPoint(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
 

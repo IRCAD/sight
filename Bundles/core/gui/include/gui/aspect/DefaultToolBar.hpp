@@ -20,7 +20,7 @@ namespace aspect
  * @brief	Defines the default toolbar for standard application
  * @class	DefaultToolBar.
  * @author	IRCAD (Research and Development Team)
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API DefaultToolBar : public IToolBar

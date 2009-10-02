@@ -41,7 +41,7 @@ namespace fwRuntime
  * @struct 	ConfigurationElement
  * @date	2004-2009
  * @author 	IRCAD (Research and Development Team).
- * @author 	Jean-Baptiste Fasquel
+
  */
 struct FWRUNTIME_CLASS_API ConfigurationElement :	public ConfigurationElementContainer,
 								public boost::enable_shared_from_this< ConfigurationElement >

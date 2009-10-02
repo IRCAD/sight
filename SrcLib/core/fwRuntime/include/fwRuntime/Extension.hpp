@@ -35,7 +35,6 @@ namespace io
  * @struct 	Extension
  * @date	2004-2009
  * @author 	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  */
 struct Extension : public BundleElement, public ConfigurationElementContainer
 {

@@ -18,7 +18,6 @@ namespace sample
 /**
  * @brief	Defines the service interface managing the rendering service for object
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  */
 class GUI_CLASS_API ITestService : public fwServices::IService
 {

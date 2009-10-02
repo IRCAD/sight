@@ -23,7 +23,7 @@ namespace editor
  * @brief	Defines the service interface managing the editor service for object.
  * @class	IEditor.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  *
  * @todo ACH : Some services of IEditor type do not need a container (example: IOSelectorService that open a dialogue box).

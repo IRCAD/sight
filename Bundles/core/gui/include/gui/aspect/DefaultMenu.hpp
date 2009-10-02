@@ -20,7 +20,7 @@ namespace aspect
  * @brief	Defines the default menu for standard application
  * @class	DefaultMenu.
  * @author	IRCAD (Research and Development Team)
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API DefaultMenu : public IMenu

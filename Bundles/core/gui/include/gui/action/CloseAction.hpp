@@ -21,7 +21,7 @@ namespace action
  * @brief	This action reset root object. All services are eliminated as well as objects composing the root object.
  * @class	CloseAction.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API CloseAction : public ::gui::action::IAction

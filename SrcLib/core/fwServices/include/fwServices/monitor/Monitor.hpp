@@ -28,7 +28,6 @@ namespace monitor
 /**
  * @brief helper for monitoring purposes
  * @author	IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 class FWSERVICES_CLASS_API Monitor
 {
@@ -44,7 +43,6 @@ public:
 	/**
 	 * @brief return in a string all object TYPES and services (does not concerns object/service registry)
 	 * @author IRCAD (Research and Development Team).
-	 * @author Jean-Baptiste Fasquel
 	 */
 	FWSERVICES_API static ::fwServices::monitor::string_map scannerObjectServices() ;
 

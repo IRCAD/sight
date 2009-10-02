@@ -32,7 +32,7 @@ namespace aspect
  * @brief	Defines the service interface managing GUI aspect, including menu actions and views
  * @class	IAspect.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  *
  * @todo    ACH: Generic actions should not be defined in the config aspect.

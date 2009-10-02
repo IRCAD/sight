@@ -21,7 +21,7 @@ namespace action
  * @brief	This action starts an ::gui::editor::IEditor on the default root object.
  * @class	RunRootObjectServiceAction.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API RunRootObjectServiceAction : public ::gui::action::IAction

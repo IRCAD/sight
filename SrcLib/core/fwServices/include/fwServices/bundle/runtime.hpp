@@ -27,7 +27,6 @@ namespace bundle
  * @note Complementary with fwRuntime::Runtime::findExtension
  * @todo Move to the fwRuntime library
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findExtensions(std::string _identifier ) ;
 
@@ -36,7 +35,6 @@ FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > find
  * @note Complementary with ::fwRuntime::Runtime::findExtensionsForPoint
  * @note Move to fwRuntime library
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findExtensionsForPoint(std::string _identifier ) ;
 
@@ -45,7 +43,6 @@ FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > find
  * @note A configuration compliant extension is an extension having only one configuration element (one child)
  * @note Use the findExtensionsForPoint(std::string ) method
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findConfigurationExtensionsForPoint(std::string _identifier ) ;
 
@@ -53,7 +50,6 @@ FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > find
  * @brief Return the configuration element associated with an extension implementing _pointId with id="_cfgId"
  * @note Use findConfigurationExtensionsForPoint(std::string ) method
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > findConfigurationForPoint(std::string _cfgId , std::string _pointId ) ;
 
@@ -65,7 +61,6 @@ FWSERVICES_API ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > findConf
  * @note <ext id="id" implements="serviceId" />
  * @note <ext id="id" implements="object.className()" />
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::vector< std::string > getValidExtensionIdsForObjectAndService( ::boost::shared_ptr< fwTools::Object > object, std::string serviceId, unsigned int mode = 0 ) ;
 
@@ -73,7 +68,6 @@ FWSERVICES_API std::vector< std::string > getValidExtensionIdsForObjectAndServic
  * @brief return runtime extension whose id contributes to SERVICECLASS.classname()
  * @note <ext id="id" implements="SERVICECLASS.className()" />
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::boost::shared_ptr< ::fwRuntime::Extension > getRuntimeExtension( std::string extId , std::string serviceId ) ;
 

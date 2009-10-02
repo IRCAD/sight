@@ -13,7 +13,7 @@
  * @brief	Namespace gui.
  * @namespace	gui.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  *
  * @date	2009.
  *
@@ -26,7 +26,7 @@ namespace gui
  * @brief	This class is called when the gui bundle is loaded.
  * @class	Plugin.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 

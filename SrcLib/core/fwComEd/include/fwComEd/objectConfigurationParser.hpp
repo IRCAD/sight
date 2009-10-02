@@ -22,7 +22,7 @@ namespace fwComEd
  * @brief 	Specific service for the construction of a ProcessObject and its associated services from an XML-based description.
  * @class	IProcessObjectParser
  * @author  IRCAD (Research and Development Team).
- * @author 	Jean-Baptiste Fasquel
+
  * @date    2007-2009
  * @see 	::fwServices::IXMLParser
  */
@@ -63,7 +63,7 @@ protected :
  * @brief 	Specific service for the construction of a Composite and its associated services from an XML-based description.
  * @class	ICompositeParser
  * @author  IRCAD (Research and Development Team).
- * @author 	Jean-Baptiste Fasquel
+
  * @date    2007-2009
  * @see 	::fwServices::IXMLParser
  */

@@ -17,7 +17,7 @@ namespace fwComEd
  * @brief 	Centralization of all identifiers used for communication and storage of dynamic attributes
  * @note 	probably not dynamic enough but allows at least to have an overview of information that can be exchanged
  * @author  IRCAD (Research and Development Team).
- * @author 	Jean-Baptiste Fasquel
+
  * @date    2007-2009.
  */
 struct FWCOMED_CLASS_API Dictionary

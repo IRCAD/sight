@@ -28,7 +28,6 @@ namespace fwServices
  * @note If several service type implementation are available, the first one is automatically chosen, being the first element return by getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId)
  * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceId
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId ) ;
 
@@ -40,7 +39,6 @@ template<class SERVICE>
  * @return the service
  * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceId
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId ) ;
 
@@ -52,7 +50,6 @@ template<class SERVICE>
  * @return the service
  * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceId
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string _id) ;
 
@@ -64,7 +61,6 @@ template<class SERVICE>
  * @note configuration element specifies service type and implementation (inline or offline)
  * @return the service
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt ) ;
 

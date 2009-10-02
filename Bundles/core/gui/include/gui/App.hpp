@@ -18,7 +18,6 @@ namespace gui
  * @brief	Defines the wx application.
  * @class	App.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
  * @date	2009.
  */
 

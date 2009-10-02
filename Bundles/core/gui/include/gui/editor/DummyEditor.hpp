@@ -24,7 +24,7 @@ namespace editor
  * @brief	Defines the service interface managing the basic editor service for object. Do nothing.
  * @class	DummyEditor.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  *
  * @todo ACH: This class has been created in order to build test application. Do we remove it now ??

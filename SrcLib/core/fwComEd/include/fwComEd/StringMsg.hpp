@@ -19,7 +19,6 @@ namespace fwComEd
  * @brief	Object event message specialized for string field : store modification information
  * @class 	StringMsg
  * @author  IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  * @date    2007-2009.
  * @see 	::fwServices::ObjectMsg
  */

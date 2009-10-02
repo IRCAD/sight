@@ -24,7 +24,6 @@ namespace sample
 /**
  * @brief	Dummy action
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  */
 class DummyAction : public ::gui::action::IAction
 {

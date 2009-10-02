@@ -19,7 +19,6 @@ namespace fwServices
  *
  * @note This implementation is only written to avoid the mixing both the service type IXMLParser and the ::fwTools::Object implementation (for homogeneity).
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 class FWSERVICES_CLASS_API ObjectXMLParser : public ::fwServices::IXMLParser
 {

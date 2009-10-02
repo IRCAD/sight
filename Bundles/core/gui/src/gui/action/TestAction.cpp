@@ -56,7 +56,6 @@ END_EVENT_TABLE()
 /**
  * @brief use wx based timing to trigger service update
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 class Timer : public wxEvtHandler
 {

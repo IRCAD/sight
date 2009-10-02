@@ -27,7 +27,7 @@ namespace aspect
  * @brief	Defines the default aspect for standard application
  * @class	DefaultAspect.
  * @author	IRCAD (Research and Development Team)
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API DefaultAspect : public ::gui::aspect::IAspect

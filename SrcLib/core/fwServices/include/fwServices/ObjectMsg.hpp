@@ -28,7 +28,6 @@ class IService;
  * @brief Object message : indicate modifications having occurred or being performed on a object.
  * @class ObjectMsg
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  * @date 2007-2009.
  *
  * The message only provides identifiers enabling to retrieve the modified information on the object. This should be embed the information. The m_subject is present

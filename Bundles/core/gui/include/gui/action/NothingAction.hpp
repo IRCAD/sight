@@ -22,7 +22,7 @@ namespace action
  * @brief	This action does nothing.
  * @class	NothingAction.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API NothingAction : public ::gui::action::IAction

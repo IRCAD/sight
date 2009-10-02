@@ -18,7 +18,6 @@ namespace fwServices
  *
  * @class	IController.
  * @author IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  * @date	2007-2009.
  */
 class FWSERVICES_CLASS_API IController : public ::fwServices::IService

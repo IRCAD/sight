@@ -26,7 +26,6 @@ namespace fwServices
  * \li Helpers have been developped for internal use (should not be used from outside) to analyze the XML based graph provided by component descriptions
  * @note It focuses on find the appropriate component to start (and dynamic libraries to load) before invoking class registry
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 namespace bundle
 {
@@ -37,7 +36,6 @@ namespace bundle
  * @note Invoked by fwServices facade methods (e.g. see support( ::fwTools::Object::sptr , std::string ))
  * @note Mainly invoke the getValidExtensionIdsForObjectAndService( ::boost::shared_ptr< fwTools::Object > , std::string , unsigned int ) method
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API bool support( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId ) throw() ;
 
@@ -46,7 +44,6 @@ FWSERVICES_API bool support( ::boost::shared_ptr< fwTools::Object > obj , std::s
  *
  * @note Invoked by fwServices facade methods (e.g. see add( ::fwTools::Object::sptr , std::string , std::string ) )
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::boost::shared_ptr< fwServices::IService > add( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId  , std::string _implementationId ) ;
 

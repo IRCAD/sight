@@ -33,7 +33,7 @@ namespace fwServices
  * @brief	This interface defines edition service API. It mainly has the role of the subject in the observer design pattern.
  * @class	IEditionService.
  * @author IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2007-2009.
  *
  * This service notifies modifications performed on its associated object. This can be seen a delegate of traditional notifications performed by objects (subjects) which are themselves subject to modification. This ensures a good separation of concerns.

@@ -19,7 +19,6 @@ namespace fwRuntime
  * @class	EConfigurationElement
  * @date	2006-2009
  * @author 	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  */
 class FWRUNTIME_CLASS_API EConfigurationElement : public ::fwRuntime::ConfigurationElement
 {

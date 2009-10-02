@@ -26,35 +26,30 @@ namespace fwServices
 /**
  * @brief start services specified in the XML like structure (_elt) and already attached to objects
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void start( ::fwRuntime::ConfigurationElement::sptr _elt) ;
 
 /**
  * @brief update services specified in the XML like structure (_elt) and already attached to objects
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void update( ::fwRuntime::ConfigurationElement::sptr _elt) ;
 
 /**
  * @brief stop services specified in the XML like structure (_elt) and already attached to objects
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void stop( ::fwRuntime::ConfigurationElement::sptr _elt) ;
 
 /**
  * @brief stop services specified in the XML like structure (_elt) and unregister CommChannel
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _elt);
 
 /**
  * @brief start all obj services
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API  void startServices( ::boost::shared_ptr< fwTools::Object > obj ) ;
 

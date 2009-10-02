@@ -29,7 +29,7 @@ namespace gui
  * @note it is equivalent to a controller between application (basicDocument) and specific visualization bundle.
  * @class	Manager.
  * @author	IRCAD (Research and Development Team)
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API Manager : public ::fwCore::BaseObject

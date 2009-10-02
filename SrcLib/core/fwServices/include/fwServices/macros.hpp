@@ -27,7 +27,6 @@ namespace fwServices
  * @brief Service object type association including all string-based registration
  * Associations concern Service-ObjectType are ObjectType-Service. Keys are typeid.
  * @author	IRCAD (Research and Development Team).
- * @Jean-Baptiste Fasquel
  */
 #define REGISTER_SERVICE( ServiceType , Service1, Object1 )\
 REGISTER_BINDING_ID_CPY( ::fwServices::IService , Service1 , ::fwServices::ObjectServiceKeyType , \

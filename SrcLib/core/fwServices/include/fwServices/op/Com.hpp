@@ -33,7 +33,6 @@ FWSERVICES_API ::fwServices::ComChannelService::sptr getCommunicationChannel( ::
  * @return The communication channel service so that it can be directly started.
  * @note if the communication channel is already existing, it is returned.
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwServices::ComChannelService::sptr registerCommunicationChannel( ::fwTools::Object::sptr _src , ::fwServices::IService::sptr _dest) ;
 

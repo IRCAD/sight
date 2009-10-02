@@ -26,7 +26,7 @@ namespace aspect
  * @brief	Defines the service interface managing GUI aspect, including menu actions and views
  * @class	IMenu.
  * @author	IRCAD (Research and Development Team)
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  * @todo 	ACH : remove m_aspect from this class ( refactoring IAspect too )
  * @todo	ACH : imposed the definition of starting, updating, etc.... methods to children classes

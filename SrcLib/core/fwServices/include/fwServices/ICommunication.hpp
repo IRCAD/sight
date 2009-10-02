@@ -22,7 +22,6 @@ namespace fwServices
  *
  * @note	ComChannelService content could moved to this class
  * @author IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  * @date	2007-2009.
  */
 class FWSERVICES_CLASS_API ICommunication : public ::fwServices::IService

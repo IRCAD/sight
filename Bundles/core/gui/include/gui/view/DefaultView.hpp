@@ -21,7 +21,7 @@ namespace view
  * @brief	Defines the default panel for standard application.
  * @class	DefaultView.
  * @author	IRCAD (Research and Development Team)
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API DefaultView : public ::gui::view::IView

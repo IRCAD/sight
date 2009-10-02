@@ -28,7 +28,6 @@ namespace fwServices
  * tree like composite object which services.
  *
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {

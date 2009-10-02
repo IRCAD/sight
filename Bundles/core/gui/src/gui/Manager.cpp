@@ -40,7 +40,6 @@ namespace
 /**
  * @brief Forward menu event received to the manager in order to update/execute the appropriate service
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 class MenuHandler : public wxEvtHandler
 {

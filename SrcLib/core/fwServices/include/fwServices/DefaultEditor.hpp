@@ -17,7 +17,7 @@ namespace fwServices
  * @brief	Implementation of basic service of type edition service. IService::update(::boost::shared_ptr< const fwServices::ObjectMsg > )
  * @class	DefaultEditor.
  * @author IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2007-2009.
  */
 class FWSERVICES_CLASS_API DefaultEditor : public ::fwServices::IEditionService

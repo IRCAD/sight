@@ -27,21 +27,18 @@ namespace fwServices
  * @note Should be optimized
  * @note Invoke getServices( ::fwTools::Object::sptr , std::string ) for each registered object
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::vector< ::fwServices::IService::sptr > getServices( std::string serviceId ) ;
 
 /**
  * @brief Return a container of services of type serviceId which are attached to obj
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceId ) ;
 
 /**
  * @brief Invoke the getServices( ::fwTools::Object::sptr obj , std::string serviceId ) where serviceId is related to the SERVICE template parameter
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 template<class SERVICE>
 std::vector< ::boost::shared_ptr< SERVICE > > getServices( ::fwTools::Object::sptr obj ) ;
@@ -53,7 +50,6 @@ std::vector< ::boost::shared_ptr< SERVICE > > getServices( ::fwTools::Object::sp
  * @todo Do not automatically add service, raise an error instead
  * @return the requested service, null if not
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index = 0 ) throw(fwTools::Failed );
 
@@ -64,7 +60,6 @@ template<class SERVICE>
  * @brief Indirectly invoke the get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index = 0 ), where SERVICE relates serviceId
  * @deprecated Traditional pointers should not be used
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 template<class SERVICE>
 ::boost::shared_ptr< SERVICE > get( fwTools::Object * obj, unsigned int _index = 0 ) throw(fwTools::Failed );
@@ -74,7 +69,7 @@ template<class SERVICE>
  * @note indirectly invoke the ::fwTools::UUID::get method, hide the access to this API in order to provide a single unique API mixing both uuid and service/object concepts
  * @todo add the get method for object to be homogeneous
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 FWSERVICES_API ::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed );
 
@@ -86,14 +81,13 @@ FWSERVICES_API ::fwServices::IService::sptr get( std::string uid ) throw(fwTools
  * @todo a get( ::fwTools::Object::sptr obj, std::string uid ) method
  * @return null if not found
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, std::string uid ) throw(fwTools::Failed );
 
 /**
  * @brief Invoke the get( ::fwTools::Object::sptr obj, std::string serviceId, std::string uid ) where serviceId is associated to the template parameter SERVICE
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 template<class SERVICE>
 ::boost::shared_ptr< SERVICE > get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed );
@@ -101,14 +95,12 @@ template<class SERVICE>
 /**
  * @brief return the _service index (or position) in the vector of services which are attached to the same object and have the same service type
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API unsigned int getServicePosition( IService::sptr  _service ) ;
 
 /**
  * @brief return a vector containing all services associated with the object _obj
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::vector< ::boost::shared_ptr< IService > > getRegisteredServices( ::boost::shared_ptr< fwTools::Object > _obj );
 
@@ -116,7 +108,6 @@ FWSERVICES_API std::vector< ::boost::shared_ptr< IService > > getRegisteredServi
  * @brief Same as getServicePosition( IService::sptr ) but with a traditional pointer
  * @deprecated Traditional pointers should not be used
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API unsigned int getServicePosition( IService * _service ) ;
 

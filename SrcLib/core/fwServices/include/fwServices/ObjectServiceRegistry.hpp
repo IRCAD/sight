@@ -41,7 +41,6 @@ namespace fwServices
  *
  * @note Weak references are considered for objects instead of strong ones to facilitate implicit destruction
  * @author	IRCAD (Research and Development Team).
- * @Jean-Baptiste Fasquel
  */
 class FWSERVICES_CLASS_API ObjectServiceRegistry
 {
@@ -60,7 +59,6 @@ public:
 	/**
 	 * @brief Container type for object-fwServices association : to each weak_ptr on object is associated a vector of fwServices
 	 * @note Enables to registration of an object without fwServices, this being convenient for monitoring for instance
-	 * @author Jean-Baptiste Fasquel
 	 */
 	typedef std::map< ::fwTools::Object::wptr , SContainer > OSContainer ;
 
@@ -134,7 +132,6 @@ public:
 	/**
 	 * @brief Register an object with no services
 	 * @author IRCAD (Research and Development Team).
-	 * @author Jean-Baptiste Fasquel
 	 */
 	FWSERVICES_API static void registerObject(  ::fwTools::Object::sptr obj );
 

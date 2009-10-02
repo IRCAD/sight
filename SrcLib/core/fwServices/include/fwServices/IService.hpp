@@ -36,7 +36,6 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
  * @brief	Base class for all services.
  * @class	IService.
  * @author IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel and Vincent Agnus.
  * @date	2007-2009.
  *
  * This class defines the API to use and declare services. The service state aims at imposing method execution order (i.e. configure(), start(), update() or update(::boost::shared_ptr< const fwServices::ObjectMsg >), stop()).

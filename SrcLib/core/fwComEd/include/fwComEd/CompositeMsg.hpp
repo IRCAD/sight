@@ -26,7 +26,6 @@ namespace fwComEd
  * @brief	Object event message specialized for Composite : store modification information
  * @class 	CompositeMsg
  * @author  IRCAD (Research and Development Team).
- * @author 	Jean-Baptiste Fasquel
  * @date    2005-2009.
  * @see 	::fwServices::ObjectMsg
  * @todo	clean old API commented
@@ -120,7 +119,7 @@ public:
 //
 //	/**
 //	 * @brief used by operator<<(std::ostream & _sstream, IService& _service)
-//	 * @author Jean-Baptiste Fasquel
+
 //	 */
 //	FWCOMED_API virtual void info(std::ostream &_sstream ) const ;
 //

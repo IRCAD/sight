@@ -26,7 +26,6 @@ namespace fwServices
  * It supports a tree like description as it is recursivelly performed to child object also having services.
  * This indirectly include XSD schema based _elt and service configuration checking. Template based writting is supported (i.e. myObjectType::sptr = New< myObjectType >(_elt)).
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API ::fwTools::Object::sptr New(::fwRuntime::ConfigurationElement::sptr _elt) ;
 

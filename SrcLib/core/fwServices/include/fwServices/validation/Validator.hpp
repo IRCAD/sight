@@ -27,7 +27,6 @@ namespace fwServices
  *
  * @note Validation can be completely performed on the base of the component distribution, without preloading or linking with dynamic libraries implementing classes.
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 namespace validation
 {

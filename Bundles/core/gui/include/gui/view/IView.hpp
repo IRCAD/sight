@@ -25,7 +25,7 @@ namespace view
  * @brief	Defines the service interface managing a view placed in main frame.
  * @class	IView.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  *
  */

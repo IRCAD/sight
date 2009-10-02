@@ -106,7 +106,7 @@ namespace fwComEd
 //
 //	/**
 //	 * @brief used by operator<<(std::ostream & _sstream, IService& _service)
-//	 * @author Jean-Baptiste Fasquel
+
 //	 */
 //	FWCOMED_API virtual void info(std::ostream &_sstream ) const ;
 //

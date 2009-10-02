@@ -18,7 +18,6 @@ namespace fwServices
  * @brief Intercept ::fwTools::Object deletion to ensure that all associated service (including communication) are stopped and unregistered
  *
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 struct FWSERVICES_CLASS_API DefaultObjectDeleter : public ::fwTools::IDeleter
 {

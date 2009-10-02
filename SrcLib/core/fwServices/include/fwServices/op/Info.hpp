@@ -26,21 +26,21 @@ namespace fwServices
 /**
  * @brief return true is obj has at least one service of type serviceId
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 FWSERVICES_API bool has( ::fwTools::Object::sptr obj , std::string serviceId) throw();
 
 /**
  * @brief return true is the system has an object associated with uuid
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 FWSERVICES_API bool has( ::std::string uuid ) throw();
 
 /**
  * @brief return true is obj has at least one service of type SERVICE
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 template<class SERVICE>
 bool has( ::fwTools::Object::sptr obj) throw();
@@ -61,7 +61,7 @@ bool has( ::fwTools::Object::sptr obj) throw();
  * @return true if service type supported
  *
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 FWSERVICES_API bool support( ::fwTools::Object::sptr obj, std::string serviceId) throw();
 
@@ -73,18 +73,16 @@ FWSERVICES_API bool support( ::fwTools::Object::sptr obj, std::string serviceId)
  * @return true if service type supported
  *
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 FWSERVICES_API bool support( ::fwTools::Object::sptr obj, std::string serviceId, std::string implementationId ) throw();
 
 /**
  * @brief Check whether an object (obj) supports service of type SERVICE
- *
  * @return true if service type supported
  * @note invoke support( ::fwTools::Object::sptr obj, std::string serviceId
  *
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 template<class SERVICE>
 bool support( ::fwTools::Object::sptr obj) throw();
@@ -97,14 +95,14 @@ bool support( ::fwTools::Object::sptr obj) throw();
  * ones (compliant with any type of object). Note that for both specific and generic implementations, the search concerns services already available in the class registry first and the one
  * (virtually) available in unstarted components
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 FWSERVICES_API std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) ;
 
 /**
  * @brief Invoke the getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) method where the template parameter SERVICE is related to serviceId
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+
  */
 template<class SERVICE>
 std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj ) ;
@@ -113,7 +111,6 @@ std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj ) ;
  * @brief Returns the default implementation identifier for a given service type (serviceId) and object (obj)
  * At this time, the default implementation identifier is the first one returned by invoking the getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) method
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API std::string getDefaultImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) ;
 

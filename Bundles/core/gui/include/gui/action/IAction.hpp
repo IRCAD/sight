@@ -27,7 +27,7 @@ namespace action
  * @brief	Defines the service interface managing action placed in IAction menus.
  * @class	IAction.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  *
  */

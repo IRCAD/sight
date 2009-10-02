@@ -19,7 +19,6 @@ namespace fwComEd
  * @brief	Object message specialized for Video : store modification information
  * @class 	VideoMsg
  * @author  IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  * @date    2007-2009.
  * @see 	::fwServices::ObjectMsg
  * @todo specialize it when Video class is clearly defined

@@ -25,7 +25,7 @@ namespace action
  *
  * @class	SelectConfigurationAction.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API SelectConfigurationAction : public ::gui::action::IAction

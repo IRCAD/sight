@@ -18,7 +18,6 @@ namespace visu
  * @brief	This class is started when the bundles is loaded.
  * @class	Plugin.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  * @date	2009.
  */
 struct VISU_CLASS_API Plugin : public ::fwRuntime::Plugin

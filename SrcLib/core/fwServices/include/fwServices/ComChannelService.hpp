@@ -24,7 +24,6 @@ class ObjectMsg ;
  * @brief Default communication channel between a source (IEditionService, the subject, associated to a given observed object) and a destination (the service receiving and processing modifications fired by the subject)
  * @class ComChannelService
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  * @date	2007-2009.
  */
 class FWSERVICES_CLASS_API ComChannelService : public ::fwServices::ICommunication
@@ -63,7 +62,6 @@ public:
 	/**
 	 * @brief Trigger detachment : observation becomes unactive
 	 * @author IRCAD (Research and Development Team).
-	 * @author Jean-Baptiste Fasquel
 	 */
 	FWSERVICES_API virtual void stopping() throw( ::fwTools::Failed);
 

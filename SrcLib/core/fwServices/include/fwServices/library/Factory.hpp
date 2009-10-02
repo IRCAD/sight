@@ -25,7 +25,7 @@ namespace fwServices
  * Mainly consists in the support and add methods
  * @note The term library means that the program has loaded a dynamic library involving the registration of the class types in the class registry
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+ *
  */
 namespace library
 {
@@ -35,7 +35,7 @@ namespace library
  *
  * @note Invoked by fwServices facade methods (e.g. see support( ::fwTools::Object::sptr , std::string ))
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+ *
  */
 FWSERVICES_API bool support( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId ) throw() ;
 
@@ -44,7 +44,7 @@ FWSERVICES_API bool support( ::boost::shared_ptr< fwTools::Object > obj , std::s
  *
  * @note Invoked by fwServices facade methods (e.g. see add( ::fwTools::Object::sptr , std::string , std::string ) )
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
+ *
  */
 FWSERVICES_API ::boost::shared_ptr< fwServices::IService > add( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId , std::string _implementationId ) ;
 

@@ -23,7 +23,7 @@ class Next;
  * @brief	Test action runs test configuration running.
  * @class	TestAction.
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel.
+
  * @date	2009.
  */
 class GUI_CLASS_API TestAction : public ::gui::action::IAction

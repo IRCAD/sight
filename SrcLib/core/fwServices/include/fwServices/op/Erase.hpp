@@ -26,14 +26,12 @@ namespace fwServices
  * @brief Erase all services attached to obj
  * @note Erase implicitely involves service stopping first
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void clear( ::fwTools::Object::sptr obj ) ;
 
 /**
  * @brief Erase service instance from the system
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void erase( ::fwServices::IService::sptr service ) ;
 
@@ -41,7 +39,6 @@ FWSERVICES_API void erase( ::fwServices::IService::sptr service ) ;
  * @brief Erase all services of type serviceId which are attached to obj
  * @note the template method can be used, where the template parameter SERVICE is related to serviceId
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void eraseServices( ::fwTools::Object::sptr obj , std::string serviceId ) ;
 
@@ -53,7 +50,6 @@ void eraseServices( ::fwTools::Object::sptr obj ) ;
  * @note erase services returned by the invocation of the get( ::fwTools::Object::sptr , std::string , unsigned int ) method
  * @note the template method can be used, where the template parameter SERVICE is related to serviceId
  * @author IRCAD (Research and Development Team).
- * @author Jean-Baptiste Fasquel
  */
 FWSERVICES_API void erase( ::fwTools::Object::sptr obj , std::string serviceId , unsigned int _index = 0) ;
 

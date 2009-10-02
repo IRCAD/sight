@@ -16,7 +16,6 @@
 //
 ///**
 // * @brief This edition command specialized for process object
-// * @author Jean-Baptiste Fasquel
 // */
 //class FWCOMED_CLASS_API POEditCmd : public fwServices::EdCmd
 //{

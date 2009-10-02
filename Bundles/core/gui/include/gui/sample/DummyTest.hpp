@@ -20,7 +20,6 @@ class DummyAction ;
  * @brief	Defines a dummy service using a view and implementing a callback to a menu action
  * @note for example purpose
  * @author	IRCAD (Research and Development Team).
- * @author	Jean-Baptiste Fasquel
  */
 class GUI_CLASS_API DummyTest : public ::gui::sample::ITestService
 {
