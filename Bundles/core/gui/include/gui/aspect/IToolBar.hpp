@@ -44,7 +44,13 @@ public :
 	 */
 	GUI_API virtual ~IToolBar() throw() ;
 
-	/**
+protected :
+
+	/** @name Service methods ( override from ::fwServices::IService )
+	 * @{
+     */
+
+	   /**
 	 * @brief This method is used to configure the class parameters. Do nothing.
 	 */
 	GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
@@ -69,8 +75,9 @@ public :
 	 * @brief This method is used to update services. Do nothing.
 	 */
 	GUI_API virtual void updating() throw(::fwTools::Failed) ;
+	///@}
 
-protected :
+private:
 
 	wxToolBar*	m_toolBar;
 };

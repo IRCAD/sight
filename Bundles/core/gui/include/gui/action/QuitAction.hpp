@@ -40,6 +40,8 @@ public :
 	*/
 	GUI_API virtual ~QuitAction() throw() ;
 
+protected:
+
 	/**
 	 * @brief This method tries to close the window and reset root object.
 	 */

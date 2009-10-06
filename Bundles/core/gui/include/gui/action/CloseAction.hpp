@@ -39,6 +39,8 @@ public :
 	*/
 	GUI_API virtual ~CloseAction() throw() ;
 
+protected:
+
 	/**
 	 * @brief This method is used to reset root object. All services are eliminated as well as objects composing the root object.
 	 */

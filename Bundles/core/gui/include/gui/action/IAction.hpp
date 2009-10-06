@@ -51,42 +51,6 @@ public :
 	GUI_API virtual ~IAction() throw() ;
 
 	/**
-	 * @brief This method is used to configure the class parameters.
-	 * @todo Remove assert on depreciated tag
-	 */
-	GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
-
-	/*
-	 * @brief Add a new item in wxMenuBar, and register this action in ::gui::Manager.
-	 */
-	GUI_API virtual void starting() throw(::fwTools::Failed);
-
-	/*
-	 * @brief This method remove the item situated in the menu and unregister this action in ::gui::Manager.
-	 */
-	GUI_API virtual void stopping() throw(::fwTools::Failed);
-
-	/**
-	 * @brief This method is used to update services on notification. Do nothing.
-	 * @attention An IAction service does not received a message.
-	 * @todo ACH: May this method be removed and imposed to children classes ??
-	 * @tode ACH : uncomment assertion
-	 */
-	GUI_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
-
-	/**
-	 * @brief This method is used to update services (it manages the check / uncheck).
-	 *
-	 * @todo ACH: It is really used and called by its children classes.
-	 */
-	GUI_API virtual void updating() throw(::fwTools::Failed);
-
-	/**
-	 * @brief This method gives information about the class. Do nothing.
-	 */
-	GUI_API virtual void info(std::ostream &_sstream ) ;
-
-	/**
 	 * @brief This method is used to change the menu name (IAction::m_menuName).
 	 *
 	 * @param[in] _menuName Name of the new menu.
@@ -166,6 +130,48 @@ public :
 	GUI_API void setCheck(bool _check);
 
 protected :
+
+	/** @name Service methods ( override from ::fwServices::IService )
+	 * @{
+	 */
+
+	/**
+	 * @brief This method is used to configure the class parameters.
+	 * @todo Remove assert on depreciated tag
+	 */
+	GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
+
+	/*
+	 * @brief Add a new item in wxMenuBar, and register this action in ::gui::Manager.
+	 */
+	GUI_API virtual void starting() throw(::fwTools::Failed);
+
+	/*
+	 * @brief This method remove the item situated in the menu and unregister this action in ::gui::Manager.
+	 */
+	GUI_API virtual void stopping() throw(::fwTools::Failed);
+
+	/**
+	 * @brief This method is used to update services on notification. Do nothing.
+	 * @attention An IAction service does not received a message.
+	 * @todo ACH: May this method be removed and imposed to children classes ??
+	 * @tode ACH : uncomment assertion
+	 */
+	GUI_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+
+	/**
+	 * @brief This method is used to update services (it manages the check / uncheck).
+	 *
+	 * @todo ACH: It is really used and called by its children classes.
+	 */
+	GUI_API virtual void updating() throw(::fwTools::Failed);
+
+	/**
+	 * @brief This method gives information about the class. Do nothing.
+	 */
+	GUI_API virtual void info(std::ostream &_sstream ) ;
+
+	///@}
 
 	static const std::map<std::string, int> SPECIAL_ACTION_TO_WXID;
 

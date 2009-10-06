@@ -41,6 +41,8 @@ public :
 	/// Destructor. Do nothing.
 	GUI_API virtual ~DefaultAspect() throw() ;
 
+protected:
+
 	/**
 	 * @brief	This method initializes class member parameters from configuration elements.
 	 *
@@ -64,6 +66,17 @@ public :
 	/// This method gives information about the class. Do nothing.
 	GUI_API virtual void info(std::ostream &_sstream ) ;
 
+    /**
+     * @brief   Normally, perform some computations according to object (this service is attached to) attribute values and its internal state.
+     *          Do nothing here.
+     */
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
+
+    /**
+     * @brief   Normally, perform some computations according to object (this service is attached to) attribute values and its internal state.
+     *          Do nothing here.
+     */
+    GUI_API virtual void updating() throw( ::fwTools::Failed );
 };
 
 

@@ -47,6 +47,19 @@ public :
 	GUI_API virtual ~IView() throw() ;
 
 	/**
+	 * @brief This method is used to get the id of a wxPanel that represents this view.
+	 *
+	 * @return WxMenuItem id.
+	 */
+	GUI_API int getGuiContainerId() ;
+
+protected :
+
+	/** @name Service methods ( override from ::fwServices::IService )
+	 * @{
+	 */
+
+	/**
 	 * @brief This method is used to configure the class parameters.
 	 */
 	GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
@@ -75,15 +88,7 @@ public :
 	 * @brief This method gives information about the class. Do nothing.
 	 */
 	GUI_API virtual void info(std::ostream &_sstream ) ;
-
-	/**
-	 * @brief This method is used to get the id of a wxPanel that represents this view.
-	 *
-	 * @return WxMenuItem id.
-	 */
-	GUI_API int getGuiContainerId() ;
-
-protected :
+    ///@}
 
 	/// The identifier of the window.
 	int m_guiContainerId ;

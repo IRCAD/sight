@@ -44,6 +44,13 @@ public :
 	/// Default destructor, do nothing.
 	GUI_API virtual ~IMenu() throw() ;
 
+
+protected :
+
+	/** @name Service methods ( override from ::fwServices::IService )
+	 * @{
+	 */
+
 	/// Retrieve IMenu::m_menuName in configuration element
 	GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
@@ -61,8 +68,10 @@ public :
 
 	/// Updating service on notification, do nothing.
 	GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+	///@}
 
-protected :
+private:
+
 	const static std::string SEPARATOR_UUUID;
 
 	std::vector< std::string >		m_actionsUUID ;
@@ -74,4 +83,4 @@ protected :
 }
 }
 
-#endif /*IMENU_HPP_*/
+#endif /* GUI_IMENU_HPP_ */

@@ -43,6 +43,8 @@ public :
 	///	Destructor. Do nothing.
 	GUI_API virtual ~DummyEditor() throw() ;
 
+protected:
+
 	///This method launches the IEditor::starting method.
 	GUI_API virtual void starting() throw(::fwTools::Failed);
 

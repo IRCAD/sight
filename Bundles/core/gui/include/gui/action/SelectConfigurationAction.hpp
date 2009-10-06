@@ -43,6 +43,8 @@ public :
 	*/
 	GUI_API virtual ~SelectConfigurationAction() throw() ;
 
+protected:
+
 	/**
 	 * @brief This method :
 	 * - uninitialize root Object

@@ -43,6 +43,7 @@ public :
 	 */
 	GUI_API virtual ~TestAction() throw() ;
 
+protected:
 
 	GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
 

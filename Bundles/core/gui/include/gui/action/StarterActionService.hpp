@@ -41,6 +41,8 @@ public :
 	*/
 	GUI_API virtual ~StarterActionService() throw();
 
+protected:
+
 	/**
 	 * @brief This method gives information about the class. Do nothing.
 	 */

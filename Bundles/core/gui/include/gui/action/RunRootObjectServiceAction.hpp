@@ -39,6 +39,8 @@ public :
 	*/
 	GUI_API virtual ~RunRootObjectServiceAction() throw() ;
 
+protected:
+
 	/**
 	 * @brief This method is used to start, update and stop service ::gui::editor::IEditor on root object.
 	 */

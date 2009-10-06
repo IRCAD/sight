@@ -46,6 +46,21 @@ public :
 	///	Destructor. Do nothing.
 	GUI_API virtual ~IEditor() throw() ;
 
+	/**
+	 * @brief Specify container within which visualization will appear.
+	 * @todo Question: Should this method be imposed to class child declarations ??. It is interesting to check if the container is really needed.
+	 */
+	GUI_API virtual void setWxContainer( wxWindow * container ) ;
+
+	/// Returns visualization wxContainer.
+	GUI_API virtual wxWindow * getWxContainer() ;
+
+protected :
+
+	/** @name Service methods ( override from ::fwServices::IService )
+	 * @{
+	 */
+
 	/// This method is used to find the container ID if it is defined in the configuration element.
 	GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
@@ -78,16 +93,7 @@ public :
 	 */
 	GUI_API virtual void updating() throw(::fwTools::Failed) {} ;
 
-	/**
-	 * @brief Specify container within which visualization will appear.
-	 * @todo Question: Should this method be imposed to class child declarations ??. It is interesting to check if the container is really needed.
-	 */
-	GUI_API virtual void setWxContainer( wxWindow * container ) ;
-
-	/// Returns visualization wxContainer.
-	GUI_API virtual wxWindow * getWxContainer() ;
-
-protected :
+	///@}
 
 	/// container
 	wxWindow * m_container;

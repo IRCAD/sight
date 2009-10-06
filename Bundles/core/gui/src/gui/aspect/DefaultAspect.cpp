@@ -98,6 +98,20 @@ void DefaultAspect::info(std::ostream &_sstream )
 	_sstream << "Manage aspect in main GUI application" ;
 }
 
+//-----------------------------------------------------------------------------
+
+void DefaultAspect::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void DefaultAspect::updating() throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
 }
 }
 

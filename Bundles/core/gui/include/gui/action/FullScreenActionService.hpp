@@ -41,6 +41,8 @@ public:
 	 */
 	GUI_API virtual ~FullScreenActionService() throw();
 
+protected:
+
 	/**
 	 * @brief This method is used to configure the class parameters. Do nothing.
 	 */

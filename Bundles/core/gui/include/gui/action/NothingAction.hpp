@@ -40,6 +40,7 @@ public :
 	*/
 	GUI_API virtual ~NothingAction() throw() ;
 
+protected:
 
 	/**
 	 * @brief This method is used to update services on notification. Do nothing.
