@@ -1,4 +1,3 @@
-#USE   = ['wx','boost','python']
 USE   = ['wx','boost']
 LIB   =  ['fwRuntime_0-3','fwCore_0-1','fwServices_0-1','fwTools_0-1']
 VERSION = '0-1'
