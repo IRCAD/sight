@@ -22,4 +22,4 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 void Plugin::stop() throw()
 {}
 
-} // namespace operators
+} // namespace vtkSimpleNegato
