@@ -3,10 +3,16 @@
 #include <libxml/xpath.h>
 #include <iostream>
 
+#include <fwCore/base.hpp>
 #include <fwRuntime/io/XMLSubstitute.hpp>
 
 namespace fwRuntime {
 namespace io {
+
+
+
+
+
 
 void substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< std::string, std::string> &dictionary)
 {
@@ -17,6 +23,20 @@ void substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< st
 	{
 		std::string xpath = iter->xpath;
 		std::string dictEntry = iter->dictEntry;
+		std::string status = iter->status;
+		bool entryInDictionary = dictionary.find(dictEntry) != dictionary.end();
+
+		if ( status=="required" && !entryInDictionary )
+		{
+			OSLM_FATAL("XML substitution required dictEntry [" << dictEntry << "] missing for xpath " << xpath );
+		}
+		// optional and not in dictionary
+		if ( status=="optional" && !entryInDictionary )
+		{
+			OSLM_INFO("XML substitution optional dictEntry [" << dictEntry << "] not modified for xpath " << xpath );
+			continue;
+		}
+
 
 		// create the context for xpath
 		xmlXPathContextPtr xpathCtx;
@@ -31,7 +51,7 @@ void substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< st
 		for (int i=NbNodesFound-1; i >= 0; --i )
 		{
 			xmlNodePtr node = xpathObj->nodesetval->nodeTab[i];
-			std::cout << "SSS " << i << node->name << node->type << std::endl;
+			//std::cout << "SSS " << i << node->name << node->type << std::endl;
 			// substitution
 			if (node->type == XML_ATTRIBUTE_NODE )
 			{
@@ -80,7 +100,7 @@ std::list< Substitute > getSubstitutions( xmlNodePtr substitutionRules )
 		xmlNodePtr element = xmlNextElementSibling(subNode->children);
 		while (element )
 		{
-			std::cout << "EEE " << i << " " << element->name << std::endl;
+			//std::cout << "EEE " << i << " " << element->name << std::endl;
 			if ( xmlStrcmp( element->name, BAD_CAST "nodePath")==0 )
 			{
 				s.xpath = (const char *)xmlNodeGetContent( element );
@@ -88,10 +108,11 @@ std::list< Substitute > getSubstitutions( xmlNodePtr substitutionRules )
 			if ( xmlStrcmp( element->name, BAD_CAST "replace")==0 )
 			{
 				s.dictEntry = (const char *)xmlGetProp( element, BAD_CAST "dictEntry" );
+				s.status    = (const char *)xmlGetProp( element, BAD_CAST "status" );
 			}
 			element = xmlNextElementSibling(element);
 		}
-		assert( s.xpath.size()  && s.dictEntry.size() );
+		assert( s.xpath.size()  && s.dictEntry.size() && s.status.size() );
 		result.push_back( s );
 	}
 
