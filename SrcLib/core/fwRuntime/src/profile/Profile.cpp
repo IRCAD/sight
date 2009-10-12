@@ -11,6 +11,7 @@
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/profile/Activater.hpp"
 #include "fwRuntime/profile/Starter.hpp"
+#include "fwRuntime/profile/Stopper.hpp"
 
 
 
@@ -51,14 +52,20 @@ void Profile::add( ::boost::shared_ptr< Activater > activater )
 void Profile::add( ::boost::shared_ptr< Starter > starter )
 {
 	m_starters.push_back( starter );
+	m_stoppers.push_back( ::boost::shared_ptr< Stopper > ( new Stopper(starter) ));
 }
-
 
 
 void Profile::start()
 {
 	std::for_each( m_activaters.begin(), m_activaters.end(), Apply< ActivaterContainer::value_type >() );
 	std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
+}
+
+
+void Profile::stop()
+{
+    std::for_each( m_stoppers.rbegin(), m_stoppers.rend(), Apply< StopperContainer::value_type >() );
 }
 
 

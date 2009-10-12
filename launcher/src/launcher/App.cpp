@@ -171,13 +171,13 @@ bool App::OnInit()
 			try
 			{
 				::fwRuntime::addBundles("./Bundles");
-				::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = ::fwRuntime::io::ProfileReader::createProfile(m_profilePath);
+				m_profile = ::fwRuntime::io::ProfileReader::createProfile(m_profilePath);
 #ifndef TDVPM_COMPLIANT
-				m_locale->AddCatalog(wxConvertMB2WX(profile->getName().c_str()), wxLANGUAGE_FRENCH, _T("utf-8"));
-				//m_locale->AddCatalog(wxConvertMB2WX(profile->getName().c_str()), wxLANGUAGE_ENGLISH, _T("utf-8"));
+				m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_FRENCH, _T("utf-8"));
+				//m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_ENGLISH, _T("utf-8"));
 #endif
-				SetAppName( wxConvertMB2WX(profile->getName().c_str()) );
-				profile->start();
+				SetAppName( wxConvertMB2WX(m_profile->getName().c_str()) );
+				m_profile->start();
 			}
 			catch( const std::exception & exception )
 			{
@@ -198,6 +198,12 @@ bool App::OnInit()
 					 wxOK|wxICON_ERROR);
 		return false;
 	}
+}
+
+int App::OnExit()
+{
+    m_profile->stop();
+    return 0;
 }
 
 

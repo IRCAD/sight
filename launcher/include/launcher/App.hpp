@@ -79,6 +79,8 @@ struct App : public wxApp
 
 	bool OnInit();
 
+	int OnExit();
+
 	void usage(const std::string & mes) const;
 
 	bool OnCmdLineParsed(wxCmdLineParser & parser);
@@ -109,6 +111,11 @@ private:
 	 * @brief	locale (internationalization) for app
 	 */
 	wxLocale * m_locale;
+
+	/**
+	 * @brief	Application Profile
+	 */
+    ::fwRuntime::profile::Profile::sptr m_profile;
 };
 
 

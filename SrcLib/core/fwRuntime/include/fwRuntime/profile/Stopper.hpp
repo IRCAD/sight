@@ -4,12 +4,14 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PROFILE_STARTER_HPP_
-#define _FWRUNTIME_PROFILE_STARTER_HPP_
+#ifndef _FWRUNTIME_PROFILE_STOPPER_HPP_
+#define _FWRUNTIME_PROFILE_STOPPER_HPP_
 
 #include <string>
 #include <boost/utility.hpp>
+#include <boost/shared_ptr.hpp>
 
+#include "fwRuntime/profile/Starter.hpp"
 #include "fwRuntime/config.hpp"
 
 
@@ -22,33 +24,28 @@ namespace profile
 
 
 /**
- * @brief	Starts a given bundle.
- * @struct 	Starter
+ * @brief	Stops a given bundle.
+ * @struct 	Stopper
  * @date	2007-2009
  * @author 	IRCAD (Research and Development Team).
  */
-struct Starter : public boost::noncopyable
+struct Stopper : public ::fwRuntime::profile::Starter
 {
 
-    friend class Stopper;
 	/**
 	 * @brief		Constructor
 	 *
 	 * @param[in]	identifier	a string containing a bundle identifier
 	 */
-	FWRUNTIME_API Starter( const std::string & identifier );
+	FWRUNTIME_API Stopper( ::boost::shared_ptr< Starter > starter );
 
 	/**
-	 * @brief	Applies the starter on the system.
+	 * @brief	Applies the Stopper on the system.
 	 *
 	 * @remark	This method should be called directly.
 	 */
 	void apply();
 
-
-protected:
-
-	const std::string	m_identifier;	///< a bundle identifier
 
 };
 
@@ -60,4 +57,4 @@ protected:
 
 
 
-#endif /*_FWRUNTIME_PROFILE_STARTER_HPP_*/
+#endif /*_FWRUNTIME_PROFILE_STOPPER_HPP_*/

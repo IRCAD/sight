@@ -333,7 +333,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
 	 */
 	FWRUNTIME_API void start() throw(RuntimeException);
 
-	//void stop() throw(RuntimeException);
+    FWRUNTIME_API void stop() throw(RuntimeException);
 	//@}
 
 

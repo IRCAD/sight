@@ -9,7 +9,8 @@
 
 #include <vector>
 #include <boost/utility.hpp>
-#include <boost/shared_ptr.hpp>
+
+#include "fwCore/base.hpp"
 
 #include "fwRuntime/config.hpp"
 
@@ -30,6 +31,7 @@ namespace profile
 
 struct Activater;
 struct Starter;
+struct Stopper;
 
 
 
@@ -39,8 +41,11 @@ struct Starter;
  * @date	2007-2009
  * @author 	IRCAD (Research and Development Team).
  */
-struct Profile
+struct Profile : public ::fwCore::BaseObject
+
 {
+
+	fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject::Baseclass), (()), new Profile) ;
 
 	/**
 	 * @brief	Constructor : does nothing.
@@ -57,7 +62,7 @@ struct Profile
 	/**
 	 * @brief		Adds a new starter.
 	 *
-	 * @param[in]	starter	a shared pointer to an starter
+	 * @param[in]	starter	a shared pointer to a starter
 	 */
 	FWRUNTIME_API void add( ::boost::shared_ptr< Starter > starter );
 
@@ -65,6 +70,7 @@ struct Profile
 	 * @brief	Starts the profile.
 	 */
 	FWRUNTIME_API void start();
+	FWRUNTIME_API void stop();
 
 	/**
 	 * @brief	Return profile name.
@@ -83,9 +89,11 @@ private:
 
 	typedef std::vector< ::boost::shared_ptr< Activater > >	ActivaterContainer;
 	typedef std::vector< ::boost::shared_ptr< Starter > >	StarterContainer;
+	typedef std::vector< ::boost::shared_ptr< Stopper > >	StopperContainer;
 
 	ActivaterContainer	m_activaters;	///< all managed activators
 	StarterContainer	m_starters;		///< all managed starters
+	StopperContainer	m_stoppers;		///< all managed stoppers
 	std::string			m_sName;		///< name profile
 
 };

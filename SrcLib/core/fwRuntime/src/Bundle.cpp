@@ -447,8 +447,8 @@ void Bundle::startPlugin() throw(RuntimeException)
 	}
 	else
 	{
-		Runtime						* rntm		( Runtime::getDefault()							);
-		 ::boost::shared_ptr< IExecutable >	executable	( rntm->createExecutableInstance(pluginType)	);
+		Runtime	* rntm	( Runtime::getDefault() );
+		::boost::shared_ptr< IExecutable > executable ( rntm->createExecutableInstance(pluginType) );
 
 		plugin = ::boost::dynamic_pointer_cast< IPlugin >( executable );
 	}
@@ -473,20 +473,29 @@ void Bundle::startPlugin() throw(RuntimeException)
 
 
 
-/*void Bundle::stop() throw(RuntimeException)
+void Bundle::stop() throw(RuntimeException)
 {
-	// Unloads all libraries.
-	LibraryContainer::iterator curEntry;
-	LibraryContainer::iterator endEntry = m_libraries.end();
-	for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
-	{
-		boost::shared_ptr<dl::Library> library(*curEntry);
-		if(library->isLoaded() == true)
-		{
-			library->unload();
-		}
-	}
-}*/
+    try
+    {
+        m_plugin->stop();
+    }
+    catch( std::exception & e )
+    {
+        throw RuntimeException( getIdentifier() + ": stop plugin error : " + e.what() );
+    }
+
+    //Unloads all libraries.
+    //LibraryContainer::iterator curEntry;
+    //LibraryContainer::iterator endEntry = m_libraries.end();
+    //for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
+    //{
+        //boost::shared_ptr<dl::Library> library(*curEntry);
+        //if(library->isLoaded() == true)
+        //{
+            //library->unload();
+        //}
+    //}
+}
 
 
 
