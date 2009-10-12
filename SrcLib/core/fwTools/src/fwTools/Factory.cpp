@@ -50,6 +50,7 @@ void Factory::addInitializer( ::boost::shared_ptr< ::fwTools::Factory::Initializ
 	::fwTools::Object::sptr newObject ( ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >( className ) );
 	if ( newObject == 0 )
 	{
+		OSLM_FATAL( "Factory::buildData unables to build class : " <<  className; )
 		assert(false);
 		std::string mes = "Factory::buildData unables to build class : " + className;
 		throw ::fwTools::Failed(mes);
