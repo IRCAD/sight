@@ -10,6 +10,7 @@
 #include <locale.h>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <wx/wx.h>
 #include <wx/cmdline.h>
@@ -26,6 +27,7 @@
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/io/ProfileReader.hpp>
+#include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwServices/bundle/runtime.hpp>
 #include <fwServices/Factory.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -181,7 +183,7 @@ bool App::OnInit()
 			}
 			catch( const std::exception & exception )
 			{
-				throw ::fwRuntime::RuntimeException( std::string(m_profilePath/*.native_file_string()*/ + ": invalid profile file. ") + exception.what() );
+				throw ::fwRuntime::RuntimeException( std::string(m_profilePath + ": invalid profile file. ") + exception.what() );
 			}
 			return true;
 		}
@@ -210,46 +212,55 @@ int App::OnExit()
 
 bool App::OnCmdLineParsed(wxCmdLineParser & parser)
 {
-
 	bool parsing;
 
 	parsing = wxApp::OnCmdLineParsed(parser);
 
+	// Retrieves the substitute parameters
+	wxString value;
+	parser.Found("s", &value);
+	if(!value.IsEmpty())
+	{
+	    std::string str = wxConvertWX2MB(value);
+	    typedef ::boost::tokenizer< ::boost::char_separator<char> >   tokenizer;
+	    ::boost::char_separator<char> sep("@");
+	    tokenizer tokens(str, sep);
+	    assert ( std::distance (tokens.begin(),tokens.end())%2 == 0 );
+	    for (tokenizer::iterator tok_iter = tokens.begin(); tok_iter != tokens.end(); ++tok_iter)
+	    {
+	        std::string key = *tok_iter;
+	        std::string val = (*++tok_iter);
+	        ::fwRuntime::io::XMLSubstitute::getDefault()->getRefDictionary()[key]= val ;
+	        std::cout << "token : "<< key << " - " << val << std::endl;
+	    }
+	}
+
 	// Retrieves the profile Path
-	// 1 argument :
-	// launcher path/profile.xml
-	if ( parser.GetParamCount() == 1 )
+	m_profilePath = "./profile.xml"; // default value
+	value.Clear();
+	parser.Found("p", &value);
+	if(!value.IsEmpty())
 	{
-		m_profilePath = wxConvertWX2MB( parser.GetParam() );
+	    m_profilePath = wxConvertWX2MB(value);
 	}
-	// 3 arguments :
-	// launcher path/profile.xml ::fwData::RootObject ConfigName
-	else if(parser.GetParamCount() == 3)
-	{
-		m_profilePath = wxConvertWX2MB( parser.GetParam(0) ) ;
-		std::string objectClassName(  wxConvertWX2MB( parser.GetParam(1)) ) ;
-		std::string objectConfigurationName( wxConvertWX2MB( parser.GetParam(2)) ) ;
-
-		::fwServices::OSR::setRootObjectClassName( objectClassName ) ;
-		::fwServices::OSR::setRootObjectConfigurationName(objectConfigurationName) ;
-
-		// Bundle initialization
-		assert( boost::filesystem::exists( m_profilePath ) ) ;
-	}
-	// 0 argument (or > 3)
-	// default profile.xml in current folder
 	else
 	{
-		m_profilePath = "./profile.xml";
+	    // old style parameters
+        // 1 argument :
+        // launcher path/profile.xml
+        if ( parser.GetParamCount() == 1 )
+        {
+            m_profilePath = wxConvertWX2MB( parser.GetParam() );
+        }
 	}
 
+
 	// Profile path is valid ?
-	m_profilePathIsValid = boost::filesystem::exists( m_profilePath );
+	m_profilePathIsValid = ::boost::filesystem::exists( m_profilePath );
 
 	// Print a message if the path is not valid
 	if ( ! m_profilePathIsValid )
 	{
-
 		const wxString msgPart1 = wxT("A valid profile is required to start the application. The file ");
 		const wxString msgPart3 = wxT(" does not exist.");
 
@@ -259,18 +270,24 @@ bool App::OnCmdLineParsed(wxCmdLineParser & parser)
 		mes << std::string(msgPart3.mb_str());
 
 		usage(mes.str());
+		parsing = false;
 	}
 	return parsing;
 }
 
+static const wxCmdLineEntryDesc cmdLineDesc[] =
+{
+    { wxCMD_LINE_OPTION, "p", "profile", "path to the profile to launch",wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, "s", "substitute", "substitute parameters : name1@value1@name2@value2...", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE | wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_PARAM, NULL, NULL, "old style parameters", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE | wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_NONE }
+};
 
 
 void App::OnInitCmdLine(wxCmdLineParser & parser)
 {
 	wxApp::OnInitCmdLine(parser);
-	parser.AddParam(_T("profile.xml"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
-	parser.AddParam(_T("object"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
-	parser.AddParam(_T("config"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
+	parser.SetDesc(cmdLineDesc);
 }
 
 } // namespace launcher

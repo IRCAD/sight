@@ -30,10 +30,9 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
 	SLM_TRACE("starting gui bundle");
 
-	// verify if the command line and profile.xml are well formed
-	startMethodPreconditionTest();
-
-	if ( ( wxTheApp && wxTheApp->wxAppConsole::argc <= 3 ) || !wxTheApp )
+	if ( this->getBundle()->hasParameter("rootObject")
+	        && this->getBundle()->hasParameter("config")
+	        && this->getBundle()->hasParameter("configFile"))
 	{
 		std::string objectClassName(  this->getBundle()->getParameterValue("rootObject") ) ;
 		std::string objectConfigurationName( this->getBundle()->getParameterValue("config") ) ;
@@ -41,11 +40,11 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 		::fwServices::OSR::setRootObjectClassName( objectClassName ) ;
 		::fwServices::OSR::setRootObjectConfigurationName(objectConfigurationName) ;
-
-		if( this->getBundle()->hasParameter("configFile") )
-		{
-			::fwServices::OSR::setRootObjectConfigurationFile(objectConfigurationFile) ;
-		}
+		::fwServices::OSR::setRootObjectConfigurationFile(objectConfigurationFile) ;
+	}
+	else
+	{
+	    SLM_FATAL(" Bundle gui, missing param : rootObject, config, configFile in profile");
 	}
 
 	if( this->getBundle()->hasParameter("Aspect") )
@@ -74,53 +73,6 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 		SLM_TRACE("Starting GUI") ;
 		::wxEntry( argcc , argvv ) ;
 	}
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::startMethodPreconditionTest()
-{
-	// Precondition tests if the launcher is used
-
-	// 1.  launcher.exe (default profile.xml)
-	// in this case, the rootObject and configName must be declared in default profile.xml
-	if ( wxTheApp && wxTheApp->wxAppConsole::argc == 1 )
-	{
-		SLM_ASSERT("rootObject and config parameter missing",
-				this->getBundle()->hasParameter("rootObject") && this->getBundle()->hasParameter("config"));
-	}
-
-	// 2.  launcher.exe myProfile.xml (root object and config must be declared in gui activation )
-	// in this case, the rootObject and configName must be declared in myProfile.xml
-	if ( wxTheApp 	&& wxTheApp->wxAppConsole::argc == 2 )
-	{
-		SLM_ASSERT("rootObject and config parameter missing",
-				this->getBundle()->hasParameter("rootObject") && this->getBundle()->hasParameter("config"));
-	}
-
-	// 3.  launcher.exe profile.xml rootObjectName configName
-	// if the rootObject and configName are given in command line, they must not be declared in the profile.xml file.
-	if ( wxTheApp && wxTheApp->wxAppConsole::argc == 4 )
-	{
-		SLM_ASSERT("rootObject and config parameter must not be declared in profile",
-				!this->getBundle()->hasParameter("rootObject") && !this->getBundle()->hasParameter("config"));
-	}
-
-	//Launcher mode
-	// test if the argument line is well formed.
-	if ( wxTheApp )
-	{
-		assert( wxTheApp->wxAppConsole::argc != 3 && wxTheApp->wxAppConsole::argc <= 4);
-	}
-
-	//the startingMode must be defined in profile.xml
-	if ( wxTheApp )
-	{
-		SLM_ASSERT("startingMode parameter missing", this->getBundle()->hasParameter("startingMode") );
-	}
-
-	// Precondition tests if the Clauncher is used (TODO)
-
 }
 
 //-----------------------------------------------------------------------------

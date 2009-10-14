@@ -52,13 +52,7 @@ public:
 	* @brief This method is used by runtime to close the bundle. Do nothing.
 	*/
 	void stop() throw();
-	
-private:
-	/**
-	 * @brief This method is used to verify if the command line and profile.xml are well formed.
-	 * @todo Write Clauncher precondition.
-	 */
-	void startMethodPreconditionTest();
+
 };
 
 } // namespace gui

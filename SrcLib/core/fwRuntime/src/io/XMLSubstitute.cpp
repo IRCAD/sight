@@ -6,20 +6,84 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/io/XMLSubstitute.hpp>
 
-namespace fwRuntime {
-namespace io {
-
-
-
-
-
-
-void substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< std::string, std::string> &dictionary)
+namespace fwRuntime
 {
-	std::list< Substitute > substitutions = getSubstitutions( substitutionRules );
+namespace io
+{
+
+//------------------------------------------------------------------------------
+
+::boost::shared_ptr< ::fwRuntime::io::XMLSubstitute > XMLSubstitute::m_instance;
+
+//------------------------------------------------------------------------------
+
+XMLSubstitute::XMLSubstitute()
+{
+    SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+XMLSubstitute::~XMLSubstitute()
+{
+    SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+std::map< std::string, std::string > &XMLSubstitute::getRefDictionary()
+{
+    return m_dictionary;
+}
+//------------------------------------------------------------------------------
+
+::boost::shared_ptr<XMLSubstitute> XMLSubstitute::getDefault()
+{
+    if ( m_instance == 0 )
+    {
+        SLM_TRACE_FUNC();
+        m_instance = ::boost::shared_ptr< ::fwRuntime::io::XMLSubstitute >( new XMLSubstitute() );
+    }
+    return m_instance;
+}
+
+//------------------------------------------------------------------------------
 
 
-	for ( std::list< Substitute >::iterator iter = substitutions.begin(); iter != substitutions.end(); ++iter )
+xmlDocPtr XMLSubstitute::load( const ::boost::filesystem::path& xmlFile)
+{
+    xmlDocPtr doc = xmlParseFile(  xmlFile.native_file_string().c_str() );
+
+	if ( ! m_dictionary.empty() ) // dictionary empty => classic xmlParseFile()
+	{
+		xmlNodePtr original = xmlDocGetRootElement(doc);
+		// create the context for xpath
+		xmlXPathContextPtr xpathCtx;
+		xpathCtx = xmlXPathNewContext(doc);
+		assert( xpathCtx );
+
+		xmlChar *xpathExpr= BAD_CAST "//Substitutions";
+		xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
+
+		if(xpathObj->nodesetval->nodeNr > 0)
+		{
+			// substitution node exists perform the translation
+			SLM_ASSERT("XMLSubstitute::load manage only one xmlNode substitution", xpathObj->nodesetval->nodeNr == 1);
+			xmlNodePtr substitutionRules = xpathObj->nodesetval->nodeTab[0];
+			substitute(original, substitutionRules, m_dictionary);
+		}
+	}
+
+    return doc;
+}
+
+//------------------------------------------------------------------------------
+
+void XMLSubstitute::substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< std::string, std::string> &dictionary)
+{
+	std::list< ::fwRuntime::io::Substitute > substitutions = getSubstitutions( substitutionRules );
+
+	for ( std::list< ::fwRuntime::io::Substitute >::iterator iter = substitutions.begin(); iter != substitutions.end(); ++iter )
 	{
 		std::string xpath = iter->xpath;
 		std::string dictEntry = iter->dictEntry;
@@ -37,6 +101,7 @@ void substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< st
 			continue;
 		}
 
+		OSLM_INFO("XML substitution dictEntry [" << dictEntry << "] modified with xpath " << xpath << " with the value : " <<  dictionary[dictEntry] );
 
 		// create the context for xpath
 		xmlXPathContextPtr xpathCtx;
@@ -51,7 +116,6 @@ void substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< st
 		for (int i=NbNodesFound-1; i >= 0; --i )
 		{
 			xmlNodePtr node = xpathObj->nodesetval->nodeTab[i];
-			//std::cout << "SSS " << i << node->name << node->type << std::endl;
 			// substitution
 			if (node->type == XML_ATTRIBUTE_NODE )
 			{
@@ -70,18 +134,16 @@ void substitute( xmlNodePtr original, xmlNodePtr substitutionRules, std::map< st
 	}
 }
 
+//------------------------------------------------------------------------------
 
-
-
-std::list< Substitute > getSubstitutions( xmlNodePtr substitutionRules )
+std::list< ::fwRuntime::io::Substitute > XMLSubstitute::getSubstitutions( xmlNodePtr substitutionRules )
 {
-
 	// create the context for xpath
 	xmlXPathContextPtr xpathCtx;
 	xpathCtx = xmlXPathNewContext(substitutionRules->doc);
 	assert( xpathCtx );
 
-	std::list< Substitute > result;
+	std::list< ::fwRuntime::io::Substitute > result;
 
 	xmlChar *xpathExpr= BAD_CAST "//Substitutions/substitute";
 	xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
@@ -91,7 +153,6 @@ std::list< Substitute > getSubstitutions( xmlNodePtr substitutionRules )
 	assert(xpathObj );
 
 	int NbNodesFound = xpathObj->nodesetval->nodeNr;
-	assert( NbNodesFound == 2 );
 
 	for (int i=0; i < NbNodesFound ; ++i )
 	{
@@ -100,7 +161,6 @@ std::list< Substitute > getSubstitutions( xmlNodePtr substitutionRules )
 		xmlNodePtr element = xmlNextElementSibling(subNode->children);
 		while (element )
 		{
-			//std::cout << "EEE " << i << " " << element->name << std::endl;
 			if ( xmlStrcmp( element->name, BAD_CAST "nodePath")==0 )
 			{
 				s.xpath = (const char *)xmlNodeGetContent( element );
