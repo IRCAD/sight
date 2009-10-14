@@ -41,5 +41,14 @@ Composite::Container const &Composite::getRefMap() const
 	return m_map;
 }
 
+//------------------------------------------------------------------------------
+
+Composite & Composite::operator=( const Composite & _composite )
+{
+   //Copy encoding
+    m_map = _composite.m_map;
+
+    return *this;
+}
 
 }

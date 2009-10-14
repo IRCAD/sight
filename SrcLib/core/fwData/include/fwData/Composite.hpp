@@ -42,6 +42,8 @@ public:
 	/// @brief get the container of ::fwData::Object
 	FWDATA_API Container const &getRefMap() const;
 
+    FWDATA_API Composite & operator=( const Composite & _composite );
+
 protected:
 	/// container of ::fwData::Object
 	Container m_map;
