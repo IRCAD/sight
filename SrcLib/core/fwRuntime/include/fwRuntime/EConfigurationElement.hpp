@@ -23,6 +23,10 @@ namespace fwRuntime
 class FWRUNTIME_CLASS_API EConfigurationElement : public ::fwRuntime::ConfigurationElement
 {
 	public :
+		fwCoreClassDefinitionsWithFactoryMacro( (EConfigurationElement)(ConfigurationElement), 
+												((( const std::string& ))),
+												new EConfigurationElement
+												);
 
 		/**
 		 * @brief 		Constructor.
