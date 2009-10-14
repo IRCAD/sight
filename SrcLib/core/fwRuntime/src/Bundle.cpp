@@ -11,6 +11,8 @@
 #include <exception>
 #include <memory>
 
+#include "fwCore/base.hpp"
+
 #include "fwRuntime/EmptyPlugin.hpp"
 #include "fwRuntime/IExecutable.hpp"
 #include "fwRuntime/ExecutableFactory.hpp"
@@ -459,6 +461,7 @@ void Bundle::startPlugin() throw(RuntimeException)
 		throw RuntimeException( getIdentifier() + ": unable to create a plugin instance." );
 	}
 
+    OSLM_TRACE("Starting " << this->getIdentifier() << "Bundle's plugin.")
 	// Stores and start the plugin.
 	try
 	{
@@ -475,6 +478,8 @@ void Bundle::startPlugin() throw(RuntimeException)
 
 void Bundle::stop() throw(RuntimeException)
 {
+    SLM_ASSERT("m_plugin not an intance.", m_plugin != 0 );
+    OSLM_TRACE("Stopping " << this->getIdentifier() << "Bundle's plugin.")
     try
     {
         m_plugin->stop();
