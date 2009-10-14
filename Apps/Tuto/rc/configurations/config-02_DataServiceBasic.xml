@@ -1,4 +1,4 @@
-﻿<plugin id="TutoConfigurations">
+<plugin id="TutoConfigurations">
 <extension id="tutoDataServiceBasicConfig" implements="::fwData::Image">
 
     <!-- In tutoDataServiceBasic, the central data  object is a ::fwData::Image type.-->
@@ -58,4 +58,12 @@
 
     </object>
 </extension>
+
+<Substitutions>
+  <substitute>
+     <nodePath>//object[@id='tutoDataServiceBasicImage']/service[@uid='myReaderPathFile']/filename/@id</nodePath>
+     <replace dictEntry="imageFile" type="path" status="required" />
+  </substitute>
+</Substitutions>
+
 </plugin>

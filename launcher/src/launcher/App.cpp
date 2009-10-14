@@ -221,7 +221,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser & parser)
 	parser.Found("s", &value);
 	if(!value.IsEmpty())
 	{
-	    std::string str = wxConvertWX2MB(value);
+	    std::string str = std::string( value.c_str()) ;
 	    typedef ::boost::tokenizer< ::boost::char_separator<char> >   tokenizer;
 	    ::boost::char_separator<char> sep("@");
 	    tokenizer tokens(str, sep);
