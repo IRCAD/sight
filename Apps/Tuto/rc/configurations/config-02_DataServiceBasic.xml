@@ -59,11 +59,4 @@
     </object>
 </extension>
 
-<Substitutions>
-  <substitute>
-     <nodePath>//object[@id='tutoDataServiceBasicImage']/service[@uid='myReaderPathFile']/filename/@id</nodePath>
-     <replace dictEntry="imageFile" type="path" status="required" />
-  </substitute>
-</Substitutions>
-
 </plugin>
