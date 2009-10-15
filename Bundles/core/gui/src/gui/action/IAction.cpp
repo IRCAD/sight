@@ -76,6 +76,11 @@ void IAction::configuring() throw( ::fwTools::Failed )
 		std::string style = m_configuration->getExistingAttributeValue("style") ;
 		OSLM_TRACE("style : " << style ) ;
 		m_isCheckable = (style == "check");
+		if (m_isCheckable && m_configuration->hasAttribute("state") )
+		{
+			std::string state = m_configuration->getExistingAttributeValue("state");
+			m_isCheck = (state == "checked");
+		}
 	}
 	if( m_configuration->hasAttribute("enable") )
 	{
@@ -136,6 +141,8 @@ void IAction::starting() throw(::fwTools::Failed)
 	menuFile->FindItem( m_actionIdInMenu )->Enable( m_enable);
 
 	::gui::Manager::registerAction( ::boost::dynamic_pointer_cast< ::gui::action::IAction>( shared_from_this() )) ;
+
+	setCheck(m_isCheck);
 }
 
 //-----------------------------------------------------------------------------
