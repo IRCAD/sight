@@ -20,8 +20,8 @@ namespace widgets
 
 //------------------------------------------------------------------------------
 
-HTMLPanel::HTMLPanel(wxWindow *parent, const std::string& url, const wxSize size) :
-	wxPanel(parent, wxID_ANY, wxDefaultPosition, size), m_url(url)
+HTMLPanel::HTMLPanel(wxWindow *parent, const std::string& _url, const wxSize size) :
+	wxPanel(parent, wxID_ANY, wxDefaultPosition, size)
 {
 #ifdef _WIN32
 	//TODO fixme explicit reload HTML parser for win
@@ -30,7 +30,7 @@ HTMLPanel::HTMLPanel(wxWindow *parent, const std::string& url, const wxSize size
 	wxFileSystem::AddHandler(new wxInternetFSHandler);
 
 	// File
-	::boost::filesystem::path htmlPath (m_url);
+	::boost::filesystem::path htmlPath (_url);
 	wxString file ( wxConvertMB2WX(htmlPath.string().c_str() ) );
 
 	// wxHtmlWindow
@@ -42,6 +42,23 @@ HTMLPanel::HTMLPanel(wxWindow *parent, const std::string& url, const wxSize size
 
 }
 
+HTMLPanel::HTMLPanel(wxWindow *parent, const wxString& _html, const wxSize size) :
+    wxPanel(parent, wxID_ANY, wxDefaultPosition, size)
+{
+#ifdef _WIN32
+    //TODO fixme explicit reload HTML parser for win
+    wxInitialize();
+#endif
+    wxFileSystem::AddHandler(new wxInternetFSHandler);
+
+    // wxHtmlWindow
+    m_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, size, wxHW_SCROLLBAR_NEVER);
+    m_html->SetBorders(10);
+    m_html->SetPage(_html);
+    m_html->SetSize(m_html->GetInternalRepresentation()->GetWidth(),
+                m_html->GetInternalRepresentation()->GetHeight());
+
+}
 
 void HTMLPanel::back()
 {

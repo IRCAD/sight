@@ -32,6 +32,7 @@ class FWWX_CLASS_API HTMLPanel : public wxPanel
 public:
 
 	FWWX_API HTMLPanel(wxWindow *parent, const std::string& url, const wxSize size = wxDefaultSize);
+	FWWX_API HTMLPanel(wxWindow *parent, const wxString& html, const wxSize size = wxDefaultSize);
 
 
 	FWWX_API void back();
@@ -43,7 +44,6 @@ public:
 	FWWX_API void OnHtmlCellClicked(wxHtmlCellEvent &event);
 private:
 	wxHtmlWindow * m_html;
-	std::string m_url;
 
     DECLARE_EVENT_TABLE()
 };
