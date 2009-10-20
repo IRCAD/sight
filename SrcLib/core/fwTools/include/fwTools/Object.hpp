@@ -251,6 +251,8 @@ public:
     ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
     ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
 
+    Object &operator=(const Object &_obj);
+
 protected :
 
 	ChildContainer m_children;
