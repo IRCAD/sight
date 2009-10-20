@@ -182,6 +182,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 		bool extensionSelectionIsCanceled = false;
 
 		// Selection of extension when availableExtensions.size() > 1
+		bool extensionIdFound = false;
 		if ( availableExtensionsSelector.size() > 1 )
 		{
 			::fwWX::Selector selector( wxTheApp->GetTopWindow() , _("Reader to use") , availableExtensionsSelector );
@@ -198,16 +199,14 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 				for(	std::vector< std::pair < std::string, std::string > >::iterator itExt = availableExtensionsMap.begin();
 						itExt < availableExtensionsMap.end();
 						itExt++ )
-				{
-					if (itExt->second == selector.getSelectedString())
 					{
-						extensionId = itExt->first ;
+						if (itExt->second == selector.getSelectedString())
+						{
+							extensionId = itExt->first ;
+							extensionIdFound = true;
+						}
 					}
-					else
-					{
-						OSLM_WARN("extensionId not found");
-					}
-				}
+				OSLM_ASSERT("Problem to find the selected string.", extensionIdFound );
 			}
 			else
 			{
