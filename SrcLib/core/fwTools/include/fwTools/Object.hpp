@@ -223,35 +223,35 @@ public:
 
 	//@}
 
-    void modified()
+	FWTOOLS_API void modified()
     {
         m_logicStamp->modified();
     };
 
-    void timeModified()
+    FWTOOLS_API void timeModified()
     {
         m_timeStamp->modified();
     };
 
-    void setLifePeriod(::fwCore::TimeStamp::TimeStampType p)
+    FWTOOLS_API void setLifePeriod(::fwCore::TimeStamp::TimeStampType p)
     {
         m_timeStamp->setLifePeriod(p);
     };
 
-    ::fwCore::TimeStamp::TimeStampType getLifePeriod()
+    FWTOOLS_API ::fwCore::TimeStamp::TimeStampType getLifePeriod()
     {
         return m_timeStamp->getLifePeriod();
     };
 
-    bool periodExpired()
+    FWTOOLS_API bool periodExpired()
     {
         return m_timeStamp->periodExpired();
     };
 
-    ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
-    ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
+    FWTOOLS_API ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
+    FWTOOLS_API ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
 
-    Object &operator=(const Object &_obj);
+    FWTOOLS_API Object &operator=(const Object &_obj);
 
 protected :
 
