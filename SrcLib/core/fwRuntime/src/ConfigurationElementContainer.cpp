@@ -70,5 +70,32 @@ const ::boost::shared_ptr<ConfigurationElement> ConfigurationElementContainer::f
 	return ( found == m_elements.end() ) ? ::boost::shared_ptr< ConfigurationElement >() : *found;
 }
 
+//-----------------------------------------------------------------------------
+
+ConfigurationElementContainer ConfigurationElementContainer::findAllConfigurationElement( const std::string & _name ) const
+{
+	ConfigurationElementContainer container;
+
+	for( 	Container::const_iterator itCfgElem = m_elements.begin();
+			itCfgElem != m_elements.begin();
+			++itCfgElem )
+	{
+		if ( (*itCfgElem)->getName() == _name )
+		{
+			container.addConfigurationElement( (*itCfgElem) );
+		}
+	}
+
+	return container;
+}
+
+//-----------------------------------------------------------------------------
+
+unsigned int ConfigurationElementContainer::size() const
+{
+	return m_elements.size();
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwRuntime
