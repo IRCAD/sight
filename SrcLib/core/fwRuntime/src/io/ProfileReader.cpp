@@ -84,17 +84,25 @@ std::string	ProfileReader::DIS_EXT		("disable-extension");
 	{
 		// Get the root node.
 		xmlNodePtr rootNode = xmlDocGetRootElement(document);
-		
-		std::string sName;
-		// if
-		if(xmlStrcmp(rootNode->properties->name, (const xmlChar*) NAME.c_str()) == 0)
-		{
-			sName = (const char*) rootNode->properties->children->content;
-		}
+
+        char* pName    = (char *) xmlGetProp(rootNode, (const xmlChar*) NAME.c_str());
+        char* pVersion = (char *) xmlGetProp(rootNode, (const xmlChar*) VERSION.c_str());
+
+        SLM_ASSERT("Application profile MUST have a name attribute"   , pName);
+        SLM_ASSERT("Application profile MUST have a version attribute", pVersion);
+
+		std::string sName( pName );
+		std::string sVersion( pVersion );
+
+
+        free(pName);
+        free(pVersion);
 		
 		// Creates and process the profile element.
-		 ::boost::shared_ptr< ::fwRuntime::profile::Profile> profile = processProfile(rootNode);
+		 ::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
+
 		profile->setName(sName);
+		profile->setVersion(sVersion);
 
 		// Job's done!
 		xmlFreeDoc(document);
