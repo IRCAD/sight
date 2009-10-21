@@ -1,4 +1,4 @@
-﻿<profile name="tutoDataServiceBasic">
+﻿<profile name="tutoDataServiceBasic" version="0.1">
     <!-- List of the basic bundles having to be loaded to launch the application. -->
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
