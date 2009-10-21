@@ -42,7 +42,6 @@ struct Stopper;
  * @author 	IRCAD (Research and Development Team).
  */
 struct Profile : public ::fwCore::BaseObject
-
 {
 
 	fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject::Baseclass), (()), new Profile) ;
@@ -118,12 +117,12 @@ private:
  *
  * @param       prof profile
  */
-void setCurrentProfile(Profile::sptr prof);
+FWRUNTIME_API void setCurrentProfile(Profile::sptr prof);
 
 /**
  * @brief       Get current profile.
  */
-Profile::sptr getCurrentProfile();
+FWRUNTIME_API Profile::sptr getCurrentProfile();
 
 } // namespace profile
 

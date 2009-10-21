@@ -39,13 +39,12 @@ public:
        );
 
 
+	typedef T ValueType;
 	/**
 	 * @brief Constructor.
-	 * @param[in] name object name (not use).
 	 * @param[in] value The initial value.
 	 */
-	FWDATA_API GenericField( const std::string& name,
-	                       const T value = static_cast< T >( 0 ) ) throw()
+	FWDATA_API GenericField( const T value = T( ) ) throw()
 	:	m_value( value )
 	{}
 

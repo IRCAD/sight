@@ -6,27 +6,25 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include "fwData/GenericField.hpp"
 #include "fwData/String.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::String, ::fwData::String );
+
 namespace fwData
 {
-String::String(std::string _value) : m_value( _value )
-{
-}
 
-String::~String()
-{
-}
+//------------------------------------------------------------------------------
 
-std::string & String::value()
-{
-	return m_value;
-}
+String::String( const std::string value ) throw()
+:   GenericField< std::string >( value )
+{}
 
-const std::string & String::value() const
-{
-	return m_value;
-}
+//------------------------------------------------------------------------------
+
+String::~String() throw()
+{}
+
+//------------------------------------------------------------------------------
 
 } // namespace fwData

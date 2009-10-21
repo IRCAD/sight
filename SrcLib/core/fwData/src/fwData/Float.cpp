@@ -4,13 +4,10 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
-
 #include <fwTools/ClassRegistrar.hpp>
 
 #include "fwData/Object.hpp"
 #include "fwData/GenericField.hpp"
-
 #include "fwData/Float.hpp"
 
 
@@ -21,7 +18,7 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Float::Float( const float value ) throw()
-:	GenericField< float >( std::string( "Float" ), value )
+:	GenericField< float >( value )
 {}
 
 //------------------------------------------------------------------------------
