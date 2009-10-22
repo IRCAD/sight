@@ -1,0 +1,65 @@
+<plugin id="FilterConfiguration">
+    <extension id="FilterConfig" implements="::fwData::Composite">
+    <!-- Root object -->
+    <object id="FilterConfig" type="::fwData::Composite">
+        <!-- Windows & Main Menu -->
+        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+            <name>Filter</name>
+            <icon>Bundles/Tuto_0-1/tuto.ico</icon>
+            <minSize width="720" height="600"/>
+            <views>
+                <view guiContainerId="900"/>
+                <view guiContainerId="901" minWidth="500" minHeight="100"/>
+            </views>
+            <menus>
+                <menu uid="menuFile"/>
+                <menu uid="menuFilter"/>
+            </menus>
+        </service>
+        <!-- Menus -->
+        <service name="File" uid="menuFile" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
+            <action uid="actionOpenImageFile"/>
+            <separator/>
+            <action uid="actionQuit"/>
+        </service>         
+        <service name="Filter" uid="menuFilter" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
+            <action uid="actionImageFilter"/>
+        </service>
+        <!-- Actions on Menus -->         
+        <service uid="actionQuit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+        <service uid="actionOpenImageFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Open image file" autoComChannel="no" >
+            <start uid="readerPathImageFile"/>
+        </service>
+        <service uid="actionImageFilter" type="::gui::action::IAction" implementation="::opImageFilter::action::imageFilter" name="Compute Image Filter" autoComChannel="no" >
+            <imageIn  uid="myImage1"/>
+            <imageOut uid="myImage2"/>
+        </service>
+        <!-- Services on objects -->
+        <!-- 1st Object of the composite -->
+        <object id="myImage1" uid="myImage1" type="::fwData::Image">
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoComChannel="yes" >
+                <win guiContainerId="900"/>
+            </service>
+            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
+                <win guiContainerId="900"/>
+                <type mode="reader"/>
+            </service>
+        </object>
+        <!-- 2nd Object of the composite -->       
+        <object id="myImage2" uid="myImage2" type="::fwData::Image">
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage2" autoComChannel="yes" >
+                <win guiContainerId="901"/>
+            </service>
+        </object> 
+    
+    <!-- Starting order of services -->
+    <start type="::gui::aspect::IAspect" />
+    <start uid="RenderingImage1" />
+    <start uid="RenderingImage2" />
+    
+    <stop uid="RenderingImage1" />
+    <stop uid="RenderingImage2" />
+    <stop type="::gui::aspect::IAspect" />
+  </object>
+  </extension>
+</plugin>    
