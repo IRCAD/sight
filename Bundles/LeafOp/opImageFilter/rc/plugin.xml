@@ -1,0 +1,13 @@
+<plugin id="opImageFilter" class="::opImageFilter::Plugin">
+	
+	<library name="opImageFilter" />
+
+	<requirement id="dataReg" />
+	<requirement id="gui" />
+
+	<point id="::opImageFilter::action::imageFilter" >
+		<implements>::gui::action::IAction</implements>
+		<implements>::fwTools::Object</implements>
+	</point>
+	
+</plugin>
