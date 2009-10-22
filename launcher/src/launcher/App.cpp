@@ -174,6 +174,7 @@ bool App::OnInit()
 			{
 				::fwRuntime::addBundles("./Bundles");
 				m_profile = ::fwRuntime::io::ProfileReader::createProfile(m_profilePath);
+                ::fwRuntime::profile::setCurrentProfile(m_profile);
 #ifndef TDVPM_COMPLIANT
 				m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_FRENCH, _T("utf-8"));
 				//m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_ENGLISH, _T("utf-8"));
@@ -221,7 +222,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser & parser)
 	parser.Found("s", &value);
 	if(!value.IsEmpty())
 	{
-	    std::string str = std::string( value.c_str()) ;
+	    std::string str ( wxConvertWX2MB(value) );
 	    typedef ::boost::tokenizer< ::boost::char_separator<char> >   tokenizer;
 	    ::boost::char_separator<char> sep("@");
 	    tokenizer tokens(str, sep);

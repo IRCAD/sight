@@ -42,7 +42,6 @@ struct Stopper;
  * @author 	IRCAD (Research and Development Team).
  */
 struct Profile : public ::fwCore::BaseObject
-
 {
 
 	fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject::Baseclass), (()), new Profile) ;
@@ -85,6 +84,19 @@ struct Profile : public ::fwCore::BaseObject
 	FWRUNTIME_API void setName(std::string _sName) { m_sName = _sName; }
 
 
+	/**
+	 * @brief	Return profile version.
+	 */
+	FWRUNTIME_API std::string getVersion() { return m_sVersion; }
+
+	/**
+	 * @brief		Set profile version.
+	 *
+	 * @param[in]	_sVersion	profile version
+	 */
+	FWRUNTIME_API void setVersion(std::string _sVersion) { m_sVersion = _sVersion; }
+
+
 private:
 
 	typedef std::vector< ::boost::shared_ptr< Activater > >	ActivaterContainer;
@@ -95,14 +107,27 @@ private:
 	StarterContainer	m_starters;		///< all managed starters
 	StopperContainer	m_stoppers;		///< all managed stoppers
 	std::string			m_sName;		///< name profile
+	std::string			m_sVersion;		///< profile app version
 
 };
 
 
+/**
+ * @brief       Set current profile.
+ *
+ * @param       prof profile
+ */
+FWRUNTIME_API void setCurrentProfile(Profile::sptr prof);
+
+/**
+ * @brief       Get current profile.
+ */
+FWRUNTIME_API Profile::sptr getCurrentProfile();
 
 } // namespace profile
 
 } // namespace fwRuntime
+
 
 
 

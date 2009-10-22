@@ -35,6 +35,22 @@ namespace
 
 }
 
+// =========================================================
+Profile::wptr current_profile;
+
+void setCurrentProfile(Profile::sptr prof)
+{
+    current_profile = prof;
+}
+
+Profile::sptr getCurrentProfile()
+{
+    return current_profile.lock();
+}
+
+// =========================================================
+
+
 
 
 Profile::Profile()

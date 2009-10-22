@@ -28,6 +28,7 @@
 #include <fwTools/dateAndTime.hpp>
 #include "wx/dataview.h"
 #include "fwWX/PatientDBTreeModel.hpp"
+#include "fwWX/convert.hpp"
 
 static const char * eye_xpm[] = {
 "16 16 2 1",
@@ -67,7 +68,8 @@ wxVariant fwPatientNode::getCell(unsigned int _col)
 	wxVariant res;
 	switch (_col)
 	{
-		case 0 : res << wxDataViewIconText(wxConvertMB2WX( (m_patient.lock()->getName() + " " + m_patient.lock()->getFirstname()).c_str())); break;
+//		case 0 : res << wxDataViewIconText(wxConvertMB2WX( (m_patient.lock()->getName() + " " + m_patient.lock()->getFirstname()).c_str())); break;
+		case 0 : res << wxDataViewIconText(::fwWX::std2wx( (m_patient.lock()->getName() + " " + m_patient.lock()->getFirstname()).c_str())); break;
 //		case 0 : res = wxString(wxConvertMB2WX(m_patient->getName().c_str())); break;
 		case 3 : res = wxString(""); break;
 		default : res = wxString("");
@@ -112,11 +114,13 @@ wxVariant fwAcqNode::getCell(unsigned int _col)
 		case 0 :
 			if( this->isSelected() )
 			{
-				res << wxDataViewIconText( wxString(wxConvertMB2WX(zone.c_str())), wxIcon( eye_xpm ));
+//				res << wxDataViewIconText( wxString(wxConvertMB2WX(zone.c_str())), wxIcon( eye_xpm ));
+				res << wxDataViewIconText(::fwWX::std2wx(zone.c_str()), wxIcon( eye_xpm ));
 			}
 			else
 			{
-				res << wxDataViewIconText( wxString(wxConvertMB2WX(zone.c_str())), wxIcon( ));
+//				res << wxDataViewIconText( wxString(wxConvertMB2WX(zone.c_str())), wxIcon( ));
+				res << wxDataViewIconText( ::fwWX::std2wx(zone.c_str()), wxIcon( ));
 			}
 			break;
 		case 1 : res = wxString(wxConvertMB2WX(getStudy().lock()->getModality().c_str()));break;

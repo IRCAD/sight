@@ -64,6 +64,7 @@ const std::string & Field::label() const
 	return m_label;
 }
 
+//------------------------------------------------------------------------------
 
 Object::Object() :
     m_timeStamp ( ::fwCore::TimeStamp::New()  ),
@@ -74,7 +75,7 @@ Object::Object() :
 	assert( m_deleter.get() );
 }
 
-
+//------------------------------------------------------------------------------
 
 Object::~Object()
 {
@@ -82,10 +83,25 @@ Object::~Object()
 	m_deleter->Delete( this ) ;
 }
 
+//------------------------------------------------------------------------------
+
+Object &Object::operator=(const Object &_obj)
+{
+	m_children =_obj.m_children;
+	m_timeStamp =_obj.m_timeStamp;
+	m_logicStamp =_obj.m_logicStamp;
+	return (*this);
+}
+
+//------------------------------------------------------------------------------
+
 void Object::setDeleter( ::fwTools::IDeleter::sptr _deleter )
 {
 	m_deleter = _deleter ;
 }
+
+//------------------------------------------------------------------------------
+
 ::fwTools::IDeleter::sptr Object::getDeleter()
 {
 	return m_deleter ;
@@ -93,13 +109,12 @@ void Object::setDeleter( ::fwTools::IDeleter::sptr _deleter )
 
 //------------------------------------------------------------------------------
 
-
 std::string Object::className() const
 {
 	return this->getClassname();
 }
 
-
+//------------------------------------------------------------------------------
 
 std::string Object::getUUID() const
 {
@@ -110,13 +125,14 @@ std::string Object::getUUID() const
 	return m_cachedSimpleUuid;
 }
 
-
+//------------------------------------------------------------------------------
 
 bool Object::hasUUID() const
 {
 	return !m_cachedSimpleUuid.empty() || UUID::supervise( shared_from_this() );
 }
 
+//------------------------------------------------------------------------------
 
 void Object::setUUID(const std::string &newID)
 {

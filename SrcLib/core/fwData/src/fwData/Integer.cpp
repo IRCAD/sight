@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
-
 #include <fwTools/ClassRegistrar.hpp>
 
 #include "fwData/Object.hpp"
@@ -20,7 +18,7 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Integer::Integer( const int value ) throw()
-:	GenericField< int >( std::string( "Integer" ), value )
+:	GenericField< int >( value )
 {}
 
 //------------------------------------------------------------------------------

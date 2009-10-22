@@ -9,6 +9,7 @@
 
 
 #include "fwData/Object.hpp"
+#include "fwData/GenericField.hpp"
 
 namespace fwData
 {
@@ -21,30 +22,21 @@ namespace fwData
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
  */
-class FWDATA_CLASS_API String : public Object
+class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object::Baseclass), ( ((std::string)("")) ), new String) ;
-
+	fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object::Baseclass), ( ((const std::string)("")) ), new String) ;
 	/**
 	 * @brief Constructor.
 	 * @param[in] value The initial value.
 	 */
-	FWDATA_API String(std::string _value="" );
+	FWDATA_API String(const std::string _value="" ) throw();
 
 	/**
 	 * @brief Destructor.
 	 */
-	FWDATA_API virtual ~String();
+	FWDATA_API virtual ~String() throw();
 
-	/// Value accessor
-	FWDATA_API std::string & value();
-	/// Value accessor
-	FWDATA_API const std::string & value() const;
-
-protected :
-
-	std::string m_value;
 };
 
 }

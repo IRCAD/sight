@@ -9,7 +9,7 @@
 
 //------------------------------------------------------------------------------
 
-#ifdef _WIN32 && _DEBUG
+#if defined(_WIN32) && defined(_DEBUG)
 #if _MSC_VER >= 1400 // visual studio >= 2005
 
 // add a dependency on the retail crt even in debug

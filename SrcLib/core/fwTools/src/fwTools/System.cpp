@@ -29,6 +29,7 @@
 
 #include "fwTools/System.hpp"
 
+#include <boost/functional/hash.hpp>
 
 namespace fwTools
 {
@@ -85,9 +86,14 @@ std::string getPersonalizedTmp()
 #endif
 
 	assert(userEnv);
-	std::string path = "fwDumpFolder-" + std::string(userEnv);
 
-	return path;
+	boost::hash<std::string> string_hash;
+	std::size_t hashValue = string_hash(userEnv);
+
+	std::ostringstream path;
+	path << "fwDumpFolder-" << hashValue;
+//	std::string path = "fwDumpFolder-" + std::string(userEnv);
+	return path.str();
 }
 
 

@@ -32,6 +32,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwWX/PatientEditor.hpp"
+#include "fwWX/convert.hpp"
 
 namespace fwWX
 {
@@ -480,10 +481,10 @@ void PatientEditorDialog::importPatientData()
 
 	wxString value;
 
-	value = stringToWxString(m_pPatient->getName());
+	value = std2wx(m_pPatient->getName());
 	m_Name->SetValue(value);
 
-	value = stringToWxString(m_pPatient->getFirstname());
+	value = std2wx(m_pPatient->getFirstname());
 	m_Firstname->SetValue(value);
 
 	::boost::gregorian::date birthdateDate = m_pPatient->getBirthdate().date();
@@ -512,7 +513,7 @@ void PatientEditorDialog::importPatientData()
  	}
 
 
-	value = stringToWxString(m_pPatient->getIDDicom());
+	value = std2wx(m_pPatient->getIDDicom());
 	m_IDDicom->SetValue(value);
 
 	value = intToWxString(m_pPatient->getDbID());
@@ -526,13 +527,13 @@ void PatientEditorDialog::importStudyData()
 
 	wxString value;
 
-	value = stringToWxString(m_pStudy->getHospital());
+	value = std2wx(m_pStudy->getHospital());
 	m_Hospital->SetValue(value);
 
 
 	//m_Modality->setStringSelection(value);
 	//m_Modality->SetValue(value);
-	value = stringToWxString(m_pStudy->getModality());
+	value = std2wx(m_pStudy->getModality());
 	if( m_Modality->FindString(value)  >= 0 )
 	{
 		m_Modality->SetStringSelection(value);
@@ -558,11 +559,11 @@ void PatientEditorDialog::importStudyData()
 		std::string key2 = regex_replace(zone, e, formatKey2, boost::match_default | boost::format_sed);
 		std::string key3 = regex_replace(zone, e, formatKey3, boost::match_default | boost::format_sed);
 
-		value = stringToWxString(key1);
+		value = std2wx(key1);
 		m_AcquisitionZone_zone->SetStringSelection(value);
-		value = stringToWxString(key2);
+		value = std2wx(key2);
 		m_AcquisitionZone_organ->SetStringSelection(value);
-		value = stringToWxString(key3);
+		value = std2wx(key3);
 		m_AcquisitionZone_injection->SetStringSelection(value);
 	}
 	else
@@ -572,13 +573,13 @@ void PatientEditorDialog::importStudyData()
 #endif
 
 
-	value = stringToWxString(m_pStudy->getUID());
+	value = std2wx(m_pStudy->getUID());
 	m_UID->SetValue(value);
 
 	value = intToWxString(m_pStudy->getDbID());
 	m_DbIDS->SetValue(value);
 
-	value = stringToWxString(m_pStudy->getRISId());
+	value = std2wx(m_pStudy->getRISId());
 	m_RISID->SetValue(value);
 }
 
@@ -602,10 +603,10 @@ void PatientEditorDialog::importAcquisitionData()
 	//value = intToWxString(m_pAcquisition->getIndex());
 	//m_Index->SetValue(value);
 
-	value = stringToWxString(m_pAcquisition->getImageType());
+	value = std2wx(m_pAcquisition->getImageType());
 	m_ImageType->SetValue(value);
 
-	value = stringToWxString(m_pAcquisition->getImageFormat());
+	value = std2wx(m_pAcquisition->getImageFormat());
 	m_ImageFormat->SetValue(value);
 
 	//value = intToWxString(m_pAcquisition->getWidth());
@@ -653,10 +654,12 @@ void PatientEditorDialog::exportPatientData()
 	// Parameter
 	std::string value;
 
-	value = wxStringToString(m_Name->GetValue());
+	value = wx2std(m_Name->GetValue());
+//	value = wxStringToString(m_Name->GetValue());
 	m_pPatient->setCRefName(value);
 
-	value = wxStringToString(m_Firstname->GetValue());
+	value = wx2std(m_Firstname->GetValue());
+//	value = wxStringToString(m_Firstname->GetValue());
 	m_pPatient->setCRefFirstname(value);
 
 	wxDateTime date = m_Birthdate->GetValue();
@@ -683,34 +686,34 @@ void PatientEditorDialog::exportStudyData()
 {
 	std::string value;
 
-	value = wxStringToString(m_Hospital->GetValue());
+	value = wx2std(m_Hospital->GetValue());
 	OSLM_DEBUG("m_Hospital export : " << value);
 	m_pStudy->setCRefHospital(value);
 
-	//value = wxStringToString(m_Modality->GetValue());
-	value = wxStringToString(m_Modality->GetStringSelection());
+	value = wx2std(m_Modality->GetStringSelection());
 	OSLM_DEBUG("Modality export : " << value);
 	m_pStudy->setCRefModality(value);
 
 //	value = wxStringToString(m_AcquisitionZone->GetValue());
 //	m_pStudy->setAcquisitionZone(value);
 	std::string zone = "";
-	value = wxStringToString(m_AcquisitionZone_zone->GetStringSelection());
+	value = wx2std(m_AcquisitionZone_zone->GetStringSelection());
 	zone += value + "_";
-	value = wxStringToString(m_AcquisitionZone_organ->GetStringSelection());
+	value = wx2std(m_AcquisitionZone_organ->GetStringSelection());
 	zone += value + "_";
-	value = wxStringToString(m_AcquisitionZone_injection->GetStringSelection());
+	value = wx2std(m_AcquisitionZone_injection->GetStringSelection());
 	zone += value;
 	OSLM_DEBUG("AcquisitionZone export : " << zone);
 	m_pStudy->setCRefAcquisitionZone(zone);
 
-	value = wxStringToString(m_UID->GetValue());
+	value = wx2std(m_UID->GetValue());
+
 	m_pStudy->setCRefUID(value);
 
 	//value = wxStringToString(m_DbIDS->GetValue());
 	//m_pPatient->setDbIDS(boost::lexical_cast< int >(value));
 
-	value = wxStringToString(m_RISID->GetValue());
+	value = wx2std(m_RISID->GetValue());
 	m_pStudy->setCRefRISId(value);
 }
 
@@ -727,7 +730,8 @@ void PatientEditorDialog::exportAcquisitionData()
 
 	wxDateTime date = m_Date->GetValue();
 	wxString dateStr = date.Format(_("%Y%m%d"));
-	value = (const char*)dateStr.mb_str(wxConvUTF8);
+//	value = (const char*)dateStr.mb_str(wxConvUTF8);
+	value = wx2std(dateStr);
 	::boost::gregorian::date birthdate ( ::boost::gregorian::from_undelimited_string( value ) );
 	::boost::posix_time::time_duration td;
 	m_pAcquisition->setCRefCreationDate( ::boost::posix_time::ptime( birthdate, td ) );
@@ -752,24 +756,28 @@ void PatientEditorDialog::onOk( wxCommandEvent & event )
 wxString PatientEditorDialog::intToWxString( int value )
 {
 	std::string val = boost::lexical_cast< std::string >(value);
-	return stringToWxString(val);
+	return std2wx(val);
 }
 
 //------------------------------------------------------------------------------
 
 wxString PatientEditorDialog::stringToWxString( const std::string & value )
 {
-	wxCSConv cust(_T("C"));
-	return wxString( value.c_str() , cust );
-	//return wxString( value.c_str() , wxConvLocal );
+//	wxCSConv cust(_T("C"));
+//	return wxString( value.c_str() , cust );
+	return std2wx(value);
+	//wxString( value.c_str() , wxConvUTF8 );
 }
 
 //------------------------------------------------------------------------------
 
 std::string PatientEditorDialog::wxStringToString( const wxString & value )
 {
-	wxCSConv cust(_T("C"));
-	return (const char*)value.mb_str(cust);
+//	wxCSConv cust(_T("C"));
+//	return (const char*)value.mb_str(cust);
+//	return (const char*)value.mb_str(wxConvUTF8);
+	return wx2std(value);
+	//(const char*)value.mb_str();
 }
 
 //------------------------------------------------------------------------------
@@ -777,7 +785,7 @@ std::string PatientEditorDialog::wxStringToString( const wxString & value )
 wxString PatientEditorDialog::boolToWxString( bool value )
 {
 	std::string val = boost::lexical_cast< std::string >(value);
-	return stringToWxString(val);
+	return std2wx(val);
 }
 
 //------------------------------------------------------------------------------

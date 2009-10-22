@@ -1,4 +1,4 @@
-﻿<profile name="tutoComChannel">
+﻿<profile name="tutoComChannel" version="0.1">
 
     <!-- Basic bundles list. -->
     <activate id="dataReg" version="0-1" />

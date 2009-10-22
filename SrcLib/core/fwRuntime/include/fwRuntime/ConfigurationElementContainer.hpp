@@ -66,7 +66,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 	FWRUNTIME_API Iterator end();
 
 	/**
-	 * @brief		Retrieves the configuration corresponding to the specified name.
+	 * @brief		Retrieves the first configuration corresponding to the specified name.
 	 *
 	 * @param[in]	name	a string containing a configuration element name
 	 *
@@ -74,6 +74,21 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 	 */
 	FWRUNTIME_API const ::boost::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & name ) const;
 
+
+	/**
+	 * @brief		Retrieves the configurations corresponding to the specified name.
+	 *
+	 * @param[in]	name	a string containing a configuration element name
+	 *
+	 * @return		a configuration element container that contains configuration element instances
+	 */
+	FWRUNTIME_API ConfigurationElementContainer findAllConfigurationElement( const std::string & name ) const;
+
+	/**
+	 * @brief		Return the number of configurations
+	 * @return		Return the number of configurations
+	 */
+	FWRUNTIME_API unsigned int size() const;
 
 protected:
 

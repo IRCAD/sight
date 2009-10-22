@@ -77,61 +77,64 @@ wxThread::ExitCode PulseProgressTowx::LocalThread::Entry()
 
 PulseProgressTowx::PulseProgressTowx(std::string title,  Stuff &stuff , std::string message, PulseProgressTowx::MilliSecond msecond) throw(::fwTools::Failed)
 {
+
+
+#ifdef PULSEPROGRESS_USE_THREAD
+	this->Bind( wxEVT_LOCALTHREAD_COMPLETED , &PulseProgressTowx::onComplete , this);
+
+	m_wxpd = new wxProgressDialog(
+									wxConvertMB2WX(title.c_str()),
+									"                                             ", // sinon pas de place pour ecrire definit espace initial
+									100 /*percent*/,
+									NULL, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_SMOOTH);
+
+
+	m_wxpd->Pulse( message.c_str() );
+	m_wxpd->Fit();
+	m_wxpd->Show();
+	m_wxpd->Update();
+    m_thread = new LocalThread( stuff);
+
+    if ( m_thread->Create() != wxTHREAD_NO_ERROR )
+    {
+        wxLogError("Can't create the thread!");
+        delete m_thread;
+        m_thread = NULL;
+    }
+    else
+    {
+        if (m_thread->Run() != wxTHREAD_NO_ERROR )
+        {
+            wxLogError("Can't create the thread!");
+            delete m_thread;
+            m_thread = NULL;
+        }
+    }
+
+    int i=0;
+    //  m_isFinished while( m_thread->IsRunning() ) pas recommand� � g�rer par event !!! recommandation wx // marche car joignable
+    while( m_thread->isFinished()== false ) // moins couteux que wxThread::isRunning
+    {
+    	OSLM_TRACE("PulseProgressTowx  in Loop m_thread->isRunning" << m_thread->IsRunning() << " " << ++i );
+    	m_wxpd->Pulse();
+    	m_wxpd->Update();
+    	wxYield();
+    	wxMilliSleep(msecond);
+    }
+    OSLM_TRACE("PulseProgressTowx AFTER Loop m_thread->isRunning " << m_thread->IsRunning() << " " << ++i );
+
+    if ( m_thread->getErrorMessage().size() )
+    {
+    	m_wxpd->Update(100,"Failed !!!");
+
+    	OSLM_WARN( "PulseProgressTowx::m_stuff an exception has occured " << m_thread->getErrorMessage() );
+    	throw ::fwTools::Failed( m_thread->getErrorMessage() );
+    }
+    m_wxpd->Update(100,"Done");
+#else
 	m_thread = NULL;
 	stuff();
-
-//	this->Bind( wxEVT_LOCALTHREAD_COMPLETED , &PulseProgressTowx::onComplete , this);
-//
-//	m_wxpd = new wxProgressDialog(
-//									wxConvertMB2WX(title.c_str()),
-//									"                                             ", // sinon pas de place pour ecrire definit espace initial
-//									100 /*percent*/,
-//									NULL, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_SMOOTH);
-//
-//
-//	m_wxpd->Pulse( message.c_str() );
-//	m_wxpd->Fit();
-//	m_wxpd->Show();
-//	m_wxpd->Update();
-//    m_thread = new LocalThread( stuff);
-//
-//    if ( m_thread->Create() != wxTHREAD_NO_ERROR )
-//    {
-//        wxLogError("Can't create the thread!");
-//        delete m_thread;
-//        m_thread = NULL;
-//    }
-//    else
-//    {
-//        if (m_thread->Run() != wxTHREAD_NO_ERROR )
-//        {
-//            wxLogError("Can't create the thread!");
-//            delete m_thread;
-//            m_thread = NULL;
-//        }
-//    }
-//
-//    int i=0;
-//    //  m_isFinished while( m_thread->IsRunning() ) pas recommand� � g�rer par event !!! recommandation wx // marche car joignable
-//    while( m_thread->isFinished()== false ) // moins couteux que wxThread::isRunning
-//    {
-//    	OSLM_TRACE("PulseProgressTowx  in Loop m_thread->isRunning" << m_thread->IsRunning() << " " << ++i );
-//    	m_wxpd->Pulse();
-//    	m_wxpd->Update();
-//    	wxYield();
-//    	wxMilliSleep(msecond);
-//    }
-//    OSLM_TRACE("PulseProgressTowx AFTER Loop m_thread->isRunning " << m_thread->IsRunning() << " " << ++i );
-//
-//    if ( m_thread->getErrorMessage().size() )
-//    {
-//    	m_wxpd->Update(100,"Failed !!!");
-//
-//    	OSLM_WARN( "PulseProgressTowx::m_stuff an exception has occured " << m_thread->getErrorMessage() );
-//    	throw ::fwTools::Failed( m_thread->getErrorMessage() );
-//    }
-//    m_wxpd->Update(100,"Done");
-
+#endif
 
 }
 

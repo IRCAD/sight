@@ -8,6 +8,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwWX/Selector.hpp"
+#include "fwWX/convert.hpp"
 
 namespace fwWX
 {
@@ -29,8 +30,10 @@ Selector::Selector( wxWindow * parent , wxString _title , std::vector< std::stri
 	wxArrayString items;
 	for( std::vector< std::string >::iterator iter = _selections.begin() ; iter != _selections.end() ; ++iter )
 	{
-		wxString name = wxConvertMB2WX( iter->c_str() );
-		wxString translatedName = wxGetTranslation(name);
+//		wxString name = wxConvertMB2WX( iter->c_str() );
+		wxString name = std2wx(*iter);
+//		wxString translatedName = wxGetTranslation(name);
+		wxString translatedName = name;
 		items.Add( translatedName );
 		m_translateToUntranslate[translatedName] = name;
 	}
@@ -62,7 +65,7 @@ Selector::Selector( wxWindow * parent , wxString _title , std::vector< std::stri
 
 std::string Selector::getSelectedString()
 {
-	return std::string( wxConvertWX2MB( m_translateToUntranslate[m_typeCtrl->GetStringSelection()] ) );
+	return  wx2std(m_translateToUntranslate[m_typeCtrl->GetStringSelection()]);
 }
 
 //------------------------------------------------------------------------------
