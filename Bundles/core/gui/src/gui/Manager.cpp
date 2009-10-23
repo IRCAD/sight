@@ -11,6 +11,7 @@
 #include <wx/accel.h>
 #include <wx/statusbr.h>
 #include <wx/config.h>
+#include <wx/evtloop.h>
 
 #include <fwCore/base.hpp>
 
@@ -177,6 +178,13 @@ void Manager::uninitialize()
 void Manager::initialize()
 {
 	SLM_INFO("Initialize GUI aspect") ;
+
+	 wxEventLoopBase* eventLoop = wxEventLoop::GetActive();
+	 if (!eventLoop)
+	 {
+		 wxEventLoop::SetActive(new wxEventLoop() );
+	 }
+
 	// wxWidget initialization
 	wxInitAllImageHandlers();
 	// Build top window
