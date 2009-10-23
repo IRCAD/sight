@@ -10,6 +10,7 @@
 #include <locale.h>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <wx/wx.h>
@@ -19,6 +20,7 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/config.h>
+#include <wx/filefn.h>
 
 #ifdef __MACOSX__
 #include <ApplicationServices/ApplicationServices.h>
@@ -174,7 +176,8 @@ bool App::OnInit()
 			{
 				::fwRuntime::addBundles("./Bundles");
 				m_profile = ::fwRuntime::io::ProfileReader::createProfile(m_profilePath);
-                ::fwRuntime::profile::setCurrentProfile(m_profile);
+				OSLM_INFO("Launcher -- m_profile: " << m_profile);
+				::fwRuntime::profile::setCurrentProfile(m_profile);
 #ifndef TDVPM_COMPLIANT
 				m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_FRENCH, _T("utf-8"));
 				//m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_ENGLISH, _T("utf-8"));
@@ -236,8 +239,18 @@ bool App::OnCmdLineParsed(wxCmdLineParser & parser)
 	    }
 	}
 
+	::boost::filesystem::path launcherPath((const char*)(wxPathOnly(wxTheApp->argv[0])).mb_str(wxConvUTF8));
+	if(!exists(launcherPath/"Bundles"))
+	{
+		// Are-you in /bin directory?
+		launcherPath = launcherPath.parent_path();
+		SLM_FATAL_IF("Bundles directory can't be found", !exists(launcherPath/"Bundles"));
+	}
+	wxSetWorkingDirectory (wxString( launcherPath.string().c_str() , wxConvUTF8 ));
+
 	// Retrieves the profile Path
-	m_profilePath = "./profile.xml"; // default value
+	//	m_profilePath = "./profile.xml"; // default value
+	m_profilePath = ::boost::filesystem::current_path().string()+"/profile.xml";
 	value.Clear();
 	parser.Found("p", &value);
 	if(!value.IsEmpty())
