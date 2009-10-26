@@ -263,7 +263,8 @@ void ComChannelService::sendMessage(::fwServices::ObjectMsg::csptr _msg)
 		}
 		else
 		{
-			OSLM_ASSERT("loop detection on "<< _msg->getSource().lock()->getClassname(), m_destination.lock() ==  _msg->getSource().lock());
+			//OSLM_ASSERT("LOOP DETECTION : "<< getNotificationInformation// _msg->getSource().lock()->getClassname(), m_destination.lock() ==  _msg->getSource().lock());
+			OSLM_ASSERT("LOOP DETECTION : "<< getNotificationInformation(_msg), m_destination.lock() ==  _msg->getSource().lock());
 		}
 	}
 }
