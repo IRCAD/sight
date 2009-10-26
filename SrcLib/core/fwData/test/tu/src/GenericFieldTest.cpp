@@ -26,11 +26,10 @@ void GenericFieldTest::tearDown()
 
 void GenericFieldTest::methode1()
 {
-	const std::string NAME	= "genericField" ;
 	const int VALUE	= 13 ;
 
 	// process
-	::fwData::GenericField<int> * p1 = new ::fwData::GenericField<int>( NAME ,VALUE) ;
+	::fwData::GenericField<int> * p1 = new ::fwData::GenericField<int>( VALUE) ;
 
 	// check
 	CPPUNIT_ASSERT_EQUAL(p1->value(),	VALUE);
