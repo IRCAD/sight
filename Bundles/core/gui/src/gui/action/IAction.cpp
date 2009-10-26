@@ -138,10 +138,10 @@ void IAction::starting() throw(::fwTools::Failed)
 	{
 		menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , wxConvertMB2WX( m_actionNameInMenu.c_str() )) ) ;
 	}
-	menuFile->FindItem( m_actionIdInMenu )->Enable( m_enable);
 
 	::gui::Manager::registerAction( ::boost::dynamic_pointer_cast< ::gui::action::IAction>( shared_from_this() )) ;
 
+	setEnable(m_enable);
 	setCheck(m_isCheck);
 }
 
@@ -215,6 +215,15 @@ void IAction::setEnable(bool _enable)
 	if(item)
 	{
 		item->Enable( m_enable);
+		wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
+		wxToolBar* toolBar =  frame->GetToolBar();
+		if(toolBar != NULL)
+		{
+			if( toolBar->FindById( m_actionIdInMenu ) != NULL )
+			{
+				toolBar->EnableTool(m_actionIdInMenu, m_enable);
+			}
+		}
 	}
 }
 
