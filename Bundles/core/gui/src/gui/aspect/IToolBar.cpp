@@ -71,6 +71,21 @@ void IToolBar::starting() throw( ::fwTools::Failed )
 	std::string name;
    	for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
    	{
+   		if( (*iter)->getName() == "toolBitmapSize" )
+   		{
+   			int height = -1;
+   			int width = -1;
+   			if((*iter)->hasAttribute("height"))
+   			{
+   				height = boost::lexical_cast< int > ((*iter)->getExistingAttributeValue("height"));
+   			}
+   			if((*iter)->hasAttribute("width"))
+   			{
+   				width = boost::lexical_cast< int > ((*iter)->getExistingAttributeValue("width"));
+   			}
+   			m_toolBar->SetToolBitmapSize( wxSize(width, height) );
+   		}
+
    		if( (*iter)->getName() == "action" )
    		{
    			SLM_ASSERT("id tag deprecated", !(*iter)->hasAttribute("id"));
@@ -105,6 +120,13 @@ void IToolBar::starting() throw( ::fwTools::Failed )
    				}
    			}
    			m_toolBar->AddTool(id, wxConvertMB2WX( name.c_str()), wxBitmap(image), wxConvertMB2WX( name.c_str()), kind);
+   			if((*iter)->hasAttribute("state"))
+   			{
+   				if((*iter)->getExistingAttributeValue("state") == "checked" && kind == wxITEM_CHECK)
+   				{
+   					m_toolBar->ToggleTool(id, true);
+   				}
+   			}
    		}
    		if( (*iter)->getName() == "separator" )
    		{
