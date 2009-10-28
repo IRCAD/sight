@@ -86,7 +86,17 @@ struct App : public wxApp
 	bool OnCmdLineParsed(wxCmdLineParser & parser);
 
 	void OnInitCmdLine(wxCmdLineParser & parser);
-	
+
+#ifdef __WXMAC__
+    virtual void MacOpenFile (  const wxString & fileName);
+
+    virtual void MacReopenApp (  const wxString & fileName);
+
+    virtual void MacNewFile (  const wxString & fileName);
+
+    void eventMac(const wxString & fileName);
+#endif
+
 	//wxLanguage GetUILanguage();
 
 	/// @}

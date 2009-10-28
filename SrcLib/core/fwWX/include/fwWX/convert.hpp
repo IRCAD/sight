@@ -10,8 +10,14 @@
 #define _FWWX_CONVERT_HPP_
 
 #include <string>
+#include <wx/wx.h>
 #include <wx/string.h>
 #include "fwWX/config.hpp"
+
+#ifdef __WXMAC__
+wxDECLARE_EVENT(wxEventFwOpen, wxCommandEvent);
+#define wxIDEventFwOpen 27001
+#endif
 
 namespace fwWX
 {

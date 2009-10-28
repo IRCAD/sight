@@ -152,8 +152,10 @@ void IMenu::stopping() throw( ::fwTools::Failed )
 
 
 	///@todo Menu not empty on MAC with specials Actions like help, Quit...
-	SLM_ASSERT( "Menu must be empty before his destruction. If you are on MAC contact johan.moreau@ircad.u-strasbg.fr", menuFile->GetMenuItems().size() == 0 );
+#ifndef __MACOSX__
+	SLM_ASSERT( "Menu must be empty before his destruction.", menuFile->GetMenuItems().size() == 0 );
 	menuBar->Remove( menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) ) ;
+#endif
 }
 
 //-----------------------------------------------------------------------------

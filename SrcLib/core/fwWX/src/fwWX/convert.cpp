@@ -5,6 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 #include "fwWX/convert.hpp"
 
+#ifdef __WXMAC__
+wxDEFINE_EVENT(wxEventFwOpen, wxCommandEvent);
+#endif
+
 namespace fwWX
 {
 wxString std2wx( const std::string & value )

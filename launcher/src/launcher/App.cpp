@@ -24,6 +24,7 @@
 
 #ifdef __MACOSX__
 #include <ApplicationServices/ApplicationServices.h>
+#include <fwWX/convert.hpp>
 #endif
 
 #include <fwRuntime/operations.hpp>
@@ -303,5 +304,39 @@ void App::OnInitCmdLine(wxCmdLineParser & parser)
 	wxApp::OnInitCmdLine(parser);
 	parser.SetDesc(cmdLineDesc);
 }
+
+#ifdef __WXMAC__
+
+void App::MacOpenFile (  const wxString & fileName)
+{
+    SLM_TRACE("MacOpenFile");
+    eventMac(fileName);
+}
+
+void App::MacNewFile (  const wxString & fileName)
+{
+    SLM_TRACE("MacNewFile");
+    eventMac(fileName);
+}
+
+void App::MacReopenApp (  const wxString & fileName)
+{
+    SLM_TRACE("MacReopenApp");
+    eventMac(fileName);
+}
+
+void App::eventMac(const wxString & fileName)
+{
+    wxCommandEvent tEvent(wxEventFwOpen, wxIDEventFwOpen);
+    tEvent.SetString( fileName );
+    tEvent.SetEventObject( this );
+    wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
+    if (frame != NULL)
+        frame->GetEventHandler()->ProcessEvent( tEvent );
+    else
+        SLM_FATAL ("Window not found !")
+}
+
+#endif
 
 } // namespace launcher
