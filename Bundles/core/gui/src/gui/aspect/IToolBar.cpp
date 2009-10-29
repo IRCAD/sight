@@ -119,7 +119,7 @@ void IToolBar::starting() throw( ::fwTools::Failed )
    					kind = wxITEM_CHECK;
    				}
    			}
-   			m_toolBar->AddTool(id, wxConvertMB2WX( name.c_str()), wxBitmap(image), wxConvertMB2WX( name.c_str()), kind);
+   			m_toolBar->AddTool(id, wxConvertMB2WX( name.c_str()), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, wxConvertMB2WX( name.c_str()));
    			if((*iter)->hasAttribute("state"))
    			{
    				if((*iter)->getExistingAttributeValue("state") == "checked" && kind == wxITEM_CHECK)
