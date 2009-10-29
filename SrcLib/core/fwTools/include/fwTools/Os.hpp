@@ -9,6 +9,8 @@
 
 #include <string>
 
+#include "config.hpp"
+
 
 namespace fwTools {
 
@@ -31,7 +33,7 @@ namespace os {
  * the path. Under unix, XDG conventions are repected.
  * For example, the UserDataDir under linux will be "~/.config/company/appName"
  */
-std::string  getUserDataDir( 
+FWTOOLS_API std::string  getUserDataDir(
         std::string company  = "",
         std::string appName  = "",
         bool createDirectory = false
