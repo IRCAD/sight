@@ -62,6 +62,7 @@ private:
 	static std::string	NAME;			///< defines the name of the xml profile
 	static std::string	VALUE;			///< defines the name of the value xml element or attribute name
 	static std::string	VERSION;		///< defines the name of the version xml element or attribute name
+	static std::string	CHECK_SINGLE_INSTANCE;///< defines the name of the check-single-instance xml element or attribute name
 	static std::string	ACTIVATE;		///< defines the name of the activate xml element or attribute name
 	static std::string	START;			///< defines the name of the start xml element or attribute name
 	static std::string	PARAM;			///< defines the name of the parameter xml element or attribute name

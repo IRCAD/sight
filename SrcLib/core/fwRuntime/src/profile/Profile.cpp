@@ -53,7 +53,7 @@ Profile::sptr getCurrentProfile()
 
 
 
-Profile::Profile()
+Profile::Profile(): m_checkSingleInstance(false)
 {}
 
 

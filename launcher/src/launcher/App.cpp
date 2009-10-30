@@ -21,11 +21,14 @@
 #include <wx/stdpaths.h>
 #include <wx/config.h>
 #include <wx/filefn.h>
+#include <wx/snglinst.h>
 
 #ifdef __MACOSX__
 #include <ApplicationServices/ApplicationServices.h>
 #include <fwWX/convert.hpp>
 #endif
+
+#include <fwTools/Os.hpp>
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
@@ -179,11 +182,39 @@ bool App::OnInit()
 				m_profile = ::fwRuntime::io::ProfileReader::createProfile(m_profilePath);
 				OSLM_INFO("Launcher -- m_profile: " << m_profile);
 				::fwRuntime::profile::setCurrentProfile(m_profile);
+
+                std::string appName = m_profile->getName();
 #ifndef TDVPM_COMPLIANT
-				m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_FRENCH, _T("utf-8"));
-				//m_locale->AddCatalog(wxConvertMB2WX(m_profile->getName().c_str()), wxLANGUAGE_ENGLISH, _T("utf-8"));
+				m_locale->AddCatalog(wxConvertMB2WX(appName.c_str()), wxLANGUAGE_FRENCH, _T("utf-8"));
+				//m_locale->AddCatalog(wxConvertMB2WX(appName.c_str()), wxLANGUAGE_ENGLISH, _T("utf-8"));
 #endif
-				SetAppName( wxConvertMB2WX(m_profile->getName().c_str()) );
+				SetAppName( wxConvertMB2WX(appName.c_str()) );
+
+
+                std::string checkerPath = ::fwTools::os::getUserDataDir("IRCAD", appName, true);
+
+                if (checkerPath.empty())
+                {
+                    checkerPath = ::fwTools::os::getUserDataDir("IRCAD", "", true);
+                }
+                if (checkerPath.empty())
+                {
+                    checkerPath = ::fwTools::os::getUserDataDir("", "", true);
+                }
+                SLM_ASSERT("Unable to find user's data dir.", !checkerPath.empty())
+
+                m_checker = new wxSingleInstanceChecker();
+                if (m_profile->getCheckSingleInstance())
+                {
+                    m_checker->Create(appName + ".pid", checkerPath);
+                    if ( m_checker->IsAnotherRunning() )
+                    {
+                        wxLogError(_("Another " +appName+ " instance is already running, aborting."));
+                        return false;
+                    }
+                }
+
+
 				m_profile->start();
 			}
 			catch( const std::exception & exception )
@@ -210,6 +241,7 @@ bool App::OnInit()
 int App::OnExit()
 {
     m_profile->stop();
+    delete m_checker;
     return 0;
 }
 

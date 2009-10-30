@@ -49,6 +49,7 @@
 
 
 class WXDLLEXPORT wxLocale;
+class wxSingleInstanceChecker;
 
 static void SaveUILanguage(wxLanguage lang);
 wxLanguage GetUILanguage();
@@ -126,6 +127,8 @@ private:
 	 * @brief	Application Profile
 	 */
     ::fwRuntime::profile::Profile::sptr m_profile;
+
+    wxSingleInstanceChecker * m_checker;
 };
 
 

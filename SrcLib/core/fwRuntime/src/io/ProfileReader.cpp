@@ -25,15 +25,16 @@ namespace io
 
 
 
-std::string	ProfileReader::ID			("id");
-std::string	ProfileReader::NAME			("name");
-std::string	ProfileReader::VALUE		("value");
-std::string	ProfileReader::VERSION		("version");
-std::string	ProfileReader::ACTIVATE		("activate");
-std::string	ProfileReader::START		("start");
-std::string	ProfileReader::PARAM		("param");
-std::string	ProfileReader::DIS_EXT_PT	("disable-extension-point");
-std::string	ProfileReader::DIS_EXT		("disable-extension");
+std::string ProfileReader::ID                    ("id");
+std::string ProfileReader::NAME                  ("name");
+std::string ProfileReader::VALUE                 ("value");
+std::string ProfileReader::VERSION               ("version");
+std::string ProfileReader::CHECK_SINGLE_INSTANCE ("check-single-instance");
+std::string ProfileReader::ACTIVATE              ("activate");
+std::string ProfileReader::START                 ("start");
+std::string ProfileReader::PARAM                 ("param");
+std::string ProfileReader::DIS_EXT_PT            ("disable-extension-point");
+std::string ProfileReader::DIS_EXT               ("disable-extension");
 
 
 
@@ -87,12 +88,14 @@ std::string	ProfileReader::DIS_EXT		("disable-extension");
 
         char* pName    = (char *) xmlGetProp(rootNode, (const xmlChar*) NAME.c_str());
         char* pVersion = (char *) xmlGetProp(rootNode, (const xmlChar*) VERSION.c_str());
+        char* pChkInst = (char *) xmlGetProp(rootNode, (const xmlChar*) CHECK_SINGLE_INSTANCE.c_str());
 
         SLM_ASSERT("Application profile MUST have a name attribute"   , pName);
         SLM_ASSERT("Application profile MUST have a version attribute", pVersion);
 
 		std::string sName( pName );
 		std::string sVersion( pVersion );
+        bool checkSingleInstance = pChkInst && std::string(pChkInst) == "true";
 
 
         xmlFree(pName);
@@ -103,6 +106,7 @@ std::string	ProfileReader::DIS_EXT		("disable-extension");
 
 		profile->setName(sName);
 		profile->setVersion(sVersion);
+		profile->setCheckSingleInstance(checkSingleInstance);
 
 		// Job's done!
 		xmlFreeDoc(document);

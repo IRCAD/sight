@@ -97,6 +97,20 @@ struct Profile : public ::fwCore::BaseObject
 	FWRUNTIME_API void setVersion(std::string _sVersion) { m_sVersion = _sVersion; }
 
 
+
+	/**
+	 * @brief	Return profile CheckSingleInstance.
+	 */
+	FWRUNTIME_API bool getCheckSingleInstance() { return m_checkSingleInstance; }
+
+	/**
+	 * @brief		Set profile CheckSingleInstance.
+	 *
+	 * @param[in]	_checkSingleInstance	profile CheckSingleInstance
+	 */
+	FWRUNTIME_API void setCheckSingleInstance(bool _checkSingleInstance) { m_checkSingleInstance = _checkSingleInstance; }
+
+
 private:
 
 	typedef std::vector< ::boost::shared_ptr< Activater > >	ActivaterContainer;
@@ -108,6 +122,7 @@ private:
 	StopperContainer	m_stoppers;		///< all managed stoppers
 	std::string			m_sName;		///< name profile
 	std::string			m_sVersion;		///< profile app version
+	bool				m_checkSingleInstance;
 
 };
 
