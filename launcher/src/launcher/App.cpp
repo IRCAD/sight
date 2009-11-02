@@ -209,7 +209,7 @@ bool App::OnInit()
                     m_checker->Create(appName + ".pid", checkerPath);
                     if ( m_checker->IsAnotherRunning() )
                     {
-                        wxLogError(_("Another " +appName+ " instance is already running, aborting."));
+                        wxLogError(_("Another " + appName + _(" instance is already running, aborting.")));
                         return false;
                     }
                 }
