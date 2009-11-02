@@ -88,7 +88,7 @@ void IToolBar::starting() throw( ::fwTools::Failed )
 
    		if( (*iter)->getName() == "action" )
    		{
-   			SLM_ASSERT("id tag deprecated", !(*iter)->hasAttribute("id"));
+   			SLM_ASSERT("id tag depreciated", !(*iter)->hasAttribute("id"));
    			SLM_ASSERT("uid attribute missing", (*iter)->hasAttribute("uid"));
 
    			std::string uid =  (*iter)->getExistingAttributeValue("uid") ;
@@ -127,6 +127,7 @@ void IToolBar::starting() throw( ::fwTools::Failed )
    					m_toolBar->ToggleTool(id, true);
    				}
    			}
+   			m_toolBar->EnableTool(id, action->isEnable());
    		}
    		if( (*iter)->getName() == "separator" )
    		{
