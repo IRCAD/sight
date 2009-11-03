@@ -115,6 +115,14 @@ boost::filesystem::path System::getTemporaryFolder() throw()
 	char *userEnvTmp = getenv("TMP") ;
 	char *userEnvTemp = getenv("TEMP") ;
 	
+	std::string EnvTmpStr(userEnvTmp);
+	std::string EnvTempStr(userEnvTemp);
+
+	if ((EnvTmpStr.find("'")!= std::string::npos) || (EnvTempStr.find("'")!= std::string::npos))
+	{
+		std::string str = "An apostrophe causes problem to the XML library. One is in the user name, change your TMP environment variable.";
+		OSLM_ERROR("PROBLEM : " << str );
+	}
 	if( userEnvTmp )
 	{
 		tmpdir = path(userEnvTmp) / getPersonalizedTmp() ;
