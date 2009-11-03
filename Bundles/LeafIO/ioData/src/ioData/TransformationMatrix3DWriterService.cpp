@@ -35,7 +35,8 @@ REGISTER_SERVICE( ::io::IWriter , ::ioData::TransformationMatrix3DWriterService 
 //-----------------------------------------------------------------------------
 
 TransformationMatrix3DWriterService::TransformationMatrix3DWriterService() :
-	m_filename ("")
+	m_filename (""),
+	m_bServiceIsConfigured(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -77,6 +78,7 @@ void TransformationMatrix3DWriterService::configuring( ) throw(::fwTools::Failed
 		std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
 		boost::filesystem::path location = boost::filesystem::path( filename ) ;
 		m_filename = location;
+		m_bServiceIsConfigured = true;
 	}
 }
 
@@ -100,6 +102,7 @@ void TransformationMatrix3DWriterService::configureWithIHM()
 	{
 		m_filename = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
 		_sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
+		m_bServiceIsConfigured = true;
 	}
 }
 
@@ -115,24 +118,22 @@ void TransformationMatrix3DWriterService::stopping() throw(::fwTools::Failed)
 void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
 {
 	SLM_TRACE_FUNC();
+	if(m_bServiceIsConfigured)
+	{
+		// Retrieve object
+		::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
+		assert( matrix ) ;
 
-	// Retrieve object
-	::boost::shared_ptr< ::fwData::TransformationMatrix3D > matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
-	assert( matrix ) ;
+		::fwDataIO::writer::TransformationMatrix3DWriter writer;
+		writer.setObject( matrix );
+		writer.setFile(m_filename);
+		writer.write();
 
-	::fwDataIO::writer::TransformationMatrix3DWriter writer;
-	writer.setObject( matrix );
-	writer.setFile(m_filename);
-	writer.write();
-
-	// Notify writing
-//	::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< fwServices::IEditionService >( this->getObject() ) ;
-	//::boost::shared_ptr< ::fwComEd::TransformationMatrix3DMsg > msg( new ::fwComEd::TransformationMatrix3DMsg(this->getObject< ::fwData::TransformationMatrix3D >()) ) ;
-	//msg->setValueModif(true);
-	::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
-	msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-//	editor->notify( msg );
-	::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+		// Notify writing
+		::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+		msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
+		::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+	}
 }
 
 //-----------------------------------------------------------------------------

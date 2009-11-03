@@ -134,6 +134,7 @@ protected:
 private :
 
 	::boost::filesystem::path m_filename;
+	bool m_bServiceIsConfigured;
 };
 
 } // namespace ioData

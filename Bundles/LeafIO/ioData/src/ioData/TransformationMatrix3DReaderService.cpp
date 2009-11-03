@@ -32,7 +32,8 @@ REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService 
 //-----------------------------------------------------------------------------
 
 TransformationMatrix3DReaderService::TransformationMatrix3DReaderService() :
-	m_filename ("")
+	m_filename (""),
+	m_bServiceIsConfigured(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -72,8 +73,9 @@ void TransformationMatrix3DReaderService::configuring( ) throw(::fwTools::Failed
 	if( m_configuration->findConfigurationElement("filename") )
 	{
 		std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-		boost::filesystem::path location = boost::filesystem::path( filename ) ;
+		::boost::filesystem::path location = ::boost::filesystem::path( filename ) ;
 		m_filename = location;
+		m_bServiceIsConfigured = true;
 	}
 }
 
@@ -97,6 +99,7 @@ void TransformationMatrix3DReaderService::configureWithIHM()
 	{
 		m_filename = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
 		_sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
+		m_bServiceIsConfigured = true;
 	}
 }
 
@@ -112,24 +115,22 @@ void TransformationMatrix3DReaderService::stopping() throw(::fwTools::Failed)
 void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
 {
 	SLM_TRACE_FUNC();
+	if( m_bServiceIsConfigured )
+	{
+		// Retrieve object
+		::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
+		assert( matrix ) ;
 
-	// Retrieve object
-	::boost::shared_ptr< ::fwData::TransformationMatrix3D > matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
-	assert( matrix ) ;
+		::fwDataIO::reader::TransformationMatrix3DReader reader;
+		reader.setObject( matrix );
+		reader.setFile(m_filename);
+		reader.read();
 
-	::fwDataIO::reader::TransformationMatrix3DReader reader;
-	reader.setObject( matrix );
-	reader.setFile(m_filename);
-	reader.read();
-
-	// Notify reading
-//	::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< fwServices::IEditionService >( this->getObject() ) ;
-	//::boost::shared_ptr< ::fwComEd::TransformationMatrix3DMsg > msg( new ::fwComEd::TransformationMatrix3DMsg(this->getObject< ::fwData::TransformationMatrix3D >()) ) ;
-	//msg->setValueModif(true);
-	::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
-	msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-//	editor->notify( msg );
-	::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+		// Notify reading
+		::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+		msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
+		::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+	}
 }
 
 //-----------------------------------------------------------------------------
