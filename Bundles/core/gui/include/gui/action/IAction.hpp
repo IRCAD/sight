@@ -178,6 +178,9 @@ protected :
 	/// To know if the action is checkable.
 	bool m_isCheckable;
 
+	/// To know if the action is a radio button.
+	bool m_isRadio;
+
 	/// To know if the action is check or uncheck when action is checkable.
 	bool m_isCheck;
 

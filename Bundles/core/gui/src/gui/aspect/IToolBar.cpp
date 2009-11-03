@@ -118,11 +118,15 @@ void IToolBar::starting() throw( ::fwTools::Failed )
    				{
    					kind = wxITEM_CHECK;
    				}
+                else if((*iter)->getExistingAttributeValue("style") == "radio")
+   				{
+   					kind = wxITEM_RADIO;
+   				}
    			}
-   			m_toolBar->AddTool(id, wxConvertMB2WX( name.c_str()), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, wxConvertMB2WX( name.c_str()));
+   			m_toolBar->AddTool(id, wxConvertMB2WX(name.c_str()), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, wxConvertMB2WX( name.c_str()));
    			if((*iter)->hasAttribute("state"))
    			{
-   				if((*iter)->getExistingAttributeValue("state") == "checked" && kind == wxITEM_CHECK)
+   				if((*iter)->getExistingAttributeValue("state") == "checked" && (kind == wxITEM_CHECK || kind == wxITEM_RADIO))
    				{
    					m_toolBar->ToggleTool(id, true);
    				}

@@ -28,6 +28,7 @@ const std::map<std::string, int> IAction::SPECIAL_ACTION_TO_WXID =
 
 IAction::IAction() throw() : m_shortcutDef(""),
 					m_isCheckable(false),
+					m_isRadio(false),
 					m_isCheck(false),
 					m_enable(true)
 {
@@ -76,7 +77,9 @@ void IAction::configuring() throw( ::fwTools::Failed )
 		std::string style = m_configuration->getExistingAttributeValue("style") ;
 		OSLM_TRACE("style : " << style ) ;
 		m_isCheckable = (style == "check");
-		if (m_isCheckable && m_configuration->hasAttribute("state") )
+		m_isRadio = (style == "radio");
+
+		if ((m_isCheckable || m_isRadio) && m_configuration->hasAttribute("state") )
 		{
 			std::string state = m_configuration->getExistingAttributeValue("state");
 			m_isCheck = (state == "checked");
@@ -130,9 +133,10 @@ void IAction::starting() throw(::fwTools::Failed)
 
 	// Adds menu item
 	SLM_ASSERT( "wxMenuItem already exist", menuFile->FindItem( m_actionIdInMenu ) == NULL );
-	if(m_isCheckable)
+	if(m_isCheckable || m_isRadio)
 	{
-		menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , wxConvertMB2WX( m_actionNameInMenu.c_str() ),_(""), wxITEM_CHECK ) ) ;
+        wxItemKind kind = m_isRadio ? wxITEM_RADIO : wxITEM_CHECK;
+		menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , wxConvertMB2WX( m_actionNameInMenu.c_str() ),_(""), kind ) ) ;
 	}
 	else
 	{
@@ -191,7 +195,7 @@ void IAction::setCheck(bool _check)
 {
 	m_isCheck = _check;
 	wxMenuItem* item = this->getMenuItem();
-	if(item && item->IsCheckable() && this->m_isCheckable)
+	if(item && item->IsCheckable() && (m_isCheckable || (_check && m_isRadio)))
 	{
 		item->Check(m_isCheck);
 		wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
@@ -232,7 +236,10 @@ void IAction::setEnable(bool _enable)
 void IAction::updating() throw(::fwTools::Failed)
 {
 	SLM_TRACE("IAction::updating");
-	setCheck(!m_isCheck);
+    if (!m_isRadio)
+    {
+        setCheck(!m_isCheck);
+    }
 }
 
 //-----------------------------------------------------------------------------
