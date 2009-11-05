@@ -19,6 +19,7 @@
 
 #include "fwDataIO/reader/TagReader.hpp"
 
+#include <fwMath/IntrasecTypes.hpp>
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::TagReader, ::fwDataIO::reader::TagReader );
 
@@ -81,7 +82,8 @@ void TagReader::read()
 			for(int i=0; i < nbPts; i++)
 			{
 				::fwData::Point::sptr p;
-				::fwData::Point::PointCoordArray vPoint;
+//				::fwData::Point::PointCoordArray vPoint;
+				fwVec3d vPoint;
 				file>>vPoint[0]>>vPoint[1]>>vPoint[2]>>radius;
 				p->setCRefCoord(vPoint);
 				tag->getRefPointList()->getRefPoints().push_back(p);

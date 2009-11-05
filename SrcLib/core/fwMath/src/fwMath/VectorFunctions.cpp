@@ -1,0 +1,144 @@
+#include "fwMath/VectorFunctions.hpp"
+
+namespace fwMath {
+
+double normalize(fwVec3d & vec) {
+	double norme = sqrt (vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+	if(norme==0.) return 0.;
+	vec /= norme;
+	return norme;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d& operator*=(fwVec3d& vec1, double val) {
+	vec1[0] += val;
+	vec1[1] += val;
+	vec1[2] += val;
+	return vec1;
+
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d& operator/=(fwVec3d& vec,  double val ) {
+	if(val!=0.) {
+		vec[0] /= val;
+		vec[1] /= val;
+		vec[2] /= val;
+	}
+	return vec;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d& operator+=(fwVec3d& vec1, fwVec3d& vec2) {
+	vec1[0] += vec2[0];
+	vec1[1] += vec2[1];
+	vec1[2] += vec2[2];
+	return vec1;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d& operator-=(fwVec3d& vec1, fwVec3d& vec2) {
+	vec1[0] -= vec2[0];
+	vec1[1] -= vec2[1];
+	vec1[2] -= vec2[2];
+	return vec1;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d operator*(const fwVec3d& _vec, double _val)
+{
+	fwVec3d v;
+	v[0] = _vec[0] * _val;
+	v[1] = _vec[1] * _val;
+	v[2] = _vec[2] * _val;
+	return v;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d operator*(double _val, const fwVec3d& _vec)
+{
+	return _val * _vec;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d operator/(const fwVec3d& _vec, double _val)
+{
+	fwVec3d v;
+	v[0] = _vec[0] / _val;
+	v[1] = _vec[1] / _val;
+	v[2] = _vec[2] / _val;
+
+	return v;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d operator+(const fwVec3d& _vec1, const fwVec3d& _vec2)
+{
+	fwVec3d v;
+	v[0] = _vec1[0] + _vec2[0];
+	v[1] = _vec1[1] + _vec2[1];
+	v[2] = _vec1[2] + _vec2[2];
+
+	return v;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2)
+{
+	fwVec3d v;
+	v[0] = _vec1[0] - _vec2[0];
+	v[1] = _vec1[1] - _vec2[1];
+	v[2] = _vec1[2] - _vec2[2];
+
+	return v;
+}
+
+//------------------------------------------------------------------------------
+
+int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2)
+{
+	return ( (_vec1[0] == _vec2[0]) && (_vec1[1] == _vec2[1]) && (_vec1[2] == _vec2[2])) ;
+}
+
+//------------------------------------------------------------------------------
+
+int operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2)
+{
+	return !(_vec1 == _vec2);
+}
+
+//------------------------------------------------------------------------------
+
+double dot(const fwVec3d& v1, const fwVec3d& v2)
+{
+  return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2)
+{
+	fwVec3d v;
+	v[0] = v1[1] * v2[2] - v1[2] * v2[1];
+	v[1] = v1[2] * v2[0] - v1[0] * v2[2];
+	v[2] = v1[0] * v2[1] - v1[1] * v2[0];
+
+	return v;
+}
+
+//------------------------------------------------------------------------------
+
+double vecLength(fwVec3d _vec)
+{
+  return sqrt(_vec[0] * _vec[0] + _vec[1] * _vec[1] + _vec[2] * _vec[2]);
+}
+}

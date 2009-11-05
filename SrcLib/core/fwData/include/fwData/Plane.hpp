@@ -9,9 +9,13 @@
 
 #include <vector>
 
+#include <fwMath/IntrasecTypes.hpp>
+
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Point.hpp"
+#include "fwData/Line.hpp"
+#include "fwData/TransformationMatrix3D.hpp"
 
 
 namespace fwData
@@ -35,6 +39,9 @@ public :
 	/// Constructor
 	FWDATA_API Plane();
 
+	/// Build a plane from 3 points.
+	FWDATA_API Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
+
 	/// Destructor
 	FWDATA_API virtual ~Plane();
 
@@ -44,11 +51,19 @@ public :
 	/// Copy method
 	FWDATA_API Plane &operator=( const Plane & _plane ) ;
 
+
+	/// get the plane coordinate
+	FWDATA_API fwPlane getPlane() const {return m_plane;};
+
+	/// Re-initialize the plane with 3 points
+	FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
+
 	/// Points container
 	fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
 
 protected :
 
+	fwPlane m_plane;
 	//! Points container
 	PointContainer m_vPoints;
 

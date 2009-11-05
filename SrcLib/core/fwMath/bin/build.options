@@ -1,0 +1,3 @@
+TYPE    = 'shared'
+VERSION = '0-1'
+USE     = ['boost']
