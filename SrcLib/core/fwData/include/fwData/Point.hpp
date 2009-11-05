@@ -32,6 +32,8 @@ public :
         (()), ::fwTools::Factory::New< Point >) ;
 
 	typedef double PointCoordType;
+
+	typedef fwVec3d PointCoordArray;
 	/// Constructor
 	FWDATA_API Point();
 	/// Destructor
