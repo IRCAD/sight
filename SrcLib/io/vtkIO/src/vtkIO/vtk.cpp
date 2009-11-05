@@ -77,9 +77,13 @@ const char *myScalarTypeCallback(void *imageData)
 	return vtkImageScalarTypeNameMacro( PixelTypeTranslation.left.at( trueImageData->getPixelType() ) );
 }
 
-vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data )
+vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImageData *dst)
 {
 	vtkImageImport *importer = vtkImageImport::New();
+	if (dst)
+	{
+		importer->SetOutput(dst);
+	}
 
 	importer->SetDataSpacing( data->getSpacing().at(0),
 							  data->getSpacing().at(1),
@@ -109,6 +113,7 @@ vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data )
 	// to produce VTK_TYPE
 	importer->SetCallbackUserData( data.get() );
 	importer->SetScalarTypeCallback( myScalarTypeCallback );
+
 
 
 	importer->Update();
