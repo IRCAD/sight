@@ -37,11 +37,14 @@ namespace vtkIO
  * @brief Allocate a new vtkImageData* from a ::boost::shared_ptr< ::fwData::Image >.
  *
  * @param[in] _data ::boost::shared_ptr< ::fwData::Image >.
+ * @param[out] dst, the vtk image to fill if provided
  * @return vtkImageData*.
  *
- * Allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
+ * if dst is provided the new image will be imported into the dst image else
+ * allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
+ *
  */
-VTKIO_API vtkImageData*  toVTKImage( ::boost::shared_ptr< ::fwData::Image > _data );
+VTKIO_API vtkImageData*  toVTKImage( ::boost::shared_ptr< ::fwData::Image > _data ,  vtkImageData *dst=NULL);
 
 /*!
  * @brief Convert a vtkImageData* to a ::boost::shared_ptr< ::fwData::Image >.

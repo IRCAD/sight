@@ -17,9 +17,9 @@ namespace fwData
 Material::Material() :
 	m_ambient() ,
 	m_diffuse(),
-	m_shadingMode(SHADING_MODE::MODE_PHONG),
-	m_representationMode(REPRESENTATION_MODE::MODE_SURFACE),
-	m_optionsMode(OPTIONS_MODE::MODE_STANDARD)
+	m_shadingMode(MODE_PHONG),
+	m_representationMode(MODE_SURFACE),
+	m_optionsMode(MODE_STANDARD)
 {
 }
 
