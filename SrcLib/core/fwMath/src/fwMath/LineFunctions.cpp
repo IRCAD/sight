@@ -47,7 +47,8 @@ bool intersect(const fwLine& _line, double _radius, fwVec3d _point)
 {
 	SLM_TRACE_FUNC();
 	fwVec3d point = getClosestPoint(_line, _point);
-	double length = vecLength(_point-point);
+	fwVec3d tmp = _point-point;
+	double length = vecLength(tmp);
 	if(length>_radius) return false;
 	return true;
 }
@@ -60,7 +61,8 @@ bool intersect(const fwLine& _line, double _radius,fwVec3d _vec0, fwVec3d _vec1,
 	fwLine line = std::pair<fwVec3d, fwVec3d>(_vec0, _vec1);
 	fwVec3d pThis;
 	if(getClosestPoints(_line, line,pThis,_point) == false) return false;
-	double length = vecLength(_point-pThis);
+	fwVec3d tmp = _point-pThis;
+	double length = vecLength(tmp);
 	if(length>_radius) return false;
 	return true;
 

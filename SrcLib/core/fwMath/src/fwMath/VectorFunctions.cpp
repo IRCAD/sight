@@ -2,7 +2,8 @@
 
 namespace fwMath {
 
-double normalize(fwVec3d & vec) {
+double normalize(fwVec3d & vec) 
+{
 	SLM_TRACE_FUNC();
 	double norme = sqrt (vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
 	if(norme==0.) return 0.;
@@ -12,7 +13,7 @@ double normalize(fwVec3d & vec) {
 
 //------------------------------------------------------------------------------
 
-double dot(const fwVec3d& v1, const fwVec3d& v2)
+double dot(const fwVec3d& v1, const fwVec3d& v2) 
 {
 	SLM_TRACE_FUNC();
 	return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
@@ -20,7 +21,7 @@ double dot(const fwVec3d& v1, const fwVec3d& v2)
 
 //------------------------------------------------------------------------------
 
-fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2)
+fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2) 
 {
 	SLM_TRACE_FUNC();
 	fwVec3d v;
@@ -33,7 +34,7 @@ fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2)
 
 //------------------------------------------------------------------------------
 
-double vecLength(fwVec3d &_vec)
+double vecLength(fwVec3d &_vec) 
 {
 	SLM_TRACE_FUNC();
 	return sqrt(_vec[0] * _vec[0] + _vec[1] * _vec[1] + _vec[2] * _vec[2]);
