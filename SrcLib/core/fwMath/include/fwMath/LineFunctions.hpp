@@ -1,6 +1,8 @@
 #ifndef _FWMATH_LINEFUNCTIONS_HPP_
 #define _FWMATH_LINEFUNCTIONS_HPP_
 
+#include <fwCore/base.hpp>
+
 #include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/export.hpp"
 

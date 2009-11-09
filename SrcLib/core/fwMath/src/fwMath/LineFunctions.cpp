@@ -8,6 +8,7 @@ namespace fwMath {
 
 bool getClosestPoints( const fwLine& _line1, const fwLine& _line2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine)
 {
+	SLM_TRACE_FUNC();
 	const fwVec3d& pos1 = _line1.first;
 	const fwVec3d& dir1 = _line1.second;
 
@@ -32,6 +33,7 @@ bool getClosestPoints( const fwLine& _line1, const fwLine& _line2, fwVec3d& _poi
 
 fwVec3d getClosestPoint( const fwLine& _line, fwVec3d& _point)
 {
+	SLM_TRACE_FUNC();
 	const fwVec3d& pos = _line.first;
 	const fwVec3d& dir = _line.second;
 
@@ -43,22 +45,24 @@ fwVec3d getClosestPoint( const fwLine& _line, fwVec3d& _point)
 
 bool intersect(const fwLine& _line, double _radius, fwVec3d _point)
 {
-	  fwVec3d point = getClosestPoint(_line, _point);
-	  double length = vecLength(_point-point);
-	  if(length>_radius) return false;
-	  return true;
+	SLM_TRACE_FUNC();
+	fwVec3d point = getClosestPoint(_line, _point);
+	double length = vecLength(_point-point);
+	if(length>_radius) return false;
+	return true;
 }
 
 //------------------------------------------------------------------------------
 
 bool intersect(const fwLine& _line, double _radius,fwVec3d _vec0, fwVec3d _vec1, fwVec3d _point)
 {
-	  fwLine line = std::pair<fwVec3d, fwVec3d>(_vec0, _vec1);
-	  fwVec3d pThis;
-	  if(getClosestPoints(_line, line,pThis,_point) == false) return false;
-	  double length = vecLength(_point-pThis);
-	  if(length>_radius) return false;
-	  return true;
+	SLM_TRACE_FUNC();
+	fwLine line = std::pair<fwVec3d, fwVec3d>(_vec0, _vec1);
+	fwVec3d pThis;
+	if(getClosestPoints(_line, line,pThis,_point) == false) return false;
+	double length = vecLength(_point-pThis);
+	if(length>_radius) return false;
+	return true;
 
 }
 
@@ -66,6 +70,7 @@ bool intersect(const fwLine& _line, double _radius,fwVec3d _vec0, fwVec3d _vec1,
 
 bool intersect( const fwLine& _line, const fwVec3d &_v1,  const fwVec3d &_v2, const fwVec3d &_v3, fwVec3d &_point, fwVec3d &_barycentric, bool& _front) {
 
+	SLM_TRACE_FUNC();
 	_barycentric = (_v1 + _v2 + _v3)/3.;
 	fwVec3d v01 = _v2 - _v1;
 	fwVec3d v12 = _v3 - _v2;

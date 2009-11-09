@@ -9,6 +9,10 @@
 
 #include <vector>
 
+#include <boost/function.hpp>
+
+#include <fwMath/IntrasecTypes.hpp>
+
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
@@ -34,6 +38,15 @@ public :
 	/// A cell contains indices of the three points related to a triangular cell
 	typedef std::vector< std::vector< int > > 		CellContainer ;
 
+	typedef ::boost::function<void ( ::fwData::TriangularMesh*, int, double, double, double ) > set1ValueFunc;
+//	typedef ::boost::function2< fwVec3d, ::fwData::TriangularMesh*, int > get1ValueFunc;
+	typedef ::boost::function< double* (::fwData::TriangularMesh*, int)  > get1ValueFunc;
+	typedef ::boost::function<void ( ::fwData::TriangularMesh*, int, int, int, int ) > set1IndexFunc;
+	typedef ::boost::function<int ( ::fwData::TriangularMesh* ) > get1IndexFunc;
+
+	typedef ::boost::function<void ( ::fwData::TriangularMesh*, int, double, double, double ) > set1NormalFunc;
+	typedef ::boost::function<int ( ::fwData::TriangularMesh* ) > get1NormalFunc;
+
 	/**
 	 * @brief constructor
 	 */
@@ -53,6 +66,17 @@ public :
 	 */
 	FWDATA_API CellContainer &cells() ;
 
+	FWDATA_API void setOneVectorInPointList(int _iIndex, double _fX, double _fY, double _fZ);
+
+	FWDATA_API void setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _p3);
+
+	FWDATA_API double* getOneVectorFromPointList(int _pt); // const;
+
+	FWDATA_API int getOneIndexFromIndexList(void); // const;
+
+	FWDATA_API void setOneVectorInNormalList(int x, double, double, double);
+
+	FWDATA_API int getOneIndexFromNormalList(void); // const;
 
 protected :
 

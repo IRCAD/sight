@@ -4,6 +4,7 @@ namespace fwMath {
 
 void multVecMatrix(const fwMatrix & _matrix, const fwVec3d& _source ,fwVec3d& _dest)
 {
+	SLM_TRACE_FUNC();
 	double x,y,z;
 	x = _source[0];
 	y = _source[1];

@@ -3,6 +3,7 @@
 namespace fwMath {
 
 double normalize(fwVec3d & vec) {
+	SLM_TRACE_FUNC();
 	double norme = sqrt (vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
 	if(norme==0.) return 0.;
 	vec /= norme;
@@ -11,7 +12,47 @@ double normalize(fwVec3d & vec) {
 
 //------------------------------------------------------------------------------
 
+double dot(const fwVec3d& v1, const fwVec3d& v2)
+{
+	SLM_TRACE_FUNC();
+	return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2)
+{
+	SLM_TRACE_FUNC();
+	fwVec3d v;
+	v[0] = v1[1] * v2[2] - v1[2] * v2[1];
+	v[1] = v1[2] * v2[0] - v1[0] * v2[2];
+	v[2] = v1[0] * v2[1] - v1[1] * v2[0];
+
+	return v;
+}
+
+//------------------------------------------------------------------------------
+
+double vecLength(fwVec3d &_vec)
+{
+	SLM_TRACE_FUNC();
+	return sqrt(_vec[0] * _vec[0] + _vec[1] * _vec[1] + _vec[2] * _vec[2]);
+}
+
+void negate(fwVec3d &_vec)
+{
+	SLM_TRACE_FUNC();
+	_vec[0]=-_vec[0];
+	_vec[1]=-_vec[1];
+	_vec[2]=-_vec[2];
+}
+
+}
+
+//------------------------------------------------------------------------------
+
 fwVec3d& operator*=(fwVec3d& vec1, double val) {
+	SLM_TRACE_FUNC();
 	vec1[0] += val;
 	vec1[1] += val;
 	vec1[2] += val;
@@ -50,8 +91,9 @@ fwVec3d& operator-=(fwVec3d& vec1, fwVec3d& vec2) {
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator*(const fwVec3d& _vec, double _val)
+fwVec3d operator*(const fwVec3d& _vec, const double _val)
 {
+	SLM_TRACE_FUNC();
 	fwVec3d v;
 	v[0] = _vec[0] * _val;
 	v[1] = _vec[1] * _val;
@@ -61,9 +103,10 @@ fwVec3d operator*(const fwVec3d& _vec, double _val)
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator*(double _val, const fwVec3d& _vec)
+fwVec3d operator*(const double _val, const fwVec3d& _vec)
 {
-	return _val * _vec;
+	SLM_TRACE_FUNC();
+	return _vec * _val;
 }
 
 //------------------------------------------------------------------------------
@@ -82,6 +125,7 @@ fwVec3d operator/(const fwVec3d& _vec, double _val)
 
 fwVec3d operator+(const fwVec3d& _vec1, const fwVec3d& _vec2)
 {
+	SLM_TRACE_FUNC();
 	fwVec3d v;
 	v[0] = _vec1[0] + _vec2[0];
 	v[1] = _vec1[1] + _vec2[1];
@@ -114,31 +158,4 @@ int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2)
 int operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2)
 {
 	return !(_vec1 == _vec2);
-}
-
-//------------------------------------------------------------------------------
-
-double dot(const fwVec3d& v1, const fwVec3d& v2)
-{
-  return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
-}
-
-//------------------------------------------------------------------------------
-
-fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2)
-{
-	fwVec3d v;
-	v[0] = v1[1] * v2[2] - v1[2] * v2[1];
-	v[1] = v1[2] * v2[0] - v1[0] * v2[2];
-	v[2] = v1[0] * v2[1] - v1[1] * v2[0];
-
-	return v;
-}
-
-//------------------------------------------------------------------------------
-
-double vecLength(fwVec3d _vec)
-{
-  return sqrt(_vec[0] * _vec[0] + _vec[1] * _vec[1] + _vec[2] * _vec[2]);
-}
 }

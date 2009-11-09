@@ -1,6 +1,8 @@
 #ifndef _FWMATH_MATRIXFUNCTIONS_HPP_
 #define _FWMATH_MATRIXFUNCTIONS_HPP_
 
+#include <fwCore/base.hpp>
+
 #include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/export.hpp"
 namespace fwMath {
