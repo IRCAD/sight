@@ -90,7 +90,7 @@ bool isInHalfSpace(const fwPlane& _plane, const fwVec3d& _point)
 
 //------------------------------------------------------------------------------
 
-void transform(fwPlane& _plane, const fwMatrix& _matrix)
+void transform(fwPlane& _plane, const fwMatrix4x4& _matrix)
 {
 	SLM_TRACE_FUNC();
 	fwVec3d normalVec = getNormal(_plane);

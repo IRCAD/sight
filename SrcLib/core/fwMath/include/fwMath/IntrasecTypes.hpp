@@ -1,4 +1,5 @@
 #include <boost/array.hpp>
+#include <vector>
 
 /// Type for a vector of tree double
 typedef ::boost::array<double, 3> fwVec3d;
@@ -11,4 +12,11 @@ typedef std::pair<fwVec3d, fwVec3d> fwLine;
 typedef ::boost::array<double, 4> fwPlane;
 
 /// Type for a matrix 4*4
-typedef ::boost::array< ::boost::array< double,4 >, 4> fwMatrix;
+typedef ::boost::array< ::boost::array< double,4 >, 4> fwMatrix4x4;
+
+/// Type for vertex positions
+typedef std::vector < std::vector <double> > fwVertexPosition;
+
+/// Type for vertex index
+typedef std::vector < std::vector <int> > fwVertexIndex;
+

@@ -32,7 +32,7 @@ FWMATH_API bool intersect( const fwPlane& _fwPlane, const fwLine & _line, fwVec3
 
 FWMATH_API bool isInHalfSpace(const fwPlane& _plane, const fwVec3d& _point);
 
-FWMATH_API void transform(fwPlane& _plane, const fwMatrix& _matrix);
+FWMATH_API void transform(fwPlane& _plane, const fwMatrix4x4& _matrix);
 
 FWMATH_API void offset(fwPlane& _plane, double _offset);
 
