@@ -1,0 +1,10 @@
+
+CLASSTEST=[
+    'MatrixFunctionsTest',
+    'PlaneFunctionsTest',
+    'VectorFunctionsTest',
+]
+
+USE = ['boost']
+LIB = ['fwData_0-1','fwTools_0-1', 'fwMath_0-1']
+CONSOLE = 'yes'
