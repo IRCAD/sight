@@ -54,9 +54,9 @@ void negate(fwVec3d &_vec)
 
 fwVec3d& operator*=(fwVec3d& vec1, double val) {
 	SLM_TRACE_FUNC();
-	vec1[0] += val;
-	vec1[1] += val;
-	vec1[2] += val;
+	vec1[0] *= val;
+	vec1[1] *= val;
+	vec1[2] *= val;
 	return vec1;
 
 }

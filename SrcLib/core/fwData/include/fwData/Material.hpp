@@ -32,7 +32,7 @@ public:
 	FWDATA_API virtual ~Material();
 
 	/// Clone method
-	Material::sptr clone() const;
+	FWDATA_API Material::sptr clone() const;
 
 	/**
 	* @brief returns editable ambient color
