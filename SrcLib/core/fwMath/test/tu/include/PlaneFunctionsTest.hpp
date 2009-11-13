@@ -15,10 +15,11 @@ class PlaneFunctionsTest : public CPPUNIT_NS::TestFixture
 	CPPUNIT_TEST( checkDistance );
 	CPPUNIT_TEST( checkNormal );
 	CPPUNIT_TEST( checkSetValues );
-	CPPUNIT_TEST( checkIntersect );
-	CPPUNIT_TEST( checkIsInHalfSpace );
+//	CPPUNIT_TEST( checkIntersect );
+	CPPUNIT_TEST( checkIsInHalfSpace_fwMath_SoLib );
 	CPPUNIT_TEST( checkOffset );
 	CPPUNIT_TEST( checkTransform );
+	CPPUNIT_TEST( checkIntersect_fwMath_SoLib);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -32,9 +33,10 @@ public:
 	void checkNormal();
 	void checkSetValues();
 	void checkIntersect();
-	void checkIsInHalfSpace();
+	void checkIsInHalfSpace_fwMath_SoLib();
 	void checkOffset();
 	void checkTransform();
+	void checkIntersect_fwMath_SoLib();
 };
 
 #endif

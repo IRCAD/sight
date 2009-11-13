@@ -1,3 +1,4 @@
+#include "fwMath/MatrixFunctions.hpp"
 #include "fwMath/VectorFunctions.hpp"
 
 namespace fwMath {

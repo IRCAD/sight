@@ -45,9 +45,12 @@ fwVec3d getNormal(const fwPlane& _plane) {
 //------------------------------------------------------------------------------
 void  setNormal(fwPlane& _plane, const fwVec3d& _normal) {
 	SLM_TRACE_FUNC();
-	_plane[0] = _normal[0];
-	_plane[1] = _normal[1];
-	_plane[2] = _normal[2];
+	fwVec3d normalNormalized(_normal);
+	normalize(normalNormalized);
+	_plane[0] = normalNormalized[0];
+	_plane[1] = normalNormalized[1];
+	_plane[2] = normalNormalized[2];
+	;
 }
 //------------------------------------------------------------------------------
 
@@ -66,15 +69,18 @@ void  setDistance(fwPlane& _plane, const double _distance) {
 //------------------------------------------------------------------------------
 bool intersect( const fwPlane& _plane, const fwLine & _line,  fwVec3d & _point) {
 	SLM_TRACE_FUNC();
-	const fwVec3d& pos = _line.first;
-	const fwVec3d& dir = _line.second;
+
+	const fwVec3d pos = _line.first;
+	fwVec3d dirNormaliser = _line.second - _line.first;
+	::fwMath::normalize(dirNormaliser);
+
 	fwVec3d normalVec = getNormal(_plane);
-	double d = dot(normalVec, dir);
-//	if(d<=EPSILON && d>=-EPSILON) return false;
-	if(d == 0.0) return false;
+	double d = dot(normalVec, dirNormaliser);
+	if((float)d == 0.0F) return false;
 	double distance = getDistance(_plane);
 	double t = (distance - dot(normalVec, pos))/d;
-	_point = pos + (t * dir);
+	_point = pos + (t * dirNormaliser);
+
 	return true;
 }
 
