@@ -19,6 +19,7 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Plane::Plane ()
+: m_isIntersection(true)
 {
 	SLM_TRACE_FUNC();
 }

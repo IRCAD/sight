@@ -15,15 +15,17 @@ REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Patient, ::fwData::Pa
 namespace fwData
 {
 const Object::FieldID Patient::ID_STUDIES = "ID_STUDIES";
+const Object::FieldID Patient::ID_TOOLBOX = "ID_TOOLBOX";
+const Object::FieldID Patient::ID_SCENARIOS = "ID_SCENARIOS";
 //------------------------------------------------------------------------------
 
 Patient::Patient () :
-	m_sName (""),
-	m_sFirstname (""),
-	m_sIDDicom (""),
-	m_sBirthdate ( ::boost::date_time::min_date_time ),
-	m_bIsMale (true),
-	m_i32DbID (-1)
+					m_sName (""),
+					m_sFirstname (""),
+					m_sIDDicom (""),
+					m_sBirthdate ( ::boost::date_time::min_date_time ),
+					m_bIsMale (true),
+					m_i32DbID (-1)
 {
 	SLM_WARN("::fwData::Patient() : (ToDo) field default value");
 	setField( Patient::ID_STUDIES );
@@ -82,6 +84,124 @@ std::pair< Patient::StudyConstIterator, Patient::StudyConstIterator > Patient::g
 	StudyConstIterator begin(  getField( Patient::ID_STUDIES )->children().begin()   );
 	StudyConstIterator   end(  getField( Patient::ID_STUDIES )->children().end()   );
 	return std::make_pair( begin, end );
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::setToolBox( ::fwData::Composite::sptr _toolBox )
+{
+	this->setFieldSingleElement(Patient::ID_TOOLBOX, _toolBox);
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Composite::sptr Patient::getToolBox()
+{
+	::fwData::Composite::sptr _pToolBox;
+
+	const unsigned int NbChildren = this->getField( Patient::ID_TOOLBOX )->children().size();
+
+	assert ( NbChildren <= 1 );
+
+	// Test if the toolBox exists
+	if( NbChildren == 1 )
+	{
+		_pToolBox = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_TOOLBOX )->children()[0] );
+	}
+	else
+	{
+		SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
+	}
+
+	return _pToolBox;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Composite::csptr Patient::getToolBox() const
+{
+	::fwData::Composite::csptr _pToolBox;
+
+	const unsigned int NbChildren = this->getField( Patient::ID_TOOLBOX )->children().size();
+
+	assert ( NbChildren <= 1 );
+
+	// Test if the toolBox exists
+	if( NbChildren == 1 )
+	{
+		_pToolBox = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_TOOLBOX )->children()[0] );
+	}
+	else
+	{
+		SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
+	}
+
+	return _pToolBox;
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::setScenarios( ::fwData::Composite::sptr _scenarios )
+{
+	this->setFieldSingleElement(Patient::ID_SCENARIOS, _scenarios);
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Composite::sptr Patient::getScenarios()
+{
+	::fwData::Composite::sptr _pScenarios;
+
+	const unsigned int NbChildren = this->getField( Patient::ID_SCENARIOS )->children().size();
+
+	assert ( NbChildren <= 1 );
+
+	// Test if the scenarios exists
+	if( NbChildren == 1 )
+	{
+		_pScenarios = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_SCENARIOS )->children()[0] );
+	}
+	else
+	{
+		SLM_WARN("Patient::getScenarios : return a null scenarios pointer.");
+	}
+
+	return _pScenarios;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Composite::csptr Patient::getScenarios() const
+{
+	::fwData::Composite::csptr _pScenarios;
+
+	const unsigned int NbChildren = this->getField( Patient::ID_SCENARIOS )->children().size();
+
+	assert ( NbChildren <= 1 );
+
+	// Test if the scenarios exists
+	if( NbChildren == 1 )
+	{
+		_pScenarios = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_SCENARIOS )->children()[0] );
+	}
+	else
+	{
+		SLM_WARN("Patient::getScenarios : return a null scenarios pointer.");
+	}
+
+	return _pScenarios;
+}
+//------------------------------------------------------------------------------
+
+void Patient::addTool( std::string _name, ::fwData::Object::sptr _tool )
+{
+	getToolBox()->getRefMap()[_name] = _tool;
+}
+//------------------------------------------------------------------------------
+
+::fwData::Object::sptr Patient::getTool( std::string _name )
+{
+	return getToolBox()->getRefMap()[_name];
 }
 
 //------------------------------------------------------------------------------

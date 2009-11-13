@@ -61,11 +61,16 @@ public :
 	/// Points container
 	fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
 
+	fwGettersSettersDocMacro(IsIntersection, isIntersection, bool, flag if the plane is an intersection one (else an union one));
+
 protected :
 
 	fwPlane m_plane;
 	//! Points container
 	PointContainer m_vPoints;
+
+	//! flag if the plane is an intersection (else an union)
+	bool m_isIntersection;
 
 }; // end class Plane
 
