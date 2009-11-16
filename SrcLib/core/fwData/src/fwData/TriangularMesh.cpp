@@ -40,7 +40,6 @@ void TriangularMesh::setOneVectorInPointList(int _iIndex, double _fX, double _fY
 	m_points[_iIndex][0] = _fX;
 	m_points[_iIndex][1] = _fY;
 	m_points[_iIndex][2] = _fZ;
-	OSLM_INFO(" TriangularMesh::setOneVectorInPointList : "<< _iIndex << " :::: " << m_points[_iIndex][0]  << " / " << m_points[_iIndex][1] << " / "<< m_points[_iIndex][2] );
 }
 void TriangularMesh::setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _p3)
 {
@@ -52,8 +51,6 @@ void TriangularMesh::setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _
 	m_cells[_iIndex][0] = _p1;
 	m_cells[_iIndex][1] = _p2;
 	m_cells[_iIndex][2] = _p3;
-	OSLM_INFO(" TriangularMesh::setOneIndexInIndexList : "<< _iIndex << " :::: " << m_cells[_iIndex][0]  << " / " << m_cells[_iIndex][1] << " / "<< m_cells[_iIndex][2] )
-
 }
 double* TriangularMesh::getOneVectorFromPointList(int _pt) /* const */  {
 	double *vec  = new double[3];
