@@ -6,7 +6,7 @@ double normalize(fwVec3d & vec)
 {
 	SLM_TRACE_FUNC();
 	double norme = sqrt (vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
-	if(norme==0.) return 0.;
+	if(abs(norme-0.0) < 0.00001) return 0.;
 	vec /= norme;
 	return norme;
 }

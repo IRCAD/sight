@@ -76,7 +76,7 @@ bool intersect( const fwPlane& _plane, const fwLine & _line,  fwVec3d & _point) 
 
 	fwVec3d normalVec = getNormal(_plane);
 	double d = dot(normalVec, dirNormaliser);
-	if((float)d == 0.0F) return false;
+	if(abs((float)d) < 0.0F) return false;
 	double distance = getDistance(_plane);
 	double t = (distance - dot(normalVec, pos))/d;
 	_point = pos + (t * dirNormaliser);
@@ -91,7 +91,7 @@ bool isInHalfSpace(const fwPlane& _plane, const fwVec3d& _point)
 	SLM_TRACE_FUNC();
 	fwVec3d normalVec = getNormal(_plane);
 	fwVec3d pos = normalVec * getDistance(_plane);
-	return (dot(normalVec, _point-pos) >= 0.0 ? true : false);
+	return (dot(normalVec, _point-pos) >= 0.0F ? true : false);
 }
 
 //------------------------------------------------------------------------------

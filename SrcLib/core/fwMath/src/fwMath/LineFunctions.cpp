@@ -18,7 +18,7 @@ bool getClosestPoints( const fwLine& _line1, const fwLine& _line2, fwVec3d& _poi
 	double dd = dot(dir1, dir2);
 	double delta = 1. - dd * dd;
 
-	if(delta==0.0) return false;
+	if(abs(delta-0.0)< 0.00001) return false;
 
 	double t2 = ( dot(dir2, pos1 - pos2) -  dot(dir1, pos1-pos2) * dd)/delta;
 	double t1  = ( -dot(dir1, pos1 - pos2) + dot(dir2, pos1-pos2) * dd)/delta;
