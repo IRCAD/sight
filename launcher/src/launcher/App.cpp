@@ -40,6 +40,11 @@
 
 #include "launcher/App.hpp"
 
+wxString std2wx( const std::string & value )
+{
+    return wxString( value.c_str() , wxConvUTF8 );
+}
+
 /**
  * @brief	Creates the application instance.
  */
@@ -206,10 +211,10 @@ bool App::OnInit()
                 m_checker = new wxSingleInstanceChecker();
                 if (m_profile->getCheckSingleInstance())
                 {
-                    m_checker->Create(appName + ".pid", checkerPath);
+                    m_checker->Create(std2wx(appName) + _(".pid"), std2wx(checkerPath));
                     if ( m_checker->IsAnotherRunning() )
                     {
-                        wxLogError(_("Another " + appName + _(" instance is already running, aborting.")));
+                        wxLogError(_("Another " + std2wx(appName) + _(" instance is already running, aborting.")));
                         return false;
                     }
                 }

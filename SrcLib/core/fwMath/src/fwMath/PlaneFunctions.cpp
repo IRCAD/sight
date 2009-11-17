@@ -18,10 +18,10 @@ void setValues(fwPlane& _plane, const fwVec3d & _point1, const fwVec3d & _point2
 {
 	SLM_TRACE_FUNC();
 	fwVec3d  normalVec= cross(_point2 - _point1, _point3 -_point1);
-	if(vecLength(normalVec) <=0.0F) {
-		normalVec[0] =0.;
-		normalVec[1] =0.;
-		normalVec[2] =1.;
+	if((float)(vecLength(normalVec)) <= 0.0F) {
+		normalVec[0] =0.0F;
+		normalVec[1] =0.0F;
+		normalVec[2] =1.0F;
 	}
 	normalize(normalVec);
 	// Normal
@@ -91,7 +91,7 @@ bool isInHalfSpace(const fwPlane& _plane, const fwVec3d& _point)
 	SLM_TRACE_FUNC();
 	fwVec3d normalVec = getNormal(_plane);
 	fwVec3d pos = normalVec * getDistance(_plane);
-	return (dot(normalVec, _point-pos) >= 0.0F ? true : false);
+	return ((float)(dot(normalVec, _point-pos)) >= 0.0F ? true : false);
 }
 
 //------------------------------------------------------------------------------

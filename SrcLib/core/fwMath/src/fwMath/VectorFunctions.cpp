@@ -6,7 +6,7 @@ double normalize(fwVec3d & vec)
 {
 	SLM_TRACE_FUNC();
 	double norme = sqrt (vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
-	if(abs(norme-0.0) < 0.00001) return 0.;
+	if((float)(norme)==0.0F) return 0.0F;
 	vec /= norme;
 	return norme;
 }
@@ -64,7 +64,7 @@ fwVec3d& operator*=(fwVec3d& vec1, double val) {
 //------------------------------------------------------------------------------
 
 fwVec3d& operator/=(fwVec3d& vec,  double val ) {
-	if(val!=0.) {
+	if((double)(val)!=0.0F) {
 		vec[0] /= val;
 		vec[1] /= val;
 		vec[2] /= val;
@@ -151,7 +151,10 @@ fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2)
 
 int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2)
 {
-	return ( (_vec1[0] == _vec2[0]) && (_vec1[1] == _vec2[1]) && (_vec1[2] == _vec2[2])) ;
+	return (((float)(_vec1[0]) == (float)(_vec2[0])) && 
+            ((float)(_vec1[1]) == (float)(_vec2[1])) && 
+            ((float)(_vec1[2]) == (float)(_vec2[2]))
+            ) ;
 }
 
 //------------------------------------------------------------------------------
