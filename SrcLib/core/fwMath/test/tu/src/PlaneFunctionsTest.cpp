@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwMath/PlaneFunctions.hpp>
-#include "SoLib/Sblinear.h"
+// #include "SoLib/Sblinear.h"
 
 #include "PlaneFunctionsTest.hpp"
 
@@ -21,6 +21,7 @@ void PlaneFunctionsTest::setUp()
 void PlaneFunctionsTest::tearDown()
 {
 	// Clean up after the test run.
+
 }
 
 void PlaneFunctionsTest::checkDistance()
@@ -53,12 +54,12 @@ void PlaneFunctionsTest::checkNormal()
 	fwVec3d normal = ::fwMath::getNormal(plane);
 
 
-	SbPlane soPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
-	SbVec3f sbNormal= soPlane.getNormal();
-
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(normal[0], (double)sbNormal[0], 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(normal[1], (double)sbNormal[1], 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(normal[2], (double)sbNormal[2], 0.00001);
+//	SbPlane soPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
+//	SbVec3f sbNormal= soPlane.getNormal();
+//
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(normal[0], (double)sbNormal[0], 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(normal[1], (double)sbNormal[1], 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(normal[2], (double)sbNormal[2], 0.00001);
 }
 
 void PlaneFunctionsTest::checkSetValues()
@@ -117,8 +118,6 @@ void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( ) {
 	const double PlanP3_Y = 23.0;
 	const double PlanP3_Z = rand()%50 + 0.8;
 
-	OSLM_TRACE( "=== Debut calcul intersection ====");
-
 	// New version
 	fwVec3d  point;
 	fwLine  line;
@@ -135,23 +134,20 @@ void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( ) {
 	int intersect =  ::fwMath::intersect( plane, line,  point);
 
 	// Old version
-	SbLine aLine(SbVec3f(LineP1_X, LineP1_Y, LineP1_Z), SbVec3f(LineP2_X, LineP2_Y, LineP2_Z));
-	SbVec3f aIntersection;
-	SbPlane soPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
-	SbBool soIntersect = soPlane.intersect(aLine,aIntersection);
+//	SbLine aLine(SbVec3f(LineP1_X, LineP1_Y, LineP1_Z), SbVec3f(LineP2_X, LineP2_Y, LineP2_Z));
+//	SbVec3f aIntersection;
+//	SbPlane soPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
+//	SbBool soIntersect = soPlane.intersect(aLine,aIntersection);
 
-//	if(soIntersect) {
-		OSLM_TRACE( "X :" <<  point[0] << ", " << aIntersection[0]);
-		OSLM_TRACE( "Y :" <<  point[1] << ", " << aIntersection[1]);
-		OSLM_TRACE( "Z :" <<  point[2] << ", " << aIntersection[2]);
-//	}
+//		OSLM_TRACE( "X :" <<  point[0] << ", " << aIntersection[0]);
+//		OSLM_TRACE( "Y :" <<  point[1] << ", " << aIntersection[1]);
+//		OSLM_TRACE( "Z :" <<  point[2] << ", " << aIntersection[2]);
 
-	CPPUNIT_ASSERT_EQUAL(intersect, soIntersect);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], (double)aIntersection[0], 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], (double)aIntersection[1], 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point[2], (double)aIntersection[2], 0.00001);
+//	CPPUNIT_ASSERT_EQUAL(intersect, soIntersect);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], (double)aIntersection[0], 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], (double)aIntersection[1], 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(point[2], (double)aIntersection[2], 0.00001);
 
-	OSLM_TRACE( "=== Fin calcul intersection ====");
 //}
 
 //	CPPUNIT_ASSERT_EQUAL(intersect, INTERSECT);
@@ -188,11 +184,11 @@ void PlaneFunctionsTest::checkIsInHalfSpace_fwMath_SoLib() {
 	bool result = ::fwMath::isInHalfSpace(plane, point1);
 
 
-	SbPlane sbPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
-	SbVec3f sbPoint1(P1_X, P1_Y, P1_Z);
-
-	SbBool sbResult = sbPlane.isInHalfSpace(sbPoint1);
-	CPPUNIT_ASSERT_EQUAL(result, (bool)sbResult);
+//	SbPlane sbPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
+//	SbVec3f sbPoint1(P1_X, P1_Y, P1_Z);
+//
+//	SbBool sbResult = sbPlane.isInHalfSpace(sbPoint1);
+//	CPPUNIT_ASSERT_EQUAL(result, (bool)sbResult);
 
 }
 
@@ -222,11 +218,11 @@ void PlaneFunctionsTest::checkOffset() {
 	::fwMath::offset(plane,OFFSET );
 	double result = ::fwMath::getDistance(plane);
 
-	SbPlane sbPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
-	sbPlane.offset(OFFSET);
-	float sbResult = sbPlane.getDistanceFromOrigin();
-
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(result, sbResult, 0.00001);
+//	SbPlane sbPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
+//	sbPlane.offset(OFFSET);
+//	float sbResult = sbPlane.getDistanceFromOrigin();
+//
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(result, sbResult, 0.00001);
 }
 
 void PlaneFunctionsTest::checkTransform() {
@@ -261,14 +257,14 @@ void PlaneFunctionsTest::checkTransform() {
 	const fwMatrix4x4 matrice = {1,c1,0,c2, c3,1,c1,0, c4,0,1,c5, 0,c1,c2,c4 };
 	::fwMath::transform(plane, matrice);
 
-	SbPlane soPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
-	SbMatrix aMatrix (1,c1,0,c2, c3,1,c1,0, c4,0,1,c5, 0,c1,c2,c4);
-	soPlane.transform(aMatrix);
-
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], (soPlane.getNormal())[0], 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], (soPlane.getNormal())[1], 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], (soPlane.getNormal())[2], 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], soPlane.getDistanceFromOrigin(), 0.00001);
+//	SbPlane soPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
+//	SbMatrix aMatrix (1,c1,0,c2, c3,1,c1,0, c4,0,1,c5, 0,c1,c2,c4);
+//	soPlane.transform(aMatrix);
+//
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], (soPlane.getNormal())[0], 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], (soPlane.getNormal())[1], 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], (soPlane.getNormal())[2], 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], soPlane.getDistanceFromOrigin(), 0.00001);
 }
 
 

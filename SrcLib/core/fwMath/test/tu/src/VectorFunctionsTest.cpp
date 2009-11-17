@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwMath/VectorFunctions.hpp>
-#include "SoLib/Sblinear.h"
+// #include "SoLib/Sblinear.h"
 
 #include <fwCore/base.hpp>
 
@@ -23,6 +23,7 @@ void VectorFunctionsTest::setUp()
 void VectorFunctionsTest::tearDown()
 {
 	// Clean up after the test run.
+
 }
 
 void VectorFunctionsTest::checkDot()
@@ -55,20 +56,20 @@ void VectorFunctionsTest::checkDot_fwMath_Solib()
 	result = ::fwMath::dot(V1, V2);
 
 	// Old version
-	SbVec3f soV1(V1_X, V1_Y, V1_Z);
-	SbVec3f soV2(V2_X, V2_Y, V2_Z);
-	float soResult = soV1.dot(soV2);
+//	SbVec3f soV1(V1_X, V1_Y, V1_Z);
+//	SbVec3f soV2(V2_X, V2_Y, V2_Z);
+//	float soResult = soV1.dot(soV2);
+//
+//	OSLM_TRACE( "V1_X :" <<  V1[0] << ", " << soV1[0]);
+//	OSLM_TRACE( "V1_Y :" <<  V1[1] << ", " << soV1[1]);
+//	OSLM_TRACE( "V1_Z :" <<  V1[2] << ", " << soV1[2]);
+//	OSLM_TRACE( "V2_X :" <<  V2[0] << ", " << soV2[0]);
+//	OSLM_TRACE( "V2_Y :" <<  V2[1] << ", " << soV2[1]);
+//	OSLM_TRACE( "V2_Z :" <<  V2[2] << ", " << soV2[2]);
+//	OSLM_TRACE( "DOT RESULT :" <<  result << ", " << soResult);
 
-	OSLM_TRACE( "V1_X :" <<  V1[0] << ", " << soV1[0]);
-	OSLM_TRACE( "V1_Y :" <<  V1[1] << ", " << soV1[1]);
-	OSLM_TRACE( "V1_Z :" <<  V1[2] << ", " << soV1[2]);
-	OSLM_TRACE( "V2_X :" <<  V2[0] << ", " << soV2[0]);
-	OSLM_TRACE( "V2_Y :" <<  V2[1] << ", " << soV2[1]);
-	OSLM_TRACE( "V2_Z :" <<  V2[2] << ", " << soV2[2]);
-	OSLM_TRACE( "DOT RESULT :" <<  result << ", " << soResult);
 
-
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(result, double(soResult), 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(result, double(soResult), 0.00001);
 }
 void VectorFunctionsTest::checkCross()
 {
@@ -111,23 +112,23 @@ void VectorFunctionsTest::checkCross_fwMath_SoLib()
 	result = ::fwMath::cross(V1, V2);
 
 	// Old version
-	SbVec3f soV1(V1_X, V1_Y, V1_Z);
-	SbVec3f soV2(V2_X, V2_Y, V2_Z);
-	SbVec3f soResult = soV1.cross(soV2);
-
-	OSLM_TRACE( "V1_X :" <<  V1[0] << ", " << soV1[0]);
-	OSLM_TRACE( "V1_Y :" <<  V1[1] << ", " << soV1[1]);
-	OSLM_TRACE( "V1_Z :" <<  V1[2] << ", " << soV1[2]);
-	OSLM_TRACE( "V2_X :" <<  V2[0] << ", " << soV2[0]);
-	OSLM_TRACE( "V2_Y :" <<  V2[1] << ", " << soV2[1]);
-	OSLM_TRACE( "V2_Z :" <<  V2[2] << ", " << soV2[2]);
-	OSLM_TRACE( "CROSS RESULT_X :" <<  result[0] << ", " << soResult[0]);
-	OSLM_TRACE( "CROSS RESULT_Y :" <<  result[1] << ", " << soResult[1]);
-	OSLM_TRACE( "CROSS RESULT_Z :" <<  result[2] << ", " << soResult[2]);
-
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(result[0], (double)soResult[0] , 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(result[1], (double)soResult[1] , 0.00001);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(result[2], (double)soResult[2] , 0.00001);
+//	SbVec3f soV1(V1_X, V1_Y, V1_Z);
+//	SbVec3f soV2(V2_X, V2_Y, V2_Z);
+//	SbVec3f soResult = soV1.cross(soV2);
+//
+//	OSLM_TRACE( "V1_X :" <<  V1[0] << ", " << soV1[0]);
+//	OSLM_TRACE( "V1_Y :" <<  V1[1] << ", " << soV1[1]);
+//	OSLM_TRACE( "V1_Z :" <<  V1[2] << ", " << soV1[2]);
+//	OSLM_TRACE( "V2_X :" <<  V2[0] << ", " << soV2[0]);
+//	OSLM_TRACE( "V2_Y :" <<  V2[1] << ", " << soV2[1]);
+//	OSLM_TRACE( "V2_Z :" <<  V2[2] << ", " << soV2[2]);
+//	OSLM_TRACE( "CROSS RESULT_X :" <<  result[0] << ", " << soResult[0]);
+//	OSLM_TRACE( "CROSS RESULT_Y :" <<  result[1] << ", " << soResult[1]);
+//	OSLM_TRACE( "CROSS RESULT_Z :" <<  result[2] << ", " << soResult[2]);
+//
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(result[0], (double)soResult[0] , 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(result[1], (double)soResult[1] , 0.00001);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(result[2], (double)soResult[2] , 0.00001);
 
 }
 
