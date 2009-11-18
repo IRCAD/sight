@@ -15,7 +15,7 @@
 #include "fwData/config.hpp"
 
 #include "fwData/Object.hpp"
-#include "fwData/Patient.hpp"
+#include "fwData/Resection.hpp"
 #include "fwData/DownCastIterator.hpp"
 
 namespace fwData
@@ -68,6 +68,10 @@ public:
 	FWDATA_API std::pair< ResectionConstIterator, ResectionConstIterator > getResections() const;
 	//@}
 
+	fwGettersSettersDocMacro(SafeResection, safeResection, ::fwData::Resection::sptr, Get the safe part of the resections);
+
+protected:
+	::fwData::Resection::sptr m_safeResection;
 };
 
 }//end namespace fwData

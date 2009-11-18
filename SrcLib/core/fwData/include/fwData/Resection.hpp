@@ -54,7 +54,13 @@ public :
 
 	fwGettersSettersDocMacro(IsSafePart, isSafePart, bool, the flag if the part is safe);
 
+	fwGettersSettersDocMacro(Name, name, std::string, the resection name);
+
+	fwGettersSettersDocMacro(IsVisible, isVisible, bool, the flag if the resection is visible);
+
 protected :
+	//! Resection name
+	std::string m_name;
 
 	//! Planes list
 	::fwData::PlaneList::sptr m_planeList;
@@ -67,6 +73,9 @@ protected :
 
 	//! flag if the part is safe
 	bool m_isSafePart;
+
+	//! flag if the resection is visible
+	bool m_isVisible;
 
 }; // end class Resection
 

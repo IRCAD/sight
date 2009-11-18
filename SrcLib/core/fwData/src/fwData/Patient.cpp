@@ -99,18 +99,21 @@ void Patient::setToolBox( ::fwData::Composite::sptr _toolBox )
 {
 	::fwData::Composite::sptr _pToolBox;
 
-	const unsigned int NbChildren = this->getField( Patient::ID_TOOLBOX )->children().size();
-
-	assert ( NbChildren <= 1 );
-
-	// Test if the toolBox exists
-	if( NbChildren == 1 )
+	if ( this->getFieldSize( Patient::ID_TOOLBOX ) != 0)
 	{
-		_pToolBox = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_TOOLBOX )->children()[0] );
-	}
-	else
-	{
-		SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
+		const unsigned int NbChildren = this->getField( Patient::ID_TOOLBOX )->children().size();
+
+		assert ( NbChildren <= 1 );
+
+		// Test if the toolBox exists
+		if( NbChildren == 1 )
+		{
+			_pToolBox = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_TOOLBOX )->children()[0] );
+		}
+		else
+		{
+			SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
+		}
 	}
 
 	return _pToolBox;
@@ -119,25 +122,28 @@ void Patient::setToolBox( ::fwData::Composite::sptr _toolBox )
 //------------------------------------------------------------------------------
 
 ::fwData::Composite::csptr Patient::getToolBox() const
-{
+		{
 	::fwData::Composite::csptr _pToolBox;
 
-	const unsigned int NbChildren = this->getField( Patient::ID_TOOLBOX )->children().size();
-
-	assert ( NbChildren <= 1 );
-
-	// Test if the toolBox exists
-	if( NbChildren == 1 )
+	if ( this->getFieldSize( Patient::ID_TOOLBOX ) != 0)
 	{
-		_pToolBox = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_TOOLBOX )->children()[0] );
-	}
-	else
-	{
-		SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
+		const unsigned int NbChildren = this->getField( Patient::ID_TOOLBOX )->children().size();
+
+		assert ( NbChildren <= 1 );
+
+		// Test if the toolBox exists
+		if( NbChildren == 1 )
+		{
+			_pToolBox = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_TOOLBOX )->children()[0] );
+		}
+		else
+		{
+			SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
+		}
 	}
 
 	return _pToolBox;
-}
+		}
 
 //------------------------------------------------------------------------------
 
@@ -152,41 +158,46 @@ void Patient::setScenarios( ::fwData::Composite::sptr _scenarios )
 {
 	::fwData::Composite::sptr _pScenarios;
 
-	const unsigned int NbChildren = this->getField( Patient::ID_SCENARIOS )->children().size();
-
-	assert ( NbChildren <= 1 );
-
-	// Test if the scenarios exists
-	if( NbChildren == 1 )
+	if ( this->getFieldSize( Patient::ID_SCENARIOS ) != 0)
 	{
-		_pScenarios = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_SCENARIOS )->children()[0] );
-	}
-	else
-	{
-		SLM_WARN("Patient::getScenarios : return a null scenarios pointer.");
-	}
+		const unsigned int NbChildren = this->getField( Patient::ID_SCENARIOS )->children().size();
 
+		assert ( NbChildren <= 1 );
+
+		// Test if the scenarios exists
+		if( NbChildren == 1 )
+		{
+			_pScenarios = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_SCENARIOS )->children()[0] );
+		}
+		else
+		{
+			SLM_WARN("Patient::getScenarios : return a null scenarios pointer.");
+		}
+	}
 	return _pScenarios;
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::Composite::csptr Patient::getScenarios() const
-{
+		{
 	::fwData::Composite::csptr _pScenarios;
 
-	const unsigned int NbChildren = this->getField( Patient::ID_SCENARIOS )->children().size();
-
-	assert ( NbChildren <= 1 );
-
-	// Test if the scenarios exists
-	if( NbChildren == 1 )
+	if ( this->getFieldSize( Patient::ID_SCENARIOS ) != 0)
 	{
-		_pScenarios = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_SCENARIOS )->children()[0] );
-	}
-	else
-	{
-		SLM_WARN("Patient::getScenarios : return a null scenarios pointer.");
+		const unsigned int NbChildren = this->getField( Patient::ID_SCENARIOS )->children().size();
+
+		assert ( NbChildren <= 1 );
+
+		// Test if the scenarios exists
+		if( NbChildren == 1 )
+		{
+			_pScenarios = ::fwData::Composite::dynamicCast ( this->getField( Patient::ID_SCENARIOS )->children()[0] );
+		}
+		else
+		{
+			SLM_WARN("Patient::getScenarios : return a null scenarios pointer.");
+		}
 	}
 
 	return _pScenarios;
@@ -195,13 +206,25 @@ void Patient::setScenarios( ::fwData::Composite::sptr _scenarios )
 
 void Patient::addTool( std::string _name, ::fwData::Object::sptr _tool )
 {
+	if (getToolBox() == NULL)
+	{
+		setToolBox(::fwData::Composite::New());
+	}
+
 	getToolBox()->getRefMap()[_name] = _tool;
 }
 //------------------------------------------------------------------------------
 
 ::fwData::Object::sptr Patient::getTool( std::string _name )
 {
-	return getToolBox()->getRefMap()[_name];
+	::fwData::Object::sptr tool;
+
+	if (getToolBox())
+	{
+		tool = getToolBox()->getRefMap()[_name];
+	}
+
+	return tool;
 }
 
 //------------------------------------------------------------------------------
