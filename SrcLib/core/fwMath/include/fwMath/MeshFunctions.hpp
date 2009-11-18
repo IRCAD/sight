@@ -6,7 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwMath/IntrasecTypes.hpp"
-#include "fwMath/Export.hpp"
+#include "fwMath/export.hpp"
 
 
 namespace fwMath
