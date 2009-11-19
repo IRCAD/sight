@@ -22,6 +22,7 @@ Resection::Resection ()
 : m_isSafePart(true)
 {
 	SLM_TRACE_FUNC();
+	m_planeList = ::fwData::PlaneList::New();
 }
 
 //------------------------------------------------------------------------------
