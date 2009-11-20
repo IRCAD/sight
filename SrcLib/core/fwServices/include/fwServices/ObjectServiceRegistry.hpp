@@ -42,9 +42,11 @@ namespace fwServices
  * @note Weak references are considered for objects instead of strong ones to facilitate implicit destruction
  * @author	IRCAD (Research and Development Team).
  */
-class FWSERVICES_CLASS_API ObjectServiceRegistry
+class FWSERVICES_CLASS_API ObjectServiceRegistry: public ::fwCore::BaseObject
 {
 public:
+
+	fwCoreNonInstanciableClassDefinitionsMacro( (ObjectServiceRegistry)(::fwCore::BaseObject) ) ;
 
     /**
      * @name Definition of service status
@@ -65,7 +67,7 @@ public:
 	//@}
 
 	/// Return the unique Instance, create it if required at first access
-	FWSERVICES_API static ::boost::shared_ptr<ObjectServiceRegistry> getDefault();
+	FWSERVICES_API static ObjectServiceRegistry::sptr getDefault();
 	/// Destructor
 	FWSERVICES_API virtual ~ObjectServiceRegistry();
 
@@ -184,13 +186,13 @@ public:
 	 * @note Services may be associated to different object
 	 */
 	template<class SERVICE>
-	static std::vector< ::boost::shared_ptr< SERVICE > > getServices() ;
+	static std::vector< SPTR(SERVICE) > getServices() ;
 
 	/**
 	 * @brief Return a container with all services of type SERVICE associated to obj in m_container
 	 */
 	template<class SERVICE>
-	static std::vector< ::boost::shared_ptr< SERVICE > > getServices(::fwTools::Object::sptr obj) ;
+	static std::vector< SPTR(SERVICE) > getServices(::fwTools::Object::sptr obj) ;
 
 	/**
 	 * @brief Return a container with all objects associated with a service of type SERVICE in m_container
@@ -202,7 +204,7 @@ public:
 	 * @brief Return a container with all objects of type OBJECT associated with a service of type SERVICE in m_container
 	 */
 	 template< class OBJECT, class SERVICE >
-	 static std::vector< ::boost::shared_ptr< OBJECT > > getObjects();
+	 static std::vector< SPTR(OBJECT) > getObjects();
 
 
 	/**
@@ -227,7 +229,7 @@ public:
 	 * @brief Move service (_service) from object objSrc to object objDst in the m_container
 	 * @author	IRCAD (Research and Development Team).
 	 */
-	FWSERVICES_API static void swapService( fwTools::Object::sptr  objSrc, fwTools::Object::sptr  objDst, ::boost::shared_ptr< ::fwServices::IService > _service );
+	FWSERVICES_API static void swapService( fwTools::Object::sptr  objSrc, fwTools::Object::sptr  objDst, ::fwServices::IService::sptr _service );
 
 	//@}
 
@@ -286,7 +288,7 @@ private :
 	/**
 	 * @brief Strong reference on the unique ObjectServiceRegistry instance
 	 */
-    static ::boost::shared_ptr<ObjectServiceRegistry> m_instance;
+    static ObjectServiceRegistry::sptr m_instance;
 
 	/**
 	 * @brief Class name of the root object.

@@ -33,7 +33,7 @@ void DefaultEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fw
 
 	SLM_FATAL("ACH : Comments follow lines. This method is not used in framework");
 
-//	::fwServices::ObjectMsg::sptr msg ( new ::fwServices::ObjectMsg( this->getObject() ) ) ;
+//	::fwServices::ObjectMsg::NewSptr msg ( this->getObject() );
 //	msg->addModif( _msg ) ;
 //	this->notify( msg ) ;
 }

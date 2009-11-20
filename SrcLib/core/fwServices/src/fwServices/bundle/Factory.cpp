@@ -22,14 +22,14 @@ namespace fwServices
 namespace bundle
 {
 
-bool support( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId ) throw()
+bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
 {
 	// Looking for services provided by components (n implementations)
 	std::vector< std::string > extensionIds = ::fwServices::bundle::getValidExtensionIdsForObjectAndService( obj , serviceId ) ;
 	return !extensionIds.empty() ;
 }
 
-::boost::shared_ptr< fwServices::IService > add( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId , std::string _implementationId )
+::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {
 	OSLM_TRACE( "Add New Service : " << _implementationId << " (service type = " << serviceId << " )" << " to objet type " << obj->className() );
 
@@ -39,7 +39,7 @@ bool support( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId
 	if( std::find(extensionIds.begin() , extensionIds.end() , _implementationId ) == extensionIds.end() )
 	{
 		OSLM_ERROR( "FAILED to add implementation " << _implementationId << " (service type = " << serviceId << " )" << " to objet type " << obj->className() );
-		return ::boost::shared_ptr< fwServices::IService >() ;
+		return ::fwServices::IService::sptr() ;
 	}
 
 	// serviceId should be an extension to ''service''
@@ -48,7 +48,7 @@ bool support( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId
 	assert( ext->getPoint() == ::fwCore::getClassname< ::fwServices::IService >());
 	ext->getBundle()->start(); // start dll providing class instances
 
-	::boost::shared_ptr< fwServices::IService > implementation = fwTools::ClassFactoryRegistry::create< fwServices::IService , std::string >( _implementationId ) ;
+	::fwServices::IService::sptr implementation = fwTools::ClassFactoryRegistry::create< fwServices::IService , std::string >( _implementationId ) ;
 	// If null : Try to start the associated bundle dynamic library so that registration operates
 	if( !implementation )
 	{

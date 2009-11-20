@@ -14,7 +14,7 @@ namespace fwServices
 {
 
 /**
- * @brief	Implementation of basic service of type edition service. IService::update(::boost::shared_ptr< const fwServices::ObjectMsg > )
+ * @brief	Implementation of basic service of type edition service. ::boost::shared_ptr< const fwServices::ObjectMsg::sptr )
  * @class	DefaultEditor.
  * @author IRCAD (Research and Development Team).
 

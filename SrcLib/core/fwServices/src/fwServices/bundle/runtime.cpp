@@ -62,7 +62,7 @@ std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findConfigurationEx
 	return filteredExtElements ;
 }
 
-::boost::shared_ptr< ::fwRuntime::ConfigurationElement > findConfigurationForPoint(std::string _cfgId , std::string _pointId )
+::fwRuntime::ConfigurationElement::sptr findConfigurationForPoint(std::string _cfgId , std::string _pointId )
 {
 	std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > cfgLikeExtension = ::fwServices::bundle::findConfigurationExtensionsForPoint(_pointId) ;
 	assert( !cfgLikeExtension.empty() );
@@ -75,10 +75,10 @@ std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findConfigurationEx
 			return *( (*iter)->begin() ) ;
 		}
 	}
-	return ::boost::shared_ptr< ::fwRuntime::ConfigurationElement >() ;
+	return ::fwRuntime::ConfigurationElement::sptr() ;
 }
 
-std::vector< std::string > getValidExtensionIdsForObjectAndService( ::boost::shared_ptr< fwTools::Object > object, std::string serviceId, unsigned int mode)
+std::vector< std::string > getValidExtensionIdsForObjectAndService( ::fwTools::Object::sptr object, std::string serviceId, unsigned int mode)
 {
 	// Local variables
 	std::vector< std::string > allExtIdContributingToServiceAndObject ;
@@ -94,7 +94,7 @@ std::vector< std::string > getValidExtensionIdsForObjectAndService( ::boost::sha
 	}
 
 	// Retrieve appropriate extensions
-	 ::boost::shared_ptr< ::fwTools::Object > genericObject( new ::fwTools::Object ) ;
+	 //::fwTools::Object::NewSptr genericObject;
 	::fwRuntime::getAllExtensionsForPoint (serviceId, extInserter);
 	for( ExtensionContainer::iterator iter = extElements.begin() ; iter != extElements.end() ; ++iter )
 	{

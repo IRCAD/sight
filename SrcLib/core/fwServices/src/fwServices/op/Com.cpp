@@ -51,7 +51,7 @@ namespace fwServices
         return comChannel;
     }
 
-    comChannel = ::boost::shared_ptr< ::fwServices::ComChannelService > ( new ::fwServices::ComChannelService );
+    comChannel = ::fwServices::ComChannelService::sptr ( new ::fwServices::ComChannelService );
     ::fwServices::IEditionService::sptr srcEditor = ::fwServices::get< ::fwServices::IEditionService >( _src ) ;
 	assert( srcEditor ) ;
 	// Configuring communication channel
@@ -67,7 +67,7 @@ namespace fwServices
 void unregisterCommunicationChannel( ::fwTools::Object::sptr _src , ::fwServices::IService::sptr _dest)
 {
 	::fwServices::IEditionService::sptr srcEditor = ::fwServices::get< ::fwServices::IEditionService >( _src ) ;
-	typedef std::vector< ::boost::shared_ptr< ::fwServices::ComChannelService > > OContainerType;
+	typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
 	OContainerType obs = OSR::getServices<fwServices::ComChannelService>() ;
 	for( OContainerType::iterator iter = obs.begin() ; iter != obs.end() ; ++iter )
 	{

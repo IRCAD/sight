@@ -143,10 +143,10 @@ void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _elt)
 	}
 }
 
-void startServices( ::boost::shared_ptr< fwTools::Object > obj )
+void startServices( ::fwTools::Object::sptr obj )
 {
-	std::vector< ::boost::shared_ptr< IService > > vfwServices = OSR::getServices<IService>( obj ) ;
-	for( std::vector< ::boost::shared_ptr< IService > >::iterator iter = vfwServices.begin() ; iter != vfwServices.end() ; ++iter )
+	std::vector< ::fwServices::IService::sptr > vfwServices = OSR::getServices<IService>( obj ) ;
+	for( std::vector< ::fwServices::IService::sptr >::iterator iter = vfwServices.begin() ; iter != vfwServices.end() ; ++iter )
 	{
 		(*iter)->start();
 	}

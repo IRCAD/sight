@@ -30,7 +30,7 @@ namespace fwServices
 FWSERVICES_API ::fwTools::Object::sptr New(::fwRuntime::ConfigurationElement::sptr _elt) ;
 
 template < class CLASSNAME >
-::boost::shared_ptr< CLASSNAME > New(::fwRuntime::ConfigurationElement::sptr _elt) ;
+SPTR(CLASSNAME) New(::fwRuntime::ConfigurationElement::sptr _elt) ;
 
 
 //@}

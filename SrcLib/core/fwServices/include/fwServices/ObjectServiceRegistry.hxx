@@ -17,9 +17,9 @@ namespace fwServices
 {
 
 template<class SERVICE>
-std::vector< ::boost::shared_ptr< SERVICE > > ObjectServiceRegistry::getServices()
+std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices()
 {
-	std::vector< ::boost::shared_ptr< SERVICE > >  lfwServices;
+	std::vector< SPTR(SERVICE) >  lfwServices;
 
 	for( OSContainer::iterator iter = getDefault()->m_container.begin() ; iter != getDefault()->m_container.end() ; ++iter )
 	{
@@ -29,7 +29,7 @@ std::vector< ::boost::shared_ptr< SERVICE > > ObjectServiceRegistry::getServices
 			{
 				if( (*lIter).use_count() != 0 )
 				{
-					::boost::shared_ptr< SERVICE > service = ::boost::dynamic_pointer_cast< SERVICE >( (*lIter) );
+					SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( (*lIter) );
 					if ( service.get() )
 					{
 						lfwServices.push_back( service ) ;
@@ -49,9 +49,9 @@ std::vector< ::boost::shared_ptr< SERVICE > > ObjectServiceRegistry::getServices
 }
 
 template<class SERVICE>
-std::vector< ::boost::shared_ptr< SERVICE > > ObjectServiceRegistry::getServices( ::boost::shared_ptr< fwTools::Object > obj)
+std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices( fwTools::Object::sptr obj)
 {
-	std::vector< ::boost::shared_ptr< SERVICE > >  lfwServices;
+	std::vector< SPTR(SERVICE) >  lfwServices;
 
 	for( OSContainer::iterator iter = getDefault()->m_container.begin() ; iter != getDefault()->m_container.end() ; ++iter )
 	{
@@ -59,7 +59,7 @@ std::vector< ::boost::shared_ptr< SERVICE > > ObjectServiceRegistry::getServices
 		{
 			for( SContainer::iterator lIter = iter->second.begin() ; lIter != iter->second.end() ; ++lIter )
 			{
-				 ::boost::shared_ptr< SERVICE > service = ::boost::dynamic_pointer_cast< SERVICE >( (*lIter) );
+				 SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( (*lIter) );
 				if ( service.get() )
 				{
 					lfwServices.push_back( service ) ;
@@ -71,9 +71,9 @@ std::vector< ::boost::shared_ptr< SERVICE > > ObjectServiceRegistry::getServices
 }
 
 template<class SERVICE>
-std::vector< ::boost::shared_ptr< ::fwTools::Object > > ObjectServiceRegistry::getObjects()
+std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
 {
-	std::vector< ::boost::shared_ptr< ::fwTools::Object > >   lobjects;
+	std::vector< ::fwTools::Object::sptr >   lobjects;
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
 	{
 		for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
@@ -82,7 +82,7 @@ std::vector< ::boost::shared_ptr< ::fwTools::Object > > ObjectServiceRegistry::g
 			{
 				assert( !pos->first.expired() ) ;
 				bool alreadyPushed = false ;
-				for( std::vector< ::boost::shared_ptr< ::fwTools::Object > >::iterator iter = lobjects.begin() ; iter != lobjects.end() ; ++iter )
+				for( std::vector< ::fwTools::Object::sptr >::iterator iter = lobjects.begin() ; iter != lobjects.end() ; ++iter )
 				{
 					if( (*iter).get() == pos->first.lock().get() )
 					{
@@ -110,12 +110,12 @@ std::vector< ::boost::shared_ptr< ::fwTools::Object > > ObjectServiceRegistry::g
 
 
 template<class OBJECT,class SERVICE>
-std::vector< ::boost::shared_ptr< OBJECT > > ObjectServiceRegistry::getObjects()
+std::vector< SPTR(OBJECT) > ObjectServiceRegistry::getObjects()
 {
-	std::vector< ::boost::shared_ptr< ::fwTools::Object > >   lobjects = getObjects< SERVICE >();
-	std::vector< ::boost::shared_ptr< OBJECT > >   castedObjects ;
+	std::vector< ::fwTools::Object::sptr >   lobjects = getObjects< SERVICE >();
+	std::vector< SPTR(OBJECT) >   castedObjects ;
 
-	for( std::vector< ::boost::shared_ptr< ::fwTools::Object > >::iterator iter = lobjects.begin() ; iter != lobjects.end() ; ++iter )
+	for( std::vector< ::fwTools::Object::sptr >::iterator iter = lobjects.begin() ; iter != lobjects.end() ; ++iter )
 	{
 		if( ::boost::dynamic_pointer_cast< OBJECT >( *iter ) )
 		{

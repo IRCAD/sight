@@ -22,14 +22,14 @@ namespace monitor
 {
 	::fwServices::monitor::map_object_servicesNames map_string ;
 
-	std::vector< ::boost::shared_ptr< ::fwTools::Object > > objects = fwServices::ObjectServiceRegistry::getDefault()->getObjects();
-	std::vector< ::boost::shared_ptr< ::fwTools::Object > >::iterator	iter = objects.begin() ;
+	std::vector< ::fwTools::Object::sptr > objects = fwServices::ObjectServiceRegistry::getDefault()->getObjects();
+	std::vector< ::fwTools::Object::sptr >::iterator	iter = objects.begin() ;
 	for( iter = objects.begin() ; iter != objects.end() ; ++iter )
 	{
 		map_string[ *iter ] = std::list< std::string > (0) ;
 
-		std::vector< ::boost::shared_ptr< IService > > lservices = fwServices::getRegisteredServices( *iter ) ;
-		std::vector< ::boost::shared_ptr< IService > >::iterator serviceIter ;
+		std::vector< ::fwServices::IService::sptr > lservices = fwServices::getRegisteredServices( *iter ) ;
+		std::vector< ::fwServices::IService::sptr >::iterator serviceIter ;
 		for( serviceIter = lservices.begin() ; serviceIter != lservices.end() ; ++serviceIter )
 		{
 			std::stringstream valueStream ;
@@ -51,12 +51,12 @@ namespace monitor
 	typedef std::map< std::string , setType > mapType;
 	mapType mapObjectNameFactoryName ;
 	setType	setObjectNames;
-	std::list< ::boost::shared_ptr< fwTools::Object > > myObjectList = fwTools::ClassFactoryRegistry::subClasses< fwTools::Object >() ;
-	for ( std::list< ::boost::shared_ptr< fwTools::Object > >::iterator iter = myObjectList.begin() ; iter != myObjectList.end() ; ++iter )
+	std::list< ::fwTools::Object::sptr > myObjectList = fwTools::ClassFactoryRegistry::subClasses< fwTools::Object >() ;
+	for ( std::list< ::fwTools::Object::sptr >::iterator iter = myObjectList.begin() ; iter != myObjectList.end() ; ++iter )
 	{
 		setType registeredFactoriesClassNames;
-		std::list< ::boost::shared_ptr< fwServices::IService > > 		myList = fwTools::ClassFactoryRegistry::subClasses<fwServices::IService>(typeid(*(*iter))) ;
-		std::list< ::boost::shared_ptr<IService> >::iterator myIter ;
+		std::list< ::fwServices::IService::sptr > 		myList = fwTools::ClassFactoryRegistry::subClasses<fwServices::IService>(typeid(*(*iter))) ;
+		std::list< ::fwServices::IService::sptr >::iterator myIter ;
 		for ( myIter = myList.begin() ; myIter != myList.end() ; ++myIter )
 		{
 			std::stringstream localInfoStream ;

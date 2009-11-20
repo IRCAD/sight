@@ -7,13 +7,9 @@
 #ifndef COMMUNICATIONCHANNELSERVICE_HPP_
 #define COMMUNICATIONCHANNELSERVICE_HPP_
 
-#include <boost/weak_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
-
 #include "fwServices/config.hpp"
 #include "fwServices/ICommunication.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/IEditionService.hpp"
 
 namespace fwServices
 {
@@ -32,6 +28,7 @@ public:
 
 	/// Definitions
 	fwCoreServiceClassDefinitionsMacro ( (ComChannelService)(::fwServices::ICommunication::Baseclass) ) ;
+    fwCoreAllowSharedFromThis();
 
 	/**
 	 * @brief Constructor
@@ -90,7 +87,7 @@ public:
 	/**
 	 * @brief Defines the object to observe (internally stored with weak reference)
 	 */
-	FWSERVICES_API void setSrc( ::fwServices::IEditionService::sptr  src);
+	FWSERVICES_API void setSrc( SPTR(::fwServices::IEditionService)  src);
 
 	/// Defines the target service
 	FWSERVICES_API void setDest( ::fwServices::IService::sptr _client);
@@ -99,7 +96,7 @@ public:
 	FWSERVICES_API IService::sptr  getDest();
 
 	/// Returns the target service
-	FWSERVICES_API ::fwServices::IEditionService::sptr  getSrc();
+	FWSERVICES_API SPTR(::fwServices::IEditionService)  getSrc();
 
 	/// Return true is both source and destination are valid pointers
 	FWSERVICES_API bool isValid();
@@ -124,7 +121,7 @@ protected:
 	/**
 	 * @brief subject being really observed. It is the editor attached with the object to be modified
 	 */
-	::fwServices::IEditionService::wptr m_source ;
+	WPTR(::fwServices::IEditionService) m_source ;
 
 	/**
 	 * client will be invoked on modification
