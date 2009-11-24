@@ -1,7 +1,7 @@
 #ifndef _FWMATH_VECTORFUNCTIONS_HPP_
 #define _FWMATH_VECTORFUNCTIONS_HPP_
 
-#include <math.h>
+#include <cmath>
 
 #include <fwCore/base.hpp>
 
