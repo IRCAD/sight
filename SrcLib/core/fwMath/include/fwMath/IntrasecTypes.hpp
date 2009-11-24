@@ -15,7 +15,7 @@ typedef ::boost::array<double, 4> fwPlane;
 typedef ::boost::array< ::boost::array< double,4 >, 4> fwMatrix4x4;
 
 /// Type for vertex positions
-typedef std::vector < std::vector <double> > fwVertexPosition;
+typedef std::vector < std::vector <float> > fwVertexPosition;
 
 /// Type for vertex index
 typedef std::vector < std::vector <int> > fwVertexIndex;
