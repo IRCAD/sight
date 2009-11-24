@@ -31,6 +31,8 @@ public:
 
 	/// Event identifier used to inform for modification
 	FWCOMED_API static std::string ADD_PLANE;
+	FWCOMED_API static std::string REMOVE_PLANE;
+	FWCOMED_API static std::string PLANELIST_VISIBILITY;
 
 	/**
 	  * @brief	Constructor : does nothing.
