@@ -39,15 +39,13 @@ SliceSelector::SliceSelector(wxWindow* const parent, const wxWindowID id ) throw
 	m_fctChangeTypeCallback = ::boost::bind( &::fwWX::SliceSelector::printType, this, _1);
 
 	m_sliceType = new wxChoice( this, ID_SLICE_TYPE, wxDefaultPosition, wxDefaultSize, m_sliceTypesArray );
-	m_sliceIndex = new wxSlider( this, ID_SLICE_INDEX, 0, -1, 1, wxDefaultPosition, wxSize(-1,75));
+	m_sliceIndex = new wxSlider( this, ID_SLICE_INDEX, 0, -1, 1);
 	m_pSliceIndexText = new wxTextCtrl( this, ID_SLICE_TEXT, _(""), wxDefaultPosition, wxSize(75,-1), wxTE_READONLY|wxTE_CENTRE);
-	//	m_sliceIndex->Disable();
 
 	wxSizer* const sizer = new wxBoxSizer( wxHORIZONTAL );
-	sizer->Add( m_sliceType      , 0, ( wxEXPAND | wxALL )           , 1 );
-	sizer->Add( m_sliceIndex     , 1, ( wxEXPAND | wxALL )& ~wxLEFT  , 1 );
-	sizer->Add( m_pSliceIndexText, 0, ( wxEXPAND | wxALL )           , 1 );
-
+	sizer->Add( m_sliceType      , 0, ( wxEXPAND | wxALL )  , 1 );
+	sizer->Add( m_sliceIndex     , 1, ( wxEXPAND | wxALL )  , 1 );
+	sizer->Add( m_pSliceIndexText, 0, ( wxALL )             , 1 );
 
 	this->SetSizer( sizer );
 	this->Layout();
