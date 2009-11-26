@@ -6,8 +6,8 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
-
 #include <fwTools/Factory.hpp>
+#include <fwMath/PlaneFunctions.hpp>
 
 #include "fwData/Plane.hpp"
 
@@ -19,8 +19,18 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Plane::Plane ()
+: m_isIntersection(true)
 {
 	SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+Plane::Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3) {
+	m_vPoints[0] = _point1;
+	m_vPoints[1] = _point2;
+	m_vPoints[2] = _point3;
+	m_plane = ::fwMath::getPlane(_point1->getCRefCoord(), _point2->getCRefCoord(), _point3->getCRefCoord());
 }
 
 //------------------------------------------------------------------------------
@@ -53,6 +63,17 @@ Plane & Plane::operator=( const Plane & _plane )
 	m_vPoints = _plane.m_vPoints;
 
 	return *this;
+}
+
+//------------------------------------------------------------------------------
+
+void Plane::setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3)
+{
+	m_vPoints[0] = _point1;
+	m_vPoints[1] = _point2;
+	m_vPoints[2] = _point3;
+	m_plane = ::fwMath::getPlane(_point1->getCRefCoord(), _point2->getCRefCoord(), _point3->getCRefCoord());
+
 }
 
 //------------------------------------------------------------------------------

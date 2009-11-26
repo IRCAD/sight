@@ -1,0 +1,7 @@
+TYPE    = 'shared'
+VERSION = '0-1'
+USE     = ['boost']
+LIB = ['fwCore_0-1']
+
+# LOGLEVEL='trace'
+

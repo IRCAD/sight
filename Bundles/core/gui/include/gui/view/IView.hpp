@@ -7,7 +7,9 @@
 #ifndef _GUI_VIEW_IVIEW_HPP_
 #define _GUI_VIEW_IVIEW_HPP_
 
+#include <wx/wx.h>
 #include <fwServices/IService.hpp>
+
 
 #include "gui/export.hpp"
 
@@ -52,6 +54,13 @@ public :
 	 * @return WxMenuItem id.
 	 */
 	GUI_API int getGuiContainerId() ;
+
+	/**
+	 * @brief This method is used to get wx container of the view.
+	 *
+	 * @return wx container.
+	 */
+	GUI_API wxWindow * getWxContainer() const;
 
 protected :
 

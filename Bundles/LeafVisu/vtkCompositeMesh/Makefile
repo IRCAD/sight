@@ -1,0 +1,1 @@
+include $(CONFIGDEV)/SCons/Makefile

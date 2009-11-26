@@ -96,11 +96,11 @@ bool wxZipFolder::unpackFolder( const wxString & _srcZipFileName, const wxString
 		{
 			// access meta-data
 			wxString name = _destFolderName + "/" + entry->GetName();
-			OSLM_DEBUG( "File Path = " << name );
+			OSLM_DEBUG( "File Path = " << name.mb_str() );
 
 			// File Name
 			wxFileName filePath ( name );
-			OSLM_DEBUG( "Dir Path = " << filePath.GetPath() );
+			OSLM_DEBUG( "Dir Path = " << filePath.GetPath().mb_str() );
 
 			// Create Directories
 			wxFileName dirPath = wxFileName::DirName( filePath.GetPath() );

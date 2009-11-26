@@ -33,6 +33,12 @@ template < class CLASSNAME >
 SPTR(CLASSNAME) New(::fwRuntime::ConfigurationElement::sptr _elt) ;
 
 
+/**
+ * @brief Add services to object from a configuration element, this method is used in ::fwServices::New method.
+ * @author IRCAD (Research and Development Team).
+ */
+FWSERVICES_API void addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _obj, ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+
 //@}
 
 
