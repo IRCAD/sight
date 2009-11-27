@@ -51,6 +51,8 @@ public :
 	/// Copy method
 	FWDATA_API Plane &operator=( const Plane & _plane ) ;
 
+	/// Compare method
+	FWDATA_API bool operator==( const Plane & _plane ) ;
 
 	/// get the plane coordinate
 	FWDATA_API fwPlane getPlane() const {return m_plane;};
