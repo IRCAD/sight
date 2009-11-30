@@ -58,6 +58,8 @@ public :
 	/// Re-initialize the plane with 3 points
 	FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
 
+	FWDATA_API void computePlaneFromPoints();
+
 	/// Points container
 	fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
 

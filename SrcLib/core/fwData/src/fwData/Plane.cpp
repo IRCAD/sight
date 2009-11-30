@@ -30,7 +30,7 @@ Plane::Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwD
 	m_vPoints[0] = _point1;
 	m_vPoints[1] = _point2;
 	m_vPoints[2] = _point3;
-	m_plane = ::fwMath::getPlane(_point1->getCRefCoord(), _point2->getCRefCoord(), _point3->getCRefCoord());
+	computePlaneFromPoints();
 }
 
 //------------------------------------------------------------------------------
@@ -72,8 +72,13 @@ void Plane::setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point
 	m_vPoints[0] = _point1;
 	m_vPoints[1] = _point2;
 	m_vPoints[2] = _point3;
-	m_plane = ::fwMath::getPlane(_point1->getCRefCoord(), _point2->getCRefCoord(), _point3->getCRefCoord());
+	computePlaneFromPoints();
 
+}
+
+void Plane::computePlaneFromPoints()
+{
+	::fwMath::setValues(m_plane, m_vPoints[0]->getCRefCoord(), m_vPoints[1]->getCRefCoord(), m_vPoints[2]->getCRefCoord());
 }
 
 //------------------------------------------------------------------------------
