@@ -43,6 +43,7 @@ private :
 
 	std::string m_imageUID;
 	std::string m_meshUID;
+	unsigned int m_reduction;
 
 };
 
