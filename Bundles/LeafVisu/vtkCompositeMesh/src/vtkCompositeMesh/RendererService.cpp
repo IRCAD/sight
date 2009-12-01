@@ -34,220 +34,206 @@
 
 #include "vtkCompositeMesh/RendererService.hpp"
 
+#include <fwData/Material.hpp>
+
 REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite );
 
 
 
 namespace vtkCompositeMesh
 {
-
-class vtkLocalCommand : public vtkCommand
-{
-public:
-
-	vtkLocalCommand(::vtkCompositeMesh::RendererService* _service)
+	class vtkLocalCommand : public vtkCommand
 	{
-		m_service = _service;
-		this->m_isMousePressed = false;
-	}
-	void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
-	{
-		//OSLM_INFO("ail like to LEFT : _event " << _event );
+	public:
 
-		if (_event == vtkCommand::StartInteractionEvent )
+		vtkLocalCommand(::vtkCompositeMesh::RendererService* _service)
 		{
-			//SLM_INFO(" ________________START___________________________");
-			this->m_isMousePressed = true;
-		}
-		else if (_event == vtkCommand::EndInteractionEvent )
-		{
-			//SLM_INFO(" ________________END___________________________");
+			m_service = _service;
 			this->m_isMousePressed = false;
 		}
-		else if ( (_event == vtkCommand::ModifiedEvent && this->m_isMousePressed)
-				|| _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
+		void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
 		{
-			//SLM_INFO(" ______________________________________________");
-			m_service->updateCamPosition();
+			//OSLM_INFO("ail like to LEFT : _event " << _event );
+
+			if (_event == vtkCommand::StartInteractionEvent )
+			{
+				//SLM_INFO(" ________________START___________________________");
+				this->m_isMousePressed = true;
+			}
+			else if (_event == vtkCommand::EndInteractionEvent )
+			{
+				//SLM_INFO(" ________________END___________________________");
+				this->m_isMousePressed = false;
+			}
+			else if ( (_event == vtkCommand::ModifiedEvent && this->m_isMousePressed)
+					|| _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
+			{
+				//SLM_INFO(" ______________________________________________");
+				m_service->updateCamPosition();
+			}
+		}
+	private:
+		::vtkCompositeMesh::RendererService* m_service;
+		bool m_isMousePressed;
+	};
+
+	RendererService::RendererService() throw()
+							: m_render( 0 ), m_bPipelineIsInit(false), m_isCamMaster(false)
+	{
+	}
+
+	//-----------------------------------------------------------------------------
+
+	RendererService::~RendererService() throw()
+	{
+	}
+
+	//-----------------------------------------------------------------------------
+
+	void RendererService::starting() throw(fwTools::Failed)
+	{
+		this->initRender();
+
+		m_bPipelineIsInit = false;
+
+		wxWindow* const container = m_container;
+		assert( container );
+		m_wxmanager = new wxAuiManager( container );
+		// Create a VTK-compliant window and insert it
+		m_interactor = new ::wxVTKRenderWindowInteractor( container, -1 );
+		m_wxmanager->AddPane( m_interactor, wxAuiPaneInfo().CentrePane() );
+		// Repaint and resize window
+		m_wxmanager->Update();
+
+		// Renderer
+		m_render = vtkRenderer::New();
+		m_interactor->GetRenderWindow()->AddRenderer(m_render);
+		// Repaint and resize window
+		m_wxmanager->Update();
+	}
+
+	//-----------------------------------------------------------------------------
+
+	void RendererService::configuring() throw(::fwTools::Failed)
+	{
+		this->initGuiContainerId();
+
+		if( m_configuration->findConfigurationElement("masterSlaveRelation") )
+		{
+			m_isCamMaster = ( m_configuration->findConfigurationElement("masterSlaveRelation")->getValue() == "master" );
 		}
 	}
-private:
-	::vtkCompositeMesh::RendererService* m_service;
-	bool m_isMousePressed;
-};
 
-RendererService::RendererService() throw()
-						: m_render( 0 ), m_bPipelineIsInit(false), m_isCamMaster(false)
-						  {
+	//-----------------------------------------------------------------------------
 
-						  }
-
-//-----------------------------------------------------------------------------
-
-RendererService::~RendererService() throw()
-						{
-						}
-
-//-----------------------------------------------------------------------------
-
-void RendererService::starting() throw(fwTools::Failed)
-						{
-	this->initRender();
-
-	m_bPipelineIsInit = false;
-
-	wxWindow* const container = m_container;
-	assert( container );
-	m_wxmanager = new wxAuiManager( container );
-	// Create a VTK-compliant window and insert it
-	m_interactor = new ::wxVTKRenderWindowInteractor( container, -1 );
-	m_wxmanager->AddPane( m_interactor, wxAuiPaneInfo().CentrePane() );
-	// Repaint and resize window
-	m_wxmanager->Update();
-
-	// Renderer
-	m_render = vtkRenderer::New();
-	m_interactor->GetRenderWindow()->AddRenderer(m_render);
-	// Repaint and resize window
-	m_wxmanager->Update();
-						}
-
-//-----------------------------------------------------------------------------
-
-void RendererService::configuring() throw(::fwTools::Failed)
-						{
-	this->initGuiContainerId();
-
-	if( m_configuration->findConfigurationElement("masterSlaveRelation") )
+	void RendererService::stopping() throw(fwTools::Failed)
 	{
-		m_isCamMaster = ( m_configuration->findConfigurationElement("masterSlaveRelation")->getValue() == "master" );
-	}
-						}
+		if( m_render == 0 ) return;
 
-//-----------------------------------------------------------------------------
+		if( m_wxmanager == 0 ) return;
 
-void RendererService::stopping() throw(fwTools::Failed)
-						{
-	if( m_render == 0 ) return;
-
-	if( m_wxmanager == 0 ) return;
-
-	assert( m_interactor );
-	if ( m_isCamMaster )
-	{
-		m_interactor->RemoveObserver(m_loc);
-	}
-	m_interactor->Delete();
-	m_interactor = 0;
-
-	assert( m_wxmanager );
-	m_wxmanager->UnInit();
-	delete m_wxmanager;
-	m_wxmanager = 0;
-
-	m_container->DestroyChildren() ;
-
-	assert( m_render );
-	m_render->Delete();
-	m_render = 0;
-
-	this->stopRender();
-						}
-
-//-----------------------------------------------------------------------------
-
-void RendererService::updating() throw(fwTools::Failed)
-						{
-
-	m_interactor->Render();
-						}
-
-//-----------------------------------------------------------------------------
-
-void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
-						{
-
-
-
-	::fwComEd::TriangularMeshMsg::csptr TriangularMeshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(_msg);
-	if ( TriangularMeshMsg && TriangularMeshMsg->hasEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) )
-	{
-		if(!m_bPipelineIsInit)
+		assert( m_interactor );
+		if ( m_isCamMaster )
 		{
-			initVTKPipeline();
-			m_bPipelineIsInit = true;
+			m_interactor->RemoveObserver(m_loc);
+		}
+		m_interactor->Delete();
+		m_interactor = 0;
+
+		assert( m_wxmanager );
+		m_wxmanager->UnInit();
+		delete m_wxmanager;
+		m_wxmanager = 0;
+
+		m_container->DestroyChildren() ;
+
+		assert( m_render );
+		m_render->Delete();
+		m_render = 0;
+
+		this->stopRender();
+	}
+
+	//-----------------------------------------------------------------------------
+
+	void RendererService::updating() throw(fwTools::Failed)
+	{
+		m_interactor->Render();
+	}
+
+	//-----------------------------------------------------------------------------
+
+	void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
+	{
+		::fwComEd::TriangularMeshMsg::csptr TriangularMeshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(_msg);
+		if ( TriangularMeshMsg && TriangularMeshMsg->hasEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) )
+		{
+			if(!m_bPipelineIsInit)
+			{
+				initVTKPipeline();
+				m_bPipelineIsInit = true;
+			}
+			else
+			{
+				updateVTKPipeline();
+			}
 		}
 		else
 		{
-			updateVTKPipeline();
-		}
-	}
-	else
-	{
-		if ( !m_isCamMaster )
-		{
-			::fwComEd::CameraMsg::csptr camMsg = ::fwComEd::CameraMsg::dynamicConstCast(_msg);
-			if( camMsg && camMsg->hasEvent( ::fwComEd::CameraMsg::CAMERA_MOVING ) )
+			if ( !m_isCamMaster )
 			{
-				vtkCamera* camera = m_render->GetActiveCamera();
+				::fwComEd::CameraMsg::csptr camMsg = ::fwComEd::CameraMsg::dynamicConstCast(_msg);
+				if( camMsg && camMsg->hasEvent( ::fwComEd::CameraMsg::CAMERA_MOVING ) )
+				{
+					vtkCamera* camera = m_render->GetActiveCamera();
 
-				camera->SetPosition(camMsg->getPositionCamera());
-				camera->SetFocalPoint(camMsg->getFocalCamera());
-				camera->SetViewUp(camMsg->getViewUpCamera());
-				camera->SetClippingRange(0.1, 1000000);
+					camera->SetPosition(camMsg->getPositionCamera());
+					camera->SetFocalPoint(camMsg->getFocalCamera());
+					camera->SetViewUp(camMsg->getViewUpCamera());
+					camera->SetClippingRange(0.1, 1000000);
+				}
 			}
 		}
+		m_interactor->Render();
+
 	}
-	m_interactor->Render();
 
-						}
+	//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-
-void RendererService::initVTKPipeline()
-
-{
-	//Create the view:
-	createAndAddActorToRender();
-
-}
-
-//-----------------------------------------------------------------------------
-void RendererService::createAndAddActorToRender()
-{
-
-	//Check there is indeed a Composite object in this:
-	assert(this->getObject< ::fwData::Composite >());
-
-	//Create a pointer on this object:
-	::fwData::Composite::sptr myComposite = this->getObject< ::fwData::Composite >();
-
-	OSLM_INFO( "VTK Pipeline ready TO UPDATE"<< '\n'<< "Object received:"<< myComposite->getLeafClassname());
-
-	// elementnumber increases for each mesh found:
-	unsigned int elementNumber=0;
-
-	//Get my composite objects map:
-	::fwData::Composite::Container myCompositeMap= myComposite->getRefMap();
-
-	//Loop through the composite objects, if it's a mesh, then render it:
-	for(::fwData::Composite::Container::const_iterator it = myCompositeMap.begin(); it != myCompositeMap.end(); ++it)
+	void RendererService::initVTKPipeline()
 	{
-		OSLM_INFO("ObjectName: " << it->first);
-		OSLM_INFO("ObjectPointer: " << it->second);
-		OSLM_INFO("ObjectType: " << it->second->getClassname () << '\n');
+		//Create the view:
+		createAndAddActorToRender();
+	}
 
-		::fwData::TriangularMesh::sptr myMesh =::fwData::TriangularMesh::dynamicCast (it->second);
+	//-----------------------------------------------------------------------------
+	void RendererService::createAndAddActorToRender()
+	{
+		bool flagMaterialExist = false;
+		//Check there is indeed a Composite object in this:
+		assert(this->getObject< ::fwData::Composite >());
 
-		// If it's a mesh, then put it in the pipeline:
-		if( myMesh )
+		//Create a pointer on this object:
+		::fwData::Composite::sptr myComposite = this->getObject< ::fwData::Composite >();
+
+		OSLM_INFO( "VTK Pipeline ready TO UPDATE" << '\n' << "Object received:" << myComposite->getLeafClassname());
+
+		// elementnumber increases for each mesh found:
+		unsigned int elementNumber=0;
+
+		//Get my composite objects map:
+		::fwData::Composite::Container myCompositeMap= myComposite->getRefMap();
+
+		//Loop through the composite objects, if it's a mesh, then render it:
+		for(::fwData::Composite::Container::const_iterator it = myCompositeMap.begin(); it != myCompositeMap.end(); ++it)
 		{
-			OSLM_INFO("Mesh found: " << it->first);
+			OSLM_INFO("ObjectName: " << it->first);
+			OSLM_INFO("ObjectPointer: " << it->second);
+			OSLM_INFO("ObjectType: " << it->second->getClassname () << '\n');
 
+			::fwData::TriangularMesh::sptr myMesh =::fwData::TriangularMesh::dynamicCast (it->second);
 			vtkPolyData* vtk_polyData = ::vtkIO::toVTKMesh(myMesh);
-
 			OSLM_INFO("Loaded: " << it->first);
-
 			vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
 
 			m_normals = vtkPolyDataNormals::New();
@@ -260,20 +246,33 @@ void RendererService::createAndAddActorToRender()
 			// Add the actors
 			m_render->AddActor( actor);
 
-			// Alternation of the meshes colors
-				if(elementNumber==0)
+			// If it's a mesh, then put it in the pipeline:
+			if( myMesh )
+			{
+				OSLM_INFO("Mesh found: " << it->first);
+				if (myMesh->getFieldSize( "MaterialMesh" ) == 0)
 				{
-					actor->GetProperty()->EdgeVisibilityOn();
-					actor->GetProperty()->SetInterpolationToFlat();
-					actor->GetProperty()->SetColor (0.0, 0.0, 1.0);
-					actor->GetProperty()->SetEdgeColor (1.0, 0.0, 0.0);
+					// No Material data then default
+					if(elementNumber == 0)
+					{
+						actor->GetProperty()->EdgeVisibilityOn();
+						actor->GetProperty()->SetInterpolationToFlat();
+						actor->GetProperty()->SetColor (1.0, 0.0, 0.0);
+						actor->GetProperty()->SetEdgeColor (1.0, 0.0, 0.0);
+					}
+					else
+					{
+						actor->GetProperty()->SetRepresentationToWireframe ();
+						actor->GetProperty()->SetColor (1.0, 1.0, 1.0);
+					}
 				}
 				else
 				{
-					actor->GetProperty()->SetRepresentationToWireframe ();
-					actor->GetProperty()->SetColor (1.0, 1.0, 1.0);
+					// Material exists
+					::fwData::Material::sptr matObjPtr = myMesh->getFieldSingleElement<::fwData::Material>( "MaterialMesh" );
+					actor->GetProperty()->SetColor (matObjPtr->ambient().red(), matObjPtr->ambient().green(), matObjPtr->ambient().blue());
 				}
-
+			}
 			m_interactor->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
 			m_loc = new vtkLocalCommand(this);
 			if ( m_isCamMaster )
@@ -283,44 +282,36 @@ void RendererService::createAndAddActorToRender()
 			// Repaint and resize window
 			m_wxmanager->Update();
 			m_render->ResetCamera();
-
 			OSLM_INFO("displayed: " << it->first);
-
 			mapper->Delete();
 			elementNumber++;
-
 		}
-
-
 	}
 
-}
-void RendererService::updateVTKPipeline()
-{
-	//Clear the view:
-	m_render->RemoveAllViewProps();
-	//Recreate the view:
-	createAndAddActorToRender();
+	void RendererService::updateVTKPipeline()
+	{
+		//Clear the view:
+		m_render->RemoveAllViewProps();
+		//Recreate the view:
+		createAndAddActorToRender();
+	}
 
+	//-----------------------------------------------------------------------------
 
-}
+	void RendererService::updateCamPosition()
+	{
+		::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >();
 
-//-----------------------------------------------------------------------------
+		vtkCamera* camera = m_render->GetActiveCamera();
 
-void RendererService::updateCamPosition()
-{
-	::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >();
+		// Prepare message to be fired according to position modification
+		::fwComEd::CameraMsg::NewSptr camMsg;
+		camMsg->addEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
+		camMsg->setPositionCamera(camera->GetPosition());
+		camMsg->setFocalCamera(camera->GetFocalPoint());
+		camMsg->setViewUpCamera(camera->GetViewUp());
 
-	vtkCamera* camera = m_render->GetActiveCamera();
-
-	// Prepare message to be fired according to position modification
-	::fwComEd::CameraMsg::NewSptr camMsg;
-	camMsg->addEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
-	camMsg->setPositionCamera(camera->GetPosition());
-	camMsg->setFocalCamera(camera->GetFocalPoint());
-	camMsg->setViewUpCamera(camera->GetViewUp());
-
-	::fwServices::IEditionService::notify(this->getSptr(), mesh, camMsg);
-}
+		::fwServices::IEditionService::notify(this->getSptr(), mesh, camMsg);
+	}
 
 }

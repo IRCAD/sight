@@ -24,6 +24,7 @@
 
 #include "vtkCompositeMesh/config.hpp"
 
+
 // VTK
 class vtkRenderer;
 class vtkPolyDataNormals;

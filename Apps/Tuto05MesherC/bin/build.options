@@ -12,7 +12,7 @@ BUNDLES = [
     'ioData_0-1'         	,
     'vtkSimpleNegato_0-1'	,
     'vtkSimpleMesh_0-1'  	,
-    'vtkCompositeMesh_0-1'  	,
+    'vtkCompositeMesh_0-1'  ,
     'uiIO_0-1'			,
     'opVTKMesh_0-1',
     'opImageFilter_0-1'
