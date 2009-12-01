@@ -59,6 +59,42 @@ struct IsEqual
 
 //-----------------------------------------------------------------------------
 
+/**
+ * @brief	Defines a predicate STL compatible that test priority order between two Com Channel Service.
+ */
+
+bool Less (::fwServices::ComChannelService::wptr observer1,  ::fwServices::ComChannelService::wptr observer2 )
+{
+	bool result = false;
+	if(!observer1.expired())
+	{
+		if(!observer2.expired())
+		{
+			// Both wpstr are valid
+			result = observer1.lock()->getPriority() < observer2.lock()->getPriority();
+		}
+		else
+		{
+			// Normally it never happens because expired comchannel is remove on the IEditionService::notify function
+			OSLM_FATAL("comChannel expired.");
+			// observer1 is valid and obseerver2 is expire.
+			result = true;
+		}
+	}
+	else
+	{
+		if(!observer2.expired())
+		{
+			// Normally it never happens because expired comchannel is remove on the IEditionService::notify function
+			OSLM_FATAL("comChannel expired.");
+			// Both observer1 and observer1 are expired.
+			result = false;
+		}
+	}
+   return result;
+}
+//-----------------------------------------------------------------------------
+
 } // end namespace
 
 //-----------------------------------------------------------------------------
@@ -101,6 +137,8 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
 	if( findObserver(observer) == m_observers.end() )
 	{
 		m_observers.push_back( observer );
+		// sort the list to put the new element at the right place.
+		m_observers.sort(Less);
 	}
 }
 

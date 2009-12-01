@@ -26,7 +26,7 @@ REGISTER_SERVICE( ::fwServices::ICommunication , ::fwServices::ComChannelService
 namespace fwServices
 {
 
-ComChannelService::ComChannelService() : m_destUUID( std::pair< bool , std::string >(false , "") )
+ComChannelService::ComChannelService() : m_destUUID( std::pair< bool , std::string >(false , "") ), m_priority(0.5)
 {
 }
 
@@ -100,7 +100,7 @@ void ComChannelService::starting() throw(fwTools::Failed)
 	{
 		std::stringstream msg ;
 		this->info( msg ) ;
-		SLM_TRACE( "Starting ComChannelService : " + msg.str() );
+		SLM_TRACE( "Starting ComChannelService : " << msg.str() << " with priority: " << m_priority);
 		m_source.lock()->attach( this->getSptr() );
 		m_source.lock()->start() ;
 	}
@@ -160,7 +160,7 @@ void ComChannelService::info(std::ostream &_sstream )
 	}
 	if( !m_destination.expired() )
 	{
-		_sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")";
+		_sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
 	}
 
 }
@@ -246,7 +246,7 @@ std::string ComChannelService::getNotificationInformation( ::fwServices::ObjectM
 	std::string objectUUID = convertToLightString( _msg->getUUID() );
 
 	std::stringstream sstr;
-	sstr << "MSG ( " << objectUUID << " ) : " << sourceUUID << " ===> " << destUUID;
+	sstr << "MSG ( " << objectUUID << " ) : " << sourceUUID << " ===> " << destUUID << " Priority: " << m_priority;
 	return sstr.str();
 }
 
@@ -268,6 +268,5 @@ void ComChannelService::sendMessage(::fwServices::ObjectMsg::csptr _msg)
 		}
 	}
 }
-
 
 }

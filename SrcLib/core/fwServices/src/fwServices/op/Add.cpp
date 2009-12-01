@@ -52,7 +52,15 @@ namespace fwServices
 	SLM_ASSERT("wrong autoComChannel definition", autoComChannel=="yes" || autoComChannel=="no");
 	if(autoComChannel=="yes")
 	{
-		::fwServices::registerCommunicationChannel( obj , service)->start();
+		::fwServices::ComChannelService::sptr comChannel = ::fwServices::registerCommunicationChannel( obj , service);
+		// Add priority for the new comChannel if defined, otherwise the default value is 0.5
+		if( _elt->hasAttribute("priority"))
+		{
+			std::string priorityStr = _elt->getExistingAttributeValue("priority");
+			double priority=atof(priorityStr.c_str());
+			comChannel->setPriority(priority);
+		}
+		comChannel->start();
 	}
 
 

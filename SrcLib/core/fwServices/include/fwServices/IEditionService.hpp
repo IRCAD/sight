@@ -9,9 +9,6 @@
 
 #include <list>
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
-
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/Object.hpp>

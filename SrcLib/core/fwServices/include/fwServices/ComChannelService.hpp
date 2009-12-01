@@ -24,6 +24,7 @@ class ObjectMsg ;
  */
 class FWSERVICES_CLASS_API ComChannelService : public ::fwServices::ICommunication
 {
+
 public:
 
 	/// Definitions
@@ -102,6 +103,14 @@ public:
 	FWSERVICES_API bool isValid();
 	//@}
 
+	/// Set the new priority for the ComChannel;
+	FWSERVICES_API setPriority(double newPriority) {m_priority = newPriority;}
+	//@}
+
+	/// Return the priority for the ComChannel
+	FWSERVICES_API double getPriority(void) {return(m_priority);}
+	//@}
+
 	/**
 	 * @brief Send message to destination service if it is started.
 	 * @param[in] _msg the message sent to destination service
@@ -109,6 +118,7 @@ public:
 	 * If the message is the message sent by destination service, the message is not notified. Else, we have an event loop and an assertion is created.
 	 */
 	FWSERVICES_API void sendMessage( ::fwServices::ObjectMsg::csptr _msg );
+
 
 protected:
 
@@ -139,6 +149,9 @@ private :
 
 	/// Helper to convert string used by ComChannelService::getNotificationInformation
 	std::string convertToLightString( std::string _initialString );
+
+	/// Priority of the com channel. By default it is 0.5
+	double m_priority;
 
 };
 
