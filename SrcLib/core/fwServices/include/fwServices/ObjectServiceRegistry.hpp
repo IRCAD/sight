@@ -173,6 +173,14 @@ public:
 	 */
 	FWSERVICES_API static void unregisterService(  ::fwServices::IService::sptr _service );
 
+	 /**
+	  * @brief container manipulator (Helper)
+	  * remove service from ObjectServiceRegistry containers, do not perform any "semantic action" like
+	  * stop service, remove comm channel
+	  * @note (internal use) use with care
+	  */
+	static void  removeFromContainer( ::boost::shared_ptr< IService > _service );
+
 	//@}
 
     /**

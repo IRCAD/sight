@@ -67,7 +67,7 @@ namespace fwServices
 		objParserSrv->configure() ;
 		objParserSrv->start() ;
 		objParserSrv->update() ;
-		objParserSrv->stop() ;
+		// unregister call stop before
 		::fwServices::OSR::unregisterService( objParserSrv );
 
 		//::fwServices::erase< ::fwServices::IXMLParser >( obj ) ;
