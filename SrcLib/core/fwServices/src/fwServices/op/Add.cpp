@@ -58,6 +58,8 @@ namespace fwServices
 		{
 			std::string priorityStr = _elt->getExistingAttributeValue("priority");
 			double priority=atof(priorityStr.c_str());
+			if(priority < 0.0) priority = 0.0;
+			if(priority > 1.0) priority = 1.0;
 			comChannel->setPriority(priority);
 		}
 		comChannel->start();
