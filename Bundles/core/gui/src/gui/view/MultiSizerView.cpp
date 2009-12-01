@@ -120,8 +120,6 @@ void MultiSizerView::starting() throw(::fwTools::Failed)
 
 		// Set the panel
 		pi->m_panel = viewPanel;
-
-		viewPanel->SetBackgroundColour( wxColour(255,255,0) );
 		m_sizer->Add( viewPanel, pi->m_proportion, wxALL|wxEXPAND, pi->m_border);
 	}
 }
