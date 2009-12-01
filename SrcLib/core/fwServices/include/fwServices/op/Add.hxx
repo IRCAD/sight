@@ -18,33 +18,33 @@ namespace fwServices
 {
 
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > add( ::fwTools::Object::sptr obj )
+SPTR(SERVICE) add( ::fwTools::Object::sptr obj )
 {
 	std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-	::boost::shared_ptr< fwServices::IService > service = ::fwServices::add( obj , serviceId ) ;
+	::fwServices::IService::sptr service = ::fwServices::add( obj , serviceId ) ;
 	assert( service );
-	::boost::shared_ptr< SERVICE > castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
+	SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
 	assert( castedService );
 	return castedService ;
 }
 
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > add( ::fwTools::Object::sptr obj  , std::string _implementationId )
+SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId )
 {
 	std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-	::boost::shared_ptr< fwServices::IService > service = ::fwServices::add( obj , serviceId , _implementationId ) ;
+	::fwServices::IService::sptr service = ::fwServices::add( obj , serviceId , _implementationId ) ;
 	assert( service );
-	::boost::shared_ptr< SERVICE > castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
+	SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
 	assert( castedService );
 	return castedService ;
 }
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > add( ::fwTools::Object::sptr obj  , std::string _implementationId , std::string _id)
+SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId , std::string _id)
 {
 	std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-	::boost::shared_ptr< fwServices::IService > service = ::fwServices::add( obj , serviceId , _implementationId , _id ) ;
+	::fwServices::IService::sptr service = ::fwServices::add( obj , serviceId , _implementationId , _id ) ;
 	assert( service );
-	::boost::shared_ptr< SERVICE > castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
+	SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
 	assert( castedService );
 	return castedService ;
 }

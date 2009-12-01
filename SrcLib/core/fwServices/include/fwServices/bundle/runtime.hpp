@@ -51,7 +51,7 @@ FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > find
  * @note Use findConfigurationExtensionsForPoint(std::string ) method
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > findConfigurationForPoint(std::string _cfgId , std::string _pointId ) ;
+FWSERVICES_API ::fwRuntime::ConfigurationElement::sptr findConfigurationForPoint(std::string _cfgId , std::string _pointId ) ;
 
 /**
  * @brief Return runtime extension identifier contributing to both serviceId and object.classname()
@@ -62,7 +62,7 @@ FWSERVICES_API ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > findConf
  * @note <ext id="id" implements="object.className()" />
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API std::vector< std::string > getValidExtensionIdsForObjectAndService( ::boost::shared_ptr< fwTools::Object > object, std::string serviceId, unsigned int mode = 0 ) ;
+FWSERVICES_API std::vector< std::string > getValidExtensionIdsForObjectAndService( fwTools::Object::sptr object, std::string serviceId, unsigned int mode = 0 ) ;
 
 /**
  * @brief return runtime extension whose id contributes to SERVICECLASS.classname()

@@ -7,9 +7,6 @@
 #ifndef COMMUNICATIONCHANNELSERVICE_HPP_
 #define COMMUNICATIONCHANNELSERVICE_HPP_
 
-#include <boost/weak_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
-
 #include "fwServices/config.hpp"
 #include "fwServices/ICommunication.hpp"
 #include "fwServices/IService.hpp"
@@ -30,6 +27,7 @@ class FWSERVICES_CLASS_API ComChannelService : public ::fwServices::ICommunicati
 public:
 	/// Definitions
 	fwCoreServiceClassDefinitionsMacro ( (ComChannelService)(::fwServices::ICommunication::Baseclass) ) ;
+    fwCoreAllowSharedFromThis();
 
 
 	/**

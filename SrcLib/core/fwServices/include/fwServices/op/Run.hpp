@@ -51,7 +51,7 @@ FWSERVICES_API void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _
  * @brief start all obj services
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API  void startServices( ::boost::shared_ptr< fwTools::Object > obj ) ;
+FWSERVICES_API  void startServices( ::fwTools::Object::sptr obj ) ;
 
 //@}
 

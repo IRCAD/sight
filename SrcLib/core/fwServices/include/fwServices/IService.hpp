@@ -38,7 +38,7 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
  * @author IRCAD (Research and Development Team).
  * @date	2007-2009.
  *
- * This class defines the API to use and declare services. The service state aims at imposing method execution order (i.e. configure(), start(), update() or update(::boost::shared_ptr< const fwServices::ObjectMsg >), stop()).
+ * This class defines the API to use and declare services. The service state aims at imposing method execution order (i.e. configure(), start(), update() or update(const fwServices::ObjectMsg::sptr), stop()).
  *
  * @todo replace tests on status in start, stop, ... methods by assertions.
  * @todo Refactoring of SWAPPING status. Perhaps must be a special status as UPDATING or UPDATING must be another GlobalStatus. it must be homogeneous.
@@ -136,7 +136,7 @@ public :
 	 * @param[in] _cfgElement a structure which represents the xml configuration
 	 * @post m_configurationState == UNCONFIGURED
 	 */
-	FWSERVICES_API void setConfiguration( const ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement ) ;
+	FWSERVICES_API void setConfiguration( const ::fwRuntime::ConfigurationElement::sptr _cfgElement ) ;
 
 	/**
 	 * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does nothing otherwise.
@@ -167,11 +167,11 @@ public :
 	FWSERVICES_API void update() throw( ::fwTools::Failed );
 
 	/**
-	 * @brief Invoke updating(::boost::shared_ptr< const fwServices::ObjectMsg >) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
+	 * @brief Invoke updating(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
 	 * @pre m_globalState == STARTED
 	 * @pre m_notificationState == IDLE
 	 */
-	FWSERVICES_API void update( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg )  ;
+	FWSERVICES_API void update( fwServices::ObjectMsg::csptr _msg )  ;
 
 	/**
 	 * @brief Associate the service to another object
@@ -251,7 +251,7 @@ public :
 	 * @todo getConfiguration() must not be virtual.
 	 * @todo getConfiguration() must be const.
 	 */
-	FWSERVICES_API virtual ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > getConfiguration() ;
+	FWSERVICES_API virtual ::fwRuntime::ConfigurationElement::sptr getConfiguration() ;
 
 	/**
 	 * @brief Check the configuration using XSD if possible
@@ -275,7 +275,7 @@ public :
 	 * @pre the service must have an associated object set
 	 * @pre associated object does not be expired
 	 */
-	FWSERVICES_API ::boost::shared_ptr< ::fwTools::Object > getObject();
+	FWSERVICES_API ::fwTools::Object::sptr getObject();
 
 	/**
 	 * @brief Return the object associated to service. The object is casted.
@@ -284,7 +284,7 @@ public :
 	 * @pre associated object does not be expired
 	 * @post cast verification in debug mode ( assertion on dynamic cast )
 	 */
-	template< class DATATYPE > ::boost::shared_ptr< DATATYPE > getObject();
+	template< class DATATYPE > SPTR(DATATYPE) getObject();
 
 	//@}
 
@@ -359,9 +359,9 @@ protected :
 	/**
 	 * @brief Perform some computations according to modifications specified in the _msg parameter. _msg generally indicates modification to occur (or having occured) on the object the service
 	 * is attached to.
-	 * @see update(::boost::shared_ptr< const fwServices::ObjectMsg > )
+	 * @see update(fwServices::ObjectMsg::csptr )
 	 */
-	FWSERVICES_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw ( ::fwTools::Failed ) = 0 ;
+	FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed ) = 0 ;
 
 	/**
 	 * @brief Write information in a stream.
@@ -376,7 +376,7 @@ protected :
 	/**
 	 * @brief Configuration element used to configure service internal state using a generic XML like structure
 	 */
-	::boost::shared_ptr< ::fwRuntime::ConfigurationElement >	 m_configuration ;
+	::fwRuntime::ConfigurationElement::sptr	 m_configuration ;
 
 	/**
 	 * @brief associated object of service

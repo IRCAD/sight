@@ -22,7 +22,7 @@ namespace monitor
 {
 
 	typedef std::map<std::string, std::list<std::string> > string_map ;
-	typedef std::map< ::boost::shared_ptr< ::fwTools::Object > , std::list<std::string> > map_object_servicesNames ;
+	typedef std::map< ::fwTools::Object::sptr , std::list<std::string> > map_object_servicesNames ;
 
 
 /**
@@ -34,7 +34,7 @@ class FWSERVICES_CLASS_API Monitor
 public:
 
 	/**
-	 * @brief return in a std::map< < ::boost::shared_ptr<Object> > , std::list<std::string> >,
+	 * @brief return in a std::map< < Object::sptr > , std::list<std::string> >,
 	 *  a list of services names (map value) associated with instanciated Objects (map key).
 	 *  The services list can be empty.
 	 */

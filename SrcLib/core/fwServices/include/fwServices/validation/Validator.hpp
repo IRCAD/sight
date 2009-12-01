@@ -37,16 +37,16 @@ namespace validation
  * Validation process manages both in-line and off-line declarations
  * The result of the validation process is logged.
  * @note This procedure applied to all end nodes of the component based XML graph in order to check all the system
- * @note It invokes the checkService( std::string , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > , ::std::stringstream ) method.
+ * @note It invokes the checkService( std::string , ::fwRuntime::ConfigurationElement::sptr , ::std::stringstream ) method.
  */
-FWSERVICES_API bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt , std::string objType="" ) ;
+FWSERVICES_API bool checkObject( ::fwRuntime::ConfigurationElement::sptr _elt , std::string objType="" ) ;
 
 /**
  * @brief Method checking the validity of a service configuration element associated to a class named implementationId
  *
  * @param [out] stream embeds the result of the validation process
  */
-FWSERVICES_API bool checkService( std::string implementationId , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt , ::std::stringstream &stream) ;
+FWSERVICES_API bool checkService( std::string implementationId , ::fwRuntime::ConfigurationElement::sptr _elt , ::std::stringstream &stream) ;
 
 
 }

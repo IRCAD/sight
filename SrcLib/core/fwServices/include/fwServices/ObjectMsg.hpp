@@ -68,7 +68,7 @@ public:
 	 * @param[in] _pDataInfo additional information concerning message ( it is an optional parameter )
 	 * @note a message can contain many events.
 	 */
-	FWSERVICES_API void addEvent( std::string _eventId , ::boost::shared_ptr< ::fwData::Object > _pDataInfo = ::boost::shared_ptr< ::fwData::Object >() );
+	FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
 
 	/**
 	 * @brief This method is used to know if a specific event declared in the message
@@ -88,7 +88,7 @@ public:
 	 * @param[in] _eventId event id used to find his associated data
 	 * @return associated data information
 	 */
-	FWSERVICES_API ::boost::shared_ptr< const ::fwData::Object > getDataInfo( std::string _eventId ) const;
+	FWSERVICES_API ::fwData::Object::csptr getDataInfo( std::string _eventId ) const;
 
 	//@}
 
@@ -99,16 +99,16 @@ public:
 	//@{
 
 	/// Set message source (service which notifies subject obsevers)
-	FWSERVICES_API void setSource( ::boost::weak_ptr< ::fwServices::IService > _source );
+	FWSERVICES_API void setSource( WPTR(::fwServices::IService) _source );
 
 	/// Get message source (service which notifies subject obsevers)
-	FWSERVICES_API ::boost::weak_ptr< ::fwServices::IService > getSource() const;
+	FWSERVICES_API WPTR(::fwServices::IService) getSource() const;
 
 	/// Set message subject (object observed)
-	FWSERVICES_API void setSubject( ::boost::weak_ptr< ::fwTools::Object > _subject );
+	FWSERVICES_API void setSubject( ::fwTools::Object::wptr _subject );
 
 	/// Get message subject (object observed)
-	FWSERVICES_API ::boost::weak_ptr< ::fwTools::Object > getSubject() const;
+	FWSERVICES_API ::fwTools::Object::wptr getSubject() const;
 
 	//@}
 
@@ -128,9 +128,9 @@ protected :
 	/**
 	 * @brief Intern map which associates an Event Id (string) to a dataInfo ( ::fwData::Object ).
 	 *
-	 * Some event has not data info, in this cases, the event is in map  but the ::boost::shared_ptr< ::fwData::Object > is null.
+	 * Some event has not data info, in this cases, the event is in map  but the ::fwData::Object::sptr is null.
 	 */
-	std::map< std::string , ::boost::shared_ptr< ::fwData::Object > > m_eventId2DataInfo;
+	std::map< std::string , ::fwData::Object::sptr > m_eventId2DataInfo;
 
 	/// Give some message informations, this method uses getGeneralInfo.
 	FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
@@ -138,10 +138,10 @@ protected :
 private :
 
 	/// Message source. It is the service which creates msg and sends it at all subject observers
-	::boost::weak_ptr< ::fwServices::IService > m_source;
+	WPTR(::fwServices::IService) m_source;
 
 	/// Message subject. All subject observers will be notified.
-	::boost::weak_ptr< ::fwTools::Object > m_subject;
+	::fwTools::Object::wptr m_subject;
 
 	/// Helper to convert string UUID/Classname in pretty string
 	static std::string convertToLightString( std::string _initialString );

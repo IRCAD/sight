@@ -47,7 +47,7 @@ struct IsEqual
 	: m_observer( observer )
 	{}
 
-	const bool operator() ( ::boost::weak_ptr< ::fwServices::ComChannelService > observer ) const
+	const bool operator() ( ::fwServices::ComChannelService::wptr observer ) const
 	{
 		return observer.lock() == m_observer;
 	}

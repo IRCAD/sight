@@ -32,7 +32,7 @@ namespace fwServices
 namespace validation
 {
 
-bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt , std::string objType )
+bool checkObject( ::fwRuntime::ConfigurationElement::sptr _elt , std::string objType )
 {
 	assert( _elt->hasAttribute("id")) ;
 	bool validity = true;
@@ -60,7 +60,7 @@ bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt 
 		ext->getBundle()->start(); // start dll to retrieve proxy and register object
 	}
 
-	::boost::shared_ptr< ::fwTools::Object > obj = ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >(objectType) ;
+	::fwTools::Object::sptr obj = ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >(objectType) ;
 	OSLM_ASSERT("root object " << objectType << " not created", obj);
 
 	stream << "Object type = " << objectType << (_elt->hasAttribute("id") ? " (id = " + _elt->getExistingAttributeValue("id") + ")" : " No id" ) ;
@@ -125,7 +125,7 @@ bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt 
 					{
 						std::string configId = (*iter)->getExistingAttributeValue("config") ;
 						stream << " (Offline=" << configId << ") : " ;
-						 ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > cfg = ::fwServices::bundle::findConfigurationForPoint(configId , implementationId ) ;
+						 ::fwRuntime::ConfigurationElement::sptr cfg = ::fwServices::bundle::findConfigurationForPoint(configId , implementationId ) ;
 						if( !cfg )
 						{
 							stream << "offline configuration not found" ;
@@ -197,7 +197,7 @@ bool checkObject( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt 
 	return validity ;
 }
 
-bool checkService( std::string implementationId , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _elt , ::std::stringstream &stream)
+bool checkService( std::string implementationId , ::fwRuntime::ConfigurationElement::sptr _elt , ::std::stringstream &stream)
 {
 	bool validity = true;
    // Typical use of validation

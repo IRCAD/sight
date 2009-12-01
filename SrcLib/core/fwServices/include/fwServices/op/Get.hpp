@@ -41,7 +41,7 @@ FWSERVICES_API std::vector< ::fwServices::IService::sptr > getServices( ::fwTool
  * @author IRCAD (Research and Development Team).
  */
 template<class SERVICE>
-std::vector< ::boost::shared_ptr< SERVICE > > getServices( ::fwTools::Object::sptr obj ) ;
+std::vector< SPTR(SERVICE) > getServices( ::fwTools::Object::sptr obj ) ;
 
 /**
  * @brief Get the service number _index of type serviceId which is attached to obj
@@ -54,7 +54,7 @@ std::vector< ::boost::shared_ptr< SERVICE > > getServices( ::fwTools::Object::sp
 FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index = 0 ) throw(fwTools::Failed );
 
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > get( ::fwTools::Object::sptr obj, unsigned int _index = 0 ) throw(fwTools::Failed );
+SPTR(SERVICE) get( ::fwTools::Object::sptr obj, unsigned int _index = 0 ) throw(fwTools::Failed );
 
 /**
  * @brief Indirectly invoke the get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index = 0 ), where SERVICE relates serviceId
@@ -62,7 +62,7 @@ template<class SERVICE>
  * @author IRCAD (Research and Development Team).
  */
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > get( fwTools::Object * obj, unsigned int _index = 0 ) throw(fwTools::Failed );
+SPTR(SERVICE) get( fwTools::Object * obj, unsigned int _index = 0 ) throw(fwTools::Failed );
 
 /**
  * @brief Return a registered IService having uid as unique universal identifier
@@ -90,7 +90,7 @@ FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, st
 
  */
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed );
+SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed );
 
 /**
  * @brief return the _service index (or position) in the vector of services which are attached to the same object and have the same service type
@@ -102,7 +102,7 @@ FWSERVICES_API unsigned int getServicePosition( IService::sptr  _service ) ;
  * @brief return a vector containing all services associated with the object _obj
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API std::vector< ::boost::shared_ptr< IService > > getRegisteredServices( ::boost::shared_ptr< fwTools::Object > _obj );
+FWSERVICES_API std::vector< ::fwServices::IService::sptr > getRegisteredServices( ::fwTools::Object::sptr _obj );
 
 /**
  * @brief Same as getServicePosition( IService::sptr ) but with a traditional pointer

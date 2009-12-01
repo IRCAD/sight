@@ -157,9 +157,9 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 	{
 		m_globalState = SWAPPING ;
 
-		::boost::shared_ptr< ::fwServices::IEditionService > oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock())  ;
-		::boost::shared_ptr< ::fwServices::IEditionService > newEditor = ::fwServices::get< ::fwServices::IEditionService >( _obj ) ;
-		typedef std::vector< ::boost::shared_ptr< ::fwServices::ComChannelService > > OContainerType;
+		::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock())  ;
+		::fwServices::IEditionService::sptr newEditor = ::fwServices::get< ::fwServices::IEditionService >( _obj ) ;
+		typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
 		OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService>() ;
 		for( OContainerType::iterator iter = obs.begin() ; iter != obs.end() ; ++iter )
 		{
@@ -174,7 +174,7 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 			}
 		}
 
-		::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , ::boost::dynamic_pointer_cast< ::fwServices::IService >(shared_from_this()) );
+		::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , this->getSptr() );
 
 		this->swapping();
 

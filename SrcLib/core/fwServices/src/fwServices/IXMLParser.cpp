@@ -27,7 +27,7 @@ void IXMLParser::stopping() throw(::fwTools::Failed)
 void IXMLParser::configuring() throw(::fwTools::Failed)
 {}
 
-void IXMLParser::updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
+void IXMLParser::updating( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {}
 
 void IXMLParser::updating() throw(::fwTools::Failed)
@@ -36,7 +36,7 @@ void IXMLParser::updating() throw(::fwTools::Failed)
 	{
 		if( (*configEltIter)->getName() == "object" )
 		{
-			 ::boost::shared_ptr< fwTools::Object > localObj = fwServices::New( (*configEltIter) ) ;
+			fwTools::Object::sptr localObj = fwServices::New( (*configEltIter) ) ;
 			assert( localObj ) ;
 			assert( (*configEltIter)->hasAttribute("id") ) ;
 			std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
