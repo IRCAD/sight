@@ -122,8 +122,6 @@ void MultiView::starting() throw(::fwTools::Failed)
 		// Set the panel
 		pi->second.m_panel = viewPanel;
 
-		viewPanel->SetBackgroundColour( wxColour(255,0,0) );
-
 		// Pane info configuration
 		::wxAuiPaneInfo paneInfo;
 		if(pi->second.m_align=="center")		{ paneInfo.Center(); }
