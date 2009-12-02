@@ -10,6 +10,7 @@
 #include <boost/filesystem.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
+#include <fwTools/UUID.hpp>
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
@@ -226,7 +227,7 @@ void  ObjectServiceRegistry::registerService( ::fwTools::Object::sptr object , :
 }
 
 
-void ObjectServiceRegistry::swapService(  fwTools::Object::sptr  _objSrc, fwTools::Object::sptr  _objDst, ::fwServices::IService::sptr _service )
+void ObjectServiceRegistry::swapService(  ::fwTools::Object::sptr  _objSrc, ::fwTools::Object::sptr  _objDst, ::fwServices::IService::sptr _service )
 {
 		std::vector< ::fwTools::Object::wptr >   lobjects;
 		for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter != getDefault()->m_container.end() ; ++iter )
@@ -235,8 +236,7 @@ void ObjectServiceRegistry::swapService(  fwTools::Object::sptr  _objSrc, fwTool
 			// For this reason, for that method only, one unregister all fwServices because expired weak_ptr can (but not sure) correspond to the considered obj
 			if( iter->first.expired() )
 			{
-				OSLM_WARN( "Expired object discovered : swap on expired object !" ) ;
-
+				SLM_WARN( "Expired object discovered : swap on expired object !" ) ;
 			}
 			// Normal case : obj is not expired
 			else if( iter->first.lock() == _objSrc )
@@ -257,7 +257,7 @@ void ObjectServiceRegistry::swapService(  fwTools::Object::sptr  _objSrc, fwTool
 		getDefault()->registerService(_objDst, _service);
 }
 
-void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
+void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
 {
 		std::vector< ::fwTools::Object::wptr >   lobjects;
 		for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter != getDefault()->m_container.end() ; ++iter )
@@ -273,7 +273,7 @@ void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
 			{
 				::fwTools::Object::wptr tmp1 = iter->first;
 
-				OSLM_WARN( "Expired object discovered : stopping and unregistering all associated fwServices" ) ;
+				SLM_WARN( "Expired object discovered : stopping and unregistering all associated fwServices" ) ;
 				lobjects.push_back( iter->first ) ;
 				// Clean service vector clearing
 				OSContainer::iterator _pos = iter ;
@@ -284,7 +284,7 @@ void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
 					if (*lIter != NULL )
 					{
 						( *lIter)->stop();
-						fwServices::unregisterComChannels( (*lIter) ) ;
+						::fwServices::unregisterComChannels( (*lIter) ) ;
 					}
 				}
 				_pos->second.clear() ;
@@ -315,42 +315,59 @@ void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
 
 void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _service )
 {
-	SLM_TRACE("ObjectServiceRegistry::unregisterService");
+	SLM_TRACE_FUNC();
+	_service->stop();
+	removeFromContainer( _service );
+	fwServices::unregisterComChannels( _service ) ;
+}
+
+
+void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _service )
+{
+	SLM_TRACE_FUNC();
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
 	{
-		SContainer::iterator positionToDelete ;
-		bool isFound = false ;
+		SContainer::iterator positionToDelete = pos->second.end() ;
 		for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
 		{
+			OSLM_TRACE( "OBJ=" <<::fwTools::UUID::get(_service->getObject()) <<
+				        " SContainer::iterator lIter" << ::fwTools::UUID::get( ( *lIter) )
+			          );
 			if( ( *lIter) == _service )
 			{
-				( *lIter)->stop();
-				isFound = true ;
+				SLM_ASSERT( "service registered twice for the same object :"
+						    << " OBJ=" <<::fwTools::UUID::get(_service->getObject())
+							<< " SRV=" << ::fwTools::UUID::get( ( *lIter) ),
+							positionToDelete == pos->second.end()
+				          );
 				positionToDelete = lIter ;
-				/// Logger Information
-				std::stringstream msg;
-				msg << "Unregistering service  : " << (*_service) << " (" << _service << ") " ;
-				if( !pos->first.expired() ) // If service being unregistered is associated with an object having expired
-				{
-					msg << "Initially attached to object " << pos->first.lock()->className() << " (" << pos->first.lock() << ")";
-				}
-				SLM_INFO( msg.str() );
 			}
 		}
-		if( isFound )
+		if ( positionToDelete != pos->second.end() )
 		{
-			fwServices::unregisterComChannels( (*positionToDelete) ) ;
+			/// Logger Information
+			std::stringstream msg;
+			msg << "remove from container service  : " << (*_service) << " (" << _service << ") " ;
+			if( !pos->first.expired() ) // If service being unregistered is associated with an object having expired
+			{
+				msg << "Initially attached to object " << pos->first.lock()->className() << " (" << pos->first.lock() << ")";
+			}
+			SLM_INFO( msg.str() );
 			pos->second.erase( positionToDelete ) ;
 		}
 	}
 }
 
-bool ObjectServiceRegistry::hasObject(IService * _service)
+
+
+
+
+bool ObjectServiceRegistry::hasObject(::fwServices::IService * _service)
 {
 	return _service->m_associatedObject.use_count();
 }
 
-::fwTools::Object::sptr ObjectServiceRegistry::shared_from( fwTools::Object *obj )
+::fwTools::Object::sptr ObjectServiceRegistry::shared_from( ::fwTools::Object *obj )
 {
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
 	{
@@ -386,7 +403,7 @@ bool ObjectServiceRegistry::hasObject(IService * _service)
 	OSLM_WARN( msg.str() ); ;
 
 	// avoid compilation warning
-	return ::fwServices::IService::sptr();
+	return ::boost::shared_ptr< fwServices::IService >();
 }
 
 

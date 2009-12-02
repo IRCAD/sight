@@ -42,5 +42,8 @@
 	<point id="::fwData::Graph">
 		<implements>::fwTools::Object</implements>
 	</point>
+	<point id="::fwData::None">
+		<implements>::fwTools::Object</implements>
+	</point>
 
 </plugin>

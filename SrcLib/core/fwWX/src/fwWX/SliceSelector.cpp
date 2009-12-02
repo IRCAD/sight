@@ -49,7 +49,8 @@ SliceSelector::SliceSelector(wxWindow* const parent, const wxWindowID id ) throw
 
 	this->SetSizer( sizer );
 	this->Layout();
-	sizer->Fit( this );
+//	sizer->Fit( this );
+//	parent->Fit();
 }
 
 //------------------------------------------------------------------------------
