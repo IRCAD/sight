@@ -102,7 +102,8 @@ bool Less (::fwServices::ComChannelService::wptr observer1,  ::fwServices::ComCh
 void IEditionService::notify(
 		::fwServices::IService::sptr _pSource,
 		::fwTools::Object::sptr _pSubject,
-		::fwServices::ObjectMsg::sptr _pMsg )
+		::fwServices::ObjectMsg::sptr _pMsg,
+		::fwServices::ComChannelService::MsgOptionsType options )
 {
 
 	_pSource->sendingModeOn();
@@ -110,7 +111,7 @@ void IEditionService::notify(
 	_pMsg->setSubject(_pSubject);
 	_pMsg->timeModified();
 	OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
-	::fwServices::get< ::fwServices::IEditionService >( _pSubject )->notify( _pMsg ) ;
+	::fwServices::get< ::fwServices::IEditionService >( _pSubject )->notify( _pMsg, options ) ;
 	_pSource->sendingModeOff();
 
 }
@@ -177,7 +178,7 @@ IEditionService::ObserverContainer::const_iterator IEditionService::findObserver
 
 //-----------------------------------------------------------------------------
 
-void IEditionService::notify( ::fwServices::ObjectMsg::csptr eventMessage )
+void IEditionService::notify( ::fwServices::ObjectMsg::csptr eventMessage, ::fwServices::ComChannelService::MsgOptionsType options )
 {
 	// We work on copy of the observer collection because observers could be attached
 	// or detached while forwarding the event and this would invalidate iterators
@@ -194,7 +195,7 @@ void IEditionService::notify( ::fwServices::ObjectMsg::csptr eventMessage )
 		// Process message
 		else
 		{
-			(*iter).lock()->sendMessage( eventMessage ) ;
+			(*iter).lock()->sendMessage( eventMessage, options ) ;
 		}
 	}
 }
