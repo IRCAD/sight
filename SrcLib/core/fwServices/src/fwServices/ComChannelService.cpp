@@ -100,7 +100,7 @@ void ComChannelService::starting() throw(fwTools::Failed)
 	{
 		std::stringstream msg ;
 		this->info( msg ) ;
-		SLM_TRACE( "Starting ComChannelService : " << msg.str() << " with priority: " << m_priority);
+		OSLM_TRACE( "Starting ComChannelService : " << msg.str() << " with priority: " << m_priority);
 		m_source.lock()->attach( this->getSptr() );
 		m_source.lock()->start() ;
 	}
