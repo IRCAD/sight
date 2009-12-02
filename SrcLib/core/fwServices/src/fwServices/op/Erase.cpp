@@ -32,7 +32,6 @@ void erase( ::fwTools::Object::sptr obj , std::string serviceId , unsigned int _
 }
 void erase( ::fwServices::IService::sptr service )
 {
-	service->stop();
 	OSR::unregisterService( service ) ;
 }
 void eraseServices( ::fwTools::Object::sptr obj , std::string serviceId )

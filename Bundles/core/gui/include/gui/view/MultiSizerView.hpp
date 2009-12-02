@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_VIEW_MULTI_VIEW_HPP_
-#define _GUI_VIEW_MULTI_VIEW_HPP_
+#ifndef _GUI_VIEW_MULTI_SIZER_VIEW_HPP_
+#define _GUI_VIEW_MULTI_SIZER_VIEW_HPP_
 
 #include <wx/wx.h>
-#include <wx/aui/aui.h>
+#include <wx/sizer.h>
 
 #include <fwTools/Failed.hpp>
 
@@ -23,39 +23,39 @@ namespace view
 
 /**
  * @brief	Defines the default panel for standard application.
- * @class	MultiView.
+ * @class	MultiSizerView.
  * @author	IRCAD (Research and Development Team)
 
  * @date	2009.
  */
-class GUI_CLASS_API MultiView : public ::gui::view::IView
+class GUI_CLASS_API MultiSizerView : public ::gui::view::IView
 {
 	class ViewInfo
 	{
 	public :
 
 		ViewInfo() :
-			m_align ("center"),
-			m_minSize (std::make_pair(-1,-1)),
-			m_isResizable(true),
-			m_visible (false),
-			m_panel (0)
+			m_proportion (1),
+			m_border(0),
+			m_panel (0),
+			m_guid(-1)
 		{}
 
-		std::string				m_align;
-		std::pair< int, int >	m_minSize;
-		bool					m_visible;
-		wxPanel * 				m_panel;
-		bool					m_isResizable;
+		int			m_proportion;
+		int 		m_border;
+		int			m_guid;
+		wxPanel * 	m_panel;
 	};
 
 public :
 
 	/// Constructor, does nothing.
-	GUI_API MultiView() throw() ;
+	GUI_API MultiSizerView() throw() ;
 	
 	/// Destructor, does nothing.
-	GUI_API virtual ~MultiView() throw() ;
+	GUI_API virtual ~MultiSizerView() throw() ;
+
+protected:
 
 	/// Analyses xml configuration to configure this service, espacially umber of panel and the layout of this view.
 	GUI_API void configuring() throw( ::fwTools::Failed );
@@ -81,16 +81,15 @@ public :
 	/// Prints service name
 	GUI_API void info(std::ostream &_sstream );
 
-protected :
+private :
+
+	int m_orient;
 
 	/// Layout manager of this view
-	wxAuiManager * m_manager;
-
-	/// New Container definition
-	typedef std::map< int , ViewInfo > PanelContainer;
+	wxBoxSizer * m_sizer;
 
 	/// Save layout configuration definition and created container
-	PanelContainer m_panels;
+	std::list< ViewInfo>  m_views;
 
 };
 
@@ -99,4 +98,4 @@ protected :
 } // namespace gui
 
 
-#endif /*_GUI_VIEW_MULTI_VIEW_HPP_*/
+#endif /*_GUI_VIEW_MULTI_SIZER_VIEW_HPP_*/

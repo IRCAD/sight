@@ -25,10 +25,20 @@ class ObjectMsg ;
 class FWSERVICES_CLASS_API ComChannelService : public ::fwServices::ICommunication
 {
 public:
-
 	/// Definitions
 	fwCoreServiceClassDefinitionsMacro ( (ComChannelService)(::fwServices::ICommunication::Baseclass) ) ;
     fwCoreAllowSharedFromThis();
+
+
+	/**
+	 * @brief Message sending options
+	 */
+	typedef enum {
+		//These options are designed to be use as mask options. Values must be power of two values.
+		NONE                 = 0,
+		IGNORE_BUSY_SERVICES = 1
+	} MsgOptionsType;
+
 
 	/**
 	 * @brief Constructor
@@ -105,10 +115,11 @@ public:
 	/**
 	 * @brief Send message to destination service if it is started.
 	 * @param[in] _msg the message sent to destination service
+	 * @param[in] _allowLoops Allow loops (be really carefull)
 	 * @pre Destination service must not be in sending mode to receive a message.
 	 * If the message is the message sent by destination service, the message is not notified. Else, we have an event loop and an assertion is created.
 	 */
-	FWSERVICES_API void sendMessage( ::fwServices::ObjectMsg::csptr _msg );
+	FWSERVICES_API void sendMessage( ::fwServices::ObjectMsg::csptr _msg, MsgOptionsType options );
 
 protected:
 

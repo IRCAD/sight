@@ -76,7 +76,8 @@ void unregisterCommunicationChannel( ::fwTools::Object::sptr _src , ::fwServices
 			// Check whether _service is the subject (IEditionService) or the destination service
 			if( (*iter)->getDest() == _dest && (*iter)->getSrc() == srcEditor  )
 			{
-				::fwServices::OSR::unregisterService( *iter ) ;
+				(*iter)->stop();
+				::fwServices::OSR::removeFromContainer( *iter ) ;
 			}
 		}
 	}
@@ -133,7 +134,8 @@ void unregisterComChannels( ::fwServices::IService::sptr _service)
 			// Check whether _service is the subject (IEditionService) or the destination service
 			if( (*iter)->getDest() == _service || (*iter)->getSrc() == _service )
 			{
-				::fwServices::OSR::unregisterService( *iter ) ;
+				(*iter)->stop();
+				::fwServices::OSR::removeFromContainer( *iter ) ;
 			}
 		}
 	}
