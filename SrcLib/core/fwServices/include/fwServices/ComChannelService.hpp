@@ -114,7 +114,7 @@ public:
 	//@}
 
 	/// Set the new priority for the ComChannel;
-	FWSERVICES_API setPriority(double newPriority) {m_priority = newPriority;}
+	FWSERVICES_API void setPriority(double newPriority) {m_priority = newPriority;}
 	//@}
 
 	/// Return the priority for the ComChannel
