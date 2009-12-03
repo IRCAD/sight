@@ -256,15 +256,10 @@ void ComChannelService::sendMessage( ::fwServices::ObjectMsg::csptr _msg, ::fwSe
 {
 	if( m_destination.lock()->isStarted())
 	{
-		if(  !m_destination.lock()->isSending()  )
+		if( m_destination.lock() !=  _msg->getSource().lock())
 		{
 			SLM_INFO( getNotificationInformation(_msg) );
 			m_destination.lock()->update(_msg ) ;
-		}
-		else if ( !(options & IGNORE_BUSY_SERVICES) )
-		{
-			//OSLM_ASSERT("LOOP DETECTION : "<< getNotificationInformation// _msg->getSource().lock()->getClassname(), m_destination.lock() ==  _msg->getSource().lock());
-			OSLM_ASSERT("LOOP DETECTION : "<< getNotificationInformation(_msg), m_destination.lock() ==  _msg->getSource().lock() );
 		}
 	}
 }

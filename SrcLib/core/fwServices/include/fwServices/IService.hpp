@@ -7,6 +7,8 @@
 #ifndef _FWSERVICES_ISERVICE_HPP_
 #define _FWSERVICES_ISERVICE_HPP_
 
+#include <deque>
+
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -406,6 +408,8 @@ private :
 	 */
 	ConfigurationStatus m_configurationState;
 
+	std::deque<::fwServices::ObjectMsg::csptr > m_msgDeque;
+
 	/**
 	 * @brief Switch communication status as SENDING_MSG ( if current state is IDLE ) or RECEIVING_WITH_SENDING_MSG ( if current state is RECEIVING_MSG ).
 	 * @pre this->isSending() == false
@@ -421,6 +425,13 @@ private :
 	 * @post this->isSending() == false
 	 */
 	void sendingModeOff();
+
+	/**
+	 * @brief process the message(s) which are in the waiting queue(m_msgDeque).
+	 * @pre
+	 * @post m_msgDeque will be empty.
+	 */
+	void processingPendingMessages();
 };
 
 } // namespace fwServices
