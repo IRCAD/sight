@@ -275,8 +275,8 @@ void IService::sendingModeOff()
 
 		OSLM_TRACE(" Processing " << m_msgDeque.size() << " pending message(s).");
 		// Processing of pending messages.
-		if(m_msgDeque.size() != 0)
-			int stop=0;
+		if(m_msgDeque.size() > 50)
+			OSLM_FATAL("The size of the queue is very hight " << m_msgDeque.size());
 		while (m_msgDeque.size() != 0)
 		{
 			::fwServices::ObjectMsg::csptr msg = m_msgDeque.front();
