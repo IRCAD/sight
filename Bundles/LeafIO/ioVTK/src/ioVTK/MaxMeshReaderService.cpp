@@ -7,6 +7,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <boost/filesystem/operations.hpp>
+
 #include <vtk3DSImporter.h>
 
 #include <fwServices/helper.hpp>
@@ -110,9 +112,9 @@ void MaxMeshReaderService::configuring( ) throw(::fwTools::Failed)
 	if( m_configuration->findConfigurationElement("filename") )
 	{
 		std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-		OSLM_INFO( "MaxMeshReaderService::configure filename: " << filename );
-		m_fsMeshPath = boost::filesystem::path( filename ) ;
-		m_bServiceIsConfigured =  true;
+		OSLM_ASSERT( "3ds file doesn't exist: " << filename, ::boost::filesystem::exists(filename) );
+		m_fsMeshPath = ::boost::filesystem::path( filename ) ;
+		m_bServiceIsConfigured = ::boost::filesystem::exists(filename);
 	}
 }
 
