@@ -23,6 +23,8 @@
 #include <vtkImageImport.h>
 #include <vtkMatrix4x4.h>
 
+#include <vtkMassProperties.h>
+
 
 
 #include "vtkIO/vtk.hpp"
@@ -405,6 +407,21 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 
 	return res;
 }
+
+
+double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
+{
+	vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
+
+	vtkMassProperties  *calculator = vtkMassProperties::New();
+	calculator->SetInput( vtkMesh );
+	calculator->Update();
+	double volume =  calculator->GetVolume();
+	calculator->Delete();
+	return volume;
+}
+
+
 
 vtkMatrix4x4 *  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
 {

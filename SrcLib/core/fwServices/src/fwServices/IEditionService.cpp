@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <cassert>
@@ -71,7 +71,7 @@ bool Less (::fwServices::ComChannelService::wptr observer1,  ::fwServices::ComCh
 		if(!observer2.expired())
 		{
 			// Both wpstr are valid
-			result = observer1.lock()->getPriority() < observer2.lock()->getPriority();
+			result = observer1.lock()->getPriority() > observer2.lock()->getPriority();
 		}
 		else
 		{
