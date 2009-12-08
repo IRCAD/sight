@@ -408,7 +408,7 @@ private :
 	 */
 	ConfigurationStatus m_configurationState;
 
-	std::deque<::fwServices::ObjectMsg::csptr > m_msgDeque;
+	std::deque< ::fwServices::ObjectMsg::csptr > m_msgDeque;
 
 	/**
 	 * @brief Switch communication status as SENDING_MSG ( if current state is IDLE ) or RECEIVING_WITH_SENDING_MSG ( if current state is RECEIVING_MSG ).
