@@ -25,6 +25,16 @@
 
 #include <vtkMassProperties.h>
 
+#include <vtkPolyDataToImageStencil.h>
+#include <vtkImageStencil.h>
+#include <vtkImageAccumulate.h>
+
+#include <vtkDataSetAttributes.h>
+#include <vtkDataArray.h>
+#include <vtkPointData.h>
+//#include <>
+//vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
+
 
 
 #include "vtkIO/vtk.hpp"
@@ -411,6 +421,7 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 
 double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
 {
+
 	vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
 
 	vtkMassProperties  *calculator = vtkMassProperties::New();
@@ -419,6 +430,60 @@ double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangul
 	double volume =  calculator->GetVolume();
 	calculator->Delete();
 	return volume;
+}
+
+double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
+{
+
+//	vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
+//
+//	vtkImageData* vi = vtkImageData::New();
+//	vi->SetOrigin( 0,0,0 ); // adjust these to your needs
+//	vi->SetSpacing( 0.5, 0.5, 0.5 ); // adjust these to your needs
+//	vi->SetDimensions( vtkMesh->GetBounds()[1]*2,  vtkMesh->GetBounds()[3]*2,  vtkMesh->GetBounds()[5]*2 ); // adjust these to your needs
+//	vi->SetScalarTypeToUnsignedChar ();
+//	vi->AllocateScalars();
+//	// outputMesh is of vtkPolyData* type and contains your mesh data
+//	vtkPolyDataToImageStencil* pti = vtkPolyDataToImageStencil::New();
+//	pti->SetInput( vtkMesh );
+//	pti->Update();
+//	vtkImageStencil* is = vtkImageStencil::New();
+//	is->SetInput( vi );
+//	is->SetStencil( pti->GetOutput() );
+//	is->ReverseStencilOff();
+//	is->SetBackgroundValue(1);
+//	is->Update();
+//	// is->GetOutput() returns your image data as vtkImageData*
+//	return -1;
+
+	vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
+
+	vtkImageData* vi = vtkImageData::New();
+	vi->SetOrigin( 0,0,0 ); // adjust these to your needs
+	vi->SetSpacing( 0.5, 0.5, 0.5 ); // adjust these to your needs
+	vi->SetDimensions( vtkMesh->GetBounds()[1]*2,  vtkMesh->GetBounds()[3]*2,  vtkMesh->GetBounds()[5]*2 ); // adjust these to your needs
+	vi->SetScalarTypeToUnsignedChar ();
+	vi->AllocateScalars();
+	vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
+	// outputMesh is of vtkPolyData* type and contains your mesh data
+	vtkPolyDataToImageStencil* pti = vtkPolyDataToImageStencil::New();
+	pti->SetInput( vtkMesh );
+	//pti->Update(); do not update because outputspacing is not defined, let sub filter set them
+//	pti->SetTolerance(0.5);
+	vtkImageAccumulate* ac = vtkImageAccumulate::New();
+	ac->SetInput( vi );
+	ac->SetStencil( pti->GetOutput() );
+	ac->ReverseStencilOff();
+	ac->Update();
+
+	unsigned long nbVoxel = ac->GetVoxelCount();
+
+	pti->Delete();
+	ac->Delete();
+	vi->Delete();
+	vtkMesh->Delete();
+
+	return nbVoxel;
 }
 
 

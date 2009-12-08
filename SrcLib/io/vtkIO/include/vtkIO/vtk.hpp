@@ -98,6 +98,11 @@ VTKIO_API  bool fromVTKMesh( vtkPolyData *_polyData, ::boost::shared_ptr< ::fwDa
  */
 VTKIO_API  double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh );
 
+/*
+* @brief compute the volume of the mesh using ImageStencil
+*/
+VTKIO_API  double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh );
+
 /*!
  * @brief Convert a ::boost::shared_ptr< ::fwData::TransformationMatrix3D > to a vtkMatrix4x4*.
  *
