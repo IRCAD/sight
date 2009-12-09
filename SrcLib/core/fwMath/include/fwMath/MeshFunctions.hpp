@@ -25,6 +25,8 @@ FWMATH_API bool isBorderlessSurface( const fwVertexIndex _vertexIndex);
 
 FWMATH_API void findBorderEdges( const fwVertexIndex _vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours);
 
+///// reorder the edges to be geomatrically chained ( contour[i].second = contour[i+1].first || contour[i+1].second)
+//FWMATH_API void sortBorderEdges(  std::vector<  std::pair< int, int  > >  &contour);
 
 FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
 

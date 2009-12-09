@@ -236,11 +236,78 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
 			massCenter[i] /= contour->size()*2;
 		}
 		_vertex.push_back( massCenter ); // normalize barycenter
-		OSLM_INFO("MASS=" << massCenter[0] << "," <<  massCenter[1] << "," <<  massCenter[2] << ",");
 
 	}
 }
 
+// slow version but contour edges are geometrically chained
+//
+//
+//std::pair< int, int  >  normalize( std::pair< int, int  > p)
+//{
+//	return std::make_pair(std::min( p.first ,p.second ) ,std::max( p.first ,p.second ) );
+//}
+
+//void findBorderEdges( const fwVertexIndex _vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours)
+//{
+//	typedef std::pair< int, int  >  Edge;
+//	typedef std::vector< Edge > Contour; // at Border
+//	typedef std::vector< Contour> Contours;
+//
+//	std::map< Edge  , int > edgesHistogram;
+//	for ( fwVertexIndex::const_iterator triangle=_vertexIndex.begin(); triangle!= _vertexIndex.end(); ++triangle )
+//	{
+//		assert (triangle->size()>2 );
+//		for (int i=0; i < 3; ++i)
+//		{
+//			Edge edge( (*triangle)[i] , (*triangle)[(i+1)%3] );
+//			edgesHistogram[ normalize(edge) ]++;
+//		}
+//	}
+//
+//	for ( fwVertexIndex::const_iterator triangle=_vertexIndex.begin(); triangle!= _vertexIndex.end(); ++triangle )
+//	{
+//		for (int i=0; i < 3; ++i)
+//		{
+//			Edge edge( (*triangle)[i] , (*triangle)[(i+1)%3] );
+//
+//			if (edgesHistogram[ normalize(edge) ]<2) // an orphan found
+//			{
+//				Contour contour;
+//				contour.reserve(1000);
+//				std::list< Edge > fifo;
+//
+//				fifo.push_back(edge);
+//				while( !fifo.empty() )
+//				{
+//					Edge current = fifo.front();
+//					contour.push_back( current );
+//					fifo.pop_front();
+//					edgesHistogram[ normalize(current) ]=2; // to mark it processed;
+//					// search neighboor at border and insert in fifo
+//					for ( fwVertexIndex::const_iterator triangleL=_vertexIndex.begin(); triangleL!= _vertexIndex.end(); ++triangleL )
+//					{
+//						for (int j=0; j < 3; ++j)
+//						{
+//							Edge candidate(  (*triangleL)[j], (*triangleL)[(j+1)%3] );
+//							if ( edgesHistogram[ normalize(candidate) ] < 2 ) // at border
+//							{
+//
+//								if ( candidate.first == current.second )// neighboor only one direction
+//								{
+//									edgesHistogram[normalize(candidate)]=2; // mark processed;
+//									fifo.push_back( candidate );
+//								}
+//							}
+//						}
+//					}
+//				}
+//				// all neighboor processed
+//				contours.push_back( contour );
+//			}
+//		} // vertex parse
+//	} // triangle parse
+//}
 
 
 
