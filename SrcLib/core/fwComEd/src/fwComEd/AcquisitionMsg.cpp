@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwComEd/ResectionMsg.hpp"
+#include "fwComEd/AcquisitionMsg.hpp"
 
 
 namespace fwComEd
@@ -12,18 +12,18 @@ namespace fwComEd
 
 //-----------------------------------------------------------------------------
 
-std::string ResectionMsg::ADD_RECONSTRUCTION = "ADD_RECONSTRUCTION";
-std::string ResectionMsg::VISIBILITY = "VISIBILITY";
-std::string ResectionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SELECTED";
+std::string AcquisitionMsg::ADD_RECONSTRUCTION          = "ADD_RECONSTRUCTION";
+std::string AcquisitionMsg::VISIBILITY                  = "VISIBILITY";
+std::string AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SELECTED";
 
 //-----------------------------------------------------------------------------
 
-ResectionMsg::ResectionMsg() throw()
+AcquisitionMsg::AcquisitionMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-ResectionMsg::~ResectionMsg() throw()
+AcquisitionMsg::~AcquisitionMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
