@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_RESECTIONMSG_HPP_
-#define _FWCOMED_RESECTIONMSG_HPP_
+#ifndef _FWCOMED_ACQUISITIONMSG_HPP_
+#define _FWCOMED_ACQUISITIONMSG_HPP_
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -16,16 +16,16 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object event message specialized for resection : store modification information
- * @class 	ResectionMsg
+ * @brief	Object event message specialized for acquisition : store modification information
+ * @class 	AcquisitionMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
  * @see 	::fwServices::ObjectMsg
  */
-class FWCOMED_CLASS_API ResectionMsg : public ::fwServices::ObjectMsg
+class FWCOMED_CLASS_API AcquisitionMsg : public ::fwServices::ObjectMsg
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro((ResectionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ResectionMsg );
+	fwCoreClassDefinitionsWithFactoryMacro((AcquisitionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new AcquisitionMsg );
 
 	/**
 	 * @name Event identifier
@@ -40,16 +40,16 @@ public:
 	/**
 	 * @brief 	Constructor : do nothing.
 	 */
-	FWCOMED_API ResectionMsg() throw();
+	FWCOMED_API AcquisitionMsg() throw();
 
 	/**
 	 * @brief	Destuctor : do nothing.
 	 */
-	FWCOMED_API virtual ~ResectionMsg() throw();
+	FWCOMED_API virtual ~AcquisitionMsg() throw();
 
 };
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_RESECTIONMSG_HPP_
+#endif //_FWCOMED_ACQUISITIONMSG_HPP_
 
