@@ -53,6 +53,20 @@ ResectionDBMsg::~ResectionDBMsg() throw()
 
 	return pResection;
 }
+//-----------------------------------------------------------------------------
+
+std::string ResectionDBMsg::getResectionOpName() const
+{
+	::fwData::PatientDB::sptr pPatientDB = ::fwData::PatientDB::dynamicCast(this->getSubject().lock());
+	SLM_ASSERT("PatientDB Object needed", pPatientDB);
+
+	::fwData::Patient::sptr pPatient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
+	::fwTools::Field::sptr pResectionInfo = pPatient->getField( fwComEd::Dictionary::m_resectionSelectedId );
+	::fwData::String::sptr pOpName = ::fwData::String::dynamicCast ( pResectionInfo->children().at(0) );
+
+
+	return pOpName->value();
+}
 
 //-----------------------------------------------------------------------------
 

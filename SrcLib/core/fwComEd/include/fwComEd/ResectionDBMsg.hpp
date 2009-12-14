@@ -57,6 +57,8 @@ public:
 	FWCOMED_API ::fwData::Resection::sptr getSafePartSelected() const;
 
 	FWCOMED_API ::fwData::ResectionDB::sptr getResectionDBSelected() const;
+
+	FWCOMED_API std::string ResectionDBMsg::getResectionOpName() const;
 };
 
 } // namespace fwComEd
