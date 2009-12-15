@@ -43,6 +43,11 @@ FWMATH_API void findBorderEdges( const fwVertexIndex _vertexIndex , std::vector<
 ///// reorder the edges to be geomatrically chained ( contour[i].second = contour[i+1].first || contour[i+1].second)
 //FWMATH_API void sortBorderEdges(  std::vector<  std::pair< int, int  > >  &contour);
 
+
+/**
+ *  @brief Closes the surface if necessary
+ * @return True if container mesh is changed
+ */
 FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
 
 }

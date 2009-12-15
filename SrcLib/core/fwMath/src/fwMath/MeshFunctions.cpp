@@ -215,6 +215,7 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
 
 	Contours contours;
 	findBorderEdges( _vertexIndex , contours);
+	bool closurePerformed = !contours.empty() ;
 	// close each hole
 	for ( Contours::iterator contour=contours.begin();  contour != contours.end(); ++contour )
 	{
@@ -241,8 +242,8 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
 			massCenter[i] /= contour->size()*2;
 		}
 		_vertex.push_back( massCenter ); // normalize barycenter
-
 	}
+	return closurePerformed;
 }
 
 // slow version but contour edges are geometrically chained
