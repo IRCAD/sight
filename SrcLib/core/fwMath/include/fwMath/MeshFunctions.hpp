@@ -50,6 +50,12 @@ FWMATH_API void findBorderEdges( const fwVertexIndex _vertexIndex , std::vector<
  */
 FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
 
+
+/**
+ * remove orphan vertices (i.e not used in _vertexIndex), _vertexIndex is reordered according to vertex suppressions
+ */
+FWMATH_API bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
+
 }
 
 #endif /* _FWMATH_MESHFUNCTIONS_HPP_ */

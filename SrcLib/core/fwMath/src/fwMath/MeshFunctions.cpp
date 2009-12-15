@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <list>
+#include <set>
 #include "fwMath/MeshFunctions.hpp"
 #include "fwMath/VectorFunctions.hpp"
 
@@ -245,6 +246,52 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
 	}
 	return closurePerformed;
 }
+
+
+
+bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
+{
+	fwVertexPosition newVertex;
+	newVertex.reserve(  _vertex.size() );
+
+	std::set< int > indexPointToKeep;
+
+
+	for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+	{
+		indexPointToKeep.insert( (*iter)[0] );
+		indexPointToKeep.insert( (*iter)[1] );
+		indexPointToKeep.insert( (*iter)[2] );
+	}
+
+	bool orphanFound = indexPointToKeep.size() != _vertex.size();
+
+	if (orphanFound)
+	{
+		// rebuild index table according to element suppression
+		int idx=0;
+		std::map< int, int > translate; // map oldIndex -> newIndex (to take into account removal
+		std::set< int >::iterator idxIter;
+		for ( idxIter =  indexPointToKeep.begin() ; idxIter !=  indexPointToKeep.end() ; ++idxIter )
+		{
+			translate[ *idxIter ] = idx++;
+			newVertex.push_back(  _vertex[ *idxIter  ] );
+		}
+
+		for ( fwVertexIndex::iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+		{
+			(*iter)[0] = translate[ (*iter)[0]  ];
+			(*iter)[1] = translate[ (*iter)[1]  ];
+			(*iter)[2] = translate[ (*iter)[2]  ];
+		}
+
+		_vertex = newVertex;
+	}
+
+	return orphanFound;
+
+}
+
 
 // slow version but contour edges are geometrically chained
 //
