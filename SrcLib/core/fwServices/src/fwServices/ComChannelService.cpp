@@ -256,7 +256,8 @@ void ComChannelService::sendMessage( ::fwServices::ObjectMsg::csptr _msg, ::fwSe
 {
 	if( m_destination.lock()->isStarted())
 	{
-		if( m_destination.lock() !=  _msg->getSource().lock())
+		bool notifySource = options & ::fwServices::ComChannelService::NOTIFY_SOURCE;
+		if( m_destination.lock() !=  _msg->getSource().lock() || notifySource )
 		{
 			SLM_INFO( getNotificationInformation(_msg) );
 			m_destination.lock()->update(_msg ) ;

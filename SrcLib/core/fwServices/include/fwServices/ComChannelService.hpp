@@ -37,7 +37,8 @@ public:
 	typedef enum {
 		//These options are designed to be use as mask options. Values must be power of two values.
 		NONE                 = 0,
-		IGNORE_BUSY_SERVICES = 1
+		IGNORE_BUSY_SERVICES = 1 << 1,
+		NOTIFY_SOURCE= 1 << 2
 	} MsgOptionsType;
 
 

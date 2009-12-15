@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef _FWMATH_LINEFUNCTIONS_HPP_
 #define _FWMATH_LINEFUNCTIONS_HPP_
 
@@ -11,7 +17,7 @@ namespace fwMath {
 //------------------------------------------------------------------------------
 
 /**
- * Compute the closest points between two lines.
+ * @brief Compute the closest points between two lines.
  * Return FALSE if the lines are parallel, TRUE otherwise.
  * @verbatim
   p1 + t1 * d1
@@ -29,12 +35,24 @@ namespace fwMath {
  */
 FWMATH_API bool getClosestPoints( const fwLine& _line1, const fwLine& _line2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine);
 
+/**
+ * @brief
+ */
 FWMATH_API fwVec3d getClosestPoint( const fwLine& _line, fwVec3d& _point);
 
+/**
+ * @brief
+ */
 FWMATH_API bool intersect(const fwLine& _line, double _radius, fwVec3d _point) ;
 
+/**
+ * @brief
+ */
 FWMATH_API bool intersect(const fwLine& _line, double _radius,fwVec3d _vec0, fwVec3d _vec1, fwVec3d _point);
 
+/**
+ * @brief
+ */
 FWMATH_API bool intersect( const fwLine& _line, const fwVec3d &_v1,  const fwVec3d &_v2, const fwVec3d &_v3, fwVec3d &_point, fwVec3d &_barycentric, bool& _front);
 
 }
