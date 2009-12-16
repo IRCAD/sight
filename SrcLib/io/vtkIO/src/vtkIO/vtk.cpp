@@ -3,7 +3,7 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
-
+#include <stdexcept>
 #include <boost/bimap/bimap.hpp>
 
 #include <boost/assign/list_of.hpp>
@@ -22,6 +22,7 @@
 #include <vtkImageData.h>
 #include <vtkImageImport.h>
 #include <vtkMatrix4x4.h>
+#include <vtkPolyDataNormals.h>
 
 #include <vtkMassProperties.h>
 
@@ -422,13 +423,31 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
 {
 
-	vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
+	vtkPolyData*  vtkMeshRaw = toVTKMesh( _triangularMesh );
+
+	vtkPolyDataNormals* filter = vtkPolyDataNormals::New();
+	filter->SetInput(vtkMeshRaw);
+	filter->AutoOrientNormalsOn ();
+	filter->FlipNormalsOn ();
 
 	vtkMassProperties  *calculator = vtkMassProperties::New();
-	calculator->SetInput( vtkMesh );
+	calculator->SetInput( filter->GetOutput() );
 	calculator->Update();
 	double volume =  calculator->GetVolume();
+	OSLM_DEBUG("GetVolume : " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected() );
+	OSLM_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
+	if ( (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000 > calculator->GetVolume() )
+	{
+		std::stringstream ss;
+		ss << "vtkMassProperties::GetVolume() - | vtkMassProperties::GetVolumeProjected() |";
+		ss << ">  vtkMassProperties::GetVolume()/10000.0" << std::endl;
+		ss << "vtkMassProperties::GetVolume() = " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected();
+		throw (std::out_of_range( ss.str() ));
+	}
+
+
 	calculator->Delete();
+	filter->Delete();
 	return volume;
 }
 
