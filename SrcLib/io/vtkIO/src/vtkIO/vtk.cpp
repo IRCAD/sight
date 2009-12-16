@@ -3,7 +3,7 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
-
+#include <stdexcept>
 #include <boost/bimap/bimap.hpp>
 
 #include <boost/assign/list_of.hpp>
@@ -22,7 +22,20 @@
 #include <vtkImageData.h>
 #include <vtkImageImport.h>
 #include <vtkMatrix4x4.h>
+#include <vtkPolyDataNormals.h>
 
+#include <vtkMassProperties.h>
+
+#include <vtkPolyDataToImageStencil.h>
+#include <vtkImageStencil.h>
+#include <vtkImageAccumulate.h>
+
+#include <vtkDataSetAttributes.h>
+#include <vtkDataArray.h>
+#include <vtkPointData.h>
+//#include <>
+//vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
+#include <fwMath/MeshFunctions.hpp>
 
 
 #include "vtkIO/vtk.hpp"
@@ -405,6 +418,98 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 
 	return res;
 }
+
+
+double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
+{
+	::fwData::TriangularMesh::NewSptr closedMesh;
+	*closedMesh = * _triangularMesh;
+
+	::fwMath::closeSurface(closedMesh->points(), closedMesh->cells());
+
+	vtkPolyData*  vtkMeshRaw = toVTKMesh( closedMesh );
+
+	vtkPolyDataNormals* filter = vtkPolyDataNormals::New();
+	filter->SetInput(vtkMeshRaw);
+	filter->AutoOrientNormalsOn ();
+	filter->FlipNormalsOn ();
+
+	vtkMassProperties  *calculator = vtkMassProperties::New();
+	calculator->SetInput( filter->GetOutput() );
+	calculator->Update();
+	double volume =  calculator->GetVolume();
+	OSLM_DEBUG("GetVolume : " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected() );
+	OSLM_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
+	if ( (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000 > calculator->GetVolume() )
+	{
+		std::stringstream ss;
+		ss << "vtkMassProperties::GetVolume() - | vtkMassProperties::GetVolumeProjected() |";
+		ss << ">  vtkMassProperties::GetVolume()/10000.0" << std::endl;
+		ss << "vtkMassProperties::GetVolume() = " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected();
+		throw (std::out_of_range( ss.str() ));
+	}
+
+
+	calculator->Delete();
+	filter->Delete();
+	return volume;
+}
+
+double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
+{
+
+//	vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
+//
+//	vtkImageData* vi = vtkImageData::New();
+//	vi->SetOrigin( 0,0,0 ); // adjust these to your needs
+//	vi->SetSpacing( 0.5, 0.5, 0.5 ); // adjust these to your needs
+//	vi->SetDimensions( vtkMesh->GetBounds()[1]*2,  vtkMesh->GetBounds()[3]*2,  vtkMesh->GetBounds()[5]*2 ); // adjust these to your needs
+//	vi->SetScalarTypeToUnsignedChar ();
+//	vi->AllocateScalars();
+//	// outputMesh is of vtkPolyData* type and contains your mesh data
+//	vtkPolyDataToImageStencil* pti = vtkPolyDataToImageStencil::New();
+//	pti->SetInput( vtkMesh );
+//	pti->Update();
+//	vtkImageStencil* is = vtkImageStencil::New();
+//	is->SetInput( vi );
+//	is->SetStencil( pti->GetOutput() );
+//	is->ReverseStencilOff();
+//	is->SetBackgroundValue(1);
+//	is->Update();
+//	// is->GetOutput() returns your image data as vtkImageData*
+//	return -1;
+
+	vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
+
+	vtkImageData* vi = vtkImageData::New();
+	vi->SetOrigin( 0,0,0 ); // adjust these to your needs
+	vi->SetSpacing( 0.5, 0.5, 0.5 ); // adjust these to your needs
+	vi->SetDimensions( vtkMesh->GetBounds()[1]*2,  vtkMesh->GetBounds()[3]*2,  vtkMesh->GetBounds()[5]*2 ); // adjust these to your needs
+	vi->SetScalarTypeToUnsignedChar ();
+	vi->AllocateScalars();
+	vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
+	// outputMesh is of vtkPolyData* type and contains your mesh data
+	vtkPolyDataToImageStencil* pti = vtkPolyDataToImageStencil::New();
+	pti->SetInput( vtkMesh );
+	//pti->Update(); do not update because outputspacing is not defined, let sub filter set them
+//	pti->SetTolerance(0.5);
+	vtkImageAccumulate* ac = vtkImageAccumulate::New();
+	ac->SetInput( vi );
+	ac->SetStencil( pti->GetOutput() );
+	ac->ReverseStencilOff();
+	ac->Update();
+
+	unsigned long nbVoxel = ac->GetVoxelCount();
+
+	pti->Delete();
+	ac->Delete();
+	vi->Delete();
+	vtkMesh->Delete();
+
+	return nbVoxel;
+}
+
+
 
 vtkMatrix4x4 *  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
 {

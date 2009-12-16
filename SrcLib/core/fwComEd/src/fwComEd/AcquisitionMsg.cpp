@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwComEd/PlaneListMsg.hpp"
+#include "fwComEd/AcquisitionMsg.hpp"
 
 
 namespace fwComEd
@@ -12,18 +12,18 @@ namespace fwComEd
 
 //-----------------------------------------------------------------------------
 
-std::string PlaneListMsg::ADD_PLANE            = "PLANE_IS_ADDED";
-std::string PlaneListMsg::REMOVE_PLANE         = "REMOVE_PLANE";
-std::string PlaneListMsg::PLANELIST_VISIBILITY = "PLANELIST_VISIBILITY";
+std::string AcquisitionMsg::ADD_RECONSTRUCTION          = "ADD_RECONSTRUCTION";
+std::string AcquisitionMsg::VISIBILITY                  = "VISIBILITY";
+std::string AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SELECTED";
 
 //-----------------------------------------------------------------------------
 
-PlaneListMsg::PlaneListMsg() throw()
+AcquisitionMsg::AcquisitionMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-PlaneListMsg::~PlaneListMsg() throw()
+AcquisitionMsg::~AcquisitionMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
