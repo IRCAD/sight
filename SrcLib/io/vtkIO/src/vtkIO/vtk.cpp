@@ -35,7 +35,7 @@
 #include <vtkPointData.h>
 //#include <>
 //vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
-
+#include <fwMath/MeshFunctions.hpp>
 
 
 #include "vtkIO/vtk.hpp"
@@ -422,8 +422,12 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 
 double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
 {
+	::fwData::TriangularMesh::NewSptr closedMesh;
+	*closedMesh = * _triangularMesh;
 
-	vtkPolyData*  vtkMeshRaw = toVTKMesh( _triangularMesh );
+	::fwMath::closeSurface(closedMesh->points(), closedMesh->cells());
+
+	vtkPolyData*  vtkMeshRaw = toVTKMesh( closedMesh );
 
 	vtkPolyDataNormals* filter = vtkPolyDataNormals::New();
 	filter->SetInput(vtkMeshRaw);
