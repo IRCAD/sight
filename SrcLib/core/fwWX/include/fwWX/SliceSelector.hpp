@@ -57,17 +57,22 @@ public:
 
 protected:
 
-    /**
-     * @brief Event handler for a slice index change.
-     * @param event The corresponding wxWidgets event.
-     */
-	FWWX_API void onSliceIndexChange( wxScrollEvent& event ) throw();
-
+#ifdef __MACOSX__
+	FWWX_API void onSliceDownButton( wxCommandEvent& event );
+	FWWX_API void onSliceTypeDownButton( wxCommandEvent& event );
+#else
 	/**
 	 * @brief Event handler for a slice type change.
 	 * @param event The corresponding wxWidgets event.
 	 */
 	FWWX_API void onSliceTypeChange( wxCommandEvent& event );
+#endif
+
+	/**
+	 * @brief Event handler for a slice index change.
+	 * @param event The corresponding wxWidgets event.
+	 */
+	FWWX_API void onSliceIndexChange( wxScrollEvent& event ) throw();
 
     /// @brief wxWidgets event table.
     /// @{
@@ -80,10 +85,23 @@ private:
     enum {
     	ID_SLICE_INDEX = wxID_HIGHEST + 1,
         ID_SLICE_TEXT,
-        ID_SLICE_TYPE
+        ID_SLICE_TYPE,
+        ID_SAGITTAL_BTN,
+        ID_FRONTAL_BTN,
+        ID_AXIAL_BTN
     };
 
+
+#ifdef __MACOSX__
+    wxButton* m_sliceType;
+    wxMenu*   m_sliceMenu;
+    int m_sliceTypeSelection;
+    wxMenuItem *m_pItemAxial;
+    wxMenuItem *m_pItemFrontal;
+    wxMenuItem *m_pItemSagittal;
+#else
     wxChoice* m_sliceType;
+#endif
 
     /// @brief Slice type names as a string array for the choice widget.
     static const wxString m_sliceTypes[];

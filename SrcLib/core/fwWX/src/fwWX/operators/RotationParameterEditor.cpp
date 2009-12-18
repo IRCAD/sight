@@ -30,9 +30,14 @@ RotationParameterEditor::RotationParameterEditor( wxWindow * parent ) :
 
 	wxBoxSizer * dialogBoxSizerV = new wxBoxSizer( wxVERTICAL ) ;
 
-	wxStaticBox * staticBox = new wxStaticBox(this, wxID_ANY, _("Rotation (degrees) :"));
+#ifdef __MACOSX__
+	wxSizer* staticBoxSizer = new wxBoxSizer( wxVERTICAL );
+#else
+	wxSizer* staticBoxSizer = new wxStaticBoxSizer( wxVERTICAL, this, wxT("Rotation (degrees) :"));
+#endif
 
-	wxStaticBoxSizer * staticBoxSizer = new wxStaticBoxSizer(staticBox, wxVERTICAL );
+//	wxStaticBox * staticBox = new wxStaticBox(this, wxID_ANY, _("Rotation (degrees) :"));
+//	wxStaticBoxSizer * staticBoxSizer = new wxStaticBoxSizer(staticBox, wxVERTICAL );
 
 	wxFlexGridSizer * flexGridSizer = new wxFlexGridSizer(2, 2, 10, 2);
 
