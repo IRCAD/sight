@@ -12,15 +12,15 @@
           <Directory Id='INSTALLDIR' Name='$(var.SOFTWARE)' LongName='$(var.SOFTWARE) $(var.VERSION)'>
 
 			<Directory Id='BUNDLESDIR' Name='Bundles'>
-				<Directory Id='B301' Name='301' LongName='gui_0-0'>
+				<Directory Id='B301' Name='301' LongName='gui_0-1'>
 					<Component Id='gui' Guid='11112222-83F1-4F22-985B-FDB3C8ABD301'>
-						<File Id="P301"		Name="301.xml"		LongName="plugin.xml" Source="../../CommonLib/Bundles/gui_0-0/plugin.xml" />
-						<File Id="DLL301"	Name="301.dll"		LongName="gui_0-0_win32_cl7-1.dll" Source="../../CommonLib/Bundles/gui_0-0/gui_0-0_win32_cl7-1.dll" />
+						<File Id="P301"		Name="301.xml"		LongName="plugin.xml" Source="../../Install/Bundles/gui_0-1/plugin.xml" />
+						<File Id="DLL301"	Name="301.dll"		LongName="gui_0-1_win_32_cl7-1.dll" Source="../../Install/Bundles/gui_0-1/gui_0-1_win_32_cl7-1.dll" />
 					</Component>
 				</Directory>
 			</Directory>
-			<Component Id='copy301' Guid='11112222-83F1-4F22-985B-FDB3C8ABD301'>
-					<CopyFile Id="cp301" FileId="DLL301" DestinationName="301.dll" DestinationLongName="gui_0-0_win32_cl7-1.dll" />
+			<Component Id='copy301' Guid='11112222-83F1-4F22-985B-FDB3C8ABD601'>
+					<CopyFile Id="cp301" FileId="DLL301" DestinationName="301.dll" DestinationLongName="gui_0-1_win_32_cl7-1.dll" />
 			</Component>
           </Directory>
         </Directory>

@@ -12,17 +12,17 @@
           <Directory Id='INSTALLDIR' Name='$(var.SOFTWARE)' LongName='$(var.SOFTWARE) $(var.VERSION)'>
 
 			<Directory Id='BUNDLESDIR' Name='Bundles'>
-				<Directory Id='B309' Name='309' LongName='visu_0-0'>
-					<Component Id='visu' Guid='11112222-83F1-4F22-985B-FDB3C8ABD409'>
-						<File Id="P309"			Name="309.xml"		LongName="plugin.xml" Source="../../CommonLib/Bundles/visu_0-0/plugin.xml" />
-						<File Id="visuCfg.xsd"	Name="visuCfg.xsd"	LongName="visuCfg.xsd" Source="../../CommonLib/Bundles/visu_0-0/visuCfg.xsd" />
-						<File Id="DLL309"		Name="309.dll"		LongName="visu_0-0_win32_cl7-1.dll" Source="../../CommonLib/Bundles/visu_0-0/visu_0-0_win32_cl7-1.dll" />
+				<Directory Id='B309' Name='309' LongName='visu_0-1'>
+					<Component Id='visu' Guid='11112222-83F1-4F22-985B-FDB3C8ABD309'>
+						<File Id="P309"			Name="309.xml"		LongName="plugin.xml" Source="../../Install/Bundles/visu_0-1/plugin.xml" />
+						<File Id="visuCfg.xsd"	Name="visuCfg.xsd"	LongName="visuCfg.xsd" Source="../../Install/Bundles/visu_0-1/visuCfg.xsd" />
+						<File Id="DLL309"		Name="309.dll"		LongName="visu_0-1_win_32_cl7-1.dll" Source="../../Install/Bundles/visu_0-1/visu_0-1_win_32_cl7-1.dll" />
 					</Component>
 				</Directory>
             </Directory>
 			
 			<Component Id='copy309' Guid='11112222-83F1-4F22-985B-FDB3C8ABD609'>
-					<CopyFile Id="cp309" FileId="DLL309" DestinationName="309.dll" DestinationLongName="visu_0-0_win32_cl7-1.dll" />
+					<CopyFile Id="cp309" FileId="DLL309" DestinationName="309.dll" DestinationLongName="visu_0-1_win_32_cl7-1.dll" />
 			</Component>
           </Directory>
         </Directory>

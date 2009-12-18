@@ -13,14 +13,14 @@
 
 			<Directory Id='BUNDLESDIR' Name='Bundles'>
 				<Directory Id='B336' Name='336' LongName='ioVTK_0-1'>
-					<Component Id='ioVTK' Guid='11112222-83F1-4F22-985B-FDB3C8ABD436'>
-						<File Id="P336"		Name="336.xml"		LongName="plugin.xml" Source="../../CommonLib/Bundles/ioVTK_0-1/plugin.xml" />
-						<File Id="DLL336"	Name="336.dll"		LongName="ioVTK_0-1_win32_cl7-1.dll" Source="../../CommonLib/Bundles/ioVTK_0-1/ioVTK_0-1_win32_cl7-1.dll" />
+					<Component Id='ioVTK' Guid='11112222-83F1-4F22-985B-FDB3C8ABD336'>
+						<File Id="P336"		Name="336.xml"		LongName="plugin.xml" Source="../../Install/Bundles/ioVTK_0-1/plugin.xml" />
+						<File Id="DLL336"	Name="336.dll"		LongName="ioVTK_0-1_win_32_cl7-1.dll" Source="../../Install/Bundles/ioVTK_0-1/ioVTK_0-1_win_32_cl7-1.dll" />
 					</Component>
 				</Directory>
             </Directory>
 			<Component Id='copy336' Guid='11112222-83F1-4F22-985B-FDB3C8ABD636'>
-					<CopyFile Id="cp336" FileId="DLL336" DestinationName="336.dll" DestinationLongName="ioVTK_0-1_win32_cl7-1.dll" />
+					<CopyFile Id="cp336" FileId="DLL336" DestinationName="336.dll" DestinationLongName="ioVTK_0-1_win_32_cl7-1.dll" />
 			</Component>
           </Directory>
         </Directory>
