@@ -11,12 +11,12 @@ namespace fwServices
 {
 
 template< class DATATYPE >
-::boost::shared_ptr< DATATYPE > IService::getObject()
+ SPTR(DATATYPE) IService::getObject()
 {
 	assert( m_associatedObject.use_count() );
 	assert( m_associatedObject.expired() == false );
 
-	::boost::shared_ptr< DATATYPE > casteDdata = ::boost::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
+	SPTR(DATATYPE) casteDdata = ::boost::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
 	assert(casteDdata);
 
 	return casteDdata;

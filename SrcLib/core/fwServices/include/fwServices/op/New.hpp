@@ -30,8 +30,14 @@ namespace fwServices
 FWSERVICES_API ::fwTools::Object::sptr New(::fwRuntime::ConfigurationElement::sptr _elt) ;
 
 template < class CLASSNAME >
-::boost::shared_ptr< CLASSNAME > New(::fwRuntime::ConfigurationElement::sptr _elt) ;
+SPTR(CLASSNAME) New(::fwRuntime::ConfigurationElement::sptr _elt) ;
 
+
+/**
+ * @brief Add services to object from a configuration element, this method is used in ::fwServices::New method.
+ * @author IRCAD (Research and Development Team).
+ */
+FWSERVICES_API void addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _obj, ::fwRuntime::ConfigurationElement::sptr _cfgElement );
 
 //@}
 

@@ -17,9 +17,9 @@ namespace fwServices
 {
 
 template<class CLASSNAME>
-::boost::shared_ptr< CLASSNAME > New(::fwRuntime::ConfigurationElement::sptr _elt)
+SPTR(CLASSNAME) New(::fwRuntime::ConfigurationElement::sptr _elt)
 {
-	::boost::shared_ptr< CLASSNAME > myObject = ::boost::dynamic_pointer_cast< CLASSNAME >( ::fwServices::New( _elt ) ) ;
+	SPTR(CLASSNAME) myObject = ::boost::dynamic_pointer_cast< CLASSNAME >( ::fwServices::New( _elt ) ) ;
 	assert(myObject);
 	return myObject;
 }

@@ -39,7 +39,8 @@ REGISTER_SERVICE( ::gui::action::IAction , ::opVTKMesh::action::VTKMeshCreation 
 
 VTKMeshCreation::VTKMeshCreation() throw() :
 	m_imageUID(""),
-	m_meshUID("")
+	m_meshUID(""),
+	m_reduction(0)
 {}
 
 //-----------------------------------------------------------------------------
@@ -74,11 +75,20 @@ void VTKMeshCreation::configuring() throw ( ::fwTools::Failed )
 
 	SLM_ASSERT( "Mesh UID andImage UID must be defined in the service configuration",  m_configuration->findConfigurationElement("image") && m_configuration->findConfigurationElement("mesh") );
 
+	
 	m_imageUID = m_configuration->findConfigurationElement("image")->getExistingAttributeValue("uid");
+
 	m_meshUID = m_configuration->findConfigurationElement("mesh")->getExistingAttributeValue("uid");
+
+	if (m_configuration->findConfigurationElement("percentReduction") && m_configuration->findConfigurationElement("percentReduction")->hasAttribute("value"))
+	{
+		std::string reduce = m_configuration->findConfigurationElement("percentReduction")->getExistingAttributeValue("value");
+		m_reduction = boost::lexical_cast<unsigned int>(reduce);
+	}
 
 	OSLM_INFO( "Image UID = " << m_imageUID);
 	OSLM_INFO( "Mesh UID = " << m_meshUID);
+	OSLM_INFO( "Reduction value = " << m_reduction);
 }
 
 //-----------------------------------------------------------------------------
@@ -117,8 +127,29 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 	smoothFilter->FeatureEdgeSmoothingOn();
 	smoothFilter->Update();
 
-	vtkPolyData * polyData;
-	polyData = smoothFilter->GetOutput();
+
+	// Get polyData
+	  vtkPolyData * polyData;
+
+	  // decimate filter
+	  unsigned int reduction = m_reduction;
+	  if( reduction > 0 )
+	  {
+	      vtkDecimatePro * decimate = vtkDecimatePro::New();
+	      decimate->SetInput( smoothFilter->GetOutput() );
+	      decimate->SetTargetReduction( reduction/100.0 );
+	      decimate->PreserveTopologyOff();
+	      decimate->SplittingOn();
+	      decimate->BoundaryVertexDeletionOn();
+	      decimate->SetSplitAngle( 120 );
+	      decimate->Update();
+	      polyData = decimate->GetOutput();
+	  }
+	  else
+	  {
+	      polyData = smoothFilter->GetOutput();
+	  }
+
 
 	OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
 	bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);

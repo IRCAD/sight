@@ -10,6 +10,7 @@
 #include <boost/filesystem.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
+#include <fwTools/UUID.hpp>
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
@@ -30,7 +31,7 @@ namespace fwServices
 
 
 
-::boost::shared_ptr<ObjectServiceRegistry> ObjectServiceRegistry::m_instance;
+ObjectServiceRegistry::sptr ObjectServiceRegistry::m_instance;
 
 ObjectServiceRegistry::ObjectServiceRegistry()
 {
@@ -65,7 +66,7 @@ void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObje
 }
 
 
-::boost::shared_ptr< ::fwTools::Object > ObjectServiceRegistry::getRootObject()
+::fwTools::Object::sptr ObjectServiceRegistry::getRootObject()
 {
 	return getDefault()->m_rootObject ;
 }
@@ -75,8 +76,8 @@ bool ObjectServiceRegistry::isRootObjectConfigurationValid()
 	{
 		assert( getDefault()->m_rootObjectClassName.first ) ;
 		assert( getDefault()->m_rootObjectConfigurationName.first ) ;
-		std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-	   for( std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
+		std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
+	   for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
 	   {
 		   if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
 		   {
@@ -95,7 +96,7 @@ void ObjectServiceRegistry::initializeRootObject()
 		if ( getDefault()->m_rootObjectConfigurationFile.first )
 		{
 			::boost::filesystem::path filePath ( getDefault()->m_rootObjectConfigurationFile.second );
-			::boost::shared_ptr< ::fwRuntime::Bundle > configBundle = ::fwRuntime::io::BundleDescriptorReader::createBundleFromXmlPlugin( filePath );
+			SPTR(::fwRuntime::Bundle) configBundle = ::fwRuntime::io::BundleDescriptorReader::createBundleFromXmlPlugin( filePath );
 			::fwRuntime::Runtime::getDefault()->addBundle( configBundle );
 			configBundle->setEnable( true );
 		}
@@ -104,8 +105,8 @@ void ObjectServiceRegistry::initializeRootObject()
 		assert( getDefault()->m_rootObjectClassName.first ) ;
 		assert( getDefault()->m_rootObjectConfigurationName.first ) ;
 
-		std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-		for( std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
+		std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
+		for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
 		{
 			if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
 			{
@@ -146,15 +147,15 @@ bool ObjectServiceRegistry::isRootObjectInitialized()
 	return getDefault()->m_isRootInitialized ;
 }
 
-void  ObjectServiceRegistry::updateObjectDeleter( ::boost::shared_ptr< fwTools::Object > object)
+void  ObjectServiceRegistry::updateObjectDeleter( ::fwTools::Object::sptr object)
 {
-	if ( ::boost::dynamic_pointer_cast< ::fwServices::DefaultObjectDeleter >(object->getDeleter() ) == 0 )
+	if ( ::fwServices::DefaultObjectDeleter::dynamicCast(object->getDeleter() ) == 0 )
 	{
-		object->setDeleter( ::boost::shared_ptr< ::fwServices::DefaultObjectDeleter >( new ::fwServices::DefaultObjectDeleter ) ) ;
+		object->setDeleter( ::fwServices::DefaultObjectDeleter::New() ) ;
 	}
 }
 
-void ObjectServiceRegistry::registerObject( ::boost::shared_ptr< fwTools::Object > obj )
+void ObjectServiceRegistry::registerObject( ::fwTools::Object::sptr obj )
 {
 	bool isAlreadyRegistered = false ;
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
@@ -166,7 +167,7 @@ void ObjectServiceRegistry::registerObject( ::boost::shared_ptr< fwTools::Object
 	}
 	if( !isAlreadyRegistered )
 	{
-		 ::boost::weak_ptr< fwTools::Object > newRef(obj) ;
+		 ::fwTools::Object::wptr newRef(obj) ;
 		 getDefault()->m_container.insert( std::make_pair( newRef , SContainer() ) );
 		 getDefault()-> updateObjectDeleter(obj);
 	}
@@ -174,28 +175,28 @@ void ObjectServiceRegistry::registerObject( ::boost::shared_ptr< fwTools::Object
 
 
 
-void ObjectServiceRegistry::registerService(  fwTools::Object * obj, ::boost::shared_ptr<fwServices::IService > service)
+void ObjectServiceRegistry::registerService(  fwTools::Object * obj, ::fwServices::IService::sptr service)
 {
 	OSR::registerService( OSR::shared_from( obj ) , service ) ;
 }
 
-::boost::shared_ptr<ObjectServiceRegistry> ObjectServiceRegistry::getDefault()
+ObjectServiceRegistry::sptr ObjectServiceRegistry::getDefault()
 {
 	if ( m_instance==0 )
 	{
-		m_instance = ::boost::shared_ptr<ObjectServiceRegistry>(new ObjectServiceRegistry() );
+		m_instance = ObjectServiceRegistry::sptr(new ObjectServiceRegistry() );
 	}
 	return m_instance;
 }
 
 
 
-void  ObjectServiceRegistry::registerService( ::boost::shared_ptr< fwTools::Object > object , ::boost::shared_ptr<fwServices::IService > service)
+void  ObjectServiceRegistry::registerService( ::fwTools::Object::sptr object , ::fwServices::IService::sptr service)
 {
-	::boost::weak_ptr< fwTools::Object > refKey ;
+	::fwTools::Object::wptr refKey ;
 	for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter!= getDefault()->m_container.end() ; ++iter )
 	{
-		::boost::weak_ptr< fwTools::Object > wo = iter->first ;
+		::fwTools::Object::wptr wo = iter->first ;
 		assert( !wo.expired() ) ;
 		if( (iter->first).lock() == object )
 		{
@@ -226,17 +227,16 @@ void  ObjectServiceRegistry::registerService( ::boost::shared_ptr< fwTools::Obje
 }
 
 
-void ObjectServiceRegistry::swapService(  fwTools::Object::sptr  _objSrc, fwTools::Object::sptr  _objDst, ::boost::shared_ptr< ::fwServices::IService > _service )
+void ObjectServiceRegistry::swapService(  ::fwTools::Object::sptr  _objSrc, ::fwTools::Object::sptr  _objDst, ::fwServices::IService::sptr _service )
 {
-		std::vector< ::boost::weak_ptr< fwTools::Object > >   lobjects;
+		std::vector< ::fwTools::Object::wptr >   lobjects;
 		for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter != getDefault()->m_container.end() ; ++iter )
 		{
 			// Usually, unregisterServices is invoked at obj destruction (from its destructor) : its weak_ptr has therefore expired
 			// For this reason, for that method only, one unregister all fwServices because expired weak_ptr can (but not sure) correspond to the considered obj
 			if( iter->first.expired() )
 			{
-				OSLM_WARN( "Expired object discovered : swap on expired object !" ) ;
-
+				SLM_WARN( "Expired object discovered : swap on expired object !" ) ;
 			}
 			// Normal case : obj is not expired
 			else if( iter->first.lock() == _objSrc )
@@ -257,9 +257,9 @@ void ObjectServiceRegistry::swapService(  fwTools::Object::sptr  _objSrc, fwTool
 		getDefault()->registerService(_objDst, _service);
 }
 
-void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
+void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
 {
-		std::vector< ::boost::weak_ptr< fwTools::Object > >   lobjects;
+		std::vector< ::fwTools::Object::wptr >   lobjects;
 		for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter != getDefault()->m_container.end() ; ++iter )
 		{
 
@@ -273,7 +273,7 @@ void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
 			{
 				::fwTools::Object::wptr tmp1 = iter->first;
 
-				OSLM_WARN( "Expired object discovered : stopping and unregistering all associated fwServices" ) ;
+				SLM_WARN( "Expired object discovered : stopping and unregistering all associated fwServices" ) ;
 				lobjects.push_back( iter->first ) ;
 				// Clean service vector clearing
 				OSContainer::iterator _pos = iter ;
@@ -284,7 +284,7 @@ void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
 					if (*lIter != NULL )
 					{
 						( *lIter)->stop();
-						fwServices::unregisterComChannels( (*lIter) ) ;
+						::fwServices::unregisterComChannels( (*lIter) ) ;
 					}
 				}
 				_pos->second.clear() ;
@@ -307,50 +307,67 @@ void ObjectServiceRegistry::unregisterServices(  fwTools::Object::sptr  obj )
 			}
 		}
 		// Erase all associated object with the refKey
-		for ( std::vector< ::boost::weak_ptr< fwTools::Object > >::iterator iter = lobjects.begin(); iter != lobjects.end() ; ++iter )
+		for ( std::vector< ::fwTools::Object::wptr >::iterator iter = lobjects.begin(); iter != lobjects.end() ; ++iter )
 		{
 			getDefault()->m_container.erase( *iter ) ;
 		}
 }
 
-void ObjectServiceRegistry::unregisterService( ::boost::shared_ptr< IService > _service )
+void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _service )
 {
-	SLM_TRACE("ObjectServiceRegistry::unregisterService");
+	SLM_TRACE_FUNC();
+	_service->stop();
+	removeFromContainer( _service );
+	fwServices::unregisterComChannels( _service ) ;
+}
+
+
+void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _service )
+{
+	SLM_TRACE_FUNC();
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
 	{
-		SContainer::iterator positionToDelete ;
-		bool isFound = false ;
+		SContainer::iterator positionToDelete = pos->second.end() ;
 		for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
 		{
+			OSLM_TRACE( "OBJ=" <<::fwTools::UUID::get(_service->getObject()) <<
+				        " SContainer::iterator lIter" << ::fwTools::UUID::get( ( *lIter) )
+			          );
 			if( ( *lIter) == _service )
 			{
-				( *lIter)->stop();
-				isFound = true ;
+				SLM_ASSERT( "service registered twice for the same object :"
+						    << " OBJ=" <<::fwTools::UUID::get(_service->getObject())
+							<< " SRV=" << ::fwTools::UUID::get( ( *lIter) ),
+							positionToDelete == pos->second.end()
+				          );
 				positionToDelete = lIter ;
-				/// Logger Information
-				std::stringstream msg;
-				msg << "Unregistering service  : " << (*_service) << " (" << _service << ") " ;
-				if( !pos->first.expired() ) // If service being unregistered is associated with an object having expired
-				{
-					msg << "Initially attached to object " << pos->first.lock()->className() << " (" << pos->first.lock() << ")";
-				}
-				SLM_INFO( msg.str() );
 			}
 		}
-		if( isFound )
+		if ( positionToDelete != pos->second.end() )
 		{
-			fwServices::unregisterComChannels( (*positionToDelete) ) ;
+			/// Logger Information
+			std::stringstream msg;
+			msg << "remove from container service  : " << (*_service) << " (" << _service << ") " ;
+			if( !pos->first.expired() ) // If service being unregistered is associated with an object having expired
+			{
+				msg << "Initially attached to object " << pos->first.lock()->className() << " (" << pos->first.lock() << ")";
+			}
+			SLM_INFO( msg.str() );
 			pos->second.erase( positionToDelete ) ;
 		}
 	}
 }
 
-bool ObjectServiceRegistry::hasObject(IService * _service)
+
+
+
+
+bool ObjectServiceRegistry::hasObject(::fwServices::IService * _service)
 {
 	return _service->m_associatedObject.use_count();
 }
 
-::boost::shared_ptr< fwTools::Object > ObjectServiceRegistry::shared_from( fwTools::Object *obj )
+::fwTools::Object::sptr ObjectServiceRegistry::shared_from( ::fwTools::Object *obj )
 {
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
 	{
@@ -365,10 +382,10 @@ bool ObjectServiceRegistry::hasObject(IService * _service)
 	OSLM_WARN( msg.str() ); ;
 
 	// avoid compilation warning
-	return ::boost::shared_ptr< fwTools::Object >();
+	return ::fwTools::Object::sptr();
 
 }
-::boost::shared_ptr< fwServices::IService > ObjectServiceRegistry::shared_from( fwServices::IService *_service )
+::fwServices::IService::sptr ObjectServiceRegistry::shared_from( fwServices::IService *_service )
 {
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
 	{
@@ -390,9 +407,9 @@ bool ObjectServiceRegistry::hasObject(IService * _service)
 }
 
 
-std::vector< ::boost::shared_ptr< ::fwTools::Object > > ObjectServiceRegistry::getObjects()
+std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
 {
-	std::vector< ::boost::shared_ptr< ::fwTools::Object > > allObjects ;
+	std::vector< ::fwTools::Object::sptr > allObjects ;
 	for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
 	{
 			assert( !pos->first.expired() ) ;

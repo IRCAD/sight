@@ -18,6 +18,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Study.hpp"
+#include "fwData/Composite.hpp"
 #include "fwData/DownCastIterator.hpp"
 
 namespace fwData
@@ -79,6 +80,55 @@ public:
 	FWDATA_API std::pair< StudyIterator, StudyIterator > getStudies();
 	FWDATA_API std::pair< StudyConstIterator, StudyConstIterator > getStudies() const;
 	//@}
+
+	// toolBox -----------------------------------------------------------------
+	/// Field identifier for toolBox
+	FWDATA_API static const Object::FieldID ID_TOOLBOX;
+
+	/**
+	 * @brief set toolBox
+	 * @param[in] _toolBox ::fwData::Composite::sptr
+	 */
+	FWDATA_API void setToolBox( ::fwData::Composite::sptr _toolBox );
+
+	/**@{
+	 * Get the toolBox.
+	 */
+	FWDATA_API ::fwData::Composite::sptr getToolBox();
+	FWDATA_API ::fwData::Composite::csptr getToolBox() const;
+	//@}
+
+
+	// scenarios -----------------------------------------------------------------
+	/// Field identifier for scenarios
+	FWDATA_API static const Object::FieldID ID_SCENARIOS;
+
+	/**
+	 * @brief set scenarios
+	 * @param[in] _scenarios ::fwData::Composite::sptr
+	 */
+	FWDATA_API void setScenarios( ::fwData::Composite::sptr _scenarios );
+
+	/**@{
+	 * Get the scenarios.
+	 */
+	FWDATA_API ::fwData::Composite::sptr getScenarios();
+	FWDATA_API ::fwData::Composite::csptr getScenarios() const;
+	//@}
+
+	/**
+	 * @brief add tool in the toolBox
+	 * @param[in] _name tool identifier
+	 * @param[in] _tool ::fwData::Object::sptr
+	 */
+	FWDATA_API void addTool( std::string _name, ::fwData::Object::sptr _tool );
+
+	/**
+	 * @brief get tool from the toolBox
+	 * @param[in] _name tool identifier
+	 * @return the tool
+	 */
+	FWDATA_API ::fwData::Object::sptr getTool( std::string _name );
 
 	// Generator result---------------------------------------------------------
 

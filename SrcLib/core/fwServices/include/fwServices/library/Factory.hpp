@@ -37,7 +37,7 @@ namespace library
  * @author IRCAD (Research and Development Team).
  *
  */
-FWSERVICES_API bool support( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId ) throw() ;
+FWSERVICES_API bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw() ;
 
 /**
  * @brief Class factory add method
@@ -46,7 +46,7 @@ FWSERVICES_API bool support( ::boost::shared_ptr< fwTools::Object > obj , std::s
  * @author IRCAD (Research and Development Team).
  *
  */
-FWSERVICES_API ::boost::shared_ptr< fwServices::IService > add( ::boost::shared_ptr< fwTools::Object > obj , std::string serviceId , std::string _implementationId ) ;
+FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId ) ;
 
 } // namespace library
 

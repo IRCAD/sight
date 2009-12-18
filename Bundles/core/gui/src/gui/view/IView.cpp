@@ -118,6 +118,15 @@ int IView::getGuiContainerId()
 	return m_guiContainerId ;
 }
 
+//-----------------------------------------------------------------------------
+
+wxWindow * IView::getWxContainer() const
+{
+	return wxWindow::FindWindowById( m_guiContainerId );
+}
+
+//-----------------------------------------------------------------------------
+
 }
 
 }

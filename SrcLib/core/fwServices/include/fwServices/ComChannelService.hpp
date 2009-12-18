@@ -7,13 +7,9 @@
 #ifndef COMMUNICATIONCHANNELSERVICE_HPP_
 #define COMMUNICATIONCHANNELSERVICE_HPP_
 
-#include <boost/weak_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
-
 #include "fwServices/config.hpp"
 #include "fwServices/ICommunication.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/IEditionService.hpp"
 
 namespace fwServices
 {
@@ -29,9 +25,20 @@ class ObjectMsg ;
 class FWSERVICES_CLASS_API ComChannelService : public ::fwServices::ICommunication
 {
 public:
-
 	/// Definitions
 	fwCoreServiceClassDefinitionsMacro ( (ComChannelService)(::fwServices::ICommunication::Baseclass) ) ;
+    fwCoreAllowSharedFromThis();
+
+
+	/**
+	 * @brief Message sending options
+	 */
+	typedef enum {
+		//These options are designed to be use as mask options. Values must be power of two values.
+		NONE                 = 0,
+		IGNORE_BUSY_SERVICES = 1
+	} MsgOptionsType;
+
 
 	/**
 	 * @brief Constructor
@@ -90,7 +97,7 @@ public:
 	/**
 	 * @brief Defines the object to observe (internally stored with weak reference)
 	 */
-	FWSERVICES_API void setSrc( ::fwServices::IEditionService::sptr  src);
+	FWSERVICES_API void setSrc( SPTR(::fwServices::IEditionService)  src);
 
 	/// Defines the target service
 	FWSERVICES_API void setDest( ::fwServices::IService::sptr _client);
@@ -99,7 +106,7 @@ public:
 	FWSERVICES_API IService::sptr  getDest();
 
 	/// Returns the target service
-	FWSERVICES_API ::fwServices::IEditionService::sptr  getSrc();
+	FWSERVICES_API SPTR(::fwServices::IEditionService)  getSrc();
 
 	/// Return true is both source and destination are valid pointers
 	FWSERVICES_API bool isValid();
@@ -108,10 +115,11 @@ public:
 	/**
 	 * @brief Send message to destination service if it is started.
 	 * @param[in] _msg the message sent to destination service
+	 * @param[in] _allowLoops Allow loops (be really carefull)
 	 * @pre Destination service must not be in sending mode to receive a message.
 	 * If the message is the message sent by destination service, the message is not notified. Else, we have an event loop and an assertion is created.
 	 */
-	FWSERVICES_API void sendMessage( ::fwServices::ObjectMsg::csptr _msg );
+	FWSERVICES_API void sendMessage( ::fwServices::ObjectMsg::csptr _msg, MsgOptionsType options );
 
 protected:
 
@@ -124,7 +132,7 @@ protected:
 	/**
 	 * @brief subject being really observed. It is the editor attached with the object to be modified
 	 */
-	::fwServices::IEditionService::wptr m_source ;
+	WPTR(::fwServices::IEditionService) m_source ;
 
 	/**
 	 * client will be invoked on modification

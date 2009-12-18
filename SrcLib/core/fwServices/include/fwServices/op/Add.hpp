@@ -32,7 +32,7 @@ namespace fwServices
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId ) ;
 
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > add( ::fwTools::Object::sptr obj ) ;
+SPTR(SERVICE) add( ::fwTools::Object::sptr obj ) ;
 
 /**
  * @brief Create and attach a service of type serviceId and implementation _implementationId to the object obj
@@ -43,7 +43,7 @@ template<class SERVICE>
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId ) ;
 
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > add( ::fwTools::Object::sptr obj , std::string _implementationId ) ;
+SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId ) ;
 
 /**
  * @brief Create and attach to the object obj a service of type serviceId, implementation _implementationId with the universal unique identifier _id
@@ -54,7 +54,7 @@ template<class SERVICE>
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string _id) ;
 
 template<class SERVICE>
-::boost::shared_ptr< SERVICE > add( ::fwTools::Object::sptr obj , std::string _implementationId , std::string _id ) ;
+SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId , std::string _id ) ;
 
 /**
  * @brief Create and attach to the object obj a service described in the XML like structure _elt

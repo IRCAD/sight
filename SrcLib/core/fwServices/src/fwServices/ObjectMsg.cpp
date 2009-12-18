@@ -26,7 +26,7 @@ ObjectMsg::~ObjectMsg()
 
 //-----------------------------------------------------------------------------
 
-void ObjectMsg::addEvent( std::string _eventId , ::boost::shared_ptr< ::fwData::Object > _pDataInfo )
+void ObjectMsg::addEvent( std::string _eventId , ::fwData::Object::sptr _pDataInfo )
 {
 	m_eventId2DataInfo[ _eventId ] = _pDataInfo;
 }
@@ -53,7 +53,7 @@ std::vector< std::string > ObjectMsg::getEventIds() const
 
 //-----------------------------------------------------------------------------
 
-::boost::shared_ptr< const ::fwData::Object > ObjectMsg::getDataInfo( std::string _eventId ) const
+::fwData::Object::csptr ObjectMsg::getDataInfo( std::string _eventId ) const
 {
 	return m_eventId2DataInfo.find( _eventId )->second;
 }
@@ -120,28 +120,28 @@ void ObjectMsg::info(std::ostream &_sstream ) const
 
 //-----------------------------------------------------------------------------
 
-void ObjectMsg::setSource(::boost::weak_ptr< ::fwServices::IService > _source)
+void ObjectMsg::setSource(::fwServices::IService::wptr _source)
 {
 	m_source = _source;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::weak_ptr< ::fwServices::IService > ObjectMsg::getSource() const
+::fwServices::IService::wptr ObjectMsg::getSource() const
 {
 	return m_source;
 }
 
 //-----------------------------------------------------------------------------
 
-void ObjectMsg::setSubject( ::boost::weak_ptr< ::fwTools::Object > _subject)
+void ObjectMsg::setSubject( ::fwTools::Object::wptr _subject)
 {
 	m_subject = _subject;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::weak_ptr< ::fwTools::Object > ObjectMsg::getSubject() const
+::fwTools::Object::wptr ObjectMsg::getSubject() const
 {
 	return m_subject;
 }

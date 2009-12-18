@@ -11,6 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwMath/IntrasecTypes.hpp"
 
 
 namespace fwData
@@ -21,6 +22,8 @@ namespace fwData
  * @author	IRCAD (Research and Development Team).
  * @date	2007-2009.
  */
+
+
 class FWDATA_CLASS_API Point : public Object
 {
 
@@ -30,9 +33,7 @@ public :
 
 	typedef double PointCoordType;
 
-	/// Coordinates array with 3 elements
-	typedef ::boost::array<PointCoordType, 3> PointCoordArray;
-
+	typedef fwVec3d PointCoordArray;
 	/// Constructor
 	FWDATA_API Point();
 	/// Destructor
@@ -44,13 +45,13 @@ public :
 	FWDATA_API Point &operator=( const Point & _point ) ;
 
 	/// Coordinates of point
-	fwGettersSettersDocMacro(Coord, vCoord, PointCoordArray, point coordinates. );
+	fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
 
 
 protected :
 
 	/// point coordinates
-	PointCoordArray m_vCoord;
+	fwVec3d m_vCoord;
 
 }; // end class Point
 

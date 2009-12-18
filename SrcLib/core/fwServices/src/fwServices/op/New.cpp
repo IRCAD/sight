@@ -24,6 +24,7 @@
 
 namespace fwServices
 {
+
 ::fwTools::Object::sptr New(::fwRuntime::ConfigurationElement::sptr _cfgElement)
 {
 	assert( _cfgElement->hasAttribute("type")) ;
@@ -61,31 +62,53 @@ namespace fwServices
 	// Retrieve IXML parser in charge of initializing (data) obj content
 	if( ::fwServices::support< ::fwServices::IXMLParser >( obj ) )
 	{
+		::fwServices::IXMLParser::sptr objParserSrv = ::fwServices::get< ::fwServices::IXMLParser >( obj );
+		objParserSrv->setConfiguration( _cfgElement ) ;
+		objParserSrv->configure() ;
+		objParserSrv->start() ;
+		objParserSrv->update() ;
+		// unregister call stop before
+		::fwServices::OSR::unregisterService( objParserSrv );
+
+		//::fwServices::erase< ::fwServices::IXMLParser >( obj ) ;
+		/*
 		::fwServices::get< ::fwServices::IXMLParser >( obj )->setConfiguration( _cfgElement ) ;
 		::fwServices::get< ::fwServices::IXMLParser >( obj )->configure() ;
 		::fwServices::get< ::fwServices::IXMLParser >( obj )->start() ;
 		::fwServices::get< ::fwServices::IXMLParser >( obj )->update() ;
 		::fwServices::get< ::fwServices::IXMLParser >( obj )->stop() ;
 		::fwServices::erase< ::fwServices::IXMLParser >( obj ) ;
+		*/
+
 	}
 
 	// Attaching a configuring services
-	typedef std::map< std::string , ::fwRuntime::ConfigurationElement::sptr > CfgMapType ;
-	for( ::fwRuntime::ConfigurationElementContainer::Iterator iter = _cfgElement->begin() ; iter != _cfgElement->end() ; ++iter )
-	{
-		if( (*iter)->getName() == "service" )
-		{
-			::fwServices::IService::sptr service = ::fwServices::add( obj , (*iter) ) ;
-			assert( service );
-		}
-	}
+	::fwServices::addServicesToObjectFromCfgElem( obj, _cfgElement );
 
 	return obj ;
 }
 
+//-----------------------------------------------------------------------------
 
+void addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _obj, ::fwRuntime::ConfigurationElement::sptr _cfgElement )
+{
+	for( 	::fwRuntime::ConfigurationElementContainer::Iterator iter = _cfgElement->begin() ;
+		iter != _cfgElement->end() ;
+		++iter )
+	{
+		if( (*iter)->getName() == "service" )
+		{
+			::fwServices::IService::sptr service = ::fwServices::add( _obj , (*iter) ) ;
+			assert( service );
+		}
+		else if ( (*iter)->getName() == "serviceList" )
+		{
+			::fwServices::addServicesToObjectFromCfgElem( _obj, (*iter) );
+		}
+	}
+}
 
-
+//-----------------------------------------------------------------------------
 
 
 

@@ -39,6 +39,7 @@ public:
 	FWCOMED_API static std::string CLEAR_PATIENT;
 	FWCOMED_API static std::string NEW_IMAGE_SELECTED;
 	FWCOMED_API static std::string NEW_LOADED_PATIENT; /*!< Event when the patient is modified from a file loading (uses a reader). */
+	FWCOMED_API static std::string NEW_RESECTION_SELECTED;
 	/// @}
 
 	/**

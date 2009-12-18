@@ -61,7 +61,7 @@ class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 		/**
    		 * @brief Does nothing
    		 */
-		FWSERVICES_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) ;
+		FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
 		/**
 		 * @brief Parse the XML configuration

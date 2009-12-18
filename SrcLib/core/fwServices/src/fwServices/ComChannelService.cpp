@@ -96,12 +96,12 @@ void ComChannelService::starting() throw(fwTools::Failed)
 	assert( !m_source.expired() ) ;
 
 
-	if( !m_source.lock()->isAttached( ::boost::dynamic_pointer_cast< ComChannelService >( shared_from_this() ) ) )
+	if( !m_source.lock()->isAttached( this->getSptr() ) )
 	{
 		std::stringstream msg ;
 		this->info( msg ) ;
 		SLM_TRACE( "Starting ComChannelService : " + msg.str() );
-		m_source.lock()->attach( ::boost::dynamic_pointer_cast< ComChannelService >( shared_from_this() ) );
+		m_source.lock()->attach( this->getSptr() );
 		m_source.lock()->start() ;
 	}
 
@@ -117,12 +117,12 @@ void ComChannelService::stopping() throw(fwTools::Failed)
 	// Pre condition
 	if( !m_source.expired() )
 	{
-		if( m_source.lock()->isAttached( ::boost::dynamic_pointer_cast< ComChannelService >( shared_from_this() ) ) )
+		if( m_source.lock()->isAttached( this->getSptr() ) )
 		{
 			std::stringstream msg ;
 			this->info( msg ) ;
 			SLM_TRACE( "Stopping ComChannelService " + msg.str() ); // crash from spylog???
-			m_source.lock()->detach( ::boost::dynamic_pointer_cast< ComChannelService >( shared_from_this() ) );
+			m_source.lock()->detach( this->getSptr() );
 		}
 	}
 }
@@ -135,7 +135,7 @@ void ComChannelService::info(std::ostream &_sstream )
 	std::string status ;
 	if( !m_source.expired() )
 	{
-		if( m_source.lock()->isAttached( ::boost::dynamic_pointer_cast< ComChannelService >( shared_from_this() ) ) )
+		if( m_source.lock()->isAttached( this->getSptr() ) )
 		{
 			status = "ON" ;
 		}
@@ -252,19 +252,19 @@ std::string ComChannelService::getNotificationInformation( ::fwServices::ObjectM
 
 //------------------------------------------------------------------------------
 
-void ComChannelService::sendMessage(::fwServices::ObjectMsg::csptr _msg)
+void ComChannelService::sendMessage( ::fwServices::ObjectMsg::csptr _msg, ::fwServices::ComChannelService::MsgOptionsType options )
 {
 	if( m_destination.lock()->isStarted())
 	{
-		if(  !m_destination.lock()->isSending() )
+		if(  !m_destination.lock()->isSending()  )
 		{
 			SLM_INFO( getNotificationInformation(_msg) );
 			m_destination.lock()->update(_msg ) ;
 		}
-		else
+		else if ( !(options & IGNORE_BUSY_SERVICES) )
 		{
 			//OSLM_ASSERT("LOOP DETECTION : "<< getNotificationInformation// _msg->getSource().lock()->getClassname(), m_destination.lock() ==  _msg->getSource().lock());
-			OSLM_ASSERT("LOOP DETECTION : "<< getNotificationInformation(_msg), m_destination.lock() ==  _msg->getSource().lock());
+			OSLM_ASSERT("LOOP DETECTION : "<< getNotificationInformation(_msg), m_destination.lock() ==  _msg->getSource().lock() );
 		}
 	}
 }

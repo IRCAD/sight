@@ -35,9 +35,11 @@ const std::string Dictionary::m_relatedServiceId	("m_relatedServiceId");
 const std::string Dictionary::m_imageLabelId 		("m_imageLabelId");
 const std::string Dictionary::m_acquisitionCountId	("m_acquisitionCountId");
 
-const std::string Dictionary::m_globalMatrixId("Global Matrix");
+const std::string Dictionary::m_globalMatrixId		("Global Matrix");
 const std::string Dictionary::m_errorId				("Error");
 const std::string Dictionary::m_acquisitionSelectedId( "Acquisition Selected" );
+const std::string Dictionary::m_resectionId			("resection identifier");
+const std::string Dictionary::m_resectionSelectedId	("selected resection identifier");
 
 const std::string Dictionary::m_roi( "ROI" );
 

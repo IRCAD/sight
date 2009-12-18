@@ -43,14 +43,8 @@ void start( ::fwRuntime::ConfigurationElement::sptr _elt)
 			if( (*iter)->hasAttribute("uid") )
 			{
 				std::string uid = (*iter)->getExistingAttributeValue("uid") ;
-				if( ::fwServices::has(uid) )
-				{
-					::fwServices::get(uid)->start() ;
-				}
-				else
-				{
-					OSLM_WARN("Configuration : element " << uid << " not found");
-				}
+				OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
+				::fwServices::get(uid)->start() ;
 			}
 		}
 	}
@@ -76,14 +70,8 @@ void update(::fwRuntime::ConfigurationElement::sptr _elt)
 			{
 				std::string uid = (*iter)->getExistingAttributeValue("uid") ;
 		    	OSLM_INFO("Updating service with UUID " << uid ) ;
-				if( ::fwServices::has(uid) )
-				{
-					::fwServices::get(uid)->update() ;
-				}
-				else
-				{
-					OSLM_WARN("Configuration : element " << uid << " not found");
-				}
+		    	OSLM_FATAL_IF("Configuration : element  "<< uid << " not found", ! ::fwServices::has(uid) );
+				::fwServices::get(uid)->update() ;
 			}
 		}
 	}
@@ -108,8 +96,8 @@ void stop( ::fwRuntime::ConfigurationElement::sptr _elt)
 			if( (*iter)->hasAttribute("uid") )
 			{
 				std::string uid = (*iter)->getExistingAttributeValue("uid") ;
-				OSLM_ASSERT("Configuration : element " << uid << " not found", ::fwServices::has(uid));
 		    	OSLM_INFO("Stopping service with UUID " << uid ) ;
+				OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
 				::fwServices::get(uid)->stop() ;
 			}
 		}
@@ -135,7 +123,7 @@ void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _elt)
 			if( (*iter)->hasAttribute("uid") )
 			{
 				std::string uid = (*iter)->getExistingAttributeValue("uid") ;
-				OSLM_ASSERT("Configuration : element " << uid << " not found", ::fwServices::has(uid));
+				OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
 		    	OSLM_INFO("Stopping service with UUID " << uid ) ;
 		    	erase(::fwServices::get(uid)) ;
 			}
@@ -143,10 +131,10 @@ void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _elt)
 	}
 }
 
-void startServices( ::boost::shared_ptr< fwTools::Object > obj )
+void startServices( ::fwTools::Object::sptr obj )
 {
-	std::vector< ::boost::shared_ptr< IService > > vfwServices = OSR::getServices<IService>( obj ) ;
-	for( std::vector< ::boost::shared_ptr< IService > >::iterator iter = vfwServices.begin() ; iter != vfwServices.end() ; ++iter )
+	std::vector< ::fwServices::IService::sptr > vfwServices = OSR::getServices<IService>( obj ) ;
+	for( std::vector< ::fwServices::IService::sptr >::iterator iter = vfwServices.begin() ; iter != vfwServices.end() ; ++iter )
 	{
 		(*iter)->start();
 	}

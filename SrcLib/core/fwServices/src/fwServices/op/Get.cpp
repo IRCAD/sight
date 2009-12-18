@@ -125,10 +125,10 @@ std::vector< ::fwServices::IService::sptr > getServices( std::string serviceId )
 
 unsigned int getServicePosition( IService * _service )
 {
-	typedef std::vector< ::boost::shared_ptr< fwServices::IService > > VectType ;
+	typedef std::vector< ::fwServices::IService::sptr > VectType ;
 
 	// Retrieve object associated with _service
-	 ::boost::shared_ptr< fwTools::Object > refObject = _service->getObject();
+	 ::fwTools::Object::sptr refObject = _service->getObject();
 	assert( refObject ) ;
 
 	// Retrieve associated fwServices
@@ -158,9 +158,9 @@ unsigned int getServicePosition( IService * _service )
 	return pos ;
 }
 
-std::vector< ::boost::shared_ptr< IService > > getRegisteredServices( ::boost::shared_ptr< fwTools::Object > _obj )
+std::vector< ::fwServices::IService::sptr > getRegisteredServices( ::fwTools::Object::sptr _obj )
 {
-	std::vector< ::boost::shared_ptr< IService > >  lfwServices = OSR::getServices<IService>(_obj);
+	std::vector< ::fwServices::IService::sptr >  lfwServices = OSR::getServices<IService>(_obj);
 	return lfwServices;
 }
 

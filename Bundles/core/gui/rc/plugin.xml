@@ -51,6 +51,15 @@
 		<implements>::fwTools::Object</implements>
 	</point>
 	
+	<point id="::gui::view::MultiView">
+		<implements>::gui::view::IView</implements>
+		<implements>::fwTools::Object</implements>
+	</point>
+
+	<point id="::gui::view::MultiSizerView">
+		<implements>::gui::view::IView</implements>
+		<implements>::fwTools::Object</implements>
+	</point>
 	
 	<point id="::gui::editor::DummyEditor">
 		<implements>::gui::editor::IEditor</implements>

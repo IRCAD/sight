@@ -16,6 +16,7 @@ std::string PatientDBMsg::ADD_PATIENT = "ADD_PATIENT";
 std::string PatientDBMsg::CLEAR_PATIENT = "CLEAR_PATIENT";
 std::string PatientDBMsg::NEW_IMAGE_SELECTED = "NEW_IMAGE_SELECTED";
 std::string PatientDBMsg::NEW_LOADED_PATIENT = "NEW_LOADED_PATIENT";
+std::string PatientDBMsg::NEW_RESECTION_SELECTED = "NEW_RESECTION_SELECTED";
 
 //------------------------------------------------------------------------------
 
