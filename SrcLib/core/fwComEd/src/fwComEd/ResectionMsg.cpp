@@ -15,6 +15,8 @@ namespace fwComEd
 std::string ResectionMsg::ADD_RECONSTRUCTION = "ADD_RECONSTRUCTION";
 std::string ResectionMsg::VISIBILITY = "VISIBILITY";
 std::string ResectionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SELECTED";
+std::string ResectionMsg::MODIFIED = "MODIFIED";
+
 
 //-----------------------------------------------------------------------------
 
