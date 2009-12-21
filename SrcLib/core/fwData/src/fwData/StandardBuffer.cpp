@@ -36,9 +36,8 @@ void StandardBuffer::setBuffer(void * newBuffer)
 {
 	char * buff = static_cast< char * >( this->getBuffer() );
 
-	if( buff && newBuffer != buff )
+	if( m_bManagesBuff && buff && newBuffer != buff )
 	{
-		SLM_ASSERT("StandardBuffer should always manage his buffer", m_bManagesBuff);
 		delete[] buff;
 	}
 	m_buffer = newBuffer;
