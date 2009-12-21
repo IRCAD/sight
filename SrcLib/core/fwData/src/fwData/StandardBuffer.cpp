@@ -35,9 +35,10 @@ void * StandardBuffer::getBuffer()
 void StandardBuffer::setBuffer(void * newBuffer)
 {
 	char * buff = static_cast< char * >( this->getBuffer() );
-    SLM_ASSERT("StandardBuffer should always manage his buffer", m_bManagesBuff);
-	if( buff and newBuffer != buff )
+
+	if( buff && newBuffer != buff )
 	{
+		SLM_ASSERT("StandardBuffer should always manage his buffer", m_bManagesBuff);
 		delete[] buff;
 	}
 	m_buffer = newBuffer;
