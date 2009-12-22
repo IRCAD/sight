@@ -20,15 +20,7 @@ StandardBuffer::StandardBuffer()
 
 StandardBuffer::~StandardBuffer()
 {
-	if( m_bManagesBuff && this->getBuffer() != NULL )
-	{
-		char * buff = static_cast< char * >( this->getBuffer() );
-		if( buff )
-		{
-			delete[] buff;
-		}
-		m_buffer = NULL;
-	}
+    this->setBuffer( NULL );
 }
 
 //------------------------------------------------------------------------------
@@ -43,7 +35,8 @@ void * StandardBuffer::getBuffer()
 void StandardBuffer::setBuffer(void * newBuffer)
 {
 	char * buff = static_cast< char * >( this->getBuffer() );
-	if( buff )
+
+	if( m_bManagesBuff && buff && newBuffer != buff )
 	{
 		delete[] buff;
 	}

@@ -40,6 +40,8 @@ public:
 	FWCOMED_API static std::string NEW_RESECTION_SELECTED;
 	FWCOMED_API static std::string NEW_SAFE_PART_SELECTED;
 	FWCOMED_API static std::string ADD_RESECTION;
+	FWCOMED_API static std::string MODIFIED;
+	FWCOMED_API static std::string RESECTIONDB_INVALIDATED;
 	/// @}
 
 	/**
