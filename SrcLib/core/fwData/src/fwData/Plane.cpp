@@ -11,6 +11,8 @@
 
 #include "fwData/Plane.hpp"
 
+#define EPSILON 0.00000001
+
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Plane, ::fwData::Plane );
 
 namespace fwData
@@ -64,7 +66,17 @@ Plane & Plane::operator=( const Plane & _plane )
 
 	return *this;
 }
+//------------------------------------------------------------------------------
 
+bool Plane::operator==( const Plane & _plane )
+{
+	bool result = false;
+	if (fabs(float((m_vPoints[0]->getCoord())[0] - (_plane.m_vPoints[0]->getCoord())[0])) < EPSILON &&
+		fabs(float((m_vPoints[1]->getCoord())[1] - (_plane.m_vPoints[1]->getCoord())[1])) < EPSILON &&
+		fabs(float((m_vPoints[2]->getCoord())[2] - (_plane.m_vPoints[2]->getCoord())[2])) < EPSILON)
+		result = true;
+	return result;
+}
 //------------------------------------------------------------------------------
 
 void Plane::setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3)

@@ -44,6 +44,9 @@ public :
 	/// Copy method
 	FWDATA_API PlaneList &operator=( const PlaneList & _planetList ) ;
 
+	// Looking for duplicate plan
+	FWDATA_API void deleteDuplicatedPlan(void);
+
 	/// Planes container
 	fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, a container of all planes);
 

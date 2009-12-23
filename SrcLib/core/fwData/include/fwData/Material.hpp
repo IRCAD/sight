@@ -11,7 +11,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
 
-namespace fwData {
+namespace fwData
+{
 /**
  * @class 	Material
  * @brief 	This class defines a material. A material is represented by an ambient color and a diffuse color
@@ -58,7 +59,8 @@ public:
 	/*
 	 * @brief Options
 	 */
-	typedef enum{
+	typedef enum
+	{
 		MODE_STANDARD = 1,
 		MODE_NORMALS  = 2,
 	} OPTIONS_MODE;
@@ -66,7 +68,8 @@ public:
 	/*
 	 * @brief Shading models
 	 */
-	typedef enum{
+	typedef enum
+	{
 	    MODE_FLAT    = 1,
 	    MODE_GOURAUD = 2,//MODE_FLAT<<1 -> 10
 	    MODE_PHONG   = 4,//MODE_FLAT<<2 -> 100
@@ -75,7 +78,8 @@ public:
 	/*
 	 * @brief Representation models
 	 */
-	typedef enum{
+	typedef enum
+	{
 		MODE_SURFACE   = 1, //1
 		MODE_POINT     = 2, //MODE_SURFACE<<1 -> 10
 	    MODE_WIREFRAME = 4, //MODE_SURFACE<<2 -> 100
