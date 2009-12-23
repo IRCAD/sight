@@ -33,6 +33,8 @@ public:
 	FWCOMED_API static std::string ADD_PLANE;
 	FWCOMED_API static std::string REMOVE_PLANE;
 	FWCOMED_API static std::string PLANELIST_VISIBILITY;
+	FWCOMED_API static std::string PLANELIST_MODIFIED;
+	FWCOMED_API static std::string DESELECT_ALL_PLANES;
 
 	/**
 	  * @brief	Constructor : does nothing.

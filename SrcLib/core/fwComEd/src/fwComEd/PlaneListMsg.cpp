@@ -15,6 +15,8 @@ namespace fwComEd
 std::string PlaneListMsg::ADD_PLANE            = "PLANE_IS_ADDED";
 std::string PlaneListMsg::REMOVE_PLANE         = "REMOVE_PLANE";
 std::string PlaneListMsg::PLANELIST_VISIBILITY = "PLANELIST_VISIBILITY";
+std::string PlaneListMsg::PLANELIST_MODIFIED   = "PLANELIST_MODIFIED";
+std::string PlaneListMsg::DESELECT_ALL_PLANES  = "DESELECT_ALL_PLANES";
 
 //-----------------------------------------------------------------------------
 
