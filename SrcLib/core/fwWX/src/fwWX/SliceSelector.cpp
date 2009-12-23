@@ -20,9 +20,9 @@ namespace fwWX
 
 const wxString SliceSelector::m_sliceTypes[] =
 {
-		wxString( _( "Sagittal"    ) ),
-		wxString( _( "Frontal"  ) ),
-		wxString( _( "Axial" ) )
+		wxString( _("Sagittal") ),
+		wxString( _("Frontal") ),
+		wxString( _("Axial") )
 };
 
 //------------------------------------------------------------------------------
@@ -38,8 +38,13 @@ SliceSelector::SliceSelector(wxWindow* const parent, const wxWindowID id ) throw
 	m_fctChangeIndexCallback = ::boost::bind( &::fwWX::SliceSelector::printIndex, this, _1);
 	m_fctChangeTypeCallback = ::boost::bind( &::fwWX::SliceSelector::printType, this, _1);
 
+#ifdef __MACOSX__
+    m_sliceMenu = new wxMenu();
+    m_sliceType = new wxButton( this, ID_SLICE_TYPE, _("Planes"), wxDefaultPosition, wxDefaultSize );
+#else
 	m_sliceType = new wxChoice( this, ID_SLICE_TYPE, wxDefaultPosition, wxDefaultSize, m_sliceTypesArray );
-	m_sliceIndex = new wxSlider( this, ID_SLICE_INDEX, 0, -1, 1);
+#endif
+	m_sliceIndex = new wxSlider( this, ID_SLICE_INDEX, 0, 0, 0);
 	m_pSliceIndexText = new wxTextCtrl( this, ID_SLICE_TEXT, _(""), wxDefaultPosition, wxSize(75,-1), wxTE_READONLY|wxTE_CENTRE);
 
 	wxSizer* const sizer = new wxBoxSizer( wxHORIZONTAL );
@@ -47,17 +52,30 @@ SliceSelector::SliceSelector(wxWindow* const parent, const wxWindowID id ) throw
 	sizer->Add( m_sliceIndex     , 1, ( wxEXPAND | wxALL )  , 1 );
 	sizer->Add( m_pSliceIndexText, 0, ( wxALL )             , 1 );
 
+#ifdef __MACOSX__
+	m_sliceTypeSelection = 0;
+    m_pItemAxial = new wxMenuItem(m_sliceMenu, ID_AXIAL_BTN, m_sliceTypes[2] , wxEmptyString, wxITEM_RADIO);
+    m_pItemFrontal = new wxMenuItem(m_sliceMenu, ID_FRONTAL_BTN, m_sliceTypes[1] , wxEmptyString, wxITEM_RADIO);
+    m_pItemSagittal = new wxMenuItem(m_sliceMenu, ID_SAGITTAL_BTN, m_sliceTypes[0] , wxEmptyString, wxITEM_RADIO);
+
+    m_sliceMenu->Append(m_pItemAxial);
+    m_sliceMenu->Append(m_pItemFrontal);
+    m_sliceMenu->Append(m_pItemSagittal);
+#endif
+
 	this->SetSizer( sizer );
 	this->Layout();
-//	sizer->Fit( this );
-//	parent->Fit();
 }
 
 //------------------------------------------------------------------------------
 
 SliceSelector::~SliceSelector() throw()
 {
-
+#ifdef __MACOSX__
+	m_sliceMenu->Remove(m_pItemAxial);
+	m_sliceMenu->Remove(m_pItemFrontal);
+	m_sliceMenu->Remove(m_pItemSagittal);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -83,15 +101,34 @@ void SliceSelector::setSliceValue( int index )
 
 void SliceSelector::setTypeSelection( int type )
 {
+#ifdef __MACOSX__
+	m_sliceTypeSelection = type;
+	switch(type)
+	{
+	case 0 :
+	{
+		m_pItemSagittal->Check(true);
+		break ;
+	}
+	case 1 :
+	{
+		m_pItemFrontal->Check(true);
+		break ;
+	}
+	case 2 :
+	{
+		m_pItemAxial->Check(true);
+		break ;
+	}
+	default :
+	{
+		OSLM_FATAL("Unknown slice type: "<<type);
+		break ;
+	}
+	}
+#else
 	this->m_sliceType->SetSelection(type);
-}
-
-//------------------------------------------------------------------------------
-
-void SliceSelector::onSliceTypeChange( wxCommandEvent& event )
-{
-	m_fctChangeTypeCallback( static_cast< int >( this->m_sliceType->GetCurrentSelection() ));
-    this->setSliceValue( this->m_sliceIndex->GetValue());
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -141,11 +178,64 @@ void SliceSelector::setEnable(bool enable)
 }
 
 //------------------------------------------------------------------------------
+#ifdef __MACOSX__
+void SliceSelector::onSliceDownButton( wxCommandEvent& event )
+{
+	SLM_TRACE_FUNC();
+	this->m_sliceType->PopupMenu(m_sliceMenu, m_sliceType->GetSize().GetWidth(),0);
+}
+//------------------------------------------------------------------------------
+void SliceSelector::onSliceTypeDownButton (  wxCommandEvent& event )
+{
+	switch(event.GetId())
+	{
+	case ID_SAGITTAL_BTN :
+	{
+		m_sliceTypeSelection = 0;
+		break ;
+	}
+	case ID_FRONTAL_BTN :
+	{
+		m_sliceTypeSelection = 1;
+		break ;
+	}
+	case ID_AXIAL_BTN :
+	{
+		m_sliceTypeSelection = 2;
+		break ;
+	}
+	default :
+	{
+		OSLM_WARN("Unknown slice type button event id: "<<event.GetId());
+		m_sliceTypeSelection = 0;
+		break ;
+	}
+	}
+	m_fctChangeTypeCallback( m_sliceTypeSelection );
+	this->setSliceValue( this->m_sliceIndex->GetValue());
+}
+#else
+//------------------------------------------------------------------------------
+void SliceSelector::onSliceTypeChange( wxCommandEvent& event )
+{
+	m_fctChangeTypeCallback( static_cast< int >( this->m_sliceType->GetCurrentSelection() ));
+    this->setSliceValue( this->m_sliceIndex->GetValue());
+}
+#endif
+
+//------------------------------------------------------------------------------
 
 // wxWidgets event table
 BEGIN_EVENT_TABLE( SliceSelector, wxPanel )
-	EVT_CHOICE        ( ID_SLICE_TYPE  , SliceSelector::onSliceTypeChange  )
-    EVT_COMMAND_SCROLL( ID_SLICE_INDEX , SliceSelector::onSliceIndexChange )
+#ifdef __MACOSX__
+    EVT_BUTTON        ( ID_SLICE_TYPE, SliceSelector::onSliceDownButton  )
+	EVT_MENU          ( ID_AXIAL_BTN, SliceSelector::onSliceTypeDownButton  )
+	EVT_MENU          ( ID_FRONTAL_BTN, SliceSelector::onSliceTypeDownButton  )
+	EVT_MENU          ( ID_SAGITTAL_BTN, SliceSelector::onSliceTypeDownButton  )
+#else
+    EVT_CHOICE        ( ID_SLICE_TYPE, SliceSelector::onSliceTypeChange )
+#endif
+    EVT_COMMAND_SCROLL( ID_SLICE_INDEX, SliceSelector::onSliceIndexChange )
 END_EVENT_TABLE()
 
 } // fwWX

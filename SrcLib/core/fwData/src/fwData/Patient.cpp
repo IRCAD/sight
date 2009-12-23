@@ -206,7 +206,7 @@ void Patient::setScenarios( ::fwData::Composite::sptr _scenarios )
 
 void Patient::addTool( std::string _name, ::fwData::Object::sptr _tool )
 {
-	if (getToolBox() == NULL)
+	if ( !getToolBox() )
 	{
 		setToolBox(::fwData::Composite::New());
 	}
@@ -225,6 +225,30 @@ void Patient::addTool( std::string _name, ::fwData::Object::sptr _tool )
 	}
 
 	return tool;
+}
+//------------------------------------------------------------------------------
+
+void Patient::addScenario( std::string _name, ::fwData::Object::sptr _scenario )
+{
+	if ( !getScenarios() )
+	{
+		setScenarios(::fwData::Composite::New());
+	}
+
+	getScenarios()->getRefMap()[_name] = _scenario;
+}
+//------------------------------------------------------------------------------
+
+::fwData::Object::sptr Patient::getScenario( std::string _name )
+{
+	::fwData::Object::sptr scenario;
+
+	if (getScenarios())
+	{
+		scenario = getScenarios()->getRefMap()[_name];
+	}
+
+	return scenario;
 }
 
 //------------------------------------------------------------------------------

@@ -33,7 +33,8 @@ void start( ::fwRuntime::ConfigurationElement::sptr _elt)
 			if( (*iter)->hasAttribute("type") )
 			{
 				std::string serviceTypeToStart = (*iter)->getExistingAttributeValue("type") ;
-				std::vector< ::fwServices::IService::sptr > servicesToStart = getServices( serviceTypeToStart ) ;
+				std::vector< ::fwServices::IService::sptr > servicesToStart = getServices( serviceTypeToStart );
+				OSLM_FATAL_IF("Configuration : element " << serviceTypeToStart << " not found", servicesToStart.empty() );
 				std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStart.begin() ;
 				for( ; iter != servicesToStart.end() ; ++iter )
 				{
@@ -60,6 +61,7 @@ void update(::fwRuntime::ConfigurationElement::sptr _elt)
 			{
 				std::string serviceTypeToUpdate = (*iter)->getExistingAttributeValue("type") ;
 				std::vector< ::fwServices::IService::sptr > servicesToUpdate = getServices( serviceTypeToUpdate ) ;
+				OSLM_FATAL_IF("Configuration : element " << serviceTypeToUpdate << " not found", servicesToUpdate.empty() );
 				std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToUpdate.begin() ;
 				for( ; iter != servicesToUpdate.end() ; ++iter )
 				{
@@ -87,6 +89,7 @@ void stop( ::fwRuntime::ConfigurationElement::sptr _elt)
 			{
 				std::string serviceTypeToStop = (*iter)->getExistingAttributeValue("type") ;
 				std::vector< ::fwServices::IService::sptr > servicesToStop = getServices( serviceTypeToStop ) ;
+				OSLM_FATAL_IF("Configuration : element " << serviceTypeToStop << " not found", servicesToStop.empty() );
 				std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStop.begin() ;
 				for( ; iter != servicesToStop.end() ; ++iter )
 				{
@@ -114,6 +117,7 @@ void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _elt)
 			{
 				std::string serviceTypeToStop = (*iter)->getExistingAttributeValue("type") ;
 				std::vector< ::fwServices::IService::sptr > servicesToStop = getServices( serviceTypeToStop ) ;
+				OSLM_FATAL_IF("Configuration : element " << serviceTypeToStop << " not found", servicesToStop.empty() );
 				std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStop.begin() ;
 				for( ; iter != servicesToStop.end() ; ++iter )
 				{
