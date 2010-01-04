@@ -4,23 +4,22 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwComEd/ReconstructionMsg.hpp"
+#include "fwComEd/MaterialMsg.hpp"
 
 
 namespace fwComEd
 {
 
 //-----------------------------------------------------------------------------
-std::string ReconstructionMsg::MESH = "MESH";
-std::string ReconstructionMsg::VISIBILITY = "VISIBILITY";
+std::string MaterialMsg::MATERIAL_IS_MODIFIED = "MATERIAL_IS_MODIFIED";
 //-----------------------------------------------------------------------------
 
-ReconstructionMsg::ReconstructionMsg() throw()
+MaterialMsg::MaterialMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-ReconstructionMsg::~ReconstructionMsg() throw()
+MaterialMsg::~MaterialMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------

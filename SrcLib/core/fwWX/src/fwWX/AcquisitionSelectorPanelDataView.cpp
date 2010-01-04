@@ -33,6 +33,7 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ReconstructionMsg.hpp>
+#include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/PatientDBMsg.hpp>
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/Stringizer.hpp>
@@ -644,8 +645,8 @@ void AcquisitionSelectorPanelDataView::UpdateProperty(wxPropertyGridEvent& event
 						}
 
 //						::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< fwServices::IEditionService >( rec ) ;
-						::fwComEd::ReconstructionMsg::NewSptr msg;
-						msg->addEvent( ::fwComEd::ReconstructionMsg::MATERIAL ) ;
+						::fwComEd::MaterialMsg::NewSptr msg;
+						msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
 //						editor->notify( msg );
 						::fwServices::IEditionService::notify(m_serviceParent.lock(), rec, msg);
 					}

@@ -4,23 +4,26 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwComEd/ReconstructionMsg.hpp"
+#include "fwComEd/AcquisitionMsg.hpp"
 
 
 namespace fwComEd
 {
 
 //-----------------------------------------------------------------------------
-std::string ReconstructionMsg::MESH = "MESH";
-std::string ReconstructionMsg::VISIBILITY = "VISIBILITY";
+
+std::string AcquisitionMsg::ADD_RECONSTRUCTION          = "ADD_RECONSTRUCTION";
+std::string AcquisitionMsg::VISIBILITY                  = "VISIBILITY";
+std::string AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SELECTED";
+
 //-----------------------------------------------------------------------------
 
-ReconstructionMsg::ReconstructionMsg() throw()
+AcquisitionMsg::AcquisitionMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-ReconstructionMsg::~ReconstructionMsg() throw()
+AcquisitionMsg::~AcquisitionMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------

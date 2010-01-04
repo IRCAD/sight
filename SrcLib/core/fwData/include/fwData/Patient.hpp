@@ -99,6 +99,14 @@ public:
 	//@}
 
 
+	//------------------------------------------------------------------------------
+
+	FWDATA_API void addScenario( std::string _name, ::fwData::Object::sptr _scenario );
+
+	FWDATA_API ::fwData::Object::sptr getScenario( std::string _name );
+
+
+
 	// scenarios -----------------------------------------------------------------
 	/// Field identifier for scenarios
 	FWDATA_API static const Object::FieldID ID_SCENARIOS;

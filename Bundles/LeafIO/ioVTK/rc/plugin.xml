@@ -60,7 +60,7 @@
 	</extension>
 	
 	<extension implements="::ioVTK::MaxMeshReaderService" >
-		<info text="3ds Reader"/>
+		<info text="3ds Reader (VTK)"/>
 	</extension>
 	
 	<extension implements="::ioVTK::ImageReaderService" >

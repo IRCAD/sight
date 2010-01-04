@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_RECONSTRCUTIONMSG_HPP_
-#define _FWCOMED_RECONSTRCUTIONMSG_HPP_
+#ifndef _FWCOMED_MATERIALMSG_HPP_
+#define _FWCOMED_MATERIALMSG_HPP_
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -16,39 +16,38 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object event message specialized for reconstruction : store modification information
- * @class 	ReconstructionMsg
+ * @brief	Object event message specialized for material : store modification information
+ * @class 	MaterialMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
  * @see 	::fwServices::ObjectMsg
  */
-class FWCOMED_CLASS_API ReconstructionMsg : public ::fwServices::ObjectMsg
+class FWCOMED_CLASS_API MaterialMsg : public ::fwServices::ObjectMsg
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro((ReconstructionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ReconstructionMsg );
+	fwCoreClassDefinitionsWithFactoryMacro((MaterialMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new MaterialMsg );
 
 	/**
 	 * @name Event identifier
 	 */
 	/// @{
 	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string MESH;
-	FWCOMED_API static std::string VISIBILITY;
+	FWCOMED_API static std::string MATERIAL_IS_MODIFIED;
 	/// @}
 
 	/**
 	 * @brief 	Constructor : do nothing.
 	 */
-	FWCOMED_API ReconstructionMsg() throw();
+	FWCOMED_API MaterialMsg() throw();
 
 	/**
 	 * @brief	Destuctor : do nothing.
 	 */
-	FWCOMED_API virtual ~ReconstructionMsg() throw();
+	FWCOMED_API virtual ~MaterialMsg() throw();
 
 };
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_RECONSTRCUTIONMSG_HPP_
+#endif //_FWCOMED_MATERIALMSG_HPP_
 

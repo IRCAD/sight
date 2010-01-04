@@ -68,13 +68,18 @@ void Color::setRGBA( const ColorType red, const ColorType green, const ColorType
 
 void Color::setRGBA( std::string  hexaColor )
 {
-	assert(hexaColor[0] == '#');
-	assert(hexaColor.length() == 7);
+	OSLM_ASSERT(
+            "Color string should start with '#' and followed by 6 ou 8 "
+            "hexadecimal digits. Given color : " << hexaColor ,
+            hexaColor[0] == '#'
+                && ( hexaColor.length() == 7 || hexaColor.length() == 9)
+            );
 
 	std::string redString = hexaColor.substr(1, 2);
 	std::string greenString = hexaColor.substr(3, 2);
 	std::string blueString = hexaColor.substr(5, 2);
-	int r,g,b;
+	int r,g,b, a = 255; 
+
 	std::istringstream iss;
 	iss.str (redString);
 	iss >> std::hex >> r;
@@ -85,7 +90,15 @@ void Color::setRGBA( std::string  hexaColor )
 	iss.str (blueString);
 	iss >> std::hex >> b;
 
-	this->setRGBA(r/255.0, g/255.0, b/255.0);
+    if (hexaColor.length() == 9)
+    {
+        std::string alphaString = hexaColor.substr(7, 2);
+        iss.clear();
+        iss.str (alphaString);
+        iss >> std::hex >> a;
+    }
+
+	this->setRGBA(r/255.0, g/255.0, b/255.0, a/255.0);
 
 }
 
