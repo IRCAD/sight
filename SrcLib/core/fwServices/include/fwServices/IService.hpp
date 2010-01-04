@@ -7,6 +7,8 @@
 #ifndef _FWSERVICES_ISERVICE_HPP_
 #define _FWSERVICES_ISERVICE_HPP_
 
+#include <deque>
+
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -188,6 +190,41 @@ public :
 	FWSERVICES_API void swap( ::fwTools::Object::sptr _obj ) throw( ::fwTools::Failed );
 
 	//@}
+
+	/**
+	 * @name Management of event handler configuration
+	 */
+
+	//@{
+
+	/**
+	 * @brief this method permits to add a new event handled by the service.
+	 * @param[in] a new id analyze by the service.
+	 * @post isHandlingAllEvents() == false
+	 */
+	FWSERVICES_API void addNewHandlingEvent( std::string _eventId );
+
+	/**
+	 * @brief Get a vector of the handling events.
+	 * @param[out] the vector of events.
+	 * @pre isHandlingAllEvents() == false
+	 *
+	 * This method returns a vector of the events which are handle by the services, by default all events are handle if this method is not overwritted.
+	 */
+	FWSERVICES_API std::vector< std::string > getHandlingEvents();
+
+	/// Return if this service analyse all events, if the value is equal to false, see the handling configuration with getHandlingEvents() method.
+	FWSERVICES_API bool isHandlingAllEvents();
+
+	/**
+	 * @brief When any handling event is defined in service, to not listen notifications event if the observation is set on.
+	 * @pre m_handlingEvents must be empty
+	 * @post m_isHandlingAllEvents == false
+	 */
+	void handlingEventOff();
+
+	//@}
+
 
 	/**
 	 * @name All concerning status access
@@ -406,6 +443,15 @@ private :
 	 */
 	ConfigurationStatus m_configurationState;
 
+	std::deque< ::fwServices::ObjectMsg::csptr > m_msgDeque;
+
+	/// Specific event configuration, by default this vector is empty and m_isHandlingAllEvents is set to true.
+	std::vector< std::string > m_handlingEvents;
+
+	/// To know if service listens all events (default value) or if it has a specific event configuration.
+	bool m_isHandlingAllEvents;
+
+
 	/**
 	 * @brief Switch communication status as SENDING_MSG ( if current state is IDLE ) or RECEIVING_WITH_SENDING_MSG ( if current state is RECEIVING_MSG ).
 	 * @pre this->isSending() == false
@@ -421,6 +467,14 @@ private :
 	 * @post this->isSending() == false
 	 */
 	void sendingModeOff();
+
+	/**
+	 * @brief process the message(s) which are in the waiting queue(m_msgDeque).
+	 * @pre
+	 * @post m_msgDeque will be empty.
+	 */
+	void processingPendingMessages();
+
 };
 
 } // namespace fwServices

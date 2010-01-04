@@ -24,9 +24,11 @@ IService::IService() :
 	m_globalState ( STOPPED ),
 	m_updatingState ( NOTUPDATING ),
 	m_notificationState ( IDLE ),
-	m_configurationState ( UNCONFIGURED )
+	m_configurationState ( UNCONFIGURED ),
+	m_isHandlingAllEvents ( true )
 {
 	// by default a weak_ptr have a use_count == 0
+	m_msgDeque.clear();
 }
 
 
@@ -90,7 +92,7 @@ void IService::configure()
 
 void IService::reconfiguring() throw ( ::fwTools::Failed )
 {
-	assert( false && "If this method is used, it must be writed for the service" );
+	assert( false && "If this method is used, it must be write for the service" );
 }
 
 
@@ -128,13 +130,67 @@ void IService::stop() throw(fwTools::Failed)
 void IService::update( ::fwServices::ObjectMsg::csptr _msg )
 {
 	OSLM_ASSERT("INVOKING update(msg) WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
-	OSLM_ASSERT("INVOKING update(msg) WHILE NOT IDLED ("<<m_notificationState<<") on this = " << this->className(), m_notificationState == IDLE );
-	OSLM_ASSERT("simple loop detection on "<< this->getSptr()->getClassname(), this->getSptr() !=  _msg->getSource().lock());
 
-	m_notificationState = RECEIVING_MSG ;
-	this->updating( _msg ) ;
-	m_notificationState = IDLE ;
+	if(m_notificationState == SENDING_MSG /* state during the service notifies to listeners a message */
+			|| m_notificationState == RECEIVING_WITH_SENDING_MSG /*  state during the service notifies to listeners a message when it is already receiving a message */
+			|| m_notificationState == RECEIVING_MSG ) /* state during the service receives a message and analyzed it */
+	{
+		m_msgDeque.push_back(_msg);
+		OSLM_TRACE("m_msgDeque size: " << m_msgDeque.size());
+	}
+	else /* IDLE: state when service do nothing */
+	{
+		OSLM_TRACE("Service" << this->className() <<" is on IDLE state ==> treatment of message: " << _msg->getGeneralInfo());
+		m_notificationState = RECEIVING_MSG ;
+		this->updating( _msg ) ;
+		m_notificationState = IDLE ;
+		processingPendingMessages();
+	}
+
+ 	//	OSLM_ASSERT("INVOKING update(msg) WHILE NOT IDLED ("<<m_notificationState<<") on this = " << this->className(), m_notificationState == IDLE );
+    //	OSLM_ASSERT("simple loop detection on "<< this->getSptr()->getClassname(), this->getSptr() !=  _msg->getSource().lock());
 }
+
+
+//-----------------------------------------------------------------------------
+
+
+void IService::handlingEventOff()
+{
+	SLM_ASSERT( "Handling event vector must be empty", m_handlingEvents.size() == 0 );
+	m_isHandlingAllEvents = false;
+}
+
+//-----------------------------------------------------------------------------
+
+
+void IService::addNewHandlingEvent( std::string _eventId )
+{
+	m_isHandlingAllEvents = false;
+	m_handlingEvents.push_back( _eventId );
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+std::vector< std::string > IService::getHandlingEvents()
+{
+	SLM_ASSERT( "ACH : This service handles all messages, why you use getHandlingEvents() ? test isHandlingAllEvents() before.", !m_isHandlingAllEvents );
+	return m_handlingEvents;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+bool IService::isHandlingAllEvents()
+{
+	return m_isHandlingAllEvents;
+}
+
+
+//-----------------------------------------------------------------------------
 
 
 void IService::update() throw(fwTools::Failed)
@@ -163,7 +219,6 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 		OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService>() ;
 		for( OContainerType::iterator iter = obs.begin() ; iter != obs.end() ; ++iter )
 		{
-
 			/// Check wether _service is the subject (IEditionService) or the destination service
 			if( (*iter)->getDest() == this->getSptr() && (*iter)->getSrc() == oldEditor )
 			{
@@ -247,13 +302,29 @@ void IService::sendingModeOff()
 
 	if(m_notificationState == RECEIVING_WITH_SENDING_MSG)
 	{
-			m_notificationState = RECEIVING_MSG;
+		m_notificationState = RECEIVING_MSG;
 	}
 	else
 	{
 		m_notificationState = IDLE;
+		processingPendingMessages();
 	}
 }
+
+ void IService::processingPendingMessages()
+ {
+
+		OSLM_TRACE(" Processing " << m_msgDeque.size() << " pending message(s).");
+		// Processing of pending messages.
+		if(m_msgDeque.size() > 50)
+			OSLM_FATAL("The size of the queue is very hight " << m_msgDeque.size());
+		while (m_msgDeque.size() != 0)
+		{
+			::fwServices::ObjectMsg::csptr msg = m_msgDeque.front();
+			m_msgDeque.pop_front();
+			update(msg);
+		}
+ }
 
 /**
  * @brief Streaming a service
