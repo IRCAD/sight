@@ -13,7 +13,7 @@
 #include <sys/time.h>
 #endif
 
-#include "fwCore/base.hpp"
+#include <fwCore/BaseObject.hpp>
 #include "fwCore/HiResClock.hpp"
 #include <fwCore/config.hpp>
 
