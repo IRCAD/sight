@@ -129,8 +129,10 @@ void IEditionService::notify(
 	_pMsg->setSubject(_pSubject);
 	_pMsg->timeModified();
 	OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
-	::fwServices::get< ::fwServices::IEditionService >( _pSubject )->notify( _pMsg, options ) ;
-	_pSource->sendingModeOff();
+	::fwServices::IEditionService::sptr srv;
+    srv = ::fwServices::get< ::fwServices::IEditionService >( _pSubject );
+    srv->notify( _pMsg, options ) ;
+    _pSource->sendingModeOff();
 
 }
 

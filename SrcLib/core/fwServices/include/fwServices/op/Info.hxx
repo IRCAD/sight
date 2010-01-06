@@ -20,8 +20,8 @@ namespace fwServices
 template<class SERVICE>
 bool has( ::fwTools::Object::sptr obj) throw()
 {
-	std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-	return ::fwServices::has( obj , serviceId ) ;
+    std::vector< typename SPTR(SERVICE) > services = ::fwServices::OSR::getServices< SERVICE >( obj );
+    return services.size() > 0;
 }
 
 template<class SERVICE>

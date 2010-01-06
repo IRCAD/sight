@@ -27,12 +27,25 @@ SPTR(SERVICE) get( fwTools::Object * obj, unsigned int _index) throw(fwTools::Fa
 template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj, unsigned int _index ) throw(fwTools::Failed )
 {
-	std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-	::boost::shared_ptr< fwServices::IService > service = ::fwServices::get( obj , serviceId , _index ) ;
-	assert( service );
-	SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
-	assert( castedService );
-	return castedService ;
+
+    SPTR(SERVICE) service;
+    std::vector< typename SPTR(SERVICE) > services = ::fwServices::OSR::getServices< SERVICE >( obj );
+
+    unsigned int servicesNb = services.size();
+    if ( servicesNb >= (_index + 1) )
+    {
+        service = services[_index];
+    }
+    else
+    {
+        std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+        ::boost::shared_ptr< fwServices::IService > iservice = ::fwServices::get( obj , serviceId , _index ) ;
+        assert( iservice );
+        service = boost::dynamic_pointer_cast< SERVICE >( iservice ) ;
+        assert( service );
+    }
+
+	return service ;
 }
 
 
