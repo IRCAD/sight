@@ -221,7 +221,7 @@ public :
 	 * @pre m_handlingEvents must be empty
 	 * @post m_isHandlingAllEvents == false
 	 */
-	void handlingEventOff();
+	FWSERVICES_API void handlingEventOff();
 
 	//@}
 
