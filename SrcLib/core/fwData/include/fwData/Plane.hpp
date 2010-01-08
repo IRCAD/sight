@@ -51,7 +51,11 @@ public :
 	/// Copy method
 	FWDATA_API Plane &operator=( const Plane & _plane ) ;
 
-	/// Compare method
+	/*
+	 * @brief Compare method
+	 *
+	 * Compare plane normal and distance from origin
+	 */
 	FWDATA_API bool operator==( const Plane & _plane ) ;
 
 	/// get the plane coordinate
@@ -60,6 +64,7 @@ public :
 	/// Re-initialize the plane with 3 points
 	FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
 
+	/// Compute plane normal and distance from points coordinates
 	FWDATA_API void computePlaneFromPoints();
 
 	/// Points container
