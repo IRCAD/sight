@@ -24,6 +24,7 @@ std::string ResectionDBMsg::RESECTIONDB_SELECTED     = "RESECTIONDB_SELECTED";
 std::string ResectionDBMsg::NEW_RESECTION_SELECTED   = "NEW_RESECTION_SELECTED";
 std::string ResectionDBMsg::NEW_SAFE_PART_SELECTED   = "NEW_SAFE_PART_SELECTED";
 std::string ResectionDBMsg::ADD_RESECTION            = "ADD_RESECTION";
+std::string ResectionDBMsg::ADD_SAFE_PART            = "ADD_SAFE_PART";
 std::string ResectionDBMsg::MODIFIED                 = "MODIFIED";
 std::string ResectionDBMsg::RESECTIONDB_INVALIDATED  = "RESECTIONDB_INVALIDATED";
 
