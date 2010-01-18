@@ -58,6 +58,8 @@ public :
 
 	fwGettersSettersDocMacro(IsVisible, isVisible, bool, the flag if the resection is visible);
 
+	fwGettersSettersDocMacro(IsValid, isValid, bool, the flag if the resection is valid);
+
 protected :
 	//! Resection name
 	std::string m_name;
@@ -73,6 +75,9 @@ protected :
 
 	//! flag if the part is safe
 	bool m_isSafePart;
+
+	//! flag if the resection is valid
+	bool m_isValid;
 
 	//! flag if the resection is visible
 	bool m_isVisible;

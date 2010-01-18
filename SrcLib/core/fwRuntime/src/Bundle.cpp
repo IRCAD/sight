@@ -425,8 +425,8 @@ void Bundle::start() throw(RuntimeException)
 		{
 			startPlugin();
 		}
-            	catch( std::exception & e )
-            	{
+		catch( std::exception & e )
+		{
 			throw RuntimeException( m_identifier + ": start plugin error (after load requirement) :" + e.what() );
 		}
 	}
@@ -461,15 +461,15 @@ void Bundle::startPlugin() throw(RuntimeException)
 		throw RuntimeException( getIdentifier() + ": unable to create a plugin instance." );
 	}
 
-    OSLM_TRACE("Starting " << this->getIdentifier() << "Bundle's plugin.")
+	OSLM_TRACE("Starting " << this->getIdentifier() << " Bundle's plugin.");
 	// Stores and start the plugin.
 	try
 	{
 		m_plugin = plugin;
 		m_plugin->start();
 	}
-        catch( std::exception & e )
-        {
+	catch( std::exception & e )
+	{
 		throw RuntimeException( getIdentifier() + ": start plugin error : " + e.what() );
 	}
 }
@@ -479,7 +479,7 @@ void Bundle::startPlugin() throw(RuntimeException)
 void Bundle::stop() throw(RuntimeException)
 {
     SLM_ASSERT("m_plugin not an intance.", m_plugin != 0 );
-    OSLM_TRACE("Stopping " << this->getIdentifier() << "Bundle's plugin.")
+    OSLM_TRACE("Stopping " << this->getIdentifier() << "Bundle's plugin.");
     try
     {
         m_plugin->stop();
