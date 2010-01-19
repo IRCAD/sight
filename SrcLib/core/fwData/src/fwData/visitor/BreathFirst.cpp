@@ -15,33 +15,28 @@ namespace fwData
 namespace visitor
 {
 
+
 void BreathFirst::next(::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
-	// store fields+source : static variable !!
-	typedef ::fwTools::Object::sptr  Source;
-	typedef ::fwTools::Object::sptr  Child;
-
-	static std::list< std::pair< Source ,Child > > fifo;
-
 	// insert ONLY ONCE child in breathFirst order+source
 	::fwTools::Object::ChildContainer::iterator f;
 	for (f = fields.begin(); f != fields.end() ; ++f)
 	{
 		assert( ::fwTools::Object::dynamicCast( *f ) );
 		std::pair< Source , Child > key( src, ::fwTools::Object::dynamicCast( *f ) );
-		if ( std::find( fifo.begin(), fifo.end(),  key )==fifo.end()  )
+		if ( std::find( m_fifo.begin(), m_fifo.end(),  key )==m_fifo.end()  )
 		{
 			// not already inserted
-			fifo.push_back(key );
+			m_fifo.push_back(key );
 		}
 	}
 
 	// process list
-	while ( !fifo.empty() )
+	while ( !m_fifo.empty() )
 	{
-		m_source = fifo.front().first;
-		Child achild= fifo.front().second;
-		fifo.pop_front();
+		m_source = m_fifo.front().first;
+		Child achild= m_fifo.front().second;
+		m_fifo.pop_front();
 		accept( achild, this );
 	}
 }
