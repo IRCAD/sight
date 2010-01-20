@@ -30,6 +30,13 @@ public:
 	/// override processing of childs : scan breath first ( aka fields[0] , fields[1] , ...)
 	FWDATA_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
 
+protected :
+
+	/// store src,child to process in a fifo queue
+	typedef ::fwTools::Object::sptr  Source;
+	typedef ::fwTools::Object::sptr  Child;
+	std::list< std::pair< Source ,Child > > m_fifo;
+
 };
 
 } // namespace visitor

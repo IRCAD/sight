@@ -17,6 +17,7 @@
 #include <fwData/Composite.hpp>
 
 #include "fwComEd/PatientDBMsg.hpp"
+#include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/AnonymiseImage.hpp"
 
 namespace fwComEd
@@ -78,6 +79,8 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
 	(* pNewPatient) = (* _pPatient);
 	pNewPatient->setField( ::fwData::Patient::ID_STUDIES );
 
+	std::map< ::fwData::Acquisition::sptr, ::fwData::Acquisition::sptr > acquisitionMap;
+
 	::fwData::Patient::StudyIterator studiesIter = _pPatient->getStudies().first;
 	for ( ; studiesIter != _pPatient->getStudies().second ; ++studiesIter)
 	{
@@ -96,8 +99,31 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
 			pNewStudy->addAcquisition(pNewAcquisition);
 
 			(* pNewAcquisition) = (*pAcquisition);
+
+			acquisitionMap[pAcquisition] = pNewAcquisition;
 		}
 	}
+
+	::fwData::Composite::sptr ctool = ::fwData::Composite::dynamicCast(_pPatient->getTool(::fwComEd::Dictionary::m_resectionId));
+	if (ctool )
+	{
+		pNewPatient->addTool(::fwComEd::Dictionary::m_resectionId, ctool );
+	}
+
+	::fwData::Composite::sptr cscenario = ::fwData::Composite::dynamicCast( _pPatient->getScenario("ResectionAcquisitionPair"));
+	if ( cscenario )
+	{
+		::fwData::Composite::NewSptr compoScenario;
+		::fwData::Composite::Container::iterator cscenarioIter;
+		for (  cscenarioIter = cscenario->getRefMap().begin() ;  cscenarioIter != cscenario->getRefMap().end();  ++cscenarioIter )
+		{
+			std::string opName = cscenarioIter->first;
+			::fwData::Acquisition::sptr initialAcq = ::fwData::Acquisition::dynamicCast(cscenario->getRefMap()[opName]);
+			compoScenario->getRefMap()[opName] = acquisitionMap[initialAcq];
+		}
+		pNewPatient->addScenario("ResectionAcquisitionPair", compoScenario );
+	}
+
 	AnonymiseImage::anonymisePatient(pNewPatient);
 
 	return pNewPatient;
