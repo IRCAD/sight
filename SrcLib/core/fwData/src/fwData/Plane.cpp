@@ -71,10 +71,16 @@ Plane & Plane::operator=( const Plane & _plane )
 bool Plane::operator==( const Plane & _plane )
 {
 	bool result = false;
-	if (fabs(float((m_vPoints[0]->getCoord())[0] - (_plane.m_vPoints[0]->getCoord())[0])) < EPSILON &&
-		fabs(float((m_vPoints[1]->getCoord())[1] - (_plane.m_vPoints[1]->getCoord())[1])) < EPSILON &&
-		fabs(float((m_vPoints[2]->getCoord())[2] - (_plane.m_vPoints[2]->getCoord())[2])) < EPSILON)
+	float dx = float(m_plane[0] - _plane.getPlane()[0] );
+	float dy = float(m_plane[1] - _plane.getPlane()[1] );
+	float dz = float(m_plane[2] - _plane.getPlane()[2] );
+	float dd = float(m_plane[3] - _plane.getPlane()[3] );
+
+	if (fabs(dx) < EPSILON && fabs(dy) < EPSILON &&	fabs(dz) < EPSILON && fabs(dd) < EPSILON)
+	{
 		result = true;
+	}
+
 	return result;
 }
 //------------------------------------------------------------------------------

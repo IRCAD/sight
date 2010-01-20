@@ -269,7 +269,7 @@ namespace vtkCompositeMesh
 				else
 				{
 					// Material exists
-					::fwData::Material::sptr matObjPtr = myMesh->getFieldSingleElement<::fwData::Material>( "MaterialMesh" );
+					::fwData::Material::sptr matObjPtr = myMesh->getFieldSingleElement< ::fwData::Material >( "MaterialMesh" );
 					actor->GetProperty()->SetColor (matObjPtr->ambient().red(), matObjPtr->ambient().green(), matObjPtr->ambient().blue());
 				}
 			}

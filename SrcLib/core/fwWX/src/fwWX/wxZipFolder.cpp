@@ -33,12 +33,25 @@ wxDirTraverseResult wxDirTraverserZIP::OnFile( const wxString & _filename )
 		{
 			break;
 		}
+
 		wxFileInputStream in(_filename);
 		if(!in.IsOk())
 		{
 			break;
 		}
-		m_stream.Write(in);
+
+		wxString extension = newFileName.GetExt();
+		if( extension == _("trian") )
+		{
+			m_stream.SetLevel(9);
+			m_stream.Write(in);
+			m_stream.SetLevel(0);
+		}
+		else
+		{
+			m_stream.Write(in);
+		}
+
 		return wxDIR_CONTINUE;
 	}
 	while(false);
