@@ -17,6 +17,8 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/op/Get.hpp"
 
+#include "fwServices/GlobalEventManager.hpp"
+
 namespace fwServices
 {
 
@@ -128,10 +130,13 @@ void IEditionService::notify(
 	_pMsg->setSource(_pSource);
 	_pMsg->setSubject(_pSubject);
 	_pMsg->timeModified();
-	OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
-	::fwServices::IEditionService::sptr srv;
-    srv = ::fwServices::get< ::fwServices::IEditionService >( _pSubject );
-    srv->notify( _pMsg, options ) ;
+
+	GlobalEventManager::getDefault()->notify( _pMsg, options );
+	// OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
+	// ::fwServices::IEditionService::sptr srv;
+    // srv = ::fwServices::get< ::fwServices::IEditionService >( _pSubject );
+    // srv->notify( _pMsg, options ) ;
+
     _pSource->sendingModeOff();
 
 }
@@ -161,6 +166,7 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
 	// Test if this service handling all events or if it has a specific configuration
 	if ( service->isHandlingAllEvents() )
 	{
+		OSLM_WARN("Sorry, IService API to manage events has changed, this service "<< service->getClassname() <<" must define a list of handling message thanks to method IService::addNewHandlingEvent() which must be used the service constructor.");
 		m_globalObservers.push_back( observer );
 		// sort the list to put the new element at the right place.
 		m_globalObservers.sort( Less );

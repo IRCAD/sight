@@ -42,6 +42,7 @@ namespace fwServices
  */
 class FWSERVICES_CLASS_API IEditionService : public fwServices::IService
 {
+	friend class GlobalEventManager;
 
 public :
 
