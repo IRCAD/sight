@@ -34,7 +34,7 @@ namespace validation
 
 bool checkObject( ::fwRuntime::ConfigurationElement::sptr _elt , std::string objType )
 {
-	assert( _elt->hasAttribute("id")) ;
+	SLM_ASSERT("Missing id attribute", _elt->hasAttribute("id")) ;
 	bool validity = true;
 	// To store check log
 	::std::stringstream stream ;

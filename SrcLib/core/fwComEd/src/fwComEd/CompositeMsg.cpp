@@ -69,7 +69,7 @@ void CompositeMsg::addEventModifiedFields( const std::vector< std::string > & _m
 
 std::vector< std::string > CompositeMsg::getEventModifiedFields() const
 {
-	SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_FIELDS event", this->hasEvent(MODIFIED_FIELDS))
+	SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_FIELDS event", this->hasEvent(MODIFIED_FIELDS));
 	::fwData::Composite::csptr dataInfo = ::fwData::Composite::dynamicConstCast(this->getDataInfo(MODIFIED_FIELDS));
 
 	std::vector< std::string > modifiedFields;

@@ -35,7 +35,7 @@ bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
 
 	// Looking for services provided by components (n implementations)
 	std::vector< std::string > extensionIds = ::fwServices::bundle::getValidExtensionIdsForObjectAndService( obj , serviceId ) ;
-    OSLM_ASSERT( "ImplementionId not found: " << _implementationId  , std::find(extensionIds.begin() , extensionIds.end() , _implementationId ) != extensionIds.end() )
+    OSLM_ASSERT( "ImplementionId not found: " << _implementationId  , std::find(extensionIds.begin() , extensionIds.end() , _implementationId ) != extensionIds.end() );
 	if( std::find(extensionIds.begin() , extensionIds.end() , _implementationId ) == extensionIds.end() )
 	{
 		OSLM_ERROR( "FAILED to add implementation " << _implementationId << " (service type = " << serviceId << " )" << " to objet type " << obj->className() );
@@ -43,7 +43,7 @@ bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
 	}
 
 	// serviceId should be an extension to ''service''
-	 ::boost::shared_ptr< ::fwRuntime::Extension > ext = ::fwRuntime::findExtension(serviceId) ;
+	::boost::shared_ptr< ::fwRuntime::Extension > ext = ::fwRuntime::findExtension(serviceId) ;
 	assert( ext );
 	assert( ext->getPoint() == ::fwCore::getClassname< ::fwServices::IService >());
 	ext->getBundle()->start(); // start dll providing class instances

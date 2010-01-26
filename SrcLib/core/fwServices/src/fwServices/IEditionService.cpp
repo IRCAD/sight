@@ -82,7 +82,7 @@ bool Less (::fwServices::ComChannelService::wptr observer1,  ::fwServices::ComCh
 		else
 		{
 			// Normally it never happens because expired comchannel is remove on the IEditionService::notify function
-			OSLM_FATAL("comChannel expired.");
+			SLM_FATAL("comChannel expired.");
 			// observer1 is valid and obseerver2 is expire.
 			result = true;
 		}
@@ -92,7 +92,7 @@ bool Less (::fwServices::ComChannelService::wptr observer1,  ::fwServices::ComCh
 		if(!observer2.expired())
 		{
 			// Normally it never happens because expired comchannel is remove on the IEditionService::notify function
-			OSLM_FATAL("comChannel expired.");
+			SLM_FATAL("comChannel expired.");
 			// Both observer1 and observer1 are expired.
 			result = false;
 		}
@@ -173,7 +173,7 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
 	}
 	else
 	{
-		OSLM_DEBUG("This service not handling all events : " << service->getClassname() )
+		OSLM_DEBUG("This service not handling all events : " << service->getClassname() );
 		std::vector< std::string > handlingEvents = service->getHandlingEvents();
 		for ( 	std::vector< std::string >::iterator iter = handlingEvents.begin();
 				iter != handlingEvents.end();

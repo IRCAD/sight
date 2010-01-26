@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
-//#include <boost/enable_shared_from_this.hpp>
-
 #include <fwTools/UUID.hpp>
 
 #include "fwServices/IService.hpp"
@@ -19,6 +17,7 @@
 namespace fwServices
 {
 
+//-----------------------------------------------------------------------------
 
 IService::IService() :
 	m_globalState ( STOPPED ),
@@ -31,36 +30,42 @@ IService::IService() :
 	m_msgDeque.clear();
 }
 
+//-----------------------------------------------------------------------------
 
 IService::~IService()
 {}
 
+//-----------------------------------------------------------------------------
 
 void IService::info( std::ostream &_sstream )
 {}
 
+//-----------------------------------------------------------------------------
 
 ::fwTools::Object::sptr IService::getObject()
 {
-	assert ( m_associatedObject.use_count() ); // initialized
-	assert ( m_associatedObject.expired() == false ); // not expired
+	SLM_ASSERT("Empty shared_ptr for Associated Object", m_associatedObject.use_count() ); // initialized
+	SLM_ASSERT("Associated Object is expired", m_associatedObject.expired() == false ); // not expired
 	return m_associatedObject.lock();
 }
 
+//-----------------------------------------------------------------------------
 
 void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _cfgElement)
 {
-	assert( _cfgElement ) ;
+	SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement ) ;
 	m_configuration = _cfgElement ;
 	m_configurationState = UNCONFIGURED ;
 }
 
+//-----------------------------------------------------------------------------
 
 ::fwRuntime::ConfigurationElement::sptr IService::getConfiguration()
 {
 	return m_configuration ;
 }
 
+//-----------------------------------------------------------------------------
 
 bool IService::checkConfiguration()
 {
@@ -70,10 +75,11 @@ bool IService::checkConfiguration()
 	return checkingResult ;
 }
 
+//-----------------------------------------------------------------------------
 
 void IService::configure()
 {
-	assert( this->checkConfiguration() );
+	SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
 	if( m_configurationState == UNCONFIGURED )
 	{
 		m_configurationState = CONFIGURING ;
@@ -89,12 +95,14 @@ void IService::configure()
 	}
 }
 
+//-----------------------------------------------------------------------------
 
 void IService::reconfiguring() throw ( ::fwTools::Failed )
 {
-	assert( false && "If this method is used, it must be write for the service" );
+	SLM_FATAL("If this method is used, it must be write for the service" );
 }
 
+//-----------------------------------------------------------------------------
 
 void IService::start() throw(fwTools::Failed)
 {
@@ -110,6 +118,7 @@ void IService::start() throw(fwTools::Failed)
 	}
 }
 
+//-----------------------------------------------------------------------------
 
 void IService::stop() throw(fwTools::Failed)
 {
@@ -126,6 +135,7 @@ void IService::stop() throw(fwTools::Failed)
 	}
 }
 
+//-----------------------------------------------------------------------------
 
 void IService::update( ::fwServices::ObjectMsg::csptr _msg )
 {
@@ -151,9 +161,7 @@ void IService::update( ::fwServices::ObjectMsg::csptr _msg )
     //	OSLM_ASSERT("simple loop detection on "<< this->getSptr()->getClassname(), this->getSptr() !=  _msg->getSource().lock());
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void IService::handlingEventOff()
 {
@@ -163,16 +171,13 @@ void IService::handlingEventOff()
 
 //-----------------------------------------------------------------------------
 
-
 void IService::addNewHandlingEvent( std::string _eventId )
 {
 	m_isHandlingAllEvents = false;
 	m_handlingEvents.push_back( _eventId );
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 std::vector< std::string > IService::getHandlingEvents()
 {
@@ -180,18 +185,14 @@ std::vector< std::string > IService::getHandlingEvents()
 	return m_handlingEvents;
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 bool IService::isHandlingAllEvents()
 {
 	return m_isHandlingAllEvents;
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void IService::update() throw(fwTools::Failed)
 {
@@ -205,10 +206,12 @@ void IService::update() throw(fwTools::Failed)
 
 }
 
+//-----------------------------------------------------------------------------
 
 void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 {
-	assert( m_associatedObject.lock() != _obj ) ;
+	SLM_ASSERT("Swapping on "<< this->getUUID() << " with same Object " << _obj->getUUID(), m_associatedObject.lock() != _obj );
+
 	if( m_globalState == STARTED ) // FIXME ???
 	{
 		m_globalState = SWAPPING ;
@@ -241,44 +244,56 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 	}
 }
 
+//-----------------------------------------------------------------------------
 
 IService::GlobalStatus IService::getStatus() const throw()
 {
 	return m_globalState ;
 }
 
+//-----------------------------------------------------------------------------
 
 bool IService::isStarted() const throw()
 {
 	return (m_globalState == STARTED) ;
 }
 
+//-----------------------------------------------------------------------------
 
 bool IService::isStopped() const throw()
 {
 	return (m_globalState == STOPPED) ;
 }
 
+//-----------------------------------------------------------------------------
+
 bool IService::isSending() const throw()
 {
 	return (m_notificationState == SENDING_MSG) || (m_notificationState == RECEIVING_WITH_SENDING_MSG) ;
 }
+
+//-----------------------------------------------------------------------------
 
 IService::ConfigurationStatus IService::getConfigurationStatus() const throw()
 {
 	return m_configurationState ;
 }
 
+//-----------------------------------------------------------------------------
 
 IService::UpdatingStatus IService::getUpdatingStatus() const throw()
 {
 	return m_updatingState ;
 }
 
+//-----------------------------------------------------------------------------
+
 IService::NotificationStatus IService::getNotificationStatus() const throw()
 {
 	return m_notificationState ;
 }
+
+//-----------------------------------------------------------------------------
 
 void IService::sendingModeOn()
 {
@@ -294,6 +309,8 @@ void IService::sendingModeOn()
 		m_notificationState = SENDING_MSG;
 	}
 }
+
+//-----------------------------------------------------------------------------
 
 void IService::sendingModeOff()
 {
@@ -311,13 +328,16 @@ void IService::sendingModeOff()
 	}
 }
 
+//-----------------------------------------------------------------------------
+
  void IService::processingPendingMessages()
  {
-
 		OSLM_TRACE(" Processing " << m_msgDeque.size() << " pending message(s).");
 		// Processing of pending messages.
 		if(m_msgDeque.size() > 50)
+		{
 			OSLM_FATAL("The size of the queue is very hight " << m_msgDeque.size());
+		}
 		while (m_msgDeque.size() != 0)
 		{
 			::fwServices::ObjectMsg::csptr msg = m_msgDeque.front();
@@ -325,6 +345,8 @@ void IService::sendingModeOff()
 			update(msg);
 		}
  }
+
+ //-----------------------------------------------------------------------------
 
 /**
  * @brief Streaming a service
