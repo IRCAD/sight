@@ -25,6 +25,13 @@ namespace fwMath {
 FWMATH_API double normalize(fwVec3d & vec);
 
 /**
+ *  @brief Retrun a normalized vector
+ *  @param [in] vector to normalize
+ *  @return normalized vector
+ */
+FWMATH_API fwVec3d normalized(fwVec3d & vec);
+
+/**
  *  @brief Compute the Dot product between two vectors.
  *  @param [in] v1
  *  @param [in] v2

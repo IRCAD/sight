@@ -19,6 +19,16 @@ double normalize(fwVec3d & vec)
 
 //------------------------------------------------------------------------------
 
+fwVec3d normalized(fwVec3d & vec) 
+{
+	SLM_TRACE_FUNC();
+    fwVec3d normalized = vec;
+    normalize(normalized);
+	return normalized;
+}
+
+//------------------------------------------------------------------------------
+
 double dot(const fwVec3d& v1, const fwVec3d& v2) 
 {
 	SLM_TRACE_FUNC();
