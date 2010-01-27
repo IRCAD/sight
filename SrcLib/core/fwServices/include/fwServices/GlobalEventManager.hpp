@@ -39,14 +39,7 @@ public:
 	FWSERVICES_API bool pending();
 	FWSERVICES_API void dispatch();
 
-	FWSERVICES_API static SPTR(GlobalEventManager) getDefault()
-	{
-		if ( !m_ClassInstance )
-		{
-			m_ClassInstance = SPTR(GlobalEventManager) (new GlobalEventManager);
-		}
-		return m_ClassInstance;
-	}
+	FWSERVICES_API static SPTR(GlobalEventManager) getDefault();
 
 	FWSERVICES_API void notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
 
@@ -55,6 +48,9 @@ public:
 	{
 		m_notifyHandler = handler;
 	};
+
+    DeliveryType getDeliveryType(){return m_deliveryType;}
+    DeliveryType setDeliveryType(DeliveryType t){m_deliveryType = t;}
 
 	virtual ~GlobalEventManager();
 protected :

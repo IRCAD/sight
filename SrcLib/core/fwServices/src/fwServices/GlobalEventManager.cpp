@@ -11,10 +11,20 @@ namespace fwServices
 SPTR( GlobalEventManager ) GlobalEventManager::m_ClassInstance;
 
 //-----------------------------------------------------------------------------
+SPTR( GlobalEventManager ) GlobalEventManager::getDefault()
+{
+    if ( !m_ClassInstance )
+    {
+        m_ClassInstance = SPTR(GlobalEventManager) (new GlobalEventManager);
+    }
+    return m_ClassInstance;
+}
+
+//-----------------------------------------------------------------------------
 
 GlobalEventManager::GlobalEventManager() :
-    //m_deliveryType ( BREADTH_FIRST ),
-    m_deliveryType ( DELEGATED_BREADTH_FIRST ),
+    m_deliveryType ( BREADTH_FIRST ),
+    //m_deliveryType ( DELEGATED_BREADTH_FIRST ),
     //m_deliveryType ( DEPTH_FIRST ),
     m_dispatching ( false )
 {
