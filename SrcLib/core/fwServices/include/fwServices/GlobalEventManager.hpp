@@ -7,6 +7,7 @@
 #ifndef _FWSERVICES_GLOBALEVENTMANAGER_HPP_
 #define _FWSERVICES_GLOBALEVENTMANAGER_HPP_
 
+#include <fwCore/base.hpp>
 #include <fwTools/Singleton.hpp>
 
 #include "fwServices/config.hpp"
@@ -29,27 +30,38 @@ class FWSERVICES_CLASS_API GlobalEventManager
 
 public:
 
-	enum AnalyseType {
-		BREADTH_FIRST_ANALYSE,
-		DEPTH_FIRST_ANALYSE
+	enum DeliveryType {
+		BREADTH_FIRST,
+		DEPTH_FIRST,
+		DELEGATED_BREADTH_FIRST
 	};
 
-	FWSERVICES_API static ::boost::shared_ptr< GlobalEventManager > getDefault()
+	FWSERVICES_API bool pending();
+	FWSERVICES_API void dispatch();
+
+	FWSERVICES_API static SPTR(GlobalEventManager) getDefault()
 	{
-		if ( m_ClassInstance.get() == NULL )
+		if ( !m_ClassInstance )
 		{
-			m_ClassInstance = ::boost::shared_ptr< GlobalEventManager >( new GlobalEventManager );
+			m_ClassInstance = SPTR(GlobalEventManager) (new GlobalEventManager);
 		}
 		return m_ClassInstance;
 	}
 
 	FWSERVICES_API void notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
 
+	
+	void setNotifyHandler(void (*handler)()) 
+	{
+		m_notifyHandler = handler;
+	};
+
+	virtual ~GlobalEventManager();
 protected :
 
 	GlobalEventManager();
 
-	FWSERVICES_API static ::boost::shared_ptr< GlobalEventManager > m_ClassInstance;
+	FWSERVICES_API static SPTR(GlobalEventManager) m_ClassInstance;
 
 	//	bool pushEventInDeque( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
 	//
@@ -59,7 +71,11 @@ protected :
 
 	std::deque< MessageAndOptions > m_msgDeque;
 
-	AnalyseType m_analyseType;
+	DeliveryType m_deliveryType;
+	bool        m_dispatching;
+
+	void (*m_notifyHandler)();
+
 };
 
 }

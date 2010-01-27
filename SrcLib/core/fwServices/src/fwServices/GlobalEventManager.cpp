@@ -8,14 +8,25 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
-::boost::shared_ptr< GlobalEventManager > GlobalEventManager::m_ClassInstance;
+SPTR( GlobalEventManager ) GlobalEventManager::m_ClassInstance;
 
 //-----------------------------------------------------------------------------
 
 GlobalEventManager::GlobalEventManager() :
-	m_analyseType ( BREADTH_FIRST_ANALYSE )
-//	m_analyseType ( DEPTH_FIRST_ANALYSE )
-{}
+    //m_deliveryType ( BREADTH_FIRST ),
+    m_deliveryType ( DELEGATED_BREADTH_FIRST ),
+    //m_deliveryType ( DEPTH_FIRST ),
+    m_dispatching ( false )
+{
+    SLM_TRACE_FUNC();
+}
+
+
+GlobalEventManager::~GlobalEventManager()
+{
+    SLM_TRACE_FUNC();
+}
+
 
 //-----------------------------------------------------------------------------
 
@@ -65,37 +76,66 @@ GlobalEventManager::GlobalEventManager() :
 
 //-----------------------------------------------------------------------------
 
+
+bool GlobalEventManager::pending()
+{
+    return !m_msgDeque.empty();
+}
+
+void GlobalEventManager::dispatch()
+{
+    SLM_ASSERT( "Cannot re-enter in GlobalEventManager::dispatch()",  !m_dispatching  );
+    SLM_ASSERT( "Message queue is empty", !m_msgDeque.empty() );
+    m_dispatching = true;
+
+    MessageAndOptions msgAndOpt = m_msgDeque.front();
+    ::fwServices::ObjectMsg::sptr                   pMsg     = msgAndOpt.first;
+    ::fwServices::ComChannelService::MsgOptionsType options  = msgAndOpt.second;
+
+    SLM_INFO_IF( "Message's sosject expired", ! pMsg->getSubject().expired() );
+    OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
+
+    ::fwServices::IService::sptr                    pSource  = pMsg->getSource().lock();
+    ::fwTools::Object::sptr                         pSubject = pMsg->getSubject().lock();
+
+    ::fwServices::IEditionService::sptr srv;
+    srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
+    srv->notify( pMsg, options ) ;
+
+    m_msgDeque.pop_front();
+    m_dispatching = false;
+}
+
 void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options )
 {
 
-	if ( m_analyseType == BREADTH_FIRST_ANALYSE )
+	if ( m_deliveryType == DELEGATED_BREADTH_FIRST )
+    {
+        OSLM_INFO( "MSG queued : " << _pMsg->getGeneralInfo() );
+        MessageAndOptions msg ( _pMsg, _options );
+        m_msgDeque.push_back( msg );
+
+        if (m_notifyHandler)
+        {
+            m_notifyHandler();
+        }
+	}
+    else if ( m_deliveryType == BREADTH_FIRST )
 	{
-		OSLM_INFO( "MSG Register Notification : " << _pMsg->getGeneralInfo() );
+		OSLM_INFO( "MSG queued for immediate notification : " << _pMsg->getGeneralInfo() );
 		MessageAndOptions msg ( _pMsg, _options );
 		m_msgDeque.push_back( msg );
 		//pushEventInDeque( _pMsg, _options );
 
 		if ( m_msgDeque.size() == 1 )
 		{
-			while ( ! m_msgDeque.empty() )
+			while ( GlobalEventManager::pending() )
 			{
-				MessageAndOptions msgAndOpt = m_msgDeque.front();
-
-				::fwServices::ObjectMsg::sptr pMsg = msgAndOpt.first;
-				::fwServices::ComChannelService::MsgOptionsType options = msgAndOpt.second;
-				::fwServices::IService::sptr pSource = pMsg->getSource().lock();
-				::fwTools::Object::sptr pSubject = pMsg->getSubject().lock();
-
-				OSLM_INFO( "MSG Apply Notification : " << pMsg->getGeneralInfo() );
-				::fwServices::IEditionService::sptr srv;
-				srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
-				srv->notify( pMsg, options ) ;
-
-				m_msgDeque.pop_front();
+                GlobalEventManager::dispatch();
 			}
 		}
 	}
-	else // if ( m_analyseType == DEPTH_FIRST_ANALYSE )
+	else if ( m_deliveryType == DEPTH_FIRST )
 	{
 		::fwServices::IService::sptr pSource = _pMsg->getSource().lock();
 		::fwTools::Object::sptr pSubject = _pMsg->getSubject().lock();

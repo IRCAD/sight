@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
+#include <cmath>
+
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
@@ -279,17 +281,20 @@ void TransfertFunction::setMinMax( ::fwData::TransfertFunctionPoint::TFValueType
 
 	::fwData::Color::sptr colorOrigin;
 	::fwData::Color::sptr color;
+
+    //::fwData::TransfertFunctionPoint::TFValueType delta wFactor =  floor( 0.5 + (double) newWidth / (double) oldWidth );
+    //::fwData::TransfertFunctionPoint::TFValueType delta =  _min - ((double) oldMin * wFactor) ;
+
+    
 	while ( iterTF != end )
 	{
 		::fwData::TransfertFunctionPoint::TFValueType oldValue = (*iterTF)->getValue();
-		::fwData::TransfertFunctionPoint::TFValueType newValue = _min +  ( oldValue - oldMin ) * newWidth / (float) oldWidth;
+        ::fwData::TransfertFunctionPoint::TFValueType newValue  = _min +  ( oldValue - oldMin ) * newWidth / (float) oldWidth;
+        //::fwData::TransfertFunctionPoint::TFValueType newValue = oldValue*wFactor + delta;
 
 		colorOrigin = pTransfertFunctionClone->getColor( oldValue );
 		color = this->getColor( newValue );
-		color->getRefRGBA()[0] = colorOrigin->getRefRGBA()[0];
-		color->getRefRGBA()[1] = colorOrigin->getRefRGBA()[1];
-		color->getRefRGBA()[2] = colorOrigin->getRefRGBA()[2];
-		color->getRefRGBA()[3] = colorOrigin->getRefRGBA()[3];
+        color->getRefRGBA() = colorOrigin->getRefRGBA();
 		iterTF++;
 	}
 }
