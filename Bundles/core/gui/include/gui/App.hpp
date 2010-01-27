@@ -9,7 +9,18 @@
 
 #include <wx/app.h>
 #include <wx/intl.h>
+
+#include <fwRuntime/profile/Profile.hpp>
+
 #include "gui/export.hpp"
+
+class WXDLLEXPORT wxLocale;
+class wxSingleInstanceChecker;
+
+static void SaveUILanguage(wxLanguage lang);
+wxLanguage GetUILanguage();
+wxLanguage ChooseLanguage();
+void ChangeUILanguage();
 
 namespace gui
 {
@@ -21,11 +32,56 @@ namespace gui
  * @date	2009.
  */
 
-GUI_CLASS_API struct App : public wxApp
+GUI_CLASS_API class App : public wxApp
 {
-	///A wxWidgets application does not have a main procedure; the equivalent is the OnInit member defined for a class derived from wxApp.
+public:
+
+	/**
+	 * @brief	Constructor
+	 */
+	App();
+
+	/**
+	 * @name	Overrides
+	 */
+	/// @{
+
 	bool OnInit();
 
+	int OnExit();
+
+	void usage(const std::string & mes) const;
+
+	bool OnCmdLineParsed(wxCmdLineParser & parser);
+
+	void OnInitCmdLine(wxCmdLineParser & parser);
+
+#ifdef __WXMAC__
+    virtual void MacOpenFile (  const wxString & fileName);
+
+    virtual void MacReopenApp (  const wxString & fileName);
+
+    virtual void MacNewFile (  const wxString & fileName);
+
+    void eventMac(const wxString & fileName);
+#endif
+
+	/// @}
+
+
+private:
+
+	/**
+	 * @brief	locale (internationalization) for app
+	 */
+	wxLocale * m_locale;
+
+	/**
+	 * @brief	Application Profile
+	 */
+    ::fwRuntime::profile::Profile::sptr m_profile;
+
+    wxSingleInstanceChecker * m_checker;
 };
 
 

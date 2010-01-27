@@ -43,6 +43,7 @@ struct Stopper;
  */
 struct Profile : public ::fwCore::BaseObject
 {
+	typedef std::vector< std::string >	ParamsContainer;
 
 	fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject::Baseclass), (()), new Profile) ;
 
@@ -110,6 +111,11 @@ struct Profile : public ::fwCore::BaseObject
 	 */
 	FWRUNTIME_API void setCheckSingleInstance(bool _checkSingleInstance) { m_checkSingleInstance = _checkSingleInstance; }
 
+	FWRUNTIME_API ParamsContainer getParams();
+
+	FWRUNTIME_API void setParams(int argc, char** argv);
+
+	FWRUNTIME_API char** getRawParams();
 
 private:
 
@@ -123,7 +129,7 @@ private:
 	std::string			m_sName;		///< name profile
 	std::string			m_sVersion;		///< profile app version
 	bool				m_checkSingleInstance;
-
+	ParamsContainer		m_params;
 };
 
 

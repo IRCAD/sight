@@ -5,10 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <wx/app.h>
-#include <wx/intl.h>
+
+#include <fwCore/base.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwCore/base.hpp>
+#include <fwRuntime/profile/Profile.hpp>
+
+
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 
@@ -58,20 +61,19 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 		SLM_TRACE("Starting GUI: No aspect specified" ) ;
 	}
 
-	if( this->getBundle()->hasParameter("startingMode") )
+	if( this->getBundle()->hasParameter("startingMode")
+			&&  this->getBundle()->getParameterValue("startingMode") == "windows")
 	{
-		::gui::Manager::initialize() ;
+		::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+		SLM_ASSERT("Profile is not initialized", profile);
+		::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
+		int    argc = params.size();
+		char** argv = profile->getRawParams();
+		::wxEntry( argc, argv ) ;
 	}
 	else
 	{
-		// Dummy parameters
-		int argcc = 1 ;
-		char **argvv = new char*[argcc];
-		std::string text = "test";
-		argvv[0] = const_cast< char * >( text.c_str() );
-
-		SLM_TRACE("Starting GUI") ;
-		::wxEntry( argcc , argvv ) ;
+		SLM_FATAL("Starting Mode not available");
 	}
 }
 
