@@ -7,6 +7,7 @@
 #include "fwRuntime/profile/Profile.hpp"
 
 #include <algorithm>
+#include <cstring>
 
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/profile/Activater.hpp"
