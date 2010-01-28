@@ -103,10 +103,11 @@ void GlobalEventManager::dispatch()
     ::fwServices::ObjectMsg::sptr                   pMsg     = msgAndOpt.first;
     ::fwServices::ComChannelService::MsgOptionsType options  = msgAndOpt.second;
 
-    SLM_INFO_IF( "Message's subject expired", ! pMsg->getSubject().expired() );
+    SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
+    SLM_ASSERT(  "Message's subject expired", ! pMsg->getSubject().expired() );
     OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
 
-    ::fwServices::IService::sptr                    pSource  = pMsg->getSource().lock();
+    //::fwServices::IService::sptr                    pSource  = pMsg->getSource().lock();
     ::fwTools::Object::sptr                         pSubject = pMsg->getSubject().lock();
 
     ::fwServices::IEditionService::sptr srv;
