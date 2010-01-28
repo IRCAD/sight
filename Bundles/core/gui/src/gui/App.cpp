@@ -85,7 +85,12 @@ bool App::OnInit()
 	setlocale(LC_ALL,"C");
 #endif
 
+	wxApp::OnInit();
+
 	std::string appName = m_profile->getName();
+#ifndef TDVPM_COMPLIANT
+	m_locale->AddCatalog(::fwWX::std2wx(appName), wxLANGUAGE_FRENCH, _T("utf-8"));
+#endif
 	SetAppName( ::fwWX::std2wx(appName) );
 
 	std::string checkerPath = ::fwTools::os::getUserDataDir("IRCAD", appName, true);
@@ -149,7 +154,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser & parser)
 			std::string key = *tok_iter;
 			std::string val = (*++tok_iter);
 			::fwRuntime::io::XMLSubstitute::getDefault()->getRefDictionary()[key]= val ;
-            OSLM_TRACE("token : "<< key << " - " << val );
+            OSLM_TRACE("Token : "<< key << " - " << val );
 		}
 	}
 
