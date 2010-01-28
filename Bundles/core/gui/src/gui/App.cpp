@@ -31,7 +31,6 @@
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwWX/convert.hpp>
-#include <fwWX/MessageHandler.hpp> //XXX
 
 
 #include "gui/App.hpp"
@@ -47,7 +46,6 @@ IMPLEMENT_APP_NO_MAIN(gui::App) ;
 
 App::App()
 {
-    new ::fwWX::MessageHandler(); //XXX
 	SetAppName( _("launcher") );
 #ifdef __MACOSX__
 	ProcessSerialNumber PSN;
@@ -151,7 +149,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser & parser)
 			std::string key = *tok_iter;
 			std::string val = (*++tok_iter);
 			::fwRuntime::io::XMLSubstitute::getDefault()->getRefDictionary()[key]= val ;
-			std::cout << "token : "<< key << " - " << val << std::endl;
+            OSLM_TRACE("token : "<< key << " - " << val );
 		}
 	}
 

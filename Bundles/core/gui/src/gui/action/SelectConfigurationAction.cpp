@@ -128,7 +128,7 @@ void SelectConfigurationAction::updating() throw( ::fwTools::Failed )
 	ObjectToConfigContainerMapType::iterator iter2 ;
 	for( iter2 = db.begin() ; iter2 != db.end() ; ++iter2 ) 
 	{
-		std::cout << iter2->first << std::endl;
+		SLM_TRACE( iter2->first );
 		wxIdsForObjectType.push_back( wxString( wxConvertMB2WX(iter2->first.c_str()) ) ) ;
 	}	
 	
