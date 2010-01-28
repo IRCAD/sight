@@ -7,13 +7,14 @@
 #ifndef FWWX_MESSAGEHANDLER_HPP_
 #define FWWX_MESSAGEHANDLER_HPP_
 
-//#include <boost/preprocessor/repetition/enum_params.hpp>
-//#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/function.hpp>
+
 
 #include <wx/timer.h>
 #include <wx/event.h>
 
-#include "fwCore/base.hpp"
+#include <fwCore/base.hpp>
+#include <fwServices/IDeliveryDelegate.hpp>
 
 #include "fwWX/config.hpp"
 
@@ -24,19 +25,37 @@ namespace fwWX
 {
 
 /**
- * @brief   This class handle fwServices message dispatching.
+ * @brief   This service handle fwServices message dispatching.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  * @todo    MessageHandler is not commented.
  */
-class FWWX_CLASS_API MessageHandler : public wxEvtHandler
+
+class FWWX_CLASS_API MessageHandler : public ::fwServices::IDeliveryDelegate
 {
 
 public:
+	/// Definitions
+	fwCoreServiceClassDefinitionsMacro ( (MessageHandler)(::fwServices::IDeliveryDelegate::Baseclass) ) ;
+    fwCoreAllowSharedFromThis();
+
+
      FWWX_API MessageHandler() throw() ;
      FWWX_API ~MessageHandler() throw() ;
 
      static void addNewMessageToWxQueue();
+
+protected:
+	/**
+	 * @brief If configuration is set, both subject (data) and observer (service) uuid are retrieved
+	 */
+	FWWX_API virtual void configuring() throw( ::fwTools::Failed ) ;
+	FWWX_API virtual void starting() throw( ::fwTools::Failed );
+	FWWX_API virtual void stopping() throw( ::fwTools::Failed );
+	FWWX_API virtual void updating() throw( ::fwTools::Failed );
+	FWWX_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
+	FWWX_API virtual void info( std::ostream &_sstream ) ;
+
 private:
 
     /*
@@ -46,9 +65,11 @@ private:
     int      m_rate;
 	wxTimer *m_wxTimer;
 
-    SPTR(::fwServices::GlobalEventManager) m_msgHandler;
+    SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
+    ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;
 
-    void OnMessage(::fwWX::MessageEvent& event);
+    ::boost::function1< void , ::fwWX::MessageEvent & > m_onMessageHandler;
+    void onMessage(::fwWX::MessageEvent& event);
 };
 
 }
