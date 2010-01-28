@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.  
  * ****** END LICENSE BLOCK ****** */
 
+#include <vector>
+#include <fwCore/base.hpp>
+#include <fwTools/TypeInfo.hpp>
+
 #include "fwServices/library/Factory.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/helper.hpp"
-#include <fwTools/TypeInfo.hpp>
-#include <vector>
-#include <hash_map>
 
-#include <fwCore/base.hpp>
 
 
 namespace fwServices
