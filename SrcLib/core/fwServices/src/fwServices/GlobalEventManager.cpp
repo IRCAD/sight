@@ -26,7 +26,8 @@ GlobalEventManager::GlobalEventManager() :
     m_deliveryType ( BREADTH_FIRST ),
     //m_deliveryType ( DELEGATED_BREADTH_FIRST ),
     //m_deliveryType ( DEPTH_FIRST ),
-    m_dispatching ( false )
+    m_dispatching ( false ),
+    m_notifyHandler(NULL)
 {
     SLM_TRACE_FUNC();
 }
@@ -102,7 +103,7 @@ void GlobalEventManager::dispatch()
     ::fwServices::ObjectMsg::sptr                   pMsg     = msgAndOpt.first;
     ::fwServices::ComChannelService::MsgOptionsType options  = msgAndOpt.second;
 
-    SLM_INFO_IF( "Message's sosject expired", ! pMsg->getSubject().expired() );
+    SLM_INFO_IF( "Message's subject expired", ! pMsg->getSubject().expired() );
     OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
 
     ::fwServices::IService::sptr                    pSource  = pMsg->getSource().lock();

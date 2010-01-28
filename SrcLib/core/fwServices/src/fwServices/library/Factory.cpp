@@ -10,6 +10,7 @@
 #include "fwServices/helper.hpp"
 #include <fwTools/TypeInfo.hpp>
 #include <vector>
+#include <hash_map>
 
 #include <fwCore/base.hpp>
 
@@ -19,6 +20,7 @@ namespace fwServices
 
 namespace library
 {
+
 
 bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
 {
@@ -35,6 +37,7 @@ bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
 	//return !serviceList.empty() ;
 	return supportGenericObject || supportSpecificObject ;
 }
+
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {

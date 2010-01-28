@@ -31,6 +31,8 @@
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwWX/convert.hpp>
+#include <fwWX/MessageHandler.hpp> //XXX
+
 
 #include "gui/App.hpp"
 #include "gui/Manager.hpp"
@@ -45,6 +47,7 @@ IMPLEMENT_APP_NO_MAIN(gui::App) ;
 
 App::App()
 {
+    new ::fwWX::MessageHandler(); //XXX
 	SetAppName( _("launcher") );
 #ifdef __MACOSX__
 	ProcessSerialNumber PSN;
