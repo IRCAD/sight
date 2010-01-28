@@ -44,13 +44,13 @@ public:
 	FWSERVICES_API void notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
 
 	
-	void setNotifyHandler(void (*handler)()) 
+	FWSERVICES_API void setNotifyHandler(void (*handler)())
 	{
 		m_notifyHandler = handler;
 	};
 
-    DeliveryType getDeliveryType(){return m_deliveryType;}
-    DeliveryType setDeliveryType(DeliveryType t){m_deliveryType = t;}
+	FWSERVICES_API DeliveryType getDeliveryType(){return m_deliveryType;}
+    FWSERVICES_API void setDeliveryType(DeliveryType t){m_deliveryType = t;}
 
 	virtual ~GlobalEventManager();
 protected :
