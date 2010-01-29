@@ -39,12 +39,18 @@
 #ifndef _FWCORE_SPYLOG_HPP_
 #define _FWCORE_SPYLOG_HPP_
 
+#ifdef _DEBUG
+//#define SPYLOG_TIMER
+#endif
+
+
 #include <cassert>
 #include <sstream>
 
 #include "fwCore/config.hpp"
 
 #include "fwCore/SpyLogger.hpp"
+#include "fwCore/ScopedMessage.hpp"
 #include "fwCore/SpyLoggerManager.hpp"
 
 
@@ -260,18 +266,50 @@
 
 //==============================================================================
 
+#ifdef __GNUC__ // with GCC
+    #define SLM_PRETTY_FUNC() __PRETTY_FUNCTION__
+#elif defined(_MSC_VER) // with MSC
+    #define SLM_PRETTY_FUNC() __FUNCSIG__
+#else
+    #define SLM_PRETTY_FUNC() __func__
+#endif
+
 /**
  * @brief Trace contextual function signature.
  *
  * Generate a log trace message with the (contextual) function signature.
  */
-#ifdef __GNUC__ // with GCC
-    #define SLM_TRACE_FUNC() SLM_TRACE(__PRETTY_FUNCTION__)
-#elif defined(_MSC_VER) // with MSC
-    #define SLM_TRACE_FUNC() SLM_TRACE(__FUNCSIG__)
-#else
-    #define SLM_TRACE_FUNC() SLM_TRACE(__func__)
-#endif
+#ifndef SPYLOG_TIMER
+
+
+
+//#ifdef __GNUC__ // with GCC
+    //#define SLM_TRACE_FUNC() SLM_TRACE(__PRETTY_FUNCTION__)
+//#elif defined(_MSC_VER) // with MSC
+    //#define SLM_TRACE_FUNC() SLM_TRACE(__FUNCSIG__)
+//#else
+    //#define SLM_TRACE_FUNC() SLM_TRACE(__func__)
+//#endif
+
+#define SLM_TRACE_FUNC() SLM_TRACE(SLM_PRETTY_FUNC())
+
+#else //SPYLOG_TIMER
+
+
+//#ifdef __GNUC__ // with GCC
+    //#define SLM_TRACE_FUNC() ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, __PRETTY_FUNCTION__); __spylog__scoped__msg__.use();
+//#elif defined(_MSC_VER) // with MSC
+    //#define SLM_TRACE_FUNC() ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, __FUNCSIG__); __spylog__scoped__msg__.use();
+//#else
+    //#define SLM_TRACE_FUNC() ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, __func__); __spylog__scoped__msg__.use();
+//#endif
+
+
+#define SLM_TRACE_FUNC() ::spyLog::ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, SLM_PRETTY_FUNC()); __spylog__scoped__msg__.use();
+
+
+
+#endif //SPYLOG_TIMER
 /**  @} */
 
 #endif /* _FWCORE_SPYLOG_HPP_ */

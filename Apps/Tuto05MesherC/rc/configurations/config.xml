@@ -19,7 +19,7 @@
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuMesher"/>
-				<menu uid="menuEdit">
+		<menu uid="menuEdit"/>
             </menus>
         </service>
 

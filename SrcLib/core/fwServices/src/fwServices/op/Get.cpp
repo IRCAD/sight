@@ -39,7 +39,7 @@ namespace fwServices
 		{
 			return ::fwServices::get( obj , serviceId , _index ) ;
 		}
-		OSLM_FATAL( msg.str() );
+		SLM_FATAL( msg.str() );
 		throw( fwTools::Failed(msg.str()) ) ;
 	}
 	if( _index < proxyServices.size() )

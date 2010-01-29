@@ -57,6 +57,8 @@ public:
 	 */
 	FWCOMED_API void addEventModifiedFields( const std::vector< std::string > & _modifiedFields );
 
+	FWCOMED_API void addEventModifiedFields( const std::vector< std::string > & _modifiedFields, std::vector< ::fwData::Object::sptr > _oldObjects );
+
 	/**
 	 * @brief 	Return the list modified fields.
 	 * @return 	The list of the modified fieds identifiers.

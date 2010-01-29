@@ -107,7 +107,7 @@ namespace fwServices
 		return ::fwServices::library::add(obj, serviceId , _implementationId ) ;
 	}
 
-	OSLM_WARN( "No service matching the identifier" + serviceId );
+	OSLM_WARN( "No service matching the identifier " << serviceId );
 	return ::fwServices::IService::sptr() ;
 }
 
@@ -134,7 +134,7 @@ namespace fwServices
 		return service ;
 	}
 
-	OSLM_WARN( "No service matching the identifier" + serviceId );
+	OSLM_WARN( "No service matching the identifier " << serviceId );
 	return service ;
 }
 

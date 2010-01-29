@@ -286,10 +286,7 @@ void TransfertFunction::setMinMax( ::fwData::TransfertFunctionPoint::TFValueType
 
 		colorOrigin = pTransfertFunctionClone->getColor( oldValue );
 		color = this->getColor( newValue );
-		color->getRefRGBA()[0] = colorOrigin->getRefRGBA()[0];
-		color->getRefRGBA()[1] = colorOrigin->getRefRGBA()[1];
-		color->getRefRGBA()[2] = colorOrigin->getRefRGBA()[2];
-		color->getRefRGBA()[3] = colorOrigin->getRefRGBA()[3];
+        color->getRefRGBA() = colorOrigin->getRefRGBA();
 		iterTF++;
 	}
 }

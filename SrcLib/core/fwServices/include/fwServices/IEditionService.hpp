@@ -42,6 +42,7 @@ namespace fwServices
  */
 class FWSERVICES_CLASS_API IEditionService : public fwServices::IService
 {
+	friend class GlobalEventManager;
 
 public :
 
@@ -105,6 +106,17 @@ private :
 	/// Contains all attached observers. From observer library.
 	ObserverContainer m_observers;
 
+
+	/// Defines the observer container type. From observer library.
+	typedef std::map< std::string, ObserverContainer > Event2ObserversContainer;
+
+	/// Contains all attached observers with a specific event configuration.
+	Event2ObserversContainer m_event2SpecificObservers;
+
+	/// Contains all attached observers without event configuration.
+	ObserverContainer m_globalObservers;
+
+
 	/**
 	 * @name Helpers to manage observations
 	 */
@@ -115,18 +127,21 @@ private :
 	 *
 	 * @param observer a shared pointer to an observer
 	 */
-	ObserverContainer::iterator findObserver( ::fwServices::ComChannelService::sptr observer ) throw();
+	ObserverContainer::iterator findObserver( ObserverContainer & _observers, ::fwServices::ComChannelService::sptr _observer ) throw();
 
 	/**
 	 * @brief Retrieves the iterator on the given observer. From observer library.
 	 *
 	 * @param observer a shared pointer to an observer
 	 */
-	ObserverContainer::const_iterator findObserver( ::fwServices::ComChannelService::sptr observer ) const throw();
+	ObserverContainer::const_iterator findObserver( const ObserverContainer & _observers, ::fwServices::ComChannelService::sptr observer ) const throw();
+
+	/// Method to find if we have expired observer in our vectors
+	bool hasExpiredObserver();
 
 	//@}
 
-protected:
+protected :
 
 	/**
 	 * @brief This method forwards an eventMessage to all related observing services (generally through a ICommunication service).
@@ -136,6 +151,7 @@ protected:
 	 * @todo In this method, observers expired are also removed, can be optimized.
 	 */
 	FWSERVICES_API void notify( ObjectMsg::csptr eventMessage, ::fwServices::ComChannelService::MsgOptionsType options ) ;
+
 };
 
 }

@@ -7,6 +7,7 @@
 #include "fwRuntime/profile/Profile.hpp"
 
 #include <algorithm>
+#include <cstring>
 
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/profile/Activater.hpp"
@@ -84,7 +85,38 @@ void Profile::stop()
     std::for_each( m_stoppers.rbegin(), m_stoppers.rend(), Apply< StopperContainer::value_type >() );
 }
 
+Profile::ParamsContainer Profile::getParams()
+{
+	return m_params;
+}
 
+char** Profile::getRawParams()
+{
+	// allocate memory for an array of character strings
+	char** rawParams = new char*[m_params.size()];
+
+	// for each string, allocate memory in the character array and copy
+	for (unsigned long i=0; i<m_params.size(); i++)
+	{
+		int paramSize = m_params[i].size();
+		rawParams[i] = new char[paramSize+1];
+		strncpy(rawParams[i], m_params[i].c_str(), paramSize);
+		rawParams[i][paramSize] = '\0';
+
+	}
+	return rawParams;
+}
+
+
+void Profile::setParams(int argc, char** argv)
+{
+	m_params.clear();
+	for(int i = 0; i < argc; i++)
+	{
+		std::string arg = argv[i];
+		m_params.push_back( arg );
+	}
+}
 
 } // namespace profile
 

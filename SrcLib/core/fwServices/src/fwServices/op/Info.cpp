@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <vector>
+#include <boost/unordered_map.hpp>
 
 #include <fwTools/TypeInfo.hpp>
 #include <fwTools/UUID.hpp>
@@ -22,6 +23,12 @@
 #include "fwServices/bundle/runtime.hpp"
 #include "fwServices/library/Factory.hpp"
 #include "fwServices/IEditionService.hpp"
+
+
+
+typedef std::pair<std::string, std::string> StringPair;
+typedef ::boost::unordered_map< StringPair, bool >  SupportMapType;
+SupportMapType  supportMap;
 
 namespace fwServices
 {
@@ -46,7 +53,7 @@ bool has( ::std::string uuid ) throw()
 	return ::fwTools::UUID::exist(uuid, ::fwTools::UUID::SIMPLE ) ;
 }
 
-bool support( ::fwTools::Object::sptr obj, std::string serviceId) throw()
+bool __support( ::fwTools::Object::sptr obj, std::string serviceId) throw()
 {
 	// Native library approach
 	bool libSupport 		= ::fwServices::library::support(obj, serviceId) ;
@@ -55,6 +62,21 @@ bool support( ::fwTools::Object::sptr obj, std::string serviceId) throw()
 
 	return ( componentSupport || libSupport ) ;
 }
+
+
+bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
+{
+    SupportMapType::key_type key(obj->getClassname(), serviceId);
+    SupportMapType::iterator iter = supportMap.find( key );
+    if (iter != supportMap.end())
+    {
+      return iter->second;
+    }
+    bool res = __support(obj, serviceId);
+    supportMap[key] = res;
+    return res;
+}
+
 
 bool support( ::fwTools::Object::sptr obj, std::string serviceId, std::string implementationId ) throw()
 {

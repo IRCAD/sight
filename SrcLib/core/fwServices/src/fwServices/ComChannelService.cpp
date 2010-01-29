@@ -70,8 +70,8 @@ void ComChannelService::starting() throw(fwTools::Failed)
 {
 	if( m_destination.expired() )
 	{
-		assert( m_destUUID.first );
-		assert( ::fwTools::UUID::exist( m_destUUID.second , ::fwTools::UUID::SIMPLE) );
+		SLM_ASSERT("No UID target", m_destUUID.first );
+		OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second , ::fwTools::UUID::exist( m_destUUID.second , ::fwTools::UUID::SIMPLE) );
 		m_destination = ::fwTools::UUID::get< ::fwServices::IService >( m_destUUID.second ) ;
 		OSLM_DEBUG("Destination = " << m_destUUID.second << " found") ;
 	}
@@ -81,7 +81,7 @@ void ComChannelService::starting() throw(fwTools::Failed)
 	if( m_source.expired() )
 	{
 		m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
-		assert( !m_source.expired() ) ;
+		SLM_ASSERT("Source is expired", !m_source.expired() ) ;
 		OSLM_DEBUG("Source (IEditionService) = " << this->getObject()->getUUID() << " found") ;
 	}
 
@@ -92,8 +92,8 @@ void ComChannelService::starting() throw(fwTools::Failed)
 			!this->hasSimilarObservation());
 
 	// Assertion
-	assert( !m_destination.expired() ) ;
-	assert( !m_source.expired() ) ;
+	SLM_ASSERT("Destination is expired", !m_destination.expired() ) ;
+	SLM_ASSERT("Source is expired", !m_source.expired() ) ;
 
 
 	if( !m_source.lock()->isAttached( this->getSptr() ) )
@@ -106,8 +106,8 @@ void ComChannelService::starting() throw(fwTools::Failed)
 	}
 
 	// Post condition
-	assert( !m_source.expired() ) ;
-	assert( !m_destination.expired() ) ;
+	SLM_ASSERT("Source is expired",  !m_source.expired() ) ;
+	SLM_ASSERT("Destination is expired", !m_destination.expired() ) ;
 }
 
 //------------------------------------------------------------------------------
@@ -178,7 +178,7 @@ void ComChannelService::setDest(IService::sptr _client)
 
 IService::sptr  ComChannelService::getDest()
 {
-	assert( !m_destination.expired() ) ;
+	SLM_ASSERT("Destination is expired", !m_destination.expired() ) ;
 	return m_destination.lock();
 }
 
@@ -186,7 +186,7 @@ IService::sptr  ComChannelService::getDest()
 
 IEditionService::sptr ComChannelService::getSrc()
 {
-	assert( !m_source.expired() ) ;
+	SLM_ASSERT("Source is expired", !m_source.expired() ) ;
 	return m_source.lock();
 }
 

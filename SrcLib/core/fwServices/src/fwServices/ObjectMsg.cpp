@@ -84,9 +84,10 @@ std::string ObjectMsg::convertToLightString( std::string _initialString )
 
 std::string ObjectMsg::getGeneralInfo() const
 {
-	std::string msgUUID = convertToLightString( this->getUUID() );
-	std::string sourceUUID = convertToLightString( m_source.lock()->getUUID() );
-	std::string destUUID = convertToLightString( m_subject.lock()->getUUID() );
+    ::fwServices::IService::sptr source = m_source.lock();
+	std::string msgUUID    = convertToLightString( this->getUUID() );
+	std::string sourceUUID = convertToLightString( source? source->getUUID():"[source died]" );
+	std::string destUUID   = convertToLightString( m_subject.lock()->getUUID() );
 
 	std::stringstream eventstream;
 	for( 	std::map< std::string, ::fwData::Object::sptr >::const_iterator itEvent2Data = m_eventId2DataInfo.begin();

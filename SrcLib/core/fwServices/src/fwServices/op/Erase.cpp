@@ -39,7 +39,7 @@ void eraseServices( ::fwTools::Object::sptr obj , std::string serviceId )
 	std::vector< ::fwServices::IService::sptr > services = ::fwServices::getServices( obj , serviceId ) ;
 	for( std::vector< ::fwServices::IService::sptr >::iterator iter = services.begin() ; iter != services.end() ; ++iter )
 	{
-		OSLM_INFO("eraseServices  : serviceId" << *iter );
+		OSLM_INFO("eraseServices  : serviceId " << *iter );
 		OSR::unregisterService( *iter ) ;
 	}
 }
