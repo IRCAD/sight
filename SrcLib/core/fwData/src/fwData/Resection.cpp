@@ -19,7 +19,9 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Resection::Resection ()
-: m_isSafePart(true)
+: m_isSafePart(true),
+  m_isVisible(true),
+  m_isValid(false)
 {
 	SLM_TRACE_FUNC();
 	m_planeList = ::fwData::PlaneList::New();
