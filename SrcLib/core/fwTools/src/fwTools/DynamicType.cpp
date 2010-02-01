@@ -6,6 +6,7 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include "fwCore/spyLog.hpp"
 #include "fwTools/DynamicType.hpp"
 
 namespace fwTools {
@@ -69,6 +70,7 @@ const std::string &DynamicType::string() const
 
 unsigned char  DynamicType::sizeOf() const
 {
+	SLM_ASSERT("Sizeof not specified.", m_sizeof!=0);
 	return m_sizeof;
 }
 
