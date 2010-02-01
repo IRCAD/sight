@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <vector>
-#include <boost/unordered_map.hpp>
+#include <boost/tr1/unordered_map.hpp>
 
 #include <fwTools/TypeInfo.hpp>
 #include <fwTools/UUID.hpp>
@@ -27,7 +27,7 @@
 
 
 typedef std::pair<std::string, std::string> StringPair;
-typedef ::boost::unordered_map< StringPair, bool >  SupportMapType;
+typedef std::tr1::unordered_map< StringPair, bool > SupportMapType;
 SupportMapType  supportMap;
 
 namespace fwServices
