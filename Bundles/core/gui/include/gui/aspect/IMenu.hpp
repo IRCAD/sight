@@ -36,7 +36,7 @@ class GUI_CLASS_API IMenu : public ::fwServices::IService
 
 public :
 
-	fwCoreNonInstanciableClassDefinitionsMacro ( (IMenu)( ::fwServices::IService::Baseclass ) ) ;
+	fwCoreNonInstanciableClassDefinitionsMacro ( (IMenu)( ::fwServices::IService::Baseclass) ) ;
 
 	/// Default constructor, do nothing.
 	GUI_API IMenu() throw() ;

@@ -126,7 +126,7 @@ public:
 
 
 	/**
-	 * @brief Return *the* SubClass instance ( derivated form BASECLASS ) which is related to given key value.
+	 * @brief Return *the* SubClass instance ( derivated form Baseclass) which is related to given key value.
 	 * @note That KEY is template so it can be of any type
 	 * @warning It use is only valid when *ONLY ONE* BASECLASS-SUBCLASS registration for a KEY type (aka subClasses(myKey).size()<2 )
 	 * @return The SubClass instance or a null smart ptr if not found
@@ -135,7 +135,7 @@ public:
 	static ::boost::shared_ptr<BASECLASS > create(const KEY &key)  throw(std::invalid_argument);
 
 	/**
-	 * @brief Return the  list of SubClass instances ( derivated form BASECLASS ) registred in the registry with KEY value
+	 * @brief Return the  list of SubClass instances ( derivated form Baseclass) registred in the registry with KEY value
 	 * @return The  list of SubClass instances or an empty list if not found
 	 */
 	template<class BASECLASS, class KEY>
@@ -143,7 +143,7 @@ public:
 
 
 	/**
-	 * @brief Return the  list of SubClass instances ( derivated form BASECLASS ) registred in the registry for all Key
+	 * @brief Return the  list of SubClass instances ( derivated form Baseclass) registred in the registry for all Key
 	 * @return The  list of SubClass instances or an empty list if not found
 	 */
 	template<class BASECLASS>
@@ -151,7 +151,7 @@ public:
 
 
 //	/*
-//	 * @brief return the  map < key , SubClass>  of instances ( SubClass derivated form BASECLASS ) registred in the registry for all Key
+//	 * @brief return the  map < key , SubClass>  of instances ( SubClass derivated form Baseclass) registred in the registry for all Key
 //	 * return empty map if not found
 //	 */DOESNT WORK BECAUSE const KEY & is not manager when copying map
 //	 */

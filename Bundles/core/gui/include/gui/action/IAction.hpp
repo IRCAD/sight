@@ -36,7 +36,7 @@ class GUI_CLASS_API IAction : public ::fwServices::IService
 
 public :
 
-	fwCoreNonInstanciableClassDefinitionsMacro ( (IAction)( ::fwServices::IService::Baseclass ) ) ;
+	fwCoreNonInstanciableClassDefinitionsMacro ( (IAction)( ::fwServices::IService::Baseclass) ) ;
 
 	/**
 	* @brief Constructor. Do nothing (Just initialize parameters).

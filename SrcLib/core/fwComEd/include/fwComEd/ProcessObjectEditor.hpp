@@ -31,7 +31,7 @@ namespace fwComEd
  */
 struct FWCOMED_CLASS_API ProcessObjectEditor : public fwServices::IEditionService
 {
-    fwCoreServiceClassDefinitionsMacro ( ( ProcessObjectEditor ) ( ::fwServices::IEditionService::Baseclass ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( ( ProcessObjectEditor ) ( ::fwServices::IEditionService::Baseclass) ) ;
 
 	/**
 	 * @brief	destructor

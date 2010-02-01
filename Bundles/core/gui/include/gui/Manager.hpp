@@ -36,7 +36,7 @@ class GUI_CLASS_API Manager : public ::fwCore::BaseObject
 {
 public:
 
-	fwCoreNonInstanciableClassDefinitionsMacro ( (Manager)( ::fwCore::BaseObject::Baseclass ) ) ;
+	fwCoreNonInstanciableClassDefinitionsMacro ( (Manager)( ::fwCore::BaseObject::Baseclass) ) ;
 
 	/**
 	 * @brief	Retrieves the singleton basicVisuCtrl instance.

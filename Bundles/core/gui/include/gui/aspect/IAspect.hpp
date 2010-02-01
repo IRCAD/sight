@@ -42,7 +42,7 @@ class GUI_CLASS_API IAspect : public ::fwServices::IService
 {
 
 public :
-	fwCoreNonInstanciableClassDefinitionsMacro ( (IAspect)( ::fwServices::IService::Baseclass ) ) ;
+	fwCoreNonInstanciableClassDefinitionsMacro ( (IAspect)( ::fwServices::IService::Baseclass) ) ;
 
 	/**
 	 * @brief	Constructor. Do nothing (Just initializes parameters).
