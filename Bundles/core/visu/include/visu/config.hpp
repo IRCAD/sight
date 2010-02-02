@@ -10,7 +10,7 @@
 
 #ifdef _WIN32
 
-	#ifdef VISUALIZATION_EXPORTS
+	#ifdef VISU_EXPORTS
 	#define VISU_API __declspec(dllexport)
 	#else
 	#define VISU_API __declspec(dllimport)
@@ -22,7 +22,7 @@
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-	#ifdef VISUALIZATION_EXPORTS
+	#ifdef VISU_EXPORTS
 	#define VISU_API __attribute__ ((visibility("default")))
 	#define VISU_CLASS_API __attribute__ ((visibility("default")))
 	#else
