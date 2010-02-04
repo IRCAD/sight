@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
@@ -19,7 +19,9 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Resection::Resection ()
-: m_isSafePart(true)
+: m_isSafePart(true),
+  m_isVisible(true),
+  m_isValid(false)
 {
 	SLM_TRACE_FUNC();
 	m_planeList = ::fwData::PlaneList::New();

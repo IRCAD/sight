@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "fwServices/GlobalEventManager.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/ObjectServiceRegistry.hpp"
@@ -103,17 +109,17 @@ void GlobalEventManager::dispatch()
     ::fwServices::ObjectMsg::sptr                   pMsg     = msgAndOpt.first;
     ::fwServices::ComChannelService::MsgOptionsType options  = msgAndOpt.second;
 
-    SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
-    SLM_ASSERT(  "Message's subject expired", ! pMsg->getSubject().expired() );
-    OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
+    SLM_WARN_IF( "Message's subject expired", pMsg->getSubject().expired() );
+    if(!pMsg->getSubject().expired())
+    {
+    	SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
+    	OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
+    	::fwTools::Object::sptr pSubject = pMsg->getSubject().lock();
 
-    //::fwServices::IService::sptr                    pSource  = pMsg->getSource().lock();
-    ::fwTools::Object::sptr                         pSubject = pMsg->getSubject().lock();
-
-    ::fwServices::IEditionService::sptr srv;
-    srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
-    srv->notify( pMsg, options ) ;
-
+    	::fwServices::IEditionService::sptr srv;
+    	srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
+    	srv->notify( pMsg, options ) ;
+    }
     m_msgDeque.pop_front();
     m_dispatching = false;
 }

@@ -6,6 +6,5 @@ USE  = ['boost','libxml2','z'] # 'wx'
 #STDLIB = ['z']
 #use of wx is required to provide a wxPanel for xmlview service
 
-LOGLEVEL = 'debug'
 
 VERSION	= '0-2'
