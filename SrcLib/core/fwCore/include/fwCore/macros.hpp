@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /** 
@@ -373,6 +373,9 @@
     BOOST_PP_SEQ_FOLD_RIGHT( __FWCORE_PREDECLARE, BOOST_PP_SEQ_NIL, _cls_)
 
 
+#define __FWCORE_STATIC_CACHE( _type_, value )        \
+    static _type_ __cache__(value); return __cache__;
+
 /**
  * @brief Generate virtual methods that return classname/namespace strings
  *
@@ -384,22 +387,22 @@
  * - RootedNamespace is ::fwData
  *
  */
-#define fwCoreClassnameMacro()                                                                                          \
-    /** @name Demangling methods */                                                                                     \
-    /** @{ */                                                                                                           \
-    /** @brief return object's classname given by ::fwCore::Demangler::getLeafClassname()  */                           \
-    virtual const std::string getLeafClassname()   const    { return ::fwCore::Demangler(*this).getLeafClassname();};   \
-    /** @brief return object's classname given by ::fwCore::Demangler::getClassname()  */                               \
-    virtual const std::string getClassname()       const    { return ::fwCore::Demangler(*this).getClassname();};       \
-    /** @brief return object's classname given by ::fwCore::Demangler::getFullClassname()  */                           \
-    virtual const std::string getFullClassname()   const    { return ::fwCore::Demangler(*this).getFullClassname();};   \
-    /** @brief return object's classname given by ::fwCore::Demangler::getRootedClassname()  */                         \
-    virtual const std::string getRootedClassname() const    { return ::fwCore::Demangler(*this).getRootedClassname();}; \
-                                                                                                                        \
-    /** @brief return object's namespace given by ::fwCore::Demangler::getFullClassname()  */                           \
-    virtual const std::string getFullNamespace()   const    { return ::fwCore::Demangler(*this).getFullClassname();};   \
-    /** @brief return object's namespace given by ::fwCore::Demangler::getRootedNamespace()  */                         \
-    virtual const std::string getRootedNamespace() const    { return ::fwCore::Demangler(*this).getRootedClassname();}  \
+#define fwCoreClassnameMacro()                                                                                                                        \
+    /** @name Demangling methods */                                                                                                                   \
+    /** @{ */                                                                                                                                         \
+    /** @brief return object's classname given by ::fwCore::Demangler::getLeafClassname()  */                                                         \
+    virtual const std::string getLeafClassname()   const    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getLeafClassname());};   \
+    /** @brief return object's classname given by ::fwCore::Demangler::getClassname()  */                                                             \
+    virtual const std::string getClassname()       const    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getClassname());};       \
+    /** @brief return object's classname given by ::fwCore::Demangler::getFullClassname()  */                                                         \
+    virtual const std::string getFullClassname()   const    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getFullClassname());};   \
+    /** @brief return object's classname given by ::fwCore::Demangler::getRootedClassname()  */                                                       \
+    virtual const std::string getRootedClassname() const    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getRootedClassname());}; \
+                                                                                                                                                      \
+    /** @brief return object's namespace given by ::fwCore::Demangler::getFullClassname()  */                                                         \
+    virtual const std::string getFullNamespace()   const    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getFullClassname());};   \
+    /** @brief return object's namespace given by ::fwCore::Demangler::getRootedNamespace()  */                                                       \
+    virtual const std::string getRootedNamespace() const    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getRootedClassname());}  \
      /** @} */
 
 

@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <iostream>
@@ -44,7 +44,7 @@ void GzBufferImageWriter::write()
 	assert( getFile().empty() ==  false );
 
 	::boost::shared_ptr< ::fwData::Image > image = getConcreteObject();
-	std::cout << "GzBufferImageWriter::write()" << image.get() << " " << image->className();
+	OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className()) ;
 
 	/// test if can open archive
 	gzFile rawFile = gzopen( getFile().native_file_string().c_str(), "wb1");

@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/assign/list_of.hpp>
 
+#include "fwCore/spyLog.hpp"
 #include "fwTools/DynamicType.hpp"
 
 namespace fwTools {
@@ -69,6 +70,7 @@ const std::string &DynamicType::string() const
 
 unsigned char  DynamicType::sizeOf() const
 {
+	SLM_ASSERT("Sizeof not specified.", m_sizeof!=0);
 	return m_sizeof;
 }
 

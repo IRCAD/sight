@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _FWCOMED_COMPOSITEMSG_HPP_
@@ -56,6 +56,8 @@ public:
 	 * This method create a MODIFIED_FIELDS event with an additional data information containing the fields identifiers.
 	 */
 	FWCOMED_API void addEventModifiedFields( const std::vector< std::string > & _modifiedFields );
+
+	FWCOMED_API void addEventModifiedFields( const std::vector< std::string > & _modifiedFields, std::vector< ::fwData::Object::sptr > _oldObjects );
 
 	/**
 	 * @brief 	Return the list modified fields.

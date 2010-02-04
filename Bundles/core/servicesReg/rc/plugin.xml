@@ -19,6 +19,12 @@
 		<implements>::fwServices::IService</implements>
 	</point>
 
+	<!-- FWSERVICE SERVICE TYPE FOR MESSAGE DELIVERY DELEGATION -->
+	<point id="::fwServices::IDeliveryDelegate">
+		<implements>::fwServices::IService</implements>
+	</point>
+
+
 	<!-- COM ASPECT -->
 	<point id="::fwServices::IEditionService">
 		<implements>::fwServices::IService</implements>

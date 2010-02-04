@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/Object.hpp>
@@ -44,9 +44,32 @@ void CompositeMsg::addEventModifiedFields( const std::vector< std::string > & _m
 
 }
 
+//-------------------------------------------------------------------------
+
+void CompositeMsg::addEventModifiedFields( const std::vector< std::string > & _modifiedFields, std::vector< ::fwData::Object::sptr > _oldObjects )
+{
+	::fwData::Composite::NewSptr dataInfo;
+
+	std::vector< std::string >::const_iterator iter;
+	std::vector< ::fwData::Object::sptr >::iterator iterOldObj = _oldObjects.begin();
+	for(iter = _modifiedFields.begin() ; iter != _modifiedFields.end() ; ++iter)
+	{
+		::fwData::String::NewSptr strField;
+		strField->value() = *iter;
+		strField->setFieldSingleElement( "OLD_OBJECT", *iterOldObj );
+		dataInfo->getRefMap()[strField->getUUID()] = strField;
+		++iterOldObj;
+	}
+
+	this->addEvent(MODIFIED_FIELDS, dataInfo);
+
+}
+
+//-------------------------------------------------------------------------
+
 std::vector< std::string > CompositeMsg::getEventModifiedFields() const
 {
-	SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_FIELDS event", this->hasEvent(MODIFIED_FIELDS))
+	SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_FIELDS event", this->hasEvent(MODIFIED_FIELDS));
 	::fwData::Composite::csptr dataInfo = ::fwData::Composite::dynamicConstCast(this->getDataInfo(MODIFIED_FIELDS));
 
 	std::vector< std::string > modifiedFields;
@@ -58,6 +81,9 @@ std::vector< std::string > CompositeMsg::getEventModifiedFields() const
 	}
 	return modifiedFields;
 }
+
+//-------------------------------------------------------------------------
+
 //
 ///***************************************/
 //CompositeMsg::CompositeMsg( ::boost::shared_ptr< ::fwData::Composite> _obj ) throw()

@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <vector>
@@ -39,7 +39,7 @@ void eraseServices( ::fwTools::Object::sptr obj , std::string serviceId )
 	std::vector< ::fwServices::IService::sptr > services = ::fwServices::getServices( obj , serviceId ) ;
 	for( std::vector< ::fwServices::IService::sptr >::iterator iter = services.begin() ; iter != services.end() ; ++iter )
 	{
-		OSLM_INFO("eraseServices  : serviceId" << *iter );
+		OSLM_INFO("eraseServices  : serviceId " << *iter );
 		OSR::unregisterService( *iter ) ;
 	}
 }

@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _GUI_ASPECT_IASPECT_HPP_
@@ -42,7 +42,7 @@ class GUI_CLASS_API IAspect : public ::fwServices::IService
 {
 
 public :
-	fwCoreNonInstanciableClassDefinitionsMacro ( (IAspect)( ::fwServices::IService::Baseclass ) ) ;
+	fwCoreNonInstanciableClassDefinitionsMacro ( (IAspect)( ::fwServices::IService::Baseclass) ) ;
 
 	/**
 	 * @brief	Constructor. Do nothing (Just initializes parameters).

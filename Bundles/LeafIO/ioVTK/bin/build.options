@@ -1,6 +1,5 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
-LOGLEVEL = 'info'
 USE     = ['boost','vtk','wx']
 LIB     = [
     'fwTools_0-1',

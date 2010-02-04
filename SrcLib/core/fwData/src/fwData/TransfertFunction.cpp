@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as 
- * published by the Free Software Foundation.  
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
@@ -286,10 +286,7 @@ void TransfertFunction::setMinMax( ::fwData::TransfertFunctionPoint::TFValueType
 
 		colorOrigin = pTransfertFunctionClone->getColor( oldValue );
 		color = this->getColor( newValue );
-		color->getRefRGBA()[0] = colorOrigin->getRefRGBA()[0];
-		color->getRefRGBA()[1] = colorOrigin->getRefRGBA()[1];
-		color->getRefRGBA()[2] = colorOrigin->getRefRGBA()[2];
-		color->getRefRGBA()[3] = colorOrigin->getRefRGBA()[3];
+        color->getRefRGBA() = colorOrigin->getRefRGBA();
 		iterTF++;
 	}
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,16 @@ double normalize(fwVec3d & vec)
 	if((float)(norme)==0.0F) return 0.0F;
 	vec /= norme;
 	return norme;
+}
+
+//------------------------------------------------------------------------------
+
+fwVec3d normalized(fwVec3d & vec) 
+{
+	SLM_TRACE_FUNC();
+    fwVec3d normalized = vec;
+    normalize(normalized);
+	return normalized;
 }
 
 //------------------------------------------------------------------------------
