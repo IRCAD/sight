@@ -1,0 +1,26 @@
+<plugin id="ctrlSelection" class="::ctrlSelection::Plugin" >
+	
+	<library name="ctrlSelection" />
+
+	<requirement id="dataReg" />
+	
+	<point id="::fwServices::IManager">
+		<implements>::fwServices::IService</implements>
+	</point>
+	
+	<point id="::fwServices::IUpdater">
+		<implements>::fwServices::IService</implements>
+	</point>
+	
+<!--
+	<point id="::uiIO::editor::IOSelectorService">
+		<implements>::gui::editor::IEditor</implements>
+		<implements>::fwTools::Object</implements>
+	</point>
+	
+	-->
+	
+</plugin>
+
+
+
