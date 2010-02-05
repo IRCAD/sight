@@ -215,6 +215,11 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         adaptee.getService()->setRenderService(VtkRenderService::dynamicCast(this->shared_from_this()));
         adaptee.getService()->setName(id);
 
+        if (this->isStarted())
+        {
+            adaptee.getService()->start();
+        }
+
         m_sceneAdaptors[id] = adaptee;
     }
     else if(m_sceneAdaptors.count(id) == 1)
