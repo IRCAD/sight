@@ -3,22 +3,20 @@
 	<library name="ctrlSelection" />
 
 	<requirement id="dataReg" />
+	<requirement id="serviceReg" />
 	
-	<point id="::fwServices::IManager">
+	<point id="::ctrlSelection::IManagerSrv">
 		<implements>::fwServices::IService</implements>
 	</point>
 	
-	<point id="::fwServices::IUpdater">
+	<point id="::ctrlSelection::IUpdaterSrv">
 		<implements>::fwServices::IService</implements>
 	</point>
 	
-<!--
-	<point id="::uiIO::editor::IOSelectorService">
-		<implements>::gui::editor::IEditor</implements>
-		<implements>::fwTools::Object</implements>
+	<point id="::ctrlSelection::AcqFromPDBUpdaterSrv">
+		<implements>::ctrlSelection::IUpdaterSrv</implements>
+		<implements>::fwData::PatientDB</implements>
 	</point>
-	
-	-->
 	
 </plugin>
 

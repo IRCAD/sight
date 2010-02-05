@@ -4,19 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ctrlSelection/IManager.hpp"
+#include "ctrlSelection/IManagerSrv.hpp"
 
 namespace ctrlSelection
 {
 
 //-----------------------------------------------------------------------------
 
-IManager::IManager()
+IManagerSrv::IManagerSrv()
 {}
 
 //-----------------------------------------------------------------------------
 
-IManager::~IManager()
+IManagerSrv::~IManagerSrv()
 {}
 
 //-----------------------------------------------------------------------------
