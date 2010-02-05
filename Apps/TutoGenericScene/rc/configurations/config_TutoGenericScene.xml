@@ -38,7 +38,7 @@
     <!-- CompositeVisu description -->
     <object id="myCompositeVisu" type="::fwData::Composite">
 
-        <service uid="myUpdater" implementation="::ctrlSelection::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+        <service uid="myUpdater" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
             <patientDB uid="myPatientDB"/>
             <acquisitionKeyInComposite value="myAcquisition"/>
         </service>
