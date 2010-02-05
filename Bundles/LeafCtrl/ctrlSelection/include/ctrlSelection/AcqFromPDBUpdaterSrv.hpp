@@ -4,8 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_DEFAULTEDITOR_HPP_
-#define _CTRLSELECTION_DEFAULTEDITOR_HPP_
+#ifndef _CTRLSELECTION_ACQFROMPDBUPDATERSRV_HPP_
+#define _CTRLSELECTION_ACQFROMPDBUPDATERSRV_HPP_
+
+#include <fwData/Acquisition.hpp>
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -24,7 +26,7 @@ class CTRLSELECTION_CLASS_API AcqFromPDBUpdaterSrv : public ::ctrlSelection::IUp
 
 public :
 
-	fwCoreServiceClassDefinitionsMacro ( (AcqFromPDBUpdaterSrv)(::fwServices::IEditionService) ) ;
+	fwCoreServiceClassDefinitionsMacro ( (AcqFromPDBUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
 
 	/// Constructor.  Do nothing.
 	CTRLSELECTION_API AcqFromPDBUpdaterSrv() throw() ;
@@ -51,8 +53,16 @@ public :
 	CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
 	CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+
+private :
+
+	void updateCompositeWithAcq ( ::fwData::Acquisition::sptr _acq );
+
+	std::string m_compositeKey;
+
+	std::string m_patientDBUID;
 };
 
 }
 
-#endif // _CTRLSELECTION_DEFAULTEDITOR_HPP_
+#endif // _CTRLSELECTION_ACQFROMPDBUPDATERSRV_HPP_
