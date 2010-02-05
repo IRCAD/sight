@@ -21,7 +21,7 @@ wxDECLARE_EVENT(wxEventFwOpen, wxCommandEvent);
 
 namespace fwWX
 {
-        FWWX_API wxString std2wx( const std::string & value );
-        FWWX_API std::string wx2std( const wxString & value );
+	FWWX_API wxString std2wx( const std::string & value );
+	FWWX_API std::string wx2std( const wxString & value );
 }
 #endif

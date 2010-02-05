@@ -10,30 +10,30 @@
 
 #ifdef _WIN32
 
-        #ifdef UIIO_EXPORTS
-        #define UIIO_API __declspec(dllexport)
-        #else
-        #define UIIO_API __declspec(dllimport)
-        #endif
+	#ifdef UIIO_EXPORTS
+	#define UIIO_API __declspec(dllexport)
+	#else
+	#define UIIO_API __declspec(dllimport)
+	#endif
 
-        #define UIIO_CLASS_API
+	#define UIIO_CLASS_API
 
-        #pragma warning(disable: 4290)
+	#pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-        #ifdef UIIO_EXPORTS
-        #define UIIO_API __attribute__ ((visibility("default")))
-        #define UIIO_CLASS_API __attribute__ ((visibility("default")))
-        #else
-        #define UIIO_API __attribute__ ((visibility("hidden")))
-        #define UIIO_CLASS_API __attribute__ ((visibility("hidden")))
-        #endif
+	#ifdef UIIO_EXPORTS
+	#define UIIO_API __attribute__ ((visibility("default")))
+	#define UIIO_CLASS_API __attribute__ ((visibility("default")))
+	#else
+	#define UIIO_API __attribute__ ((visibility("hidden")))
+	#define UIIO_CLASS_API __attribute__ ((visibility("hidden")))
+	#endif
 
 #else
 
-        #define UIIO_API
-        #define UIIO_CLASS_API
+	#define UIIO_API
+	#define UIIO_CLASS_API
 
 #endif
 

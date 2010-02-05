@@ -37,14 +37,14 @@ CloseAction::~CloseAction() throw()
 
 void CloseAction::info(std::ostream &_sstream )
 {
-        _sstream << "Close Action" << std::endl;
+	_sstream << "Close Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void CloseAction::updating() throw( ::fwTools::Failed )
 {
-        ::fwServices::OSR::uninitializeRootObject();
+	::fwServices::OSR::uninitializeRootObject();
 }
 
 }

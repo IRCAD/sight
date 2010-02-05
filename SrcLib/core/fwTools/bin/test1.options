@@ -1,8 +1,8 @@
 
-CLASSTEST=[     'FieldTest','ClassFactoryRegistryTest','ObjectTest','DynamicTypeTest',
-                        'StringizerTest','UUIDTEST','MacrosTest']
+CLASSTEST=[	'FieldTest','ClassFactoryRegistryTest','ObjectTest','DynamicTypeTest',
+			'StringizerTest','UUIDTEST','MacrosTest']
 
 USE = ['boost','Python']
-LIB     = ['fwCore_0-1']
+LIB	= ['fwCore_0-1']
 TYPE='exec'
 CONSOLE='yes'

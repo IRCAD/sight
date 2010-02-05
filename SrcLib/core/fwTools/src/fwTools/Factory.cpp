@@ -40,34 +40,34 @@ Factory::~Factory()
 
 void Factory::addInitializer( ::boost::shared_ptr< ::fwTools::Factory::Initializer > _init )
 {
-        m_initializers.push_back( _init ) ;
+	m_initializers.push_back( _init ) ;
 }
 
 //------------------------------------------------------------------------------
 
 ::fwTools::Object::sptr Factory::buildData(const std::string &className)
 {
-        ::fwTools::Object::sptr newObject ( ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >( className ) );
-        if ( newObject == 0 )
-        {
-                OSLM_FATAL( "Factory::buildData unables to build class : " <<  className; )
-                assert(false);
-                std::string mes = "Factory::buildData unables to build class : " + className;
-                throw ::fwTools::Failed(mes);
-        }
-        for( std::list< ::boost::shared_ptr< Initializer > >::iterator iter = m_initializers.begin() ; iter != m_initializers.end() ; ++iter  )
-//      BOOST_FOREACH( ::boost::shared_ptr< ::fwTools::Factory::Initializer > initializer , m_initializers )
-        {
-//              initializer->init( weakVersion );
-                (*iter)->init( newObject );
-        }
+	::fwTools::Object::sptr newObject ( ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >( className ) );
+	if ( newObject == 0 )
+	{
+		OSLM_FATAL( "Factory::buildData unables to build class : " <<  className; )
+		assert(false);
+		std::string mes = "Factory::buildData unables to build class : " + className;
+		throw ::fwTools::Failed(mes);
+	}
+	for( std::list< ::boost::shared_ptr< Initializer > >::iterator iter = m_initializers.begin() ; iter != m_initializers.end() ; ++iter  )
+//	BOOST_FOREACH( ::boost::shared_ptr< ::fwTools::Factory::Initializer > initializer , m_initializers )
+	{
+//		initializer->init( weakVersion );
+		(*iter)->init( newObject );
+	}
 
-//      BOOST_FOREACH( ::boost::shared_ptr< fwTools::Factory::Initializer > initializer , m_initializers )
-//      {
-//              initializer->init( newObject ) ;
-//      }
+//	BOOST_FOREACH( ::boost::shared_ptr< fwTools::Factory::Initializer > initializer , m_initializers )
+//	{
+//		initializer->init( newObject ) ;
+//	}
 
-        return newObject;
+	return newObject;
 }
 
 //------------------------------------------------------------------------------

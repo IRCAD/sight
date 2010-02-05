@@ -22,42 +22,42 @@ class UIIO_CLASS_API ExportAcquisition : public ::gui::action::IAction
 public:
 
     /// Constructor. Do nothing (Just initialize parameters).
-        UIIO_API ExportAcquisition() throw() ;
+	UIIO_API ExportAcquisition() throw() ;
 
-        /// Destructor. Do nothing.
-        UIIO_API virtual ~ExportAcquisition() throw() ;
+	/// Destructor. Do nothing.
+	UIIO_API virtual ~ExportAcquisition() throw() ;
 
 protected:
-        /**
-         * @brief   This method initializes class member parameters from configuration elements.
-         * @note    Call action base class configuring() method.
-         */
-        UIIO_API void configuring() throw( ::fwTools::Failed ) ;
+	/**
+	 * @brief   This method initializes class member parameters from configuration elements.
+	 * @note    Call action base class configuring() method.
+	 */
+	UIIO_API void configuring() throw( ::fwTools::Failed ) ;
 
-        /**
-         * @brief  Starting method. Call base class starting() method.
-         */
-        UIIO_API void starting() throw( ::fwTools::Failed ) ;
+	/**
+	 * @brief  Starting method. Call base class starting() method.
+	 */
+	UIIO_API void starting() throw( ::fwTools::Failed ) ;
 
-        /**
-         * @brief  Stopping method. Call base class stopping() method.
-         */
-        UIIO_API void stopping() throw( ::fwTools::Failed ) ;
+	/**
+	 * @brief  Stopping method. Call base class stopping() method.
+	 */
+	UIIO_API void stopping() throw( ::fwTools::Failed ) ;
 
-        /**
-         * @brief  Export the acquition.
-         *
-         * Use the IOSelectorService which propose all writer services for acquisition.
-         */
-        UIIO_API void updating() throw(::fwTools::Failed) ;
+	/**
+	 * @brief  Export the acquition.
+	 *
+	 * Use the IOSelectorService which propose all writer services for acquisition.
+	 */
+	UIIO_API void updating() throw(::fwTools::Failed) ;
 
-        /**
-         * @brief React on modifications : does nothing.
-         */
-        UIIO_API void updating(::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg) throw(::fwTools::Failed) ;
+	/**
+	 * @brief React on modifications : does nothing.
+	 */
+	UIIO_API void updating(::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg) throw(::fwTools::Failed) ;
 
-        /// Gives a short information about the action.
-        UIIO_API void info(std::ostream &_sstream ) ;
+	/// Gives a short information about the action.
+	UIIO_API void info(std::ostream &_sstream ) ;
 
 private:
 

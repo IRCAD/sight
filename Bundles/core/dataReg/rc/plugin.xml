@@ -1,49 +1,49 @@
 <plugin id="dataReg" class="::dataReg::Plugin" >
-        
-        <library name="dataReg" />
+	
+	<library name="dataReg" />
 
-        <!-- ROOT STRUCTURES -->
-        <extension-point id="::fwTools::Object" />
+	<!-- ROOT STRUCTURES -->
+	<extension-point id="::fwTools::Object" />
 
-        <!-- SPECIFIC DATA -->
-        <point id="::fwData::Composite">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::ProcessObject">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Float">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Image">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::PatientDB">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Patient">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Model">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::TriangularMesh">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Video">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Camera">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Spline">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::Graph">
-                <implements>::fwTools::Object</implements>
-        </point>
-        <point id="::fwData::None">
-                <implements>::fwTools::Object</implements>
-        </point>
+	<!-- SPECIFIC DATA -->
+	<point id="::fwData::Composite">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::ProcessObject">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Float">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Image">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::PatientDB">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Patient">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Model">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::TriangularMesh">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Video">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Camera">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Spline">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::Graph">
+		<implements>::fwTools::Object</implements>
+	</point>
+	<point id="::fwData::None">
+		<implements>::fwTools::Object</implements>
+	</point>
 
 </plugin>

@@ -15,22 +15,22 @@ namespace visu
 {
 
 /**
- * @brief       This class is started when the bundles is loaded.
- * @class       Plugin.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	This class is started when the bundles is loaded.
+ * @class	Plugin.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  */
 struct VISU_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
-        /// Destructor. Do nothing.
-        VISU_API ~Plugin() throw();
-        
-        /// Overrides start method. Do nothing
-        VISU_API void start() throw(::fwRuntime::RuntimeException);
+	/// Destructor. Do nothing.
+	VISU_API ~Plugin() throw();
+	
+	/// Overrides start method. Do nothing
+	VISU_API void start() throw(::fwRuntime::RuntimeException);
 
-        /// Overrides stop method. Do nothing
-        VISU_API void stop() throw();
-        
+	/// Overrides stop method. Do nothing
+	VISU_API void stop() throw();
+	
 };
 
 } // namespace visu

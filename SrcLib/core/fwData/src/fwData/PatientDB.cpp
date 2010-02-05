@@ -24,56 +24,56 @@ const Object::FieldID PatientDB::ID_PATIENTS = "ID_PATIENTS";
 
 PatientDB::PatientDB ()
 {
-        SLM_TRACE_FUNC();
-        this->setField( PatientDB::ID_PATIENTS );
+	SLM_TRACE_FUNC();
+	this->setField( PatientDB::ID_PATIENTS );
 }
 
 //------------------------------------------------------------------------------
 
 PatientDB::~PatientDB ()
 {
-        SLM_TRACE_FUNC();
+	SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 PatientDB & PatientDB::operator=( const PatientDB & _patientDB )
 {
-        this->getField( PatientDB::ID_PATIENTS )->children() = _patientDB.getField( PatientDB::ID_PATIENTS )->children();
+	this->getField( PatientDB::ID_PATIENTS )->children() = _patientDB.getField( PatientDB::ID_PATIENTS )->children();
 
-        return *this;
+	return *this;
 }
 
 //------------------------------------------------------------------------------
 
 boost::uint32_t  PatientDB::getPatientSize() const
 {
-        return this->getField( PatientDB::ID_PATIENTS )->children().size();
+	return this->getField( PatientDB::ID_PATIENTS )->children().size();
 }
 
 //------------------------------------------------------------------------------
 
 void PatientDB::addPatient( ::fwData::Patient::sptr _patient )
 {
-        this->addFieldElement(PatientDB::ID_PATIENTS, _patient);
+	this->addFieldElement(PatientDB::ID_PATIENTS, _patient);
 }
 
 //------------------------------------------------------------------------------
 
 std::pair< PatientDB::PatientIterator, PatientDB::PatientIterator > PatientDB::getPatients()
 {
-        PatientIterator begin(  getField( PatientDB::ID_PATIENTS )->children().begin() );
-        PatientIterator   end(  getField( PatientDB::ID_PATIENTS )->children().end()   );
-        return std::make_pair( begin, end );
+	PatientIterator begin(  getField( PatientDB::ID_PATIENTS )->children().begin() );
+	PatientIterator   end(  getField( PatientDB::ID_PATIENTS )->children().end()   );
+	return std::make_pair( begin, end );
 }
 
 //------------------------------------------------------------------------------
 
 std::pair< PatientDB::PatientConstIterator, PatientDB::PatientConstIterator > PatientDB::getPatients() const
 {
-        PatientConstIterator begin(  getField( PatientDB::ID_PATIENTS )->children().begin()   );
-        PatientConstIterator   end(  getField( PatientDB::ID_PATIENTS )->children().end()   );
-        return std::make_pair( begin, end );
+	PatientConstIterator begin(  getField( PatientDB::ID_PATIENTS )->children().begin()   );
+	PatientConstIterator   end(  getField( PatientDB::ID_PATIENTS )->children().end()   );
+	return std::make_pair( begin, end );
 }
 
 } // end namespace fwData

@@ -19,7 +19,7 @@
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuMesher"/>
-                                <menu uid="menuAction">
+				<menu uid="menuAction">
             </menus>
         </service>
 
@@ -36,17 +36,17 @@
             <action uid="actionQuit"/>
         </service>         
 
-                
+		
         <service name="Mesher" uid="menuMesher" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
             <action uid="actionCreateVTKMesh"/>
         </service> 
     
         <service uid="actionQuit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
-                
-                <service name="Action" uid="menuAction" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
+		
+		<service name="Action" uid="menuAction" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
             <action uid="actionModifyMaterial1"/>
             <action uid="actionModifyMaterial2"/>
-                </service>
+		</service>
 
         <!-- Service associated to the Composite data :
         menu services creation.
@@ -71,17 +71,17 @@
             <image uid="myImage"/>
             <mesh uid="myMesh"/>
         </service>
-                
-                
-                <!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
-                <service uid="actionModifyMaterial1" implementation="::gui::action::IAction" type="::gui::action::IAction" name="Change Material of Image" autoComChannel="no" >
+		
+		
+		<!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
+		<service uid="actionModifyMaterial1" implementation="::gui::action::IAction" type="::gui::action::IAction" name="Change Material of Image" autoComChannel="no" >
             <start uid="changeMaterial1"/>
         </service>
-                
-                <service uid="actionModifyMaterial2" implementation="::gui::action::IAction" type="::gui::action::IAction" name="Change Material of Mesh" autoComChannel="no" >
+		
+		<service uid="actionModifyMaterial2" implementation="::gui::action::IAction" type="::gui::action::IAction" name="Change Material of Mesh" autoComChannel="no" >
             <start uid="changeMaterial2"/>
         </service>
-                <!--  --------------------------------------- -->
+		<!--  --------------------------------------- -->
                           
 
         <!-- Image object creation 
@@ -102,12 +102,12 @@
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerImageFile" autoComChannel="no" >
                 <type mode="writer"/>
             </service>
-                        
-                        <!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
-                        <service implemetation="::____::____" type="::____::____" uid="changeMaterial1" autoCommChannel="no">
-                                
-                        </service>
-                        <!--  --------------------------------------- -->
+			
+			<!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
+			<service implemetation="::____::____" type="::____::____" uid="changeMaterial1" autoCommChannel="no">
+				
+			</service>
+			<!--  --------------------------------------- -->
         </object>       
 
         <!-- TriangularMesh objet creation. 
@@ -129,13 +129,13 @@
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerMeshFile" autoComChannel="no" >
                 <type mode="writer"/>
             </service>
-                        
-                        
-                        <!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
-                        <action implemetation="::____::____" type="::____::____" uid="changeMaterial2" autoCommChannel="no">
-                                
-                        </action>
-                        <!--  --------------------------------------- -->
+			
+			
+			<!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
+			<action implemetation="::____::____" type="::____::____" uid="changeMaterial2" autoCommChannel="no">
+				
+			</action>
+			<!--  --------------------------------------- -->
                  
         </object> 
     

@@ -21,32 +21,32 @@ namespace fwTools
  */
 
 /**
- * @brief               Construct a boost ptime from a string in iso extended format (YYYY-MM-DDTHH:MM:SS)
- * @param[in]   time_string time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
- * @return              Time in the boost format
+ * @brief		Construct a boost ptime from a string in iso extended format (YYYY-MM-DDTHH:MM:SS)
+ * @param[in]	time_string time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
+ * @return		Time in the boost format
  */
 FWTOOLS_API boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string );
 
 /**
- * @brief               Construct a string in iso extended format from a boost ptime
- * @param[in]   ptime time in the boost format
- * @return              Time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
+ * @brief		Construct a string in iso extended format from a boost ptime
+ * @param[in]	ptime time in the boost format
+ * @return		Time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
  */
 FWTOOLS_API std::string toIsoExtendedString(boost::posix_time::ptime ptime);
 
 /**
- * @brief               Construct a string in the format YYYY-MM-DD from a boost ptime
- * @param[in]   ptime time in the boost format
- * @return              Time in the format YYYY-MM-DD (example : 2007-02-25 )
+ * @brief		Construct a string in the format YYYY-MM-DD from a boost ptime
+ * @param[in]	ptime time in the boost format
+ * @return		Time in the format YYYY-MM-DD (example : 2007-02-25 )
  */
 FWTOOLS_API std::string getDateInXsdFormat( const boost::posix_time::ptime & dateAndTime ) ;
 
 ///@}
 
 /**
- * @brief               Remove all accent in the string
- * @param[in]   str string with accent
- * @return              A string without accent
+ * @brief		Remove all accent in the string
+ * @param[in] 	str string with accent
+ * @return 		A string without accent
  */
 FWTOOLS_API std::string toStringWithoutAccent(const std::string & str);
 

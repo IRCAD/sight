@@ -17,22 +17,22 @@ namespace aspect
 {
 
 /**
- * @brief       Defines the default menu for standard application
- * @class       DefaultMenu.
- * @author      IRCAD (Research and Development Team)
+ * @brief	Defines the default menu for standard application
+ * @class	DefaultMenu.
+ * @author	IRCAD (Research and Development Team)
 
- * @date        2009.
+ * @date	2009.
  */
 class GUI_CLASS_API DefaultMenu : public IMenu
 {
 
 public :
 
-        /// Constructor. Do nothing.
-        GUI_API DefaultMenu() throw();
+	/// Constructor. Do nothing.
+	GUI_API DefaultMenu() throw();
 
-        /// Destructor. Do nothing.
-        GUI_API virtual ~DefaultMenu() throw();
+	/// Destructor. Do nothing.
+	GUI_API virtual ~DefaultMenu() throw();
 
 };
 

@@ -10,33 +10,33 @@ namespace fwRuntime
 
 
 /**
- * @brief       Implements a STL compliant predicate that tests if a given
- *                      object has a given identifier and is enabled.
- * @struct      IsEnableAndHasIdentifier
+ * @brief	Implements a STL compliant predicate that tests if a given
+ * 			object has a given identifier and is enabled.
+ * @struct	IsEnableAndHasIdentifier
  *
- * @remark      Intended to be used on extensions, extension points and bundles
+ * @remark	Intended to be used on extensions, extension points and bundles
  *
- * @date        2007-2009
- * @author      IRCAD (Research and Development Team).
+ * @date	2007-2009
+ * @author 	IRCAD (Research and Development Team).
  */
 template< typename T >
 struct IsEnableAndHasIdentifier
 {
-        /**
-         * @brief       Constructor.
-         */
-        IsEnableAndHasIdentifier( const std::string & identifier )
-        :       m_identifier( identifier )
-        {}
+	/**
+	 * @brief	Constructor.
+	 */
+	IsEnableAndHasIdentifier( const std::string & identifier )
+	:	m_identifier( identifier )
+	{}
 
-        const bool operator() ( const ::boost::shared_ptr< T > p ) const
-        {
-                return p->getIdentifier() == m_identifier && p->isEnable();
-        }
+	const bool operator() ( const ::boost::shared_ptr< T > p ) const
+	{
+		return p->getIdentifier() == m_identifier && p->isEnable();
+	}
 
 private:
 
-        std::string m_identifier;
+	std::string m_identifier;
 };
 
 

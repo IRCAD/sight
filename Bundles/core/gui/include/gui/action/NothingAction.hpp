@@ -19,39 +19,39 @@ namespace action
 {
 
 /**
- * @brief       This action does nothing.
- * @class       NothingAction.
- * @author      IRCAD (Research and Development Team).
+ * @brief	This action does nothing.
+ * @class	NothingAction.
+ * @author	IRCAD (Research and Development Team).
 
- * @date        2009.
+ * @date	2009.
  */
 class GUI_CLASS_API NothingAction : public ::gui::action::IAction
 {
 
 public :
-        
-        /**
-        * @brief Constructor. Do nothing.
-        */
-        GUI_API NothingAction() throw() ;
+	
+	/**
+	* @brief Constructor. Do nothing.
+	*/
+	GUI_API NothingAction() throw() ;
 
-        /**
-        * @brief Destructor. Do nothing.
-        */
-        GUI_API virtual ~NothingAction() throw() ;
+	/**
+	* @brief Destructor. Do nothing.
+	*/
+	GUI_API virtual ~NothingAction() throw() ;
 
 protected:
 
-        /**
-         * @brief This method is used to update services on notification. Do nothing.
-         */
-        GUI_API virtual void updating() throw(::fwTools::Failed);
+	/**
+	 * @brief This method is used to update services on notification. Do nothing.
+	 */
+	GUI_API virtual void updating() throw(::fwTools::Failed);
 
-        /**
-         * @brief This method gives information about the class. Do nothing.
-         */
-        GUI_API virtual void info(std::ostream &_sstream ) ;
-        
+	/**
+	 * @brief This method gives information about the class. Do nothing.
+	 */
+	GUI_API virtual void info(std::ostream &_sstream ) ;
+	
 };
 
 

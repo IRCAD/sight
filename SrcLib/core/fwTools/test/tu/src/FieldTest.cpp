@@ -13,22 +13,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FieldTest );
 
 void FieldTest::setUp()
 {
-        // Set up context before running a test.
+	// Set up context before running a test.
 }
 
 void FieldTest::tearDown()
 {
-        // Clean up after the test run.
+	// Clean up after the test run.
 }
 
 void FieldTest::methode1()
 {
-        std::string LABEL       = "label" ;
+	std::string LABEL	= "label" ;
 
-        // process
-        ::fwTools::Field::NewSptr p1(LABEL);
+	// process
+	::fwTools::Field::NewSptr p1(LABEL);
 
-        // check
-        CPPUNIT_ASSERT_EQUAL(p1->label(),       LABEL);
+	// check
+	CPPUNIT_ASSERT_EQUAL(p1->label(),	LABEL);
 
 }

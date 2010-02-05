@@ -32,32 +32,32 @@ REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService 
 //-----------------------------------------------------------------------------
 
 TransformationMatrix3DReaderService::TransformationMatrix3DReaderService() :
-        m_filename (""),
-        m_bServiceIsConfigured(false)
+	m_filename (""),
+	m_bServiceIsConfigured(false)
 {}
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DReaderService::info(std::ostream &_sstream )
 {
-        this->SuperClass::info( _sstream ) ;
-        _sstream << std::endl << " TransformationMatrix3D object reader" ;
+	this->SuperClass::info( _sstream ) ;
+	_sstream << std::endl << " TransformationMatrix3D object reader" ;
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > TransformationMatrix3DReaderService::getSupportedExtensions()
 {
-        std::vector< std::string > extensions ;
-        extensions.push_back(".trf");
-        return extensions ;
+	std::vector< std::string > extensions ;
+	extensions.push_back(".trf");
+	return extensions ;
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DReaderService::starting( ) throw(::fwTools::Failed)
 {
-        SLM_TRACE_FUNC();
+	SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -69,68 +69,68 @@ TransformationMatrix3DReaderService::~TransformationMatrix3DReaderService() thro
 
 void TransformationMatrix3DReaderService::configuring( ) throw(::fwTools::Failed)
 {
-        OSLM_TRACE( "TransformationMatrix3DReaderService::configure : " << *m_configuration );
-        if( m_configuration->findConfigurationElement("filename") )
-        {
-                std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-                ::boost::filesystem::path location = ::boost::filesystem::path( filename ) ;
-                m_filename = location;
-                m_bServiceIsConfigured = true;
-        }
+	OSLM_TRACE( "TransformationMatrix3DReaderService::configure : " << *m_configuration );
+	if( m_configuration->findConfigurationElement("filename") )
+	{
+		std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
+		::boost::filesystem::path location = ::boost::filesystem::path( filename ) ;
+		m_filename = location;
+		m_bServiceIsConfigured = true;
+	}
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
-        SLM_TRACE_FUNC();
-        static wxString _sDefaultPath = _("");
-        wxString title = _("Choose a file to load a transformation matrix");
-        wxString file = wxFileSelector(
-                        title,
-                        _sDefaultPath,
-                        wxT(""),
-                        wxT(""),
-                        wxT("TRF files (*.trf)|*.trf"),
-                        wxFD_OPEN | wxFD_FILE_MUST_EXIST,
-                        wxTheApp->GetTopWindow() );
+	SLM_TRACE_FUNC();
+	static wxString _sDefaultPath = _("");
+	wxString title = _("Choose a file to load a transformation matrix");
+	wxString file = wxFileSelector(
+			title,
+			_sDefaultPath,
+			wxT(""),
+			wxT(""),
+			wxT("TRF files (*.trf)|*.trf"),
+			wxFD_OPEN | wxFD_FILE_MUST_EXIST,
+			wxTheApp->GetTopWindow() );
 
-        if( file.IsEmpty() == false )
-        {
-                m_filename = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
-                _sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
-                m_bServiceIsConfigured = true;
-        }
+	if( file.IsEmpty() == false )
+	{
+		m_filename = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+		_sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
+		m_bServiceIsConfigured = true;
+	}
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DReaderService::stopping() throw(::fwTools::Failed)
 {
-        SLM_TRACE_FUNC();
+	SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
 {
-        SLM_TRACE_FUNC();
-        if( m_bServiceIsConfigured )
-        {
-                // Retrieve object
-                ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
-                assert( matrix ) ;
+	SLM_TRACE_FUNC();
+	if( m_bServiceIsConfigured )
+	{
+		// Retrieve object
+		::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
+		assert( matrix ) ;
 
-                ::fwDataIO::reader::TransformationMatrix3DReader reader;
-                reader.setObject( matrix );
-                reader.setFile(m_filename);
-                reader.read();
+		::fwDataIO::reader::TransformationMatrix3DReader reader;
+		reader.setObject( matrix );
+		reader.setFile(m_filename);
+		reader.read();
 
-                // Notify reading
-                ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
-                msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-                ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
-        }
+		// Notify reading
+		::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+		msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
+		::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+	}
 }
 
 //-----------------------------------------------------------------------------

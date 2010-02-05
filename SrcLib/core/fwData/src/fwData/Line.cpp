@@ -20,7 +20,7 @@ namespace fwData
 
 Line::Line ()
 {
-        SLM_TRACE_FUNC();
+	SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -36,39 +36,39 @@ Line::Line( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction)
 
 Line::~Line ()
 {
-        SLM_TRACE_FUNC();
+	SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 Line::sptr Line::clone() const
 {
-        SLM_TRACE_FUNC();
+	SLM_TRACE_FUNC();
 
-        Line::NewSptr pNewLine;
+	Line::NewSptr pNewLine;
 
-        pNewLine->m_position = this->m_position;
-        pNewLine->m_direction = this->m_direction;
+	pNewLine->m_position = this->m_position;
+	pNewLine->m_direction = this->m_direction;
 
-        return pNewLine;
+	return pNewLine;
 }
 
 //------------------------------------------------------------------------------
 
 Line & Line::operator=( const ::fwData::Line& _line )
 {
-        // Copy encoding
-        this->m_position = _line.m_position;
-        this->m_direction = _line.m_direction;
+	// Copy encoding
+	this->m_position = _line.m_position;
+	this->m_direction = _line.m_direction;
 
-        return *this;
+	return *this;
 }
 
 //------------------------------------------------------------------------------
 
 void Line::setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction) {
-        m_position = _position;
-        m_direction = _direction;
+	m_position = _position;
+	m_direction = _direction;
 }
 
 } // namespace fwData

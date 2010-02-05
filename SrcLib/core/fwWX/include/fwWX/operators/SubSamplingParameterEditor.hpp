@@ -19,31 +19,31 @@ namespace operators
 {
 
 /**
- * @brief       This class proposes a dialog box to edit operator parameters.
- * @class       SubSamplingParameterEditor.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- * @note        This class is not commented, because it is not used in the open framework tutorial.
- * @todo        SubSamplingParameterEditor is not commented.
+ * @brief	This class proposes a dialog box to edit operator parameters.
+ * @class	SubSamplingParameterEditor.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
+ * @note 	This class is not commented, because it is not used in the open framework tutorial.
+ * @todo 	SubSamplingParameterEditor is not commented.
  */
 class FWWX_CLASS_API SubSamplingParameterEditor : public wxDialog
 {
 
 public :
 
-        FWWX_API SubSamplingParameterEditor( wxWindow * parent );
+	FWWX_API SubSamplingParameterEditor( wxWindow * parent );
 
-        FWWX_API ~SubSamplingParameterEditor();
+	FWWX_API ~SubSamplingParameterEditor();
 
-        FWWX_API int getFrequence();
+	FWWX_API int getFrequence();
 
-        FWWX_API int getDirection();
+	FWWX_API int getDirection();
 
 private :
 
-        wxRadioBox * m_directionRadioBox ;
-        long m_frequence ; //frequence, (en fait l'inverse de la fr�quence)
-        int m_direction ;       //1=X, 2=Y, 3=Z.
+	wxRadioBox * m_directionRadioBox ;
+	long m_frequence ; //frequence, (en fait l'inverse de la fr�quence)
+	int m_direction ;	//1=X, 2=Y, 3=Z.
 };
 
 } // operators

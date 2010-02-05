@@ -11,32 +11,32 @@
 
 #ifdef _WIN32
 
-        #ifdef FWWX_EXPORTS
-        #define FWWX_API __declspec(dllexport)
-        #else
-        #define FWWX_API __declspec(dllimport)
-        #endif
+	#ifdef FWWX_EXPORTS
+	#define FWWX_API __declspec(dllexport)
+	#else
+	#define FWWX_API __declspec(dllimport)
+	#endif
 
-        #define FWWX_CLASS_API
+	#define FWWX_CLASS_API
 
-        #pragma warning(disable: 4290)
+	#pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-        #ifdef FWWX_EXPORTS
-        #define FWWX_API __attribute__ ((visibility("default")))
-        #define FWWX_CLASS_API __attribute__ ((visibility("default")))
-        #else
-        //#define FWWX_API __attribute__ ((visibility("hidden")))
-        //#define FWWX_CLASS_API __attribute__ ((visibility("hidden")))
-        #define FWWX_API 
-        #define FWWX_CLASS_API 
-        #endif
+	#ifdef FWWX_EXPORTS
+	#define FWWX_API __attribute__ ((visibility("default")))
+	#define FWWX_CLASS_API __attribute__ ((visibility("default")))
+	#else
+	//#define FWWX_API __attribute__ ((visibility("hidden")))
+	//#define FWWX_CLASS_API __attribute__ ((visibility("hidden")))
+	#define FWWX_API 
+	#define FWWX_CLASS_API 
+	#endif
 
 #else
 
-        #define FWWX_API
-        #define FWWX_CLASS_API
+	#define FWWX_API
+	#define FWWX_CLASS_API
 
 #endif
 

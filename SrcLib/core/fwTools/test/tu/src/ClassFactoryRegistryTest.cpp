@@ -20,28 +20,28 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ClassFactoryRegistryTest );
 
 void ClassFactoryRegistryTest::setUp()
 {
-        // Set up context before running a test.
+	// Set up context before running a test.
 }
 
 void ClassFactoryRegistryTest::tearDown()
 {
-        // Clean up after the test run.
+	// Clean up after the test run.
 }
 
 void ClassFactoryRegistryTest::methode1()
 {
-        const std::string STR = "toto";
+	const std::string STR = "toto";
 
-        ::boost::shared_ptr< ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Field, std::string > > cf(new ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Field, std::string >(STR));
+	::boost::shared_ptr< ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Field, std::string > > cf(new ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Field, std::string >(STR));
 
-        ::fwTools::ClassFactoryRegistry::addFactory(cf);
+	::fwTools::ClassFactoryRegistry::addFactory(cf);
 
-        std::list< ::boost::shared_ptr< ::fwTools::Object > > list =  ::fwTools::ClassFactoryRegistry::subClasses< ::fwTools::Object >(STR);
+	std::list< ::boost::shared_ptr< ::fwTools::Object > > list =  ::fwTools::ClassFactoryRegistry::subClasses< ::fwTools::Object >(STR);
 
-        ::fwTools::Object::sptr obj = ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >(STR);
+	::fwTools::Object::sptr obj = ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >(STR);
 
-        CPPUNIT_ASSERT(list.begin() != list.end());
-        CPPUNIT_ASSERT(obj);
+	CPPUNIT_ASSERT(list.begin() != list.end());
+	CPPUNIT_ASSERT(obj);
 }
 
 

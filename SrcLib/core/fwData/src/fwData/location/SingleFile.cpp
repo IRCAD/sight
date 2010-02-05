@@ -11,24 +11,24 @@ namespace location {
 
 SingleFile::SingleFile()
 {
-        // TODO Auto-generated constructor stub
+	// TODO Auto-generated constructor stub
 
 }
 
 SingleFile::~SingleFile()
 {
-        // TODO Auto-generated destructor stub
+	// TODO Auto-generated destructor stub
 }
 
 void SingleFile::setPath( ::boost::filesystem::path path)
 {
-        m_path = path;
+	m_path = path;
 }
 
 
 ::boost::filesystem::path SingleFile::getPath()
 {
-        return m_path;
+	return m_path;
 }
 
 

@@ -20,23 +20,23 @@ namespace utils
 {
 
 /**
- * @brief       Defines a generic template executable factory registrar class.
- * @struct      GenericExecutableFactoryRegistrar
- * @date        2004-2009
- * @author      IRCAD (Research and Development Team).
+ * @brief	Defines a generic template executable factory registrar class.
+ * @struct	GenericExecutableFactoryRegistrar
+ * @date	2004-2009
+ * @author 	IRCAD (Research and Development Team).
  */
 template< typename E >
 struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
 {
 
-        typedef GenericExecutableFactory< E >   FactoryType;
+	typedef GenericExecutableFactory< E >	FactoryType;
 
-        /**
-         * @brief       Constructor
-         */
-        GenericExecutableFactoryRegistrar(const std::string& type)
-        : ExecutableFactoryRegistrar( ::boost::shared_ptr< FactoryType >( new FactoryType(type) ) )
-        {}
+	/**
+	 * @brief	Constructor
+	 */
+	GenericExecutableFactoryRegistrar(const std::string& type)
+	: ExecutableFactoryRegistrar( ::boost::shared_ptr< FactoryType >( new FactoryType(type) ) )
+	{}
 
 };
 

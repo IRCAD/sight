@@ -15,19 +15,19 @@
 namespace fwTools {
 
 /**
- * @brief       Namespace for os tools
- * @author      IRCAD (Research and Development Team).
- * @date        2007-2009.
+ * @brief	Namespace for os tools
+ * @author	IRCAD (Research and Development Team).
+ * @date	2007-2009.
  */
 namespace os {
 
 /**
- * @brief       Return the users's application data directory
- * @author      IRCAD (Research and Development Team).
+ * @brief	Return the users's application data directory
+ * @author	IRCAD (Research and Development Team).
  * @param company The company name
  * @param appName The application name
  * @param createDirectory if true, create the returned directory if it don't exist
- * @date        2007-2009.
+ * @date	2007-2009.
  *
  * Return the application data directory. If company or appName is not empty, append them to
  * the path. Under unix, XDG conventions are repected.

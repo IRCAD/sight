@@ -21,11 +21,11 @@ namespace editor
 
 
 /**
- * @brief       Defines the service interface managing the basic editor service for object. Do nothing.
- * @class       DummyEditor.
- * @author      IRCAD (Research and Development Team).
+ * @brief	Defines the service interface managing the basic editor service for object. Do nothing.
+ * @class	DummyEditor.
+ * @author	IRCAD (Research and Development Team).
 
- * @date        2009.
+ * @date	2009.
  *
  * @todo ACH: This class has been created in order to build test application. Do we remove it now ??
  */
@@ -35,21 +35,21 @@ class GUI_CLASS_API DummyEditor : public ::gui::editor::IEditor
 public :
 
 
-        fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) ) ;
+	fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) ) ;
 
-        ///     Constructor. Do nothing.
-        GUI_API DummyEditor() throw() ;
+	///	Constructor. Do nothing.
+	GUI_API DummyEditor() throw() ;
 
-        ///     Destructor. Do nothing.
-        GUI_API virtual ~DummyEditor() throw() ;
+	///	Destructor. Do nothing.
+	GUI_API virtual ~DummyEditor() throw() ;
 
 protected:
 
-        ///This method launches the IEditor::starting method.
-        GUI_API virtual void starting() throw(::fwTools::Failed);
+	///This method launches the IEditor::starting method.
+	GUI_API virtual void starting() throw(::fwTools::Failed);
 
-        ///This method launches the IEditor::stopping method.
-        GUI_API virtual void stopping() throw(::fwTools::Failed);
+	///This method launches the IEditor::stopping method.
+	GUI_API virtual void stopping() throw(::fwTools::Failed);
 
 
 };

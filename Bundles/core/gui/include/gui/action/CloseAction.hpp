@@ -18,38 +18,38 @@ namespace action
 {
 
 /**
- * @brief       This action reset root object. All services are eliminated as well as objects composing the root object.
- * @class       CloseAction.
- * @author      IRCAD (Research and Development Team).
+ * @brief	This action reset root object. All services are eliminated as well as objects composing the root object.
+ * @class	CloseAction.
+ * @author	IRCAD (Research and Development Team).
 
- * @date        2009.
+ * @date	2009.
  */
 class GUI_CLASS_API CloseAction : public ::gui::action::IAction
 {
 
 public :
-        
-        /**
-        * @brief Constructor. Do nothing.
-        */
-        GUI_API CloseAction() throw() ;
+	
+	/**
+	* @brief Constructor. Do nothing.
+	*/
+	GUI_API CloseAction() throw() ;
 
-        /**
-        * @brief Destructor. Do nothing.
-        */
-        GUI_API virtual ~CloseAction() throw() ;
+	/**
+	* @brief Destructor. Do nothing.
+	*/
+	GUI_API virtual ~CloseAction() throw() ;
 
 protected:
 
-        /**
-         * @brief This method is used to reset root object. All services are eliminated as well as objects composing the root object.
-         */
-        GUI_API virtual void updating() throw(::fwTools::Failed);
+	/**
+	 * @brief This method is used to reset root object. All services are eliminated as well as objects composing the root object.
+	 */
+	GUI_API virtual void updating() throw(::fwTools::Failed);
 
-        /**
-         * @brief This method gives information about the class. Do nothing.
-         */
-        GUI_API virtual void info(std::ostream &_sstream ) ;
+	/**
+	 * @brief This method gives information about the class. Do nothing.
+	 */
+	GUI_API virtual void info(std::ostream &_sstream ) ;
 
 };
 

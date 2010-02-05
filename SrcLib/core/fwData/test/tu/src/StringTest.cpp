@@ -13,22 +13,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION( StringTest );
 
 void StringTest::setUp()
 {
-        // Set up context before running a test.
+	// Set up context before running a test.
 }
 
 void StringTest::tearDown()
 {
-        // Clean up after the test run.
+	// Clean up after the test run.
 }
 
 void StringTest::methode1()
 {
-        const std::string VALUE = "chaine_caractere" ;
+	const std::string VALUE	= "chaine_caractere" ;
 
-        // process
-        ::fwData::String::NewSptr p1( VALUE );
+	// process
+	::fwData::String::NewSptr p1( VALUE );
 
-        // check
-        CPPUNIT_ASSERT_EQUAL(p1->value(),       VALUE);
+	// check
+	CPPUNIT_ASSERT_EQUAL(p1->value(),	VALUE);
 
 }

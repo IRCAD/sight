@@ -14,14 +14,14 @@ namespace fwData
 
 Pipeline::Pipeline()
 {
-        SLM_WARN("::fwData::Pipeline() : (ToDo)");
+	SLM_WARN("::fwData::Pipeline() : (ToDo)");
 }
 
 //------------------------------------------------------------------------------
 
 Pipeline::~Pipeline()
 {
-        SLM_WARN("::fwData::~Reconstruction() : (ToDo)");
+	SLM_WARN("::fwData::~Reconstruction() : (ToDo)");
 }
 
 //------------------------------------------------------------------------------

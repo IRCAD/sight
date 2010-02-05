@@ -16,9 +16,9 @@ namespace io
 
 /**
  * @brief Writer service API. It manages extension points definition and extension configuration
- * @class       IWriter.
- * @author      IRCAD (Research and Development Team).
- * @date        2007-2009.
+ * @class	IWriter.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2007-2009.
  *
  * This class represents the base interface for writer services.
  * Use the base service methods :
@@ -33,29 +33,29 @@ class IO_CLASS_API IWriter : public fwServices::IService
 public :
     fwCoreServiceClassDefinitionsMacro ( (IWriter)(::fwServices::IService::Baseclass) ) ;
 
-        /**
-         * @brief       Constructor (by default does nothing)
-         */
-        IO_API IWriter() throw() ;
+	/**
+	 * @brief	Constructor (by default does nothing)
+	 */
+	IO_API IWriter() throw() ;
 
-        /**
-         * @brief       Destructor
-         */
-        IO_API virtual ~IWriter() throw() ;
+	/**
+	 * @brief	Destructor
+	 */
+	IO_API virtual ~IWriter() throw() ;
 
-        /**
-         * @name        Specific service methods for writing
-         */
-        //@{
+	/**
+	 * @name	Specific service methods for writing
+	 */
+	//@{
 
-        /**
-         * @brief Configure the image path (by default does nothing).
-         *
-         * This method is used to find
-         * the file path  using a file selector.
-         */
-        IO_API virtual void configureWithIHM() = 0 ;
-        ///@}
+	/**
+	 * @brief Configure the image path (by default does nothing).
+	 *
+	 * This method is used to find
+	 * the file path  using a file selector.
+	 */
+	IO_API virtual void configureWithIHM() = 0 ;
+	///@}
 
 };
 

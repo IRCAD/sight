@@ -18,10 +18,10 @@ namespace validator
 {
 
 /**
- * @brief       This class allows us to double value in wx widgets.
- * @class       DoubleValidator.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	This class allows us to double value in wx widgets.
+ * @class	DoubleValidator.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  * @note This class is not commented, because it is not used in the open framework tutorial.
  * @todo DoubleValidator is not commented.
  */
@@ -30,27 +30,27 @@ class FWWX_CLASS_API DoubleValidator : public wxTextValidator
 
 public:
 
-        FWWX_API DoubleValidator( const DoubleValidator & validator );
+	FWWX_API DoubleValidator( const DoubleValidator & validator );
 
-        FWWX_API DoubleValidator( double & value );
+	FWWX_API DoubleValidator( double & value );
 
-        FWWX_API DoubleValidator( double & value, double minValue, double maxValue );
+	FWWX_API DoubleValidator( double & value, double minValue, double maxValue );
 
-        FWWX_API wxObject * Clone() const;
+	FWWX_API wxObject * Clone() const;
 
-        FWWX_API bool TransferFromWindow();
+	FWWX_API bool TransferFromWindow();
 
-        FWWX_API bool TransferToWindow();
+	FWWX_API bool TransferToWindow();
 
-        FWWX_API bool Validate( wxWindow * parent );
+	FWWX_API bool Validate( wxWindow * parent );
 
 private:
 
-        double & m_value;
+	double & m_value;
 
-        double m_minValue;
+	double m_minValue;
 
-        double m_maxValue;
+	double m_maxValue;
 
 };
 

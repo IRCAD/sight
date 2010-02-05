@@ -11,24 +11,24 @@ namespace location {
 
 MultiFiles::MultiFiles()
 {
-        // TODO Auto-generated constructor stub
+	// TODO Auto-generated constructor stub
 
 }
 
 MultiFiles::~MultiFiles()
 {
-        // TODO Auto-generated destructor stub
+	// TODO Auto-generated destructor stub
 }
 
 void MultiFiles::setPaths( std::vector< ::boost::filesystem::path> paths)
 {
-        m_paths = paths;
+	m_paths = paths;
 }
 
 
 std::vector< ::boost::filesystem::path> MultiFiles::getPaths()
 {
-        return m_paths;
+	return m_paths;
 }
 
 

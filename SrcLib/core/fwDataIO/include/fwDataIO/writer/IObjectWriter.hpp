@@ -24,10 +24,10 @@ namespace writer
 {
 
 /**
- * @brief       Base class for all object writers.
- * @class       IObjectWriter.
- * @author      IRCAD (Research and Development Team).
- * @date        2009
+ * @brief	Base class for all object writers.
+ * @class	IObjectWriter.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009
  *
  * This class defines the API to use basic object writers. This writer is not
  * a service. Their equivalent exist as services see ::io::IWriter. To write an
@@ -41,72 +41,72 @@ class FWDATAIO_CLASS_API IObjectWriter : public ::fwCore::BaseObject
 
 public :
 
-        fwCoreNonInstanciableClassDefinitionsMacro( (IObjectWriter) );
+	fwCoreNonInstanciableClassDefinitionsMacro( (IObjectWriter) );
 
-        /// Constructor. Do nothing.
-        FWDATAIO_API IObjectWriter();
+	/// Constructor. Do nothing.
+	FWDATAIO_API IObjectWriter();
 
-        /// Destructor. Do nothing.
-        FWDATAIO_API virtual ~IObjectWriter();
+	/// Destructor. Do nothing.
+	FWDATAIO_API virtual ~IObjectWriter();
 
-        /**
-         * @brief Defines an writer interface.
-         *
-         * This method write the object given in parameter of setObject method.
-         */
-        FWDATAIO_API virtual void write() = 0;
+	/**
+	 * @brief Defines an writer interface.
+	 *
+	 * This method write the object given in parameter of setObject method.
+	 */
+	FWDATAIO_API virtual void write() = 0;
 
-        /**
-         * @brief m_location setter.
-         * @param[in] _location set location where object will be saved
-         */
-        FWDATAIO_API virtual void setLocation( ::fwData::location::ILocation::sptr location );
+	/**
+	 * @brief m_location setter.
+	 * @param[in] _location set location where object will be saved
+	 */
+	FWDATAIO_API virtual void setLocation( ::fwData::location::ILocation::sptr location );
 
-        /**
-         * @brief m_location getter.
-         *
-         * @return m_location
-         */
-        FWDATAIO_API virtual ::fwData::location::ILocation::sptr getLocation();
+	/**
+	 * @brief m_location getter.
+	 *
+	 * @return m_location
+	 */
+	FWDATAIO_API virtual ::fwData::location::ILocation::sptr getLocation();
 
-        /**
-         * @brief m_object setter.
-         * @param[in] _pObject replace m_object of the instance writer
-         * @note m_object is save in class with a weakptr
-         * @note This object can be get with the method getObject()
-         */
-        FWDATAIO_API virtual void setObject( ::fwTools::Object::sptr _pObject );
+	/**
+	 * @brief m_object setter.
+	 * @param[in] _pObject replace m_object of the instance writer
+	 * @note m_object is save in class with a weakptr
+	 * @note This object can be get with the method getObject()
+	 */
+	FWDATAIO_API virtual void setObject( ::fwTools::Object::sptr _pObject );
 
-        /**
-         * @brief m_object getter.
-         *
-         * @return m_object
-         */
-        FWDATAIO_API virtual ::fwTools::Object::sptr  getObject();
+	/**
+	 * @brief m_object getter.
+	 *
+	 * @return m_object
+	 */
+	FWDATAIO_API virtual ::fwTools::Object::sptr  getObject();
 
-        /**
-         * @brief Return the default filename extension can be dynamic.
-         * @return m_extension
-         *
-         * The extension can be empty (for a repository for example) or must return a string BEGINNING WITH A DOT
-         * by default be empty
-         */
-        FWDATAIO_API virtual std::string  extension();
+	/**
+	 * @brief Return the default filename extension can be dynamic.
+	 * @return m_extension
+	 *
+	 * The extension can be empty (for a repository for example) or must return a string BEGINNING WITH A DOT
+	 * by default be empty
+	 */
+	FWDATAIO_API virtual std::string  extension();
 
 protected :
 
-        /**
-         * @brief Object write on filesystem by the process.
-         *
-         * This object is given in parameter of setObject method but it is conserved with a weakptr.
-         */
-        ::fwTools::Object::wptr m_object;
+	/**
+	 * @brief Object write on filesystem by the process.
+	 *
+	 * This object is given in parameter of setObject method but it is conserved with a weakptr.
+	 */
+	::fwTools::Object::wptr m_object;
 
-        /// Object location ( file path, directory path, url, etc )
-        ::fwData::location::ILocation::sptr m_location;
+	/// Object location ( file path, directory path, url, etc )
+	::fwData::location::ILocation::sptr m_location;
 
-        /// Extension of file format
-        std::string m_extension;
+	/// Extension of file format
+	std::string m_extension;
 
 };
 

@@ -23,7 +23,7 @@ class FWCORE_CLASS_API LogicStamp : public BaseObject
 {
 
 public:
-        fwCoreClassDefinitionsWithFactoryMacro( (LogicStamp)(BaseObject::Baseclass), (()), new LogicStamp);
+	fwCoreClassDefinitionsWithFactoryMacro( (LogicStamp)(BaseObject::Baseclass), (()), new LogicStamp);
 
     /** 
      * @brief Type used in logical typestamp.

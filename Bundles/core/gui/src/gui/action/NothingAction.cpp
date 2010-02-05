@@ -33,14 +33,14 @@ NothingAction::~NothingAction() throw()
 
 void NothingAction::info(std::ostream &_sstream )
 {
-        _sstream << "Nothing Action" << std::endl;
+	_sstream << "Nothing Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void NothingAction::updating() throw( ::fwTools::Failed )
 {
-        SLM_TRACE("NothingAction::update") ;
+	SLM_TRACE("NothingAction::update") ;
 }
 }
 }

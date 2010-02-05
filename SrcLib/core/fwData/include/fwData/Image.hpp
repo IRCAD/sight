@@ -22,132 +22,132 @@ namespace fwData
 {
 
 /**
- * @class       Image
- * @brief       This class defines an image
+ * @class 	Image
+ * @brief 	This class defines an image
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
  *
- * @author      IRCAD (Research and Development Team).
- * @date        2007-2009.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2007-2009.
  */
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-        fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Image > ) ;
+	fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
 
-        /**
-         * @brief Constructor
-         */
-        FWDATA_API Image();
+	/**
+	 * @brief Constructor
+	 */
+	FWDATA_API Image();
 
-        /**
-         * @brief Destructor
-         */
-        FWDATA_API virtual ~Image() throw();
+	/**
+	 * @brief Destructor
+	 */
+	FWDATA_API virtual ~Image() throw();
 
-        /// Clone
-        FWDATA_API Image::sptr clone() const;
+	/// Clone
+	FWDATA_API Image::sptr clone() const;
 
-        /// Copy
-        FWDATA_API Image &operator=(const Image & _img) ;
-
-
-        /**
-         * @brief an R/W accessor to the buffer (can involve unserialization/restoration)
-         */
-        FWDATA_API void * getBuffer() const;
-
-        /**
-         * @brief Essentially used by ImageIOInventory to restore the image buffer
-         * @note launch a imageModifiedEvent if _buffer is not NULL
-         */
-        FWDATA_API void setBuffer(void *_buffer);
+	/// Copy
+	FWDATA_API Image &operator=(const Image & _img) ;
 
 
-        /**
-         * @brief delegateBuffer setter : by default use StandardBuffer
-         */
-        FWDATA_API void setBufferDelegate(IBufferDelegate::sptr bufferDelegate);
+	/**
+	 * @brief an R/W accessor to the buffer (can involve unserialization/restoration)
+	 */
+	FWDATA_API void * getBuffer() const;
+
+	/**
+	 * @brief Essentially used by ImageIOInventory to restore the image buffer
+	 * @note launch a imageModifiedEvent if _buffer is not NULL
+	 */
+	FWDATA_API void setBuffer(void *_buffer);
 
 
-        /**
-         * @brief delegateBuffer getter : by default use StandardBuffer
-         */
-        FWDATA_API IBufferDelegate::sptr  getBufferDelegate();
+	/**
+	 * @brief delegateBuffer setter : by default use StandardBuffer
+	 */
+	FWDATA_API void setBufferDelegate(IBufferDelegate::sptr bufferDelegate);
 
 
-        // Generator result---------------------------------------------------------
+	/**
+	 * @brief delegateBuffer getter : by default use StandardBuffer
+	 */
+	FWDATA_API IBufferDelegate::sptr  getBufferDelegate();
 
-        /** @name ManagesBuff accessor */
-        /**
-         * @brief Get/Set if buffer is managed.
-         *
-         * True if buffer is managed.
-         * @{
-         */
-        FWDATA_API void setManagesBuff( const bool _bManagesBuff );
-        FWDATA_API void setCRefManagesBuff( const bool & _bManagesBuff );
-        FWDATA_API const bool getManagesBuff() const;
-        FWDATA_API const bool & getCRefManagesBuff() const;
-        FWDATA_API bool & getRefManagesBuff();
-        //@}
 
-        fwGettersSettersDocMacro(Dimension, ui8Dimension, ::boost::uint8_t, the image dimension (3 for 3D image));
+	// Generator result---------------------------------------------------------
 
-        fwGettersSettersDocMacro(PixelType, dtPixelType, ::fwTools::DynamicType, type of image pixel (float, short, ...));
+	/** @name ManagesBuff accessor */
+	/**
+	 * @brief Get/Set if buffer is managed.
+	 *
+	 * True if buffer is managed.
+	 * @{
+	 */
+	FWDATA_API void setManagesBuff( const bool _bManagesBuff );
+	FWDATA_API void setCRefManagesBuff( const bool & _bManagesBuff );
+	FWDATA_API const bool getManagesBuff() const;
+	FWDATA_API const bool & getCRefManagesBuff() const;
+	FWDATA_API bool & getRefManagesBuff();
+	//@}
 
-        fwGettersSettersDocMacro(Spacing, vSpacing, std::vector<double>, an array on the voxel size of the image);
+	fwGettersSettersDocMacro(Dimension, ui8Dimension, ::boost::uint8_t, the image dimension (3 for 3D image));
 
-        fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the origin of the image in 3D repair);
+	fwGettersSettersDocMacro(PixelType, dtPixelType, ::fwTools::DynamicType, type of image pixel (float, short, ...));
 
-        fwGettersSettersDocMacro(Size, vSize, std::vector<boost::int32_t>, the size of the image (in terms of points));
+	fwGettersSettersDocMacro(Spacing, vSpacing, std::vector<double>, an array on the voxel size of the image);
 
-        fwGettersSettersDocMacro(Filename, fsFilename, ::boost::filesystem::path, the path to save/load this image);
+	fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the origin of the image in 3D repair);
 
-        fwGettersSettersDocMacro(WindowCenter, dWindowCenter, double, window level);
+	fwGettersSettersDocMacro(Size, vSize, std::vector<boost::int32_t>, the size of the image (in terms of points));
 
-        fwGettersSettersDocMacro(WindowWidth, dWindowWidth, double, window width);
+	fwGettersSettersDocMacro(Filename, fsFilename, ::boost::filesystem::path, the path to save/load this image);
 
-        fwGettersSettersDocMacro(RescaleIntercept, dRescaleIntercept, double, rescale intercept);
+	fwGettersSettersDocMacro(WindowCenter, dWindowCenter, double, window level);
+
+	fwGettersSettersDocMacro(WindowWidth, dWindowWidth, double, window width);
+
+	fwGettersSettersDocMacro(RescaleIntercept, dRescaleIntercept, double, rescale intercept);
 
 
 protected :
 
-        //! image dimension, ex : 3 for image 3D
-        boost::uint8_t  m_ui8Dimension;
+	//! image dimension, ex : 3 for image 3D
+	boost::uint8_t  m_ui8Dimension;
 
-        //! type of image pixel
-        fwTools::DynamicType m_dtPixelType;
+	//! type of image pixel
+	fwTools::DynamicType m_dtPixelType;
 
-        //! buffer of image
-        //void * m_pBuffer;
+	//! buffer of image
+	//void * m_pBuffer;
 
 
-        // bool m_bManagesBuff ;
+	// bool m_bManagesBuff ;
 
     //! An array on the voxel size of the image
-        std::vector<double> m_vSpacing;
+	std::vector<double> m_vSpacing;
 
-        //! Origin of the image in 3D repair
-        std::vector<double> m_vOrigin;
+	//! Origin of the image in 3D repair
+	std::vector<double> m_vOrigin;
 
-        //! Size of the image (in terms of points)
-        std::vector<boost::int32_t>  m_vSize;
+	//! Size of the image (in terms of points)
+	std::vector<boost::int32_t>  m_vSize;
 
-        //! the path to save/load this image
-        boost::filesystem::path m_fsFilename;
+	//! the path to save/load this image
+	boost::filesystem::path m_fsFilename;
 
-        /** @{
-         * @brief Visu control to adjust contrast image (come from dicom image ?)
-         */
-        double m_dWindowCenter;
-        double m_dWindowWidth;
-        double m_dRescaleIntercept;
-        // @}
+	/** @{
+	 * @brief Visu control to adjust contrast image (come from dicom image ?)
+	 */
+	double m_dWindowCenter;
+	double m_dWindowWidth;
+	double m_dRescaleIntercept;
+	// @}
 
-        //! image buffer
-        IBufferDelegate::sptr  m_bufferDelegate;
+	//! image buffer
+	IBufferDelegate::sptr  m_bufferDelegate;
 
 };
 

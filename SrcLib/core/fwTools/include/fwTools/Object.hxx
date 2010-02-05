@@ -9,19 +9,19 @@ namespace fwTools
 
 template< typename FWDATATYPE >
 typename FWDATATYPE::sptr Object::getFieldSingleElement( const FieldID& id ) const
-        throw()
+	throw()
 {
 
-        Field::csptr field = getField( id );
-        if ( field && !field->children().empty() )
-        {
-                assert( field->children().size() == 1 );
-                return FWDATATYPE::dynamicCast( field->children().front() );
-        }
-        else
-        {
-                return typename FWDATATYPE::sptr();
-        }
+	Field::csptr field = getField( id );
+	if ( field && !field->children().empty() )
+	{
+		assert( field->children().size() == 1 );
+		return FWDATATYPE::dynamicCast( field->children().front() );
+	}
+	else
+	{
+		return typename FWDATATYPE::sptr();
+	}
 
 }
 
@@ -31,23 +31,23 @@ typename FWDATATYPE::sptr Object::getFieldSingleElement( const FieldID& id ) con
 
 template< typename FWDATATYPE >
 typename FWDATATYPE::sptr Object::getFieldElement( const FieldID& id , unsigned int _index ) const
-        throw()
+	throw()
 {
-        Field::csptr labeledObject =
-                Field::dynamicCast( getField( id ) );
+	Field::csptr labeledObject =
+		Field::dynamicCast( getField( id ) );
 
-        if ( labeledObject )
-        {
-                const ChildContainer& children = labeledObject->children();
-                if ( !children.empty() )
-                {
-                        typename FWDATATYPE::sptr typedFieldElement =
-                                FWDATATYPE::dynamicCast( children.at( _index ) );
-                        if ( typedFieldElement ) return typedFieldElement;
-                }
-        }
+	if ( labeledObject )
+	{
+		const ChildContainer& children = labeledObject->children();
+		if ( !children.empty() )
+		{
+			typename FWDATATYPE::sptr typedFieldElement =
+				FWDATATYPE::dynamicCast( children.at( _index ) );
+			if ( typedFieldElement ) return typedFieldElement;
+		}
+	}
 
-        return typename FWDATATYPE::sptr();
+	return typename FWDATATYPE::sptr();
 
 }
 

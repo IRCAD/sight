@@ -18,11 +18,11 @@ namespace fwServices
 {
 
 /**
- * @brief       Event Manager of the application
+ * @brief	Event Manager of the application
  *
- * @class       GlobalEventManager
+ * @class	GlobalEventManager
  * @author  IRCAD (Research and Development Team).
- * @date        2010
+ * @date	2010
  */
 class FWSERVICES_CLASS_API GlobalEventManager
 {
@@ -30,47 +30,47 @@ class FWSERVICES_CLASS_API GlobalEventManager
 
 public:
 
-        enum DeliveryType {
-                BREADTH_FIRST,
-                DEPTH_FIRST,
-                DELEGATED_BREADTH_FIRST
-        };
+	enum DeliveryType {
+		BREADTH_FIRST,
+		DEPTH_FIRST,
+		DELEGATED_BREADTH_FIRST
+	};
 
-        FWSERVICES_API bool pending();
-        FWSERVICES_API void dispatch();
+	FWSERVICES_API bool pending();
+	FWSERVICES_API void dispatch();
 
-        FWSERVICES_API static SPTR(GlobalEventManager) getDefault();
+	FWSERVICES_API static SPTR(GlobalEventManager) getDefault();
 
-        FWSERVICES_API void notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
+	FWSERVICES_API void notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
 
-        
-        FWSERVICES_API void setNotifyHandler(void (*handler)())
-        {
-                m_notifyHandler = handler;
-        };
+	
+	FWSERVICES_API void setNotifyHandler(void (*handler)())
+	{
+		m_notifyHandler = handler;
+	};
 
-        FWSERVICES_API DeliveryType getDeliveryType(){return m_deliveryType;}
+	FWSERVICES_API DeliveryType getDeliveryType(){return m_deliveryType;}
     FWSERVICES_API void setDeliveryType(DeliveryType t){m_deliveryType = t;}
 
-        virtual ~GlobalEventManager();
+	virtual ~GlobalEventManager();
 protected :
 
-        GlobalEventManager();
+	GlobalEventManager();
 
-        FWSERVICES_API static SPTR(GlobalEventManager) m_ClassInstance;
+	FWSERVICES_API static SPTR(GlobalEventManager) m_ClassInstance;
 
-        //      bool pushEventInDeque( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
-        //
-        //      bool messagesHaveSameEffect( ::fwServices::ObjectMsg::sptr _pMsg1, ::fwServices::ObjectMsg::sptr _pMsg2 );
+	//	bool pushEventInDeque( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
+	//
+	//	bool messagesHaveSameEffect( ::fwServices::ObjectMsg::sptr _pMsg1, ::fwServices::ObjectMsg::sptr _pMsg2 );
 
-        typedef std::pair< ::fwServices::ObjectMsg::sptr, ::fwServices::ComChannelService::MsgOptionsType > MessageAndOptions;
+	typedef std::pair< ::fwServices::ObjectMsg::sptr, ::fwServices::ComChannelService::MsgOptionsType > MessageAndOptions;
 
-        std::deque< MessageAndOptions > m_msgDeque;
+	std::deque< MessageAndOptions > m_msgDeque;
 
-        DeliveryType m_deliveryType;
-        bool        m_dispatching;
+	DeliveryType m_deliveryType;
+	bool        m_dispatching;
 
-        void (*m_notifyHandler)();
+	void (*m_notifyHandler)();
 
 };
 

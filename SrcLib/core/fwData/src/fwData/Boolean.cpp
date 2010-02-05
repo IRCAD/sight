@@ -18,7 +18,7 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Boolean::Boolean( const bool value ) throw()
-:       GenericField< bool >( value )
+:	GenericField< bool >( value )
 {}
 
 //------------------------------------------------------------------------------

@@ -14,26 +14,26 @@ CPPUNIT_TEST_SUITE_REGISTRATION( UUIDTest );
 
 void UUIDTest::setUp()
 {
-        // Set up context before running a test.
+	// Set up context before running a test.
 }
 
 void UUIDTest::tearDown()
 {
-        // Clean up after the test run.
+	// Clean up after the test run.
 }
 
 void UUIDTest::methode1()
 {
-        const std::string UUID = "myUUID" ;
+	const std::string UUID = "myUUID" ;
 
-        ::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
+	::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
 
-        CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID, ::fwTools::UUID::Version::SIMPLE) == false);
+	CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID, ::fwTools::UUID::Version::SIMPLE) == false);
 
-        ::fwTools::UUID::impose(obj, UUID, ::fwTools::UUID::Version::SIMPLE);
+	::fwTools::UUID::impose(obj, UUID, ::fwTools::UUID::Version::SIMPLE);
 
-        CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID, ::fwTools::UUID::Version::SIMPLE) );
-        CPPUNIT_ASSERT( ::fwTools::UUID::supervise(obj) );
-        CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get(obj), UUID );
-        CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get< ::fwTools::Object >(UUID), obj );
+	CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID, ::fwTools::UUID::Version::SIMPLE) );
+	CPPUNIT_ASSERT( ::fwTools::UUID::supervise(obj) );
+	CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get(obj), UUID );
+	CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get< ::fwTools::Object >(UUID), obj );
 }

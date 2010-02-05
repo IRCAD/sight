@@ -19,21 +19,21 @@ namespace fwWX
 {
 
 /**
- * @brief       This class returns a wxFrame witch contains a wxXmlTree (Xml tree in a wxTree).
- * @class       wxDialogXmlTree.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	This class returns a wxFrame witch contains a wxXmlTree (Xml tree in a wxTree).
+ * @class	wxDialogXmlTree.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
 * @todo wxDialogXmlTree is not commented.
  */
 class FWWX_CLASS_API wxDialogXmlTree : public wxFrame
 {
 public:
-        /**
-        * @brief        Constructor
-        *
-        * @remarks   Call itself wxXmlTree constructor
-        */
-        FWWX_API wxDialogXmlTree(wxWindow* parent, xmlNodePtr node) ;
+	/**
+	* @brief	Constructor
+	*
+	* @remarks   Call itself wxXmlTree constructor
+	*/
+	FWWX_API wxDialogXmlTree(wxWindow* parent, xmlNodePtr node) ;
 
 };
 

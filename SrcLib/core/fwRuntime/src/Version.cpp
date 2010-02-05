@@ -36,23 +36,23 @@ Version::Version(const std::string & version)
 : m_major(-1), m_minor(-1), m_build(-1), m_defined(false)
 {
 #if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
-        if( version.empty() == false )
-        {
-                boost::regex    regex ("(\\d+)-(\\d+)(svn(\\d+)){0,1}");
-                boost::smatch   what;
+	if( version.empty() == false )
+	{
+		boost::regex	regex ("(\\d+)-(\\d+)(svn(\\d+)){0,1}");
+		boost::smatch	what;
 
-                if( boost::regex_match(version, what, regex) )
-                {
-                        m_major = boost::lexical_cast<int>( what[1].str() );
-                        m_minor = boost::lexical_cast<int>( what[2].str() );
-                        m_build = (what.size() == 4) ? boost::lexical_cast<int>( what[3].str() ) : 0;
-                        m_defined = true;
-                }
-                else
-                {
-                        throw RuntimeException(version + " : invalid version.");
-                }
-        }
+		if( boost::regex_match(version, what, regex) )
+		{
+			m_major = boost::lexical_cast<int>( what[1].str() );
+			m_minor = boost::lexical_cast<int>( what[2].str() );
+			m_build = (what.size() == 4) ? boost::lexical_cast<int>( what[3].str() ) : 0;
+			m_defined = true;
+		}
+		else
+		{
+			throw RuntimeException(version + " : invalid version.");
+		}
+	}
 #endif
 }
 
@@ -66,35 +66,35 @@ Version::Version(const int major, const int minor, const int build)
 
 const std::string Version::string() const
 {
-        std::ostringstream      os;
-        os << *this;
-        return os.str();
+	std::ostringstream	os;
+	os << *this;
+	return os.str();
 }
 
 
 
 const bool Version::operator==(const Version & version) const
 {
-        if( m_defined && version.m_defined )
-        {
-                return m_major == version.m_major && m_minor == version.m_minor;
-        }
-        else
-        {
-                return true;
-        }
+	if( m_defined && version.m_defined )
+	{
+		return m_major == version.m_major && m_minor == version.m_minor;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 
 
 std::ostream & operator<<(std::ostream & os, const Version & version)
 {
-        if(version.m_defined)
-        {
-                return os << version.m_major << "-" << version.m_minor << "svn" << version.m_build;
-        }
-        else
-                return os << "version-not-defined";
+	if(version.m_defined)
+	{
+		return os << version.m_major << "-" << version.m_minor << "svn" << version.m_build;
+	}
+	else
+		return os << "version-not-defined";
 }
 
 

@@ -28,25 +28,25 @@ namespace fieldHelper
 
 void AnonymiseImage::anonymisePatient( ::fwData::Patient::sptr _pPatient)
 {
-        _pPatient->setCRefName("anonymous");
-        _pPatient->setCRefFirstname("anonymous");
-        _pPatient->setCRefBirthdate( ::boost::date_time::min_date_time );
-        _pPatient->setCRefIDDicom("");
+	_pPatient->setCRefName("anonymous");
+	_pPatient->setCRefFirstname("anonymous");
+	_pPatient->setCRefBirthdate( ::boost::date_time::min_date_time );
+	_pPatient->setCRefIDDicom("");
 
-        ::fwData::Patient::StudyIterator studiesIter = _pPatient->getStudies().first;
-        for ( ; studiesIter != _pPatient->getStudies().second ; ++studiesIter)
-        {
-                AnonymiseImage::anonymiseStudy(*studiesIter);
-        }
+	::fwData::Patient::StudyIterator studiesIter = _pPatient->getStudies().first;
+	for ( ; studiesIter != _pPatient->getStudies().second ; ++studiesIter)
+	{
+		AnonymiseImage::anonymiseStudy(*studiesIter);
+	}
 }
 
 void AnonymiseImage::anonymisePatientDB( ::fwData::PatientDB::sptr _pPatientDB)
 {
-        ::fwData::PatientDB::PatientIterator patientIter = _pPatientDB->getPatients().first;
-        for ( ; patientIter != _pPatientDB->getPatients().second ; ++patientIter)
-        {
-                AnonymiseImage::anonymisePatient(*patientIter);
-        }
+	::fwData::PatientDB::PatientIterator patientIter = _pPatientDB->getPatients().first;
+	for ( ; patientIter != _pPatientDB->getPatients().second ; ++patientIter)
+	{
+		AnonymiseImage::anonymisePatient(*patientIter);
+	}
 }
 
 void AnonymiseImage::anonymiseImage( ::fwData::Image::sptr _pImage)
@@ -56,90 +56,90 @@ void AnonymiseImage::anonymiseImage( ::fwData::Image::sptr _pImage)
 
 void AnonymiseImage::anonymiseStudy( ::fwData::Study::sptr _pStudy)
 {
-        _pStudy->setCRefHospital("anonymous");
-        _pStudy->setCRefRISId("");
-        _pStudy->setCRefUID("");
+	_pStudy->setCRefHospital("anonymous");
+	_pStudy->setCRefRISId("");
+	_pStudy->setCRefUID("");
 
-        ::fwData::Study::AcquisitionIterator acquisitionIter = _pStudy->getAcquisitions().first;
-        for ( ; acquisitionIter != _pStudy->getAcquisitions().second ; ++acquisitionIter)
-        {
-                AnonymiseImage::anonymiseAcquisition(*acquisitionIter);
-        }
+	::fwData::Study::AcquisitionIterator acquisitionIter = _pStudy->getAcquisitions().first;
+	for ( ; acquisitionIter != _pStudy->getAcquisitions().second ; ++acquisitionIter)
+	{
+		AnonymiseImage::anonymiseAcquisition(*acquisitionIter);
+	}
 }
 
 void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisition)
 {
-        _pAcquisition->setCRefCreationDate( ::boost::date_time::min_date_time );
-        _pAcquisition->setCRefUID("");
+	_pAcquisition->setCRefCreationDate( ::boost::date_time::min_date_time );
+	_pAcquisition->setCRefUID("");
 }
 
 ::fwData::Patient::sptr AnonymiseImage::createAnonymisedPatient( ::fwData::Patient::sptr _pPatient)
 {
-        ::fwData::Patient::NewSptr pNewPatient;
-        (* pNewPatient) = (* _pPatient);
-        pNewPatient->setField( ::fwData::Patient::ID_STUDIES );
+	::fwData::Patient::NewSptr pNewPatient;
+	(* pNewPatient) = (* _pPatient);
+	pNewPatient->setField( ::fwData::Patient::ID_STUDIES );
 
-        std::map< ::fwData::Acquisition::sptr, ::fwData::Acquisition::sptr > acquisitionMap;
+	std::map< ::fwData::Acquisition::sptr, ::fwData::Acquisition::sptr > acquisitionMap;
 
-        ::fwData::Patient::StudyIterator studiesIter = _pPatient->getStudies().first;
-        for ( ; studiesIter != _pPatient->getStudies().second ; ++studiesIter)
-        {
-                ::fwData::Study::sptr pStudy = (*studiesIter);
-                ::fwData::Study::NewSptr pNewStudy;
-                pNewPatient->addStudy(pNewStudy);
+	::fwData::Patient::StudyIterator studiesIter = _pPatient->getStudies().first;
+	for ( ; studiesIter != _pPatient->getStudies().second ; ++studiesIter)
+	{
+		::fwData::Study::sptr pStudy = (*studiesIter);
+		::fwData::Study::NewSptr pNewStudy;
+		pNewPatient->addStudy(pNewStudy);
 
-                (* pNewStudy) = (*pStudy);
-                pNewStudy->setField( ::fwData::Study::ID_ACQUISITIONS );
+		(* pNewStudy) = (*pStudy);
+		pNewStudy->setField( ::fwData::Study::ID_ACQUISITIONS );
 
-                ::fwData::Study::AcquisitionIterator acquisitionIter = pStudy->getAcquisitions().first;
-                for ( ; acquisitionIter != pStudy->getAcquisitions().second ; ++acquisitionIter)
-                {
-                        ::fwData::Acquisition::sptr pAcquisition = (*acquisitionIter);
-                        ::fwData::Acquisition::NewSptr pNewAcquisition;
-                        pNewStudy->addAcquisition(pNewAcquisition);
+		::fwData::Study::AcquisitionIterator acquisitionIter = pStudy->getAcquisitions().first;
+		for ( ; acquisitionIter != pStudy->getAcquisitions().second ; ++acquisitionIter)
+		{
+			::fwData::Acquisition::sptr pAcquisition = (*acquisitionIter);
+			::fwData::Acquisition::NewSptr pNewAcquisition;
+			pNewStudy->addAcquisition(pNewAcquisition);
 
-                        (* pNewAcquisition) = (*pAcquisition);
+			(* pNewAcquisition) = (*pAcquisition);
 
-                        acquisitionMap[pAcquisition] = pNewAcquisition;
-                }
-        }
+			acquisitionMap[pAcquisition] = pNewAcquisition;
+		}
+	}
 
-        ::fwData::Composite::sptr ctool = ::fwData::Composite::dynamicCast(_pPatient->getTool(::fwComEd::Dictionary::m_resectionId));
-        if (ctool )
-        {
-                pNewPatient->addTool(::fwComEd::Dictionary::m_resectionId, ctool );
-        }
+	::fwData::Composite::sptr ctool = ::fwData::Composite::dynamicCast(_pPatient->getTool(::fwComEd::Dictionary::m_resectionId));
+	if (ctool )
+	{
+		pNewPatient->addTool(::fwComEd::Dictionary::m_resectionId, ctool );
+	}
 
-        ::fwData::Composite::sptr cscenario = ::fwData::Composite::dynamicCast( _pPatient->getScenario("ResectionAcquisitionPair"));
-        if ( cscenario )
-        {
-                ::fwData::Composite::NewSptr compoScenario;
-                ::fwData::Composite::Container::iterator cscenarioIter;
-                for (  cscenarioIter = cscenario->getRefMap().begin() ;  cscenarioIter != cscenario->getRefMap().end();  ++cscenarioIter )
-                {
-                        std::string opName = cscenarioIter->first;
-                        ::fwData::Acquisition::sptr initialAcq = ::fwData::Acquisition::dynamicCast(cscenario->getRefMap()[opName]);
-                        compoScenario->getRefMap()[opName] = acquisitionMap[initialAcq];
-                }
-                pNewPatient->addScenario("ResectionAcquisitionPair", compoScenario );
-        }
+	::fwData::Composite::sptr cscenario = ::fwData::Composite::dynamicCast( _pPatient->getScenario("ResectionAcquisitionPair"));
+	if ( cscenario )
+	{
+		::fwData::Composite::NewSptr compoScenario;
+		::fwData::Composite::Container::iterator cscenarioIter;
+		for (  cscenarioIter = cscenario->getRefMap().begin() ;  cscenarioIter != cscenario->getRefMap().end();  ++cscenarioIter )
+		{
+			std::string opName = cscenarioIter->first;
+			::fwData::Acquisition::sptr initialAcq = ::fwData::Acquisition::dynamicCast(cscenario->getRefMap()[opName]);
+			compoScenario->getRefMap()[opName] = acquisitionMap[initialAcq];
+		}
+		pNewPatient->addScenario("ResectionAcquisitionPair", compoScenario );
+	}
 
-        AnonymiseImage::anonymisePatient(pNewPatient);
+	AnonymiseImage::anonymisePatient(pNewPatient);
 
-        return pNewPatient;
+	return pNewPatient;
 }
 
 ::fwData::PatientDB::sptr AnonymiseImage::createAnonymisedPatientDB( ::fwData::PatientDB::sptr _pPatientDB)
 {
-        ::fwData::PatientDB::NewSptr pNewPatientDB;
+	::fwData::PatientDB::NewSptr pNewPatientDB;
 
-        ::fwData::PatientDB::PatientIterator patientIter = _pPatientDB->getPatients().first;
-        for ( ; patientIter != _pPatientDB->getPatients().second ; ++patientIter)
-        {
-                pNewPatientDB->addPatient(AnonymiseImage::createAnonymisedPatient(*patientIter));
-        }
+	::fwData::PatientDB::PatientIterator patientIter = _pPatientDB->getPatients().first;
+	for ( ; patientIter != _pPatientDB->getPatients().second ; ++patientIter)
+	{
+		pNewPatientDB->addPatient(AnonymiseImage::createAnonymisedPatient(*patientIter));
+	}
 
-        return pNewPatientDB;
+	return pNewPatientDB;
 }
 
 //------------------------------------------------------------------------------

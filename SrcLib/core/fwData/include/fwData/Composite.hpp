@@ -16,37 +16,37 @@
 namespace fwData
 {
 /**
- * @class       Composite
- * @brief       This class defines a composite object.
+ * @class 	Composite
+ * @brief 	This class defines a composite object.
  *
  * Composite contains a map of ::fwData::Object.
  *
- * @author      IRCAD (Research and Development Team).
- * @date        2007-2009.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2007-2009.
  */
 
 class FWDATA_CLASS_API Composite : public Object{
 public:
-        fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Composite >) ;
+	fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Composite >) ;
 
-        typedef std::map< std::string, Object::sptr > Container;
+	typedef std::map< std::string, Object::sptr > Container;
 
-        /// Constructor
-        FWDATA_API Composite();
+	/// Constructor
+	FWDATA_API Composite();
 
-        /// Destructor
-        FWDATA_API virtual ~Composite();
+	/// Destructor
+	FWDATA_API virtual ~Composite();
 
-        /// @brief get the container of ::fwData::Object
-        FWDATA_API Container &getRefMap();
-        /// @brief get the container of ::fwData::Object
-        FWDATA_API Container const &getRefMap() const;
+	/// @brief get the container of ::fwData::Object
+	FWDATA_API Container &getRefMap();
+	/// @brief get the container of ::fwData::Object
+	FWDATA_API Container const &getRefMap() const;
 
     FWDATA_API Composite & operator=( const Composite & _composite );
 
 protected:
-        /// container of ::fwData::Object
-        Container m_map;
+	/// container of ::fwData::Object
+	Container m_map;
 };
 }
 #endif /* _FWDATA_COMPOSITE_HPP_ */

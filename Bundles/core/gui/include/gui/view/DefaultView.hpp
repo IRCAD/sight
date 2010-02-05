@@ -18,22 +18,22 @@ namespace view
 {
 
 /**
- * @brief       Defines the default panel for standard application.
- * @class       DefaultView.
- * @author      IRCAD (Research and Development Team)
+ * @brief	Defines the default panel for standard application.
+ * @class	DefaultView.
+ * @author	IRCAD (Research and Development Team)
 
- * @date        2009.
+ * @date	2009.
  */
 class GUI_CLASS_API DefaultView : public ::gui::view::IView
 {
 
 public :
 
-        /// Constructor. Do nothing.
-        GUI_API DefaultView() throw() ;
-        
-        /// Destructor. Do nothing.
-        GUI_API virtual ~DefaultView() throw() ;
+	/// Constructor. Do nothing.
+	GUI_API DefaultView() throw() ;
+	
+	/// Destructor. Do nothing.
+	GUI_API virtual ~DefaultView() throw() ;
 
 };
 

@@ -23,27 +23,27 @@ class OPVTKMESH_CLASS_API VTKMeshCreation : public ::gui::action::IAction
 
 public :
 
-        OPVTKMESH_API VTKMeshCreation() throw() ;
+	OPVTKMESH_API VTKMeshCreation() throw() ;
 
-        OPVTKMESH_API virtual ~VTKMeshCreation() throw() ;
+	OPVTKMESH_API virtual ~VTKMeshCreation() throw() ;
 
-        OPVTKMESH_API void starting() throw ( ::fwTools::Failed );
+	OPVTKMESH_API void starting() throw ( ::fwTools::Failed );
 
-        OPVTKMESH_API void stopping() throw ( ::fwTools::Failed );
+	OPVTKMESH_API void stopping() throw ( ::fwTools::Failed );
 
-        OPVTKMESH_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+	OPVTKMESH_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
-        OPVTKMESH_API void configuring() throw ( ::fwTools::Failed );
+	OPVTKMESH_API void configuring() throw ( ::fwTools::Failed );
 
-        OPVTKMESH_API void updating() throw ( ::fwTools::Failed );
+	OPVTKMESH_API void updating() throw ( ::fwTools::Failed );
 
-        OPVTKMESH_API void info ( std::ostream &_sstream ) ;
+	OPVTKMESH_API void info ( std::ostream &_sstream ) ;
 
 private :
 
-        std::string m_imageUID;
-        std::string m_meshUID;
-        unsigned int m_reduction;
+	std::string m_imageUID;
+	std::string m_meshUID;
+	unsigned int m_reduction;
 
 };
 

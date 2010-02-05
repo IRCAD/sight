@@ -15,83 +15,83 @@ namespace fwData {
 //------------------------------------------------------------------------------
 
 Node::Node() {
-        // TODO Auto-generated constructor stub
+	// TODO Auto-generated constructor stub
 
 }
 
 //------------------------------------------------------------------------------
 
 Node::~Node() {
-        // TODO Auto-generated destructor stub
+	// TODO Auto-generated destructor stub
 }
 
 //------------------------------------------------------------------------------
 
 void Node::addInputPort(::fwData::Port::sptr port)
 {
-        m_inputs.push_back(port);
+	m_inputs.push_back(port);
 }
 
 //------------------------------------------------------------------------------
 
 void Node::addOutputPort(::fwData::Port::sptr port)
 {
-        m_outputs.push_back(port);
+	m_outputs.push_back(port);
 }
 
 //------------------------------------------------------------------------------
 
 Node::PortContainer & Node::getInputPorts()
 {
-        return m_inputs;
+	return m_inputs;
 }
 
 //------------------------------------------------------------------------------
 
 Node::PortContainer & Node::getOutputPorts()
 {
-        return m_outputs;
+	return m_outputs;
 }
 
 //------------------------------------------------------------------------------
 
 void Node::setObject( ::fwData::Object::sptr object )
 {
-        m_object = object;
+	m_object = object;
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::Object::sptr Node::getObject() const
 {
-        return m_object;
+	return m_object;
 }
 
 //------------------------------------------------------------------------------
 
 Port::sptr Node::findPort(const std::string &identifier, /*const std::string &type,*/ bool modeInput)
 {
-        if ( modeInput)
-        {
-                for ( PortContainer::iterator i = m_inputs.begin() ; i != m_inputs.end() ; ++i )
-                {
-                        if ( (*i)->getIdentifier() == identifier)
-                        {
-                                return *i;
-                        }
-                }
-        }
-        else
-        {
-                for ( PortContainer::iterator i = m_outputs.begin() ; i != m_outputs.end() ; ++i )
-                {
-                        if ( (*i)->getIdentifier() == identifier)
-                        {
-                                return *i;
-                        }
-                }
-        }
-        return Port::sptr();
+	if ( modeInput)
+	{
+		for ( PortContainer::iterator i = m_inputs.begin() ; i != m_inputs.end() ; ++i )
+		{
+			if ( (*i)->getIdentifier() == identifier)
+			{
+				return *i;
+			}
+		}
+	}
+	else
+	{
+		for ( PortContainer::iterator i = m_outputs.begin() ; i != m_outputs.end() ; ++i )
+		{
+			if ( (*i)->getIdentifier() == identifier)
+			{
+				return *i;
+			}
+		}
+	}
+	return Port::sptr();
 }
 
 //------------------------------------------------------------------------------

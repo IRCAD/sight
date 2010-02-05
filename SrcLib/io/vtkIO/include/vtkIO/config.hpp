@@ -10,38 +10,38 @@
 
 #ifdef _WIN32
 
-        #ifdef VTKIO_EXPORTS
-        #define VTKIO_API __declspec(dllexport)
+	#ifdef VTKIO_EXPORTS
+	#define VTKIO_API __declspec(dllexport)
     #define VTKIO_TEMPLATE_API
-        #else
-        #define VTKIO_API __declspec(dllimport)
+	#else
+	#define VTKIO_API __declspec(dllimport)
     #define VTKIO_TEMPLATE_API extern
-        #endif
+	#endif
 
-        #define VTKIO_CLASS_API
+	#define VTKIO_CLASS_API
 
-        #pragma warning(disable: 4290)
-        #pragma warning(disable: 4800) // avoid waring on return hard coded value
+	#pragma warning(disable: 4290)
+	#pragma warning(disable: 4800) // avoid waring on return hard coded value
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
         #ifdef VTKIO_EXPORTS
         #define VTKIO_API __attribute__ ((visibility("default")))
         #define VTKIO_CLASS_API __attribute__ ((visibility("default")))
-                #define VTKIO_TEMPLATE_API
+		#define VTKIO_TEMPLATE_API
         #else
         //#define VTKIO_API __attribute__ ((visibility("hidden")))
         //#define VTKIO_CLASS_API __attribute__ ((visibility("hidden")))
         #define VTKIO_API
         #define VTKIO_CLASS_API
-                #define VTKIO_TEMPLATE_API extern
+		#define VTKIO_TEMPLATE_API extern
         #endif
 
 #else
 
         #define VTKIO_API
-                #define VTKIO_CLASS_API
-                #define VTKIO_TEMPLATE_API
+		#define VTKIO_CLASS_API
+		#define VTKIO_TEMPLATE_API
 
 #endif
 

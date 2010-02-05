@@ -13,22 +13,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DynamicTypeTest );
 
 void DynamicTypeTest::setUp()
 {
-        // Set up context before running a test.
+	// Set up context before running a test.
 }
 
 void DynamicTypeTest::tearDown()
 {
-        // Clean up after the test run.
+	// Clean up after the test run.
 }
 
 void DynamicTypeTest::methode1()
 {
-        const std::string TYPE = "double";
-        ::fwTools::DynamicType type1 = ::fwTools::makeDynamicType<int>();
-        ::fwTools::DynamicType type2 = ::fwTools::DynamicType();
-        type2.setType<double>();
+	const std::string TYPE = "double";
+	::fwTools::DynamicType type1 = ::fwTools::makeDynamicType<int>();
+	::fwTools::DynamicType type2 = ::fwTools::DynamicType();
+	type2.setType<double>();
 
-        CPPUNIT_ASSERT(type1.isType<int>());
-        CPPUNIT_ASSERT(type2.isType<double>());
-        CPPUNIT_ASSERT_EQUAL(type2.string(), TYPE );
+	CPPUNIT_ASSERT(type1.isType<int>());
+	CPPUNIT_ASSERT(type2.isType<double>());
+	CPPUNIT_ASSERT_EQUAL(type2.string(), TYPE );
 }

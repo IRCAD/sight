@@ -18,43 +18,43 @@ namespace fwRuntime
 
 
 BundleElement::BundleElement()
-:       m_bundle( Bundle::getLoadingBundle() ), m_enable(true)
+:	m_bundle( Bundle::getLoadingBundle() ), m_enable(true)
 {
-        // Post-condition
-        assert( m_bundle != 0 );
+	// Post-condition
+	assert( m_bundle != 0 );
 }
 
 
 
 BundleElement::BundleElement( ::boost::shared_ptr< Bundle > bundle )
-:       m_bundle( bundle ), m_enable(true)
+:	m_bundle( bundle ), m_enable(true)
 {
-        // Post-condition
-        assert( m_bundle != 0 );
+	// Post-condition
+	assert( m_bundle != 0 );
 }
 
 
 
 ::boost::shared_ptr<Bundle> BundleElement::getBundle() const
 {
-        return m_bundle;
+	return m_bundle;
 }
 
 
 
 const bool BundleElement::isEnable() const
 {
-        // Pre-condition.
-        assert( m_bundle != 0 );
+	// Pre-condition.
+	assert( m_bundle != 0 );
 
-        return m_bundle->isEnable() && m_enable;
+	return m_bundle->isEnable() && m_enable;
 }
 
 
 
 void BundleElement::setEnable(const bool enable)
 {
-        m_enable = enable;
+	m_enable = enable;
 }
 
 

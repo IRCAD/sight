@@ -18,35 +18,35 @@ namespace operators
 
 
 /**
- * @brief       This class proposes a dialog box to edit operator parameters.
- * @class       AnisotropicFilterParameterEditor.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- * @note        This class is not commented, because it is not used in the open framework tutorial.
- * @todo        AnisotropicFilterParameterEditor is not commented.
+ * @brief	This class proposes a dialog box to edit operator parameters.
+ * @class	AnisotropicFilterParameterEditor.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
+ * @note 	This class is not commented, because it is not used in the open framework tutorial.
+ * @todo 	AnisotropicFilterParameterEditor is not commented.
  */
 class FWWX_CLASS_API AnisotropicFilterParameterEditor : public wxDialog
 {
 
 public :
 
-        FWWX_API AnisotropicFilterParameterEditor( wxWindow * parent );
+	FWWX_API AnisotropicFilterParameterEditor( wxWindow * parent );
 
-        FWWX_API ~AnisotropicFilterParameterEditor();
+	FWWX_API ~AnisotropicFilterParameterEditor();
 
-        FWWX_API double getTimeStep();
+	FWWX_API double getTimeStep();
 
-        FWWX_API int getNbIterations();
+	FWWX_API int getNbIterations();
 
-        FWWX_API double getConductance();
+	FWWX_API double getConductance();
 
 private :
 
-        void createContent();
+	void createContent();
 
-        double m_dTimeStep;
-        long m_iNbIterations;
-        double m_dConductance;
+	double m_dTimeStep;
+	long m_iNbIterations;
+	double m_dConductance;
 };
 
 } // operators

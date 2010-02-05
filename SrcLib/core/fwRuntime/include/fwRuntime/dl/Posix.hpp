@@ -24,58 +24,58 @@ namespace dl
 
 
 /**
- * @brief       Implements a posix native module.
- * @struct      Posix
- * @date        2004-2009
- * @author      IRCAD (Research and Development Team).
+ * @brief	Implements a posix native module.
+ * @struct 	Posix
+ * @date	2004-2009
+ * @author 	IRCAD (Research and Development Team).
  */
 struct Posix : public Native
 {
 
-        /**
-         * @brief               Constructor.
-         *
-         * @param[in]   modulePath      a path to the module to manage
-         */
-        Posix( const boost::filesystem::path & modulePath ) throw();
+	/**
+	 * @brief		Constructor.
+	 *
+	 * @param[in]	modulePath	a path to the module to manage
+	 */
+	Posix( const boost::filesystem::path & modulePath ) throw();
 
-        /**
-         * @brief       Destructor.
-         */
-        ~Posix() throw();
+	/**
+	 * @brief	Destructor.
+	 */
+	~Posix() throw();
 
 
-        /**
-         * @see ::fwRuntime::dl::Native#isLoaded
-         */
-        const bool isLoaded() const throw();
+	/**
+	 * @see	::fwRuntime::dl::Native#isLoaded
+	 */
+	const bool isLoaded() const throw();
 
-        /**
-         * @brief               Retrieves the address of a symbol specified by its name.
-         *
-         * @param[in]   name    a string containing the symbol name.
-         *
-         * @return              a pointer to the found symbol or null if none has been found
-         */
-        void* getSymbol( const std::string & name ) const throw(RuntimeException);
+	/**
+	 * @brief		Retrieves the address of a symbol specified by its name.
+	 *
+	 * @param[in]	name	a string containing the symbol name.
+	 *
+	 * @return		a pointer to the found symbol or null if none has been found
+	 */
+	void* getSymbol( const std::string & name ) const throw(RuntimeException);
 
-        /**
-         * @see ::fwRuntime::dl::Native#load
-         */
-        void load() throw(RuntimeException);
+	/**
+	 * @see	::fwRuntime::dl::Native#load
+	 */
+	void load() throw(RuntimeException);
 
-        /**
-         * @see ::fwRuntime::dl::Native#unload
-         */
-        void unload() throw(RuntimeException);
+	/**
+	 * @see	::fwRuntime::dl::Native#unload
+	 */
+	void unload() throw(RuntimeException);
 
 
 private:
 
-        /**
-         * @brief       The handle of the loaded module.
-         */
-        void * m_handle;
+	/**
+	 * @brief	The handle of the loaded module.
+	 */
+	void * m_handle;
 
 };
 

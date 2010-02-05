@@ -11,20 +11,20 @@
 
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
-        CPPUNIT_TEST_SUITE( ImageTest );
-        CPPUNIT_TEST( methode1 );
-        CPPUNIT_TEST( methode2 );
-        CPPUNIT_TEST_SUITE_END();
+	CPPUNIT_TEST_SUITE( ImageTest );
+	CPPUNIT_TEST( methode1 );
+	CPPUNIT_TEST( methode2 );
+	CPPUNIT_TEST_SUITE_END();
 
 protected:
 
 public:
-        // interface
-        void setUp();
-        void tearDown();
-        // fonctions de tests
-        void methode1();
-        void methode2();
+	// interface
+	void setUp();
+	void tearDown();
+	// fonctions de tests
+	void methode1();
+	void methode2();
 };
 
 #endif

@@ -19,49 +19,49 @@ namespace fwComEd
 {
 
 /**
- * @brief       Object event message specialized for resectionDB : store modification information
- * @class       ResectionDBMsg
+ * @brief	Object event message specialized for resectionDB : store modification information
+ * @class 	ResectionDBMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
- * @see         ::fwServices::ObjectMsg
+ * @see 	::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API ResectionDBMsg : public ::fwServices::ObjectMsg
 {
 public:
-        fwCoreClassDefinitionsWithFactoryMacro((ResectionDBMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ResectionDBMsg );
+	fwCoreClassDefinitionsWithFactoryMacro((ResectionDBMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ResectionDBMsg );
 
-        /**
-         * @name Event identifier
-         */
-        /// @{
-        /// Event identifier used to inform for modification
-        FWCOMED_API static std::string NEW_RESECTIONDB_SELECTED;
-        FWCOMED_API static std::string RESECTIONDB_SELECTED;
-        FWCOMED_API static std::string NEW_RESECTION_SELECTED;
-        FWCOMED_API static std::string NEW_SAFE_PART_SELECTED;
-        FWCOMED_API static std::string ADD_RESECTION;
-        FWCOMED_API static std::string ADD_SAFE_PART;
-        FWCOMED_API static std::string MODIFIED;
-        FWCOMED_API static std::string RESECTIONDB_INVALIDATED;
-        /// @}
+	/**
+	 * @name Event identifier
+	 */
+	/// @{
+	/// Event identifier used to inform for modification
+	FWCOMED_API static std::string NEW_RESECTIONDB_SELECTED;
+	FWCOMED_API static std::string RESECTIONDB_SELECTED;
+	FWCOMED_API static std::string NEW_RESECTION_SELECTED;
+	FWCOMED_API static std::string NEW_SAFE_PART_SELECTED;
+	FWCOMED_API static std::string ADD_RESECTION;
+	FWCOMED_API static std::string ADD_SAFE_PART;
+	FWCOMED_API static std::string MODIFIED;
+	FWCOMED_API static std::string RESECTIONDB_INVALIDATED;
+	/// @}
 
-        /**
-         * @brief       Constructor : do nothing.
-         */
-        FWCOMED_API ResectionDBMsg() throw();
+	/**
+	 * @brief 	Constructor : do nothing.
+	 */
+	FWCOMED_API ResectionDBMsg() throw();
 
-        /**
-         * @brief       Destuctor : do nothing.
-         */
-        FWCOMED_API virtual ~ResectionDBMsg() throw();
+	/**
+	 * @brief	Destuctor : do nothing.
+	 */
+	FWCOMED_API virtual ~ResectionDBMsg() throw();
 
-        FWCOMED_API ::fwData::Resection::sptr getResectionSelected() const;
+	FWCOMED_API ::fwData::Resection::sptr getResectionSelected() const;
 
-        FWCOMED_API ::fwData::Resection::sptr getSafePartSelected() const;
+	FWCOMED_API ::fwData::Resection::sptr getSafePartSelected() const;
 
-        FWCOMED_API ::fwData::ResectionDB::sptr getResectionDBSelected() const;
+	FWCOMED_API ::fwData::ResectionDB::sptr getResectionDBSelected() const;
 
-        FWCOMED_API std::string getResectionOpName() const;
+	FWCOMED_API std::string getResectionOpName() const;
 };
 
 } // namespace fwComEd

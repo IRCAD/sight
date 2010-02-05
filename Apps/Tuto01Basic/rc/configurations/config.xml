@@ -1,18 +1,18 @@
 <plugin id="tutoBasicConfig">
 
-        <extension id="tutoBasicConfig" implements="::fwTools::Object">
-                <object id="tutoBasicObject" type="::fwTools::Object">
+	<extension id="tutoBasicConfig" implements="::fwTools::Object">
+		<object id="tutoBasicObject" type="::fwTools::Object">
 
-                        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
-                                <name>tutoBasicApplicationName</name>
-                                <icon>Bundles/Tuto01Basic_0-1/tuto.ico</icon>
-                        </service>
+			<service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+				<name>tutoBasicApplicationName</name>
+				<icon>Bundles/Tuto01Basic_0-1/tuto.ico</icon>
+			</service>
 
-                        <start type="::gui::aspect::IAspect" />
-                        
-                        <stop type="::gui::aspect::IAspect" />
+			<start type="::gui::aspect::IAspect" />
+			
+			<stop type="::gui::aspect::IAspect" />
 
-                </object>
-        </extension>
+		</object>
+	</extension>
 
 </plugin>

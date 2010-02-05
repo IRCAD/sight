@@ -40,13 +40,13 @@ fwSetCRefMacro(funcName, var, type);
 #define fwSetMacro(funcName, var, type)           \
 FWDATA_API void set##funcName (const type _##var) \
 {                                             \
-        this->m_##var = _##var;                   \
+	this->m_##var = _##var;                   \
 }
 //-----------------------------------
 #define fwSetCRefMacro(funcName, var, type)              \
 FWDATA_API void setCRef##funcName (const type & _##var)  \
 {                                                    \
-        this->m_##var = _##var;                          \
+	this->m_##var = _##var;                          \
 }
 
 //-----------------------------------
@@ -65,19 +65,19 @@ fwGetCRefMacro(funcName, var, type);
 #define fwGetMacro(funcName, var, type)       \
 FWDATA_API const type get##funcName () const  \
 {                                         \
-        return m_##var;                       \
+	return m_##var;                       \
 }
 //-----------------------------------
 #define fwGetRefMacro(funcName, var, type) \
 FWDATA_API type & getRef##funcName ()      \
 {                                      \
-        return this->m_##var;              \
+	return this->m_##var;              \
 }
 //-----------------------------------
 #define fwGetCRefMacro(funcName, var, type)        \
 FWDATA_API const type & getCRef##funcName () const \
 {                                              \
-        return this->m_##var;                      \
+	return this->m_##var;                      \
 }
 //-----------------------------------
 

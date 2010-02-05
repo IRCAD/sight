@@ -24,44 +24,44 @@ namespace vtkIO
 MeshReader::MeshReader()
 : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
-        SLM_TRACE("vtkIO::MeshReader::MeshReader");
+	SLM_TRACE("vtkIO::MeshReader::MeshReader");
 }
 
 //------------------------------------------------------------------------------
 
 MeshReader::~MeshReader()
 {
-        SLM_TRACE("vtkIO::MeshReader::~MeshReader");
+	SLM_TRACE("vtkIO::MeshReader::~MeshReader");
 }
 
 //------------------------------------------------------------------------------
 
 void MeshReader::read()
 {
-        assert( m_object.use_count() );
-        assert( !m_object.expired() );
-        assert( m_object.lock() );
+	assert( m_object.use_count() );
+	assert( !m_object.expired() );
+	assert( m_object.lock() );
 
-        ::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
+	::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
 
-        vtkGenericDataObjectReader *reader = vtkGenericDataObjectReader::New();
-        reader->SetFileName(this->getFile().string().c_str());
-        reader->Update();
+	vtkGenericDataObjectReader *reader = vtkGenericDataObjectReader::New();
+	reader->SetFileName(this->getFile().string().c_str());
+	reader->Update();
 
-        vtkDataObject *obj = reader->GetOutput();
-        vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
-        if(mesh)
-        {
-                ::vtkIO::fromVTKMesh(mesh, pTriangularMesh);
-        }
-        else
-        {
-                std::string errMsg;
-                errMsg  = "MeshReader cannot read VTK Mesh file : ";
-                errMsg.append( this->getFile().string() );
-                throw( errMsg );
-        }
-        reader->Delete();
+	vtkDataObject *obj = reader->GetOutput();
+	vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
+	if(mesh)
+	{
+		::vtkIO::fromVTKMesh(mesh, pTriangularMesh);
+	}
+	else
+	{
+		std::string errMsg;
+		errMsg	= "MeshReader cannot read VTK Mesh file : ";
+		errMsg.append( this->getFile().string() );
+		throw( errMsg );
+	}
+	reader->Delete();
 }
 
 //------------------------------------------------------------------------------

@@ -15,24 +15,24 @@ namespace dataReg
 {
 
 /**
- * @brief       This class is started when the bundles is loaded.
- * @class       Plugin.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	This class is started when the bundles is loaded.
+ * @class	Plugin.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  */
 struct DATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
-        /// Destructor. Do nothing.
-        DATAREG_API ~Plugin() throw();
+	/// Destructor. Do nothing.
+	DATAREG_API ~Plugin() throw();
 
-        /**
-         * @brief Overrides start method. Object declarations.
-         * @todo All data are not register in this method, what data must be registered ?
-         */
-        DATAREG_API void start() throw( ::fwRuntime::RuntimeException );
+	/**
+	 * @brief Overrides start method. Object declarations.
+	 * @todo All data are not register in this method, what data must be registered ?
+	 */
+	DATAREG_API void start() throw( ::fwRuntime::RuntimeException );
 
-        /// Overrides stop method. Do nothing
-        DATAREG_API void stop() throw();
+	/// Overrides stop method. Do nothing
+	DATAREG_API void stop() throw();
 
 };
 

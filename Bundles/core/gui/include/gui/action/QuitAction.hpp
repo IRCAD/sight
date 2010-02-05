@@ -19,38 +19,38 @@ namespace action
 {
 
 /**
- * @brief       This action tries to close the window and reset root object.
- * @class       QuitAction.
- * @author      IRCAD (Research and Development Team).
+ * @brief	This action tries to close the window and reset root object.
+ * @class	QuitAction.
+ * @author	IRCAD (Research and Development Team).
 
- * @date        2009.
+ * @date	2009.
  */
 class GUI_CLASS_API QuitAction : public ::gui::action::IAction
 {
 
 public :
-        
-        /**
-        * @brief Constructor. Do nothing.
-        */
-        GUI_API QuitAction() throw() ;
+	
+	/**
+	* @brief Constructor. Do nothing.
+	*/
+	GUI_API QuitAction() throw() ;
 
-        /**
-        * @brief Destructor. Do nothing.
-        */
-        GUI_API virtual ~QuitAction() throw() ;
+	/**
+	* @brief Destructor. Do nothing.
+	*/
+	GUI_API virtual ~QuitAction() throw() ;
 
 protected:
 
-        /**
-         * @brief This method tries to close the window and reset root object.
-         */
-        GUI_API virtual void updating() throw(::fwTools::Failed);
+	/**
+	 * @brief This method tries to close the window and reset root object.
+	 */
+	GUI_API virtual void updating() throw(::fwTools::Failed);
 
-        /*
-         * @brief This method gives information about the class.
-         */
-        GUI_API virtual void info(std::ostream &_sstream ) ;
+	/*
+	 * @brief This method gives information about the class.
+	 */
+	GUI_API virtual void info(std::ostream &_sstream ) ;
 
 };
 

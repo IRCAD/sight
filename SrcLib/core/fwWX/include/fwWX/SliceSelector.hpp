@@ -35,44 +35,44 @@ public:
      * @param parent The parent window.
      * @param id     The window ID.
      */
-        FWWX_API SliceSelector( wxWindow* const parent, const wxWindowID id = wxID_ANY ) throw();
+	FWWX_API SliceSelector( wxWindow* const parent, const wxWindowID id = wxID_ANY ) throw();
 
 
     /// @brief Destructor.
-        FWWX_API virtual ~SliceSelector() throw();
+	FWWX_API virtual ~SliceSelector() throw();
 
-        FWWX_API void setSliceRange( int min, int max );
+	FWWX_API void setSliceRange( int min, int max );
 
-        FWWX_API void setSliceValue( int index );
+	FWWX_API void setSliceValue( int index );
 
-        FWWX_API void setTypeSelection( int type );
+	FWWX_API void setTypeSelection( int type );
 
-        FWWX_API void setEnable(bool enable);
+	FWWX_API void setEnable(bool enable);
 
-        typedef ::boost::function1<void, int > ChangeIndexCallback;
-        FWWX_API void setChangeIndexCallback(ChangeIndexCallback fct);
+	typedef ::boost::function1<void, int > ChangeIndexCallback;
+	FWWX_API void setChangeIndexCallback(ChangeIndexCallback fct);
 
-        typedef ::boost::function1<void, int > ChangeTypeCallback;
-        FWWX_API void setChangeTypeCallback(ChangeTypeCallback fct);
+	typedef ::boost::function1<void, int > ChangeTypeCallback;
+	FWWX_API void setChangeTypeCallback(ChangeTypeCallback fct);
 
 protected:
 
 #ifdef __MACOSX__
-        FWWX_API void onSliceDownButton( wxCommandEvent& event );
-        FWWX_API void onSliceTypeDownButton( wxCommandEvent& event );
+	FWWX_API void onSliceDownButton( wxCommandEvent& event );
+	FWWX_API void onSliceTypeDownButton( wxCommandEvent& event );
 #else
-        /**
-         * @brief Event handler for a slice type change.
-         * @param event The corresponding wxWidgets event.
-         */
-        FWWX_API void onSliceTypeChange( wxCommandEvent& event );
+	/**
+	 * @brief Event handler for a slice type change.
+	 * @param event The corresponding wxWidgets event.
+	 */
+	FWWX_API void onSliceTypeChange( wxCommandEvent& event );
 #endif
 
-        /**
-         * @brief Event handler for a slice index change.
-         * @param event The corresponding wxWidgets event.
-         */
-        FWWX_API void onSliceIndexChange( wxScrollEvent& event ) throw();
+	/**
+	 * @brief Event handler for a slice index change.
+	 * @param event The corresponding wxWidgets event.
+	 */
+	FWWX_API void onSliceIndexChange( wxScrollEvent& event ) throw();
 
     /// @brief wxWidgets event table.
     /// @{
@@ -83,7 +83,7 @@ private:
 
     /// @brief The IDs for the wxWidgets controls.
     enum {
-        ID_SLICE_INDEX = wxID_HIGHEST + 1,
+    	ID_SLICE_INDEX = wxID_HIGHEST + 1,
         ID_SLICE_TEXT,
         ID_SLICE_TYPE,
         ID_SAGITTAL_BTN,

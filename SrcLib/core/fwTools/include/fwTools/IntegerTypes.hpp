@@ -11,11 +11,11 @@
 
 namespace fwTools {
 
-typedef boost::mpl::vector<     signed char , unsigned char,
-                                signed short, unsigned short,
-                                signed int  , unsigned int,
-                                signed long , unsigned long
-                          >::type IntegerTypes;
+typedef boost::mpl::vector< 	signed char , unsigned char,
+				signed short, unsigned short,
+				signed int  , unsigned int,
+				signed long , unsigned long
+			  >::type IntegerTypes;
 
 
 } // end namespace fwTools {

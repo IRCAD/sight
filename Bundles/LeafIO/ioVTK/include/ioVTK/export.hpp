@@ -9,32 +9,32 @@
 
 
 #ifdef _WIN32
-        #pragma warning( disable : 4251 )
+	#pragma warning( disable : 4251 )
 
 
-        #ifdef IOVTK_EXPORTS
-        #define IOVTK_API __declspec(dllexport)
-        #else
-        #define IOVTK_API __declspec(dllimport)
-        #endif
+	#ifdef IOVTK_EXPORTS
+	#define IOVTK_API __declspec(dllexport)
+	#else
+	#define IOVTK_API __declspec(dllimport)
+	#endif
 
-        #define IOVTK_CLASS_API
-        #pragma warning(disable: 4290)
+	#define IOVTK_CLASS_API
+	#pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-        #ifdef IOVTK_EXPORTS
-        #define IOVTK_API __attribute__ ((visibility("default")))
-        #define IOVTK_CLASS_API __attribute__ ((visibility("default")))
-        #else
-        #define IOVTK_API __attribute__ ((visibility("hidden")))
-        #define IOVTK_CLASS_API __attribute__ ((visibility("hidden")))
-        #endif
+	#ifdef IOVTK_EXPORTS
+	#define IOVTK_API __attribute__ ((visibility("default")))
+	#define IOVTK_CLASS_API __attribute__ ((visibility("default")))
+	#else
+	#define IOVTK_API __attribute__ ((visibility("hidden")))
+	#define IOVTK_CLASS_API __attribute__ ((visibility("hidden")))
+	#endif
 
 #else
 
-        #define IOVTK_API
-        #define IOVTK_CLASS_API
+	#define IOVTK_API
+	#define IOVTK_CLASS_API
 
 #endif
 

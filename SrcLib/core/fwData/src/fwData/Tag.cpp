@@ -19,15 +19,15 @@ namespace fwData
 Tag::Tag () :
 m_size(0.5)
 {
-        SLM_TRACE("::fwData::Tag()");
+	SLM_TRACE("::fwData::Tag()");
 }
 
 //------------------------------------------------------------------------------
 
 Tag::~Tag ()
 {
-        m_pointList->getRefPoints().clear();
-        SLM_TRACE("::fwData::~Tag()");
+	m_pointList->getRefPoints().clear();
+	SLM_TRACE("::fwData::~Tag()");
 }
 
 //------------------------------------------------------------------------------

@@ -25,21 +25,21 @@ const std::string Dictionary::m_frontalSliceIndexId ( "Frontal Slice Index" );
 const std::string Dictionary::m_sagittalSliceIndexId( "Sagittal Slice Index" );
 const std::string Dictionary::m_transfertFunctionId ( "m_transfertFunctionId" );
 const std::string Dictionary::m_transfertFunctionCompositeId ( "m_transfertFunctionCompositeId" );
-const std::string Dictionary::m_imageLandmarksId        ("m_imageLandmarksId");
-const std::string Dictionary::m_imageDistancesId        ("m_imageDistancesId");
-const std::string Dictionary::m_imageSelectedId         ("m_imageSelectedId");
-const std::string Dictionary::m_commentId                       ("m_commentId");
-const std::string Dictionary::m_labelId                         ("m_labelId");
-const std::string Dictionary::m_colorId                         ("m_colorId");
-const std::string Dictionary::m_relatedServiceId        ("m_relatedServiceId");
-const std::string Dictionary::m_imageLabelId            ("m_imageLabelId");
-const std::string Dictionary::m_acquisitionCountId      ("m_acquisitionCountId");
+const std::string Dictionary::m_imageLandmarksId 	("m_imageLandmarksId");
+const std::string Dictionary::m_imageDistancesId 	("m_imageDistancesId");
+const std::string Dictionary::m_imageSelectedId 	("m_imageSelectedId");
+const std::string Dictionary::m_commentId 			("m_commentId");
+const std::string Dictionary::m_labelId 			("m_labelId");
+const std::string Dictionary::m_colorId 			("m_colorId");
+const std::string Dictionary::m_relatedServiceId	("m_relatedServiceId");
+const std::string Dictionary::m_imageLabelId 		("m_imageLabelId");
+const std::string Dictionary::m_acquisitionCountId	("m_acquisitionCountId");
 
-const std::string Dictionary::m_globalMatrixId          ("Global Matrix");
-const std::string Dictionary::m_errorId                         ("Error");
+const std::string Dictionary::m_globalMatrixId		("Global Matrix");
+const std::string Dictionary::m_errorId				("Error");
 const std::string Dictionary::m_acquisitionSelectedId( "Acquisition Selected" );
-const std::string Dictionary::m_resectionId                     ("resection identifier");
-const std::string Dictionary::m_resectionSelectedId     ("selected resection identifier");
+const std::string Dictionary::m_resectionId			("resection identifier");
+const std::string Dictionary::m_resectionSelectedId	("selected resection identifier");
 
 const std::string Dictionary::m_roi( "ROI" );
 

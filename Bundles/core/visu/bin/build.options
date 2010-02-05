@@ -1,4 +1,4 @@
-TYPE     = 'bundle'
-USE      = ['wx','vtk','boost']
-LIB              = ['fwRuntime_0-3','fwData_0-1','fwServices_0-1','fwComEd_0-1','fwTools_0-1','fwCore_0-1', 'fwWX_0-1','fwRender_0-1']
+TYPE	 = 'bundle'
+USE 	 = ['wx','vtk','boost']
+LIB		 = ['fwRuntime_0-3','fwData_0-1','fwServices_0-1','fwComEd_0-1','fwTools_0-1','fwCore_0-1', 'fwWX_0-1','fwRender_0-1']
 VERSION  = '0-1'

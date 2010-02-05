@@ -19,31 +19,31 @@ namespace widgets
 {
 
 /**
- * @brief       This class is used to show an html file or url
- * @class       HTMLPanel.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- * @note        This class is not commented, because it is not used in the open framework tutorial.
- * @todo        HTMLPanel is not commented.
+ * @brief	This class is used to show an html file or url
+ * @class	HTMLPanel.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
+ * @note 	This class is not commented, because it is not used in the open framework tutorial.
+ * @todo 	HTMLPanel is not commented.
  */
 class FWWX_CLASS_API HTMLPanel : public wxPanel
 {
 
 public:
 
-        FWWX_API HTMLPanel(wxWindow *parent, const std::string& url, const wxSize size = wxDefaultSize);
-        FWWX_API HTMLPanel(wxWindow *parent, const wxString& html, const wxSize size = wxDefaultSize);
+	FWWX_API HTMLPanel(wxWindow *parent, const std::string& url, const wxSize size = wxDefaultSize);
+	FWWX_API HTMLPanel(wxWindow *parent, const wxString& html, const wxSize size = wxDefaultSize);
 
 
-        FWWX_API void back();
-        FWWX_API void forward();
+	FWWX_API void back();
+	FWWX_API void forward();
 
 
-        FWWX_API void OnHtmlLinkClicked(wxHtmlLinkEvent& event);
-        FWWX_API void OnHtmlCellHover(wxHtmlCellEvent &event);
-        FWWX_API void OnHtmlCellClicked(wxHtmlCellEvent &event);
+	FWWX_API void OnHtmlLinkClicked(wxHtmlLinkEvent& event);
+	FWWX_API void OnHtmlCellHover(wxHtmlCellEvent &event);
+	FWWX_API void OnHtmlCellClicked(wxHtmlCellEvent &event);
 private:
-        wxHtmlWindow * m_html;
+	wxHtmlWindow * m_html;
 
     DECLARE_EVENT_TABLE()
 };

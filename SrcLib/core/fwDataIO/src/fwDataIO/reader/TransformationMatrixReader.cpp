@@ -26,46 +26,46 @@ namespace reader{
 TransformationMatrix3DReader::TransformationMatrix3DReader()
 : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
-        // TODO Auto-generated constructor stub
+	// TODO Auto-generated constructor stub
 
 }
 
 TransformationMatrix3DReader::~TransformationMatrix3DReader() {
-        // TODO Auto-generated destructor stub
+	// TODO Auto-generated destructor stub
 }
 
 
 
 void TransformationMatrix3DReader::read()
 {
-        assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-        ::boost::filesystem::path file = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+	assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+	::boost::filesystem::path file = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-        assert( ::boost::filesystem::exists(file) ) ;
+	assert( ::boost::filesystem::exists(file) ) ;
 
-        std::ifstream inFile(file.string().c_str(), std::ifstream::in );
-        assert( inFile.good() );
+	std::ifstream inFile(file.string().c_str(), std::ifstream::in );
+	assert( inFile.good() );
 
-        char readedValue = 0;
-        double value;
-        this->getConcreteObject()->getRefCoefficients().clear();
-        this->getConcreteObject()->getRefCoefficients().reserve(16);
+	char readedValue = 0;
+	double value;
+	this->getConcreteObject()->getRefCoefficients().clear();
+	this->getConcreteObject()->getRefCoefficients().reserve(16);
 
-        while ( !inFile.eof() && readedValue<16 )
-        {
-                inFile >> value;
-                this->getConcreteObject()->getRefCoefficients().push_back( value );
-                readedValue++;
-        }
+	while ( !inFile.eof() && readedValue<16 )
+	{
+		inFile >> value;
+		this->getConcreteObject()->getRefCoefficients().push_back( value );
+		readedValue++;
+	}
 
-        assert(this->getConcreteObject()->getRefCoefficients().size()==16 );
+	assert(this->getConcreteObject()->getRefCoefficients().size()==16 );
 }
 
 
 std::string  &TransformationMatrix3DReader::extension()
 {
-        static std::string ext(".trf");
-        return ext;
+	static std::string ext(".trf");
+	return ext;
 }
 
 

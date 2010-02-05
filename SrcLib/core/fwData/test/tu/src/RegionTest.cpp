@@ -12,29 +12,29 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RegionTest );
 
 void RegionTest::setUp()
 {
-        // Set up context before running a test.
+	// Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
 void RegionTest::tearDown()
 {
-        // Clean up after the test run.
+	// Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
 void RegionTest::methode1()
 {
-        ::boost::uint8_t DIM    = 14 ;
-        std::vector<double> vOrigin;
-        vOrigin = std::vector<double>(DIM, 0) ;
-        //vOrigin.push_back( DIM ) ;
+	::boost::uint8_t DIM	= 14 ;
+	std::vector<double> vOrigin;
+	vOrigin = std::vector<double>(DIM, 0) ;
+	//vOrigin.push_back( DIM ) ;
 
-        // process
-        ::fwData::Region::sptr p1(new ::fwData::Region(DIM));
+	// process
+	::fwData::Region::sptr p1(new ::fwData::Region(DIM));
 
-        // check
-        CPPUNIT_ASSERT_EQUAL(p1->getRefOrigin().back(), vOrigin.back());
+	// check
+	CPPUNIT_ASSERT_EQUAL(p1->getRefOrigin().back(),	vOrigin.back());
 
 }

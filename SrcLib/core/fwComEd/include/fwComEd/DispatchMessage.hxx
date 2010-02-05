@@ -41,53 +41,53 @@ namespace fwComEd
  */
 template< typename T >
 bool DispatchMessage(
-        const boost::shared_ptr< const fwServices::ObjectMsg > message,
-        T* const client, const bool always = false )
+	const boost::shared_ptr< const fwServices::ObjectMsg > message,
+	T* const client, const bool always = false )
 {
-        const std::vector< std::string > ids = message->getEventIds();
-        // Comment by ACH
-        // ::fwServices::ObjectMsg::sptr unhandled ( new fwServices::ObjectMsg( message->m_modifiedObject ) );
-        bool fullyHandled = true;
+	const std::vector< std::string > ids = message->getEventIds();
+	// Comment by ACH
+	// ::fwServices::ObjectMsg::sptr unhandled ( new fwServices::ObjectMsg( message->m_modifiedObject ) );
+	bool fullyHandled = true;
 
-        // Call the callback corresponding to every field modification
-        for ( std::vector< std::string >::const_iterator iter = ids.begin();
-              iter != ids.end();
-              ++iter )
-        {
-                const boost::shared_ptr< ::fwComEd::ICallback > callback = ::fwTools::ClassFactoryRegistry::create< fwComEd::ICallbackFilter< T >, std::string >( *iter );
+	// Call the callback corresponding to every field modification
+	for ( std::vector< std::string >::const_iterator iter = ids.begin();
+	      iter != ids.end();
+	      ++iter )
+	{
+		const boost::shared_ptr< ::fwComEd::ICallback > callback = ::fwTools::ClassFactoryRegistry::create< fwComEd::ICallbackFilter< T >, std::string >( *iter );
 
-                if ( callback )
-                {
-                        (*callback)( message, client );
-                        SLM_FATAL("ACH disptach msg used ?"); // If comment this fatal, reactivate cppunit test (CallbackTest)
-                }
-                else
-                {
+		if ( callback )
+		{
+			(*callback)( message, client );
+			SLM_FATAL("ACH disptach msg used ?"); // If comment this fatal, reactivate cppunit test (CallbackTest)
+		}
+		else
+		{
 // Comment by ACH
-//                      unhandled->addModif(    *iter,
-//                                                                      message->getMsg( *iter ),
-//                                                                      message->getProp( *iter ) );
-                        OSLM_WARN("MSG filtering  : this event message ( " << *iter << " ) is not handled by DispatchMessage");
-                        //fullyHandled = false;
-                }
-        }
+//			unhandled->addModif(	*iter,
+//									message->getMsg( *iter ),
+//									message->getProp( *iter ) );
+			OSLM_WARN("MSG filtering  : this event message ( " << *iter << " ) is not handled by DispatchMessage");
+			//fullyHandled = false;
+		}
+	}
 
-        // If there is a field that hasn't been handled, call the default callback
-        if ( always || !fullyHandled )
-        {
-                SLM_FATAL("ACH :  this cases exist in the framework ?");
-//              const boost::shared_ptr< fwComEd::ICallback > callback =
-//                  fwTools::ClassFactoryRegistry::create< fwComEd::ICallbackFilter< T >,
-//                                                std::string >( defaultCallbackId );
+	// If there is a field that hasn't been handled, call the default callback
+	if ( always || !fullyHandled )
+	{
+		SLM_FATAL("ACH :  this cases exist in the framework ?");
+//		const boost::shared_ptr< fwComEd::ICallback > callback =
+//		    fwTools::ClassFactoryRegistry::create< fwComEd::ICallbackFilter< T >,
+//		                                  std::string >( defaultCallbackId );
 //
-//              if ( callback )
-//              {
-//                      (*callback)( unhandled, client );
-//                      fullyHandled = true;
-//              }
-        }
+//		if ( callback )
+//		{
+//			(*callback)( unhandled, client );
+//			fullyHandled = true;
+//		}
+	}
 
-        return fullyHandled;
+	return fullyHandled;
 }
 
 } // namespace fwComEd

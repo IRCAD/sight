@@ -21,32 +21,32 @@ namespace fwDataIO {
 namespace writer {
 
 /**
- * @brief       Writer for transformation of 3D Matrix. Write file format .trf
- * @class       TransformationMatrix3DWriter.
- * @author      IRCAD (Research and Development Team).
- * @date        2009
+ * @brief	Writer for transformation of 3D Matrix. Write file format .trf
+ * @class	TransformationMatrix3DWriter.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009
  *
  * Ircad writer to write a ::fwData::TransformationMatrix3D on filesystem which the file format
  * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
  */
 class FWDATAIO_CLASS_API TransformationMatrix3DWriter :
-        public GenericObjectWriter< ::fwData::TransformationMatrix3D>,
-        public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+	public GenericObjectWriter< ::fwData::TransformationMatrix3D>,
+	public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-        /// Constructor. Do nothing.
-        FWDATAIO_API TransformationMatrix3DWriter();
+	/// Constructor. Do nothing.
+	FWDATAIO_API TransformationMatrix3DWriter();
 
-        /// Destructor. Do nothing.
-        FWDATAIO_API virtual ~TransformationMatrix3DWriter();
+	/// Destructor. Do nothing.
+	FWDATAIO_API virtual ~TransformationMatrix3DWriter();
 
-        /// Write the file with standard iostream API.
-        FWDATAIO_API virtual void write();
+	/// Write the file with standard iostream API.
+	FWDATAIO_API virtual void write();
 
-        /// Defines extension supported by this writer ".trf"
-        FWDATAIO_API virtual std::string  extension();
+	/// Defines extension supported by this writer ".trf"
+	FWDATAIO_API virtual std::string  extension();
 
 };
 

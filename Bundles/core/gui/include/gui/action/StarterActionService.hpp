@@ -21,46 +21,46 @@ namespace action
 {
 
 /**
- * @brief       This action reset root object. All services are eliminated as well as objects composing the root object.
- * @class       CloseAction.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	This action reset root object. All services are eliminated as well as objects composing the root object.
+ * @class	CloseAction.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  */
 class GUI_CLASS_API StarterActionService : public ::gui::action::IAction
 {
 
 public :
 
-        /**
-        * @brief Constructor. Do nothing.
-        */
-        GUI_API StarterActionService() throw();
+	/**
+	* @brief Constructor. Do nothing.
+	*/
+	GUI_API StarterActionService() throw();
 
-        /**
-        * @brief Destructor. Do nothing.
-        */
-        GUI_API virtual ~StarterActionService() throw();
+	/**
+	* @brief Destructor. Do nothing.
+	*/
+	GUI_API virtual ~StarterActionService() throw();
 
 protected:
 
-        /**
-         * @brief This method gives information about the class. Do nothing.
-         */
-        GUI_API virtual void info(std::ostream &_sstream ) ;
+	/**
+	 * @brief This method gives information about the class. Do nothing.
+	 */
+	GUI_API virtual void info(std::ostream &_sstream ) ;
 
-        /**
-         * @brief This method starts-updates or stops the specified services
-         */
-        GUI_API void updating()throw (fwTools::Failed);
+	/**
+	 * @brief This method starts-updates or stops the specified services
+	 */
+	GUI_API void updating()throw (fwTools::Failed);
 
-        /**
-         * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
-         */
-        GUI_API void configuring() throw( ::fwTools::Failed );
+	/**
+	 * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
+	 */
+	GUI_API void configuring() throw( ::fwTools::Failed );
 
 private:
-        // vector representing uuid's services that must be started (true) or stopped (false)
-        std::vector< std::pair< std::string, bool > > m_uuidServices;
+	// vector representing uuid's services that must be started (true) or stopped (false)
+	std::vector< std::pair< std::string, bool > > m_uuidServices;
 };
 
 

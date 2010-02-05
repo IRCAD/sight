@@ -24,34 +24,34 @@ namespace fwWX
 template< typename F = ::boost::function0<void> >
 
 /**
- * @brief       This class allows us to use a timer.
- * @class       Timer.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	This class allows us to use a timer.
+ * @class	Timer.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  * @todo Timer is not commented.
  */
 struct Timer : public wxEvtHandler
 {
 
-        typedef F function;
+	typedef F function;
     typedef ::boost::shared_ptr< Timer<F> > ptr;
 
-         Timer() throw() ;
-         ~Timer() throw() ;
+	 Timer() throw() ;
+	 ~Timer() throw() ;
 
-         void test() throw() ;
+	 void test() throw() ;
 
-         void setFunction( function _function );
+	 void setFunction( function _function );
      void setOneShot( bool isOneShot );
      void setRate( int rate );
 
-        // Start clocking
-         void start() ;
-         void start(int rate) ;
-         void start(int rate, bool isOneShot) ;
+	// Start clocking
+	 void start() ;
+	 void start(int rate) ;
+	 void start(int rate, bool isOneShot) ;
 
-        // Stop clocking
-         void stop() ;
+	// Stop clocking
+	 void stop() ;
 
 //#define DO_NOTHING(z, N, data) void doNothing ( BOOST_PP_ENUM_PARAMS (N, void* notUsed) ) {} ;
 //    BOOST_PP_REPEAT(10, DO_NOTHING, )
@@ -59,18 +59,18 @@ struct Timer : public wxEvtHandler
 
 private:
 
-        /*
-         * @brief       declares the wxWidgets event table
-         */
-        DECLARE_EVENT_TABLE()
+	/*
+	 * @brief	declares the wxWidgets event table
+	 */
+	DECLARE_EVENT_TABLE()
 
     int m_rate;
     bool m_isOneShot;
 
-        wxTimer *m_wxTimer;
+	wxTimer *m_wxTimer;
     function m_function;
 
-        void OnTimer(wxTimerEvent& event) ;
+	void OnTimer(wxTimerEvent& event) ;
 
 };
 

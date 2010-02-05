@@ -16,31 +16,31 @@ namespace fwComEd
 {
 
 /**
- * @brief       Object event message specialized for Tag : store modification information
- * @class       TagMsg
+ * @brief	Object event message specialized for Tag : store modification information
+ * @class 	TagMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
- * @see         ::fwServices::ObjectMsg
+ * @see 	::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API TagMsg : public ::fwServices::ObjectMsg
 {
 
 public:
 
-        fwCoreClassDefinitionsWithFactoryMacro((TagMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new TagMsg );
+	fwCoreClassDefinitionsWithFactoryMacro((TagMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new TagMsg );
 
-        /// Event identifier used to inform for modification
-        FWCOMED_API static std::string TAG_IS_MODIFIED;
+	/// Event identifier used to inform for modification
+	FWCOMED_API static std::string TAG_IS_MODIFIED;
 
-        /**
-          * @brief      Constructor : do nothing.
-          */
-        FWCOMED_API TagMsg() throw();
+	/**
+	  * @brief	Constructor : do nothing.
+	  */
+	FWCOMED_API TagMsg() throw();
 
-        /**
-          * @brief      Destuctor : do nothing.
-          */
-        FWCOMED_API virtual ~TagMsg() throw();
+	/**
+	  * @brief	Destuctor : do nothing.
+	  */
+	FWCOMED_API virtual ~TagMsg() throw();
 
 };
 

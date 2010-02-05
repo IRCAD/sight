@@ -17,39 +17,39 @@ namespace operators
 {
 
 /**
- * @brief       This class proposes a dialog box to edit operator parameters.
- * @class       MeshParameterEditor.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- * @note        This class is not commented, because it is not used in the open framework tutorial.
- * @todo        MeshParameterEditor is not commented.
+ * @brief	This class proposes a dialog box to edit operator parameters.
+ * @class	MeshParameterEditor.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
+ * @note 	This class is not commented, because it is not used in the open framework tutorial.
+ * @todo 	MeshParameterEditor is not commented.
  */
 class FWWX_CLASS_API MeshParameterEditor : public wxDialog
 {
 
 public :
 
-        FWWX_API MeshParameterEditor( wxWindow * parent );
+	FWWX_API MeshParameterEditor( wxWindow * parent );
 
-        FWWX_API ~MeshParameterEditor();
+	FWWX_API ~MeshParameterEditor();
 
-        FWWX_API int getValue() ;
+	FWWX_API int getValue() ;
 
-        FWWX_API int getMinVoxelSize() ;
+	FWWX_API int getMinVoxelSize() ;
 
-        FWWX_API int getMaxVoxelSize() ;
+	FWWX_API int getMaxVoxelSize() ;
 
 private :
 
-        wxTextCtrl * textCtrl1 ;
-        wxTextCtrl * textCtrl2 ;
-        wxTextCtrl * textCtrl3 ;
+	wxTextCtrl * textCtrl1 ;
+	wxTextCtrl * textCtrl2 ;
+	wxTextCtrl * textCtrl3 ;
 
-        long m_value;
+	long m_value;
 
-        long m_minVoxelSize;
+	long m_minVoxelSize;
 
-        long m_maxVoxelSize;
+	long m_maxVoxelSize;
 };
 
 } // operators

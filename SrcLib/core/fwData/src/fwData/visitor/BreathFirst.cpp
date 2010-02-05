@@ -18,27 +18,27 @@ namespace visitor
 
 void BreathFirst::next(::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
-        // insert ONLY ONCE child in breathFirst order+source
-        ::fwTools::Object::ChildContainer::iterator f;
-        for (f = fields.begin(); f != fields.end() ; ++f)
-        {
-                assert( ::fwTools::Object::dynamicCast( *f ) );
-                std::pair< Source , Child > key( src, ::fwTools::Object::dynamicCast( *f ) );
-                if ( std::find( m_fifo.begin(), m_fifo.end(),  key )==m_fifo.end()  )
-                {
-                        // not already inserted
-                        m_fifo.push_back(key );
-                }
-        }
+	// insert ONLY ONCE child in breathFirst order+source
+	::fwTools::Object::ChildContainer::iterator f;
+	for (f = fields.begin(); f != fields.end() ; ++f)
+	{
+		assert( ::fwTools::Object::dynamicCast( *f ) );
+		std::pair< Source , Child > key( src, ::fwTools::Object::dynamicCast( *f ) );
+		if ( std::find( m_fifo.begin(), m_fifo.end(),  key )==m_fifo.end()  )
+		{
+			// not already inserted
+			m_fifo.push_back(key );
+		}
+	}
 
-        // process list
-        while ( !m_fifo.empty() )
-        {
-                m_source = m_fifo.front().first;
-                Child achild= m_fifo.front().second;
-                m_fifo.pop_front();
-                accept( achild, this );
-        }
+	// process list
+	while ( !m_fifo.empty() )
+	{
+		m_source = m_fifo.front().first;
+		Child achild= m_fifo.front().second;
+		m_fifo.pop_front();
+		accept( achild, this );
+	}
 }
 
 } // namespace visitor

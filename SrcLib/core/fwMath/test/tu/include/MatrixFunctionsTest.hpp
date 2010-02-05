@@ -12,19 +12,19 @@
 
 class MatrixFunctionsTest : public CPPUNIT_NS::TestFixture
 {
-        CPPUNIT_TEST_SUITE( MatrixFunctionsTest );
-        CPPUNIT_TEST( checkMultVecMatrix);
-        CPPUNIT_TEST_SUITE_END();
+	CPPUNIT_TEST_SUITE( MatrixFunctionsTest );
+	CPPUNIT_TEST( checkMultVecMatrix);
+	CPPUNIT_TEST_SUITE_END();
 
 protected:
 
 public:
-        // interface
-        void setUp();
-        void tearDown();
-        // fonctions de tests
-        void checkMultVecMatrix();
-        void checkRotationMatrix();
+	// interface
+	void setUp();
+	void tearDown();
+	// fonctions de tests
+	void checkMultVecMatrix();
+	void checkRotationMatrix();
 };
 
 #endif

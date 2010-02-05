@@ -25,14 +25,14 @@ namespace profile
 namespace
 {
 
-        template< typename E >
-        struct Apply
-        {
-                void operator() ( E e )
-                {
-                        e->apply();
-                }
-        };
+	template< typename E >
+	struct Apply
+	{
+		void operator() ( E e )
+		{
+			e->apply();
+		}
+	};
 
 }
 
@@ -61,22 +61,22 @@ Profile::Profile(): m_checkSingleInstance(false)
 
 void Profile::add( ::boost::shared_ptr< Activater > activater )
 {
-        m_activaters.push_back( activater );
+	m_activaters.push_back( activater );
 }
 
 
 
 void Profile::add( ::boost::shared_ptr< Starter > starter )
 {
-        m_starters.push_back( starter );
-        m_stoppers.push_back( ::boost::shared_ptr< Stopper > ( new Stopper(starter) ));
+	m_starters.push_back( starter );
+	m_stoppers.push_back( ::boost::shared_ptr< Stopper > ( new Stopper(starter) ));
 }
 
 
 void Profile::start()
 {
-        std::for_each( m_activaters.begin(), m_activaters.end(), Apply< ActivaterContainer::value_type >() );
-        std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
+	std::for_each( m_activaters.begin(), m_activaters.end(), Apply< ActivaterContainer::value_type >() );
+	std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
 }
 
 
@@ -87,35 +87,35 @@ void Profile::stop()
 
 Profile::ParamsContainer Profile::getParams()
 {
-        return m_params;
+	return m_params;
 }
 
 char** Profile::getRawParams()
 {
-        // allocate memory for an array of character strings
-        char** rawParams = new char*[m_params.size()];
+	// allocate memory for an array of character strings
+	char** rawParams = new char*[m_params.size()];
 
-        // for each string, allocate memory in the character array and copy
-        for (unsigned long i=0; i<m_params.size(); i++)
-        {
-                int paramSize = m_params[i].size();
-                rawParams[i] = new char[paramSize+1];
-                strncpy(rawParams[i], m_params[i].c_str(), paramSize);
-                rawParams[i][paramSize] = '\0';
+	// for each string, allocate memory in the character array and copy
+	for (unsigned long i=0; i<m_params.size(); i++)
+	{
+		int paramSize = m_params[i].size();
+		rawParams[i] = new char[paramSize+1];
+		strncpy(rawParams[i], m_params[i].c_str(), paramSize);
+		rawParams[i][paramSize] = '\0';
 
-        }
-        return rawParams;
+	}
+	return rawParams;
 }
 
 
 void Profile::setParams(int argc, char** argv)
 {
-        m_params.clear();
-        for(int i = 0; i < argc; i++)
-        {
-                std::string arg = argv[i];
-                m_params.push_back( arg );
-        }
+	m_params.clear();
+	for(int i = 0; i < argc; i++)
+	{
+		std::string arg = argv[i];
+		m_params.push_back( arg );
+	}
 }
 
 } // namespace profile

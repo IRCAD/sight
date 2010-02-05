@@ -35,32 +35,32 @@ namespace fwServices
 
 bool has( ::fwTools::Object::sptr obj , std::string serviceId) throw()
 {
-        std::vector< std::string > availableImplementations = ::fwServices::getImplementationIds( obj , serviceId ) ;
-        std::vector< ::fwServices::IService::sptr >  allServices = ::fwServices::getRegisteredServices(obj);
-        for(std::vector< ::fwServices::IService::sptr >::iterator iter = allServices.begin() ; iter != allServices.end() ; ++iter )
-        {
-                std::string className = (*iter)->getClassname() ;
-                if( std::find( availableImplementations.begin() , availableImplementations.end() , className ) != availableImplementations.end()  )
-                {
-                        return true ;
-                }
-        }
-        return false ;
+	std::vector< std::string > availableImplementations = ::fwServices::getImplementationIds( obj , serviceId ) ;
+	std::vector< ::fwServices::IService::sptr >  allServices = ::fwServices::getRegisteredServices(obj);
+	for(std::vector< ::fwServices::IService::sptr >::iterator iter = allServices.begin() ; iter != allServices.end() ; ++iter )
+	{
+		std::string className = (*iter)->getClassname() ;
+		if( std::find( availableImplementations.begin() , availableImplementations.end() , className ) != availableImplementations.end()  )
+		{
+			return true ;
+		}
+	}
+	return false ;
 }
 
 bool has( ::std::string uuid ) throw()
 {
-        return ::fwTools::UUID::exist(uuid, ::fwTools::UUID::SIMPLE ) ;
+	return ::fwTools::UUID::exist(uuid, ::fwTools::UUID::SIMPLE ) ;
 }
 
 bool __support( ::fwTools::Object::sptr obj, std::string serviceId) throw()
 {
-        // Native library approach
-        bool libSupport                 = ::fwServices::library::support(obj, serviceId) ;
-        // Component approach
-        bool componentSupport   = ::fwServices::bundle::support(obj, serviceId) ;
+	// Native library approach
+	bool libSupport 		= ::fwServices::library::support(obj, serviceId) ;
+	// Component approach
+	bool componentSupport 	= ::fwServices::bundle::support(obj, serviceId) ;
 
-        return ( componentSupport || libSupport ) ;
+	return ( componentSupport || libSupport ) ;
 }
 
 
@@ -80,72 +80,72 @@ bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
 
 bool support( ::fwTools::Object::sptr obj, std::string serviceId, std::string implementationId ) throw()
 {
-        assert( ::fwServices::support(obj,serviceId) ) ;
-        std::vector< std::string > impl = ::fwServices::getImplementationIds( obj , serviceId );
-        bool isImplementationSupported = ( std::find(impl.begin(), impl.end(), implementationId ) != impl.end() ) ;
-        return isImplementationSupported ;
+	assert( ::fwServices::support(obj,serviceId) ) ;
+	std::vector< std::string > impl = ::fwServices::getImplementationIds( obj , serviceId );
+	bool isImplementationSupported = ( std::find(impl.begin(), impl.end(), implementationId ) != impl.end() ) ;
+	return isImplementationSupported ;
 }
 
 std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId)
 {
-        std::vector< std::string > allImplementationId ;
+	std::vector< std::string > allImplementationId ;
 
-        // SPECIFIC IMPLEMENTATIONS
+	// SPECIFIC IMPLEMENTATIONS
 
-        // All implementation already registered in fwTools for specific type
-        ::fwServices::ObjectServiceKeyType myKey(serviceId,obj->className());
-        std::list< ::fwServices::IService::sptr > serviceList = ::fwTools::ClassFactoryRegistry::subClasses< fwServices::IService >(myKey) ;
-        for( std::list< ::fwServices::IService::sptr >::iterator iterLib = serviceList.begin() ; iterLib != serviceList.end() ; ++iterLib )
-        {
-                std::string classname =  (*iterLib)->getClassname() ;
-                if( std::find( allImplementationId.begin() , allImplementationId.end() , classname ) == allImplementationId.end()  )
-                {
-                        allImplementationId.push_back( classname ) ;
-                }
-        }
+	// All implementation already registered in fwTools for specific type
+	::fwServices::ObjectServiceKeyType myKey(serviceId,obj->className());
+	std::list< ::fwServices::IService::sptr > serviceList = ::fwTools::ClassFactoryRegistry::subClasses< fwServices::IService >(myKey) ;
+	for( std::list< ::fwServices::IService::sptr >::iterator iterLib = serviceList.begin() ; iterLib != serviceList.end() ; ++iterLib )
+	{
+		std::string classname =  (*iterLib)->getClassname() ;
+		if( std::find( allImplementationId.begin() , allImplementationId.end() , classname ) == allImplementationId.end()  )
+		{
+			allImplementationId.push_back( classname ) ;
+		}
+	}
 
-        // All implementations available from bundle analysis
-        std::vector< std::string > extensionIdsSpec = ::fwServices::bundle::getValidExtensionIdsForObjectAndService( obj , serviceId , 1) ;
-        for( std::vector< std::string >::iterator iterBundle = extensionIdsSpec.begin() ; iterBundle != extensionIdsSpec.end() ; ++iterBundle )
-        {
-                if( std::find( allImplementationId.begin() , allImplementationId.end() , *iterBundle ) == allImplementationId.end()  )
-                {
-                        allImplementationId.push_back( *iterBundle ) ;
-                }
-        }
+	// All implementations available from bundle analysis
+	std::vector< std::string > extensionIdsSpec = ::fwServices::bundle::getValidExtensionIdsForObjectAndService( obj , serviceId , 1) ;
+	for( std::vector< std::string >::iterator iterBundle = extensionIdsSpec.begin() ; iterBundle != extensionIdsSpec.end() ; ++iterBundle )
+	{
+		if( std::find( allImplementationId.begin() , allImplementationId.end() , *iterBundle ) == allImplementationId.end()  )
+		{
+			allImplementationId.push_back( *iterBundle ) ;
+		}
+	}
 
-        // GENERIC IMPLEMENTATIONS
+	// GENERIC IMPLEMENTATIONS
 
-        // All implementation already registered in fwTools for ::fwTools::Object type
-        // This concerns implementation of type serviceId who are valid for any object type (declared by REGISTER_SERVICE( serviceIdClassType , impl , Object )
-        ::fwServices::ObjectServiceKeyType myRootKey(serviceId,::fwCore::getClassname< ::fwTools::Object >() );
-        std::list< ::fwServices::IService::sptr > rootServiceList = ::fwTools::ClassFactoryRegistry::subClasses< fwServices::IService >(myRootKey) ;
-        for( std::list< ::fwServices::IService::sptr >::iterator iterLib = rootServiceList.begin() ; iterLib != rootServiceList.end() ; ++iterLib )
-        {
-                std::string classname = (*iterLib)->getClassname() ;
-                if( std::find( allImplementationId.begin() , allImplementationId.end() , classname ) == allImplementationId.end()  )
-                {
-                        allImplementationId.push_back( classname ) ;
-                }
-        }
+	// All implementation already registered in fwTools for ::fwTools::Object type
+	// This concerns implementation of type serviceId who are valid for any object type (declared by REGISTER_SERVICE( serviceIdClassType , impl , Object )
+	::fwServices::ObjectServiceKeyType myRootKey(serviceId,::fwCore::getClassname< ::fwTools::Object >() );
+	std::list< ::fwServices::IService::sptr > rootServiceList = ::fwTools::ClassFactoryRegistry::subClasses< fwServices::IService >(myRootKey) ;
+	for( std::list< ::fwServices::IService::sptr >::iterator iterLib = rootServiceList.begin() ; iterLib != rootServiceList.end() ; ++iterLib )
+	{
+		std::string classname = (*iterLib)->getClassname() ;
+		if( std::find( allImplementationId.begin() , allImplementationId.end() , classname ) == allImplementationId.end()  )
+		{
+			allImplementationId.push_back( classname ) ;
+		}
+	}
 
-        std::vector< std::string > extensionIdsGen = ::fwServices::bundle::getValidExtensionIdsForObjectAndService( obj , serviceId , 2) ;
-        for( std::vector< std::string >::iterator iterBundle = extensionIdsGen.begin() ; iterBundle != extensionIdsGen.end() ; ++iterBundle )
-        {
-                if( std::find( allImplementationId.begin() , allImplementationId.end() , *iterBundle ) == allImplementationId.end()  )
-                {
-                        allImplementationId.push_back( *iterBundle ) ;
-                }
-        }
+	std::vector< std::string > extensionIdsGen = ::fwServices::bundle::getValidExtensionIdsForObjectAndService( obj , serviceId , 2) ;
+	for( std::vector< std::string >::iterator iterBundle = extensionIdsGen.begin() ; iterBundle != extensionIdsGen.end() ; ++iterBundle )
+	{
+		if( std::find( allImplementationId.begin() , allImplementationId.end() , *iterBundle ) == allImplementationId.end()  )
+		{
+			allImplementationId.push_back( *iterBundle ) ;
+		}
+	}
 
 
-        return allImplementationId ;
+	return allImplementationId ;
 }
 std::string getDefaultImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId)
 {
-        std::vector< std::string > implementations = ::fwServices::getImplementationIds( obj , serviceId ) ;
-        OSLM_ASSERT("implementation not found for " << serviceId << " service type", !implementations.empty() ) ;
-        return *implementations.begin() ;
+	std::vector< std::string > implementations = ::fwServices::getImplementationIds( obj , serviceId ) ;
+	OSLM_ASSERT("implementation not found for " << serviceId << " service type", !implementations.empty() ) ;
+	return *implementations.begin() ;
 }
 
 }

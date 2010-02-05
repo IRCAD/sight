@@ -24,42 +24,42 @@ namespace vtkIO
 {
 
 /**
- * @brief       Write a reconstruction.
- * @class       ReconstructionWriter.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	Write a reconstruction.
+ * @class	ReconstructionWriter.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  *
  * Write a ::fwData::Reconstruction using the VTK lib and the obj format
  */
 class ReconstructionWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >,
-                                                         public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
-                                                         public ::fwTools::ProgressAdviser
+							 public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
+							 public ::fwTools::ProgressAdviser
 {
 
 public :
 
-        fwCoreClassDefinitionsWithFactoryMacro(         (ReconstructionWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >::Baseclass),
-                                                                                                         (()),
-                                                                                                         new  ReconstructionWriter
-                                                                                                );
+	fwCoreClassDefinitionsWithFactoryMacro( 	(ReconstructionWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >::Baseclass),
+													 (()),
+													 new  ReconstructionWriter
+												);
 
-        //! @brief Constructor.
-        VTKIO_API ReconstructionWriter();
+	//! @brief Constructor.
+	VTKIO_API ReconstructionWriter();
 
-        //! @brief Destructor.
-        VTKIO_API ~ReconstructionWriter();
+	//! @brief Destructor.
+	VTKIO_API ~ReconstructionWriter();
 
-        //! @brief Writing operator.
-        VTKIO_API void write();
+	//! @brief Writing operator.
+	VTKIO_API void write();
 
 protected:
-        /*!
-         * @brief Create a vtkActor* from a ::fwData::Reconstruction::sptr.
-         *
-         * @param[in] _pReconstruction ::fwData::Reconstruction::sptr.
-         * @return vtkActor*.
-         */
-        vtkActor * createActor( ::fwData::Reconstruction::sptr _pReconstruction );
+	/*!
+	 * @brief Create a vtkActor* from a ::fwData::Reconstruction::sptr.
+	 *
+	 * @param[in] _pReconstruction ::fwData::Reconstruction::sptr.
+	 * @return vtkActor*.
+	 */
+	vtkActor * createActor( ::fwData::Reconstruction::sptr _pReconstruction );
 };
 
 } // namespace vtkIO

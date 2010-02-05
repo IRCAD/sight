@@ -22,34 +22,34 @@ namespace vtkIO
 {
 
 /**
- * @brief       Write a mesh.
- * @class       MeshWriter.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	Write a mesh.
+ * @class	MeshWriter.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  *
  * Write a VTK Mesh using the VTK lib
  */
 
 class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >,
-                                                         public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
-                                                         public ::fwTools::ProgressAdviser
+							 public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
+							 public ::fwTools::ProgressAdviser
 {
 
 public :
 
-        fwCoreClassDefinitionsWithFactoryMacro(         (MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >::Baseclass),
-                                                                                                         (()),
-                                                                                                         new  MeshWriter
-                                                                                                );
+	fwCoreClassDefinitionsWithFactoryMacro( 	(MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >::Baseclass),
+													 (()),
+													 new  MeshWriter
+												);
 
-        //! @brief Constructor.
-        VTKIO_API MeshWriter();
+	//! @brief Constructor.
+	VTKIO_API MeshWriter();
 
-        //! @brief Destructor.
-        VTKIO_API ~MeshWriter();
+	//! @brief Destructor.
+	VTKIO_API ~MeshWriter();
 
-        //! @brief Reading operator.
-        VTKIO_API void write();
+	//! @brief Reading operator.
+	VTKIO_API void write();
 
 };
 

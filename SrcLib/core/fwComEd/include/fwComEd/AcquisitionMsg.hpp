@@ -16,36 +16,36 @@ namespace fwComEd
 {
 
 /**
- * @brief       Object event message specialized for acquisition : store modification information
- * @class       AcquisitionMsg
+ * @brief	Object event message specialized for acquisition : store modification information
+ * @class 	AcquisitionMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
- * @see         ::fwServices::ObjectMsg
+ * @see 	::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API AcquisitionMsg : public ::fwServices::ObjectMsg
 {
 public:
-        fwCoreClassDefinitionsWithFactoryMacro((AcquisitionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new AcquisitionMsg );
+	fwCoreClassDefinitionsWithFactoryMacro((AcquisitionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new AcquisitionMsg );
 
-        /**
-         * @name Event identifier
-         */
-        /// @{
-        /// Event identifier used to inform for modification
-        FWCOMED_API static std::string ADD_RECONSTRUCTION;
-        FWCOMED_API static std::string VISIBILITY;
-        FWCOMED_API static std::string NEW_RECONSTRUCTION_SELECTED;
-        /// @}
+	/**
+	 * @name Event identifier
+	 */
+	/// @{
+	/// Event identifier used to inform for modification
+	FWCOMED_API static std::string ADD_RECONSTRUCTION;
+	FWCOMED_API static std::string VISIBILITY;
+	FWCOMED_API static std::string NEW_RECONSTRUCTION_SELECTED;
+	/// @}
 
-        /**
-         * @brief       Constructor : do nothing.
-         */
-        FWCOMED_API AcquisitionMsg() throw();
+	/**
+	 * @brief 	Constructor : do nothing.
+	 */
+	FWCOMED_API AcquisitionMsg() throw();
 
-        /**
-         * @brief       Destuctor : do nothing.
-         */
-        FWCOMED_API virtual ~AcquisitionMsg() throw();
+	/**
+	 * @brief	Destuctor : do nothing.
+	 */
+	FWCOMED_API virtual ~AcquisitionMsg() throw();
 
 };
 

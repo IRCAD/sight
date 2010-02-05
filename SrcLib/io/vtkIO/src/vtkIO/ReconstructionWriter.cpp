@@ -34,88 +34,88 @@ namespace vtkIO
 ReconstructionWriter::ReconstructionWriter()
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-        SLM_TRACE("vtkIO::ReconstructionWriter::ReconstructionWriter");
+	SLM_TRACE("vtkIO::ReconstructionWriter::ReconstructionWriter");
 }
 
 //------------------------------------------------------------------------------
 
 ReconstructionWriter::~ReconstructionWriter()
 {
-        SLM_TRACE("vtkIO::ReconstructionWriter::~ReconstructionWriter");
+	SLM_TRACE("vtkIO::ReconstructionWriter::~ReconstructionWriter");
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriter::write()
 {
-        assert( m_object.use_count() );
-        assert( !m_object.expired() );
-        assert( m_object.lock() );
+	assert( m_object.use_count() );
+	assert( !m_object.expired() );
+	assert( m_object.lock() );
 
-        std::string prefix =  this->getFile().string();
-        if (prefix.find(".obj") != std::string::npos)
-        {
-                prefix = prefix.substr(0, prefix.length()-4);
-        }
-        ::fwData::Acquisition::sptr pAcquisition = getConcreteObject();
+	std::string prefix =  this->getFile().string();
+	if (prefix.find(".obj") != std::string::npos)
+	{
+		prefix = prefix.substr(0, prefix.length()-4);
+	}
+	::fwData::Acquisition::sptr pAcquisition = getConcreteObject();
 
-        ::fwData::Acquisition::ReconstructionIterator iter;
-        vtkRenderer *renderer = vtkRenderer::New();
+	::fwData::Acquisition::ReconstructionIterator iter;
+	vtkRenderer *renderer = vtkRenderer::New();
 
-        for (iter = pAcquisition->getReconstructions().first; iter != pAcquisition->getReconstructions().second; ++iter)
-        {
-                vtkActor * actor = createActor(*iter);
-                renderer->AddActor(actor);
-                actor->Delete();
-        }
+	for (iter = pAcquisition->getReconstructions().first; iter != pAcquisition->getReconstructions().second; ++iter)
+	{
+		vtkActor * actor = createActor(*iter);
+		renderer->AddActor(actor);
+		actor->Delete();
+	}
 
-        vtkRenderWindow *renderWindow = vtkRenderWindow::New();
-        renderWindow->AddRenderer(renderer);
+	vtkRenderWindow *renderWindow = vtkRenderWindow::New();
+	renderWindow->AddRenderer(renderer);
 
-        vtkOBJExporter *exporter = vtkOBJExporter::New();
-        exporter->SetRenderWindow(renderWindow);
-        exporter->SetFilePrefix(prefix.c_str());
-        exporter->Write();
+	vtkOBJExporter *exporter = vtkOBJExporter::New();
+	exporter->SetRenderWindow(renderWindow);
+	exporter->SetFilePrefix(prefix.c_str());
+	exporter->Write();
 
-        renderer->Delete();
-        renderWindow->Delete();
-        exporter->Delete();
+	renderer->Delete();
+	renderWindow->Delete();
+	exporter->Delete();
 }
 
 vtkActor * ReconstructionWriter::createActor( ::fwData::Reconstruction::sptr pReconstruction )
 {
-        vtkActor* actor = vtkActor::New();
+	vtkActor* actor = vtkActor::New();
 
-        ::fwData::TriangularMesh::sptr mesh = pReconstruction->getTriangularMesh();
-        ::fwData::Material::sptr material = pReconstruction->getMaterial();
+	::fwData::TriangularMesh::sptr mesh = pReconstruction->getTriangularMesh();
+	::fwData::Material::sptr material = pReconstruction->getMaterial();
 
-        vtkPolyData * polyData       = ::vtkIO::toVTKMesh(mesh);
-        vtkPolyDataMapper  * mapper  = vtkPolyDataMapper::New();
-        vtkPolyDataNormals* normals = vtkPolyDataNormals::New();
-        normals->SetInput(polyData);
-        normals->ComputePointNormalsOn ();
-        normals->ComputeCellNormalsOn ();
-        normals->ConsistencyOn ();
-        normals->SplittingOn ();
-        normals->SetFeatureAngle(180);
-        mapper->SetInputConnection(normals->GetOutputPort());
-        actor->SetMapper(mapper);
-        mapper->Delete();
-        polyData->Delete();
-        normals->Delete();
+	vtkPolyData * polyData       = ::vtkIO::toVTKMesh(mesh);
+	vtkPolyDataMapper  * mapper  = vtkPolyDataMapper::New();
+	vtkPolyDataNormals* normals = vtkPolyDataNormals::New();
+	normals->SetInput(polyData);
+	normals->ComputePointNormalsOn ();
+	normals->ComputeCellNormalsOn ();
+	normals->ConsistencyOn ();
+	normals->SplittingOn ();
+	normals->SetFeatureAngle(180);
+	mapper->SetInputConnection(normals->GetOutputPort());
+	actor->SetMapper(mapper);
+	mapper->Delete();
+	polyData->Delete();
+	normals->Delete();
 
-        ::fwData::Color & color = material->ambient();
-        vtkProperty *property = actor->GetProperty();
-        property->SetColor( color.red(), color.green(), color.blue());
-        property->SetSpecularColor(1.,1.,1.);
-        property->SetSpecularPower(100.); //Shininess
-        property->SetAmbient(.05);
-        property->SetDiffuse(1.);
-        property->SetSpecular(1.);
-        property->SetInterpolationToPhong();
-        property->SetOpacity( color.alpha() );
+	::fwData::Color & color = material->ambient();
+	vtkProperty *property = actor->GetProperty();
+	property->SetColor( color.red(), color.green(),	color.blue());
+	property->SetSpecularColor(1.,1.,1.);
+	property->SetSpecularPower(100.); //Shininess
+	property->SetAmbient(.05);
+	property->SetDiffuse(1.);
+	property->SetSpecular(1.);
+	property->SetInterpolationToPhong();
+	property->SetOpacity( color.alpha() );
 
-        return actor;
+	return actor;
 }
 
 //------------------------------------------------------------------------------

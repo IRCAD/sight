@@ -19,45 +19,45 @@ namespace operators
 {
 
 /**
- * @brief       This class proposes a dialog box to edit operator parameters.
- * @class       BoxCroppingParameterEditor.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- * @note        This class is not commented, because it is not used in the open framework tutorial.
- * @todo        BoxCroppingParameterEditor is not commented.
+ * @brief	This class proposes a dialog box to edit operator parameters.
+ * @class	BoxCroppingParameterEditor.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
+ * @note 	This class is not commented, because it is not used in the open framework tutorial.
+ * @todo 	BoxCroppingParameterEditor is not commented.
  */
 class FWWX_CLASS_API BoxCroppingParameterEditor : public wxDialog
 {
 
 public :
 
-        FWWX_API BoxCroppingParameterEditor( wxWindow * parent, ::fwData::Image::sptr pImage );
+	FWWX_API BoxCroppingParameterEditor( wxWindow * parent, ::fwData::Image::sptr pImage );
 
-        FWWX_API ~BoxCroppingParameterEditor();
+	FWWX_API ~BoxCroppingParameterEditor();
 
-        FWWX_API int getXMin();
+	FWWX_API int getXMin();
 
-        FWWX_API int getYMin();
+	FWWX_API int getYMin();
 
-        FWWX_API int getZMin();
+	FWWX_API int getZMin();
 
-        FWWX_API int getXMax();
+	FWWX_API int getXMax();
 
-        FWWX_API int getYMax();
+	FWWX_API int getYMax();
 
-        FWWX_API int getZMax();
+	FWWX_API int getZMax();
 
 private :
 
-        void createContent();
+	void createContent();
 
-        long m_xMin;
-        long m_yMin;
-        long m_zMin;
-        long m_xMax;
-        long m_yMax;
-        long m_zMax;
-        ::fwData::Image::sptr m_pImage;
+	long m_xMin;
+	long m_yMin;
+	long m_zMin;
+	long m_xMax;
+	long m_yMax;
+	long m_zMax;
+	::fwData::Image::sptr m_pImage;
 };
 
 } // operators

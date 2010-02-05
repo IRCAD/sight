@@ -1,13 +1,13 @@
 <plugin id="opVTKMesh" class="::opVTKMesh::Plugin">
-        
-        <library name="opVTKMesh" />
+	
+	<library name="opVTKMesh" />
 
-        <requirement id="dataReg" />
-        <requirement id="gui" />
+	<requirement id="dataReg" />
+	<requirement id="gui" />
 
-        <point id="::opVTKMesh::action::VTKMeshCreation" >
-                <implements>::gui::action::IAction</implements>
-                <implements>::fwTools::Object</implements>
-        </point>
-        
+	<point id="::opVTKMesh::action::VTKMeshCreation" >
+		<implements>::gui::action::IAction</implements>
+		<implements>::fwTools::Object</implements>
+	</point>
+	
 </plugin>

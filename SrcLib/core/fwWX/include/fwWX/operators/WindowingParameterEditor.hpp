@@ -19,38 +19,38 @@ namespace operators
 
 
 /**
- * @brief       This class proposes a dialog box to edit operator parameters.
- * @class       WindowingParameterEditor.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- * @note        This class is not commented, because it is not used in the open framework tutorial.
- * @todo        WindowingParameterEditor is not commented.
+ * @brief	This class proposes a dialog box to edit operator parameters.
+ * @class	WindowingParameterEditor.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
+ * @note 	This class is not commented, because it is not used in the open framework tutorial.
+ * @todo 	WindowingParameterEditor is not commented.
  */
 class FWWX_CLASS_API WindowingParameterEditor : public wxDialog
 {
 
 public :
 
-        FWWX_API WindowingParameterEditor( wxWindow * parent );
+	FWWX_API WindowingParameterEditor( wxWindow * parent );
 
-        FWWX_API ~WindowingParameterEditor();
+	FWWX_API ~WindowingParameterEditor();
 
-        FWWX_API int getWindowMinimun();
+	FWWX_API int getWindowMinimun();
 
-        FWWX_API int getWindowMaximum();
+	FWWX_API int getWindowMaximum();
 
-        FWWX_API int getOutputMinimum();
+	FWWX_API int getOutputMinimum();
 
-        FWWX_API int getOutputMaximum();
+	FWWX_API int getOutputMaximum();
 
 private :
 
-        void createContent();
+	void createContent();
 
-        long m_iWindowMinimum;
-        long m_iWindowMaximum;
-        long m_iOutputMinimum;
-        long m_iOutputMaximum;
+	long m_iWindowMinimum;
+	long m_iWindowMaximum;
+	long m_iOutputMinimum;
+	long m_iOutputMaximum;
 };
 
 } // operators

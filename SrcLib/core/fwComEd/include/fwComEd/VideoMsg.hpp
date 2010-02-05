@@ -16,11 +16,11 @@ namespace fwComEd
 {
 
 /**
- * @brief       Object message specialized for Video : store modification information
- * @class       VideoMsg
+ * @brief	Object message specialized for Video : store modification information
+ * @class 	VideoMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
- * @see         ::fwServices::ObjectMsg
+ * @see 	::fwServices::ObjectMsg
  * @todo specialize it when Video class is clearly defined
  */
 class FWCOMED_CLASS_API VideoMsg : public ::fwServices::ObjectMsg
@@ -28,26 +28,26 @@ class FWCOMED_CLASS_API VideoMsg : public ::fwServices::ObjectMsg
 
 public:
 
-        fwCoreClassDefinitionsWithFactoryMacro((VideoMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new VideoMsg );
+	fwCoreClassDefinitionsWithFactoryMacro((VideoMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new VideoMsg );
 
-        /**
-         * @name Event identifier
-         */
-        /// @{
-        /// Event identifier used to inform for modification
-        FWCOMED_API static  std::string VIDEO_IS_REFRESHED;
-        FWCOMED_API static  std::string VIDEO_IS_INITIALIZED;
-        /// @}
+	/**
+	 * @name Event identifier
+	 */
+	/// @{
+	/// Event identifier used to inform for modification
+	FWCOMED_API static  std::string VIDEO_IS_REFRESHED;
+	FWCOMED_API static  std::string VIDEO_IS_INITIALIZED;
+	/// @}
 
-        /**
-          * @brief      Constructor : do nothing.
-          */
-        FWCOMED_API VideoMsg() throw();
+	/**
+	  * @brief	Constructor : do nothing.
+	  */
+	FWCOMED_API VideoMsg() throw();
 
-        /**
-          * @brief      Destuctor : do nothing.
-          */
-        FWCOMED_API virtual ~VideoMsg() throw();
+	/**
+	  * @brief	Destuctor : do nothing.
+	  */
+	FWCOMED_API virtual ~VideoMsg() throw();
 
 };
 

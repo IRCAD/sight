@@ -18,10 +18,10 @@ namespace fwWX
 {
 
 /**
- * @brief       This class shows data content.
- * @class       wxShowXML.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	This class shows data content.
+ * @class	wxShowXML.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  * @todo wxShowXML is not commented.
  */
 
@@ -29,28 +29,28 @@ class FWWX_CLASS_API wxShowXML : public ::wxPanel
 
 {
 public:
-        /**
-        * @brief        Constructor
-        */
-        FWWX_API wxShowXML(wxWindow* parent, xmlNodePtr node);
+	/**
+	* @brief	Constructor
+	*/
+	FWWX_API wxShowXML(wxWindow* parent, xmlNodePtr node);
 
 private :
-        /**
-         * @brief       construct the wxTree with xmlNodePtr
-         */
-        void addNodeToWidget(wxTreeCtrl *tree, wxTreeItemId pItem , xmlNodePtr pXmlNode) ;
-        /**
-         * @brief       Convert a wxmlChar(Ascii) To wxString
-         */
-        wxString xmlCharTowxString(const xmlChar * ch) ;
-        /**
-         * @brief       return {name&value} of a node property in wxString(or empty wxString)
-         */
-        wxString getNodePropertiesInWxString(xmlNodePtr pXmlNode) ;
-        /**
-         * @brief       return Element Value of a node in wxString(or empty wxString)
-         */
-        wxString getElementValue(xmlNodePtr pXmlNode) ;
+	/**
+	 * @brief	construct the wxTree with xmlNodePtr
+	 */
+	void addNodeToWidget(wxTreeCtrl *tree, wxTreeItemId pItem , xmlNodePtr pXmlNode) ;
+	/**
+	 * @brief	Convert a wxmlChar(Ascii) To wxString
+	 */
+	wxString xmlCharTowxString(const xmlChar * ch) ;
+	/**
+	 * @brief	return {name&value} of a node property in wxString(or empty wxString)
+	 */
+	wxString getNodePropertiesInWxString(xmlNodePtr pXmlNode) ;
+	/**
+	 * @brief	return Element Value of a node in wxString(or empty wxString)
+	 */
+	wxString getElementValue(xmlNodePtr pXmlNode) ;
 };
 
 } // namespace fwWX

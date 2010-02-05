@@ -23,14 +23,14 @@ m_dataAvailable(false),
 m_lastModified(0),
 m_camera( new ::fwData::Camera)
 {
-        SLM_TRACE("Video::Video()");
+	SLM_TRACE("Video::Video()");
 }
 
 //------------------------------------------------------------------------------
 
 Video::~Video() throw()
 {
-        SLM_TRACE("Video::~Video()");
+	SLM_TRACE("Video::~Video()");
 }
 
 //------------------------------------------------------------------------------

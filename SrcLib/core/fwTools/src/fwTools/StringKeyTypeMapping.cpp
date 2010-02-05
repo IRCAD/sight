@@ -18,45 +18,45 @@ namespace fwTools {
 template<>
 bool isMapping<unsigned char>(const std::string &key)
 {
-        return key=="unsigned char";
+	return key=="unsigned char";
 }
 template<>
 bool isMapping<unsigned short>(const std::string &key)
 {
-        return key=="unsigned short";
+	return key=="unsigned short";
 }
 template<>
 bool isMapping<unsigned int>(const std::string &key)
 {
-        return key=="unsigned int";
+	return key=="unsigned int";
 }
 template<>
 bool isMapping<unsigned long>(const std::string &key)
 {
-        return key=="unsigned long";
+	return key=="unsigned long";
 }
 
 // FIXED PRECISION SIGNED
 template<>
 bool isMapping<signed char>(const std::string &key)
 {
-        return key=="signed char";
+	return key=="signed char";
 }
 template<>
 bool isMapping<signed short>(const std::string &key)
 {
-        return key=="signed short";
+	return key=="signed short";
 }
 template<>
 bool isMapping<signed int>(const std::string &key)
 {
-        return key=="signed int";
+	return key=="signed int";
 }
 
 template<>
 bool isMapping<signed long>(const std::string &key)
 {
-        return key=="signed long";
+	return key=="signed long";
 }
 
 
@@ -64,19 +64,19 @@ bool isMapping<signed long>(const std::string &key)
 template<>
 bool isMapping<float>(const std::string &key)
 {
-        return key=="float";
+	return key=="float";
 }
 template<>
 bool isMapping<double>(const std::string &key)
 {
-        return key=="double";
+	return key=="double";
 }
 
 // MISC
 template<>
 bool isMapping<std::string>(const std::string &key)
 {
-        return key=="std::string";
+	return key=="std::string";
 }
 
 

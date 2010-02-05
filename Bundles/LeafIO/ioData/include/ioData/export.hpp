@@ -9,32 +9,32 @@
 
 
 #ifdef _WIN32
-        #pragma warning( disable : 4251 )
+	#pragma warning( disable : 4251 )
 
 
-        #ifdef IODATA_EXPORTS
-        #define IODATA_API __declspec(dllexport)
-        #else
-        #define IODATA_API __declspec(dllimport)
-        #endif
+	#ifdef IODATA_EXPORTS
+	#define IODATA_API __declspec(dllexport)
+	#else
+	#define IODATA_API __declspec(dllimport)
+	#endif
 
-        #define IODATA_CLASS_API
-        #pragma warning(disable: 4290)
+	#define IODATA_CLASS_API
+	#pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-        #ifdef IODATA_EXPORTS
-        #define IODATA_API __attribute__ ((visibility("default")))
-        #define IODATA_CLASS_API __attribute__ ((visibility("default")))
-        #else
-        #define IODATA_API __attribute__ ((visibility("hidden")))
-        #define IODATA_CLASS_API __attribute__ ((visibility("hidden")))
-        #endif
+	#ifdef IODATA_EXPORTS
+	#define IODATA_API __attribute__ ((visibility("default")))
+	#define IODATA_CLASS_API __attribute__ ((visibility("default")))
+	#else
+	#define IODATA_API __attribute__ ((visibility("hidden")))
+	#define IODATA_CLASS_API __attribute__ ((visibility("hidden")))
+	#endif
 
 #else
 
-        #define IODATA_API
-        #define IODATA_CLASS_API
+	#define IODATA_API
+	#define IODATA_CLASS_API
 
 #endif
 

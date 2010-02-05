@@ -15,22 +15,22 @@ namespace fwData
 
 Spline::Spline()
 {
-        SLM_WARN("::fwData::Spline()");
+	SLM_WARN("::fwData::Spline()");
 }
 
 //------------------------------------------------------------------------------
 
 Spline::~Spline()
 {
-        SLM_WARN("::fwData::~Spline()");
-        m_points.clear();
+	SLM_WARN("::fwData::~Spline()");
+	m_points.clear();
 }
 
 //------------------------------------------------------------------------------
 
 Spline::Points &Spline::points()
 {
-        return m_points ;
+	return m_points ;
 }
 
 //------------------------------------------------------------------------------

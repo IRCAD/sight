@@ -16,51 +16,51 @@ namespace ctrlSelection
 {
 
 /**
- * @class       AcqFromPDBUpdaterSrv.
+ * @class	AcqFromPDBUpdaterSrv.
  * @author IRCAD (Research and Development Team).
 
- * @date        2007-2009.
+ * @date	2007-2009.
  */
 class CTRLSELECTION_CLASS_API AcqFromPDBUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
 {
 
 public :
 
-        fwCoreServiceClassDefinitionsMacro ( (AcqFromPDBUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
+	fwCoreServiceClassDefinitionsMacro ( (AcqFromPDBUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
 
-        /// Constructor.  Do nothing.
-        CTRLSELECTION_API AcqFromPDBUpdaterSrv() throw() ;
+	/// Constructor.  Do nothing.
+	CTRLSELECTION_API AcqFromPDBUpdaterSrv() throw() ;
 
-        /// Destructor. Do nothing.
-        CTRLSELECTION_API virtual ~AcqFromPDBUpdaterSrv() throw() ;
+	/// Destructor. Do nothing.
+	CTRLSELECTION_API virtual ~AcqFromPDBUpdaterSrv() throw() ;
 
-        /// Implements starting method derived from IService. Do nothing.
-        CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+	/// Implements starting method derived from IService. Do nothing.
+	CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
-        /// Implements stopping method derived from IService. Do nothing.
-        CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+	/// Implements stopping method derived from IService. Do nothing.
+	CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-        /// Implements configuring method derived from IService. Do nothing.
-        CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+	/// Implements configuring method derived from IService. Do nothing.
+	CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
-        /// Implements reconfiguring method derived from IService. Do nothing.
-        CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+	/// Implements reconfiguring method derived from IService. Do nothing.
+	CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
 
-        /// Implements updating method derived from IService. Do nothing.
-        CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+	/// Implements updating method derived from IService. Do nothing.
+	CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
-        /// Implements info method derived from IService. Print classname.
-        CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+	/// Implements info method derived from IService. Print classname.
+	CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-        CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+	CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private :
 
-        void updateCompositeWithAcq ( ::fwData::Acquisition::sptr _acq );
+	void updateCompositeWithAcq ( ::fwData::Acquisition::sptr _acq );
 
-        std::string m_compositeKey;
+	std::string m_compositeKey;
 
-        std::string m_patientDBUID;
+	std::string m_patientDBUID;
 };
 
 }

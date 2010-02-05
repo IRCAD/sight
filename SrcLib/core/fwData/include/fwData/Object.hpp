@@ -23,36 +23,36 @@
 fwCorePredeclare( (data)(visitor)(IVisitor) );
 
 /**
- * @namespace   data
- * @brief               This namespace contains the representation of the data objects used in the framework.
- * @author              IRCAD (Research and Development Team).
- * @date                2007-2009.
+ * @namespace 	data
+ * @brief 		This namespace contains the representation of the data objects used in the framework.
+ * @author		IRCAD (Research and Development Team).
+ * @date		2007-2009.
  */
 namespace fwData
 {
 
 
 /**
- * @brief       Base class for each data object.
+ * @brief 	Base class for each data object.
  * Each object can optionally embed sub-object with string indentifier. We name this concept a Field.
  * An Object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
  *
- * @author      IRCAD (Research and Development Team).
- * @date        2007-2009.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2007-2009.
  */
 
 
 class FWDATA_CLASS_API Object  : public ::fwTools::Object
 {
 public:
-        fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object::Baseclass), (( )), ::fwTools::Factory::New< Object > );
+	fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object::Baseclass), (( )), ::fwTools::Factory::New< Object > );
 
-        /// Constructor
-        FWDATA_API Object(); // FIXME set private
+	/// Constructor
+	FWDATA_API Object(); // FIXME set private
 
-        /// Destructor
-        FWDATA_API virtual ~Object() ; // need to be polymorphic !!!
+	/// Destructor
+	FWDATA_API virtual ~Object() ; // need to be polymorphic !!!
 
 };
 

@@ -21,28 +21,28 @@ namespace fwRuntime
 
 
 /**
- * @brief       Defines the plugin interface.
- * @struct      IPlugin
- * @date        2004-2009
- * @author      IRCAD (Research and Development Team).
+ * @brief	Defines the plugin interface.
+ * @struct 	IPlugin
+ * @date	2004-2009
+ * @author 	IRCAD (Research and Development Team).
  */
 struct FWRUNTIME_CLASS_API IPlugin : public IExecutable
 {
 
-        /**
-         * @brief       Destructor : does nothing.
-         */
-        FWRUNTIME_API virtual ~IPlugin();
+	/**
+	 * @brief	Destructor : does nothing.
+	 */
+	FWRUNTIME_API virtual ~IPlugin();
 
-        /**
-         * @brief       Notifies the plugin about its start.
-         */
-        virtual void start() throw(::fwRuntime::RuntimeException) = 0;
+	/**
+	 * @brief	Notifies the plugin about its start.
+	 */
+	virtual void start() throw(::fwRuntime::RuntimeException) = 0;
 
-        /**
-         * @brief       Notifies the plugin about its stop.
-         */
-        virtual void stop() throw() = 0;
+	/**
+	 * @brief	Notifies the plugin about its stop.
+	 */
+	virtual void stop() throw() = 0;
 
 };
 

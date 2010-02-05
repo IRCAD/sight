@@ -1,6 +1,6 @@
 CLASSTEST=['EConfigurationElementTest','RuntimeTest']
 
 USE = ['boost','libxml2']
-LIB     = ['fwCore_0-1']
+LIB	= ['fwCore_0-1']
 TYPE='exec'
 CONSOLE='yes'

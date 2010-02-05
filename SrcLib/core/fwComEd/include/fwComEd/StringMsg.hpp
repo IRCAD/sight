@@ -16,26 +16,26 @@ namespace fwComEd
 {
 
 /**
- * @brief       Object event message specialized for string field : store modification information
- * @class       StringMsg
+ * @brief	Object event message specialized for string field : store modification information
+ * @class 	StringMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
- * @see         ::fwServices::ObjectMsg
+ * @see 	::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API StringMsg : public ::fwServices::ObjectMsg
 {
 public:
-        fwCoreClassDefinitionsWithFactoryMacro((StringMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new StringMsg );
+	fwCoreClassDefinitionsWithFactoryMacro((StringMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new StringMsg );
 
-        /**
-          * @brief      Constructor : do nothing.
-          */
-        FWCOMED_API StringMsg() throw();
+	/**
+	  * @brief	Constructor : do nothing.
+	  */
+	FWCOMED_API StringMsg() throw();
 
-        /**
-          * @brief      Destuctor : do nothing
-          */
-        FWCOMED_API virtual ~StringMsg() throw();
+	/**
+	  * @brief	Destuctor : do nothing
+	  */
+	FWCOMED_API virtual ~StringMsg() throw();
 
 };
 

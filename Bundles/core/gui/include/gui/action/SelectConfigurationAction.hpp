@@ -18,50 +18,50 @@ namespace action
 {
 
 /**
- * @brief       This action un-initializes root Object,
+ * @brief	This action un-initializes root Object,
  * sets the new selected object in root,
  * sets  the new selected configuration
  * and re-initialize root Object.
  *
- * @class       SelectConfigurationAction.
- * @author      IRCAD (Research and Development Team).
+ * @class	SelectConfigurationAction.
+ * @author	IRCAD (Research and Development Team).
 
- * @date        2009.
+ * @date	2009.
  */
 class GUI_CLASS_API SelectConfigurationAction : public ::gui::action::IAction
 {
 
 public :
-        
-        /**
-        * @brief Constructor. Do nothing.
-        */
-        GUI_API SelectConfigurationAction() throw() ;
+	
+	/**
+	* @brief Constructor. Do nothing.
+	*/
+	GUI_API SelectConfigurationAction() throw() ;
 
-        /**
-        * @brief Destructor. Do nothing.
-        */
-        GUI_API virtual ~SelectConfigurationAction() throw() ;
+	/**
+	* @brief Destructor. Do nothing.
+	*/
+	GUI_API virtual ~SelectConfigurationAction() throw() ;
 
 protected:
 
-        /**
-         * @brief This method :
-         * - uninitialize root Object
-         * - show a root Object selector
-         * - set root Object
-         * - show a configuration Object selector
-         * - set root Object configuration
-         * - initialize root Object
-         */
-        GUI_API virtual void updating() throw(::fwTools::Failed);
+	/**
+	 * @brief This method :
+	 * - uninitialize root Object
+	 * - show a root Object selector
+	 * - set root Object
+	 * - show a configuration Object selector
+	 * - set root Object configuration
+	 * - initialize root Object
+	 */
+	GUI_API virtual void updating() throw(::fwTools::Failed);
 
-        /**
-         * @brief This method gives information about the class. Do nothing.
-         */
-        GUI_API virtual void info(std::ostream &_sstream ) ;
-        
-        
+	/**
+	 * @brief This method gives information about the class. Do nothing.
+	 */
+	GUI_API virtual void info(std::ostream &_sstream ) ;
+	
+	
 };
 
 

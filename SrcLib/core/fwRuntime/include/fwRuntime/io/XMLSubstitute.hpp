@@ -28,9 +28,9 @@ namespace io
 /// Helper class to contain substitution rules
 struct FWRUNTIME_CLASS_API Substitute
 {
-        std::string xpath; /// path to the XML node to patch
-        std::string dictEntry; /// dictionary Entry to retrieve the new value. This value is used to replace the old one
-        std::string status; // dictEntry presence requirement = "optional" , "required"
+	std::string xpath; /// path to the XML node to patch
+	std::string dictEntry; /// dictionary Entry to retrieve the new value. This value is used to replace the old one
+	std::string status; // dictEntry presence requirement = "optional" , "required"
 };
 
 class FWRUNTIME_CLASS_API XMLSubstitute

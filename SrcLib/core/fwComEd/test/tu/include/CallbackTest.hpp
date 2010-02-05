@@ -16,31 +16,31 @@
 
 
 /**
- * @brief       Test Callback and DispatchMessage
- * @see         ::fwComEd::ICallback
- * @see         ::fwServices::ObjectMsg
- * @see         ::fwComEd::DispatchMessage
+ * @brief 	Test Callback and DispatchMessage
+ * @see 	::fwComEd::ICallback
+ * @see 	::fwServices::ObjectMsg
+ * @see		::fwComEd::DispatchMessage
  */
 class CallbackTest : public CPPUNIT_NS::TestFixture
 {
-        CPPUNIT_TEST_SUITE( CallbackTest );
-        CPPUNIT_TEST( methodeCallback );
-        CPPUNIT_TEST_SUITE_END();
+	CPPUNIT_TEST_SUITE( CallbackTest );
+	CPPUNIT_TEST( methodeCallback );
+	CPPUNIT_TEST_SUITE_END();
 
 public:
-        // interface
-        void setUp();
-        void tearDown();
-        // tests callback
-        void methodeCallback();
+	// interface
+	void setUp();
+	void tearDown();
+	// tests callback
+	void methodeCallback();
 
-        // method used by callback
-        void testCallback( ::fwServices::ObjectMsg::csptr _msg );
-        void testCallback2( ::fwServices::ObjectMsg::csptr _msg );
+	// method used by callback
+	void testCallback( ::fwServices::ObjectMsg::csptr _msg );
+	void testCallback2( ::fwServices::ObjectMsg::csptr _msg );
 
 private:
-        bool m_isCallback1;
-        bool m_isCallback2;
+	bool m_isCallback1;
+	bool m_isCallback2;
 };
 
 

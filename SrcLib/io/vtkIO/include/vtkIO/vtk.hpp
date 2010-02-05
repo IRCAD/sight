@@ -23,10 +23,10 @@ class vtkImageImport;
 class vtkMatrix4x4;
 
 /**
- * @brief       Namespace vtkIO.
- * @namespace   vtkIO.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
+ * @brief	Namespace vtkIO.
+ * @namespace	vtkIO.
+ * @author	IRCAD (Research and Development Team).
+ * @date	2009.
  *
  *  The namespace vtkIO contains reader, writer and helper using the VTK lib for output and input actions between data and the frameWork
  */

@@ -16,22 +16,22 @@ namespace ctrlSelection
 {
 
 /**
- * @class       IUpdaterSrv.
+ * @class	IUpdaterSrv.
  * @author  IRCAD (Research and Development Team).
- * @date        2007-2009.
+ * @date	2007-2009.
  */
 class CTRLSELECTION_CLASS_API IUpdaterSrv : public ::fwServices::IService
 {
 
 public:
 
-        fwCoreServiceClassDefinitionsMacro ( (IUpdaterSrv)(::fwServices::IService::Baseclass) ) ;
+	fwCoreServiceClassDefinitionsMacro ( (IUpdaterSrv)(::fwServices::IService::Baseclass) ) ;
 
-        ///@brief IUpdaterSrv constructor. Do nothing.
-        CTRLSELECTION_API IUpdaterSrv();
+	///@brief IUpdaterSrv constructor. Do nothing.
+	CTRLSELECTION_API IUpdaterSrv();
 
-        ///@brief IUpdaterSrv destructor. Do nothing.
-        CTRLSELECTION_API virtual ~IUpdaterSrv();
+	///@brief IUpdaterSrv destructor. Do nothing.
+	CTRLSELECTION_API virtual ~IUpdaterSrv();
 
 };
 

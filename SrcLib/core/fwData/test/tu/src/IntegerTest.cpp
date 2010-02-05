@@ -14,22 +14,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION(IntegerTest );
 
 void IntegerTest::setUp()
 {
-        // Set up context before running a test.
+	// Set up context before running a test.
 }
 
 void IntegerTest::tearDown()
 {
-        // Clean up after the test run.
+	// Clean up after the test run.
 }
 
 void IntegerTest::methode1()
 {
-        const int VALUE = 13 ;
+	const int VALUE	= 13 ;
 
-        // process
-        ::fwData::Integer::NewSptr p1(VALUE );
+	// process
+	::fwData::Integer::NewSptr p1(VALUE );
 
-        // check
-        CPPUNIT_ASSERT_EQUAL(p1->value(),       VALUE);
+	// check
+	CPPUNIT_ASSERT_EQUAL(p1->value(),	VALUE);
 
 }
