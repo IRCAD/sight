@@ -59,6 +59,8 @@ public :
 
 protected:
 
+    class SubService;
+
 	typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 	typedef std::string ObjectIdType;
 

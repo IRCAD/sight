@@ -15,7 +15,7 @@
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwMemory/MemoryMonitor.hpp>
+//#include <fwMemory/MemoryMonitor.hpp>
 
 #include <fwDataIO/writer/GzBufferImageWriter.hpp>
 #include <fwDataIO/reader/GzBufferImageReader.hpp>
@@ -114,11 +114,12 @@ void ImageFileFormatService::RWPoliciesInstall()
     path->setPath( this->getFullPath() );
     m_reader->setLocation( path );
 
+    //FIXME JMO
     // reserve memory (300Mo)
-    if ( ! ::fwMemory::MemoryMonitor::getDefault()->reserveMemory(1024*1024*300) )
+    /*if ( ! ::fwMemory::MemoryMonitor::getDefault()->reserveMemory(1024*1024*300) )
     {
         throw ::fwTools::Failed("can not reserve enough memory");
-    }
+    }*/
 
     m_reader->read();
 }
