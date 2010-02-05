@@ -10,6 +10,11 @@
 		<implements>::gui::editor::IEditor</implements>
 		<implements>::fwTools::Object</implements>
 	</point>
+ 
+    <point id="::uiIO::action::ExportAcquisition">
+        <implements>::gui::action::IAction</implements>
+        <implements>::fwData::PatientDB</implements>
+    </point>
 	
     <extension-point id="::uiIO::editor::IOSelectorServiceConfig"/>
   
