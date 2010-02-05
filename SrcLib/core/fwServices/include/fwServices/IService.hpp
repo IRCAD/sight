@@ -202,7 +202,7 @@ public :
      * @param[in] a new id analyze by the service.
      * @post isHandlingAllEvents() == false
      */
-    FWSERVICES_API void addNewHandlingEvent( std::string _eventId );
+    FWSERVICES_API void addNewHandledEvent( std::string _eventId );
 
     /**
      * @brief Get a vector of the handling events.
@@ -211,14 +211,14 @@ public :
      *
      * This method returns a vector of the events which are handle by the services, by default all events are handle if this method is not overwritted.
      */
-    FWSERVICES_API std::vector< std::string > getHandlingEvents();
+    FWSERVICES_API std::vector< std::string > getHandledEvents();
 
-    /// Return if this service analyse all events, if the value is equal to false, see the handling configuration with getHandlingEvents() method.
+    /// Return if this service analyse all events, if the value is equal to false, see the handling configuration with getHandledEvents() method.
     FWSERVICES_API bool isHandlingAllEvents();
 
     /**
      * @brief When any handling event is defined in service, to not listen notifications event if the observation is set on.
-     * @pre m_handlingEvents must be empty
+     * @pre m_handledEvents must be empty
      * @post m_isHandlingAllEvents == false
      */
     FWSERVICES_API void handlingEventOff();
@@ -446,7 +446,7 @@ private :
     std::deque< ::fwServices::ObjectMsg::csptr > m_msgDeque;
 
     /// Specific event configuration, by default this vector is empty and m_isHandlingAllEvents is set to true.
-    std::vector< std::string > m_handlingEvents;
+    std::vector< std::string > m_handledEvents;
 
     /// To know if service listens all events (default value) or if it has a specific event configuration.
     bool m_isHandlingAllEvents;

@@ -30,9 +30,9 @@ ResectionDB::ResectionDB() throw()
 {
     m_clippingPlanes = "";
     m_sharpEdgeAngle = 50;
-    addNewHandlingEvent( ::fwComEd::ResectionDBMsg::ADD_SAFE_PART );
-    addNewHandlingEvent( ::fwComEd::ResectionDBMsg::ADD_RESECTION );
-    addNewHandlingEvent( ::fwComEd::ResectionDBMsg::MODIFIED );
+    addNewHandledEvent( ::fwComEd::ResectionDBMsg::ADD_SAFE_PART );
+    addNewHandledEvent( ::fwComEd::ResectionDBMsg::ADD_RESECTION );
+    addNewHandledEvent( ::fwComEd::ResectionDBMsg::MODIFIED );
 }
 
 //------------------------------------------------------------------------------

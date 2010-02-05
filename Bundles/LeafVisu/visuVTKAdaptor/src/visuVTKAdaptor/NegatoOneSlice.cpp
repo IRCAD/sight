@@ -135,12 +135,12 @@ NegatoOneSlice::NegatoOneSlice() throw() : IImagesAdaptor()
     m_planeOutlineActor    = vtkActor::New();
 
     // Manage events
-    addNewHandlingEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::WINDOWING );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
+    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
+    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------

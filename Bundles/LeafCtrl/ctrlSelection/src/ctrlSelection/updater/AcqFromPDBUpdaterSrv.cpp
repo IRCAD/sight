@@ -33,7 +33,7 @@ AcqFromPDBUpdaterSrv::AcqFromPDBUpdaterSrv() throw()
  :	m_compositeKey(""),
 	m_patientDBUID("")
 {
-	addNewHandlingEvent( ::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT );
+	addNewHandledEvent( ::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT );
 }
 
 //-----------------------------------------------------------------------------

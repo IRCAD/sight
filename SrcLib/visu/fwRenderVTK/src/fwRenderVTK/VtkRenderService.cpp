@@ -74,7 +74,7 @@ VtkRenderService::VtkRenderService() throw() :
      m_interactor( 0 ),
      m_pendingRenderRequest(false)
 {
-    addNewHandlingEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
 }
 
 //-----------------------------------------------------------------------------

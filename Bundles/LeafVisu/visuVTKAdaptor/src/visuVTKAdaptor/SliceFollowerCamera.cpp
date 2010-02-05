@@ -43,9 +43,9 @@ namespace visuVTKAdaptor
 SliceFollowerCamera::SliceFollowerCamera() throw() : IImagesAdaptor()
 {
     m_comChannelPriority = 0.49;
-    addNewHandlingEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------

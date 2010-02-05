@@ -30,8 +30,8 @@ namespace visuVTKAdaptor
 
 ImageText::ImageText() throw()
 {
-    addNewHandlingEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandlingEvent( ::fwComEd::ImageMsg::WINDOWING );
+    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
 }
 
 //-----------------------------------------------------------------------------

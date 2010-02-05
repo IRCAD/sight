@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
 
 Model::Model() throw()
 {
-     addNewHandlingEvent( ::fwComEd::ModelMsg::NEW_MODEL );
+     addNewHandledEvent( ::fwComEd::ModelMsg::NEW_MODEL );
 }
 
 //------------------------------------------------------------------------------

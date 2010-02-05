@@ -27,8 +27,8 @@ Resection::Resection() throw()
 {
     m_clippingPlanes = "";
     m_sharpEdgeAngle = 50;
-    addNewHandlingEvent( ::fwComEd::ResectionMsg::VISIBILITY );
-    addNewHandlingEvent( ::fwComEd::ResectionMsg::MODIFIED );
+    addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
+    addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
 }
 
 //------------------------------------------------------------------------------

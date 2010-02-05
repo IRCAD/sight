@@ -39,9 +39,9 @@ NegatoMPR::NegatoMPR() throw() : IImagesAdaptor(),
         m_backupedSliceMode(THREE_SLICES)
 {
     SLM_TRACE_FUNC();
-    addNewHandlingEvent("SLICE_MODE");
-    addNewHandlingEvent("SCAN_SHOW");
-    addNewHandlingEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    addNewHandledEvent("SLICE_MODE");
+    addNewHandledEvent("SCAN_SHOW");
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------

@@ -48,11 +48,11 @@ Plane::Plane() throw()
     m_vtkPlaneCollection = 0;
     m_vtkImplicitPlane = 0;
 
-    addNewHandlingEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-    addNewHandlingEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
-    addNewHandlingEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
-    addNewHandlingEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
-    addNewHandlingEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
+    addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    addNewHandledEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
+    addNewHandledEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
+    addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
+    addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
 
 }
 

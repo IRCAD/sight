@@ -47,8 +47,8 @@ Reconstruction::Reconstruction() throw()
 {
     m_clippingPlanesId = "";
     m_sharpEdgeAngle = 180;
-    addNewHandlingEvent( ::fwComEd::ReconstructionMsg::MESH );
-    addNewHandlingEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
+    addNewHandledEvent( ::fwComEd::ReconstructionMsg::MESH );
+    addNewHandledEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
 }
 
 //------------------------------------------------------------------------------

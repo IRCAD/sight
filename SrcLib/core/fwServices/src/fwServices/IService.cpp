@@ -165,24 +165,24 @@ void IService::update( ::fwServices::ObjectMsg::csptr _msg )
 
 void IService::handlingEventOff()
 {
-    SLM_ASSERT( "Handling event vector must be empty", m_handlingEvents.size() == 0 );
+    SLM_ASSERT( "Handling event vector must be empty", m_handledEvents.size() == 0 );
     m_isHandlingAllEvents = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void IService::addNewHandlingEvent( std::string _eventId )
+void IService::addNewHandledEvent( std::string _eventId )
 {
     m_isHandlingAllEvents = false;
-    m_handlingEvents.push_back( _eventId );
+    m_handledEvents.push_back( _eventId );
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > IService::getHandlingEvents()
+std::vector< std::string > IService::getHandledEvents()
 {
-    SLM_ASSERT( "ACH : This service handles all messages, why you use getHandlingEvents() ? test isHandlingAllEvents() before.", !m_isHandlingAllEvents );
-    return m_handlingEvents;
+    SLM_ASSERT( "ACH : This service handles all messages, why you use getHandledEvents() ? test isHandlingAllEvents() before.", !m_isHandlingAllEvents );
+    return m_handledEvents;
 }
 
 //-----------------------------------------------------------------------------

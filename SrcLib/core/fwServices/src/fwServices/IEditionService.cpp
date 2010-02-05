@@ -166,7 +166,7 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
     // Test if this service handling all events or if it has a specific configuration
     if ( service->isHandlingAllEvents() )
     {
-        OSLM_WARN("Sorry, IService API to manage events has changed, this service "<< service->getClassname() <<" must define a list of handling message thanks to method IService::addNewHandlingEvent() which must be used the service constructor.");
+        OSLM_WARN("Sorry, IService API to manage events has changed, this service "<< service->getClassname() <<" must define a list of handling message thanks to method IService::addNewHandledEvent() which must be used the service constructor.");
         m_globalObservers.push_back( observer );
         // sort the list to put the new element at the right place.
         m_globalObservers.sort( Less );
@@ -174,7 +174,7 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
     else
     {
         OSLM_DEBUG("This service not handling all events : " << service->getClassname() );
-        std::vector< std::string > handlingEvents = service->getHandlingEvents();
+        std::vector< std::string > handlingEvents = service->getHandledEvents();
         for (   std::vector< std::string >::iterator iter = handlingEvents.begin();
                 iter != handlingEvents.end();
                 ++iter )
@@ -220,7 +220,7 @@ void IEditionService::detach( ::fwServices::ComChannelService::sptr observer ) t
     }
     else
     {
-        std::vector< std::string > handlingEvents = service->getHandlingEvents();
+        std::vector< std::string > handlingEvents = service->getHandledEvents();
         for (   std::vector< std::string >::iterator iter = handlingEvents.begin();
                 iter != handlingEvents.end();
                 ++iter )
@@ -257,7 +257,7 @@ const bool IEditionService::isAttached( ::fwServices::ComChannelService::sptr ob
     }
     else
     {
-        std::vector< std::string > handlingEvents = service->getHandlingEvents();
+        std::vector< std::string > handlingEvents = service->getHandledEvents();
         for (   std::vector< std::string >::iterator iter = handlingEvents.begin();
                 !isAttached && iter != handlingEvents.end();
                 ++iter )

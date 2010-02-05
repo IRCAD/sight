@@ -35,7 +35,7 @@ namespace visuVTKAdaptor
 Acquisition::Acquisition() throw()
 {
     m_clippingPlanes = "";
-    addNewHandlingEvent("ShowReconstructions");
+    addNewHandledEvent("ShowReconstructions");
 }
 
 Acquisition::~Acquisition() throw()
@@ -65,7 +65,7 @@ void Acquisition::configuring() throw(fwTools::Failed)
 void Acquisition::doStart() throw(fwTools::Failed)
 {
     this->doUpdate();
-    addNewHandlingEvent("ShowReconstructions");
+    addNewHandledEvent("ShowReconstructions");
 }
 
 void Acquisition::doUpdate() throw(fwTools::Failed)

@@ -38,7 +38,7 @@ namespace visuVTKAdaptor
 
 Snapshot::Snapshot() throw()
 {
-    addNewHandlingEvent("SNAP");
+    addNewHandledEvent("SNAP");
 }
 
 //------------------------------------------------------------------------------

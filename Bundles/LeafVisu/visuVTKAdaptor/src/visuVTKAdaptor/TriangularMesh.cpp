@@ -430,7 +430,7 @@ TriangularMesh::TriangularMesh() throw()
 #endif
 #endif
 
-    addNewHandlingEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------

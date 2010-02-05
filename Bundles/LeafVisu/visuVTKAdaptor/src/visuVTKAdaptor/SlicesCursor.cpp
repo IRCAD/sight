@@ -44,9 +44,9 @@ SlicesCursor::SlicesCursor()  throw()
 , m_isSelected(false)
 {
 
-    addNewHandlingEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
-    addNewHandlingEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-    addNewHandlingEvent( "CROSS_TYPE" );
+    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    addNewHandledEvent( "CROSS_TYPE" );
 }
 
 //-----------------------------------------------------------------------------

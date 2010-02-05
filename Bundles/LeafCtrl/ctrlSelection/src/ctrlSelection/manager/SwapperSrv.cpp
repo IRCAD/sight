@@ -31,7 +31,7 @@ REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::Swappe
 
 SwapperSrv::SwapperSrv() throw()
 {
-    addNewHandlingEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
 }
 
 //-----------------------------------------------------------------------------

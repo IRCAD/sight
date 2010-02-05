@@ -137,7 +137,7 @@ Point::Point() throw() :
     rep->SetHandleSize(7);
 
 
-    addNewHandlingEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
 Point::~Point() throw()

@@ -40,7 +40,7 @@ Medical3DCamera::m_orientationConversion
 
 Medical3DCamera::Medical3DCamera() throw() : IImagesAdaptor()
 {
-    addNewHandlingEvent( "CAMERA_ORIENTATION" );
+    addNewHandledEvent( "CAMERA_ORIENTATION" );
 }
 
 //------------------------------------------------------------------------------
