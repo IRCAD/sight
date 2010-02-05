@@ -15,28 +15,28 @@ namespace fwData
 {
 
 /**
- * @class 	Boolean
- * @brief 	This class contains a boolean value
+ * @class       Boolean
+ * @brief       This class contains a boolean value
  *
  * Boolean object is essentially used as a field in other objects.
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object::Baseclass),( ((const bool)(false)) ), new Boolean) ;
-	/**
-	 * @brief Constructor.
-	 * @param[in] value The initial value.
-	 */
-	FWDATA_API Boolean( const bool value = false ) throw();
+        fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object::Baseclass),( ((const bool)(false)) ), new Boolean) ;
+        /**
+         * @brief Constructor.
+         * @param[in] value The initial value.
+         */
+        FWDATA_API Boolean( const bool value = false ) throw();
 
-	/**
-	 * @brief Destructor.
-	 */
-	FWDATA_API virtual ~Boolean() throw();
+        /**
+         * @brief Destructor.
+         */
+        FWDATA_API virtual ~Boolean() throw();
 };
 
 } // namespace fwData

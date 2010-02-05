@@ -26,11 +26,11 @@ namespace fwServices
 /**
  * @brief Service object type association including all string-based registration
  * Associations concern Service-ObjectType are ObjectType-Service. Keys are typeid.
- * @author	IRCAD (Research and Development Team).
+ * @author      IRCAD (Research and Development Team).
  */
 #define REGISTER_SERVICE( ServiceType , Service1, Object1 )\
 REGISTER_BINDING_ID_CPY( ::fwServices::IService , Service1 , ::fwServices::ObjectServiceKeyType , \
-						 ::fwServices::ObjectServiceKeyType( ::fwCore::getClassname<ServiceType>(),  ::fwCore::getClassname<Object1>() ) , BOOST_PP_CAT( __LINE__ , A )) ; \
+                                                 ::fwServices::ObjectServiceKeyType( ::fwCore::getClassname<ServiceType>(),  ::fwCore::getClassname<Object1>() ) , BOOST_PP_CAT( __LINE__ , A )) ; \
 REGISTER_BINDING_ID_CPY( ::fwServices::IService , Service1 , std::string , ::fwCore::TypeDemangler<Service1>().getClassname() , BOOST_PP_CAT( __LINE__ , B ) ) ;
 
 //@}

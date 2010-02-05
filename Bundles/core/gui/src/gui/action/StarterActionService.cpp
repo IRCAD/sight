@@ -41,56 +41,56 @@ StarterActionService::~StarterActionService() throw()
 
 void StarterActionService::info(std::ostream &_sstream )
 {
-	_sstream << "Starter Action" << std::endl;
+        _sstream << "Starter Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void StarterActionService::updating() throw( ::fwTools::Failed )
 {
-	SLM_TRACE("updating StarterActionService") ;
-	this->::gui::action::IAction::updating();
+        SLM_TRACE("updating StarterActionService") ;
+        this->::gui::action::IAction::updating();
 
-	for(size_t i = 0; i < m_uuidServices.size(); i++)
-	{
-		::fwServices::IService::sptr service = ::fwServices::get( m_uuidServices.at(i).first ) ;
-		SLM_ASSERT("service not found", service);
-		if(m_uuidServices.at(i).second)
-		{
-			service->start();
-			service->update();
-		}
-		else
-		{
-			service->stop();
-		}
-	}
+        for(size_t i = 0; i < m_uuidServices.size(); i++)
+        {
+                ::fwServices::IService::sptr service = ::fwServices::get( m_uuidServices.at(i).first ) ;
+                SLM_ASSERT("service not found", service);
+                if(m_uuidServices.at(i).second)
+                {
+                        service->start();
+                        service->update();
+                }
+                else
+                {
+                        service->stop();
+                }
+        }
 }
 
 //-----------------------------------------------------------------------------
 
 void StarterActionService::configuring() throw( ::fwTools::Failed )
 {
-	SLM_TRACE("configuring StarterActionService") ;
-	this->::gui::action::IAction::configuring() ;
+        SLM_TRACE("configuring StarterActionService") ;
+        this->::gui::action::IAction::configuring() ;
 
-	::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
-	for( ; iter != this->m_configuration->end() ; ++iter )
-	{
-		OSLM_INFO( "StarterActionService "  << (*iter)->getName());
-		if( (*iter)->getName() == "start" )
-		{
-			SLM_ASSERT("attribute uid missing", (*iter)->hasAttribute("uid")) ;
-			std::string uuid = (*iter)->getExistingAttributeValue("uid") ;
-			m_uuidServices.push_back( std::make_pair(uuid, true) );
-		}
-		if( (*iter)->getName() == "stop" )
-		{
-			SLM_ASSERT("attribute uid missing", (*iter)->hasAttribute("uid")) ;
-			std::string uuid = (*iter)->getExistingAttributeValue("uid") ;
-			m_uuidServices.push_back( std::make_pair(uuid, false) );
-		}
-	}
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
+        for( ; iter != this->m_configuration->end() ; ++iter )
+        {
+                OSLM_INFO( "StarterActionService "  << (*iter)->getName());
+                if( (*iter)->getName() == "start" )
+                {
+                        SLM_ASSERT("attribute uid missing", (*iter)->hasAttribute("uid")) ;
+                        std::string uuid = (*iter)->getExistingAttributeValue("uid") ;
+                        m_uuidServices.push_back( std::make_pair(uuid, true) );
+                }
+                if( (*iter)->getName() == "stop" )
+                {
+                        SLM_ASSERT("attribute uid missing", (*iter)->hasAttribute("uid")) ;
+                        std::string uuid = (*iter)->getExistingAttributeValue("uid") ;
+                        m_uuidServices.push_back( std::make_pair(uuid, false) );
+                }
+        }
 }
 
 }

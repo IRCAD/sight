@@ -10,30 +10,30 @@
 
 #ifdef _WIN32
 
-	#ifdef CTRLSELECTION_EXPORTS
-	#define CTRLSELECTION_API __declspec(dllexport)
-	#else
-	#define CTRLSELECTION_API __declspec(dllimport)
-	#endif
+        #ifdef CTRLSELECTION_EXPORTS
+        #define CTRLSELECTION_API __declspec(dllexport)
+        #else
+        #define CTRLSELECTION_API __declspec(dllimport)
+        #endif
 
-	#define CTRLSELECTION_CLASS_API
+        #define CTRLSELECTION_CLASS_API
 
-	#pragma warning(disable: 4290)
+        #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-	#ifdef CTRLSELECTION_EXPORTS
-	#define CTRLSELECTION_API __attribute__ ((visibility("default")))
-	#define CTRLSELECTION_CLASS_API __attribute__ ((visibility("default")))
-	#else
-	#define CTRLSELECTION_API __attribute__ ((visibility("hidden")))
-	#define CTRLSELECTION_CLASS_API __attribute__ ((visibility("hidden")))
-	#endif
+        #ifdef CTRLSELECTION_EXPORTS
+        #define CTRLSELECTION_API __attribute__ ((visibility("default")))
+        #define CTRLSELECTION_CLASS_API __attribute__ ((visibility("default")))
+        #else
+        #define CTRLSELECTION_API __attribute__ ((visibility("hidden")))
+        #define CTRLSELECTION_CLASS_API __attribute__ ((visibility("hidden")))
+        #endif
 
 #else
 
-	#define CTRLSELECTION_API
-	#define CTRLSELECTION_CLASS_API
+        #define CTRLSELECTION_API
+        #define CTRLSELECTION_CLASS_API
 
 #endif
 

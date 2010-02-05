@@ -16,9 +16,9 @@ namespace fwTools {
 template<class TYPE>
 DynamicType makeDynamicType()
 {
-	DynamicType d;
-	d.template setType<TYPE>();
-	return d;
+        DynamicType d;
+        d.template setType<TYPE>();
+        return d;
 }
 
 
@@ -26,11 +26,11 @@ DynamicType makeDynamicType()
 
 struct TypeSetter
 {
-	template<class TYPE>
-	void operator()( DynamicType & dynamicType )
-	{
-		dynamicType.setType<TYPE>();
-	}
+        template<class TYPE>
+        void operator()( DynamicType & dynamicType )
+        {
+                dynamicType.setType<TYPE>();
+        }
 };
 
 
@@ -38,15 +38,15 @@ struct TypeSetter
 template<class KEYTYPE>
 DynamicType makeDynamicType(const KEYTYPE &keyType)
 {
-	typedef boost::mpl::vector< signed char, unsigned char, signed short, unsigned short,  signed int, unsigned int, float, double >:: type SupportedTypes;
+        typedef boost::mpl::vector< signed char, unsigned char, signed short, unsigned short,  signed int, unsigned int, float, double >:: type SupportedTypes;
 
-	DynamicType d;
+        DynamicType d;
 
-	Dispatcher<SupportedTypes,TypeSetter >::invoke(keyType,d);
+        Dispatcher<SupportedTypes,TypeSetter >::invoke(keyType,d);
 
-	assert ( d != DynamicType() ); // a type must be found !!
+        assert ( d != DynamicType() ); // a type must be found !!
 
-	return d;
+        return d;
 }
 
 
@@ -56,22 +56,22 @@ DynamicType makeDynamicType(const KEYTYPE &keyType)
 template< class TYPE>
 void DynamicType::setType() throw(std::invalid_argument)
 {
-	 std::list< std::string>::const_iterator  supportedTypesIter;
+         std::list< std::string>::const_iterator  supportedTypesIter;
 
-	 supportedTypesIter = m_managedTypes.begin();
-	 while ( supportedTypesIter !=  m_managedTypes.end() )
-	 {
-		 if ( isMapping<TYPE>( *supportedTypesIter) )
-		 {
-			 m_value  = *supportedTypesIter;
-			 m_sizeof = sizeof(TYPE);
-			 return;
+         supportedTypesIter = m_managedTypes.begin();
+         while ( supportedTypesIter !=  m_managedTypes.end() )
+         {
+                 if ( isMapping<TYPE>( *supportedTypesIter) )
+                 {
+                         m_value  = *supportedTypesIter;
+                         m_sizeof = sizeof(TYPE);
+                         return;
 
-		 }
-		 ++supportedTypesIter;
-	 }
+                 }
+                 ++supportedTypesIter;
+         }
 
-	 throw std::invalid_argument("DynamicType::setType<TYPE> incorrect TYPE");
+         throw std::invalid_argument("DynamicType::setType<TYPE> incorrect TYPE");
 }
 
 
@@ -80,7 +80,7 @@ void DynamicType::setType() throw(std::invalid_argument)
 template< class TYPE>
 bool DynamicType::isType() const
 {
-	return isMapping<TYPE>(m_value);
+        return isMapping<TYPE>(m_value);
 }
 
 
@@ -89,9 +89,9 @@ bool DynamicType::isType() const
 template<class TYPE>
 const std::string DynamicType::string()
 {
-	DynamicType d;
-	d.setType<TYPE>();
-	return d.string();
+        DynamicType d;
+        d.setType<TYPE>();
+        return d.string();
 }
 
 
@@ -100,33 +100,33 @@ const std::string DynamicType::string()
 template<class NEWTYPE>
 void DynamicType::registerNewType(const std::string &newKey) throw(std::invalid_argument)
 {
-	// ensure isMapping present and well defined
-	// if prog trap here it is because is Mapping is not well defined !!!
-	if ( isMapping<NEWTYPE>(newKey) == false )
-	{
-		throw std::invalid_argument("Dynamic::registerNewType misconception with isMapping");
-	}
+        // ensure isMapping present and well defined
+        // if prog trap here it is because is Mapping is not well defined !!!
+        if ( isMapping<NEWTYPE>(newKey) == false )
+        {
+                throw std::invalid_argument("Dynamic::registerNewType misconception with isMapping");
+        }
 
-	// ensure that newKey is not already used
-	if ( std::find( m_managedTypes.begin(),m_managedTypes.end(), newKey ) != m_managedTypes.end() )
-	{
-		throw std::invalid_argument("Dynamic::registerNewType newKey already used");
-	}
+        // ensure that newKey is not already used
+        if ( std::find( m_managedTypes.begin(),m_managedTypes.end(), newKey ) != m_managedTypes.end() )
+        {
+                throw std::invalid_argument("Dynamic::registerNewType newKey already used");
+        }
 
-	// ensure that no other mapping respond to newkey
-	try
-	{
-		DynamicType dummy;
-		dummy.setType<NEWTYPE>();
-	}
-	catch ( std::exception )
-	{
-		// OK it is really a new type, insert it
-		m_managedTypes.push_back(newKey);
-		return;
-	}
+        // ensure that no other mapping respond to newkey
+        try
+        {
+                DynamicType dummy;
+                dummy.setType<NEWTYPE>();
+        }
+        catch ( std::exception )
+        {
+                // OK it is really a new type, insert it
+                m_managedTypes.push_back(newKey);
+                return;
+        }
 
-	throw std::invalid_argument("Dynamic::registerNewType another isMapping is responding");
+        throw std::invalid_argument("Dynamic::registerNewType another isMapping is responding");
 }
 
 

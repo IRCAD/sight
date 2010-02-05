@@ -46,32 +46,32 @@ class FWWX_CLASS_API wxMonitorCallback
 };
 
 /**
- * @brief	This class is used for monitoring applications.
- * @class	wxMonitor.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief       This class is used for monitoring applications.
+ * @class       wxMonitor.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
 * @todo wxMonitor is not commented.
  */
 class FWWX_CLASS_API wxMonitor : public ::wxPanel
 {
 public:
 
-	FWWX_API wxMonitor(wxWindow* parent, ::fwServices::monitor::map_object_servicesNames & map_string) ;
+        FWWX_API wxMonitor(wxWindow* parent, ::fwServices::monitor::map_object_servicesNames & map_string) ;
 
-	FWWX_API wxMonitor(wxWindow* parent, ::fwServices::monitor::string_map & map_string) ;
+        FWWX_API wxMonitor(wxWindow* parent, ::fwServices::monitor::string_map & map_string) ;
 
     void FWWX_API setOnSelectionCallback( wxMonitorCallback::ptr callback);
 
 private :
 
-	wxTreeCtrl * m_tree ;
-	::boost::shared_ptr< ::fwData::Object > m_ObjPtr ;
-	wxRadioBox* m_radioBox ;
+        wxTreeCtrl * m_tree ;
+        ::boost::shared_ptr< ::fwData::Object > m_ObjPtr ;
+        wxRadioBox* m_radioBox ;
 
     wxMonitorCallback::ptr m_onSelectionCallback;
-	FWWX_API void OnSelection( wxTreeEvent& event ) ;
+        FWWX_API void OnSelection( wxTreeEvent& event ) ;
 
-	~wxMonitor() ;
+        ~wxMonitor() ;
 };
 
 }//namespace fwWX

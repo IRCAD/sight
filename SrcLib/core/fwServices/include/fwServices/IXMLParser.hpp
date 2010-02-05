@@ -31,43 +31,43 @@ namespace fwServices
  */
 class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {
-	public :
+        public :
     fwCoreServiceClassDefinitionsMacro ( (IXMLParser)(::fwServices::IService::Baseclass) ) ;
-		/**
-   		 * @brief Constructor. Does nothing.
-   		 */
-		FWSERVICES_API IXMLParser( ) ;
+                /**
+                 * @brief Constructor. Does nothing.
+                 */
+                FWSERVICES_API IXMLParser( ) ;
 
-		/**
-   		 * @brief Destructor. Does nothing.
-   		 */
-		FWSERVICES_API virtual ~IXMLParser() ;
+                /**
+                 * @brief Destructor. Does nothing.
+                 */
+                FWSERVICES_API virtual ~IXMLParser() ;
 
-		/**
-   		 * @brief Does nothing
-   		 */
-		FWSERVICES_API virtual void starting() throw(::fwTools::Failed) ;
+                /**
+                 * @brief Does nothing
+                 */
+                FWSERVICES_API virtual void starting() throw(::fwTools::Failed) ;
 
-		/**
-   		 * @brief Does nothing
-   		 */
-		FWSERVICES_API virtual void stopping() throw(::fwTools::Failed) ;
+                /**
+                 * @brief Does nothing
+                 */
+                FWSERVICES_API virtual void stopping() throw(::fwTools::Failed) ;
 
-		/**
-   		 * @brief Does nothing
-   		 */
-		FWSERVICES_API virtual void configuring() throw(::fwTools::Failed) ;
+                /**
+                 * @brief Does nothing
+                 */
+                FWSERVICES_API virtual void configuring() throw(::fwTools::Failed) ;
 
-		/**
-   		 * @brief Does nothing
-   		 */
-		FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+                /**
+                 * @brief Does nothing
+                 */
+                FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
-		/**
-		 * @brief Parse the XML configuration
-		 * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both specific compositions and this generic one
-		 */
-		FWSERVICES_API virtual void updating() throw(::fwTools::Failed) ;
+                /**
+                 * @brief Parse the XML configuration
+                 * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both specific compositions and this generic one
+                 */
+                FWSERVICES_API virtual void updating() throw(::fwTools::Failed) ;
 };
 
 

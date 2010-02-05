@@ -20,26 +20,26 @@ CPPUNIT_TEST_SUITE_REGISTRATION( CompositeTest );
 
 void CompositeTest::setUp()
 {
-	// Set up context before running a test.
+        // Set up context before running a test.
 
 }
 void CompositeTest::tearDown()
 {
-	// Clean up after the test run.
+        // Clean up after the test run.
 }
 
 void CompositeTest::methode1()
 {
-	//-----------test values
-	const std::string STR = "toto";
-	::fwData::Object::sptr obj = ::fwData::Object::New();
+        //-----------test values
+        const std::string STR = "toto";
+        ::fwData::Object::sptr obj = ::fwData::Object::New();
 
-	::fwData::Composite::NewSptr compo;
+        ::fwData::Composite::NewSptr compo;
 
-	compo->getRefMap()[STR] = obj;
+        compo->getRefMap()[STR] = obj;
 
-	CPPUNIT_ASSERT(compo->getRefMap().find(STR) != compo->getRefMap().end());
-	CPPUNIT_ASSERT_EQUAL(compo->getRefMap()[STR], obj);
+        CPPUNIT_ASSERT(compo->getRefMap().find(STR) != compo->getRefMap().end());
+        CPPUNIT_ASSERT_EQUAL(compo->getRefMap()[STR], obj);
 }
 
 

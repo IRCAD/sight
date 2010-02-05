@@ -1,67 +1,67 @@
 <plugin id="servicesReg" class="::servicesReg::Plugin" >
-	
-	<library name="servicesReg" />
+        
+        <library name="servicesReg" />
 
-	<requirement id="dataReg" />
-	
-	<!-- CORE -->
-	<point id="::fwServices::IService">
-		<implements>::fwTools::Object</implements>
-	</point>
-	
-	<!-- XML PARSING ASPECT -->
-	<point id="::fwServices::IXMLParser">
-		<implements>::fwServices::IService</implements>
-	</point>
-	
-	<!-- FWSERVICE SERVICE TYPE FOR CONTROLERS -->
-	<point id="::fwServices::IController">
-		<implements>::fwServices::IService</implements>
-	</point>
+        <requirement id="dataReg" />
+        
+        <!-- CORE -->
+        <point id="::fwServices::IService">
+                <implements>::fwTools::Object</implements>
+        </point>
+        
+        <!-- XML PARSING ASPECT -->
+        <point id="::fwServices::IXMLParser">
+                <implements>::fwServices::IService</implements>
+        </point>
+        
+        <!-- FWSERVICE SERVICE TYPE FOR CONTROLERS -->
+        <point id="::fwServices::IController">
+                <implements>::fwServices::IService</implements>
+        </point>
 
-	<!-- FWSERVICE SERVICE TYPE FOR MESSAGE DELIVERY DELEGATION -->
-	<point id="::fwServices::IDeliveryDelegate">
-		<implements>::fwServices::IService</implements>
-	</point>
-
-
-	<!-- COM ASPECT -->
-	<point id="::fwServices::IEditionService">
-		<implements>::fwServices::IService</implements>
-	</point>
-
-	
+        <!-- FWSERVICE SERVICE TYPE FOR MESSAGE DELIVERY DELEGATION -->
+        <point id="::fwServices::IDeliveryDelegate">
+                <implements>::fwServices::IService</implements>
+        </point>
 
 
-	<!-- SPECIFIC SERVICES -->
-	<point id="::fwServices::DefaultEditor">
-		<implements>::fwServices::IEditionService</implements>
-		<implements>::fwTools::Object</implements>
-	</point>
-	
-	<point id="::fwComEd::IProcessObjectParser">
-		<implements>::fwServices::IXMLParser</implements>
-		<implements>::fwData::ProcessObject</implements>
-	</point>
-	
-	<point id="::fwComEd::ICompositeParser">
-		<implements>::fwServices::IXMLParser</implements>
-		<implements>::fwData::Composite</implements>
-	</point>
+        <!-- COM ASPECT -->
+        <point id="::fwServices::IEditionService">
+                <implements>::fwServices::IService</implements>
+        </point>
 
-	<point id="::fwServices::ObjectXMLParser">
-		<implements>::fwServices::IXMLParser</implements>
-		<implements>::fwTools::Object</implements>
-	</point>
+        
 
-	<point id="::fwComEd::ProcessObjectEditor">
-		<implements>::fwServices::IEditionService</implements>
-		<implements>::fwData::ProcessObject</implements>
-	</point>
-	
-	<point id="::fwComEd::CompositeEditor">
-		<implements>::fwServices::IEditionService</implements>
-		<implements>::fwData::Composite</implements>
-	</point>
+
+        <!-- SPECIFIC SERVICES -->
+        <point id="::fwServices::DefaultEditor">
+                <implements>::fwServices::IEditionService</implements>
+                <implements>::fwTools::Object</implements>
+        </point>
+        
+        <point id="::fwComEd::IProcessObjectParser">
+                <implements>::fwServices::IXMLParser</implements>
+                <implements>::fwData::ProcessObject</implements>
+        </point>
+        
+        <point id="::fwComEd::ICompositeParser">
+                <implements>::fwServices::IXMLParser</implements>
+                <implements>::fwData::Composite</implements>
+        </point>
+
+        <point id="::fwServices::ObjectXMLParser">
+                <implements>::fwServices::IXMLParser</implements>
+                <implements>::fwTools::Object</implements>
+        </point>
+
+        <point id="::fwComEd::ProcessObjectEditor">
+                <implements>::fwServices::IEditionService</implements>
+                <implements>::fwData::ProcessObject</implements>
+        </point>
+        
+        <point id="::fwComEd::CompositeEditor">
+                <implements>::fwServices::IEditionService</implements>
+                <implements>::fwData::Composite</implements>
+        </point>
 
 </plugin>

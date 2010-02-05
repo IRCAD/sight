@@ -16,14 +16,14 @@ namespace fwTools
 /*
 boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string ) //const std::string & s
 {
-	std::stringstream ss;
-	boost::posix_time::time_input_facet* input_facet = new boost::posix_time::time_input_facet();
-	input_facet->set_iso_extended_format();
-	ss.imbue(std::locale(ss.getloc(), input_facet));
-	ss.str(time_string);
-	boost::posix_time::ptime  t;
-	ss >> t;
-	return t ;
+        std::stringstream ss;
+        boost::posix_time::time_input_facet* input_facet = new boost::posix_time::time_input_facet();
+        input_facet->set_iso_extended_format();
+        ss.imbue(std::locale(ss.getloc(), input_facet));
+        ss.str(time_string);
+        boost::posix_time::ptime  t;
+        ss >> t;
+        return t ;
 }
 */
 //version sans boost
@@ -32,57 +32,57 @@ boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string )
 
 std::string getDateInXsdFormat( const boost::posix_time::ptime & dateAndTime )
 {
-	std::string dateAndTimeStr = boost::posix_time::to_iso_extended_string(dateAndTime);
-	return dateAndTimeStr.substr(0,10);
+        std::string dateAndTimeStr = boost::posix_time::to_iso_extended_string(dateAndTime);
+        return dateAndTimeStr.substr(0,10);
 }
 
 //------------------------------------------------------------------------------
 
 boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string)
 {
-	std::string tmp(time_string);
-	std::string::size_type i = 0;
-	while ((i = tmp.find('T', i)) != (std::string::size_type)(-1))
-	tmp.replace(i++, 1, " ");
-	boost::posix_time::ptime  t = boost::posix_time::time_from_string(tmp);
-	return t;
+        std::string tmp(time_string);
+        std::string::size_type i = 0;
+        while ((i = tmp.find('T', i)) != (std::string::size_type)(-1))
+        tmp.replace(i++, 1, " ");
+        boost::posix_time::ptime  t = boost::posix_time::time_from_string(tmp);
+        return t;
 }
 
 //------------------------------------------------------------------------------
 
 std::string toIsoExtendedString(boost::posix_time::ptime ptime)
 {
-	return boost::posix_time::to_iso_extended_string(ptime) ;
+        return boost::posix_time::to_iso_extended_string(ptime) ;
 }
 
 //------------------------------------------------------------------------------
 
 std::string toStringWithoutAccent( const std::string & str )
 {
-	std::string newStr = str;
+        std::string newStr = str;
 
-	std::string withAccent 		("ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ");
-	std::string withoutAccent	("aaaaaaaaaaaaooooooooooooeeeeeeeecciiiiiiiiuuuuuuuuynn");
+        std::string withAccent          ("ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ");
+        std::string withoutAccent       ("aaaaaaaaaaaaooooooooooooeeeeeeeecciiiiiiiiuuuuuuuuynn");
 
 
-	std::string::iterator charWithAccent = withAccent.begin();
-	std::string::iterator charWithoutAccent = withoutAccent.begin();
+        std::string::iterator charWithAccent = withAccent.begin();
+        std::string::iterator charWithoutAccent = withoutAccent.begin();
 
-	while ( charWithAccent != withAccent.end() )
-	{
-		for ( 	std::string::iterator pCharacter = newStr.begin();
-		pCharacter != newStr.end();
-		++pCharacter )
-		{
-			if( *pCharacter == *charWithAccent )
-			{
-				*pCharacter = *charWithoutAccent;
-			}
-		}
-		charWithAccent++;
-		charWithoutAccent++;
-	}
-	return newStr;
+        while ( charWithAccent != withAccent.end() )
+        {
+                for (   std::string::iterator pCharacter = newStr.begin();
+                pCharacter != newStr.end();
+                ++pCharacter )
+                {
+                        if( *pCharacter == *charWithAccent )
+                        {
+                                *pCharacter = *charWithoutAccent;
+                        }
+                }
+                charWithAccent++;
+                charWithoutAccent++;
+        }
+        return newStr;
 }
 
 }//end namespace

@@ -18,40 +18,40 @@ namespace action
 {
 
 /**
- * @brief	This action starts an ::gui::editor::IEditor on the default root object.
- * @class	RunRootObjectServiceAction.
- * @author	IRCAD (Research and Development Team).
+ * @brief       This action starts an ::gui::editor::IEditor on the default root object.
+ * @class       RunRootObjectServiceAction.
+ * @author      IRCAD (Research and Development Team).
 
- * @date	2009.
+ * @date        2009.
  */
 class GUI_CLASS_API RunRootObjectServiceAction : public ::gui::action::IAction
 {
 
 public :
-	
-	/**
-	* @brief Constructor. Do nothing.
-	*/
-	GUI_API RunRootObjectServiceAction() throw() ;
+        
+        /**
+        * @brief Constructor. Do nothing.
+        */
+        GUI_API RunRootObjectServiceAction() throw() ;
 
-	/**
-	* @brief Destructor. Do nothing.
-	*/
-	GUI_API virtual ~RunRootObjectServiceAction() throw() ;
+        /**
+        * @brief Destructor. Do nothing.
+        */
+        GUI_API virtual ~RunRootObjectServiceAction() throw() ;
 
 protected:
 
-	/**
-	 * @brief This method is used to start, update and stop service ::gui::editor::IEditor on root object.
-	 */
-	GUI_API virtual void updating() throw(::fwTools::Failed);
+        /**
+         * @brief This method is used to start, update and stop service ::gui::editor::IEditor on root object.
+         */
+        GUI_API virtual void updating() throw(::fwTools::Failed);
 
-	/**
-	 * @brief This method gives information about the class. Do nothing.
-	 */
-	GUI_API virtual void info(std::ostream &_sstream ) ;
-	
-	
+        /**
+         * @brief This method gives information about the class. Do nothing.
+         */
+        GUI_API virtual void info(std::ostream &_sstream ) ;
+        
+        
 };
 
 

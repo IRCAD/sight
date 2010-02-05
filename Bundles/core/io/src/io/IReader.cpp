@@ -22,12 +22,12 @@ IReader::~IReader() throw()
 
 wxString IReader::getSelectorDialogTitle()
 {
-	return _("Title of selector dialog box");
+        return _("Title of selector dialog box");
 }
 
 std::vector< std::string > IReader::getSupportedExtensions()
 {
-	return std::vector< std::string >();
+        return std::vector< std::string >();
 }
 
 }

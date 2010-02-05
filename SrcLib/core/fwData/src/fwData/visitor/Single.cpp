@@ -13,8 +13,8 @@ namespace visitor
 
 void Single::next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
-	m_source = src;
-	// perform nothing with child;
+        m_source = src;
+        // perform nothing with child;
 }
 
 } // namespace visitor

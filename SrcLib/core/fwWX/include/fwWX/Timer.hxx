@@ -24,11 +24,11 @@ Timer<F>::Timer() throw()
 template< typename F >
 Timer<F>::~Timer() throw()
 {
-	if( m_wxTimer )
-	{
-	    delete m_wxTimer ;
-	    m_wxTimer = 0 ;
-	}
+        if( m_wxTimer )
+        {
+            delete m_wxTimer ;
+            m_wxTimer = 0 ;
+        }
 }
 
 template< typename F >
@@ -51,7 +51,7 @@ template< typename F >
 void Timer<F>::start(int rate)
 {
     this->setRate(rate);
-	this->start();
+        this->start();
 }
 
 template< typename F >
@@ -59,30 +59,30 @@ void Timer<F>::start(int rate, bool isOneShot)
 {
     this->setRate(rate);
     this->setOneShot(isOneShot);
-	this->start();
+        this->start();
 }
 
 template< typename F >
 void Timer<F>::start()
 {
     assert(m_function);
-	m_wxTimer->Start( m_rate , m_isOneShot) ;
+        m_wxTimer->Start( m_rate , m_isOneShot) ;
 }
 
 template< typename F >
 void Timer<F>::stop()
 {
-	m_wxTimer->Stop() ;
+        m_wxTimer->Stop() ;
 }
 
 template< typename F >
 void Timer<F>::OnTimer(wxTimerEvent& event)
 {
-	m_function() ;
+        m_function() ;
 }
 
 BEGIN_EVENT_TABLE_TEMPLATE1(Timer, wxEvtHandler, F)
-	EVT_TIMER(-1, Timer::OnTimer)
+        EVT_TIMER(-1, Timer::OnTimer)
 END_EVENT_TABLE()
 
 }

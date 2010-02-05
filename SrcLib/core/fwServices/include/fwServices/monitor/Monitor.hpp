@@ -21,36 +21,36 @@ namespace fwServices
 namespace monitor
 {
 
-	typedef std::map<std::string, std::list<std::string> > string_map ;
-	typedef std::map< ::fwTools::Object::sptr , std::list<std::string> > map_object_servicesNames ;
+        typedef std::map<std::string, std::list<std::string> > string_map ;
+        typedef std::map< ::fwTools::Object::sptr , std::list<std::string> > map_object_servicesNames ;
 
 
 /**
  * @brief helper for monitoring purposes
- * @author	IRCAD (Research and Development Team).
+ * @author      IRCAD (Research and Development Team).
  */
 class FWSERVICES_CLASS_API Monitor
 {
 public:
 
-	/**
-	 * @brief return in a std::map< < Object::sptr > , std::list<std::string> >,
-	 *  a list of services names (map value) associated with instanciated Objects (map key).
-	 *  The services list can be empty.
-	 */
-	FWSERVICES_API static ::fwServices::monitor::map_object_servicesNames scannerObjectServicesRegistry() ;
+        /**
+         * @brief return in a std::map< < Object::sptr > , std::list<std::string> >,
+         *  a list of services names (map value) associated with instanciated Objects (map key).
+         *  The services list can be empty.
+         */
+        FWSERVICES_API static ::fwServices::monitor::map_object_servicesNames scannerObjectServicesRegistry() ;
 
-	/**
-	 * @brief return in a string all object TYPES and services (does not concerns object/service registry)
-	 * @author IRCAD (Research and Development Team).
-	 */
-	FWSERVICES_API static ::fwServices::monitor::string_map scannerObjectServices() ;
+        /**
+         * @brief return in a string all object TYPES and services (does not concerns object/service registry)
+         * @author IRCAD (Research and Development Team).
+         */
+        FWSERVICES_API static ::fwServices::monitor::string_map scannerObjectServices() ;
 
-	~Monitor() ;
+        ~Monitor() ;
 
 protected:
 
-	Monitor() ;
+        Monitor() ;
 
 };
 

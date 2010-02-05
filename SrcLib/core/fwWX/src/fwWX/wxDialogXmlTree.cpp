@@ -14,7 +14,7 @@ wxDialogXmlTree::wxDialogXmlTree(wxWindow* parent, xmlNodePtr node)
 : wxFrame(parent, wxID_ANY, _T("Xml Tree")  , wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE)
 
 {
-	new wxXmlTree(this, node ) ;
+        new wxXmlTree(this, node ) ;
 }
 
 } //namespace fwWX

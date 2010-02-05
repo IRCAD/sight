@@ -16,51 +16,51 @@
 
 namespace fwData
 {
-	class ProcessObject;
+        class ProcessObject;
 }
 
 namespace fwComEd
 {
 
 /**
- * @brief	Defines the interface of operator object edition service.
- * @struct 	ProcessObjectEditor
+ * @brief       Defines the interface of operator object edition service.
+ * @struct      ProcessObjectEditor
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
- * @todo 	really difference with DefaultEditor ? updating(msg) method are equivalent ?
+ * @todo        really difference with DefaultEditor ? updating(msg) method are equivalent ?
  */
 struct FWCOMED_CLASS_API ProcessObjectEditor : public fwServices::IEditionService
 {
     fwCoreServiceClassDefinitionsMacro ( ( ProcessObjectEditor ) ( ::fwServices::IEditionService::Baseclass) ) ;
 
-	/**
-	 * @brief	destructor
-	 */
-	FWCOMED_API virtual ~ProcessObjectEditor() throw() ;
+        /**
+         * @brief       destructor
+         */
+        FWCOMED_API virtual ~ProcessObjectEditor() throw() ;
 
-	/// Implements starting method derived from IService. Do nothing.
-	FWCOMED_API virtual void starting()  throw ( ::fwTools::Failed );
+        /// Implements starting method derived from IService. Do nothing.
+        FWCOMED_API virtual void starting()  throw ( ::fwTools::Failed );
 
-	/// Implements stopping method derived from IService. Do nothing.
-	FWCOMED_API virtual void stopping()  throw ( ::fwTools::Failed );
+        /// Implements stopping method derived from IService. Do nothing.
+        FWCOMED_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-	/// Implements configuring method derived from IService. Do nothing.
-	FWCOMED_API virtual void configuring()  throw ( ::fwTools::Failed );
+        /// Implements configuring method derived from IService. Do nothing.
+        FWCOMED_API virtual void configuring()  throw ( ::fwTools::Failed );
 
-	/// Implements reconfiguring method derived from IService. Do nothing.
-	FWCOMED_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+        /// Implements reconfiguring method derived from IService. Do nothing.
+        FWCOMED_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
 
-	/// Implements updating method derived from IService. Do nothing.
-	FWCOMED_API virtual void updating() throw ( ::fwTools::Failed );
+        /// Implements updating method derived from IService. Do nothing.
+        FWCOMED_API virtual void updating() throw ( ::fwTools::Failed );
 
-	/// Implements info method derived from IService. Print classname.
-	FWCOMED_API virtual void info( std::ostream &_sstream );
+        /// Implements info method derived from IService. Print classname.
+        FWCOMED_API virtual void info( std::ostream &_sstream );
 
-	/**
-	 * @brief 	This method is not used, it raise a fatal message.
-	 * @todo	This method is used ?
-	 */
-	FWCOMED_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+        /**
+         * @brief       This method is not used, it raise a fatal message.
+         * @todo        This method is used ?
+         */
+        FWCOMED_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
 
 };

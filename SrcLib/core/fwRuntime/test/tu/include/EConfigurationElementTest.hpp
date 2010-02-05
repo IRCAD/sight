@@ -10,22 +10,22 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 /**
- * @brief	Test the creation of EConfigurationElement
+ * @brief       Test the creation of EConfigurationElement
  */
 class EConfigurationElementTest : public CPPUNIT_NS::TestFixture
 {
-	CPPUNIT_TEST_SUITE( EConfigurationElementTest );
-	CPPUNIT_TEST( testConfiguration );
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE( EConfigurationElementTest );
+        CPPUNIT_TEST( testConfiguration );
+        CPPUNIT_TEST_SUITE_END();
 
 protected:
 
 public:
-	// interface
-	void setUp();
-	void tearDown();
-	// fonctions de tests
-	void testConfiguration();
+        // interface
+        void setUp();
+        void tearDown();
+        // fonctions de tests
+        void testConfiguration();
 };
 
 #endif

@@ -11,22 +11,22 @@
 
 class ObjectTest : public CPPUNIT_NS::TestFixture
 {
-	CPPUNIT_TEST_SUITE( ObjectTest );
-	CPPUNIT_TEST( methode1 );
-	CPPUNIT_TEST( methode2 );
-	CPPUNIT_TEST( methode3 );
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE( ObjectTest );
+        CPPUNIT_TEST( methode1 );
+        CPPUNIT_TEST( methode2 );
+        CPPUNIT_TEST( methode3 );
+        CPPUNIT_TEST_SUITE_END();
 
 protected:
 
 public:
-	// interface
-	void setUp();
-	void tearDown();
-	// fonctions de tests
-	void methode1();
-	void methode2();
-	void methode3();
+        // interface
+        void setUp();
+        void tearDown();
+        // fonctions de tests
+        void methode1();
+        void methode2();
+        void methode3();
 };
 
 #endif

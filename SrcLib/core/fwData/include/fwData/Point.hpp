@@ -17,10 +17,10 @@
 namespace fwData
 {
 /**
- * @class 	Point
- * @brief 	This class define a 3D point.
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class       Point
+ * @brief       This class define a 3D point.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 
 
@@ -28,30 +28,30 @@ class FWDATA_CLASS_API Point : public Object
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object::Baseclass),
+        fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object::Baseclass),
         (()), ::fwTools::Factory::New< Point >) ;
 
-	typedef double PointCoordType;
+        typedef double PointCoordType;
 
-	typedef fwVec3d PointCoordArray;
-	/// Constructor
-	FWDATA_API Point();
-	/// Destructor
-	FWDATA_API virtual ~Point();
+        typedef fwVec3d PointCoordArray;
+        /// Constructor
+        FWDATA_API Point();
+        /// Destructor
+        FWDATA_API virtual ~Point();
 
-	/// Clone method
-	FWDATA_API Point::sptr clone() const;
-	/// Copy method
-	FWDATA_API Point &operator=( const Point & _point ) ;
+        /// Clone method
+        FWDATA_API Point::sptr clone() const;
+        /// Copy method
+        FWDATA_API Point &operator=( const Point & _point ) ;
 
-	/// Coordinates of point
-	fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
+        /// Coordinates of point
+        fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
 
 
 protected :
 
-	/// point coordinates
-	fwVec3d m_vCoord;
+        /// point coordinates
+        fwVec3d m_vCoord;
 
 }; // end class Point
 

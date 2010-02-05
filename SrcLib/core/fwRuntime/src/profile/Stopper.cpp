@@ -31,22 +31,22 @@ Stopper::Stopper( ::boost::shared_ptr< Starter > starter )
 void Stopper::apply()
 {
     SLM_TRACE_FUNC();
-	 ::boost::shared_ptr< Bundle >	bundle = Runtime::getDefault()->findBundle(m_identifier);
-	if( bundle == 0 )
-	{
-		OSLM_ERROR("Unable to stop bundle " << m_identifier << ". Not found.");
-	}
-	else
-	{
-		try
-		{
-			bundle->stop();
-		}
-		catch( const std::exception & e )
-		{
-			OSLM_ERROR("Unable to stop bundle " << m_identifier << ". " << e.what());
-		}
-	}
+         ::boost::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
+        if( bundle == 0 )
+        {
+                OSLM_ERROR("Unable to stop bundle " << m_identifier << ". Not found.");
+        }
+        else
+        {
+                try
+                {
+                        bundle->stop();
+                }
+                catch( const std::exception & e )
+                {
+                        OSLM_ERROR("Unable to stop bundle " << m_identifier << ". " << e.what());
+                }
+        }
 }
 
 

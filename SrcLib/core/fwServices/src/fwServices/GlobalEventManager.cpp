@@ -51,44 +51,44 @@ GlobalEventManager::~GlobalEventManager()
 //
 //bool GlobalEventManager::messagesHaveSameEffect( ::fwServices::ObjectMsg::sptr _pMsg1, ::fwServices::ObjectMsg::sptr _pMsg2 )
 //{
-//	bool messagesHaveSameEffect = ( _pMsg1->getSubject().lock().get() == _pMsg2->getSubject().lock().get() );
+//      bool messagesHaveSameEffect = ( _pMsg1->getSubject().lock().get() == _pMsg2->getSubject().lock().get() );
 //
-//	std::vector< std::string > events1 = _pMsg1->getEventIds();
-//	std::vector< std::string > events2 = _pMsg2->getEventIds();
+//      std::vector< std::string > events1 = _pMsg1->getEventIds();
+//      std::vector< std::string > events2 = _pMsg2->getEventIds();
 //
-//	messagesHaveSameEffect =
-//			messagesHaveSameEffect &&
-//			events1.size() == 1 &&
-//			events2.size() == 1 &&
-//			events1[0] == events2[0];
+//      messagesHaveSameEffect =
+//                      messagesHaveSameEffect &&
+//                      events1.size() == 1 &&
+//                      events2.size() == 1 &&
+//                      events1[0] == events2[0];
 //
-//	return messagesHaveSameEffect;
+//      return messagesHaveSameEffect;
 //}
 //
 ////-----------------------------------------------------------------------------
 //
 //bool GlobalEventManager::pushEventInDeque( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options )
 //{
-//	if ( m_msgDeque.size() > 1 )
-//	{
-//		::fwServices::ObjectMsg::sptr pLastMsg = m_msgDeque.back().first;
-//		if ( messagesHaveSameEffect( pLastMsg, _pMsg ) )
-//		{
-//			OSLM_INFO( "MSG Not Register (Same Msg In Deque) : " << _pMsg->getGeneralInfo() );
-//		}
-//		else
-//		{
-//			OSLM_INFO( "MSG Register Notification : " << _pMsg->getGeneralInfo() );
-//			MessageAndOptions msg ( _pMsg, _options );
-//			m_msgDeque.push_back( msg );
-//		}
-//	}
-//	else
-//	{
-//		OSLM_INFO( "MSG Register Notification : " << _pMsg->getGeneralInfo() );
-//		MessageAndOptions msg ( _pMsg, _options );
-//		m_msgDeque.push_back( msg );
-//	}
+//      if ( m_msgDeque.size() > 1 )
+//      {
+//              ::fwServices::ObjectMsg::sptr pLastMsg = m_msgDeque.back().first;
+//              if ( messagesHaveSameEffect( pLastMsg, _pMsg ) )
+//              {
+//                      OSLM_INFO( "MSG Not Register (Same Msg In Deque) : " << _pMsg->getGeneralInfo() );
+//              }
+//              else
+//              {
+//                      OSLM_INFO( "MSG Register Notification : " << _pMsg->getGeneralInfo() );
+//                      MessageAndOptions msg ( _pMsg, _options );
+//                      m_msgDeque.push_back( msg );
+//              }
+//      }
+//      else
+//      {
+//              OSLM_INFO( "MSG Register Notification : " << _pMsg->getGeneralInfo() );
+//              MessageAndOptions msg ( _pMsg, _options );
+//              m_msgDeque.push_back( msg );
+//      }
 //}
 
 //-----------------------------------------------------------------------------
@@ -112,13 +112,13 @@ void GlobalEventManager::dispatch()
     SLM_WARN_IF( "Message's subject expired", pMsg->getSubject().expired() );
     if(!pMsg->getSubject().expired())
     {
-    	SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
-    	OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
-    	::fwTools::Object::sptr pSubject = pMsg->getSubject().lock();
+        SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
+        OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
+        ::fwTools::Object::sptr pSubject = pMsg->getSubject().lock();
 
-    	::fwServices::IEditionService::sptr srv;
-    	srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
-    	srv->notify( pMsg, options ) ;
+        ::fwServices::IEditionService::sptr srv;
+        srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
+        srv->notify( pMsg, options ) ;
     }
     m_msgDeque.pop_front();
     m_dispatching = false;
@@ -127,7 +127,7 @@ void GlobalEventManager::dispatch()
 void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options )
 {
 
-	if ( m_deliveryType == DELEGATED_BREADTH_FIRST )
+        if ( m_deliveryType == DELEGATED_BREADTH_FIRST )
     {
         OSLM_INFO( "MSG queued : " << _pMsg->getGeneralInfo() );
         MessageAndOptions msg ( _pMsg, _options );
@@ -137,32 +137,32 @@ void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServic
         {
             m_notifyHandler();
         }
-	}
+        }
     else if ( m_deliveryType == BREADTH_FIRST )
-	{
-		OSLM_INFO( "MSG queued for immediate notification : " << _pMsg->getGeneralInfo() );
-		MessageAndOptions msg ( _pMsg, _options );
-		m_msgDeque.push_back( msg );
-		//pushEventInDeque( _pMsg, _options );
+        {
+                OSLM_INFO( "MSG queued for immediate notification : " << _pMsg->getGeneralInfo() );
+                MessageAndOptions msg ( _pMsg, _options );
+                m_msgDeque.push_back( msg );
+                //pushEventInDeque( _pMsg, _options );
 
-		if ( m_msgDeque.size() == 1 )
-		{
-			while ( GlobalEventManager::pending() )
-			{
+                if ( m_msgDeque.size() == 1 )
+                {
+                        while ( GlobalEventManager::pending() )
+                        {
                 GlobalEventManager::dispatch();
-			}
-		}
-	}
-	else if ( m_deliveryType == DEPTH_FIRST )
-	{
-		::fwServices::IService::sptr pSource = _pMsg->getSource().lock();
-		::fwTools::Object::sptr pSubject = _pMsg->getSubject().lock();
+                        }
+                }
+        }
+        else if ( m_deliveryType == DEPTH_FIRST )
+        {
+                ::fwServices::IService::sptr pSource = _pMsg->getSource().lock();
+                ::fwTools::Object::sptr pSubject = _pMsg->getSubject().lock();
 
-		OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
-		::fwServices::IEditionService::sptr srv;
-		srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
-		srv->notify( _pMsg, _options ) ;
-	}
+                OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
+                ::fwServices::IEditionService::sptr srv;
+                srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
+                srv->notify( _pMsg, _options ) ;
+        }
 
 }
 

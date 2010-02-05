@@ -11,34 +11,34 @@ namespace location {
 
 Folder::Folder()
 {
-	// TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
 
 }
 
 Folder::~Folder()
 {
-	// TODO Auto-generated destructor stub
+        // TODO Auto-generated destructor stub
 }
 
 
 void Folder::setFolder( ::boost::filesystem::path folder)
 {
-	m_folder = folder;
+        m_folder = folder;
 }
 
 ::boost::filesystem::path Folder::getFolder()
 {
-	return m_folder;
+        return m_folder;
 }
 
 void Folder::setRecursive( bool recursive)
 {
-	m_isRecursive = recursive;
+        m_isRecursive = recursive;
 }
 
 bool Folder::getRecursive()
 {
-	return m_isRecursive;
+        return m_isRecursive;
 }
 
 

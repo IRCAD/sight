@@ -22,33 +22,33 @@ namespace profile
 
 
 /**
- * @brief	Starts a given bundle.
- * @struct 	Starter
- * @date	2007-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief       Starts a given bundle.
+ * @struct      Starter
+ * @date        2007-2009
+ * @author      IRCAD (Research and Development Team).
  */
 struct Starter : public boost::noncopyable
 {
 
     friend class Stopper;
-	/**
-	 * @brief		Constructor
-	 *
-	 * @param[in]	identifier	a string containing a bundle identifier
-	 */
-	FWRUNTIME_API Starter( const std::string & identifier );
+        /**
+         * @brief               Constructor
+         *
+         * @param[in]   identifier      a string containing a bundle identifier
+         */
+        FWRUNTIME_API Starter( const std::string & identifier );
 
-	/**
-	 * @brief	Applies the starter on the system.
-	 *
-	 * @remark	This method should be called directly.
-	 */
-	void apply();
+        /**
+         * @brief       Applies the starter on the system.
+         *
+         * @remark      This method should be called directly.
+         */
+        void apply();
 
 
 protected:
 
-	const std::string	m_identifier;	///< a bundle identifier
+        const std::string       m_identifier;   ///< a bundle identifier
 
 };
 

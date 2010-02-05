@@ -15,7 +15,7 @@
 
 namespace fwRuntime
 {
-	struct IExecutable;
+        struct IExecutable;
 }
 
 
@@ -25,53 +25,53 @@ namespace fwRuntime
 
 
 /**
- * @brief	Defines the abstract executable factory class.
- * @struct	ExecutableFactory
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief       Defines the abstract executable factory class.
+ * @struct      ExecutableFactory
+ * @date        2004-2009
+ * @author      IRCAD (Research and Development Team).
  */
 struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
 {
 
-	/**
-	 * @name	Construction & Destruction
-	 *
-	 * @{
-	 */
+        /**
+         * @name        Construction & Destruction
+         *
+         * @{
+         */
 
-	/**
-	 * @brief		Constructor
-	 *
-	 * @param[in]	type	a string containing a type identifier
-	 */
-	FWRUNTIME_API ExecutableFactory( const std::string & type );
+        /**
+         * @brief               Constructor
+         *
+         * @param[in]   type    a string containing a type identifier
+         */
+        FWRUNTIME_API ExecutableFactory( const std::string & type );
 
-	/**
-	 * @brief	Destructor : does nothing
-	 */
-	FWRUNTIME_API virtual ~ExecutableFactory();
-	///@}
+        /**
+         * @brief       Destructor : does nothing
+         */
+        FWRUNTIME_API virtual ~ExecutableFactory();
+        ///@}
 
-	/**
-	 * @brief	Creates an executable object instance.
-	 *
-	 * @return	a pointer to an executable instance
-	 */
-	virtual IExecutable* createExecutable() const throw(RuntimeException) = 0;
+        /**
+         * @brief       Creates an executable object instance.
+         *
+         * @return      a pointer to an executable instance
+         */
+        virtual IExecutable* createExecutable() const throw(RuntimeException) = 0;
 
 
-	/**
-	 * @brief	Retrieves the type of executable the factory is able to create.
-	 *
-	 * @return	a string containing an executable type
-	 */
-	FWRUNTIME_API const std::string getType() const;
+        /**
+         * @brief       Retrieves the type of executable the factory is able to create.
+         *
+         * @return      a string containing an executable type
+         */
+        FWRUNTIME_API const std::string getType() const;
 
 
 private:
 
 
-	std::string	m_type;	///< a string containing the type identifier managed by the factory
+        std::string     m_type; ///< a string containing the type identifier managed by the factory
 
 };
 

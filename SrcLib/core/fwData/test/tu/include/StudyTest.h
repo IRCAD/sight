@@ -10,20 +10,20 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class StudyTest : public CPPUNIT_NS::TestFixture {
-	CPPUNIT_TEST_SUITE( StudyTest );
-	CPPUNIT_TEST( methode1 );
-	CPPUNIT_TEST( methode2 );
-	CPPUNIT_TEST( addAcquisition ) ;
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE( StudyTest );
+        CPPUNIT_TEST( methode1 );
+        CPPUNIT_TEST( methode2 );
+        CPPUNIT_TEST( addAcquisition ) ;
+        CPPUNIT_TEST_SUITE_END();
 protected:
 
 public:
-	// interface
-	void setUp();
-	void tearDown();
-	// fonctions de tests
-	void methode1();
-	void methode2();
-	void addAcquisition() ;
+        // interface
+        void setUp();
+        void tearDown();
+        // fonctions de tests
+        void methode1();
+        void methode2();
+        void addAcquisition() ;
 };
 #endif

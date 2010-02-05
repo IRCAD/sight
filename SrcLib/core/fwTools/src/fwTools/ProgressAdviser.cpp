@@ -9,25 +9,25 @@
 namespace fwTools {
 
 ProgressAdviser::ProgressAdviser() {
-	// TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
 
 }
 
 ProgressAdviser::~ProgressAdviser() {
-	// TODO Auto-generated destructor stub
+        // TODO Auto-generated destructor stub
 }
 
 
 void   ProgressAdviser::addHandler(const ProgessHandler &handler)
 {
-	// append a new ProgressHandler
-	m_progressSignal.connect(handler);
+        // append a new ProgressHandler
+        m_progressSignal.connect(handler);
 }
 
 
 void   ProgressAdviser::notifyProgress(float percent,std::string msg)
 {
-	m_progressSignal(percent,msg);
+        m_progressSignal(percent,msg);
 }
 
 

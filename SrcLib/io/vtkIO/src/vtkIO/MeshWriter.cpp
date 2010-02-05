@@ -25,33 +25,33 @@ namespace vtkIO
 MeshWriter::MeshWriter()
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-	SLM_TRACE("vtkIO::MeshWriter::MeshWriter");
+        SLM_TRACE("vtkIO::MeshWriter::MeshWriter");
 }
 
 //------------------------------------------------------------------------------
 
 MeshWriter::~MeshWriter()
 {
-	SLM_TRACE("vtkIO::MeshWriter::~MeshWriter");
+        SLM_TRACE("vtkIO::MeshWriter::~MeshWriter");
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriter::write()
 {
-	assert( m_object.use_count() );
-	assert( !m_object.expired() );
-	assert( m_object.lock() );
+        assert( m_object.use_count() );
+        assert( !m_object.expired() );
+        assert( m_object.lock() );
 
-	::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
+        ::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
 
-	vtkGenericDataObjectWriter *writer = vtkGenericDataObjectWriter::New();
-	writer->SetInput( ::vtkIO::toVTKMesh( pTriangularMesh ) );
-	writer->SetFileName(this->getFile().string().c_str());
-	writer->SetFileTypeToBinary ();
+        vtkGenericDataObjectWriter *writer = vtkGenericDataObjectWriter::New();
+        writer->SetInput( ::vtkIO::toVTKMesh( pTriangularMesh ) );
+        writer->SetFileName(this->getFile().string().c_str());
+        writer->SetFileTypeToBinary ();
 
-	writer->Write();
-	writer->Delete();
+        writer->Write();
+        writer->Delete();
 }
 
 //------------------------------------------------------------------------------

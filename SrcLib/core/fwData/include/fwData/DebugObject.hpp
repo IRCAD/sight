@@ -13,35 +13,35 @@
 namespace fwData
 {
 /**
- * @class 	DebugObject
- * @brief 	This class is used for debugging
+ * @class       DebugObject
+ * @brief       This class is used for debugging
  *
  * This contains a static method to print informations about the object and its fields.
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 class FWDATA_CLASS_API DebugObject : public ::fwCore::BaseObject
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (DebugObject), (()), new DebugObject) ;
+        fwCoreClassDefinitionsWithFactoryMacro( (DebugObject), (()), new DebugObject) ;
 
-	/// Construcotr
-	FWDATA_API DebugObject();
+        /// Construcotr
+        FWDATA_API DebugObject();
 
-	/// Destructor
-	FWDATA_API virtual ~DebugObject();
+        /// Destructor
+        FWDATA_API virtual ~DebugObject();
 
-	/**
-	 * @brief Print informations about the object
-	 *
-	 * Print object classname, number of field, list of all fields
-	 *
-	 * @param[out] _os output stream
-	 * @param[in] _object object to be debug
-	 * @param[in] _level number of blank before text
-	 */
-	FWDATA_API static void print( std::ostream &_os, fwTools::Object *_object, int _level = 0 );
+        /**
+         * @brief Print informations about the object
+         *
+         * Print object classname, number of field, list of all fields
+         *
+         * @param[out] _os output stream
+         * @param[in] _object object to be debug
+         * @param[in] _level number of blank before text
+         */
+        FWDATA_API static void print( std::ostream &_os, fwTools::Object *_object, int _level = 0 );
 };
 
 } // namespace fwData

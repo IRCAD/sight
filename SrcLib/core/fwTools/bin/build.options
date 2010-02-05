@@ -1,5 +1,5 @@
-TYPE 	= 'shared'
+TYPE    = 'shared'
 VERSION = '0-1'
-USE		= ['boost','uuid']
-LIB		= ['fwCore_0-1']
+USE             = ['boost','uuid']
+LIB             = ['fwCore_0-1']
 

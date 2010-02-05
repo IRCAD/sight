@@ -38,9 +38,9 @@ class wxColourPanel;
 
 
 /**
- * @brief	This class provides a widgets which allows the user to pick a colour from a palette.
- * @class	WindowingParameterEditor.
- * @note 	This class is not commented, because it is not used in the open framework tutorial.
+ * @brief       This class provides a widgets which allows the user to pick a colour from a palette.
+ * @class       WindowingParameterEditor.
+ * @note        This class is not commented, because it is not used in the open framework tutorial.
  * @todo This class has to be removed, because it is available in the new wxWidgets release.
  *
  * This class provides a widgets which allows
@@ -65,7 +65,7 @@ public:
      * @param parent The parent window
      * @param id The widget's id
      */
-	FWWX_API wxColourPicker(wxWindow *parent, int id);
+        FWWX_API wxColourPicker(wxWindow *parent, int id);
 
     // Get-Set methods
     /**
@@ -73,21 +73,21 @@ public:
      * the picker button. This method sends an event whenever it is called.
      * @param colour The colour to show in the picker
      */
-	FWWX_API void SetColour(wxColour& colour);
+        FWWX_API void SetColour(wxColour& colour);
 
     /**
      * Return the selected colour
      * @return The selected colour
      */
-	FWWX_API wxColour GetColour();
+        FWWX_API wxColour GetColour();
 
     // Overriden methods
-	FWWX_API virtual void DoSetSize(int x, int y,
+        FWWX_API virtual void DoSetSize(int x, int y,
                            int width, int height,
                            int sizeFlags = wxSIZE_AUTO);
 
     // Events
-	FWWX_API void OnPopup(wxCommandEvent& WXUNUSED(e));
+        FWWX_API void OnPopup(wxCommandEvent& WXUNUSED(e));
 
     DECLARE_EVENT_TABLE()
 };
@@ -102,14 +102,14 @@ public:
 class FWWX_CLASS_API wxColourPickerEvent : public wxCommandEvent {
     wxColour m_colour;
 public:
-	FWWX_API wxColourPickerEvent(int id, wxColour& colur);
+        FWWX_API wxColourPickerEvent(int id, wxColour& colur);
 
     /**
      * Returns the new selected colour
      * @return The selected colour
      */
-	FWWX_API wxColour GetColour();
-	FWWX_API wxEvent* Clone() const;
+        FWWX_API wxColour GetColour();
+        FWWX_API wxEvent* Clone() const;
 };
 
 //----------------------------------------------------

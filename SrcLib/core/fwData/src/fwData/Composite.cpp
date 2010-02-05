@@ -18,27 +18,27 @@ namespace fwData
 
 Composite::Composite()
 {
-	SLM_TRACE_FUNC();
-	// TODO Auto-generated constructor stub
+        SLM_TRACE_FUNC();
+        // TODO Auto-generated constructor stub
 }
 
 
 Composite::~Composite()
 {
-	SLM_TRACE_FUNC();
-	// TODO Auto-generated destructor stub
+        SLM_TRACE_FUNC();
+        // TODO Auto-generated destructor stub
 }
 
 
 Composite::Container &Composite::getRefMap()
 {
-	return m_map;
+        return m_map;
 }
 
 
 Composite::Container const &Composite::getRefMap() const
 {
-	return m_map;
+        return m_map;
 }
 
 //------------------------------------------------------------------------------

@@ -19,10 +19,10 @@ namespace writer
 {
 
 /**
- * @brief	generic class for all object writers.
- * @class	GenericObjectWriter.
- * @author	IRCAD (Research and Development Team).
- * @date	2009
+ * @brief       generic class for all object writers.
+ * @class       GenericObjectWriter.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009
  *
  * This class adds 2 methods to the API of IObjectWriter. This
  * generic reader test the object type given to the method setObject.
@@ -35,39 +35,39 @@ class GenericObjectWriter  : public ::fwDataIO::writer::IObjectWriter
 
 public :
 
-	/// the object type related
-	typedef DATATYPE DataType;
+        /// the object type related
+        typedef DATATYPE DataType;
 
-	fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectWriter<DATATYPE>)(::fwDataIO::writer::IObjectWriter::Baseclass) );
+        fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectWriter<DATATYPE>)(::fwDataIO::writer::IObjectWriter::Baseclass) );
 
-	/// Constructor. Do nothing.
-	GenericObjectWriter() {};
+        /// Constructor. Do nothing.
+        GenericObjectWriter() {};
 
-	/// Destructor. Do nothing.
-	virtual ~GenericObjectWriter() {};
+        /// Destructor. Do nothing.
+        virtual ~GenericObjectWriter() {};
 
-	/**
-	 * @brief m_object setter.
-	 * @param[out] _pObject replace weakptr m_object of the instance reader
-	 *
-	 * This method overload setObject to ensure that given object correspond to DATATYPE
-	 */
-	virtual void  setObject( ::fwTools::Object::sptr obj)
-	{
-		assert ( ::boost::dynamic_pointer_cast< DataType >( obj ) );
-		m_object = obj;
-	}
+        /**
+         * @brief m_object setter.
+         * @param[out] _pObject replace weakptr m_object of the instance reader
+         *
+         * This method overload setObject to ensure that given object correspond to DATATYPE
+         */
+        virtual void  setObject( ::fwTools::Object::sptr obj)
+        {
+                assert ( ::boost::dynamic_pointer_cast< DataType >( obj ) );
+                m_object = obj;
+        }
 
-	/**
-	 * @brief m_object getter.
-	 * @return m_object
-	 *
-	 * This method automatic cast object in correct DataType.
-	 */
-	virtual ::boost::shared_ptr< DataType >  getConcreteObject()
-	{
-		return ::boost::dynamic_pointer_cast< DataType >( getObject() );
-	}
+        /**
+         * @brief m_object getter.
+         * @return m_object
+         *
+         * This method automatic cast object in correct DataType.
+         */
+        virtual ::boost::shared_ptr< DataType >  getConcreteObject()
+        {
+                return ::boost::dynamic_pointer_cast< DataType >( getObject() );
+        }
 
 };
 

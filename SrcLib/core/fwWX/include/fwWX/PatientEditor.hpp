@@ -17,167 +17,167 @@ class wxWindow;
 
 namespace fwData
 {
-	class PatientDB;
-	class Patient;
-	class Study;
-	class Acquisition;
+        class PatientDB;
+        class Patient;
+        class Study;
+        class Acquisition;
 }
 
 namespace fwWX
 {
 
 /**
- * @brief	Implements a class providing a dialog box to edit patient properties.
- * @class	PatientEditorDialog.
- * @author	IRCAD (Research and Development Team)
- * @date	2009.
+ * @brief       Implements a class providing a dialog box to edit patient properties.
+ * @class       PatientEditorDialog.
+ * @author      IRCAD (Research and Development Team)
+ * @date        2009.
  * @note This class is not commented, because it is not used in the open framework tutorial.
  * @todo PatientEditorDialog is not commented.
  */
 class FWWX_CLASS_API PatientEditorDialog : public wxDialog
 {
-	public :
+        public :
 
-		FWWX_API PatientEditorDialog( 	wxWindow * parent,
-								::boost::shared_ptr< ::fwData::Patient > _pPatient,
-								::boost::shared_ptr< ::fwData::Study > _pStudy,
-								::boost::shared_ptr< ::fwData::Acquisition > _pAcquisition );
+                FWWX_API PatientEditorDialog(   wxWindow * parent,
+                                                                ::boost::shared_ptr< ::fwData::Patient > _pPatient,
+                                                                ::boost::shared_ptr< ::fwData::Study > _pStudy,
+                                                                ::boost::shared_ptr< ::fwData::Acquisition > _pAcquisition );
 
-		FWWX_API ~PatientEditorDialog();
+                FWWX_API ~PatientEditorDialog();
 
-	private :
+        private :
 
-		/**
-		* @name  wxWidget creation
-		*/
-		//@{
+                /**
+                * @name  wxWidget creation
+                */
+                //@{
 
-		void createContent();
+                void createContent();
 
-		wxSizer * createPatientSizer();
+                wxSizer * createPatientSizer();
 
-		wxSizer * createStudySizer();
+                wxSizer * createStudySizer();
 
-		wxSizer * createAcquisitionSizer();
+                wxSizer * createAcquisitionSizer();
 
-		//@}
+                //@}
 
-		/**
-		* @name  Data import
-		*/
-		//@{
+                /**
+                * @name  Data import
+                */
+                //@{
 
-		void importData();
+                void importData();
 
-		void importPatientData();
+                void importPatientData();
 
-		void importStudyData();
+                void importStudyData();
 
-		void importAcquisitionData();
+                void importAcquisitionData();
 
-		void disableFieldEdition();
+                void disableFieldEdition();
 
-		//@}
+                //@}
 
-		/**
-		* @name  Data export
-		*/
-		//@{
+                /**
+                * @name  Data export
+                */
+                //@{
 
-		void exportData();
+                void exportData();
 
-		void exportPatientData();
+                void exportPatientData();
 
-		void exportStudyData();
+                void exportStudyData();
 
-		void exportAcquisitionData();
+                void exportAcquisitionData();
 
-		//@}
+                //@}
 
-		/**
-		* @name  Event managment
-		*/
-		//@{
+                /**
+                * @name  Event managment
+                */
+                //@{
 
-		void onOk( wxCommandEvent & event );
+                void onOk( wxCommandEvent & event );
 
-		//@}
+                //@}
 
-		/**
-		* @name  Convertion method
-		*/
-		//@{
+                /**
+                * @name  Convertion method
+                */
+                //@{
 
-		std::string wxStringToString(const wxString&);
+                std::string wxStringToString(const wxString&);
 
-		wxString intToWxString( int value );
+                wxString intToWxString( int value );
 
-		wxString stringToWxString( const std::string & value );
+                wxString stringToWxString( const std::string & value );
 
-		wxString boolToWxString( bool value );
+                wxString boolToWxString( bool value );
 
-		wxDateTime::Month convertMonth(int month);
+                wxDateTime::Month convertMonth(int month);
 
-		//@}
+                //@}
 
-	private :
+        private :
 
-		/**
-		* @name  Patient data
-		*/
-		//@{
+                /**
+                * @name  Patient data
+                */
+                //@{
 
-		wxTextCtrl * 		m_Name;
-		wxTextCtrl * 		m_Firstname;
-		wxDatePickerCtrl * 	m_Birthdate;
-		wxChoice * 			m_Sex;
-		wxTextCtrl * 		m_IDDicom;
-		wxTextCtrl * 		m_DbID;
+                wxTextCtrl *            m_Name;
+                wxTextCtrl *            m_Firstname;
+                wxDatePickerCtrl *      m_Birthdate;
+                wxChoice *                      m_Sex;
+                wxTextCtrl *            m_IDDicom;
+                wxTextCtrl *            m_DbID;
 
-		//@}
+                //@}
 
-		/**
-		* @name  Study data
-		*/
-		//@{
+                /**
+                * @name  Study data
+                */
+                //@{
 
-		wxTextCtrl * 	m_Hospital;
-		wxChoice * 		m_Modality;
-		//wxTextCtrl * 	m_AcquisitionZone;
-		wxChoice * 		m_AcquisitionZone_zone;
-		wxChoice * 		m_AcquisitionZone_organ;
-		wxChoice *	 	m_AcquisitionZone_injection;
-		wxTextCtrl * 	m_UID;
-		wxTextCtrl * 	m_DbIDS;
-		wxTextCtrl * 	m_RISID;
+                wxTextCtrl *    m_Hospital;
+                wxChoice *              m_Modality;
+                //wxTextCtrl *  m_AcquisitionZone;
+                wxChoice *              m_AcquisitionZone_zone;
+                wxChoice *              m_AcquisitionZone_organ;
+                wxChoice *              m_AcquisitionZone_injection;
+                wxTextCtrl *    m_UID;
+                wxTextCtrl *    m_DbIDS;
+                wxTextCtrl *    m_RISID;
 
-		/**
-		* @name  Acqusition data
-		*/
-		//@{
+                /**
+                * @name  Acqusition data
+                */
+                //@{
 
-		wxTextCtrl * 		m_LaboID;
-		wxDatePickerCtrl * 	m_Date;
-		wxTextCtrl * 		m_Time;
-		wxTextCtrl * 		m_Index;
-		wxTextCtrl * 		m_ImageType;
-		wxTextCtrl * 		m_ImageFormat;
-		wxTextCtrl * 		m_Width;
-		wxTextCtrl *		m_Height;
-		wxTextCtrl * 		m_SliceThickness;
-		wxTextCtrl * 		m_VoxelSize;
-		wxTextCtrl * 		m_Axe;
-		wxTextCtrl * 		m_FrameNumber;
-		wxTextCtrl * 		m_BitsPerPixel;
-		wxTextCtrl * 		m_DbIDA;
+                wxTextCtrl *            m_LaboID;
+                wxDatePickerCtrl *      m_Date;
+                wxTextCtrl *            m_Time;
+                wxTextCtrl *            m_Index;
+                wxTextCtrl *            m_ImageType;
+                wxTextCtrl *            m_ImageFormat;
+                wxTextCtrl *            m_Width;
+                wxTextCtrl *            m_Height;
+                wxTextCtrl *            m_SliceThickness;
+                wxTextCtrl *            m_VoxelSize;
+                wxTextCtrl *            m_Axe;
+                wxTextCtrl *            m_FrameNumber;
+                wxTextCtrl *            m_BitsPerPixel;
+                wxTextCtrl *            m_DbIDA;
 
-		//@}
+                //@}
 
-		::boost::shared_ptr< ::fwData::Patient > m_pPatient;
-		::boost::shared_ptr< ::fwData::Study > m_pStudy;
-		::boost::shared_ptr< ::fwData::Acquisition > m_pAcquisition;
+                ::boost::shared_ptr< ::fwData::Patient > m_pPatient;
+                ::boost::shared_ptr< ::fwData::Study > m_pStudy;
+                ::boost::shared_ptr< ::fwData::Acquisition > m_pAcquisition;
 
-		DECLARE_EVENT_TABLE()
+                DECLARE_EVENT_TABLE()
 };
 
 
@@ -185,17 +185,17 @@ class FWWX_CLASS_API PatientEditorDialog : public wxDialog
 struct PatientEditor
 {
 
-	/**
-	 * @brief	Edits patient properties using a dialog box.
-	 *
-	 * @param	parent	a pointer to a window that will be the parent of the dialog
-	 *
-	 * @return	a bool telling if patient properties have been updated
-	 */
-	static const bool showModalDialog(	wxWindow * parent,
-										::boost::shared_ptr< ::fwData::Patient > _pPatient,
-										::boost::shared_ptr< ::fwData::Study > _pStudy,
-										::boost::shared_ptr< ::fwData::Acquisition > _pAcquisition );
+        /**
+         * @brief       Edits patient properties using a dialog box.
+         *
+         * @param       parent  a pointer to a window that will be the parent of the dialog
+         *
+         * @return      a bool telling if patient properties have been updated
+         */
+        static const bool showModalDialog(      wxWindow * parent,
+                                                                                ::boost::shared_ptr< ::fwData::Patient > _pPatient,
+                                                                                ::boost::shared_ptr< ::fwData::Study > _pStudy,
+                                                                                ::boost::shared_ptr< ::fwData::Acquisition > _pAcquisition );
 
 };
 

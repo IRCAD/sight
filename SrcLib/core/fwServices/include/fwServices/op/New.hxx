@@ -19,9 +19,9 @@ namespace fwServices
 template<class CLASSNAME>
 SPTR(CLASSNAME) New(::fwRuntime::ConfigurationElement::sptr _elt)
 {
-	SPTR(CLASSNAME) myObject = ::boost::dynamic_pointer_cast< CLASSNAME >( ::fwServices::New( _elt ) ) ;
-	assert(myObject);
-	return myObject;
+        SPTR(CLASSNAME) myObject = ::boost::dynamic_pointer_cast< CLASSNAME >( ::fwServices::New( _elt ) ) ;
+        assert(myObject);
+        return myObject;
 }
 
 

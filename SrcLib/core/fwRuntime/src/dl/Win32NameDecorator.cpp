@@ -18,7 +18,7 @@ namespace dl
 
 const std::string Win32NameDecorator::getNativeExtension() const throw()
 {
-	return std::string("dll");
+        return std::string("dll");
 }
 
 

@@ -19,10 +19,10 @@ namespace codeGenerator
 // A : ar &  boost::serialization::make_nvp( "Param" , _patient.getParam() );
 void generateSaveTypeA( const std::string & field, const std::string & parameterName )
 {
-	std::string methodName = fieldToMethodName( field );
-	std::cout << "ar &  boost::serialization::make_nvp( \"";
-	std::cout << methodName << "\" , " << parameterName << ".get" <<  methodName;
-	std::cout << "() );" << std::endl;
+        std::string methodName = fieldToMethodName( field );
+        std::cout << "ar &  boost::serialization::make_nvp( \"";
+        std::cout << methodName << "\" , " << parameterName << ".get" <<  methodName;
+        std::cout << "() );" << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -30,46 +30,46 @@ void generateSaveTypeA( const std::string & field, const std::string & parameter
 // A : ar &  boost::serialization::make_nvp( "Param" , _patient.getCRefParam() );
 void generateSaveTypeB( const std::string & field, const std::string & parameterName )
 {
-	std::string methodName = fieldToMethodName( field );
-	std::cout << "ar &  boost::serialization::make_nvp( \"";
-	std::cout << methodName << "\" , " << parameterName << ".getCRef" <<  methodName;
-	std::cout << "() );" << std::endl;
+        std::string methodName = fieldToMethodName( field );
+        std::cout << "ar &  boost::serialization::make_nvp( \"";
+        std::cout << methodName << "\" , " << parameterName << ".getCRef" <<  methodName;
+        std::cout << "() );" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
 void generateSave( const std::string & field, const std::string & type, const std::string & parameterName)
 {
-	if ( isASharedPtr(type) )
-	{
-		generateSaveTypeA( field, parameterName );
-	}
-	else // if ( isAnObject(type) || isAContainair(type) ) & simple object
-	{
-		generateSaveTypeB( field, parameterName );
-	}
+        if ( isASharedPtr(type) )
+        {
+                generateSaveTypeA( field, parameterName );
+        }
+        else // if ( isAnObject(type) || isAContainair(type) ) & simple object
+        {
+                generateSaveTypeB( field, parameterName );
+        }
 }
 
 //------------------------------------------------------------------------------
 
 void generateSave( const std::vector< std::pair< std::string, std::string > > & fieldAndType, const std::string & parameterName )
 {
-	
-	for( 	std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
-			field != fieldAndType.end();
-			field ++ )
-	{
-		std::string name = field->first;
-		std::string type = field->second;
-	
-		generateSave(name,type,parameterName);
-		
-	}
+        
+        for(    std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
+                        field != fieldAndType.end();
+                        field ++ )
+        {
+                std::string name = field->first;
+                std::string type = field->second;
+        
+                generateSave(name,type,parameterName);
+                
+        }
 
 }
 
 //------------------------------------------------------------------------------
-	
+        
 } // codeGenerator
 
 

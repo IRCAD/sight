@@ -17,14 +17,14 @@ namespace fwData
 
 DictionaryOrgan::DictionaryOrgan()
 {
-	SLM_WARN("::fwData::DictionaryOrgan() : (ToDo) field default value");
+        SLM_WARN("::fwData::DictionaryOrgan() : (ToDo) field default value");
 }
 
 //------------------------------------------------------------------------------
 
 DictionaryOrgan::~DictionaryOrgan()
 {
-	SLM_WARN("::fwData::~DictionaryOrgan() : (ToDo)");
+        SLM_WARN("::fwData::~DictionaryOrgan() : (ToDo)");
 }
 
 //------------------------------------------------------------------------------

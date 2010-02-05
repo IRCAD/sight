@@ -22,10 +22,10 @@ namespace dl
 
 
 /**
- * @brief	Implements a win32 specific name decorator.
- * @struct	Win32NameDecorator
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief       Implements a win32 specific name decorator.
+ * @struct      Win32NameDecorator
+ * @date        2004-2009
+ * @author      IRCAD (Research and Development Team).
  */
 struct Win32NameDecorator : public NameDecorator
 {
@@ -33,12 +33,12 @@ struct Win32NameDecorator : public NameDecorator
 
 protected:
 
-	/**
-	 * @name		Ovrerides
-	 */
-	//@{
-	const std::string getNativeExtension() const throw();
-	//@}
+        /**
+         * @name                Ovrerides
+         */
+        //@{
+        const std::string getNativeExtension() const throw();
+        //@}
 
 };
 

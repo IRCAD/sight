@@ -23,19 +23,19 @@ EConfigurationElement::~EConfigurationElement()
 
 ::boost::shared_ptr< EConfigurationElement > EConfigurationElement::addConfigurationElement( const std::string& name )
 {
-	::boost::shared_ptr< EConfigurationElement > cfg( new EConfigurationElement( name ) ) ;
-	this->::fwRuntime::ConfigurationElement::addConfigurationElement( cfg );
-	return cfg ;
+        ::boost::shared_ptr< EConfigurationElement > cfg( new EConfigurationElement( name ) ) ;
+        this->::fwRuntime::ConfigurationElement::addConfigurationElement( cfg );
+        return cfg ;
 }
 
 void EConfigurationElement::addConfigurationElement( ::boost::shared_ptr< EConfigurationElement > element )
 {
-	this->::fwRuntime::ConfigurationElement::addConfigurationElement( element );
+        this->::fwRuntime::ConfigurationElement::addConfigurationElement( element );
 }
 
 void EConfigurationElement::setAttributeValue(const std::string& name, const std::string& value) throw()
 {
-	this->::fwRuntime::ConfigurationElement::setAttributeValue( name , value ) ;
+        this->::fwRuntime::ConfigurationElement::setAttributeValue( name , value ) ;
 }
 
 void EConfigurationElement::setValue(const std::string& value) throw()

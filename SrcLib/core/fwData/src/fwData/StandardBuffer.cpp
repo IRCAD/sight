@@ -27,20 +27,20 @@ StandardBuffer::~StandardBuffer()
 
 void * StandardBuffer::getBuffer()
 {
-	return m_buffer;
+        return m_buffer;
 }
 
 //------------------------------------------------------------------------------
 
 void StandardBuffer::setBuffer(void * newBuffer)
 {
-	char * buff = static_cast< char * >( this->getBuffer() );
+        char * buff = static_cast< char * >( this->getBuffer() );
 
-	if( m_bManagesBuff && buff && newBuffer != buff )
-	{
-		delete[] buff;
-	}
-	m_buffer = newBuffer;
+        if( m_bManagesBuff && buff && newBuffer != buff )
+        {
+                delete[] buff;
+        }
+        m_buffer = newBuffer;
 }
 
 //------------------------------------------------------------------------------

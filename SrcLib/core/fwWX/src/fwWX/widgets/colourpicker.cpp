@@ -331,9 +331,9 @@ void wxColourPanel::OnPaint(wxPaintEvent& WXUNUSED(e)){
     int alpha = 48;
     wxColour selection = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
     wxColour lighterSelection = wxColour(
-		(colourMenu.Red() * (255 - alpha) + selection.Red() * alpha) >> 8,
-		(colourMenu.Green() * (255 - alpha) + selection.Green() * alpha) >> 8,
-		(colourMenu.Blue() * (255 - alpha) + selection.Blue() * alpha) >> 8);
+                (colourMenu.Red() * (255 - alpha) + selection.Red() * alpha) >> 8,
+                (colourMenu.Green() * (255 - alpha) + selection.Green() * alpha) >> 8,
+                (colourMenu.Blue() * (255 - alpha) + selection.Blue() * alpha) >> 8);
 
     bool found = false;
     int squareStart = SQUARE_WIDTH + SQUARE_SEPARATION;

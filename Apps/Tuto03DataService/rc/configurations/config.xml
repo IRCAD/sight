@@ -41,7 +41,7 @@
         (Note:
                In this tutorial, there is an attribute specialAction with the value "QUIT". On MS Windows, there's no impact.
                But on Mac OS, this value installs the menuItem in the system menu bar,
-               and on Linux this value installs the default 'Quit' system icon in the menuItem.)	
+               and on Linux this value installs the default 'Quit' system icon in the menuItem.)        
                The attribute "shortcut" is set with the value "Ctrl+Q" to close the application with this specific shortcut. -->
         <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
 
@@ -63,7 +63,7 @@
 
 
         <start type="::gui::aspect::IAspect" />
-        <start uid="myRenderingTuto"/>						
+        <start uid="myRenderingTuto"/>                                          
         
         <stop uid="myRenderingTuto"/>
         <stop type="::gui::aspect::IAspect" />

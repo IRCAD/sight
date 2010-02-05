@@ -16,30 +16,30 @@
 namespace fwData
 {
 /**
- * @class 	StandardBuffer
- * @brief 	This class defines a standard buffer. It is the default buffer class used in ::fwData::Image.
- * @see 	IBufferDelegate
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class       StandardBuffer
+ * @brief       This class defines a standard buffer. It is the default buffer class used in ::fwData::Image.
+ * @see         IBufferDelegate
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 
 
 class FWDATA_CLASS_API StandardBuffer : public ::fwCore::BaseObject, public IBufferDelegate
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (StandardBuffer)(IBufferDelegate::Baseclass), (()), new StandardBuffer ) ;
+        fwCoreClassDefinitionsWithFactoryMacro( (StandardBuffer)(IBufferDelegate::Baseclass), (()), new StandardBuffer ) ;
 
-	/// Constructor
-	FWDATA_API StandardBuffer();
+        /// Constructor
+        FWDATA_API StandardBuffer();
 
-	/// Destructor
-	FWDATA_API virtual ~StandardBuffer();
+        /// Destructor
+        FWDATA_API virtual ~StandardBuffer();
 
-	/// Get buffer
-	FWDATA_API virtual void *getBuffer();
+        /// Get buffer
+        FWDATA_API virtual void *getBuffer();
 
-	/// Set buffer
-	FWDATA_API virtual void setBuffer(void *);
+        /// Set buffer
+        FWDATA_API virtual void setBuffer(void *);
 };
 
 }

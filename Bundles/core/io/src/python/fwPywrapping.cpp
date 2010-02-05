@@ -27,23 +27,23 @@ using namespace boost::python;
 // BOOST_PYTHON_MODULE(io) todo use imp.load or a SCONS define to get this information
 BOOST_PYTHON_MODULE(io)
 {
-	OSLM_INFO("Bundle io exporting python wrapping");
-	class_< ::io::IReader, bases< ::fwServices::IService >, ::boost::shared_ptr< ::io::IReader > >("IReader", no_init)
-	.def("configureWithIHM", &::io::IReader::configureWithIHM )
-	.def("update", &::io::IReader::update   );
+        OSLM_INFO("Bundle io exporting python wrapping");
+        class_< ::io::IReader, bases< ::fwServices::IService >, ::boost::shared_ptr< ::io::IReader > >("IReader", no_init)
+        .def("configureWithIHM", &::io::IReader::configureWithIHM )
+        .def("update", &::io::IReader::update   );
 }
 
 
 struct PyImporterForIO : public ::fwTools::IPyImporter
 {
-	PyImporterForIO() {}
-	virtual ~PyImporterForIO() { }
+        PyImporterForIO() {}
+        virtual ~PyImporterForIO() { }
 
-	bool import()
-	{
-		initio();
-		return true;
-	}
+        bool import()
+        {
+                initio();
+                return true;
+        }
 };
 
 

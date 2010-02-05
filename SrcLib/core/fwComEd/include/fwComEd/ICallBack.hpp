@@ -18,8 +18,8 @@ namespace fwComEd
 {
 
 /**
- * @brief	Interface for callback functions to define and execute and messages
- * @class 	ICallback
+ * @brief       Interface for callback functions to define and execute and messages
+ * @class       ICallback
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
@@ -27,26 +27,26 @@ class FWCOMED_CLASS_API ICallback
 {
 public:
 
-	/**
-	 * @brief	Constructor : does nothing.
-	 */
-	FWCOMED_API ICallback() throw();
+        /**
+         * @brief       Constructor : does nothing.
+         */
+        FWCOMED_API ICallback() throw();
 
-	/**
-	 * @brief	Destuctor : does nothing.
-	 */
-	FWCOMED_API virtual ~ICallback() throw();
+        /**
+         * @brief       Destuctor : does nothing.
+         */
+        FWCOMED_API virtual ~ICallback() throw();
 
-	/// Define modif status
-	FWCOMED_API virtual void operator()
-		( ::boost::shared_ptr< const ::fwServices::ObjectMsg >
-		_msg, void *_client) throw( ::fwTools::Failed ) = 0 ;
+        /// Define modif status
+        FWCOMED_API virtual void operator()
+                ( ::boost::shared_ptr< const ::fwServices::ObjectMsg >
+                _msg, void *_client) throw( ::fwTools::Failed ) = 0 ;
 
 };
 
 /**
- * @brief 	Template filter for callback functions to define and execute and messages.
- * @class 	ICallbackFilter
+ * @brief       Template filter for callback functions to define and execute and messages.
+ * @class       ICallbackFilter
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  *
@@ -58,20 +58,20 @@ class ICallbackFilter : public ICallback
 {
 public:
 
-	/**
-	 * @brief	Constructor : does nothing.
-	 */
-	ICallbackFilter() throw() {};
+        /**
+         * @brief       Constructor : does nothing.
+         */
+        ICallbackFilter() throw() {};
 
-	/**
-	 * @brief	Destuctor : does nothing.
-	 */
-	virtual ~ICallbackFilter() throw() {};
+        /**
+         * @brief       Destuctor : does nothing.
+         */
+        virtual ~ICallbackFilter() throw() {};
 
-	/// Define modif status
-	virtual void operator()
-		( ::boost::shared_ptr< const ::fwServices::ObjectMsg >
-		_msg, void *_client) throw( ::fwTools::Failed ) = 0 ;
+        /// Define modif status
+        virtual void operator()
+                ( ::boost::shared_ptr< const ::fwServices::ObjectMsg >
+                _msg, void *_client) throw( ::fwTools::Failed ) = 0 ;
 
 };
 

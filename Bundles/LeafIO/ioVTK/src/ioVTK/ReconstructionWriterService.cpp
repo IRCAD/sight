@@ -34,8 +34,8 @@ REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwDat
 //------------------------------------------------------------------------------
 
 ReconstructionWriterService::ReconstructionWriterService() throw() :
-	m_bServiceIsConfigured(false),
-	m_fsAcqPath("")
+        m_bServiceIsConfigured(false),
+        m_fsAcqPath("")
 {}
 
 //------------------------------------------------------------------------------
@@ -47,112 +47,112 @@ ReconstructionWriterService::~ReconstructionWriterService() throw()
 
 void ReconstructionWriterService::configuring() throw(::fwTools::Failed)
 {
-	if( m_configuration->findConfigurationElement("filename") )
-	{
-		std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-		m_fsAcqPath = ::boost::filesystem::path( filename ) ;
-		m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAcqPath);
-		OSLM_TRACE("Filename found" << filename ) ;
-	}
+        if( m_configuration->findConfigurationElement("filename") )
+        {
+                std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
+                m_fsAcqPath = ::boost::filesystem::path( filename ) ;
+                m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAcqPath);
+                OSLM_TRACE("Filename found" << filename ) ;
+        }
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriterService::configureWithIHM()
 {
-	static wxString _sDefaultPath = _("");
-	wxString title = _("Choose an obj file to save image");
-	wxString file = wxFileSelector(
-			title,
-			_sDefaultPath,
-			wxT(""),
-			wxT(""),
-			wxT("Obj (*.obj)|*.obj"),
+        static wxString _sDefaultPath = _("");
+        wxString title = _("Choose an obj file to save image");
+        wxString file = wxFileSelector(
+                        title,
+                        _sDefaultPath,
+                        wxT(""),
+                        wxT(""),
+                        wxT("Obj (*.obj)|*.obj"),
 #if wxCHECK_VERSION(2, 8, 0)
-			wxFD_SAVE,
+                        wxFD_SAVE,
 #else
-			wxSAVE,
+                        wxSAVE,
 #endif
-			wxTheApp->GetTopWindow() );
+                        wxTheApp->GetTopWindow() );
 
-	if( file.IsEmpty() == false)
-	{
-		m_fsAcqPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
-		m_bServiceIsConfigured = true;
-		_sDefaultPath = wxConvertMB2WX( m_fsAcqPath.branch_path().string().c_str() );
-	}
+        if( file.IsEmpty() == false)
+        {
+                m_fsAcqPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+                m_bServiceIsConfigured = true;
+                _sDefaultPath = wxConvertMB2WX( m_fsAcqPath.branch_path().string().c_str() );
+        }
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriterService::starting() throw(::fwTools::Failed)
 {
-	SLM_TRACE("ReconstructionWriterService::starting()");
+        SLM_TRACE("ReconstructionWriterService::starting()");
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriterService::stopping() throw(::fwTools::Failed)
 {
-	SLM_TRACE("ReconstructionWriterService::stopping()");
+        SLM_TRACE("ReconstructionWriterService::stopping()");
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriterService::info(std::ostream &_sstream )
 {
-	_sstream << "ReconstructionWriterService::info";
+        _sstream << "ReconstructionWriterService::info";
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem::path objFile, ::boost::shared_ptr< ::fwData::Acquisition > _pAcq )
 {
-	SLM_TRACE("ReconstructionWriterService::saveImage");
-	::vtkIO::ReconstructionWriter myWriter;
+        SLM_TRACE("ReconstructionWriterService::saveImage");
+        ::vtkIO::ReconstructionWriter myWriter;
 
-	myWriter.setObject(_pAcq);
-	myWriter.setFile(objFile);
+        myWriter.setObject(_pAcq);
+        myWriter.setFile(objFile);
 
-	try
-	{
-		::fwWX::ProgressTowx progressMeterGUI("Saving Reconstructions ");
-		myWriter.addHandler( progressMeterGUI );
-		myWriter.write();
+        try
+        {
+                ::fwWX::ProgressTowx progressMeterGUI("Saving Reconstructions ");
+                myWriter.addHandler( progressMeterGUI );
+                myWriter.write();
 
-	}
-	catch (const std::exception & e)
-	{
-		std::stringstream ss;
-		ss << "Warning during loading : " << e.what();
-		wxString wxStmp( ss.str().c_str(), wxConvLocal );
-		wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
-	}
-	catch( ... )
-	{
-		std::stringstream ss;
-		ss << "Warning during loading : ";
-		wxString wxStmp( ss.str().c_str(), wxConvLocal );
-		wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
-	}
+        }
+        catch (const std::exception & e)
+        {
+                std::stringstream ss;
+                ss << "Warning during loading : " << e.what();
+                wxString wxStmp( ss.str().c_str(), wxConvLocal );
+                wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        }
+        catch( ... )
+        {
+                std::stringstream ss;
+                ss << "Warning during loading : ";
+                wxString wxStmp( ss.str().c_str(), wxConvLocal );
+                wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        }
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriterService::updating() throw(::fwTools::Failed)
 {
-	SLM_TRACE("ReconstructionWriterService::updating()");
+        SLM_TRACE("ReconstructionWriterService::updating()");
 
-	if( m_bServiceIsConfigured )
-	{
-		// Retrieve dataStruct associated with this service
-		::fwData::Acquisition::sptr pAcquisition = this->getObject< ::fwData::Acquisition >() ;
-		assert(pAcquisition);
+        if( m_bServiceIsConfigured )
+        {
+                // Retrieve dataStruct associated with this service
+                ::fwData::Acquisition::sptr pAcquisition = this->getObject< ::fwData::Acquisition >() ;
+                assert(pAcquisition);
 
-		wxBeginBusyCursor();
-		saveReconstruction(m_fsAcqPath,pAcquisition);
-		wxEndBusyCursor();
-	}
+                wxBeginBusyCursor();
+                saveReconstruction(m_fsAcqPath,pAcquisition);
+                wxEndBusyCursor();
+        }
 }
 
 //------------------------------------------------------------------------------

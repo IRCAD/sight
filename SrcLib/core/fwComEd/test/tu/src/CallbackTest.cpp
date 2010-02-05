@@ -25,58 +25,58 @@ REGISTER_CALLBACK( ::fwComEd::Dictionary::m_windowMaxId , CallbackTest , testCal
 
 void CallbackTest::setUp()
 {
-	// Set up context before running a test.
-	this->m_isCallback1 = false;
-	this->m_isCallback2 = false;
+        // Set up context before running a test.
+        this->m_isCallback1 = false;
+        this->m_isCallback2 = false;
 }
 
 //------------------------------------------------------------------------------
 
 void CallbackTest::tearDown()
 {
-	// Clean up after the test run.
+        // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
 void CallbackTest::methodeCallback()
 {
-	::fwData::Integer::sptr minField = ::fwData::Integer::New(15);
-	::fwData::Integer::sptr maxField = ::fwData::Integer::New(150);
+        ::fwData::Integer::sptr minField = ::fwData::Integer::New(15);
+        ::fwData::Integer::sptr maxField = ::fwData::Integer::New(150);
 
-	// message with event corresponding to callback
-	::fwServices::ObjectMsg::NewSptr objMessage;
-	objMessage->addEvent(::fwComEd::Dictionary::m_windowMinId, minField);
-	objMessage->addEvent(::fwComEd::Dictionary::m_windowMaxId, maxField);
+        // message with event corresponding to callback
+        ::fwServices::ObjectMsg::NewSptr objMessage;
+        objMessage->addEvent(::fwComEd::Dictionary::m_windowMinId, minField);
+        objMessage->addEvent(::fwComEd::Dictionary::m_windowMaxId, maxField);
 
-	// dispatch the message to callback
-	::fwComEd::DispatchMessage< ::CallbackTest >(objMessage, this);
+        // dispatch the message to callback
+        ::fwComEd::DispatchMessage< ::CallbackTest >(objMessage, this);
 
-	// check if the callbacks have received the message
-	CPPUNIT_ASSERT(this->m_isCallback1);
-	CPPUNIT_ASSERT(this->m_isCallback2);
+        // check if the callbacks have received the message
+        CPPUNIT_ASSERT(this->m_isCallback1);
+        CPPUNIT_ASSERT(this->m_isCallback2);
 }
 
 void CallbackTest::testCallback( ::fwServices::ObjectMsg::csptr _msg )
 {
-	// check receive message with minField
-	CPPUNIT_ASSERT( _msg->hasEvent( ::fwComEd::Dictionary::m_windowMinId ) );
-	::fwData::Integer::csptr minField = ::fwData::Integer::dynamicConstCast(_msg->getDataInfo( ::fwComEd::Dictionary::m_windowMinId ));
+        // check receive message with minField
+        CPPUNIT_ASSERT( _msg->hasEvent( ::fwComEd::Dictionary::m_windowMinId ) );
+        ::fwData::Integer::csptr minField = ::fwData::Integer::dynamicConstCast(_msg->getDataInfo( ::fwComEd::Dictionary::m_windowMinId ));
 
-	CPPUNIT_ASSERT( 15, minField->value());
+        CPPUNIT_ASSERT( 15, minField->value());
 
-	this->m_isCallback1 = true;
+        this->m_isCallback1 = true;
 }
 
 void CallbackTest::testCallback2( ::fwServices::ObjectMsg::csptr _msg )
 {
-	// check receive message with maxField
-	CPPUNIT_ASSERT( _msg->hasEvent( ::fwComEd::Dictionary::m_windowMaxId ) );
-	::fwData::Integer::csptr maxField = ::fwData::Integer::dynamicConstCast(_msg->getDataInfo( ::fwComEd::Dictionary::m_windowMaxId ));
+        // check receive message with maxField
+        CPPUNIT_ASSERT( _msg->hasEvent( ::fwComEd::Dictionary::m_windowMaxId ) );
+        ::fwData::Integer::csptr maxField = ::fwData::Integer::dynamicConstCast(_msg->getDataInfo( ::fwComEd::Dictionary::m_windowMaxId ));
 
-	CPPUNIT_ASSERT( 150, maxField->value());
+        CPPUNIT_ASSERT( 150, maxField->value());
 
-	this->m_isCallback2 = true;
+        this->m_isCallback2 = true;
 }
 
 //------------------------------------------------------------------------------

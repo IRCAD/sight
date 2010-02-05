@@ -15,13 +15,13 @@ namespace visitor
 
 void DepthFirst::next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
-	::fwTools::Object::ChildContainer::iterator f;
-	for ( f = fields.begin();   f != fields.end() ; ++f )
-	{
-		assert( ::fwTools::Object::dynamicCast( *f ) ) ;
-		m_source = src;
-		accept( ::fwTools::Object::dynamicCast( *f ) , this );
-	}
+        ::fwTools::Object::ChildContainer::iterator f;
+        for ( f = fields.begin();   f != fields.end() ; ++f )
+        {
+                assert( ::fwTools::Object::dynamicCast( *f ) ) ;
+                m_source = src;
+                accept( ::fwTools::Object::dynamicCast( *f ) , this );
+        }
 }
 
 } // namespace visitor

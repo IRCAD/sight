@@ -16,35 +16,35 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object message specialized for PlaneList : store modification information
- * @class 	PlaneListMsg
+ * @brief       Object message specialized for PlaneList : store modification information
+ * @class       PlaneListMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
- * @see 	::fwServices::ObjectMsg
+ * @see         ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API PlaneListMsg : public ::fwServices::ObjectMsg
 {
 
 public:
 
-	fwCoreClassDefinitionsWithFactoryMacro((PlaneListMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new PlaneListMsg );
+        fwCoreClassDefinitionsWithFactoryMacro((PlaneListMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new PlaneListMsg );
 
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string ADD_PLANE;
-	FWCOMED_API static std::string REMOVE_PLANE;
-	FWCOMED_API static std::string PLANELIST_VISIBILITY;
-	FWCOMED_API static std::string PLANELIST_MODIFIED;
-	FWCOMED_API static std::string DESELECT_ALL_PLANES;
+        /// Event identifier used to inform for modification
+        FWCOMED_API static std::string ADD_PLANE;
+        FWCOMED_API static std::string REMOVE_PLANE;
+        FWCOMED_API static std::string PLANELIST_VISIBILITY;
+        FWCOMED_API static std::string PLANELIST_MODIFIED;
+        FWCOMED_API static std::string DESELECT_ALL_PLANES;
 
-	/**
-	  * @brief	Constructor : does nothing.
-	  */
-	FWCOMED_API PlaneListMsg() throw();
+        /**
+          * @brief      Constructor : does nothing.
+          */
+        FWCOMED_API PlaneListMsg() throw();
 
-	/**
-	  * @brief	Destuctor : does nothing.
-	  */
-	FWCOMED_API virtual ~PlaneListMsg() throw();
+        /**
+          * @brief      Destuctor : does nothing.
+          */
+        FWCOMED_API virtual ~PlaneListMsg() throw();
 
 };
 

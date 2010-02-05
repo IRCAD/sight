@@ -10,16 +10,16 @@
 
 #ifdef _WIN32
 
-	#ifdef FWCOMED_EXPORTS
-	#define FWCOMED_API __declspec(dllexport)
-	#else
-	#define FWCOMED_API __declspec(dllimport)
-	#endif
-	
-	#define FWCOMED_CLASS_API 
+        #ifdef FWCOMED_EXPORTS
+        #define FWCOMED_API __declspec(dllexport)
+        #else
+        #define FWCOMED_API __declspec(dllimport)
+        #endif
+        
+        #define FWCOMED_CLASS_API 
 
-	#pragma warning(disable: 4290)
-	
+        #pragma warning(disable: 4290)
+        
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
         #ifdef FWCOMED_EXPORTS
@@ -33,7 +33,7 @@
 #else
 
     #define FWCOMED_API
-	#define FWCOMED_CLASS_API
+        #define FWCOMED_CLASS_API
 
 #endif
 

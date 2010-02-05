@@ -18,7 +18,7 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Float::Float( const float value ) throw()
-:	GenericField< float >( value )
+:       GenericField< float >( value )
 {}
 
 //------------------------------------------------------------------------------

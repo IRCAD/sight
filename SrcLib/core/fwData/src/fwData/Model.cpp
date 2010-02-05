@@ -18,18 +18,18 @@ Model::Model()
 
 Model::~Model() throw()
 {
-	m_map.clear();
+        m_map.clear();
 }
 
 FWDATA_API Model::Container &Model::getRefMap()
 {
-	return m_map ;
+        return m_map ;
 }
 
 
 FWDATA_API const Model::Container &Model::getCRefMap() const
 {
-	return m_map ;
+        return m_map ;
 }
 
 

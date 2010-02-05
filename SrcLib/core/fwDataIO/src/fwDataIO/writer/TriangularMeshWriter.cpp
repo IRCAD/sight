@@ -40,44 +40,44 @@ TriangularMeshWriter::~TriangularMeshWriter()
 
 void TriangularMeshWriter::write()
 {
-	OSLM_INFO( "[TriangularMeshReader::read] Trian file: " << getFile());
-	assert( getFile().empty() ==  false );
+        OSLM_INFO( "[TriangularMeshReader::read] Trian file: " << getFile());
+        assert( getFile().empty() ==  false );
 
-	::boost::shared_ptr< ::fwData::TriangularMesh > triMesh = getConcreteObject();
+        ::boost::shared_ptr< ::fwData::TriangularMesh > triMesh = getConcreteObject();
 
-	std::fstream file;
-	file.open(getFile().native_file_string().c_str(), std::fstream::out);
-	if (!file.is_open())
-	{
-		OSLM_ERROR( "Trian file writing error for " << getFile());
-		std::string str = "Unable to write ";
-		str+= getFile().native_file_string();
-		throw std::ios_base::failure(str);
-	}
+        std::fstream file;
+        file.open(getFile().native_file_string().c_str(), std::fstream::out);
+        if (!file.is_open())
+        {
+                OSLM_ERROR( "Trian file writing error for " << getFile());
+                std::string str = "Unable to write ";
+                str+= getFile().native_file_string();
+                throw std::ios_base::failure(str);
+        }
 
-	unsigned int i, nbPts, nbCells;
-	nbPts = triMesh->points().size();
-	file<<nbPts<<std::endl;
-	for( i=0 ; i<nbPts ; ++i )
-	{
-		std::vector< float > point = triMesh->points().at(i);
-		file<<point[0]<<" "<<point[1]<<" "<<point[2]<<std::endl;
-	}
+        unsigned int i, nbPts, nbCells;
+        nbPts = triMesh->points().size();
+        file<<nbPts<<std::endl;
+        for( i=0 ; i<nbPts ; ++i )
+        {
+                std::vector< float > point = triMesh->points().at(i);
+                file<<point[0]<<" "<<point[1]<<" "<<point[2]<<std::endl;
+        }
 
-	nbCells = triMesh->cells().size();
-	file<<nbCells<<std::endl;
-	for( i=0 ; i<nbCells ; ++i )
-	{
-		std::vector< int > cell = triMesh->cells().at(i);
-		file<<cell[0]<<" "<<cell[1]<<" "<<cell[2]<<" "<<-1<<" "<<-1<<" "<<-1<<std::endl;
-	}
-	file.close();
+        nbCells = triMesh->cells().size();
+        file<<nbCells<<std::endl;
+        for( i=0 ; i<nbCells ; ++i )
+        {
+                std::vector< int > cell = triMesh->cells().at(i);
+                file<<cell[0]<<" "<<cell[1]<<" "<<cell[2]<<" "<<-1<<" "<<-1<<" "<<-1<<std::endl;
+        }
+        file.close();
 }
 
 
 std::string  TriangularMeshWriter::extension()
 {
-	return ".trian";
+        return ".trian";
 }
 
 //------------------------------------------------------------------------------

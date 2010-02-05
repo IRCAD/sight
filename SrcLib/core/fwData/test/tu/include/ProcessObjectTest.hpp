@@ -10,17 +10,17 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class ProcessObjectTest : public CPPUNIT_NS::TestFixture {
-	CPPUNIT_TEST_SUITE( ProcessObjectTest );
-	CPPUNIT_TEST( constructeur );
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE( ProcessObjectTest );
+        CPPUNIT_TEST( constructeur );
+        CPPUNIT_TEST_SUITE_END();
 protected:
 
 public:
-	// interface
-	void setUp(){};
-	void tearDown(){};
+        // interface
+        void setUp(){};
+        void tearDown(){};
 
-	// fonctions de tests
-	void constructeur();
+        // fonctions de tests
+        void constructeur();
 };
 #endif // DATA_PROCESSOBJECTTEST_H

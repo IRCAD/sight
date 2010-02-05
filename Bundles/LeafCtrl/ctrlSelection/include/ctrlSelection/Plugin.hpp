@@ -10,10 +10,10 @@
 #include <fwRuntime/Plugin.hpp>
 
 /**
- * @brief	Namespace ctrlSelection.
- * @namespace	ctrlSelection.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief       Namespace ctrlSelection.
+ * @namespace   ctrlSelection.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
  */
 namespace ctrlSelection
 {
@@ -23,15 +23,15 @@ class Plugin : public ::fwRuntime::Plugin
 
 public :
 
-	/// PLugin destructor
-	~Plugin() throw();
-	
-	/// This method is used by runtime to initialize the bundle.
-	void start() throw( ::fwRuntime::RuntimeException );
+        /// PLugin destructor
+        ~Plugin() throw();
+        
+        /// This method is used by runtime to initialize the bundle.
+        void start() throw( ::fwRuntime::RuntimeException );
 
-	/// This method is used by runtime to stop the bundle.
-	void stop() throw();
-	
+        /// This method is used by runtime to stop the bundle.
+        void stop() throw();
+        
 };
 
 } // namespace ctrlSelection

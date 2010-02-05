@@ -10,22 +10,22 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 /**
- * @brief 	Test Runtime : read the bundles in CommonLib
+ * @brief       Test Runtime : read the bundles in CommonLib
  */
 class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
-	CPPUNIT_TEST_SUITE( RuntimeTest );
-	CPPUNIT_TEST( testRuntime );
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE( RuntimeTest );
+        CPPUNIT_TEST( testRuntime );
+        CPPUNIT_TEST_SUITE_END();
 
 protected:
 
 public:
-	// interface
-	void setUp();
-	void tearDown();
-	// fonctions de tests
-	void testRuntime();
+        // interface
+        void setUp();
+        void tearDown();
+        // fonctions de tests
+        void testRuntime();
 };
 
 #endif

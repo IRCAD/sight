@@ -1,5 +1,5 @@
 <plugin id="MesherV2Config">
-	
+        
 
     <extension id="MesherV2Config" implements="::fwData::Composite">
   
@@ -61,13 +61,13 @@
         <service uid="actionCreateVTKMesh1" type="::gui::action::IAction" implementation="::opVTKMesh::action::VTKMeshCreation" name="Compute Mesh1 (VTK)" autoComChannel="no" >
             <image uid="myImage"/>
             <mesh uid="myMesh1"/>
-		<percentReduction value="0"/>
+                <percentReduction value="0"/>
         </service>
 
         <service uid="actionCreateVTKMesh2" type="::gui::action::IAction" implementation="::opVTKMesh::action::VTKMeshCreation" name="Compute Mesh2 (VTK)" autoComChannel="no" >
             <image uid="myImage"/>
             <mesh uid="myMesh2"/>
-		<percentReduction value="30"/>
+                <percentReduction value="30"/>
         </service>
                           
 

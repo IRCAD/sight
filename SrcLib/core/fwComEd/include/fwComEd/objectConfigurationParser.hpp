@@ -19,76 +19,76 @@
 namespace fwComEd
 {
 /**
- * @brief 	Specific service for the construction of a ProcessObject and its associated services from an XML-based description.
- * @class	IProcessObjectParser
+ * @brief       Specific service for the construction of a ProcessObject and its associated services from an XML-based description.
+ * @class       IProcessObjectParser
  * @author  IRCAD (Research and Development Team).
 
  * @date    2007-2009
- * @see 	::fwServices::IXMLParser
+ * @see         ::fwServices::IXMLParser
  */
 class FWCOMED_CLASS_API IProcessObjectParser : public ::fwServices::IXMLParser
 {
 public :
-	fwCoreServiceClassDefinitionsMacro ( (IProcessObjectParser)(::fwServices::IXMLParser::Baseclass) ) ;
+        fwCoreServiceClassDefinitionsMacro ( (IProcessObjectParser)(::fwServices::IXMLParser::Baseclass) ) ;
 
-	/**
-	 * @brief 	Constructor : does nothing.
-	 */
-	FWCOMED_API IProcessObjectParser( ) {};
+        /**
+         * @brief       Constructor : does nothing.
+         */
+        FWCOMED_API IProcessObjectParser( ) {};
 
-	/**
-	 * @brief 	Destructor : does nothing.
-	 */
-	FWCOMED_API virtual ~IProcessObjectParser() {};
+        /**
+         * @brief       Destructor : does nothing.
+         */
+        FWCOMED_API virtual ~IProcessObjectParser() {};
 
-	/**
-	 * @brief Updating method : create the process object.
-	 *
-	 * Parse the configuration element to configure inputs and outputs and add
-	 * them in the process object.
-	 */
-	FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
+        /**
+         * @brief Updating method : create the process object.
+         *
+         * Parse the configuration element to configure inputs and outputs and add
+         * them in the process object.
+         */
+        FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
 
 protected :
 
-	/**
-	 * @brief 		Configure inputs and outputs and add them in the process object.
-	 * @param[in] 	io inputs/outputs
-	 * @param[in] 	list inputs/outputs configuration
-	 */
-	void configureIO( ::fwTools::Object::sptr io, const ::fwRuntime::ConfigurationElement::sptr list) ;
+        /**
+         * @brief               Configure inputs and outputs and add them in the process object.
+         * @param[in]   io inputs/outputs
+         * @param[in]   list inputs/outputs configuration
+         */
+        void configureIO( ::fwTools::Object::sptr io, const ::fwRuntime::ConfigurationElement::sptr list) ;
 };
 
 /**
- * @brief 	Specific service for the construction of a Composite and its associated services from an XML-based description.
- * @class	ICompositeParser
+ * @brief       Specific service for the construction of a Composite and its associated services from an XML-based description.
+ * @class       ICompositeParser
  * @author  IRCAD (Research and Development Team).
 
  * @date    2007-2009
- * @see 	::fwServices::IXMLParser
+ * @see         ::fwServices::IXMLParser
  */
 class FWCOMED_CLASS_API ICompositeParser : public ::fwServices::IXMLParser
 {
 public :
 
-	fwCoreServiceClassDefinitionsMacro ( (ICompositeParser)(::fwServices::IXMLParser::Baseclass) ) ;
+        fwCoreServiceClassDefinitionsMacro ( (ICompositeParser)(::fwServices::IXMLParser::Baseclass) ) ;
 
-	/**
-	 * @brief 	Constructor : does nothing.
-	 */
-	FWCOMED_API ICompositeParser( ) {};
+        /**
+         * @brief       Constructor : does nothing.
+         */
+        FWCOMED_API ICompositeParser( ) {};
 
-	/**
-	 * @brief	Destructor : does nothing.
-	 */
-	FWCOMED_API virtual ~ICompositeParser() {};
+        /**
+         * @brief       Destructor : does nothing.
+         */
+        FWCOMED_API virtual ~ICompositeParser() {};
 
-	/**
-	 * @brief 	Updating method : create composite object.
-	 *
-	 * Parse the composite configuratiob element to configure and add its objets.
-	 */
-	FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
+        /**
+         * @brief       Updating method : create composite object.
+         *
+         * Parse the composite configuratiob element to configure and add its objets.
+         */
+        FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
 };
 
 

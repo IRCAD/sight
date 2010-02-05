@@ -11,22 +11,22 @@
 
 class GraphTest : public CPPUNIT_NS::TestFixture {
 
-	CPPUNIT_TEST_SUITE( GraphTest );
-	CPPUNIT_TEST( normalCase );
-	CPPUNIT_TEST( limitCase1 );
-	CPPUNIT_TEST( limitCase2 );
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE( GraphTest );
+        CPPUNIT_TEST( normalCase );
+        CPPUNIT_TEST( limitCase1 );
+        CPPUNIT_TEST( limitCase2 );
+        CPPUNIT_TEST_SUITE_END();
 
 public:
 
-	// interface
-	void setUp();
-	void tearDown();
+        // interface
+        void setUp();
+        void tearDown();
 
-	// fonctions de tests
-	void normalCase();
-	void limitCase1();
-	void limitCase2();
+        // fonctions de tests
+        void normalCase();
+        void limitCase1();
+        void limitCase2();
 };
 
 #endif

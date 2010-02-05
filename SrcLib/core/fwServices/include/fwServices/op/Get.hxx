@@ -20,8 +20,8 @@ namespace fwServices
 template<class SERVICE>
 SPTR(SERVICE) get( fwTools::Object * obj, unsigned int _index) throw(fwTools::Failed )
 {
-	assert(  OSR::shared_from( obj ).get() ); // check if object registred first !!!
-	return::fwServices::get< SERVICE > ( OSR::shared_from( obj ) , _index ) ;
+        assert(  OSR::shared_from( obj ).get() ); // check if object registred first !!!
+        return::fwServices::get< SERVICE > ( OSR::shared_from( obj ) , _index ) ;
 }
 
 template<class SERVICE>
@@ -45,19 +45,19 @@ SPTR(SERVICE) get( ::fwTools::Object::sptr obj, unsigned int _index ) throw(fwTo
         assert( service );
     }
 
-	return service ;
+        return service ;
 }
 
 
 template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed )
 {
-	std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-	::boost::shared_ptr< fwServices::IService > service = ::fwServices::get( obj , serviceId , uid ) ;
-	assert( service );
-	SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
-	assert( castedService );
-	return castedService ;
+        std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+        ::boost::shared_ptr< fwServices::IService > service = ::fwServices::get( obj , serviceId , uid ) ;
+        assert( service );
+        SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
+        assert( castedService );
+        return castedService ;
 }
 
 
@@ -66,20 +66,20 @@ SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools:
 template<class SERVICE>
 std::vector< SPTR(SERVICE) > getServices( ::fwTools::Object::sptr obj )
 {
-	std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-	std::vector< ::boost::shared_ptr< fwServices::IService > > services = ::fwServices::getServices( obj , serviceId ) ;
+        std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+        std::vector< ::boost::shared_ptr< fwServices::IService > > services = ::fwServices::getServices( obj , serviceId ) ;
 
-	std::vector< SPTR(SERVICE) > castedServices ;
+        std::vector< SPTR(SERVICE) > castedServices ;
 
-	std::vector< ::boost::shared_ptr< fwServices::IService > >::iterator iter ;
-	for( iter = services.begin() ; iter != services.end() ; ++iter )
-	{
-		SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( *iter ) ;
-		assert( castedService );
-		castedServices.push_back( castedService ) ;
-	}
+        std::vector< ::boost::shared_ptr< fwServices::IService > >::iterator iter ;
+        for( iter = services.begin() ; iter != services.end() ; ++iter )
+        {
+                SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( *iter ) ;
+                assert( castedService );
+                castedServices.push_back( castedService ) ;
+        }
 
-	return castedServices ;
+        return castedServices ;
 }
 
 

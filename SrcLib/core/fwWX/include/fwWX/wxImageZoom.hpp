@@ -17,10 +17,10 @@ namespace fwWX
 {
 
 /**
- * @brief	This class returns a wxPanel witch displays an image, and allows to zoom.
- * @class	wxImageZoom.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief       This class returns a wxPanel witch displays an image, and allows to zoom.
+ * @class       wxImageZoom.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
  * @note This class is not commented, because it is not used in the open framework tutorial.
  * @todo wxImageZoom is not commented.
  */
@@ -29,24 +29,24 @@ class FWWX_CLASS_API wxImageZoom : public ::wxScrolledWindow
 
 {
 public:
-	/**
-	* @brief	Constructor
-	*
-	* @ param image Image to load in the wxImageZoom.
-	*/
+        /**
+        * @brief        Constructor
+        *
+        * @ param image Image to load in the wxImageZoom.
+        */
 
-	wxImage m_img ;
-	wxBitmap m_bmp ;
+        wxImage m_img ;
+        wxBitmap m_bmp ;
 
-	int m_compteur ;
-	wxDragImage * m_dragImage ;
-	wxPoint m_dragStartPos ;
-	wxPoint m_Pos ;
-	int m_dragMode ;
-	int m_state ;
+        int m_compteur ;
+        wxDragImage * m_dragImage ;
+        wxPoint m_dragStartPos ;
+        wxPoint m_Pos ;
+        int m_dragMode ;
+        int m_state ;
 
 
-	FWWX_API wxImageZoom(wxWindow* parent, ::boost::filesystem::path _path_png ) ;
+        FWWX_API wxImageZoom(wxWindow* parent, ::boost::filesystem::path _path_png ) ;
     FWWX_API void Scale() ;
     FWWX_API void OnPaint(wxPaintEvent& event) ;
     FWWX_API void OnMouseUp(wxMouseEvent& event) ;

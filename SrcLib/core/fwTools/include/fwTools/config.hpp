@@ -14,38 +14,38 @@
 
 #ifdef _WIN32
 
-	#ifdef FWTOOLS_EXPORTS
-	#define FWTOOLS_API __declspec(dllexport)
+        #ifdef FWTOOLS_EXPORTS
+        #define FWTOOLS_API __declspec(dllexport)
     #define FWTOOLS_TEMPLATE_API
-	#else
-	#define FWTOOLS_API __declspec(dllimport)
+        #else
+        #define FWTOOLS_API __declspec(dllimport)
     #define FWTOOLS_TEMPLATE_API extern
-	#endif
+        #endif
 
-	#define FWTOOLS_CLASS_API
+        #define FWTOOLS_CLASS_API
 
-	#pragma warning(disable: 4290)
-	#pragma warning(disable: 4800) // avoid waring on return hard coded value
+        #pragma warning(disable: 4290)
+        #pragma warning(disable: 4800) // avoid waring on return hard coded value
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
         #ifdef FWTOOLS_EXPORTS
         #define FWTOOLS_API __attribute__ ((visibility("default")))
         #define FWTOOLS_CLASS_API __attribute__ ((visibility("default")))
-		#define FWTOOLS_TEMPLATE_API
+                #define FWTOOLS_TEMPLATE_API
         #else
         //#define FWTOOLS_API __attribute__ ((visibility("hidden")))
         //#define FWTOOLS_CLASS_API __attribute__ ((visibility("hidden")))
         #define FWTOOLS_API
         #define FWTOOLS_CLASS_API
-		#define FWTOOLS_TEMPLATE_API extern
+                #define FWTOOLS_TEMPLATE_API extern
         #endif
 
 #else
 
         #define FWTOOLS_API
-	#define FWTOOLS_CLASS_API
-		#define FWTOOLS_TEMPLATE_API 
+        #define FWTOOLS_CLASS_API
+                #define FWTOOLS_TEMPLATE_API 
 
 #endif
 

@@ -10,23 +10,23 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 /**
- * @brief	Test ObjectMsg API
+ * @brief       Test ObjectMsg API
  */
 class ObjectMsgTest : public CPPUNIT_NS::TestFixture
 {
-	CPPUNIT_TEST_SUITE( ObjectMsgTest );
-	CPPUNIT_TEST( testObjectMsg );
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE( ObjectMsgTest );
+        CPPUNIT_TEST( testObjectMsg );
+        CPPUNIT_TEST_SUITE_END();
 
 
 public:
-	// interface
-	void setUp();
-	void tearDown();
-	// fonctions de tests
+        // interface
+        void setUp();
+        void tearDown();
+        // fonctions de tests
 
-	/// Test using ObjectMsg API
-	void testObjectMsg();
+        /// Test using ObjectMsg API
+        void testObjectMsg();
 
 };
 

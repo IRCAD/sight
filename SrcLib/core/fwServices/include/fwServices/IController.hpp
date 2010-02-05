@@ -14,24 +14,24 @@ namespace fwServices
 {
 
 /**
- * @brief	This interface defines control service API. Does nothing particularly, can be considered as a default service type to be implemented by unclassified services.
+ * @brief       This interface defines control service API. Does nothing particularly, can be considered as a default service type to be implemented by unclassified services.
  *
- * @class	IController.
+ * @class       IController.
  * @author IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @date        2007-2009.
  */
 class FWSERVICES_CLASS_API IController : public ::fwServices::IService
 {
 
 public:
 
-	fwCoreServiceClassDefinitionsMacro ( (IController)(::fwServices::IService::Baseclass) ) ;
+        fwCoreServiceClassDefinitionsMacro ( (IController)(::fwServices::IService::Baseclass) ) ;
 
-	///@brief IController constructor. Do nothing.
-	FWSERVICES_API IController();
+        ///@brief IController constructor. Do nothing.
+        FWSERVICES_API IController();
 
-	///@brief IController destructor. Do nothing.
-	FWSERVICES_API virtual ~IController();
+        ///@brief IController destructor. Do nothing.
+        FWSERVICES_API virtual ~IController();
 
 };
 

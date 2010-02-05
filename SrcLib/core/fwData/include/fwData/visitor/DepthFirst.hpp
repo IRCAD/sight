@@ -17,18 +17,18 @@ namespace visitor
 
 /**
  * @brief Implementation for Visitor Pattern : visitor scan in depth first
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 class FWDATA_CLASS_API DepthFirst : public  IVisitor
 {
 public:
-	fwCoreNonInstanciableClassDefinitionsMacro( (DepthFirst)(IVisitor::Baseclass) ) ;
+        fwCoreNonInstanciableClassDefinitionsMacro( (DepthFirst)(IVisitor::Baseclass) ) ;
 
-	FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
+        FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 
-	/// override processing of childs : scan in depth ( aka fields[0].fields[0].fields[0] , fields[0].fields[0].fields[1], ....)
-	FWDATA_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
+        /// override processing of childs : scan in depth ( aka fields[0].fields[0].fields[0] , fields[0].fields[0].fields[1], ....)
+        FWDATA_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
 
 };
 

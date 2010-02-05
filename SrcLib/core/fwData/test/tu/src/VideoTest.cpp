@@ -11,29 +11,29 @@ CPPUNIT_TEST_SUITE_REGISTRATION( VideoTest );
 
 void VideoTest::setUp()
 {
-	// Set up context before running a test.
+        // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
 void VideoTest::tearDown()
 {
-	// Clean up after the test run.
+        // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
 void VideoTest::methode1()
 {
-	boost::uint32_t VALUE	= 0 ;
-	boost::uint8_t VALUE1	= 1 ;
+        boost::uint32_t VALUE   = 0 ;
+        boost::uint8_t VALUE1   = 1 ;
 
-	// process
-	::fwData::Video::NewSptr p1;
+        // process
+        ::fwData::Video::NewSptr p1;
 
-	// check
-	CPPUNIT_ASSERT_EQUAL(p1->getXSize(),	VALUE);
-	CPPUNIT_ASSERT_EQUAL(p1->getYSize(),	VALUE);
-	CPPUNIT_ASSERT_EQUAL(p1->getBPP(),	VALUE1);
+        // check
+        CPPUNIT_ASSERT_EQUAL(p1->getXSize(),    VALUE);
+        CPPUNIT_ASSERT_EQUAL(p1->getYSize(),    VALUE);
+        CPPUNIT_ASSERT_EQUAL(p1->getBPP(),      VALUE1);
 
 }

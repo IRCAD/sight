@@ -17,32 +17,32 @@ namespace operators
 {
 
 /**
- * @brief	This class proposes a dialog box to edit operator parameters.
- * @class	LabelingParameterEditor.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
- * @note 	This class is not commented, because it is not used in the open framework tutorial.
- * @todo 	LabelingParameterEditor is not commented.
+ * @brief       This class proposes a dialog box to edit operator parameters.
+ * @class       LabelingParameterEditor.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
+ * @note        This class is not commented, because it is not used in the open framework tutorial.
+ * @todo        LabelingParameterEditor is not commented.
  */
 class FWWX_CLASS_API LabelingParameterEditor : public wxDialog
 {
 
 public :
 
-	FWWX_API LabelingParameterEditor( wxWindow * parent );
+        FWWX_API LabelingParameterEditor( wxWindow * parent );
 
-	FWWX_API ~LabelingParameterEditor();
+        FWWX_API ~LabelingParameterEditor();
 
-	FWWX_API int getBackground();
+        FWWX_API int getBackground();
 
-	FWWX_API double getThreshold();
+        FWWX_API double getThreshold();
 
 private :
 
-	void createContent();
+        void createContent();
 
-	double m_dThreshold;
-	long m_iBackground;
+        double m_dThreshold;
+        long m_iBackground;
 };
 
 } // operators

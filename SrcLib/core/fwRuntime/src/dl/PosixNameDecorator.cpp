@@ -18,14 +18,14 @@ namespace dl
 
 const std::string PosixNameDecorator::getNativePrefix() const throw()
 {
-	return std::string("lib");
+        return std::string("lib");
 }
 
 
 
 const std::string PosixNameDecorator::getNativeExtension() const throw()
 {
-	return std::string("so");
+        return std::string("so");
 }
 
 

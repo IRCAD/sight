@@ -21,65 +21,65 @@
 namespace fwData
 {
 /**
- * @class 	Plane
- * @brief 	This class defines a plane defined by tree points.
- * @see 	::fwData::Point
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class       Plane
+ * @brief       This class defines a plane defined by tree points.
+ * @see         ::fwData::Point
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 class FWDATA_CLASS_API Plane : public Object
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object::Baseclass),
+        fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object::Baseclass),
         (()), ::fwTools::Factory::New< Plane >) ;
 
-	typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
+        typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
 
-	/// Constructor
-	FWDATA_API Plane();
+        /// Constructor
+        FWDATA_API Plane();
 
-	/// Build a plane from 3 points.
-	FWDATA_API Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
+        /// Build a plane from 3 points.
+        FWDATA_API Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
 
-	/// Destructor
-	FWDATA_API virtual ~Plane();
+        /// Destructor
+        FWDATA_API virtual ~Plane();
 
-	/// Clone method
-	FWDATA_API Plane::sptr clone() const;
+        /// Clone method
+        FWDATA_API Plane::sptr clone() const;
 
-	/// Copy method
-	FWDATA_API Plane &operator=( const Plane & _plane ) ;
+        /// Copy method
+        FWDATA_API Plane &operator=( const Plane & _plane ) ;
 
-	/*
-	 * @brief Compare method
-	 *
-	 * Compare plane normal and distance from origin
-	 */
-	FWDATA_API bool operator==( const Plane & _plane ) ;
+        /*
+         * @brief Compare method
+         *
+         * Compare plane normal and distance from origin
+         */
+        FWDATA_API bool operator==( const Plane & _plane ) ;
 
-	/// get the plane coordinate
-	FWDATA_API fwPlane getPlane() const {return m_plane;};
+        /// get the plane coordinate
+        FWDATA_API fwPlane getPlane() const {return m_plane;};
 
-	/// Re-initialize the plane with 3 points
-	FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
+        /// Re-initialize the plane with 3 points
+        FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
 
-	/// Compute plane normal and distance from points coordinates
-	FWDATA_API void computePlaneFromPoints();
+        /// Compute plane normal and distance from points coordinates
+        FWDATA_API void computePlaneFromPoints();
 
-	/// Points container
-	fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
+        /// Points container
+        fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
 
-	fwGettersSettersDocMacro(IsIntersection, isIntersection, bool, flag if the plane is an intersection one (else an union one));
+        fwGettersSettersDocMacro(IsIntersection, isIntersection, bool, flag if the plane is an intersection one (else an union one));
 
 protected :
 
-	fwPlane m_plane;
-	//! Points container
-	PointContainer m_vPoints;
+        fwPlane m_plane;
+        //! Points container
+        PointContainer m_vPoints;
 
-	//! flag if the plane is an intersection (else an union)
-	bool m_isIntersection;
+        //! flag if the plane is an intersection (else an union)
+        bool m_isIntersection;
 
 }; // end class Plane
 

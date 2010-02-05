@@ -18,35 +18,35 @@ namespace operators
 
 
 /**
- * @brief	This class proposes a dialog box to edit operator parameters.
- * @class	ConnectedComponentParameterEditor.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
- * @note 	This class is not commented, because it is not used in the open framework tutorial.
- * @todo 	ConnectedComponentParameterEditor is not commented.
+ * @brief       This class proposes a dialog box to edit operator parameters.
+ * @class       ConnectedComponentParameterEditor.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
+ * @note        This class is not commented, because it is not used in the open framework tutorial.
+ * @todo        ConnectedComponentParameterEditor is not commented.
  */
 class FWWX_CLASS_API ConnectedComponentParameterEditor : public wxDialog
 {
 
 public :
 
-	FWWX_API ConnectedComponentParameterEditor( wxWindow * parent );
+        FWWX_API ConnectedComponentParameterEditor( wxWindow * parent );
 
-	FWWX_API ~ConnectedComponentParameterEditor();
+        FWWX_API ~ConnectedComponentParameterEditor();
 
-	FWWX_API int getBackground();
+        FWWX_API int getBackground();
 
-	FWWX_API double getThreshold();
+        FWWX_API double getThreshold();
 
-	FWWX_API int getNbComponent();
+        FWWX_API int getNbComponent();
 
 private :
 
-	void createContent();
+        void createContent();
 
-	double m_dThreshold;
-	long m_iBackground;
-	long m_iNbComponent;
+        double m_dThreshold;
+        long m_iBackground;
+        long m_iNbComponent;
 };
 
 } // operators

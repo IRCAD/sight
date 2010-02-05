@@ -20,32 +20,32 @@ namespace operators
 {
 
 /**
- * @brief	This class proposes a dialog box to edit operator parameters.
- * @class	RotationParameterEditor.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
- * @note 	This class is not commented, because it is not used in the open framework tutorial.
- * @todo 	RotationParameterEditor is not commented.
+ * @brief       This class proposes a dialog box to edit operator parameters.
+ * @class       RotationParameterEditor.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
+ * @note        This class is not commented, because it is not used in the open framework tutorial.
+ * @todo        RotationParameterEditor is not commented.
  */
 class FWWX_CLASS_API RotationParameterEditor : public wxDialog
 {
 
 public :
 
-	FWWX_API RotationParameterEditor( wxWindow * parent );
+        FWWX_API RotationParameterEditor( wxWindow * parent );
 
-	FWWX_API ~RotationParameterEditor();
+        FWWX_API ~RotationParameterEditor();
 
-	FWWX_API int getRotation();
+        FWWX_API int getRotation();
 
-	FWWX_API int getAxis();
+        FWWX_API int getAxis();
 
 private :
 
-	wxRadioBox * m_directionRadioBox ;
-	wxRadioBox *m_rotationRadioBox;
-	wxRadioButton *m_p90RadioButton;
-	wxRadioButton *m_m90RadioButton;
+        wxRadioBox * m_directionRadioBox ;
+        wxRadioBox *m_rotationRadioBox;
+        wxRadioButton *m_p90RadioButton;
+        wxRadioButton *m_m90RadioButton;
 };
 
 } // operators

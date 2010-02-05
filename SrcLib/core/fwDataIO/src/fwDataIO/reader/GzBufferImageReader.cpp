@@ -41,47 +41,47 @@ GzBufferImageReader::~GzBufferImageReader()
 
 void GzBufferImageReader::read()
 {
-	assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-	::boost::filesystem::path file = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+        assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+        ::boost::filesystem::path file = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-	assert( file.empty() ==  false );
+        assert( file.empty() ==  false );
 
-	::boost::shared_ptr< ::fwData::Image > image = getConcreteObject();
-	::boost::uint32_t imageSizeInBytes = ::fwData::imageSizeInBytes(*image);
+        ::boost::shared_ptr< ::fwData::Image > image = getConcreteObject();
+        ::boost::uint32_t imageSizeInBytes = ::fwData::imageSizeInBytes(*image);
 
-	char *ptr =new char[imageSizeInBytes];
+        char *ptr =new char[imageSizeInBytes];
 
-	gzFile rawFile = gzopen(file.native_file_string().c_str(), "rb");
+        gzFile rawFile = gzopen(file.native_file_string().c_str(), "rb");
 
-	assert(rawFile);
-	if ( rawFile == 0 )
-	{
-		std::string str = "Unable to open ";
-		str+= file.native_file_string();
-		throw std::ios_base::failure(str);
-	}
+        assert(rawFile);
+        if ( rawFile == 0 )
+        {
+                std::string str = "Unable to open ";
+                str+= file.native_file_string();
+                throw std::ios_base::failure(str);
+        }
 
-	unsigned int uncompressedbytesreaded=gzread(rawFile,ptr,imageSizeInBytes);
+        unsigned int uncompressedbytesreaded=gzread(rawFile,ptr,imageSizeInBytes);
 
-	//assert(uncompressedbytesreaded==m_nbBytes);
-	if ( uncompressedbytesreaded!=imageSizeInBytes )
-	{
-		std::string str = "Unable to read ";
-		str+= file.native_file_string();
-		throw std::ios_base::failure(str);
-	}
+        //assert(uncompressedbytesreaded==m_nbBytes);
+        if ( uncompressedbytesreaded!=imageSizeInBytes )
+        {
+                std::string str = "Unable to read ";
+                str+= file.native_file_string();
+                throw std::ios_base::failure(str);
+        }
 
-	image->setBuffer(ptr);
+        image->setBuffer(ptr);
 
-	gzclose(rawFile);
+        gzclose(rawFile);
 }
 
 
 
 std::string  &GzBufferImageReader::extension()
 {
-	static std::string ext(".raw.gz");
-	return ext;
+        static std::string ext(".raw.gz");
+        return ext;
 }
 
 

@@ -19,8 +19,8 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-	//Hack: force link with fwData
-	::fwData::Object obj;
+        //Hack: force link with fwData
+        ::fwData::Object obj;
 }
 
 void Plugin::stop() throw()

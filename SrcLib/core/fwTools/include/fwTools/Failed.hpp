@@ -16,39 +16,39 @@ namespace fwTools
 {
 
 /**
- * @brief	Implements a failed exception class
- * @class 	Failed
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @brief       Implements a failed exception class
+ * @class       Failed
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 struct FWTOOLS_CLASS_API Failed : public std::exception
 {
 
-	/**
-	 * @brief		Constructor
-	 *
-	 * @param[in]	message	a string containing the failure message
-	 */
-	FWTOOLS_API Failed(const std::string & message) throw();
+        /**
+         * @brief               Constructor
+         *
+         * @param[in]   message a string containing the failure message
+         */
+        FWTOOLS_API Failed(const std::string & message) throw();
 
-	/**
-	 * @brief	Destructor : do nothing.
-	 */
-	FWTOOLS_API ~Failed() throw();
+        /**
+         * @brief       Destructor : do nothing.
+         */
+        FWTOOLS_API ~Failed() throw();
 
 
-	/**
-	 * @brief	Retrieves the failuer message
-	 *
-	 * @return	a pointer to the string containing the failure message
-	 */
-	FWTOOLS_API const char* what() const throw();
+        /**
+         * @brief       Retrieves the failuer message
+         *
+         * @return      a pointer to the string containing the failure message
+         */
+        FWTOOLS_API const char* what() const throw();
 
 
 private:
 
-	/// A string containing the failure message
-	std::string m_message;
+        /// A string containing the failure message
+        std::string m_message;
 
 };
 

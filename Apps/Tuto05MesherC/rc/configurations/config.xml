@@ -1,5 +1,5 @@
 <plugin id="MesherV3Config">
-	
+        
     <extension id="MesherV3Config" implements="::fwData::Composite">
   
     <!--  Composite data creation. -->
@@ -19,7 +19,7 @@
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuMesher"/>
-		<menu uid="menuEdit"/>
+                <menu uid="menuEdit"/>
             </menus>
         </service>
 
@@ -30,7 +30,7 @@
             <action uid="actionOpenImageFile"/>
             <action uid="actionSaveImageFile"/>
             <separator/>
-			<action uid="actionQuit"/>
+                        <action uid="actionQuit"/>
         </service>           
 
         <service name="Mesher" uid="menuMesher" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
@@ -39,11 +39,11 @@
         </service> 
     
         <service uid="actionQuit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
-		
-		<!-- Added for material changing for the meshes -->
-		<service name="Edit" uid="menuEdit" type="::gui::action::IAction" implementation="gui::action::DefaultMenu" autoCommChannel="no">
-			<action uid="actionChangeMat"/>
-		</service>
+                
+                <!-- Added for material changing for the meshes -->
+                <service name="Edit" uid="menuEdit" type="::gui::action::IAction" implementation="gui::action::DefaultMenu" autoCommChannel="no">
+                        <action uid="actionChangeMat"/>
+                </service>
 
         <!-- Service associated to the Composite data :
         menu services creation.
@@ -67,21 +67,21 @@
         <service uid="actionCreateVTKMesh1" type="::gui::action::IAction" implementation="::opVTKMesh::action::VTKMeshCreation" name="Compute Mesh1 (VTK)" autoComChannel="no" >
             <image uid="myImage"/>
             <mesh uid="myMesh1"/>
-			<percentReduction value="50"/>
+                        <percentReduction value="50"/>
         </service>
 
         <service uid="actionCreateVTKMesh2" type="::gui::action::IAction" implementation="::opVTKMesh::action::VTKMeshCreation" name="Compute Mesh2 (VTK)" autoComChannel="no" >
             <image uid="myImage"/>
             <mesh uid="myMesh2"/>
-			<percentReduction value="80"/>
+                        <percentReduction value="80"/>
         </service>
 
         <service implementation="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes" >
             <win guiContainerId="903"/>
         </service>
-		
-		<!-- Added for action material changing for the meshes -->
-		<service uid="actionChangeMat" type="::gui::action::IAction" implementation="::vtkCompositeMesh::ChangeMaterialService" autoCommChannel="no" />
+                
+                <!-- Added for action material changing for the meshes -->
+                <service uid="actionChangeMat" type="::gui::action::IAction" implementation="::vtkCompositeMesh::ChangeMaterialService" autoCommChannel="no" />
 
                           
 
@@ -111,15 +111,15 @@
         Services contained between the tags <object> and </object> 
         are associated to the TriangularMesh data. -->
         <object id="myMesh1" uid="myMesh1" type="::fwData::TriangularMesh">
-		
-			<service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes" >
-				<win guiContainerId="901"/>
-			</service>
+                
+                        <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes" >
+                                <win guiContainerId="901"/>
+                        </service>
 
             <service uid="MyComChannelSrv1" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
-				<target>RenderingMesh</target>	
-			</service>
-			
+                                <target>RenderingMesh</target>  
+                        </service>
+                        
         </object> 
 
         <!-- TriangularMesh objet creation2. 
@@ -127,14 +127,14 @@
         are associated to the TriangularMesh data. -->
         <object id="myMesh2" uid="myMesh2" type="::fwData::TriangularMesh">
 
-			<service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes" >
-				<win guiContainerId="902"/>
-			</service>
-			
-			<service uid="MyComChannelSrv2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
-				<target>RenderingMesh</target>				
-        	</service>
-			
+                        <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes" >
+                                <win guiContainerId="902"/>
+                        </service>
+                        
+                        <service uid="MyComChannelSrv2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+                                <target>RenderingMesh</target>                          
+                </service>
+                        
         </object> 
     
     <!-- In order to start the different services,
@@ -147,15 +147,15 @@
     <start uid="RenderingMesh" />
     <start uid="RenderingMesh1" />
     <start uid="RenderingMesh2" />
-	<start uid="actionChangeMat"/>
-	<start uid="MyComChannelSrv1" />
+        <start uid="actionChangeMat"/>
+        <start uid="MyComChannelSrv1" />
     <start uid="MyComChannelSrv2" />
 
 
-	
-    <stop uid="MyComChannelSrv2" />	
+        
+    <stop uid="MyComChannelSrv2" />     
     <stop uid="MyComChannelSrv1" />
-	<stop uid="actionChangeMat"/>
+        <stop uid="actionChangeMat"/>
     <stop uid="RenderingImage" />
     <stop uid="RenderingMesh" />
     <stop uid="RenderingMesh1" />

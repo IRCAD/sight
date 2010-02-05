@@ -21,11 +21,11 @@ namespace fwTools {
  */
 
 /**
- * @brief 		Template specialization for defining KeyType mapping ( here std::type_info) with their value.
+ * @brief               Template specialization for defining KeyType mapping ( here std::type_info) with their value.
  *
  * Header declare function already specialized while src provide definition
  *
- * @warning 	isMapping does not need to be exported since fwTools Library is builded as static
+ * @warning     isMapping does not need to be exported since fwTools Library is builded as static
  */
 
 // FIX UNSIGNED

@@ -13,10 +13,10 @@ namespace visitor
 
 void accept( ::fwTools::Object::sptr object,  ::fwData::visitor::IVisitor *visitor )
 {
-	assert(visitor);
+        assert(visitor);
 
-	visitor->visit(object);
-	visitor->next( object, object->children() );
+        visitor->visit(object);
+        visitor->next( object, object->children() );
 }
 
 } // namespace visitor

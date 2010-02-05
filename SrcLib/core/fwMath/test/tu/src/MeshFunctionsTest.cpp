@@ -21,12 +21,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MeshFunctionsTest );
 
 void MeshFunctionsTest::setUp()
 {
-	// Set up context before running a test.
+        // Set up context before running a test.
 
 }
 void MeshFunctionsTest::tearDown()
 {
-	// Clean up after the test run.
+        // Clean up after the test run.
 }
 
 void MeshFunctionsTest::checkIsInclosedVolume(){

@@ -18,14 +18,14 @@ namespace dl
 
 const std::string DarwinNameDecorator::getNativePrefix() const throw()
 {
-	return std::string("lib");
+        return std::string("lib");
 }
 
 
 
 const std::string DarwinNameDecorator::getNativeExtension() const throw()
 {
-	return std::string("dylib");
+        return std::string("dylib");
 }
 
 

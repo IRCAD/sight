@@ -22,34 +22,34 @@ namespace vtkIO
 {
 
 /**
- * @brief	Read a mesh.
- * @class	MeshReader.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief       Read a mesh.
+ * @class       MeshReader.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
  *
  * Read a VTK Mesh using the VTK lib
  */
 
 class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >,
-							 public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
-							 public ::fwTools::ProgressAdviser
+                                                         public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
+                                                         public ::fwTools::ProgressAdviser
 {
 
 public :
 
-	fwCoreClassDefinitionsWithFactoryMacro( 	(MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >::Baseclass),
-													 (()),
-													 new  MeshReader
-												);
+        fwCoreClassDefinitionsWithFactoryMacro(         (MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >::Baseclass),
+                                                                                                         (()),
+                                                                                                         new  MeshReader
+                                                                                                );
 
-	//! @brief Constructor.
-	VTKIO_API MeshReader();
+        //! @brief Constructor.
+        VTKIO_API MeshReader();
 
-	//! @brief Destructor.
-	VTKIO_API ~MeshReader();
+        //! @brief Destructor.
+        VTKIO_API ~MeshReader();
 
-	//! @brief Reading operator.
-	VTKIO_API void read();
+        //! @brief Reading operator.
+        VTKIO_API void read();
 
 };
 

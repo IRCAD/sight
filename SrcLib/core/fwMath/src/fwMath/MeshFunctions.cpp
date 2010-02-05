@@ -128,167 +128,167 @@ bool IsInclosedVolume(const fwVertexPosition _vertex, const fwVertexIndex _verte
 
 bool isBorderlessSurface(const fwVertexIndex _vertexIndex)
 {
-	typedef std::pair< int, int  >  Edge; // always Edge.first < Edge.second !!
-	std::map< Edge  , int > edgesHistogram;
-	for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
-	{
-		assert (iter->size()>2 );
-		int i1=  (*iter)[0];
-		int i2 = (*iter)[1];
-		int i3 = (*iter)[2];
-		edgesHistogram[std::make_pair(std::min(i1,i2),std::max(i1,i2) )]++;
-		edgesHistogram[std::make_pair(std::min(i1,i3),std::max(i1,i3) )]++;
-		edgesHistogram[std::make_pair(std::min(i3,i2),std::max(i3,i2) )]++;
-	}
+        typedef std::pair< int, int  >  Edge; // always Edge.first < Edge.second !!
+        std::map< Edge  , int > edgesHistogram;
+        for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+        {
+                assert (iter->size()>2 );
+                int i1=  (*iter)[0];
+                int i2 = (*iter)[1];
+                int i3 = (*iter)[2];
+                edgesHistogram[std::make_pair(std::min(i1,i2),std::max(i1,i2) )]++;
+                edgesHistogram[std::make_pair(std::min(i1,i3),std::max(i1,i3) )]++;
+                edgesHistogram[std::make_pair(std::min(i3,i2),std::max(i3,i2) )]++;
+        }
 
-	for ( std::map< Edge  , int >::const_iterator iter=edgesHistogram.begin(); iter!=edgesHistogram.end(); ++iter )
-	{
-		if (iter->second<2)
-		{
-			return false;
-		}
-	}
-	return true;
+        for ( std::map< Edge  , int >::const_iterator iter=edgesHistogram.begin(); iter!=edgesHistogram.end(); ++iter )
+        {
+                if (iter->second<2)
+                {
+                        return false;
+                }
+        }
+        return true;
 }
 
 // container of connected componnent
 void findBorderEdges( const fwVertexIndex _vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours)
 {
-	typedef std::pair< int, int  >  Edge;
-	typedef std::vector< Edge > Contour; // at Border
-	typedef std::vector< Contour> Contours;
+        typedef std::pair< int, int  >  Edge;
+        typedef std::vector< Edge > Contour; // at Border
+        typedef std::vector< Contour> Contours;
 
-	std::map< Edge  , int > edgesHistogram;
-	for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
-	{
-		assert (iter->size()>2 );
-		int i1=  (*iter)[0];
-		int i2 = (*iter)[1];
-		int i3 = (*iter)[2];
-		edgesHistogram[std::make_pair(std::min(i1,i2),std::max(i1,i2) )]++;
-		edgesHistogram[std::make_pair(std::min(i1,i3),std::max(i1,i3) )]++;
-		edgesHistogram[std::make_pair(std::min(i3,i2),std::max(i3,i2) )]++;
-	}
+        std::map< Edge  , int > edgesHistogram;
+        for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+        {
+                assert (iter->size()>2 );
+                int i1=  (*iter)[0];
+                int i2 = (*iter)[1];
+                int i3 = (*iter)[2];
+                edgesHistogram[std::make_pair(std::min(i1,i2),std::max(i1,i2) )]++;
+                edgesHistogram[std::make_pair(std::min(i1,i3),std::max(i1,i3) )]++;
+                edgesHistogram[std::make_pair(std::min(i3,i2),std::max(i3,i2) )]++;
+        }
 
-	for ( std::map< Edge  , int >::const_iterator iter=edgesHistogram.begin(); iter!=edgesHistogram.end(); ++iter )
-	{
-		if (iter->second<2) // an orphan found
-		{
-			Contour contour;
-			contour.reserve(1000);
-			std::list< Edge > fifo;
-			Edge orphan = iter->first;
+        for ( std::map< Edge  , int >::const_iterator iter=edgesHistogram.begin(); iter!=edgesHistogram.end(); ++iter )
+        {
+                if (iter->second<2) // an orphan found
+                {
+                        Contour contour;
+                        contour.reserve(1000);
+                        std::list< Edge > fifo;
+                        Edge orphan = iter->first;
 
-			fifo.push_back(orphan);
-			while( !fifo.empty() )
-			{
-				Edge current = fifo.front();
-				contour.push_back( current );
-				fifo.pop_front();
-				edgesHistogram[current]=2; // to mark it processed;
-				// search neighboor at border and insert in fifo
-				for ( std::map< Edge  , int >::const_iterator iterL=edgesHistogram.begin(); iterL!=edgesHistogram.end(); ++iterL )
-				{
-					Edge candidate= iterL->first;
-					if ( iterL->second < 2 ) // at border
-					{
-						if ( candidate.first == current.first ||  candidate.second == current.second || // neighboor
-						     candidate.first == current.second ||  candidate.second == current.first
-						   )
-						{
-							edgesHistogram[candidate]=2; // mark processed;
-							fifo.push_back( candidate );
-						}
-					}
-				}
-			}
-			// all neighboor processed
-			contours.push_back( contour );
-		}
-	}
+                        fifo.push_back(orphan);
+                        while( !fifo.empty() )
+                        {
+                                Edge current = fifo.front();
+                                contour.push_back( current );
+                                fifo.pop_front();
+                                edgesHistogram[current]=2; // to mark it processed;
+                                // search neighboor at border and insert in fifo
+                                for ( std::map< Edge  , int >::const_iterator iterL=edgesHistogram.begin(); iterL!=edgesHistogram.end(); ++iterL )
+                                {
+                                        Edge candidate= iterL->first;
+                                        if ( iterL->second < 2 ) // at border
+                                        {
+                                                if ( candidate.first == current.first ||  candidate.second == current.second || // neighboor
+                                                     candidate.first == current.second ||  candidate.second == current.first
+                                                   )
+                                                {
+                                                        edgesHistogram[candidate]=2; // mark processed;
+                                                        fifo.push_back( candidate );
+                                                }
+                                        }
+                                }
+                        }
+                        // all neighboor processed
+                        contours.push_back( contour );
+                }
+        }
 }
 
 bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
 {
-	typedef std::pair< int, int  >  Edge;
-	typedef std::vector< Edge > Contour; // at Border
-	typedef std::vector< Contour> Contours;
+        typedef std::pair< int, int  >  Edge;
+        typedef std::vector< Edge > Contour; // at Border
+        typedef std::vector< Contour> Contours;
 
-	Contours contours;
-	findBorderEdges( _vertexIndex , contours);
-	bool closurePerformed = !contours.empty() ;
-	// close each hole
-	for ( Contours::iterator contour=contours.begin();  contour != contours.end(); ++contour )
-	{
-		int newVertexIndex = _vertex.size() ;
-		// create gravity point & insert new triangle
-		std::vector< float > massCenter(3,0);
-		for ( Contour::iterator edge =contour->begin();  edge != contour->end(); ++edge )
-		{
-			for (int i=0; i<3; ++i )
-			{
-				massCenter[i]  += _vertex[edge->first][i];
-				massCenter[i]  += _vertex[edge->second][i];
-			}
-			// create new Triangle
-			std::vector< int > triangleIndex(3);
-			triangleIndex[0] =  edge->first;
-			triangleIndex[1] =  edge->second;
-			triangleIndex[2] =  newVertexIndex;
-			_vertexIndex.push_back( triangleIndex ); // TEST
+        Contours contours;
+        findBorderEdges( _vertexIndex , contours);
+        bool closurePerformed = !contours.empty() ;
+        // close each hole
+        for ( Contours::iterator contour=contours.begin();  contour != contours.end(); ++contour )
+        {
+                int newVertexIndex = _vertex.size() ;
+                // create gravity point & insert new triangle
+                std::vector< float > massCenter(3,0);
+                for ( Contour::iterator edge =contour->begin();  edge != contour->end(); ++edge )
+                {
+                        for (int i=0; i<3; ++i )
+                        {
+                                massCenter[i]  += _vertex[edge->first][i];
+                                massCenter[i]  += _vertex[edge->second][i];
+                        }
+                        // create new Triangle
+                        std::vector< int > triangleIndex(3);
+                        triangleIndex[0] =  edge->first;
+                        triangleIndex[1] =  edge->second;
+                        triangleIndex[2] =  newVertexIndex;
+                        _vertexIndex.push_back( triangleIndex ); // TEST
 
-		}
-		for (int i=0; i<3; ++i )
-		{
-			massCenter[i] /= contour->size()*2;
-		}
-		_vertex.push_back( massCenter ); // normalize barycenter
-	}
-	return closurePerformed;
+                }
+                for (int i=0; i<3; ++i )
+                {
+                        massCenter[i] /= contour->size()*2;
+                }
+                _vertex.push_back( massCenter ); // normalize barycenter
+        }
+        return closurePerformed;
 }
 
 
 
 bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
 {
-	fwVertexPosition newVertex;
-	newVertex.reserve(  _vertex.size() );
+        fwVertexPosition newVertex;
+        newVertex.reserve(  _vertex.size() );
 
-	std::set< int > indexPointToKeep;
+        std::set< int > indexPointToKeep;
 
 
-	for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
-	{
-		indexPointToKeep.insert( (*iter)[0] );
-		indexPointToKeep.insert( (*iter)[1] );
-		indexPointToKeep.insert( (*iter)[2] );
-	}
+        for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+        {
+                indexPointToKeep.insert( (*iter)[0] );
+                indexPointToKeep.insert( (*iter)[1] );
+                indexPointToKeep.insert( (*iter)[2] );
+        }
 
-	bool orphanFound = indexPointToKeep.size() != _vertex.size();
+        bool orphanFound = indexPointToKeep.size() != _vertex.size();
 
-	if (orphanFound)
-	{
-		// rebuild index table according to element suppression
-		int idx=0;
-		std::map< int, int > translate; // map oldIndex -> newIndex (to take into account removal
-		std::set< int >::iterator idxIter;
-		for ( idxIter =  indexPointToKeep.begin() ; idxIter !=  indexPointToKeep.end() ; ++idxIter )
-		{
-			translate[ *idxIter ] = idx++;
-			newVertex.push_back(  _vertex[ *idxIter  ] );
-		}
+        if (orphanFound)
+        {
+                // rebuild index table according to element suppression
+                int idx=0;
+                std::map< int, int > translate; // map oldIndex -> newIndex (to take into account removal
+                std::set< int >::iterator idxIter;
+                for ( idxIter =  indexPointToKeep.begin() ; idxIter !=  indexPointToKeep.end() ; ++idxIter )
+                {
+                        translate[ *idxIter ] = idx++;
+                        newVertex.push_back(  _vertex[ *idxIter  ] );
+                }
 
-		for ( fwVertexIndex::iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
-		{
-			(*iter)[0] = translate[ (*iter)[0]  ];
-			(*iter)[1] = translate[ (*iter)[1]  ];
-			(*iter)[2] = translate[ (*iter)[2]  ];
-		}
+                for ( fwVertexIndex::iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+                {
+                        (*iter)[0] = translate[ (*iter)[0]  ];
+                        (*iter)[1] = translate[ (*iter)[1]  ];
+                        (*iter)[2] = translate[ (*iter)[2]  ];
+                }
 
-		_vertex = newVertex;
-	}
+                _vertex = newVertex;
+        }
 
-	return orphanFound;
+        return orphanFound;
 
 }
 
@@ -298,68 +298,68 @@ bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexInde
 //
 //std::pair< int, int  >  normalize( std::pair< int, int  > p)
 //{
-//	return std::make_pair(std::min( p.first ,p.second ) ,std::max( p.first ,p.second ) );
+//      return std::make_pair(std::min( p.first ,p.second ) ,std::max( p.first ,p.second ) );
 //}
 
 //void findBorderEdges( const fwVertexIndex _vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours)
 //{
-//	typedef std::pair< int, int  >  Edge;
-//	typedef std::vector< Edge > Contour; // at Border
-//	typedef std::vector< Contour> Contours;
+//      typedef std::pair< int, int  >  Edge;
+//      typedef std::vector< Edge > Contour; // at Border
+//      typedef std::vector< Contour> Contours;
 //
-//	std::map< Edge  , int > edgesHistogram;
-//	for ( fwVertexIndex::const_iterator triangle=_vertexIndex.begin(); triangle!= _vertexIndex.end(); ++triangle )
-//	{
-//		assert (triangle->size()>2 );
-//		for (int i=0; i < 3; ++i)
-//		{
-//			Edge edge( (*triangle)[i] , (*triangle)[(i+1)%3] );
-//			edgesHistogram[ normalize(edge) ]++;
-//		}
-//	}
+//      std::map< Edge  , int > edgesHistogram;
+//      for ( fwVertexIndex::const_iterator triangle=_vertexIndex.begin(); triangle!= _vertexIndex.end(); ++triangle )
+//      {
+//              assert (triangle->size()>2 );
+//              for (int i=0; i < 3; ++i)
+//              {
+//                      Edge edge( (*triangle)[i] , (*triangle)[(i+1)%3] );
+//                      edgesHistogram[ normalize(edge) ]++;
+//              }
+//      }
 //
-//	for ( fwVertexIndex::const_iterator triangle=_vertexIndex.begin(); triangle!= _vertexIndex.end(); ++triangle )
-//	{
-//		for (int i=0; i < 3; ++i)
-//		{
-//			Edge edge( (*triangle)[i] , (*triangle)[(i+1)%3] );
+//      for ( fwVertexIndex::const_iterator triangle=_vertexIndex.begin(); triangle!= _vertexIndex.end(); ++triangle )
+//      {
+//              for (int i=0; i < 3; ++i)
+//              {
+//                      Edge edge( (*triangle)[i] , (*triangle)[(i+1)%3] );
 //
-//			if (edgesHistogram[ normalize(edge) ]<2) // an orphan found
-//			{
-//				Contour contour;
-//				contour.reserve(1000);
-//				std::list< Edge > fifo;
+//                      if (edgesHistogram[ normalize(edge) ]<2) // an orphan found
+//                      {
+//                              Contour contour;
+//                              contour.reserve(1000);
+//                              std::list< Edge > fifo;
 //
-//				fifo.push_back(edge);
-//				while( !fifo.empty() )
-//				{
-//					Edge current = fifo.front();
-//					contour.push_back( current );
-//					fifo.pop_front();
-//					edgesHistogram[ normalize(current) ]=2; // to mark it processed;
-//					// search neighboor at border and insert in fifo
-//					for ( fwVertexIndex::const_iterator triangleL=_vertexIndex.begin(); triangleL!= _vertexIndex.end(); ++triangleL )
-//					{
-//						for (int j=0; j < 3; ++j)
-//						{
-//							Edge candidate(  (*triangleL)[j], (*triangleL)[(j+1)%3] );
-//							if ( edgesHistogram[ normalize(candidate) ] < 2 ) // at border
-//							{
+//                              fifo.push_back(edge);
+//                              while( !fifo.empty() )
+//                              {
+//                                      Edge current = fifo.front();
+//                                      contour.push_back( current );
+//                                      fifo.pop_front();
+//                                      edgesHistogram[ normalize(current) ]=2; // to mark it processed;
+//                                      // search neighboor at border and insert in fifo
+//                                      for ( fwVertexIndex::const_iterator triangleL=_vertexIndex.begin(); triangleL!= _vertexIndex.end(); ++triangleL )
+//                                      {
+//                                              for (int j=0; j < 3; ++j)
+//                                              {
+//                                                      Edge candidate(  (*triangleL)[j], (*triangleL)[(j+1)%3] );
+//                                                      if ( edgesHistogram[ normalize(candidate) ] < 2 ) // at border
+//                                                      {
 //
-//								if ( candidate.first == current.second )// neighboor only one direction
-//								{
-//									edgesHistogram[normalize(candidate)]=2; // mark processed;
-//									fifo.push_back( candidate );
-//								}
-//							}
-//						}
-//					}
-//				}
-//				// all neighboor processed
-//				contours.push_back( contour );
-//			}
-//		} // vertex parse
-//	} // triangle parse
+//                                                              if ( candidate.first == current.second )// neighboor only one direction
+//                                                              {
+//                                                                      edgesHistogram[normalize(candidate)]=2; // mark processed;
+//                                                                      fifo.push_back( candidate );
+//                                                              }
+//                                                      }
+//                                              }
+//                                      }
+//                              }
+//                              // all neighboor processed
+//                              contours.push_back( contour );
+//                      }
+//              } // vertex parse
+//      } // triangle parse
 //}
 
 

@@ -1,8 +1,8 @@
 CLASSTEST=[
-	'EConfigurationElementTest',
-	'RuntimeTest',
-	]
+        'EConfigurationElementTest',
+        'RuntimeTest',
+        ]
 
 USE = ['boost','libxml2']
-LIB	= ['fwCore_0-1','fwRuntime_0-3']
+LIB     = ['fwCore_0-1','fwRuntime_0-3']
 CONSOLE='yes'

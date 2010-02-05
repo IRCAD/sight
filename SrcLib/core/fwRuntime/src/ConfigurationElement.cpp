@@ -18,26 +18,26 @@ namespace fwRuntime
 
 std::ostream & operator<<(std::ostream & _sstream, ConfigurationElement& _configurationElement)
 {
-	_sstream << "Configuration element " << _configurationElement.getName() << " value = " << _configurationElement.getValue() << std::endl;
-	for(ConfigurationElement::AttributeContainer::iterator iter = _configurationElement.m_attributes.begin() ; iter != _configurationElement.m_attributes.end() ; ++iter )
-	{
-		_sstream << "Id = " << iter->first << " with value " << iter->second << std::endl;
-	}
-	_sstream << "Subelement : " << std::endl;
-	for(ConfigurationElementContainer::Container::iterator iter = _configurationElement.begin() ; iter != _configurationElement.end() ; ++iter )
-	{
+        _sstream << "Configuration element " << _configurationElement.getName() << " value = " << _configurationElement.getValue() << std::endl;
+        for(ConfigurationElement::AttributeContainer::iterator iter = _configurationElement.m_attributes.begin() ; iter != _configurationElement.m_attributes.end() ; ++iter )
+        {
+                _sstream << "Id = " << iter->first << " with value " << iter->second << std::endl;
+        }
+        _sstream << "Subelement : " << std::endl;
+        for(ConfigurationElementContainer::Container::iterator iter = _configurationElement.begin() ; iter != _configurationElement.end() ; ++iter )
+        {
 
-		_sstream << std::endl << *(*iter) << std::endl;
-	}
+                _sstream << std::endl << *(*iter) << std::endl;
+        }
 
-	return _sstream ;
+        return _sstream ;
 }
 
 
 ConfigurationElement::ConfigurationElement( const ::boost::shared_ptr< Bundle > bundle, const std::string & name )
-:	m_bundle( bundle	),
-	m_name	( name		),
-	m_value ( std::string("") )
+:       m_bundle( bundle        ),
+        m_name  ( name          ),
+        m_value ( std::string("") )
 {}
 
 
@@ -45,84 +45,84 @@ ConfigurationElement::ConfigurationElement( const ::boost::shared_ptr< Bundle > 
 
 const ::boost::shared_ptr<Bundle> ConfigurationElement::getBundle() const throw()
 {
-	return m_bundle;
+        return m_bundle;
 }
 
 
 
 const std::string ConfigurationElement::getAttributeValue(const std::string& name) const throw()
 {
-	AttributeContainer::const_iterator foundPos = m_attributes.find(name);
-	return foundPos == m_attributes.end() ? std::string() : foundPos->second;
+        AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+        return foundPos == m_attributes.end() ? std::string() : foundPos->second;
 }
 
 
 
 const std::string ConfigurationElement::getExistingAttributeValue(const std::string& name) const throw(NoSuchAttribute)
 {
-	AttributeContainer::const_iterator foundPos = m_attributes.find(name);
-	if(foundPos == m_attributes.end())
-	{
-		throw NoSuchAttribute();
-	}
-	return foundPos->second;
+        AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+        if(foundPos == m_attributes.end())
+        {
+                throw NoSuchAttribute();
+        }
+        return foundPos->second;
 }
 
 
 
 const ConfigurationElement::AttributePair ConfigurationElement::getSafeAttributeValue(const std::string& name) const throw()
 {
-	AttributeContainer::const_iterator foundPos = m_attributes.find(name);
-	if(foundPos == m_attributes.end())
-	{
-		return AttributePair(false, std::string());
-	}
-	else
-	{
-		return AttributePair(true, foundPos->second);
-	}
+        AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+        if(foundPos == m_attributes.end())
+        {
+                return AttributePair(false, std::string());
+        }
+        else
+        {
+                return AttributePair(true, foundPos->second);
+        }
 }
 
 
 
 const std::string ConfigurationElement::getName() const throw()
 {
-	return m_name;
+        return m_name;
 }
 
 
 
 const std::string ConfigurationElement::getValue() const throw()
 {
-	return m_value;
+        return m_value;
 }
 
 
 
 const bool ConfigurationElement::hasAttribute(const std::string& name) const throw()
 {
-	AttributeContainer::const_iterator foundPos = m_attributes.find(name);
-	return foundPos != m_attributes.end();
+        AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+        return foundPos != m_attributes.end();
 }
 
 //--------------------Ajout------------------------------
 const std::map<std::string, std::string> ConfigurationElement::getAttributes() const throw()
 {
-	return m_attributes;
+        return m_attributes;
 }
 //--------------------Fin----Ajout----------------------
 
 
 void ConfigurationElement::setAttributeValue(const std::string& name, const std::string& value) throw()
 {
-	m_attributes[name] = value;
+        m_attributes[name] = value;
 }
 
 
 
 void ConfigurationElement::setValue(const std::string& value) throw()
 {
-	m_value = value;
+        m_value = value;
 }
 
 

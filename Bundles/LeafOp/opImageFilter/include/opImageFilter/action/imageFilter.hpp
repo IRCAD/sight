@@ -23,26 +23,26 @@ class OPIMAGEFILTER_CLASS_API imageFilter : public ::gui::action::IAction
 
 public :
 
-	OPIMAGEFILTER_API imageFilter() throw() ;
+        OPIMAGEFILTER_API imageFilter() throw() ;
 
-	OPIMAGEFILTER_API virtual ~imageFilter() throw() ;
+        OPIMAGEFILTER_API virtual ~imageFilter() throw() ;
 
-	OPIMAGEFILTER_API void starting() throw ( ::fwTools::Failed );
+        OPIMAGEFILTER_API void starting() throw ( ::fwTools::Failed );
 
-	OPIMAGEFILTER_API void stopping() throw ( ::fwTools::Failed );
+        OPIMAGEFILTER_API void stopping() throw ( ::fwTools::Failed );
 
-	OPIMAGEFILTER_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+        OPIMAGEFILTER_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
-	OPIMAGEFILTER_API void configuring() throw ( ::fwTools::Failed );
+        OPIMAGEFILTER_API void configuring() throw ( ::fwTools::Failed );
 
-	OPIMAGEFILTER_API void updating() throw ( ::fwTools::Failed );
+        OPIMAGEFILTER_API void updating() throw ( ::fwTools::Failed );
 
-	OPIMAGEFILTER_API void info ( std::ostream &_sstream ) ;
+        OPIMAGEFILTER_API void info ( std::ostream &_sstream ) ;
 
 private :
 
-	std::string m_image1UID;
-	std::string m_image2UID;
+        std::string m_image1UID;
+        std::string m_image2UID;
 
 };
 

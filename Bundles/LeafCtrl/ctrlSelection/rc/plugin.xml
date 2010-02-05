@@ -1,23 +1,23 @@
 <plugin id="ctrlSelection" class="::ctrlSelection::Plugin" >
-	
-	<library name="ctrlSelection" />
+        
+        <library name="ctrlSelection" />
 
-	<requirement id="dataReg" />
-	<requirement id="serviceReg" />
-	
-	<point id="::ctrlSelection::IManagerSrv">
-		<implements>::fwServices::IService</implements>
-	</point>
-	
-	<point id="::ctrlSelection::IUpdaterSrv">
-		<implements>::fwServices::IService</implements>
-	</point>
-	
-	<point id="::ctrlSelection::AcqFromPDBUpdaterSrv">
-		<implements>::ctrlSelection::IUpdaterSrv</implements>
-		<implements>::fwData::PatientDB</implements>
-	</point>
-	
+        <requirement id="dataReg" />
+        <requirement id="serviceReg" />
+        
+        <point id="::ctrlSelection::IManagerSrv">
+                <implements>::fwServices::IService</implements>
+        </point>
+        
+        <point id="::ctrlSelection::IUpdaterSrv">
+                <implements>::fwServices::IService</implements>
+        </point>
+        
+        <point id="::ctrlSelection::AcqFromPDBUpdaterSrv">
+                <implements>::ctrlSelection::IUpdaterSrv</implements>
+                <implements>::fwData::PatientDB</implements>
+        </point>
+        
 </plugin>
 
 

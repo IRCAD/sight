@@ -29,13 +29,13 @@ DefaultEditor::~DefaultEditor() throw()
 
 void DefaultEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-	SLM_TRACE_FUNC();
+        SLM_TRACE_FUNC();
 
-	SLM_FATAL("ACH : Comments follow lines. This method is not used in framework");
+        SLM_FATAL("ACH : Comments follow lines. This method is not used in framework");
 
-//	::fwServices::ObjectMsg::NewSptr msg ( this->getObject() );
-//	msg->addModif( _msg ) ;
-//	this->notify( msg ) ;
+//      ::fwServices::ObjectMsg::NewSptr msg ( this->getObject() );
+//      msg->addModif( _msg ) ;
+//      this->notify( msg ) ;
 }
 
 //-----------------------------------------------------------------------------

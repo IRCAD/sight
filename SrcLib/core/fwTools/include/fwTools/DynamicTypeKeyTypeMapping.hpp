@@ -17,15 +17,15 @@ namespace fwTools {
 
 
 /**
- * @name	Dynamic key type mapping
+ * @name        Dynamic key type mapping
  * @{
  */
 
 /**
- * @brief	Template specialization for defining KeyType mapping ( here DynamicType) with their value.
+ * @brief       Template specialization for defining KeyType mapping ( here DynamicType) with their value.
  *
  * Header declare function already specialized while src provide definition
- * @warning	isMapping does not need to be exported since fwTools Library is builded as static
+ * @warning     isMapping does not need to be exported since fwTools Library is builded as static
  */
 // FIX UNSIGNED
 template<> FWTOOLS_API

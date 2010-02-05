@@ -20,39 +20,39 @@
 namespace fwData
 {
 /**
- * @class 	Tag
- * @brief 	This class represent a tag. A tag contains a list of points.
+ * @class       Tag
+ * @brief       This class represent a tag. A tag contains a list of points.
  *
  * @see ::fwData::PointList
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 class FWDATA_CLASS_API Tag : public Object
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Tag >) ;
+        fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Tag >) ;
 
-	/// Constructor
-	FWDATA_API Tag();
-	/// Destructor
-	FWDATA_API virtual ~Tag();
+        /// Constructor
+        FWDATA_API Tag();
+        /// Destructor
+        FWDATA_API virtual ~Tag();
 
-	fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, the list of points )
+        fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, the list of points )
 
-	fwGettersSettersDocMacro(Type, sType, std::string, the type of tag)
+        fwGettersSettersDocMacro(Type, sType, std::string, the type of tag)
 
-	fwGettersSettersDocMacro(Size, size, double, the size of the tag)
+        fwGettersSettersDocMacro(Size, size, double, the size of the tag)
 
 protected :
-	/// list of points
-	::fwData::PointList::sptr  m_pointList;
+        /// list of points
+        ::fwData::PointList::sptr  m_pointList;
 
-	/// type of tag
-	std::string m_sType;
+        /// type of tag
+        std::string m_sType;
 
-	/// size of tag
-	double m_size;
+        /// size of tag
+        double m_size;
 
 }; // end class Tag
 

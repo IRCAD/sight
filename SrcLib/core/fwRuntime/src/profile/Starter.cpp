@@ -30,22 +30,22 @@ Starter::Starter( const std::string & identifier )
 
 void Starter::apply()
 {
-	 ::boost::shared_ptr< Bundle >	bundle = Runtime::getDefault()->findBundle(m_identifier);
-	if( bundle == 0 )
-	{
-		OSLM_ERROR("Unable to start bundle " << m_identifier << ". Not found.");
-	}
-	else
-	{
-		try
-		{
-			bundle->start();
-		}
-		catch( const std::exception & e )
-		{
-			OSLM_ERROR("Unable to start bundle " << m_identifier << ". " << e.what());
-		}
-	}
+         ::boost::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
+        if( bundle == 0 )
+        {
+                OSLM_ERROR("Unable to start bundle " << m_identifier << ". Not found.");
+        }
+        else
+        {
+                try
+                {
+                        bundle->start();
+                }
+                catch( const std::exception & e )
+                {
+                        OSLM_ERROR("Unable to start bundle " << m_identifier << ". " << e.what());
+                }
+        }
 }
 
 

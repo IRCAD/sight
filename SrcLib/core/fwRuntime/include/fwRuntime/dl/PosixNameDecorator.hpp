@@ -21,10 +21,10 @@ namespace dl
 
 
 /**
- * @brief	Implements a posix specific name decorator.
- * @struct	PosixNameDecorator
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief       Implements a posix specific name decorator.
+ * @struct      PosixNameDecorator
+ * @date        2004-2009
+ * @author      IRCAD (Research and Development Team).
  */
 struct PosixNameDecorator : public NameDecorator
 {
@@ -32,13 +32,13 @@ struct PosixNameDecorator : public NameDecorator
 
 protected:
 
-	/**
-	 * @name		Ovrerides
-	 */
-	//@{
-	const std::string getNativePrefix() const throw();
-	const std::string getNativeExtension() const throw();
-	//@}
+        /**
+         * @name                Ovrerides
+         */
+        //@{
+        const std::string getNativePrefix() const throw();
+        const std::string getNativeExtension() const throw();
+        //@}
 
 };
 

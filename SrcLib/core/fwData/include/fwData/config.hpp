@@ -9,30 +9,30 @@
 
 #ifdef _WIN32
 
-	#ifdef FWDATA_EXPORTS
-	#define FWDATA_API __declspec(dllexport)
-	#else
-	#define FWDATA_API __declspec(dllimport)
-	#endif
+        #ifdef FWDATA_EXPORTS
+        #define FWDATA_API __declspec(dllexport)
+        #else
+        #define FWDATA_API __declspec(dllimport)
+        #endif
 
-	#define FWDATA_CLASS_API
+        #define FWDATA_CLASS_API
 
-	#pragma warning(disable: 4290)
+        #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-	#ifdef FWDATA_EXPORTS
-	#define FWDATA_API __attribute__ ((visibility("default")))
-	#define FWDATA_CLASS_API __attribute__ ((visibility("default")))
-	#else
-	#define FWDATA_API __attribute__ ((visibility("hidden")))
-	#define FWDATA_CLASS_API __attribute__ ((visibility("hidden")))
-	#endif
+        #ifdef FWDATA_EXPORTS
+        #define FWDATA_API __attribute__ ((visibility("default")))
+        #define FWDATA_CLASS_API __attribute__ ((visibility("default")))
+        #else
+        #define FWDATA_API __attribute__ ((visibility("hidden")))
+        #define FWDATA_CLASS_API __attribute__ ((visibility("hidden")))
+        #endif
 
 #else
 
-	#define FWDATA_API
-	#define FWDATA_CLASS_API
+        #define FWDATA_API
+        #define FWDATA_CLASS_API
 
 #endif
 

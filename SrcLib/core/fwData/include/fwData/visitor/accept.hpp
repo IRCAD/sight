@@ -18,15 +18,15 @@ namespace visitor
 /**
  *  @brief externalisation of Design Pattern Vistor
  *
- * 	Each object can be visited. An object accept a visitor. This visitor visits(performs an action) on object via
+ *      Each object can be visited. An object accept a visitor. This visitor visits(performs an action) on object via
  *  an concret implement of Visitor::visit( obj ). Then visitor continues to obj children using Visitor::next( obj, obj'schildren )
  *  strategy implemented via  an concret implementation of this method
  *
  * @param[in] object the object which accept the visitor
  * @param[in] visitor the visitor which visit the object
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 
 FWDATA_API void accept( ::fwTools::Object::sptr object,  ::fwData::visitor::IVisitor *visitor );

@@ -17,44 +17,44 @@ class ClassTest
 {
 
 public:
-	fwCoreClassDefinitionsWithFactoryMacro((ClassTest), (()) ( ((int)) ), new ClassTest);
+        fwCoreClassDefinitionsWithFactoryMacro((ClassTest), (()) ( ((int)) ), new ClassTest);
 
-	int getNum() { return m_num; }
+        int getNum() { return m_num; }
 
 protected:
-	ClassTest()
-	: m_num(1)
-	{}
+        ClassTest()
+        : m_num(1)
+        {}
 
-	ClassTest(int num)
-	: m_num(num)
-	{}
+        ClassTest(int num)
+        : m_num(num)
+        {}
 
 private:
-	int m_num;
+        int m_num;
 };
 
 void MacrosTest::setUp()
 {
-	// Set up context before running a test.
+        // Set up context before running a test.
 }
 
 void MacrosTest::tearDown()
 {
-	// Clean up after the test run.
+        // Clean up after the test run.
 }
 
 void MacrosTest::methode1()
 {
-	const int NUM = 15;
+        const int NUM = 15;
 
-	ClassTest::sptr classTest1;
-	ClassTest::sptr classTest2 = ClassTest::New();
-	ClassTest::sptr classTest3 = ClassTest::New(NUM);
-	ClassTest::NewSptr classTest4;
+        ClassTest::sptr classTest1;
+        ClassTest::sptr classTest2 = ClassTest::New();
+        ClassTest::sptr classTest3 = ClassTest::New(NUM);
+        ClassTest::NewSptr classTest4;
 
-	CPPUNIT_ASSERT(classTest1 == NULL);
-	CPPUNIT_ASSERT_EQUAL(classTest2->getNum(), 1);
-	CPPUNIT_ASSERT_EQUAL(classTest3->getNum(), NUM);
-	CPPUNIT_ASSERT_EQUAL(classTest4->getNum(), 1);
+        CPPUNIT_ASSERT(classTest1 == NULL);
+        CPPUNIT_ASSERT_EQUAL(classTest2->getNum(), 1);
+        CPPUNIT_ASSERT_EQUAL(classTest3->getNum(), NUM);
+        CPPUNIT_ASSERT_EQUAL(classTest4->getNum(), 1);
 }

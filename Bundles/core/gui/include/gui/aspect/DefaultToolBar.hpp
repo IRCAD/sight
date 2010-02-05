@@ -17,22 +17,22 @@ namespace aspect
 {
 
 /**
- * @brief	Defines the default toolbar for standard application
- * @class	DefaultToolBar.
- * @author	IRCAD (Research and Development Team)
+ * @brief       Defines the default toolbar for standard application
+ * @class       DefaultToolBar.
+ * @author      IRCAD (Research and Development Team)
 
- * @date	2009.
+ * @date        2009.
  */
 class GUI_CLASS_API DefaultToolBar : public IToolBar
 {
 
 public :
 
-	/// Constructor. Do nothing.
-	GUI_API DefaultToolBar() throw();
+        /// Constructor. Do nothing.
+        GUI_API DefaultToolBar() throw();
 
-	/// Destructor. Do nothing.
-	GUI_API virtual ~DefaultToolBar() throw();
+        /// Destructor. Do nothing.
+        GUI_API virtual ~DefaultToolBar() throw();
 
 };
 

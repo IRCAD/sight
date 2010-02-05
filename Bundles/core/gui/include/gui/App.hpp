@@ -26,35 +26,35 @@ namespace gui
 {
 
 /**
- * @brief	Defines the wx application.
- * @class	App.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief       Defines the wx application.
+ * @class       App.
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009.
  */
 
 GUI_CLASS_API class App : public wxApp
 {
 public:
 
-	/**
-	 * @brief	Constructor
-	 */
-	App();
+        /**
+         * @brief       Constructor
+         */
+        App();
 
-	/**
-	 * @name	Overrides
-	 */
-	/// @{
+        /**
+         * @name        Overrides
+         */
+        /// @{
 
-	bool OnInit();
+        bool OnInit();
 
-	int OnExit();
+        int OnExit();
 
-	void usage(const std::string & mes) const;
+        void usage(const std::string & mes) const;
 
-	bool OnCmdLineParsed(wxCmdLineParser & parser);
+        bool OnCmdLineParsed(wxCmdLineParser & parser);
 
-	void OnInitCmdLine(wxCmdLineParser & parser);
+        void OnInitCmdLine(wxCmdLineParser & parser);
 
 #ifdef __WXMAC__
     virtual void MacOpenFile (  const wxString & fileName);
@@ -66,19 +66,19 @@ public:
     void eventMac(const wxString & fileName);
 #endif
 
-	/// @}
+        /// @}
 
 
 private:
 
-	/**
-	 * @brief	locale (internationalization) for app
-	 */
-	wxLocale * m_locale;
+        /**
+         * @brief       locale (internationalization) for app
+         */
+        wxLocale * m_locale;
 
-	/**
-	 * @brief	Application Profile
-	 */
+        /**
+         * @brief       Application Profile
+         */
     ::fwRuntime::profile::Profile::sptr m_profile;
 
     wxSingleInstanceChecker * m_checker;

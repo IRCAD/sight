@@ -30,15 +30,15 @@ IObjectReader::~IObjectReader()
 
 void IObjectReader::setObject( ::boost::shared_ptr< ::fwTools::Object > _pObject )
 {
-	m_object = _pObject;
+        m_object = _pObject;
 }
 
 
 
 ::boost::shared_ptr< ::fwTools::Object >  IObjectReader::getObject()
 {
-	assert( !m_object.expired() );
-	return m_object.lock();
+        assert( !m_object.expired() );
+        return m_object.lock();
 }
 
 
@@ -46,13 +46,13 @@ void IObjectReader::setObject( ::boost::shared_ptr< ::fwTools::Object > _pObject
 
 void IObjectReader::setLocation( const ::boost::shared_ptr< ::fwData::location::ILocation > _location )
 {
-	m_location = _location;
+        m_location = _location;
 }
 
 
 ::boost::shared_ptr< ::fwData::location::ILocation > IObjectReader::getLocation()
 {
-	return m_location;
+        return m_location;
 }
 
 

@@ -13,21 +13,21 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FloatTest );
 
 void FloatTest::setUp()
 {
-	// Set up context before running a test.
+        // Set up context before running a test.
 
 }
 
 void FloatTest::tearDown()
 {
-	// Clean up after the test run.
+        // Clean up after the test run.
 }
 
 void FloatTest::methode1()
 {
-	const float VALUE	= 2.04f ;
-	// process
-	::fwData::Float::NewSptr p1( VALUE );
-	// check
-	CPPUNIT_ASSERT_EQUAL(p1->value(),	VALUE);
+        const float VALUE       = 2.04f ;
+        // process
+        ::fwData::Float::NewSptr p1( VALUE );
+        // check
+        CPPUNIT_ASSERT_EQUAL(p1->value(),       VALUE);
 
 }

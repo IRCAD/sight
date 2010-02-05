@@ -15,16 +15,16 @@
 namespace fwTools {
 
 /**
- * @name	String type mapping
+ * @name        String type mapping
  * @{
  */
 /**
- * @brief 	Template specialization for defining KeyType mapping ( here std::string) with their value.
+ * @brief       Template specialization for defining KeyType mapping ( here std::string) with their value.
  *
  * Header declare function already specialized while src provide definition.
  *
  * @warning isMapping does not need to be exported since fwTools Library is builded as static.
- * @author	IRCAD (Research and Development Team).
+ * @author      IRCAD (Research and Development Team).
  */
 
 // FIX UNSIGNED

@@ -20,55 +20,55 @@
 namespace fwData
 {
 /**
- * @class	Pipeline
- * @brief 	This class defines a pipeline
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class       Pipeline
+ * @brief       This class defines a pipeline
+ * @author      IRCAD (Research and Development Team).
+ * @date        2007-2009.
  */
 class FWDATA_CLASS_API Pipeline : public ProcessObject
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (Pipeline)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Pipeline >) ;
+        fwCoreClassDefinitionsWithFactoryMacro( (Pipeline)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Pipeline >) ;
 
-	typedef enum
-		{
-			STRUCTURE = 0,
-			ZONEA = 1,
-		} PIPELINE_PURPOSE;
+        typedef enum
+                {
+                        STRUCTURE = 0,
+                        ZONEA = 1,
+                } PIPELINE_PURPOSE;
 
-	typedef std::pair< ::fwData::ProcessObject const *, int > 	PortIn;
+        typedef std::pair< ::fwData::ProcessObject const *, int >       PortIn;
 
-	typedef std::pair< ::fwData::ProcessObject const *, int > 	PortOut;
+        typedef std::pair< ::fwData::ProcessObject const *, int >       PortOut;
 
-	typedef std::pair<  PortIn, PortOut > 						Link;
+        typedef std::pair<  PortIn, PortOut >                                           Link;
 
-	typedef std::list< Link  >					   				typedefLinkContainer;
+        typedef std::list< Link  >                                                                      typedefLinkContainer;
 
 
 public :
 
-	/// Constructor
-	FWDATA_API Pipeline();
+        /// Constructor
+        FWDATA_API Pipeline();
 
-	/// Destructor
-	FWDATA_API virtual ~Pipeline();
+        /// Destructor
+        FWDATA_API virtual ~Pipeline();
 
 
 protected :
 
-	std::vector< ::fwData::ProcessObject::sptr > m_vectorProcessObject;
+        std::vector< ::fwData::ProcessObject::sptr > m_vectorProcessObject;
 
-	typedefLinkContainer m_links;
+        typedefLinkContainer m_links;
 
-	std::string m_sStructureType;
+        std::string m_sStructureType;
 
-	bool m_bIsUsingROI;
+        bool m_bIsUsingROI;
 
-	bool m_bIsOutputImageValidatedAsOrgan;
+        bool m_bIsOutputImageValidatedAsOrgan;
 
-	//! The purpose of the associated ROI
-	PIPELINE_PURPOSE m_PipelinePurpose;
+        //! The purpose of the associated ROI
+        PIPELINE_PURPOSE m_PipelinePurpose;
 
 
 };
