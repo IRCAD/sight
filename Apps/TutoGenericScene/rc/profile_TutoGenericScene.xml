@@ -32,7 +32,7 @@
     <!--  <start id="ctrlSelection" /> -->
     <start id="visuVTK" />
     <start id="visuVTKAdaptor" />
-    <start id="monitor" />
+    <!--<start id="monitor" />-->
     <start id="gui" />
 
 

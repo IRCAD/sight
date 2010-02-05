@@ -34,7 +34,6 @@
     
     </object>
 
-                                
     <!-- CompositeVisu description -->
     <object id="myCompositeVisu" type="::fwData::Composite">
 
@@ -50,7 +49,9 @@
                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                 
                 <renderer id="default" background="0.0" />
-
+                <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="myCompositeVisu">
+                    <config renderer="default" picker="" />
+                </adaptor>
                 <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
                     <config renderer="default" picker="myPicker" />
                 </adaptor>
