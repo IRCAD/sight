@@ -1,0 +1,77 @@
+<plugin id="TutoGenericSceneConfiguration">
+
+<extension id="TutoGenericScene" implements="::fwData::Composite">
+<object id="TutoGenericScene" type="::fwData::Composite">
+
+    <service uid="MyIHM" implementation="::gui::aspect::DefaultAspect" type="::gui::aspect::IAspect" autoComChannel="no" >
+        <name>TutoGenericScene</name>
+        <icon>Bundles/TutoGenericScene_0-1/tuto.ico</icon>
+        <views>
+            <view guiContainerId="900" />
+        </views>
+        <menus>
+            <menu uid="menu_File"/>
+        </menus>
+    </service>
+
+    
+    <service uid="menu_File" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="File" autoComChannel="no" >
+            <action uid="action_openFile"/>
+    </service>
+
+   <service uid="action_openFile" implementation="::gui::action::StarterActionService" name="OpenFile" type="::gui::action::IAction"  shortcut="Ctrl+O" autoComChannel="no" >
+            <start uid="myReaderPathFile"/>
+    </service>
+
+    <!-- myPatientDB description -->
+    <object id="myPatientDB" uid="myPatientDB" type="::fwData::PatientDB">
+        
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" />
+        
+        <service uid="myUpdaterComCannel" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+            <target>myUpdater</target>
+        </service>
+    
+    </object>
+
+                                
+    <!-- CompositeVisu description -->
+    <object id="myCompositeVisu" type="::fwData::Composite">
+
+        <service uid="myUpdater" implementation="::ctrlSelection::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <patientDB uid="myPatientDB"/>
+            <acquisitionKeyInComposite value="myAcquisition"/>
+        </service>
+    
+        <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+            <win guiContainerId="900"/>
+            <scene>
+            
+                <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                
+                <renderer id="default" background="0.0" />
+
+                <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                    <config renderer="default" picker="myPicker" />
+                </adaptor>
+
+            </scene>
+        </service>
+
+        <object id="myAcquisition" type="::fwData::Acquisition" />
+
+    </object>
+
+    <start uid="MyIHM"/>
+    <start uid="genericScene"/>
+    <start uid="myUpdater"/>
+    <start uid="myUpdaterComCannel"/>
+
+    <stop uid="myUpdaterComCannel"/>
+    <stop uid="myUpdater"/>
+    <stop uid="genericScene"/>
+    <stop uid="MyIHM"/>
+
+</object>
+</extension>
+</plugin>

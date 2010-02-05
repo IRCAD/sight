@@ -1,0 +1,73 @@
+<plugin id="ioXML" class="ioXML::Plugin">
+
+    <library name="ioXML"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="io" />
+    
+    <!-- REGISTER_SERVICE( ::io::IReader , ::io::FwXMLPatientDBReaderService , ::fwData::PatientDB ) ; -->
+    <point id="::ioXML::FwXMLPatientDBReaderService" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::PatientDB</implements>
+    </point>
+    
+    
+    <!-- REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLPatientDBWriterService , ::fwData::PatientDB ) ; -->
+    <point id="::ioXML::FwXMLPatientDBWriterService" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::PatientDB</implements>
+    </point>
+    
+    
+    <!-- REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLImageReaderService , ::fwData::Image ) ; -->
+    <point id="::ioXML::FwXMLImageReaderService" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::Image</implements>
+    </point>
+    
+    
+    <!-- REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLImageWriterService , ::fwData::Image ) ; -->
+    <point id="::ioXML::FwXMLImageWriterService" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::Image</implements>
+    </point>
+    
+    
+    <!-- REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLPatient2PatientDBWriterService , ::fwData::Patient ) ; -->
+    <point id="::ioXML::FwXMLPatient2PatientDBWriterService" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::Patient</implements>
+    </point>
+ 
+    <!-- REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLAcquisitionWriterService , ::fwData::Acquisition ) ; -->
+    <point id="::ioXML::FwXMLAcquisitionWriterService" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+    
+
+    
+    
+    <!-- User info like extensions -->  
+    <extension implements="::ioXML::FwXMLPatientDBReaderService" >
+        <info text="fwXML Reader (Ircad)"/>
+    </extension>
+    <extension implements="::ioXML::FwXMLPatientDBWriterService" >
+        <info text="fwXML Writer (Ircad)"/>
+    </extension>
+    <extension implements="::ioXML::FwXMLPatient2PatientDBWriterService" >
+        <info text="fwXML Writer (Ircad)"/>
+    </extension>
+    <extension implements="::ioXML::FwXMLImageReaderService" >
+        <info text="fwXML Reader (Ircad)"/>
+    </extension>
+    <extension implements="::ioXML::FwXMLImageWriterService" >
+        <info text="fwXML Writer (Ircad)"/>
+    </extension>
+    <extension implements="::ioXML::FwXMLAcquisitionWriterService" >
+        <info text="fwXML Writer (Ircad)"/>
+    </extension>
+
+
+</plugin>

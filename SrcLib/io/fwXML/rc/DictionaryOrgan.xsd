@@ -1,0 +1,47 @@
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+
+<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ --> 	
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+
+<xsd:include schemaLocation="Field.xsd"/>
+
+<xsd:element name="DictionaryOrgan" type="DictionaryOrganXSDType"/>
+
+<xsd:complexType name="DictionaryOrganXSDType">
+	<xsd:sequence>
+	<xsd:element name="StructureType" type="xsd:string"/>
+	<xsd:element name="SALabel" type="xsd:string"/>
+	<xsd:element name="IsMedicalStructure" type="xsd:boolean"/>
+	<xsd:element name="AOColor" type="xsd:int"/>
+	<xsd:element name="AvgVolume" type="xsd:double"/>
+	<xsd:element name="VolStdDeviation" type="xsd:double"/>
+	<xsd:element name="NbExams" type="xsd:int"/>
+	<xsd:element name="Position" type="xsd:string"/>
+	<xsd:element name="IconPath" type="xsd:anyURI"/>
+	<xsd:element name="Red" type="xsd:double"/>
+	<xsd:element name="Green" type="xsd:double"/>
+	<xsd:element name="Blue" type="xsd:double"/>
+	<xsd:element name="Alpha" type="xsd:double"/>
+	<xsd:element name="TexturePath" type="xsd:anyURI"/>
+	<xsd:element name="AvgTriangleNb" type="xsd:int"/>
+	<xsd:element name="SegMin" type="xsd:double"/>
+	<xsd:element name="SegMax" type="xsd:double"/>
+	<xsd:element name="Modality" type="xsd:string"/>
+	<xsd:element name="SurfaceElasticity" type="xsd:double"/>
+	<xsd:element name="SurfaceRupture" type="xsd:double"/>
+	<xsd:element name="InteriorRupture" type="xsd:double"/>
+	<xsd:element name="Comment" type="xsd:string"/>
+	<xsd:element name="BelongsTo" type="StringContainerXSDType"/>
+	
+	<xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+	
+	</xsd:sequence>
+	<xsd:attribute name="id" type="xsd:string"/>
+	<xsd:attribute name="class" type="xsd:string"/>
+	<xsd:attribute ref="xml:base"/>
+	
+</xsd:complexType>
+
+</xsd:schema>

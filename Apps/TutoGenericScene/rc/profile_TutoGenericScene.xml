@@ -1,0 +1,40 @@
+<profile name="TutoGenericScene" version="0.1" check-single-instance="true"> 
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" /> 
+
+    <activate id="gui" version="0-1" >
+        <param id="startingMode" value="windows" />
+        <param id="rootObject" value="::fwData::Composite" />
+        <param id="config" value="TutoGenericScene" />
+        <param id="configFile" value="./Bundles/TutoGenericScene_0-1/configurations/config_TutoGenericScene.xml" />
+    </activate>
+
+    <activate id="io" version="0-1" />
+    <activate id="visu" version="0-1" />
+
+    <activate id="ctrlSelection" version="0-1" />
+    <!--
+    <activate id="ioVtkGdcm" version="0-1" />
+    <activate id="basicVRCtrl" version="0-1" />
+    <activate id="uiData" version="0-1" />
+    <activate id="ioITK" version="0-1" />
+    <start id="ioITK" />
+    <activate id="monitor" version="0-1">
+        <param id="Policy" value="LimitedMemoryDumpPolicy" />
+    </activate>
+    -->
+    <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKAdaptor" version="0-1" />
+    <activate id="uiIO" version="0-1" />
+    <activate id="ioXML" version="0-1" />
+
+    <!--  <start id="ctrlSelection" /> -->
+    <start id="visuVTK" />
+    <start id="visuVTKAdaptor" />
+    <start id="monitor" />
+    <start id="gui" />
+
+
+
+</profile>

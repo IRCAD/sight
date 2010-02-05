@@ -1,0 +1,4 @@
+TEST='yes'
+TESTRUNNER= 'testRunnerCOUT' #'testRunnerdata' #
+TESTFIXTURE='1'
+TESTLIB='cppunit'

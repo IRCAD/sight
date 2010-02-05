@@ -1,0 +1,47 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+
+<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ --> 	
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+
+<xsd:include schemaLocation="Field.xsd"/>
+<xsd:include schemaLocation="DynamicType.xsd"/>
+
+<xsd:complexType name="ImageType">
+	<xsd:sequence>
+		<xsd:element name="Dimension"        type="xsd:positiveInteger"/>
+		<xsd:element name="PixelType"        type="DynamicTypeXSDType"/>
+		<xsd:element name="ManagesBuff"      type="xsd:boolean"/>
+		<xsd:element name="Spacing"	         type="FloatContainerXSDType"/>
+		<xsd:element name="Origin"  	     type="IntegerContainerXSDType"/>
+		<xsd:element name="Size"    	     type="IntegerContainerXSDType"/>
+		<xsd:element name="Filename" 	     type="xsd:string"/>
+		<xsd:element name="WindowCenter"     type="xsd:float"/>
+		<xsd:element name= "WindowWidth"     type="xsd:float"/>
+		<xsd:element name="RescaleIntercept" type="xsd:float"/>
+		<xsd:element name="Buffer"/>
+		<xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="id" type="xsd:string" />
+	<xsd:attribute name="class" type="xsd:string"/>
+	<xsd:attribute ref="xml:base" />
+</xsd:complexType>
+
+<xsd:element name="Image" type="ImageType"/>
+
+
+
+
+<!-- The presence of xml:base attributes might lead to unexpected results in the case where the attribute
+value is provided, not directly in the XML document entity, but via a default attribute. For instance, such
+a declaration in an external entity might not be read by software which is based on a non-validating XML
+processor. Defaulting attributes through an external mechanism such as XML Schema may also lead to unexpected
+results; even if a validating processor is used by the application, the addition of defaulted attributes
+subsequent to creation of the infoset can cause xml:base attributes to get out of sync with the [base URI]
+infoset property. For these reasons, xml:base values should be provided either directly in the XML document
+ instance or via default attributes declared in the internal subset of the DTD.
+-->
+
+
+
+
+</xsd:schema>

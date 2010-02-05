@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="qualified">
+	
+
+<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ --> 	
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />	
+	
+<xsd:include schemaLocation="Field.xsd"/>
+
+
+
+<xsd:element name="Study" type="StudyXSDType"/>
+
+<xsd:complexType name="StudyXSDType">
+	<xsd:sequence>
+	<xsd:element name="Hospital" type="xsd:string"/>
+	<xsd:element name="Modality" type="xsd:string"/>
+	<xsd:element name="AcquisitionZone" type="xsd:string"/>
+	<xsd:element name="RISId" type="xsd:string"/>
+	<xsd:element name="UID" type="xsd:string"/>
+	<xsd:element name="DbID" type="xsd:int"/>
+	<xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="id" type="xsd:string"/>
+	<xsd:attribute name="class" type="xsd:string"/>
+	<xsd:attribute ref="xml:base" />
+</xsd:complexType>
+
+</xsd:schema>

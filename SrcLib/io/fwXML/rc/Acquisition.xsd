@@ -1,0 +1,48 @@
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+
+<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ --> 	
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+
+<xsd:include schemaLocation="Field.xsd"/>
+
+<xsd:element name="Acquisition" type="AcquisitionXSDType"/>
+
+<xsd:complexType name="AcquisitionXSDType">
+	<xsd:sequence>
+	<xsd:element name="BitsPerPixel" type="xsd:byte"/>
+	<xsd:element name="SliceThickness" type="xsd:float"/>
+	<xsd:element name="Axe" type="xsd:byte"/>
+	<xsd:element name="UnsignedFlag" type="xsd:boolean"/>
+	<xsd:element name="AcquisitionIndex" type="xsd:int"/>
+	<xsd:element name="ImageType" type="xsd:string"/>
+	<xsd:element name="ImageFormat" type="xsd:string"/>
+	<xsd:element name="CreationDate" type="xsd:dateTime"/>
+	<xsd:element name="IsMain" type="xsd:boolean"/>
+	<xsd:element name="IsNormalDir" type="xsd:boolean"/>
+	<xsd:element name="UID" type="xsd:string"/>
+	<xsd:element name="DbID" type="xsd:int"/>
+	<xsd:element name="LaboID" type="xsd:int"/>
+	<xsd:element name="NetID" type="xsd:int"/>
+	<xsd:element name="DateSendToLaboAt" type="xsd:dateTime"/>
+	<xsd:element name="DateReceiveFromLaboAt" type="xsd:dateTime"/>
+	<xsd:element name="DateSendToBDDAt" type="xsd:dateTime"/>
+	<xsd:element name="DateDisponibilityAt" type="xsd:dateTime"/>
+	<xsd:element name="PatientSize" type="xsd:double"/>
+	<xsd:element name="PatientWeight" type="xsd:double"/>
+	<xsd:element name="Radiations" type="xsd:double"/>
+	<xsd:element name="MedicalPrinter" type="xsd:string"/>
+	<xsd:element name="MedicalPrinterCorp" type="xsd:string"/>
+	<xsd:element name="PatientPosition" type="xsd:string"/>
+	
+	<xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+	
+	</xsd:sequence>
+	<xsd:attribute name="id" type="xsd:string"/>
+	<xsd:attribute name="class" type="xsd:string"/>
+	<xsd:attribute ref="xml:base" />
+	
+</xsd:complexType>
+
+</xsd:schema>

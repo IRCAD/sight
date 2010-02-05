@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+
+
+ <xsd:complexType name="StringFieldXSDType">
+	<xsd:simpleContent>
+		<xsd:extension base="xsd:string">
+			<xsd:attribute name="id" type="xsd:string" />
+			<xsd:attribute name="class" type="xsd:string"/>
+      		</xsd:extension>
+    	</xsd:simpleContent>
+ </xsd:complexType>
+
+
+<xsd:element name="StringField" type="StringFieldXSDType"/>
+
+</xsd:schema>

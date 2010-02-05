@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+
+
+
+<xsd:complexType name="IntegerFieldXSDType">
+	<xsd:simpleContent>
+		<xsd:extension base="xsd:integer">
+			<xsd:attribute name="id" type="xsd:string" />
+			<xsd:attribute name="class" type="xsd:string"/>
+		</xsd:extension>
+	</xsd:simpleContent>
+</xsd:complexType>
+
+ <xsd:element  name="IntegerField"  type="IntegerFieldXSDType"/>
+
+</xsd:schema>
+
