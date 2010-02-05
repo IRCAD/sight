@@ -50,8 +50,6 @@ void SwapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fw
     if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
     {
         std::vector< std::string > objectIds = compositeMsg->getEventModifiedFields();
-        std::vector< std::string >::iterator iter;
-
         SLM_ASSERT ("No services configuration!", m_managerConfiguration );
 
         BOOST_FOREACH( std::string objectId, objectIds)

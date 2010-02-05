@@ -15,14 +15,17 @@
 #include <fwComEd/PatientDBMsg.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 
-#include "ctrlSelection/AcqFromPDBUpdaterSrv.hpp"
+#include "ctrlSelection/updater/AcqFromPDBUpdaterSrv.hpp"
 
 namespace ctrlSelection
 {
 
+namespace updater
+{
+
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::AcqFromPDBUpdaterSrv, ::fwData::Composite    ) ;
+REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::AcqFromPDBUpdaterSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -139,4 +142,5 @@ void AcqFromPDBUpdaterSrv::info( std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-}
+} // updater
+} // ctrlSelection

@@ -13,12 +13,12 @@
 		<implements>::fwServices::IService</implements>
 	</point>
 
-	<point id="::ctrlSelection::AcqFromPDBUpdaterSrv">
+	<point id="::ctrlSelection::updater::AcqFromPDBUpdaterSrv">
 		<implements>::ctrlSelection::IUpdaterSrv</implements>
 		<implements>::fwData::Composite</implements>
 	</point>
 
-	<point id="::ctrlSelection::manager::SwapperSrv">
+    <point id="::ctrlSelection::manager::SwapperSrv">
         <implements>::ctrlSelection::IManagerSrv</implements>
         <implements>::fwData::Composite</implements>
     </point>

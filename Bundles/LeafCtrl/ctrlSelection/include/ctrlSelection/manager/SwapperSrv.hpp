@@ -61,8 +61,7 @@ protected:
 
 	typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 	typedef std::string ObjectIdType;
-	typedef std::vector<SubService> SubServicesVecType;
-	typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
+
 
 	class SubService
 	{
@@ -77,6 +76,9 @@ protected:
 	    ConfigurationType m_config;
 	    WPTR(::fwServices::IService) m_service;
 	};
+
+	typedef std::vector<SubService> SubServicesVecType;
+	typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
 
     void configureObject( ConfigurationType conf );
 

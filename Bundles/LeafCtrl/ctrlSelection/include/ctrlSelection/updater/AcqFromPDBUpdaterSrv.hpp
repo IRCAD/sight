@@ -15,6 +15,9 @@
 namespace ctrlSelection
 {
 
+namespace updater
+{
+
 /**
  * @class   AcqFromPDBUpdaterSrv.
  * @author IRCAD (Research and Development Team).
@@ -63,6 +66,7 @@ private :
     std::string m_patientDBUID;
 };
 
-}
+} // updater
+} // ctrlSelection
 
 #endif // _CTRLSELECTION_ACQFROMPDBUPDATERSRV_HPP_
