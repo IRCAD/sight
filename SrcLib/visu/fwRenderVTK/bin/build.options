@@ -1,0 +1,40 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+USE = [
+    'boost',
+    'vtk',
+    'vtkinria3d',
+    'wx',
+    ]
+LIB = [
+    'fwComEd_0-1',
+    'fwCore_0-1',
+    'fwData_0-1',
+    'fwMath_0-1',
+    'fwRender_0-1',
+    'fwRuntime_0-3',
+    'fwServices_0-1',
+    'fwTools_0-1',
+    'fwWX_0-1',
+    'vtkIO_0-1',
+    ]
+TYPE = 'shared'
+VERSION = '0-1'
+
+# USE_COVERAGE_CULLER and USE_DEPTH_SORT are effectives only if
+# USE_DEPTH_PEELING is not.
+if racy.renv.system() == 'windows':
+    DEF = [
+            'USE_DEPTH_PEELING',
+            #'USE_DEPTH_SORT'
+            #'USE_COVERAGE_CULLER',
+#            'SHOW_ID_LABELS' ,
+            ]
+else:
+    DEF = [
+            #'USE_DEPTH_PEELING',
+            'USE_DEPTH_SORT',
+            'USE_COVERAGE_CULLER',
+#            'SHOW_ID_LABELS'  ,
+            ]
+

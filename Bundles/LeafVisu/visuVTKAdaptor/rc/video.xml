@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Material name="video" NumberOfVertexShaders="1" NumberOfFragmentShaders="1">
+
+  <Shader scope="Vertex" name="videoVert" location="Inline" language="GLSL" entry="main" args="-DVERTEX_PROGRAM">
+        varying vec2  texCoord;
+        void main(void)
+        {
+           texCoord = gl_MultiTexCoord0.st;
+           texCoord.y = 1.-texCoord.y;
+           
+          // normal transformation
+          gl_Position = ftransform();
+        }
+  </Shader>
+
+  <Shader scope="Fragment" name="videoFrag" location="Inline" language="GLSL" entry="main" args="-DFRAGMENT_PROGRAM">
+        uniform sampler2D texture;   // input image
+        varying vec2  texCoord;
+        void main(void)
+        {
+          vec4 tmp_color;
+          tmp_color = texture2D(texture,texCoord);
+          gl_FragColor = tmp_color;
+          gl_FragColor.r = tmp_color.b;
+          gl_FragColor.b = tmp_color.r;
+        }
+  </Shader>
+
+</Material>
+

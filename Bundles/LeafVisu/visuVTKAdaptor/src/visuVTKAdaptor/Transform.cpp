@@ -1,0 +1,116 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+
+
+#include <boost/foreach.hpp>
+
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Boolean.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/Factory.hpp>
+
+#include <fwServices/ObjectServiceRegistry.hpp>
+
+#include <fwComEd/TransformationMatrix3DMsg.hpp>
+
+#include <vtkCubeSource.h>
+#include <vtkActor.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkMatrix4x4.h>
+#include <vtkTransform.h>
+#include <vtkRenderWindowInteractor.h>
+
+#include "visuVTKAdaptor/Transform.hpp"
+
+
+
+REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ) ;
+
+namespace visuVTKAdaptor
+{
+
+
+Transform::Transform() throw() : bForceRender(false)
+{
+}
+
+Transform::~Transform() throw()
+{
+
+}
+
+void Transform::configuring() throw(fwTools::Failed)
+{
+
+    SLM_TRACE_FUNC();
+
+    assert(m_configuration->getName() == "config");
+    this->setTransformId( m_configuration->getAttributeValue("transform") );
+    // only to force render
+    if(m_configuration->hasAttribute("forceRender") )
+    {
+        std::string value(m_configuration->getAttributeValue("forceRender"));
+        std::transform(value.begin(), value.end(), value.begin(), tolower);
+        this->bForceRender = ( value != "no" );
+    }
+}
+
+void Transform::doStart() throw(fwTools::Failed)
+{
+    this->doUpdate();
+}
+
+void Transform::doUpdate() throw(fwTools::Failed)
+{
+    doStop();
+}
+
+void Transform::doSwap() throw(fwTools::Failed)
+{
+    this->doUpdate();
+}
+
+void Transform::doStop() throw(fwTools::Failed)
+{
+    this->unregisterServices();
+}
+
+
+void Transform::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+{
+//  if ( msg->isAllModified() )
+    ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
+    if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
+    {
+        ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+        vtkMatrix4x4* mat = vtkMatrix4x4::New();
+
+        for(int lt=0; lt<4; lt++)
+        {
+            for(int ct=0; ct<4; ct++)
+            {
+                mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
+            }
+        }
+        vtkTransform* vtkTrf = this->getTransform();
+        vtkTrf->SetMatrix(mat);
+        this->getTransform()->Modified();
+        // @TODO : Hack to force render !! (pb with tracking)
+        if( bForceRender )
+        {
+            this->getRenderService()->render();
+        }
+    }
+}
+
+
+
+
+} //namespace visuVTKAdaptor
