@@ -19,22 +19,22 @@
 namespace fwWX
 {
 /**
- * @brief	This class returns a wxMiniFrame witch contain a wxMonitor(Display Services).
- * @class	wxDialogMonitor.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   This class returns a wxMiniFrame witch contain a wxMonitor(Display Services).
+ * @class   wxDialogMonitor.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
 * @todo wxDialogMonitor is not commented.
  */
 class FWWX_CLASS_API wxDialogMonitor : public wxMiniFrame
 
 {
 public:
-	/**
-	* @brief	Constructor
-	*/
-	FWWX_API wxDialogMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesNames map_string, wxString title = _("Objects and Services Database")) ;
+    /**
+    * @brief    Constructor
+    */
+    FWWX_API wxDialogMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesNames map_string, wxString title = _("Objects and Services Database")) ;
 
-	FWWX_API wxDialogMonitor(wxWindow* parent, fwServices::monitor::string_map map_string, wxString title = _("Objects and Services Database")) ;
+    FWWX_API wxDialogMonitor(wxWindow* parent, fwServices::monitor::string_map map_string, wxString title = _("Objects and Services Database")) ;
 
     void FWWX_API setOnSelectionCallback( wxMonitorCallback::ptr callback);
 

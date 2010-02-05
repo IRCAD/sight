@@ -20,8 +20,8 @@ Failed::~Failed() throw()
 
 const char * Failed::what() const throw()
 {
-	return m_message.c_str();
+    return m_message.c_str();
 }
 
-	
+    
 } // namespace fwTools

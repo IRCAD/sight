@@ -16,8 +16,8 @@ namespace fwData
 /**
  * @namespace ::fwData::location
  * @brief This namespace contains the classes which define a %location ( fileSystem, directory(IES) etc.... ).
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  *
  */
 namespace location
@@ -32,15 +32,15 @@ namespace location
 class FWDATA_CLASS_API ILocation : public ::fwData::Object
 {
 public:
-	fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object::Baseclass) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object::Baseclass) );
 
 protected:
 
-	/// Constructor : cannot be instanciated but derivated class OK
-	FWDATA_API ILocation();
+    /// Constructor : cannot be instanciated but derivated class OK
+    FWDATA_API ILocation();
 
-	/// Destructor
-	FWDATA_API virtual ~ILocation();
+    /// Destructor
+    FWDATA_API virtual ~ILocation();
 };
 
 
@@ -51,22 +51,22 @@ protected:
 template<class LOCATION, class RW >
 inline typename LOCATION::sptr getLocation(RW *rw)
 {
-	assert( rw );
-	typename LOCATION::sptr location;
-	location = LOCATION::dynamicCast( rw->getLocation() );
-	if ( !location )
-	{
-		location = typename LOCATION::NewSptr();
-		rw->setLocation(location);
-	}
-	return location;
+    assert( rw );
+    typename LOCATION::sptr location;
+    location = LOCATION::dynamicCast( rw->getLocation() );
+    if ( !location )
+    {
+        location = typename LOCATION::NewSptr();
+        rw->setLocation(location);
+    }
+    return location;
 }
 
 /// test if a Reader/writer (ie a class implementing get/setLocation) have an specialized LOCATION
 template<class LOCATION, class RW >
 inline bool have(RW *rw)
 {
-	return LOCATION::dynamicCast( rw->getLocation() );
+    return LOCATION::dynamicCast( rw->getLocation() );
 }
 
 

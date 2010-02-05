@@ -20,43 +20,43 @@ namespace fwData
 
 PointList::PointList ()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 PointList::~PointList ()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 PointList::sptr PointList::clone() const
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 
-	PointList::NewSptr pNewPointList;
+    PointList::NewSptr pNewPointList;
 
-	// Copy encoding
-	for ( 	PointList::PointListContainer::const_iterator iter = this->m_vPoints.begin();
-			iter != this->m_vPoints.end();
-			++iter )
-	{
-		pNewPointList->m_vPoints.push_back( (*iter)->clone() );
-	}
+    // Copy encoding
+    for (   PointList::PointListContainer::const_iterator iter = this->m_vPoints.begin();
+            iter != this->m_vPoints.end();
+            ++iter )
+    {
+        pNewPointList->m_vPoints.push_back( (*iter)->clone() );
+    }
 
-	return pNewPointList;
+    return pNewPointList;
 }
 
 //------------------------------------------------------------------------------
 
 PointList & PointList::operator=( const PointList & _pointList )
 {
-	// Copy encoding
-	m_vPoints = _pointList.m_vPoints;
+    // Copy encoding
+    m_vPoints = _pointList.m_vPoints;
 
-	return *this;
+    return *this;
 }
 
 //------------------------------------------------------------------------------

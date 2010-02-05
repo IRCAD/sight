@@ -20,13 +20,13 @@ ProcessObjectEditor::~ProcessObjectEditor() throw()
 
 void ProcessObjectEditor::updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
 {
-	SLM_FATAL("ACH: must report ObjectMsg API modification. This method is used ?");
-//	std::cout << "ProcessObjectEditor::objectModified( const ObjectEvent & event )" << std::endl;
-//	 ::boost::shared_ptr< ::fwData::ProcessObject > m_client = this->getObject< ::fwData::ProcessObject>() ;
-//	 ::boost::shared_ptr< fwComEd::ProcessObjectMsg > poMsg( new fwComEd::ProcessObjectMsg( m_client ) ) ;
-//	poMsg->addIoModif( _msg ) ;	//One assumes that event is related to a modification of either an input or an output
+    SLM_FATAL("ACH: must report ObjectMsg API modification. This method is used ?");
+//  std::cout << "ProcessObjectEditor::objectModified( const ObjectEvent & event )" << std::endl;
+//   ::boost::shared_ptr< ::fwData::ProcessObject > m_client = this->getObject< ::fwData::ProcessObject>() ;
+//   ::boost::shared_ptr< fwComEd::ProcessObjectMsg > poMsg( new fwComEd::ProcessObjectMsg( m_client ) ) ;
+//  poMsg->addIoModif( _msg ) ; //One assumes that event is related to a modification of either an input or an output
 //
-//	this->notify( poMsg ) ;
+//  this->notify( poMsg ) ;
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ void ProcessObjectEditor::updating() throw ( ::fwTools::Failed )
 
 void ProcessObjectEditor::info(std::ostream &_sstream )
 {
-	_sstream << "ProcessObjectEditor" ;
+    _sstream << "ProcessObjectEditor" ;
 }
 
 //-----------------------------------------------------------------------------

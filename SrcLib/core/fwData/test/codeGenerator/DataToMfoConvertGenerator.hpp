@@ -16,102 +16,102 @@ namespace codeGenerator
 
 //------------------------------------------------------------------------------
 
-//	TYPE _param = mfoPatient->GetParam();
+//  TYPE _param = mfoPatient->GetParam();
 void generateMfoToDataConvertGetTypeA( const std::string & field, const std::string & type, const std::string & className )
 {
-	std::string methodName = fieldToMethodName( field );
-	std::string paramName = fieldToParamName( field );
-	
-	std::cout << type << " " << paramName << " = mfo" << className << "->Get" << methodName << "();" << std::endl; 
+    std::string methodName = fieldToMethodName( field );
+    std::string paramName = fieldToParamName( field );
+    
+    std::cout << type << " " << paramName << " = mfo" << className << "->Get" << methodName << "();" << std::endl; 
 }
 //------------------------------------------------------------------------------
 
-//	A
-//	dataPatient->setName(name);
+//  A
+//  dataPatient->setName(name);
 void generateMfoToDataConvertSetTypeA( const std::string & field, const std::string & type, const std::string & className )
 {
-	std::string methodName = fieldToMethodName( field );
-	std::string paramName = fieldToParamName( field );
-	
-	std::cout << "data" << className << "->set" << methodName << "( " << paramName << " );" << std::endl;
+    std::string methodName = fieldToMethodName( field );
+    std::string paramName = fieldToParamName( field );
+    
+    std::cout << "data" << className << "->set" << methodName << "( " << paramName << " );" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
-//	B
-//	dataPatient->setCRefName(name);
+//  B
+//  dataPatient->setCRefName(name);
 void generateMfoToDataConvertSetTypeB( const std::string & field, const std::string & type, const std::string & className )
 {
-	std::string methodName = fieldToMethodName( field );
-	std::string paramName = fieldToParamName( field );
-	
-	std::cout << "data" << className << "->setCRef" << methodName << "( " << paramName << " );" << std::endl;
+    std::string methodName = fieldToMethodName( field );
+    std::string paramName = fieldToParamName( field );
+    
+    std::cout << "data" << className << "->setCRef" << methodName << "( " << paramName << " );" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
 void generateMfoToDataConvertSet( const std::string & field, const std::string & type, const std::string & parameterName)
 {
-	if ( isASharedPtr(type) )
-	{
-		generateMfoToDataConvertSetTypeA( field, type, parameterName );
-	}
-	else if ( isAnObject(type) || isAContainair(type) )
-	{
-		generateMfoToDataConvertSetTypeB( field, type, parameterName );
-	}
-	else
-	{
-		generateMfoToDataConvertSetTypeA( field, type, parameterName );
-	}
+    if ( isASharedPtr(type) )
+    {
+        generateMfoToDataConvertSetTypeA( field, type, parameterName );
+    }
+    else if ( isAnObject(type) || isAContainair(type) )
+    {
+        generateMfoToDataConvertSetTypeB( field, type, parameterName );
+    }
+    else
+    {
+        generateMfoToDataConvertSetTypeA( field, type, parameterName );
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void generateMfoToDataConvertGet( const std::string & field, const std::string & type, const std::string & parameterName)
 {
-	if ( isASharedPtr(type) )
-	{
-		generateMfoToDataConvertGetTypeA( field, type, parameterName );
-	}
-	else if ( isAnObject(type) || isAContainair(type) )
-	{
-		generateMfoToDataConvertGetTypeA( field, type, parameterName );
-	}
-	else
-	{
-		generateMfoToDataConvertGetTypeA( field, type, parameterName );
-	}
+    if ( isASharedPtr(type) )
+    {
+        generateMfoToDataConvertGetTypeA( field, type, parameterName );
+    }
+    else if ( isAnObject(type) || isAContainair(type) )
+    {
+        generateMfoToDataConvertGetTypeA( field, type, parameterName );
+    }
+    else
+    {
+        generateMfoToDataConvertGetTypeA( field, type, parameterName );
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void generateMfoToDataConvert( const std::vector< std::pair< std::string, std::string > > & fieldAndType, const std::string & parameterName )
 {
-	
-	for( 	std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
-			field != fieldAndType.end();
-			field ++ )
-	{
-		std::string name = field->first;
-		std::string type = field->second;
-	
-		generateMfoToDataConvertGet(name,type,parameterName);
-	}
+    
+    for(    std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
+            field != fieldAndType.end();
+            field ++ )
+    {
+        std::string name = field->first;
+        std::string type = field->second;
+    
+        generateMfoToDataConvertGet(name,type,parameterName);
+    }
 
-	for( 	std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
-			field != fieldAndType.end();
-			field ++ )
-	{
-		std::string name = field->first;
-		std::string type = field->second;
-	
-		generateMfoToDataConvertSet(name,type,parameterName);
-	}
+    for(    std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
+            field != fieldAndType.end();
+            field ++ )
+    {
+        std::string name = field->first;
+        std::string type = field->second;
+    
+        generateMfoToDataConvertSet(name,type,parameterName);
+    }
 }
 
 //------------------------------------------------------------------------------
-	
+    
 } // codeGenerator
 
 

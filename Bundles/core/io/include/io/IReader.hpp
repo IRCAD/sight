@@ -18,9 +18,9 @@ namespace io
 
 /**
  * @brief Reader service API. It manages extension points definition and extension configuration
- * @class	IReader.
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class   IReader.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  *
  * This class represents the base interface for reader services.
  * Use the base service methods :
@@ -36,39 +36,39 @@ class IO_CLASS_API IReader : public fwServices::IService
 public :
     fwCoreServiceClassDefinitionsMacro ( (IReader)(::fwServices::IService::Baseclass) ) ;
 
-	/**
-	 * @brief	Constructor (by default does nothing)
-	 */
-	IO_API IReader() throw() ;
+    /**
+     * @brief   Constructor (by default does nothing)
+     */
+    IO_API IReader() throw() ;
 
-	/**
-	 * @brief	Destructor
-	 */
-	IO_API virtual ~IReader() throw() ;
+    /**
+     * @brief   Destructor
+     */
+    IO_API virtual ~IReader() throw() ;
 
-	/**
-	 * @name	Specific service methods for reading
-	 */
-	//@{
+    /**
+     * @name    Specific service methods for reading
+     */
+    //@{
 
-	/**
-	 * @brief Configure the image path (by default does nothing).
-	 *
-	 * This method is used to find
-	 * the file path  using a file selector.
-	 */
-	IO_API virtual void configureWithIHM() = 0;
+    /**
+     * @brief Configure the image path (by default does nothing).
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    IO_API virtual void configureWithIHM() = 0;
 
-	/**
-	 * @brief	returns  (filename) extension
-	 */
-	IO_API virtual std::vector< std::string > getSupportedExtensions() ;
+    /**
+     * @brief   returns  (filename) extension
+     */
+    IO_API virtual std::vector< std::string > getSupportedExtensions() ;
 
-	/**
-	 * @brief	returns  the title of selector dialog box
-	 */
-	IO_API virtual wxString getSelectorDialogTitle();
-	//@}
+    /**
+     * @brief   returns  the title of selector dialog box
+     */
+    IO_API virtual wxString getSelectorDialogTitle();
+    //@}
 
 };
 

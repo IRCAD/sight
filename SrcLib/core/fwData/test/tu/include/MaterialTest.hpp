@@ -10,16 +10,16 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class MaterialTest : public CPPUNIT_NS::TestFixture {
-	CPPUNIT_TEST_SUITE( MaterialTest );
-	CPPUNIT_TEST( methode1 );
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE( MaterialTest );
+    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST_SUITE_END();
 protected:
 
 public:
-	// interface
-	void setUp();
-	void tearDown();
-	// fonctions de tests
-	void methode1();
+    // interface
+    void setUp();
+    void tearDown();
+    // fonctions de tests
+    void methode1();
 };
 #endif

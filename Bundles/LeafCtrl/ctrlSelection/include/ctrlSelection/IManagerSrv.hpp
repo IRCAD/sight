@@ -16,22 +16,22 @@ namespace ctrlSelection
 {
 
 /**
- * @class	IManagerSrv.
+ * @class   IManagerSrv.
  * @author  IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @date    2007-2009.
  */
 class CTRLSELECTION_CLASS_API IManagerSrv : public ::fwServices::IService
 {
 
 public:
 
-	fwCoreServiceClassDefinitionsMacro ( (IManagerSrv)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IManagerSrv)(::fwServices::IService::Baseclass) ) ;
 
-	///@brief IManagerSrv constructor. Do nothing.
-	CTRLSELECTION_API IManagerSrv();
+    ///@brief IManagerSrv constructor. Do nothing.
+    CTRLSELECTION_API IManagerSrv();
 
-	///@brief IManagerSrv destructor. Do nothing.
-	CTRLSELECTION_API virtual ~IManagerSrv();
+    ///@brief IManagerSrv destructor. Do nothing.
+    CTRLSELECTION_API virtual ~IManagerSrv();
 
 };
 

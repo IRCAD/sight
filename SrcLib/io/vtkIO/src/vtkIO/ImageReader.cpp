@@ -24,44 +24,44 @@ namespace vtkIO
 ImageReader::ImageReader()
 : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
-	SLM_TRACE("vtkIO::ImageReader::ImageReader");
+    SLM_TRACE("vtkIO::ImageReader::ImageReader");
 }
 
 //------------------------------------------------------------------------------
 
 ImageReader::~ImageReader()
 {
-	SLM_TRACE("vtkIO::ImageReader::~ImageReader");
+    SLM_TRACE("vtkIO::ImageReader::~ImageReader");
 }
 
 //------------------------------------------------------------------------------
 
 void ImageReader::read()
 {
-	assert( m_object.use_count() );
-	assert( !m_object.expired() );
-	assert( m_object.lock() );
+    assert( m_object.use_count() );
+    assert( !m_object.expired() );
+    assert( m_object.lock() );
 
-	::fwData::Image::sptr pImage = getConcreteObject();
+    ::fwData::Image::sptr pImage = getConcreteObject();
 
-	vtkGenericDataObjectReader *reader = vtkGenericDataObjectReader::New();
-	reader->SetFileName(this->getFile().string().c_str());
-	reader->Update();
+    vtkGenericDataObjectReader *reader = vtkGenericDataObjectReader::New();
+    reader->SetFileName(this->getFile().string().c_str());
+    reader->Update();
 
-	vtkDataObject *obj = reader->GetOutput();
-	vtkImageData* img = vtkImageData::SafeDownCast(obj);
-	if(img)
-	{
-		::vtkIO::fromVTKImage(img, pImage);
-	}
-	else
-	{
-		std::string errMsg;
-		errMsg	= "ImageReader cannot read VTK image file : ";
-		errMsg.append( this->getFile().string() );
-		throw( errMsg );
-	}
-	reader->Delete();
+    vtkDataObject *obj = reader->GetOutput();
+    vtkImageData* img = vtkImageData::SafeDownCast(obj);
+    if(img)
+    {
+        ::vtkIO::fromVTKImage(img, pImage);
+    }
+    else
+    {
+        std::string errMsg;
+        errMsg  = "ImageReader cannot read VTK image file : ";
+        errMsg.append( this->getFile().string() );
+        throw( errMsg );
+    }
+    reader->Delete();
 }
 
 //------------------------------------------------------------------------------

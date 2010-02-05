@@ -69,9 +69,9 @@
 
         <start type="::gui::aspect::IAspect" />
         
-        <start uid="myRenderingTuto1"/>	
-        <start uid="myRenderingTuto2"/>						
-        <start uid="myRenderingTuto3"/>						
+        <start uid="myRenderingTuto1"/> 
+        <start uid="myRenderingTuto2"/>                     
+        <start uid="myRenderingTuto3"/>                     
         
         <stop uid="myRenderingTuto3"/>
         <stop uid="myRenderingTuto2"/>

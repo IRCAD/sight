@@ -15,45 +15,45 @@
 
 int main(int argc, char **argv)
 {
-	if (argc!=3)
-	{
-		std::cout << "Transform a Trian to an VTK Mesh\nUsage " << *argv << "input.trian output.vtk";
-		return 0;
-	}
+    if (argc!=3)
+    {
+        std::cout << "Transform a Trian to an VTK Mesh\nUsage " << *argv << "input.trian output.vtk";
+        return 0;
+    }
 
-	try
-	{
-	char *trianFile=argv[1];
-	char *vtkMesh=argv[2];
+    try
+    {
+    char *trianFile=argv[1];
+    char *vtkMesh=argv[2];
 
-	namespace fs = boost::filesystem;
+    namespace fs = boost::filesystem;
 
-	fs::path trianPath(trianFile);
-	fs::path meshPath(vtkMesh);
+    fs::path trianPath(trianFile);
+    fs::path meshPath(vtkMesh);
 
 
-	::fwData::TriangularMesh::sptr trian= ::fwTools::Factory::New< ::fwData::TriangularMesh>();
-	assert(trian);
-	::fwDataIO::reader::TriangularMeshReader trianReader;
-	trianReader.setObject(trian);
-	trianReader.setFile(trianPath.string());
-	trianReader.read();
+    ::fwData::TriangularMesh::sptr trian= ::fwTools::Factory::New< ::fwData::TriangularMesh>();
+    assert(trian);
+    ::fwDataIO::reader::TriangularMeshReader trianReader;
+    trianReader.setObject(trian);
+    trianReader.setFile(trianPath.string());
+    trianReader.read();
 
-	assert( trian->points().size() );
+    assert( trian->points().size() );
 
-	vtkPolyData *mesh = ::vtkIO::toVTKMesh( trian );
+    vtkPolyData *mesh = ::vtkIO::toVTKMesh( trian );
 
-	vtkPolyDataWriter* wri = vtkPolyDataWriter::New();
-	wri->SetFileTypeToBinary();
-	wri->SetInput(0,mesh);
-	wri->SetFileName(meshPath.string().c_str());
-	wri->Write();
-	}
-	catch (std::exception &e)
-	{
-		std::cerr << argv[0] << "  Fail " << e.what();
-	}
+    vtkPolyDataWriter* wri = vtkPolyDataWriter::New();
+    wri->SetFileTypeToBinary();
+    wri->SetInput(0,mesh);
+    wri->SetFileName(meshPath.string().c_str());
+    wri->Write();
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << argv[0] << "  Fail " << e.what();
+    }
 
-	return 0;
+    return 0;
 
 }

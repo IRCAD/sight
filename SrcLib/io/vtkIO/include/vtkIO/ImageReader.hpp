@@ -22,35 +22,35 @@ namespace vtkIO
 {
 
 /**
- * @brief	Read an image.
- * @class	ImageReader.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   Read an image.
+ * @class   ImageReader.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  *
  * Read a VTK Image using the VTK lib
  */
 class ImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
-							 public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
-							 public ::fwTools::ProgressAdviser
+                             public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
+                             public ::fwTools::ProgressAdviser
 {
 
 public :
 
-	fwCoreClassDefinitionsWithFactoryMacro( 	(ImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >::Baseclass),
-													 (()),
-													 new  ImageReader
-												);
+    fwCoreClassDefinitionsWithFactoryMacro(     (ImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >::Baseclass),
+                                                     (()),
+                                                     new  ImageReader
+                                                );
 
 
 
-	//! @brief Constructor.
-	VTKIO_API ImageReader();
+    //! @brief Constructor.
+    VTKIO_API ImageReader();
 
-	//! @brief Destructor.
-	VTKIO_API ~ImageReader();
+    //! @brief Destructor.
+    VTKIO_API ~ImageReader();
 
-	//! @brief Reading operator.
-	VTKIO_API void read();
+    //! @brief Reading operator.
+    VTKIO_API void read();
 
 };
 

@@ -18,20 +18,20 @@ namespace fwData
 
 Color::Color ()
 {
-	SLM_TRACE("::fwData::Color()");
-	m_vRGBA[0] = 1.0;
-	m_vRGBA[1] = 1.0;
-	m_vRGBA[2] = 1.0;
-	m_vRGBA[3] = 1.0;
+    SLM_TRACE("::fwData::Color()");
+    m_vRGBA[0] = 1.0;
+    m_vRGBA[1] = 1.0;
+    m_vRGBA[2] = 1.0;
+    m_vRGBA[3] = 1.0;
 }
 
 Color::Color(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)
 {
-	SLM_TRACE("::fwData::Color(float red, float green, float blue, float alpha)");
-	m_vRGBA[0] = red;
-	m_vRGBA[1] = green;
-	m_vRGBA[2] = blue;
-	m_vRGBA[3] = alpha;
+    SLM_TRACE("::fwData::Color(float red, float green, float blue, float alpha)");
+    m_vRGBA[0] = red;
+    m_vRGBA[1] = green;
+    m_vRGBA[2] = blue;
+    m_vRGBA[3] = alpha;
 }
 
 
@@ -39,56 +39,56 @@ Color::Color(Color::ColorType red, Color::ColorType green, Color::ColorType blue
 
 Color::~Color ()
 {
-	SLM_TRACE("::fwData::~Color()");
+    SLM_TRACE("::fwData::~Color()");
 }
 
 //------------------------------------------------------------------------------
 
 Color::sptr Color::clone() const
 {
-	Color::NewSptr pNewColor;
+    Color::NewSptr pNewColor;
 
-	// Copy encoding
-	pNewColor->m_vRGBA = this->m_vRGBA;
+    // Copy encoding
+    pNewColor->m_vRGBA = this->m_vRGBA;
 
-	return pNewColor;
+    return pNewColor;
 }
 
 //------------------------------------------------------------------------------
 
 void Color::setRGBA( const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha )
 {
-	m_vRGBA[0] = red;
-	m_vRGBA[1] = green;
-	m_vRGBA[2] = blue;
-	m_vRGBA[3] = alpha;
+    m_vRGBA[0] = red;
+    m_vRGBA[1] = green;
+    m_vRGBA[2] = blue;
+    m_vRGBA[3] = alpha;
 }
 
 //------------------------------------------------------------------------------
 
 void Color::setRGBA( std::string  hexaColor )
 {
-	OSLM_ASSERT(
+    OSLM_ASSERT(
             "Color string should start with '#' and followed by 6 ou 8 "
             "hexadecimal digits. Given color : " << hexaColor ,
             hexaColor[0] == '#'
                 && ( hexaColor.length() == 7 || hexaColor.length() == 9)
             );
 
-	std::string redString = hexaColor.substr(1, 2);
-	std::string greenString = hexaColor.substr(3, 2);
-	std::string blueString = hexaColor.substr(5, 2);
-	int r,g,b, a = 255; 
+    std::string redString = hexaColor.substr(1, 2);
+    std::string greenString = hexaColor.substr(3, 2);
+    std::string blueString = hexaColor.substr(5, 2);
+    int r,g,b, a = 255; 
 
-	std::istringstream iss;
-	iss.str (redString);
-	iss >> std::hex >> r;
-	iss.clear();
-	iss.str (greenString);
-	iss >> std::hex >> g;
-	iss.clear();
-	iss.str (blueString);
-	iss >> std::hex >> b;
+    std::istringstream iss;
+    iss.str (redString);
+    iss >> std::hex >> r;
+    iss.clear();
+    iss.str (greenString);
+    iss >> std::hex >> g;
+    iss.clear();
+    iss.str (blueString);
+    iss >> std::hex >> b;
 
     if (hexaColor.length() == 9)
     {
@@ -98,7 +98,7 @@ void Color::setRGBA( std::string  hexaColor )
         iss >> std::hex >> a;
     }
 
-	this->setRGBA(r/255.0, g/255.0, b/255.0, a/255.0);
+    this->setRGBA(r/255.0, g/255.0, b/255.0, a/255.0);
 
 }
 
@@ -106,37 +106,37 @@ void Color::setRGBA( std::string  hexaColor )
 
 Color::ColorType  &Color::red()
 {
-	return m_vRGBA[0];
+    return m_vRGBA[0];
 }
 Color::ColorType  &Color::green()
 {
-	return m_vRGBA[1];
+    return m_vRGBA[1];
 }
 Color::ColorType  &Color::blue()
 {
-	return m_vRGBA[2];
+    return m_vRGBA[2];
 }
 Color::ColorType  &Color::alpha()
 {
-	return m_vRGBA[3];
+    return m_vRGBA[3];
 }
 
 
 const Color::ColorType  &Color::red() const
 {
-	return m_vRGBA[0];
+    return m_vRGBA[0];
 }
 const Color::ColorType  &Color::green() const
 {
-	return m_vRGBA[1];
+    return m_vRGBA[1];
 }
 const Color::ColorType  &Color::blue() const
 {
-	return m_vRGBA[2];
+    return m_vRGBA[2];
 }
 const Color::ColorType  &Color::alpha() const
 {
-	return m_vRGBA[3];
+    return m_vRGBA[3];
 }
 
 //------------------------------------------------------------------------------

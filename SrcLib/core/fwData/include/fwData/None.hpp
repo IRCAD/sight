@@ -16,22 +16,22 @@
 namespace fwData
 {
 /**
- * @class 	None
- * @brief 	This class represent the absence of data.
+ * @class   None
+ * @brief   This class represent the absence of data.
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API None : public Object
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< None >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< None >) ;
 
-	/// Constructor
-	FWDATA_API None();
-	/// Destructor
-	FWDATA_API virtual ~None();
+    /// Constructor
+    FWDATA_API None();
+    /// Destructor
+    FWDATA_API virtual ~None();
 
     FWDATA_API static bool isNone(::fwData::Object::sptr object);
 }; // end class None

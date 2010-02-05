@@ -27,26 +27,26 @@ namespace fwServices
 
 void erase( ::fwTools::Object::sptr obj , std::string serviceId , unsigned int _index )
 {
-	::fwServices::IService::sptr service = ::fwServices::get( obj , serviceId , _index ) ;
-	OSR::unregisterService( service ) ;
+    ::fwServices::IService::sptr service = ::fwServices::get( obj , serviceId , _index ) ;
+    OSR::unregisterService( service ) ;
 }
 void erase( ::fwServices::IService::sptr service )
 {
-	OSR::unregisterService( service ) ;
+    OSR::unregisterService( service ) ;
 }
 void eraseServices( ::fwTools::Object::sptr obj , std::string serviceId )
 {
-	std::vector< ::fwServices::IService::sptr > services = ::fwServices::getServices( obj , serviceId ) ;
-	for( std::vector< ::fwServices::IService::sptr >::iterator iter = services.begin() ; iter != services.end() ; ++iter )
-	{
-		OSLM_INFO("eraseServices  : serviceId " << *iter );
-		OSR::unregisterService( *iter ) ;
-	}
+    std::vector< ::fwServices::IService::sptr > services = ::fwServices::getServices( obj , serviceId ) ;
+    for( std::vector< ::fwServices::IService::sptr >::iterator iter = services.begin() ; iter != services.end() ; ++iter )
+    {
+        OSLM_INFO("eraseServices  : serviceId " << *iter );
+        OSR::unregisterService( *iter ) ;
+    }
 }
 
 void clear( ::fwTools::Object::sptr obj )
 {
-	OSR::unregisterServices( obj ) ;
+    OSR::unregisterServices( obj ) ;
 }
 
 

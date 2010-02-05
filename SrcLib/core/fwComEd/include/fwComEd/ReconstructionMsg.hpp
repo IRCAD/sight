@@ -16,35 +16,35 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object event message specialized for reconstruction : store modification information
- * @class 	ReconstructionMsg
+ * @brief   Object event message specialized for reconstruction : store modification information
+ * @class   ReconstructionMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API ReconstructionMsg : public ::fwServices::ObjectMsg
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro((ReconstructionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ReconstructionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ReconstructionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ReconstructionMsg );
 
-	/**
-	 * @name Event identifier
-	 */
-	/// @{
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string MESH;
-	FWCOMED_API static std::string VISIBILITY;
-	/// @}
+    /**
+     * @name Event identifier
+     */
+    /// @{
+    /// Event identifier used to inform for modification
+    FWCOMED_API static std::string MESH;
+    FWCOMED_API static std::string VISIBILITY;
+    /// @}
 
-	/**
-	 * @brief 	Constructor : do nothing.
-	 */
-	FWCOMED_API ReconstructionMsg() throw();
+    /**
+     * @brief   Constructor : do nothing.
+     */
+    FWCOMED_API ReconstructionMsg() throw();
 
-	/**
-	 * @brief	Destuctor : do nothing.
-	 */
-	FWCOMED_API virtual ~ReconstructionMsg() throw();
+    /**
+     * @brief   Destuctor : do nothing.
+     */
+    FWCOMED_API virtual ~ReconstructionMsg() throw();
 
 };
 

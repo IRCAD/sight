@@ -13,11 +13,11 @@ namespace fwWX
 {
 wxString std2wx( const std::string & value )
 {
-	return wxString( value.c_str() , wxConvUTF8 );
+    return wxString( value.c_str() , wxConvUTF8 );
 }
 
 std::string wx2std( const wxString & value )
 {
-	return (const char*)value.mb_str(wxConvUTF8);
+    return (const char*)value.mb_str(wxConvUTF8);
 }
 }

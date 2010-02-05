@@ -18,8 +18,8 @@
 
 
 /**
- * @namespace	fwComEd
- * @brief		This namespace contains the classes used in communication edition.
+ * @namespace   fwComEd
+ * @brief       This namespace contains the classes used in communication edition.
  * @author      IRCAD (Research and Development Team).
  * @date        2009.
  *
@@ -44,17 +44,17 @@ extern FWCOMED_API const std::string defaultCallbackId;
  *                   callback.
  */
 #define BEGIN_CALLBACK( name, fieldId, clientType )                     \
-	struct name : public fwComEd::ICallbackFilter< clientType >         \
-	{                                                                   \
-		name() throw() {}                                               \
-		virtual ~name() throw() {}                                      \
-		virtual void operator()(                                        \
-			boost::shared_ptr< const fwServices::ObjectMsg > message,   \
-			void* rawClient ) throw( fwTools::Failed )                  \
-		{                                                               \
-			clientType* const client =                                  \
-				reinterpret_cast< clientType* >( rawClient );           \
-			assert( client );
+    struct name : public fwComEd::ICallbackFilter< clientType >         \
+    {                                                                   \
+        name() throw() {}                                               \
+        virtual ~name() throw() {}                                      \
+        virtual void operator()(                                        \
+            boost::shared_ptr< const fwServices::ObjectMsg > message,   \
+            void* rawClient ) throw( fwTools::Failed )                  \
+        {                                                               \
+            clientType* const client =                                  \
+                reinterpret_cast< clientType* >( rawClient );           \
+            assert( client );
 
 /**
  * @brief Macro to call after the callback contents.
@@ -65,10 +65,10 @@ extern FWCOMED_API const std::string defaultCallbackId;
  *                   callback.
  */
 #define END_CALLBACK( name, fieldId, clientType )                  \
-		}                                                          \
-	};                                                             \
-	REGISTER_BINDING( fwComEd::ICallbackFilter< clientType >, \
-	                  name, std::string, fieldId )
+        }                                                          \
+    };                                                             \
+    REGISTER_BINDING( fwComEd::ICallbackFilter< clientType >, \
+                      name, std::string, fieldId )
 
 /**
  * @brief Macro to call inside the callback contents to retrieve a field.
@@ -76,8 +76,8 @@ extern FWCOMED_API const std::string defaultCallbackId;
  * @author Benjamin Gaillard
  */
 #define CALLBACK_GET_FIELD( fieldId )                    \
-	boost::dynamic_pointer_cast< ::fwTools::Field >(          \
-		message->m_modifiedObject->getField( fieldId ) )
+    boost::dynamic_pointer_cast< ::fwTools::Field >(          \
+        message->m_modifiedObject->getField( fieldId ) )
 
 /**
  * @brief Build a unique callback name from the client class name.
@@ -85,7 +85,7 @@ extern FWCOMED_API const std::string defaultCallbackId;
  * @note Internal use only!
  */
 #define _MAKE_CALLBACK_NAME( clientClass ) \
-	BOOST_PP_CAT( _ ## clientClass ## _Callback_, __LINE__ )
+    BOOST_PP_CAT( _ ## clientClass ## _Callback_, __LINE__ )
 
 /**
  * @brief "Register" a method to be called as a callback method with the message
@@ -105,9 +105,9 @@ extern FWCOMED_API const std::string defaultCallbackId;
  * @param clientMethod The method name.
  */
 #define REGISTER_CALLBACK( fieldId, clientClass, clientMethod )                \
-	BEGIN_CALLBACK( _MAKE_CALLBACK_NAME( clientClass ), fieldId, clientClass ) \
-		client->clientMethod( message );                                       \
-	END_CALLBACK  ( _MAKE_CALLBACK_NAME( clientClass ), fieldId, clientClass )
+    BEGIN_CALLBACK( _MAKE_CALLBACK_NAME( clientClass ), fieldId, clientClass ) \
+        client->clientMethod( message );                                       \
+    END_CALLBACK  ( _MAKE_CALLBACK_NAME( clientClass ), fieldId, clientClass )
 
 /**
  * @brief "Register" a default callback method.
@@ -123,7 +123,7 @@ extern FWCOMED_API const std::string defaultCallbackId;
  * @see REGISTER_CALLBACK
  */
 #define REGISTER_DEFAULT_CALLBACK( clientClass, clientMethod) \
-	REGISTER_CALLBACK( ::fwComEd::defaultCallbackId, clientClass, clientMethod )
+    REGISTER_CALLBACK( ::fwComEd::defaultCallbackId, clientClass, clientMethod )
 
 } // namespace fwComEd
 

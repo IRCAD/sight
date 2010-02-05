@@ -17,41 +17,41 @@ namespace fwData
 {
 
 /**
- * @class 	Region
- * @brief 	Defines region, including origin and size
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class   Region
+ * @brief   Defines region, including origin and size
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API Region : public Object
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (Region)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Region >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Region)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Region >) ;
 
-	/// Constructor
-	FWDATA_API	Region();
+    /// Constructor
+    FWDATA_API  Region();
 
-	/**
-	 * @brief Constructor with specified dimension
-	 * @param[in] _dim dimension of the region
-	 */
-	FWDATA_API	Region(boost::uint8_t  _dim);
+    /**
+     * @brief Constructor with specified dimension
+     * @param[in] _dim dimension of the region
+     */
+    FWDATA_API  Region(boost::uint8_t  _dim);
 
-	/**
-	 * @brief Destructor
-	 */
-	FWDATA_API	virtual ~Region();
+    /**
+     * @brief Destructor
+     */
+    FWDATA_API  virtual ~Region();
 
-	fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the region origin);
+    fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the region origin);
 
-	fwGettersSettersDocMacro(Size, vSize, std::vector< ::boost::int32_t >, the region size);
+    fwGettersSettersDocMacro(Size, vSize, std::vector< ::boost::int32_t >, the region size);
 
 protected:
 
-	//! Origin of the region
-	std::vector<double> m_vOrigin;
+    //! Origin of the region
+    std::vector<double> m_vOrigin;
 
-	//! Size of the region (in terms of points)
-	std::vector<boost::int32_t>  m_vSize;
+    //! Size of the region (in terms of points)
+    std::vector<boost::int32_t>  m_vSize;
 
 };
 

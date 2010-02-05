@@ -16,31 +16,31 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object message specialized for Spline : store modification information
- * @class 	SplineMsg
+ * @brief   Object message specialized for Spline : store modification information
+ * @class   SplineMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API SplineMsg : public fwServices::ObjectMsg
 {
 
 public:
 
-	fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new SplineMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new SplineMsg );
 
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string NEW_SPLINE;
+    /// Event identifier used to inform for modification
+    FWCOMED_API static std::string NEW_SPLINE;
 
-	/**
-	 * @brief	Constructor : do nothing.
-	 */
-	FWCOMED_API SplineMsg() throw();
+    /**
+     * @brief   Constructor : do nothing.
+     */
+    FWCOMED_API SplineMsg() throw();
 
-	/**
-	 * @brief	Destuctor : do nothing.
-	 */
-	FWCOMED_API virtual ~SplineMsg() throw();
+    /**
+     * @brief   Destuctor : do nothing.
+     */
+    FWCOMED_API virtual ~SplineMsg() throw();
 
 };
 

@@ -28,51 +28,51 @@ struct Runtime;
 
 
 /**
- * @brief	Defines the base executable interface.
- * @struct 	IExecutable
+ * @brief   Defines the base executable interface.
+ * @struct  IExecutable
  *
  * An executable object is an instance created by an extension
  * point of a plugin.
  *
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @date    2004-2009
+ * @author  IRCAD (Research and Development Team).
  */
 struct FWRUNTIME_CLASS_API IExecutable
 {
-	friend struct Runtime;
+    friend struct Runtime;
 
 
-	/**
-	 * @brief	Destructor : does nothing.
-	 */
-	FWRUNTIME_API virtual ~IExecutable();
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    FWRUNTIME_API virtual ~IExecutable();
 
 
-	/**
-	 * @brief	Retrieves the bundle the executable originates from.
-	 *
-	 * @return	a pointer to the originating bundle.
-	 */
-	virtual ::boost::shared_ptr<Bundle> getBundle() const throw() = 0;
+    /**
+     * @brief   Retrieves the bundle the executable originates from.
+     *
+     * @return  a pointer to the originating bundle.
+     */
+    virtual ::boost::shared_ptr<Bundle> getBundle() const throw() = 0;
 
-	/**
-	 * @brief		Initializes the executable instance with the specified
-	 * 				configuration element.
-	 *
-	 * @param[in]	configuration	a shared pointer to the configuration element used to
-	 * 				trigger this execution
-	 */
-	virtual void setInitializationData( const ::boost::shared_ptr<ConfigurationElement> configuration ) throw() = 0;
+    /**
+     * @brief       Initializes the executable instance with the specified
+     *              configuration element.
+     *
+     * @param[in]   configuration   a shared pointer to the configuration element used to
+     *              trigger this execution
+     */
+    virtual void setInitializationData( const ::boost::shared_ptr<ConfigurationElement> configuration ) throw() = 0;
 
 
 protected:
 
-	/**
-	 * @brief		Updates the bundle the executable originates from.
-	 *
-	 * @param[in]	bundle	a pointer to the bundle the executable originates from
-	 */
-	virtual void setBundle( ::boost::shared_ptr< Bundle > bundle ) = 0;
+    /**
+     * @brief       Updates the bundle the executable originates from.
+     *
+     * @param[in]   bundle  a pointer to the bundle the executable originates from
+     */
+    virtual void setBundle( ::boost::shared_ptr< Bundle > bundle ) = 0;
 
 };
 

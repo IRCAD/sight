@@ -21,24 +21,24 @@ namespace widgets
 //------------------------------------------------------------------------------
 
 HTMLPanel::HTMLPanel(wxWindow *parent, const std::string& _url, const wxSize size) :
-	wxPanel(parent, wxID_ANY, wxDefaultPosition, size)
+    wxPanel(parent, wxID_ANY, wxDefaultPosition, size)
 {
 #ifdef _WIN32
-	//TODO fixme explicit reload HTML parser for win
-	wxInitialize();
+    //TODO fixme explicit reload HTML parser for win
+    wxInitialize();
 #endif
-	wxFileSystem::AddHandler(new wxInternetFSHandler);
+    wxFileSystem::AddHandler(new wxInternetFSHandler);
 
-	// File
-	::boost::filesystem::path htmlPath (_url);
-	wxString file ( wxConvertMB2WX(htmlPath.string().c_str() ) );
+    // File
+    ::boost::filesystem::path htmlPath (_url);
+    wxString file ( wxConvertMB2WX(htmlPath.string().c_str() ) );
 
-	// wxHtmlWindow
-	m_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, size, wxHW_SCROLLBAR_NEVER);
-	m_html->SetBorders(10);
-	m_html->LoadPage(file);
-	m_html->SetSize(m_html->GetInternalRepresentation()->GetWidth(),
-				m_html->GetInternalRepresentation()->GetHeight());
+    // wxHtmlWindow
+    m_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, size, wxHW_SCROLLBAR_NEVER);
+    m_html->SetBorders(10);
+    m_html->LoadPage(file);
+    m_html->SetSize(m_html->GetInternalRepresentation()->GetWidth(),
+                m_html->GetInternalRepresentation()->GetHeight());
 
 }
 
@@ -64,7 +64,7 @@ void HTMLPanel::back()
 {
     if (!m_html->HistoryBack())
     {
-    	SLM_TRACE("You reached prehistory era");
+        SLM_TRACE("You reached prehistory era");
     }
 }
 
@@ -78,26 +78,26 @@ void HTMLPanel::forward()
 
 void HTMLPanel::OnHtmlLinkClicked(wxHtmlLinkEvent &event)
 {
-	//OSLM_TRACE("The url "<< event.GetLinkInfo().GetHref().c_str() <<" has been clicked");
-	wxString url ( wxConvertMB2WX(event.GetLinkInfo().GetHref().c_str() ) );
+    //OSLM_TRACE("The url "<< event.GetLinkInfo().GetHref().c_str() <<" has been clicked");
+    wxString url ( wxConvertMB2WX(event.GetLinkInfo().GetHref().c_str() ) );
     // skipping this event the default behaviour (load the clicked URL)
     // will happen...
-	wxLaunchDefaultBrowser(url);
+    wxLaunchDefaultBrowser(url);
 //    event.Skip();
 }
 
 void HTMLPanel::OnHtmlCellHover(wxHtmlCellEvent &event)
 {
-	OSLM_TRACE("Mouse moved over cell " << event.GetCell()
-			<< "-" << event.GetPoint().x
-			<< "-" << event.GetPoint().y);
+    OSLM_TRACE("Mouse moved over cell " << event.GetCell()
+            << "-" << event.GetPoint().x
+            << "-" << event.GetPoint().y);
 }
 
 void HTMLPanel::OnHtmlCellClicked(wxHtmlCellEvent &event)
 {
-	OSLM_TRACE("Click over cell " << event.GetCell()
-    		<< "-" << event.GetPoint().x
-    		<< "-" << event.GetPoint().y);
+    OSLM_TRACE("Click over cell " << event.GetCell()
+            << "-" << event.GetPoint().x
+            << "-" << event.GetPoint().y);
 
     // if we don't skip the event, OnHtmlLinkClicked won't be called!
     event.Skip();

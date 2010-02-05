@@ -22,33 +22,33 @@ namespace vtkIO
 {
 
 /**
- * @brief	Write an image.
- * @class	ImageWriter.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   Write an image.
+ * @class   ImageWriter.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  *
  * Write a VTK Image using the VTK lib
  */
 class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-							 public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
-							 public ::fwTools::ProgressAdviser
+                             public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
+                             public ::fwTools::ProgressAdviser
 {
 
 public :
 
-	fwCoreClassDefinitionsWithFactoryMacro( 	(ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >::Baseclass),
-													 (()),
-													 new  ImageWriter
-												);
+    fwCoreClassDefinitionsWithFactoryMacro(     (ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >::Baseclass),
+                                                     (()),
+                                                     new  ImageWriter
+                                                );
 
-	//! @brief Constructor.
-	VTKIO_API ImageWriter();
+    //! @brief Constructor.
+    VTKIO_API ImageWriter();
 
-	//! @brief Destructor.
-	VTKIO_API ~ImageWriter();
+    //! @brief Destructor.
+    VTKIO_API ~ImageWriter();
 
-	//! @brief Writing operator.
-	VTKIO_API void write();
+    //! @brief Writing operator.
+    VTKIO_API void write();
 };
 
 } // namespace vtkIO

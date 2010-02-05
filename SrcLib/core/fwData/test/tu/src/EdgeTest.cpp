@@ -20,28 +20,28 @@ CPPUNIT_TEST_SUITE_REGISTRATION( EdgeTest );
 
 void EdgeTest::setUp()
 {
-	// Set up context before running a test.
+    // Set up context before running a test.
 
 }
 void EdgeTest::tearDown()
 {
-	// Clean up after the test run.
+    // Clean up after the test run.
 }
 
 void EdgeTest::methode1()
 {
-	//-----------test values
-	const std::string STR1 = "toto";
-	const std::string STR2 = "titi";
-	const std::string STR3 = ::fwData::Edge::NATURE_FLOW;
-	::fwData::Edge::NewSptr edge;
+    //-----------test values
+    const std::string STR1 = "toto";
+    const std::string STR2 = "titi";
+    const std::string STR3 = ::fwData::Edge::NATURE_FLOW;
+    ::fwData::Edge::NewSptr edge;
 
-	edge->setIdentifiers(STR1, STR2);
-	edge->setNature(STR3);
+    edge->setIdentifiers(STR1, STR2);
+    edge->setNature(STR3);
 
-	CPPUNIT_ASSERT_EQUAL(edge->getFromPortID(), STR1);
-	CPPUNIT_ASSERT_EQUAL(edge->getToPortID(), STR2);
-	CPPUNIT_ASSERT_EQUAL(edge->getNature(), STR3);
+    CPPUNIT_ASSERT_EQUAL(edge->getFromPortID(), STR1);
+    CPPUNIT_ASSERT_EQUAL(edge->getToPortID(), STR2);
+    CPPUNIT_ASSERT_EQUAL(edge->getNature(), STR3);
 }
 
 

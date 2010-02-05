@@ -17,7 +17,7 @@
 #include "fwDataIO/writer/GenericObjectWriter.hpp"
 
 namespace fwData {
-	class TriangularMesh;
+    class TriangularMesh;
 }
 
 namespace fwDataIO
@@ -27,10 +27,10 @@ namespace writer
 {
 
 /**
- * @brief	Mesh writer. Write file format .trian
- * @class	TriangularMeshWriter.
- * @author	IRCAD (Research and Development Team).
- * @date	2009
+ * @brief   Mesh writer. Write file format .trian
+ * @class   TriangularMeshWriter.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009
  *
  * Ircad writer to write a ::fwData::TriangularMesh on filesystem which the file format
  * is .trian. This format is basic. This is an ascii file which contains : 1) nb of points
@@ -38,23 +38,23 @@ namespace writer
  * 4) list of triangles with index of points and normals ( often set a -1 )
  */
 class FWDATAIO_CLASS_API TriangularMeshWriter :
-	public GenericObjectWriter< ::fwData::TriangularMesh>,
-	public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public GenericObjectWriter< ::fwData::TriangularMesh>,
+    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public :
 
-	/// Constructor. Do nothing.
-	FWDATAIO_API TriangularMeshWriter( );
+    /// Constructor. Do nothing.
+    FWDATAIO_API TriangularMeshWriter( );
 
-	/// Destructor. Do nothing.
-	FWDATAIO_API virtual ~TriangularMeshWriter();
+    /// Destructor. Do nothing.
+    FWDATAIO_API virtual ~TriangularMeshWriter();
 
-	/// Write the file with standard iostream API.
-	FWDATAIO_API virtual void write();
+    /// Write the file with standard iostream API.
+    FWDATAIO_API virtual void write();
 
-	/// Defines extension supported by this reader ".trian"
-	FWDATAIO_API virtual std::string  extension();
+    /// Defines extension supported by this reader ".trian"
+    FWDATAIO_API virtual std::string  extension();
 
 };
 

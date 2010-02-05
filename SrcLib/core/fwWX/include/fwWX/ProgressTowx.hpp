@@ -19,25 +19,25 @@ class wxProgressDialog;
 namespace fwWX {
 
 /**
- * @brief	This class allows us to select an acquisition in a patient data base.
- * @class	ProgressTowx.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   This class allows us to select an acquisition in a patient data base.
+ * @class   ProgressTowx.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  * @note Do not inherit from wxProgressDialog but embedded a wxProgressDialog because this lasted is not copiable.
  * @todo ProgressTowx is not commented.
  */
 class FWWX_CLASS_API ProgressTowx : public ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
 {
 public:
-	FWWX_API ProgressTowx(std::string title, std::string message= std::string(86,' '));
+    FWWX_API ProgressTowx(std::string title, std::string message= std::string(86,' '));
 
-	FWWX_API virtual ~ProgressTowx();
+    FWWX_API virtual ~ProgressTowx();
 
-	FWWX_API void operator()(float percent,std::string msg);
+    FWWX_API void operator()(float percent,std::string msg);
 
 protected :
 
-	::boost::shared_ptr< wxProgressDialog>  m_pdialog;
+    ::boost::shared_ptr< wxProgressDialog>  m_pdialog;
 
 };
 

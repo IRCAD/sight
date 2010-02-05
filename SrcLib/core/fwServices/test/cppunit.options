@@ -1,8 +1,8 @@
 CLASSTEST=[
-	'ObjectMsgTest',
-	'ServiceTest',
-	]
+    'ObjectMsgTest',
+    'ServiceTest',
+    ]
 
 USE = ['boost']
-LIB	= ['fwTools_0-1','fwCore_0-1','fwRuntime_0-3','fwData_0-1','fwServices_0-1']
+LIB = ['fwTools_0-1','fwCore_0-1','fwRuntime_0-3','fwData_0-1','fwServices_0-1']
 CONSOLE='yes'

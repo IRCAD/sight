@@ -17,69 +17,69 @@ namespace codeGenerator
 //------------------------------------------------------------------------------
 
 //  A
-//	std::string _sBirthdate;
-//	ar &  boost::serialization::make_nvp( "Birthdate" , _sBirthdate );
-//	_patient.setBirthdate(_sBirthdate);
+//  std::string _sBirthdate;
+//  ar &  boost::serialization::make_nvp( "Birthdate" , _sBirthdate );
+//  _patient.setBirthdate(_sBirthdate);
 void generateLoadTypeA( const std::string & field, const std::string & type, const std::string & parameterName )
 {
-	std::string methodName = fieldToMethodName( field );
-	std::cout << "ar &  boost::serialization::make_nvp( \"";
-	std::cout << methodName << "\" , " << parameterName << ".get" <<  methodName;
-	std::cout << "() );" << std::endl;
+    std::string methodName = fieldToMethodName( field );
+    std::cout << "ar &  boost::serialization::make_nvp( \"";
+    std::cout << methodName << "\" , " << parameterName << ".get" <<  methodName;
+    std::cout << "() );" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
 //  B
-//	std::string _sBirthdate;
-//	ar &  boost::serialization::make_nvp( "Birthdate" , _sBirthdate );
-//	_patient.setCRefBirthdate(_sBirthdate);
+//  std::string _sBirthdate;
+//  ar &  boost::serialization::make_nvp( "Birthdate" , _sBirthdate );
+//  _patient.setCRefBirthdate(_sBirthdate);
 void generateLoadTypeB( const std::string & field, const std::string & type, const std::string & parameterName )
 {
-	std::string methodName = fieldToMethodName( field );
-	std::cout << "ar &  boost::serialization::make_nvp( \"";
-	std::cout << methodName << "\" , " << parameterName << ".getRef" <<  methodName;
-	std::cout << "() );" << std::endl;
+    std::string methodName = fieldToMethodName( field );
+    std::cout << "ar &  boost::serialization::make_nvp( \"";
+    std::cout << methodName << "\" , " << parameterName << ".getRef" <<  methodName;
+    std::cout << "() );" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
 void generateLoad( const std::string & field, const std::string & type, const std::string & parameterName)
 {
-	if ( isASharedPtr(type) )
-	{
-		generateLoadTypeA( field, type, parameterName );
-	}
-	else if ( isAnObject(type) || isAContainair(type) )
-	{
-		generateLoadTypeB( field, type, parameterName );
-	}
-	else
-	{
-		generateLoadTypeB( field, type, parameterName );
-	}
+    if ( isASharedPtr(type) )
+    {
+        generateLoadTypeA( field, type, parameterName );
+    }
+    else if ( isAnObject(type) || isAContainair(type) )
+    {
+        generateLoadTypeB( field, type, parameterName );
+    }
+    else
+    {
+        generateLoadTypeB( field, type, parameterName );
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void generateLoad( const std::vector< std::pair< std::string, std::string > > & fieldAndType, const std::string & parameterName )
 {
-	
-	for( 	std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
-			field != fieldAndType.end();
-			field ++ )
-	{
-		std::string name = field->first;
-		std::string type = field->second;
-	
-		generateLoad(name,type,parameterName);
-		
-	}
+    
+    for(    std::vector < std::pair < std::string, std::string > >::const_iterator field = fieldAndType.begin();
+            field != fieldAndType.end();
+            field ++ )
+    {
+        std::string name = field->first;
+        std::string type = field->second;
+    
+        generateLoad(name,type,parameterName);
+        
+    }
 
 }
 
 //------------------------------------------------------------------------------
-	
+    
 } // codeGenerator
 
 

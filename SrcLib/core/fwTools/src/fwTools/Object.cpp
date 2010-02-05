@@ -19,17 +19,17 @@ REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwTools::Object, ::fwTools::O
 
 const std::string & getLabel(const ::fwTools::Object *obj)
 {
-	const Field *lobj = dynamic_cast< const fwTools::Field *>( obj );
-	assert( lobj );
-	return lobj->label();
+    const Field *lobj = dynamic_cast< const fwTools::Field *>( obj );
+    assert( lobj );
+    return lobj->label();
 }
 
 //------------------------------------------------------------------------------
 
 ::fwTools::Field::sptr castToField(::fwTools::Object::sptr obj)
 {
-	assert( fwTools::Field::dynamicCast(obj) );
-	return fwTools::Field::dynamicCast(obj);
+    assert( fwTools::Field::dynamicCast(obj) );
+    return fwTools::Field::dynamicCast(obj);
 }
 
 //------------------------------------------------------------------------------
@@ -54,14 +54,14 @@ Field::~Field()
 
 std::string & Field::label()
 {
-	return m_label;
+    return m_label;
 }
 
 //------------------------------------------------------------------------------
 
 const std::string & Field::label() const
 {
-	return m_label;
+    return m_label;
 }
 
 //------------------------------------------------------------------------------
@@ -71,74 +71,74 @@ Object::Object() :
     m_logicStamp( ::fwCore::LogicStamp::New() ),
     m_deleter( IDeleter::New() )
 {
-	// TODO Auto-generated constructor stub
-	assert( m_deleter.get() );
+    // TODO Auto-generated constructor stub
+    assert( m_deleter.get() );
 }
 
 //------------------------------------------------------------------------------
 
 Object::~Object()
 {
-	// TODO Auto-generated destructor stub
-	m_deleter->Delete( this ) ;
+    // TODO Auto-generated destructor stub
+    m_deleter->Delete( this ) ;
 }
 
 //------------------------------------------------------------------------------
 
 Object &Object::operator=(const Object &_obj)
 {
-	m_children =_obj.m_children;
-	m_timeStamp =_obj.m_timeStamp;
-	m_logicStamp =_obj.m_logicStamp;
-	return (*this);
+    m_children =_obj.m_children;
+    m_timeStamp =_obj.m_timeStamp;
+    m_logicStamp =_obj.m_logicStamp;
+    return (*this);
 }
 
 //------------------------------------------------------------------------------
 
 void Object::setDeleter( ::fwTools::IDeleter::sptr _deleter )
 {
-	m_deleter = _deleter ;
+    m_deleter = _deleter ;
 }
 
 //------------------------------------------------------------------------------
 
 ::fwTools::IDeleter::sptr Object::getDeleter()
 {
-	return m_deleter ;
+    return m_deleter ;
 }
 
 //------------------------------------------------------------------------------
 
 std::string Object::className() const
 {
-	return this->getClassname();
+    return this->getClassname();
 }
 
 //------------------------------------------------------------------------------
 
 std::string Object::getUUID() const
 {
-	if ( m_cachedSimpleUuid.empty() )
-	{
-		m_cachedSimpleUuid = UUID::get( Object::constCast(this->getConstSptr()),UUID::SIMPLE );
-	}
-	return m_cachedSimpleUuid;
+    if ( m_cachedSimpleUuid.empty() )
+    {
+        m_cachedSimpleUuid = UUID::get( Object::constCast(this->getConstSptr()),UUID::SIMPLE );
+    }
+    return m_cachedSimpleUuid;
 }
 
 //------------------------------------------------------------------------------
 
 bool Object::hasUUID() const
 {
-	return !m_cachedSimpleUuid.empty() || UUID::supervise( shared_from_this() );
+    return !m_cachedSimpleUuid.empty() || UUID::supervise( shared_from_this() );
 }
 
 //------------------------------------------------------------------------------
 
 void Object::setUUID(const std::string &newID)
 {
-	assert( hasUUID()== false );
-	assert( UUID::exist( newID , UUID::SIMPLE) == false );
-	UUID::impose( shared_from_this(), newID, UUID::SIMPLE );
+    assert( hasUUID()== false );
+    assert( UUID::exist( newID , UUID::SIMPLE) == false );
+    UUID::impose( shared_from_this(), newID, UUID::SIMPLE );
 }
 
 
@@ -146,19 +146,19 @@ void Object::setUUID(const std::string &newID)
 
 ::fwTools::Field::sptr Object::setField( const FieldID &fieldId )
 {
-	Field::sptr field = getField(fieldId);
+    Field::sptr field = getField(fieldId);
 
-	if ( field.get()==NULL )
-	{
-		fwTools::Field::NewSptr newfield(fieldId);
-		m_children.push_back( newfield );
-		return newfield ;
-	}
-	else
-	{
-		field->children().clear();
-		return field;
-	}
+    if ( field.get()==NULL )
+    {
+        fwTools::Field::NewSptr newfield(fieldId);
+        m_children.push_back( newfield );
+        return newfield ;
+    }
+    else
+    {
+        field->children().clear();
+        return field;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -166,17 +166,17 @@ void Object::setUUID(const std::string &newID)
 ::fwTools::Field::sptr Object::getField( const FieldID &fieldId )
 {
 
-	for ( ChildContainer::iterator f = m_children.begin() ;  f != m_children.end(); ++f )
-	{
-		::fwTools::Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
-//		assert( lobj );
-		if ( lobj && lobj->label() == fieldId )
-		{
-			return lobj;
-		}
-	}
+    for ( ChildContainer::iterator f = m_children.begin() ;  f != m_children.end(); ++f )
+    {
+        ::fwTools::Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
+//      assert( lobj );
+        if ( lobj && lobj->label() == fieldId )
+        {
+            return lobj;
+        }
+    }
 
-	return ::fwTools::Field::sptr();
+    return ::fwTools::Field::sptr();
 }
 
 //------------------------------------------------------------------------------
@@ -184,38 +184,38 @@ void Object::setUUID(const std::string &newID)
 ::fwTools::Field::csptr Object::getField( const FieldID &fieldId ) const
 {
 
-	for ( ChildContainer::const_iterator f = m_children.begin() ;  f != m_children.end(); ++f )
-	{
-		Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
-//		assert( lobj );
-		if ( lobj && lobj->label() == fieldId )
-		{
-			return lobj;
-		}
-	}
+    for ( ChildContainer::const_iterator f = m_children.begin() ;  f != m_children.end(); ++f )
+    {
+        Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
+//      assert( lobj );
+        if ( lobj && lobj->label() == fieldId )
+        {
+            return lobj;
+        }
+    }
 
-	return Field::sptr();
+    return Field::sptr();
 }
 
 //------------------------------------------------------------------------------
 
 ::fwTools::Field::sptr Object::getField( std::vector< std::string > _path , const FieldID &fieldId )
 {
-	Field::sptr _result ;
-	_result = this->getField(_path[0]) ;
-	if( !_result )
-	{
-		return _result ;
-	}
-	for(unsigned int i = 1 ; i < _path.size() ; ++i )
-	{
-		_result = _result->getField(_path[i]) ;
-		if( !_result )
-		{
-			return _result ;
-		}
-	}
-	return _result->getField(fieldId) ;
+    Field::sptr _result ;
+    _result = this->getField(_path[0]) ;
+    if( !_result )
+    {
+        return _result ;
+    }
+    for(unsigned int i = 1 ; i < _path.size() ; ++i )
+    {
+        _result = _result->getField(_path[i]) ;
+        if( !_result )
+        {
+            return _result ;
+        }
+    }
+    return _result->getField(fieldId) ;
 }
 
 
@@ -223,17 +223,17 @@ void Object::setUUID(const std::string &newID)
 
 void Object::removeField( const FieldID &fieldId )
 {
-	for ( ChildContainer::iterator f = m_children.begin() ;  f != m_children.end(); ++f )
-	{
-		::fwTools::Field::sptr field = ::fwTools::Field::dynamicCast( *f );
+    for ( ChildContainer::iterator f = m_children.begin() ;  f != m_children.end(); ++f )
+    {
+        ::fwTools::Field::sptr field = ::fwTools::Field::dynamicCast( *f );
 
-		if ( field && field->label() == fieldId )
-		{
-			m_children.erase(f);
-			// all sub field erased if not pointed
-			break;
-		}
-	}
+        if ( field && field->label() == fieldId )
+        {
+            m_children.erase(f);
+            // all sub field erased if not pointed
+            break;
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -243,23 +243,23 @@ void Object::removeField( const FieldID &fieldId )
 
 ::fwTools::Field::sptr Object::setFieldSingleElement( const FieldID &fieldId, ::fwTools::Object::sptr newSubObject )
 {
-	::fwTools::Field::sptr field = getField(fieldId);
-	if ( getField(fieldId) )
-	{
-		// field exist append newSubObject as *unique* element
-		assert( field->children().size() < 2 ); // change behavior of Field ?? many element -> one ?
-		field->children().clear();
-		field->children().push_back( newSubObject );
-		return field;
-	}
-	else
-	{
-		// field doesn no exist create it then append new element
-		fwTools::Field::NewSptr newfield(fieldId);
-		newfield->children().push_back(newSubObject);
-		m_children.push_back( newfield);
-		return newfield;
-	}
+    ::fwTools::Field::sptr field = getField(fieldId);
+    if ( getField(fieldId) )
+    {
+        // field exist append newSubObject as *unique* element
+        assert( field->children().size() < 2 ); // change behavior of Field ?? many element -> one ?
+        field->children().clear();
+        field->children().push_back( newSubObject );
+        return field;
+    }
+    else
+    {
+        // field doesn no exist create it then append new element
+        fwTools::Field::NewSptr newfield(fieldId);
+        newfield->children().push_back(newSubObject);
+        m_children.push_back( newfield);
+        return newfield;
+    }
 
 }
 
@@ -267,22 +267,22 @@ void Object::removeField( const FieldID &fieldId )
 
 ::fwTools::Field::sptr Object::addFieldElement( const FieldID &fieldId, ::fwTools::Object::sptr newSubObject )
 {
-	::fwTools::Field::sptr field = getField(fieldId);
+    ::fwTools::Field::sptr field = getField(fieldId);
 
-	if ( getField(fieldId) )
-	{
-		// field exist append newSubObject as new element
-		field->children().push_back( newSubObject );
-		return field;
-	}
-	else
-	{
-		// field doesn no exist create it then append new element
-		fwTools::Field::NewSptr newfield(fieldId);
-		newfield->children().push_back(newSubObject);
-		m_children.push_back( newfield);
-		return newfield;
-	}
+    if ( getField(fieldId) )
+    {
+        // field exist append newSubObject as new element
+        field->children().push_back( newSubObject );
+        return field;
+    }
+    else
+    {
+        // field doesn no exist create it then append new element
+        fwTools::Field::NewSptr newfield(fieldId);
+        newfield->children().push_back(newSubObject);
+        m_children.push_back( newfield);
+        return newfield;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -290,25 +290,25 @@ void Object::removeField( const FieldID &fieldId )
 
 void Object::removeFieldElement( const FieldID &fieldId, ::fwTools::Object::sptr subObjectToRemove )
 {
-	::fwTools::Field::sptr field = getField(fieldId);
+    ::fwTools::Field::sptr field = getField(fieldId);
 
-		if ( field)
-		{
-			ChildContainer::iterator i;
-			i = std::find( field->children().begin(),  field->children().end(), subObjectToRemove );
-			if ( i != field->children().end() )
-			{
-				field->children().erase(i);
-			}
-		}
+        if ( field)
+        {
+            ChildContainer::iterator i;
+            i = std::find( field->children().begin(),  field->children().end(), subObjectToRemove );
+            if ( i != field->children().end() )
+            {
+                field->children().erase(i);
+            }
+        }
 }
 
 //------------------------------------------------------------------------------
 
 int Object::getFieldSize( const FieldID& id ) const throw()
 {
-	::fwTools::Field::csptr field = ::fwTools::Field::dynamicConstCast( getField( id ) );
-	return (field ? field->children().size() : 0 );
+    ::fwTools::Field::csptr field = ::fwTools::Field::dynamicConstCast( getField( id ) );
+    return (field ? field->children().size() : 0 );
 }
 
 
@@ -338,58 +338,58 @@ int Object::getFieldSize( const FieldID& id ) const throw()
 //
 //bool Object::getFieldSize( const FieldID& id ) const throw()
 //{
-//	const ::fwTools::Field::sptr labeledObject =
-//		::fwTools::Field::dynamicCast( getField( id ) );
-//	return labeledObject && !labeledObject->children().empty();
+//  const ::fwTools::Field::sptr labeledObject =
+//      ::fwTools::Field::dynamicCast( getField( id ) );
+//  return labeledObject && !labeledObject->children().empty();
 //}
 ////------------------------------------------------------------------------------
 //
 //bool Object::modifyField( const FieldID& id,
 //                          const ::fwTools::Object::sptr data ) throw()
 //{
-//	if ( getFieldSize( id ) )
-//	{
-//		setFieldSingleElement( id,  data );
-//		return true;
-//	}
-//	return false;
+//  if ( getFieldSize( id ) )
+//  {
+//      setFieldSingleElement( id,  data );
+//      return true;
+//  }
+//  return false;
 //}
 
 
 
 //::fwTools::Field::sptr Object::setFieldSingleElement( const FieldID &fieldId,  ::fwTools::Object::sptr newSubObject )
 //{
-//	::fwTools::Field::sptr field = getField(fieldId);
+//  ::fwTools::Field::sptr field = getField(fieldId);
 //
-//	if ( field.get()==NULL )
-//	{
-//		::fwTools::Field::NewSptr newfield(fieldId);
-//		newfield->children().push_back(newSubObject);
-//		m_children.push_back( newfield);
-//		return newfield;
-//	}
-//	else
-//	{
-//		// labeled object already exist set new subObject
-//		field->children().clear();
-//		field->children().push_back( newSubObject );
-//		return field ;
+//  if ( field.get()==NULL )
+//  {
+//      ::fwTools::Field::NewSptr newfield(fieldId);
+//      newfield->children().push_back(newSubObject);
+//      m_children.push_back( newfield);
+//      return newfield;
+//  }
+//  else
+//  {
+//      // labeled object already exist set new subObject
+//      field->children().clear();
+//      field->children().push_back( newSubObject );
+//      return field ;
 //
-//	}
+//  }
 //}
 
 ////------------------------------------------------------------------------------
 //
 //void Object::setFieldElement(std::string _id, ::fwTools::Object::sptr _obj, unsigned int _index )
 //{
-//	::fwTools::Field::sptr infoOfInterest = this->setField(_id) ;
-//	//infoOfInterest
-//	while( _index >= infoOfInterest->children().size() )
-//	{
+//  ::fwTools::Field::sptr infoOfInterest = this->setField(_id) ;
+//  //infoOfInterest
+//  while( _index >= infoOfInterest->children().size() )
+//  {
 //        fwTools::Object::NewSptr newObject;
-//		infoOfInterest->children().push_back( newObject ) ;
-//	}
-//	infoOfInterest->children()[_index] = _obj ;
+//      infoOfInterest->children().push_back( newObject ) ;
+//  }
+//  infoOfInterest->children()[_index] = _obj ;
 //}
 
 

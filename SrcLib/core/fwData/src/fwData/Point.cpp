@@ -20,41 +20,41 @@ namespace fwData
 
 Point::Point ()
 {
-	SLM_TRACE_FUNC();
-	m_vCoord[0] = 0.0;
-	m_vCoord[1] = 0.0;
-	m_vCoord[2] = 0.0;
+    SLM_TRACE_FUNC();
+    m_vCoord[0] = 0.0;
+    m_vCoord[1] = 0.0;
+    m_vCoord[2] = 0.0;
 }
 
 //------------------------------------------------------------------------------
 
 Point::~Point ()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 Point::sptr Point::clone() const
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 
-	Point::NewSptr pNewPoint;
+    Point::NewSptr pNewPoint;
 
-	// Copy encoding
-	pNewPoint->m_vCoord = this->m_vCoord;
+    // Copy encoding
+    pNewPoint->m_vCoord = this->m_vCoord;
 
-	return pNewPoint;
+    return pNewPoint;
 }
 
 //------------------------------------------------------------------------------
 
 Point & Point::operator=( const Point & _point )
 {
-	// Copy encoding
-	m_vCoord = _point.m_vCoord;
+    // Copy encoding
+    m_vCoord = _point.m_vCoord;
 
-	return *this;
+    return *this;
 }
 
 //------------------------------------------------------------------------------

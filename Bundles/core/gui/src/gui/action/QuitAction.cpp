@@ -35,17 +35,17 @@ QuitAction::~QuitAction() throw()
 
 void QuitAction::info(std::ostream &_sstream )
 {
-	_sstream << "Quit Action" << std::endl;
+    _sstream << "Quit Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void QuitAction::updating() throw( ::fwTools::Failed )
 {
-	wxBeginBusyCursor();
-	::fwServices::OSR::uninitializeRootObject();
-	wxEndBusyCursor();
-	wxTheApp->GetTopWindow()->Close();
+    wxBeginBusyCursor();
+    ::fwServices::OSR::uninitializeRootObject();
+    wxEndBusyCursor();
+    wxTheApp->GetTopWindow()->Close();
 
 }
 }

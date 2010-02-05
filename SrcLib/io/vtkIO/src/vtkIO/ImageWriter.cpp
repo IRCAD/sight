@@ -24,33 +24,33 @@ namespace vtkIO
 
 ImageWriter::ImageWriter() : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-	SLM_TRACE("vtkIO::ImageWriter::ImageWriter");
+    SLM_TRACE("vtkIO::ImageWriter::ImageWriter");
 }
 
 //------------------------------------------------------------------------------
 
 ImageWriter::~ImageWriter()
 {
-	SLM_TRACE("vtkIO::ImageWriter::~ImageWriter");
+    SLM_TRACE("vtkIO::ImageWriter::~ImageWriter");
 }
 
 //------------------------------------------------------------------------------
 
 void ImageWriter::write()
 {
-	assert( m_object.use_count() );
-	assert( !m_object.expired() );
-	assert( m_object.lock() );
+    assert( m_object.use_count() );
+    assert( !m_object.expired() );
+    assert( m_object.lock() );
 
-	::fwData::Image::sptr pImage = getConcreteObject();
+    ::fwData::Image::sptr pImage = getConcreteObject();
 
-	vtkGenericDataObjectWriter *writer = vtkGenericDataObjectWriter::New();
-	writer->SetInput( ::vtkIO::toVTKImage( pImage ) );
-	writer->SetFileName(this->getFile().string().c_str());
-	writer->SetFileTypeToBinary ();
+    vtkGenericDataObjectWriter *writer = vtkGenericDataObjectWriter::New();
+    writer->SetInput( ::vtkIO::toVTKImage( pImage ) );
+    writer->SetFileName(this->getFile().string().c_str());
+    writer->SetFileTypeToBinary ();
 
-	writer->Write();
-	writer->Delete();
+    writer->Write();
+    writer->Delete();
 }
 
 //------------------------------------------------------------------------------

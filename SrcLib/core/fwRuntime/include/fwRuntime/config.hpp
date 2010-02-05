@@ -10,14 +10,14 @@
 
 #ifdef _WIN32
 
-	#ifdef FWRUNTIME_EXPORTS
-	#define FWRUNTIME_API __declspec(dllexport)
-	#else
-	#define FWRUNTIME_API __declspec(dllimport)
-	#endif
-	
-	#define FWRUNTIME_CLASS_API 
-	#pragma warning(disable: 4290)
+    #ifdef FWRUNTIME_EXPORTS
+    #define FWRUNTIME_API __declspec(dllexport)
+    #else
+    #define FWRUNTIME_API __declspec(dllimport)
+    #endif
+    
+    #define FWRUNTIME_CLASS_API 
+    #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
@@ -33,9 +33,9 @@
 
 #else
 
-	#define FWRUNTIME_API 
-	#define FWRUNTIME_CLASS_API 
-	
+    #define FWRUNTIME_API 
+    #define FWRUNTIME_CLASS_API 
+    
 #endif
 
 

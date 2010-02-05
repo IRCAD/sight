@@ -17,25 +17,25 @@ namespace visitor
 
 /**
  * @brief Implementation for Visitor Pattern : visitor scan breath first
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API BreathFirst : public  IVisitor
 {
 public:
-	fwCoreNonInstanciableClassDefinitionsMacro( (BreathFirst)(IVisitor::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro( (BreathFirst)(IVisitor::Baseclass) ) ;
 
-	FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
+    FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 
-	/// override processing of childs : scan breath first ( aka fields[0] , fields[1] , ...)
-	FWDATA_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
+    /// override processing of childs : scan breath first ( aka fields[0] , fields[1] , ...)
+    FWDATA_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
 
 protected :
 
-	/// store src,child to process in a fifo queue
-	typedef ::fwTools::Object::sptr  Source;
-	typedef ::fwTools::Object::sptr  Child;
-	std::list< std::pair< Source ,Child > > m_fifo;
+    /// store src,child to process in a fifo queue
+    typedef ::fwTools::Object::sptr  Source;
+    typedef ::fwTools::Object::sptr  Child;
+    std::list< std::pair< Source ,Child > > m_fifo;
 
 };
 

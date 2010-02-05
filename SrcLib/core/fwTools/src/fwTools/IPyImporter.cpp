@@ -10,29 +10,29 @@
 namespace fwTools {
 
 IPyImporter::IPyImporter() {
-	// TODO Auto-generated constructor stub
+    // TODO Auto-generated constructor stub
 
 }
 
 IPyImporter::~IPyImporter() {
-	// TODO Auto-generated destructor stub
+    // TODO Auto-generated destructor stub
 }
 
 
 
 void pyImporterStr(std::string bundleId)
 {
-	::boost::shared_ptr< ::fwTools::IPyImporter > pyImporter;
-	pyImporter = ::fwTools::ClassFactoryRegistry::create< ::fwTools::IPyImporter >( bundleId );
-	if ( pyImporter )
-	{
-		OSLM_WARN( "EXE PyImporter for " <<  bundleId );
-		pyImporter->import();
-	}
-	else
-	{
-		OSLM_WARN( "No PyImporter for " << bundleId );
-	}
+    ::boost::shared_ptr< ::fwTools::IPyImporter > pyImporter;
+    pyImporter = ::fwTools::ClassFactoryRegistry::create< ::fwTools::IPyImporter >( bundleId );
+    if ( pyImporter )
+    {
+        OSLM_WARN( "EXE PyImporter for " <<  bundleId );
+        pyImporter->import();
+    }
+    else
+    {
+        OSLM_WARN( "No PyImporter for " << bundleId );
+    }
 }
 
 

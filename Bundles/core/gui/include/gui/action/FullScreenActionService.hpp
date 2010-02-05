@@ -19,50 +19,50 @@ namespace action
 {
 
 /**
- * @brief	This action shows the current window in full screen mode or restored to its normal state.
- * @class	FullScreenActionService.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   This action shows the current window in full screen mode or restored to its normal state.
+ * @class   FullScreenActionService.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  */
 class GUI_CLASS_API FullScreenActionService : public ::gui::action::IAction
 {
 
 public:
 
-	/**
-	* @brief Constructor. Do nothing (Just initialize parameters).
-	*
-	* By default, the m_isFullScreen is defined as false.
-	*/
-	GUI_API FullScreenActionService() throw();
+    /**
+    * @brief Constructor. Do nothing (Just initialize parameters).
+    *
+    * By default, the m_isFullScreen is defined as false.
+    */
+    GUI_API FullScreenActionService() throw();
 
-	/*
-	 * @brief Destructor. Do nothing.
-	 */
-	GUI_API virtual ~FullScreenActionService() throw();
+    /*
+     * @brief Destructor. Do nothing.
+     */
+    GUI_API virtual ~FullScreenActionService() throw();
 
 protected:
 
-	/**
-	 * @brief This method is used to configure the class parameters. Do nothing.
-	 */
-	GUI_API void configuring() throw( ::fwTools::Failed ) ;
+    /**
+     * @brief This method is used to configure the class parameters. Do nothing.
+     */
+    GUI_API void configuring() throw( ::fwTools::Failed ) ;
 
-	/**
-	 * @brief This method is used to update services on notification.
-	 * Show the current window in full screen mode or restored to its normal state.
-	 */
-	GUI_API void updating() throw(::fwTools::Failed) ;
+    /**
+     * @brief This method is used to update services on notification.
+     * Show the current window in full screen mode or restored to its normal state.
+     */
+    GUI_API void updating() throw(::fwTools::Failed) ;
 
-	/*
-	 * @brief This method gives information about the class.
-	 */
-	GUI_API void info(std::ostream &_sstream ) ;
+    /*
+     * @brief This method gives information about the class.
+     */
+    GUI_API void info(std::ostream &_sstream ) ;
 
 private:
 
-	/// To know if the window is in full-screen mode.
-	bool m_isFullScreen;
+    /// To know if the window is in full-screen mode.
+    bool m_isFullScreen;
 };
 }
 }

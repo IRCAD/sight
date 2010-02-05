@@ -1,21 +1,21 @@
 <plugin id="vtkCompositeMesh" class="::vtkCompositeMesh::Plugin" >
-	
-	
-	<library name="vtkCompositeMesh" />
+    
+    
+    <library name="vtkCompositeMesh" />
 
-	<!-- 	REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite) ;	-->
-	<point id="::vtkCompositeMesh::RendererService" >
-		<implements>::fwRender::IRender</implements>
-		<implements>::fwData::Composite</implements>
-	</point>
-	
-	
-	<!-- 	REGISTER_SERVICE( ::gui::action::IAction , ::vtkCompositeMesh::action::ChangeMaterialService , ::fwData::Composite );	-->
-	<point id="::vtkCompositeMesh::action::ChangeMaterialService" >
-		<implements>::gui::action::IAction</implements>
-		<implements>::fwData::Composite</implements>
-	</point>
-	
-	
+    <!--    REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite) ;    -->
+    <point id="::vtkCompositeMesh::RendererService" >
+        <implements>::fwRender::IRender</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
+    
+    <!--    REGISTER_SERVICE( ::gui::action::IAction , ::vtkCompositeMesh::action::ChangeMaterialService , ::fwData::Composite );   -->
+    <point id="::vtkCompositeMesh::action::ChangeMaterialService" >
+        <implements>::gui::action::IAction</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
+    
     
 </plugin>

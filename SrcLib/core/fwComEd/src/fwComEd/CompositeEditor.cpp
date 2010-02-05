@@ -26,14 +26,14 @@ CompositeEditor::~CompositeEditor() throw()
 
 void CompositeEditor::updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
 {
-	SLM_FATAL("ACH: must report compositeMsg API modification. This method is used ?"); // If comment this fatal, reactivate cppunit test (CompositeMessageTest::methodeMessageNotification)
-//	//std::cout << "CompositeEditor::objectModified( const ObjectEvent & event )" << std::endl;
-//	::boost::shared_ptr< ::fwData::Composite > m_client = this->getObject< ::fwData::Composite >() ;
-//	::boost::shared_ptr< ::fwComEd::CompositeMsg > poMsg( new fwComEd::CompositeMsg( m_client ) ) ;
-//	poMsg->addModif( _msg ) ;	//One assumes that event is related to a modification of either an input or an output
+    SLM_FATAL("ACH: must report compositeMsg API modification. This method is used ?"); // If comment this fatal, reactivate cppunit test (CompositeMessageTest::methodeMessageNotification)
+//  //std::cout << "CompositeEditor::objectModified( const ObjectEvent & event )" << std::endl;
+//  ::boost::shared_ptr< ::fwData::Composite > m_client = this->getObject< ::fwData::Composite >() ;
+//  ::boost::shared_ptr< ::fwComEd::CompositeMsg > poMsg( new fwComEd::CompositeMsg( m_client ) ) ;
+//  poMsg->addModif( _msg ) ;   //One assumes that event is related to a modification of either an input or an output
 //
-//	this->notify( poMsg ) ;
-//	//::fwServices::IEditionService::notify(this->getSptr(),m_client, poMsg);
+//  this->notify( poMsg ) ;
+//  //::fwServices::IEditionService::notify(this->getSptr(),m_client, poMsg);
 }
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void CompositeEditor::updating() throw ( ::fwTools::Failed )
 
 void CompositeEditor::info(std::ostream &_sstream )
 {
-	_sstream << "CompositeEditor" ;
+    _sstream << "CompositeEditor" ;
 }
 
 //-----------------------------------------------------------------------------

@@ -16,14 +16,14 @@ ProgressToLogger::ProgressToLogger(std::string prefix, std::string postfix)
 }
 
 ProgressToLogger::~ProgressToLogger() {
-	// TODO Auto-generated destructor stub
+    // TODO Auto-generated destructor stub
 }
 
 
 void ProgressToLogger::operator()(float percent,std::string msg)
 {
-	// fixme io precision
-	OSLM_INFO( m_prefix << msg << " " << (int) (percent*100) << m_postfix);
+    // fixme io precision
+    OSLM_INFO( m_prefix << msg << " " << (int) (percent*100) << m_postfix);
 }
 
 }

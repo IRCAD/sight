@@ -10,5 +10,5 @@ CLASSTEST=['testTrian2MeshVTK']
 
 import os
 if os.name == 'posix' :
-#	STDLIB += ['python25']
-	STDLIB += ['python2.5']
+#   STDLIB += ['python25']
+    STDLIB += ['python2.5']

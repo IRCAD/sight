@@ -22,21 +22,21 @@ namespace fwServices
 struct FWSERVICES_CLASS_API DefaultObjectDeleter : public ::fwTools::IDeleter
 {
 
-	fwCoreClassDefinitionsWithFactoryMacro( (DefaultObjectDeleter)(::fwTools::IDeleter::Baseclass), (()), new DefaultObjectDeleter );
+    fwCoreClassDefinitionsWithFactoryMacro( (DefaultObjectDeleter)(::fwTools::IDeleter::Baseclass), (()), new DefaultObjectDeleter );
 
-	/**
-	 * @brief Constructor
-	 */
-	FWSERVICES_API DefaultObjectDeleter();
-	/**
-	 * @brief Destructor
-	 */
-	FWSERVICES_API virtual ~DefaultObjectDeleter();
+    /**
+     * @brief Constructor
+     */
+    FWSERVICES_API DefaultObjectDeleter();
+    /**
+     * @brief Destructor
+     */
+    FWSERVICES_API virtual ~DefaultObjectDeleter();
 
-	/**
-	 * @brief Invoked from obj destructor and trigger service unregistration
-	 */
-	FWSERVICES_API void Delete(::fwTools::Object *obj) ;
+    /**
+     * @brief Invoked from obj destructor and trigger service unregistration
+     */
+    FWSERVICES_API void Delete(::fwTools::Object *obj) ;
 } ;
 
 

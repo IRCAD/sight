@@ -21,7 +21,7 @@ class FWCORE_CLASS_API TimeStamp : public BaseObject
 {
 
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (TimeStamp)(BaseObject::Baseclass), (()), new TimeStamp) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TimeStamp)(BaseObject::Baseclass), (()), new TimeStamp) ;
 
     /**
      * @brief Type used in logical typestamp.

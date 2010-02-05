@@ -7,4 +7,4 @@ USE  = ['boost','libxml2','z'] # 'wx'
 #use of wx is required to provide a wxPanel for xmlview service
 
 
-VERSION	= '0-2'
+VERSION = '0-2'

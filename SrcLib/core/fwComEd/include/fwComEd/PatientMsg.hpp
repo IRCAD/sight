@@ -17,32 +17,32 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object event message specialized for Patient : store modification information.
- * @class 	PatientMsg
+ * @brief   Object event message specialized for Patient : store modification information.
+ * @class   PatientMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API PatientMsg : public ::fwServices::ObjectMsg
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro((PatientMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new PatientMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PatientMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new PatientMsg );
 
-	/// Event identifier used to inform new patient creation
-	FWCOMED_API static std::string NEW_PATIENT;
+    /// Event identifier used to inform new patient creation
+    FWCOMED_API static std::string NEW_PATIENT;
 
-	/// Event identifier used to inform that a new material is created for reconstruction
-	FWCOMED_API static std::string NEW_MATERIAL_FOR_RECONSTRUCTION;
+    /// Event identifier used to inform that a new material is created for reconstruction
+    FWCOMED_API static std::string NEW_MATERIAL_FOR_RECONSTRUCTION;
 
-	/**
-	 * @brief	Constructor : does nothing.
-	 */
-	FWCOMED_API PatientMsg() throw();
+    /**
+     * @brief   Constructor : does nothing.
+     */
+    FWCOMED_API PatientMsg() throw();
 
-	/**
-	 * @brief 	Destructor : does nothing.
-	 */
-	FWCOMED_API virtual ~PatientMsg() throw();
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    FWCOMED_API virtual ~PatientMsg() throw();
 
 };
 

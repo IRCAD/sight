@@ -1,7 +1,7 @@
-TYPE 	= 'shared'
-LIB  	= ['fwTools_0-1' ,'fwCore_0-1', 'fwMath_0-1']
-USE  	= ['boost']
-VERSION	= '0-1'
+TYPE    = 'shared'
+LIB     = ['fwTools_0-1' ,'fwCore_0-1', 'fwMath_0-1']
+USE     = ['boost']
+VERSION = '0-1'
 
 #DEF=['BOOST_SYSTEM_NO_DEPRECATED']
 
@@ -10,7 +10,7 @@ VERSION	= '0-1'
 #import os
 #import sys
 #if os.name == 'nt' or sys.platform == 'darwin' :
-#	LIB += ['ui','workbench','dictionary']
+#   LIB += ['ui','workbench','dictionary']
 
 # Under MacOSX, disables the optimization to avoid bogus execution
 # if sys.platform == 'darwin' :

@@ -15,21 +15,21 @@ namespace servicesReg
 {
 
 /**
- * @brief	This class is started when the bundles is loaded.
- * @class	Plugin.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   This class is started when the bundles is loaded.
+ * @class   Plugin.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  */
 struct SERVICESREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
-	/// Destructor. Do nothing.
-	SERVICESREG_API ~Plugin() throw();
+    /// Destructor. Do nothing.
+    SERVICESREG_API ~Plugin() throw();
 
-	/// Overrides start method. Service declarations (services declared in fwServices / fwComEd libraries ).
-	SERVICESREG_API void start() throw(::fwRuntime::RuntimeException);
+    /// Overrides start method. Service declarations (services declared in fwServices / fwComEd libraries ).
+    SERVICESREG_API void start() throw(::fwRuntime::RuntimeException);
 
-	/// Overrides stop method. Do nothing
-	SERVICESREG_API void stop() throw();
+    /// Overrides stop method. Do nothing
+    SERVICESREG_API void stop() throw();
 
 };
 

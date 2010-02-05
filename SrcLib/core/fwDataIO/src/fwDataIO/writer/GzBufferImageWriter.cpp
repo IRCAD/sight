@@ -41,43 +41,43 @@ GzBufferImageWriter::~GzBufferImageWriter()
 
 void GzBufferImageWriter::write()
 {
-	assert( getFile().empty() ==  false );
+    assert( getFile().empty() ==  false );
 
-	::boost::shared_ptr< ::fwData::Image > image = getConcreteObject();
-	OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className()) ;
+    ::boost::shared_ptr< ::fwData::Image > image = getConcreteObject();
+    OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className()) ;
 
-	/// test if can open archive
-	gzFile rawFile = gzopen( getFile().native_file_string().c_str(), "wb1");
-	assert(rawFile);
-	if ( rawFile == 0 )
-	{
-		std::string str = "GzBufferImageWriter::write unable to open ";
-		str+= getFile().native_file_string();
-		gzclose(rawFile);
-		throw std::ios_base::failure(str);
-	}
+    /// test if can open archive
+    gzFile rawFile = gzopen( getFile().native_file_string().c_str(), "wb1");
+    assert(rawFile);
+    if ( rawFile == 0 )
+    {
+        std::string str = "GzBufferImageWriter::write unable to open ";
+        str+= getFile().native_file_string();
+        gzclose(rawFile);
+        throw std::ios_base::failure(str);
+    }
 
-	// file is OK : process now
-	::boost::uint32_t imageSizeInBytes = ::fwData::imageSizeInBytes(*image);
+    // file is OK : process now
+    ::boost::uint32_t imageSizeInBytes = ::fwData::imageSizeInBytes(*image);
 
-	unsigned int uncompressedbyteswrited=gzwrite(rawFile,image->getBuffer(),imageSizeInBytes);
-	assert(uncompressedbyteswrited==imageSizeInBytes);
+    unsigned int uncompressedbyteswrited=gzwrite(rawFile,image->getBuffer(),imageSizeInBytes);
+    assert(uncompressedbyteswrited==imageSizeInBytes);
 
-	if ( uncompressedbyteswrited!=imageSizeInBytes )
-	{
-		std::string str = "GzBufferImageWriter::write unable to write ";
-		str+=  getFile().native_file_string();
-		gzclose(rawFile);
-		throw std::ios_base::failure(str);
-	}
+    if ( uncompressedbyteswrited!=imageSizeInBytes )
+    {
+        std::string str = "GzBufferImageWriter::write unable to write ";
+        str+=  getFile().native_file_string();
+        gzclose(rawFile);
+        throw std::ios_base::failure(str);
+    }
 
-	gzclose(rawFile);
+    gzclose(rawFile);
 }
 
 
 std::string  GzBufferImageWriter::extension()
 {
-	return ".raw.gz";
+    return ".raw.gz";
 }
 
 //------------------------------------------------------------------------------

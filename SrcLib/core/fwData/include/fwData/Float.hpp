@@ -16,28 +16,28 @@ namespace fwData
 {
 
 /**
- * @class 	Float
- * @brief 	This class contains an float value
+ * @class   Float
+ * @brief   This class contains an float value
  *
  * Float object is essentially used as a field in other objects.
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API Float : public GenericField< float >
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object::Baseclass),( ((const float)(0.0f)) ), new Float) ;
-	/**
-	 * @brief Constructor.
-	 * @param[in] value The initial value.
-	 */
-	FWDATA_API Float( const float value = 0.0f ) throw();
+    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object::Baseclass),( ((const float)(0.0f)) ), new Float) ;
+    /**
+     * @brief Constructor.
+     * @param[in] value The initial value.
+     */
+    FWDATA_API Float( const float value = 0.0f ) throw();
 
-	/**
-	 * @brief Destructor.
-	 */
-	FWDATA_API virtual ~Float() throw();
+    /**
+     * @brief Destructor.
+     */
+    FWDATA_API virtual ~Float() throw();
 };
 
 } // namespace fwData
