@@ -17,6 +17,22 @@
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/io/ProfileReader.hpp>
 
+//------------------------------------------------------------------------------
+#if defined(_WIN32) && defined(_DEBUG)
+#if _MSC_VER >= 1400 // visual studio >= 2005
+
+// add a dependency on the retail crt even in debug
+#pragma comment(linker,"/manifestdependency:\"type='win32' " \
+        "name='" __LIBRARIES_ASSEMBLY_NAME_PREFIX ".CRT' "   \
+        "version='" _CRT_ASSEMBLY_VERSION "' "               \
+        "processorArchitecture='*' "                         \
+        "publicKeyToken='" _VC_ASSEMBLY_PUBLICKEYTOKEN "' "   \
+        "language='*'\"")
+
+#endif    /* _MSC_VER >= 1400 */
+#endif    /* _WIN32 && _DEBUG */
+//------------------------------------------------------------------------------
+
 //-----------------------------------------------------------------------------
 int    m_argc;
 char** m_argv;

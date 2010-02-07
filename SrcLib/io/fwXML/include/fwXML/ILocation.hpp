@@ -8,11 +8,10 @@
 #ifndef _FWXML_LOCATION_HPP_
 #define _FWXML_LOCATION_HPP_
 
-namespace fwXML
-{
-
 #include "fwXML/config.hpp"
 
+namespace fwXML
+{
 
 
 /**

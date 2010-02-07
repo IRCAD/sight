@@ -250,7 +250,10 @@ void ObjectServiceRegistry::swapService(  ::fwTools::Object::sptr  _objSrc, ::fw
                         iter->second.erase(lIter);
                         bFind = true;
                     }
-                    ++lIter;
+                    else
+                    {
+                        ++lIter;
+                    }
                 }
             }
         }
