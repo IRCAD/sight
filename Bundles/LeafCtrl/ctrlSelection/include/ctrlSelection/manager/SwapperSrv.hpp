@@ -8,7 +8,7 @@
 #define _CTRLSELECTION_MANAGER_SWAPPER_HPP_
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwServices/Iservice.hpp>
+#include <fwServices/IService.hpp>
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
 

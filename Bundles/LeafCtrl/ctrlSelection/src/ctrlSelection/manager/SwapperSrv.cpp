@@ -154,7 +154,7 @@ void SwapperSrv::configureObject( ConfigurationType conf )
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
             srv->configure();
             SubService subSrv;
-            subSrv.m_config = *(cfg->begin());
+            subSrv.m_config = cfg;
             subSrv.m_service = srv;
             subVecSrv.push_back(subSrv);
          }
