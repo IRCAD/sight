@@ -157,6 +157,10 @@ void SwapperSrv::configureObject( ConfigurationType conf )
             subSrv.m_config = cfg;
             subSrv.m_service = srv;
             subVecSrv.push_back(subSrv);
+            if (this->isStarted())
+            {
+                subSrv.getService()->start();
+            }
          }
         m_objectsSubServices[objectId] = subVecSrv;
     }
