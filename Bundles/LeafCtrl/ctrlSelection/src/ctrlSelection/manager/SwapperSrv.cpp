@@ -29,7 +29,7 @@ REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::Swappe
 
 //-----------------------------------------------------------------------------
 
-SwapperSrv::SwapperSrv() throw()
+SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 {
     addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
 }
@@ -106,6 +106,16 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
 void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    std::vector < ConfigurationType > vectMode = m_configuration->find("mode");
+    if(!vectMode.empty())
+    {
+        ConfigurationType modeConfiguration = vectMode.at(0);
+        SLM_ASSERT("Missing attribute type", modeConfiguration->hasAttribute("type"));
+        std::string mode = modeConfiguration->getAttributeValue("type");
+        SLM_ASSERT("Wrong type mode", (mode == "dummy" ) || (mode == "stop" ));
+        m_dummyStopMode = (mode == "dummy" );
+    }
+
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
     SLM_ASSERT("Missing <config> tag!", !vectConfig.empty());
     m_managerConfiguration = vectConfig.at(0);
@@ -143,7 +153,7 @@ void SwapperSrv::configureObject( ConfigurationType conf )
         object = ::fwTools::Object::dynamicCast(composite->getRefMap()[objectId]);
     }
 
-    // Object's not registered in manager and exists in Composite
+    // SubService's not registered in manager and 'new' associated object exists in Composite
     if ( m_objectsSubServices.count(objectId) == 0 && object )
     {
         OSLM_ASSERT("ObjectType "<<objectType<<" does not match ObjectType in Composite "<<object->getClassname(), objectType == object->getClassname());
@@ -160,14 +170,15 @@ void SwapperSrv::configureObject( ConfigurationType conf )
             if (this->isStarted())
             {
                 subSrv.getService()->start();
+                subSrv.getService()->update();
             }
          }
         m_objectsSubServices[objectId] = subVecSrv;
     }
-    // Object's already registered in manager
+    // SubService's already registered in manager
     else if(m_objectsSubServices.count(objectId) == 1)
     {
-        // Object exists in Composite, so we swap all associated subServices
+        // 'new' Object exists in Composite, so we swap all associated subServices
         if (object)
         {
             SubServicesVecType subServices = m_objectsSubServices[objectId];
@@ -182,6 +193,7 @@ void SwapperSrv::configureObject( ConfigurationType conf )
                 if(subSrv.getService()->getObject() != object)
                 {
                     subSrv.getService()->swap(object);
+                    subSrv.m_dummy.reset();
                 }
                 else
                 {
@@ -192,20 +204,32 @@ void SwapperSrv::configureObject( ConfigurationType conf )
                 }
             }
         }
-        //Object was removed from Composite, so we remove all associated subServices
+        // old Object was removed from Composite, so we remove all associated subServices
         else
         {
             SubServicesVecType subServices = m_objectsSubServices[objectId];
+            object = ::fwTools::Factory::New(objectId);
             for( SubServicesVecType::iterator iter = subServices.begin(); iter != subServices.end(); ++iter )
             {
                 SubService &subSrv = *iter;
                 SLM_ASSERT("SubService expired !", subSrv.getService() );
                 OSLM_ASSERT( ::fwTools::UUID::get(subSrv.getService()) <<  " is not started ", subSrv.getService()->isStarted());
-                subSrv.getService()->stop();
-                ::fwServices::erase(subSrv.getService());
-                subSrv.m_service.reset();
+                if(m_dummyStopMode)
+                {
+                    subSrv.m_dummy = object;
+                    subSrv.getService()->swap(object);
+                }
+                else
+                {
+                    subSrv.getService()->stop();
+                    ::fwServices::erase(subSrv.getService());
+                    subSrv.m_service.reset();
+                }
             }
-            m_objectsSubServices.erase(objectId);
+            if(!m_dummyStopMode)
+            {
+                m_objectsSubServices.erase(objectId);
+            }
         }
     }
     // Object isn't present in the Composite and any subServices have been registered with it.

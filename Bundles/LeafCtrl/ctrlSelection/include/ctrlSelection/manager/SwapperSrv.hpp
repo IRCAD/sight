@@ -19,74 +19,76 @@ namespace manager
 {
 
 /**
- * @class	SwapperSrv.
+ * @class  SwapperSrv.
  * @author IRCAD (Research and Development Team).
 
- * @date	2007-2009.
+ * @date   2007-2009.
  */
 class CTRLSELECTION_CLASS_API SwapperSrv : public ::ctrlSelection::IManagerSrv
 {
 
 public :
 
-	fwCoreServiceClassDefinitionsMacro ( (SwapperSrv)(::ctrlSelection::IManagerSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SwapperSrv)(::ctrlSelection::IManagerSrv::Baseclass) ) ;
 
-	/// Constructor.  Do nothing.
-	CTRLSELECTION_API SwapperSrv() throw() ;
+    /// Constructor.  Do nothing.
+    CTRLSELECTION_API SwapperSrv() throw() ;
 
-	/// Destructor. Do nothing.
-	CTRLSELECTION_API virtual ~SwapperSrv() throw() ;
+    /// Destructor. Do nothing.
+    CTRLSELECTION_API virtual ~SwapperSrv() throw() ;
 
-	/// Implements starting method derived from IService. Do nothing.
-	CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    /// Implements starting method derived from IService. Do nothing.
+    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
-	/// Implements stopping method derived from IService. Do nothing.
-	CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    /// Implements stopping method derived from IService. Do nothing.
+    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-	/// Implements configuring method derived from IService. Do nothing.
-	CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    /// Implements configuring method derived from IService. Do nothing.
+    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
-	/// Implements reconfiguring method derived from IService. Do nothing.
-	CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    /// Implements reconfiguring method derived from IService. Do nothing.
+    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
 
-	/// Implements updating method derived from IService. Do nothing.
-	CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    /// Implements updating method derived from IService. Do nothing.
+    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
-	/// Implements info method derived from IService. Print classname.
-	CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    /// Implements info method derived from IService. Print classname.
+    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-	CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 protected:
 
     class SubService;
 
-	typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-	typedef std::string ObjectIdType;
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef std::string ObjectIdType;
 
 
-	class SubService
-	{
-	public:
-	    SubService()
-	    { }
-	    ~SubService()
-	    { }
-	    SPTR (::fwServices::IService) getService()
-	                { return m_service.lock(); }
+    class SubService
+    {
+    public:
+        SubService()
+        { }
+        ~SubService()
+        { }
+        SPTR (::fwServices::IService) getService()
+                    { return m_service.lock(); }
 
-	    ConfigurationType m_config;
-	    WPTR(::fwServices::IService) m_service;
-	};
+        SPTR(::fwTools::Object) m_dummy;
+        ConfigurationType m_config;
+        WPTR(::fwServices::IService) m_service;
+    };
 
-	typedef std::vector<SubService> SubServicesVecType;
-	typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
+    typedef std::vector<SubService> SubServicesVecType;
+    typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
 
     void configureObject( ConfigurationType conf );
 
 private:
-	ConfigurationType m_managerConfiguration;
-	SubServicesMapType m_objectsSubServices;
+    bool m_dummyStopMode;
+    ConfigurationType m_managerConfiguration;
+    SubServicesMapType m_objectsSubServices;
 
 };
 
