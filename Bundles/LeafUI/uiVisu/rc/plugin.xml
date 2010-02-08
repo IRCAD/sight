@@ -1,0 +1,15 @@
+<plugin id="uiVisu" class="::uiVisu::Plugin">
+    <library name="uiVisu"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    <requirement id="io"/>
+    
+    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwTools::Object ) ;-->
+    <point id="::uiVisu::SnapshotEditor" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+
+</plugin>
