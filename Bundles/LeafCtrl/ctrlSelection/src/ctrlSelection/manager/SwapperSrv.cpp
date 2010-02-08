@@ -14,6 +14,7 @@
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Acquisition.hpp>
 
 #include "ctrlSelection/manager/SwapperSrv.hpp"
 
@@ -73,9 +74,9 @@ void SwapperSrv::starting()  throw ( ::fwTools::Failed )
         SubServicesVecType subServices = iterMap->second;
         for( SubServicesVecType::iterator iterVect = subServices.begin(); iterVect != subServices.end(); ++iterVect )
         {
-            SubService &subSrv = *iterVect;
-            SLM_ASSERT("SubService expired !", subSrv.getService() );
-            subSrv.getService()->start();
+            SPTR(SubService) subSrv = *iterVect;
+            SLM_ASSERT("SubService expired !", subSrv->getService() );
+            subSrv->getService()->start();
         }
     }
 }
@@ -91,11 +92,11 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
         SubServicesVecType subServices = iterMap->second;
         for( SubServicesVecType::iterator iterVect = subServices.begin(); iterVect != subServices.end(); ++iterVect )
         {
-            SubService &subSrv = *iterVect;
-            SLM_ASSERT("SubService expired !", subSrv.getService() );
-            subSrv.getService()->stop();
-            ::fwServices::erase(subSrv.getService());
-            subSrv.m_service.reset();
+            SPTR(SubService) subSrv = *iterVect;
+            SLM_ASSERT("SubService expired !", subSrv->getService() );
+            subSrv->getService()->stop();
+            ::fwServices::erase(subSrv->getService());
+            subSrv->m_service.reset();
         }
     }
     m_objectsSubServices.clear();
@@ -163,14 +164,14 @@ void SwapperSrv::configureObject( ConfigurationType conf )
             ::fwServices::IService::sptr srv = ::fwServices::add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
             srv->configure();
-            SubService subSrv;
-            subSrv.m_config = cfg;
-            subSrv.m_service = srv;
+            ::boost::shared_ptr< SubService > subSrv = ::boost::shared_ptr< SubService >( new SubService());
+            subSrv->m_config = cfg;
+            subSrv->m_service = srv;
             subVecSrv.push_back(subSrv);
             if (this->isStarted())
             {
-                subSrv.getService()->start();
-                subSrv.getService()->update();
+                subSrv->getService()->start();
+                subSrv->getService()->update();
             }
          }
         m_objectsSubServices[objectId] = subVecSrv;
@@ -184,22 +185,22 @@ void SwapperSrv::configureObject( ConfigurationType conf )
             SubServicesVecType subServices = m_objectsSubServices[objectId];
             for( SubServicesVecType::iterator iter = subServices.begin(); iter != subServices.end(); ++iter )
             {
-                SubService &subSrv = *iter;
+                SPTR(SubService) subSrv = *iter;
 
-                SLM_ASSERT("SubService expired !", subSrv.getService() );
-                OSLM_ASSERT( ::fwTools::UUID::get(subSrv.getService()) <<  " is not started ", subSrv.getService()->isStarted());
+                SLM_ASSERT("SubService expired !", subSrv->getService() );
+                OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
 
                 OSLM_TRACE ("Swapping subService " << subSrvId << " on "<< objectId );
-                if(subSrv.getService()->getObject() != object)
+                if(subSrv->getService()->getObject() != object)
                 {
-                    subSrv.getService()->swap(object);
-                    subSrv.m_dummy.reset();
+                    subSrv->getService()->swap(object);
+                    subSrv->m_dummy.reset();
                 }
                 else
                 {
-                    OSLM_WARN( ::fwTools::UUID::get(subSrv.getService())
+                    OSLM_WARN( ::fwTools::UUID::get(subSrv->getService())
                             << "'s object already is '"
-                            << subSrv.getService()->getObject()->getUUID()
+                            << subSrv->getService()->getObject()->getUUID()
                             << "', no need to swap");
                 }
             }
@@ -208,22 +209,22 @@ void SwapperSrv::configureObject( ConfigurationType conf )
         else
         {
             SubServicesVecType subServices = m_objectsSubServices[objectId];
-            object = ::fwTools::Factory::New(objectId);
+            ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
             for( SubServicesVecType::iterator iter = subServices.begin(); iter != subServices.end(); ++iter )
             {
-                SubService &subSrv = *iter;
-                SLM_ASSERT("SubService expired !", subSrv.getService() );
-                OSLM_ASSERT( ::fwTools::UUID::get(subSrv.getService()) <<  " is not started ", subSrv.getService()->isStarted());
+                SPTR(SubService) subSrv = *iter;
+                SLM_ASSERT("SubService expired !", subSrv->getService() );
+                OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
                 if(m_dummyStopMode)
                 {
-                    subSrv.m_dummy = object;
-                    subSrv.getService()->swap(object);
+                    subSrv->m_dummy = dummyObj;
+                    subSrv->getService()->swap(dummyObj);
                 }
                 else
                 {
-                    subSrv.getService()->stop();
-                    ::fwServices::erase(subSrv.getService());
-                    subSrv.m_service.reset();
+                    subSrv->getService()->stop();
+                    ::fwServices::erase(subSrv->getService());
+					subSrv->m_service.reset();
                 }
             }
             if(!m_dummyStopMode)
