@@ -79,7 +79,7 @@
 
 
 <extension id="TutoGenericSceneV2" implements="::fwData::Composite">
-<object id="TutoGenericScene" type="::fwData::Composite">
+<object id="TutoGenericSceneV2" type="::fwData::Composite">
 
     <service uid="MyIHM" implementation="::gui::aspect::DefaultAspect" type="::gui::aspect::IAspect" autoComChannel="no" >
         <name>TutoGenericScene</name>
@@ -116,6 +116,10 @@
     <!-- CompositeVisu description -->
     <object id="myCompositeVisu" uid="myCompositeVisu" type="::fwData::Composite">
     
+        <service uid="myMedicalImageManager" implementation="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6">
+            <update imageCompositeKey="visuImage" />
+        </service>
+        
         <service uid="myUpdater" implementation="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
             <update compositeKey="visuImage" onEvent="NEW_IMAGE" fromUID="myImage" actionType="ADD_OR_SWAP"/>
         </service>
@@ -142,11 +146,13 @@
 
     <start uid="MyIHM"/>
     <start uid="genericScene"/>
+    <start uid="myMedicalImageManager"/>
     <start uid="myUpdater"/>
     <start uid="myUpdaterComCannel"/>
 
     <stop uid="myUpdaterComCannel"/>
     <stop uid="myUpdater"/>
+    <stop uid="myMedicalImageManager"/>
     <stop uid="genericScene"/>
     <stop uid="MyIHM"/>
 

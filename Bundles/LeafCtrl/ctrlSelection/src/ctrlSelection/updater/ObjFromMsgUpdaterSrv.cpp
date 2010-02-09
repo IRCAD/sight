@@ -169,6 +169,7 @@ void ObjFromMsgUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
 
     SLM_ASSERT("Problem with configuration for ObjFromMsgUpdaterSrv type, missing element \"update\"", handleEvents.size() != 0 );
     OSLM_DEBUG( "handleEvents.size() = " << handleEvents.size() );
+    m_managedEvents.clear();
     for(    ::fwRuntime::ConfigurationElementContainer::Iterator item = handleEvents.begin();
             item != handleEvents.end();
             ++item )
