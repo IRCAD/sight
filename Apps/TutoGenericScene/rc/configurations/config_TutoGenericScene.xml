@@ -13,7 +13,29 @@
             <menu uid="menu_File"/>
         </menus>
     </service>
-
+    
+    <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
+        <win guiContainerId="900" />
+        <views>
+            <view guiContainerId="901" align="center" />
+            <view guiContainerId="903" align="bottom" minHeight="30" resizable="no" />
+        </views>
+    </service>
+    <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
+        <win guiContainerId="903" />
+        <views orientation="horizontal" >
+            <view guiContainerId="910" proportion="0" />
+            <view guiContainerId="911" proportion="0" />
+            <view guiContainerId="912" proportion="1" />
+            <view guiContainerId="913" proportion="0" />
+        </views>
+    </service>
+    <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+        <win guiContainerId="913" />
+        <snap>
+            <scene uid="genericScene" />
+        </snap>
+    </service>
     
     <service uid="menu_File" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="File" autoComChannel="no" >
             <action uid="action_openFile"/>
@@ -28,22 +50,50 @@
         
         <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" />
         
-        <service uid="myUpdaterComCannel" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
-            <target>myUpdater</target>
+        <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+            <target>myUpdaterAcq</target>
         </service>
-    
+        <service uid="myUpdaterComCannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+            <target>myUpdaterImg</target>
+        </service>
     </object>
  
     <!-- CompositeVisu description -->
     <object id="myCompositeVisu" uid="myCompositeVisu" type="::fwData::Composite">
 
-        <service uid="myUpdater" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
-            <patientDB uid="myPatientDB"/>
-            <acquisitionKeyInComposite value="myAcquisition"/>
+        <service uid="myMedicalImageManager" implementation="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6">
+            <update imageCompositeKey="myImage" />
+        </service>
+        <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
+        </service>
+        <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
+        </service>
+        
+        <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes">
+            <mode type="stop" />
+            <config>
+             <object id="myImage" type="::fwData::Image" >
+                 <service uid="sliceListEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
+                    <win guiContainerId="910" />
+                    <negatoAdaptor uid="MPRNegatoScene3D" slices="3"/>
+                 </service>
+                 <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+                     <win guiContainerId="911" />
+                     <negatoAdaptor uid="MPRNegatoScene3D" />
+                 </service>
+                 <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial">
+                    <win guiContainerId="912"/>
+                 </service>
+             </object>
+            </config>
         </service>
         
         <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
-            <win guiContainerId="900"/>
+            <win guiContainerId="901"/>
             <scene>
             
                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
@@ -54,24 +104,37 @@
                 </adaptor>
                  
                 <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
-                    <config renderer="default" picker="myPicker" />
+                    <config renderer="default" picker="" />
                 </adaptor>
                 
+                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                    <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                </adaptor>
             </scene>
         </service>
-
-        <object id="myAcquisition" type="::fwData::Acquisition" />
-        
+                
     </object>
 
     <start uid="MyIHM"/>
+    <start uid="multiView_scene1"/>
+    <start uid="multiView_scene1_bottom"/>
+    <start uid="snapshotScene1Editor"/>
     <start uid="genericScene"/>
-    <start uid="myUpdater"/>
-    <start uid="myUpdaterComCannel"/>
-
-    <stop uid="myUpdaterComCannel"/>
-    <stop uid="myUpdater"/>
+    <start uid="myUpdaterAcq"/>
+    <start uid="myUpdaterImg"/>
+    <start uid="myManager"/>
+    <start uid="myUpdaterComCannelAcq"/>
+    <start uid="myUpdaterComCannelImg"/>
+    
+    <stop uid="myUpdaterComCannelImg"/>
+    <stop uid="myUpdaterComCannelAcq"/>
+    <stop uid="myManager"/>
+    <stop uid="myUpdaterImg"/>
+    <stop uid="myUpdaterAcq"/>
     <stop uid="genericScene"/>
+    <stop uid="snapshotScene1Editor"/>
+    <stop uid="multiView_scene1_bottom"/>
+    <stop uid="multiView_scene1"/>
     <stop uid="MyIHM"/>
 
 </object>

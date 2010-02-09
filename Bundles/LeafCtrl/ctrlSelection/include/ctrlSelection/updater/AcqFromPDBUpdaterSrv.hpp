@@ -8,6 +8,7 @@
 #define _CTRLSELECTION_ACQFROMPDBUPDATERSRV_HPP_
 
 #include <fwData/Acquisition.hpp>
+#include <fwData/PatientDB.hpp>
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -37,6 +38,8 @@ public :
     /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~AcqFromPDBUpdaterSrv() throw() ;
 
+protected:
+
     /// Implements starting method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
@@ -57,13 +60,9 @@ public :
 
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
-private :
+private:
 
-    void updateCompositeWithAcq ( ::fwData::Acquisition::sptr _acq );
-
-    std::string m_compositeKey;
-
-    std::string m_patientDBUID;
+    ::fwData::Acquisition::sptr getAcquisition(::fwData::PatientDB::sptr patientDB);
 };
 
 } // updater

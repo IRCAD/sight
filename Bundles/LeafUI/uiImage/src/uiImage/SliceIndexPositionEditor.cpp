@@ -75,12 +75,13 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     ::fwWX::SliceSelector::ChangeIndexCallback changeTypeCallback;
     changeTypeCallback = ::boost::bind( &::uiImage::SliceIndexPositionEditor::sliceTypeNotification, this, _1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
-
-    m_container->SetSizer( sizer );
-    sizer->Fit( m_container );
     sizer->Add( m_sliceSelectorPanel, 1, wxALL|wxEXPAND, 1 );
 
     this->updateSliceType(m_sliceType);
+
+    m_container->SetSizer( sizer );
+    sizer->Fit( m_container );
+    m_container->Fit();
 }
 
 //------------------------------------------------------------------------------
@@ -92,6 +93,10 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
         delete m_sliceSelectorPanel;
         m_sliceSelectorPanel = 0;
     }
+
+    m_container->SetSizer(NULL);
+    m_container->DestroyChildren();
+
     ::gui::editor::IEditor::stopping();
 }
 

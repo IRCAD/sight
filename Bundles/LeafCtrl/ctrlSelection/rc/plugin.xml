@@ -1,23 +1,28 @@
 <plugin id="ctrlSelection" class="::ctrlSelection::Plugin" >
-	
-	<library name="ctrlSelection" />
+    
+    <library name="ctrlSelection" />
 
-	<requirement id="dataReg" />
-	<requirement id="servicesReg" />
-	
-	<point id="::ctrlSelection::IManagerSrv">
-		<implements>::fwServices::IService</implements>
-	</point>
-	
-	<point id="::ctrlSelection::IUpdaterSrv">
-		<implements>::fwServices::IService</implements>
-	</point>
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    
+    <point id="::ctrlSelection::IManagerSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
+    <point id="::ctrlSelection::IUpdaterSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
 
-	<point id="::ctrlSelection::updater::AcqFromPDBUpdaterSrv">
-		<implements>::ctrlSelection::IUpdaterSrv</implements>
-		<implements>::fwData::Composite</implements>
-	</point>
-
+    <point id="::ctrlSelection::updater::AcqFromPDBUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+ 
+    <point id="::ctrlSelection::updater::ImageFromPDBUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+ 
     <point id="::ctrlSelection::updater::ObjFromMsgUpdaterSrv">
         <implements>::ctrlSelection::IUpdaterSrv</implements>
         <implements>::fwData::Composite</implements>

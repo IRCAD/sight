@@ -68,7 +68,7 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     m_dropDownButton->SetToolTip(_("Manage slice visibility"));
 
     m_pDropDownMenu = new wxMenu();
-    m_oneSliceItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), _("One slice")   , wxEmptyString, wxITEM_RADIO);
+    m_oneSliceItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), _("One slice"), wxEmptyString, wxITEM_RADIO);
     m_threeSlicesItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), _("three slices"), wxEmptyString, wxITEM_RADIO);
 //  m_obliqueSliceItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), _("Oblique slice") , wxEmptyString, wxITEM_RADIO);
     m_pDropDownMenu->Append(m_oneSliceItem);
@@ -76,13 +76,11 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 //    m_pDropDownMenu->Append(m_obliqueSliceItem);
 
     m_threeSlicesItem->Check(true);
-    m_pDropDownMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode  , this, m_oneSliceItem->GetId());
-    m_pDropDownMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode , this, m_threeSlicesItem->GetId());
-//    m_pDropDownMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode , this, m_obliqueSliceItem->GetId());
+    m_pDropDownMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_oneSliceItem->GetId());
+    m_pDropDownMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_threeSlicesItem->GetId());
+//    m_pDropDownMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_obliqueSliceItem->GetId());
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
-    m_container->SetSizer( sizer );
-    sizer->Fit( m_container );
     sizer->Add( m_dropDownButton, 1, wxALL|wxEXPAND, 1 );
 
     m_oneSliceItem->Check(m_nbSlice == 1);
@@ -90,6 +88,10 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 //  m_obliqueSliceItem->Check(m_nbSlice == -1);
 
     m_container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this,  m_idDropDown);
+
+    m_container->SetSizer( sizer );
+    sizer->Fit( m_container );
+    m_container->Fit();
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +99,14 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 void SliceListEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_oneSliceItem->GetId());
+    m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_threeSlicesItem->GetId());
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this, m_idDropDown);
+
+    m_container->SetSizer(NULL);
+    m_container->DestroyChildren();
+
     ::gui::editor::IEditor::stopping();
 }
 

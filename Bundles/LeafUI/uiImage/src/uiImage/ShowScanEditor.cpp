@@ -75,10 +75,12 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
     m_showScanButton->SetToolTip(_("Show/Hide Scan"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
-    m_container->SetSizer( sizer );
-    sizer->Fit( m_container );
     sizer->Add( m_showScanButton, 1, wxALL|wxEXPAND, 1 );
     m_container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this,  m_showScanButton->GetId());
+
+    m_container->SetSizer( sizer );
+    sizer->Fit( m_container );
+    m_container->Fit();
 }
 
 //------------------------------------------------------------------------------
@@ -87,6 +89,10 @@ void ShowScanEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this, m_showScanButton->GetId());
+
+    m_container->SetSizer(NULL);
+    m_container->DestroyChildren();
+
     ::gui::editor::IEditor::stopping();
 }
 
