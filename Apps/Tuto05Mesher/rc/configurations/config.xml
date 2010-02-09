@@ -19,7 +19,6 @@
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuMesher"/>
-                <menu uid="menuAction">
             </menus>
         </service>
 
@@ -42,11 +41,6 @@
         </service> 
     
         <service uid="actionQuit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
-        
-        <service name="Action" uid="menuAction" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
-            <action uid="actionModifyMaterial1"/>
-            <action uid="actionModifyMaterial2"/>
-        </service>
 
         <!-- Service associated to the Composite data :
         menu services creation.
@@ -72,18 +66,6 @@
             <mesh uid="myMesh"/>
         </service>
         
-        
-        <!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
-        <service uid="actionModifyMaterial1" implementation="::gui::action::IAction" type="::gui::action::IAction" name="Change Material of Image" autoComChannel="no" >
-            <start uid="changeMaterial1"/>
-        </service>
-        
-        <service uid="actionModifyMaterial2" implementation="::gui::action::IAction" type="::gui::action::IAction" name="Change Material of Mesh" autoComChannel="no" >
-            <start uid="changeMaterial2"/>
-        </service>
-        <!--  --------------------------------------- -->
-                          
-
         <!-- Image object creation 
         Services contained between the tags <object> and </object>
         are associated to the Image data. -->
@@ -102,12 +84,7 @@
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerImageFile" autoComChannel="no" >
                 <type mode="writer"/>
             </service>
-            
-            <!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
-            <service implemetation="::____::____" type="::____::____" uid="changeMaterial1" autoCommChannel="no">
-                
-            </service>
-            <!--  --------------------------------------- -->
+
         </object>       
 
         <!-- TriangularMesh objet creation. 
@@ -129,13 +106,6 @@
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerMeshFile" autoComChannel="no" >
                 <type mode="writer"/>
             </service>
-            
-            
-            <!--  ADDED FOR ACTION TO CHANGE THE MATERIAL -->
-            <action implemetation="::____::____" type="::____::____" uid="changeMaterial2" autoCommChannel="no">
-                
-            </action>
-            <!--  --------------------------------------- -->
                  
         </object> 
     
