@@ -77,7 +77,7 @@ ConfigurationElementContainer ConfigurationElementContainer::findAllConfiguratio
     ConfigurationElementContainer container;
 
     for(    Container::const_iterator itCfgElem = m_elements.begin();
-            itCfgElem != m_elements.begin();
+            itCfgElem != m_elements.end();
             ++itCfgElem )
     {
         if ( (*itCfgElem)->getName() == _name )

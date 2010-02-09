@@ -190,7 +190,7 @@ void SwapperSrv::configureObject( ConfigurationType conf )
                 SLM_ASSERT("SubService expired !", subSrv->getService() );
                 OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
 
-                OSLM_TRACE ("Swapping subService " << subSrvId << " on "<< objectId );
+                OSLM_TRACE("Swapping subService " << ::fwTools::UUID::get(subSrv->getService()) << " on "<< objectId );
                 if(subSrv->getService()->getObject() != object)
                 {
                     subSrv->getService()->swap(object);
