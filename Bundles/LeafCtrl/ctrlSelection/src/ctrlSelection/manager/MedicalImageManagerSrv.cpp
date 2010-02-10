@@ -53,7 +53,7 @@ void MedicalImageManagerSrv::updating( ::fwServices::ObjectMsg::csptr message ) 
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-    SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg);
+    SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg == 0 );
 
     if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
     {
