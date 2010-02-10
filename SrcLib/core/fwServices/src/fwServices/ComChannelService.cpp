@@ -68,23 +68,16 @@ void ComChannelService::configuring() throw( ::fwTools::Failed )
 
 void ComChannelService::starting() throw(fwTools::Failed)
 {
-    if( m_destination.expired() )
-    {
-        SLM_ASSERT("No UID target", m_destUUID.first );
-        OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second , ::fwTools::UUID::exist( m_destUUID.second , ::fwTools::UUID::SIMPLE) );
-        m_destination = ::fwTools::UUID::get< ::fwServices::IService >( m_destUUID.second ) ;
-        OSLM_DEBUG("Destination = " << m_destUUID.second << " found") ;
-    }
+    SLM_ASSERT("No UID target", m_destUUID.first );
+    OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second , ::fwTools::UUID::exist( m_destUUID.second , ::fwTools::UUID::SIMPLE) );
+    m_destination = ::fwTools::UUID::get< ::fwServices::IService >( m_destUUID.second ) ;
+    OSLM_DEBUG("Destination = " << m_destUUID.second << " found") ;
 
     SLM_ASSERT("intern data mismatch", m_destination.lock()->getUUID() == m_destUUID.second);
 
-    if( m_source.expired() )
-    {
-        m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
-        SLM_ASSERT("Source is expired", !m_source.expired() ) ;
-        OSLM_DEBUG("Source (IEditionService) = " << this->getObject()->getUUID() << " found") ;
-    }
-
+    m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
+    SLM_ASSERT("Source is expired", !m_source.expired() ) ;
+    OSLM_DEBUG("Source (IEditionService) = " << this->getObject()->getUUID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
             m_destination.lock()->getUUID() <<
@@ -108,6 +101,14 @@ void ComChannelService::starting() throw(fwTools::Failed)
     // Post condition
     SLM_ASSERT("Source is expired",  !m_source.expired() ) ;
     SLM_ASSERT("Destination is expired", !m_destination.expired() ) ;
+}
+
+//------------------------------------------------------------------------------
+
+void ComChannelService::swapping() throw(fwTools::Failed)
+{
+    this->stopping();
+    this->starting();
 }
 
 //------------------------------------------------------------------------------
@@ -162,7 +163,6 @@ void ComChannelService::info(std::ostream &_sstream )
     {
         _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
     }
-
 }
 
 //------------------------------------------------------------------------------

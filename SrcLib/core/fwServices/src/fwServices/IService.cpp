@@ -240,7 +240,7 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
     }
     else
     {
-        //OSLM_WARN( "" );
+        OSLM_WARN( "Service "<< this->getUUID() << " is not STARTED, no swapping with Object " << _obj->getUUID());
     }
 }
 

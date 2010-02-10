@@ -53,10 +53,12 @@ void IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr
         std::string actionType =  (*item)->getExistingAttributeValue("actionType");
 
         ActionType action;
-        if ( actionType == "ADD" )              { action = ADD; }
-        else if ( actionType == "SWAP" )        { action = SWAP; }
-        else if ( actionType == "REMOVE" )      { action = REMOVE; }
-        else if ( actionType == "ADD_OR_SWAP" ) { action = ADD_OR_SWAP; }
+        if ( actionType == "ADD" )                    { action = ADD; }
+        else if ( actionType == "SWAP" )              { action = SWAP; }
+        else if ( actionType == "REMOVE" )            { action = REMOVE; }
+        else if ( actionType == "ADD_OR_SWAP" )       { action = ADD_OR_SWAP; }
+        else if ( actionType == "REMOVE_IF_PRESENT" ) { action = REMOVE_IF_PRESENT; }
+        else if ( actionType == "DO_NOTHING" )        { action = DO_NOTHING; }
         else
         {
             SLM_FATAL("Sorry this type of \"actionType\" is not managed by ObjFromMsgUpdaterSrv type");
@@ -86,37 +88,54 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
             _action = ADD;
         }
     }
+    else if(_action == REMOVE_IF_PRESENT )
+    {
+        if ( pComposite->getRefMap().find(_compositeKey) != pComposite->getRefMap().end() )
+        {
+            _action = REMOVE;
+        }
+        else
+        {
+            _action = DO_NOTHING;
+        }
+    }
 
     // Use helper on composite
     ::boost::shared_ptr< ::fwComEd::helper::Composite > pCompositeHelper ( new ::fwComEd::helper::Composite( pComposite ) );
 
+    if(_action != DO_NOTHING)
+    {
+        switch ( _action )
+        {
+        case REMOVE :
+        {
+            pCompositeHelper->remove(_compositeKey);
+            break;
+        }
+        case SWAP :
+        {
+            pCompositeHelper->swap(_compositeKey,_obj);
+            break;
+        }
+        case ADD :
+        {
+            pCompositeHelper->add(_compositeKey,_obj);
+            break;
+        }
+        default :
+        {
+            SLM_FATAL("Sorry, this action type is not managed");
+            break;
+        }
+        }
 
-       switch ( _action )
-       {
-       case REMOVE :
-       {
-           pCompositeHelper->remove(_compositeKey);
-           break;
-       }
-       case SWAP :
-       {
-           pCompositeHelper->swap(_compositeKey,_obj);
-           break;
-       }
-       case ADD :
-       {
-           pCompositeHelper->add(_compositeKey,_obj);
-           break;
-       }
-       default :
-       {
-           SLM_FATAL("Sorry, this action type is not managed");
-           break;
-       }
-       }
-
-       // Notification of message
-       pCompositeHelper->notify( this->getSptr() );
+        // Notification of message
+        pCompositeHelper->notify( this->getSptr() );
+    }
+    else
+    {
+        OSLM_INFO("Do nothing for objectID " << _compositeKey);
+    }
 }
 
 }

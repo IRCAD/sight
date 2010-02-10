@@ -33,6 +33,8 @@ public:
         ADD,
         SWAP,
         REMOVE,
+        DO_NOTHING,
+        REMOVE_IF_PRESENT,
         ADD_OR_SWAP
     };
 

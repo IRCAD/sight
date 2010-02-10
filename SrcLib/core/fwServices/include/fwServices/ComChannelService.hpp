@@ -89,6 +89,8 @@ public:
      */
     FWSERVICES_API virtual void updating( ) throw( ::fwTools::Failed) {};
 
+    FWSERVICES_API virtual void swapping() throw(fwTools::Failed);
+
     //@}
 
     /**

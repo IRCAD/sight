@@ -22,6 +22,11 @@
         <implements>::ctrlSelection::IUpdaterSrv</implements>
         <implements>::fwData::Composite</implements>
     </point>
+    
+    <point id="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
  
     <point id="::ctrlSelection::updater::ObjFromMsgUpdaterSrv">
         <implements>::ctrlSelection::IUpdaterSrv</implements>
