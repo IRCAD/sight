@@ -8,6 +8,7 @@
 
 #include <fwServices/IEditionService.hpp>
 #include <fwComEd/CompositeMsg.hpp>
+#include <fwComEd/helper/Composite.hpp>
 
 #include "ctrlSelection/IUpdaterSrv.hpp"
 
@@ -72,9 +73,6 @@ void IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr
 
 void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData::Object::sptr _obj, std::string _compositeKey, ActionType _action )
 {
-    // Manage pre-condition
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must not exist in composite on action : " << _action, ( _action == ADD ) && ( pComposite->getRefMap().find(_compositeKey) != pComposite->getRefMap().end() ) );
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite on action : " << _action, ( _action == REMOVE || _action == SWAP ) && ( pComposite->getRefMap().find(_compositeKey) == pComposite->getRefMap().end() ) );
 
     // Manage special action
     if ( _action == ADD_OR_SWAP )
@@ -89,63 +87,36 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
         }
     }
 
-    // Message & parameters messages
-    ::fwComEd::CompositeMsg::NewSptr compositeMsg;
-    std::vector< std::string > modifiedFields;
-    std::vector< ::fwData::Object::sptr > oldObjects;
+    // Use helper on composite
+    ::boost::shared_ptr< ::fwComEd::helper::Composite > pCompositeHelper ( new ::fwComEd::helper::Composite( pComposite ) );
 
-    switch ( _action )
-    {
-    case REMOVE :
-    {
-        // Backup
-        ::fwData::Object::sptr objBackup = pComposite->getRefMap()[ _compositeKey ];
-        oldObjects.push_back( objBackup );
 
-        // Message
-        modifiedFields.push_back(_compositeKey);
+       switch ( _action )
+       {
+       case REMOVE :
+       {
+           pCompositeHelper->remove(_compositeKey);
+           break;
+       }
+       case SWAP :
+       {
+           pCompositeHelper->swap(_compositeKey,_obj);
+           break;
+       }
+       case ADD :
+       {
+           pCompositeHelper->add(_compositeKey,_obj);
+           break;
+       }
+       default :
+       {
+           SLM_FATAL("Sorry, this action type is not managed");
+           break;
+       }
+       }
 
-        // Composite modification
-        pComposite->getRefMap().erase( _compositeKey );
-        break;
-    }
-    case SWAP :
-    {
-        // Backup
-        ::fwData::Object::sptr objBackup = pComposite->getRefMap()[ _compositeKey ];
-        oldObjects.push_back( objBackup );
-
-        // Message
-        modifiedFields.push_back(_compositeKey);
-
-        // Composite modification
-        pComposite->getRefMap()[ _compositeKey ] = _obj;
-        break;
-    }
-    case ADD :
-    {
-        // Push temp object (hack, necessary for composite message)
-        ::fwData::Object::NewSptr pTmpObj;
-        oldObjects.push_back( pTmpObj );
-
-        // Message
-        modifiedFields.push_back(_compositeKey);
-
-        // Composite modification
-        pComposite->getRefMap()[ _compositeKey ] = _obj;
-        break;
-    }
-    default :
-    {
-        SLM_FATAL("Sorry, this action type is not managed");
-        break;
-    }
-    }
-
-    // Notification of message
-    compositeMsg->addEventModifiedFields(modifiedFields,oldObjects);
-    ::fwServices::IEditionService::notify(this->getSptr(), pComposite, compositeMsg);
-
+       // Notification of message
+       pCompositeHelper->notify( this->getSptr() );
 }
 
 }

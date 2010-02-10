@@ -11,6 +11,7 @@
 //#include <iostream>
 
 #include <fwServices/ObjectMsg.hpp>
+#include <fwData/Composite.hpp>
 
 #include "fwComEd/export.hpp"
 
@@ -39,6 +40,16 @@ public:
     /// Event identifier used to inform that fields were modified
     FWCOMED_API static std::string MODIFIED_FIELDS;
 
+    /// Event identifier used to inform that fields were added
+    FWCOMED_API static std::string ADDED_FIELDS;
+
+    /// Event identifier used to inform that fields were removed
+    FWCOMED_API static std::string REMOVED_FIELDS;
+
+    /// Event identifier used to inform that fields were swapped
+    FWCOMED_API static std::string SWAPPED_FIELDS;
+
+
     /**
      * @brief   Constructor : does nothing.
      */
@@ -66,6 +77,29 @@ public:
      */
     FWCOMED_API std::vector< std::string > getEventModifiedFields() const;
 
+    FWCOMED_API  void addEventModifiedField( std::string _modifiedField );
+
+
+
+    FWCOMED_API void addAddedField( std::string _compositeKey, ::fwData::Object::sptr _pNewObject );
+    FWCOMED_API ::fwData::Composite::sptr getAddedFields() const;
+
+    FWCOMED_API void addRemovedField( std::string _compositeKey, ::fwData::Object::sptr _pOldObject );
+    FWCOMED_API ::fwData::Composite::sptr getRemovedFields() const;
+
+    FWCOMED_API void addSwappedField( std::string _compositeKey, ::fwData::Object::sptr _pOldObject, ::fwData::Object::sptr _pNewObject );
+    FWCOMED_API ::fwData::Composite::sptr  getSwappedOldFields() const;
+    FWCOMED_API ::fwData::Composite::sptr  getSwappedNewFields() const;
+
+private :
+
+    std::vector< std::string > m_modifiedFields;
+    std::vector< ::fwData::Object::sptr > m_modifiedObjects;
+
+    ::fwData::Composite::sptr m_removedFields;
+    ::fwData::Composite::sptr m_addedFields;
+    ::fwData::Composite::sptr m_swappedOldFields;
+    ::fwData::Composite::sptr m_swappedNewFields;
 
 //  fwCoreClassDefinitionsWithFactoryMacro((CompositeMsg)(::fwServices::ObjectMsg::Baseclass), ( ((::boost::shared_ptr< ::fwData::Composite>)) ), new CompositeMsg );
 //
@@ -134,7 +168,6 @@ public:
 //   * @brief modification properties per input identifier
 //   */
 //  std::map< std::string , fwServices::ObjectMsg::ModifProp > m_ModifProp ;
-
 };
 
 } // namespace fwComEd
