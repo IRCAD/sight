@@ -55,4 +55,9 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
+std::string  ImageWriter::extension()
+{
+   return ".vtk";
+}
+
 } // namespace vtkIO

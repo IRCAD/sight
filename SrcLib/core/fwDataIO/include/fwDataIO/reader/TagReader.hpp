@@ -51,7 +51,7 @@ public :
     FWDATAIO_API virtual void read();
 
     /// Defines extension supported by this reader ".tag"
-    FWDATAIO_API std::string  &extension();
+    FWDATAIO_API std::string  extension();
 
 };
 

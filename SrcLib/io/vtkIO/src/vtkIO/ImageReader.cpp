@@ -66,4 +66,9 @@ void ImageReader::read()
 
 //------------------------------------------------------------------------------
 
+std::string  ImageReader::extension()
+{
+   return ".vtk";
+}
+
 } // namespace vtkIO

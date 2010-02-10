@@ -49,7 +49,7 @@ public:
     FWDATAIO_API virtual void read();
 
     /// Defines extension supported by this reader ".trf"
-    FWDATAIO_API virtual std::string & extension();
+    FWDATAIO_API virtual std::string extension();
 
 };
 

@@ -66,4 +66,9 @@ void MeshReader::read()
 
 //------------------------------------------------------------------------------
 
+std::string  MeshReader::extension()
+{
+   return ".trian";
+}
+
 } // namespace vtkIO

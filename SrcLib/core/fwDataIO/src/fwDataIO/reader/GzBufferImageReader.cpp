@@ -78,10 +78,9 @@ void GzBufferImageReader::read()
 
 
 
-std::string  &GzBufferImageReader::extension()
+std::string  GzBufferImageReader::extension()
 {
-    static std::string ext(".raw.gz");
-    return ext;
+    return (".raw.gz");
 }
 
 

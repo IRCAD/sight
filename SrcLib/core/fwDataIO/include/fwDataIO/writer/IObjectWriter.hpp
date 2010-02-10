@@ -91,7 +91,7 @@ public :
      * The extension can be empty (for a repository for example) or must return a string BEGINNING WITH A DOT
      * by default be empty
      */
-    FWDATAIO_API virtual std::string  extension();
+    FWDATAIO_API virtual std::string  extension()=0;
 
 protected :
 

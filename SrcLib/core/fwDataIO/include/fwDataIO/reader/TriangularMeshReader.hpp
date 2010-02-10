@@ -58,8 +58,7 @@ public :
     /// Read the file with standard iostream API.
     FWDATAIO_API virtual void read();
 
-    /// Defines extension supported by this reader ".trian"
-    FWDATAIO_API std::string  &extension();
+    FWDATAIO_API std::string  extension();
 
 };
 

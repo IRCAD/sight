@@ -44,6 +44,7 @@ public :
 
     FWXML_API void read();
 
+    FWXML_API std::string  extension();
 
 private :
 

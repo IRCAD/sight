@@ -104,10 +104,9 @@ void TagReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string & TagReader::extension()
+std::string TagReader::extension()
 {
-    static std::string ext(".tag");
-    return ext;
+    return (".tag");
 }
 
 //------------------------------------------------------------------------------

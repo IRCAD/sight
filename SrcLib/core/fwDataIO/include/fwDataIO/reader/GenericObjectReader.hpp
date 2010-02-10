@@ -43,6 +43,8 @@ public :
     /// Constructor. Do nothing.
     GenericObjectReader(){};
 
+    virtual std::string extension() {return ("");}
+
     /// Destructor. Do nothing.
     virtual ~GenericObjectReader(){};
 

@@ -51,6 +51,8 @@ public :
     //! @brief Reading operator.
     VTKIO_API void write();
 
+    /// @return ".trian"
+    VTKIO_API  std::string extension();
 };
 
 } // namespace vtkIO

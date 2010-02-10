@@ -192,6 +192,7 @@ void FwXMLImageReaderService::notificationOfDBUpdate()
 
 //   ::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< fwServices::IEditionService >( pImage ) ;
     ::fwComEd::ImageMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
     msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
     msg->addEvent( ::fwComEd::ImageMsg::REGION ) ;
     msg->addEvent( ::fwComEd::ImageMsg::SPACING ) ;

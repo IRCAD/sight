@@ -84,6 +84,7 @@ public :
      */
     FWDATAIO_API virtual ::fwData::location::ILocation::sptr getLocation();
 
+    FWDATAIO_API virtual std::string  extension()=0;
 
 protected :
 

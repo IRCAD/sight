@@ -56,4 +56,9 @@ void MeshWriter::write()
 
 //------------------------------------------------------------------------------
 
+std::string  MeshWriter::extension()
+{
+   return ".trian";
+}
+
 } // namespace vtkIO

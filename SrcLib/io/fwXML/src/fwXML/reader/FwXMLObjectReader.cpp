@@ -64,6 +64,10 @@ void FwXMLObjectReader::read()
 
 //------------------------------------------------------------------------------
 
+std::string  FwXMLObjectReader::extension()
+{
+    return ".fxz";
+}
 } // namespace reader
 
 } // namespace fwXML

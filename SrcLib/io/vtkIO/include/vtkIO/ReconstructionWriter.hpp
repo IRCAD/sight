@@ -52,6 +52,8 @@ public :
     //! @brief Writing operator.
     VTKIO_API void write();
 
+    /// @return ".obj"
+    VTKIO_API  std::string extension();
 protected:
     /*!
      * @brief Create a vtkActor* from a ::fwData::Reconstruction::sptr.

@@ -89,10 +89,9 @@ void TriangularMeshReader::read()
 
 
 
-std::string  &TriangularMeshReader::extension()
+std::string  TriangularMeshReader::extension()
 {
-    static std::string ext(".trian");
-    return ext;
+    return (".trian");
 }
 
 

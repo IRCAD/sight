@@ -45,6 +45,7 @@ public :
 
     FWXML_API void write();
 
+    FWXML_API std::string  extension();
 protected:
     bool m_saveSchema;
 

@@ -68,6 +68,10 @@ void FwXMLObjectWriter::write()
 
 //------------------------------------------------------------------------------
 
+std::string  FwXMLObjectWriter::extension()
+{
+    return ".fxz";
+}
 } // namespace writer
 
 } // namespace fwXML

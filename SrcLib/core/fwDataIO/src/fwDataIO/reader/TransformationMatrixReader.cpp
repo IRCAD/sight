@@ -62,10 +62,9 @@ void TransformationMatrix3DReader::read()
 }
 
 
-std::string  &TransformationMatrix3DReader::extension()
+std::string  TransformationMatrix3DReader::extension()
 {
-    static std::string ext(".trf");
-    return ext;
+    return (".trf");
 }
 
 

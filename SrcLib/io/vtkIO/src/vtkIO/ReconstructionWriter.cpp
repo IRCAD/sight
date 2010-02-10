@@ -120,4 +120,9 @@ vtkActor * ReconstructionWriter::createActor( ::fwData::Reconstruction::sptr pRe
 
 //------------------------------------------------------------------------------
 
+std::string ReconstructionWriter::extension()
+{
+    return ".obj";
+}
+
 } // namespace dicomIO
