@@ -24,10 +24,10 @@
     <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
         <win guiContainerId="903" />
         <views orientation="horizontal" >
-            <view guiContainerId="910" proportion="0" />
-            <view guiContainerId="911" proportion="0" />
+            <view guiContainerId="910" proportion="0" minWidth="30" />
+            <view guiContainerId="911" proportion="0" minWidth="50" />
             <view guiContainerId="912" proportion="1" />
-            <view guiContainerId="913" proportion="0" />
+            <view guiContainerId="913" proportion="0" minWidth="30" />
         </views>
     </service>
     <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">

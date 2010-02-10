@@ -83,6 +83,17 @@ void MultiSizerView::configuring() throw( ::fwTools::Failed )
             vi.m_border = ::boost::lexical_cast< int >(border) ;
         }
 
+        if( (*iter)->hasAttribute("minWidth") )
+        {
+            std::string width = (*iter)->getExistingAttributeValue("minWidth") ;
+            vi.m_minSize.first = ::boost::lexical_cast< int >(width) ;
+        }
+
+        if( (*iter)->hasAttribute("minHeight") )
+        {
+            std::string height = (*iter)->getExistingAttributeValue("minHeight") ;
+            vi.m_minSize.second = ::boost::lexical_cast< int >(height) ;
+        }
         m_views.push_back(vi);
     }
 }
@@ -116,7 +127,7 @@ void MultiSizerView::starting() throw(::fwTools::Failed)
     std::list<ViewInfo>::iterator pi = m_views.begin();
     for ( pi; pi!= m_views.end() ; ++pi )
     {
-        wxPanel * viewPanel = new wxPanel(  wxContainer, pi->m_guid , wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTAB_TRAVERSAL );
+        wxPanel * viewPanel = new wxPanel(  wxContainer, pi->m_guid , wxDefaultPosition, wxSize( pi->m_minSize.first, pi->m_minSize.second ), wxNO_BORDER | wxTAB_TRAVERSAL );
 
         // Set the panel
         pi->m_panel = viewPanel;
