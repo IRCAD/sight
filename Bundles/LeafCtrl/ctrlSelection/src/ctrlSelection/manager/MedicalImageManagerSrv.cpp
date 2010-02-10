@@ -37,7 +37,8 @@ REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::Medica
 
 MedicalImageManagerSrv::MedicalImageManagerSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS );
 }
 
 //-----------------------------------------------------------------------------
@@ -52,23 +53,37 @@ void MedicalImageManagerSrv::updating( ::fwServices::ObjectMsg::csptr message ) 
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
+    SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg);
 
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
     {
-        ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
+        ::fwData::Composite::sptr fields = compositeMsg->getAddedFields();
+        convertImages( fields );
+    }
 
-        std::vector< std::string > objectIds = compositeMsg->getEventModifiedFields();
-        BOOST_FOREACH( std::string objectId, objectIds )
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
+    {
+        ::fwData::Composite::sptr fields = compositeMsg->getSwappedNewFields();
+        convertImages( fields );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void MedicalImageManagerSrv::convertImages( ::fwData::Composite::sptr _composite )
+{
+    for(    ::fwData::Composite::Container::iterator  objectId = _composite->getRefMap().begin();
+            objectId != _composite->getRefMap().end();
+            ++objectId )
+    {
+        BOOST_FOREACH( std::string key, m_imageCompositeKeys )
         {
-            BOOST_FOREACH( std::string key, m_imageCompositeKeys )
+            if( objectId->first == key )
             {
-                if( objectId == key )
-                {
-                    ::fwData::Image::sptr pImg = ::fwData::Image::dynamicCast( pComposite->getRefMap()[ objectId ] );
-                    std::pair<bool, bool> MinMaxTFAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( pImg );
-                    bool landMarksAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks( pImg );
-                    bool sliceIndexAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( pImg );
-                }
+                ::fwData::Image::sptr pImg = ::fwData::Image::dynamicCast( objectId->second );
+                std::pair<bool, bool> MinMaxTFAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( pImg );
+                bool landMarksAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks( pImg );
+                bool sliceIndexAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( pImg );
             }
         }
     }

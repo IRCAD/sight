@@ -59,6 +59,8 @@ public :
 
 private :
 
+    void convertImages( ::fwData::Composite::sptr _composite );
+
     std::vector< std::string > m_imageCompositeKeys;
 };
 
