@@ -251,6 +251,47 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
         fieldIsModified = true;
     }
+    else if (   _pImg->getFieldSize( ::fwComEd::Dictionary::m_axialSliceIndexId ) > 0 &&
+                _pImg->getFieldSize( ::fwComEd::Dictionary::m_frontalSliceIndexId ) > 0 &&
+                _pImg->getFieldSize( ::fwComEd::Dictionary::m_sagittalSliceIndexId ) > 0 )
+    {
+        // Get value
+        std::vector< boost::int32_t > imageSize (3,0);
+        for ( int k = 0; k < _pImg->getDimension(); k++ )
+        {
+            imageSize[k] = _pImg->getSize()[k];
+        }
+
+        // Get value
+        ::fwData::Integer::sptr paramA = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
+        if( paramA->value() < 0 ||  imageSize[2] < paramA->value() )
+        {
+            paramA->value() = imageSize[2] / 2;
+            _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
+            fieldIsModified = true;
+        }
+
+        ::fwData::Integer::sptr paramF = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId );
+        if( paramF->value() < 0 ||  imageSize[1] < paramF->value() )
+        {
+            paramF->value() = imageSize[1] / 2;
+            _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
+            fieldIsModified = true;
+        }
+
+        ::fwData::Integer::sptr paramS = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
+        if( paramS->value() < 0 ||  imageSize[0] < paramS->value() )
+        {
+            paramS->value() = imageSize[0] / 2;
+            _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramF );
+            fieldIsModified = true;
+        }
+    }
+    else
+    {
+        SLM_FATAL("Information on image slice index is not correct, miss one of these fields : m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.");
+    }
+
 
     return fieldIsModified;
 }
