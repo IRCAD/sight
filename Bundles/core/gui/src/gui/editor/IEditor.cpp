@@ -80,6 +80,9 @@ void IEditor::stopping() throw(::fwTools::Failed)
 {
     // Do not destroy m_container children either refresh
     // This is delegated to delegate which manage uninstallation of installed subwindows, such as the vtk one.
+    m_container->SetSizer(NULL);
+    m_container->DestroyChildren();
+
     if( m_isContainerLocallyCreated && m_container != 0 )
     {
         SLM_DEBUG("Destroying container") ;

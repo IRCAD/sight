@@ -93,9 +93,6 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
         m_sliceSelectorPanel = 0;
     }
 
-    m_container->SetSizer(NULL);
-    m_container->DestroyChildren();
-
     ::gui::editor::IEditor::stopping();
 }
 

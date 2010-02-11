@@ -103,9 +103,6 @@ void SliceListEditor::stopping() throw(::fwTools::Failed)
     m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_threeSlicesItem->GetId());
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this, m_idDropDown);
 
-    m_container->SetSizer(NULL);
-    m_container->DestroyChildren();
-
     ::gui::editor::IEditor::stopping();
 }
 

@@ -89,9 +89,6 @@ void ShowScanEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this, m_showScanButton->GetId());
 
-    m_container->SetSizer(NULL);
-    m_container->DestroyChildren();
-
     ::gui::editor::IEditor::stopping();
 }
 
