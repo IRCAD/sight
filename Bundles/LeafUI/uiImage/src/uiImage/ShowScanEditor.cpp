@@ -79,8 +79,7 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
     m_container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this,  m_showScanButton->GetId());
 
     m_container->SetSizer( sizer );
-    sizer->Fit( m_container );
-    m_container->Fit();
+    m_container->Layout();
 }
 
 //------------------------------------------------------------------------------

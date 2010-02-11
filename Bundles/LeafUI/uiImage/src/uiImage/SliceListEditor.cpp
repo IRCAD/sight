@@ -90,8 +90,7 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     m_container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this,  m_idDropDown);
 
     m_container->SetSizer( sizer );
-    sizer->Fit( m_container );
-    m_container->Fit();
+    m_container->Layout();
 }
 
 //------------------------------------------------------------------------------
