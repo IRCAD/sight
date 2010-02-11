@@ -81,6 +81,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
     m_container->SetSizer( sizer );
     m_container->Layout();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

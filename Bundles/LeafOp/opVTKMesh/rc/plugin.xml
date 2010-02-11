@@ -5,9 +5,18 @@
     <requirement id="dataReg" />
     <requirement id="gui" />
 
+    <point id="::opVTKMesh::IMesher">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
     <point id="::opVTKMesh::action::VTKMeshCreation" >
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
+    </point>
+    
+    <point id="::opVTKMesh::VTKMesherService" >
+        <implements>::opVTKMesh::IMesher</implements>
+        <implements>::fwData::Acquisition</implements>
     </point>
     
 </plugin>

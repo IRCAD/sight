@@ -171,7 +171,6 @@ void SwapperSrv::configureObject( ConfigurationType conf )
             if (this->isStarted())
             {
                 subSrv->getService()->start();
-                subSrv->getService()->update();
             }
          }
         m_objectsSubServices[objectId] = subVecSrv;

@@ -69,6 +69,7 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
 
     m_container->Bind( wxEVT_COMMAND_SLIDER_UPDATED, &OrganMaterialEditor::onOpacitySlider, this,  m_opacitySlider->GetId());
     m_container->Bind( wxEVT_COMMAND_COLOURPICKER_CHANGED, &OrganMaterialEditor::onColorButton, this,  m_colourButton->GetId());
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

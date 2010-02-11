@@ -118,6 +118,9 @@
                         <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
                             <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
                         </adaptor>
+                        <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="myCompositeVisu" >
+                            <config renderer="default" />
+                        </adaptor>
                     </scene>
                 </service>
 

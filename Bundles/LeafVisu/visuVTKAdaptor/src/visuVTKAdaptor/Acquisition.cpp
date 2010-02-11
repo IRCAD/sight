@@ -13,6 +13,8 @@
 #include <fwData/Material.hpp>
 #include <fwData/Boolean.hpp>
 
+#include <fwComEd/AcquisitionMsg.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 
@@ -36,6 +38,7 @@ Acquisition::Acquisition() throw()
 {
     m_clippingPlanes = "";
     addNewHandledEvent("ShowReconstructions");
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
 }
 
 Acquisition::~Acquisition() throw()
@@ -115,33 +118,39 @@ void Acquisition::doStop() throw(fwTools::Failed)
 void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
 
-    ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-
-    if ( msg->hasEvent("ShowReconstructions") )
+    ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
+    if ( acquisitionMsg )
     {
-        bool showRec = true;
-        if (acq->getFieldSize("ShowReconstructions"))
+        if ( acquisitionMsg->hasEvent("ShowReconstructions") )
         {
-            showRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
-        }
-
-        BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
-        {
-            if(!service.expired())
+            ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
+            bool showRec = true;
+            if (acq->getFieldSize("ShowReconstructions"))
             {
-                ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
-                    = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
-                if (renconstructionAdaptor)
+                showRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
+            }
+
+            BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+            {
+                if(!service.expired())
                 {
-                    renconstructionAdaptor->setForceHide( !showRec );
+                    ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
+                     = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
+                    if (renconstructionAdaptor)
+                    {
+                        renconstructionAdaptor->setForceHide( !showRec );
+                    }
                 }
             }
+
+            OSLM_INFO( "Receive event ShowReconstruction : " << showRec );
+            this->setVtkPipelineModified();
         }
-
-        OSLM_INFO( "Receive event ShowReconstruction : " << showRec );
-        this->setVtkPipelineModified();
+        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+        {
+            this->doUpdate();
+        }
     }
-
 }
 
 

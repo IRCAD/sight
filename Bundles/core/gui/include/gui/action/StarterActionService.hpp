@@ -43,6 +43,14 @@ public :
 
 protected:
 
+    enum ActionType {
+        START,
+        STOP,
+        START_IF_EXISTS,
+        STOP_IF_EXISTS,
+        DO_NOTHING
+    };
+
     /**
      * @brief This method gives information about the class. Do nothing.
      */
@@ -60,7 +68,7 @@ protected:
 
 private:
     // vector representing uuid's services that must be started (true) or stopped (false)
-    std::vector< std::pair< std::string, bool > > m_uuidServices;
+    std::vector< std::pair< std::string, ActionType > > m_uuidServices;
 };
 
 

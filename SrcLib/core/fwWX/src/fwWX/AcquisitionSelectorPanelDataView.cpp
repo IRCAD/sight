@@ -35,6 +35,8 @@
 #include <fwComEd/ReconstructionMsg.hpp>
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/PatientDBMsg.hpp>
+#include <fwComEd/AcquisitionMsg.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/Stringizer.hpp>
 
@@ -582,7 +584,7 @@ void AcquisitionSelectorPanelDataView::UpdateProperty(wxPropertyGridEvent& event
 
             //::boost::shared_ptr< ::fwServices::ObjectMsg > msg( new ::fwServices::ObjectMsg(  m_showAllRecPGProperty.first.lock()) ) ;
             //msg->addModif( "ShowReconstructions" ) ;
-            ::fwServices::ObjectMsg::NewSptr msg;
+            ::fwComEd::AcquisitionMsg::NewSptr msg;
             msg->addEvent("ShowReconstructions");
 
 //          editor->notify( msg );

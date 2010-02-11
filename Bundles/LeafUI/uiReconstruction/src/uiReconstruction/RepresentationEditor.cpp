@@ -74,6 +74,7 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     m_container->Bind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeRepresentation, this,  m_radioBoxRepresentation->GetId());
     m_container->Bind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeShading, this,  m_radioBoxShading->GetId());
     m_container->Bind( wxEVT_COMMAND_CHECKBOX_CLICKED, &RepresentationEditor::onShowNormals, this,  m_normalsCheckBox->GetId());
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

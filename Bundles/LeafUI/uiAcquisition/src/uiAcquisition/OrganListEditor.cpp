@@ -11,6 +11,7 @@
 #include <fwData/Acquisition.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/String.hpp>
+
 #include <fwComEd/ReconstructionMsg.hpp>
 #include <fwComEd/AcquisitionMsg.hpp>
 
@@ -37,6 +38,7 @@ OrganListEditor::OrganListEditor() throw()
 {
     addNewHandledEvent("ShowReconstructions");
     addNewHandledEvent("SelectReconstruction");
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
 }
 
 //------------------------------------------------------------------------------
@@ -69,6 +71,7 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
     m_container->Bind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this,  m_showCheckBox->GetId());
     m_container->Bind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
     m_container->Bind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +100,6 @@ void OrganListEditor::updating() throw(::fwTools::Failed)
 {
     this->updateReconstructions();
     this->refreshVisibility();
-    m_container->Layout();
 }
 
 //------------------------------------------------------------------------------
@@ -110,12 +112,17 @@ void OrganListEditor::swapping() throw(::fwTools::Failed)
 
 void OrganListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
-    ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-
-    if ( msg->hasEvent("ShowReconstructions") || msg->hasEvent("SelectReconstruction") )
+    ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
+    if ( acquisitionMsg )
     {
-        this->updating();
+        if ( acquisitionMsg->hasEvent("ShowReconstructions") ||
+                acquisitionMsg->hasEvent("SelectReconstruction") ||
+                acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+        {
+            this->updating();
+        }
     }
+
 }
 
 //------------------------------------------------------------------------------
@@ -207,7 +214,7 @@ void OrganListEditor::onShowReconstructions(wxCommandEvent & event )
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     acq->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(!m_showCheckBox->IsChecked()) );
 
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwComEd::AcquisitionMsg::NewSptr msg;
     msg->addEvent( "ShowReconstructions" );
     ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
 

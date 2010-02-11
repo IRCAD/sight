@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <wx/app.h>
+#include <wx/msgdlg.h>
+
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
@@ -14,7 +17,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
-
+#include <fwWX/convert.hpp>
 
 #include "gui/action/StarterActionService.hpp"
 
@@ -53,16 +56,66 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
 
     for(size_t i = 0; i < m_uuidServices.size(); i++)
     {
-        ::fwServices::IService::sptr service = ::fwServices::get( m_uuidServices.at(i).first ) ;
-        SLM_ASSERT("service not found", service);
-        if(m_uuidServices.at(i).second)
+        ActionType action =  m_uuidServices.at(i).second;
+        std::string uid =  m_uuidServices.at(i).first;
+        bool srv_exists = ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE );
+
+        // Manage special action
+        if ( action == START_IF_EXISTS )
         {
-            service->start();
-            service->update();
+            if ( srv_exists )
+            {
+                action = START;
+            }
+            else
+            {
+                action = DO_NOTHING;
+            }
+        }
+        else if( action == STOP_IF_EXISTS )
+        {
+            if ( srv_exists )
+            {
+                action = STOP;
+            }
+            else
+            {
+                action = DO_NOTHING;
+            }
+        }
+
+        if( action != DO_NOTHING)
+        {
+            ::fwServices::IService::sptr service = ::fwServices::get( uid ) ;
+            SLM_ASSERT("service not found", service);
+            switch ( action )
+            {
+            case START :
+            {
+                service->start();
+                service->update();
+                break;
+            }
+            case STOP :
+            {
+                service->stop();
+                break;
+            }
+            default :
+            {
+                SLM_FATAL("Sorry, this action type is not managed");
+                break;
+            }
+            }
         }
         else
         {
-            service->stop();
+            std::string msgInfo = "Sorry, the service is unavailable.";
+            wxMessageBox( ::fwWX::std2wx(msgInfo),
+                    _("Service unavailable"),
+                    wxOK | wxICON_WARNING,
+                    wxTheApp->GetTopWindow() );
+            OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
     }
 }
@@ -78,18 +131,21 @@ void StarterActionService::configuring() throw( ::fwTools::Failed )
     for( ; iter != this->m_configuration->end() ; ++iter )
     {
         OSLM_INFO( "StarterActionService "  << (*iter)->getName());
-        if( (*iter)->getName() == "start" )
+
+        std::string actionType =  (*iter)->getName();
+        ActionType action;
+        if ( actionType == "start" )                { action = START; }
+        else if ( actionType == "stop" )            { action = STOP; }
+        else if ( actionType == "start_if_exists" ) { action = START_IF_EXISTS; }
+        else if ( actionType == "stop_if_exists" )  { action = STOP_IF_EXISTS; }
+        else
         {
-            SLM_ASSERT("attribute uid missing", (*iter)->hasAttribute("uid")) ;
-            std::string uuid = (*iter)->getExistingAttributeValue("uid") ;
-            m_uuidServices.push_back( std::make_pair(uuid, true) );
+            OSLM_FATAL("Sorry this type of \"actionType\":" << actionType <<" is not managed by StarterActionService");
         }
-        if( (*iter)->getName() == "stop" )
-        {
-            SLM_ASSERT("attribute uid missing", (*iter)->hasAttribute("uid")) ;
-            std::string uuid = (*iter)->getExistingAttributeValue("uid") ;
-            m_uuidServices.push_back( std::make_pair(uuid, false) );
-        }
+        SLM_ASSERT("Attribute uid missing", (*iter)->hasAttribute("uid")) ;
+        std::string uuid = (*iter)->getExistingAttributeValue("uid") ;
+
+        m_uuidServices.push_back( std::make_pair(uuid, action) );
     }
 }
 
