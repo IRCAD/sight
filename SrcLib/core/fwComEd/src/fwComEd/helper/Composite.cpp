@@ -58,21 +58,36 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
 {
     OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite." , m_composite.lock()->getRefMap().find(_compositeKey) == m_composite.lock()->getRefMap().end() );
 
+
     // Get old object
     ::fwData::Object::sptr objBackup = m_composite.lock()->getRefMap()[ _compositeKey ];
 
-    // Modify composite
-    m_composite.lock()->getRefMap()[ _compositeKey ] = _newObject;
+    if( objBackup != _newObject )
+    {
+        // Modify composite
+        m_composite.lock()->getRefMap()[ _compositeKey ] = _newObject;
 
-    // Modify message
-    m_compositeMsg->addSwappedField( _compositeKey, objBackup, _newObject );
+        // Modify message
+        m_compositeMsg->addSwappedField( _compositeKey, objBackup, _newObject );
+    }
+    else
+    {
+        OSLM_INFO("Cannot swap this object ( "<< _compositeKey <<" ) in composite because it is the same object. Do nothing (not notification)");
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void Composite::notify( ::fwServices::IService::sptr _serviceSource )
 {
-    ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg );
+    if ( m_compositeMsg->getEventIds().size() > 0 )
+    {
+        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg );
+    }
+    else
+    {
+        SLM_INFO("Sorry, this helper cannot notify his message because the message is empty.");
+    }
 }
 
 //-----------------------------------------------------------------------------
