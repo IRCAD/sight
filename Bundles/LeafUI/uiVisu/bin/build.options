@@ -11,7 +11,7 @@ LIB     = [
            'fwWX_0-1'
            ]
 USE     = ['wx','boost']
-BUNDLES = ['gui_0-1','io_0-1']
+BUNDLES = ['gui_0-1']
 
 
 

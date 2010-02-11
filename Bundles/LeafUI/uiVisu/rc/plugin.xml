@@ -4,7 +4,6 @@
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
     <requirement id="gui"/>
-    <requirement id="io"/>
     
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwTools::Object ) ;-->
     <point id="::uiVisu::SnapshotEditor" >
