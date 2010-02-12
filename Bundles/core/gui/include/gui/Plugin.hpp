@@ -9,6 +9,8 @@
 
 #include <fwRuntime/Plugin.hpp>
 
+#include "gui/export.hpp"
+
 /**
  * @brief   Namespace gui.
  * @namespace   gui.
@@ -30,13 +32,13 @@ namespace gui
  * @date    2009.
  */
 
-class Plugin : public ::fwRuntime::Plugin
+class GUI_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
 public:
 
      ///@brief  Destructor. Do nothing.
-    ~Plugin() throw();
+    GUI_API virtual ~Plugin() throw();
 
     /**
      * @brief This method is used by runtime to initialize the bundle.
@@ -46,12 +48,12 @@ public:
      * Register first basic services of type IAction, IEditor, IAspect and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
      */
-    void start() throw(::fwRuntime::RuntimeException);
+    GUI_API void start() throw(::fwRuntime::RuntimeException);
 
     /**
     * @brief This method is used by runtime to close the bundle. Do nothing.
     */
-    void stop() throw();
+    GUI_API void stop() throw();
 
 };
 

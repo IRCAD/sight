@@ -45,13 +45,40 @@ public :
 
 protected:
 
-    ///This method launches the IEditor::starting method.
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    /** @name Service methods ( override from ::fwServices::IService )
+     * @{
+     */
+    /**
+     * @brief This method launches the IEditor::starting method.
+     */
+    GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
 
-    ///This method launches the IEditor::stopping method.
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    /**
+     * @brief This method launches the IEditor::stopping method.
+     */
+    GUI_API virtual void stopping() throw( ::fwTools::Failed );
 
+    /**
+     * @brief This method is used to update services on notification. Do nothing.
+     */
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
+    /**
+     * @brief This method is used to update services. Do nothing.
+     */
+    GUI_API virtual void updating() throw(::fwTools::Failed);
+
+    /**
+     * @brief This method is used to configure the class parameters. Do nothing.
+    */
+    GUI_API virtual void configuring() throw( ::fwTools::Failed );
+
+    /**
+     * @brief This method is used to give information about the service. Do nothing.
+     */
+    GUI_API virtual void info(std::ostream &_sstream );
+
+    ///@}
 };
 
 }

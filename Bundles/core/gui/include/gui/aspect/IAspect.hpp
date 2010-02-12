@@ -112,6 +112,10 @@ protected :
 
     ///@}
 
+    GUI_API void unregisterAspect();
+
+    GUI_API void registerAspect();
+
     /// Service vector of ::gui::view::IView type.  List of the view declared in the aspect config.
     std::vector< ::gui::view::IView::sptr >         m_views ;
 

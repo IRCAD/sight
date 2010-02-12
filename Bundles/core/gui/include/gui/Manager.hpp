@@ -36,13 +36,13 @@ class GUI_CLASS_API Manager : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (Manager)( ::fwCore::BaseObject::Baseclass) ) ;
+    fwCoreClassDefinitionsWithFactoryMacro((Manager)(::fwCore::BaseObject::Baseclass), (( )) , new Manager );
 
     /**
      * @brief   Retrieves the singleton basicVisuCtrl instance.
      * @return  a shared pointer to the basicVisuCtrl instance
      */
-    GUI_API static const ::boost::shared_ptr< Manager > getDefault() throw();
+    GUI_API static const ::gui::Manager::sptr getDefault() throw();
 
     /**
      * @brief   destructor
@@ -60,45 +60,26 @@ public:
     GUI_API static void uninitialize() ;
 
     /**
-     * @brief Register aspect for top window name, icons...
-     */
-    GUI_API static void registerAspect( ::gui::aspect::IAspect::wptr _aspect ) ;
-
-    /**
-     * @brief Unregister aspect for top window name, icons...
-     */
-    GUI_API static void unregisterAspect( ::gui::aspect::IAspect::wptr _aspect ) ;
-
-    /**
      * @brief Associates an id with a service callBack
      * @note the callBack is an IAction having installed a new menu item in the application. This action is typically provided by a starting service wanting to have a entry from app menu
      * @note the map id to IAction is used by the menu handler (placed on the app top window) to indirectly trigger the action
      */
-    GUI_API static void registerAction( ::gui::action::IAction::wptr _action ) ;
+    GUI_API static void registerAction( ::gui::action::IAction::sptr _action ) ;
 
     /**
      * @brief Remove id to service callBack association
      */
-    GUI_API static void unregisterAction( ::gui::action::IAction::wptr _action ) ;
+    GUI_API static void unregisterAction( ::gui::action::IAction::sptr _action ) ;
 
 
-    GUI_API static ::gui::action::IAction::wptr getAction( int id ) ;
-
-    GUI_API static bool isRegistered( int id ) ;
+    GUI_API static wxAuiManager *getTopAuiManager();
 
     /**
      * @brief Invoked by the menu event handler observing user actions on application menu
      */
-    GUI_API static void processAction(int id ) ;
+    static void processAction(int id ) ;
 
-    /**
-     * @brief Information allowing to specify the global gui aspect to be further loading. This information could be dynamically read from the profile.xml
-     */
-    GUI_API static void setGlobalAspectInformations( std::pair< bool , std::string > globalAspectInfo ) ;
-
-    GUI_API static wxAuiManager *getTopAuiManager();
-
-    GUI_API static void registerShortcuts();
+    static void registerShortcuts();
 
 private:
 
@@ -123,20 +104,7 @@ private:
     /**
      * @brief aui manager used to manage integration of subframes as children of the application top window
      */
-    wxAuiManager *      m_wxmanager ;
-
-    /**
-     * @brief global application aspect, not provided by an specific object configuration
-     * @note m_unlessObject used only so that aspect has an associated object: should be done differently (e.g. global aspect directly affected to any new root object....)
-     */
-    ::fwTools::Object::sptr m_unlessObject ;
-
-    ::gui::aspect::IAspect::wptr m_globalAspect ;
-
-    /**
-     * @brief true (m_globalAspectInformation.first) if global aspect specified by the id of the associated contribution to ::gui::aspect::DefaultAspect (m_globalAspectInformation.second)
-     */
-    std::pair< bool , std::string > m_globalAspectInformation ;
+    wxAuiManager * m_wxmanager ;
 
 };
 

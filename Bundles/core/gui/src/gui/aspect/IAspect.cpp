@@ -15,16 +15,18 @@
 #include <fwServices/Factory.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/bundle/runtime.hpp>
+
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <fwData/Object.hpp>
+
+#include <fwWX/convert.hpp>
 
 #include "gui/aspect/IMenu.hpp"
 #include "gui/aspect/IAspect.hpp"
 #include "gui/aspect/IToolBar.hpp"
-#include "gui/action/IAction.hpp"
-#include "gui/action/NothingAction.hpp"
 #include "gui/Manager.hpp"
 
 
@@ -117,11 +119,7 @@ void IAspect::configuring() throw( ::fwTools::Failed )
 
 void IAspect::starting() throw(::fwTools::Failed)
 {
-    // To update name
-    ::gui::Manager::registerAspect( ::boost::dynamic_pointer_cast< ::gui::aspect::IAspect >( shared_from_this() ) ) ;
-
     // Create MenuBar
-    SLM_TRACE("No menu bar : creating it") ;
     wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
     SLM_ASSERT( "No wxFrame", frame ) ;
 
@@ -139,7 +137,7 @@ void IAspect::starting() throw(::fwTools::Failed)
     for(std::vector< std::string >::iterator iterUUID = m_menusUUID.begin() ; iterUUID != m_menusUUID.end() ; ++iterUUID )
     {
         bool menuIsFound = false;
-        for(    std::vector< ::boost::shared_ptr< ::gui::aspect::IMenu > >::iterator iterMenu = allMenus.begin();
+        for(    std::vector< ::gui::aspect::IMenu::sptr >::iterator iterMenu = allMenus.begin();
                 iterMenu != allMenus.end() && ! menuIsFound ;
                 ++iterMenu )
         {
@@ -151,16 +149,14 @@ void IAspect::starting() throw(::fwTools::Failed)
         }
         SLM_ASSERT("Menu Not Found", menuIsFound);
     }
+    this->registerAspect();
 }
 //---------------------------------------------------------------------------
 
 void IAspect::stopping() throw(::fwTools::Failed)
 {
-    // To update name
-    ::gui::Manager::unregisterAspect( ::boost::dynamic_pointer_cast< ::gui::aspect::IAspect >( shared_from_this() ) ) ;
-
     // Stopping menus (do this after actions)
-    std::vector< ::boost::shared_ptr< ::gui::aspect::IMenu > > allMenus = ::fwServices::OSR::getServices< ::gui::aspect::IMenu >() ;
+    std::vector< ::gui::aspect::IMenu::sptr > allMenus = ::fwServices::OSR::getServices< ::gui::aspect::IMenu >() ;
     for(std::vector< std::string >::iterator iterUUID = m_menusUUID.begin() ; iterUUID != m_menusUUID.end() ; ++iterUUID )
     {
         bool menuIsFound = false;
@@ -176,7 +172,7 @@ void IAspect::stopping() throw(::fwTools::Failed)
         }
         SLM_ASSERT("Menu Not Found", menuIsFound);
     }
-
+    this->unregisterAspect();
 }
 
 //---------------------------------------------------------------------------
@@ -225,6 +221,38 @@ wxIcon* IAspect::createIcon(std::string _imagePath) const throw(::fwTools::Faile
     }
     return result;
 }
+
+//-----------------------------------------------------------------------------
+
+void IAspect::registerAspect( )
+{
+    wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
+    SLM_ASSERT( "No wxFrame", frame ) ;
+    frame->SetTitle( ::fwWX::std2wx(this->getName()) ) ;
+    if(this->getIcon()!= 0)
+    {
+        frame->SetIcon( *this->getIcon().get() );
+    }
+    frame->SetMinSize(this->getMinSize());
+    frame->Show(TRUE);
+}
+
+//-----------------------------------------------------------------------------
+
+void IAspect::unregisterAspect( )
+{
+    wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
+    SLM_ASSERT( "No wxFrame", frame ) ;
+    frame->SetTitle("") ;
+
+    if( ::gui::Manager::getDefault() &&
+            ::gui::Manager::getDefault()->getTopAuiManager() )
+    {
+        ::gui::Manager::getDefault()->getTopAuiManager()->Update();
+        wxTheApp->GetTopWindow()->Refresh();
+    }
+}
+
 }
 }
 

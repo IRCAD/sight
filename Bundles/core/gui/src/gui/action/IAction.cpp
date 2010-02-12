@@ -106,7 +106,6 @@ void IAction::starting() throw(::fwTools::Failed)
 {
     OSLM_TRACE("starting action " << this->getId() << " : info = " << *this) ;
     SLM_ASSERT("IAction must be associated with a menu", !m_menuName.empty());
-    SLM_ASSERT("Action already registered", !::gui::Manager::isRegistered(m_actionIdInMenu));
 
     // get Frame
     wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
@@ -121,11 +120,7 @@ void IAction::starting() throw(::fwTools::Failed)
     wxMenu *menuFile = menuBar->GetMenu( menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) ) ;
 
     // create shortcut
-    if( m_shortcutDef.empty() )
-    {
-        m_shortcut = ::boost::shared_ptr< ::gui::action::Shortcut >();
-    }
-    else
+    if( !m_shortcutDef.empty() )
     {
         m_shortcut =  ::gui::action::Shortcut::New( m_shortcutDef );
         m_actionNameInMenu += "\t" + m_shortcut->toString();
@@ -143,7 +138,7 @@ void IAction::starting() throw(::fwTools::Failed)
         menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , wxConvertMB2WX( m_actionNameInMenu.c_str() )) ) ;
     }
 
-    ::gui::Manager::registerAction( ::boost::dynamic_pointer_cast< ::gui::action::IAction>( shared_from_this() )) ;
+    ::gui::Manager::registerAction( this->getSptr() ) ;
 
     setEnable(m_enable);
     setCheck(m_isCheck);
@@ -181,7 +176,7 @@ void IAction::stopping() throw(::fwTools::Failed)
         menuFile->Remove( m_actionIdInMenu );
 #endif
 
-    ::gui::Manager::unregisterAction( ::boost::dynamic_pointer_cast< ::gui::action::IAction >( shared_from_this() )) ;
+    ::gui::Manager::unregisterAction( this->getSptr()) ;
 }
 
 bool IAction::isEnable()
@@ -298,7 +293,7 @@ wxMenuItem* IAction::getMenuItem()
 
 //-----------------------------------------------------------------------------
 
-const ::gui::action::Shortcut::sptr IAction::getShortcut() const
+::gui::action::Shortcut::csptr IAction::getShortcut() const
 {
     return m_shortcut;
 }
@@ -315,7 +310,6 @@ const ::gui::action::Shortcut::sptr IAction::getShortcut() const
 void IAction::setShortcut( ::gui::action::Shortcut::sptr _shortcut )
 {
     m_shortcut = _shortcut;
-    //std::for_each( m_listeners.begin(), m_listeners.end(), NotifyPropertyChanged(shared_from_this(), SHORTCUT) );
 }
 
 

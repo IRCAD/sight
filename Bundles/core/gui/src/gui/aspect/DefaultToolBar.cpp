@@ -20,8 +20,54 @@ namespace aspect
 DefaultToolBar::DefaultToolBar() throw()
 {}
 
+//-----------------------------------------------------------------------------
+
 DefaultToolBar::~DefaultToolBar() throw()
 {}
+
+//-----------------------------------------------------------------------------
+
+void DefaultToolBar::starting()  throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->::gui::aspect::IToolBar::starting();
+}
+
+//-----------------------------------------------------------------------------
+
+void DefaultToolBar::stopping()  throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->::gui::aspect::IToolBar::stopping();
+}
+
+//-----------------------------------------------------------------------------
+
+void DefaultToolBar::configuring()  throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void DefaultToolBar::updating() throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void DefaultToolBar::updating(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void DefaultToolBar::info( std::ostream &_sstream )
+{
+    SLM_TRACE_FUNC();
+}
 
 }
 

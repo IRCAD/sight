@@ -37,6 +37,7 @@ class GUI_CLASS_API IAction : public ::fwServices::IService
 public :
 
     fwCoreNonInstanciableClassDefinitionsMacro ( (IAction)( ::fwServices::IService::Baseclass) ) ;
+    fwCoreAllowSharedFromThis();
 
     /**
     * @brief Constructor. Do nothing (Just initialize parameters).
@@ -90,7 +91,7 @@ public :
      *
      * @return  Constant shared pointer to the shortcut.
      */
-    GUI_API const ::boost::shared_ptr< ::gui::action::Shortcut > getShortcut() const;
+    GUI_API ::gui::action::Shortcut::csptr getShortcut() const;
 
 
     /**
@@ -98,7 +99,7 @@ public :
      *
      * @return  Shared pointer to the shortcut.
      */
-    GUI_API ::boost::shared_ptr< ::gui::action::Shortcut > getShortcut();
+    GUI_API ::gui::action::Shortcut::sptr getShortcut();
 
 
     /**
@@ -157,7 +158,7 @@ protected :
      * @todo ACH: May this method be removed and imposed to children classes ??
      * @tode ACH : uncomment assertion
      */
-    GUI_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services (it manages the check / uncheck).

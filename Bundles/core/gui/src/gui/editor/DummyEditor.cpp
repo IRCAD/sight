@@ -36,18 +36,52 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::gui::editor::DummyEditor , ::fwTool
 DummyEditor::DummyEditor() throw()
 {}
 
+//-----------------------------------------------------------------------------
+
 DummyEditor::~DummyEditor() throw()
 {}
+
+//-----------------------------------------------------------------------------
 
 void DummyEditor::starting() throw(::fwTools::Failed)
 {
     ::gui::editor::IEditor::starting();
 }
+
+//-----------------------------------------------------------------------------
+
 void DummyEditor::stopping() throw(::fwTools::Failed)
 {
     ::gui::editor::IEditor::stopping();
 }
 
+//-----------------------------------------------------------------------------
+
+void DummyEditor::configuring()  throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void DummyEditor::updating() throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void DummyEditor::updating(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void DummyEditor::info( std::ostream &_sstream )
+{
+    SLM_TRACE_FUNC();
+}
 }
 }
 

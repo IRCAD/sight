@@ -18,7 +18,6 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include "gui/aspect/IToolBar.hpp"
-#include "gui/aspect/IAspect.hpp"
 #include "gui/action/IAction.hpp"
 
 
@@ -28,28 +27,18 @@ namespace aspect
 {
 
 IToolBar::IToolBar() throw() : m_toolBar(0)
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 
 IToolBar::~IToolBar() throw()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void IToolBar::configuring() throw( ::fwTools::Failed )
-{
-    SLM_INFO("IToolBar::configuring") ;
-}
+{}
 
 //-----------------------------------------------------------------------------
 
 void IToolBar::starting() throw( ::fwTools::Failed )
 {
-    SLM_INFO("IToolBar::starting") ;
-
+    SLM_TRACE_FUNC();
     //get frame
     wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
     SLM_ASSERT( "No wxFrame", frame ) ;
@@ -145,26 +134,13 @@ void IToolBar::starting() throw( ::fwTools::Failed )
 
 void IToolBar::stopping() throw( ::fwTools::Failed )
 {
-    SLM_INFO("IToolBar::stopping") ;
+    SLM_TRACE_FUNC();
     if( m_toolBar != 0 )
     {
         m_toolBar->ClearTools();
         delete m_toolBar;
         m_toolBar = 0;
     }
-}
-//-----------------------------------------------------------------------------
-
-void IToolBar::updating() throw(::fwTools::Failed)
-{
-    SLM_TRACE("IToolBar::updating");
-}
-
-//-----------------------------------------------------------------------------
-
-void IToolBar::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_FATAL("an IToolBar service does not received a message." );
 }
 
 //-----------------------------------------------------------------------------

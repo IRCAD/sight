@@ -85,13 +85,13 @@ protected :
      * @brief Update/refresh/execute the service on an observation/notification. Do nothing.
      * @todo Must be not implemented and class child declaration should be imposed.
      */
-    GUI_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {};
 
     /**
      * @brief Update/refresh/execute the service. Do nothing.
      * @todo Must be not implemented and class child declaration should be imposed.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed) {} ;
+    GUI_API virtual void updating() throw(::fwTools::Failed) {};
 
     ///@}
 

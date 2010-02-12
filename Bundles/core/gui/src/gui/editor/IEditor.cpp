@@ -70,9 +70,6 @@ void IEditor::starting() throw(::fwTools::Failed)
         m_container->Refresh();
         m_isContainerLocallyCreated = true ;
     }
-
-//  fwServices::registerCommunicationChannel(this->getObject() ,this->getSptr() )->start();
-
     // Postcondition assertions
     assert( m_container ) ;
 }

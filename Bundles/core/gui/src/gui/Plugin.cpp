@@ -50,16 +50,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
         SLM_FATAL(" Bundle gui, missing param : rootObject, config, configFile in profile");
     }
 
-    if( this->getBundle()->hasParameter("Aspect") )
-    {
-        std::string id = this->getBundle()->getParameterValue("Aspect") ;
-        OSLM_TRACE("Starting GUI: specified aspect is " << id ) ;
-        ::gui::Manager::setGlobalAspectInformations( std::pair< bool , std::string >( true , id ));
-    }
-    else
-    {
-        SLM_TRACE("Starting GUI: No aspect specified" ) ;
-    }
+    SLM_FATAL_IF("Depreciated parameter Aspect", this->getBundle()->hasParameter("Aspect"));
 
     if( this->getBundle()->hasParameter("startingMode")
             &&  this->getBundle()->getParameterValue("startingMode") == "windows")

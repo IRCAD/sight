@@ -50,11 +50,6 @@ protected :
      * @{
      */
 
-       /**
-     * @brief This method is used to configure the class parameters. Do nothing.
-     */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
-
     /**
      * @brief This method create a new ToolBar in frame, and add tools with IToolBar::m_actionIds list.
      */
@@ -63,18 +58,30 @@ protected :
     /**
      * @brief This method remove the tools situated in the ToolBar and delete ToolBar.
      */
-    GUI_API virtual void stopping() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void stopping() throw( ::fwTools::Failed );
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
      * @attention An IToolBar service does not received a message.
      */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) = 0 ;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed) ;
+    GUI_API virtual void updating() throw(::fwTools::Failed) = 0;
+
+    /**
+     * @brief This method is used to configure the class parameters. Do nothing.
+    */
+    GUI_API virtual void configuring() throw( ::fwTools::Failed ) = 0;
+
+    /**
+     * @brief This method is used to give information about the service. Do nothing.
+     * @todo Must be not implemented and class child declaration should be imposed.
+     */
+    GUI_API virtual void info(std::ostream &_sstream ) = 0;
+
     ///@}
 
 private:
