@@ -53,7 +53,7 @@
      <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no">
        <action uid="action_openFile" />
        <action uid="action_SaveFile" />
-       <separator />	
+       <separator />    
        <action uid="action_quit" />
      </service>
      
