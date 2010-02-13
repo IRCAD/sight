@@ -38,8 +38,11 @@ class GUI_CLASS_API MultiView : public ::gui::view::IView
             m_align ("center"),
             m_minSize (std::make_pair(-1,-1)),
             m_isResizable(true),
-            m_visible (false),
-            m_panel (0)
+            m_visible (true),
+            m_panel (0),
+            m_position(0),
+            m_layer(0),
+            m_row(0)
         {}
 
         std::string             m_align;
@@ -47,13 +50,16 @@ class GUI_CLASS_API MultiView : public ::gui::view::IView
         bool                    m_visible;
         wxPanel *               m_panel;
         bool                    m_isResizable;
+        int                     m_position;
+        int                     m_layer;
+        int                     m_row;
     };
 
 public :
 
     /// Constructor, does nothing.
     GUI_API MultiView() throw() ;
-    
+
     /// Destructor, does nothing.
     GUI_API virtual ~MultiView() throw() ;
 

@@ -38,8 +38,6 @@ MultiView::~MultiView() throw()
 
 void MultiView::configuring() throw( ::fwTools::Failed )
 {
-
-
     assert( m_configuration->getName() == "service" );
     SLM_FATAL_IF( "missing win configuration" , ! m_configuration->findConfigurationElement("win") );
 
@@ -84,7 +82,35 @@ void MultiView::configuring() throw( ::fwTools::Failed )
         if( (*iter)->hasAttribute("resizable") )
         {
             std::string resizable = (*iter)->getExistingAttributeValue("resizable") ;
+            OSLM_ASSERT("Incorrect value for \"resizable\" attribute "<<resizable,
+                               (resizable == "yes") || (resizable == "no"));
             vi.m_isResizable = (resizable=="yes") ;
+        }
+
+        if( (*iter)->hasAttribute("position") )
+        {
+            std::string position = (*iter)->getExistingAttributeValue("position") ;
+            vi.m_position = ::boost::lexical_cast< int >(position);
+        }
+
+        if( (*iter)->hasAttribute("layer") )
+        {
+            std::string layer = (*iter)->getExistingAttributeValue("layer") ;
+            vi.m_layer = ::boost::lexical_cast< int >(layer);
+        }
+
+        if( (*iter)->hasAttribute("row") )
+        {
+            std::string row = (*iter)->getExistingAttributeValue("row") ;
+            vi.m_row = ::boost::lexical_cast< int >(row);
+        }
+
+        if( (*iter)->hasAttribute("visible") )
+        {
+            std::string visible = (*iter)->getExistingAttributeValue("visible") ;
+            OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                    (visible == "yes") || (visible == "no"));
+            vi.m_visible = (visible == "yes");
         }
         m_panels[guid] = vi;
     }
@@ -136,7 +162,10 @@ void MultiView::starting() throw(::fwTools::Failed)
         paneInfo.CaptionVisible( false );
         paneInfo.PaneBorder( false );
         paneInfo.MinSize( wxSize( pi->second.m_minSize.first, pi->second.m_minSize.second ) );
-
+        paneInfo.Position(pi->second.m_position);
+        paneInfo.Layer(pi->second.m_layer);
+        paneInfo.Row(pi->second.m_row);
+        paneInfo.Show(pi->second.m_visible);
         // rempli paneInfo avec pi->second
         m_manager->AddPane( viewPanel, paneInfo);
     }

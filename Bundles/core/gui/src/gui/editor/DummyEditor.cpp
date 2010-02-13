@@ -8,20 +8,20 @@
 
 #include <wx/wx.h>
 #include <wx/window.h>
-#include <wx/frame.h>
-
-#include <boost/lexical_cast.hpp>
+#include <wx/colour.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
-
 
 #include <fwCore/base.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
-
+#include <fwWX/convert.hpp>
+#include <fwTools/UUID.hpp>
 
 #include "gui/editor/DummyEditor.hpp"
 
@@ -46,12 +46,21 @@ DummyEditor::~DummyEditor() throw()
 void DummyEditor::starting() throw(::fwTools::Failed)
 {
     ::gui::editor::IEditor::starting();
+
+    wxBoxSizer* bSizer;
+    bSizer = new wxBoxSizer( wxVERTICAL );
+    wxStaticText*  staticText = new wxStaticText( m_container, wxID_ANY, ::fwWX::std2wx(this->getUUID()), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer->Add( staticText, 1, wxALL|wxEXPAND, 5 );
+    m_container->SetSizer( bSizer );
+    m_container->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
+    m_container->Refresh();
 }
 
 //-----------------------------------------------------------------------------
 
 void DummyEditor::stopping() throw(::fwTools::Failed)
 {
+    m_container->SetBackgroundColour(wxNullColour);
     ::gui::editor::IEditor::stopping();
 }
 
@@ -59,6 +68,7 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
 
 void DummyEditor::configuring()  throw ( ::fwTools::Failed )
 {
+    ::gui::editor::IEditor::configuring();
     SLM_TRACE_FUNC();
 }
 
