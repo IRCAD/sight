@@ -1,0 +1,209 @@
+<plugin id="Tuto09MesherWithGenericScene">
+
+<extension id="Tuto09MesherWithGenericScene" implements="::fwData::Composite">
+<object id="Tuto09MesherWithGenericScene" type="::fwData::Composite">
+
+    <service uid="MyIHM" implementation="::gui::aspect::DefaultAspect" type="::gui::aspect::IAspect" autoComChannel="no" >
+        <name>Tuto09MesherWithGenericScene</name>
+        <icon>Bundles/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
+        <views>
+            <view guiContainerId="900" />
+        </views>
+        <menus>
+            <menu uid="menu_File"/>
+            <menu uid="menu_Mesher"/>
+        </menus>
+    </service>
+    
+    <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
+        <win guiContainerId="900" />
+        <views>
+            <view guiContainerId="901" align="center" />
+            <view guiContainerId="902" align="right" minWidth="200" />
+            <view guiContainerId="904" align="right" minWidth="200" />
+            <view guiContainerId="905" align="right" minWidth="200" />
+            <view guiContainerId="903" align="bottom" minHeight="30" resizable="no" />
+        </views>
+    </service>
+    <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
+        <win guiContainerId="903" />
+        <views orientation="horizontal" >
+            <view guiContainerId="910" proportion="0" minWidth="30" />
+            <view guiContainerId="911" proportion="0" minWidth="50" />
+            <view guiContainerId="912" proportion="1" />
+            <view guiContainerId="913" proportion="0" minWidth="30" />
+        </views>
+    </service>
+    <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+        <win guiContainerId="913" />
+        <snap>
+            <scene uid="genericScene" />
+        </snap>
+    </service>
+    
+    <service uid="menu_File" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="File" autoComChannel="no" >
+            <action uid="action_openFile"/>
+            <action uid="action_saveFile"/>
+    </service>
+    <service uid="menu_Mesher" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="Mesher" autoComChannel="no" >
+            <action uid="action_createMesh50"/>
+            <action uid="action_createMesh80"/>
+    </service>
+
+   <service uid="action_openFile" implementation="::gui::action::StarterActionService" name="Open File" type="::gui::action::IAction"  shortcut="Ctrl+O" autoComChannel="no" >
+            <start uid="myReaderPathFile"/>
+    </service>
+    <service uid="action_saveFile" implementation="::gui::action::StarterActionService" name="Save File" type="::gui::action::IAction"  shortcut="Ctrl+O" autoComChannel="no" >
+            <start uid="myWriterPathFile"/>
+    </service>
+    <service uid="action_createMesh50" implementation="::gui::action::StarterActionService" name="Create Mesh 50" type="::gui::action::IAction" autoComChannel="no" >
+            <start_if_exists uid="mesher50ServiceUID"/>
+    </service>
+    <service uid="action_createMesh80" implementation="::gui::action::StarterActionService" name="Create Mesh 80" type="::gui::action::IAction" autoComChannel="no" >
+            <start_if_exists uid="mesher80ServiceUID"/>
+    </service>  
+
+    <!-- myPatientDB description -->
+    <object id="myPatientDB" uid="myPatientDB" type="::fwData::PatientDB">
+        
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" >
+            <type mode="reader"/>
+        </service>
+        <service uid="myWriterPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" >
+           <type mode="writer"/>
+        </service>
+        <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+            <target>myUpdaterAcq</target>
+        </service>
+        <service uid="myUpdaterComCannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+            <target>myUpdaterImg</target>
+        </service>
+        <service uid="myUpdaterComCannelReconst" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+            <target>myUpdaterReconst</target>
+        </service>
+    </object>
+ 
+    <!-- CompositeVisu description -->
+    <object id="myCompositeVisu" uid="myCompositeVisu" type="::fwData::Composite">
+
+        <service uid="myMedicalImageManager" implementation="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6">
+            <update imageCompositeKey="myImage" />
+        </service>
+        <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myAcquisition" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
+        </service>
+        <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
+        </service>
+        <service uid="myUpdaterReconst" implementation="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myReconstruction" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
+            <update compositeKey="myReconstruction" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
+            <update compositeKey="myReconstruction" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
+        </service>
+        
+        <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes">
+            <mode type="stop" />
+            <config>
+                <object id="myAcquisition" type="::fwData::Acquisition" >
+                     <service uid="myUpdaterComCannelReconst2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+                         <target>myUpdaterReconst</target>
+                     </service>
+                     <service uid="listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" >
+                        <win guiContainerId="902"/>
+                     </service>
+                     <service uid="mesher50ServiceUID" implementation="::opVTKMesh::VTKMesherService" type="::opVTKMesh::IMesher" autoComChannel="no" >
+                         <percentReduction value="50"/>
+                     </service>
+                     <service uid="mesher80ServiceUID" implementation="::opVTKMesh::VTKMesherService" type="::opVTKMesh::IMesher" autoComChannel="no" >
+                         <percentReduction value="80"/>
+                     </service>
+                 </object>
+                 <object id="myImage" type="::fwData::Image" >
+                     <service uid="sliceListEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
+                        <win guiContainerId="910" />
+                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3"/>
+                     </service>
+                     <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+                         <win guiContainerId="911" />
+                         <negatoAdaptor uid="MPRNegatoScene3D" />
+                     </service>
+                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial">
+                        <win guiContainerId="912"/>
+                     </service>
+                 </object>
+                 <object id="myReconstruction" type="::fwData::Reconstruction" >
+                     <service uid="organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="yes" >
+                        <win guiContainerId="904"/>
+                     </service>
+                      <service uid="representationEditor" implementation="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoComChannel="yes" >
+                        <win guiContainerId="905"/>
+                     </service>
+                 </object>
+            </config>
+        </service>
+        
+        <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+            <win guiContainerId="901"/>
+            <scene>
+            
+                <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                
+                <renderer id="default" background="0.0" />
+                <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="myCompositeVisu">
+                    <config renderer="default" picker="" />
+                </adaptor>
+                 
+                <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                    <config renderer="default" picker="" />
+                </adaptor>
+                
+                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                    <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                </adaptor>
+                
+                 <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="myCompositeVisu" >
+                    <config renderer="default" />
+                </adaptor>
+                
+            </scene>
+        </service>
+                
+    </object>
+
+    <start uid="MyIHM"/>
+    <start uid="multiView_scene1"/>
+    <start uid="multiView_scene1_bottom"/>
+    <start uid="snapshotScene1Editor"/>
+    <start uid="genericScene"/>
+    <start uid="myUpdaterAcq"/>
+    <start uid="myUpdaterImg"/>
+    <start uid="myUpdaterReconst"/>
+    <start uid="myMedicalImageManager"/>
+    <start uid="myManager"/>
+    <start uid="myUpdaterComCannelAcq"/>
+    <start uid="myUpdaterComCannelImg"/>
+    <start uid="myUpdaterComCannelReconst"/>
+    
+    <stop uid="myUpdaterComCannelReconst"/>
+    <stop uid="myUpdaterComCannelImg"/>
+    <stop uid="myUpdaterComCannelAcq"/>
+    <stop uid="myManager"/>
+    <stop uid="myMedicalImageManager"/>
+    <stop uid="myUpdaterReconst"/>
+    <stop uid="myUpdaterImg"/>
+    <stop uid="myUpdaterAcq"/>
+    <stop uid="genericScene"/>
+    <stop uid="snapshotScene1Editor"/>
+    <stop uid="multiView_scene1_bottom"/>
+    <stop uid="multiView_scene1"/>
+    <stop uid="MyIHM"/>
+
+</object>
+</extension>
+
+</plugin>

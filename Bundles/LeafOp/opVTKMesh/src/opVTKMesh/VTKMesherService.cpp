@@ -142,7 +142,7 @@ void VTKMesherService::updating() throw ( ::fwTools::Failed )
     bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
     ::fwData::Reconstruction::NewSptr pReconstruction;
 
-    pReconstruction->setCRefOrganName("Organ_" + pReconstruction->getUUID());
+    pReconstruction->setCRefOrganName("OrganMesher_VTK_" + pReconstruction->getUUID());
     pReconstruction->setCRefStructureType("OrganType");
     pReconstruction->setIsVisible(true);
     pReconstruction->setGenerated3D(true);
