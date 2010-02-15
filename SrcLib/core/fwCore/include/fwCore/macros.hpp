@@ -55,6 +55,7 @@
 /** @cond 
  */
 
+#define __FWCORE_TYPEDEF_SELF_NAME               SelfType
 #define __FWCORE_TYPEDEF_SHARED_PTR_NAME         sptr
 #define __FWCORE_TYPEDEF_WEAK_PTR_NAME           wptr
 #define __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME   csptr
@@ -297,6 +298,8 @@
                                         __FWCORE_GET_BASECLASSNAME(_classinfo_),                 \
                                         __FWCORE_GET_CLASSNAME(_classinfo_)                      \
                                         ) __FWCORE_TYPEDEF_BASECLASS_NAME ;                      \
+    /** Self type  */                                                                            \
+    typedef __FWCORE_GET_CLASSNAME(_classinfo_) __FWCORE_TYPEDEF_SELF_NAME;                      \
     /** Shared pointer type  */                                                                  \
     typedef SPTR ( __FWCORE_GET_CLASSNAME(_classinfo_) ) __FWCORE_TYPEDEF_SHARED_PTR_NAME;       \
     /** Weak pointer type  */                                                                    \
