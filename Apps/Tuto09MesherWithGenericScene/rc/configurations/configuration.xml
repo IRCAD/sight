@@ -19,9 +19,9 @@
         <win guiContainerId="900" />
         <views>
             <view guiContainerId="901" align="center" />
-            <view guiContainerId="902" align="right" minWidth="200" />
-            <view guiContainerId="904" align="right" minWidth="200" />
-            <view guiContainerId="905" align="right" minWidth="200" />
+            <view guiContainerId="902" align="right" minWidth="200" position="0" />
+            <view guiContainerId="904" align="right" minWidth="200" position="1" />
+            <view guiContainerId="905" align="right" minWidth="200" position="2" />
             <view guiContainerId="903" align="bottom" minHeight="30" resizable="no" />
         </views>
     </service>
