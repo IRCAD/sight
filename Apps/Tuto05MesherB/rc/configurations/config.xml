@@ -11,15 +11,22 @@
         <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
             <name>MyApp</name>
             <minSize width="720" height="600"/>
-            <views>
-                <view guiContainerId="900"/>
-                <view guiContainerId="901" minWidth="500" minHeight="100"/>
-                <view guiContainerId="902" minWidth="500" minHeight="100"/>
-            </views>
+            <view uid="myDefaultView" autoStart="yes" />
+        </service>
+
+        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuMesher"/>
             </menus>
+        </service>
+        
+        <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <views>
+                <view uid="RenderingImage" autoStart="yes"  />
+                <view uid="RenderingMesh1" minWidth="500" minHeight="100" autoStart="yes" />
+                <view uid="RenderingMesh2" minWidth="500" minHeight="100" autoStart="yes" />
+            </views>
         </service>
 
 
@@ -78,9 +85,7 @@
 
             <!-- Services associated to the Image data :
             Visualization, reading and writing service creation. -->
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" >
-                <win guiContainerId="900"/>
-            </service>
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
 
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
                 <type mode="reader"/>
@@ -100,14 +105,7 @@
              
             <!-- Services associated to the TriangularMesh data :
             Visualization, reading and writing service creation. -->
-            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes" >
-
-                <win guiContainerId="902"/>
-            </service>
-
-              
-
-                 
+            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes" />
         </object> 
 
         <!-- TriangularMesh objet creation2. 
@@ -117,12 +115,7 @@
              
             <!-- Services associated to the TriangularMesh data :
             Visualization, reading and writing service creation. -->
-            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes" >
-                <win guiContainerId="901"/>
-            </service>
-
-
-                 
+            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes" />              
         </object> 
     
     <!-- In order to start the different services,
@@ -131,13 +124,9 @@
     are not started between the tags corresponding to these two data definitions
     but, before the end of the Composite data definition. -->
     <start type="::gui::aspect::IAspect" />
-    <start uid="RenderingImage" />
-    <start uid="RenderingMesh1" />
-    <start uid="RenderingMesh2" />
+    <start type="::gui::aspect::IMenuBar" />
     
-    <stop uid="RenderingImage" />
-    <stop uid="RenderingMesh1" />
-    <stop uid="RenderingMesh2" />
+    <stop type="::gui::aspect::IMenuBar" />
     <stop type="::gui::aspect::IAspect" />
   </object>
   </extension>

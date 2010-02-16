@@ -10,18 +10,24 @@
         <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
             <name>MyApp</name>
             <minSize width="720" height="600"/>
-            <views>
-                <view guiContainerId="900"/>
-                <view guiContainerId="901" minWidth="500" minHeight="100"/>
-                <view guiContainerId="902" minWidth="500" minHeight="100"/>
-                <view guiContainerId="903" minWidth="500" minHeight="100"/>
-            </views>
+            <view uid="myDefaultView" autoStart="yes" />
+        </service>
+
+        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuMesher"/>
             </menus>
         </service>
-
+        
+        <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <views>
+                <view uid="RenderingImage" autoStart="yes"  />
+                <view uid="RenderingMesh" minWidth="500" minHeight="100" autoStart="yes" />
+                <view uid="RenderingMesh1" minWidth="500" minHeight="100" autoStart="yes" />
+                <view uid="RenderingMesh2" minWidth="500" minHeight="100" autoStart="yes" />
+            </views>
+        </service>
 
         <!-- Service associated to the Composite data :
         menu creation. -->
@@ -70,9 +76,7 @@
             <percentReduction value="80"/>
         </service>
 
-        <service implementation="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes" >
-            <win guiContainerId="903"/>
-        </service>
+        <service implementation="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes" />
         
         <!-- Image object creation 
         Services contained between the tags <object> and </object>
@@ -81,9 +85,7 @@
 
             <!-- Services associated to the Image data :
             Visualization, reading and writing service creation. -->
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" >
-                <win guiContainerId="900"/>
-            </service>
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
 
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
                 <type mode="reader"/>
@@ -101,9 +103,7 @@
         are associated to the TriangularMesh data. -->
         <object id="myMesh1" uid="myMesh1" type="::fwData::TriangularMesh">
         
-            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes" >
-                <win guiContainerId="901"/>
-            </service>
+            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes" />
 
             <service uid="MyComChannelSrv1" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
                 <target>RenderingMesh</target>  
@@ -116,9 +116,7 @@
         are associated to the TriangularMesh data. -->
         <object id="myMesh2" uid="myMesh2" type="::fwData::TriangularMesh">
 
-            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes" >
-                <win guiContainerId="902"/>
-            </service>
+            <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes" />
             
             <service uid="MyComChannelSrv2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
                 <target>RenderingMesh</target>              
@@ -132,22 +130,17 @@
     are not started between the tags corresponding to these two data definitions
     but, before the end of the Composite data definition. -->
     <start type="::gui::aspect::IAspect" />
+    <start type="::gui::aspect::IMenuBar" />
     <start uid="RenderingImage" />
-    <start uid="RenderingMesh" />
-    <start uid="RenderingMesh1" />
-    <start uid="RenderingMesh2" />
     <start uid="MyComChannelSrv1" />
     <start uid="MyComChannelSrv2" />
-
-
     
+    
+
     <stop uid="MyComChannelSrv2" /> 
     <stop uid="MyComChannelSrv1" />
     <stop uid="RenderingImage" />
-    <stop uid="RenderingMesh" />
-    <stop uid="RenderingMesh1" />
-    <stop uid="RenderingMesh2" />
-
+    <stop type="::gui::aspect::IMenuBar" />
     <stop type="::gui::aspect::IAspect" />
   </object>
   </extension>

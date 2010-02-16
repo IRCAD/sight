@@ -9,7 +9,7 @@
         <param id="startingMode" value="windows" />
         <param id="rootObject" value="::fwData::Composite" />
         <param id="config" value="tutoLoaderExternalDataConfig" />
-        <param id="configFile" value="./Bundles/Tuto07LoaderForExternalData_0-1/configurations/config.xml" />
+        <param id="configFile" value="./Bundles/Tuto07LoaderForExternalData_0-1/configurations/configImageOnly.xml" />
     </activate>
 
     <!-- List of specific bundles. -->

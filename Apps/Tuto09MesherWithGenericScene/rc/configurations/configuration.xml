@@ -19,9 +19,9 @@
     <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
         <views>
             <view uid="genericScene" align="center" autoStart="yes" />
-            <view uid="listOrganEditor" align="right" minWidth="200" position="0" />
-            <view uid="organMaterialEditor" align="right" minWidth="200" position="1" />
-            <view uid="representationEditor" align="right" minWidth="200" position="2" />
+            <view uid="listOrganEditor" align="right" minWidth="200" minHeight="200" position="0" />
+            <view uid="organMaterialEditor" align="right" minWidth="200" minHeight="80" position="1" />
+            <view uid="representationEditor" align="right" minWidth="200" minHeight="200" position="2" />
             <view uid="multiView_scene1_bottom" align="bottom" minHeight="30" resizable="no" autoStart="yes" />
         </views>
     </service>
@@ -51,7 +51,7 @@
    <service uid="action_openFile" implementation="::gui::action::StarterActionService" name="Open File" type="::gui::action::IAction"  shortcut="Ctrl+O" autoComChannel="no" >
             <start uid="myReaderPathFile"/>
     </service>
-    <service uid="action_saveFile" implementation="::gui::action::StarterActionService" name="Save File" type="::gui::action::IAction"  shortcut="Ctrl+O" autoComChannel="no" >
+    <service uid="action_saveFile" implementation="::gui::action::StarterActionService" name="Save File" type="::gui::action::IAction"  shortcut="Ctrl+S" autoComChannel="no" >
             <start uid="myWriterPathFile"/>
     </service>
     <service uid="action_createMesh50" implementation="::gui::action::StarterActionService" name="Create Mesh 50" type="::gui::action::IAction" autoComChannel="no" >

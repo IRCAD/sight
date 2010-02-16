@@ -7,15 +7,23 @@
             <name>Filter</name>
             <icon>Bundles/Tuto06Filter_0-1/tuto.ico</icon>
             <minSize width="720" height="600"/>
-            <views>
-                <view guiContainerId="900"/>
-                <view guiContainerId="901" minWidth="500" minHeight="100"/>
-            </views>
+            <view uid="myDefaultView" autoStart="yes" />
+        </service>
+        
+       <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuFilter"/>
             </menus>
         </service>
+        
+        <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <views>
+                <view uid="RenderingImage1" autoStart="yes" />
+                <view uid="RenderingImage2" minWidth="500" minHeight="100" autoStart="yes" />
+            </views>
+        </service> 
+        
         <!-- Menus -->
         <service name="File" uid="menuFile" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
             <action uid="actionOpenImageFile"/>
@@ -37,28 +45,21 @@
         <!-- Services on objects -->
         <!-- 1st Object of the composite -->
         <object id="myImage1" uid="myImage1" type="::fwData::Image">
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoComChannel="yes" >
-                <win guiContainerId="900"/>
-            </service>
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoComChannel="yes" />
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
-                <win guiContainerId="900"/>
                 <type mode="reader"/>
             </service>
         </object>
         <!-- 2nd Object of the composite -->       
         <object id="myImage2" uid="myImage2" type="::fwData::Image">
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage2" autoComChannel="yes" >
-                <win guiContainerId="901"/>
-            </service>
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage2" autoComChannel="yes" />
         </object> 
     
     <!-- Starting order of services -->
     <start type="::gui::aspect::IAspect" />
-    <start uid="RenderingImage1" />
-    <start uid="RenderingImage2" />
+    <start type="::gui::aspect::IMenuBar" />
     
-    <stop uid="RenderingImage1" />
-    <stop uid="RenderingImage2" />
+    <stop type="::gui::aspect::IMenuBar" />
     <stop type="::gui::aspect::IAspect" />
   </object>
   </extension>

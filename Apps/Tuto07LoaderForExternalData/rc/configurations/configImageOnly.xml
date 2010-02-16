@@ -26,9 +26,7 @@
         </service>
 
         <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images. -->
-        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" >
-            <win guiContainerId="900"/>
-        </service>
+        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
         
     </object>
     
@@ -41,9 +39,10 @@
      <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no">
         <name>Tuto07LoaderForExternalData</name>
         <icon>Bundles/Tuto07LoaderForExternalData_0-1/tuto.ico</icon>
-        <views>
-            <view guiContainerId="900" />
-        </views>
+        <view uid="myRenderingTuto" autoStart="yes" />
+     </service>
+     
+     <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
         <menus>
             <menu uid="menu_File" />
         </menus>
@@ -68,9 +67,9 @@
 
     <!-- Definition of the starting and closing order of the different services. -->
     <start type="::gui::aspect::IAspect" />
-    <start uid="myRenderingTuto"/>
+    <start type="::gui::aspect::IMenuBar" />
     
-    <stop uid="myRenderingTuto"/>
+    <stop type="::gui::aspect::IMenuBar" />
     <stop type="::gui::aspect::IAspect" />
 </object>
 </extension>

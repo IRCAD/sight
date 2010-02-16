@@ -12,16 +12,22 @@
             <name>Mesher</name>
             <icon>Bundles/Tuto05Mesher_0-1/tuto.ico</icon>
             <minSize width="720" height="600"/>
-            <views>
-                <view guiContainerId="900"/>
-                <view guiContainerId="901" minWidth="500" minHeight="100"/>
-            </views>
+            <view uid="myDefaultView" autoStart="yes" />
+        </service>
+
+        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
             <menus>
                 <menu uid="menuFile"/>
                 <menu uid="menuMesher"/>
             </menus>
         </service>
-
+        
+        <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <views>
+                <view uid="RenderingImage" autoStart="yes"  />
+                <view uid="RenderingMesh" minWidth="500" minHeight="100" autoStart="yes" />
+            </views>
+        </service>
 
         <!-- Service associated to the Composite data :
         menu creation. -->
@@ -73,9 +79,7 @@
 
             <!-- Services associated to the Image data :
             Visualization, reading and writing service creation. -->
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" >
-                <win guiContainerId="900"/>
-            </service>
+            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
 
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
                 <type mode="reader"/>
@@ -96,7 +100,6 @@
             Visualization, reading and writing service creation. -->
             <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes" >
                 <masterSlaveRelation>master</masterSlaveRelation>
-                <win guiContainerId="901"/>
             </service>
                  
             <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathMeshFile" autoComChannel="no" >
@@ -115,11 +118,9 @@
     are not started between the tags corresponding to these two data definitions
     but, before the end of the Composite data definition. -->
     <start type="::gui::aspect::IAspect" />
-    <start uid="RenderingImage" />
-    <start uid="RenderingMesh" />
+    <start type="::gui::aspect::IMenuBar" />
     
-    <stop uid="RenderingImage" />
-    <stop uid="RenderingMesh" />
+    <stop type="::gui::aspect::IMenuBar" />
     <stop type="::gui::aspect::IAspect" />
   </object>
   </extension>
