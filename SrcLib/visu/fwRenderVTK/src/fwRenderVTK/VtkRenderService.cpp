@@ -236,8 +236,8 @@ void VtkRenderService::configureObject( ConfigurationType conf )
             }
             else
             {
-                OSLM_WARN(adaptor << "'s object already is '" 
-                        << adaptee.getService()->getObject()->getUUID() 
+                OSLM_WARN(adaptor << "'s object already is '"
+                        << adaptee.getService()->getObject()->getUUID()
                         << "', no need to swap");
             }
         }
@@ -277,9 +277,8 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 void VtkRenderService::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
 
-//  this->::fwRender::IRender::configuring();
-    this->initGuiContainerId();
     this->initClockRate();
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
@@ -311,7 +310,6 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -319,8 +317,6 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
 void VtkRenderService::starting() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
-//  this->fwRender::IRender::starting();
     this->initRender();
 
     this->startContext();
@@ -344,7 +340,6 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         adaptorIter->second.getService()->start();
         assert(adaptorIter->second.getService()->isStarted());
     }
-
 }
 
 //-----------------------------------------------------------------------------

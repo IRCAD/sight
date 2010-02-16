@@ -9,6 +9,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>

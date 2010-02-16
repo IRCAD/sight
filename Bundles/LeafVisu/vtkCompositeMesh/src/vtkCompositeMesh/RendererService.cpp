@@ -116,7 +116,6 @@ namespace vtkCompositeMesh
 
     void RendererService::configuring() throw(::fwTools::Failed)
     {
-        this->initGuiContainerId();
 
         if( m_configuration->findConfigurationElement("masterSlaveRelation") )
         {

@@ -9,9 +9,9 @@
 
 #include <fwTools/Failed.hpp>
 #include <fwServices/IService.hpp>
-#include <fwData/Integer.hpp>
 
 #include <fwWX/Timer.hpp>
+#include <fwWX/IGuiContainer.hpp>
 
 #include "fwRender/config.hpp"
 
@@ -41,7 +41,7 @@ namespace fwRender
  * @li Finally we must call stop() before deleting the service
  *
  */
-class FWRENDER_CLASS_API IRender : public fwServices::IService
+class FWRENDER_CLASS_API IRender : public ::fwWX::IGuiContainer
 {
 
 public :
@@ -74,12 +74,6 @@ public :
      */
     FWRENDER_API void initClockRate();
 
-    /**
-     * @brief Configure the service (use it in configuring, before start).
-     *
-     * Configure gui container if it's specified in the configuration.
-     */
-    FWRENDER_API void initGuiContainerId();
 
     /**
      * @brief Initialize the Render.
@@ -122,15 +116,6 @@ public :
      * @name    Specific service methods for visualization management
      */
     //@{
-    /**
-     * @brief   Specify container within which visualization will appear
-     */
-    FWRENDER_API virtual void setWxContainer( wxWindow * container ) ;
-
-    /**
-     * @brief Returns visualization wxContainer
-     */
-    FWRENDER_API virtual wxWindow * getWxContainer() ;
 
     /**
      * @brief   defines the clock rate
@@ -151,16 +136,6 @@ public :
 
 protected :
 
-    /// container
-    wxWindow * m_container;
-
-    /**
-     * @brief gui container indentifier
-     *
-     * @li m_guiContainerId.first == true if gui container is configured
-     * @li m_guiContainerId.second = container wx ID
-     */
-    std::pair< bool , int > m_guiContainerId ;
 
     /**
      * @brief gui container indentifier
@@ -172,9 +147,6 @@ protected :
 
     /// Clock used to refresh view
     ::fwWX::Timer<>::ptr m_timer ;
-
-    /// flag if the container is locally created (ie the container was not configured)
-    bool m_isContainerLocallyCreated ;
 
 };
 

@@ -4,19 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/window.h>
-#include <wx/frame.h>
 #include <string>
+
+#include <fwCore/base.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/ProcessObject.hpp>
 #include <fwServices/helper.hpp>
-#include <fwCore/base.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
-#include <boost/lexical_cast.hpp>
+
 
 #include "fwRender/IRender.hpp"
 
@@ -26,11 +22,8 @@ namespace fwRender
 const std::string IRender::ClockRateId  = "ClockRate";
 
 IRender::IRender() throw() :
-    m_container( 0 ),
-    m_guiContainerId( std::pair< bool , int >(false,0)),
     m_clockRate( std::pair< bool , int >(false,0)),
-    m_timer(),
-    m_isContainerLocallyCreated( false )
+    m_timer()
 {
 }
 
@@ -65,8 +58,8 @@ void IRender::initClockRate()
     // Configuring clock if specified in configuration
     if( m_configuration->hasAttribute("clockRateMSeconds") )
     {
-            std::string clockRate = m_configuration->getExistingAttributeValue("clockRateMSeconds") ;
-            this->setClockRate( ::boost::lexical_cast< int >(clockRate) ) ;
+        std::string clockRate = m_configuration->getExistingAttributeValue("clockRateMSeconds") ;
+        this->setClockRate( ::boost::lexical_cast< int >(clockRate) ) ;
     }
 }
 
@@ -86,41 +79,9 @@ std::pair< bool, int > IRender::getClockRate()
 
 //-----------------------------------------------------------------------------
 
-void IRender::initGuiContainerId()
-{
-    if( m_configuration->findConfigurationElement("win") )
-    {
-        SLM_TRACE("IRender:: find win") ;
-        std::string id = m_configuration->findConfigurationElement("win")->getExistingAttributeValue("guiContainerId") ;
-        m_guiContainerId = std::pair< bool, int >(true, ::boost::lexical_cast< int >(id)) ;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void IRender::initRender()
 {
-    // Precondition management
-    ::fwTools::Object::sptr associatedObject = this->getObject();
-
-    if( m_guiContainerId.first )
-    {
-        OSLM_TRACE( "Finding gui container from IDENTIFIER " <<  m_guiContainerId.second );
-        m_container = wxWindow::FindWindowById( m_guiContainerId.second ) ;
-        assert( m_container ) ;
-    }
-
-    if( m_container == 0 )
-    {
-        std::stringstream msg;
-        msg << "Tracking service cannot be started for " << associatedObject->className() << " (adr: " << associatedObject.get() << ")" << std::endl;
-        msg << "WxContainer not specified : using application top one" << std::endl;
-        SLM_WARN( msg.str() );
-        m_container = new wxFrame(wxTheApp->GetTopWindow(),-1, wxConvertMB2WX( "IRendereringService" ));
-        m_container->Show();
-        m_container->Refresh();
-        m_isContainerLocallyCreated = true ;
-    }
+    this->initGuiParentContainer();
 
     // Start clock
     if( this->getClockRate().first )
@@ -130,7 +91,6 @@ void IRender::initRender()
         m_timer->setRate( this->getClockRate().second ) ;
         m_timer->start() ;
     }
-    //fwServices::registerCommunicationChannel(this->getObject() ,this->getSptr() )->start();
 
     // Postcondition assertions
     assert( m_container ) ;
@@ -146,29 +106,7 @@ void IRender::stopRender()
         m_timer->stop();
         m_timer.reset();
     }
-    // Do not destroy m_container children either refresh
-    // This is delegated to delegate which manage uninstallation of installed subwindows, such as the vtk one.
-    if( m_isContainerLocallyCreated && m_container != 0 )
-    {
-        SLM_DEBUG("Destroying container") ;
-        m_container->Destroy();
-        m_container = 0 ;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void IRender::setWxContainer( wxWindow * container )
-{
-    m_container = container ;
-}
-
-//-----------------------------------------------------------------------------
-
-wxWindow * IRender::getWxContainer()
-{
-    assert( m_container ) ;
-    return m_container ;
+    this->resetGuiParentContainer();
 }
 
 }

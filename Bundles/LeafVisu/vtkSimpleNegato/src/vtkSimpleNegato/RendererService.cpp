@@ -49,7 +49,6 @@ RendererService::~RendererService() throw()
 void RendererService::configuring() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->initGuiContainerId();
 }
 
 //-----------------------------------------------------------------------------

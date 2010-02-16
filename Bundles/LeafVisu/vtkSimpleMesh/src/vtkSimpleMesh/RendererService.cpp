@@ -115,8 +115,6 @@ void RendererService::starting() throw(fwTools::Failed)
 
 void RendererService::configuring() throw(::fwTools::Failed)
 {
-    this->initGuiContainerId();
-
     if( m_configuration->findConfigurationElement("masterSlaveRelation") )
     {
         m_isCamMaster = ( m_configuration->findConfigurationElement("masterSlaveRelation")->getValue() == "master" );
@@ -164,7 +162,6 @@ void RendererService::updating() throw(fwTools::Failed)
 
 void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
 {
-
     ::fwComEd::TriangularMeshMsg::csptr TriangularMeshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(_msg);
     if ( TriangularMeshMsg && TriangularMeshMsg->hasEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) )
     {
@@ -195,7 +192,6 @@ void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTo
         }
     }
     m_interactor->Render();
-
 }
 
 //-----------------------------------------------------------------------------
