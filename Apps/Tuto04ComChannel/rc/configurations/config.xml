@@ -8,21 +8,25 @@
             <name>tutoComChannel</name>
             <icon>Bundles/Tuto04ComChannel_0-1/tuto.ico</icon>
             <minSize width="720" height="600"/>
-
-            <!-- The application contains three different views. the different views are characterized by their identifiers, here 900, 901 et 902.
-                 Furthermore, a minimum window height and a width are given to the last two views.-->
-            <views>
-                <view guiContainerId="900"/>
-                <view guiContainerId="901" minWidth="400" minHeight="100"/>
-                <view guiContainerId="902" minWidth="400" minHeight="100"/>
-            </views>
-
-            <menus>
-                <menu uid="menu_File"/>
-            </menus>
+            <view uid="myDefaultView" autoStart="yes" />
         </service>
 
-
+        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
+            <menus>
+                <menu uid="menu_File" />
+            </menus>
+        </service>
+        
+        <!-- The application contains three different views. The different views are characterized by their associated service uid.
+                 Furthermore, a minimum window height and a width are given to the last two views.-->
+         <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <views>
+                <view uid="myRenderingTuto1" autoStart="yes" />
+                <view uid="myRenderingTuto2" minWidth="400" minHeight="100" autoStart="yes" />
+                <view uid="myRenderingTuto3" minWidth="400" minHeight="100" autoStart="yes" />
+            </views>
+        </service>
+        
         <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
             <action uid="action_openFile"/>
             <separator/>
@@ -50,33 +54,24 @@
         Visualization service for the first window.-->
         <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto1" autoComChannel="yes" >
             <masterSlaveRelation>master</masterSlaveRelation>
-            <win guiContainerId="900"/>
         </service>
 
         
         <!-- Visualization service for the second window-->
         <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto2" autoComChannel="yes" >
             <masterSlaveRelation>slave</masterSlaveRelation>
-            <win guiContainerId="901"/>
         </service>
 
 
         <!-- Visualization service for the third window-->
         <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto3" autoComChannel="yes" >
             <masterSlaveRelation>master</masterSlaveRelation>
-            <win guiContainerId="902"/>
         </service>
 
         <start type="::gui::aspect::IAspect" />
+        <start type="::gui::aspect::IMenuBar" />
         
-        <start uid="myRenderingTuto1"/> 
-        <start uid="myRenderingTuto2"/>                     
-        <start uid="myRenderingTuto3"/>                     
-        
-        <stop uid="myRenderingTuto3"/>
-        <stop uid="myRenderingTuto2"/>
-        <stop uid="myRenderingTuto1"/>
-        
+        <stop type="::gui::aspect::IMenuBar" />
         <stop type="::gui::aspect::IAspect" />
 
     </object>

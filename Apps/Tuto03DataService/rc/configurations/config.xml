@@ -13,14 +13,15 @@
         <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no">
             <name>tutoDataService</name>
             <icon>Bundles/Tuto03DataService_0-1/tuto.ico</icon>
-            <views>
-                <view guiContainerId="900" />
-            </views>
-            <menus>
-                <menu uid="menu_File"/>
-            </menus>
+            <view uid="myRenderingTuto" autoStart="yes"  />
         </service>
 
+        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
+            <menus>
+                <menu uid="menu_File" />
+            </menus>
+        </service>
+        
         <!-- The ::gui::aspect::DefaultMenu service creates the menu "File". This menu contains two menuItems (with a separator).
         The actions associated with these two menuItem are identified with the uid "action_openFile" and "action_quit". -->
         <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
@@ -28,7 +29,7 @@
             <separator/>
             <action uid="action_quit"/>
         </service>
-
+        
         <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
         we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "OpenFile".
         In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile". -->
@@ -57,15 +58,12 @@
         <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" />
 
         <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images. -->
-        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" >
-            <win guiContainerId="900"/>
-        </service>
-
+        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
 
         <start type="::gui::aspect::IAspect" />
-        <start uid="myRenderingTuto"/>                      
+        <start type="::gui::aspect::IMenuBar" />
         
-        <stop uid="myRenderingTuto"/>
+        <stop type="::gui::aspect::IMenuBar" />
         <stop type="::gui::aspect::IAspect" />
 
     </object>

@@ -20,10 +20,8 @@
         Furthermore, a guiContainerId attribut is also associated to the service.
         It is the container identifier (arbitrarily set to "900") where the visualization service will be installed. 
         A container, which identifier is "900" must be created. -->
-        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" > 
-            <win guiContainerId="900"/>
-        </service>
-
+        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
+        
         <!-- Description service of the HMI.
         Creation of a container, which id's value is 900.
         Here, the container will be used by the 3D visualization service previously described. 
@@ -33,11 +31,10 @@
         <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
             <name>tutoDataServiceBasic</name>
             <icon>Bundles/Tuto02DataServiceBasic_0-1/tuto.ico</icon>
-            <views>
-                <view guiContainerId="900" />
-            </views>
+            <view uid="myRenderingTuto" autoStart="yes" />
         </service>
-
+        
+        
         <!-- Definition of the starting and closing order of the different services.
         Here, the three services ::gui::aspect::IAspect, myRenderingTuto, and myReaderPathFile are started,
         nevertheless, only the myReaderPathFile service is updated after the launching.
@@ -47,13 +44,11 @@
         The stopping of the services is done in the reverse order compared to the starting one. -->
         
         <start type="::gui::aspect::IAspect" />
-        <start uid="myRenderingTuto"/>
         <start uid="myReaderPathFile"/>
 
         <update uid="myReaderPathFile"/>
 
         <stop uid="myReaderPathFile"/>
-        <stop uid="myRenderingTuto"/>
         <stop type="::gui::aspect::IAspect" />
 
     </object>

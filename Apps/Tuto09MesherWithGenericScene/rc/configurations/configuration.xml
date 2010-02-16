@@ -6,36 +6,34 @@
     <service uid="MyIHM" implementation="::gui::aspect::DefaultAspect" type="::gui::aspect::IAspect" autoComChannel="no" >
         <name>Tuto09MesherWithGenericScene</name>
         <icon>Bundles/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
-        <views>
-            <view guiContainerId="900" />
-        </views>
-        <menus>
-            <menu uid="menu_File"/>
-            <menu uid="menu_Mesher"/>
-        </menus>
+        <view uid="multiView_scene1" autoStart="yes" />
     </service>
     
+    <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
+        <menus>
+            <menu uid="menu_File" />
+            <menu uid="menu_Mesher" />
+        </menus>
+    </service>
+        
     <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
-        <win guiContainerId="900" />
         <views>
-            <view guiContainerId="901" align="center" />
-            <view guiContainerId="902" align="right" minWidth="200" position="0" />
-            <view guiContainerId="904" align="right" minWidth="200" position="1" />
-            <view guiContainerId="905" align="right" minWidth="200" position="2" />
-            <view guiContainerId="903" align="bottom" minHeight="30" resizable="no" />
+            <view uid="genericScene" align="center" autoStart="yes" />
+            <view uid="listOrganEditor" align="right" minWidth="200" position="0" />
+            <view uid="organMaterialEditor" align="right" minWidth="200" position="1" />
+            <view uid="representationEditor" align="right" minWidth="200" position="2" />
+            <view uid="multiView_scene1_bottom" align="bottom" minHeight="30" resizable="no" autoStart="yes" />
         </views>
     </service>
     <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
-        <win guiContainerId="903" />
         <views orientation="horizontal" >
-            <view guiContainerId="910" proportion="0" minWidth="30" />
-            <view guiContainerId="911" proportion="0" minWidth="50" />
-            <view guiContainerId="912" proportion="1" />
-            <view guiContainerId="913" proportion="0" minWidth="30" />
+            <view uid="sliceListEditor" proportion="0" minWidth="30" />
+            <view uid="showScanEditor" proportion="0" minWidth="50" />
+            <view uid="sliderIndexEditor" proportion="1" />
+            <view uid="snapshotScene1Editor" proportion="0" minWidth="30" autoStart="yes" />
         </views>
     </service>
     <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
-        <win guiContainerId="913" />
         <snap>
             <scene uid="genericScene" />
         </snap>
@@ -113,9 +111,7 @@
                      <service uid="myUpdaterComCannelReconst2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
                          <target>myUpdaterReconst</target>
                      </service>
-                     <service uid="listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" >
-                        <win guiContainerId="902"/>
-                     </service>
+                     <service uid="listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
                      <service uid="mesher50ServiceUID" implementation="::opVTKMesh::VTKMesherService" type="::opVTKMesh::IMesher" autoComChannel="no" >
                          <percentReduction value="50"/>
                      </service>
@@ -125,30 +121,21 @@
                  </object>
                  <object id="myImage" type="::fwData::Image" >
                      <service uid="sliceListEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
-                        <win guiContainerId="910" />
                         <negatoAdaptor uid="MPRNegatoScene3D" slices="3"/>
                      </service>
                      <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
-                         <win guiContainerId="911" />
                          <negatoAdaptor uid="MPRNegatoScene3D" />
                      </service>
-                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial">
-                        <win guiContainerId="912"/>
-                     </service>
+                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />
                  </object>
                  <object id="myReconstruction" type="::fwData::Reconstruction" >
-                     <service uid="organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="yes" >
-                        <win guiContainerId="904"/>
-                     </service>
-                      <service uid="representationEditor" implementation="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoComChannel="yes" >
-                        <win guiContainerId="905"/>
-                     </service>
+                     <service uid="organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                     <service uid="representationEditor" implementation="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
                  </object>
             </config>
         </service>
         
         <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
-            <win guiContainerId="901"/>
             <scene>
             
                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
@@ -176,10 +163,7 @@
     </object>
 
     <start uid="MyIHM"/>
-    <start uid="multiView_scene1"/>
-    <start uid="multiView_scene1_bottom"/>
-    <start uid="snapshotScene1Editor"/>
-    <start uid="genericScene"/>
+    <start uid="myMenuBar" />
     <start uid="myUpdaterAcq"/>
     <start uid="myUpdaterImg"/>
     <start uid="myUpdaterReconst"/>
@@ -197,10 +181,7 @@
     <stop uid="myUpdaterReconst"/>
     <stop uid="myUpdaterImg"/>
     <stop uid="myUpdaterAcq"/>
-    <stop uid="genericScene"/>
-    <stop uid="snapshotScene1Editor"/>
-    <stop uid="multiView_scene1_bottom"/>
-    <stop uid="multiView_scene1"/>
+    <stop uid="myMenuBar" />
     <stop uid="MyIHM"/>
 
 </object>

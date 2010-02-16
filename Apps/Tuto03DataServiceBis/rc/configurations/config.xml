@@ -13,14 +13,15 @@
         <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no">
             <name>tutoDataService bis</name>
             <icon>Bundles/Tuto03DataServiceBis_0-1/tuto.ico</icon>
-            <views>
-                <view guiContainerId="900" />
-            </views>
-            <menus>
-                <menu uid="menu_File"/>
-            </menus>
+            <view uid="myRenderingTuto" autoStart="yes" />
         </service>
 
+        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
+            <menus>
+                <menu uid="menu_File" />
+            </menus>
+        </service>
+        
         <!-- The ::gui::aspect::DefaultMenu service creates the menu "File". This menu contains two menuItems (with a separator).
         The actions associated with these two menuItem are identified with the uid "action_openFile" and "action_quit". -->
         <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
@@ -61,11 +62,10 @@
             <win guiContainerId="900"/>
         </service>
 
-
         <start type="::gui::aspect::IAspect" />
-        <start uid="myRenderingTuto"/>                      
+        <start type="::gui::aspect::IMenuBar" />
         
-        <stop uid="myRenderingTuto"/>
+        <stop type="::gui::aspect::IMenuBar" />
         <stop type="::gui::aspect::IAspect" />
 
     </object>
