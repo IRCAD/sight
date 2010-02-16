@@ -4,22 +4,25 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/aspect/IToolBar.hpp"
+#include "gui/aspect/IMenuBar.hpp"
 
 namespace gui
 {
+
 namespace aspect
 {
 
-IToolBar::IToolBar() throw()
+//-----------------------------------------------------------------------------
+
+IMenuBar::IMenuBar() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-IToolBar::~IToolBar() throw()
+IMenuBar::~IMenuBar() throw()
 {}
 
-//-----------------------------------------------------------------------------
+}
 
 }
-}
+

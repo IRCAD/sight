@@ -4,14 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef GUI_ASPECT_DEFAULT_MENU_HPP_
-#define GUI_ASPECT_DEFAULT_MENU_HPP_
+#ifndef GUI_ASPECT_DEFAULT_MENUBAR_HPP_
+#define GUI_ASPECT_DEFAULT_MENUBAR_HPP_
 
-#include <set>
-
-#include <wx/menuitem.h>
-
-#include "gui/aspect/IMenu.hpp"
+#include "gui/aspect/IMenuBar.hpp"
 #include "gui/export.hpp"
 
 namespace gui
@@ -21,22 +17,22 @@ namespace aspect
 {
 
 /**
- * @brief   Defines the default menu for standard application
- * @class   DefaultMenu.
+ * @brief   Defines the default menubar for standard application
+ * @class   DefaultMenuBar.
  * @author  IRCAD (Research and Development Team)
 
- * @date    2009.
+ * @date    2009-2010.
  */
-class GUI_CLASS_API DefaultMenu : public IMenu
+class GUI_CLASS_API DefaultMenuBar : public IMenuBar
 {
 
 public :
 
     /// Constructor. Do nothing.
-    GUI_API DefaultMenu() throw();
+    GUI_API DefaultMenuBar() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultMenu() throw();
+    GUI_API virtual ~DefaultMenuBar() throw();
 
 protected :
 
@@ -44,7 +40,7 @@ protected :
      * @{
      */
 
-    /// Retrieve DefaultMenu::m_menuName in configuration element
+    /// Retrieve DefaultMenuBar::m_menuName in configuration element
     GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
     GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
@@ -64,15 +60,12 @@ protected :
     ///@}
 
 private:
-
-    std::vector< std::string >      m_actionsUID ;
-    std::set< wxMenuItem * >        m_separators ;
-    std::string                     m_menuName ;
-    const static std::string        SEPARATOR_UID;
+    /// Service vector of ::gui::aspect::IMenu UUID.  List of the menus declared in the aspect config.
+    std::vector< std::string >  m_menusUID ;
 };
 
 }
 
 }
 
-#endif // GUI_ASPECT_DEFAULT_MENU_HPP_
+#endif // GUI_ASPECT_DEFAULT_MENUBAR_HPP_

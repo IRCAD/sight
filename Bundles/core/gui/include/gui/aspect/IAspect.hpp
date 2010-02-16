@@ -88,10 +88,10 @@ protected :
     GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
     /// This method first registers the aspect gui manager and it starts the menus contained in the IAspect::m_menus.
-    GUI_API virtual void starting() throw( ::fwTools::Failed );
+    GUI_API virtual void starting() throw( ::fwTools::Failed ) = 0 ;
 
     /// This method first unregisters the aspect gui manager and it stops the menus contained in the IAspect::m_menus.
-    GUI_API virtual void stopping() throw( ::fwTools::Failed );
+    GUI_API virtual void stopping() throw( ::fwTools::Failed ) = 0;
 
     /**
      * @brief   Normally, perform some computations according to object (this service is attached to) attribute values and its internal state. Do nothing here.
@@ -115,12 +115,6 @@ protected :
     GUI_API void unregisterAspect();
 
     GUI_API void registerAspect();
-
-    /// Service vector of ::gui::view::IView type.  List of the view declared in the aspect config.
-    std::vector< ::gui::view::IView::sptr >         m_views ;
-
-    /// Service vector of ::gui::aspect::IMenu UUID.  List of the menus declared in the aspect config.
-    std::vector< std::string >                      m_menusUUID ;
 
     /// Application name.
     std::string                                     m_name ;

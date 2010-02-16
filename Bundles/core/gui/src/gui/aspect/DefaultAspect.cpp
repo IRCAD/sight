@@ -7,19 +7,16 @@
 #include <wx/app.h>
 #include <wx/wx.h>
 
+#include <fwTools/UUID.hpp>
+
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
-#include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwData/Object.hpp>
 
+#include <fwWX/IGuiContainer.hpp>
+
 #include "gui/aspect/DefaultAspect.hpp"
-#include "gui/aspect/IMenu.hpp"
-#include "gui/view/IView.hpp"
+
 #include "gui/Manager.hpp"
 
 
@@ -31,39 +28,35 @@ namespace aspect
 REGISTER_SERVICE( ::gui::aspect::IAspect , ::gui::aspect::DefaultAspect , ::fwTools::Object ) ;
 
 
-DefaultAspect::DefaultAspect() throw()
-{
-}
+DefaultAspect::DefaultAspect() throw(): m_uid(""), m_autostart(false)
+{}
 
 //-----------------------------------------------------------------------------
 
 DefaultAspect::~DefaultAspect() throw()
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 
 void DefaultAspect::configuring() throw( ::fwTools::Failed )
 {
     this->::gui::aspect::IAspect::configuring();
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
-    for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
+    if(m_configuration->findConfigurationElement("view"))
     {
-        if( (*iter)->getName() == "views" )
+        ::fwRuntime::ConfigurationElement::sptr viewCfgElt = m_configuration->findConfigurationElement("view");
+        SLM_ASSERT("Sorry, \"uid\" attribute is missing.", viewCfgElt->hasAttribute("uid") );
+        m_uid = viewCfgElt->getExistingAttributeValue("uid") ;
+        if(viewCfgElt->hasAttribute("autoStart"))
         {
-            ::fwRuntime::ConfigurationElementContainer::Iterator view ;
-            for( view = (*iter)->begin() ; view != (*iter)->end() ; ++view )
-            {
-                if( (*view)->getName() == "view" )
-                {
-                    assert( (*view)->hasAttribute("guiContainerId")) ;
-                    ::gui::view::IView::sptr service = ::fwServices::add< ::gui::view::IView >( this->getObject() ) ;
-                    service->setConfiguration( (*view) ) ;
-                    service->configure();
-                    m_views.push_back(service) ;
-                }
-            }
+            std::string autostart = viewCfgElt->getExistingAttributeValue("autoStart");
+            OSLM_ASSERT("Sorry, value "<<autostart<<" is not correct for attribute autoStart.",
+                    autostart == "yes" || autostart == "no");
+            m_autostart = (autostart == "yes");
         }
+    }
+    else
+    {
+        SLM_WARN("No main view specified.");
     }
 }
 
@@ -71,11 +64,17 @@ void DefaultAspect::configuring() throw( ::fwTools::Failed )
 
 void DefaultAspect::starting() throw(::fwTools::Failed)
 {
-    this->::gui::aspect::IAspect::starting();
-    // Starting views
-    for(std::vector< ::gui::view::IView::sptr >::iterator iter = m_views.begin() ; iter != m_views.end() ; ++iter )
+    this->registerAspect();
+    if(!m_uid.empty())
     {
-        (*iter)->start();
+        ::fwWX::IGuiContainer::registerGlobalWxContainer(m_uid, wxTheApp->GetTopWindow());
+        if(m_autostart)
+        {
+            wxTheApp->GetTopWindow()->Update();
+            OSLM_ASSERT("Service "<<m_uid<<" doesn't exist.", ::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ));
+            ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
+            service->start();
+        }
     }
 }
 
@@ -83,12 +82,17 @@ void DefaultAspect::starting() throw(::fwTools::Failed)
 
 void DefaultAspect::stopping() throw(::fwTools::Failed)
 {
-    // To update name
-    this->::gui::aspect::IAspect::stopping();
-    for(std::vector< ::gui::view::IView::sptr >::iterator iter = m_views.begin() ; iter != m_views.end() ; ++iter )
+    if(!m_uid.empty())
     {
-        (*iter)->stop();
+        ::fwWX::IGuiContainer::unregisterGlobalWxContainer(m_uid);
+        OSLM_ASSERT("Service "<<m_uid<<" doesn't exist.", ::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ));
+        ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
+        service->stop();
+        m_uid = "";
     }
+    // To update name
+    this->unregisterAspect();
+
 }
 
 //-----------------------------------------------------------------------------

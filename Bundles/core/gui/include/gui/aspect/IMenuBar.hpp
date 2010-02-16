@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef GUI_ASPECT_IMENU_HPP_
-#define GUI_ASPECT_IMENU_HPP_
+#ifndef GUI_ASPECT_IMENUBAR_HPP_
+#define GUI_ASPECT_IMENUBAR_HPP_
 
 #include <fwServices/IService.hpp>
 
@@ -19,27 +19,27 @@ namespace aspect
 
 /**
  * @brief   Defines the service interface managing GUI aspect, including menu actions and views
- * @class   IMenu.
+ * @class   IMenuBar.
  * @author  IRCAD (Research and Development Team)
 
  * @date    2009.
  */
-class GUI_CLASS_API IMenu : public ::fwServices::IService
+class GUI_CLASS_API IMenuBar : public ::fwServices::IService
 {
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IMenu)( ::fwServices::IService::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IMenuBar)( ::fwServices::IService::Baseclass) ) ;
 
     /// Default constructor, do nothing.
-    GUI_API IMenu() throw() ;
+    GUI_API IMenuBar() throw() ;
 
     /// Default destructor, do nothing.
-    GUI_API virtual ~IMenu() throw() ;
+    GUI_API virtual ~IMenuBar() throw() ;
 
 };
 
 }
 }
 
-#endif /* GUI_ASPECT_IMENU_HPP_ */
+#endif /* GUI_ASPECT_IMENUBAR_HPP_ */

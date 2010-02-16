@@ -7,15 +7,10 @@
 #ifndef _GUI_ASPECT_DEFAULTASPECT_HPP_
 #define _GUI_ASPECT_DEFAULTASPECT_HPP_
 
-#include <vector>
-#include <wx/aui/aui.h>
-#include <wx/menuitem.h>
 #include <fwServices/IService.hpp>
 
 #include "gui/export.hpp"
 #include "gui/aspect/IAspect.hpp"
-#include "gui/action/IAction.hpp"
-#include "gui/view/IView.hpp"
 
 namespace gui
 {
@@ -34,7 +29,7 @@ class GUI_CLASS_API DefaultAspect : public ::gui::aspect::IAspect
 {
 
 public :
-    
+
     /// Constructor. Do nothing.
     GUI_API DefaultAspect() throw() ;
 
@@ -77,6 +72,11 @@ protected:
      *          Do nothing here.
      */
     GUI_API virtual void updating() throw( ::fwTools::Failed );
+
+private:
+
+    std::string  m_uid;
+    bool         m_autostart;
 };
 
 

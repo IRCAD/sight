@@ -4,29 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include <fwServices/helper.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
-#include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
+#include <wx/wx.h>
 
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <fwServices/Base.hpp>
+
 #include <fwData/Object.hpp>
 
 #include <fwWX/convert.hpp>
 
-#include "gui/aspect/IMenu.hpp"
 #include "gui/aspect/IAspect.hpp"
-#include "gui/aspect/IToolBar.hpp"
 #include "gui/Manager.hpp"
 
 
@@ -54,17 +47,21 @@ std::string IAspect::getName()
     return m_name ;
 }
 
-
 //---------------------------------------------------------------------------
 
 void IAspect::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE("IAspect::configuring");
+    SLM_FATAL_IF( "Depreciated tag \"views\" in configuration", m_configuration->findConfigurationElement("views") );
+    SLM_FATAL_IF( "Depreciated tag \"menus\" in configuration", m_configuration->findConfigurationElement("menus") );
+    SLM_FATAL_IF( "Depreciated tag \"toolbar\" in configuration", m_configuration->findConfigurationElement("toolbar") );
+
     assert( m_configuration->getName() == "aspect" || m_configuration->getName() == "service" );
+
     ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
     for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
     {
-        SLM_ASSERT( "actions tag is deprecated", (*iter)->getName() != "actions" );
+        SLM_ASSERT( "actions tag is depreciated", (*iter)->getName() != "actions" );
 
         if( (*iter)->getName() == "name" )
         {
@@ -83,7 +80,6 @@ void IAspect::configuring() throw( ::fwTools::Failed )
             //assert((*iter)->hasAttribute("height") && (*iter)->hasAttribute("width") );
             //m_minSizeHeight = ::boost::lexical_cast<int >((*iter)->getExistingAttributeValue("height").c_str());
             //m_minSizeWidth = ::boost::lexical_cast<int >((*iter)->getExistingAttributeValue("width").c_str());
-
             if( (*iter)->hasAttribute("height") )
             {
                 m_minSizeHeight = ::boost::lexical_cast<int >((*iter)->getExistingAttributeValue("height").c_str());
@@ -93,86 +89,7 @@ void IAspect::configuring() throw( ::fwTools::Failed )
                 m_minSizeWidth = ::boost::lexical_cast<int >((*iter)->getExistingAttributeValue("width").c_str());
             }
         }
-
-        if( (*iter)->getName() == "menus" )
-        {
-            ::fwRuntime::ConfigurationElementContainer::Iterator menu ;
-            for( menu = (*iter)->begin() ; menu != (*iter)->end() ; ++menu )
-            {
-                SLM_ASSERT("menu tag missing", (*menu)->getName() == "menu" );
-                SLM_ASSERT("uid attribute missing", (*menu)->hasAttribute("uid"));
-                m_menusUUID.push_back( (*menu)->getExistingAttributeValue("uid") ) ;
-            }
-        }
-
-        if( (*iter)->getName() == "toolBar" )
-        {
-            ::gui::aspect::IToolBar::sptr service = ::fwServices::add< ::gui::aspect::IToolBar >(this->getObject(),"::gui::aspect::DefaultToolBar"); ;
-            service->setConfiguration( *iter ) ;
-            service->configure() ;
-            service->start() ;
-        }
     }
-}
-
-//---------------------------------------------------------------------------
-
-void IAspect::starting() throw(::fwTools::Failed)
-{
-    // Create MenuBar
-    wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
-    SLM_ASSERT( "No wxFrame", frame ) ;
-
-    if(frame->GetMenuBar())
-    {
-        SLM_ASSERT( "MenuBar must be null or empty", frame->GetMenuBar()->GetMenuCount() == 0 );
-    }
-    else
-    {
-        frame->SetMenuBar(new wxMenuBar());
-    }
-
-    // Starting menus (do this before actions)
-    std::vector< ::gui::aspect::IMenu::sptr > allMenus = ::fwServices::OSR::getServices< ::gui::aspect::IMenu >() ;
-    for(std::vector< std::string >::iterator iterUUID = m_menusUUID.begin() ; iterUUID != m_menusUUID.end() ; ++iterUUID )
-    {
-        bool menuIsFound = false;
-        for(    std::vector< ::gui::aspect::IMenu::sptr >::iterator iterMenu = allMenus.begin();
-                iterMenu != allMenus.end() && ! menuIsFound ;
-                ++iterMenu )
-        {
-            if( (*iterMenu)->getUUID() == *iterUUID )
-            {
-                (*iterMenu)->start();
-                menuIsFound = true;
-            }
-        }
-        SLM_ASSERT("Menu Not Found", menuIsFound);
-    }
-    this->registerAspect();
-}
-//---------------------------------------------------------------------------
-
-void IAspect::stopping() throw(::fwTools::Failed)
-{
-    // Stopping menus (do this after actions)
-    std::vector< ::gui::aspect::IMenu::sptr > allMenus = ::fwServices::OSR::getServices< ::gui::aspect::IMenu >() ;
-    for(std::vector< std::string >::iterator iterUUID = m_menusUUID.begin() ; iterUUID != m_menusUUID.end() ; ++iterUUID )
-    {
-        bool menuIsFound = false;
-        for(    std::vector< ::gui::aspect::IMenu::sptr >::iterator iterMenu = allMenus.begin();
-                iterMenu != allMenus.end() && ! menuIsFound ;
-                ++iterMenu )
-        {
-            if( (*iterMenu)->getUUID() == *iterUUID )
-            {
-                (*iterMenu)->stop();
-                menuIsFound = true;
-            }
-        }
-        SLM_ASSERT("Menu Not Found", menuIsFound);
-    }
-    this->unregisterAspect();
 }
 
 //---------------------------------------------------------------------------
@@ -244,13 +161,7 @@ void IAspect::unregisterAspect( )
     wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
     SLM_ASSERT( "No wxFrame", frame ) ;
     frame->SetTitle("") ;
-
-    if( ::gui::Manager::getDefault() &&
-            ::gui::Manager::getDefault()->getTopAuiManager() )
-    {
-        ::gui::Manager::getDefault()->getTopAuiManager()->Update();
-        wxTheApp->GetTopWindow()->Refresh();
-    }
+    wxTheApp->GetTopWindow()->Refresh();
 }
 
 }

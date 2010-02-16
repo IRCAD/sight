@@ -30,9 +30,17 @@
         <implements>::fwServices::IService</implements>
     </point>
     
+    <point id="::gui::aspect::IMenuBar">
+        <implements>::fwServices::IService</implements>
+    </point>
     
     <point id="::gui::aspect::DefaultMenu">
         <implements>::gui::aspect::IMenu</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
+    <point id="::gui::aspect::DefaultMenuBar">
+        <implements>::gui::aspect::IMenuBar</implements>
         <implements>::fwTools::Object</implements>
     </point>
     

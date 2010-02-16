@@ -9,6 +9,9 @@
 
 #include <fwTools/Failed.hpp>
 #include <fwServices/IService.hpp>
+
+#include <fwWX/IGuiContainer.hpp>
+
 #include "gui/export.hpp"
 
 class wxWindow;
@@ -30,7 +33,7 @@ namespace editor
  *  The problem is that the IEditor::starting method create another useless container in this case.
  */
 
-class GUI_CLASS_API IEditor : public fwServices::IService
+class GUI_CLASS_API IEditor : public ::fwWX::IGuiContainer
 {
 
 public :
@@ -45,15 +48,6 @@ public :
 
     /// Destructor. Do nothing.
     GUI_API virtual ~IEditor() throw() ;
-
-    /**
-     * @brief Specify container within which visualization will appear.
-     * @todo Question: Should this method be imposed to class child declarations ??. It is interesting to check if the container is really needed.
-     */
-    GUI_API virtual void setWxContainer( wxWindow * container ) ;
-
-    /// Returns visualization wxContainer.
-    GUI_API virtual wxWindow * getWxContainer() ;
 
 protected :
 
@@ -94,23 +88,6 @@ protected :
     GUI_API virtual void updating() throw(::fwTools::Failed) {};
 
     ///@}
-
-    /// container
-    wxWindow * m_container;
-
-    /**
-     * @brief Container ID.
-     *
-     * The first element of the std::pair is a boolean that is set to true if the configuration element is found.
-     * The second element of the std::pair is an int representing the identification number of a wxWidgets container. This number allows to retrieve the wxWidgets container and thus to initialize the m_container.
-     */
-    std::pair< bool , int > m_guiContainerId ;
-
-    /**
-     * @brief This boolean allows to know if a new container has been created inside the class instance in order to destroy it during the stopping function.
-     *
-     **/
-    bool m_isContainerLocallyCreated ;
 
 };
 

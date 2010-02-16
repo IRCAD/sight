@@ -11,6 +11,8 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 
+#include <fwWX/convert.hpp>
+
 #include "gui/action/IAction.hpp"
 #include "gui/Manager.hpp"
 
@@ -116,8 +118,8 @@ void IAction::starting() throw(::fwTools::Failed)
     wxMenuBar *menuBar =  frame->GetMenuBar();
 
     // get Menu
-    SLM_ASSERT("Menu must be created", menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) != wxNOT_FOUND );
-    wxMenu *menuFile = menuBar->GetMenu( menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) ) ;
+    SLM_ASSERT("Menu must be created", menuBar->FindMenu( ::fwWX::std2wx( m_menuName ) ) != wxNOT_FOUND );
+    wxMenu *menuFile = menuBar->GetMenu( menuBar->FindMenu( ::fwWX::std2wx( m_menuName ) ) ) ;
 
     // create shortcut
     if( !m_shortcutDef.empty() )
@@ -131,11 +133,11 @@ void IAction::starting() throw(::fwTools::Failed)
     if(m_isCheckable || m_isRadio)
     {
         wxItemKind kind = m_isRadio ? wxITEM_RADIO : wxITEM_CHECK;
-        menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , wxConvertMB2WX( m_actionNameInMenu.c_str() ),_(""), kind ) ) ;
+        menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , ::fwWX::std2wx( m_actionNameInMenu ),_(""), kind ) ) ;
     }
     else
     {
-        menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , wxConvertMB2WX( m_actionNameInMenu.c_str() )) ) ;
+        menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , ::fwWX::std2wx( m_actionNameInMenu )) ) ;
     }
 
     ::gui::Manager::registerAction( this->getSptr() ) ;
@@ -157,8 +159,8 @@ void IAction::stopping() throw(::fwTools::Failed)
     wxMenuBar *menuBar =  frame->GetMenuBar();
 
     // get Menu
-    SLM_ASSERT("Menu must exist", menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) != wxNOT_FOUND );
-    wxMenu *menuFile = menuBar->GetMenu( menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) ) ;
+    SLM_ASSERT("Menu must exist", menuBar->FindMenu( ::fwWX::std2wx( m_menuName ) ) != wxNOT_FOUND );
+    wxMenu *menuFile = menuBar->GetMenu( menuBar->FindMenu( ::fwWX::std2wx( m_menuName ) ) ) ;
 
     SLM_ASSERT( "wxMenuItem must exist", menuFile->FindItem( m_actionIdInMenu ) != NULL );
 
@@ -285,8 +287,8 @@ wxMenuItem* IAction::getMenuItem()
     wxMenuBar *menuBar =  frame->GetMenuBar();
 
     // get Menu
-    SLM_ASSERT("Menu must exist", menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) != wxNOT_FOUND );
-    wxMenu *menuFile = menuBar->GetMenu( menuBar->FindMenu( wxConvertMB2WX( m_menuName.c_str() ) ) ) ;
+    SLM_ASSERT("Menu must exist", menuBar->FindMenu( ::fwWX::std2wx( m_menuName ) ) != wxNOT_FOUND );
+    wxMenu *menuFile = menuBar->GetMenu( menuBar->FindMenu( ::fwWX::std2wx( m_menuName ) ) ) ;
 
     return menuFile->FindItem( m_actionIdInMenu );
 }

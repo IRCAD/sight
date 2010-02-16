@@ -71,9 +71,6 @@ public:
      */
     GUI_API static void unregisterAction( ::gui::action::IAction::sptr _action ) ;
 
-
-    GUI_API static wxAuiManager *getTopAuiManager();
-
     /**
      * @brief Invoked by the menu event handler observing user actions on application menu
      */
@@ -100,11 +97,6 @@ private:
      */
     ActionContainer m_serviceCallBacks;
     std::vector< wxAcceleratorEntry > m_vAccelEntries;
-
-    /**
-     * @brief aui manager used to manage integration of subframes as children of the application top window
-     */
-    wxAuiManager * m_wxmanager ;
 
 };
 

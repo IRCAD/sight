@@ -7,10 +7,6 @@
 #ifndef GUI_ASPECT_ITOOLBAR_HPP_
 #define GUI_ASPECT_ITOOLBAR_HPP_
 
-#include <boost/shared_ptr.hpp>
-#include <set>
-#include <wx/toolbar.h>
-
 #include <fwServices/IService.hpp>
 
 #include "gui/export.hpp"
@@ -53,12 +49,12 @@ protected :
     /**
      * @brief This method create a new ToolBar in frame, and add tools with IToolBar::m_actionIds list.
      */
-    GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void starting() throw( ::fwTools::Failed ) = 0;
 
     /**
      * @brief This method remove the tools situated in the ToolBar and delete ToolBar.
      */
-    GUI_API virtual void stopping() throw( ::fwTools::Failed );
+    GUI_API virtual void stopping() throw( ::fwTools::Failed ) = 0;
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
@@ -83,10 +79,6 @@ protected :
     GUI_API virtual void info(std::ostream &_sstream ) = 0;
 
     ///@}
-
-private:
-
-    wxToolBar*  m_toolBar;
 };
 
 }

@@ -6,6 +6,8 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwTools/UUID.hpp>
+
 #include <wx/window.h>
 #include <wx/colour.h>
 
@@ -39,11 +41,7 @@ MultiSizerView::~MultiSizerView() throw()
 void MultiSizerView::configuring() throw( ::fwTools::Failed )
 {
     assert( m_configuration->getName() == "service" );
-    SLM_FATAL_IF( "missing win configuration" , ! m_configuration->findConfigurationElement("win") );
-
-    std::string guiContainerId =  m_configuration->findConfigurationElement("win")->getExistingAttributeValue("guiContainerId") ;
-    OSLM_TRACE("Configuring win identified by " << guiContainerId ) ;
-    m_guiContainerId = ::boost::lexical_cast<int >(guiContainerId) ;
+    SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
 
     SLM_FATAL_IF( "missing views configuration" , !m_configuration->findConfigurationElement("views") );
     ::fwRuntime::ConfigurationElement::sptr viewsCfgElt = m_configuration->findConfigurationElement("views");
@@ -69,8 +67,8 @@ void MultiSizerView::configuring() throw( ::fwTools::Failed )
         SLM_FATAL_IF("<views> node can only contain <view> node", (*iter)->getName()!="view" );
         ViewInfo vi;
 
-        SLM_FATAL_IF(" <view> node must contain guiContainerId attribute", !(*iter)->hasAttribute("guiContainerId") );
-        vi.m_guid = ::boost::lexical_cast<int >( (*iter)->getExistingAttributeValue("guiContainerId") );
+        SLM_FATAL_IF("<view> node must contain uid attribute", !(*iter)->hasAttribute("uid") );
+        vi.m_uid = (*iter)->getExistingAttributeValue("uid");
         if( (*iter)->hasAttribute("proportion") )
         {
             std::string proportion = (*iter)->getExistingAttributeValue("proportion") ;
@@ -94,6 +92,13 @@ void MultiSizerView::configuring() throw( ::fwTools::Failed )
             std::string height = (*iter)->getExistingAttributeValue("minHeight") ;
             vi.m_minSize.second = ::boost::lexical_cast< int >(height) ;
         }
+        if( (*iter)->hasAttribute("autoStart") )
+        {
+            std::string autostart = (*iter)->getExistingAttributeValue("autoStart");
+            OSLM_ASSERT("Sorry, value "<<autostart<<" is not correct for attribute autoStart.",
+                    autostart == "yes" || autostart == "no");
+            vi.m_autostart = (autostart == "yes");
+        }
         m_views.push_back(vi);
     }
 }
@@ -109,29 +114,39 @@ void MultiSizerView::reconfiguring() throw( ::fwTools::Failed )
 
 void MultiSizerView::info(std::ostream &_sstream )
 {
-    _sstream << "GUI View with ID = " <<  m_guiContainerId;
+    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void MultiSizerView::starting() throw(::fwTools::Failed)
 {
-    OSLM_ASSERT("Gui container must exist", wxWindow::FindWindowById( m_guiContainerId )) ;
+    SLM_TRACE_FUNC();
+    this->initGuiParentContainer();
 
     assert( wxTheApp->GetTopWindow() );
 
-    wxWindow * wxContainer = wxWindow::FindWindowById( m_guiContainerId );
+    wxWindow * wxContainer = this->getWxContainer();
     m_sizer = new wxBoxSizer( m_orient );
     wxContainer->SetSizer( m_sizer );
+    wxContainer->Layout();
 
     std::list<ViewInfo>::iterator pi = m_views.begin();
     for ( pi; pi!= m_views.end() ; ++pi )
     {
-        wxPanel * viewPanel = new wxPanel(  wxContainer, pi->m_guid , wxDefaultPosition, wxSize( pi->m_minSize.first, pi->m_minSize.second ), wxNO_BORDER | wxTAB_TRAVERSAL );
+        wxPanel * viewPanel = new wxPanel(  wxContainer, wxNewId() , wxDefaultPosition, wxSize( pi->m_minSize.first, pi->m_minSize.second ), wxNO_BORDER | wxTAB_TRAVERSAL );
 
         // Set the panel
         pi->m_panel = viewPanel;
         m_sizer->Add( viewPanel, pi->m_proportion, wxALL|wxEXPAND, pi->m_border);
+        this->registerWxContainer(pi->m_uid, pi->m_panel);
+
+        if(pi->m_autostart)
+        {
+            OSLM_ASSERT("Service "<<pi->m_uid<<" doesn't exist.", ::fwTools::UUID::exist(pi->m_uid, ::fwTools::UUID::SIMPLE ));
+            ::fwServices::IService::sptr service = ::fwServices::get( pi->m_uid ) ;
+            service->start();
+        }
     }
 }
 //-----------------------------------------------------------------------------
@@ -152,17 +167,9 @@ void MultiSizerView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwT
 
 void MultiSizerView::stopping() throw(::fwTools::Failed)
 {
-    std::list<ViewInfo>::iterator pi = m_views.begin();
-    for ( pi; pi!= m_views.end() ; ++pi )
-    {
-        if ( pi->m_panel )
-        {
-            pi->m_panel->Destroy() ;
-            pi->m_panel = 0 ;
-        }
-    }
-
-    wxWindow * wxContainer = wxWindow::FindWindowById( m_guiContainerId );
+    SLM_TRACE_FUNC();
+    this->unregisterAllWxContainer();
+    this->resetGuiParentContainer();
 }
 
 //-----------------------------------------------------------------------------

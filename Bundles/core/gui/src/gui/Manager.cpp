@@ -141,7 +141,7 @@ const ::gui::Manager::sptr Manager::getDefault() throw()
 
 //-----------------------------------------------------------------------------
 
-Manager::Manager() throw() : m_wxmanager( 0 )
+Manager::Manager() throw()
 {}
 
 //-----------------------------------------------------------------------------
@@ -159,14 +159,6 @@ void Manager::uninitialize()
 
     // Stops all services of the application root object before uninstalling wxContainer
     ::fwServices::OSR::uninitializeRootObject();
-
-    // Uninstalling wxContainer
-    if( ::gui::Manager::getDefault()->m_wxmanager )
-    {
-        ::gui::Manager::getDefault()->m_wxmanager->UnInit() ;
-        delete ::gui::Manager::getDefault()->m_wxmanager;
-        ::gui::Manager::getDefault()->m_wxmanager = 0 ;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -192,22 +184,8 @@ void Manager::initialize()
     frame->Refresh();
     frame->Layout();
 
-    if( getDefault()->m_wxmanager == 0 )
-    {
-        getDefault()->m_wxmanager = new wxAuiManager( wxTheApp->GetTopWindow() ) ;
-    }
-
     // Initialize root object : root object, views, ...
     ::fwServices::OSR::initializeRootObject();
-    getDefault()->m_wxmanager->Update();
-}
-
-//-----------------------------------------------------------------------------
-
-wxAuiManager * Manager::getTopAuiManager()
-{
-    SLM_ASSERT("Sorry, no wxManager", getDefault()->m_wxmanager );
-    return getDefault()->m_wxmanager ;
 }
 
 //-----------------------------------------------------------------------------

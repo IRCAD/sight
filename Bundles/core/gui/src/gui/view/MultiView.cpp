@@ -9,6 +9,8 @@
 #include <wx/window.h>
 #include <wx/colour.h>
 
+#include <fwTools/UUID.hpp>
+
 #include <fwServices/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -39,15 +41,10 @@ MultiView::~MultiView() throw()
 void MultiView::configuring() throw( ::fwTools::Failed )
 {
     assert( m_configuration->getName() == "service" );
-    SLM_FATAL_IF( "missing win configuration" , ! m_configuration->findConfigurationElement("win") );
-
-    std::string guiContainerId =  m_configuration->findConfigurationElement("win")->getExistingAttributeValue("guiContainerId") ;
-    OSLM_TRACE("Configuring win identified by " << guiContainerId ) ;
-    m_guiContainerId = ::boost::lexical_cast<int >(guiContainerId) ;
-
-
+    SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
 
     SLM_FATAL_IF( "missing views configuration" , !m_configuration->findConfigurationElement("views") );
+
     ::fwRuntime::ConfigurationElement::sptr viewsCfgElt = m_configuration->findConfigurationElement("views");
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = viewsCfgElt->find("view");
@@ -58,10 +55,10 @@ void MultiView::configuring() throw( ::fwTools::Failed )
     {
         SLM_FATAL_IF("<views> node can only contain <view> node", (*iter)->getName()!="view" );
         ViewInfo vi;
-        int guid=-1;
+        std::string uid;
 
-        SLM_FATAL_IF(" <view> node must contain guiContainerId attribute", !(*iter)->hasAttribute("guiContainerId") );
-        guid = ::boost::lexical_cast<int >( (*iter)->getExistingAttributeValue("guiContainerId") );
+        SLM_FATAL_IF("<view> node must contain uid attribute", !(*iter)->hasAttribute("uid") );
+        uid = (*iter)->getExistingAttributeValue("uid");
         if( (*iter)->hasAttribute("align") )
         {
             vi.m_align = (*iter)->getExistingAttributeValue("align");
@@ -109,10 +106,18 @@ void MultiView::configuring() throw( ::fwTools::Failed )
         {
             std::string visible = (*iter)->getExistingAttributeValue("visible") ;
             OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                    (visible == "true") || (visible == "false") ||
                     (visible == "yes") || (visible == "no"));
-            vi.m_visible = (visible == "yes");
+            vi.m_visible = ((visible == "true") || (visible == "yes"));
         }
-        m_panels[guid] = vi;
+        if( (*iter)->hasAttribute("autoStart") )
+        {
+            std::string autostart = (*iter)->getExistingAttributeValue("autoStart");
+            OSLM_ASSERT("Sorry, value "<<autostart<<" is not correct for attribute autoStart.",
+                    autostart == "yes" || autostart == "no");
+            vi.m_autostart = (autostart == "yes");
+        }
+        m_panels[uid] = vi;
     }
 }
 
@@ -127,23 +132,24 @@ void MultiView::reconfiguring() throw( ::fwTools::Failed )
 
 void MultiView::info(std::ostream &_sstream )
 {
-    _sstream << "GUI View with ID = " <<  m_guiContainerId;
+    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void MultiView::starting() throw(::fwTools::Failed)
 {
-    OSLM_ASSERT("Gui container must exist", wxWindow::FindWindowById( m_guiContainerId )) ;
+    SLM_TRACE_FUNC();
+    this->initGuiParentContainer();
 
     assert( wxTheApp->GetTopWindow() );
 
-    wxWindow * wxContainer = wxWindow::FindWindowById( m_guiContainerId );
+    wxWindow * wxContainer = this->getWxContainer();
     m_manager = new wxAuiManager(  wxContainer  );
     PanelContainer::iterator pi = m_panels.begin();
     for ( pi; pi!= m_panels.end() ; ++pi )
     {
-        wxPanel * viewPanel = new wxPanel(  wxContainer, pi->first , wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTAB_TRAVERSAL );
+        wxPanel * viewPanel = new wxPanel(  wxContainer, wxNewId() , wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTAB_TRAVERSAL );
 
         // Set the panel
         pi->second.m_panel = viewPanel;
@@ -168,6 +174,16 @@ void MultiView::starting() throw(::fwTools::Failed)
         paneInfo.Show(pi->second.m_visible);
         // rempli paneInfo avec pi->second
         m_manager->AddPane( viewPanel, paneInfo);
+
+        this->registerWxContainer(pi->first, viewPanel);
+
+        if(pi->second.m_autostart)
+        {
+            m_manager->Update();
+            OSLM_ASSERT("Service "<<pi->first<<" doesn't exist.", ::fwTools::UUID::exist(pi->first, ::fwTools::UUID::SIMPLE ));
+            ::fwServices::IService::sptr service = ::fwServices::get( pi->first ) ;
+            service->start();
+        }
     }
 
     m_manager->Update();
@@ -191,6 +207,9 @@ void MultiView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools:
 
 void MultiView::stopping() throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
+    this->unregisterAllWxContainer();
+
     // Destroy wxAuiManager
     if( m_manager )
     {
@@ -198,18 +217,8 @@ void MultiView::stopping() throw(::fwTools::Failed)
         delete m_manager;
         m_manager = 0 ;
     }
-
-    PanelContainer::iterator pi = m_panels.begin();
-    for ( pi; pi!= m_panels.end() ; ++pi )
-    {
-        if ( pi->second.m_panel )
-        {
-            pi->second.m_panel->Destroy() ;
-            pi->second.m_panel = 0 ;
-        }
-    }
-
-    wxWindow * wxContainer = wxWindow::FindWindowById( m_guiContainerId );
+    this->resetGuiParentContainer();
+    m_panels.clear();
 }
 
 //-----------------------------------------------------------------------------

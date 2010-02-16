@@ -42,7 +42,8 @@ class GUI_CLASS_API MultiView : public ::gui::view::IView
             m_panel (0),
             m_position(0),
             m_layer(0),
-            m_row(0)
+            m_row(0),
+            m_autostart(false)
         {}
 
         std::string             m_align;
@@ -53,6 +54,7 @@ class GUI_CLASS_API MultiView : public ::gui::view::IView
         int                     m_position;
         int                     m_layer;
         int                     m_row;
+        bool                    m_autostart;
     };
 
 public :
@@ -93,7 +95,7 @@ protected :
     wxAuiManager * m_manager;
 
     /// New Container definition
-    typedef std::map< int , ViewInfo > PanelContainer;
+    typedef std::map< std::string , ViewInfo > PanelContainer;
 
     /// Save layout configuration definition and created container
     PanelContainer m_panels;

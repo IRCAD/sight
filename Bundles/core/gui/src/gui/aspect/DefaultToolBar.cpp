@@ -4,9 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <wx/app.h>
+#include <wx/bitmap.h>
+
+#include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/Factory.hpp>
+#include <fwServices/bundle/runtime.hpp>
+
+#include <fwRuntime/Runtime.hpp>
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwWX/convert.hpp>
 
 #include "gui/aspect/IToolBar.hpp"
+#include "gui/action/IAction.hpp"
 #include "gui/aspect/DefaultToolBar.hpp"
 
 REGISTER_SERVICE( ::gui::aspect::IToolBar , ::gui::aspect::DefaultToolBar , ::fwTools::Object ) ;
@@ -17,7 +30,7 @@ namespace gui
 namespace aspect
 {
 
-DefaultToolBar::DefaultToolBar() throw()
+DefaultToolBar::DefaultToolBar() throw() : m_toolBar(0)
 {}
 
 //-----------------------------------------------------------------------------
@@ -30,7 +43,95 @@ DefaultToolBar::~DefaultToolBar() throw()
 void DefaultToolBar::starting()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->::gui::aspect::IToolBar::starting();
+     //get frame
+     wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
+     SLM_ASSERT( "No wxFrame", frame ) ;
+
+     // If no menu bar yet : create it
+     if( !frame->GetToolBar() )
+     {
+         SLM_TRACE("No tool bar : creating it") ;
+
+         // Create the toolbar
+         frame->CreateToolBar(wxNO_BORDER|wxHORIZONTAL|wxTB_FLAT, -1);
+         frame->GetToolBar()->SetMargins( 2, 2 );
+         frame->GetToolBar()->SetToolBitmapSize( wxSize(32, 32) );
+         m_toolBar = frame->GetToolBar();
+     }
+     frame->Update();
+     // Reconfiguring and starting appropriate actions
+     ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
+     std::string name;
+     for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
+     {
+         if( (*iter)->getName() == "toolBitmapSize" )
+         {
+             int height = -1;
+             int width = -1;
+             if((*iter)->hasAttribute("height"))
+             {
+                 height = ::boost::lexical_cast< int > ((*iter)->getExistingAttributeValue("height"));
+             }
+             if((*iter)->hasAttribute("width"))
+             {
+                 width = ::boost::lexical_cast< int > ((*iter)->getExistingAttributeValue("width"));
+             }
+             m_toolBar->SetToolBitmapSize( wxSize(width, height) );
+         }
+
+         if( (*iter)->getName() == "action" )
+         {
+             SLM_ASSERT("id tag depreciated", !(*iter)->hasAttribute("id"));
+             SLM_ASSERT("uid attribute missing", (*iter)->hasAttribute("uid"));
+
+             std::string uid =  (*iter)->getExistingAttributeValue("uid") ;
+             ::gui::action::IAction::sptr action = ::gui::action::IAction::dynamicCast( ::fwServices::get(uid) );
+             SLM_ASSERT("action missing", action);
+             int id = action->getId();
+
+             name = "";
+             if((*iter)->hasAttribute("name"))
+             {
+                 name = (*iter)->getExistingAttributeValue("name");
+             }
+
+             wxImage image = wxNullImage ;
+             if((*iter)->hasAttribute("icon"))
+             {
+                 std::string icon = (*iter)->getExistingAttributeValue("icon");
+                 if ( !image.LoadFile(::fwWX::std2wx( icon )))
+                 {
+                     wxLogError(_("Couldn't load image from '%s'."), ::fwWX::std2wx( icon ));
+                 }
+             }
+             wxItemKind kind = wxITEM_NORMAL;
+             if((*iter)->hasAttribute("style"))
+             {
+                 if((*iter)->getExistingAttributeValue("style") == "check")
+                 {
+                     kind = wxITEM_CHECK;
+                 }
+                 else if((*iter)->getExistingAttributeValue("style") == "radio")
+                 {
+                     kind = wxITEM_RADIO;
+                 }
+             }
+             m_toolBar->AddTool(id, ::fwWX::std2wx(name), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, ::fwWX::std2wx( name));
+             if((*iter)->hasAttribute("state"))
+             {
+                 if((*iter)->getExistingAttributeValue("state") == "checked" && (kind == wxITEM_CHECK || kind == wxITEM_RADIO))
+                 {
+                     m_toolBar->ToggleTool(id, true);
+                 }
+             }
+             m_toolBar->EnableTool(id, action->isEnable());
+         }
+         if( (*iter)->getName() == "separator" )
+         {
+             m_toolBar->AddSeparator();
+         }
+     }
+     m_toolBar->Realize();
 }
 
 //-----------------------------------------------------------------------------
@@ -38,7 +139,12 @@ void DefaultToolBar::starting()  throw ( ::fwTools::Failed )
 void DefaultToolBar::stopping()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->::gui::aspect::IToolBar::stopping();
+    if( m_toolBar != 0 )
+    {
+        m_toolBar->ClearTools();
+        delete m_toolBar;
+        m_toolBar = 0;
+    }
 }
 
 //-----------------------------------------------------------------------------

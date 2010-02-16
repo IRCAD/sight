@@ -7,6 +7,8 @@
 #ifndef GUI_DEFAULT_TOOLBAR_HPP_
 #define GUI_DEFAULT_TOOLBAR_HPP_
 
+#include <wx/toolbar.h>
+
 #include "gui/aspect/IToolBar.hpp"
 #include "gui/export.hpp"
 
@@ -70,6 +72,10 @@ protected:
      */
     GUI_API virtual void info(std::ostream &_sstream );
     ///@}
+
+private:
+
+    wxToolBar*  m_toolBar;
 };
 
 }

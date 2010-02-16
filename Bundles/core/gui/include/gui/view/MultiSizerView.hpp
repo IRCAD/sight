@@ -38,15 +38,17 @@ class GUI_CLASS_API MultiSizerView : public ::gui::view::IView
             m_proportion (1),
             m_border(0),
             m_panel (0),
-            m_guid(-1),
-            m_minSize (std::make_pair(-1,-1))
+            m_uid(""),
+            m_minSize (std::make_pair(-1,-1)),
+            m_autostart(false)
         {}
 
         int                     m_proportion;
         int                     m_border;
-        int                     m_guid;
+        std::string             m_uid;
         wxPanel *               m_panel;
         std::pair< int, int >   m_minSize;
+        bool                    m_autostart;
     };
 
 public :
