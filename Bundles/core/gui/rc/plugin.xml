@@ -30,6 +30,10 @@
         <implements>::fwServices::IService</implements>
     </point>
     
+    <point id="::gui::frame::IFrame">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
     <point id="::gui::aspect::IMenuBar">
         <implements>::fwServices::IService</implements>
     </point>
