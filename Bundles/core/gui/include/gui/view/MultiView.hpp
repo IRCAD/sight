@@ -43,18 +43,20 @@ class GUI_CLASS_API MultiView : public ::gui::view::IView
             m_position(0),
             m_layer(0),
             m_row(0),
-            m_autostart(false)
+            m_autostart(false),
+            m_caption (std::make_pair(false,""))
         {}
 
-        std::string             m_align;
-        std::pair< int, int >   m_minSize;
-        bool                    m_visible;
-        wxPanel *               m_panel;
-        bool                    m_isResizable;
-        int                     m_position;
-        int                     m_layer;
-        int                     m_row;
-        bool                    m_autostart;
+        std::string                      m_align;
+        std::pair< int, int >            m_minSize;
+        bool                             m_visible;
+        wxPanel *                        m_panel;
+        bool                             m_isResizable;
+        int                              m_position;
+        int                              m_layer;
+        int                              m_row;
+        bool                             m_autostart;
+        std::pair< bool, std::string >   m_caption;
     };
 
 public :

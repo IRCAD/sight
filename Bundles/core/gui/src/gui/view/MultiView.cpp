@@ -14,6 +14,8 @@
 #include <fwServices/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <fwWX/convert.hpp>
+
 #include "gui/Manager.hpp"
 #include "gui/view/MultiView.hpp"
 
@@ -110,6 +112,13 @@ void MultiView::configuring() throw( ::fwTools::Failed )
                     (visible == "yes") || (visible == "no"));
             vi.m_visible = ((visible == "true") || (visible == "yes"));
         }
+
+        if( (*iter)->hasAttribute("caption") )
+        {
+            vi.m_caption.first = true;
+            vi.m_caption.second = (*iter)->getExistingAttributeValue("caption") ;
+        }
+
         if( (*iter)->hasAttribute("autoStart") )
         {
             std::string autostart = (*iter)->getExistingAttributeValue("autoStart");
@@ -165,7 +174,15 @@ void MultiView::starting() throw(::fwTools::Failed)
         paneInfo.CloseButton( false );
         paneInfo.Floatable( false );
         paneInfo.MaximizeButton( true );
-        paneInfo.CaptionVisible( false );
+        if(pi->second.m_caption.first)
+        {
+            paneInfo.CaptionVisible( true );
+            paneInfo.Caption( ::fwWX::std2wx(pi->second.m_caption.second) );
+        }
+        else
+        {
+            paneInfo.CaptionVisible( false );
+        }
         paneInfo.PaneBorder( false );
         paneInfo.MinSize( wxSize( pi->second.m_minSize.first, pi->second.m_minSize.second ) );
         paneInfo.Position(pi->second.m_position);
