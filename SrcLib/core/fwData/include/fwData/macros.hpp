@@ -94,18 +94,27 @@
 //-----------------------------------
 // Deep/Shallow copy
 //-----------------------------------
-#define fwDataShallowCopyMacro()                                                 \
-    void shallowCopy( ::fwTools::Object::sptr _source )                          \
-    {                                                                            \
-        ::fwTools::Object::shallowCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source ); \
+
+#define fwDataShallowCopyMacro()                                                    \
+    void shallowCopy( ::fwTools::Object::csptr _source )                            \
+    {                                                                               \
+        ::fwTools::Object::shallowCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source );    \
+    };                                                                              \
+    void shallowCopy( __FWCORE_TYPEDEF_SELF_NAME::sptr _source )                    \
+    {                                                                               \
+        ::fwTools::Object::shallowCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source );    \
     };
 
 //-----------------------------------
 
-#define fwDataDeepCopyMacro()                                                    \
-    void deepCopy( ::fwTools::Object::sptr _source )                             \
-    {                                                                            \
-        ::fwTools::Object::deepCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source );    \
+#define fwDataDeepCopyMacro()                                                       \
+    void deepCopy( ::fwTools::Object::csptr _source )                               \
+    {                                                                               \
+        ::fwTools::Object::deepCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source );       \
+    };                                                                              \
+    void deepCopy( __FWCORE_TYPEDEF_SELF_NAME::sptr _source )                       \
+    {                                                                               \
+        ::fwTools::Object::deepCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source );       \
     };
 
 

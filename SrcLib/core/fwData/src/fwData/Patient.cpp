@@ -40,19 +40,45 @@ Patient::~Patient ()
 
 //------------------------------------------------------------------------------
 
-Patient &Patient::operator=(const Patient &_patient)
+void Patient::shallowCopy( Patient::csptr _source )
 {
-    this->m_sName       = _patient.m_sName;
-    this->m_sFirstname  = _patient.m_sFirstname;
-    this->m_sIDDicom    = _patient.m_sIDDicom;
-    this->m_sBirthdate  = _patient.m_sBirthdate;
-    this->m_bIsMale     = _patient.m_bIsMale;
-    this->m_i32DbID     = _patient.m_i32DbID;
-
-    this->getField( Patient::ID_STUDIES )->children() = _patient.getField( Patient::ID_STUDIES )->children();
-
-    return (*this);
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_sName       = _source->m_sName;
+    this->m_sFirstname  = _source->m_sFirstname;
+    this->m_sIDDicom    = _source->m_sIDDicom;
+    this->m_sBirthdate  = _source->m_sBirthdate;
+    this->m_bIsMale     = _source->m_bIsMale;
+    this->m_i32DbID     = _source->m_i32DbID;
 }
+
+//------------------------------------------------------------------------------
+
+void Patient::deepCopy( Patient::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_sName       = _source->m_sName;
+    this->m_sFirstname  = _source->m_sFirstname;
+    this->m_sIDDicom    = _source->m_sIDDicom;
+    this->m_sBirthdate  = _source->m_sBirthdate;
+    this->m_bIsMale     = _source->m_bIsMale;
+    this->m_i32DbID     = _source->m_i32DbID;
+}
+
+//------------------------------------------------------------------------------
+
+//Patient &Patient::operator=(const Patient &_patient)
+//{
+//    this->m_sName       = _patient.m_sName;
+//    this->m_sFirstname  = _patient.m_sFirstname;
+//    this->m_sIDDicom    = _patient.m_sIDDicom;
+//    this->m_sBirthdate  = _patient.m_sBirthdate;
+//    this->m_bIsMale     = _patient.m_bIsMale;
+//    this->m_i32DbID     = _patient.m_i32DbID;
+//
+//    this->getField( Patient::ID_STUDIES )->children() = _patient.getField( Patient::ID_STUDIES )->children();
+//
+//    return (*this);
+//}
 
 //------------------------------------------------------------------------------
 

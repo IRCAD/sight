@@ -174,7 +174,7 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
             m_vRGBA[2] = vtkMmat->ambient.blue;
             m_vRGBA[3] = 1.0;
             ::fwData::Material::NewSptr dataMat;
-            dataMat->ambient().setCRefRGBA(m_vRGBA);
+            dataMat->ambient()->setCRefRGBA(m_vRGBA);
             model->getRefMap().insert (
                     std::pair< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr >(mesh, dataMat));
 

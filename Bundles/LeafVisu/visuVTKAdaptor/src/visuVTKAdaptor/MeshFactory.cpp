@@ -108,12 +108,13 @@ void MeshFactory::updateMaterial( ::fwData::Material::sptr material )
 {
     if (m_actor)
     {
-        ::fwData::Color & color = material->ambient();
+        ::fwData::Color::sptr color = material->ambient();
+
         vtkProperty *property = m_actor->GetProperty();
 
-        property->SetColor( color.red(),
-                color.green(),
-                color.blue());
+        property->SetColor( color->red(),
+                color->green(),
+                color->blue());
 
         //3DVSP like rendering
         property->SetSpecularColor(1.,1.,1.);
@@ -124,7 +125,7 @@ void MeshFactory::updateMaterial( ::fwData::Material::sptr material )
 //        property->SetInterpolationToPhong();
 
 
-        property->SetOpacity( color.alpha() );
+        property->SetOpacity( color->alpha() );
 
         /// Sets RepresentationMode
         if(material->getRepresentationMode() == ::fwData::Material::MODE_SURFACE)
@@ -162,7 +163,7 @@ void MeshFactory::updateMaterial( ::fwData::Material::sptr material )
 
 #ifndef USE_DEPTH_PEELING // replacement for depth peeling
 #ifdef USE_DEPTH_SORT
-        if (color.alpha() < 1.)
+        if (color->alpha() < 1.)
         {
             m_actor->GetMapper()->SetInputConnection(m_depthSort->GetOutputPort());
             m_hasAlpha = true;

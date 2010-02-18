@@ -42,17 +42,34 @@ Color::~Color ()
     SLM_TRACE("::fwData::~Color()");
 }
 
+
 //------------------------------------------------------------------------------
 
-Color::sptr Color::clone() const
+void Color::shallowCopy( Color::csptr _source )
 {
-    Color::NewSptr pNewColor;
-
-    // Copy encoding
-    pNewColor->m_vRGBA = this->m_vRGBA;
-
-    return pNewColor;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_vRGBA = _source->m_vRGBA;
 }
+
+//------------------------------------------------------------------------------
+
+void Color::deepCopy( Color::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_vRGBA = _source->m_vRGBA;
+}
+
+//------------------------------------------------------------------------------
+
+//Color::sptr Color::clone() const
+//{
+//    Color::NewSptr pNewColor;
+//
+//    // Copy encoding
+//    pNewColor->m_vRGBA = this->m_vRGBA;
+//
+//    return pNewColor;
+//}
 
 //------------------------------------------------------------------------------
 
@@ -78,7 +95,7 @@ void Color::setRGBA( std::string  hexaColor )
     std::string redString = hexaColor.substr(1, 2);
     std::string greenString = hexaColor.substr(3, 2);
     std::string blueString = hexaColor.substr(5, 2);
-    int r,g,b, a = 255; 
+    int r,g,b, a = 255;
 
     std::istringstream iss;
     iss.str (redString);

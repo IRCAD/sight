@@ -160,7 +160,8 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
             ::boost::shared_ptr< ::fwData::Image > associatedImage = ::boost::dynamic_pointer_cast< ::fwData::Image >( associatedObject ) ;
             assert( associatedImage ) ;
 
-            ( *( associatedImage ) ) = ( *( image.get() ) ) ;
+            //( *( associatedImage ) ) = ( *( image.get() ) ) ;
+            associatedImage->shallowCopy( image );
 
             wxBeginBusyCursor();
             notificationOfDBUpdate();

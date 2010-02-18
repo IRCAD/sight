@@ -43,11 +43,22 @@ public:
     FWDATA_API Acquisition();
     /// Destructor
     FWDATA_API virtual ~Acquisition();
+
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Acquisition::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Acquisition::csptr _source );
+
+
     /// Clone
-    FWDATA_API Acquisition::sptr clone() const;
+    //FWDATA_API Acquisition::sptr clone() const;
 
     /// Copy
-    FWDATA_API Acquisition &operator=( const Acquisition & _acquisition ) ;
+    //FWDATA_API Acquisition &operator=( const Acquisition & _acquisition ) ;
 
     // Image -------------------------------------------------------------------
     /// Field identifier for image

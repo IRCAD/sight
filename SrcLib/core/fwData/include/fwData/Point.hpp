@@ -39,10 +39,18 @@ public :
     /// Destructor
     FWDATA_API virtual ~Point();
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Point::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Point::csptr _source );
+
     /// Clone method
-    FWDATA_API Point::sptr clone() const;
+    //FWDATA_API Point::sptr clone() const;
     /// Copy method
-    FWDATA_API Point &operator=( const Point & _point ) ;
+    //FWDATA_API Point &operator=( const Point & _point ) ;
 
     /// Coordinates of point
     fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );

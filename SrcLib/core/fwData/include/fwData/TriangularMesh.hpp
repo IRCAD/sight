@@ -50,6 +50,17 @@ public :
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumPointsFunc;
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumCellsFunc;
 
+
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( TriangularMesh::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( TriangularMesh::csptr _source );
+
+
     /**
      * @brief constructor
      */

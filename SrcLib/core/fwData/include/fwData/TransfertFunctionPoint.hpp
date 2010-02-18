@@ -42,8 +42,17 @@ public :
     /// Destructor
     FWDATA_API virtual ~TransfertFunctionPoint();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( TransfertFunctionPoint::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( TransfertFunctionPoint::csptr _source );
+
     /// Clone
-    FWDATA_API TransfertFunctionPoint::sptr clone() const;
+    //FWDATA_API TransfertFunctionPoint::sptr clone() const;
 
     /// indentier for field color
     static const Object::FieldID ID_COLOR;

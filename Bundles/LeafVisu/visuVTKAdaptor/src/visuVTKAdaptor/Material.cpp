@@ -132,10 +132,10 @@ void Material::doStop() throw(fwTools::Failed)
 void Material::updateMaterial( ::fwData::Material::sptr material )
 {
 
-    ::fwData::Color & color = material->ambient();
-    m_property->SetColor( color.red(),
-            color.green(),
-            color.blue());
+    ::fwData::Color::sptr color =  material->ambient();
+    m_property->SetColor( color->red(),
+            color->green(),
+            color->blue());
 
     //3DVSP-like rendering
     m_property->SetSpecularColor(1.,1.,1.);
@@ -144,7 +144,7 @@ void Material::updateMaterial( ::fwData::Material::sptr material )
     m_property->SetDiffuse(1.);
     m_property->SetSpecular(1.);
 
-    m_property->SetOpacity( color.alpha() );
+    m_property->SetOpacity( color->alpha() );
 
     switch(material->getRepresentationMode())
     {

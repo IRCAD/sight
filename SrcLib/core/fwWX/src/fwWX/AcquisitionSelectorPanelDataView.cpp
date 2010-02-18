@@ -615,7 +615,7 @@ void AcquisitionSelectorPanelDataView::UpdateProperty(wxPropertyGridEvent& event
                         if (( vIter - vEditor.begin() ) == 0 ) // Alpha
                         {
                             int a = value.GetLong();
-                            mat->ambient().alpha() = (float) (a / 255.0) ;
+                            mat->ambient()->alpha() = (float) (a / 255.0) ;
                             OSLM_DEBUG("wxProp : UpdateProperty Alpha" );
                         }
                         if (( vIter - vEditor.begin() ) == 1 ) // RGB
@@ -627,9 +627,9 @@ void AcquisitionSelectorPanelDataView::UpdateProperty(wxPropertyGridEvent& event
                             float red   = ((int) col.Red())/255.0;
                             float green = ((int) col.Green())/255.0;
                             float blue  = ((int) col.Blue())/255.0;
-                            mat->ambient().red() = red;
-                            mat->ambient().green() = green;
-                            mat->ambient().blue() = blue;
+                            mat->ambient()->red() = red;
+                            mat->ambient()->green() = green;
+                            mat->ambient()->blue() = blue;
                             OSLM_DEBUG("wxProp : UpdateProperty RGB: r=" << red << " g=" << green << " b=" << blue );
 
                         }

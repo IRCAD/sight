@@ -32,32 +32,58 @@ PlaneList::~PlaneList ()
 
 //------------------------------------------------------------------------------
 
-PlaneList::sptr PlaneList::clone() const
+void PlaneList::shallowCopy( PlaneList::csptr _source )
 {
-    SLM_TRACE_FUNC();
+    ::fwTools::Object::shallowCopyOfChildren( _source );
 
-    PlaneList::NewSptr pNewPlaneList;
-
-    // Copy encoding
-    for (   PlaneList::PlaneListContainer::const_iterator iter = this->m_vPlanes.begin();
-            iter != this->m_vPlanes.end();
-            ++iter )
-    {
-        pNewPlaneList->m_vPlanes.push_back( (*iter)->clone() );
-    }
-
-    return pNewPlaneList;
+    this->m_vPlanes = _source->m_vPlanes;
 }
 
 //------------------------------------------------------------------------------
 
-PlaneList & PlaneList::operator=( const PlaneList & _planetList )
+void PlaneList::deepCopy( PlaneList::csptr _source )
 {
-    // Copy encoding
-    m_vPlanes = _planetList.m_vPlanes;
+    ::fwTools::Object::deepCopyOfChildren( _source );
 
-    return *this;
+    this->m_vPlanes.clear();
+    for (   PlaneList::PlaneListContainer::const_iterator iter = _source->m_vPlanes.begin();
+            iter != _source->m_vPlanes.end();
+            ++iter )
+    {
+        Plane::NewSptr newPlane;
+        newPlane->deepCopy( *iter );
+        this->m_vPlanes.push_back( newPlane );
+    }
 }
+
+//------------------------------------------------------------------------------
+
+//PlaneList::sptr PlaneList::clone() const
+//{
+//    SLM_TRACE_FUNC();
+//
+//    PlaneList::NewSptr pNewPlaneList;
+//
+//    // Copy encoding
+//    for (   PlaneList::PlaneListContainer::const_iterator iter = this->m_vPlanes.begin();
+//            iter != this->m_vPlanes.end();
+//            ++iter )
+//    {
+//        pNewPlaneList->m_vPlanes.push_back( (*iter)->clone() );
+//    }
+//
+//    return pNewPlaneList;
+//}
+//
+////------------------------------------------------------------------------------
+//
+//PlaneList & PlaneList::operator=( const PlaneList & _planetList )
+//{
+//    // Copy encoding
+//    m_vPlanes = _planetList.m_vPlanes;
+//
+//    return *this;
+//}
 
 //------------------------------------------------------------------------------
 

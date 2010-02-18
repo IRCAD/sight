@@ -130,9 +130,9 @@ void OrganMaterialEditor::onColorButton(wxColourPickerEvent & event )
     float blue  = event.GetColour().Blue()/255.0;
     //float alpha = event.GetColour().Alpha()/255.0;
 
-    material->ambient().red() = red;
-    material->ambient().green() = green;
-    material->ambient().blue() = blue;
+    material->ambient()->red() = red;
+    material->ambient()->green() = green;
+    material->ambient()->blue() = blue;
 
     this->materialNotification();
 }
@@ -148,7 +148,7 @@ void OrganMaterialEditor::onOpacitySlider(wxCommandEvent & event )
 
     float a = m_opacitySlider->GetValue() ;
     a = (a*255)/100;
-    material->ambient().alpha() = (float) (a / 255.0) ;
+    material->ambient()->alpha() = (float) (a / 255.0) ;
 
     this->materialNotification();
 }
@@ -164,14 +164,14 @@ void OrganMaterialEditor::refreshMaterial( )
 
     ::fwData::Material::sptr material = reconstruction->getMaterial() ;
     wxColour wxMaterialColor = wxColour (
-                material->ambient().red()*255,
-                material->ambient().green()*255,
-                material->ambient().blue()*255,
-                material->ambient().alpha()*255
+                material->ambient()->red()*255,
+                material->ambient()->green()*255,
+                material->ambient()->blue()*255,
+                material->ambient()->alpha()*255
                 );
 
     m_colourButton->SetColour( wxMaterialColor ) ;
-    int a = (int) (material->ambient().alpha()*255) ;
+    int a = (int) (material->ambient()->alpha()*255) ;
     a = (a*100)/255;
     m_opacitySlider->SetValue( a ) ;
 }

@@ -27,5 +27,17 @@ Float::~Float() throw()
 {}
 
 //------------------------------------------------------------------------------
+void Float::shallowCopy( Float::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+}
+
+//------------------------------------------------------------------------------
+
+void Float::deepCopy( Float::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+}
+
 
 } // namespace fwData

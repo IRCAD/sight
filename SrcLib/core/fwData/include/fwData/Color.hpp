@@ -27,10 +27,11 @@ class FWDATA_CLASS_API Color : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Color)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Color >) ;
 
     typedef float ColorType;
     typedef ::boost::array<ColorType,4> ColorArray;
+
+    fwCoreClassDefinitionsWithFactoryMacro( (Color)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Color > ) ;
 
     /// Constructor
     FWDATA_API Color();
@@ -39,8 +40,17 @@ public :
     /// Destructor
     FWDATA_API virtual ~Color();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Color::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Color::csptr _source );
+
     /// Clone
-    FWDATA_API Color::sptr clone() const;
+    //FWDATA_API Color::sptr clone() const;
 
     fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, the array of color values (red, green, blue, alpha).);
 

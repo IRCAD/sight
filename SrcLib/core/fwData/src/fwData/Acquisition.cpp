@@ -67,104 +67,164 @@ Acquisition::~Acquisition()
 
 //------------------------------------------------------------------------------
 
-Acquisition &Acquisition::operator=(const Acquisition & _acquisition)
+void Acquisition::shallowCopy( Acquisition::csptr _source )
 {
-    this->m_ui8BitsPerPixel = _acquisition.m_ui8BitsPerPixel;
-    this->m_fSliceThickness = _acquisition.m_fSliceThickness;
-    this->m_ui8Axe = _acquisition.m_ui8Axe;
-    this->m_bUnsignedFlag = _acquisition.m_bUnsignedFlag;
-    this->m_ui32AcquisitionIndex = _acquisition.m_ui32AcquisitionIndex;
-    this->m_sImageType = _acquisition.m_sImageType;
-    this->m_sImageFormat = _acquisition.m_sImageFormat;
-    this->m_ptCreationDate = _acquisition.m_ptCreationDate;
-    this->m_bIsMain = _acquisition.m_bIsMain;
-    this->m_bIsNormalDir = _acquisition.m_bIsNormalDir;
-    this->m_sUID = _acquisition.m_sUID;
-    this->m_i32DbID = _acquisition.m_i32DbID;
-    this->m_ui32LaboID = _acquisition.m_ui32LaboID;
-    this->m_ptDateSendToLaboAt = _acquisition.m_ptDateSendToLaboAt;
-    this->m_ptDateReceiveFromLaboAt = _acquisition.m_ptDateReceiveFromLaboAt;
-    this->m_ptDateSendToBDDAt = _acquisition.m_ptDateSendToBDDAt;
-    this->m_ptDateDisponibilityAt = _acquisition.m_ptDateDisponibilityAt;
-    this->m_dPatientSize = _acquisition.m_dPatientSize;
-    this->m_dPatientWeight = _acquisition.m_dPatientWeight;
-    this->m_dRadiations = _acquisition.m_dRadiations;
-    this->m_sMedicalPrinter = _acquisition.m_sMedicalPrinter;
-    this->m_sMedicalPrinterCorp = _acquisition.m_sMedicalPrinterCorp;
-    this->m_sPatientPosition = _acquisition.m_sPatientPosition;
-
-    ::fwData::Image::csptr img = _acquisition.getImage();
-    if ( img != 0 )
-    {
-        this->setImage( ::boost::const_pointer_cast< ::fwData::Image >( img ) );
-    }
-
-    img = _acquisition.getStructAnat();
-    if ( img != 0 )
-    {
-        this->setStructAnat( ::boost::const_pointer_cast< ::fwData::Image >( img ) );
-    }
-
-    //this->setImage( ::boost::const_pointer_cast< ::fwData::Image >(_acquisition.getImage()));
-
-    this->getField( Acquisition::ID_RECONSTRUCTIONS )->children() = _acquisition.getField( Acquisition::ID_RECONSTRUCTIONS )->children();
-
-    return (*this);
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
+    this->m_fSliceThickness = _source->m_fSliceThickness;
+    this->m_ui8Axe = _source->m_ui8Axe;
+    this->m_bUnsignedFlag = _source->m_bUnsignedFlag;
+    this->m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
+    this->m_sImageType = _source->m_sImageType;
+    this->m_sImageFormat = _source->m_sImageFormat;
+    this->m_ptCreationDate = _source->m_ptCreationDate;
+    this->m_bIsMain = _source->m_bIsMain;
+    this->m_bIsNormalDir = _source->m_bIsNormalDir;
+    this->m_sUID = _source->m_sUID;
+    this->m_i32DbID = _source->m_i32DbID;
+    this->m_ui32LaboID = _source->m_ui32LaboID;
+    this->m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
+    this->m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
+    this->m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
+    this->m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
+    this->m_dPatientSize = _source->m_dPatientSize;
+    this->m_dPatientWeight = _source->m_dPatientWeight;
+    this->m_dRadiations = _source->m_dRadiations;
+    this->m_sMedicalPrinter = _source->m_sMedicalPrinter;
+    this->m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
+    this->m_sPatientPosition = _source->m_sPatientPosition;
 }
 
 //------------------------------------------------------------------------------
 
-Acquisition::sptr Acquisition::clone() const
+void Acquisition::deepCopy( Acquisition::csptr _source )
 {
-    SLM_TRACE("Acquisition::clone()");
-    ::fwData::Acquisition::NewSptr pNewAcquisition;
-
-    pNewAcquisition->m_ui8BitsPerPixel = this->m_ui8BitsPerPixel;
-    pNewAcquisition->m_fSliceThickness = this->m_fSliceThickness;
-    pNewAcquisition->m_ui8Axe = this->m_ui8Axe;
-    pNewAcquisition->m_bUnsignedFlag = this->m_bUnsignedFlag;
-    pNewAcquisition->m_ui32AcquisitionIndex = this->m_ui32AcquisitionIndex;
-    pNewAcquisition->m_sImageType = this->m_sImageType;
-    pNewAcquisition->m_sImageFormat = this->m_sImageFormat;
-    pNewAcquisition->m_ptCreationDate  = this->m_ptCreationDate;
-    pNewAcquisition->m_bIsMain = this->m_bIsMain;
-    pNewAcquisition->m_bIsNormalDir = this->m_bIsNormalDir;
-    pNewAcquisition->m_sUID = this->m_sUID;
-    pNewAcquisition->m_i32DbID = this->m_i32DbID;
-    pNewAcquisition->m_ui32LaboID = this->m_ui32LaboID;
-    pNewAcquisition->m_ui32NetID = this->m_ui32NetID;
-    pNewAcquisition->m_ptDateReceiveFromLaboAt = this->m_ptDateReceiveFromLaboAt;
-    pNewAcquisition->m_ptDateSendToBDDAt = this->m_ptDateSendToBDDAt;
-    pNewAcquisition->m_ptDateDisponibilityAt = this->m_ptDateDisponibilityAt;
-    pNewAcquisition->m_dPatientSize = this->m_dPatientSize;
-    pNewAcquisition->m_dPatientWeight = this->m_dPatientWeight;
-    pNewAcquisition->m_dRadiations = this->m_dRadiations;
-    pNewAcquisition->m_sMedicalPrinter = this->m_sMedicalPrinter;
-    pNewAcquisition->m_sMedicalPrinterCorp = this->m_sMedicalPrinterCorp;
-    pNewAcquisition->m_sPatientPosition = this->m_sPatientPosition;
-
-    ::fwData::Image::csptr img = this->getImage();
-    if ( img != 0 )
-    {
-        pNewAcquisition->setImage( img->clone() );
-    }
-
-    img = this->getStructAnat();
-    if ( img != 0 )
-    {
-        pNewAcquisition->setStructAnat( img->clone() );
-    }
-
-    ::fwData::Acquisition::ReconstructionConstIterator reconstructionIter = this->getReconstructions().first;
-    ::fwData::Acquisition::ReconstructionConstIterator reconstructionIterEnd = this->getReconstructions().second;
-    while ( reconstructionIter != reconstructionIterEnd )
-    {
-        pNewAcquisition->addReconstruction( (*reconstructionIter)->clone() );
-        reconstructionIter++;
-    }
-
-    return pNewAcquisition;
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
+    this->m_fSliceThickness = _source->m_fSliceThickness;
+    this->m_ui8Axe = _source->m_ui8Axe;
+    this->m_bUnsignedFlag = _source->m_bUnsignedFlag;
+    this->m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
+    this->m_sImageType = _source->m_sImageType;
+    this->m_sImageFormat = _source->m_sImageFormat;
+    this->m_ptCreationDate = _source->m_ptCreationDate;
+    this->m_bIsMain = _source->m_bIsMain;
+    this->m_bIsNormalDir = _source->m_bIsNormalDir;
+    this->m_sUID = _source->m_sUID;
+    this->m_i32DbID = _source->m_i32DbID;
+    this->m_ui32LaboID = _source->m_ui32LaboID;
+    this->m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
+    this->m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
+    this->m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
+    this->m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
+    this->m_dPatientSize = _source->m_dPatientSize;
+    this->m_dPatientWeight = _source->m_dPatientWeight;
+    this->m_dRadiations = _source->m_dRadiations;
+    this->m_sMedicalPrinter = _source->m_sMedicalPrinter;
+    this->m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
+    this->m_sPatientPosition = _source->m_sPatientPosition;
 }
+
+//------------------------------------------------------------------------------
+
+//Acquisition &Acquisition::operator=(const Acquisition & _acquisition)
+//{
+//    this->m_ui8BitsPerPixel = _acquisition.m_ui8BitsPerPixel;
+//    this->m_fSliceThickness = _acquisition.m_fSliceThickness;
+//    this->m_ui8Axe = _acquisition.m_ui8Axe;
+//    this->m_bUnsignedFlag = _acquisition.m_bUnsignedFlag;
+//    this->m_ui32AcquisitionIndex = _acquisition.m_ui32AcquisitionIndex;
+//    this->m_sImageType = _acquisition.m_sImageType;
+//    this->m_sImageFormat = _acquisition.m_sImageFormat;
+//    this->m_ptCreationDate = _acquisition.m_ptCreationDate;
+//    this->m_bIsMain = _acquisition.m_bIsMain;
+//    this->m_bIsNormalDir = _acquisition.m_bIsNormalDir;
+//    this->m_sUID = _acquisition.m_sUID;
+//    this->m_i32DbID = _acquisition.m_i32DbID;
+//    this->m_ui32LaboID = _acquisition.m_ui32LaboID;
+//    this->m_ptDateSendToLaboAt = _acquisition.m_ptDateSendToLaboAt;
+//    this->m_ptDateReceiveFromLaboAt = _acquisition.m_ptDateReceiveFromLaboAt;
+//    this->m_ptDateSendToBDDAt = _acquisition.m_ptDateSendToBDDAt;
+//    this->m_ptDateDisponibilityAt = _acquisition.m_ptDateDisponibilityAt;
+//    this->m_dPatientSize = _acquisition.m_dPatientSize;
+//    this->m_dPatientWeight = _acquisition.m_dPatientWeight;
+//    this->m_dRadiations = _acquisition.m_dRadiations;
+//    this->m_sMedicalPrinter = _acquisition.m_sMedicalPrinter;
+//    this->m_sMedicalPrinterCorp = _acquisition.m_sMedicalPrinterCorp;
+//    this->m_sPatientPosition = _acquisition.m_sPatientPosition;
+//
+//    ::fwData::Image::csptr img = _acquisition.getImage();
+//    if ( img != 0 )
+//    {
+//        this->setImage( ::boost::const_pointer_cast< ::fwData::Image >( img ) );
+//    }
+//
+//    img = _acquisition.getStructAnat();
+//    if ( img != 0 )
+//    {
+//        this->setStructAnat( ::boost::const_pointer_cast< ::fwData::Image >( img ) );
+//    }
+//
+//    //this->setImage( ::boost::const_pointer_cast< ::fwData::Image >(_acquisition.getImage()));
+//
+//    this->getField( Acquisition::ID_RECONSTRUCTIONS )->children() = _acquisition.getField( Acquisition::ID_RECONSTRUCTIONS )->children();
+//
+//    return (*this);
+//}
+
+//------------------------------------------------------------------------------
+//
+//Acquisition::sptr Acquisition::clone() const
+//{
+//    SLM_TRACE("Acquisition::clone()");
+//    ::fwData::Acquisition::NewSptr pNewAcquisition;
+//
+//    pNewAcquisition->m_ui8BitsPerPixel = this->m_ui8BitsPerPixel;
+//    pNewAcquisition->m_fSliceThickness = this->m_fSliceThickness;
+//    pNewAcquisition->m_ui8Axe = this->m_ui8Axe;
+//    pNewAcquisition->m_bUnsignedFlag = this->m_bUnsignedFlag;
+//    pNewAcquisition->m_ui32AcquisitionIndex = this->m_ui32AcquisitionIndex;
+//    pNewAcquisition->m_sImageType = this->m_sImageType;
+//    pNewAcquisition->m_sImageFormat = this->m_sImageFormat;
+//    pNewAcquisition->m_ptCreationDate  = this->m_ptCreationDate;
+//    pNewAcquisition->m_bIsMain = this->m_bIsMain;
+//    pNewAcquisition->m_bIsNormalDir = this->m_bIsNormalDir;
+//    pNewAcquisition->m_sUID = this->m_sUID;
+//    pNewAcquisition->m_i32DbID = this->m_i32DbID;
+//    pNewAcquisition->m_ui32LaboID = this->m_ui32LaboID;
+//    pNewAcquisition->m_ui32NetID = this->m_ui32NetID;
+//    pNewAcquisition->m_ptDateReceiveFromLaboAt = this->m_ptDateReceiveFromLaboAt;
+//    pNewAcquisition->m_ptDateSendToBDDAt = this->m_ptDateSendToBDDAt;
+//    pNewAcquisition->m_ptDateDisponibilityAt = this->m_ptDateDisponibilityAt;
+//    pNewAcquisition->m_dPatientSize = this->m_dPatientSize;
+//    pNewAcquisition->m_dPatientWeight = this->m_dPatientWeight;
+//    pNewAcquisition->m_dRadiations = this->m_dRadiations;
+//    pNewAcquisition->m_sMedicalPrinter = this->m_sMedicalPrinter;
+//    pNewAcquisition->m_sMedicalPrinterCorp = this->m_sMedicalPrinterCorp;
+//    pNewAcquisition->m_sPatientPosition = this->m_sPatientPosition;
+//
+//    ::fwData::Image::csptr img = this->getImage();
+//    if ( img != 0 )
+//    {
+//        pNewAcquisition->setImage( img->clone() );
+//    }
+//
+//    img = this->getStructAnat();
+//    if ( img != 0 )
+//    {
+//        pNewAcquisition->setStructAnat( img->clone() );
+//    }
+//
+//    ::fwData::Acquisition::ReconstructionConstIterator reconstructionIter = this->getReconstructions().first;
+//    ::fwData::Acquisition::ReconstructionConstIterator reconstructionIterEnd = this->getReconstructions().second;
+//    while ( reconstructionIter != reconstructionIterEnd )
+//    {
+//        pNewAcquisition->addReconstruction( (*reconstructionIter)->clone() );
+//        reconstructionIter++;
+//    }
+//
+//    return pNewAcquisition;
+//}
 
 //------------------------------------------------------------------------------
 

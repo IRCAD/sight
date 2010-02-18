@@ -154,7 +154,8 @@ void VtkPatientDBReaderService::updating() throw(::fwTools::Failed)
             // Retrieve dataStruct associated with this service
             ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
 
-            ( *( pPatientDB ) ) = ( *( pNewPatientDB.get() ) ) ;
+            //( *( pPatientDB ) ) = ( *( pNewPatientDB.get() ) ) ;
+            pPatientDB->shallowCopy( pNewPatientDB );
 
             wxBeginBusyCursor();
             notificationOfDBUpdate();

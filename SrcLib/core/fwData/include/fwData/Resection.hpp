@@ -39,11 +39,19 @@ public :
     /// Destructor
     FWDATA_API virtual ~Resection();
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Resection::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Resection::csptr _source );
+
     /// Clone method
-    FWDATA_API Resection::sptr clone() const;
+  //  FWDATA_API Resection::sptr clone() const;
 
     /// Copy method
-    FWDATA_API Resection &operator=( const Resection & _planetList ) ;
+    //FWDATA_API Resection &operator=( const Resection & _planetList ) ;
 
     /// PlaneList
     fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, the plane list);

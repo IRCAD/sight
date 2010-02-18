@@ -144,7 +144,10 @@ bool BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::
 
         // Image backup
         //assert(false && "TODO : clone need backup of all temp field (medical image)");
-        ::fwData::Acquisition::sptr pAquisitionBackup = (*acquisitionIter)->clone();
+
+        //::fwData::Acquisition::sptr pAquisitionBackup = (*acquisitionIter)->clone();
+        ::fwData::Acquisition::NewSptr pAquisitionBackup;
+        pAquisitionBackup->deepCopy( *acquisitionIter );
         ::fwData::Image::sptr pImageBackup = pAquisitionBackup->getImage();
 
         if ( (*acquisitionIter)->getImage()->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) )
@@ -163,7 +166,10 @@ bool BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::
             ::fwData::Composite::Container::iterator iterTF;
             for (iterTF = cTF->getRefMap().begin() ; iterTF != cTF->getRefMap().end() ; ++iterTF)
             {
-                cTFBackup->getRefMap()[iterTF->first] = ::fwData::TransfertFunction::dynamicCast(iterTF->second)->clone();
+                //cTFBackup->getRefMap()[iterTF->first] = ::fwData::TransfertFunction::dynamicCast(iterTF->second)->clone();
+                ::fwData::TransfertFunction::NewSptr newTF;
+                newTF->deepCopy( iterTF->second );
+                cTFBackup->getRefMap()[iterTF->first] = newTF;
             }
             sTFBackup->value() = sTF->value();
 

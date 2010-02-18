@@ -223,8 +223,8 @@ class PlaneCollectionShifterCallback : public TriangularMeshVtkCommand
             this->Clear();
 
             vtkPlane *plane = NULL;
-            for (  m_planeCollectionSrc->InitTraversal(); 
-                  (plane=m_planeCollectionSrc->GetNextItem()); 
+            for (  m_planeCollectionSrc->InitTraversal();
+                  (plane=m_planeCollectionSrc->GetNextItem());
                 )
             {
                 vtkPlane *newPlane = vtkPlane::New();
@@ -328,8 +328,8 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
             this->Clear();
 
             vtkPlane *plane = NULL;
-            for (  m_planeCollectionSrc->InitTraversal(); 
-                    (plane = m_planeCollectionSrc->GetNextItem()); 
+            for (  m_planeCollectionSrc->InitTraversal();
+                    (plane = m_planeCollectionSrc->GetNextItem());
                 )
             {
                 vtkPlane *newPlane = vtkPlane::New();
@@ -352,7 +352,7 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
                 meshAdaptor->setMapperInput   ( service->getMapperInput()    );
                 meshAdaptor->setSharpEdgeAngle( service->getSharpEdgeAngle() );
                 meshAdaptor->setMaterial      ( service->getMaterial()       );
-                
+
                 meshAdaptor->setVtkClippingPlanes( newCollection );
 
                 meshAdaptor->start();
@@ -406,7 +406,7 @@ TriangularMesh::TriangularMesh() throw()
 {
     m_material               = ::fwData::Material::New();
     m_unclippedPartMaterial  = ::fwData::Material::New();
-    m_unclippedPartMaterial->ambient().setRGBA("#aaaaff44");
+    m_unclippedPartMaterial->ambient()->setRGBA("#aaaaff44");
 
     m_clippingPlanesId       = "";
     m_sharpEdgeAngle         = 180;
@@ -464,9 +464,9 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
     std::string color = m_configuration->getAttributeValue("color");
     std::string unclippedColor = m_configuration->getAttributeValue("unclippedcolor");
 
-    m_material->ambient().setRGBA(color.empty() ? "#ffffffff" : color );
+    m_material->ambient()->setRGBA(color.empty() ? "#ffffffff" : color );
 
-    m_unclippedPartMaterial->ambient().setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
+    m_unclippedPartMaterial->ambient()->setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
 
     this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
     this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
@@ -766,7 +766,7 @@ void TriangularMesh::buildPipeline()
             this->addToPicker(m_actor);
         }
     }
-    
+
     setActorPropertyToUnclippedMaterial(false);
 
     removeServicesStarterCommand();
@@ -816,7 +816,7 @@ vtkActor *TriangularMesh::newActor()
 
         removePlaneCollectionShifterCommand();
 
-        m_planeCollectionShifterCallback = 
+        m_planeCollectionShifterCallback =
             PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
 
         mapper->SetClippingPlanes(newClippingPlanes);
@@ -840,9 +840,9 @@ void TriangularMesh::updateMaterial( ::fwData::Material::sptr material )
 #ifndef USE_DEPTH_PEELING // replacement for depth peeling
 #ifdef USE_DEPTH_SORT
 
-    ::fwData::Color & color = m_material->ambient();
+    ::fwData::Color::sptr color = m_material->ambient();
 
-    if (color.alpha() < 1.)
+    if (color->alpha() < 1.)
     {
         m_mapperInput = m_depthSort->GetOutputPort();
         m_hasAlpha = true;
@@ -865,7 +865,7 @@ void TriangularMesh::updateVisibility( bool isVisible)
     {
         m_actor->SetVisibility( isVisible );
     }
-    
+
     if (m_servicesStarterCallback)
     {
         m_servicesStarterCallback->Execute(0, vtkCommand::UserEvent, &isVisible);
@@ -903,7 +903,7 @@ void TriangularMesh::createServicesStarterCommand()
 {
     if(!m_servicesStarterCallback)
     {
-        ::visuVTKAdaptor::TriangularMesh::sptr srv = 
+        ::visuVTKAdaptor::TriangularMesh::sptr srv =
             ::visuVTKAdaptor::TriangularMesh::dynamicCast(
                     this->getSptr()
                     );

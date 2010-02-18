@@ -28,4 +28,16 @@ Integer::~Integer() throw()
 
 //------------------------------------------------------------------------------
 
+void Integer::shallowCopy( Integer::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+}
+
+//------------------------------------------------------------------------------
+
+void Integer::deepCopy( Integer::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+}
+
 } // namespace fwData

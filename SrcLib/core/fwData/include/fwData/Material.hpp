@@ -23,7 +23,9 @@ namespace fwData
  */
 
 class FWDATA_CLASS_API Material : public Object {
+
 public:
+
     fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Material >) ;
 
     /// Constructor
@@ -32,28 +34,37 @@ public:
     /// Destructor
     FWDATA_API virtual ~Material();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Material::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Material::csptr _source );
+
     /// Clone method
-    FWDATA_API Material::sptr clone() const;
+    //FWDATA_API Material::sptr clone() const;
 
     /**
     * @brief returns editable ambient color
     */
-    FWDATA_API Color &ambient() ;
+    FWDATA_API Color::sptr ambient() const;
 
     /**
     * @brief returns editable diffuse color
     */
-    FWDATA_API Color &diffuse() ;
+    FWDATA_API Color::sptr diffuse() const;
 
-    /**
-    * @brief returns read-only  ambient color
-    */
-    FWDATA_API const Color &ambient() const;
-
-    /**
-    * @brief returns read-only  diffuse color
-    */
-    FWDATA_API const Color &diffuse() const;
+//    /**
+//    * @brief returns read-only  ambient color
+//    */
+//    FWDATA_API const Color &ambient() const;
+//
+//    /**
+//    * @brief returns read-only  diffuse color
+//    */
+//    FWDATA_API const Color &diffuse() const;
 
 
     /*
@@ -96,8 +107,8 @@ protected :
     REPRESENTATION_MODE m_representationMode;
     OPTIONS_MODE m_optionsMode;
 
-    Color m_ambient;
-    Color m_diffuse;
+    Color::sptr m_ambient;
+    Color::sptr m_diffuse;
 };
 
 }

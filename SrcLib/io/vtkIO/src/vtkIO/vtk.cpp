@@ -423,7 +423,8 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
 {
     ::fwData::TriangularMesh::NewSptr closedMesh;
-    *closedMesh = * _triangularMesh;
+    //*closedMesh = * _triangularMesh;
+    closedMesh->deepCopy(_triangularMesh);
 
     ::fwMath::closeSurface(closedMesh->points(), closedMesh->cells());
 

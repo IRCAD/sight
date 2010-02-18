@@ -41,19 +41,45 @@ Study::~Study()
 
 //------------------------------------------------------------------------------
 
-Study &Study::operator=(const Study & _study)
+void Study::shallowCopy( Study::csptr _source )
 {
-    this->m_sHospital = _study.m_sHospital;
-    this->m_sModality = _study.m_sModality;
-    this->m_sAcquisitionZone = _study.m_sAcquisitionZone;
-    this->m_sRISId = _study.m_sRISId;
-    this->m_sUID = _study.m_sUID;
-    this->m_i32DbID = _study.m_i32DbID;
-
-    this->getField( Study::ID_ACQUISITIONS )->children() = _study.getField( Study::ID_ACQUISITIONS )->children();
-
-    return (*this);
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_sHospital = _source->m_sHospital;
+    this->m_sModality = _source->m_sModality;
+    this->m_sAcquisitionZone = _source->m_sAcquisitionZone;
+    this->m_sRISId = _source->m_sRISId;
+    this->m_sUID = _source->m_sUID;
+    this->m_i32DbID = _source->m_i32DbID;
 }
+
+//------------------------------------------------------------------------------
+
+void Study::deepCopy( Study::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_sHospital = _source->m_sHospital;
+    this->m_sModality = _source->m_sModality;
+    this->m_sAcquisitionZone = _source->m_sAcquisitionZone;
+    this->m_sRISId = _source->m_sRISId;
+    this->m_sUID = _source->m_sUID;
+    this->m_i32DbID = _source->m_i32DbID;
+}
+
+//------------------------------------------------------------------------------
+
+//Study &Study::operator=(const Study & _study)
+//{
+//    this->m_sHospital = _study.m_sHospital;
+//    this->m_sModality = _study.m_sModality;
+//    this->m_sAcquisitionZone = _study.m_sAcquisitionZone;
+//    this->m_sRISId = _study.m_sRISId;
+//    this->m_sUID = _study.m_sUID;
+//    this->m_i32DbID = _study.m_i32DbID;
+//
+//    this->getField( Study::ID_ACQUISITIONS )->children() = _study.getField( Study::ID_ACQUISITIONS )->children();
+//
+//    return (*this);
+//}
 
 //------------------------------------------------------------------------------
 

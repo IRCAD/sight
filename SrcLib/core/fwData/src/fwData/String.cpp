@@ -26,5 +26,16 @@ String::~String() throw()
 {}
 
 //------------------------------------------------------------------------------
+void String::shallowCopy( String::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+}
+
+//------------------------------------------------------------------------------
+
+void String::deepCopy( String::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+}
 
 } // namespace fwData

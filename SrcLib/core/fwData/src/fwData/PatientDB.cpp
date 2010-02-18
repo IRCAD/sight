@@ -37,12 +37,26 @@ PatientDB::~PatientDB ()
 
 //------------------------------------------------------------------------------
 
-PatientDB & PatientDB::operator=( const PatientDB & _patientDB )
+void PatientDB::shallowCopy( PatientDB::csptr _source )
 {
-    this->getField( PatientDB::ID_PATIENTS )->children() = _patientDB.getField( PatientDB::ID_PATIENTS )->children();
-
-    return *this;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
 }
+
+//------------------------------------------------------------------------------
+
+void PatientDB::deepCopy( PatientDB::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+}
+
+//------------------------------------------------------------------------------
+
+//PatientDB & PatientDB::operator=( const PatientDB & _patientDB )
+//{
+//    this->getField( PatientDB::ID_PATIENTS )->children() = _patientDB.getField( PatientDB::ID_PATIENTS )->children();
+//
+//    return *this;
+//}
 
 //------------------------------------------------------------------------------
 

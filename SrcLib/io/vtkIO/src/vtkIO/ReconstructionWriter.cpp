@@ -104,16 +104,16 @@ vtkActor * ReconstructionWriter::createActor( ::fwData::Reconstruction::sptr pRe
     polyData->Delete();
     normals->Delete();
 
-    ::fwData::Color & color = material->ambient();
+    ::fwData::Color::sptr color = material->ambient();
     vtkProperty *property = actor->GetProperty();
-    property->SetColor( color.red(), color.green(), color.blue());
+    property->SetColor( color->red(), color->green(), color->blue());
     property->SetSpecularColor(1.,1.,1.);
     property->SetSpecularPower(100.); //Shininess
     property->SetAmbient(.05);
     property->SetDiffuse(1.);
     property->SetSpecular(1.);
     property->SetInterpolationToPhong();
-    property->SetOpacity( color.alpha() );
+    property->SetOpacity( color->alpha() );
 
     return actor;
 }
