@@ -71,7 +71,7 @@ void Reconstruction::shallowCopy( Reconstruction::csptr _source )
     ::fwTools::Object::shallowCopyOfChildren( _source );
 
     this->m_bIsVisible = _source->m_bIsVisible;
-    this->m_pMaterial->shallowCopy(Material::dynamicConstCast(_source->m_pMaterial));
+    this->m_pMaterial = _source->m_pMaterial;
     this->m_sReconstructionFormat = _source->m_sReconstructionFormat;
     this->m_sOrganName = _source->m_sOrganName;
     this->m_sStructureType = _source->m_sStructureType;
