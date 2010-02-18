@@ -80,7 +80,7 @@ void IGuiContainer::resetGuiParentContainer()
 
 void IGuiContainer::registerWxContainer(std::string uid , wxWindow * container)
 {
-    SLM_ASSERT("Sorry, wxContainer for "<<uid<<" already exists in SubUIDToWxContainer map.",
+    OSLM_ASSERT("Sorry, wxContainer for "<<uid<<" already exists in SubUIDToWxContainer map.",
             m_subUIDToWxContainer.find(uid) == m_subUIDToWxContainer.end());
     m_subUIDToWxContainer[uid] = container;
 
@@ -92,14 +92,14 @@ void IGuiContainer::registerWxContainer(std::string uid , wxWindow * container)
 void IGuiContainer::unregisterWxContainer(std::string uid)
 {
     bool service_exists = ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE );
-    SLM_INFO_IF("Service "<<uid <<" not exists.",!service_exists );
+    OSLM_INFO_IF("Service "<<uid <<" not exists.",!service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( uid ) ;
         service->stop();
     }
 
-    SLM_ASSERT("Sorry, wxContainer for "<<uid<<" not exists in SubUIDToWxContainer map.",
+    OSLM_ASSERT("Sorry, wxContainer for "<<uid<<" not exists in SubUIDToWxContainer map.",
             m_subUIDToWxContainer.find(uid) != m_subUIDToWxContainer.end());
 
     wxWindow* container = m_subUIDToWxContainer[uid];
@@ -129,7 +129,7 @@ void IGuiContainer::unregisterAllWxContainer()
 
 void IGuiContainer::registerGlobalWxContainer(std::string uid, wxWindow * container)
 {
-    SLM_ASSERT("Sorry, wxContainer for "<<uid<<" already exists in GlobalUIDToWxContainer map.",
+    OSLM_ASSERT("Sorry, wxContainer for "<<uid<<" already exists in GlobalUIDToWxContainer map.",
             m_globalUIDToWxContainer.find(uid) == m_globalUIDToWxContainer.end());
     m_globalUIDToWxContainer[uid] = container;
 }
@@ -138,7 +138,7 @@ void IGuiContainer::registerGlobalWxContainer(std::string uid, wxWindow * contai
 
 void IGuiContainer::unregisterGlobalWxContainer(std::string uid)
 {
-    SLM_ASSERT("Sorry, wxContainer for "<<uid<<" not exists in GlobalUIDToWxContainer map.",
+    OSLM_ASSERT("Sorry, wxContainer for "<<uid<<" not exists in GlobalUIDToWxContainer map.",
             m_globalUIDToWxContainer.find(uid) != m_globalUIDToWxContainer.end());
     // Removes container in global map
     m_globalUIDToWxContainer.erase(uid);
@@ -148,7 +148,7 @@ void IGuiContainer::unregisterGlobalWxContainer(std::string uid)
 
 wxWindow* IGuiContainer::getWxContainer(std::string uid)
 {
-    SLM_ASSERT("Sorry, wxContainer for "<<uid<<" not exists in GlobalUIDToWxContainer map.",
+    OSLM_ASSERT("Sorry, wxContainer for "<<uid<<" not exists in GlobalUIDToWxContainer map.",
             m_globalUIDToWxContainer.find(uid) != m_globalUIDToWxContainer.end());
     // returns container in global map
     return  m_globalUIDToWxContainer[uid];
