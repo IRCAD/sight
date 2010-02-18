@@ -43,6 +43,11 @@
         <implements>::fwData::Composite</implements>
     </point>
     
+    <point id="::ctrlSelection::MedicalImageSrv">
+        <implements>::fwServices::IController</implements>
+        <implements>::fwData::Image</implements>
+    </point>
+    
 </plugin>
 
 

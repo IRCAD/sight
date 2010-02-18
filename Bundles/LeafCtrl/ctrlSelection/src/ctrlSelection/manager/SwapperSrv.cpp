@@ -222,7 +222,7 @@ void SwapperSrv::configureObject( ConfigurationType conf )
                 {
                     subSrv->getService()->stop();
                     ::fwServices::erase(subSrv->getService());
-					subSrv->m_service.reset();
+                    subSrv->m_service.reset();
                 }
             }
             if(!m_dummyStopMode)
