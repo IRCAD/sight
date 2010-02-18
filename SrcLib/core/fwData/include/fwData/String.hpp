@@ -37,6 +37,14 @@ public:
      */
     FWDATA_API virtual ~String() throw();
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( String::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( String::csptr _source );
+
 };
 
 }

@@ -40,8 +40,17 @@ public:
     /// Destructor
     FWDATA_API virtual ~PatientDB ();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    void shallowCopy( PatientDB::csptr _source );
+
+    /// Defines deep copy
+    void deepCopy( PatientDB::csptr _source );
+
     /// Copy method
-    FWDATA_API PatientDB &operator=( const PatientDB & _patientDB ) ;
+    //FWDATA_API PatientDB &operator=( const PatientDB & _patientDB ) ;
 
     // Patients ----------------------------------------------------------------
     /// Field identifier for patients

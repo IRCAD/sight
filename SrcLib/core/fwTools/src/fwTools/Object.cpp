@@ -9,6 +9,7 @@
 #include "fwTools/ClassRegistrar.hpp"
 #include "fwTools/Object.hpp"
 #include "fwTools/UUID.hpp"
+#include "fwTools/Factory.hpp"
 
 namespace fwTools {
 
@@ -66,6 +67,53 @@ const std::string & Field::label() const
 
 //------------------------------------------------------------------------------
 
+void Field::shallowCopy( ::fwTools::Field::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    m_label = _source->m_label;
+}
+
+//------------------------------------------------------------------------------
+
+void Field::deepCopy( ::fwTools::Field::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    m_label = _source->m_label;
+}
+
+//------------------------------------------------------------------------------
+
+void Field::shallowCopy( ::fwTools::Field::sptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    m_label = _source->m_label;
+}
+
+//------------------------------------------------------------------------------
+
+void Field::deepCopy( ::fwTools::Field::sptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    m_label = _source->m_label;
+}
+
+//------------------------------------------------------------------------------
+
+void Field::shallowCopy( ::fwTools::Object::csptr _source )
+{
+    ::fwTools::Object::shallowCopy< ::fwTools::Field >( _source );
+}
+
+//------------------------------------------------------------------------------
+
+
+void Field::deepCopy( ::fwTools::Object::csptr _source )
+{
+    ::fwTools::Object::deepCopy< ::fwTools::Field >( _source );
+}
+
+//------------------------------------------------------------------------------
+
 Object::Object() :
     m_timeStamp ( ::fwCore::TimeStamp::New()  ),
     m_logicStamp( ::fwCore::LogicStamp::New() ),
@@ -87,6 +135,7 @@ Object::~Object()
 
 Object &Object::operator=(const Object &_obj)
 {
+    SLM_FATAL("This operator is forbiden, use shallowCopy or deepCopy instead.");
     m_children =_obj.m_children;
     m_timeStamp =_obj.m_timeStamp;
     m_logicStamp =_obj.m_logicStamp;
@@ -311,18 +360,61 @@ int Object::getFieldSize( const FieldID& id ) const throw()
     return (field ? field->children().size() : 0 );
 }
 
+//-----------------------------------------------------------------------------
 
+void Object::shallowCopy( Object::csptr _source )
+{
+    OSLM_FATAL("Method shallowCopy is not implemented for ::fwTools::Object of classname : " << this->getClassname() );
+}
 
+//-----------------------------------------------------------------------------
 
+void Object::deepCopy( Object::csptr _source )
+{
+    OSLM_FATAL("Method deepCopy is not implemented for ::fwTools::Object of classname : " << this->getClassname() );
+}
 
+//-----------------------------------------------------------------------------
 
+void Object::shallowCopyOfChildren( Object::csptr _source )
+{
+    m_children.clear();
+    for (   ChildContainer::const_iterator f = _source->m_children.begin() ;
+            f != _source->m_children.end();
+            ++f )
+    {
+        ::fwTools::Object::sptr sourceSubObject = *f;
+        if( ::fwTools::Field::dynamicCast( sourceSubObject ) )
+        {
+            ::fwTools::Field::NewSptr newField;
+            newField->shallowCopy( sourceSubObject );
+            m_children.push_back( newField );
+        }
+        else
+        {
+            m_children.push_back( sourceSubObject );
+        }
+    }
+}
 
+//-----------------------------------------------------------------------------
 
+void Object::deepCopyOfChildren( Object::csptr _source )
+{
+    m_children.clear();
+    for (   ChildContainer::const_iterator f = _source->m_children.begin() ;
+            f != _source->m_children.end();
+            ++f )
+    {
+        ::fwTools::Object::sptr sourceSubObject = *f;
+        //::fwTools::Object::NewSptr newSubObject;
+        ::fwTools::Object::sptr newSubObject = ::fwTools::Factory::buildData( sourceSubObject->getClassname() );
+        newSubObject->deepCopy( sourceSubObject );
+        m_children.push_back( newSubObject );
+    }
+}
 
-
-
-
-
+//-----------------------------------------------------------------------------
 
 
 

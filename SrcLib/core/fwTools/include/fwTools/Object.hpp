@@ -251,16 +251,60 @@ public:
     FWTOOLS_API ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
     FWTOOLS_API ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
 
-    FWTOOLS_API Object &operator=(const Object &_obj);
+
+
+    /**
+     * @brief A shallow copy (also called "bitwise copy") simply copies chunks of memory from one location to another.
+     * @param[in] _source source of the copy.
+     */
+    FWTOOLS_API virtual void shallowCopy( Object::csptr _source );
+
+    /**
+     * @brief A deep copy clone all source object parameters (sub-ojects are duplcated in memory). For a sptr on sub-object, method allocates a new object.
+     * @param[in] _source source of the copy.
+     */
+    FWTOOLS_API virtual void deepCopy( Object::csptr _source );
 
 protected :
 
     ChildContainer m_children;
 
     ::fwCore::TimeStamp::sptr  m_timeStamp;
+
     ::fwCore::LogicStamp::sptr m_logicStamp;
 
+    /**
+     * @brief A shallow copy of fields (objects in m_children)
+     * @param[in] _source source of the copy.
+     */
+    void shallowCopyOfChildren( Object::csptr _source );
+
+    /**
+     * @brief A deep copy of fields (objects in m_children)
+     * @param[in] _source source of the copy.
+     */
+    void deepCopyOfChildren( Object::csptr _source );
+
+    /**
+     * @brief A shallow copy of fields (objects in m_children), tests the classname and calls the specific method of the class.
+     * @param[in] _source source of the copy.
+     */
+    template< typename FWDATATYPE >
+    void shallowCopy( ::fwTools::Object::csptr _source );
+
+    /**
+     * @brief A deep copy of fields (objects in m_children), tests the classname and calls the specific method of the class.
+     * @param[in] _source source of the copy.
+     */
+    template< typename FWDATATYPE >
+    void deepCopy( ::fwTools::Object::csptr _source );
+
+
 private :
+
+    /// Standard copy operator, forbiden.
+    Object &operator=(const Object &_obj);
+
     /// cache for storing uid
     mutable std::string m_cachedSimpleUuid;
 
@@ -297,6 +341,24 @@ public:
     FWTOOLS_API std::string & label();
 
     FWTOOLS_API virtual ~Field();
+
+    /**
+     * @brief A shallow copy (also called "bitwise copy") simply copies chunks of memory from one location to another.
+     * @param[in] _source source of the copy.
+     */
+    FWTOOLS_API void shallowCopy( ::fwTools::Field::csptr _source );
+    FWTOOLS_API void shallowCopy( ::fwTools::Field::sptr _source );
+
+    /**
+     * @brief A deep copy clone all source object parameters (sub-ojects are duplcated in memory). For a sptr on sub-object, method allocates a new object.
+     * @param[in] _source source of the copy.
+     */
+    FWTOOLS_API void deepCopy( ::fwTools::Field::csptr _source );
+    FWTOOLS_API void deepCopy( ::fwTools::Field::sptr _source );
+
+    FWTOOLS_API void shallowCopy( ::fwTools::Object::csptr _source );
+
+    FWTOOLS_API void deepCopy( ::fwTools::Object::csptr _source );
 
 protected :
 

@@ -66,82 +66,134 @@ Reconstruction::~Reconstruction()
 
 //------------------------------------------------------------------------------
 
-Reconstruction &Reconstruction::operator=(const Reconstruction & _reconstruction)
+void Reconstruction::shallowCopy( Reconstruction::csptr _source )
 {
+    ::fwTools::Object::shallowCopyOfChildren( _source );
 
-    this->m_bIsVisible = _reconstruction.m_bIsVisible;
-
-    this->setMaterial( _reconstruction.m_pMaterial );
-    this->m_sReconstructionFormat = _reconstruction.m_sReconstructionFormat;
-    this->m_sOrganName = _reconstruction.m_sOrganName;
-    this->m_sStructureType = _reconstruction.m_sStructureType;
-    this->m_bIsClosed = _reconstruction.m_bIsClosed;
-    this->m_bIsAutomatic = _reconstruction.m_bIsAutomatic;
-    this->m_dAvgVolume = _reconstruction.m_dAvgVolume;
-    this->m_dVolStdDeviation = _reconstruction.m_dVolStdDeviation;
-    this->m_dVolPctConfidence = _reconstruction.m_dVolPctConfidence;
-    this->m_sReconstructionTime = _reconstruction.m_sReconstructionTime;
-    this->m_bMaskGenerated = _reconstruction.m_bMaskGenerated;
-    this->m_ui8Level = _reconstruction.m_ui8Level;
-    this->m_ui16Label = _reconstruction.m_ui16Label;
-    this->m_bGenerated3D = _reconstruction.m_bGenerated3D;
-    this->m_sType3D = _reconstruction.m_sType3D;
-    this->m_fsPath = _reconstruction.m_fsPath;
-    this->m_i32DbID = _reconstruction.m_i32DbID;
-
-    ::fwData::Image::csptr img = _reconstruction.getImage();
-    if ( img != 0 )
-    {
-        this->setImage( ::boost::const_pointer_cast< ::fwData::Image > ( img ) );
-    }
-
-    ::fwData::TriangularMesh::csptr triangularMesh = _reconstruction.getTriangularMesh();
-    this->setTriangularMesh(::boost::const_pointer_cast< ::fwData::TriangularMesh >(triangularMesh));
-
-    return (*this);
+    this->m_bIsVisible = _source->m_bIsVisible;
+    this->m_pMaterial = _source->m_pMaterial;
+    this->m_sReconstructionFormat = _source->m_sReconstructionFormat;
+    this->m_sOrganName = _source->m_sOrganName;
+    this->m_sStructureType = _source->m_sStructureType;
+    this->m_bIsClosed = _source->m_bIsClosed;
+    this->m_bIsAutomatic = _source->m_bIsAutomatic;
+    this->m_dAvgVolume = _source->m_dAvgVolume;
+    this->m_dVolStdDeviation = _source->m_dVolStdDeviation;
+    this->m_dVolPctConfidence = _source->m_dVolPctConfidence;
+    this->m_sReconstructionTime = _source->m_sReconstructionTime;
+    this->m_bMaskGenerated = _source->m_bMaskGenerated;
+    this->m_ui8Level = _source->m_ui8Level;
+    this->m_ui16Label = _source->m_ui16Label;
+    this->m_bGenerated3D = _source->m_bGenerated3D;
+    this->m_sType3D = _source->m_sType3D;
+    this->m_fsPath = _source->m_fsPath;
+    this->m_i32DbID = _source->m_i32DbID;
 }
 
 //------------------------------------------------------------------------------
-Reconstruction::sptr Reconstruction::clone() const
+
+void Reconstruction::deepCopy( Reconstruction::csptr _source )
 {
-    SLM_TRACE("Reconstruction::clone()");
-    ::fwData::Reconstruction::NewSptr pNewReconstruction;
+    ::fwTools::Object::deepCopyOfChildren( _source );
 
-    pNewReconstruction->m_bIsVisible = this->m_bIsVisible;
-//  pNewReconstruction->m_dRed = this->m_dRed;
-//  pNewReconstruction->m_dGreen = this->m_dGreen;
-//  pNewReconstruction->m_dBlue = this->m_dBlue;
-//  pNewReconstruction->m_dAlpha = this->m_dAlpha;
-    pNewReconstruction->setMaterial( this->m_pMaterial->clone() );
-    pNewReconstruction->m_sReconstructionFormat = this->m_sReconstructionFormat;
-    pNewReconstruction->m_sOrganName = this->m_sOrganName;
-    pNewReconstruction->m_sStructureType = this->m_sStructureType;
-    pNewReconstruction->m_bIsClosed = this->m_bIsClosed;
-    pNewReconstruction->m_bIsAutomatic = this->m_bIsAutomatic;
-    pNewReconstruction->m_dAvgVolume = this->m_dAvgVolume;
-    pNewReconstruction->m_dVolStdDeviation = this->m_dVolStdDeviation;
-    pNewReconstruction->m_dVolPctConfidence = this->m_dVolPctConfidence;
-    pNewReconstruction->m_sReconstructionTime = this->m_sReconstructionTime;
-    pNewReconstruction->m_bMaskGenerated = this->m_bMaskGenerated;
-    pNewReconstruction->m_ui8Level = this->m_ui8Level;
-    pNewReconstruction->m_ui16Label = this->m_ui16Label;
-    pNewReconstruction->m_bGenerated3D = this->m_bGenerated3D;
-    pNewReconstruction->m_sType3D = this->m_sType3D;
-    pNewReconstruction->m_fsPath = this->m_fsPath;
-    pNewReconstruction->m_i32DbID = this->m_i32DbID;
-
-    ::fwData::TriangularMesh::csptr triangularMesh = this->getTriangularMesh();
-    pNewReconstruction->setTriangularMesh(::boost::const_pointer_cast< ::fwData::TriangularMesh >(triangularMesh));
-
-    pNewReconstruction->setField(Reconstruction::ID_IMAGE);
-    ::fwData::Image::csptr img = this->getImage();
-    if ( img != 0 )
-    {
-        pNewReconstruction->setImage( img->clone() );
-    }
-
-    return pNewReconstruction;
+    this->m_bIsVisible = _source->m_bIsVisible;
+    this->m_pMaterial->deepCopy( _source->m_pMaterial );
+    this->m_sReconstructionFormat = _source->m_sReconstructionFormat;
+    this->m_sOrganName = _source->m_sOrganName;
+    this->m_sStructureType = _source->m_sStructureType;
+    this->m_bIsClosed = _source->m_bIsClosed;
+    this->m_bIsAutomatic = _source->m_bIsAutomatic;
+    this->m_dAvgVolume = _source->m_dAvgVolume;
+    this->m_dVolStdDeviation = _source->m_dVolStdDeviation;
+    this->m_dVolPctConfidence = _source->m_dVolPctConfidence;
+    this->m_sReconstructionTime = _source->m_sReconstructionTime;
+    this->m_bMaskGenerated = _source->m_bMaskGenerated;
+    this->m_ui8Level = _source->m_ui8Level;
+    this->m_ui16Label = _source->m_ui16Label;
+    this->m_bGenerated3D = _source->m_bGenerated3D;
+    this->m_sType3D = _source->m_sType3D;
+    this->m_fsPath = _source->m_fsPath;
+    this->m_i32DbID = _source->m_i32DbID;
 }
+
+//------------------------------------------------------------------------------
+
+//Reconstruction &Reconstruction::operator=(const Reconstruction & _reconstruction)
+//{
+//
+//    this->m_bIsVisible = _reconstruction.m_bIsVisible;
+//
+//    this->setMaterial( _reconstruction.m_pMaterial );
+//    this->m_sReconstructionFormat = _reconstruction.m_sReconstructionFormat;
+//    this->m_sOrganName = _reconstruction.m_sOrganName;
+//    this->m_sStructureType = _reconstruction.m_sStructureType;
+//    this->m_bIsClosed = _reconstruction.m_bIsClosed;
+//    this->m_bIsAutomatic = _reconstruction.m_bIsAutomatic;
+//    this->m_dAvgVolume = _reconstruction.m_dAvgVolume;
+//    this->m_dVolStdDeviation = _reconstruction.m_dVolStdDeviation;
+//    this->m_dVolPctConfidence = _reconstruction.m_dVolPctConfidence;
+//    this->m_sReconstructionTime = _reconstruction.m_sReconstructionTime;
+//    this->m_bMaskGenerated = _reconstruction.m_bMaskGenerated;
+//    this->m_ui8Level = _reconstruction.m_ui8Level;
+//    this->m_ui16Label = _reconstruction.m_ui16Label;
+//    this->m_bGenerated3D = _reconstruction.m_bGenerated3D;
+//    this->m_sType3D = _reconstruction.m_sType3D;
+//    this->m_fsPath = _reconstruction.m_fsPath;
+//    this->m_i32DbID = _reconstruction.m_i32DbID;
+//
+//    ::fwData::Image::csptr img = _reconstruction.getImage();
+//    if ( img != 0 )
+//    {
+//        this->setImage( ::boost::const_pointer_cast< ::fwData::Image > ( img ) );
+//    }
+//
+//    ::fwData::TriangularMesh::csptr triangularMesh = _reconstruction.getTriangularMesh();
+//    this->setTriangularMesh(::boost::const_pointer_cast< ::fwData::TriangularMesh >(triangularMesh));
+//
+//    return (*this);
+//}
+
+//------------------------------------------------------------------------------
+//Reconstruction::sptr Reconstruction::clone() const
+//{
+//    SLM_TRACE("Reconstruction::clone()");
+//    ::fwData::Reconstruction::NewSptr pNewReconstruction;
+//
+//    pNewReconstruction->m_bIsVisible = this->m_bIsVisible;
+////  pNewReconstruction->m_dRed = this->m_dRed;
+////  pNewReconstruction->m_dGreen = this->m_dGreen;
+////  pNewReconstruction->m_dBlue = this->m_dBlue;
+////  pNewReconstruction->m_dAlpha = this->m_dAlpha;
+//    pNewReconstruction->setMaterial( this->m_pMaterial->clone() );
+//    pNewReconstruction->m_sReconstructionFormat = this->m_sReconstructionFormat;
+//    pNewReconstruction->m_sOrganName = this->m_sOrganName;
+//    pNewReconstruction->m_sStructureType = this->m_sStructureType;
+//    pNewReconstruction->m_bIsClosed = this->m_bIsClosed;
+//    pNewReconstruction->m_bIsAutomatic = this->m_bIsAutomatic;
+//    pNewReconstruction->m_dAvgVolume = this->m_dAvgVolume;
+//    pNewReconstruction->m_dVolStdDeviation = this->m_dVolStdDeviation;
+//    pNewReconstruction->m_dVolPctConfidence = this->m_dVolPctConfidence;
+//    pNewReconstruction->m_sReconstructionTime = this->m_sReconstructionTime;
+//    pNewReconstruction->m_bMaskGenerated = this->m_bMaskGenerated;
+//    pNewReconstruction->m_ui8Level = this->m_ui8Level;
+//    pNewReconstruction->m_ui16Label = this->m_ui16Label;
+//    pNewReconstruction->m_bGenerated3D = this->m_bGenerated3D;
+//    pNewReconstruction->m_sType3D = this->m_sType3D;
+//    pNewReconstruction->m_fsPath = this->m_fsPath;
+//    pNewReconstruction->m_i32DbID = this->m_i32DbID;
+//
+//    ::fwData::TriangularMesh::csptr triangularMesh = this->getTriangularMesh();
+//    pNewReconstruction->setTriangularMesh(::boost::const_pointer_cast< ::fwData::TriangularMesh >(triangularMesh));
+//
+//    pNewReconstruction->setField(Reconstruction::ID_IMAGE);
+//    ::fwData::Image::csptr img = this->getImage();
+//    if ( img != 0 )
+//    {
+//        pNewReconstruction->setImage( img->clone() );
+//    }
+//
+//    return pNewReconstruction;
+//}
 
 //------------------------------------------------------------------------------
 

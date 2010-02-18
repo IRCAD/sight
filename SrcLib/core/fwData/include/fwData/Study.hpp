@@ -41,8 +41,17 @@ public:
     /// @brief Destructor
     FWDATA_API virtual ~Study();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    void shallowCopy( Study::csptr _source );
+
+    /// Defines deep copy
+    void deepCopy( Study::csptr _source );
+
     /// @brief Copy method
-    FWDATA_API Study &operator=( const Study & _study ) ;
+    //FWDATA_API Study &operator=( const Study & _study ) ;
 
     /// Field identifier for acquisitions
     FWDATA_API static const Object::FieldID ID_ACQUISITIONS;

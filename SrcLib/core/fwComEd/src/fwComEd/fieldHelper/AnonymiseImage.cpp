@@ -76,7 +76,8 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
 ::fwData::Patient::sptr AnonymiseImage::createAnonymisedPatient( ::fwData::Patient::sptr _pPatient)
 {
     ::fwData::Patient::NewSptr pNewPatient;
-    (* pNewPatient) = (* _pPatient);
+    //(* pNewPatient) = (* _pPatient);
+    pNewPatient->shallowCopy( _pPatient );
     pNewPatient->setField( ::fwData::Patient::ID_STUDIES );
 
     std::map< ::fwData::Acquisition::sptr, ::fwData::Acquisition::sptr > acquisitionMap;
@@ -88,7 +89,8 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
         ::fwData::Study::NewSptr pNewStudy;
         pNewPatient->addStudy(pNewStudy);
 
-        (* pNewStudy) = (*pStudy);
+        //(* pNewStudy) = (*pStudy);
+        pNewStudy->shallowCopy( pStudy );
         pNewStudy->setField( ::fwData::Study::ID_ACQUISITIONS );
 
         ::fwData::Study::AcquisitionIterator acquisitionIter = pStudy->getAcquisitions().first;
@@ -98,7 +100,8 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
             ::fwData::Acquisition::NewSptr pNewAcquisition;
             pNewStudy->addAcquisition(pNewAcquisition);
 
-            (* pNewAcquisition) = (*pAcquisition);
+            //(* pNewAcquisition) = (*pAcquisition);
+            pNewAcquisition->shallowCopy(pAcquisition);
 
             acquisitionMap[pAcquisition] = pNewAcquisition;
         }

@@ -40,8 +40,16 @@ public:
     /// Destructor
     FWDATA_API virtual ~ResectionDB ();
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( ResectionDB::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( ResectionDB::csptr _source );
+
     /// Copy method
-    FWDATA_API ResectionDB &operator=( const ResectionDB & _resectionDB ) ;
+    //FWDATA_API ResectionDB &operator=( const ResectionDB & _resectionDB ) ;
 
     // Patients ----------------------------------------------------------------
     /// Field identifier for patients

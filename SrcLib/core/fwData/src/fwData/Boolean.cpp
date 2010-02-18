@@ -27,5 +27,16 @@ Boolean::~Boolean() throw()
 {}
 
 //------------------------------------------------------------------------------
+void Boolean::shallowCopy( Boolean::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+}
+
+//------------------------------------------------------------------------------
+
+void Boolean::deepCopy( Boolean::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+}
 
 } // namespace fwData

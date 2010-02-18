@@ -133,6 +133,50 @@ Image::~Image() throw()
 //  }
 }
 
+//-----------------------------------------------------------------------------
+
+void Image::shallowCopy( Image::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+
+    // Assign
+    this->m_ui8Dimension        = _source->m_ui8Dimension;
+    this->m_dtPixelType         = _source->m_dtPixelType;
+    this->m_vSpacing            = _source->m_vSpacing;
+    this->m_vOrigin             = _source->m_vOrigin;
+    this->m_vSize               = _source->m_vSize;
+    this->m_fsFilename          = _source->m_fsFilename;
+    this->m_dWindowCenter       = _source->m_dWindowCenter;
+    this->m_dWindowWidth        = _source->m_dWindowWidth;
+    this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
+
+    this->m_bufferDelegate  = _source->m_bufferDelegate;
+}
+
+//-----------------------------------------------------------------------------
+
+void Image::deepCopy( Image::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+
+    // Assign
+    this->m_ui8Dimension        = _source->m_ui8Dimension;
+    this->m_dtPixelType         = _source->m_dtPixelType;
+    this->m_vSpacing            = _source->m_vSpacing;
+    this->m_vOrigin             = _source->m_vOrigin;
+    this->m_vSize               = _source->m_vSize;
+    this->m_fsFilename          = _source->m_fsFilename;
+    this->m_dWindowCenter       = _source->m_dWindowCenter;
+    this->m_dWindowWidth        = _source->m_dWindowWidth;
+    this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
+
+    char * src = static_cast<char *>( _source->getBuffer() );
+    ::boost::int32_t size = imageSizeInBytes( *_source );
+    char * dest = new char[size];
+    ::std::copy( src, src + size , dest );
+    this->setBuffer( dest );
+}
+
 //------------------------------------------------------------------------------
 
 //void Image::copy( ::fwData::Image::sptr _img )
@@ -173,68 +217,68 @@ Image::~Image() throw()
 
 //------------------------------------------------------------------------------
 
-Image::sptr Image::clone() const
-{
-    SLM_TRACE("clone()");
-    ::fwData::Image::NewSptr pNewImage;
-
-    pNewImage->m_ui8Dimension       = this->m_ui8Dimension;
-    pNewImage->m_dtPixelType        = this->m_dtPixelType;
-    pNewImage->m_vSpacing           = this->m_vSpacing;
-    pNewImage->m_vOrigin            = this->m_vOrigin;
-    pNewImage->m_vSize              = this->m_vSize;
-    pNewImage->m_fsFilename         = this->m_fsFilename;
-    pNewImage->m_dWindowCenter      = this->m_dWindowCenter;
-    pNewImage->m_dWindowWidth       = this->m_dWindowWidth;
-    pNewImage->m_dRescaleIntercept  = this->m_dRescaleIntercept;
-
-    // pNewImage->setBuffthis->is->getBuffer() );
-    // pNewImage->m_bManagesBuff  = this->m_bManagesBuff;
-    // pNewImage->m_bManagesBuff = true;
-
-    char * src = static_cast<char *>( this->getBuffer() );
-    ::boost::int32_t size = imageSizeInBytes( *this );
-    char * dest = new char[size];
-    ::std::copy( src, src + size , dest );
-    pNewImage->setBuffer( dest );
-
-    return pNewImage;
-}
+//Image::sptr Image::clone() const
+//{
+//    SLM_TRACE("clone()");
+//    ::fwData::Image::NewSptr pNewImage;
+//
+//    pNewImage->m_ui8Dimension       = this->m_ui8Dimension;
+//    pNewImage->m_dtPixelType        = this->m_dtPixelType;
+//    pNewImage->m_vSpacing           = this->m_vSpacing;
+//    pNewImage->m_vOrigin            = this->m_vOrigin;
+//    pNewImage->m_vSize              = this->m_vSize;
+//    pNewImage->m_fsFilename         = this->m_fsFilename;
+//    pNewImage->m_dWindowCenter      = this->m_dWindowCenter;
+//    pNewImage->m_dWindowWidth       = this->m_dWindowWidth;
+//    pNewImage->m_dRescaleIntercept  = this->m_dRescaleIntercept;
+//
+//    // pNewImage->setBuffthis->is->getBuffer() );
+//    // pNewImage->m_bManagesBuff  = this->m_bManagesBuff;
+//    // pNewImage->m_bManagesBuff = true;
+//
+//    char * src = static_cast<char *>( this->getBuffer() );
+//    ::boost::int32_t size = imageSizeInBytes( *this );
+//    char * dest = new char[size];
+//    ::std::copy( src, src + size , dest );
+//    pNewImage->setBuffer( dest );
+//
+//    return pNewImage;
+//}
 
 //------------------------------------------------------------------------------
 
-Image &Image::operator=(const Image &_img)
-{
-    SLM_INFO(" Image::operator= : the image buffer is not duplicate copy only the pointer.");
-
-    // Delete buffer if m_bManagesBuff
-//  if( m_bManagesBuff && this->getBuffer() != NULL )
-//  {
-//      char * buff= static_cast< char * >( this->getBuffer() );
-//      if( buff )
-//      {
-//          delete[] buff;
-//      }
-//      this->setBuffer( NULL );
-//  }
-
-    // Assign
-    this->m_ui8Dimension        = _img.m_ui8Dimension;
-    this->m_dtPixelType         = _img.m_dtPixelType;
-//  this->m_bManagesBuff        = _img.m_bManagesBuff;
-    this->m_vSpacing            = _img.m_vSpacing;
-    this->m_vOrigin             = _img.m_vOrigin;
-    this->m_vSize               = _img.m_vSize;
-    this->m_fsFilename          = _img.m_fsFilename;
-    this->m_dWindowCenter       = _img.m_dWindowCenter;
-    this->m_dWindowWidth        = _img.m_dWindowWidth;
-    this->m_dRescaleIntercept   = _img.m_dRescaleIntercept;
-
-    // this->setBuffer( _img.getBuffer() );
-    this->m_bufferDelegate  = _img.m_bufferDelegate;
-
-    return (*this);
-}
+//Image &Image::operator=(const Image &_img)
+//{
+//    SLM_INFO(" Image::operator= : the image buffer is not duplicate copy only the pointer.");
+//
+//    // Delete buffer if m_bManagesBuff
+////  if( m_bManagesBuff && this->getBuffer() != NULL )
+////  {
+////      char * buff= static_cast< char * >( this->getBuffer() );
+////      if( buff )
+////      {
+////          delete[] buff;
+////      }
+////      this->setBuffer( NULL );
+////  }
+//
+//    // Assign
+//    this->m_ui8Dimension        = _img.m_ui8Dimension;
+//    this->m_dtPixelType         = _img.m_dtPixelType;
+////  this->m_bManagesBuff        = _img.m_bManagesBuff;
+//    this->m_vSpacing            = _img.m_vSpacing;
+//    this->m_vOrigin             = _img.m_vOrigin;
+//    this->m_vSize               = _img.m_vSize;
+//    this->m_fsFilename          = _img.m_fsFilename;
+//    this->m_dWindowCenter       = _img.m_dWindowCenter;
+//    this->m_dWindowWidth        = _img.m_dWindowWidth;
+//    this->m_dRescaleIntercept   = _img.m_dRescaleIntercept;
+//
+//    // this->setBuffer( _img.getBuffer() );
+//    this->m_bufferDelegate  = _img.m_bufferDelegate;
+//
+//    return (*this);
+//}
 
 //------------------------------------------------------------------------------
 

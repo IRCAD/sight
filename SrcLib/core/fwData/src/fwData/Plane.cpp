@@ -44,28 +44,51 @@ Plane::~Plane ()
 
 //------------------------------------------------------------------------------
 
-Plane::sptr Plane::clone() const
+void Plane::shallowCopy( Plane::csptr _source )
 {
-    SLM_TRACE_FUNC();
-
-    Plane::NewSptr pNewPlane;
-
-    pNewPlane->m_vPoints[0] = this->m_vPoints[0];
-    pNewPlane->m_vPoints[1] = this->m_vPoints[1];
-    pNewPlane->m_vPoints[2] = this->m_vPoints[2];
-
-    return pNewPlane;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    //this->m_vPoints[0] = _source->m_vPoints[0];
+    //this->m_vPoints[1] = _source->m_vPoints[1];
+    //this->m_vPoints[2] = _source->m_vPoints[2];
+    this->m_vPoints = _source->m_vPoints;
+    this->m_plane = _source->m_plane;
 }
 
 //------------------------------------------------------------------------------
 
-Plane & Plane::operator=( const Plane & _plane )
+void Plane::deepCopy( Plane::csptr _source )
 {
-    // Copy encoding
-    m_vPoints = _plane.m_vPoints;
-
-    return *this;
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_vPoints[0]->deepCopy( _source->m_vPoints[0] );
+    this->m_vPoints[1]->deepCopy( _source->m_vPoints[1] );
+    this->m_vPoints[2]->deepCopy( _source->m_vPoints[2] );
+    this->m_plane = _source->m_plane;
 }
+//------------------------------------------------------------------------------
+
+//Plane::sptr Plane::clone() const
+//{
+//    SLM_TRACE_FUNC();
+//
+//    Plane::NewSptr pNewPlane;
+//
+//    pNewPlane->m_vPoints[0] = this->m_vPoints[0];
+//    pNewPlane->m_vPoints[1] = this->m_vPoints[1];
+//    pNewPlane->m_vPoints[2] = this->m_vPoints[2];
+//
+//    return pNewPlane;
+//}
+//
+////------------------------------------------------------------------------------
+//
+//Plane & Plane::operator=( const Plane & _plane )
+//{
+//    // Copy encoding
+//    m_vPoints = _plane.m_vPoints;
+//
+//    return *this;
+//}
+
 //------------------------------------------------------------------------------
 
 bool Plane::operator==( const Plane & _plane )

@@ -49,8 +49,17 @@ public:
     /// Destructor
     FWDATA_API virtual ~Patient ();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    void shallowCopy( Patient::csptr _source );
+
+    /// Defines deep copy
+    void deepCopy( Patient::csptr _source );
+
     /// Copy
-    FWDATA_API Patient &operator=( const Patient & _patient ) ;
+    //FWDATA_API Patient &operator=( const Patient & _patient ) ;
 
     // Studies -----------------------------------------------------------------
     /// Field identifier for studies

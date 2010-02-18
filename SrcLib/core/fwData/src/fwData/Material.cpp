@@ -15,8 +15,8 @@ namespace fwData
 {
 
 Material::Material() :
-    m_ambient() ,
-    m_diffuse(),
+    m_ambient( Color::New() ) ,
+    m_diffuse( Color::New() ),
     m_shadingMode(MODE_PHONG),
     m_representationMode(MODE_SURFACE),
     m_optionsMode(MODE_STANDARD)
@@ -31,43 +31,71 @@ Material::~Material()
 
 //------------------------------------------------------------------------------
 
-Material::sptr Material::clone() const
+void Material::shallowCopy( Material::csptr _source )
 {
-    SLM_TRACE("Material::clone()");
-    ::fwData::Material::NewSptr pMaterial;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
 
-    pMaterial->m_ambient = this->m_ambient;
-    pMaterial->m_diffuse = this->m_diffuse;
-    pMaterial->m_shadingMode = this->m_shadingMode;
-    pMaterial->m_representationMode = this->m_representationMode;
+    this->m_ambient = _source->m_ambient;
+    this->m_diffuse = _source->m_diffuse;
 
-    return pMaterial;
+    this->m_shadingMode = _source->m_shadingMode;
+    this->m_representationMode = _source->m_representationMode;
+    this->m_optionsMode = _source->m_optionsMode;
 }
 
 //------------------------------------------------------------------------------
 
-Color &Material::ambient()
+void Material::deepCopy( Material::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+
+    this->m_ambient->deepCopy( _source->m_ambient );
+    this->m_diffuse->deepCopy( _source->m_diffuse );
+
+    this->m_shadingMode = _source->m_shadingMode;
+    this->m_representationMode = _source->m_representationMode;
+    this->m_optionsMode = _source->m_optionsMode;
+}
+
+//------------------------------------------------------------------------------
+
+//Material::sptr Material::clone() const
+//{
+//    SLM_TRACE("Material::clone()");
+//    ::fwData::Material::NewSptr pMaterial;
+//
+//    pMaterial->m_ambient = this->m_ambient;
+//    pMaterial->m_diffuse = this->m_diffuse;
+//    pMaterial->m_shadingMode = this->m_shadingMode;
+//    pMaterial->m_representationMode = this->m_representationMode;
+//
+//    return pMaterial;
+//}
+
+//------------------------------------------------------------------------------
+//
+//Color &Material::ambient()
+//{
+//    return m_ambient ;
+//}
+//
+////------------------------------------------------------------------------------
+//
+//Color &Material::diffuse()
+//{
+//    return m_diffuse ;
+//}
+
+//------------------------------------------------------------------------------
+
+Color::sptr Material::ambient() const
 {
     return m_ambient ;
 }
 
 //------------------------------------------------------------------------------
 
-Color &Material::diffuse()
-{
-    return m_diffuse ;
-}
-
-//------------------------------------------------------------------------------
-
-const Color &Material::ambient() const
-{
-    return m_ambient ;
-}
-
-//------------------------------------------------------------------------------
-
-const Color &Material::diffuse() const
+Color::sptr Material::diffuse() const
 {
     return m_diffuse ;
 }

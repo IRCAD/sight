@@ -273,7 +273,7 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
                 ::boost::shared_ptr< ::fwData::PatientDB > associatedPatientDB = ::boost::dynamic_pointer_cast< ::fwData::PatientDB >( associatedObject ) ;
                 assert( associatedPatientDB ) ;
 
-                ( *( associatedPatientDB ) ) = ( *( patientDB.get() ) ) ;
+                associatedPatientDB->shallowCopy( patientDB );
 
                 wxBeginBusyCursor();
                 notificationOfDBUpdate();

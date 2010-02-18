@@ -43,14 +43,23 @@ public :
     /// Destructor
     FWDATA_API virtual ~TransfertFunction();
 
+    /// Maccro for deep and shallow copies
+    fwDataObjectMacro();
+
+    /// Shallow copy method
+    FWDATA_API void shallowCopy( TransfertFunction::csptr _source );
+
+    /// Deep copy method
+    FWDATA_API void deepCopy( TransfertFunction::csptr _source );
+
     /// Constructor by copy
-    FWDATA_API TransfertFunction( const TransfertFunction & _transfertFunction );
+    //FWDATA_API TransfertFunction( const TransfertFunction & _transfertFunction );
 
     /// Copy method
-    FWDATA_API TransfertFunction & operator=( const TransfertFunction & _transfertFunction );
+    //FWDATA_API TransfertFunction & operator=( const TransfertFunction & _transfertFunction );
 
     /// Clone method
-    FWDATA_API TransfertFunction::sptr clone() const;
+    //FWDATA_API TransfertFunction::sptr clone() const;
 
     // TransfertFunctionPoints ---------------------------------------------------------------------
     /// Field identifier for transfert function points
@@ -137,7 +146,7 @@ public :
 protected :
 
     /// Copy method
-    void copy( const TransfertFunction & _transfertFunction );
+    //void copy( const TransfertFunction & _transfertFunction );
 
     //! Encoding
     std::string m_sEncoding;

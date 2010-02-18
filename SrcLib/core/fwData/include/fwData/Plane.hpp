@@ -45,11 +45,20 @@ public :
     /// Destructor
     FWDATA_API virtual ~Plane();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Plane::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Plane::csptr _source );
+
     /// Clone method
-    FWDATA_API Plane::sptr clone() const;
+    //FWDATA_API Plane::sptr clone() const;
 
     /// Copy method
-    FWDATA_API Plane &operator=( const Plane & _plane ) ;
+    //FWDATA_API Plane &operator=( const Plane & _plane ) ;
 
     /*
      * @brief Compare method

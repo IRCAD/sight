@@ -46,11 +46,20 @@ public:
      */
     FWDATA_API virtual ~Image() throw();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Image::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Image::csptr _source );
+
     /// Clone
-    FWDATA_API Image::sptr clone() const;
+    //FWDATA_API Image::sptr clone() const;
 
     /// Copy
-    FWDATA_API Image &operator=(const Image & _img) ;
+    //FWDATA_API Image &operator=(const Image & _img) ;
 
 
     /**

@@ -27,10 +27,10 @@ template<class Archive>
 void load(Archive & ar, ::fwData::Reconstruction & _reconstruction, const unsigned int version)
 {
     ar &  boost::serialization::make_nvp( "IsVisible" , _reconstruction.getRefIsVisible() );
-    ar &  boost::serialization::make_nvp( "Red" , _reconstruction.getMaterial()->ambient().red() );
-    ar &  boost::serialization::make_nvp( "Green" , _reconstruction.getMaterial()->ambient().green() );
-    ar &  boost::serialization::make_nvp( "Blue" , _reconstruction.getMaterial()->ambient().blue() );
-    ar &  boost::serialization::make_nvp( "Alpha" , _reconstruction.getMaterial()->ambient().alpha() );
+    ar &  boost::serialization::make_nvp( "Red" , _reconstruction.getMaterial()->ambient()->red() );
+    ar &  boost::serialization::make_nvp( "Green" , _reconstruction.getMaterial()->ambient()->green() );
+    ar &  boost::serialization::make_nvp( "Blue" , _reconstruction.getMaterial()->ambient()->blue() );
+    ar &  boost::serialization::make_nvp( "Alpha" , _reconstruction.getMaterial()->ambient()->alpha() );
     ar &  boost::serialization::make_nvp( "ReconstructionFormat" , _reconstruction.getRefReconstructionFormat() );
     ar &  boost::serialization::make_nvp( "OrganName" , _reconstruction.getRefOrganName() );
     ar &  boost::serialization::make_nvp( "StructureType" , _reconstruction.getRefStructureType() );
@@ -60,10 +60,10 @@ void save(Archive & ar, const ::fwData::Reconstruction & _reconstruction, const 
 {
     std::string newStr;
     ar &  boost::serialization::make_nvp( "IsVisible" , _reconstruction.getCRefIsVisible() );
-    ar &  boost::serialization::make_nvp( "Red" , _reconstruction.getMaterial()->ambient().red() );
-    ar &  boost::serialization::make_nvp( "Green" , _reconstruction.getMaterial()->ambient().green() );
-    ar &  boost::serialization::make_nvp( "Blue" , _reconstruction.getMaterial()->ambient().blue() );
-    ar &  boost::serialization::make_nvp( "Alpha" , _reconstruction.getMaterial()->ambient().alpha() );
+    ar &  boost::serialization::make_nvp( "Red" , _reconstruction.getMaterial()->ambient()->red() );
+    ar &  boost::serialization::make_nvp( "Green" , _reconstruction.getMaterial()->ambient()->green() );
+    ar &  boost::serialization::make_nvp( "Blue" , _reconstruction.getMaterial()->ambient()->blue() );
+    ar &  boost::serialization::make_nvp( "Alpha" , _reconstruction.getMaterial()->ambient()->alpha() );
 
 //  newStr = ::fwTools::toStringWithoutAccent( _reconstruction.getCRefReconstructionFormat() );
     ar &  boost::serialization::make_nvp( "ReconstructionFormat" , _reconstruction.getCRefReconstructionFormat() );

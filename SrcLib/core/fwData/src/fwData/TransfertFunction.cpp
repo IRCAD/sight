@@ -42,48 +42,66 @@ TransfertFunction::~TransfertFunction ()
 
 //------------------------------------------------------------------------------
 
-TransfertFunction::TransfertFunction( const TransfertFunction & _transfertFunction )
+void TransfertFunction::shallowCopy( TransfertFunction::csptr _source )
 {
-    copy(_transfertFunction);
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_sName = _source->m_sName;
+    this->m_sEncoding = _source->m_sEncoding;
 }
 
 //------------------------------------------------------------------------------
 
-TransfertFunction & TransfertFunction::operator=( const TransfertFunction & _transfertFunction )
+void TransfertFunction::deepCopy( TransfertFunction::csptr _source )
 {
-    copy(_transfertFunction);
-    return *this;
-}
-//------------------------------------------------------------------------------
-
-void TransfertFunction::copy( const TransfertFunction & _transfertFunction )
-{
-    this->m_sName = _transfertFunction.m_sName;
-    this->m_sEncoding = _transfertFunction.m_sEncoding;
-    this->getField( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS )->children() = _transfertFunction.getField( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS )->children();
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_sName = _source->m_sName;
+    this->m_sEncoding = _source->m_sEncoding;
 }
 
 //------------------------------------------------------------------------------
 
-TransfertFunction::sptr TransfertFunction::clone() const
-{
-    TransfertFunction::NewSptr pNewTransfertFunction;
+//TransfertFunction::TransfertFunction( const TransfertFunction & _transfertFunction )
+//{
+//    copy(_transfertFunction);
+//}
 
-    // Copy encoding
-    pNewTransfertFunction->m_sEncoding = this->m_sEncoding;
-    pNewTransfertFunction->m_sName = this->m_sName;
+//------------------------------------------------------------------------------
 
-    // Copy TransfertFunctionPoints
-    ::std::pair< TransfertFunctionPointConstIterator, TransfertFunctionPointConstIterator > range = this->getTransfertFunctionPoints();
-    TransfertFunctionPointConstIterator iterPoint = range.first;
-    while( iterPoint != range.second )
-    {
-        pNewTransfertFunction->addFieldElement( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS, (*iterPoint)->clone() );
-        ++iterPoint;
-    }
-
-    return pNewTransfertFunction;
-}
+//TransfertFunction & TransfertFunction::operator=( const TransfertFunction & _transfertFunction )
+//{
+//    copy(_transfertFunction);
+//    return *this;
+//}
+////------------------------------------------------------------------------------
+//
+//void TransfertFunction::copy( const TransfertFunction & _transfertFunction )
+//{
+//    this->m_sName = _transfertFunction.m_sName;
+//    this->m_sEncoding = _transfertFunction.m_sEncoding;
+//    this->getField( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS )->children() = _transfertFunction.getField( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS )->children();
+//}
+//
+////------------------------------------------------------------------------------
+//
+//TransfertFunction::sptr TransfertFunction::clone() const
+//{
+//    TransfertFunction::NewSptr pNewTransfertFunction;
+//
+//    // Copy encoding
+//    pNewTransfertFunction->m_sEncoding = this->m_sEncoding;
+//    pNewTransfertFunction->m_sName = this->m_sName;
+//
+//    // Copy TransfertFunctionPoints
+//    ::std::pair< TransfertFunctionPointConstIterator, TransfertFunctionPointConstIterator > range = this->getTransfertFunctionPoints();
+//    TransfertFunctionPointConstIterator iterPoint = range.first;
+//    while( iterPoint != range.second )
+//    {
+//        pNewTransfertFunction->addFieldElement( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS, (*iterPoint)->clone() );
+//        ++iterPoint;
+//    }
+//
+//    return pNewTransfertFunction;
+//}
 
 //------------------------------------------------------------------------------
 
@@ -261,7 +279,9 @@ std::pair< ::boost::int32_t, ::boost::int32_t > TransfertFunction::getMinMax() c
 void TransfertFunction::setMinMax( ::fwData::TransfertFunctionPoint::TFValueType _min, ::fwData::TransfertFunctionPoint::TFValueType _max )
 {
 
-    ::fwData::TransfertFunction::sptr pTransfertFunctionClone = this->clone();
+    //::fwData::TransfertFunction::sptr pTransfertFunctionClone = this->clone();
+    ::fwData::TransfertFunction::NewSptr pTransfertFunctionClone;
+    pTransfertFunctionClone->deepCopy( this->getSptr() );
     this->clear();
 
     typedef ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPCIterator;

@@ -37,6 +37,14 @@ public:
      * @brief Destructor.
      */
     FWDATA_API virtual ~Integer() throw();
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Integer::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Integer::csptr _source );
 };
 
 } // namespace fwData

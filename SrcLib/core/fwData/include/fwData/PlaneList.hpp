@@ -38,11 +38,19 @@ public :
     /// Destructor
     FWDATA_API virtual ~PlaneList();
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( PlaneList::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( PlaneList::csptr _source );
+
     /// Clone method
-    FWDATA_API PlaneList::sptr clone() const;
+    //FWDATA_API PlaneList::sptr clone() const;
 
     /// Copy method
-    FWDATA_API PlaneList &operator=( const PlaneList & _planetList ) ;
+    //FWDATA_API PlaneList &operator=( const PlaneList & _planetList ) ;
 
     // Looking for duplicate plan
     FWDATA_API void deleteDuplicatedPlan(void);

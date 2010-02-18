@@ -43,12 +43,38 @@ Composite::Container const &Composite::getRefMap() const
 
 //------------------------------------------------------------------------------
 
-Composite & Composite::operator=( const Composite & _composite )
+void Composite::shallowCopy( Composite::csptr _source )
 {
-   //Copy encoding
-    m_map = _composite.m_map;
-
-    return *this;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_map = _source->m_map;
 }
+
+//------------------------------------------------------------------------------
+
+void Composite::deepCopy( Composite::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+
+    this->m_map.clear();
+
+    for(    Composite::Container::const_iterator iter = _source->m_map.begin();
+            iter != _source->m_map.end();
+            ++iter )
+    {
+        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( iter->second->getClassname() );
+        newObj->deepCopy( iter->second );
+        this->m_map[ iter->first ] = ::fwData::Object::dynamicCast( newObj );
+    }
+}
+
+//------------------------------------------------------------------------------
+
+//Composite & Composite::operator=( const Composite & _composite )
+//{
+//   //Copy encoding
+//    m_map = _composite.m_map;
+//
+//    return *this;
+//}
 
 }

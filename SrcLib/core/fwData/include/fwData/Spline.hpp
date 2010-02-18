@@ -31,13 +31,27 @@ public :
      * @struct point
      * @brief Defines a 3D %point for a spline.
      */
-    typedef struct{
+    struct point {
+
         int id;            /**< @brief Identifier */
         double p[3];       /**< @brief Point coordinates */
         double normal[3];  /**< @brief Normal coordinates*/
         Color c;           /**< @brief Point color*/
         bool isVisible;    /**< @brief Flag if %point is visible */
-    }point;
+
+        FWDATA_API point &operator=( const point & _point )
+        {
+            this->id = _point.id;
+            this->p[0] = _point.p[0];
+            this->p[1] = _point.p[1];
+            this->p[2] = _point.p[2];
+            this->normal[0] = _point.normal[0];
+            this->normal[1] = _point.normal[1];
+            this->normal[2] = _point.normal[2];
+            this->isVisible = _point.isVisible;
+            c.deepCopy( _point.c.getConstSptr() );
+        }
+    };
 
     /// 3D %point container
     typedef std::vector< point > Points ;

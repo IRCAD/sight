@@ -40,11 +40,20 @@ public :
     /// Destructor
     FWDATA_API virtual ~Line();
 
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Line::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Line::csptr _source );
+
     /// Clone method
-    FWDATA_API Line::sptr clone() const;
+    //FWDATA_API Line::sptr clone() const;
 
     /// Copy method
-    FWDATA_API Line &operator=( const Line & _Line ) ;
+    //FWDATA_API Line &operator=( const Line & _Line ) ;
 
     FWDATA_API void setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction);
 

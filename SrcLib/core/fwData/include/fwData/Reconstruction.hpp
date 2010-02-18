@@ -40,11 +40,19 @@ public:
     /// Destructor
     FWDATA_API virtual ~Reconstruction();
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Reconstruction::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Reconstruction::csptr _source );
+
     /// Clone method
-    FWDATA_API Reconstruction::sptr clone() const;
+    //FWDATA_API Reconstruction::sptr clone() const;
 
     /// Copy method
-    FWDATA_API Reconstruction &operator=( const Reconstruction & _reconstruction ) ;
+    //FWDATA_API Reconstruction &operator=( const Reconstruction & _reconstruction ) ;
 
     // Image -------------------------------------------------------------------
     /// @name Image accessor

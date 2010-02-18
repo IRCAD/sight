@@ -204,19 +204,43 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
 
 ::fwData::Color::sptr generateColor()
 {
-    using namespace boost::assign; // bring 'operator+=()' for vector into scope
+    //using namespace boost::assign; // bring 'operator+=()' for vector into scope
     using namespace fwData;
 
-    static std::vector< Color > colors;
-    static std::vector< Color >::iterator current;
+    static std::vector< Color::sptr > colors;
+    static std::vector< Color::sptr >::iterator current;
     if ( colors.empty() )
     {
-        colors +=   Color( 1, 0, 1), // magenta
-                    Color( 0, 1, 1), // cyan
-                    Color( 1, 0.647, 0 ), // orange
-                    Color( .5, 0.26, 1 ), // violet
-                    Color( .65, 1 , 0), // vert pomme
-                    Color( 1, 1, 0 ); // jaune
+        Color::NewSptr magenta;
+        magenta->setRGBA( 1, 0, 1);
+        colors.push_back( magenta );
+
+        Color::NewSptr cyan;
+        cyan->setRGBA(0, 1, 1);
+        colors.push_back( cyan );
+
+        Color::NewSptr orange;
+        orange->setRGBA(  1, 0.647, 0);
+        colors.push_back( orange );
+
+        Color::NewSptr violet;
+        violet->setRGBA( .5, 0.26, 1);
+        colors.push_back( violet );
+
+        Color::NewSptr vertpomme;
+        vertpomme->setRGBA( .65, 1 , 0);
+        colors.push_back( vertpomme );
+
+        Color::NewSptr jaune;
+        jaune->setRGBA( 1, 1, 0);
+        colors.push_back( jaune );
+
+//        colors +=   Color::New( 1, 0, 1), // magenta
+//                    Color::New( 0, 1, 1), // cyan
+//                    Color::New( 1, 0.647, 0 ), // orange
+//                    Color::New( .5, 0.26, 1 ), // violet
+//                    Color::New( .65, 1 , 0), // vert pomme
+//                    Color::New( 1, 1, 0 ); // jaune
         current= colors.begin();
     }
 
@@ -225,7 +249,9 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
         current = colors.begin();
     }
 
-    return current->clone();
+    Color::NewSptr newColor;
+    newColor->deepCopy( *current );
+    return newColor;
 }
 
 //------------------------------------------------------------------------------

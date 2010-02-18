@@ -37,16 +37,32 @@ TransfertFunctionPoint::~TransfertFunctionPoint ()
 
 //------------------------------------------------------------------------------
 
-TransfertFunctionPoint::sptr TransfertFunctionPoint::clone() const
+void TransfertFunctionPoint::shallowCopy( TransfertFunctionPoint::csptr _source )
 {
-    TransfertFunctionPoint::sptr pNewTransfertFunctionPoint = ::fwTools::Factory::New< TransfertFunctionPoint >();
-
-    // Copy encoding
-    pNewTransfertFunctionPoint->m_i32Value = this->m_i32Value;
-    pNewTransfertFunctionPoint->setColor( this->getColor()->clone() );
-
-    return pNewTransfertFunctionPoint;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_i32Value = _source->m_i32Value;
 }
+
+//------------------------------------------------------------------------------
+
+void TransfertFunctionPoint::deepCopy( TransfertFunctionPoint::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_i32Value = _source->m_i32Value;
+}
+
+//------------------------------------------------------------------------------
+
+//TransfertFunctionPoint::sptr TransfertFunctionPoint::clone() const
+//{
+//    TransfertFunctionPoint::sptr pNewTransfertFunctionPoint = ::fwTools::Factory::New< TransfertFunctionPoint >();
+//
+//    // Copy encoding
+//    pNewTransfertFunctionPoint->m_i32Value = this->m_i32Value;
+//    pNewTransfertFunctionPoint->setColor( this->getColor()->clone() );
+//
+//    return pNewTransfertFunctionPoint;
+//}
 
 //------------------------------------------------------------------------------
 

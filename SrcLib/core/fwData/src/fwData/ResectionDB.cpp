@@ -35,12 +35,26 @@ ResectionDB::~ResectionDB ()
 
 //------------------------------------------------------------------------------
 
-ResectionDB & ResectionDB::operator=( const ResectionDB & _resectionDB )
+void ResectionDB::shallowCopy( ResectionDB::csptr _source )
 {
-    this->getField( ResectionDB::ID_RESECTIONS )->children() = _resectionDB.getField( ResectionDB::ID_RESECTIONS )->children();
-
-    return *this;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
 }
+
+//------------------------------------------------------------------------------
+
+void ResectionDB::deepCopy( ResectionDB::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+}
+
+//------------------------------------------------------------------------------
+
+//ResectionDB & ResectionDB::operator=( const ResectionDB & _resectionDB )
+//{
+//    this->getField( ResectionDB::ID_RESECTIONS )->children() = _resectionDB.getField( ResectionDB::ID_RESECTIONS )->children();
+//
+//    return *this;
+//}
 
 //------------------------------------------------------------------------------
 

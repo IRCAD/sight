@@ -42,7 +42,15 @@ public:
     /// @brief get the container of ::fwData::Object
     FWDATA_API Container const &getRefMap() const;
 
-    FWDATA_API Composite & operator=( const Composite & _composite );
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Composite::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Composite::csptr _source );
+
+    //FWDATA_API Composite & operator=( const Composite & _composite );
 
 protected:
     /// container of ::fwData::Object
