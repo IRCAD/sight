@@ -45,10 +45,10 @@ public:
     fwDataObjectMacro();
 
     /// Defines shallow copy
-    void shallowCopy( Study::csptr _source );
+    FWDATA_API void shallowCopy( Study::csptr _source );
 
     /// Defines deep copy
-    void deepCopy( Study::csptr _source );
+    FWDATA_API void deepCopy( Study::csptr _source );
 
     /// @brief Copy method
     //FWDATA_API Study &operator=( const Study & _study ) ;

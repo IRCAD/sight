@@ -53,10 +53,10 @@ public:
     fwDataObjectMacro();
 
     /// Defines shallow copy
-    void shallowCopy( Patient::csptr _source );
+    FWDATA_API void shallowCopy( Patient::csptr _source );
 
     /// Defines deep copy
-    void deepCopy( Patient::csptr _source );
+    FWDATA_API void deepCopy( Patient::csptr _source );
 
     /// Copy
     //FWDATA_API Patient &operator=( const Patient & _patient ) ;

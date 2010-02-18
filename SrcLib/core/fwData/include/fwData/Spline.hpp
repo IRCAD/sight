@@ -32,14 +32,13 @@ public :
      * @brief Defines a 3D %point for a spline.
      */
     struct point {
-
         int id;            /**< @brief Identifier */
         double p[3];       /**< @brief Point coordinates */
         double normal[3];  /**< @brief Normal coordinates*/
         Color c;           /**< @brief Point color*/
         bool isVisible;    /**< @brief Flag if %point is visible */
 
-        FWDATA_API point &operator=( const point & _point )
+        point &operator=( const point & _point )
         {
             this->id = _point.id;
             this->p[0] = _point.p[0];
@@ -50,7 +49,8 @@ public :
             this->normal[2] = _point.normal[2];
             this->isVisible = _point.isVisible;
             c.deepCopy( _point.c.getConstSptr() );
-        }
+            return(*this);
+        };
     };
 
     /// 3D %point container

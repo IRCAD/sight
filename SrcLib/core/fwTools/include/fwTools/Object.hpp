@@ -277,13 +277,13 @@ protected :
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] _source source of the copy.
      */
-    void shallowCopyOfChildren( Object::csptr _source );
+    FWTOOLS_API void shallowCopyOfChildren( Object::csptr _source );
 
     /**
      * @brief A deep copy of fields (objects in m_children)
      * @param[in] _source source of the copy.
      */
-    void deepCopyOfChildren( Object::csptr _source );
+    FWTOOLS_API void deepCopyOfChildren( Object::csptr _source );
 
     /**
      * @brief A shallow copy of fields (objects in m_children), tests the classname and calls the specific method of the class.
