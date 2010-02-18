@@ -269,7 +269,7 @@ namespace vtkCompositeMesh
                 {
                     // Material exists
                     ::fwData::Material::sptr matObjPtr = myMesh->getFieldSingleElement< ::fwData::Material >( "MaterialMesh" );
-                    actor->GetProperty()->SetColor (matObjPtr->ambient().red(), matObjPtr->ambient().green(), matObjPtr->ambient().blue());
+                    actor->GetProperty()->SetColor (matObjPtr->ambient()->red(), matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
                 }
             }
             m_interactor->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());

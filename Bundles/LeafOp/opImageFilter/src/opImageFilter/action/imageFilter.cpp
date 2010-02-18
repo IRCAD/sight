@@ -85,8 +85,9 @@ struct ThresholdFilter
     void operator()(Parameter &param)
     {
         assert( param.imageIn->getSize().size()==3 );
-        *param.imageOut = *param.imageIn; // La copie serait utile uniquement lors du changement de l'image d'origine
-        // Il serait préféreable de copier uniquement les attributs de l'image et d'allouer le buffer sans le copier
+//        *param.imageOut = *param.imageIn; // La copie serait utile uniquement lors du changement de l'image d'origine
+        param.imageOut->shallowCopy(param.imageIn);
+        // Il serait prï¿½fï¿½reable de copier uniquement les attributs de l'image et d'allouer le buffer sans le copier
         PIXELTYPE *buffer1 = (PIXELTYPE *)param.imageIn->getBuffer();
         PIXELTYPE *buffer2 = (PIXELTYPE *)param.imageOut->getBuffer();
         const unsigned int NbPixels = param.imageIn->getSize()[0] * param.imageIn->getSize()[1] * param.imageIn->getSize()[2];
@@ -113,7 +114,7 @@ void imageFilter::updating() throw ( ::fwTools::Failed )
     OSLM_ASSERT("Image 2 not found. UID : " << m_image2UID, ::fwTools::UUID::exist(m_image2UID, ::fwTools::UUID::SIMPLE )) ;
     param.imageOut = ::fwTools::UUID::get< ::fwData::Image >( m_image2UID ) ;
     param.thresholdValue = Threshold;
-    
+
     ::fwTools::DynamicType type = param.imageIn->getPixelType();
     fwTools::Dispatcher< fwTools::IntrinsicTypes , ThresholdFilter >::invoke( type , param );
 
