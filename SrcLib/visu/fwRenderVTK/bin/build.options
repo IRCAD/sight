@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 USE = [
     'boost',
-    'vtk',
-    'vtkinria3d',
-    'wx',
+    'vtkInria3dWxVtk',
+    'wxCore',
     ]
 LIB = [
     'fwComEd_0-1',

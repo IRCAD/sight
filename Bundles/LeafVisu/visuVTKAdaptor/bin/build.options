@@ -2,7 +2,7 @@
 
 TYPE = 'bundle'
 VERSION = '0-1'
-USE = ['vtk', 'boost']
+USE = ['vtkWidgets', 'boost']
 LIB = [
     'fwComEd_0-1',
     'fwCore_0-1',
