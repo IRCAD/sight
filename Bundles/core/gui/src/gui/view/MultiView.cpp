@@ -52,6 +52,7 @@ void MultiView::configuring() throw( ::fwTools::Failed )
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = viewsCfgElt->find("view");
     assert(!vectConfig.empty());
 
+    m_panels.clear();
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = vectConfig.begin() ; iter != vectConfig.end() ; ++iter)
     {
@@ -235,7 +236,6 @@ void MultiView::stopping() throw(::fwTools::Failed)
         m_manager = 0 ;
     }
     this->resetGuiParentContainer();
-    m_panels.clear();
 }
 
 //-----------------------------------------------------------------------------

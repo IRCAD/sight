@@ -37,6 +37,8 @@ public :
     /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~SwapperSrv() throw() ;
 
+protected:
+
     /// Implements starting method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
@@ -57,7 +59,6 @@ public :
 
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
-protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string ObjectIdType;

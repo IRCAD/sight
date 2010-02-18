@@ -60,7 +60,7 @@ void MultiSizerView::configuring() throw( ::fwTools::Failed )
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = viewsCfgElt->find("view");
     assert(!vectConfig.empty());
-
+    m_views.clear();
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = vectConfig.begin() ; iter != vectConfig.end() ; ++iter)
     {

@@ -4,12 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_VIEW_IFRAME_HPP_
-#define _GUI_VIEW_IFRAME_HPP_
+#ifndef _GUI_FRAME_IFRAME_HPP_
+#define _GUI_FRAME_IFRAME_HPP_
 
 #include <fwServices/IService.hpp>
-
-#include <fwWX/IGuiContainer.hpp>
 
 #include "gui/export.hpp"
 
@@ -31,7 +29,7 @@ namespace frame
  * @date    2009.
  *
  */
-class GUI_CLASS_API IFrame : public ::fwWX::IGuiContainer
+class GUI_CLASS_API IFrame : public ::fwServices::IService
 {
 
 public :
@@ -56,4 +54,4 @@ public :
 } // namespace gui
 
 
-#endif /*_GUI_VIEW_IFRAME_HPP_*/
+#endif /*_GUI_FRAME_IFRAME_HPP_*/

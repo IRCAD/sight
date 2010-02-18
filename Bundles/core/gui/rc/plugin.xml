@@ -34,6 +34,11 @@
         <implements>::fwServices::IService</implements>
     </point>
     
+    <point id="::gui::frame::DefaultFrame">
+        <implements>::gui::frame::IFrame</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
     <point id="::gui::aspect::IMenuBar">
         <implements>::fwServices::IService</implements>
     </point>

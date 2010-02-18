@@ -54,7 +54,7 @@ void IGuiContainer::initGuiParentContainer()
     else
     {
         OSLM_TRACE( "GuiContainer not fund for this Service " <<  this->getUUID() );
-        m_container = new wxFrame(wxTheApp->GetTopWindow(), -1, ::fwWX::std2wx( "IGuiContainer" ));
+        m_container = new wxFrame(wxTheApp->GetTopWindow(), wxNewId(), ::fwWX::std2wx( "IGuiContainer" ));
         m_container->Show();
         m_container->Refresh();
         m_isContainerLocallyCreated = true ;
@@ -65,9 +65,11 @@ void IGuiContainer::initGuiParentContainer()
 
 void IGuiContainer::resetGuiParentContainer()
 {
-    m_container->SetSizer(NULL);
-    m_container->DestroyChildren();
-
+    if(m_container != wxTheApp->GetTopWindow())
+    {
+        m_container->SetSizer(NULL);
+        m_container->DestroyChildren();
+    }
     if( m_isContainerLocallyCreated && m_container != 0 )
     {
         SLM_DEBUG("Destroying container") ;
