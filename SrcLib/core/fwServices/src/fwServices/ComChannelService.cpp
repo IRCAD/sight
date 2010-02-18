@@ -76,7 +76,6 @@ void ComChannelService::starting() throw(fwTools::Failed)
     SLM_ASSERT("intern data mismatch", m_destination.lock()->getUUID() == m_destUUID.second);
 
     m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
-    SLM_ASSERT("Source is expired", !m_source.expired() ) ;
     OSLM_DEBUG("Source (IEditionService) = " << this->getObject()->getUUID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
@@ -85,8 +84,8 @@ void ComChannelService::starting() throw(fwTools::Failed)
             !this->hasSimilarObservation());
 
     // Assertion
-    SLM_ASSERT("Destination is expired", !m_destination.expired() ) ;
-    SLM_ASSERT("Source is expired", !m_source.expired() ) ;
+    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getUUID(), !m_destination.expired() ) ;
+    OSLM_ASSERT("Source is expired for ComChannel "<<this->getUUID(), !m_source.expired() ) ;
 
 
     if( !m_source.lock()->isAttached( this->getSptr() ) )
@@ -99,8 +98,8 @@ void ComChannelService::starting() throw(fwTools::Failed)
     }
 
     // Post condition
-    SLM_ASSERT("Source is expired",  !m_source.expired() ) ;
-    SLM_ASSERT("Destination is expired", !m_destination.expired() ) ;
+    OSLM_ASSERT("Source is expired for ComChannel "<<this->getUUID(), !m_source.expired() ) ;
+    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getUUID(), !m_destination.expired() );
 }
 
 //------------------------------------------------------------------------------
@@ -178,7 +177,7 @@ void ComChannelService::setDest(IService::sptr _client)
 
 IService::sptr  ComChannelService::getDest()
 {
-    SLM_ASSERT("Destination is expired", !m_destination.expired() ) ;
+    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getUUID(), !m_destination.expired() ) ;
     return m_destination.lock();
 }
 
@@ -186,7 +185,7 @@ IService::sptr  ComChannelService::getDest()
 
 IEditionService::sptr ComChannelService::getSrc()
 {
-    SLM_ASSERT("Source is expired", !m_source.expired() ) ;
+    OSLM_ASSERT("Source is expired for ComChannel "<<this->getUUID(), !m_source.expired() ) ;
     return m_source.lock();
 }
 

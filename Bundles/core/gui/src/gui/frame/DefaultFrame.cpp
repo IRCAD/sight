@@ -124,7 +124,7 @@ void DefaultFrame::stopping() throw(::fwTools::Failed)
     SLM_ASSERT("Sorry, no container!",m_container);
     m_container->Show(false);
 
-    BOOST_FOREACH(std::string serviceUID, m_managedServices)
+    BOOST_REVERSE_FOREACH(std::string serviceUID, m_managedServices)
     {
         OSLM_FATAL_IF("Service " << serviceUID << " doesn't exist.", ! ::fwTools::UUID::exist(serviceUID, ::fwTools::UUID::SIMPLE ));
         ::fwServices::IService::sptr service = ::fwServices::get( serviceUID ) ;
