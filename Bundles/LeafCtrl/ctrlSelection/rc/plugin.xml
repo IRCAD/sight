@@ -38,6 +38,11 @@
         <implements>::fwData::Composite</implements>
     </point>
     
+    <point id="::ctrlSelection::manager::SimpleSwapperSrv">
+        <implements>::ctrlSelection::IManagerSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
     <point id="::ctrlSelection::manager::MedicalImageManagerSrv">
         <implements>::ctrlSelection::IManagerSrv</implements>
         <implements>::fwData::Composite</implements>

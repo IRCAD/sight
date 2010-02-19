@@ -85,6 +85,7 @@ void SliceFollowerCamera::configuring() throw(fwTools::Failed)
 void SliceFollowerCamera::doStart() throw(fwTools::Failed)
 {
     m_camera = this->getRenderer()->GetActiveCamera();
+    this->initializeCamera();
     this->doUpdate();
 }
 
