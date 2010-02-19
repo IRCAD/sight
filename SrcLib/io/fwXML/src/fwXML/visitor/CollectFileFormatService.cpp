@@ -11,6 +11,8 @@
 #include <fwData/visitor/accept.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Resection.hpp>
+#include <fwData/Vector.hpp>
+#include <fwData/List.hpp>
 
 //#include <libxml/tree.h>
 
@@ -48,6 +50,26 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
         for ( i = composite->getRefMap().begin(); i != composite->getRefMap().end(); ++i)
         {
             ::fwData::visitor::accept( i->second , this);
+        }
+    }
+
+    ::fwData::Vector::sptr vector = ::fwData::Vector::dynamicCast( src );
+    if ( vector )
+    {
+        ::fwData::Vector::Container::iterator i;
+        for ( i = vector->getRefContainer().begin(); i != vector->getRefContainer().end(); ++i)
+        {
+            ::fwData::visitor::accept( *i , this);
+        }
+    }
+
+    ::fwData::List::sptr list = ::fwData::List::dynamicCast( src );
+    if ( list )
+    {
+        ::fwData::List::Container::iterator i;
+        for ( i = list->getRefContainer().begin(); i != list->getRefContainer().end(); ++i)
+        {
+            ::fwData::visitor::accept( *i , this);
         }
     }
 

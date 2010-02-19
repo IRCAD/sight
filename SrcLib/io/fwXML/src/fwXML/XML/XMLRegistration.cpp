@@ -51,6 +51,8 @@
 #include "fwXML/XML/GraphXMLTranslator.hpp"
 #include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
 #include "fwXML/XML/CompositeXMLTranslator.hpp"
+#include "fwXML/XML/ListXMLTranslator.hpp"
+#include "fwXML/XML/VectorXMLTranslator.hpp"
 #include "fwXML/XML/PointListXMLTranslator.hpp"
 #include "fwXML/XML/ResectionXMLTranslator.hpp"
 #include "fwXML/XML/PlaneXMLTranslator.hpp"
@@ -86,6 +88,8 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PortXMLTranslator                 
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , EdgeXMLTranslator                                       ,  ::fwData::Edge                   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , TriangularMeshXMLTranslator                             ,  ::fwData::TriangularMesh         );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , CompositeXMLTranslator                                  ,  ::fwData::Composite              );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , VectorXMLTranslator                                     ,  ::fwData::Vector                 );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ListXMLTranslator                                       ,  ::fwData::List                   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PointListXMLTranslator                                  ,  ::fwData::PointList              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionXMLTranslator                                  ,  ::fwData::Resection              );
