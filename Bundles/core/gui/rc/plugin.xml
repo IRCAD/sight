@@ -78,6 +78,11 @@
         <implements>::fwTools::Object</implements>
     </point>
     
+    <point id="::gui::view::MultiTabView">
+        <implements>::gui::view::IView</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
     <point id="::gui::editor::DummyEditor">
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwTools::Object</implements>
