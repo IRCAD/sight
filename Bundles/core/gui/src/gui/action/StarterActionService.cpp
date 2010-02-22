@@ -92,8 +92,15 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
             {
             case START :
             {
-                service->start();
-                service->update();
+                if(service->isStopped())
+                {
+                    service->start();
+                    service->update();
+                }
+                else
+                {
+                    OSLM_WARN("Service " << service->getUUID() << " is not stopped");
+                }
                 break;
             }
             case STOP :
