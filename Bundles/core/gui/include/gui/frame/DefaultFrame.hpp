@@ -7,6 +7,7 @@
 #ifndef _GUI_FRAME_DEFAULT_FRAME_HPP_
 #define _GUI_FRAME_DEFAULT_FRAME_HPP_
 
+#include <boost/filesystem/path.hpp>
 #include <fwTools/Failed.hpp>
 
 #include "gui/export.hpp"
@@ -72,16 +73,25 @@ protected :
     GUI_API virtual void info(std::ostream &_sstream ) ;
     ///@}
 
+    static const std::map<std::string, long> FWSTYLE_TO_WXSTYLE;
+
 private:
 
     void onCloseFrame(wxCloseEvent& event);
 
-    wxWindow* m_container;
-
-    std::vector< std::string > m_managedServices;
-
-    std::string  m_uid;
-    bool         m_autostart;
+    wxWindow*                        m_container;
+    std::vector< std::string >       m_managedServices;
+    long                             m_modeStyle;
+    std::string                      m_uid;
+    bool                             m_autostart;
+    /// Application name.
+    std::string                      m_name ;
+    /// Application icon.
+    ::boost::filesystem::path        m_iconPath;
+    /// Application minimum height.
+    int                              m_minSizeHeight;
+    /// Application minimum width.
+    int                              m_minSizeWidth;
 
 };
 
