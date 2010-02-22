@@ -23,11 +23,41 @@
         <implements>::fwData::Composite</implements>
     </point>
     
+    <point id="::ctrlSelection::updater::AcqFromPDBSelectorUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+ 
+    <point id="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
+    <point id="::ctrlSelection::updater::ResecFromPDBUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
+    <point id="::ctrlSelection::updater::ResecDBFromPDBUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
     <point id="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv">
         <implements>::ctrlSelection::IUpdaterSrv</implements>
         <implements>::fwData::Composite</implements>
     </point>
  
+    <point id="::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
+    <point id="::ctrlSelection::updater::PlaneListFromPDBUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
     <point id="::ctrlSelection::updater::ObjFromMsgUpdaterSrv">
         <implements>::ctrlSelection::IUpdaterSrv</implements>
         <implements>::fwData::Composite</implements>

@@ -215,8 +215,8 @@ void SwapperSrv::configureObject( ConfigurationType conf )
                 OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
                 if(m_dummyStopMode)
                 {
-                    subSrv->m_dummy = dummyObj;
                     subSrv->getService()->swap(dummyObj);
+                    subSrv->m_dummy = dummyObj;
                 }
                 else
                 {
