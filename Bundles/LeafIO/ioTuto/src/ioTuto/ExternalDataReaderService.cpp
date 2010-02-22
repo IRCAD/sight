@@ -85,7 +85,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
     configureWithIHM();
 
     std::string imageName;
-    ::fwData::Composite::sptr dataComposite = this->getObject<::fwData::Composite>();
+    ::fwData::Composite::sptr dataComposite = this->getObject< ::fwData::Composite >();
     assert( dataComposite ) ;
     try {
         if (::boost::filesystem::exists(m_fsExternalDataPath))

@@ -72,7 +72,8 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
             myReader.read();
             ::fwData::Composite::sptr newCompo;
             newCompo = ::fwData::Composite::dynamicCast( myReader.getObject() );
-            *pComposite = *newCompo;
+//            *pComposite = *newCompo;
+            pComposite->shallowCopy(newCompo);
             std::copy( newCompo->children().begin(),  newCompo->children().end(), std::back_inserter( pComposite->children() ) );
 
         }
