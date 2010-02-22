@@ -44,8 +44,8 @@ void TransfertFunctionTest::methode1()
 
     tf->setCRefEncoding(ENCODING);
     tf->setCRefName(NAME);
-    *( tf->getColor(INDEX1) ) = *C1;
-    *( tf->getColor(INDEX2) ) = *C2;
+    tf->getColor(INDEX1)->deepCopy( C1 );
+    tf->getColor(INDEX2)->deepCopy( C2 );
 
     CPPUNIT_ASSERT_EQUAL(tf->getTransfertFunctionPointSize(), SIZE);
     CPPUNIT_ASSERT_EQUAL(tf->getName(), NAME);
