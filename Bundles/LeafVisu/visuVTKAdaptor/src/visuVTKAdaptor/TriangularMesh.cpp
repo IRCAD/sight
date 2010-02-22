@@ -820,6 +820,7 @@ vtkActor *TriangularMesh::newActor()
             PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
 
         mapper->SetClippingPlanes(newClippingPlanes);
+        newClippingPlanes->Delete();
     }
 
     actor->SetMapper(mapper);
