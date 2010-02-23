@@ -82,7 +82,14 @@ protected:
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
     typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
 
-    void configureObject( ConfigurationType conf );
+
+    void initOnDummyObject( ConfigurationType conf );
+    void addObjects( ::fwData::Composite::sptr _composite );
+    void addObject( const std::string objectId, ::fwTools::Object::sptr object );
+    void swapObjects( ::fwData::Composite::sptr _composite );
+    void swapObject(const std::string objectId, ::fwTools::Object::sptr object);
+    void removeObjects( ::fwData::Composite::sptr _composite );
+    void removeObject( const std::string objectId );
 
 private:
     bool m_dummyStopMode;

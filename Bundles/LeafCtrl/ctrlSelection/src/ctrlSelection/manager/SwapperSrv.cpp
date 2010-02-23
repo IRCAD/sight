@@ -32,7 +32,9 @@ REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::Swappe
 
 SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS );
 }
 
 //-----------------------------------------------------------------------------
@@ -47,47 +49,41 @@ void SwapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fw
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
-    {
-        std::vector< std::string > objectIds = compositeMsg->getEventModifiedFields();
-        SLM_ASSERT ("No services configuration!", m_managerConfiguration );
+    SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg == 0 );
 
-        BOOST_FOREACH( std::string objectId, objectIds)
-        {
-            BOOST_FOREACH( ConfigurationType cfg, m_managerConfiguration->find("object", "id", objectId))
-            {
-                this->configureObject(cfg);
-            }
-        }
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+    {
+        ::fwData::Composite::sptr fields = compositeMsg->getAddedFields();
+        this->addObjects( fields );
+    }
+
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+    {
+        ::fwData::Composite::sptr fields = compositeMsg->getRemovedFields();
+        this->removeObjects( fields );
+    }
+
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
+    {
+        ::fwData::Composite::sptr fields = compositeMsg->getSwappedNewFields();
+        this->swapObjects( fields );
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::starting()  throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
+void SwapperSrv::reconfiguring()  throw ( ::fwTools::Failed )
+{}
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-    for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
-    {
-        if ((*iter)->getName() == "object")
-        {
-            this->configureObject( *iter );
-        }
-    }
+//-----------------------------------------------------------------------------
 
-    for( SubServicesMapType::iterator iterMap = m_objectsSubServices.begin(); iterMap != m_objectsSubServices.end(); ++iterMap )
-    {
-        SubServicesVecType subServices = iterMap->second;
-        for( SubServicesVecType::iterator iterVect = subServices.begin(); iterVect != subServices.end(); ++iterVect )
-        {
-            SPTR(SubService) subSrv = *iterVect;
-            OSLM_ASSERT("SubService on " << iterMap->first <<" expired !", subSrv->getService() );
-            subSrv->getService()->start();
-        }
-    }
-}
+void SwapperSrv::updating() throw ( ::fwTools::Failed )
+{}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::info( std::ostream &_sstream )
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -98,9 +94,8 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
     for( SubServicesMapType::iterator iterMap = m_objectsSubServices.begin(); iterMap != m_objectsSubServices.end(); ++iterMap )
     {
         SubServicesVecType subServices = iterMap->second;
-        for( SubServicesVecType::iterator iterVect = subServices.begin(); iterVect != subServices.end(); ++iterVect )
+        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
-            SPTR(SubService) subSrv = *iterVect;
             OSLM_ASSERT("SubService on "<< iterMap->first <<" expired !", subSrv->getService() );
             subSrv->getService()->stop();
             ::fwServices::erase(subSrv->getService());
@@ -132,59 +127,100 @@ void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::configureObject( ConfigurationType conf )
+void SwapperSrv::starting()  throw ( ::fwTools::Failed )
 {
-    SLM_ASSERT("Missing <object> tag!", conf->getName() == "object");
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
-
-    const std::string objectId      = conf->getAttributeValue("id");
-    const std::string objectType    = conf->getAttributeValue("type");
-
-    SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
-    SLM_ASSERT( "'type' required attribute missing or empty", !objectType.empty() );
-
-    const unsigned int compositeObjectCount = composite->getRefMap().count(objectId);
-
-    OSLM_TRACE_IF(objectId << " not found in composite.", !(compositeObjectCount == 1));
-
-    ::fwTools::Object::sptr object;
-    if (compositeObjectCount)
+    SLM_TRACE_FUNC();
+    if(m_dummyStopMode)
     {
-        object = ::fwTools::Object::dynamicCast(composite->getRefMap()[objectId]);
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+        for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
+        {
+            if ((*iter)->getName() == "object")
+            {
+                this->initOnDummyObject( *iter );
+            }
+        }
     }
-
-    // SubService's not registered in manager and 'new' associated object exists in Composite
-    if ( m_objectsSubServices.count(objectId) == 0 && object )
+    BOOST_FOREACH( SubServicesMapType::value_type subServicesElt, m_objectsSubServices)
     {
-        OSLM_ASSERT("ObjectType "<<objectType<<" does not match ObjectType in Composite "<<object->getClassname(), objectType == object->getClassname());
+        SubServicesVecType subServices = subServicesElt.second;
+        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        {
+            OSLM_ASSERT("SubService on " << subServicesElt.first <<" expired !", subSrv->getService() );
+            subSrv->getService()->start();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
+{
+    BOOST_FOREACH( ::fwData::Composite::Container::value_type  addedObjectId, _composite->getRefMap())
+    {
+        if(m_objectsSubServices.find(addedObjectId.first) != m_objectsSubServices.end())
+        {
+            // Services are on dummyObject
+            this->swapObject(addedObjectId.first, addedObjectId.second);
+        }
+        else
+        {
+            this->addObject(addedObjectId.first, addedObjectId.second);
+        }
+   }
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr object )
+{
+    if(!m_managerConfiguration->find("object", "id", objectId).empty())
+    {
+        ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
+        const std::string objectType   = conf->getAttributeValue("type");
+
+        OSLM_ASSERT("ObjectType "<<objectType<<" does not match ObjectType in Composite "<<object->getClassname(),
+                objectType == object->getClassname());
         SubServicesVecType subVecSrv;
         BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
         {
             ::fwServices::IService::sptr srv = ::fwServices::add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
             srv->configure();
-            ::boost::shared_ptr< SubService > subSrv = ::boost::shared_ptr< SubService >( new SubService());
+            SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
             subSrv->m_config = cfg;
             subSrv->m_service = srv;
             subVecSrv.push_back(subSrv);
-            if (this->isStarted())
-            {
-                subSrv->getService()->start();
-            }
-         }
+            subSrv->getService()->start();
+        }
         m_objectsSubServices[objectId] = subVecSrv;
     }
-    // SubService's already registered in manager
-    else if(m_objectsSubServices.count(objectId) == 1)
+    else
     {
-        // 'new' Object exists in Composite, so we swap all associated subServices
-        if (object)
+        OSLM_WARN("Sorry, object "<<objectId<<" not found in configuration.");
+    }
+}
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
+{
+    BOOST_FOREACH( ::fwData::Composite::Container::value_type  swappedObjectId, _composite->getRefMap())
+    {
+        this->swapObject(swappedObjectId.first, swappedObjectId.second);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr object)
+{
+    if(m_objectsSubServices.find(objectId) != m_objectsSubServices.end())
+    {
+        BOOST_FOREACH( ConfigurationType cfg, m_managerConfiguration->find("object", "id", objectId))
         {
             SubServicesVecType subServices = m_objectsSubServices[objectId];
-            for( SubServicesVecType::iterator iter = subServices.begin(); iter != subServices.end(); ++iter )
+            BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
             {
-                SPTR(SubService) subSrv = *iter;
-
                 OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
                 OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
 
@@ -203,76 +239,124 @@ void SwapperSrv::configureObject( ConfigurationType conf )
                 }
             }
         }
-        // old Object was removed from Composite, so we remove all associated subServices
-        else
-        {
-            SubServicesVecType subServices = m_objectsSubServices[objectId];
-            ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
-            for( SubServicesVecType::iterator iter = subServices.begin(); iter != subServices.end(); ++iter )
-            {
-                SPTR(SubService) subSrv = *iter;
-                OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
-                OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
-                if(m_dummyStopMode)
-                {
-                    subSrv->getService()->swap(dummyObj);
-                    subSrv->m_dummy = dummyObj;
-                }
-                else
-                {
-                    subSrv->getService()->stop();
-                    ::fwServices::erase(subSrv->getService());
-                    subSrv->m_service.reset();
-                }
-            }
-            if(!m_dummyStopMode)
-            {
-                m_objectsSubServices.erase(objectId);
-            }
-        }
     }
-    // Object isn't present in the Composite and any subServices have been registered with it.
     else
     {
-        OSLM_TRACE ( "'"<< objectId << "' nonexistent'");
-        if(m_dummyStopMode)
-        {
-            ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
-            SubServicesVecType subVecSrv;
-            BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
-            {
-                ::fwServices::IService::sptr srv = ::fwServices::add( dummyObj, cfg );
-                OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
-                srv->configure();
-                ::boost::shared_ptr< SubService > subSrv = ::boost::shared_ptr< SubService >( new SubService());
-                subSrv->m_config = cfg;
-                subSrv->m_service = srv;
-                subSrv->m_dummy = dummyObj;
-                subVecSrv.push_back(subSrv);
-                if (this->isStarted())
-                {
-                    subSrv->getService()->start();
-                }
-            }
-            m_objectsSubServices[objectId] = subVecSrv;
-        }
+        OSLM_WARN("Object "<<objectId<<" not found in managed objects.");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+void SwapperSrv::removeObjects( ::fwData::Composite::sptr _composite )
+{
+    BOOST_FOREACH( ::fwData::Composite::Container::value_type  swappedObjectId, _composite->getRefMap())
+    {
+        this->removeObject(swappedObjectId.first);
+    }
+}
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::updating() throw ( ::fwTools::Failed )
-{}
+void SwapperSrv::removeObject( const std::string objectId )
+{
+    if(!m_managerConfiguration->find("object", "id", objectId).empty())
+    {
+        ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
+        const std::string objectType   = conf->getAttributeValue("type");
 
+        SubServicesVecType subServices = m_objectsSubServices[objectId];
+        ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
+        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        {
+            OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
+            OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
+            if(m_dummyStopMode)
+            {
+                subSrv->getService()->swap(dummyObj);
+                subSrv->m_dummy = dummyObj;
+            }
+            else
+            {
+                subSrv->getService()->stop();
+                ::fwServices::erase(subSrv->getService());
+                subSrv->m_service.reset();
+            }
+        }
+        if(!m_dummyStopMode)
+        {
+            m_objectsSubServices.erase(objectId);
+        }
+    }
+    else
+    {
+        OSLM_WARN("Object "<<objectId<<" not found in managed objects.");
+    }
+}
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::info( std::ostream &_sstream )
-{}
+void SwapperSrv::initOnDummyObject( ConfigurationType conf )
+{
+    SLM_ASSERT("Missing <object> tag!", conf->getName() == "object");
+     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+
+     const std::string objectId      = conf->getAttributeValue("id");
+     const std::string objectType    = conf->getAttributeValue("type");
+
+     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
+     SLM_ASSERT( "'type' required attribute missing or empty", !objectType.empty() );
+
+     const unsigned int compositeObjectCount = composite->getRefMap().count(objectId);
+
+     OSLM_TRACE_IF(objectId << " not found in composite.", !(compositeObjectCount == 1));
+
+     ::fwTools::Object::sptr object;
+     if (compositeObjectCount)
+     {
+         object = ::fwTools::Object::dynamicCast(composite->getRefMap()[objectId]);
+     }
+
+     // Any subServices have been registered with object.
+     if ( m_objectsSubServices.count(objectId) == 0 )
+     {
+         // Object exists in Composite, so we create all associated subServices with it
+         if(object)
+         {
+             SubServicesVecType subVecSrv;
+             BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+             {
+                 ::fwServices::IService::sptr srv = ::fwServices::add( object, cfg );
+                 OSLM_ASSERT("Instantiation Service failed on object "<<object, srv);
+                 srv->configure();
+                 SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
+                 subSrv->m_config = cfg;
+                 subSrv->m_service = srv;
+                 subVecSrv.push_back(subSrv);
+             }
+             m_objectsSubServices[objectId] = subVecSrv;
+         }
+         // Object isn't present in the Composite, so we create all associated subServices with a dummy object
+         else
+         {
+             OSLM_TRACE ( "'"<< objectId << "' nonexistent'");
+
+             ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
+             SubServicesVecType subVecSrv;
+             BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+             {
+                 ::fwServices::IService::sptr srv = ::fwServices::add( dummyObj, cfg );
+                 OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
+                 srv->configure();
+                 SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
+                 subSrv->m_config = cfg;
+                 subSrv->m_service = srv;
+                 subSrv->m_dummy = dummyObj;
+                 subVecSrv.push_back(subSrv);
+             }
+             m_objectsSubServices[objectId] = subVecSrv;
+         }
+     }
+}
 
 //-----------------------------------------------------------------------------
 
