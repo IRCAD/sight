@@ -43,16 +43,8 @@ protected :
     VISUVTKADAPTOR_API virtual void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    // helper which install SubServices (pl need no have already an installer service and size > 1 )
     void installSubServices( ::fwData::PointList::sptr pl );
     ::fwData::Point::sptr screenToWorld(int X,int Y);
-
-//  typedef std::map< ::fwData::PointList::wptr, ::visuVTKAdaptor::PointList::wptr > PointListAdaptorServices;
-//  typedef std::map< ::fwData::PointList::wptr, ::visuVTKAdaptor::Distance::wptr  > DistancesAdaptorServices
-//
-//  PointListAdaptorServices    m_pointListAdaptorServices;
-//  DistancesAdaptorServices    m_distancesAdaptorServices;
-
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 

@@ -48,16 +48,16 @@ namespace visuVTKAdaptor
 {
 //------------------------------------------------------------------------------
 
-void notifyNewDistance( ::fwData::Image::sptr image, ImageMultiDistances * _service )
+void notifyNewDistance( ::fwData::Image::sptr image, ImageMultiDistances * _service, ::fwData::PointList::sptr plist )
 {
 
     ::fwComEd::ImageMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
+    // backup pList in message
+    msg->addEvent( ::fwComEd::ImageMsg::DISTANCE, plist );
 
     SLM_ASSERT("NULL Service", _service);
 
     ::fwServices::IEditionService::notify( _service->getSptr(), image, msg );
-    //_service->update(msg);
     _service->setNeedSubservicesDeletion(true);
     _service->update();
 }
@@ -133,7 +133,7 @@ public :
                     {
                         ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
                         image->removeFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , plist);
-                        notifyNewDistance(image, m_service);
+                        notifyNewDistance(image, m_service, plist);
                         break;
                     }
                 }
@@ -392,6 +392,7 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
             this->installSubServices(pl);
         }
     }
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -399,20 +400,20 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
 void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
-     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
-     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
-     {
-         ::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DISTANCE));
+    ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
+    {
+        ::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DISTANCE));
 
-         // update only if the distance is added in this scene
-         // or if the service is not filtered
-         if ( !dataInfo || dataInfo->value() == ::fwTools::UUID::get( getRenderService() )
-         || m_configuration->getAttributeValue("filter") == "false")
-         {
-             m_needSubservicesDeletion = true; // to manage point deletion
-             doUpdate();
-         }
-     }
+        // update only if the distance is added in this scene
+        // or if the service is not filtered
+        if ( !dataInfo || dataInfo->value() == ::fwTools::UUID::get( getRenderService() )
+        || m_configuration->getAttributeValue("filter") == "false")
+        {
+            m_needSubservicesDeletion = true; // to manage point deletion
+            doUpdate();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

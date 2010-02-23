@@ -42,8 +42,6 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLand
 namespace visuVTKAdaptor
 {
 
-
-
 void notifyNewLandMark2( ::fwData::Image::sptr image, ::fwServices::IService* _service )
 {
     ::fwComEd::ImageMsg::NewSptr msg;
@@ -52,6 +50,8 @@ void notifyNewLandMark2( ::fwData::Image::sptr image, ::fwServices::IService* _s
 
     ::fwServices::IEditionService::notify( _service->getSptr(), image, msg, ::fwServices::ComChannelService::NOTIFY_SOURCE);
 }
+
+//------------------------------------------------------------------------------
 
 class vtkPointDeleteCallBack : public vtkCommand
 {
@@ -168,7 +168,7 @@ protected :
 
 };
 
-
+//------------------------------------------------------------------------------
 
 ImageLandmarks::ImageLandmarks() throw():
     m_rightButtonCommand(0),
@@ -177,21 +177,23 @@ ImageLandmarks::ImageLandmarks() throw():
     addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
 }
 
+//------------------------------------------------------------------------------
+
 ImageLandmarks::~ImageLandmarks() throw()
-{
+{}
 
-}
-
+//------------------------------------------------------------------------------
 
 void ImageLandmarks::configuring() throw(fwTools::Failed)
 {
-
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
     this->setPickerId( m_configuration->getAttributeValue("picker") );
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
+
+//------------------------------------------------------------------------------
 
 void ImageLandmarks::doStart() throw(fwTools::Failed)
 {
@@ -204,12 +206,16 @@ void ImageLandmarks::doStart() throw(fwTools::Failed)
     this->doUpdate();
 }
 
+//------------------------------------------------------------------------------
+
 void ImageLandmarks::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE("SWAPPING ImageLandmarks **TODO**");
     this->doStop();
     this->doStart();
 }
+
+//------------------------------------------------------------------------------
 
 void ImageLandmarks::doUpdate() throw(fwTools::Failed)
 {
@@ -223,7 +229,6 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
     if (!isShown || !hasLandmarkField  || m_needSubservicesDeletion)
     {
         this->unregisterServices();
-//      this->getRenderService()->update();
         m_needSubservicesDeletion = false;
     }
 
@@ -259,11 +264,11 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
                 this->registerService( serviceLabel );
             }
         }
-
-    } // Show
-
-//    this->getRenderService()->update();
+    }
+    this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
 
 void ImageLandmarks::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
@@ -275,6 +280,8 @@ void ImageLandmarks::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
         doUpdate();
     }
 }
+
+//------------------------------------------------------------------------------
 
 void ImageLandmarks::doStop() throw(fwTools::Failed)
 {
@@ -288,6 +295,7 @@ void ImageLandmarks::doStop() throw(fwTools::Failed)
     this->unregisterServices();
 }
 
+//------------------------------------------------------------------------------
 
 void ImageLandmarks::show(bool b)
 {
@@ -300,7 +308,6 @@ void ImageLandmarks::show(bool b)
         this->doStop();
     }
 }
-
 
 
 } //namespace visuVTKAdaptor

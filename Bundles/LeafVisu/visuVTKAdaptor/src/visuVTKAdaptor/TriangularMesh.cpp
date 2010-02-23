@@ -395,11 +395,6 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
 };
 
 
-
-
-
-
-
 //------------------------------------------------------------------------------
 
 TriangularMesh::TriangularMesh() throw()
