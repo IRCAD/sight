@@ -38,8 +38,9 @@ const std::string & ExtensionPoint::getIdentifier() const
     {
         try
         {
-            const boost::filesystem::path   schemaPath = getBundle()->getLocation() / m_schema;
 
+            const boost::filesystem::path   schemaPath = getBundle()->getLocation() / m_schema;
+            OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
             m_validator = ::boost::shared_ptr< io::Validator >( new io::Validator(schemaPath) );
         }
         catch( const std::exception & e )

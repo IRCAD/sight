@@ -124,7 +124,7 @@ void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTo
     ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg ) ;
     if (pImageMsg)
     {
-        if( pImageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ))
+        if( pImageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) || pImageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
         {
             if(!m_bPipelineIsInit)
             {
@@ -146,7 +146,6 @@ void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTo
             m_negatoAxial->SetSliceIndex( axialIndex );
             m_negatoFrontal->SetSliceIndex( frontalIndex );
             m_negatoSagittal->SetSliceIndex( sagittalIndex );
-
             m_interactor->Render();
         }
     }
