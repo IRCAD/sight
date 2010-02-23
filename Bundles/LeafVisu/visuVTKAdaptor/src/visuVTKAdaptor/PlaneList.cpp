@@ -166,7 +166,7 @@ protected :
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList() throw() 
+PlaneList::PlaneList() throw()
     : m_planeCollectionId("")
 {
     addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
@@ -209,27 +209,30 @@ void PlaneList::doStart() throw(fwTools::Failed)
 void PlaneList::doUpdate() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
     ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
 
-    BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
+    bool showPlanes = planeList->getFieldSize("ShowPlanes") ? planeList->getFieldSingleElement< ::fwData::Boolean >("ShowPlanes")->value() : true;
+    if(showPlanes)
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr servicePlane =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-                ( plane, "::visuVTKAdaptor::Plane" );
-        assert(servicePlane);
-
-        servicePlane->setRenderService(this->getRenderService());
-        servicePlane->setRenderId( this->getRenderId() );
-        servicePlane->setPickerId( this->getPickerId() );
-
-        if (!m_planeCollectionId.empty())
+        BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
         {
-            Plane::dynamicCast(servicePlane)->setVtkPlaneCollection( this->getVtkObject(m_planeCollectionId) );
-        }
-        servicePlane->start();
+            ::fwRenderVTK::IVtkAdaptorService::sptr servicePlane =
+                    ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                    ( plane, "::visuVTKAdaptor::Plane" );
+            assert(servicePlane);
 
-        this->registerService(servicePlane);
+            servicePlane->setRenderService(this->getRenderService());
+            servicePlane->setRenderId( this->getRenderId() );
+            servicePlane->setPickerId( this->getPickerId() );
+
+            if (!m_planeCollectionId.empty())
+            {
+                Plane::dynamicCast(servicePlane)->setVtkPlaneCollection( this->getVtkObject(m_planeCollectionId) );
+            }
+            servicePlane->start();
+
+            this->registerService(servicePlane);
+        }
     }
 }
 
