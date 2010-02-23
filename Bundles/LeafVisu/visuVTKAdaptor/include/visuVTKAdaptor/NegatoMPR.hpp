@@ -7,6 +7,8 @@
 #ifndef _VISUVTKADAPTOR_NEGATOMPR_HPP_
 #define _VISUVTKADAPTOR_NEGATOMPR_HPP_
 
+#include <boost/logic/tribool.hpp>
+
 #include "visuVTKAdaptor/IImagesAdaptor.hpp"
 
 #include "visuVTKAdaptor/config.hpp"
@@ -49,12 +51,12 @@ protected :
 
     void setSliceMode(SliceMode sliceMode);
     SliceMode getSliceMode();
-    bool is3dModeEnabled();
+    ::boost::logic::tribool is3dModeEnabled();
     void set3dMode( bool enabled );
 
 private:
 
-    bool m_3dModeEnabled;
+    ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;
     SliceMode m_backupedSliceMode;
 };

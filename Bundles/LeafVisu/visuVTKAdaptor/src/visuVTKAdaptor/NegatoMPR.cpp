@@ -34,7 +34,7 @@ namespace visuVTKAdaptor
 //------------------------------------------------------------------------------
 
 NegatoMPR::NegatoMPR() throw() : IImagesAdaptor(),
-        m_3dModeEnabled ( false ),
+        m_3dModeEnabled ( ::boost::logic::indeterminate ),
         m_sliceMode(THREE_SLICES),
         m_backupedSliceMode(THREE_SLICES)
 {
@@ -120,10 +120,15 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
     {
         this->addAdaptor("::visuVTKAdaptor::Medical3DCamera", m_orientation);
     }
-    else
+    else if(!this->is3dModeEnabled())
     {
         this->addAdaptor("::visuVTKAdaptor::SliceFollowerCamera", m_orientation);
     }
+    else
+    {
+        SLM_TRACE("No 2D/3D mode specified.");
+    }
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -222,7 +227,8 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         std::string value(m_configuration->getAttributeValue("mode"));
         std::transform(value.begin(), value.end(), value.begin(), tolower);
-
+        OSLM_ASSERT("Sorry, bad value "<<value<<" for attribute mode.",
+                value == "3d" || value == "2d");
         this->set3dMode(value == "3d");
     }
     if (m_configuration->hasAttribute("slices"))
@@ -281,7 +287,7 @@ NegatoMPR::SliceMode NegatoMPR::getSliceMode()
 
 //------------------------------------------------------------------------------
 
-bool NegatoMPR::is3dModeEnabled()
+::boost::logic::tribool NegatoMPR::is3dModeEnabled()
 {
     return m_3dModeEnabled;
 }
