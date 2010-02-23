@@ -17,6 +17,7 @@
 #include <boost/filesystem/convenience.hpp>
 
 #include <fwTools/Object.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -168,42 +169,56 @@ void SliceListEditor::info( std::ostream &_sstream )
 void SliceListEditor::onDropDownButton( wxCommandEvent& event )
 {
     SLM_TRACE_FUNC();
-    m_dropDownButton->PopupMenu(m_pDropDownMenu, m_dropDownButton->GetSize().GetWidth(), 0);
+    if(::fwTools::UUID::exist(m_adaptorUID, ::fwTools::UUID::SIMPLE ))
+    {
+        m_dropDownButton->PopupMenu(m_pDropDownMenu, m_dropDownButton->GetSize().GetWidth(), 0);
+    }
+    else
+    {
+        OSLM_TRACE("Service "<< m_adaptorUID << " is not yet present.");
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SliceListEditor::onChangeSliceMode(  wxCommandEvent& event )
 {
-    ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
-    ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
-    SLM_ASSERT("SliceListEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
+    if(::fwTools::UUID::exist(m_adaptorUID, ::fwTools::UUID::SIMPLE ))
+    {
+        ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
+        ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
+        SLM_ASSERT("SliceListEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
 
-    ::fwData::Integer::NewSptr dataInfo;
+        ::fwData::Integer::NewSptr dataInfo;
 
-    if(event.GetId() == m_oneSliceItem->GetId())
-    {
-        dataInfo->value() = 1;
-        m_nbSlice = 1;
-    }
-    else if(event.GetId() == m_threeSlicesItem->GetId())
-    {
-        dataInfo->value() = 3;
-        m_nbSlice = 3;
-    }
-    else if(event.GetId() == m_obliqueSliceItem->GetId())
-    {
-        dataInfo->value() = -1;
-        m_nbSlice = -1;
+        if(event.GetId() == m_oneSliceItem->GetId())
+        {
+            dataInfo->value() = 1;
+            m_nbSlice = 1;
+        }
+        else if(event.GetId() == m_threeSlicesItem->GetId())
+        {
+            dataInfo->value() = 3;
+            m_nbSlice = 3;
+        }
+        else if(event.GetId() == m_obliqueSliceItem->GetId())
+        {
+            dataInfo->value() = -1;
+            m_nbSlice = -1;
+        }
+        else
+        {
+            OSLM_FATAL("Unknown slice mode: "<<event.GetId());
+        }
+        dataInfo->setFieldSingleElement(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
+        ::fwComEd::ImageMsg::NewSptr imageMsg;
+        imageMsg->addEvent( "SLICE_MODE", dataInfo );
+        ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
     }
     else
     {
-        OSLM_FATAL("Unknown slice mode: "<<event.GetId());
+        OSLM_TRACE("Service "<< m_adaptorUID << " is not yet present.");
     }
-    dataInfo->setFieldSingleElement(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
-    imageMsg->addEvent( "SLICE_MODE", dataInfo );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
 }
 
 }

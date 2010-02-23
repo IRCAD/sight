@@ -17,6 +17,7 @@
 #include <boost/filesystem/convenience.hpp>
 
 #include <fwTools/Object.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Boolean.hpp>
@@ -133,28 +134,35 @@ void ShowScanEditor::info( std::ostream &_sstream )
 
 void ShowScanEditor::onChangeScanMode(  wxCommandEvent& event )
 {
-    m_scanAreShown = !m_scanAreShown;
-
-    if (!m_scanAreShown)
+    if(::fwTools::UUID::exist(m_adaptorUID, ::fwTools::UUID::SIMPLE ))
     {
-        m_showScanButton->SetBitmapLabel(m_imageHideScan);
+        m_scanAreShown = !m_scanAreShown;
+
+        if (!m_scanAreShown)
+        {
+            m_showScanButton->SetBitmapLabel(m_imageHideScan);
+        }
+        else
+        {
+            m_showScanButton->SetBitmapLabel(m_imageShowScan);
+        }
+
+        ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
+        ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
+        SLM_ASSERT("ShowScanEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
+
+        ::fwData::Boolean::NewSptr dataInfo;
+        dataInfo->value() = m_scanAreShown;
+
+        dataInfo->setFieldSingleElement(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
+        ::fwComEd::ImageMsg::NewSptr imageMsg;
+        imageMsg->addEvent( "SCAN_SHOW", dataInfo );
+        ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
     }
     else
     {
-        m_showScanButton->SetBitmapLabel(m_imageShowScan);
+        OSLM_TRACE("Service "<< m_adaptorUID << " is not yet present.");
     }
-
-    ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
-    ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
-    SLM_ASSERT("ShowScanEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
-
-    ::fwData::Boolean::NewSptr dataInfo;
-    dataInfo->value() = m_scanAreShown;
-
-    dataInfo->setFieldSingleElement(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
-    imageMsg->addEvent( "SCAN_SHOW", dataInfo );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
 }
 
 }
