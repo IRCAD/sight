@@ -85,9 +85,12 @@ void DefaultAspect::stopping() throw(::fwTools::Failed)
     if(!m_uid.empty())
     {
         ::fwWX::IGuiContainer::unregisterGlobalWxContainer(m_uid);
-        OSLM_ASSERT("Service "<<m_uid<<" doesn't exist.", ::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ));
-        ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
-        service->stop();
+        OSLM_INFO_IF("Service "<<m_uid<<" doesn't exist.", !::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ));
+        if (::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ))
+        {
+            ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
+            service->stop();
+        }
         m_uid = "";
     }
     // To update name
