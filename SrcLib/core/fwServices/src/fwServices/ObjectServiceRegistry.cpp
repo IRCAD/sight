@@ -320,8 +320,8 @@ void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _ser
 {
     SLM_TRACE_FUNC();
     _service->stop();
-    removeFromContainer( _service );
     fwServices::unregisterComChannels( _service ) ;
+    removeFromContainer( _service );
 }
 
 
