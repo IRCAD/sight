@@ -119,7 +119,7 @@ public :
                         ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
                         ::fwComEd::ImageMsg::NewSptr msg;
                         msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, plist );
-                        ::fwServices::IEditionService::notify( m_service->getSptr(), image, msg );
+                        ::fwServices::IEditionService::notify( m_service->getSptr(), image, msg , ::fwServices::ComChannelService::NOTIFY_SOURCE);
                         break;
                     }
                 }
