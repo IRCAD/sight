@@ -397,34 +397,30 @@ bool fwWxVTKRenderWindowInteractor::isDepthPeelingSupported( vtkRenderWindow *re
             supports_edge_clamp=extensions->ExtensionSupported("GL_EXT_texture_edge_clamp");
         }
     }
+
+    extensions->Delete();
+
     //TODO FIXME bad test
-    GLint alphaBits;
-#ifdef USE_INTERNAL_FEATURES
-    glGetIntegerv(GL_ALPHA_BITS, &alphaBits);
-#endif
+    //GLint alphaBits;
+    //glGetIntegerv(GL_ALPHA_BITS, &alphaBits);
     //int supportsAtLeast8AlphaBits=alphaBits>=8;
 
 
     bool depthPeelingIsSupported  = supports_depth_texture &&
-    supports_shadow &&
-    supports_blend_func_separate &&
-    supports_shadow_funcs &&
-    supports_vertex_shader &&
-    supports_fragment_shader &&
-    supports_shader_objects &&
-    supports_occlusion_query &&
-    supports_multitexture &&
-    supports_GL_ARB_texture_rectangle &&
-    supports_edge_clamp ;//&&   supportsAtLeast8AlphaBits;
+        supports_shadow &&
+        supports_blend_func_separate &&
+        supports_shadow_funcs &&
+        supports_vertex_shader &&
+        supports_fragment_shader &&
+        supports_shader_objects &&
+        supports_occlusion_query &&
+        supports_multitexture &&
+        supports_GL_ARB_texture_rectangle &&
+        supports_edge_clamp ;//&&   supportsAtLeast8AlphaBits;
 
-    if ( depthPeelingIsSupported )
-    {
-        SLM_TRACE("Depth peeling is supported");
-    }
-    else
-    {
-        SLM_TRACE("Depth peeling isn't supported");
-    }
+    SLM_TRACE_IF("Depth peeling is supported",depthPeelingIsSupported);
+    SLM_TRACE_IF("Depth peeling isn't supported",!depthPeelingIsSupported);
+
     return depthPeelingIsSupported;
 }
 

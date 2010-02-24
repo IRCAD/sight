@@ -68,16 +68,7 @@ void InteractorStyle3DForNegato::OnLeftButtonDown()
 
     if (this->Interactor->GetShiftKey())
     {
-        if (this->Interactor->GetControlKey())
-        {
-            // press Ctrl + Shift key
-            this->StartRotate();
-        }
-        else
-        {
-            // press Shift key
-            this->StartPan();
-        }
+        this->StartRotate();
     }
     else
     {
@@ -117,7 +108,7 @@ void InteractorStyle3DForNegato::OnMiddleButtonDown()
 {
     this->FindPokedRenderer(this->Interactor->GetEventPosition()[0], this->Interactor->GetEventPosition()[1]);
 
-    if (this->CurrentRenderer != NULL && this->Interactor->GetShiftKey())
+    if (this->CurrentRenderer != NULL)
     {
         m_oldPickPoint[0] = this->Interactor->GetEventPosition()[0];
         m_oldPickPoint[1] = this->Interactor->GetEventPosition()[1];

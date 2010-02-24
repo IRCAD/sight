@@ -105,15 +105,16 @@ protected:
 
     vtkAlgorithmOutput *m_mapperInput;
     vtkPolyDataNormals *m_normals;
-    vtkPlaneCollection *m_clippingPlanes;
     vtkActor           *m_actor;
     vtkCommand         *m_depthSortCommand;
+
+    vtkPlaneCollection *m_clippingPlanes;
+    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanesId;
 
     TriangularMeshVtkCommand *m_planeCollectionShifterCallback;
     TriangularMeshVtkCommand *m_servicesStarterCallback;
 
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanesId;
 
     ::fwData::TriangularMesh::wptr m_triangularMesh;
     ::fwData::Material::sptr       m_material;
