@@ -76,11 +76,10 @@ void ComChannelService::starting() throw(fwTools::Failed)
     SLM_ASSERT("intern data mismatch", m_destination.lock()->getUUID() == m_destUUID.second);
 
     m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
-    OSLM_DEBUG("Source (IEditionService) = " << this->getObject()->getUUID() << " found") ;
+    OSLM_DEBUG("Source (IEditionService) = " << m_source.lock()->getUUID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
-            m_destination.lock()->getUUID() <<
-            " src= " << this->getObject()->getUUID(),
+            m_destination.lock()->getUUID() ,
             !this->hasSimilarObservation());
 
     // Assertion

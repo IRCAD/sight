@@ -48,7 +48,9 @@ namespace fwServices
     }
     if( _cfgElement->hasAttribute("uid"))
     {
-        assert( !obj->hasUUID() ) ;
+        OSLM_ASSERT("Object has already an UID.\n"
+                    << "Can't assign UID: " <<_cfgElement->getExistingAttributeValue("uid")
+                    ,!obj->hasUUID() ) ;
         if( ::fwTools::UUID::exist( _cfgElement->getExistingAttributeValue("uid") , ::fwTools::UUID::SIMPLE) )
         {
             OSLM_FATAL("ID " << _cfgElement->getExistingAttributeValue("uid") << " already exists");
