@@ -43,7 +43,9 @@ public:
     FWCOMED_API static std::string TRANSFERTFUNCTION;
     FWCOMED_API static std::string WINDOWING;
     FWCOMED_API static std::string LANDMARK;
+    FWCOMED_API static std::string NEW_DISTANCE;
     FWCOMED_API static std::string DISTANCE;
+    FWCOMED_API static std::string DELETE_DISTANCE;
     FWCOMED_API static std::string SLICE_INDEX;
     FWCOMED_API static std::string ACTIVATE_SYNC_CROSS;
     FWCOMED_API static std::string INACTIVATE_SYNC_CROSS;

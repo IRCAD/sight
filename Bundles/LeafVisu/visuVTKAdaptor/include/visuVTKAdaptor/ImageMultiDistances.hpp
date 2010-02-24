@@ -45,6 +45,8 @@ protected :
 
     void installSubServices( ::fwData::PointList::sptr pl );
     ::fwData::Point::sptr screenToWorld(int X,int Y);
+    void removeDistance(  ::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed);
+    void createNewDistance( std::string sceneId ) throw(::fwTools::Failed);
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 

@@ -46,21 +46,6 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMult
 
 namespace visuVTKAdaptor
 {
-//------------------------------------------------------------------------------
-
-void notifyNewDistance( ::fwData::Image::sptr image, ImageMultiDistances * _service, ::fwData::PointList::sptr plist )
-{
-
-    ::fwComEd::ImageMsg::NewSptr msg;
-    // backup pList in message
-    msg->addEvent( ::fwComEd::ImageMsg::DISTANCE, plist );
-
-    SLM_ASSERT("NULL Service", _service);
-
-    ::fwServices::IEditionService::notify( _service->getSptr(), image, msg );
-    _service->setNeedSubservicesDeletion(true);
-    _service->update();
-}
 
 //------------------------------------------------------------------------------
 
@@ -132,8 +117,9 @@ public :
                     if(plist)
                     {
                         ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
-                        image->removeFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , plist);
-                        notifyNewDistance(image, m_service, plist);
+                        ::fwComEd::ImageMsg::NewSptr msg;
+                        msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, plist );
+                        ::fwServices::IEditionService::notify( m_service->getSptr(), image, msg );
                         break;
                     }
                 }
@@ -158,6 +144,8 @@ ImageMultiDistances::ImageMultiDistances() throw():
     m_needSubservicesDeletion(false)
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_DISTANCE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE );
 }
 
 //------------------------------------------------------------------------------
@@ -185,7 +173,7 @@ void ImageMultiDistances::doStart() throw(fwTools::Failed)
 
     m_rightButtonCommand = vtkDistanceDeleteCallBack::New(this);
     this->getInteractor()->AddObserver( "RightButtonPressEvent" , m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent" , m_rightButtonCommand, 1 ); // jamais re�u quand TrackBallCameraStyle activ� (GrabFocus)
+    this->getInteractor()->AddObserver( "RightButtonReleaseEvent" , m_rightButtonCommand, 1 ); // jamais reçu quand TrackBallCameraStyle activé (GrabFocus)
     this->getInteractor()->AddObserver( "StartInteractionEvent" , m_rightButtonCommand, 0);    // par contre ce style lance un event d'interaction
 
     this->doUpdate();
@@ -349,10 +337,9 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
         isShown = image->getFieldSingleElement< ::fwData::Boolean > ("ShowDistances")->value();
     }
 
-    if ( !isShown || !hasDistanceField  || m_needSubservicesDeletion )
+    if ( !isShown || !hasDistanceField  )
     {
         this->unregisterServices();
-        m_needSubservicesDeletion = false;
     }
 
     if( isShown && hasDistanceField )
@@ -378,22 +365,54 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
                 }
             }
             // test pass OK : install service
-            if(pl->getCRefPoints().empty())
-            {
-                // if no given points in pointList, use default points positions
-                int sizeX = this->getRenderer()->GetRenderWindow()->GetSize()[0];
-                int sizeY = this->getRenderer()->GetRenderWindow()->GetSize()[1];
-                ::fwData::Point::sptr pt1 = this->screenToWorld(sizeX/3.0, sizeY/2.0);
-                ::fwData::Point::sptr pt2 = this->screenToWorld(2*sizeX/3.0, sizeY/2.0);
-
-                pl->getRefPoints().push_back( pt1 );
-                pl->getRefPoints().push_back( pt2 );
-            }
+            SLM_ASSERT( "Empty Point List for Distance !!!!", !pl->getCRefPoints().empty() );
             this->installSubServices(pl);
         }
     }
     this->setVtkPipelineModified();
 }
+
+
+void ImageMultiDistances::removeDistance(  ::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed)
+{
+
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->unregisterServices();
+    image->removeFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , plToRemove);
+    doUpdate();
+}
+
+
+void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwTools::Failed)
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::PointList::NewSptr newPL;
+
+    newPL->setFieldSingleElement( ::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( sceneId ) );
+
+    image->addFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , newPL  );
+
+    OSLM_INFO("AddDistance::image->getField( LAND).size() " << image->getField( ::fwComEd::Dictionary::m_imageDistancesId)->children().size() );
+    assert( image->getFieldSize( ::fwComEd::Dictionary::m_imageDistancesId ) );
+
+
+    int sizeX = this->getRenderer()->GetRenderWindow()->GetSize()[0];
+    int sizeY = this->getRenderer()->GetRenderWindow()->GetSize()[1];
+    this->getRenderer()->Print(std::cout);
+    this->getRenderer()->GetRenderWindow()->Print(std::cout);
+    OSLM_ASSERT("invalid RenderWindow size",  sizeX>0 && sizeY>0 )
+    ::fwData::Point::sptr pt1 = this->screenToWorld(sizeX/3.0, sizeY/2.0);
+    ::fwData::Point::sptr pt2 = this->screenToWorld(2*sizeX/3.0, sizeY/2.0);
+
+    newPL->getRefPoints().push_back( pt1 );
+    newPL->getRefPoints().push_back( pt2 );
+
+    this->installSubServices(newPL);
+    this->setVtkPipelineModified();
+}
+
+
+
 
 //------------------------------------------------------------------------------
 
@@ -401,18 +420,39 @@ void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(:
 {
     // update only if new LandMarks
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    std::string  sceneId = ::fwTools::UUID::get( getRenderService() );
+
+    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::NEW_DISTANCE ) )
+    {
+		::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::NEW_DISTANCE));
+		OSLM_FATAL_IF(" ImageMultiDistances::doUpdate with RenderService "<<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
+		if ( dataInfo->value() == sceneId )
+		{
+			this->createNewDistance( sceneId );
+		    ::fwComEd::ImageMsg::NewSptr msg;
+		    msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
+		    ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
+		}
+    }
+
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
     {
         ::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DISTANCE));
-
         // update only if the distance is added in this scene
         // or if the service is not filtered
         if ( !dataInfo || dataInfo->value() == ::fwTools::UUID::get( getRenderService() )
-        || m_configuration->getAttributeValue("filter") == "false")
+			|| m_configuration->getAttributeValue("filter") == "false")
         {
-            m_needSubservicesDeletion = true; // to manage point deletion
             doUpdate();
         }
+    }
+
+    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE ) )
+    {
+        ::fwData::PointList::csptr plToRemove = ::fwData::PointList::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DELETE_DISTANCE));
+        SLM_ASSERT( " ImageMsg::DELETE_DISTANCE , no dataInfo for the PointList ",plToRemove );
+        this->removeDistance( ::boost::const_pointer_cast< ::fwData::PointList>(plToRemove) );
     }
 }
 
@@ -441,14 +481,7 @@ void ImageMultiDistances::doStop() throw(fwTools::Failed)
 
 void ImageMultiDistances::show(bool b)
 {
-    if (b)
-    {
-        this->doStart();
-    }
-    else
-    {
-        this->doStop();
-    }
+    b?doStart():doStop();
 }
 
 
