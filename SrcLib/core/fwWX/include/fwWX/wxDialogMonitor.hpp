@@ -36,7 +36,7 @@ public:
 
     FWWX_API wxDialogMonitor(wxWindow* parent, fwServices::monitor::string_map map_string, wxString title = _("Objects and Services Database")) ;
 
-    void FWWX_API setOnSelectionCallback( wxMonitorCallback::ptr callback);
+    FWWX_API void setOnSelectionCallback( wxMonitorCallback::ptr callback);
 
 private:
     wxMonitor *m_monitor;

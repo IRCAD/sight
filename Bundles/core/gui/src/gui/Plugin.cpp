@@ -16,8 +16,6 @@
 #include <fwServices/ObjectServiceRegistry.hpp>
 
 #include "gui/Plugin.hpp"
-#include "gui/Manager.hpp"
-
 
 namespace gui
 {

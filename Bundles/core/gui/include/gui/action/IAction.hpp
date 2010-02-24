@@ -9,6 +9,7 @@
 
 #include <fwServices/IService.hpp>
 #include <wx/menuitem.h>
+#include <wx/event.h>
 
 #include "gui/action/Shortcut.hpp"
 #include "gui/export.hpp"
@@ -173,6 +174,8 @@ protected :
     GUI_API virtual void info(std::ostream &_sstream ) ;
 
     ///@}
+
+    void processAction(wxCommandEvent& event);
 
     static const std::map<std::string, int> SPECIAL_ACTION_TO_WXID;
 

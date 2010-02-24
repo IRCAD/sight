@@ -22,10 +22,10 @@
         
         <!-- Description service of the HMI.
         Here, the container will be used by the 3D visualization service previously described. 
-        The ::gui::aspect::DefaultAspect service automaticly positions the different containers in the application main window.
+        The ::gui::frame::MainFrame service automaticly positions the different containers in the application main window.
         In our tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.
         Remember we will see in details the use of communications in the tutoComChannel tutorial.-->
-        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+        <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
             <name>tutoDataServiceBasic</name>
             <icon>Bundles/Tuto02DataServiceBasic_0-1/tuto.ico</icon>
             <view uid="myRenderingTuto" autoStart="yes" />
@@ -33,20 +33,20 @@
         
         
         <!-- Definition of the starting and closing order of the different services.
-        Here, the three services ::gui::aspect::IAspect, and myReaderPathFile are started,
+        Here, the three services ::gui::frame::IFrame, and myReaderPathFile are started,
         nevertheless, only the myReaderPathFile service is updated after the launching.
         Indeed, as the image location is known (contained in the configuration file),
         the image can be loaded since the application starting. It corresponds to the update flag for myReaderPathFile.
         The HMI service must be started first, then the rendering service, and finaly the reading service.
         The stopping of the services is done in the reverse order compared to the starting one. -->
         
-        <start type="::gui::aspect::IAspect" />
+        <start type="::gui::frame::IFrame" />
         <start uid="myReaderPathFile"/>
 
         <update uid="myReaderPathFile"/>
 
         <stop uid="myReaderPathFile"/>
-        <stop type="::gui::aspect::IAspect" />
+        <stop type="::gui::frame::IFrame" />
 
     </object>
 </extension>

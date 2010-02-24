@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/utility/WindowLocation.hpp"
+#include "fwWX/WindowLocation.hpp"
 
 #include <cassert>
 #include <wx/wx.h>
@@ -14,16 +14,11 @@
 
 #include <fwCore/base.hpp>
 
-
-namespace gui
-{
-
-namespace utility
+namespace fwWX
 {
 
 namespace
 {
-
     const wxString  UNKNOWN_LITERAL     ( _("unknown")      );  ///< the unknown state literal
     const wxString  ICONIZED_LITERAL    ( _("iconized")     );  ///< the iconized state literal
     const wxString  MAXIMIZED_LITERAL   ( _("maximized")    );  ///< the maximized state literal
@@ -66,10 +61,9 @@ namespace
 
         return state;
     }
-
 }
 
-
+//------------------------------------------------------------------------------
 
 WindowLocation::WindowLocation( wxWindow * window )
 :   m_position  ( window->GetPosition() ),
@@ -77,7 +71,7 @@ WindowLocation::WindowLocation( wxWindow * window )
     m_state     ( UNKNOWN               )
 {}
 
-
+//------------------------------------------------------------------------------
 
 WindowLocation::WindowLocation( wxTopLevelWindow * window )
 :   m_position  ( window->GetPosition() ),
@@ -85,7 +79,7 @@ WindowLocation::WindowLocation( wxTopLevelWindow * window )
     m_state     ( getState(window)      )
 {}
 
-
+//------------------------------------------------------------------------------
 
 WindowLocation::WindowLocation( const wxString & definition )
 :   m_position  ( 0, 0      ),
@@ -169,7 +163,7 @@ WindowLocation::WindowLocation( const wxString & definition )
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void WindowLocation::applyOn( wxWindow * window ) const
 {
@@ -177,7 +171,7 @@ void WindowLocation::applyOn( wxWindow * window ) const
     window->SetSize( m_size );
 }
 
-
+//------------------------------------------------------------------------------
 
 void WindowLocation::applyOn( wxTopLevelWindow * topLevelWindow ) const
 {
@@ -202,7 +196,7 @@ void WindowLocation::applyOn( wxTopLevelWindow * topLevelWindow ) const
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 const wxString WindowLocation::toString() const
 {
@@ -230,7 +224,7 @@ const wxString WindowLocation::toString() const
 
         case UNKNOWN:
         default:
-            assert( false );    // Forbidden!
+            SLM_FATAL("Forbidden state");
             break;
         }
     }
@@ -238,7 +232,4 @@ const wxString WindowLocation::toString() const
 }
 
 
-
-} // namespace utility
-
-} // namespace ui
+} // namespace fwWX

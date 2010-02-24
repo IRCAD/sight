@@ -45,7 +45,7 @@ public:
      *
      * @exception ::fwRuntime::RuntimeException.
      *
-     * Register first basic services of type IAction, IEditor, IAspect and IView.
+     * Register first basic services of type IAction, IEditor and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
      */
     GUI_API void start() throw(::fwRuntime::RuntimeException);

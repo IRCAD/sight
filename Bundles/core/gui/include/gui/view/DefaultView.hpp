@@ -9,6 +9,8 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <wx/aui/framemanager.h>
+
 #include "gui/export.hpp"
 #include "gui/view/IView.hpp"
 

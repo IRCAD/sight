@@ -7,7 +7,7 @@
   
         <!-- Service associated to the Composite data :
         main window creation. -->
-        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+        <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
             <name>MyApp</name>
             <minSize width="720" height="600"/>
             <view uid="myDefaultView" autoStart="yes" />
@@ -129,7 +129,7 @@
     Note that the services associated to the Image and TriangularMesh data
     are not started between the tags corresponding to these two data definitions
     but, before the end of the Composite data definition. -->
-    <start type="::gui::aspect::IAspect" />
+    <start type="::gui::frame::IFrame" />
     <start type="::gui::aspect::IMenuBar" />
     <start uid="RenderingImage" />
     <start uid="MyComChannelSrv1" />
@@ -141,7 +141,7 @@
     <stop uid="MyComChannelSrv1" />
     <stop uid="RenderingImage" />
     <stop type="::gui::aspect::IMenuBar" />
-    <stop type="::gui::aspect::IAspect" />
+    <stop type="::gui::frame::IFrame" />
   </object>
   </extension>
 </plugin>    

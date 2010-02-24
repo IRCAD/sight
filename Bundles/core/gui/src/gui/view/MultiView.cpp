@@ -16,7 +16,6 @@
 
 #include <fwWX/convert.hpp>
 
-#include "gui/Manager.hpp"
 #include "gui/view/MultiView.hpp"
 
 namespace gui

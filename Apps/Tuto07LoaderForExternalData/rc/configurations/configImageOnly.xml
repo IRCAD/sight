@@ -36,7 +36,7 @@
      This application have 2 menu one to open/save image and one to load/save extra data.
      There are FW4SPL identifiers. -->
 
-     <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no">
+     <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no">
         <name>Tuto07LoaderForExternalData</name>
         <icon>Bundles/Tuto07LoaderForExternalData_0-1/tuto.ico</icon>
         <view uid="myRenderingTuto" autoStart="yes" />
@@ -66,11 +66,11 @@
      <service uid="action_quit" specialAction="QUIT" name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
 
     <!-- Definition of the starting and closing order of the different services. -->
-    <start type="::gui::aspect::IAspect" />
+    <start type="::gui::frame::IFrame" />
     <start type="::gui::aspect::IMenuBar" />
     
     <stop type="::gui::aspect::IMenuBar" />
-    <stop type="::gui::aspect::IAspect" />
+    <stop type="::gui::frame::IFrame" />
 </object>
 </extension>
 </plugin>

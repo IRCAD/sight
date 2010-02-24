@@ -12,7 +12,6 @@
 #include <fwServices/macros.hpp>
 #include <fwData/Object.hpp>
 
-#include "gui/Manager.hpp"
 #include "gui/view/DefaultView.hpp"
 
 namespace gui

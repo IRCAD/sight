@@ -3,7 +3,7 @@
 <extension id="Tuto09MesherWithGenericScene" implements="::fwData::Composite">
 <object id="Tuto09MesherWithGenericScene" type="::fwData::Composite">
 
-    <service uid="MyIHM" implementation="::gui::aspect::DefaultAspect" type="::gui::aspect::IAspect" autoComChannel="no" >
+    <service uid="MyIHM" implementation="::gui::frame::MainFrame" type="::gui::frame::IFrame" autoComChannel="no" >
         <name>Tuto09MesherWithGenericScene</name>
         <icon>Bundles/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
         <view uid="multiView_scene1" autoStart="yes" />

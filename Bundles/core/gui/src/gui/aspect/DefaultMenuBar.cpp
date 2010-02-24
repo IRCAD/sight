@@ -24,7 +24,6 @@
 
 #include "gui/action/IAction.hpp"
 #include "gui/aspect/IMenu.hpp"
-#include "gui/aspect/IAspect.hpp"
 #include "gui/aspect/DefaultMenuBar.hpp"
 
 

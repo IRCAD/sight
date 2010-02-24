@@ -30,12 +30,12 @@
 #include <fwTools/Os.hpp>
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
+#include <fwServices/bundle/runtime.hpp>
+
 #include <fwWX/convert.hpp>
 
 
 #include "gui/App.hpp"
-#include "gui/Manager.hpp"
-
 
 namespace gui
 {
@@ -116,8 +116,8 @@ bool App::OnInit()
         }
     }
 
-    // Initialize application manager
-    ::gui::Manager::initialize() ;
+    // Initialize root object : root object, views, ...
+    ::fwServices::OSR::initializeRootObject();
 
     return TRUE;
 }

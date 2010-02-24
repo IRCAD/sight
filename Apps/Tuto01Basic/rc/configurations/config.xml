@@ -3,14 +3,15 @@
     <extension id="tutoBasicConfig" implements="::fwTools::Object">
         <object id="tutoBasicObject" type="::fwTools::Object">
 
-            <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+            <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
                 <name>tutoBasicApplicationName</name>
                 <icon>Bundles/Tuto01Basic_0-1/tuto.ico</icon>
+                <minSize width="800" height="600"/>
             </service>
 
-            <start type="::gui::aspect::IAspect" />
+            <start type="::gui::frame::IFrame" />
             
-            <stop type="::gui::aspect::IAspect" />
+            <stop type="::gui::frame::IFrame" />
 
         </object>
     </extension>

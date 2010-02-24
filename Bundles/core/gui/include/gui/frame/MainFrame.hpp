@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_FRAME_DEFAULT_FRAME_HPP_
-#define _GUI_FRAME_DEFAULT_FRAME_HPP_
+#ifndef _GUI_FRAME_MAIN_FRAME_HPP_
+#define _GUI_FRAME_MAIN_FRAME_HPP_
 
 #include <boost/filesystem/path.hpp>
 #include <fwTools/Failed.hpp>
@@ -19,22 +19,22 @@ namespace frame
 {
 
 /**
- * @brief   Defines the default frame for standard application.
- * @class   DefaultFrame.
+ * @brief   Defines the main frame for standard application.
+ * @class   MainFrame.
  * @author  IRCAD (Research and Development Team)
 
- * @date    2009.
+ * @date    2009-2010.
  */
-class GUI_CLASS_API DefaultFrame : public ::gui::frame::IFrame
+class GUI_CLASS_API MainFrame : public ::gui::frame::IFrame
 {
 
 public :
 
     /// Constructor. Do nothing.
-    GUI_API DefaultFrame() throw() ;
+    GUI_API MainFrame() throw() ;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultFrame() throw() ;
+    GUI_API virtual ~MainFrame() throw() ;
 
 protected :
 
@@ -98,4 +98,4 @@ private:
 } // namespace gui
 
 
-#endif /*_GUI_FRAME_DEFAULT_FRAME_HPP_*/
+#endif /*_GUI_FRAME_MAIN_FRAME_HPP_*/

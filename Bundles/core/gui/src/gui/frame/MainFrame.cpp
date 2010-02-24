@@ -7,31 +7,35 @@
 #include <boost/foreach.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/assign/list_of.hpp>
 
 #include <wx/wx.h>
+#include <wx/config.h>
+#include <wx/evtloop.h>
 
 #include <fwTools/UUID.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/ObjectServiceRegistry.hpp>
 
 #include <fwData/Object.hpp>
 
 #include <fwWX/IGuiContainer.hpp>
 #include <fwWX/convert.hpp>
+#include <fwWX/wxMainFrame.hpp>
 
-#include "gui/frame/DefaultFrame.hpp"
+#include "gui/frame/MainFrame.hpp"
 
 namespace gui
 {
 namespace frame
 {
 
-REGISTER_SERVICE( ::gui::frame::IFrame , ::gui::frame::DefaultFrame , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::gui::frame::IFrame , ::gui::frame::MainFrame , ::fwTools::Object ) ;
 
+//-----------------------------------------------------------------------------
 
-DefaultFrame::DefaultFrame() throw() : m_container(0),
+MainFrame::MainFrame() throw() : m_container(0),
         m_name(""),
         m_minSizeHeight(-1),
         m_minSizeWidth(-1),
@@ -42,12 +46,12 @@ DefaultFrame::DefaultFrame() throw() : m_container(0),
 
 //-----------------------------------------------------------------------------
 
-DefaultFrame::~DefaultFrame() throw()
+MainFrame::~MainFrame() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::configuring() throw( ::fwTools::Failed )
+void MainFrame::configuring() throw( ::fwTools::Failed )
 {
     assert( m_configuration->getName() == "service" );
 
@@ -132,17 +136,28 @@ void DefaultFrame::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::starting() throw(::fwTools::Failed)
+void MainFrame::starting() throw(::fwTools::Failed)
 {
-    wxFrame* frame = new wxFrame(wxTheApp->GetTopWindow(),
+    SLM_TRACE_FUNC();
+    wxEventLoopBase* eventLoop = wxEventLoop::GetActive();
+    if (!eventLoop)
+    {
+        wxEventLoop::SetActive(new wxEventLoop() );
+    }
+    // wxWidget initialization
+    wxInitAllImageHandlers();
+    wxFrame* frame = new ::fwWX::wxMainFrame(wxTheApp->GetTopWindow(),
             wxNewId(),
             ::fwWX::std2wx(m_name),
             wxDefaultPosition,
             wxDefaultSize,
             m_modeStyle
             );
-    frame->SetMinSize(wxSize(m_minSizeWidth, m_minSizeHeight));
     m_container = frame;
+    wxTheApp->SetTopWindow( frame ) ;
+    frame->CreateStatusBar();
+    frame->SetMinSize(wxSize(m_minSizeWidth, m_minSizeHeight));
+
     if(!m_iconPath.empty())
     {
         wxIcon icon( ::fwWX::std2wx(m_iconPath.native_file_string()), wxBITMAP_TYPE_ICO );
@@ -150,19 +165,19 @@ void DefaultFrame::starting() throw(::fwTools::Failed)
         frame->SetIcon( icon );
     }
 
-    m_container->Bind( wxEVT_CLOSE_WINDOW, &DefaultFrame::onCloseFrame, this,  m_container->GetId());
+    m_container->Bind( wxEVT_CLOSE_WINDOW, &MainFrame::onCloseFrame, this,  m_container->GetId());
 
     if(!m_uid.empty())
     {
         ::fwWX::IGuiContainer::registerGlobalWxContainer(m_uid, m_container);
         if(m_autostart)
         {
-            wxTheApp->GetTopWindow()->Update();
             OSLM_ASSERT("Service "<<m_uid<<" doesn't exist.", ::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ));
             ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
             service->start();
         }
     }
+
     m_container->Fit();
     m_container->Show();
     m_container->Refresh();
@@ -177,7 +192,7 @@ void DefaultFrame::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::stopping() throw(::fwTools::Failed)
+void MainFrame::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -199,41 +214,42 @@ void DefaultFrame::stopping() throw(::fwTools::Failed)
         service->stop();
     }
 
-    m_container->Unbind( wxEVT_CLOSE_WINDOW, &DefaultFrame::onCloseFrame, this,  m_container->GetId());
-
+    m_container->Unbind( wxEVT_CLOSE_WINDOW, &MainFrame::onCloseFrame, this,  m_container->GetId());
     m_container->Destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::info(std::ostream &_sstream )
+void MainFrame::info(std::ostream &_sstream )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void MainFrame::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::updating() throw(::fwTools::Failed)
+void MainFrame::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::onCloseFrame(wxCloseEvent& event)
+void MainFrame::onCloseFrame(wxCloseEvent& event)
 {
-    this->stop();
+    SLM_TRACE_FUNC();
+    wxBeginBusyCursor();
+    ::fwServices::OSR::uninitializeRootObject();
+    wxEndBusyCursor();
 }
 
 //-----------------------------------------------------------------------------
 
 }
 }
-

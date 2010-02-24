@@ -14,7 +14,6 @@
 #include <fwWX/convert.hpp>
 
 #include "gui/action/IAction.hpp"
-#include "gui/Manager.hpp"
 
 namespace gui
 {
@@ -47,8 +46,8 @@ IAction::~IAction() throw()
 void IAction::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE("configuring action") ;
-    SLM_ASSERT("id tag deprecated", !m_configuration->hasAttribute("id"));
-    SLM_ASSERT("menu tag deprecated", !m_configuration->hasAttribute("menu"));
+    SLM_ASSERT("id tag depreciated", !m_configuration->hasAttribute("id"));
+    SLM_ASSERT("menu tag depreciated", !m_configuration->hasAttribute("menu"));
     SLM_ASSERT("name tag missing", m_configuration->hasAttribute("name"));
 
     if( m_configuration->hasAttribute("specialAction") )
@@ -114,7 +113,7 @@ void IAction::starting() throw(::fwTools::Failed)
     SLM_ASSERT( "No wxFrame", frame ) ;
 
     // get MenuBar
-    SLM_ASSERT( "No menu bar: MenuBar must be created by IAspect", frame->GetMenuBar() );
+    SLM_ASSERT( "No menu bar: MenuBar must be created by IFrame", frame->GetMenuBar() );
     wxMenuBar *menuBar =  frame->GetMenuBar();
 
     // get Menu
@@ -139,8 +138,7 @@ void IAction::starting() throw(::fwTools::Failed)
     {
         menuFile->Append( new wxMenuItem(menuFile, m_actionIdInMenu , ::fwWX::std2wx( m_actionNameInMenu )) ) ;
     }
-
-    ::gui::Manager::registerAction( this->getSptr() ) ;
+    frame->Bind( wxEVT_COMMAND_MENU_SELECTED, &IAction::processAction, this, m_actionIdInMenu);
 
     setEnable(m_enable);
     setCheck(m_isCheck);
@@ -155,7 +153,7 @@ void IAction::stopping() throw(::fwTools::Failed)
     SLM_ASSERT( "No wxFrame", frame ) ;
 
     // get MenuBar
-    SLM_ASSERT( "No menu bar: MenuBar must be created by IAspect", frame->GetMenuBar() );
+    SLM_ASSERT( "No menu bar: MenuBar must be created by IFrame", frame->GetMenuBar() );
     wxMenuBar *menuBar =  frame->GetMenuBar();
 
     // get Menu
@@ -177,8 +175,7 @@ void IAction::stopping() throw(::fwTools::Failed)
 #else
         menuFile->Remove( m_actionIdInMenu );
 #endif
-
-    ::gui::Manager::unregisterAction( this->getSptr()) ;
+        frame->Unbind( wxEVT_COMMAND_MENU_SELECTED, &IAction::processAction, this, m_actionIdInMenu);
 }
 
 bool IAction::isEnable()
@@ -283,7 +280,7 @@ wxMenuItem* IAction::getMenuItem()
     SLM_ASSERT( "No wxFrame", frame ) ;
 
     // get MenuBar
-    SLM_ASSERT( "No menu bar: MenuBar must be created by IAspect", frame->GetMenuBar() );
+    SLM_ASSERT( "No menu bar: MenuBar must be created by IFrame", frame->GetMenuBar() );
     wxMenuBar *menuBar =  frame->GetMenuBar();
 
     // get Menu
@@ -314,6 +311,12 @@ void IAction::setShortcut( ::gui::action::Shortcut::sptr _shortcut )
     m_shortcut = _shortcut;
 }
 
+//-----------------------------------------------------------------------------
+
+void IAction::processAction(wxCommandEvent& event)
+{
+    this->update();
+}
 
 }
 }

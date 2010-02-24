@@ -46,6 +46,8 @@ public :
      */
     GUI_API virtual ~IFrame() throw() ;
 
+    static const std::map<std::string, long> FWSTYLE_TO_WXSTYLE;
+
 };
 
 

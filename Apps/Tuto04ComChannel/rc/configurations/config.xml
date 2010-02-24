@@ -4,7 +4,7 @@
     <!-- In tutoComChannel, the main data object type is ::fwData::TriangularMesh.-->
     <object id="tutoComChannelMesh" type="::fwData::TriangularMesh">
 
-        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+        <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
             <name>tutoComChannel</name>
             <icon>Bundles/Tuto04ComChannel_0-1/tuto.ico</icon>
             <minSize width="720" height="600"/>
@@ -68,11 +68,11 @@
             <masterSlaveRelation>master</masterSlaveRelation>
         </service>
 
-        <start type="::gui::aspect::IAspect" />
+        <start type="::gui::frame::IFrame" />
         <start type="::gui::aspect::IMenuBar" />
         
         <stop type="::gui::aspect::IMenuBar" />
-        <stop type="::gui::aspect::IAspect" />
+        <stop type="::gui::frame::IFrame" />
 
     </object>
 

@@ -14,7 +14,6 @@
 #include <fwServices/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "gui/Manager.hpp"
 #include "gui/view/MultiSizerView.hpp"
 
 namespace gui

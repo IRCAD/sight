@@ -16,7 +16,6 @@
 
 #include <fwWX/convert.hpp>
 
-#include "gui/Manager.hpp"
 #include "gui/view/MultiTabView.hpp"
 
 namespace gui

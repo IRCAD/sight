@@ -62,7 +62,7 @@ public:
             <service implementation="::ioVTK::ImageReaderService" type="::io::IReader" uid="myReaderPathFile" autoComChannel="no" >
                 <filename id="./TutoData/patient1.vtk"/>
             </service>
-            <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+            <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
                 <name>tutoDataServiceBasic</name>
                 <icon>Bundles/Tuto_0-1/tuto.ico</icon>
                 <views>
@@ -90,7 +90,7 @@ public:
             <service implementation="::ioVTK::ImageReaderService" type="::io::IReader" uid="myReaderPathFile" autoComChannel="no" >
                 <filename id="OtherImage.vtk"/>
             </service>
-            <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
+            <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
                 <name>tutoDataServiceBasic</name>
                 <icon>Other.ico</icon>
                 <views>

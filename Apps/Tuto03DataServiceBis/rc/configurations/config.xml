@@ -10,7 +10,7 @@
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
         it's an FW4SPL identifier. -->
-        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no">
+        <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no">
             <name>tutoDataService bis</name>
             <icon>Bundles/Tuto03DataServiceBis_0-1/tuto.ico</icon>
             <view uid="myRenderingTuto" autoStart="yes" />
@@ -62,11 +62,11 @@
             <win guiContainerId="900"/>
         </service>
 
-        <start type="::gui::aspect::IAspect" />
+        <start type="::gui::frame::IFrame" />
         <start type="::gui::aspect::IMenuBar" />
         
         <stop type="::gui::aspect::IMenuBar" />
-        <stop type="::gui::aspect::IAspect" />
+        <stop type="::gui::frame::IFrame" />
 
     </object>
 

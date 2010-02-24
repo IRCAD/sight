@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_UTILITY_LOCATION_HPP_
-#define _GUI_UTILITY_LOCATION_HPP_
+#ifndef _FWWX_LOCATION_HPP_
+#define _FWWX_LOCATION_HPP_
 
 #include <wx/wx.h>
 #include <wx/gdicmn.h>
@@ -15,13 +15,7 @@
 class wxTopLevelWindow;
 class wxWindow;
 
-namespace gui
-{
-
-/**
- * @namespace ::gui::utility
- */
-namespace utility
+namespace fwWX
 {
 
 /**
@@ -96,11 +90,8 @@ private:
 };
 
 
-
-} // namespace utility
-
-} // namespace gui
+} // namespace fwWX
 
 
 
-#endif /*_GUI_UTILITY_LOCATION_HPP_*/
+#endif /*_FWWX_LOCATION_HPP_*/

@@ -14,10 +14,6 @@
         <implements>::fwServices::IService</implements>
     </point>
     
-    <point id="::gui::aspect::IAspect">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
     <point id="::gui::aspect::IMenu">
         <implements>::fwServices::IService</implements>
     </point>
@@ -39,6 +35,11 @@
         <implements>::fwTools::Object</implements>
     </point>
     
+    <point id="::gui::frame::MainFrame">
+        <implements>::gui::frame::IFrame</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
     <point id="::gui::aspect::IMenuBar">
         <implements>::fwServices::IService</implements>
     </point>
@@ -52,12 +53,7 @@
         <implements>::gui::aspect::IMenuBar</implements>
         <implements>::fwTools::Object</implements>
     </point>
-    
-    <point id="::gui::aspect::DefaultAspect" schema="DefaultAspect.xsd">
-        <implements>::gui::aspect::IAspect</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
+        
     <point id="::gui::aspect::DefaultToolBar">
         <implements>::gui::aspect::IToolBar</implements>
         <implements>::fwTools::Object</implements>
@@ -118,13 +114,11 @@
         <implements>::fwTools::Object</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::FullScreenActionService , ::fwTools::Object ) ; -->
     <point id="::gui::action::FullScreenActionService">
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::StarterActionService , ::fwTools::Object ) ; -->
     <point id="::gui::action::StarterActionService">
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
