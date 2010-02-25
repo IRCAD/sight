@@ -215,7 +215,6 @@ void MainFrame::stopping() throw(::fwTools::Failed)
             ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
             service->stop();
         }
-        m_uid = "";
     }
 
     m_container->Unbind( wxEVT_CLOSE_WINDOW, &MainFrame::onCloseFrame, this,  m_container->GetId());
