@@ -6,7 +6,7 @@ VERSION = '0-1'
 import os
 import sys
 
-DEF = ["PULSEPROGRESS_USE_THREAD"]
+# DEF = ["PULSEPROGRESS_USE_THREAD"]
 
 if os.name == 'nt':
     DEF += ['MULTI_ROOT']
