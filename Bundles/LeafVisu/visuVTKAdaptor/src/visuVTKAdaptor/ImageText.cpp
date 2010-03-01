@@ -33,6 +33,7 @@ ImageText::ImageText() throw()
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
+    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +76,8 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
      ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
     if ( imgMsg &&
                ( imgMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX )
-                 || imgMsg->hasEvent( ::fwComEd::ImageMsg::WINDOWING )))
+                 || imgMsg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ))
+                 || imgMsg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ))
     {
         doUpdate();
     }
