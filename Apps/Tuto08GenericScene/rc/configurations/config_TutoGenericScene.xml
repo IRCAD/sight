@@ -64,10 +64,6 @@
             <!-- CompositeVisu description -->
             <object id="myCompositeVisu" uid="myCompositeVisu" type="::fwData::Composite">
 
-                <service uid="myMedicalImageManager" implementation="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6">
-                    <update imageCompositeKey="myImage" />
-                </service>
-
                 <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
                     <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                     <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
@@ -79,10 +75,12 @@
                     <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
                 </service>
 
-                <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes">
+                <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6"  >
                     <mode type="stop" />
                     <config>
                         <object id="myImage" type="::fwData::Image">
+                            <!-- This service convert a simple fwData::Image to medical Image -->
+                            <service uid="medicalImageConverter" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoComChannel="no" />
                             <service uid="sliceListEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
                                 <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
                             </service>
@@ -123,14 +121,12 @@
             <start uid="myMenuBar" />
             <start uid="myUpdaterAcq" />
             <start uid="myUpdaterImg" />
-            <start uid="myMedicalImageManager" />
             <start uid="myManager" />
             <start uid="myUpdaterComCannelAcq" />
             <start uid="myUpdaterComCannelImg" />
 
             <stop uid="myUpdaterComCannelImg" />
             <stop uid="myUpdaterComCannelAcq" />
-            <stop uid="myMedicalImageManager" />
             <stop uid="myManager" />
             <stop uid="myUpdaterImg" />
             <stop uid="myUpdaterAcq" />
