@@ -178,7 +178,6 @@ void MainFrame::starting() throw(::fwTools::Failed)
         }
     }
 
-    m_container->Fit();
     m_container->Show();
     m_container->Refresh();
 
