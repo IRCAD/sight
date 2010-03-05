@@ -63,7 +63,13 @@ void MultiTabView::configuring() throw( ::fwTools::Failed )
         {
             vi.m_name = (*iter)->getExistingAttributeValue("name") ;
         }
-
+        if( (*iter)->hasAttribute("selected") )
+        {
+            std::string isSelected = (*iter)->getExistingAttributeValue("selected");
+            OSLM_ASSERT("Sorry, value "<<isSelected<<" is not correct for attribute isSelected.",
+                    isSelected == "yes" || isSelected == "no");
+            vi.m_isSelect = (isSelected == "yes");
+        }
         if( (*iter)->hasAttribute("autoStart") )
         {
             std::string autostart = (*iter)->getExistingAttributeValue("autoStart");
@@ -107,7 +113,7 @@ void MultiTabView::starting() throw(::fwTools::Failed)
         wxPanel * viewPanel = new wxPanel(  m_notebook, wxNewId());
         // Set the panel
         pi->m_panel = viewPanel;
-        m_notebook->AddPage( viewPanel, ::fwWX::std2wx(pi->m_name), true );
+        m_notebook->AddPage( viewPanel, ::fwWX::std2wx(pi->m_name), pi->m_isSelect );
         this->registerWxContainer(pi->m_uid, pi->m_panel);
 
         if(pi->m_autostart)
