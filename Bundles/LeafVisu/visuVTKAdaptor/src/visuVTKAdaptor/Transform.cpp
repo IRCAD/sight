@@ -69,7 +69,25 @@ void Transform::doStart() throw(fwTools::Failed)
 
 void Transform::doUpdate() throw(fwTools::Failed)
 {
-    doStop();
+    //doStop();
+    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    vtkMatrix4x4* mat = vtkMatrix4x4::New();
+
+    for(int lt=0; lt<4; lt++)
+    {
+        for(int ct=0; ct<4; ct++)
+        {
+            mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
+        }
+    }
+    vtkTransform* vtkTrf = this->getTransform();
+    vtkTrf->SetMatrix(mat);
+    this->getTransform()->Modified();
+    // @TODO : Hack to force render !! (pb with tracking)
+    if( bForceRender )
+    {
+        this->getRenderService()->render();
+    }
 }
 
 void Transform::doSwap() throw(fwTools::Failed)
@@ -89,24 +107,26 @@ void Transform::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fai
     ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
     if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
     {
-        ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
-        vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
-        for(int lt=0; lt<4; lt++)
-        {
-            for(int ct=0; ct<4; ct++)
-            {
-                mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
-            }
-        }
-        vtkTransform* vtkTrf = this->getTransform();
-        vtkTrf->SetMatrix(mat);
-        this->getTransform()->Modified();
-        // @TODO : Hack to force render !! (pb with tracking)
-        if( bForceRender )
-        {
-            this->getRenderService()->render();
-        }
+        doUpdate();
+//        ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+//        vtkMatrix4x4* mat = vtkMatrix4x4::New();
+//
+//        for(int lt=0; lt<4; lt++)
+//        {
+//            for(int ct=0; ct<4; ct++)
+//            {
+//                mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
+//            }
+//        }
+//        vtkTransform* vtkTrf = this->getTransform();
+//        vtkTrf->SetMatrix(mat);
+//        this->getTransform()->Modified();
+//        // @TODO : Hack to force render !! (pb with tracking)
+//        if( bForceRender )
+//        {
+//            this->getRenderService()->render();
+//        }
     }
 }
 
