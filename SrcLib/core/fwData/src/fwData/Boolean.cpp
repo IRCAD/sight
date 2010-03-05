@@ -30,6 +30,7 @@ Boolean::~Boolean() throw()
 void Boolean::shallowCopy( Boolean::csptr _source )
 {
     ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_value = _source->m_value;
 }
 
 //------------------------------------------------------------------------------
@@ -37,6 +38,7 @@ void Boolean::shallowCopy( Boolean::csptr _source )
 void Boolean::deepCopy( Boolean::csptr _source )
 {
     ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_value = _source->m_value;
 }
 
 } // namespace fwData

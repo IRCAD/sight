@@ -157,7 +157,7 @@ void Image::shallowCopy( Image::csptr _source )
 
 void Image::deepCopy( Image::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    ::fwTools::Object::deepCopyOfChildren( _source );
 
     // Assign
     this->m_ui8Dimension        = _source->m_ui8Dimension;

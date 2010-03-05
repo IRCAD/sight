@@ -142,85 +142,9 @@ bool BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::
         ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
         acquisitionIter += myIntAcq->value();
 
-        // Image backup
-        //assert(false && "TODO : clone need backup of all temp field (medical image)");
-
         //::fwData::Acquisition::sptr pAquisitionBackup = (*acquisitionIter)->clone();
         ::fwData::Acquisition::NewSptr pAquisitionBackup;
         pAquisitionBackup->deepCopy( *acquisitionIter );
-        ::fwData::Image::sptr pImageBackup = pAquisitionBackup->getImage();
-
-        if ( (*acquisitionIter)->getImage()->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) )
-        {
-            ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( pImageBackup );
-            ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( pImageBackup );
-            ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks( pImageBackup );
-
-            // clone TF
-            ::fwData::Composite::sptr cTF = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
-            ::fwData::String::sptr sTF = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
-
-            ::fwData::Composite::sptr cTFBackup = ::fwData::Composite::New();
-            ::fwData::String::sptr sTFBackup = ::fwData::String::New();
-
-            ::fwData::Composite::Container::iterator iterTF;
-            for (iterTF = cTF->getRefMap().begin() ; iterTF != cTF->getRefMap().end() ; ++iterTF)
-            {
-                //cTFBackup->getRefMap()[iterTF->first] = ::fwData::TransfertFunction::dynamicCast(iterTF->second)->clone();
-                ::fwData::TransfertFunction::NewSptr newTF;
-                newTF->deepCopy( iterTF->second );
-                cTFBackup->getRefMap()[iterTF->first] = newTF;
-            }
-            sTFBackup->value() = sTF->value();
-
-            pImageBackup->setFieldSingleElement(::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTFBackup);
-            pImageBackup->setFieldSingleElement(::fwComEd::Dictionary::m_transfertFunctionId, sTFBackup);
-
-            // clone min/max
-            int min = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_windowMinId)->value();
-            pImageBackup->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_windowMinId)->value() = min;
-
-            int max = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_windowMaxId)->value();
-            pImageBackup->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_windowMaxId)->value() = max;
-
-            // clone landmarks ???
-            // m�me question pour les distances ...
-        }
-        // clone axial slice index
-        if ((*acquisitionIter)->getImage()->getFieldSize( ::fwComEd::Dictionary::m_axialSliceIndexId ) )
-        {
-            int axialSliceIndex = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_axialSliceIndexId)->value();
-            pImageBackup->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_axialSliceIndexId)->value() = axialSliceIndex;
-        }
-        // clone frontal slice inde
-        if ((*acquisitionIter)->getImage()->getFieldSize( ::fwComEd::Dictionary::m_frontalSliceIndexId ) )
-        {
-            int frontalSliceIndex = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_frontalSliceIndexId)->value();
-            pImageBackup->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_frontalSliceIndexId)->value() = frontalSliceIndex;
-        }
-        // clone sagittal slice inde
-        if ((*acquisitionIter)->getImage()->getFieldSize( ::fwComEd::Dictionary::m_sagittalSliceIndexId ) )
-        {
-            int sagittalSliceIndex = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_sagittalSliceIndexId)->value();
-            pImageBackup->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_sagittalSliceIndexId)->value() = sagittalSliceIndex;
-        }
-        // clone comment
-        if ((*acquisitionIter)->getImage()->getFieldSize( ::fwComEd::Dictionary::m_commentId ) )
-        {
-            std::string comment = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
-            ::fwData::String::NewSptr commentField;
-            commentField->value() = comment;
-            pImageBackup->setFieldSingleElement( ::fwComEd::Dictionary::m_commentId, commentField);
-        }
-        // clone label
-        if ((*acquisitionIter)->getImage()->getFieldSize( ::fwComEd::Dictionary::m_imageLabelId ) )
-        {
-            std::string label = (*acquisitionIter)->getImage()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
-            ::fwData::String::NewSptr labelField;
-            labelField->value() =   label;
-            pImageBackup->setFieldSingleElement( ::fwComEd::Dictionary::m_imageLabelId, labelField);
-        }
-
         (*studyIter)->addAcquisition( pAquisitionBackup );
         bRes = true;
 

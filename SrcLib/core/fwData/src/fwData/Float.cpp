@@ -30,6 +30,7 @@ Float::~Float() throw()
 void Float::shallowCopy( Float::csptr _source )
 {
     ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_value = _source->m_value;
 }
 
 //------------------------------------------------------------------------------
@@ -37,6 +38,7 @@ void Float::shallowCopy( Float::csptr _source )
 void Float::deepCopy( Float::csptr _source )
 {
     ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_value = _source->m_value;
 }
 
 
