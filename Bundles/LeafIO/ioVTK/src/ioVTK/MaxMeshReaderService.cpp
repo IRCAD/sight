@@ -6,6 +6,9 @@
 
 #include <iostream>
 #include <fstream>
+#include <wx/string.h>
+#include <wx/filedlg.h>
+#include <wx/app.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -21,7 +24,6 @@
 #include <fwCore/base.hpp>
 
 #include <fwComEd/ModelMsg.hpp>
-
 
 #include "ioVTK/MaxMeshReaderService.hpp"
 
@@ -74,7 +76,7 @@ std::vector< std::string > MaxMeshReaderService::getSupportedExtensions()
 
 MaxMeshReaderService::~MaxMeshReaderService() throw()
 {
-    SLM_INFO( "[MaxMeshReaderService::~MaxMeshReaderService]");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +110,7 @@ void MaxMeshReaderService::configureWithIHM()
 
 void MaxMeshReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    SLM_INFO( "[MaxMeshReaderService::configure]");
+    SLM_TRACE_FUNC();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
@@ -180,12 +182,8 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
 
         }
         /// Notify reading
-//      ::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< ::fwServices::IEditionService >( model ) ;
-        //::boost::shared_ptr< ::fwServices::ObjectMsg > msg( new ::fwServices::ObjectMsg(model) ) ;
-        //msg->setAllModified( ) ;
         ::fwComEd::ModelMsg::NewSptr msg;;
         msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL ) ;
-//      editor->notify( msg );
         ::fwServices::IEditionService::notify(this->getSptr(), model, msg);
         importer1->Delete();
     }

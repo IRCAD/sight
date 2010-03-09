@@ -26,8 +26,8 @@
 
 namespace ioXML
 {
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("ioXML::Plugin");
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioXML::Plugin");
 
 Plugin::~Plugin() throw()
 {}

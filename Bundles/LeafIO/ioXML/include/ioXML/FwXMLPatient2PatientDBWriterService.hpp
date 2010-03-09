@@ -41,6 +41,8 @@ public :
      */
     IOXML_API virtual ~FwXMLPatient2PatientDBWriterService() throw();
 
+protected:
+
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
 

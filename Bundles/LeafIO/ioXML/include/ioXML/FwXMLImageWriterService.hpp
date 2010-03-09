@@ -42,6 +42,8 @@ public :
      */
     IOXML_API virtual ~FwXMLImageWriterService() throw();
 
+protected:
+
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
 

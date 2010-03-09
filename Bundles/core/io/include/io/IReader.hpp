@@ -7,8 +7,6 @@
 #ifndef _IO_IREADER_HPP_
 #define _IO_IREADER_HPP_
 
-#include <wx/wx.h>
-
 #include <fwServices/IService.hpp>
 
 #include "io/config.hpp"
@@ -67,7 +65,7 @@ public :
     /**
      * @brief   returns  the title of selector dialog box
      */
-    IO_API virtual wxString getSelectorDialogTitle();
+    IO_API virtual std::string getSelectorDialogTitle();
     //@}
 
 };

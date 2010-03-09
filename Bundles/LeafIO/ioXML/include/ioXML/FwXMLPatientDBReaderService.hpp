@@ -8,6 +8,7 @@
 #ifndef _IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_
 #define _IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_
 
+#include <wx/string.h>
 #include <string>
 #include <boost/filesystem/path.hpp>
 
@@ -44,6 +45,8 @@ public :
      */
     IOXML_API virtual ~FwXMLPatientDBReaderService() throw();
 
+protected:
+
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
 
@@ -66,7 +69,7 @@ public :
     IOXML_API virtual std::vector< std::string > getSupportedExtensions() ;
 
     /// Override
-    IOXML_API virtual wxString getSelectorDialogTitle();
+    IOXML_API virtual std::string getSelectorDialogTitle();
 
     /// Override
     IOXML_API virtual void configureWithIHM();
@@ -91,6 +94,6 @@ private :
 
 };
 
-} // namespace ioDicom
+} // namespace ioXML
 
 #endif //_IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_

@@ -109,7 +109,7 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwData::Image > FwXMLImageReaderService::createImage( const ::boost::filesystem::path inrFileDir )
+::fwData::Image::sptr FwXMLImageReaderService::createImage( const ::boost::filesystem::path inrFileDir )
 {
     SLM_TRACE("FwXMLImageReaderService::createImage");
     ::fwXML::reader::FwXMLObjectReader myLoader;
@@ -137,7 +137,7 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
         wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
     }
 
-    ::boost::shared_ptr< ::fwData::Image > pImage = ::boost::dynamic_pointer_cast< ::fwData::Image > ( myLoader.getObject() );
+    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( myLoader.getObject() );
 
     return pImage;
 }
@@ -150,14 +150,13 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
 
     if( m_bServiceIsConfigured )
     {
-        ::boost::shared_ptr< ::fwData::Image > image = createImage( m_fsImagePath );
+        ::fwData::Image::sptr image = createImage( m_fsImagePath );
 
         if ( image != NULL )
         {
 
             // Retrieve dataStruct associated with this service
-            ::boost::shared_ptr< ::fwTools::Object > associatedObject = this->getObject();
-            ::boost::shared_ptr< ::fwData::Image > associatedImage = ::boost::dynamic_pointer_cast< ::fwData::Image >( associatedObject ) ;
+            ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
             assert( associatedImage ) ;
 
             //( *( associatedImage ) ) = ( *( image.get() ) ) ;
@@ -191,7 +190,6 @@ void FwXMLImageReaderService::notificationOfDBUpdate()
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
     assert( pImage );
 
-//   ::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< fwServices::IEditionService >( pImage ) ;
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
     msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
@@ -199,7 +197,6 @@ void FwXMLImageReaderService::notificationOfDBUpdate()
     msg->addEvent( ::fwComEd::ImageMsg::SPACING ) ;
     msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE ) ;
 
-//  editor->notify( msg );
     ::fwServices::IEditionService::notify(this->getSptr(),  pImage, msg);
 }
 
