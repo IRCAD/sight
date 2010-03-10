@@ -22,6 +22,7 @@
 #include "ioXML/FwXMLPatientDBReaderService.hpp"
 #include "ioXML/FwXMLPatientDBWriterService.hpp"
 #include "ioXML/FwXMLPatient2PatientDBWriterService.hpp"
+#include <fwXML/ImageFileFormatService.hpp>
 
 
 namespace ioXML
@@ -40,6 +41,13 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLPatientDBReaderService , ::fwData::PatientDB ) ;
     REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLPatientDBWriterService , ::fwData::PatientDB ) ;
     REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLPatient2PatientDBWriterService , ::fwData::Patient ) ;
+
+
+    if ( this->getBundle()->hasParameter("defaultImageWriter") )
+    {
+        std::string libwriter(  this->getBundle()->getParameterValue("defaultImageWriter") ) ;
+        ::fwXML::ImageFileFormatService::setPreferedWriter( libwriter );
+    }
 
 }
 

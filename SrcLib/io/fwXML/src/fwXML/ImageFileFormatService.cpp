@@ -27,10 +27,12 @@ namespace fwXML
 {
 
 
+std::string ImageFileFormatService::m_preferedWriter;
+
 
 ImageFileFormatService::ImageFileFormatService()
 {
-    RWPoliciesInstall();
+	RWPoliciesInstall();
 }
 
 
@@ -40,58 +42,67 @@ ImageFileFormatService::~ImageFileFormatService()
 }
 
 
-
+void ImageFileFormatService::setPreferedWriter( std::string libwriter )
+{
+	m_preferedWriter = libwriter;
+}
 
 
 
 void ImageFileFormatService::RWPoliciesInstall()
 {
-    if ( m_reader.get() == 0 ) // reader not set
-    {
-        // try to install inrReader
-        ::boost::shared_ptr< ::fwDataIO::reader::IObjectReader > reader;
+	// try to install inrReader
+	::boost::shared_ptr< ::fwDataIO::reader::IObjectReader > reader;
 
-        reader = fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader, std::string >("::vtkIO::ImageReader" );
-        if(reader)
-        {
-            setReader(reader);
-        }
-        else
-        {
-            reader = fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader, std::string >( "::itkIO::ImageReader" );
-            if ( reader )
-            {
-                setReader( reader );
-            }
-            else
-            {
-                setReader( ::boost::shared_ptr< ::fwDataIO::reader::GzBufferImageReader >( new ::fwDataIO::reader::GzBufferImageReader() ));
-            }
-        }
-    }
-    if ( m_writer.get() == 0 ) // writer not set
-    {
-        // try to install inrWriterer
-         ::boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > writer;
-         writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::vtkIO::ImageWriter" );
-         if ( writer )
-         {
-             setWriter( writer );
-         }
-        else
-        {
-            writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::itkIO::ImageWriter" );
-            if ( writer )
-            {
-                setWriter( writer );
-            }
-            else
-            {
-                setWriter( ::boost::shared_ptr< ::fwDataIO::writer::GzBufferImageWriter >( new ::fwDataIO::writer::GzBufferImageWriter() ));
-            }
+	reader = fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader, std::string >("::vtkIO::ImageReader" );
+	if(reader)
+	{
+		setReader(reader);
+	}
+	else
+	{
+		reader = fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader, std::string >( "::itkIO::ImageReader" );
+		if ( reader )
+		{
+			setReader( reader );
+		}
+		else
+		{
+			setReader( ::boost::shared_ptr< ::fwDataIO::reader::GzBufferImageReader >( new ::fwDataIO::reader::GzBufferImageReader() ));
+		}
+	}
 
-        }
-    }
+
+	// try to install Writrer
+	 ::boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > writer;
+	 writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >(m_preferedWriter);
+	 OSLM_WARN_IF(" prefered Writer" << m_preferedWriter << " cannot be instanciated => use default one", !m_preferedWriter.empty() && !writer);
+	 if ( writer )
+	 {
+		 setWriter( writer );
+	 }
+	 else
+	 {
+		 writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::vtkIO::ImageWriter" );
+		 if ( writer )
+		 {
+			 setWriter( writer );
+		 }
+		else
+		{
+			writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::itkIO::ImageWriter" );
+			if ( writer )
+			{
+				setWriter( writer );
+			}
+			else
+			{
+				setWriter( ::boost::shared_ptr< ::fwDataIO::writer::GzBufferImageWriter >( new ::fwDataIO::writer::GzBufferImageWriter() ));
+			}
+
+		}
+	 }
+
 }
 
 
@@ -99,6 +110,7 @@ void ImageFileFormatService::RWPoliciesInstall()
  void ImageFileFormatService::load()
 {
     // precondition
+	RWPoliciesInstall();
 
     assert( !m_filename.empty() );
     // assert( !m_localFolder.empty() ); not mandatory can be loaded at root Folder
@@ -133,7 +145,7 @@ void ImageFileFormatService::save()
     assert( !m_filename.empty() );
     // assert( !m_localFolder.empty() ); not mandatory can be saved at root Folder
 
-    //RWPoliciesInstall();
+    RWPoliciesInstall();
     assert( m_writer );
 
      ::boost::shared_ptr< ::fwData::Image > image = this->getObject< ::fwData::Image >() ;
