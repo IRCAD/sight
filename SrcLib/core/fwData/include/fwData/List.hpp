@@ -32,7 +32,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< List >) ;
 
-    typedef std::vector< Object::sptr > Container;
+    typedef std::list< Object::sptr > Container;
 
     /// Constructor
     FWDATA_API List();
