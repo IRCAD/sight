@@ -32,7 +32,7 @@ void TransfertFunctionPointTest::tearDown()
 void TransfertFunctionPointTest::methode1()
 {
     //-----------test values
-    const ::fwData::Color::sptr COLOR(new ::fwData::Color(0.5f, 0.4f ,0.6f, 0.1f));
+    const ::fwData::Color::NewSptr COLOR(0.5f, 0.4f ,0.6f, 0.1f);
     const ::boost::int32_t INDEX = 32;
 
     ::fwData::TransfertFunctionPoint::NewSptr tfp;

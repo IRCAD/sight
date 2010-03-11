@@ -42,37 +42,37 @@ void StudyTest::methode1() //test des setters et getters
     const boost::int32_t  DBID  =156 ;
 
     // process
-    ::boost::shared_ptr< ::fwData::Study > p1 ( new ::fwData::Study);
-    p1->setCRefHospital(                    HOSPITAL);
-    p1->setCRefModality(                MODALITY);
-    p1->setCRefAcquisitionZone(             ZONE);
-    p1->setCRefRISId(                   RISID);
-    p1->setCRefUID(                 UID);
-    p1->setDbID(                    DBID);
+    ::fwData::Study::NewSptr p1;
+    p1->setCRefHospital        ( HOSPITAL );
+    p1->setCRefModality        ( MODALITY );
+    p1->setCRefAcquisitionZone ( ZONE     );
+    p1->setCRefRISId           ( RISID    );
+    p1->setCRefUID             ( UID      );
+    p1->setDbID                ( DBID     );
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital(),          HOSPITAL);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefHospital(),         HOSPITAL);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital(),          HOSPITAL);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital()        , HOSPITAL);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefHospital()       , HOSPITAL);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital()        , HOSPITAL);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getModality(),     MODALITY);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefModality(),     MODALITY);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefModality(),      MODALITY);
+    CPPUNIT_ASSERT_EQUAL(p1->getModality()           , MODALITY);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefModality()       , MODALITY);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefModality()        , MODALITY);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getAcquisitionZone(),      ZONE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefAcquisitionZone(),      ZONE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefAcquisitionZone(),       ZONE);
+    CPPUNIT_ASSERT_EQUAL(p1->getAcquisitionZone()    , ZONE);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefAcquisitionZone(), ZONE);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefAcquisitionZone() , ZONE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId(),             RISID);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefRISId(),                RISID);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId(),             RISID);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId()           , RISID);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefRISId()          , RISID);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId()           , RISID);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getUID(),      UID);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefUID(),      UID);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefUID(),       UID);
+    CPPUNIT_ASSERT_EQUAL(p1->getUID()                , UID);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefUID()            , UID);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefUID()             , UID);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getDbID(),         DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID(),         DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID(),          DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getDbID()               , DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID()           , DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID()            , DBID ) ;
 
 }
 
@@ -88,38 +88,38 @@ void StudyTest::methode2()
     const boost::int32_t  DBID  =156 ;
 
     // process
-    ::boost::shared_ptr< ::fwData::Study > p1 ( new ::fwData::Study);
-    p1->setCRefHospital(                    HOSPITAL);
-    p1->setCRefModality(                MODALITY);
-    p1->setCRefAcquisitionZone(             ZONE);
-    p1->setCRefRISId(                   RISID);
-    p1->setCRefUID(                 UID);
+    ::fwData::Study::NewSptr p1;
+    p1->setCRefHospital        ( HOSPITAL );
+    p1->setCRefModality        ( MODALITY );
+    p1->setCRefAcquisitionZone ( ZONE     );
+    p1->setCRefRISId           ( RISID    );
+    p1->setCRefUID             ( UID      );
     //test autre setter DbID
-    p1->setCRefDbID(                    DBID);
+    p1->setCRefDbID            ( DBID     );
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital(),          HOSPITAL);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefHospital(),         HOSPITAL);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital(),          HOSPITAL);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital()        , HOSPITAL);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefHospital()       , HOSPITAL);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefHospital()        , HOSPITAL);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getModality(),     MODALITY);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefModality(),     MODALITY);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefModality(),      MODALITY);
+    CPPUNIT_ASSERT_EQUAL(p1->getModality()           , MODALITY);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefModality()       , MODALITY);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefModality()        , MODALITY);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getAcquisitionZone(),      ZONE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefAcquisitionZone(),      ZONE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefAcquisitionZone(),       ZONE);
+    CPPUNIT_ASSERT_EQUAL(p1->getAcquisitionZone()    , ZONE);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefAcquisitionZone(), ZONE);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefAcquisitionZone() , ZONE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId(),             RISID);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefRISId(),                RISID);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId(),             RISID);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId()           , RISID);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefRISId()          , RISID);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefRISId()           , RISID);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getUID(),      UID);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefUID(),      UID);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefUID(),       UID);
+    CPPUNIT_ASSERT_EQUAL(p1->getUID()                , UID);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefUID()            , UID);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefUID()             , UID);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getDbID(),         DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID(),         DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID(),          DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getDbID()               , DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID()           , DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID()            , DBID ) ;
 
 }
 
@@ -128,8 +128,10 @@ void StudyTest::methode2()
 void StudyTest::addAcquisition()
 {
     boost::uint32_t  NB = 0 ;
-    ::boost::shared_ptr< ::fwData::Study > s1 ( new ::fwData::Study);
-    ::boost::shared_ptr< ::fwData::Acquisition > a1 ( new ::fwData::Acquisition);
+
+    ::fwData::Study::NewSptr s1;
+    ::fwData::Acquisition::NewSptr a1;
+
     //check
     CPPUNIT_ASSERT_EQUAL(s1->getAcquisitionSize(),  NB );
 
