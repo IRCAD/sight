@@ -31,12 +31,18 @@ public :
     typedef float ColorType;
     typedef ::boost::array<ColorType,4> ColorArray;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Color)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Color > ) ;
+    fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object::Baseclass),
+       ((::fwTools::Factory::New< Color > ,() ))
+       ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
+       );
 
     /// Constructor
     FWDATA_API Color();
     /// Constructor
     FWDATA_API Color(ColorType red, ColorType green=1.0, ColorType blue=1.0, ColorType alpha=1.0);
+    
+    static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
+
     /// Destructor
     FWDATA_API virtual ~Color();
 

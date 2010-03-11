@@ -35,20 +35,17 @@ class FWDATA_CLASS_API GenericField : public Object
 public:
     fwCoreClassDefinitionsWithNFactoriesMacro( (GenericField<T>)(::fwData::Object::Baseclass),
        ((::fwTools::Factory::New< GenericField<T> > ,() ))
-       //((GenericFieldFactory<T>  ,((T)) ))
+       ((GenericFieldFactory  ,((const  T)) ))
        );
 
 
     typedef T ValueType;
 
     template< typename GT >
-    static typename GT::sptr GenericFieldFactory(const typename GT::ValueType value)
-    {
-        typename GT::sptr field;
-        field = ::fwTools::Factory::New< GT >();
-        field->value() = value;
-        return field;
-    }
+    static typename GT::sptr GenericFieldFactory(const typename GT::ValueType value);
+
+    static sptr GenericFieldFactory(const T value);
+
 
     /**
      * @brief Constructor.
@@ -76,6 +73,28 @@ protected:
     /// @brief The stored value.
     T m_value;
 };
+
+
+
+
+template< typename T >
+template< typename GT >
+typename GT::sptr GenericField<T>::GenericFieldFactory(const typename GT::ValueType value)
+{
+    typename GT::sptr field;
+    field = ::fwTools::Factory::New< GT >();
+    field->value() = value;
+    return field;
+}
+
+template< typename T >
+typename GenericField<T>::sptr GenericField<T>::GenericFieldFactory(const T value)
+{
+    typename GenericField<T>::sptr field;
+    field = GenericFieldFactory< GenericField<T> >(value);
+    field->value() = value;
+    return field;
+}
 
 
 
