@@ -252,7 +252,6 @@ void NegatoSlicingInteractor::configuring() throw(fwTools::Failed)
     SLM_ASSERT("Tag config is required", m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
-
 }
 
 //-----------------------------------------------------------------------------
@@ -385,6 +384,8 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 {

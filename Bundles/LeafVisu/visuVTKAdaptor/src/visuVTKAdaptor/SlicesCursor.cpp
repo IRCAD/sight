@@ -23,6 +23,7 @@
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkLine.h> // CELL
+#include <vtkTransform.h>
 
 #include <fwCore/base.hpp>
 
@@ -79,7 +80,10 @@ void SlicesCursor::configuring() throw(fwTools::Failed)
         SLM_ASSERT("scale attribute must be in a config", m_configuration->getName() == "config");
         m_scale = ::boost::lexical_cast<double>(scaleStr);
     }
-
+    if(m_configuration->hasAttribute("transform") )
+    {
+        this->setTransformId( m_configuration->getAttributeValue("transform") );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -99,6 +103,10 @@ void SlicesCursor::doStart() throw(fwTools::Failed)
     updateColors();
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
+    if(!this->getTransformId().empty())
+    {
+        m_cursorActor->SetUserTransform(this->getTransform());
+    }
     this->addToRenderer(m_cursorActor);
     this->setVtkPipelineModified();
 }

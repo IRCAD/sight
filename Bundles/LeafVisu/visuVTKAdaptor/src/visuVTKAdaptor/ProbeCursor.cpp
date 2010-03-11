@@ -37,7 +37,7 @@
 #include <vtkPolyData.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
-
+#include <vtkTransform.h>
 
 #include "fwRenderVTK/vtk/Helpers.hpp"
 #include "visuVTKAdaptor/ImageText.hpp"
@@ -203,7 +203,10 @@ void ProbeCursor::configuring() throw(fwTools::Failed)
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
-
+    if(m_configuration->hasAttribute("transform") )
+    {
+        this->setTransformId( m_configuration->getAttributeValue("transform") );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -239,6 +242,10 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,0,0);
+    if(!this->getTransformId().empty())
+    {
+        m_cursorActor->SetUserTransform(this->getTransform());
+    }
     this->addToRenderer(m_cursorActor);
 
     ProbingCallback *observer = ProbingCallback::New();

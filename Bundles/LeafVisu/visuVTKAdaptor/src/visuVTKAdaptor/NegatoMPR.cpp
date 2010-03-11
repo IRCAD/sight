@@ -266,6 +266,10 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
              m_orientation = X_AXIS;
          }
     }
+    if(m_configuration->hasAttribute("transform") )
+    {
+        this->setTransformId( m_configuration->getAttributeValue("transform") );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -324,6 +328,7 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     service->setRenderService(this->getRenderService());
     service->setRenderId( this->getRenderId() );
     service->setPickerId( this->getPickerId() );
+    service->setTransformId( this->getTransformId() );
 
     service->start();
     service->update();

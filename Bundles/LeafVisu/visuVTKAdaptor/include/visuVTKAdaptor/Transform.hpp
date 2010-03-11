@@ -41,8 +41,6 @@ protected:
     // manage only "ShowReconstructions" Field
     VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
-private:
-    bool bForceRender;
 };
 
 

@@ -26,6 +26,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkImageActor.h>
 #include <vtkCellArray.h>
+#include <vtkTransform.h>
 
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 
@@ -290,6 +291,10 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
              m_orientation = X_AXIS;
          }
     }
+    if(m_configuration->hasAttribute("transform") )
+    {
+        this->setTransformId( m_configuration->getAttributeValue("transform") );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -370,12 +375,15 @@ void NegatoOneSlice::setSlice( int slice )
 
 void NegatoOneSlice::buildPipeline( )
 {
-
     m_map2colors->SetLookupTable(m_lut);
     m_imageActor->SetInput(m_map2colors->GetOutput());
+    if(!this->getTransformId().empty())
+    {
+        m_imageActor->SetUserTransform(this->getTransform());
+    }
 //  m_imageActor->InterpolateOff();
     buildOutline();
-    setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -414,7 +422,11 @@ void NegatoOneSlice::buildOutline()
     m_planeOutlineMapper->SetResolveCoincidentTopologyToPolygonOffset();
     m_planeOutlineActor->SetMapper(m_planeOutlineMapper);
     m_planeOutlineActor->PickableOff();
-    setVtkPipelineModified();
+    if(!this->getTransformId().empty())
+    {
+        m_planeOutlineActor->SetUserTransform(this->getTransform());
+    }
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------

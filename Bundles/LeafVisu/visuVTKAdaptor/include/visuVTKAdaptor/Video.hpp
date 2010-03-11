@@ -50,7 +50,6 @@ private:
     vtkTexture* m_texture ;
 
     bool bText_init;
-    bool bForceRender;
 //  enum ARL_VIDEO_FLIP { VIDEO_FLIP_VERTICAL, VIDEO_FLIP_HORIZONTAL, VIDEO_FLIP_RADIAL, VIDEO_NBFLIP };
 
 };
