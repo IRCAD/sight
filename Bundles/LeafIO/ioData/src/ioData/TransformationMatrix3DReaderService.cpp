@@ -17,6 +17,7 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 #include <fwServices/macros.hpp>
+#include <fwWX/convert.hpp>
 
 #include <fstream>
 #include <fwCore/base.hpp>
@@ -101,8 +102,8 @@ void TransformationMatrix3DReaderService::configureWithIHM()
 
     if( file.IsEmpty() == false )
     {
-        m_filename = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
-        _sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
+        m_filename = ::boost::filesystem::path( ::fwWX::wx2std(file), ::boost::filesystem::native );
+        _sDefaultPath = ::fwWX::std2wx( m_filename.branch_path().string() );
         m_bServiceIsConfigured = true;
     }
 }
@@ -119,7 +120,7 @@ void TransformationMatrix3DReaderService::stopping() throw(::fwTools::Failed)
 void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if(m_bServiceIsConfigured)
     {
         // Retrieve object
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );

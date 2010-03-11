@@ -25,6 +25,8 @@
 
 #include <fwComEd/ModelMsg.hpp>
 
+#include <fwWX/convert.hpp>
+
 #include "ioVTK/MaxMeshReaderService.hpp"
 
 REGISTER_SERVICE( ::io::IReader , ::ioVTK::MaxMeshReaderService , ::fwData::Model );
@@ -100,9 +102,9 @@ void MaxMeshReaderService::configureWithIHM()
 
     if( folder.IsEmpty() == false)
     {
-        m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
+        m_fsMeshPath = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
+        _sDefaultPath = ::fwWX::std2wx( m_fsMeshPath.branch_path().string() );
     }
 }
 
@@ -129,10 +131,9 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
         /// Retrieve object
         ::fwData::Model::sptr model = this->getObject< ::fwData::Model >( );
         assert( model ) ;
+        ::fwData::Model::NewSptr backupModel;
+        backupModel->shallowCopy(model);
         model->getRefMap().clear();
-        /// Retrieve Reader for location
-        ::io::IReader *readerInfo = dynamic_cast< ::io::IReader *>( this ) ;
-        assert( readerInfo ) ;
 
         vtk3DSImporter *importer1 = vtk3DSImporter::New();
         importer1->SetFileName(m_fsMeshPath.native_file_string().c_str());
@@ -183,7 +184,7 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
         }
         /// Notify reading
         ::fwComEd::ModelMsg::NewSptr msg;;
-        msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL ) ;
+        msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL, backupModel ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), model, msg);
         importer1->Delete();
     }

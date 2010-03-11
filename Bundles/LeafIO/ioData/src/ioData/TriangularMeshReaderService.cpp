@@ -18,6 +18,8 @@
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 
+#include <fwWX/convert.hpp>
+
 #include <fwDataIO/reader/TriangularMeshReader.hpp>
 
 #include <fwComEd/TriangularMeshMsg.hpp>
@@ -29,7 +31,9 @@ REGISTER_SERVICE( ::io::IReader , ::ioData::TriangularMeshReaderService , ::fwDa
 namespace ioData
 {
 
-TriangularMeshReaderService::TriangularMeshReaderService()
+TriangularMeshReaderService::TriangularMeshReaderService():
+        m_fsMeshPath (""),
+        m_bServiceIsConfigured(false)
 {
 }
 
@@ -65,7 +69,8 @@ void TriangularMeshReaderService::configuring( ) throw(::fwTools::Failed)
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
         OSLM_INFO( "TriangularMeshReaderService::configure filename: " << filename );
-        m_fsMeshPath = boost::filesystem::path( filename ) ;
+        m_fsMeshPath = ::boost::filesystem::path( filename ) ;
+        m_bServiceIsConfigured = true;
     }
 }
 
@@ -74,7 +79,7 @@ void TriangularMeshReaderService::configuring( ) throw(::fwTools::Failed)
 void TriangularMeshReaderService::configureWithIHM()
 {
     static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an TrianMesh file");
+    wxString title = _("Choose an transformation matrix file");
     wxString folder = wxFileSelector(
             title,
             _sDefaultPath,
@@ -86,8 +91,9 @@ void TriangularMeshReaderService::configureWithIHM()
 
     if( folder.IsEmpty() == false)
     {
-        m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-        _sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
+        m_fsMeshPath = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
+        _sDefaultPath = ::fwWX::std2wx( m_fsMeshPath.branch_path().string() );
+        m_bServiceIsConfigured = true;
     }
 }
 
@@ -95,9 +101,8 @@ void TriangularMeshReaderService::configureWithIHM()
 
 void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
 {
-    SLM_INFO("[TriangularMeshReaderService::update]");
-
-    if (::boost::filesystem::exists(m_fsMeshPath))
+    SLM_TRACE_FUNC();
+    if(m_bServiceIsConfigured)
     {
         // Retrieve object
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
@@ -114,4 +119,5 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
         ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
     }
 }
+
 }
