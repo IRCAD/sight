@@ -90,6 +90,19 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
             SLM_ASSERT("service not found", service);
             switch ( action )
             {
+            case START_OR_STOP:
+            {
+                if(service->isStopped())
+                {
+                    service->start();
+                    service->update();
+                }
+                else
+                {
+                    service->stop();
+                }
+                break;
+            }
             case START :
             {
                 if(service->isStopped())
@@ -143,6 +156,7 @@ void StarterActionService::configuring() throw( ::fwTools::Failed )
         ActionType action;
         if ( actionType == "start" )                { action = START; }
         else if ( actionType == "stop" )            { action = STOP; }
+        else if ( actionType == "start_or_stop" )   { action = START_OR_STOP; }
         else if ( actionType == "start_if_exists" ) { action = START_IF_EXISTS; }
         else if ( actionType == "stop_if_exists" )  { action = STOP_IF_EXISTS; }
         else

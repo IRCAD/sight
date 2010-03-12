@@ -16,7 +16,7 @@ namespace opVTKMesh
 
 
 /**
- * @brief   Implements a plugin for the basicVRCtrl bundle.
+ * @brief   Implements a plugin for the opVTKMesh bundle.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {

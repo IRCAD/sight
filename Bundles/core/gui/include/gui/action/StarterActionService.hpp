@@ -46,6 +46,7 @@ protected:
     enum ActionType {
         START,
         STOP,
+        START_OR_STOP,
         START_IF_EXISTS,
         STOP_IF_EXISTS,
         DO_NOTHING
