@@ -4,7 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwData/location/SingleFile.hpp"
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::location::SingleFile, ::fwData::location::SingleFile);
 
 namespace fwData {
 namespace location {
