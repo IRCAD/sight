@@ -3,18 +3,15 @@
 // Visual Studio 2005 generates the manifest automatically and so we
 // shouldn't include it in the resources manually: 
 //////////////////////////////////////////////////////////////////////////////
-#if _MSC_VER < 140040130
-
-	// see "about isolated applications" topic in MSDN
-	#ifdef ISOLATION_AWARE_ENABLED
-		#define MANIFEST_ID 2
-	#else
-		#define MANIFEST_ID 1
-	#endif
-	
-	MANIFEST_ID 24 "x86.manifest"
-
-#endif // _MSC_VER < 140040130
+#if _MSC_VER <= 1400
+    // see "about isolated applications" topic in MSDN
+    #ifdef ISOLATION_AWARE_ENABLED
+        #define MANIFEST_ID 2
+    #else
+        #define MANIFEST_ID 1
+    #endif
+    MANIFEST_ID 24 "x86.manifest"
+#endif // _MSC_VER <= 1400
 
 // First wx icon in alphabetical order, so it will be used by Explorer if the
 // application doesn't have any icons of its own
