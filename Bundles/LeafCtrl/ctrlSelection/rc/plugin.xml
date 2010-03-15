@@ -63,6 +63,11 @@
         <implements>::fwData::Composite</implements>
     </point>
     
+   <point id="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
     <point id="::ctrlSelection::manager::SwapperSrv">
         <implements>::ctrlSelection::IManagerSrv</implements>
         <implements>::fwData::Composite</implements>
