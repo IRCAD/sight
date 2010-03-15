@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_FLOATMSG_HPP_
-#define _FWCOMED_FLOATMSG_HPP_
+#ifndef _FWCOMED_INTEGERMSG_HPP_
+#define _FWCOMED_INTEGERMSG_HPP_
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -16,18 +16,18 @@ namespace fwComEd
 {
 
 /**
- * @brief   Object event message specialized for float field : store modification information
- * @class   FloatMsg
+ * @brief   Object event message specialized for integer field : store modification information
+ * @class   IntegerMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
-class FWCOMED_CLASS_API FloatMsg : public fwServices::ObjectMsg
+class FWCOMED_CLASS_API IntegerMsg : public fwServices::ObjectMsg
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((FloatMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new FloatMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((IntegerMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new IntegerMsg );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
@@ -35,16 +35,16 @@ public:
     /**
      * @brief   Constructor : does nothing.
      */
-    FWCOMED_API FloatMsg() throw();
+    FWCOMED_API IntegerMsg() throw();
 
     /**
      * @brief   Destructor : does nothing.
      */
-    FWCOMED_API virtual ~FloatMsg() throw();
+    FWCOMED_API virtual ~IntegerMsg() throw();
 };
 
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_FloatMSG_HPP_
+#endif //_FWCOMED_INTEGERMSG_HPP_
 

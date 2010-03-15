@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_FLOATMSG_HPP_
-#define _FWCOMED_FLOATMSG_HPP_
+#ifndef _FWCOMED_LOCATIONMSG_HPP_
+#define _FWCOMED_LOCATIONMSG_HPP_
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -16,35 +16,35 @@ namespace fwComEd
 {
 
 /**
- * @brief   Object event message specialized for float field : store modification information
- * @class   FloatMsg
+ * @brief   Object event message specialized for location object : store modification information
+ * @class   LocationMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
-class FWCOMED_CLASS_API FloatMsg : public fwServices::ObjectMsg
+class FWCOMED_CLASS_API LocationMsg : public fwServices::ObjectMsg
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((FloatMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new FloatMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((LocationMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new LocationMsg );
 
     /// Event identifier used to inform that the value is modified.
-    FWCOMED_API static std::string VALUE_IS_MODIFIED;
+    FWCOMED_API static std::string LOCATION_IS_MODIFIED;
 
     /**
      * @brief   Constructor : does nothing.
      */
-    FWCOMED_API FloatMsg() throw();
+    FWCOMED_API LocationMsg() throw();
 
     /**
      * @brief   Destructor : does nothing.
      */
-    FWCOMED_API virtual ~FloatMsg() throw();
+    FWCOMED_API virtual ~LocationMsg() throw();
 };
 
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_FloatMSG_HPP_
+#endif //_FWCOMED_LOCATIONMSG_HPP_
 
