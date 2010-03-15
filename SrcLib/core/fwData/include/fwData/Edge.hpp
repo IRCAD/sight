@@ -56,6 +56,9 @@ public:
     /// @brief return "to" identifier
     FWDATA_API std::string getToPortID() const;
 
+    /// @brief return "to or from" identifier accroding to upStream
+    FWDATA_API std::string getPortID(bool upStream) const;
+
     /// @brief Set edge nature ("FLOW" , "FWDATA")
     FWDATA_API void setNature(std::string nature);
 

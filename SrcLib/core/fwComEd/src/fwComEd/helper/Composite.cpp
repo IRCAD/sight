@@ -82,7 +82,7 @@ void Composite::notify( ::fwServices::IService::sptr _serviceSource )
 {
     if ( m_compositeMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg );
+        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg , ::fwServices::ComChannelService::NOTIFY_SOURCE );
     }
     else
     {
