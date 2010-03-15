@@ -35,6 +35,7 @@ SelectedNodeIOUpdaterSrv::SelectedNodeIOUpdaterSrv() throw()
 {
 	 m_managedEvents.push_back( ::fwComEd::GraphMsg::SELECTED_NODE );
 	 addNewHandledEvent( ::fwComEd::GraphMsg::SELECTED_NODE );
+	 m_upStream = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -46,7 +47,7 @@ SelectedNodeIOUpdaterSrv::~SelectedNodeIOUpdaterSrv() throw()
 
 void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-	OSLM_WARN("YYY SelectedNodeIOUpdaterSrv::updating " <<  _msg->getGeneralInfo() );
+	OSLM_TRACE("SelectedNodeIOUpdaterSrv::updating " <<  _msg->getGeneralInfo() );
 
 	::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 	::fwData::Graph::csptr cgraph = ::fwData::Graph::dynamicConstCast( _msg->getSubject().lock() );
@@ -68,46 +69,19 @@ void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) t
 
 
 
-	bool upStream=true;
     std::vector< ::fwData::Edge::sptr > dataEdges;
-    dataEdges = graph->getEdges( node, upStream,  ::fwData::Edge::NATURE_DATA ,"");
+    dataEdges = graph->getEdges( node, m_upStream,  ::fwData::Edge::NATURE_DATA );
 
     BOOST_FOREACH( ::fwData::Edge::sptr dataEdge , dataEdges )
     {
-    	::fwData::Node::sptr dataNode = graph->getSourceNode( dataEdge );
-		 std::string compositeKey = dataEdge->getPortID(!upStream);
+    	::fwData::Node::sptr dataNode = graph->getNode( dataEdge , m_upStream );
+		 std::string compositeKey = dataEdge->getPortID(!m_upStream);
 		 compositeHelper.add( compositeKey , dataNode->getObject() );
     }
     compositeHelper.notify( this->getSptr() );
 
 
-//    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-//    for (   ManagedEvents::iterator it = m_managedEvents.begin();
-//            it != m_managedEvents.end();
-//            ++it )
-//    {
-//    	std::string event         = it->get<0>();
-//    	std::string uuid          = it->get<1>();
-//    	std::string compositeKey  = it->get<2>();
-//    	ctrlSelection::IUpdaterSrv::ActionType action        = it->get<3>();
-//
-//        //  test if message correspond to a defined event
-//        if( _msg->hasEvent( event ) )
-//        {
-//            ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast( _msg->getSubject().lock() );
-//            SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
-//
-//            // Test if we manage this event from this object message uid
-//            if( obj->getUUID() == uuid )
-//            {
-//            	::fwData::Object::sptr dataInfo = ::boost::const_pointer_cast< ::fwData::Object >(_msg->getDataInfo(  event ));
-//            	SLM_ASSERT("no dataInfo set!!!" ,  dataInfo );
-//                // Udpate the composite object referenced by the composite key
-//            	OSLM_WARN("YYYYYYY SelectedNodeIOUpdaterSrv::updating");
-//                this->updateComposite(composite, dataInfo , compositeKey , action );
-//            }
-//        }
-//    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +101,13 @@ void SelectedNodeIOUpdaterSrv::stopping()  throw ( ::fwTools::Failed )
 void SelectedNodeIOUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    //this->configureManagedEvents(m_configuration);
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    std::vector < ConfigurationType > vectConfig = m_configuration->find("mode");
+    SLM_ASSERT("Missing <mode> tag!", !vectConfig.empty());
+    std::string modeval = vectConfig.at(0)->getValue(); // "input" or "output"
+    m_upStream = modeval=="input"?true:false;
+
+
 }
 
 //-----------------------------------------------------------------------------

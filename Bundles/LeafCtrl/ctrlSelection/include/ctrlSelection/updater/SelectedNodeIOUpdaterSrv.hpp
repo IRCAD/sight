@@ -57,6 +57,9 @@ protected:
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+
+    /// to sepcify if the updater manage input (upStream=true) or output (default)
+    bool  m_upStream;
 };
 
 } // updater
