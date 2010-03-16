@@ -40,6 +40,7 @@ public:
     FWCOMED_API static std::string REMOVE_EDGE;
     FWCOMED_API static std::string SELECTED_NODE;
     FWCOMED_API static std::string SELECTED_OPERATOR;
+    FWCOMED_API static std::string EXECUTE_GRAPH;
 
     /**
       * @brief  Constructor : does nothing.
