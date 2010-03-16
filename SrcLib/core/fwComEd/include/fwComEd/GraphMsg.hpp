@@ -39,6 +39,7 @@ public:
     FWCOMED_API static std::string ADD_EDGE;
     FWCOMED_API static std::string REMOVE_EDGE;
     FWCOMED_API static std::string SELECTED_NODE;
+    FWCOMED_API static std::string SELECTED_OPERATOR;
 
     /**
       * @brief  Constructor : does nothing.
