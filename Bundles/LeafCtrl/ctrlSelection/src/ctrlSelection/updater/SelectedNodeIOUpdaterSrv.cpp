@@ -33,9 +33,9 @@ REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::Select
 
 SelectedNodeIOUpdaterSrv::SelectedNodeIOUpdaterSrv() throw()
 {
-//	 m_managedEvents.push_back( ::fwComEd::GraphMsg::SELECTED_NODE );
-	 addNewHandledEvent( ::fwComEd::GraphMsg::SELECTED_NODE );
-	 m_upStream = false;
+//   m_managedEvents.push_back( ::fwComEd::GraphMsg::SELECTED_NODE );
+    addNewHandledEvent( ::fwComEd::GraphMsg::SELECTED_NODE );
+    m_upStream = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -47,25 +47,25 @@ SelectedNodeIOUpdaterSrv::~SelectedNodeIOUpdaterSrv() throw()
 
 void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-	OSLM_TRACE("SelectedNodeIOUpdaterSrv::updating " <<  _msg->getGeneralInfo() );
+    OSLM_TRACE("SelectedNodeIOUpdaterSrv::updating " <<  _msg->getGeneralInfo() );
 
-	::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-	::fwData::Graph::csptr cgraph = ::fwData::Graph::dynamicConstCast( _msg->getSubject().lock() );
-	::fwData::Graph::sptr graph   = ::boost::const_pointer_cast< ::fwData::Graph >( cgraph );
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    ::fwData::Graph::csptr cgraph = ::fwData::Graph::dynamicConstCast( _msg->getSubject().lock() );
+    ::fwData::Graph::sptr graph   = ::boost::const_pointer_cast< ::fwData::Graph >( cgraph );
 
-	::fwComEd::GraphMsg::csptr  msg = ::fwComEd::GraphMsg::dynamicConstCast( _msg );
-	OSLM_ASSERT( "not a SELECTED_NODE msg from Graph", msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) );
+    ::fwComEd::GraphMsg::csptr  msg = ::fwComEd::GraphMsg::dynamicConstCast( _msg );
+    OSLM_ASSERT( "not a SELECTED_NODE msg from Graph", msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) );
 
-	::fwData::Node::csptr cnode = msg->getSelectedNode();
-	::fwData::Node::sptr node =  ::boost::const_pointer_cast< ::fwData::Node >( cnode );
+    ::fwData::Node::csptr cnode = msg->getSelectedNode();
+    ::fwData::Node::sptr node =  ::boost::const_pointer_cast< ::fwData::Node >( cnode );
 
 
-	::fwComEd::helper::Composite compositeHelper( composite );
-	// remove previous data
-	while ( !composite->getRefMap().empty() )
-	{
-		compositeHelper.remove( composite->getRefMap().begin()->first );
-	}
+    ::fwComEd::helper::Composite compositeHelper( composite );
+    // remove previous data
+    while ( !composite->getRefMap().empty() )
+    {
+        compositeHelper.remove( composite->getRefMap().begin()->first );
+    }
 
 
 
@@ -74,9 +74,9 @@ void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) t
 
     BOOST_FOREACH( ::fwData::Edge::sptr dataEdge , dataEdges )
     {
-    	::fwData::Node::sptr dataNode = graph->getNode( dataEdge , m_upStream );
-		 std::string compositeKey = dataEdge->getPortID(!m_upStream);
-		 compositeHelper.add( compositeKey , dataNode->getObject() );
+        ::fwData::Node::sptr dataNode = graph->getNode( dataEdge , m_upStream );
+         std::string compositeKey = dataEdge->getPortID(!m_upStream);
+         compositeHelper.add( compositeKey , dataNode->getObject() );
     }
     compositeHelper.notify( this->getSptr() );
 
