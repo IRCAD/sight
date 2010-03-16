@@ -33,7 +33,7 @@ REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::Select
 
 SelectedNodeIOUpdaterSrv::SelectedNodeIOUpdaterSrv() throw()
 {
-	 m_managedEvents.push_back( ::fwComEd::GraphMsg::SELECTED_NODE );
+//	 m_managedEvents.push_back( ::fwComEd::GraphMsg::SELECTED_NODE );
 	 addNewHandledEvent( ::fwComEd::GraphMsg::SELECTED_NODE );
 	 m_upStream = false;
 }
