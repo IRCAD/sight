@@ -45,6 +45,10 @@ public :
      */
     IOXML_API virtual ~FwXMLPatientDBReaderService() throw();
 
+    /// Simple API to convert wxString to boost path and valid the
+    //configuration
+    void fixFilename(wxString _filename);
+
 protected:
 
     /// Override
@@ -73,10 +77,6 @@ protected:
 
     /// Override
     IOXML_API virtual void configureWithIHM();
-
-    /// Simple API to convert wxString to boost path and valid the
-    //configuration
-    void fixFilename(wxString _filename);
 
 private :
 
