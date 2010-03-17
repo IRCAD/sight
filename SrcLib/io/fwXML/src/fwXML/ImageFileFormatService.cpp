@@ -110,7 +110,7 @@ void ImageFileFormatService::RWPoliciesInstall()
  void ImageFileFormatService::load()
 {
     // precondition
-	RWPoliciesInstall();
+	// WPoliciesInstall();
 
     assert( !m_filename.empty() );
     // assert( !m_localFolder.empty() ); not mandatory can be loaded at root Folder
