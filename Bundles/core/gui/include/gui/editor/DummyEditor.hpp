@@ -45,6 +45,11 @@ public :
 
 protected:
 
+    /**
+     * @brief optionnal text
+     */
+    std::string m_text;
+
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
      */
