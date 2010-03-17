@@ -115,13 +115,13 @@ void Node::shallowCopy( Node::csptr _source )
     BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
     {
         ::fwData::Port::NewSptr newPort;
-        newPort->deepCopy( newPort );
+        newPort->deepCopy( port );
         this->addInputPort(newPort);
     }
     BOOST_FOREACH(::fwData::Port::sptr port, _source->m_outputs)
     {
         ::fwData::Port::NewSptr newPort;
-        newPort->deepCopy( newPort );
+        newPort->deepCopy( port );
         this->addOutputPort(newPort);
     }
 }
