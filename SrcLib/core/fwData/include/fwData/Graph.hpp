@@ -154,11 +154,11 @@ public:
      * @param[in] _node node associated with the edges
      * @param[in] _upStream if true _node is a source node, else _node is a destination node
      * @param[in] _nature if nature is an empty string : no check on nature of edge
-     * @param[in] _portID if portID not specified (no check) : porID muts be an BoolupStream port of given node
+     * @param[in] _portID if portID not specified (no check) : porID must be an BoolupStream port of given node
      *
      * @return the vector of all edges with correct nature and portID where _node is a source/destination node
      */
-    FWDATA_API std::vector< Edge::sptr > getEdges(Node::sptr _node, bool _upStream,std::string _nature="",  std::string _portID="");
+    FWDATA_API std::vector< Edge::sptr > getEdges(Node::sptr _node, bool _upStream, std::string _nature="",  std::string _portID="");
 
     /**
      * @brief Get a vector of nodes

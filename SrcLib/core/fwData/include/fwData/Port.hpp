@@ -33,7 +33,11 @@ public:
 
     fwGettersSettersDocMacro(Type, type, std::string, the port type (example : "Image", "Mesh", a %data className));
 
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Port::csptr _source );
 
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Port::csptr _source );
 
 protected :
 

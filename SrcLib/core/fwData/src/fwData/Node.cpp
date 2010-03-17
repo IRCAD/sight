@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwTools/ClassRegistrar.hpp>
 
 #include "fwData/Port.hpp"
@@ -11,17 +13,20 @@
 #include "fwData/Node.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Node, ::fwData::Node );
-namespace fwData {
+
+namespace fwData
+{
 //------------------------------------------------------------------------------
 
-Node::Node() {
+Node::Node()
+{
     // TODO Auto-generated constructor stub
-
 }
 
 //------------------------------------------------------------------------------
 
-Node::~Node() {
+Node::~Node()
+{
     // TODO Auto-generated destructor stub
 }
 
@@ -92,6 +97,62 @@ Port::sptr Node::findPort(const std::string &identifier, /*const std::string &ty
         }
     }
     return Port::sptr();
+}
+
+//------------------------------------------------------------------------------
+
+void Node::shallowCopy( Node::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+
+    this->m_inputs.clear();
+    this->m_outputs.clear();
+
+    ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
+    OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
+    this->m_object = ::fwData::Object::dynamicCast(object);
+
+    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
+    {
+        ::fwData::Port::NewSptr newPort;
+        newPort->deepCopy( newPort );
+        this->addInputPort(newPort);
+    }
+    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_outputs)
+    {
+        ::fwData::Port::NewSptr newPort;
+        newPort->deepCopy( newPort );
+        this->addOutputPort(newPort);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Node::deepCopy( Node::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+
+    this->m_inputs.clear();
+    this->m_outputs.clear();
+
+    ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
+    OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
+    this->m_object = ::fwData::Object::dynamicCast(object);
+
+    this->m_object->deepCopy(_source->m_object);
+
+    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
+    {
+        ::fwData::Port::NewSptr newPort;
+        newPort->deepCopy( port );
+        this->addInputPort(newPort);
+    }
+    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_outputs)
+    {
+        ::fwData::Port::NewSptr newPort;
+        newPort->deepCopy( port );
+        this->addOutputPort(newPort);
+    }
 }
 
 //------------------------------------------------------------------------------

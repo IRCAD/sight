@@ -16,7 +16,9 @@
 #include "fwData/Graph.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Graph,  ::fwData::Graph);
-namespace fwData {
+
+namespace fwData
+{
 
 const bool Graph::UP_STREAM = true;
 const bool Graph::DOWN_STREAM = false;
