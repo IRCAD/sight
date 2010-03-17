@@ -39,6 +39,7 @@ public:
     FWCOMED_API static std::string ADD_EDGE;
     FWCOMED_API static std::string REMOVE_EDGE;
     FWCOMED_API static std::string SELECTED_NODE;
+    FWCOMED_API static std::string UNSELECTED_NODE;
     FWCOMED_API static std::string SELECTED_OPERATOR;
     FWCOMED_API static std::string EXECUTE_GRAPH;
 
@@ -60,6 +61,9 @@ public:
 
     FWCOMED_API virtual void selectedNode( ::fwData::Node::sptr node );
     FWCOMED_API virtual ::fwData::Node::csptr getSelectedNode() const;
+
+    FWCOMED_API virtual void unselectedNode( ::fwData::Node::sptr node );
+    FWCOMED_API virtual ::fwData::Node::csptr getUnselectedNode() const;
 
 };
 

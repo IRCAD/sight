@@ -19,6 +19,7 @@ std::string GraphMsg::REMOVE_NODE          = "REMOVE_NODE";
 std::string GraphMsg::ADD_EDGE             = "ADD_EDGE";
 std::string GraphMsg::REMOVE_EDGE          = "REMOVE_EDGE";
 std::string GraphMsg::SELECTED_NODE        = "SELECTED_NODE";
+std::string GraphMsg::UNSELECTED_NODE      = "UNSELECTED_NODE";
 std::string GraphMsg::SELECTED_OPERATOR    = "SELECTED_OPERATOR";
 std::string GraphMsg::EXECUTE_GRAPH        = "EXECUTE_GRAPH";
 
@@ -73,6 +74,16 @@ void GraphMsg::selectedNode( ::fwData::Node::sptr node )
 ::fwData::Node::csptr GraphMsg::getSelectedNode() const
 {
     return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::SELECTED_NODE ) );
+}
+
+void GraphMsg::unselectedNode( ::fwData::Node::sptr node )
+{
+    addEvent( GraphMsg::UNSELECTED_NODE , node );
+}
+
+::fwData::Node::csptr GraphMsg::getUnselectedNode() const
+{
+    return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::UNSELECTED_NODE ) );
 }
 
 
