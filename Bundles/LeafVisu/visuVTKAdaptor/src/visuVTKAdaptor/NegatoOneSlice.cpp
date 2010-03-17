@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/helpers.hpp>
+
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
@@ -297,12 +299,41 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     }
 }
 
+
 //------------------------------------------------------------------------------
+
 
 void NegatoOneSlice::updateImage( ::fwData::Image::sptr image  )
 {
     ::vtkIO::toVTKImage(image,m_imageData);
     m_map2colors->SetInput(m_imageData);
+
+    ::fwTools::getFieldFromObject(m_axialIndex   , image, ::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
+    ::fwTools::getFieldFromObject(m_frontalIndex , image, ::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
+    ::fwTools::getFieldFromObject(m_sagittalIndex, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+    ::fwTools::getFieldFromObject(m_windowMin    , image, ::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
+    ::fwTools::getFieldFromObject(m_windowMax    , image, ::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
+
+
+    ::fwTools::getFieldFromObject(m_transfertFunctionId, image, ::fwComEd::Dictionary::m_transfertFunctionId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
+
+    if(!image->getField(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
+    {
+        ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(image);
+        tf->setMinMax(m_windowMin->value(), m_windowMax->value());
+
+        ::fwData::String::NewSptr tfId;
+        tfId->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
+        ::fwData::Composite::sptr cTF = ::fwData::Composite::New();
+
+        cTF->operator[](tfId->value()) = tf;
+        (*cTF)[tfId->value()] = tf;
+
+        ::fwTools::getFieldFromObject(m_transfertFunctions, image, ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
+    }
+
+
+
     this->setVtkPipelineModified();
 }
 
@@ -310,9 +341,9 @@ void NegatoOneSlice::updateImage( ::fwData::Image::sptr image  )
 
 void NegatoOneSlice::updateSliceIndex( ::fwData::Image::sptr image )
 {
-    unsigned int axialIndex = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId )->value();
-    unsigned int frontalIndex = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId )->value();
-    unsigned int sagittalIndex = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
+    unsigned int axialIndex    = m_axialIndex->value();
+    unsigned int frontalIndex  = m_frontalIndex->value();
+    unsigned int sagittalIndex = m_sagittalIndex->value();
 
     int pos[3];
     pos[2]= axialIndex;
@@ -326,15 +357,11 @@ void NegatoOneSlice::updateSliceIndex( ::fwData::Image::sptr image )
 
 void NegatoOneSlice::updateWindowing( ::fwData::Image::sptr image )
 {
-    std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
+    //std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
     // Temp test because theses cases are not manage ( need to notify if there are modifications of Min/Max/TF )
-    assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
+    //assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
 
-    // Get Min and Max
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
-
-    m_lut->SetTableRange( min->value(), max->value() );
+    m_lut->SetTableRange( m_windowMin->value(), m_windowMax->value() );
     m_lut->Modified();
     setVtkPipelineModified();
 }
@@ -343,8 +370,8 @@ void NegatoOneSlice::updateWindowing( ::fwData::Image::sptr image )
 
 void NegatoOneSlice::updateTransfertFunction( ::fwData::Image::sptr image )
 {
-    ::fwData::Composite::sptr tfComposite = image->getFieldSingleElement< ::fwData::Composite >( fwComEd::Dictionary::m_transfertFunctionCompositeId );;
-    std::string tfName = image->getFieldSingleElement< ::fwData::String >( fwComEd::Dictionary::m_transfertFunctionId )->value();
+    ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
+    std::string tfName = m_transfertFunctionId->value();
     ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
     convertTF2vtkTF( pTransfertFunction, m_lut );
     setVtkPipelineModified();
