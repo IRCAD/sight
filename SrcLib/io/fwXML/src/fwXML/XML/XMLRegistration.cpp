@@ -57,6 +57,7 @@
 #include "fwXML/XML/ResectionXMLTranslator.hpp"
 #include "fwXML/XML/PlaneXMLTranslator.hpp"
 #include "fwXML/XML/PlaneListXMLTranslator.hpp"
+#include "fwXML/XML/SingleFileXMLTranslator.hpp"
 
 namespace fwXML
 {
@@ -95,7 +96,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PointListXMLTranslator            
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionXMLTranslator                                  ,  ::fwData::Resection              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                                      ,  ::fwData::Plane                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator                                  ,  ::fwData::PlaneList              );
-
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                  , ::fwData::location::SingleFile  );
 }
 
 
