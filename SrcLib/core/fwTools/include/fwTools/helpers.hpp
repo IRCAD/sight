@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef __FWTOOLS_HELPERS_HPP__
+#define __FWTOOLS_HELPERS_HPP__
+
 #include "fwTools/Object.hpp"
 
 namespace fwTools {
@@ -41,3 +44,5 @@ DATA_SPTR_TYPE getFieldFromObject(
 }
 
 } //end namespace fwTools
+
+#endif // __FWTOOLS_HELPERS_HPP__
