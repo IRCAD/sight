@@ -30,6 +30,8 @@ class GUI_CLASS_API QuitAction : public ::gui::action::IAction
 
 public :
     
+     fwCoreServiceClassDefinitionsMacro ( (QuitAction)(::gui::action::IAction::Baseclass) ) ;
+
     /**
     * @brief Constructor. Do nothing.
     */

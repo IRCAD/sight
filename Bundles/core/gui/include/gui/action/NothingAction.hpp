@@ -29,7 +29,9 @@ class GUI_CLASS_API NothingAction : public ::gui::action::IAction
 {
 
 public :
-    
+   
+    fwCoreServiceClassDefinitionsMacro ( (NothingAction)(::gui::action::IAction::Baseclass) ) ;
+
     /**
     * @brief Constructor. Do nothing.
     */

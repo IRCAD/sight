@@ -35,7 +35,7 @@ class GUI_CLASS_API DummyEditor : public ::gui::editor::IEditor
 public :
 
 
-    fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor::Baseclass) ) ;
 
     /// Constructor. Do nothing.
     GUI_API DummyEditor() throw() ;

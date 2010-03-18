@@ -26,7 +26,7 @@ class UIIMAGE_CLASS_API ShowScanEditor : public ::gui::editor::IEditor
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (ShowScanEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ShowScanEditor)(::gui::editor::IEditor::Baseclass) ) ;
 
     /// Constructor. Do nothing.
     UIIMAGE_API ShowScanEditor() throw() ;

@@ -29,6 +29,8 @@ class GUI_CLASS_API RunRootObjectServiceAction : public ::gui::action::IAction
 
 public :
     
+    fwCoreServiceClassDefinitionsMacro ( (RunRootObjectServiceAction)(::gui::action::IAction::Baseclass) ) ;
+
     /**
     * @brief Constructor. Do nothing.
     */

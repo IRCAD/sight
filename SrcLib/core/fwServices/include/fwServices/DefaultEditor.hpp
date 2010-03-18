@@ -25,7 +25,7 @@ class FWSERVICES_CLASS_API DefaultEditor : public ::fwServices::IEditionService
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultEditor)(::fwServices::IEditionService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultEditor)(::fwServices::IEditionService::Baseclass) ) ;
 
     /// Constructor.  Do nothing.
     FWSERVICES_API DefaultEditor() throw() ;
