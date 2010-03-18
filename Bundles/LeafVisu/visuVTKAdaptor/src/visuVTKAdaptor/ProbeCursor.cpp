@@ -94,8 +94,8 @@ public:
                     m_mouseMoveObserved = true;
                     SetAbortFlag(1);
                     m_adaptor->setVisibility(true);
-                    process();
                     m_adaptor->StartProbeCursor();
+                    process();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, m_priority);
                 }
             }

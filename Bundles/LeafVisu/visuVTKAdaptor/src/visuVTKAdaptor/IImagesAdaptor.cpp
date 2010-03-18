@@ -168,7 +168,6 @@ void IImagesAdaptor::worldToImageSliceIndex(const double world[3], int index[3] 
 
 void IImagesAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     index[0] = m_sagittalIndex;
     index[1] = m_frontalIndex;
     index[2] = m_axialIndex;
@@ -207,6 +206,7 @@ void IImagesAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 
     ::fwTools::getFieldFromObject(m_transfertFunctionId, image, ::fwComEd::Dictionary::m_transfertFunctionId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
 
+    ::fwData::Composite::sptr cTF;
     if(!image->getField(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
     {
         ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(image);
@@ -214,13 +214,13 @@ void IImagesAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 
         ::fwData::String::NewSptr tfId;
         tfId->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
-        ::fwData::Composite::sptr cTF = ::fwData::Composite::New();
+        cTF = ::fwData::Composite::New();
 
         cTF->operator[](tfId->value()) = tf;
         (*cTF)[tfId->value()] = tf;
 
-        ::fwTools::getFieldFromObject(m_transfertFunctions, image, ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
     }
+    ::fwTools::getFieldFromObject(m_transfertFunctions, image, ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
 }
 
 } //namespace visuVTKAdaptor
