@@ -26,8 +26,10 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkCommand.h>
 
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
+
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
-#include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ) ;
 
@@ -244,7 +246,7 @@ void NegatoWindowingInteractor::startWindowing( )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->doUpdate();
 
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( image );
+    ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
 
     int max = m_windowMax->value();
     int min = m_windowMin->value();
@@ -291,11 +293,11 @@ void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
         m_windowMin->value() = rmin;
 
         // Update TF
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( image );
+        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::WINDOWING ) ;
+        msg->setWindowMinMax(m_windowMin, m_windowMax);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 
         this->setVtkPipelineModified();
@@ -321,11 +323,11 @@ void NegatoWindowingInteractor::resetWindowing()
         m_windowMin->value() = rmin;
 
         // Update TF
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( image );
+        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::WINDOWING ) ;
+        msg->setWindowMinMax(m_windowMin, m_windowMax);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 
         this->setVtkPipelineModified();

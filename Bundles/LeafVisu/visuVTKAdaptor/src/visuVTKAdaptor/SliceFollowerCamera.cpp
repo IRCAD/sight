@@ -40,7 +40,7 @@ namespace visuVTKAdaptor
 {
 
 
-SliceFollowerCamera::SliceFollowerCamera() throw() : IImagesAdaptor()
+SliceFollowerCamera::SliceFollowerCamera() throw()
 {
     m_comChannelPriority = 0.49;
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );

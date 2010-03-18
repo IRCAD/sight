@@ -9,7 +9,9 @@
 
 #include <fwData/TransfertFunction.hpp>
 
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
 #include "visuVTKAdaptor/config.hpp"
 
 class VISUVTKADAPTOR_CLASS_API vtkCommand;
@@ -19,7 +21,7 @@ namespace visuVTKAdaptor
 
 
 
-class VISUVTKADAPTOR_CLASS_API NegatoSlicingInteractor: public ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API NegatoSlicingInteractor: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 
 public:

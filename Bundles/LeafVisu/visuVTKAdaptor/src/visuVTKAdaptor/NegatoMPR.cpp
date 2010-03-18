@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-NegatoMPR::NegatoMPR() throw() : IImagesAdaptor(),
+NegatoMPR::NegatoMPR() throw() :
         m_3dModeEnabled ( ::boost::logic::indeterminate ),
         m_sliceMode(THREE_SLICES),
         m_backupedSliceMode(THREE_SLICES)
@@ -314,8 +314,8 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     {
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
         assert(service);
-        ::visuVTKAdaptor::IImagesAdaptor::sptr adaptorSrv =
-                ::visuVTKAdaptor::IImagesAdaptor::dynamicCast(service);
+        ::fwComEd::helper::MedicalImageAdaptor::sptr adaptorSrv =
+                ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(service);
         assert(adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
     }

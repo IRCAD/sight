@@ -125,7 +125,7 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-NegatoOneSlice::NegatoOneSlice() throw() : IImagesAdaptor()
+NegatoOneSlice::NegatoOneSlice() throw()
 {
     m_lut = vtkLookupTable::New();
     m_imageActor = vtkImageActor::New();
@@ -236,11 +236,13 @@ void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
         {
+            ::fwComEd::ImageMsg::dynamicConstCast(msg)->getWindowMinMax( m_windowMin, m_windowMax);
             updateWindowing(image);
         }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {
+            ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
             updateSliceIndex(image);
             updateOutline();
         }

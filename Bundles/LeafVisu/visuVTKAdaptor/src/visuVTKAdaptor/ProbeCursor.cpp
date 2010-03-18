@@ -311,7 +311,8 @@ void ProbeCursor::updateView( double world[3] )
 
     std::string txt;
 
-    if ( world[0]<0  || world[1]<0  || world[2]<0  ||
+    static const double epsilon = -0.00001;
+    if ( world[0]<epsilon  || world[1]<epsilon  || world[2]<epsilon  ||
          index[0]< 0 || index[1]< 0 || index[2]< 0 ||
          index[0]>= image->getSize()[0] ||
          index[1]>= image->getSize()[1] ||

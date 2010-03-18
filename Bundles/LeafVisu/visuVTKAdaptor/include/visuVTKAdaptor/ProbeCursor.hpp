@@ -10,7 +10,7 @@
 #include <fwData/TransfertFunction.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 class vtkCommand;
 class vtkActor;
@@ -22,7 +22,7 @@ class vtkPolyDataMapper;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API ProbeCursor: public  ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API ProbeCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 
 public:

@@ -8,9 +8,10 @@
 #define _VISUVTKADAPTOR_PLANEINTERACTOR_HPP_
 
 #include <fwData/TransfertFunction.hpp>
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
 
 
 class vtkCommand;
@@ -18,7 +19,7 @@ class vtkCommand;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PlaneInteractor: public ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API PlaneInteractor: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 
 public:

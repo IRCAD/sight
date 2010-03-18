@@ -169,27 +169,27 @@ public:
 
                 if (std::string(keySym) == "T")
                 {
-                    m_adaptor->pushSlice(-1, IImagesAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
                 }
                 else if (std::string(keySym) == "Y")
                 {
-                    m_adaptor->pushSlice(1, IImagesAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
                 }
                 else if (std::string(keySym) == "G")
                 {
-                    m_adaptor->pushSlice(-1, IImagesAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
                 }
                 else if (std::string(keySym) == "H")
                 {
-                    m_adaptor->pushSlice(1, IImagesAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
                 }
                 else if (std::string(keySym) == "B")
                 {
-                    m_adaptor->pushSlice(-1, IImagesAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
                 }
                 else if (std::string(keySym) == "N")
                 {
-                    m_adaptor->pushSlice(1, IImagesAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
                 }
             }
         }
@@ -342,7 +342,7 @@ void NegatoSlicingInteractor::stopSlicing( )
     sliceMode->value() = "STOP_SLICING";
     dataInfo->setFieldSingleElement("SLICE_MODE", sliceMode);
     ::fwComEd::ImageMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, dataInfo ) ;
+    msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
 
@@ -383,7 +383,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, dataInfo ) ;
+        msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
 }
@@ -424,7 +424,7 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, dataInfo ) ;
+        msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
 }

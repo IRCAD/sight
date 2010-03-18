@@ -10,6 +10,7 @@
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
 
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 #include <fwWX/SliceSelector.hpp>
 
 #include "uiImage/config.hpp"
@@ -23,7 +24,7 @@ namespace uiImage
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIIMAGE_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor
+class UIIMAGE_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor, public ::fwComEd::helper::MedicalImageAdaptor
 {
 
 public :
@@ -40,11 +41,7 @@ public :
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    typedef enum {
-        X_AXIS = 0, // Sagittal
-        Y_AXIS,     // Frontal
-        Z_AXIS      // Axial
-    } Orientation ;
+    using ::fwComEd::helper::MedicalImageAdaptor::Orientation ;
 
     ///This method launches the IEditor::starting method.
     virtual void starting() throw(::fwTools::Failed);
@@ -78,7 +75,6 @@ private:
     static const std::string* SLICE_INDEX_FIELDID[ 3 ];
 
     ::fwWX::SliceSelector* m_sliceSelectorPanel;
-    Orientation m_sliceType;
 
 };
 

@@ -32,13 +32,13 @@ namespace visuVTKAdaptor
 {
 
 
-std::map< std::string, ::visuVTKAdaptor::IImagesAdaptor::Orientation >
+std::map< std::string, ::fwComEd::helper::MedicalImageAdaptor::Orientation >
 Medical3DCamera::m_orientationConversion
         = ::boost::assign::map_list_of(std::string("axial"),Z_AXIS)
                                       (std::string("frontal"),Y_AXIS)
                                       (std::string("sagittal"),X_AXIS);
 
-Medical3DCamera::Medical3DCamera() throw() : IImagesAdaptor()
+Medical3DCamera::Medical3DCamera() throw()
 {
     addNewHandledEvent( "CAMERA_ORIENTATION" );
 }
