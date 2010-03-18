@@ -30,6 +30,8 @@ class GUI_CLASS_API DefaultFrame : public ::gui::frame::IFrame
 
 public :
 
+    fwCoreServiceClassDefinitionsMacro ( (DefaultFrame)(::gui::frame::IFrame::Baseclass) ) ;
+
     /// Constructor. Do nothing.
     GUI_API DefaultFrame() throw() ;
 

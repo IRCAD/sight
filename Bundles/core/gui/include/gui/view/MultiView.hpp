@@ -61,6 +61,8 @@ class GUI_CLASS_API MultiView : public ::gui::view::IView
 
 public :
 
+    fwCoreServiceClassDefinitionsMacro ( (MultiView)(::gui::view::IView::Baseclass) ) ;
+
     /// Constructor, does nothing.
     GUI_API MultiView() throw() ;
 

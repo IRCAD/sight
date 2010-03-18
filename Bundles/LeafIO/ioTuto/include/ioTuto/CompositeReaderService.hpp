@@ -22,7 +22,7 @@ namespace ioTuto
 class IOTUTO_CLASS_API CompositeReaderService : public ::io::IReader
 {
 public:
-
+    fwCoreServiceClassDefinitionsMacro ( (CompositeReaderService)( ::io::IReader::Baseclass) ) ;
     /// Constructor. Do nothing (Just initialize parameters).
     IOTUTO_API CompositeReaderService() throw() ;
 

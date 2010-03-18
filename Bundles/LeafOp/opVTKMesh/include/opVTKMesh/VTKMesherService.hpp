@@ -18,6 +18,8 @@ class OPVTKMESH_CLASS_API VTKMesherService : public ::opVTKMesh::IMesher
 
 public :
 
+    fwCoreServiceClassDefinitionsMacro ( (VTKMesherService)(::opVTKMesh::IMesher::Baseclass) ) ;
+
     OPVTKMESH_API VTKMesherService() throw() ;
 
     OPVTKMESH_API virtual ~VTKMesherService() throw() ;

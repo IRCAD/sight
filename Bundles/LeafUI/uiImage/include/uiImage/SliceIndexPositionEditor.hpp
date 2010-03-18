@@ -29,7 +29,7 @@ class UIIMAGE_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor
 public :
 
 
-    fwCoreServiceClassDefinitionsMacro ( (SliceIndexPositionEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SliceIndexPositionEditor)(::gui::editor::IEditor::Baseclass) ) ;
 
     /// Constructor. Do nothing.
     UIIMAGE_API SliceIndexPositionEditor() throw() ;

@@ -30,7 +30,10 @@ class GUI_CLASS_API TestAction : public ::gui::action::IAction
 {
 
 public :
+   
+    fwCoreServiceClassDefinitionsMacro ( (TestAction)(::gui::action::IAction::Baseclass) ) ;
     
+
     /**
      * @brief Constructor. Do nothing.(Just initialize parameters).
      *
