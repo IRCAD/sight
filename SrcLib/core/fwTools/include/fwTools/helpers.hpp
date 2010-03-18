@@ -28,8 +28,9 @@ DATA_SPTR_TYPE getFieldFromObject(
         )
 {
 
-    if( obj->getField( fieldId ) )
+    if( obj->getFieldSize( fieldId ) )
     {
+        OSLM_ASSERT("Field '"<< fieldId <<"' size > 1 ("<< obj->getFieldSize( fieldId ) << ")", obj->getFieldSize( fieldId ) == 1);
         return obj->getFieldSingleElement< typename DATA_SPTR_TYPE::element_type >( fieldId );
     }
     else
