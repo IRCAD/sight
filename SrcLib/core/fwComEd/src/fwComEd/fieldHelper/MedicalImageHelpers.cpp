@@ -113,6 +113,15 @@ std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _
 
 //------------------------------------------------------------------------------
 
+void MedicalImageHelpers::updateMinMaxFromTF( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF)
+{
+    ::fwData::TransfertFunction::MinMaxType currentMinMax = tF->getMinMax();
+    min->value() = currentMinMax.first;
+    max->value() = currentMinMax.second;
+}
+
+//------------------------------------------------------------------------------
+
 void MedicalImageHelpers::updateMinMaxFromTF( ::fwData::Image::sptr _pImg )
 {
     assert( _pImg->getFieldSize( ::fwComEd::Dictionary::m_windowMinId ) &&
@@ -126,10 +135,17 @@ void MedicalImageHelpers::updateMinMaxFromTF( ::fwData::Image::sptr _pImg )
     ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
     ::fwData::TransfertFunction::sptr pTF = ::fwData::TransfertFunction::dynamicCast( cTransfertFunction->getRefMap()[sTransfertFunction->value()] );
 
-    std::pair< ::boost::int32_t, ::boost::int32_t > currentMinMax = pTF->getMinMax();
-    minField->value() = currentMinMax.first;
-    maxField->value() = currentMinMax.second;
+    updateMinMaxFromTF(minField, maxField, pTF);
 }
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF)
+{
+    tF->setMinMax( min->value(), max->value() );
+}
+
+
 
 //------------------------------------------------------------------------------
 
@@ -146,7 +162,7 @@ void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Image::sptr _pImg )
     ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
     ::fwData::TransfertFunction::sptr pTF = ::fwData::TransfertFunction::dynamicCast( cTransfertFunction->getRefMap()[sTransfertFunction->value()] );
 
-    pTF->setMinMax( minField->value(), maxField->value() );
+    updateTFFromMinMax(minField, maxField, pTF);
 }
 
 //------------------------------------------------------------------------------

@@ -8,6 +8,7 @@
 #define _FWCOMED_IMAGEMSG_HPP_
 
 #include <fwData/Object.hpp>
+#include <fwData/Integer.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -61,6 +62,21 @@ public:
      * @brief   Destuctor : does nothing.
      */
     FWCOMED_API virtual ~ImageMsg() throw();
+
+    FWCOMED_API void setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+    FWCOMED_API void setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+
+    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s ) const;
+    FWCOMED_API void getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max ) const;
+
+protected:
+    ::fwData::Integer::sptr m_axialIndex;
+    ::fwData::Integer::sptr m_frontalIndex;
+    ::fwData::Integer::sptr m_sagittalIndex;
+
+    ::fwData::Integer::sptr m_windowMin;
+    ::fwData::Integer::sptr m_windowMax;
+
 
 };
 

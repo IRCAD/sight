@@ -10,9 +10,11 @@
 #include <utility> // std::pair
 
 #include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 #include "fwComEd/export.hpp"
 
@@ -53,11 +55,29 @@ public :
      */
     FWCOMED_API static std::pair<bool,bool> checkMinMaxTF( ::fwData::Image::sptr _pImg );
 
+
+    /**
+     * @brief       Update window min and max objects from transfer function.
+     * @param[in]   min min data object
+     * @param[in]   max max data object
+     * @param[in]   tF  Transfert function data object
+     */
+    FWCOMED_API static void updateMinMaxFromTF( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF);
+
     /**
      * @brief       Update window min and max fields from transfer function field.
      * @param[in]   _pImg   image which contains the fields.
      */
     FWCOMED_API static void updateMinMaxFromTF( ::fwData::Image::sptr _pImg );
+
+
+    /**
+     * @brief       Update transfer function min/max from min/max objects.
+     * @param[in]   min min data object
+     * @param[in]   max max data object
+     * @param[in]   tF  Transfert function data object
+     */
+    FWCOMED_API static void updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF);
 
     /**
      * @brief       Update transfer function min/max from window min/max fields.
