@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <vector>
+#include <boost/lexical_cast.hpp>
 
 #include <fwTools/TypeInfo.hpp>
 #include <fwTools/UUID.hpp>
@@ -57,7 +58,7 @@ namespace fwServices
         if( _elt->hasAttribute("priority"))
         {
             std::string priorityStr = _elt->getExistingAttributeValue("priority");
-            double priority=atof(priorityStr.c_str());
+            double priority = ::boost::lexical_cast< double >( priorityStr );
             if(priority < 0.0) priority = 0.0;
             if(priority > 1.0) priority = 1.0;
             comChannel->setPriority(priority);
