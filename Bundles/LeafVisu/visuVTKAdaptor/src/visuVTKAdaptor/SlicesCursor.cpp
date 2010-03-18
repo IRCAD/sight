@@ -289,8 +289,9 @@ void SlicesCursor::doUpdate() throw(fwTools::Failed)
 
     if ( imageIsValid)
     {
-        updateSliceIndex(image);
-        updateColors();
+        this->updateImageInfos(image);
+        this->updateSliceIndex(image);
+        this->updateColors();
     }
 }
 
@@ -300,9 +301,9 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 {
     unsigned int pos[3];
 
-    pos[2] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId )->value();
-    pos[1] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId )->value();
-    pos[0] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
+    pos[2] = m_axialIndex->value();
+    pos[1] = m_frontalIndex->value();
+    pos[0] = m_sagittalIndex->value();
 
     double sliceWorld[3];
     for (int dim=0; dim<3; ++dim )

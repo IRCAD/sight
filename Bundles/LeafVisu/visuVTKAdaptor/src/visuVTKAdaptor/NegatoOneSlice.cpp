@@ -308,31 +308,7 @@ void NegatoOneSlice::updateImage( ::fwData::Image::sptr image  )
     ::vtkIO::toVTKImage(image,m_imageData);
     m_map2colors->SetInput(m_imageData);
 
-    ::fwTools::getFieldFromObject(m_axialIndex   , image, ::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
-    ::fwTools::getFieldFromObject(m_frontalIndex , image, ::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
-    ::fwTools::getFieldFromObject(m_sagittalIndex, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
-    ::fwTools::getFieldFromObject(m_windowMin    , image, ::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
-    ::fwTools::getFieldFromObject(m_windowMax    , image, ::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
-
-
-    ::fwTools::getFieldFromObject(m_transfertFunctionId, image, ::fwComEd::Dictionary::m_transfertFunctionId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
-
-    if(!image->getField(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
-    {
-        ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(image);
-        tf->setMinMax(m_windowMin->value(), m_windowMax->value());
-
-        ::fwData::String::NewSptr tfId;
-        tfId->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
-        ::fwData::Composite::sptr cTF = ::fwData::Composite::New();
-
-        cTF->operator[](tfId->value()) = tf;
-        (*cTF)[tfId->value()] = tf;
-
-        ::fwTools::getFieldFromObject(m_transfertFunctions, image, ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
-    }
-
-
+    this->updateImageInfos(image);
 
     this->setVtkPipelineModified();
 }

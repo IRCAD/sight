@@ -95,6 +95,7 @@ public:
                     SetAbortFlag(1);
                     m_adaptor->setVisibility(true);
                     process();
+                    m_adaptor->StartProbeCursor();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, m_priority);
                 }
             }
@@ -294,6 +295,12 @@ void ProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
 
 //------------------------------------------------------------------------------
 
+void ProbeCursor::StartProbeCursor( )
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+}
+
 void ProbeCursor::updateView( double world[3] )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -345,9 +352,9 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
 
     unsigned int sliceIndex[3]; // the current sliceIndex
 
-    sliceIndex[2] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId )->value();
-    sliceIndex[1] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId )->value();
-    sliceIndex[0] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
+    sliceIndex[2] = m_axialIndex->value();
+    sliceIndex[1] = m_frontalIndex->value();
+    sliceIndex[0] = m_sagittalIndex->value();
 
     double probeWorld[3]; // probe index in world positioning system
     for (int dim=0; dim<3; ++dim )

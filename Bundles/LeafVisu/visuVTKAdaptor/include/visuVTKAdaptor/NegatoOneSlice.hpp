@@ -70,16 +70,7 @@ protected :
     vtkPolyDataMapper *m_planeOutlineMapper;
     vtkActor *m_planeOutlineActor;
 
-    
-    ::fwData::Integer::sptr m_axialIndex;
-    ::fwData::Integer::sptr m_frontalIndex;
-    ::fwData::Integer::sptr m_sagittalIndex;
 
-    ::fwData::Integer::sptr m_windowMin;
-    ::fwData::Integer::sptr m_windowMax;
-
-    ::fwData::Composite::sptr m_transfertFunctions;
-    ::fwData::String::sptr m_transfertFunctionId;
 };
 
 

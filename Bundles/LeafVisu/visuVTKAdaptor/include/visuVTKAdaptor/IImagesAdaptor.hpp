@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <fwData/Integer.hpp>
+#include <fwData/String.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -64,7 +65,20 @@ protected:
     bool setSliceIndex(const int index[3]);
     void getSliceIndex(::fwData::Integer::sptr index[3]);
 
+    void updateImageInfos( ::fwData::Image::sptr image  );
+
     Orientation m_orientation;
+
+
+    ::fwData::Integer::sptr m_axialIndex;
+    ::fwData::Integer::sptr m_frontalIndex;
+    ::fwData::Integer::sptr m_sagittalIndex;
+
+    ::fwData::Integer::sptr m_windowMin;
+    ::fwData::Integer::sptr m_windowMax;
+
+    ::fwData::Composite::sptr m_transfertFunctions;
+    ::fwData::String::sptr m_transfertFunctionId;
 };
 
 

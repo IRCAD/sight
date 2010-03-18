@@ -9,7 +9,7 @@
 
 #include <fwData/TransfertFunction.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include "visuVTKAdaptor/IImagesAdaptor.hpp"
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -20,7 +20,7 @@ namespace visuVTKAdaptor
 
 
 
-class VISUVTKADAPTOR_CLASS_API NegatoWindowingInteractor: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API NegatoWindowingInteractor: public ::visuVTKAdaptor::IImagesAdaptor
 {
 
 public:

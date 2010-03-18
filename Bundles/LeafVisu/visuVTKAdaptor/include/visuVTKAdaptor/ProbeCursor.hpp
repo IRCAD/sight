@@ -36,6 +36,8 @@ public:
 
     VISUVTKADAPTOR_API void setVisibility( bool visibility );
 
+    VISUVTKADAPTOR_API void StartProbeCursor();
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);

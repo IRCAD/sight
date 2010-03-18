@@ -6,7 +6,10 @@
 
 #include <boost/foreach.hpp>
 
+#include <fwTools/helpers.hpp>
+
 #include <fwData/Image.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -166,9 +169,9 @@ void IImagesAdaptor::worldToImageSliceIndex(const double world[3], int index[3] 
 void IImagesAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    index[0] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
-    index[1] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId );
-    index[2] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
+    index[0] = m_sagittalIndex;
+    index[1] = m_frontalIndex;
+    index[2] = m_axialIndex;
 }
 
 bool IImagesAdaptor::setSliceIndex(const int index[3])
@@ -193,5 +196,31 @@ bool IImagesAdaptor::setSliceIndex(const int index[3])
     return isModified;
 }
 
+
+void IImagesAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
+{
+    ::fwTools::getFieldFromObject(m_axialIndex   , image, ::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
+    ::fwTools::getFieldFromObject(m_frontalIndex , image, ::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
+    ::fwTools::getFieldFromObject(m_sagittalIndex, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+    ::fwTools::getFieldFromObject(m_windowMin    , image, ::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
+    ::fwTools::getFieldFromObject(m_windowMax    , image, ::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
+
+    ::fwTools::getFieldFromObject(m_transfertFunctionId, image, ::fwComEd::Dictionary::m_transfertFunctionId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
+
+    if(!image->getField(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
+    {
+        ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(image);
+        tf->setMinMax(m_windowMin->value(), m_windowMax->value());
+
+        ::fwData::String::NewSptr tfId;
+        tfId->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
+        ::fwData::Composite::sptr cTF = ::fwData::Composite::New();
+
+        cTF->operator[](tfId->value()) = tf;
+        (*cTF)[tfId->value()] = tf;
+
+        ::fwTools::getFieldFromObject(m_transfertFunctions, image, ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
+    }
+}
 
 } //namespace visuVTKAdaptor

@@ -308,6 +308,9 @@ void NegatoSlicingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) thro
 
 void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    updateImageInfos(image);
+
     ::fwData::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
 

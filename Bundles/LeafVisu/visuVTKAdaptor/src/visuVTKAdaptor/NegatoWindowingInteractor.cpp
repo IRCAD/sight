@@ -223,9 +223,10 @@ void NegatoWindowingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) th
 void NegatoWindowingInteractor::startWindowing( )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
 
-    ::fwData::Integer::sptr imageMin = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr imageMax = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
+    ::fwData::Integer::sptr imageMin = m_windowMin;
+    ::fwData::Integer::sptr imageMax = m_windowMax;
 
     ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( image );
 
@@ -247,8 +248,8 @@ void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::Integer::sptr imageMin = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr imageMax = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
+    ::fwData::Integer::sptr imageMin = m_windowMin;
+    ::fwData::Integer::sptr imageMax = m_windowMax;
 
     double newWindow = m_initialWindow + dw;
     double newLevel  = m_initialLevel - dl;
@@ -301,8 +302,8 @@ void NegatoWindowingInteractor::resetWindowing()
     double newLevel  = image->getWindowCenter();
     double rmin, rmax;
 
-    ::fwData::Integer::sptr imageMin = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr imageMax = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
+    ::fwData::Integer::sptr imageMin = m_windowMin;
+    ::fwData::Integer::sptr imageMax = m_windowMax;
 
     rmin = newLevel - 0.5*fabs( newWindow );
     rmax = rmin + fabs( newWindow );
