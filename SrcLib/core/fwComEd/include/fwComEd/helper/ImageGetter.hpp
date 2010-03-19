@@ -29,7 +29,7 @@ class FWCOMED_CLASS_API ImageGetter
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (ImageGetter) );
 
-    FWCOMED_API ::fwData::Image::sptr getImage();
+    ::fwData::Image::sptr getImage();
 };
 
 

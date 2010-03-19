@@ -33,7 +33,7 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (MedicalImageAdaptor) );
 
 
-     
+
     typedef enum {
         X_AXIS = 0,
         Y_AXIS,
@@ -47,35 +47,35 @@ public:
 
 protected:
 
-    MedicalImageAdaptor(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
+    FWCOMED_API MedicalImageAdaptor(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
 
-    void setOrientation( int orientation );
+    FWCOMED_API void setOrientation( int orientation );
 
-    void getImageSpacing(double spacing[3]);
-    void getImageDataSize(int size[3]);
-    void getImageSize(double size[3]);
-    void getCurrentSliceCenter(double center[3]);
+    FWCOMED_API void getImageSpacing(double spacing[3]);
+    FWCOMED_API void getImageDataSize(int size[3]);
+    FWCOMED_API void getImageSize(double size[3]);
+    FWCOMED_API void getCurrentSliceCenter(double center[3]);
 
     /// retreive the grey level from an image from physicial world
     //float getPixelvalue( double worldPosition[3]);
 
-    void worldToSliceIndex(const double world[3],int index[3] );
-    void worldToImageSliceIndex(const double world[3], int index[3] );
+    FWCOMED_API void worldToSliceIndex(const double world[3],int index[3] );
+    FWCOMED_API void worldToImageSliceIndex(const double world[3], int index[3] );
     /// return the 4 points of the image plane
     /// points are ordered in the following way : image origin is the first point
     /// points are insterted using the preference follow X axis if exist, if not exist follow Y axis
     /// if Y axis is not present follow Z axis
-    void getPlane( double points[4][3], int sliceNumber );
+    FWCOMED_API void getPlane( double points[4][3], int sliceNumber );
 
-    bool setSliceIndex(const int index[3]);
-    void getSliceIndex(::fwData::Integer::sptr index[3]);
+    FWCOMED_API bool setSliceIndex(const int index[3]);
+    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
-    ::fwData::Integer::sptr getCurrentSliceIndex();
-    void setCurrentSliceIndex(::fwData::Integer::sptr);
+    FWCOMED_API ::fwData::Integer::sptr getCurrentSliceIndex();
+    FWCOMED_API void setCurrentSliceIndex(::fwData::Integer::sptr);
 
-    ::fwData::TransfertFunction::sptr getCurrentTransfertFunction();
+    FWCOMED_API ::fwData::TransfertFunction::sptr getCurrentTransfertFunction();
 
-    void updateImageInfos( ::fwData::Image::sptr image  );
+    FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
 
     Orientation m_orientation;
 
