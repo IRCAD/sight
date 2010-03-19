@@ -28,6 +28,8 @@ class GUI_CLASS_API DefaultMenuBar : public IMenuBar
 
 public :
 
+    fwCoreServiceClassDefinitionsMacro ( (DefaultMenuBar)(::gui::aspect::IMenuBar::Baseclass) ) ;
+
     /// Constructor. Do nothing.
     GUI_API DefaultMenuBar() throw();
 

@@ -39,7 +39,7 @@ class IOVTK_CLASS_API MeshWriterService : public ::io::IWriter
 {
 
 public :
-
+    fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)( ::io::IWriter::Baseclass) ) ;
     /**
      * @brief   Constructor
      *

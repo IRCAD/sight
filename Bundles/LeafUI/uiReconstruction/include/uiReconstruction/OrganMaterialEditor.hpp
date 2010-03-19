@@ -23,7 +23,7 @@ class UIRECONSTRUCTION_CLASS_API OrganMaterialEditor : public ::gui::editor::IEd
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (OrganMaterialEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (OrganMaterialEditor)(::gui::editor::IEditor::Baseclass) ) ;
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTION_API OrganMaterialEditor() throw() ;

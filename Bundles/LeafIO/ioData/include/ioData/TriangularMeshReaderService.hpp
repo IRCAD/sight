@@ -33,6 +33,8 @@ class IODATA_CLASS_API TriangularMeshReaderService : public ::io::IReader
 
 public:
 
+    fwCoreServiceClassDefinitionsMacro ( (TriangularMeshReaderService)(::io::IReader::Baseclass) ) ;
+
      /// Super class of reader services
     typedef ::io::IReader   SuperClass;
 
