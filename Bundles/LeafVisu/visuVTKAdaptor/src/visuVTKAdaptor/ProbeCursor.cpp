@@ -169,7 +169,10 @@ ProbeCursor::ProbeCursor() throw()
 , m_cursorMapper  ( vtkPolyDataMapper::New() )
 , m_cursorActor(    vtkActor::New() )
 {
-    handlingEventOff();
+    //handlingEventOff();
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
 }
 
 //------------------------------------------------------------------------------
@@ -260,6 +263,10 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
     this->getInteractor()->AddObserver(START_PROBE_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_PROBE_EVENT, m_vtkObserver, m_priority);
 
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -273,6 +280,8 @@ void ProbeCursor::doUpdate() throw(fwTools::Failed)
 void ProbeCursor::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
 }
 
 //------------------------------------------------------------------------------
@@ -291,14 +300,23 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
 void ProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        this->updateImageInfos(image);
+    }
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
+    {
+        ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void ProbeCursor::StartProbeCursor( )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
 }
 
 void ProbeCursor::updateView( double world[3] )
