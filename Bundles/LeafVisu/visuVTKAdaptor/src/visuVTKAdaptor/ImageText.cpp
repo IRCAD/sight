@@ -45,6 +45,7 @@ ImageText::~ImageText() throw()
 
 void ImageText::doStart() throw(::fwTools::Failed)
 {
+    Text::doStart();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
 }
