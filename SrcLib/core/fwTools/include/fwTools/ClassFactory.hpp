@@ -98,17 +98,11 @@ public:
 
      virtual bool operator==(const IClassFactory &other) const
      {
-//       std::cout << std::endl << "=== test"<< std::endl;
-//       std::cout << " this : " << this->baseClassId().name() << "-" << this->subClassId().name() << "-" << this->keyId().name() << " : " << this->stringizedKey()  << std::endl;
-//       std::cout << " other : " << other.baseClassId().name() << "-" << other.subClassId().name() << "-" << other.keyId().name() << " : " << other.stringizedKey() << std::endl;
-//       std::cout << " RESULT:";
-
          bool sameTypeInfo =     ( keyComparatorEquality( this->baseClassId() , other.baseClassId()   )  )
                               && ( keyComparatorEquality( this->subClassId()  , other.subClassId()  )  )
                               && ( keyComparatorEquality( this->keyId()       , other.keyId()       )  );
          if ( !sameTypeInfo )
          {
-//           std::cout << " NOT equal (typeid)"<<std::endl;
              return false;
          }
          else
@@ -116,7 +110,6 @@ public:
              const ConcreteFactory &concreteFactory =  dynamic_cast< const ConcreteFactory &>(other);
              const Key &otherKey = concreteFactory.keyValue();
 
-//           std::cout << ( this->canHandle(otherKey) ? " equal" : " NOT equal (keyvalue)" )  << " [concreteFactory=" << typeid(other).name()<<"]"<< std::endl;
              return this->canHandle(otherKey);
          }
 

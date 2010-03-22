@@ -36,17 +36,16 @@
 #include <sstream>
 #include <iostream> // REMOVE ME DEBUG
 
-namespace boost {
-namespace archive {
+namespace boost
+{
+namespace archive
+{
 
 
 /** @brief IRCAD R&D team framework boost::archive. The purpose of this class is to
  * create an xml archive based on the libxml instead a stream like in native boost
  * @author IRCAD (Research and Development Team).
  */
-
-
-
 
 
 class fw_xml_oarchive : public detail::common_oarchive< fw_xml_oarchive > // , public  basic_text_oprimitive< std::stringstream >
@@ -65,7 +64,6 @@ public:
     {
         std::stringstream ss;
         ss << t;
-        //std::cout << "In saveTemplate of " <<  ss.str().c_str() << std::endl;
         xmlNodeAddContent( m_parent, xmlCharStrdup( ss.str().c_str()) );
     }
 
@@ -84,10 +82,10 @@ public:
     // error and should be trapped here.
     template<class T>
     void save_override(
-            #ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+#ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
             const
-            #endif
-            T & t, BOOST_PFTO int)
+#endif
+    T & t, BOOST_PFTO int)
     {
 #ifdef BOOST135ENABLED
         // If your program fails to compile here, its most likely due to
@@ -98,41 +96,35 @@ public:
 #else
         BOOST_MPL_ASSERT((sizeof(T)==0)); // old boost API with no wrapper should no be enter here
 #endif
-
-
     }
 
     template<class T>
     void save_override(
-            #ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
-            const
-            #endif
-          ::boost::serialization::nvp<T> & nvp,
-            int
+#ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+                const
+#endif
+        ::boost::serialization::nvp<T> & nvp,
+         int
         )
     {
-        assert( nvp.first  ); // if NULL it can be serialized via pointer !!! 07102008 can be null if pass throw ptr
-//#6  0xb71f389a in boost::archive::detail::pointer_oserializer<boost::archive::fw_xml_oarchive, ::fwData::Node>::save_object_ptr (this=0xb72ab4d0,
-//    ar=@0xbffbce18, x=0x80fb3e0) at /usr/include/boost/archive/detail/oserializer.hpp:204
-//204         ar_impl << boost::serialization::make_nvp(NULL, * t);
+            assert( nvp.first  ); // if NULL it can be serialized via pointer !!! 07102008 can be null if pass throw ptr
+    //#6  0xb71f389a in boost::archive::detail::pointer_oserializer<boost::archive::fw_xml_oarchive, ::fwData::Node>::save_object_ptr (this=0xb72ab4d0,
+    //    ar=@0xbffbce18, x=0x80fb3e0) at /usr/include/boost/archive/detail/oserializer.hpp:204
+    //204         ar_impl << boost::serialization::make_nvp(NULL, * t);
 
-        assert( nvp.second );
+            assert( nvp.second );
 
-        // save parent
-        xmlNodePtr old_parent = m_parent;
+            // save parent
+            xmlNodePtr old_parent = m_parent;
 
-        // create new node and set new parent
-        m_parent = createNodeAndAppendTo(  nvp.first , m_parent );
+            // create new node and set new parent
+            m_parent = createNodeAndAppendTo(  nvp.first , m_parent );
 
-        archive::save( *this , nvp.const_value());
+            archive::save( *this , nvp.const_value());
 
-        // restore old parent
-        m_parent = old_parent;
+            // restore old parent
+            m_parent = old_parent;
     }
-
-
-
-
 
     // override NVP function : note WinSux does not deal with Partial Function Template Ordering !!!!
     template< class R>
@@ -167,10 +159,6 @@ public:
     void save_override(const tracking_type & t, BOOST_PFTO int)         {/* nothing todo */ }
 
 
-
-
-
-
     // create a node named by name and append it to parent, return the new created one
     xmlNodePtr createNodeAndAppendTo(const std::string &name, xmlNodePtr parent);
 
@@ -179,11 +167,7 @@ public:
 //    BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
 //    init();
 
-
-
-
-
-    public:
+public:
 
     fw_xml_oarchive( unsigned int flags = 0);
 
@@ -191,12 +175,12 @@ public:
 
 
     /**
-    * @brief return the xml node pointer
-    */
+     * @brief return the xml node pointer
+     */
     xmlNodePtr getXMLNode();
 
 
-    protected :
+protected :
 
     // the xml root of the archive
     xmlNodePtr m_root;
@@ -204,10 +188,7 @@ public:
     /// the node where to attach(child) information ( internal use )
     xmlNodePtr m_parent;
 
-
-
 };
-
 
 
 } // namespace archive

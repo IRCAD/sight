@@ -74,7 +74,6 @@ public:
         std::stringstream ss;
         ss << ::fwXML::XMLParser::getTextValue( m_current );
         ss >> const_cast<T &>(t);
-        //std::cout << "void load( T &t))0" <<std::endl;
     }
 
     /////////////////////////////////////////////////////////
@@ -119,13 +118,8 @@ public:
             int
         )
     {
-//      std::cout << "IN load_override(:nvp<T> & nvp, BOOST_PFTO int) NVP name=" << nvp.first << " typeid=" << typeid(T).name() << " m_current=" << m_current << std::endl;
         assert( nvp.first  ); // if NULL it can be serialized via pointer !!!
         assert( nvp.second );
-//      if (m_current)
-//      {
-//          std::cout << ::fwXML::XMLParser::toString(m_current)<<std::endl;
-//      }
 
         if ( m_current == NULL )
         {
@@ -146,7 +140,6 @@ public:
             m_current = m_current->parent;
             //assert( m_current );
         }
-//      std::cout << "OUT load_override(:nvp<T> & nvp, BOOST_PFTO int) NVP name=" << nvp.first << " typeid=" << typeid(T).name() << " m_current=" << m_current << std::endl;
     }
 
 
@@ -165,7 +158,7 @@ public:
     template<class SHAREDP,class PRT>
     void reset( SHAREDP sp, PRT p )
     {
-        std::cout << "FIXMEME void reset( SHAREDP sp, p )\n";
+        SLM_TRACE("FIXMEME void reset( SHAREDP sp, p )");
     }
 
 
