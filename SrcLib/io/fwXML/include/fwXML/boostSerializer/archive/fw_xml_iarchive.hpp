@@ -31,6 +31,7 @@
 #endif
 
 
+#include "fwCore/base.hpp"
 #include "fwXML/XML/XMLParser.hpp"
 
 
