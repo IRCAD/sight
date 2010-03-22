@@ -242,7 +242,7 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
     }
     else
     {
-        OSLM_WARN("Object "<<objectId<<" not found in managed objects.");
+        OSLM_INFO("Object "<<objectId<<" not found in managed objects.");
     }
 }
 
