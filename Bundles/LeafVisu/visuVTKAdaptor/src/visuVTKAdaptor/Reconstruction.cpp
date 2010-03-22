@@ -97,6 +97,7 @@ void Reconstruction::createMeshService()
     meshService->setRenderService( this->getRenderService() );
     meshService->setRenderId     ( this->getRenderId()      );
     meshService->setPickerId     ( this->getPickerId()      );
+    meshService->setTransformId  ( this->getTransformId()   );
 
     meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
     meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
