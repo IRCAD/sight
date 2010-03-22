@@ -149,8 +149,8 @@ void MultiSizerView::starting() throw(::fwTools::Failed)
         if(pi->m_caption.first)
         {
             wxStaticBoxSizer* sizer = new wxStaticBoxSizer( m_orient, wxContainer, ::fwWX::std2wx(pi->m_caption.second));
-            sizer->Add( viewPanel, pi->m_proportion, wxALL|wxEXPAND, pi->m_border);
-            boxSizer->Add(sizer, 1, wxALL|wxEXPAND);
+            sizer->Add( viewPanel, 1, wxALL|wxEXPAND, pi->m_border);
+            boxSizer->Add(sizer, pi->m_proportion, wxALL|wxEXPAND);
         }
         else
         {
