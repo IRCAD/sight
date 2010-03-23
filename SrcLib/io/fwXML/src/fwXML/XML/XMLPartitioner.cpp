@@ -37,6 +37,8 @@ boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstanc
 namespace fwXML
 {
 
+//------------------------------------------------------------------------------
+
 XMLPartitioner::XMLPartitioner()
 : m_pathPolicy ( new DefaultPathPolicy ),
   m_splitPolicy( new AlwaysSplitPolicy )
@@ -45,13 +47,13 @@ XMLPartitioner::XMLPartitioner()
     assert( m_splitPolicy );
 }
 
-
+//------------------------------------------------------------------------------
 
 XMLPartitioner::~XMLPartitioner()
 {
 }
 
-
+//------------------------------------------------------------------------------
 
 void XMLPartitioner::setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy)
 {
@@ -59,7 +61,7 @@ void XMLPartitioner::setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPo
     m_pathPolicy=newPathPolicy;
 }
 
-
+//------------------------------------------------------------------------------
 
 void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSplitPolicy)
 {
@@ -67,14 +69,14 @@ void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSpli
     m_splitPolicy=newSplitPolicy;
 }
 
+//------------------------------------------------------------------------------
 
-
-boost::filesystem::path DefaultRoot()
+::boost::filesystem::path DefaultRoot()
 {
 #ifdef WIN32
-    boost::filesystem::path root( "C:\\tmp" );
+    ::boost::filesystem::path root( "C:\\tmp" );
 #else
-    boost::filesystem::path root( "/tmp" );
+    ::boost::filesystem::path root( "/tmp" );
 #endif
 
      return root;
@@ -98,18 +100,15 @@ boost::filesystem::path DefaultRoot()
 
 // saver->directory the same as the aggregator
 
-
 void XMLPartitioner::manageExtraData( ::boost::shared_ptr<fwTools::Object> obj )
 {
-
-
     if ( fwServices::support< IFileFormatService >(obj) )
     {
-         ::boost::shared_ptr< IFileFormatService >  saver =fwServices::get< IFileFormatService >(obj,0);
+        ::boost::shared_ptr< IFileFormatService >  saver =fwServices::get< IFileFormatService >(obj,0);
 
         if (saver)
         {
-             ::boost::shared_ptr< XMLAggregator > aggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[obj];
+            ::boost::shared_ptr< XMLAggregator > aggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[obj];
             saver->rootFolder()  = aggregator->rootFolder();
             saver->localFolder() = aggregator->localFolder();
             saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
@@ -119,13 +118,10 @@ void XMLPartitioner::manageExtraData( ::boost::shared_ptr<fwTools::Object> obj )
     }
 }
 
-
-
+//------------------------------------------------------------------------------
 
 xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father, ::boost::shared_ptr< fwTools::Object >  son )
 {
-
-
     XMLHierarchy::getDefault()->mapChildFather()[son]=father;
     XMLHierarchy::getDefault()->mapFatherChildren()[father].insert(son);
 
@@ -133,7 +129,7 @@ xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father
     {
         assert( XMLHierarchy::getDefault()->mapObjectAggregator()[son].get()==NULL );
         // root serialisation : create a new Aggregator
-         ::boost::shared_ptr< XMLAggregator > newAggregator( new  XMLAggregator() );
+        ::boost::shared_ptr< XMLAggregator > newAggregator( new  XMLAggregator() );
 
         newAggregator->rootFolder()  =   DefaultRoot();
         newAggregator->localFolder() =  m_pathPolicy->getPath(son).branch_path();
@@ -147,14 +143,13 @@ xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father
         return NULL;
     }
 
-
     bool splitXML = m_splitPolicy->split( son );
 
     if  (splitXML==false)
     {
         // no splitting :  append in the same serialisation unit of its father
-         ::boost::shared_ptr< XMLAggregator > fatherAggregator =
-        XMLHierarchy::getDefault()->mapObjectAggregator()[father];
+        ::boost::shared_ptr< XMLAggregator > fatherAggregator =
+                XMLHierarchy::getDefault()->mapObjectAggregator()[father];
 
         assert( fatherAggregator );
         fatherAggregator->append( son );
@@ -165,17 +160,13 @@ xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father
         // delegate extra XML serialisation information if necessary
         manageExtraData(son);
 
-//      std::cout << std::endl << " XMLPartitioner::manage(" << father << "," << son << ")NOSPLIT" << std::endl;
-//      xmlSaveFile( "-" , fatherAggregator->getXMLDoc() );
-//      std::cout << std::endl;
-
+        //xmlSaveFile( "-" , fatherAggregator->getXMLDoc() );
         return NULL;
-
     }
     else
     {
         // splitting requited : create a new Aggregator
-         ::boost::shared_ptr< XMLAggregator > newAggregator( new  XMLAggregator() ); ;
+        ::boost::shared_ptr< XMLAggregator > newAggregator( new  XMLAggregator() ); ;
 
         // FSLocation
         newAggregator->rootFolder()  =   DefaultRoot();
@@ -185,19 +176,15 @@ xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father
 
         newAggregator->append(son);
         XMLHierarchy::getDefault()->mapObjectAggregator()[son]=newAggregator;
-//      std::cout << std::endl << " XMLPartitioner::manage(" << father << "," << son << ")WITHSPLIT" << std::endl;
-//      xmlSaveFile( "-" , newAggregator->getXMLDoc() );
-//      std::cout << std::endl;
+        //xmlSaveFile( "-" , newAggregator->getXMLDoc() );
 
         // delegate extra XML serialisation information if necessary
         manageExtraData(son);
 
         return NULL;
     }
-
-
-
 }
 
+//------------------------------------------------------------------------------
 
 }

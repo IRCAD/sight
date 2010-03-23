@@ -110,7 +110,6 @@ UUID::MultiUUID UUID::generate(const std::type_info &ti)
     std::string prefix = ::fwCore::Demangler(ti).getRootedClassname();
     do
     {
-        //std::cout << "ti.name()"
         newUUID.first = prefix  + "-" + boost::lexical_cast<std::string>( m_CategorizedCounter[ti]++ );
     }
     while ( exist(newUUID.first,UUID::SIMPLE) ); // necessary due to manual set
