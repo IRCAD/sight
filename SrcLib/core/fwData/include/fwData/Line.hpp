@@ -8,6 +8,7 @@
 #define _FWDATA_LINE_HPP_
 
 #include <vector>
+#include <utility>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
@@ -66,6 +67,11 @@ protected :
     //! Points container
     ::fwData::Point::sptr m_position;
     ::fwData::Point::sptr m_direction;
+
+    fwToolsAttributesMacro(
+            ((::fwData::Point::sptr, point1, point nb 1))
+            ((::fwData::Point::sptr, point2, point nb 2))
+            )
 
 }; // end class Line
 

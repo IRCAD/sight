@@ -54,7 +54,7 @@ public :
     //FWDATA_API Resection &operator=( const Resection & _planetList ) ;
 
     /// PlaneList
-    fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, the plane list);
+    //fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, the plane list);
     /// Inputs
     fwGettersSettersDocMacro(Inputs, vInputs, ResectionInputs, the resection inputs);
     /// Outputs
@@ -73,7 +73,11 @@ protected :
     std::string m_name;
 
     //! Planes list
-    ::fwData::PlaneList::sptr m_planeList;
+    //::fwData::PlaneList::sptr m_planeList;
+
+    fwToolsAttributesMacro(
+            ((::fwData::PlaneList::sptr, PlaneList, Planes list))
+            )
 
     //! Inputs (reconstructions)
     ResectionInputs m_vInputs;
