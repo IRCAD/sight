@@ -68,11 +68,6 @@ protected :
     ::fwData::Point::sptr m_position;
     ::fwData::Point::sptr m_direction;
 
-    fwToolsAttributesMacro(
-            ((::fwData::Point::sptr, point1, point nb 1))
-            ((::fwData::Point::sptr, point2, point nb 2))
-            )
-
 }; // end class Line
 
 } // end namespace fwData
