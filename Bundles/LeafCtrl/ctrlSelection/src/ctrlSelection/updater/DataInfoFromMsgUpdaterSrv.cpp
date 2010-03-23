@@ -58,7 +58,10 @@ void DataInfoFromMsgUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) 
             if( obj->getUUID() == uuid )
             {
             	::fwData::Object::sptr dataInfo = ::boost::const_pointer_cast< ::fwData::Object >(_msg->getDataInfo(  event ));
-            	SLM_ASSERT("no dataInfo set!!!" ,  dataInfo );
+            	SLM_ASSERT("no dataInfo set!!!" ,  dataInfo
+            	                                   ||  action== ctrlSelection::IUpdaterSrv::REMOVE
+            	                                   ||  action== ctrlSelection::IUpdaterSrv::REMOVE_IF_PRESENT
+            	           );
                 // Udpate the composite object referenced by the composite key
                 this->updateComposite(composite, dataInfo , compositeKey , action );
             }
