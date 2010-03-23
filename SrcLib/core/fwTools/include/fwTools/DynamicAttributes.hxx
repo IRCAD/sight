@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
+#define _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
+
 #include <boost/ref.hpp>
 
 #include "fwCore/base.hpp"
@@ -75,3 +78,4 @@ void DynamicAttributes< CLASS >::BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_
 
 } //end namespace fwTools {
 
+#endif //_FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
