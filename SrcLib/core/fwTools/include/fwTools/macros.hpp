@@ -42,6 +42,8 @@
 #define fwToolsPrependMemberPrefix( _name ) \
     BOOST_PP_CAT (__FWTOOLS_MEMBER_PREFIX, _name)
 
+#define fwToolsAttributeType( _type ) \
+    _type::__FWCORE_TYPEDEF_SHARED_PTR_NAME
 
 //-----------------------------------
 // Setter
@@ -105,18 +107,18 @@
 //-----------------------------------
 // Getter/Setter
 //-----------------------------------
-#define fwGetterSetterMacro( _type, _name, _desc )           \
-    /** @name fwToolsPrependMemberPrefix( _var ) accessor */ \
-    /** Getter/Setter for _var                            */ \
-    /** @{                                                */ \
-    fwToolsGetterMacro(_type, _name);                        \
-    fwToolsSetterMacro(_type, _name);                        \
+#define fwGetterSetterMacro( _type, _name, _desc )              \
+    /** @name fwToolsPrependMemberPrefix( _var ) accessor */    \
+    /** Getter/Setter for _var                            */    \
+    /** @{                                                */    \
+    fwToolsGetterMacro( fwToolsAttributeType( _type ) , _name); \
+    fwToolsSetterMacro( fwToolsAttributeType( _type ) , _name); \
     /**@}                                                 */
 
 
-#define fwToolsAttrMacro( _type, _name, _desc ) \
-    /** @desc _desc **/                         \
-    _type fwToolsPrependMemberPrefix( _name );
+#define fwToolsAttrMacro( _type, _name, _desc )                          \
+    /** @desc _desc **/                                                  \
+     fwToolsAttributeType( _type )  fwToolsPrependMemberPrefix( _name );
 
 
 #define fwToolsRegisterAttrMacro(_type, _name, _desc , _id )                                    \
@@ -128,7 +130,7 @@
       __FWTOOLS_ATTRIBUTE_MAP_NAME.insert(                                                      \
               std::make_pair(                                                                   \
                   BOOST_PP_STRINGIZE(_name),                                                    \
-                  boost::ref( (AttrType&) fwToolsPrependMemberPrefix( _name ) )                             \
+                  boost::ref( (AttrType&) fwToolsPrependMemberPrefix( _name ) )                 \
                   ));                                                                           \
       /* Call the previouly defined register function if _id > 1 */                             \
       BOOST_PP_IF(                                                                              \

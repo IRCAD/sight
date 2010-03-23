@@ -24,7 +24,7 @@ Resection::Resection ()
   m_isValid(false)
 {
     SLM_TRACE_FUNC();
-    m_PlaneList = ::fwData::PlaneList::New();
+    m_planeList = ::fwData::PlaneList::New();
 }
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ void Resection::shallowCopy( Resection::csptr _source )
     this->m_isSafePart = _source->m_isSafePart;
     this->m_isValid = _source->m_isValid;
     this->m_isVisible = _source->m_isVisible;
-    this->m_PlaneList = _source->m_PlaneList;
+    this->m_planeList = _source->m_planeList;
     this->m_vInputs = _source->m_vInputs;
     this->m_vOutputs = _source->m_vOutputs;
 }
@@ -59,7 +59,7 @@ void Resection::deepCopy( Resection::csptr _source )
     this->m_isSafePart = _source->m_isSafePart;
     this->m_isValid = _source->m_isValid;
     this->m_isVisible = _source->m_isVisible;
-    this->m_PlaneList->deepCopy( _source->m_PlaneList );
+    this->m_planeList->deepCopy( _source->m_planeList );
 
     this->m_vInputs.clear();
     for (   Resection::ResectionInputs::const_iterator iter = _source->m_vInputs.begin();
@@ -91,7 +91,7 @@ void Resection::deepCopy( Resection::csptr _source )
 //    Resection::NewSptr pNewResection;
 //
 //    // Copy encoding
-//    pNewResection->m_PlaneList = this->m_PlaneList->clone();
+//    pNewResection->m_planeList = this->m_planeList->clone();
 //
 //    for (   Resection::ResectionInputs::const_iterator iter = this->m_vInputs.begin();
 //            iter != this->m_vInputs.end();
@@ -115,7 +115,7 @@ void Resection::deepCopy( Resection::csptr _source )
 //Resection & Resection::operator=( const Resection & _resection )
 //{
 //    // Copy encoding
-//    m_PlaneList = _resection.m_PlaneList;
+//    m_planeList = _resection.m_planeList;
 //    m_vInputs = _resection.m_vInputs;
 //    m_vOutputs = _resection.m_vOutputs;
 //
