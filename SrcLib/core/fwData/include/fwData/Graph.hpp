@@ -34,6 +34,8 @@ class FWDATA_CLASS_API Graph : public ::fwData::Object {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Graph >) ;
 
+    fwDataObjectMacro();
+
     FWDATA_API static const bool UP_STREAM;
     FWDATA_API static const bool DOWN_STREAM;
 
@@ -181,6 +183,8 @@ public:
      * @return Number of edges
      */
     FWDATA_API unsigned int getNbEdges() const;
+
+    FWDATA_API void shallowCopy( Graph::csptr _source );
 
 protected :
 

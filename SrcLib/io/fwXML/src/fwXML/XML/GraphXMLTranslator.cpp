@@ -96,8 +96,12 @@ void GraphXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object>
         ::boost::shared_ptr< ::fwData::Edge >  edge = ::boost::dynamic_pointer_cast< ::fwData::Edge >( obj );
         assert ( edge );
 
-        std::string uuidSrc = XMLTH::getProp<std::string>(connectionNode,"fromNode");
-        std::string uuidDst = XMLTH::getProp<std::string>(connectionNode,"toNode");
+
+        std::string uuidSrcXML = XMLTH::getProp<std::string>(connectionNode,"fromNode");
+        std::string uuidDstXML = XMLTH::getProp<std::string>(connectionNode,"toNode");
+        std::string uuidSrc = ObjectTracker::xmlID2RuntimeID( uuidSrcXML );
+        std::string uuidDst = ObjectTracker::xmlID2RuntimeID(uuidDstXML );
+
         ::boost::shared_ptr< ::fwData::Node > srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc , ::fwTools::UUID::EXTENDED);
         ::boost::shared_ptr< ::fwData::Node > dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst , ::fwTools::UUID::EXTENDED);
         assert( srcNode );

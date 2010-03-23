@@ -57,7 +57,8 @@ public:
 
     static std::string getClassname( xmlNodePtr xmlNode );
 
-    static std::string translateID( const std::string & xmlid, bool assignNewUUID);
+    /// return the UUID generated at runtime for the  object instanciated from XML node with attribute id="<xmlID>"
+    static std::string  xmlID2RuntimeID( const std::string &xmlID );
 
     /**
      * @brief reset the registry and transatation oldID<->newID (if any)

@@ -289,6 +289,15 @@ const Graph::ConnectionContainer &Graph::getCRefConnections() const
     return m_connections;
 }
 
+
+
+void Graph::shallowCopy( Graph::csptr _source )
+{
+	Object::shallowCopyOfChildren(_source );
+	m_nodes = _source->m_nodes;
+	m_connections = _source->m_connections;
+}
+
 //------------------------------------------------------------------------------
 
 } // namespace fwData

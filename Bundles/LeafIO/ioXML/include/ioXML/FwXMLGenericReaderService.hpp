@@ -25,6 +25,16 @@
 namespace ioXML
 {
 
+/**
+ * @class a generic reader which can load any kind of object in a fxz archive
+ * after loading data are shallow copied then some notifications are send. configuration
+ * of service allow to define what event are send
+ * @example :
+ * <notify message="IMAGE_NEW" attachData="yes">
+ * if attachData attribute is set to true then the loaded object is inserted in the dataInfo holder of the message
+ * @TODO : create a factory on ObjMsg ( thanks to classFactoryRegistry)then change configuration to  <notify type="::fwComEd::ImageMsg" message="IMAGE_NEW" attachData="yes">
+ */
+
 class IOXML_CLASS_API FwXMLGenericReaderService : public ::io::IReader
 {
 

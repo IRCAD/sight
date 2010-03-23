@@ -77,7 +77,7 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
     assert( toUpdate->getLeafClassname() ==  nameInXML );
 
     ::boost::shared_ptr< ::fwXML::XMLTranslator > translator;
-    translator = fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  typeid(*toUpdate)  );
+    translator = fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  toUpdate->getRootedClassname() );
 
     if (translator.get() )
     {

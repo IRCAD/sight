@@ -10,6 +10,8 @@
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/foreach.hpp>
+
 
 #include <fwCore/base.hpp>
 
@@ -46,9 +48,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwTools
 
 //------------------------------------------------------------------------------
 
-FwXMLGenericReaderService::FwXMLGenericReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsObjectPath("")
+FwXMLGenericReaderService::FwXMLGenericReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -61,21 +61,6 @@ FwXMLGenericReaderService::~FwXMLGenericReaderService() throw()
 void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    // Test if in the service configuration the tag filename is defined. If it is defined, the image path is initialized and we tag the service as configured.
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsObjectPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsObjectPath);
-        if(m_bServiceIsConfigured)
-        {
-            OSLM_TRACE("Filename found in service configuration : patient path = " << filename ) ;
-        }
-        else
-        {
-            OSLM_WARN("filename not exist = " <<  filename ) ;
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -99,19 +84,12 @@ void FwXMLGenericReaderService::configureWithIHM()
 
     if( file.IsEmpty() == false)
     {
-        fixFilename(file);
+        m_reader.setFile(  ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native ) );
         _sDefaultPath = wxConvertMB2WX( m_fsObjectPath.branch_path().string().c_str() );
     }
 }
 
 //------------------------------------------------------------------------------
-//
-void FwXMLGenericReaderService::fixFilename(wxString _filename)
-{
-    m_fsObjectPath = ::boost::filesystem::path( ::fwWX::wx2std(_filename), ::boost::filesystem::native );
-    m_bServiceIsConfigured = true;
-
-}
 
 //------------------------------------------------------------------------------
 
@@ -156,7 +134,7 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
 ::fwTools::Object::sptr FwXMLGenericReaderService::loadData( const ::boost::filesystem::path inrFileDir )
 {
-    SLM_TRACE("FwXMLGenericReaderService::createObject");
+    SLM_TRACE_FUNC();
     ::fwXML::reader::FwXMLObjectReader myLoader;
     ::fwTools::Object::sptr pObject;
 
@@ -164,7 +142,7 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Image ");
+        ::fwWX::ProgressTowx progressMeterGUI("Loading data ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }
@@ -232,15 +210,12 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 
 void FwXMLGenericReaderService::notificationOfUpdate()
 {
-    SLM_TRACE("FwXMLGenericReaderService::notificationOfUpdate");
-    ::fwTools::Object::sptr object = this->getObject< ::fwTools::Object >();
+	SLM_TRACE_FUNC();
+    ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
     assert( object );
-//
-//    ::fwComEd::ObjectMsg::NewSptr msg;
-//    msg->addEvent( ::fwComEd::ObjectMsg::NEW_PATIENT, pDPDB );
-//    msg->addEvent( ::fwComEd::ObjectMsg::NEW_LOADED_PATIENT );
-//
-//    ::fwServices::IEditionService::notify( this->getSptr(),  pDPDB, msg );
+    ::fwServices::ObjectMsg::NewSptr msg;
+	msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
+	::fwServices::IEditionService::notify( this->getSptr(),  object, msg );
 }
 
 //------------------------------------------------------------------------------
@@ -278,5 +253,16 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 }
 
 //------------------------------------------------------------------------------
+
+::boost::filesystem::path FwXMLGenericReaderService::correctFileFormat( const ::boost::filesystem::path _filePath ) const
+{
+    ::boost::filesystem::path newPath = _filePath;
+    if ( ::boost::filesystem::extension(_filePath) != ".fxz" && ::boost::filesystem::extension(_filePath) != ".xml" )
+    {
+        newPath = _filePath.string() + ".fxz";
+    }
+
+    return newPath;
+}
 
 } // namespace ioXML
