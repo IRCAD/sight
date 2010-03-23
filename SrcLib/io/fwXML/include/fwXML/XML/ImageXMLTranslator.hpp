@@ -47,6 +47,8 @@ protected :
 
     /// manage extra serialization : only inform <Buffer filename attribut />
     FWXML_API void manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::Image> );
+
+    static std::string s_noFileProtocol;
 };
 
 }

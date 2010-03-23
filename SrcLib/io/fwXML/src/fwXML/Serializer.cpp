@@ -191,6 +191,7 @@ struct HandlerHelper : public boost::signals::trackable
 
 void Serializer::IOforExtraXML( ::boost::shared_ptr< fwTools::Object > object , bool savingMode)
 {
+    SLM_TRACE_FUNC();
 
     ::visitor::CollectFileFormatService collector;
     ::fwData::visitor::accept( object , &collector );

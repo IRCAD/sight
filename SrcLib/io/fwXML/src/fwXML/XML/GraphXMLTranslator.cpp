@@ -51,7 +51,7 @@ xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> 
     EdgeXMLTranslator translator;
     for ( i= graph->getCRefConnections().begin(); i != graph->getCRefConnections().end() ;++i)
     {
-        xmlNodePtr anEdge = translator.getXMLFrom( (*i).first );
+        xmlNodePtr anEdge = XMLTH::toXMLRecursive( (*i).first );
         // hack by adding port ptr
         XMLTH::addProp( anEdge , "fromNode", ::fwTools::UUID::get( (*i).second.first  , ::fwTools::UUID::EXTENDED) );
         XMLTH::addProp( anEdge , "toNode",   ::fwTools::UUID::get( (*i).second.second , ::fwTools::UUID::EXTENDED) );

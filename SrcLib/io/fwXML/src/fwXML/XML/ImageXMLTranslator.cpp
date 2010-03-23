@@ -27,6 +27,9 @@
 namespace fwXML
 {
 
+
+std::string ImageXMLTranslator::s_noFileProtocol = "NoFile";
+
 ImageXMLTranslator::ImageXMLTranslator() {};
 
 ImageXMLTranslator::~ImageXMLTranslator() {};
@@ -34,11 +37,12 @@ ImageXMLTranslator::~ImageXMLTranslator() {};
 void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::Image> img )
 {
     // get XML node related to Buffer //FIXMEXPATH
-    ::boost::shared_ptr< IFileFormatService > binSaver = fwServices::get<  IFileFormatService >(img,0);
-    std::string path;
-    path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
+
     if ( img->getSize().size()!=0 && img->getSize().front()!=0  )
     {
+        ::boost::shared_ptr< IFileFormatService > binSaver = fwServices::get<  IFileFormatService >(img,0);
+        std::string path;
+        path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
         XMLTH::addProp( boostXMLBuffer, "filename",  path );
         XMLTH::addProp( boostXMLBuffer, "protocol",  binSaver->getWriter()->getClassname() );
         // to Implement in session information ?
@@ -46,6 +50,7 @@ void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEX
     else
     {
         XMLTH::addProp( boostXMLBuffer, "filename",  "" );
+        XMLTH::addProp( boostXMLBuffer, "protocol",  ImageXMLTranslator::s_noFileProtocol );
     }
 
 
@@ -54,36 +59,41 @@ void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEX
 
 void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::Image> img )
 {
-    // get XML node related to Buffer //FIXMEXPATH
-    ::boost::shared_ptr< IFileFormatService > binLoader = fwServices::get<  IFileFormatService >(img,0);
-    OSLM_DEBUG( "ImageXMLTranslator::manageLoadingBuffer :: READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename") );
-    boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
-    binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
-    binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
-    binLoader->localFolder() = fileLocation.branch_path();
-
     // find and update IO Protocol
     std::string protocol = XMLTH::getProp<std::string>(boostXMLBuffer,"protocol");
-    std::string pseudoReader = protocol;
-    if (  protocol.find("Writer") != std::string::npos )
-    {
-    pseudoReader.replace(  protocol.find("Writer"), strlen("Writer") ,"Reader");
-    }
-    if (  protocol.find("writer") != std::string::npos )
-    {
-        pseudoReader.replace(  protocol.find("writer"), strlen("writer") ,"reader");
-    }
-    assert( protocol != pseudoReader );
 
-    // get new reader
-     ::boost::shared_ptr< ::fwDataIO::reader::IObjectReader > reader;
-    OSLM_DEBUG("ImageXMLTranslator::manageLoadingBuffer initial protocol="<< protocol << " final loading protocol=" << pseudoReader)
-    reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
-    assert(reader);
+    if ( protocol != ImageXMLTranslator::s_noFileProtocol )
+    {
+        // get XML node related to Buffer //FIXMEXPATH
+        ::boost::shared_ptr< IFileFormatService > binLoader = fwServices::get<  IFileFormatService >(img,0);
+        OSLM_DEBUG( "ImageXMLTranslator::manageLoadingBuffer :: READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename") );
+        boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
+        binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
+        binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
+        binLoader->localFolder() = fileLocation.branch_path();
 
-    // assign to FileFormatService
-     ::boost::shared_ptr< IFileFormatService > binReader = fwServices::get<  IFileFormatService >(img,0);
-    binReader->setReader( reader );
+        std::string pseudoReader = protocol;
+        if (  protocol.find("Writer") != std::string::npos )
+        {
+        pseudoReader.replace(  protocol.find("Writer"), strlen("Writer") ,"Reader");
+        }
+        if (  protocol.find("writer") != std::string::npos )
+        {
+            pseudoReader.replace(  protocol.find("writer"), strlen("writer") ,"reader");
+        }
+        assert( protocol != pseudoReader );
+
+
+        // get new reader
+         ::boost::shared_ptr< ::fwDataIO::reader::IObjectReader > reader;
+        OSLM_DEBUG("ImageXMLTranslator::manageLoadingBuffer initial protocol="<< protocol << " final loading protocol=" << pseudoReader)
+        reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
+        assert(reader);
+
+        // assign to FileFormatService
+         ::boost::shared_ptr< IFileFormatService > binReader = fwServices::get<  IFileFormatService >(img,0);
+        binReader->setReader( reader );
+    }
 }
 
 
