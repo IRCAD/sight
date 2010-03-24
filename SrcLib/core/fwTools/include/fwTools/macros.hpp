@@ -19,6 +19,7 @@
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 #include <boost/preprocessor/repetition/for.hpp>
+#include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/seq.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/to_tuple.hpp>
@@ -30,7 +31,7 @@
 #define __FWTOOLS_MEMBER_PREFIX                   m_
 #define __FWTOOLS_ATTRIBUTE_ACCESSOR_PARAM_PREFIX _
 #define __FWTOOLS_ATTRIBUTE_MAP_NAME              __m_object_attributes__
-#define __FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME    __registerAttribute
+#define __FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME   __registerAttributes
 
 #define __FWTOOLS_NONE
 /** @endcond */
@@ -116,63 +117,71 @@
     /**@}                                                 */
 
 
-#define fwToolsAttrMacro( _type, _name, _desc )                          \
+#define fwToolsDeclareAttrMacro( _type, _name, _desc )                          \
     /** @desc _desc **/                                                  \
      fwToolsAttributeType( _type )  fwToolsPrependMemberPrefix( _name );
 
 
-#define fwToolsRegisterAttrMacro(_type, _name, _desc , _id )                                    \
+
+
+
+#define __FWTOOLS_ONE_ATTR_REGISTER_MACRO(_type, _name, _desc )                                       \
     /* Register the specified attribute in the map */                                           \
-    /** @cond **/                                                                               \
-    void BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME,_id)()                             \
-    {                                                                                           \
       /* Insert pair into map */                                                                \
       __FWTOOLS_ATTRIBUTE_MAP_NAME.insert(                                                      \
               std::make_pair(                                                                   \
                   BOOST_PP_STRINGIZE(_name),                                                    \
                   boost::ref( (AttrType&) fwToolsPrependMemberPrefix( _name ) )                 \
-                  ));                                                                           \
-      /* Call the previouly defined register function if _id > 1 */                             \
-      BOOST_PP_IF(                                                                              \
-              BOOST_PP_DEC(_id),                                                                \
-              this->BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME, BOOST_PP_DEC(_id))();, \
-              __FWTOOLS_NONE)                                                                   \
-    }                                                                                           \
+                  ));
+
+#define fwToolsOneAttrRegisterMacro( r, data, _tuple ) \
+    __FWTOOLS_ONE_ATTR_REGISTER_MACRO _tuple
+
+
+#define fwToolsOneAttrDeclareMacro( r, data, _tuple ) \
+    fwToolsDeclareAttrMacro _tuple
+
+
+#define fwToolsOneAttrGetterSetterMacro( r, data, _tuple ) \
+    fwGetterSetterMacro _tuple
+
+
+#define fwToolsDeclareAttributesMacro( _attributes )                     \
+        BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrDeclareMacro, _, _attributes)
+
+
+#define fwToolsGetterSetterAttributesMacro( _attributes )                      \
+    /** @cond **/                                                          \
+        BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrGetterSetterMacro, _, _attributes) \
     /** @endcond **/
 
 
-#define fwToolsRegisterAttrCallerMacro(count)                              \
+#define fwToolsRegisterAttributesMacro( _attributes )                     \
     /** @cond **/                                                          \
-    void BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME,s)()          \
+    void __FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME()                         \
     {                                                                      \
-      /* Call the first register function */                               \
-      this->BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME, count)(); \
+        BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrRegisterMacro, _, _attributes) \
     }                                                                      \
     /** @endcond **/
 
 
-#define __FWTOOLS_APPEND_TO_TUPLE(size, tuple, elem) \
-    BOOST_PP_EXPAND(BOOST_PP_SEQ_TO_TUPLE(BOOST_PP_TUPLE_TO_SEQ(size,BOOST_PP_SEQ_HEAD(tuple))(elem)))
-
 #define __FWTOOLS_EXPAND_ATTR_PRED(r, state) BOOST_PP_SEQ_SIZE(state)
 #define __FWTOOLS_EXPAND_ATTR_OP(r, state)   BOOST_PP_SEQ_TAIL(state)
 
-#define __FWTOOLS_EXPAND_ATTR_MACRO(r, state)                                                                         \
+#define __FWTOOLS_EXPAND_ATTR_MACRO(r, state)                                                                        \
     private:                                                                                                          \
-        BOOST_PP_EXPAND( fwToolsAttrMacro BOOST_PP_SEQ_HEAD(state) )                                                  \
-        BOOST_PP_IF(                                                                                                  \
-            BOOST_PP_SEQ_SIZE(state),                                                                                 \
-            BOOST_PP_EXPAND( fwToolsRegisterAttrMacro __FWTOOLS_APPEND_TO_TUPLE(3, state, BOOST_PP_SEQ_SIZE(state))), \
-            __FWTOOLS_NONE                                                                                            \
-                )                                                                                                     \
+        BOOST_PP_EXPAND( fwToolsDeclareAttrMacro BOOST_PP_SEQ_HEAD(state) )                                                  \
     public:                                                                                                           \
-    BOOST_PP_EXPAND( fwGetterSetterMacro BOOST_PP_SEQ_HEAD(state) )
-
-#define fwToolsAttributesMacro( attributes )                                                                    \
-    BOOST_PP_FOR(attributes, __FWTOOLS_EXPAND_ATTR_PRED, __FWTOOLS_EXPAND_ATTR_OP, __FWTOOLS_EXPAND_ATTR_MACRO) \
-    fwToolsRegisterAttrCallerMacro( BOOST_PP_SEQ_SIZE(attributes) )
+        BOOST_PP_EXPAND( fwGetterSetterMacro BOOST_PP_SEQ_HEAD(state) )
 
 
+
+#define fwToolsAttributesMacro( _attributes )                                                                    \
+    private:                                                                                                     \
+    fwToolsDeclareAttributesMacro( _attributes )                                                                 \
+    fwToolsRegisterAttributesMacro( _attributes )                                                                \
+    public:                                                                                                      \
+    fwToolsGetterSetterAttributesMacro( _attributes )
 
 
 
