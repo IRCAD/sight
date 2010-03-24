@@ -92,18 +92,24 @@ bool initFwDir()
     // old style parameters
     // 1 argument :
     // launcher path/profile.xml
-#if defined(__MACOSX__)
-    // In graphical context, OSX add a Process Number like parameter
-    int minArg = 3;
-    int profileArg = 2;
-#else
-    int minArg = 2;
-    int profileArg = 1;
-#endif
 
-    if ( m_argc >= minArg )
+    if ( m_argc >= 2 )
     {
+        int profileArg = 1;
+#if defined(__MACOSX__)
+        // In graphical context, OSX add a Process Number like parameter
+        if ( m_argc > 2 )
+        {
+            std::string strPSN = m_argv[1];
+            std::string strPSN1 = "-psn";
+            if (strPSN.substr(0,4).compare( strPSN1 ) != 0)
+            {
+                profilePath = m_argv[profileArg];
+            }
+        }
+#else
         profilePath = m_argv[profileArg];
+#endif
     }
 
     return profilePath;
