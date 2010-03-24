@@ -7,7 +7,10 @@
 #ifndef _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
 #define _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
 
+#include <vector>
+
 #include <boost/ref.hpp>
+#include <boost/foreach.hpp>
 
 #include "fwCore/base.hpp"
 #include "fwCore/Demangler.hpp"
@@ -21,6 +24,7 @@ class DynamicAttributes
 public:
     typedef std::string AttrNameType;
     typedef SPTR(CLASS) AttrType;
+    typedef std::vector< AttrNameType > AttrNameVectorType;
     typedef ::boost::reference_wrapper< AttrType > AttrRefType;
     typedef std::map< AttrNameType, AttrRefType > AttrMapType;
 
@@ -28,8 +32,12 @@ public:
     virtual ~DynamicAttributes();
     
     virtual AttrRefType getAttribute( AttrNameType attrName );
-    bool hasAttribute( AttrNameType attrName );
+            bool        hasAttribute( AttrNameType attrName );
     
+    virtual void        setAttribute( AttrNameType attrName, AttrType obj );
+
+    virtual AttrNameVectorType getAttributeNames();
+
 protected:
 
     AttrMapType __FWTOOLS_ATTRIBUTE_MAP_NAME;
@@ -38,7 +46,7 @@ protected:
 
 };
 
-
+//------------------------------------------------------------------------------
 
 template< class CLASS >
 DynamicAttributes< CLASS >::DynamicAttributes()
@@ -46,10 +54,14 @@ DynamicAttributes< CLASS >::DynamicAttributes()
     this->BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME,s)();
 }
 
+//------------------------------------------------------------------------------
+
 template< class CLASS >
 DynamicAttributes< CLASS >::~DynamicAttributes()
 {
 }
+
+//------------------------------------------------------------------------------
 
 template< class CLASS >
 typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::getAttribute( AttrNameType attrName ) 
@@ -62,6 +74,8 @@ typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::get
     return (*iter).second;
 }
 
+//------------------------------------------------------------------------------
+
 template< class CLASS >
 bool DynamicAttributes< CLASS >::hasAttribute( AttrNameType attrName ) 
 {
@@ -69,7 +83,43 @@ bool DynamicAttributes< CLASS >::hasAttribute( AttrNameType attrName )
     return iter != this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end();
 }
 
+//------------------------------------------------------------------------------
 
+template< class CLASS >
+void DynamicAttributes< CLASS >::setAttribute( AttrNameType attrName, AttrType obj ) 
+{
+    typename DynamicAttributes::AttrRefType::type attr = this->getAttribute(attrName);
+    if (obj)
+    {
+        //OSLM_ASSERT( 
+                //"Tryed to put a '"<< obj->getClassname() <<"' in '"<< attrName <<"' ('"<< attr->getClassname() <<"') attribute.",
+                //!obj || attr->dynamicCast(obj) );
+        //attr = attr->dynamicCast(obj);
+        //TODO : Check types !
+        attr = obj;
+        assert(attr); //TODO remove when types checked
+    }
+    else
+    {
+        attr.reset();
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
+template< class CLASS >
+typename DynamicAttributes< CLASS >::AttrNameVectorType  DynamicAttributes< CLASS >::getAttributeNames()
+{
+    AttrNameVectorType names;
+    BOOST_FOREACH( typename DynamicAttributes::AttrMapType::value_type p , this->__FWTOOLS_ATTRIBUTE_MAP_NAME)
+    {
+        names.push_back(p.first);
+    }
+    return names;
+}
+
+//------------------------------------------------------------------------------
 
 template< class CLASS >
 void DynamicAttributes< CLASS >::BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME,s)()
