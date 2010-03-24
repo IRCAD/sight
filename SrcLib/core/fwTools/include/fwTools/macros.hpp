@@ -117,21 +117,27 @@
     /**@}                                                 */
 
 
-#define fwToolsDeclareAttrMacro( _type, _name, _desc )                          \
+#define fwToolsDeclareAttrMacro( _type, _name, _desc )                   \
     /** @desc _desc **/                                                  \
      fwToolsAttributeType( _type )  fwToolsPrependMemberPrefix( _name );
 
 
+#define fwToolsDeclareAttrTypedefMacro( _type, _name, _desc ) \
+    /** @desc _desc **/                                       \
+     typedef _type BOOST_PP_CAT( _name, Type );
 
 
 
-#define __FWTOOLS_ONE_ATTR_REGISTER_MACRO(_type, _name, _desc )                                       \
-    /* Register the specified attribute in the map */                                           \
-      /* Insert pair into map */                                                                \
-      __FWTOOLS_ATTRIBUTE_MAP_NAME.insert(                                                      \
-              std::make_pair(                                                                   \
-                  BOOST_PP_STRINGIZE(_name),                                                    \
-                  boost::ref( (AttrType&) fwToolsPrependMemberPrefix( _name ) )                 \
+
+
+
+#define __FWTOOLS_ONE_ATTR_REGISTER_MACRO(_type, _name, _desc )                 \
+    /* Register the specified attribute in the map */                           \
+      /* Insert pair into map */                                                \
+      __FWTOOLS_ATTRIBUTE_MAP_NAME.insert(                                      \
+              std::make_pair(                                                   \
+                  BOOST_PP_STRINGIZE(_name),                                    \
+                  boost::ref( (AttrType&) fwToolsPrependMemberPrefix( _name ) ) \
                   ));
 
 #define fwToolsOneAttrRegisterMacro( r, data, _tuple ) \
@@ -142,21 +148,28 @@
     fwToolsDeclareAttrMacro _tuple
 
 
+#define fwToolsOneAttrTypedefDeclareMacro( r, data, _tuple ) \
+    fwToolsDeclareAttrTypedefMacro _tuple
+
+
 #define fwToolsOneAttrGetterSetterMacro( r, data, _tuple ) \
     fwGetterSetterMacro _tuple
 
 
-#define fwToolsDeclareAttributesMacro( _attributes )                     \
+#define fwToolsDeclareAttributesMacro( _attributes )                      \
         BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrDeclareMacro, _, _attributes)
+
+#define fwToolsDeclareAttributesTypedefMacro( _attributes )                      \
+        BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrTypedefDeclareMacro, _, _attributes)
 
 
 #define fwToolsGetterSetterAttributesMacro( _attributes )                      \
-    /** @cond **/                                                          \
+    /** @cond **/                                                              \
         BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrGetterSetterMacro, _, _attributes) \
     /** @endcond **/
 
 
-#define fwToolsRegisterAttributesMacro( _attributes )                     \
+#define fwToolsRegisterAttributesMacro( _attributes )                      \
     /** @cond **/                                                          \
     void __FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME()                         \
     {                                                                      \
@@ -165,22 +178,12 @@
     /** @endcond **/
 
 
-#define __FWTOOLS_EXPAND_ATTR_PRED(r, state) BOOST_PP_SEQ_SIZE(state)
-#define __FWTOOLS_EXPAND_ATTR_OP(r, state)   BOOST_PP_SEQ_TAIL(state)
-
-#define __FWTOOLS_EXPAND_ATTR_MACRO(r, state)                                                                        \
-    private:                                                                                                          \
-        BOOST_PP_EXPAND( fwToolsDeclareAttrMacro BOOST_PP_SEQ_HEAD(state) )                                                  \
-    public:                                                                                                           \
-        BOOST_PP_EXPAND( fwGetterSetterMacro BOOST_PP_SEQ_HEAD(state) )
-
-
-
-#define fwToolsAttributesMacro( _attributes )                                                                    \
-    private:                                                                                                     \
-    fwToolsDeclareAttributesMacro( _attributes )                                                                 \
-    fwToolsRegisterAttributesMacro( _attributes )                                                                \
-    public:                                                                                                      \
+#define fwToolsAttributesMacro( _attributes )           \
+    private:                                            \
+    fwToolsDeclareAttributesMacro( _attributes )        \
+    fwToolsRegisterAttributesMacro( _attributes )       \
+    public:                                             \
+    fwToolsDeclareAttributesTypedefMacro( _attributes ) \
     fwToolsGetterSetterAttributesMacro( _attributes )
 
 
