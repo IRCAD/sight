@@ -116,10 +116,12 @@ public:
         {
             vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
             char *keySym = rwi->GetKeySym();
-
-            if (std::string(keySym) == "R")
+            if(keySym != NULL)
             {
-                m_adaptor->resetWindowing();
+                if (std::string(keySym) == "R")
+                {
+                    m_adaptor->resetWindowing();
+                }
             }
         }
     }
