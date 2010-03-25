@@ -37,6 +37,10 @@
 /** @endcond */
 
 
+#define fwToolsRegisterAttributeSignatureMacro()  \
+    void __FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME()
+
+
 #define fwToolsSetAttributeSignatureMacro()                   \
     void setAttribute( AttrNameType attrName, AttrType _obj )
 
@@ -184,7 +188,7 @@
 
 #define fwToolsRegisterAttributesMacro( _attributes )                      \
     /** @cond **/                                                          \
-    void __FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME()                         \
+    fwToolsRegisterAttributeSignatureMacro()                         \
     {                                                                      \
         BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrRegisterMacro, _, _attributes) \
     }                                                                      \

@@ -21,6 +21,7 @@ namespace fwTools {
 template<class CLASS>
 class DynamicAttributes
 {
+
 public:
     typedef std::string AttrNameType;
     typedef SPTR(CLASS) AttrType;
@@ -30,19 +31,19 @@ public:
 
     DynamicAttributes();
     virtual ~DynamicAttributes();
-    
+
     virtual AttrRefType getAttribute( AttrNameType attrName );
             bool        hasAttribute( AttrNameType attrName );
-    
+
     virtual fwToolsSetAttributeSignatureMacro() {};
 
     virtual AttrNameVectorType getAttributeNames();
 
+    virtual fwToolsRegisterAttributeSignatureMacro() {};
 protected:
 
     AttrMapType __FWTOOLS_ATTRIBUTE_MAP_NAME;
 
-    virtual void BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME,s)();
 
 };
 
@@ -51,7 +52,6 @@ protected:
 template< class CLASS >
 DynamicAttributes< CLASS >::DynamicAttributes()
 {
-    this->BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME,s)();
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ DynamicAttributes< CLASS >::~DynamicAttributes()
 //------------------------------------------------------------------------------
 
 template< class CLASS >
-typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::getAttribute( AttrNameType attrName ) 
+typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::getAttribute( AttrNameType attrName )
 {
     typename DynamicAttributes::AttrMapType::iterator iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.find(attrName);
     OSLM_FATAL_IF(
@@ -77,7 +77,7 @@ typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::get
 //------------------------------------------------------------------------------
 
 template< class CLASS >
-bool DynamicAttributes< CLASS >::hasAttribute( AttrNameType attrName ) 
+bool DynamicAttributes< CLASS >::hasAttribute( AttrNameType attrName )
 {
     typename DynamicAttributes::AttrMapType::iterator iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.find(attrName);
     return iter != this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end();
@@ -96,13 +96,6 @@ typename DynamicAttributes< CLASS >::AttrNameVectorType  DynamicAttributes< CLAS
     return names;
 }
 
-//------------------------------------------------------------------------------
-
-template< class CLASS >
-void DynamicAttributes< CLASS >::BOOST_PP_CAT(__FWTOOLS_ATTRIBUTE_REGISTER_FUNC_NAME,s)()
-{ };
-
-
-} //end namespace fwTools {
+} //end namespace fwTools
 
 #endif //_FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
