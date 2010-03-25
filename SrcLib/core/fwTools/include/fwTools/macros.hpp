@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/** 
+/**
  * @file fwTools/attributesmacros.hpp
  * @brief TODO
  *
@@ -56,7 +56,7 @@
 //-----------------------------------
 //
 #define fwToolsSetMacro(_type, _var)                                                \
-    FWTOOLS_API void set##_var (const _type fwToolsPrependParamPrefix(_var))        \
+    void set##_var (const _type fwToolsPrependParamPrefix(_var))        \
     {                                                                               \
         this->fwToolsPrependMemberPrefix( _var ) = fwToolsPrependParamPrefix(_var); \
     }
@@ -64,7 +64,7 @@
 //-----------------------------------
 //
 #define fwToolsSetCRefMacro(_type, _var)                                            \
-    FWTOOLS_API void setCRef##_var (const _type & fwToolsPrependParamPrefix(_var))  \
+    void setCRef##_var (const _type & fwToolsPrependParamPrefix(_var))  \
     {                                                                               \
         this->fwToolsPrependMemberPrefix( _var ) = fwToolsPrependParamPrefix(_var); \
     }
@@ -84,7 +84,7 @@
 //-----------------------------------
 //
 #define fwToolsGetMacro(_type, _var)               \
-    FWTOOLS_API const _type get##_var () const     \
+    const _type get##_var () const     \
     {                                              \
         return fwToolsPrependMemberPrefix( _var ); \
     }
@@ -92,7 +92,7 @@
 //-----------------------------------
 //
 #define fwToolsGetRefMacro(_type, _var)                  \
-    FWTOOLS_API _type & getRef##_var ()                  \
+    _type & getRef##_var ()                  \
     {                                                    \
         return this->fwToolsPrependMemberPrefix( _var ); \
     }
@@ -100,7 +100,7 @@
 //-----------------------------------
 //
 #define fwToolsGetCRefMacro(_type, _var)                 \
-    FWTOOLS_API const _type & getCRef##_var () const     \
+    const _type & getCRef##_var () const     \
     {                                                    \
         return this->fwToolsPrependMemberPrefix( _var ); \
     }
