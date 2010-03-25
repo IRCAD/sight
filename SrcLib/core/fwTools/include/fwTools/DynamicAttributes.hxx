@@ -34,7 +34,7 @@ public:
     virtual AttrRefType getAttribute( AttrNameType attrName );
             bool        hasAttribute( AttrNameType attrName );
     
-    virtual void        setAttribute( AttrNameType attrName, AttrType obj );
+    virtual fwToolsSetAttributeSignatureMacro() {};
 
     virtual AttrNameVectorType getAttributeNames();
 
@@ -81,29 +81,6 @@ bool DynamicAttributes< CLASS >::hasAttribute( AttrNameType attrName )
 {
     typename DynamicAttributes::AttrMapType::iterator iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.find(attrName);
     return iter != this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end();
-}
-
-//------------------------------------------------------------------------------
-
-template< class CLASS >
-void DynamicAttributes< CLASS >::setAttribute( AttrNameType attrName, AttrType obj ) 
-{
-    typename DynamicAttributes::AttrRefType::type attr = this->getAttribute(attrName);
-    if (obj)
-    {
-        //OSLM_ASSERT( 
-                //"Tryed to put a '"<< obj->getClassname() <<"' in '"<< attrName <<"' ('"<< attr->getClassname() <<"') attribute.",
-                //!obj || attr->dynamicCast(obj) );
-        //attr = attr->dynamicCast(obj);
-        //TODO : Check types !
-        attr = obj;
-        assert(attr); //TODO remove when types checked
-    }
-    else
-    {
-        attr.reset();
-    }
-
 }
 
 //------------------------------------------------------------------------------

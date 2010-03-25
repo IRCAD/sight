@@ -37,13 +37,16 @@
 /** @endcond */
 
 
-#define fwToolsPrependParamPrefix( _name ) \
+#define fwToolsSetAttributeSignatureMacro() \
+    void setAttribute( AttrNameType attrName, AttrType _obj )
+
+#define fwToolsPrependParamPrefixMacro( _name ) \
     BOOST_PP_CAT (__FWTOOLS_ATTRIBUTE_ACCESSOR_PARAM_PREFIX, _name)
 
-#define fwToolsPrependMemberPrefix( _name ) \
+#define fwToolsPrependMemberPrefixMacro( _name ) \
     BOOST_PP_CAT (__FWTOOLS_MEMBER_PREFIX, _name)
 
-#define fwToolsAttributeType( _type ) \
+#define fwToolsAttributeTypeMacro( _type ) \
     _type::__FWCORE_TYPEDEF_SHARED_PTR_NAME
 
 //-----------------------------------
@@ -56,17 +59,17 @@
 //-----------------------------------
 //
 #define fwToolsSetMacro(_type, _var)                                                \
-    void set##_var (const _type fwToolsPrependParamPrefix(_var))        \
+    void set##_var (const _type fwToolsPrependParamPrefixMacro(_var))        \
     {                                                                               \
-        this->fwToolsPrependMemberPrefix( _var ) = fwToolsPrependParamPrefix(_var); \
+        this->fwToolsPrependMemberPrefixMacro( _var ) = fwToolsPrependParamPrefixMacro(_var); \
     }
 
 //-----------------------------------
 //
 #define fwToolsSetCRefMacro(_type, _var)                                            \
-    void setCRef##_var (const _type & fwToolsPrependParamPrefix(_var))  \
+    void setCRef##_var (const _type & fwToolsPrependParamPrefixMacro(_var))  \
     {                                                                               \
-        this->fwToolsPrependMemberPrefix( _var ) = fwToolsPrependParamPrefix(_var); \
+        this->fwToolsPrependMemberPrefixMacro( _var ) = fwToolsPrependParamPrefixMacro(_var); \
     }
 
 //-----------------------------------
@@ -86,7 +89,7 @@
 #define fwToolsGetMacro(_type, _var)               \
     const _type get##_var () const     \
     {                                              \
-        return fwToolsPrependMemberPrefix( _var ); \
+        return fwToolsPrependMemberPrefixMacro( _var ); \
     }
 
 //-----------------------------------
@@ -94,7 +97,7 @@
 #define fwToolsGetRefMacro(_type, _var)                  \
     _type & getRef##_var ()                  \
     {                                                    \
-        return this->fwToolsPrependMemberPrefix( _var ); \
+        return this->fwToolsPrependMemberPrefixMacro( _var ); \
     }
 
 //-----------------------------------
@@ -102,24 +105,24 @@
 #define fwToolsGetCRefMacro(_type, _var)                 \
     const _type & getCRef##_var () const     \
     {                                                    \
-        return this->fwToolsPrependMemberPrefix( _var ); \
+        return this->fwToolsPrependMemberPrefixMacro( _var ); \
     }
 
 //-----------------------------------
 // Getter/Setter
 //-----------------------------------
 #define fwGetterSetterMacro( _type, _name, _desc )              \
-    /** @name fwToolsPrependMemberPrefix( _var ) accessor */    \
+    /** @name fwToolsPrependMemberPrefixMacro( _var ) accessor */    \
     /** Getter/Setter for _var                            */    \
     /** @{                                                */    \
-    fwToolsGetterMacro( fwToolsAttributeType( _type ) , _name); \
-    fwToolsSetterMacro( fwToolsAttributeType( _type ) , _name); \
+    fwToolsGetterMacro( fwToolsAttributeTypeMacro( _type ) , _name); \
+    fwToolsSetterMacro( fwToolsAttributeTypeMacro( _type ) , _name); \
     /**@}                                                 */
 
 
 #define fwToolsDeclareAttrMacro( _type, _name, _desc )                   \
     /** @desc _desc **/                                                  \
-     fwToolsAttributeType( _type )  fwToolsPrependMemberPrefix( _name );
+     fwToolsAttributeTypeMacro( _type )  fwToolsPrependMemberPrefixMacro( _name );
 
 
 #define fwToolsDeclareAttrTypedefMacro( _type, _name, _desc ) \
@@ -137,8 +140,19 @@
       __FWTOOLS_ATTRIBUTE_MAP_NAME.insert(                                      \
               std::make_pair(                                                   \
                   BOOST_PP_STRINGIZE(_name),                                    \
-                  boost::ref( (AttrType&) fwToolsPrependMemberPrefix( _name ) ) \
+                  boost::ref( (AttrType&) fwToolsPrependMemberPrefixMacro( _name ) ) \
                   ));
+
+
+#define __FWTOOLS_SET_ONE_ATTR_MACRO(_type, _name, _desc )             \
+    /* check the given object and Set the specified attribute value */ \
+    else if( fwToolsPrependMemberPrefixMacro( _name )->dynamicCast(_obj) )   \
+    {                                                                  \
+        attr = _obj;                                                    \
+    }
+
+
+
 
 #define fwToolsOneAttrRegisterMacro( r, data, _tuple ) \
     __FWTOOLS_ONE_ATTR_REGISTER_MACRO _tuple
@@ -154,6 +168,9 @@
 
 #define fwToolsOneAttrGetterSetterMacro( r, data, _tuple ) \
     fwGetterSetterMacro _tuple
+
+#define fwToolsSetOneAttrMacro( r, data, _tuple ) \
+    __FWTOOLS_SET_ONE_ATTR_MACRO _tuple
 
 
 #define fwToolsDeclareAttributesMacro( _attributes )                      \
@@ -178,13 +195,34 @@
     /** @endcond **/
 
 
+#define fwToolsSetAttributesMacro( _attributes )                                            \
+    /** @cond **/                                                                           \
+    fwToolsSetAttributeSignatureMacro()                               \
+    {                                                                                       \
+        AttrRefType::type &attr = this->getAttribute(attrName); \
+        if (!_obj)                                                                          \
+        {                                                                                   \
+            attr.reset();                                                                   \
+        }                                                                                   \
+        BOOST_PP_SEQ_FOR_EACH(fwToolsSetOneAttrMacro, _, _attributes)                       \
+        else                                                                                \
+        {                                                                                   \
+            OSLM_FATAL( "Attribute '"<<attrName<<"' of object '"<< this->getClassname()     \
+                      <<"' can not handle a object of type '"<<_obj->getClassname()<<"'");  \
+        }                                                                                   \
+    }
+    /** @endcond **/
+
+
+
 #define fwToolsAttributesMacro( _attributes )           \
     private:                                            \
     fwToolsDeclareAttributesMacro( _attributes )        \
     fwToolsRegisterAttributesMacro( _attributes )       \
     public:                                             \
     fwToolsDeclareAttributesTypedefMacro( _attributes ) \
-    fwToolsGetterSetterAttributesMacro( _attributes )
+    fwToolsGetterSetterAttributesMacro( _attributes )   \
+    fwToolsSetAttributesMacro( _attributes )
 
 
 
