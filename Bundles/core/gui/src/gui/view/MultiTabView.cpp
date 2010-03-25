@@ -137,6 +137,18 @@ void MultiTabView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwToo
 void MultiTabView::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    // Remove pages without removing wxPanel created for this pages
+    // BE CARREFULL => not use m_notebook->DeleteAllPages() because
+    // this method remove wxPanel insides pages but unregisterAllWxContainer
+    // remove this panel also.
+    for ( int pageNumber = m_notebook->GetPageCount()-1;
+          pageNumber >= 0;
+          pageNumber-- )
+    {
+        m_notebook->RemovePage( pageNumber );
+    }
+
     this->unregisterAllWxContainer();
     this->resetGuiParentContainer();
 }
