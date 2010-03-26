@@ -146,7 +146,7 @@
 
 #define __FWTOOLS_SET_ONE_ATTR_MACRO(_type, _name, _desc )                 \
     /* check the given object and Set the specified attribute value */     \
-    else if( fwToolsPrependMemberPrefixMacro( _name )->dynamicCast(_obj) ) \
+    else if( BOOST_PP_STRINGIZE(_name) == attrName && BOOST_PP_CAT(_name,Type)::dynamicCast(_obj) ) \
     {                                                                      \
         theAttr = _obj;                                                    \
     }
@@ -173,7 +173,7 @@
     __FWTOOLS_SET_ONE_ATTR_MACRO _tuple
 
 
-#define fwToolsDeclareAttributesMacro( _attributes )                      \
+#define fwToolsDeclareAttributesMacro( _attributes )                            \
         BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrDeclareMacro, _, _attributes)
 
 #define fwToolsDeclareAttributesTypedefMacro( _attributes )                      \
@@ -188,7 +188,7 @@
 
 #define fwToolsRegisterAttributesMacro( _attributes )                      \
     /** @cond **/                                                          \
-    fwToolsRegisterAttributeSignatureMacro()                         \
+    fwToolsRegisterAttributeSignatureMacro()                               \
     {                                                                      \
         BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrRegisterMacro, _, _attributes) \
     }                                                                      \
@@ -199,10 +199,10 @@
     /** @cond **/                                                                          \
     fwToolsSetAttributeSignatureMacro()                                                    \
     {                                                                                      \
-        AttrRefType::type &theAttr = this->getAttribute(attrName);                            \
+        AttrRefType::type &theAttr = this->getAttribute(attrName);                         \
         if (!_obj)                                                                         \
         {                                                                                  \
-            theAttr.reset();                                                                  \
+            theAttr.reset();                                                               \
         }                                                                                  \
         BOOST_PP_SEQ_FOR_EACH(fwToolsSetOneAttrMacro, _, _attributes)                      \
         else                                                                               \
