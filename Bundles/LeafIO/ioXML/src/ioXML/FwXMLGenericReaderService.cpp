@@ -96,13 +96,6 @@ void FwXMLGenericReaderService::configureWithIHM()
 void FwXMLGenericReaderService::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE("FwXMLGenericReaderService::starting()");
-#ifdef __WXMAC__
-    wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
-    if (frame != NULL)
-        frame->Connect( wxIDEventFwOpen, wxEventFwOpen, wxCommandEventHandler(wxEvtHandlerOpenFile::open) );
-    else
-        SLM_FATAL ("Window not found !")
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -193,13 +186,13 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         }
         if (obj)
         {
-			// Retrieve dataStruct associated with this service
-			::fwTools::Object::sptr associatedObject = this->getObject< ::fwTools::Object >();
-			assert( associatedObject ) ;
+            // Retrieve dataStruct associated with this service
+            ::fwTools::Object::sptr associatedObject = this->getObject< ::fwTools::Object >();
+            assert( associatedObject ) ;
 
-			associatedObject->shallowCopy( obj );
+            associatedObject->shallowCopy( obj );
 
-			notificationOfUpdate();
+            notificationOfUpdate();
         }
         wxEndBusyCursor();
     }
@@ -210,12 +203,12 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 
 void FwXMLGenericReaderService::notificationOfUpdate()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
     ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
     assert( object );
     ::fwServices::ObjectMsg::NewSptr msg;
-	msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
-	::fwServices::IEditionService::notify( this->getSptr(),  object, msg );
+    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
+    ::fwServices::IEditionService::notify( this->getSptr(),  object, msg );
 }
 
 //------------------------------------------------------------------------------

@@ -24,11 +24,22 @@ SingleFile::~SingleFile()
     // TODO Auto-generated destructor stub
 }
 
+//------------------------------------------------------------------------------
+SingleFile::sptr SingleFile::SingleFileFactory(::boost::filesystem::path _path)
+{
+    SingleFile::sptr singlefile = SingleFile::New();
+    singlefile->setPath(_path);
+    return singlefile;
+}
+
+//------------------------------------------------------------------------------
+
 void SingleFile::setPath( ::boost::filesystem::path path)
 {
     m_path = path;
 }
 
+//------------------------------------------------------------------------------
 
 ::boost::filesystem::path SingleFile::getPath()
 {
