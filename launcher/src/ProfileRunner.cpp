@@ -96,6 +96,7 @@ bool initFwDir()
     if ( m_argc >= 2 )
     {
         int profileArg = 1;
+        profilePath = m_argv[profileArg];
 #if defined(__MACOSX__)
         // In graphical context, OSX add a Process Number like parameter
         if ( m_argc > 2 )
@@ -107,8 +108,6 @@ bool initFwDir()
                 profilePath = m_argv[profileArg];
             }
         }
-#else
-        profilePath = m_argv[profileArg];
 #endif
     }
 
