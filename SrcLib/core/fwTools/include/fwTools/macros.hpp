@@ -154,7 +154,7 @@
     BOOST_PP_ARRAY_DATA(BOOST_PP_ARRAY_PUSH_FRONT((_size, _tuple), _value))
 
 #define fwToolsOneAttrRegisterMacro( r, _data_memberprefix, _tuple )                                  \
-    __FWTOOLS_ONE_ATTR_REGISTER_MACRO __FWTOOLS_PREPEND_TO_TUPLE_MACRO(3, _tuple, _data_memberprefix)
+    BOOST_PP_EXPAND( __FWTOOLS_ONE_ATTR_REGISTER_MACRO __FWTOOLS_PREPEND_TO_TUPLE_MACRO(3, _tuple, _data_memberprefix))
 
 
 #define fwToolsOneAttrDeclareMacro( r, _data_memberprefix, _tuple )                                            \
@@ -166,7 +166,7 @@
 
 
 #define fwToolsOneAttrGetterSetterMacro( r, _data_memberprefix, _tuple )                 \
-    fwGetterSetterMacro  __FWTOOLS_PREPEND_TO_TUPLE_MACRO(3, _tuple, _data_memberprefix)
+    BOOST_PP_EXPAND( fwGetterSetterMacro  __FWTOOLS_PREPEND_TO_TUPLE_MACRO(3, _tuple, _data_memberprefix))
 
 #define fwToolsSetOneAttrMacro( r, data, _tuple ) \
     __FWTOOLS_SET_ONE_ATTR_MACRO _tuple
