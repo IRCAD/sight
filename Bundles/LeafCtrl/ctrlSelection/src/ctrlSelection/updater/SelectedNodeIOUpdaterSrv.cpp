@@ -53,14 +53,9 @@ void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) t
     ::fwData::Graph::csptr cgraph = ::fwData::Graph::dynamicConstCast( _msg->getSubject().lock() );
     ::fwData::Graph::sptr graph   = ::boost::const_pointer_cast< ::fwData::Graph >( cgraph );
 
-    ::fwComEd::GraphMsg::csptr  msg = ::fwComEd::GraphMsg::dynamicConstCast( _msg );
-    ::fwData::Node::csptr cnode = msg->getSelectedNode();
-    ::fwData::Node::sptr node =  ::boost::const_pointer_cast< ::fwData::Node >( cnode );
-
     ::fwComEd::helper::Composite compositeHelper( composite );
 
-
-    if ( msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) || msg->hasEvent( ::fwComEd::GraphMsg::UNSELECTED_NODE ) )
+    if ( _msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) || _msg->hasEvent( ::fwComEd::GraphMsg::UNSELECTED_NODE ) )
     {
         // remove previous data for SELECTED_NODE and UNSELECTED_NODE
         while ( !composite->getRefMap().empty() )
@@ -68,8 +63,11 @@ void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             compositeHelper.remove( composite->getRefMap().begin()->first );
         }
 
-        if ( msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) )
+        if ( _msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) )
         {
+            ::fwComEd::GraphMsg::csptr  msg = ::fwComEd::GraphMsg::dynamicConstCast( _msg );
+            ::fwData::Node::csptr cnode = msg->getSelectedNode();
+            ::fwData::Node::sptr node =  ::boost::const_pointer_cast< ::fwData::Node >( cnode );
             // repopulate composite
             std::vector< ::fwData::Edge::sptr > dataEdges;
             dataEdges = graph->getEdges( node, m_upStream,  ::fwData::Edge::NATURE_DATA );
