@@ -96,18 +96,21 @@ bool initFwDir()
     if ( m_argc >= 2 )
     {
         int profileArg = 1;
-        profilePath = m_argv[profileArg];
-#if defined(__MACOSX__)
+#ifdef __MACOSX__
         // In graphical context, OSX add a Process Number like parameter
-        if ( m_argc > 2 )
+        std::string strPSN = m_argv[1];
+        std::string strPSN1 = "-psn";
+        if ( strPSN.substr(0,4).compare( strPSN1 ) == 0)
         {
-            std::string strPSN = m_argv[1];
-            std::string strPSN1 = "-psn";
-            if (strPSN.substr(0,4).compare( strPSN1 ) != 0)
-            {
-                profilePath = m_argv[profileArg];
-            }
+            SLM_TRACE("PSN used");
         }
+        else
+        {
+            SLM_TRACE("PSN not used");
+            profilePath = m_argv[profileArg];
+        }
+#else
+        profilePath = m_argv[profileArg];
 #endif
     }
 
