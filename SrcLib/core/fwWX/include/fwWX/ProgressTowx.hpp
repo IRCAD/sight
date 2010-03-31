@@ -16,7 +16,8 @@
 
 class wxProgressDialog;
 
-namespace fwWX {
+namespace fwWX
+{
 
 /**
  * @brief   This class allows us to select an acquisition in a patient data base.
@@ -29,7 +30,7 @@ namespace fwWX {
 class FWWX_CLASS_API ProgressTowx : public ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
 {
 public:
-    FWWX_API ProgressTowx(std::string title, std::string message= std::string(86,' '));
+    FWWX_API ProgressTowx( const std::string title, std::string message= std::string(86,' '));
 
     FWWX_API virtual ~ProgressTowx();
 

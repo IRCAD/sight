@@ -4,34 +4,44 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwWX/ProgressTowx.hpp"
 #include "wx/progdlg.h"
 
-namespace fwWX {
+#include "fwWX/ProgressTowx.hpp"
+#include "fwWX/convert.hpp"
 
-ProgressTowx::ProgressTowx(std::string title, const std::string message)
+namespace fwWX
 {
-    // TODO Auto-generated constructor stub
+
+//------------------------------------------------------------------------------
+
+ProgressTowx::ProgressTowx( const std::string title, const std::string message)
+{
     wxProgressDialog *wxpd = new wxProgressDialog(
-                                    wxConvertMB2WX(title.c_str()),
-                                    wxConvertMB2WX(message.c_str()),
+                                    ::fwWX::std2wx(title),
+                                    ::fwWX::std2wx(message),
                                     100 /*percent*/,
                                     NULL, wxPD_AUTO_HIDE | wxPD_APP_MODAL //| wxPD_REMAINING_TIME
                             );
     m_pdialog = ::boost::shared_ptr<wxProgressDialog>(wxpd);
-
 }
 
-ProgressTowx::~ProgressTowx() {
+//------------------------------------------------------------------------------
+
+ProgressTowx::~ProgressTowx()
+{
     // auto clean dialog
 }
+
+//------------------------------------------------------------------------------
 
 FWWX_API void ProgressTowx::operator()(float percent,std::string msg)
 {
     assert(m_pdialog);
     int value = (int)(percent*100);
-    m_pdialog->Show(true); // can be hidden if repvious load as finished
-    m_pdialog->Update(value,wxConvertMB2WX(msg.c_str()));
+    m_pdialog->Show(true); // can be hidden if previous load as finished
+    m_pdialog->Update(value, ::fwWX::std2wx(msg) );
 }
+
+//------------------------------------------------------------------------------
 
 }
