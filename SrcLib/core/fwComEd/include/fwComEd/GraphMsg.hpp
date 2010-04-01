@@ -42,6 +42,7 @@ public:
     FWCOMED_API static std::string UNSELECTED_NODE;
     FWCOMED_API static std::string SELECTED_OPERATOR;
     FWCOMED_API static std::string EXECUTE_GRAPH;
+    FWCOMED_API static std::string CHANGED_NODE_STATE;
 
     /**
       * @brief  Constructor : does nothing.

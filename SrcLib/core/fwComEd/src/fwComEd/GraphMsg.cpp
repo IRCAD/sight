@@ -22,6 +22,7 @@ std::string GraphMsg::SELECTED_NODE        = "SELECTED_NODE";
 std::string GraphMsg::UNSELECTED_NODE      = "UNSELECTED_NODE";
 std::string GraphMsg::SELECTED_OPERATOR    = "SELECTED_OPERATOR";
 std::string GraphMsg::EXECUTE_GRAPH        = "EXECUTE_GRAPH";
+std::string GraphMsg::CHANGED_NODE_STATE   = "CHANGED_NODE_STATE";
 
 //-----------------------------------------------------------------------------
 
