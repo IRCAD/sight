@@ -122,6 +122,11 @@
     <point id="::gui::action::StarterActionService">
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
+    </point>    
+    
+    <point id="::gui::action::ActionNotifyService">
+        <implements>::gui::action::IAction</implements>
+        <implements>::fwTools::Object</implements>
     </point>
 
 </plugin>
