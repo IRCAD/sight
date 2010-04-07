@@ -33,6 +33,8 @@ public:
 
     FWXML_API virtual void save();
 
+    FWXML_API static void setPreferedWriter( std::string libwriter );
+
 protected :
 
     /**
@@ -41,6 +43,8 @@ protected :
      * @li if not set and INR RW policy install failed use gzBufferRW
      */
     void RWPoliciesInstall();
+
+    static std::string m_preferedWriter;
 
 
 

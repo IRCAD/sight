@@ -63,13 +63,18 @@ void ComChannelService::configuring() throw( ::fwTools::Failed )
         m_destUUID.second = m_configuration->findConfigurationElement("target")->getValue() ;
         OSLM_INFO("Destination = " << m_destUUID.second ) ;
     }
-    if( m_configuration->hasAttribute("priority"))
+    
+    if( m_configuration->findConfigurationElement("priority") )
     {
-        std::string priorityStr = m_configuration->getExistingAttributeValue("priority");
-        double priority = ::boost::lexical_cast< double >( priorityStr );
-        if(priority < 0.0) priority = 0.0;
-        if(priority > 1.0) priority = 1.0;
-        this->setPriority(priority);
+        m_priority = ::boost::lexical_cast<float>(m_configuration->findConfigurationElement("priority")->getValue());
+        if( (m_priority<=1.0) && (m_priority>=0.0) )
+        {
+            OSLM_INFO("Priority = " << m_priority ) ;
+        }
+        else
+        {
+            OSLM_FATAL("Priority must be a float between 0.0 and 1.0, and you selected " << m_priority ) ;
+        }
     }
 }
 
