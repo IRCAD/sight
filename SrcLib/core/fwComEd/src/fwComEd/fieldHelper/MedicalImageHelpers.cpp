@@ -219,8 +219,9 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
     SLM_TRACE_FUNC();
 
     // Test if the image is allocated
-    bool dataImageIsAllocated = true;
-    for ( int k = 0; k < _pImg->getDimension(); k++ )
+    bool dataImageIsAllocated = (_pImg != ::fwData::Image::sptr());
+
+    for ( int k = 0; dataImageIsAllocated && k < _pImg->getDimension(); k++ )
     {
         if(k == 2 && _pImg->getDimension() == 3) // special test for 2D jpeg image (size[2] == 1)
             dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
