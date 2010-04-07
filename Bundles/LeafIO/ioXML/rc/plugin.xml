@@ -82,8 +82,11 @@
     </extension>
     
     <extension implements="::ioXML::FwXMLGenericWriterService" >
-        <info text="fwXML Writer (Ircad)"/>
+        <info text="Generic fwXML Writer (Ircad)"/>
     </extension>
-
+    
+    <extension implements="::ioXML::FwXMLGenericReaderService" >
+        <info text="Generic fwXML Reader (Ircad)"/>
+    </extension>
 
 </plugin>
