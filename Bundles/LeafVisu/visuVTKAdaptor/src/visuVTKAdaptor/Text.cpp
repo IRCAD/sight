@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include <fwServices/macros.hpp>
+
+#include <fwData/Color.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkActor2D.h>
@@ -13,7 +14,6 @@
 #include <vtkTextProperty.h>
 
 #include "visuVTKAdaptor/Text.hpp"
-
 
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Text, ::fwTools::Object ) ;
@@ -38,15 +38,18 @@ Text::Text() throw()
     m_actor->SetPosition(0.001,0.02);
 }
 
+//-----------------------------------------------------------------------------
+
 Text::~Text() throw()
 {
-    //assert(false);
     m_actor->Delete();
     m_actor = 0;
 
     m_mapper->Delete();
     m_mapper = 0;
 }
+
+//-----------------------------------------------------------------------------
 
 void Text::configuring() throw(fwTools::Failed)
 {
@@ -55,18 +58,37 @@ void Text::configuring() throw(fwTools::Failed)
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setText( m_configuration->getAttributeValue("text") );
+
+    std::string colorText = m_configuration->getAttributeValue("color");
+    if(!colorText.empty() && colorText[0] == '#')
+    {
+        ::fwData::Color color;
+        color.setRGBA(colorText);
+        m_mapper->GetTextProperty()->SetColor(color.getRefRGBA()[0], color.getRefRGBA()[1], color.getRefRGBA()[2]);
+    }
+    else
+    {
+        // compatibility with "old" color
+        double color = ::boost::lexical_cast<double> (colorText);
+        m_mapper->GetTextProperty()->SetColor(color, color, color);
+    }
 }
+
+//-----------------------------------------------------------------------------
 
 void Text::doStart() throw(fwTools::Failed)
 {
     this->addToRenderer(m_actor);
 }
 
+//-----------------------------------------------------------------------------
 
 void Text::doStop() throw(fwTools::Failed)
 {
     this->removeAllPropFromRenderer();
 }
+
+//-----------------------------------------------------------------------------
 
 void Text::setText(std::string str)
 {
@@ -74,6 +96,8 @@ void Text::setText(std::string str)
     m_mapper->SetInput(m_text.c_str());
     this->setVtkPipelineModified();
 }
+
+//-----------------------------------------------------------------------------
 
 
 } //namespace visuVTKAdaptor
