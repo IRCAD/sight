@@ -4,10 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "wx/progdlg.h"
+
+#include "fwCore/base.hpp"
+#include "fwWX/convert.hpp"
+#include "fwWX/widgets/fwProgressDialog.hpp"
 
 #include "fwWX/ProgressTowx.hpp"
-#include "fwWX/convert.hpp"
 
 namespace fwWX
 {
@@ -16,13 +18,13 @@ namespace fwWX
 
 ProgressTowx::ProgressTowx( const std::string title, const std::string message)
 {
-    wxProgressDialog *wxpd = new wxProgressDialog(
+    fwProgressDialog *wxpd = new fwProgressDialog(
                                     ::fwWX::std2wx(title),
                                     ::fwWX::std2wx(message),
                                     100 /*percent*/,
                                     NULL, wxPD_AUTO_HIDE | wxPD_APP_MODAL //| wxPD_REMAINING_TIME
                             );
-    m_pdialog = ::boost::shared_ptr<wxProgressDialog>(wxpd);
+    m_pdialog = ::boost::shared_ptr<fwProgressDialog>(wxpd);
 }
 
 //------------------------------------------------------------------------------
