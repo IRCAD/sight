@@ -105,7 +105,11 @@ void MultiTabView::starting() throw(::fwTools::Failed)
     assert( wxTheApp->GetTopWindow() );
 
     wxWindow * wxContainer = this->getWxContainer();
+    wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
+    wxContainer->SetSizer( boxSizer );
     m_notebook = new wxNotebook( wxContainer, wxNewId() );
+
+    boxSizer->Add( m_notebook, 0, wxALL|wxEXPAND, 0);
 
     std::list<ViewInfo>::iterator pi = m_views.begin();
     for ( pi; pi!= m_views.end() ; ++pi )
