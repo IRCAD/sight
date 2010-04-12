@@ -1,4 +1,5 @@
 
+#include <vtkObjectFactory.h>
 #include <vtkOutputWindow.h>
 
 #include <fwCore/base.hpp>
@@ -25,6 +26,12 @@ private:
   void operator=(const vtkOutputWindowToSpyLog&);  // Not implemented.
 };
 
+
+//------------------------------------------------------------------------------
+
+vtkCxxRevisionMacro(vtkOutputWindowToSpyLog, "$Revision: 1.3 $");
+vtkStandardNewMacro(vtkOutputWindowToSpyLog);
+
 //------------------------------------------------------------------------------
 
 vtkOutputWindowToSpyLog::vtkOutputWindowToSpyLog()
@@ -39,7 +46,7 @@ vtkOutputWindowToSpyLog::~vtkOutputWindowToSpyLog()
 
 //------------------------------------------------------------------------------
 
-void vtkOutputWindow::PrintSelf(ostream& os, vtkIndent indent)
+void vtkOutputWindowToSpyLog::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 
