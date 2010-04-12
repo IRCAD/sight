@@ -74,6 +74,7 @@ void Reconstruction::configuring() throw(fwTools::Failed)
 
 void Reconstruction::doStart() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     createMeshService();
 }
 
@@ -85,36 +86,43 @@ void Reconstruction::createMeshService()
     ::fwData::Reconstruction::sptr reconstruction
         = this->getObject < ::fwData::Reconstruction >();
 
+    ::fwData::TriangularMesh::sptr mesh = reconstruction->getTriangularMesh();
 
-    ::fwRenderVTK::IVtkAdaptorService::sptr meshService;
-    meshService = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
-            reconstruction->getTriangularMesh(),
-            "::visuVTKAdaptor::TriangularMesh" );
-    assert(meshService);
-    ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor
-        = TriangularMesh::dynamicCast(meshService);
+    SLM_TRACE_IF("Mesh is null", !mesh);
+    if (mesh)
+    {
+        ::fwRenderVTK::IVtkAdaptorService::sptr meshService;
+        meshService = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+                mesh,
+                "::visuVTKAdaptor::TriangularMesh" );
+        assert(meshService);
+        ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor
+            = TriangularMesh::dynamicCast(meshService);
 
-    meshService->setRenderService( this->getRenderService() );
-    meshService->setRenderId     ( this->getRenderId()      );
-    meshService->setPickerId     ( this->getPickerId()      );
-    meshService->setTransformId  ( this->getTransformId() );
+        meshService->setRenderService( this->getRenderService() );
+        meshService->setRenderId     ( this->getRenderId()      );
+        meshService->setPickerId     ( this->getPickerId()      );
+        meshService->setTransformId  ( this->getTransformId() );
 
-    meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
-    meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
-    meshAdaptor->setShowClippedPart ( true );
-    meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
-    meshService->start();
-    meshAdaptor ->updateVisibility  ( reconstruction->getIsVisible() );
+        meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
+        meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
+        meshAdaptor->setShowClippedPart ( true );
+        meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
+        meshService->start();
+        meshAdaptor ->updateVisibility  ( reconstruction->getIsVisible() );
 
-    m_meshService = meshService;
-    this->registerService(meshService);
+        m_meshService = meshService;
+        this->registerService(meshService);
+        OSLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
+        OSLM_TRACE("Mesh nb points : "<< mesh->getNumPoints());
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Reconstruction::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE("SWAPPING Reconstruction");
+    SLM_TRACE_FUNC();
     this->doUpdate();
 }
 
@@ -122,6 +130,7 @@ void Reconstruction::doSwap() throw(fwTools::Failed)
 
 void Reconstruction::doUpdate() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
 
     if (!m_meshService.expired())
     {
@@ -175,6 +184,7 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
 
 void Reconstruction::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
 
     if (!m_meshService.expired())
     {
@@ -203,6 +213,7 @@ void Reconstruction::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwT
 
 void Reconstruction::doStop() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->removeAllPropFromRenderer();
 
     //if (this->getPicker())
@@ -217,6 +228,7 @@ void Reconstruction::doStop() throw(fwTools::Failed)
 
 void Reconstruction::setForceHide(bool hide)
 {
+    SLM_TRACE_FUNC();
     if (!m_meshService.expired())
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr meshService = m_meshService.lock();
