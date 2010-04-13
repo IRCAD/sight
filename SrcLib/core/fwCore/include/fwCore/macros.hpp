@@ -290,8 +290,8 @@
 /*
  * __FWCORE_CLASS_TYPEDEFS define several typdefs for classes (sptr, wptr, ...)
  *
- * Baseclass is a typedef to the superclass
- * Rootclass is a typedef to the toplevel base class
+ * BaseClass is a typedef to the superclass
+ * RootClass is a typedef to the toplevel base class
  */
 #define __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                               \
     /** Self type  */                                                                                      \
@@ -420,6 +420,28 @@
     static  const std::string rootedNamespace()          { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getRootedClassname<SelfType>());}              \
      /** @} */
 
+/**
+ * @brief Generate virtual methods that check if passed type is same type of
+ * (or a topclass of) 'this' type
+ *
+ * Example: 
+ * ::fwData::Image::IsTypeOf("::fwData::Object") is true
+ * image->isA("::fwData::Object") is true
+ *
+ */
+#define fwCoreIsTypeOfMacro(_classinfo_)                                                                                                   \
+    static const bool isTypeOf(const std::string type)                                                                                     \
+    {                                                                                                                                      \
+        if (__FWCORE_TYPEDEF_SELF_NAME::classname()==type)                                                                                 \
+        {                                                                                                                                  \
+            return true;                                                                                                                   \
+        }                                                                                                                                  \
+        return BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ), __FWCORE_TYPEDEF_SUPERCLASS_NAME::isTypeOf(type), false); \
+    }                                                                                                                                      \
+    virtual const bool isA(const std::string type) const                                                                                   \
+    {                                                                                                                                      \
+        return this->__FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                                                                           \
+    }
 
 /**
  * @brief Generate common construction methods for classes with one factory
@@ -440,22 +462,24 @@
  *
  * @param _factory_ A factory that can take arguments as defined in _parameters_ arguments
  */
-#define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                                                                                     \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                                                                                \
-    /* @cond */                                                                                                                                                          \
-    class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME: public __FWCORE_TYPEDEF_SHARED_PTR_NAME                                                                                 \
-    {                                                                                                                                                                    \
-        public:                                                                                                                                                          \
-          __FWCORE_GENERATE_CONSTRUCTORS (__FWCORE_GET_CLASSNAME(_classinfo_), _factory_, _parameters_);                                                                 \
-    };                                                                                                                                                                   \
-    /* @endcond */                                                                                                                                                       \
-    /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
-    typedef  __FWCORE_SHARED_PTR_FACTORY_CLASSNAME __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME;                                                                             \
-    /* @cond */                                                                                                                                                          \
-    /* @endcond */                                                                                                                                                       \
-    __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY (_factory_, _parameters_);                                                                                              \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME);                                                                        \
-    fwCoreClassnameMacro()
+#define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                     \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                \
+    /* @cond */                                                                                          \
+    class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME: public __FWCORE_TYPEDEF_SHARED_PTR_NAME                 \
+    {                                                                                                    \
+        public:                                                                                          \
+          __FWCORE_GENERATE_CONSTRUCTORS (__FWCORE_GET_CLASSNAME(_classinfo_), _factory_, _parameters_); \
+    };                                                                                                   \
+    /* @endcond */                                                                                       \
+    /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > )  \
+     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                  \
+    typedef  __FWCORE_SHARED_PTR_FACTORY_CLASSNAME __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME;             \
+    /* @cond */                                                                                          \
+    /* @endcond */                                                                                       \
+    __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY (_factory_, _parameters_);                              \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME);        \
+    fwCoreClassnameMacro()                                                                               \
+    fwCoreIsTypeOfMacro(_classinfo_)
 
 
 /**
@@ -474,23 +498,26 @@
  *                            - for a N-parameters factory : ((type0)) ((type1)) ... ((typeN)(default_value))
  *
  */
-#define fwCoreClassDefinitionsWithNFactoriesMacro(_classinfo_, _factories_args_)                                                                                         \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                                                                                \
-    /* @cond */                                                                                                                                                          \
-    class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME: public __FWCORE_TYPEDEF_SHARED_PTR_NAME                                                                                 \
-    {                                                                                                                                                                    \
-        public:                                                                                                                                                          \
-          __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES (__FWCORE_GET_CLASSNAME(_classinfo_), _factories_args_);                                                       \
-    } ;                                                                                                                                                                  \
-    /* @endcond */                                                                                                                                                       \
-    /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */ \
-    typedef __FWCORE_SHARED_PTR_FACTORY_CLASSNAME __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME;                                                                              \
-    /* @cond */                                                                                                                                                          \
-                                                                                                                                                                         \
-    __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES (_factories_args_);                                                                                                     \
-    /* @endcond */                                                                                                                                                       \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_),__FWCORE_TYPEDEF_ROOTCLASS_NAME);                                                                         \
-    fwCoreClassnameMacro()
+#define fwCoreClassDefinitionsWithNFactoriesMacro(_classinfo_, _factories_args_)                                    \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                           \
+    /* @cond */                                                                                                     \
+    class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME: public __FWCORE_TYPEDEF_SHARED_PTR_NAME                            \
+    {                                                                                                               \
+        public:                                                                                                     \
+          __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES (__FWCORE_GET_CLASSNAME(_classinfo_), _factories_args_);  \
+    } ;                                                                                                             \
+    /* @endcond */                                                                                                  \
+    /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > )             \
+     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                             \
+    typedef __FWCORE_SHARED_PTR_FACTORY_CLASSNAME __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME;                         \
+    /* @cond */                                                                                                     \
+                                                                                                                    \
+    __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES (_factories_args_);                                                \
+    /* @endcond */                                                                                                  \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_),__FWCORE_TYPEDEF_ROOTCLASS_NAME);                    \
+    fwCoreClassnameMacro()                                                                                          \
+    fwCoreIsTypeOfMacro(_classinfo_)
+
 
 
 /**
@@ -503,7 +530,9 @@
 #define fwCoreServiceClassDefinitionsMacro(_classinfo_)                                           \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                         \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME); \
-    fwCoreClassnameMacro()
+    fwCoreClassnameMacro()                                                                        \
+    fwCoreIsTypeOfMacro(_classinfo_)
+
 
 
 
@@ -519,7 +548,9 @@
 #define fwCoreNonInstanciableClassDefinitionsMacro(_classinfo_)                                   \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                         \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME); \
-    fwCoreClassnameMacro()
+    fwCoreClassnameMacro()                                                                        \
+    fwCoreIsTypeOfMacro(_classinfo_)
+
 
 
 
