@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_STRINGMSG_HPP_
-#define _FWCOMED_STRINGMSG_HPP_
+#ifndef _FWCOMED_BOOLEANMSG_HPP_
+#define _FWCOMED_BOOLEANMSG_HPP_
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -16,34 +16,35 @@ namespace fwComEd
 {
 
 /**
- * @brief   Object event message specialized for string field : store modification information
- * @class   StringMsg
+ * @brief   Object event message specialized for float field : store modification information
+ * @class   BooleanMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
-class FWCOMED_CLASS_API StringMsg : public ::fwServices::ObjectMsg
+class FWCOMED_CLASS_API BooleanMsg : public fwServices::ObjectMsg
 {
+
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((StringMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new StringMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((BooleanMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new BooleanMsg );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
 
     /**
-      * @brief  Constructor : do nothing.
-      */
-    FWCOMED_API StringMsg() throw();
+     * @brief   Constructor : does nothing.
+     */
+    FWCOMED_API BooleanMsg() throw();
 
     /**
-      * @brief  Destuctor : do nothing
-      */
-    FWCOMED_API virtual ~StringMsg() throw();
-
+     * @brief   Destructor : does nothing.
+     */
+    FWCOMED_API virtual ~BooleanMsg() throw();
 };
+
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_STRINGMSG_HPP_
+#endif //_FWCOMED_BOOLEANMSG_HPP_
 

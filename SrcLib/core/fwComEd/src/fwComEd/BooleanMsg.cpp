@@ -4,24 +4,23 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwComEd/StringMsg.hpp"
-
+#include "fwComEd/BooleanMsg.hpp"
 
 namespace fwComEd
 {
 
 //-----------------------------------------------------------------------------
 
-std::string StringMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
+std::string BooleanMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-StringMsg::StringMsg() throw()
+BooleanMsg::BooleanMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-StringMsg::~StringMsg() throw()
+BooleanMsg::~BooleanMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
