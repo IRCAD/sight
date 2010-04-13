@@ -31,7 +31,7 @@ typedef std::map< std::string, Object::sptr > ObjectMapType;
 class FWDATA_CLASS_API Composite : public Object, private ObjectMapType
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Composite >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwTools::Factory::New< Composite >) ;
 
     typedef Composite Container;
     typedef ObjectMapType ContainerType;

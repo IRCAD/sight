@@ -29,7 +29,7 @@ class CTRLSELECTION_CLASS_API ReconstructionFromResecUpdaterSrv : public ::ctrlS
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (ReconstructionFromResecUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ReconstructionFromResecUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API ReconstructionFromResecUpdaterSrv() throw() ;

@@ -26,7 +26,7 @@ class VISUVTKADAPTOR_CLASS_API NegatoWindowingInteractor: public ::fwComEd::help
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoWindowingInteractor)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoWindowingInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API NegatoWindowingInteractor() throw();
 

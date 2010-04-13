@@ -19,7 +19,7 @@ class VISUVTKADAPTOR_CLASS_API Medical3DCamera: public ::fwComEd::helper::Medica
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Medical3DCamera)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Medical3DCamera)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Medical3DCamera() throw();
 

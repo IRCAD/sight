@@ -30,7 +30,7 @@ class FWDATA_CLASS_API Dictionary : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Dictionary >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwTools::Factory::New< Dictionary >) ;
 
     /// Constructor
     FWDATA_API Dictionary();

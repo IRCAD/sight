@@ -27,7 +27,7 @@ class VISUVTKADAPTOR_CLASS_API Video: public ::fwRenderVTK::IVtkAdaptorService, 
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Video)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Video)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     Video() throw();
     virtual ~Video() throw();

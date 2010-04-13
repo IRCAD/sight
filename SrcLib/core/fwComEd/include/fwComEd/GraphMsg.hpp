@@ -30,7 +30,7 @@ class FWCOMED_CLASS_API GraphMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((GraphMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new GraphMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((GraphMsg)(::fwServices::ObjectMsg), ( () ), new GraphMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_GRAPH;

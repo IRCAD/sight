@@ -23,7 +23,7 @@ class VISUVTKADAPTOR_CLASS_API ImageText: public Text, public ::fwComEd::helper:
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageText)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageText)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API ImageText() throw();
 

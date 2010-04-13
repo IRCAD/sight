@@ -27,7 +27,7 @@ namespace fwData
 class FWDATA_CLASS_API Float : public GenericField< float >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object::Baseclass),( ((const float)(0.0f)) ), GenericFieldFactory< Float >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object),( ((const float)(0.0f)) ), GenericFieldFactory< Float >) ;
     /**
      * @brief Constructor.
      * @param[in] value The initial value.

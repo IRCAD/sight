@@ -28,7 +28,7 @@ class IOXML_CLASS_API FwXMLPatient2PatientDBWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatient2PatientDBWriterService)(::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatient2PatientDBWriterService)(::io::IWriter) ) ;
 
     /**
      * @brief   constructor

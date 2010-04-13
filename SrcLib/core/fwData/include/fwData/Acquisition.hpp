@@ -37,7 +37,7 @@ namespace fwData
 class FWDATA_CLASS_API Acquisition : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Acquisition >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object), (()), ::fwTools::Factory::New< Acquisition >) ;
 
     /// Constructor
     FWDATA_API Acquisition();

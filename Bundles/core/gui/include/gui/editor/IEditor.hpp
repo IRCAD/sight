@@ -37,7 +37,7 @@ class GUI_CLASS_API IEditor : public ::fwWX::IGuiContainer
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IEditor)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IEditor)(::fwServices::IService) ) ;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).

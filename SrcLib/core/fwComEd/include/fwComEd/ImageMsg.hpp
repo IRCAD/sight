@@ -28,7 +28,7 @@ namespace fwComEd
 class FWCOMED_CLASS_API ImageMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ImageMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ImageMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ImageMsg)(::fwServices::ObjectMsg), ( () ), new ImageMsg );
 
     /**
      * @name Event identifier

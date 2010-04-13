@@ -28,7 +28,7 @@ class VISUVTKADAPTOR_CLASS_API SlicesCursor: public ::fwComEd::helper::MedicalIm
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API SlicesCursor()  throw();
 

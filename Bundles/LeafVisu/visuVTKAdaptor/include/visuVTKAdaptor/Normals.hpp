@@ -28,7 +28,7 @@ class VISUVTKADAPTOR_CLASS_API Normals: public ::fwRenderVTK::IVtkAdaptorService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Normals)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Normals)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Normals() throw();
 

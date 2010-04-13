@@ -22,7 +22,7 @@ class VISUVTKADAPTOR_CLASS_API Reconstruction: public ::fwRenderVTK::IVtkAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Reconstruction() throw();
 

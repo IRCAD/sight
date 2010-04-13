@@ -25,7 +25,7 @@ class CTRLSELECTION_CLASS_API IManagerSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IManagerSrv)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IManagerSrv)(::fwServices::IService) ) ;
 
     ///@brief IManagerSrv constructor. Do nothing.
     CTRLSELECTION_API IManagerSrv();

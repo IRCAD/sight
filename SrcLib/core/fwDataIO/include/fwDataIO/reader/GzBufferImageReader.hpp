@@ -37,7 +37,7 @@ class FWDATAIO_CLASS_API GzBufferImageReader :  public GenericObjectReader< ::fw
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (GzBufferImageReader)(GenericObjectReader< ::fwData::Image>::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (GzBufferImageReader)(GenericObjectReader< ::fwData::Image>),
                                                  (()),
                                                  new  GzBufferImageReader
                                             );

@@ -31,7 +31,7 @@ class FWDATA_CLASS_API Plane : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object),
         (()), ::fwTools::Factory::New< Plane >) ;
 
     typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;

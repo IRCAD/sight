@@ -26,7 +26,7 @@ namespace fwData
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object::Baseclass),( ((const bool)(false)) ), GenericFieldFactory< Boolean >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object),( ((const bool)(false)) ), GenericFieldFactory< Boolean >) ;
     /**
      * @brief Constructor.
      * @param[in] value The initial value.

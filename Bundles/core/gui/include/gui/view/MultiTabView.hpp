@@ -51,7 +51,7 @@ class GUI_CLASS_API MultiTabView : public ::gui::view::IView
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (MultiTabView)(::gui::view::IView::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MultiTabView)(::gui::view::IView) ) ;
 
     /// Constructor, does nothing.
     GUI_API MultiTabView() throw() ;

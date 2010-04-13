@@ -28,7 +28,7 @@ class CTRLSELECTION_CLASS_API SelectedNodeIOUpdaterSrv : public ::ctrlSelection:
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (SelectedNodeIOUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SelectedNodeIOUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SelectedNodeIOUpdaterSrv() throw() ;

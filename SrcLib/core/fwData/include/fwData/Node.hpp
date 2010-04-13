@@ -32,7 +32,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Node >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwTools::Factory::New< Node >) ;
 
     /// Port container
     typedef std::vector< ::fwData::Port::sptr > PortContainer;

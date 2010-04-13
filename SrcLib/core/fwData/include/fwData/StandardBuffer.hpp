@@ -27,7 +27,7 @@ namespace fwData
 class FWDATA_CLASS_API StandardBuffer : public ::fwCore::BaseObject, public IBufferDelegate
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StandardBuffer)(IBufferDelegate::Baseclass), (()), new StandardBuffer ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (StandardBuffer)(IBufferDelegate), (()), new StandardBuffer ) ;
 
     /// Constructor
     FWDATA_API StandardBuffer();

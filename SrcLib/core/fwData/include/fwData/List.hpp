@@ -33,7 +33,7 @@ class FWDATA_CLASS_API List : public Object, private ObjectListType
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< List >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwTools::Factory::New< List >) ;
 
     typedef List Container;
     typedef ObjectListType ContainerType;

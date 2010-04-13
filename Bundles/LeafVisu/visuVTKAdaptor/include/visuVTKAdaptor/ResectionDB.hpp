@@ -21,7 +21,7 @@ class VISUVTKADAPTOR_CLASS_API ResectionDB: public ::fwRenderVTK::IVtkAdaptorSer
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ResectionDB)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ResectionDB)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API ResectionDB() throw();
 

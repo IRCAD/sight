@@ -33,7 +33,7 @@ class FWDATA_CLASS_API Vector : public Object, private ObjectVectorType
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Vector >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwTools::Factory::New< Vector >) ;
 
     typedef Vector Container;
     typedef ObjectVectorType ContainerType;

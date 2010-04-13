@@ -33,7 +33,7 @@ template< typename T >
 class FWDATA_CLASS_API GenericField : public Object
 {
 public:
-    fwCoreClassDefinitionsWithNFactoriesMacro( (GenericField<T>)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithNFactoriesMacro( (GenericField<T>)(::fwData::Object),
        ((::fwTools::Factory::New< GenericField<T> > ,() ))
        ((GenericFieldFactory  ,((const  T)) ))
        );

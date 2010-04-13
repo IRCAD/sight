@@ -38,7 +38,7 @@ public :
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IEditor::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IEditor) ) ;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).

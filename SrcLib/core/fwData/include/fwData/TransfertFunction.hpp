@@ -36,7 +36,7 @@ class FWDATA_CLASS_API TransfertFunction : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< TransfertFunction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction)(::fwData::Object), (()), ::fwTools::Factory::New< TransfertFunction >) ;
 
     /// Constructor
     FWDATA_API TransfertFunction();

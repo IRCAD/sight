@@ -23,7 +23,7 @@ class VISUVTKADAPTOR_CLASS_API NegatoMPR: public ::fwComEd::helper::MedicalImage
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API NegatoMPR() throw();
 

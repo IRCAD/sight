@@ -24,7 +24,7 @@ namespace fwData
 class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< ProcessObject >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwTools::Factory::New< ProcessObject >) ;
 
     /// IO Container type
     static const std::string InputKey  ;

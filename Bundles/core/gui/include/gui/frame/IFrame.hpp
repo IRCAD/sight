@@ -34,7 +34,7 @@ class GUI_CLASS_API IFrame : public ::fwServices::IService
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IFrame)( ::fwServices::IService::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IFrame)( ::fwServices::IService) ) ;
 
     /**
     * @brief Constructor. Do nothing (Just initialize parameters).

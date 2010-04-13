@@ -44,7 +44,7 @@ class GUI_CLASS_API DefaultView : public ::gui::view::IView
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultView)(::gui::view::IView::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultView)(::gui::view::IView) ) ;
 
     /// Constructor. Do nothing.
     GUI_API DefaultView() throw() ;

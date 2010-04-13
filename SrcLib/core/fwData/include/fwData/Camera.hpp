@@ -25,7 +25,7 @@ namespace fwData
 class FWDATA_CLASS_API Camera : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Camera)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Camera >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Camera)(::fwData::Object), (()), ::fwTools::Factory::New< Camera >) ;
     typedef struct{ unsigned long Low; unsigned long High; }uint32HL;
     /**
      * @brief constructor

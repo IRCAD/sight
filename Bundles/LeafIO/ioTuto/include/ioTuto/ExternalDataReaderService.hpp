@@ -19,7 +19,7 @@ class IOTUTO_CLASS_API ExternalDataReaderService : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ExternalDataReaderService)( ::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ExternalDataReaderService)( ::io::IReader) ) ;
     /**
      * @brief Constructor : does nothing
     */

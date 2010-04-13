@@ -28,7 +28,7 @@ class FWDATA_CLASS_API Point : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object),
         (()), ::fwTools::Factory::New< Point >) ;
 
     typedef double PointCoordType;

@@ -25,7 +25,7 @@ namespace fwXML
 class FWXML_CLASS_API MeshFileFormatService : public IFileFormatService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (MeshFileFormatService)(::fwXML::IFileFormatService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MeshFileFormatService)(::fwXML::IFileFormatService) ) ;
     FWXML_API MeshFileFormatService();
 
     FWXML_API virtual ~MeshFileFormatService();

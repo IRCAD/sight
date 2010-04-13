@@ -32,7 +32,7 @@ class IO_CLASS_API IReader : public fwServices::IService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IReader)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IReader)(::fwServices::IService) ) ;
 
     /**
      * @brief   Constructor (by default does nothing)

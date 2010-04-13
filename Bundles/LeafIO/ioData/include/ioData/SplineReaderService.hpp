@@ -35,7 +35,7 @@ class IODATA_CLASS_API SplineReaderService : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SplineReaderService)( ::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SplineReaderService)( ::io::IReader) ) ;
     /// Super class of reader services
     typedef ::io::IReader   SuperClass;
     /**

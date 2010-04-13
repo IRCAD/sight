@@ -21,7 +21,7 @@ namespace fwData
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Port >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwTools::Factory::New< Port >) ;
 
     /// Constructor
     FWDATA_API Port();

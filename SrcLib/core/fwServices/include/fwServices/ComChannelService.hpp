@@ -27,7 +27,7 @@ class FWSERVICES_CLASS_API ComChannelService : public ::fwServices::ICommunicati
 
 public:
     /// Definitions
-    fwCoreServiceClassDefinitionsMacro ( (ComChannelService)(::fwServices::ICommunication::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ComChannelService)(::fwServices::ICommunication) ) ;
     fwCoreAllowSharedFromThis();
 
 

@@ -32,7 +32,7 @@ class IOXML_CLASS_API FwXMLPatientDBReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatientDBReaderService)(::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatientDBReaderService)(::io::IReader) ) ;
 
     /**
      * @brief   constructor

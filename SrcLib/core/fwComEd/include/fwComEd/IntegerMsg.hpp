@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API IntegerMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((IntegerMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new IntegerMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((IntegerMsg)(::fwServices::ObjectMsg), ( ( ) ), new IntegerMsg );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;

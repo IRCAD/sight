@@ -28,7 +28,7 @@ class FWDATA_CLASS_API SingleFile  : public ILocation
 {
 public:
     fwCoreClassDefinitionsWithNFactoriesMacro(
-            (SingleFile)(ILocation::Baseclass),
+            (SingleFile)(ILocation),
             ((::fwTools::Factory::New< SingleFile > ,() ))
             ((SingleFileFactory ,((::boost::filesystem::path)) ))
             );

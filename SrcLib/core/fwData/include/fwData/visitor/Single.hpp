@@ -23,7 +23,7 @@ namespace visitor
 class FWDATA_CLASS_API Single : public  IVisitor
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (Single)(IVisitor::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro( (Single)(IVisitor) ) ;
     /// subclass should override the operation
     FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 

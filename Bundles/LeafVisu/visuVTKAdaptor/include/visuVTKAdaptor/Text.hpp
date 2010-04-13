@@ -25,7 +25,7 @@ class VISUVTKADAPTOR_CLASS_API Text: public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Text)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Text)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Text() throw();
     VISUVTKADAPTOR_API virtual ~Text() throw();

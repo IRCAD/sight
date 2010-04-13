@@ -24,7 +24,7 @@ class VISUVTKADAPTOR_CLASS_API PlaneInteractor: public ::fwComEd::helper::Medica
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneInteractor)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PlaneInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API PlaneInteractor() throw();
 

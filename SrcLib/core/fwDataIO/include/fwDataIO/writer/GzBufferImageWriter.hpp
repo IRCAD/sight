@@ -37,7 +37,7 @@ class FWDATAIO_CLASS_API GzBufferImageWriter :  public GenericObjectWriter< ::fw
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (GzBufferImageWriter)(GenericObjectWriter< ::fwData::Image>::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (GzBufferImageWriter)(GenericObjectWriter< ::fwData::Image>),
                                                      (()),
                                                      new  GzBufferImageWriter
                                                 );

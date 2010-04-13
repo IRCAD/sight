@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API LocationMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((LocationMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new LocationMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((LocationMsg)(::fwServices::ObjectMsg), ( ( ) ), new LocationMsg );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string LOCATION_IS_MODIFIED;

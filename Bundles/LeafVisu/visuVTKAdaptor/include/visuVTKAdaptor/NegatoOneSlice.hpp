@@ -31,7 +31,7 @@ class VISUVTKADAPTOR_CLASS_API NegatoOneSlice: public ::fwComEd::helper::Medical
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API NegatoOneSlice() throw();
 

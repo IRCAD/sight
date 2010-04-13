@@ -28,7 +28,7 @@ class IOXML_CLASS_API FwXMLAcquisitionWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLAcquisitionWriterService)(::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLAcquisitionWriterService)(::io::IWriter) ) ;
 
     /**
      * @brief   constructor

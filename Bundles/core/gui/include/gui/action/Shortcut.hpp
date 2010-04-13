@@ -34,7 +34,7 @@ class Shortcut : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Shortcut)(::fwCore::BaseObject::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (Shortcut)(::fwCore::BaseObject),
             ( ((const int))((const int ))  ) ( ((const std::string )) ),
             new Shortcut) ;
 

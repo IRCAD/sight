@@ -29,7 +29,7 @@ class GUI_CLASS_API IMenuBar : public ::fwServices::IService
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IMenuBar)( ::fwServices::IService::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IMenuBar)( ::fwServices::IService) ) ;
 
     /// Default constructor, do nothing.
     GUI_API IMenuBar() throw() ;

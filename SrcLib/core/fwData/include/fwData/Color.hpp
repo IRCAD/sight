@@ -31,7 +31,7 @@ public :
     typedef float ColorType;
     typedef ::boost::array<ColorType,4> ColorArray;
 
-    fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
        ((::fwTools::Factory::New< Color > ,() ))
        ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
        );

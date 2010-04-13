@@ -22,7 +22,7 @@ namespace ioTuto
 class IOTUTO_CLASS_API CompositeWriterService : public ::io::IWriter
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (CompositeWriterService)( ::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (CompositeWriterService)( ::io::IWriter) ) ;
     /// Constructor. Do nothing (Just initialize parameters).
     IOTUTO_API CompositeWriterService() throw() ;
 

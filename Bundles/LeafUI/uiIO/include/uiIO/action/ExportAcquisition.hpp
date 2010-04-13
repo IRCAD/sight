@@ -21,7 +21,7 @@ class UIIO_CLASS_API ExportAcquisition : public ::gui::action::IAction
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ExportAcquisition)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ExportAcquisition)(::gui::action::IAction) ) ;
 
     /// Constructor. Do nothing (Just initialize parameters).
     UIIO_API ExportAcquisition() throw() ;

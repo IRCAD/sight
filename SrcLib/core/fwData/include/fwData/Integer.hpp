@@ -26,7 +26,7 @@ namespace fwData
 class FWDATA_CLASS_API Integer : public GenericField< int >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object::Baseclass),( ((const int)(0)) ), GenericFieldFactory< Integer >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object),( ((const int)(0)) ), GenericFieldFactory< Integer >) ;
     /**
      * @brief Constructor.
      * @param[in] value The initial value.

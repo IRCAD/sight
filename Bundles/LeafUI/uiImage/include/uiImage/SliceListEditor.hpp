@@ -26,7 +26,7 @@ class UIIMAGE_CLASS_API SliceListEditor : public ::gui::editor::IEditor
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (SliceListEditor)(::gui::editor::IEditor::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SliceListEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
     UIIMAGE_API SliceListEditor() throw() ;

@@ -30,7 +30,7 @@ class CTRLSELECTION_CLASS_API PlaneListFromPDBUpdaterSrv : public ::ctrlSelectio
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneListFromPDBUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PlaneListFromPDBUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API PlaneListFromPDBUpdaterSrv() throw() ;

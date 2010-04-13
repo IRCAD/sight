@@ -20,7 +20,7 @@ namespace visuVTKAdaptor
 class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API SliceFollowerCamera() throw();
 

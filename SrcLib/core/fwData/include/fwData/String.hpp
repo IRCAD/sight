@@ -25,7 +25,7 @@ namespace fwData
 class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object::Baseclass), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
     /**
      * @brief Constructor.
      * @param[in] value The initial value.

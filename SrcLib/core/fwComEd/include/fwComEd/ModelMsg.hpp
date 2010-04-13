@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API ModelMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ModelMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new ModelMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ModelMsg)(::fwServices::ObjectMsg), ( ( ) ), new ModelMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_MODEL;

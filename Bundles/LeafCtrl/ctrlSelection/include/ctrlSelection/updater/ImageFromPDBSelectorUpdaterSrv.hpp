@@ -30,7 +30,7 @@ class CTRLSELECTION_CLASS_API ImageFromPDBSelectorUpdaterSrv : public ::ctrlSele
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageFromPDBSelectorUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageFromPDBSelectorUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API ImageFromPDBSelectorUpdaterSrv() throw() ;

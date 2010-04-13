@@ -38,7 +38,7 @@ class IOVTK_CLASS_API ReconstructionWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (ReconstructionWriterService)( ::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ReconstructionWriterService)( ::io::IWriter) ) ;
     /**
      * @brief   Constructor
      *

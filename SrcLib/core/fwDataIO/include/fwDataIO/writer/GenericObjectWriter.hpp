@@ -38,7 +38,7 @@ public :
     /// the object type related
     typedef DATATYPE DataType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectWriter<DATATYPE>)(::fwDataIO::writer::IObjectWriter::Baseclass) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectWriter<DATATYPE>)(::fwDataIO::writer::IObjectWriter) );
 
     /// Constructor. Do nothing.
     GenericObjectWriter() {};

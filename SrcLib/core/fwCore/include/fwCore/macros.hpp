@@ -62,7 +62,8 @@
 #define __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME     cwptr
 #define __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME NewSptr
 #define __FWCORE_FACTORY_NAME                    New
-#define __FWCORE_TYPEDEF_BASECLASS_NAME          Baseclass
+#define __FWCORE_TYPEDEF_SUPERCLASS_NAME         BaseClass
+#define __FWCORE_TYPEDEF_ROOTCLASS_NAME          RootClass
 #define __FWCORE_DYNAMIC_CAST_FUNC_NAME          dynamicCast
 #define __FWCORE_DYNAMIC_CONST_CAST_FUNC_NAME    dynamicConstCast
 #define __FWCORE_CONST_CAST_FUNC_NAME            constCast
@@ -277,37 +278,42 @@
 
 
 /*
- * __FWCORE_GET_CLASSNAME and __FWCORE_GET_BASECLASSNAME work with a sequence like "(classname)(baseclassname)" or "(classname)"
+ * __FWCORE_GET_CLASSNAME and __FWCORE_GET_SUPERCLASSNAME work with a sequence like "(classname)(baseclassname)" or "(classname)"
  * and return respectively 1st and 2nd element
  *
- * if the sequence containt only 1 element, __FWCORE_GET_BASECLASSNAME returns the 1st
+ * if the sequence containt only 1 element, __FWCORE_GET_SUPERCLASSNAME returns the 1st
  */
 #define __FWCORE_GET_CLASSNAME( _seq_ ) BOOST_PP_SEQ_ELEM(0, _seq_)
-#define __FWCORE_GET_BASECLASSNAME( _seq_ ) BOOST_PP_SEQ_ELEM( BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_seq_), 2 ), 1, 0), _seq_)
+#define __FWCORE_GET_SUPERCLASSNAME( _seq_ ) BOOST_PP_SEQ_ELEM( BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_seq_), 2 ), 1, 0), _seq_)
 
 
 /*
  * __FWCORE_CLASS_TYPEDEFS define several typdefs for classes (sptr, wptr, ...)
  *
- * Baseclass is defined too. If baseclass is specified in (_classinfo_), Baseclass typedef is the specified one,
- * else, Baseclass is an alias for the specified classname in (_classinfo_).
+ * Baseclass is a typedef to the superclass
+ * Rootclass is a typedef to the toplevel base class
  */
-#define __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                     \
-    /** Type of base class  */                                                                   \
-    typedef  BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ),                   \
-                                        __FWCORE_GET_BASECLASSNAME(_classinfo_),                 \
-                                        __FWCORE_GET_CLASSNAME(_classinfo_)                      \
-                                        ) __FWCORE_TYPEDEF_BASECLASS_NAME ;                      \
-    /** Self type  */                                                                            \
-    typedef __FWCORE_GET_CLASSNAME(_classinfo_) __FWCORE_TYPEDEF_SELF_NAME;                      \
-    /** Shared pointer type  */                                                                  \
-    typedef SPTR ( __FWCORE_GET_CLASSNAME(_classinfo_) ) __FWCORE_TYPEDEF_SHARED_PTR_NAME;       \
-    /** Weak pointer type  */                                                                    \
-    typedef WPTR ( __FWCORE_GET_CLASSNAME(_classinfo_) ) __FWCORE_TYPEDEF_WEAK_PTR_NAME;         \
-    /** Const shared pointer type  */                                                            \
-    typedef CSPTR( __FWCORE_GET_CLASSNAME(_classinfo_) ) __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME; \
-    /** Const weak pointer type  */                                                              \
-    typedef CWPTR( __FWCORE_GET_CLASSNAME(_classinfo_) ) __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME
+#define __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                               \
+    /** Self type  */                                                                                      \
+    typedef __FWCORE_GET_CLASSNAME(_classinfo_) __FWCORE_TYPEDEF_SELF_NAME;                                \
+    /** Type of base class  */                                                                             \
+    typedef  BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ),                             \
+                                        __FWCORE_GET_SUPERCLASSNAME(_classinfo_),                          \
+                                        __FWCORE_TYPEDEF_SELF_NAME                                         \
+                                        ) __FWCORE_TYPEDEF_SUPERCLASS_NAME ;                               \
+                                                                                                           \
+    typedef  BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ),                             \
+                                        __FWCORE_TYPEDEF_SUPERCLASS_NAME::__FWCORE_TYPEDEF_ROOTCLASS_NAME, \
+                                        __FWCORE_TYPEDEF_SELF_NAME                                         \
+                                        ) __FWCORE_TYPEDEF_ROOTCLASS_NAME ;                                \
+    /** Shared pointer type  */                                                                            \
+    typedef SPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_NAME;                          \
+    /** Weak pointer type  */                                                                              \
+    typedef WPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_NAME;                            \
+    /** Const shared pointer type  */                                                                      \
+    typedef CSPTR( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME;                    \
+    /** Const weak pointer type  */                                                                        \
+    typedef CWPTR( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME
 
 /*
  * Cast definition for casting from baseclassname and derived to _classname_
@@ -448,7 +454,7 @@
     /* @cond */                                                                                                                                                          \
     /* @endcond */                                                                                                                                                       \
     __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY (_factory_, _parameters_);                                                                                              \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_BASECLASS_NAME);                                                                        \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME);                                                                        \
     fwCoreClassnameMacro()
 
 
@@ -483,7 +489,7 @@
                                                                                                                                                                          \
     __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES (_factories_args_);                                                                                                     \
     /* @endcond */                                                                                                                                                       \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_),__FWCORE_TYPEDEF_BASECLASS_NAME);                                                                         \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_),__FWCORE_TYPEDEF_ROOTCLASS_NAME);                                                                         \
     fwCoreClassnameMacro()
 
 
@@ -496,7 +502,7 @@
  */
 #define fwCoreServiceClassDefinitionsMacro(_classinfo_)                                           \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                         \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_BASECLASS_NAME); \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME); \
     fwCoreClassnameMacro()
 
 
@@ -512,7 +518,7 @@
  */
 #define fwCoreNonInstanciableClassDefinitionsMacro(_classinfo_)                                   \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                         \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_BASECLASS_NAME); \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME); \
     fwCoreClassnameMacro()
 
 

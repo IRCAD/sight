@@ -29,7 +29,7 @@ class VISUVTKADAPTOR_CLASS_API Distance: public ::fwRenderVTK::IVtkAdaptorServic
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Distance)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Distance)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Distance() throw();
 

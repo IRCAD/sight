@@ -36,7 +36,7 @@ class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Im
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
                                                      (()),
                                                      new  ImageWriter
                                                 );

@@ -40,7 +40,7 @@ class FWXML_CLASS_API IFileFormatService : public ::fwServices::IService, public
                                               public ::fwTools::ProgressAdviser
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IFileFormatService)(::fwTools::Object::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IFileFormatService)(::fwTools::Object) ) ;
     FWXML_API IFileFormatService();
 
     FWXML_API virtual ~IFileFormatService();

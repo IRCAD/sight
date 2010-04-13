@@ -31,7 +31,7 @@ namespace fwComEd
  */
 struct FWCOMED_CLASS_API CompositeEditor : public fwServices::IEditionService
 {
-    fwCoreServiceClassDefinitionsMacro ( (CompositeEditor)(::fwServices::IEditionService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (CompositeEditor)(::fwServices::IEditionService) ) ;
 
     /**
      * @brief   Destructor : does nothing.

@@ -28,7 +28,7 @@ class VISUVTKADAPTOR_CLASS_API Point: public ::fwRenderVTK::IVtkAdaptorService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Point)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Point)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Point() throw();
 

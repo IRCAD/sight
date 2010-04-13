@@ -28,7 +28,7 @@ class FWCOMED_CLASS_API VideoMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((VideoMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new VideoMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((VideoMsg)(::fwServices::ObjectMsg), ( () ), new VideoMsg );
 
     /**
      * @name Event identifier

@@ -29,7 +29,7 @@ class GUI_CLASS_API FullScreenActionService : public ::gui::action::IAction
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (FullScreenActionService)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FullScreenActionService)(::gui::action::IAction) ) ;
 
     /**
     * @brief Constructor. Do nothing (Just initialize parameters).

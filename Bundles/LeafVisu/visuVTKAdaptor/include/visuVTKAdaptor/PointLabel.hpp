@@ -25,7 +25,7 @@ class VISUVTKADAPTOR_CLASS_API PointLabel: public Text
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (PointLabel)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PointLabel)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API PointLabel();
 

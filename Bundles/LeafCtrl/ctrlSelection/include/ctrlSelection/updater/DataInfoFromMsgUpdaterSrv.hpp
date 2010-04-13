@@ -29,7 +29,7 @@ class CTRLSELECTION_CLASS_API DataInfoFromMsgUpdaterSrv : public ::ctrlSelection
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (DataInfoFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DataInfoFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API DataInfoFromMsgUpdaterSrv() throw() ;

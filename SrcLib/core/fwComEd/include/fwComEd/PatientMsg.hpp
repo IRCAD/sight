@@ -26,7 +26,7 @@ namespace fwComEd
 class FWCOMED_CLASS_API PatientMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((PatientMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new PatientMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PatientMsg)(::fwServices::ObjectMsg), ( () ), new PatientMsg );
 
     /// Event identifier used to inform new patient creation
     FWCOMED_API static std::string NEW_PATIENT;

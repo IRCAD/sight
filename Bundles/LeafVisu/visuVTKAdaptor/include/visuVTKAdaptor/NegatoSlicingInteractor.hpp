@@ -26,7 +26,7 @@ class VISUVTKADAPTOR_CLASS_API NegatoSlicingInteractor: public ::fwComEd::helper
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoSlicingInteractor)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoSlicingInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API NegatoSlicingInteractor() throw();
 

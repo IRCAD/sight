@@ -46,7 +46,7 @@ class FWSERVICES_CLASS_API ObjectMsg : public ::fwTools::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object::Baseclass), (()), ::fwTools::Factory::New< ObjectMsg > );
+    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwTools::Factory::New< ObjectMsg > );
 
     /// Constructor, do nothing.
     FWSERVICES_API ObjectMsg();

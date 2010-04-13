@@ -32,7 +32,7 @@ class VISUVTKADAPTOR_CLASS_API TriangularMesh: public ::fwRenderVTK::IVtkAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TriangularMesh)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TriangularMesh)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API TriangularMesh() throw();
     VISUVTKADAPTOR_API virtual ~TriangularMesh() throw();

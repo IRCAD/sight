@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API PlaneMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PlaneMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new PlaneMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PlaneMsg)(::fwServices::ObjectMsg), ( () ), new PlaneMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string PLANE_MODIFIED;

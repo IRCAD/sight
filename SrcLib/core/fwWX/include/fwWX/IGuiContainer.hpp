@@ -38,7 +38,7 @@ public :
 
     typedef std::map< std::string , wxWindow* > ContainerMapType;
 
-    fwCoreServiceClassDefinitionsMacro ( (IGuiContainer)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IGuiContainer)(::fwServices::IService) ) ;
 
 
 

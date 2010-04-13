@@ -28,7 +28,7 @@ class SpyLogger : public ::fwCore::BaseObject
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (SpyLogger)(BaseObject::Baseclass), (()), new SpyLogger) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (SpyLogger)(BaseObject), (()), new SpyLogger) ;
 
     FWCORE_API enum LevelType
     {   SL_TRACE,

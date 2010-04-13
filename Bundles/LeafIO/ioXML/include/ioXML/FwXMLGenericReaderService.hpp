@@ -39,7 +39,7 @@ class IOXML_CLASS_API FwXMLGenericReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLGenericReaderService)(::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLGenericReaderService)(::io::IReader) ) ;
 
     /**
      * @brief   constructor

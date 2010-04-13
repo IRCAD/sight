@@ -29,7 +29,7 @@ class CTRLSELECTION_CLASS_API GraphWrapperSrv : public ::ctrlSelection::IWrapper
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (GraphWrapperSrv)(::ctrlSelection::IWrapperSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (GraphWrapperSrv)(::ctrlSelection::IWrapperSrv) ) ;
 
 //    /// Constructor.  Do nothing.
     CTRLSELECTION_API GraphWrapperSrv() throw() ;

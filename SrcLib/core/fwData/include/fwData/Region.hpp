@@ -25,7 +25,7 @@ namespace fwData
 class FWDATA_CLASS_API Region : public Object
 {
 public:
-    fwCoreClassDefinitionsWithNFactoriesMacro( (Region)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithNFactoriesMacro( (Region)(::fwData::Object),
        ((::fwTools::Factory::New< Region > ,() ))
        ((RegionFactory ,((const boost::uint8_t)) ))
        );

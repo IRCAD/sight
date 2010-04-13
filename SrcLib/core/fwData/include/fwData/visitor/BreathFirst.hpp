@@ -23,7 +23,7 @@ namespace visitor
 class FWDATA_CLASS_API BreathFirst : public  IVisitor
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (BreathFirst)(IVisitor::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro( (BreathFirst)(IVisitor) ) ;
 
     FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 

@@ -29,7 +29,7 @@ class IOXML_CLASS_API FwXMLImageWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageWriterService)(::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageWriterService)(::io::IWriter) ) ;
 
     /**
      * @brief   constructor

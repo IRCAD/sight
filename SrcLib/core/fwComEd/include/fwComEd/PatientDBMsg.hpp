@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API PatientDBMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PatientDBMsg)(::fwServices::ObjectMsg::Baseclass), (()), new PatientDBMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PatientDBMsg)(::fwServices::ObjectMsg), (()), new PatientDBMsg );
 
     /**
      * @name Event identifier

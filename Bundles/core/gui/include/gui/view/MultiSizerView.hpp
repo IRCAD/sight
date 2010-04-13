@@ -55,7 +55,7 @@ class GUI_CLASS_API MultiSizerView : public ::gui::view::IView
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (MultiSizerView)(::gui::view::IView::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MultiSizerView)(::gui::view::IView) ) ;
 
     /// Constructor, does nothing.
     GUI_API MultiSizerView() throw() ;

@@ -25,8 +25,7 @@ namespace fwComEd
 class FWCOMED_CLASS_API StringMsg : public ::fwServices::ObjectMsg
 {
 public:
-
-    fwCoreClassDefinitionsWithFactoryMacro((StringMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new StringMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((StringMsg)(::fwServices::ObjectMsg), ( ( ) ), new StringMsg );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;

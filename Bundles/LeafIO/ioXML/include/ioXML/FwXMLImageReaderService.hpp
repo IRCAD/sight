@@ -30,7 +30,7 @@ class IOXML_CLASS_API FwXMLImageReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageReaderService)(::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageReaderService)(::io::IReader) ) ;
 
     /**
      * @brief   constructor

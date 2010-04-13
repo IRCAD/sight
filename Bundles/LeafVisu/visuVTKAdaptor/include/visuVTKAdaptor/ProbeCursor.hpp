@@ -26,7 +26,7 @@ class VISUVTKADAPTOR_CLASS_API ProbeCursor: public  ::fwComEd::helper::MedicalIm
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ProbeCursor)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ProbeCursor)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API ProbeCursor() throw();
 

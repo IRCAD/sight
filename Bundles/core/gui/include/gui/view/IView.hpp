@@ -36,7 +36,7 @@ class GUI_CLASS_API IView : public ::fwWX::IGuiContainer
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IView)( ::fwServices::IService::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IView)( ::fwServices::IService) ) ;
 
     /**
     * @brief Constructor. Do nothing (Just initialize parameters).

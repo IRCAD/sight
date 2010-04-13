@@ -33,7 +33,7 @@ class CTRLSELECTION_CLASS_API IWrapperSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IWrapperSrv)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IWrapperSrv)(::fwServices::IService) ) ;
 
     ///@brief IWrapperSrv constructor. Do nothing.
     CTRLSELECTION_API IWrapperSrv();

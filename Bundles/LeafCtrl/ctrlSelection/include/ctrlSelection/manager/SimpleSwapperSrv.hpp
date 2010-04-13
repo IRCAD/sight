@@ -29,7 +29,7 @@ class CTRLSELECTION_CLASS_API SimpleSwapperSrv : public ::ctrlSelection::IManage
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (SimpleSwapperSrv)(::ctrlSelection::IManagerSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SimpleSwapperSrv)(::ctrlSelection::IManagerSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SimpleSwapperSrv() throw() ;

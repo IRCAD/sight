@@ -26,7 +26,7 @@ namespace fwData
 class FWDATA_CLASS_API Edge : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Edge >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object), (()), ::fwTools::Factory::New< Edge >) ;
 
     FWDATA_API static std::string NATURE_FLOW;
     FWDATA_API static std::string NATURE_DATA;

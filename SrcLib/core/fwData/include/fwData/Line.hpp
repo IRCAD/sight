@@ -28,7 +28,7 @@ class FWDATA_CLASS_API Line : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
         (()), ::fwTools::Factory::New< Line >) ;
 
     /// Constructor
