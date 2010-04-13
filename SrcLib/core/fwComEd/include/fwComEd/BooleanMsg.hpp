@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API BooleanMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((BooleanMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new BooleanMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((BooleanMsg)(::fwServices::ObjectMsg), ( ( ) ), new BooleanMsg );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
