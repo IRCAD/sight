@@ -13,6 +13,7 @@ CLASSTEST=[
     'GraphTest',
     'ImageTest',
     'IntegerTest',
+    'IsTypeOfTest',
     'MaterialTest',
     'ModelTest',
     'ObjectTest',
