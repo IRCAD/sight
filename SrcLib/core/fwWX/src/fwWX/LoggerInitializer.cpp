@@ -11,6 +11,8 @@
 #include "fwWX/LoggerInitializer.hpp"
 #include "fwWX/convert.hpp"
 
+//------------------------------------------------------------------------------
+
 namespace fwWX
 {
 
@@ -25,6 +27,7 @@ protected:
 
 };
 
+//------------------------------------------------------------------------------
 
 void fwWXLog::DoLog(wxLogLevel level, const wxString& szString, time_t t)
 {
@@ -75,7 +78,6 @@ void fwWXLog::DoLog(wxLogLevel level, const wxString& szString, time_t t)
 
     switch ( level )
     {
-
         case wxLOG_FatalError:
             wxLog::DoLog(level, szString, t);
             break;
@@ -85,11 +87,8 @@ void fwWXLog::DoLog(wxLogLevel level, const wxString& szString, time_t t)
         case wxLOG_Status:
             wxLog::DoLog(level, szString, t);
             break;
-
     }
 }
-
-
 
 //------------------------------------------------------------------------------
 
@@ -98,10 +97,13 @@ LoggerInitializer::LoggerInitializer()
     delete wxLog::SetActiveTarget(new fwWXLog);
 }
 
+//------------------------------------------------------------------------------
 
 void LoggerInitializer::initialize()
 {
     WPTR(LoggerInitializer) reg = SPTR(LoggerInitializer)(new LoggerInitializer) ;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace fwWX

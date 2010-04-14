@@ -7,16 +7,19 @@
 #ifndef _FWWX_LOGGERINITIALIZER_HPP_
 #define _FWWX_LOGGERINITIALIZER_HPP_
 
+#include "fwWX/config.hpp"
 
 namespace fwWX
 {
 
-class LoggerInitializer
+class FWWX_CLASS_API LoggerInitializer
 {
-public:
-    LoggerInitializer();
 
-    static void initialize();
+public:
+
+    FWWX_API LoggerInitializer();
+
+    FWWX_API static void initialize();
 };
 
 
