@@ -59,18 +59,21 @@ void Text::configuring() throw(fwTools::Failed)
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setText( m_configuration->getAttributeValue("text") );
 
-    std::string colorText = m_configuration->getAttributeValue("color");
-    if(!colorText.empty() && colorText[0] == '#')
+    if( m_configuration->hasAttribute("color") )
     {
-        ::fwData::Color color;
-        color.setRGBA(colorText);
-        m_mapper->GetTextProperty()->SetColor(color.getRefRGBA()[0], color.getRefRGBA()[1], color.getRefRGBA()[2]);
-    }
-    else
-    {
-        // compatibility with "old" color
-        double color = ::boost::lexical_cast<double> (colorText);
-        m_mapper->GetTextProperty()->SetColor(color, color, color);
+        std::string colorText = m_configuration->getAttributeValue("color");
+        if( colorText[0] == '#')
+        {
+            ::fwData::Color color;
+            color.setRGBA(colorText);
+            m_mapper->GetTextProperty()->SetColor(color.getRefRGBA()[0], color.getRefRGBA()[1], color.getRefRGBA()[2]);
+        }
+        else
+        {
+            // compatibility with "old" color
+            double color = ::boost::lexical_cast<double> (colorText);
+            m_mapper->GetTextProperty()->SetColor(color, color, color);
+        }
     }
 }
 
