@@ -6,6 +6,8 @@
 
 #include <fwTools/UUID.hpp>
 
+#include <fwRuntime/EConfigurationElement.hpp>
+
 #include "fwServices/IService.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/ComChannelService.hpp"
@@ -13,6 +15,7 @@
 #include "fwServices/helper.hpp"
 #include "fwServices/Factory.hpp"
 #include "fwServices/validation/Validator.hpp"
+
 
 namespace fwServices
 {
@@ -24,7 +27,8 @@ IService::IService() :
     m_updatingState ( NOTUPDATING ),
     m_notificationState ( IDLE ),
     m_configurationState ( UNCONFIGURED ),
-    m_isHandlingAllEvents ( true )
+    m_isHandlingAllEvents ( true ),
+    m_configuration ( new ::fwRuntime::EConfigurationElement("EmptyConfigurationElement") )
 {
     // by default a weak_ptr have a use_count == 0
     m_msgDeque.clear();
