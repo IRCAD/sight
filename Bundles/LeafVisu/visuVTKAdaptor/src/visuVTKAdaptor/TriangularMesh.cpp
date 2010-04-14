@@ -15,6 +15,7 @@
 #include <fwServices/Factory.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
+#include <fwComEd/TriangularMeshMsg.hpp>
 
 #include <vtkIO/vtk.hpp>
 
@@ -426,6 +427,7 @@ TriangularMesh::TriangularMesh() throw()
 #endif
 
     addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
 }
 
 //------------------------------------------------------------------------------
@@ -480,9 +482,18 @@ void TriangularMesh::doUpdate() throw(fwTools::Failed)
 void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
+    ::fwComEd::TriangularMeshMsg::csptr meshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(msg);
+
     if( materialMsg && materialMsg->hasEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED) )
     {
         this->updateOptionsMode();
+    }
+
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::TriangularMeshMsg::NEW_MESH) )
+    {
+        ::fwData::TriangularMesh::sptr triangularMesh
+            = this->getObject < ::fwData::TriangularMesh >();
+        this->updateTriangularMesh( triangularMesh );
     }
 }
 
@@ -779,8 +790,6 @@ void TriangularMesh::buildPipeline()
 
 void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 {
-    if (m_triangularMesh.expired() || mesh != m_triangularMesh.lock())
-    {
         m_triangularMesh = mesh;
 
         vtkPolyData * polyData = ::vtkIO::toVTKMesh(mesh);
@@ -790,7 +799,6 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
         polyData->Delete();
 
         this->setVtkPipelineModified();
-    }
 }
 
 //------------------------------------------------------------------------------
