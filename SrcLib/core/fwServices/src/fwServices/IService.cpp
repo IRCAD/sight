@@ -103,7 +103,7 @@ void IService::configure()
 
 void IService::reconfiguring() throw ( ::fwTools::Failed )
 {
-    SLM_FATAL("If this method is used, it must be write for the service" );
+    OSLM_FATAL("If this method (reconfiguring) is called, it must be overrided in the implementation ("<<this->getClassname()<<", "<< this->getUUID() <<")" );
 }
 
 //-----------------------------------------------------------------------------
@@ -116,10 +116,8 @@ void IService::start() throw(fwTools::Failed)
         this->starting() ;
         m_globalState = STARTED ;
     }
-    else
-    {
-        OSLM_WARN( "INVOKING START WHILE ALREADY STARTED (on this = " << this->className() << ")");
-    }
+
+    OSLM_WARN_IF( "INVOKING START WHILE ALREADY STARTED (on this = " << this->className() << ")", m_globalState != STOPPED);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,10 +131,8 @@ void IService::stop() throw(fwTools::Failed)
         this->stopping() ;
         m_globalState = STOPPED ;
     }
-    else
-    {
-        OSLM_WARN( "INVOKING STOP WHILE ALREADY STOPPED (on this = " << this->className() << ")");
-    }
+
+    OSLM_WARN_IF( "INVOKING STOP WHILE ALREADY STOPPED (on this = " << this->className() << ")", m_globalState != STARTED);
 }
 
 //-----------------------------------------------------------------------------
@@ -242,10 +238,8 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 
         m_globalState = STARTED ;
     }
-    else
-    {
-        OSLM_WARN( "Service "<< this->getUUID() << " is not STARTED, no swapping with Object " << _obj->getUUID());
-    }
+
+    OSLM_WARN_IF( "Service "<< this->getUUID() << " is not STARTED, no swapping with Object " << _obj->getUUID(), m_globalState != STARTED);
 }
 
 //-----------------------------------------------------------------------------

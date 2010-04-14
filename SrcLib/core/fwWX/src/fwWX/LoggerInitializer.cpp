@@ -8,6 +8,7 @@
 
 #include <fwCore/base.hpp>
 
+#include "fwWX/LoggerInitializer.hpp"
 #include "fwWX/convert.hpp"
 
 namespace fwWX
@@ -17,6 +18,7 @@ class fwWXLog : public wxLog
 {
 public:
     fwWXLog(){};
+    virtual ~fwWXLog(){};
 
 protected:
     virtual void DoLog(wxLogLevel level, const wxString& szString, time_t t);
@@ -91,22 +93,15 @@ void fwWXLog::DoLog(wxLogLevel level, const wxString& szString, time_t t)
 
 //------------------------------------------------------------------------------
 
-class InitializeWxLogger
+LoggerInitializer::LoggerInitializer()
 {
-
-public:
-    InitializeWxLogger()
-    {
-        wxLog * oldLog;
-        oldLog = wxLog::SetActiveTarget(new fwWXLog);
-        delete oldLog;
-    }
-
-};
-
-WPTR(InitializeWxLogger) reg = SPTR(InitializeWxLogger)(new InitializeWxLogger) ;
+    delete wxLog::SetActiveTarget(new fwWXLog);
+}
 
 
-
+void LoggerInitializer::initialize()
+{
+    WPTR(LoggerInitializer) reg = SPTR(LoggerInitializer)(new LoggerInitializer) ;
+}
 
 } // namespace fwWX
