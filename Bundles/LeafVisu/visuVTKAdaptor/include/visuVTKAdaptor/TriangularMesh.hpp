@@ -102,6 +102,7 @@ protected:
     bool   m_showClippedPart;
     double m_sharpEdgeAngle;
     bool   m_manageMapperInput;
+    bool   m_autoResetCamera;
 
     vtkAlgorithmOutput *m_mapperInput;
     vtkPolyDataNormals *m_normals;

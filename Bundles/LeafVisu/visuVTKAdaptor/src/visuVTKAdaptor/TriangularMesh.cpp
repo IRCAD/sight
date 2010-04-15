@@ -458,12 +458,15 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
+    std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
     std::string color = m_configuration->getAttributeValue("color");
     std::string unclippedColor = m_configuration->getAttributeValue("unclippedcolor");
 
     m_material->ambient()->setRGBA(color.empty() ? "#ffffffff" : color );
 
     m_unclippedPartMaterial->ambient()->setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
+
+    m_autoResetCamera = (autoresetcamera == "yes");
 
     this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
     this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
@@ -797,6 +800,11 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
         m_normals->SetInput( polyData );
 
         polyData->Delete();
+
+        if (m_autoResetCamera)
+        {
+            this->getRenderer()->ResetCamera();
+        }
 
         this->setVtkPipelineModified();
 }
