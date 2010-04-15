@@ -28,7 +28,7 @@ class FWRENDERVTK_CLASS_API IVtkAdaptorService : public fwServices::IService
 {
     friend class VtkRenderService;
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService) ) ;
 
     typedef fwServices::IService SuperClass ;
 

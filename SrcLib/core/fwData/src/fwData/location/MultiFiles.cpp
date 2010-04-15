@@ -4,7 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwData/location/MultiFiles.hpp"
+
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::location::MultiFiles, ::fwData::location::MultiFiles);
 
 namespace fwData{
 namespace location {

@@ -36,6 +36,17 @@ Color::Color(Color::ColorType red, Color::ColorType green, Color::ColorType blue
 
 
 //------------------------------------------------------------------------------
+Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)
+{
+    Color::sptr color = ::fwData::Color::New();
+    color->m_vRGBA[0] = red;
+    color->m_vRGBA[1] = green;
+    color->m_vRGBA[2] = blue;
+    color->m_vRGBA[3] = alpha;
+    return color;
+}
+    
+//------------------------------------------------------------------------------
 
 Color::~Color ()
 {

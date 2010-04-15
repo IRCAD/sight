@@ -34,7 +34,7 @@ class FWDATA_CLASS_API Study : public Object
 
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Study >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwTools::Factory::New< Study >) ;
 
     /// @brief Constructor
     FWDATA_API Study();

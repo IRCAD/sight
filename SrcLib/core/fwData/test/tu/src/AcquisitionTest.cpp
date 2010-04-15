@@ -349,7 +349,7 @@ void AcquisitionTest::Image()
 {
 
     ::fwData::Acquisition::NewSptr a1;
-    ::fwData::Image::sptr i1(new ::fwData::Image);
+    ::fwData::Image::sptr i1 = ::fwData::Image::New();
 
     a1->setImage(i1) ;
 
@@ -361,7 +361,7 @@ void AcquisitionTest::Image()
 void AcquisitionTest::StructAnat()
 {
     ::fwData::Acquisition::NewSptr a1;
-    ::fwData::Image::sptr i1(new ::fwData::Image);
+    ::fwData::Image::sptr i1 = ::fwData::Image::New();
 
     a1->setStructAnat(i1) ;
 

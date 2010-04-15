@@ -23,7 +23,7 @@ class VISUVTKADAPTOR_CLASS_API PlaneSelector: public ::fwRenderVTK::IVtkAdaptorS
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneSelector)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PlaneSelector)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API PlaneSelector() throw();
 

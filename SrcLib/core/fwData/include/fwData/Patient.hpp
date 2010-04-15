@@ -42,7 +42,7 @@ class FWDATA_CLASS_API Patient : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Patient >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwTools::Factory::New< Patient >) ;
 
     /// Constructor
     FWDATA_API Patient ();

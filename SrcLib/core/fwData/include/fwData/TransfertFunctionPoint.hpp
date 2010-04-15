@@ -31,7 +31,7 @@ class FWDATA_CLASS_API TransfertFunctionPoint : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunctionPoint)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunctionPoint)(::fwData::Object),
         (()), ::fwTools::Factory::New< TransfertFunctionPoint >) ;
 
     typedef ::boost::int32_t TFValueType;

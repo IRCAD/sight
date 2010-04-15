@@ -28,7 +28,7 @@ namespace fwCore
 class FWCORE_CLASS_API HiResTimer : public BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (HiResTimer)(BaseObject::Baseclass), (()), new HiResTimer) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (HiResTimer)(BaseObject), (()), new HiResTimer) ;
 
     /** 
      * @name Constructor/Destructor

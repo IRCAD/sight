@@ -15,6 +15,9 @@
 
 namespace fwData
 {
+
+typedef std::vector< Object::sptr > ObjectVectorType;
+
 /**
  * @class   Vector
  * @brief   This class defines a vector of objects.
@@ -25,14 +28,57 @@ namespace fwData
  * @date    2007-2009.
  */
 
-class FWDATA_CLASS_API Vector : public Object
+class FWDATA_CLASS_API Vector : public Object, private ObjectVectorType
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Vector >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwTools::Factory::New< Vector >) ;
 
-    typedef std::vector< Object::sptr > Container;
+    typedef Vector Container;
+    typedef ObjectVectorType ContainerType;
+
+
+    using ObjectVectorType::reference;
+    using ObjectVectorType::const_reference;
+    using ObjectVectorType::iterator;
+    using ObjectVectorType::const_iterator;
+    using ObjectVectorType::size_type;
+    using ObjectVectorType::difference_type;
+    using ObjectVectorType::value_type;
+    using ObjectVectorType::allocator_type;
+    using ObjectVectorType::pointer;
+    using ObjectVectorType::const_pointer;
+    using ObjectVectorType::reverse_iterator;
+    using ObjectVectorType::const_reverse_iterator;
+
+    using ObjectVectorType::begin;
+    using ObjectVectorType::end;
+    using ObjectVectorType::rbegin;
+    using ObjectVectorType::rend;
+
+    using ObjectVectorType::size;
+    using ObjectVectorType::max_size;
+    using ObjectVectorType::resize;
+    using ObjectVectorType::capacity;
+    using ObjectVectorType::empty;
+    using ObjectVectorType::reserve;
+
+    using ObjectVectorType::operator[];
+    using ObjectVectorType::at;
+    using ObjectVectorType::front;
+    using ObjectVectorType::back;
+
+    using ObjectVectorType::assign;
+    using ObjectVectorType::push_back;
+    using ObjectVectorType::pop_back;
+    using ObjectVectorType::insert;
+    using ObjectVectorType::erase;
+    using ObjectVectorType::swap;
+    using ObjectVectorType::clear;
+
+    using ObjectVectorType::get_allocator;
+
 
     /// Constructor
     FWDATA_API Vector();
@@ -41,10 +87,10 @@ public:
     FWDATA_API virtual ~Vector();
 
     /// @brief get the container of ::fwData::Object
-    FWDATA_API Container &getRefContainer();
+    FWDATA_API Vector &getRefContainer();
 
     /// @brief get the container of ::fwData::Object
-    FWDATA_API Container const &getRefContainer() const;
+    FWDATA_API Vector const &getRefContainer() const;
 
     fwDataObjectMacro();
 
@@ -54,10 +100,7 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Vector::csptr _source );
 
-protected:
 
-    /// container of ::fwData::Object
-    Container m_container;
 };
 }
 

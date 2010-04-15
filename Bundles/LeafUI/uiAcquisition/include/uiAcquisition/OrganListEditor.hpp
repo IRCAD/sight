@@ -23,7 +23,7 @@ class UIACQUISITION_CLASS_API OrganListEditor : public ::gui::editor::IEditor
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (OrganListEditor)(::gui::editor::IEditor::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (OrganListEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
     UIACQUISITION_API OrganListEditor() throw() ;

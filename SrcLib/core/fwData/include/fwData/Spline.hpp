@@ -25,7 +25,7 @@ namespace fwData
 class FWDATA_CLASS_API Spline : public Object
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Spline >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwTools::Factory::New< Spline >) ;
 
     /**
      * @struct point

@@ -36,7 +36,7 @@ class IODATA_CLASS_API DefaultCompositeObjectReaderService : public ::io::IReade
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultCompositeObjectReaderService)(::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultCompositeObjectReaderService)(::io::IReader) ) ;
 
     /// Super class of reader services
     typedef ::io::IReader   SuperClass;

@@ -23,7 +23,7 @@ namespace visitor
 class FWDATA_CLASS_API DepthFirst : public  IVisitor
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (DepthFirst)(IVisitor::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro( (DepthFirst)(IVisitor) ) ;
 
     FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 

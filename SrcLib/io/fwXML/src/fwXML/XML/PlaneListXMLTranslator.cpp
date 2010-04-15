@@ -66,7 +66,7 @@ void PlaneListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
             {
                 // Load Plane
                 ::fwTools::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( planeNode, true, true );
+                valueObj = Serializer().ObjectsFromXml( planeNode, true );
 
                 // Add plane in the vector
                 assert( valueObj );

@@ -191,6 +191,7 @@ struct HandlerHelper : public boost::signals::trackable
 
 void Serializer::IOforExtraXML( ::boost::shared_ptr< fwTools::Object > object , bool savingMode)
 {
+    SLM_TRACE_FUNC();
 
     ::visitor::CollectFileFormatService collector;
     ::fwData::visitor::accept( object , &collector );
@@ -344,7 +345,7 @@ void Serializer::serialize( ::boost::shared_ptr< fwTools::Object> object, bool s
 // a) if not a Field ignore this child
 // b) else createObject on this child
 
-::boost::shared_ptr< fwTools::Object > Serializer::ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML, bool assignNewUUID )
+::boost::shared_ptr< fwTools::Object > Serializer::ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML  )
 {
     xmlNodePtr child = xmlNode->children;
 
@@ -360,8 +361,6 @@ void Serializer::serialize( ::boost::shared_ptr< fwTools::Object> object, bool s
     assert(className.size());
     std::string idXML = ObjectTracker::getID(xmlNode );
 
-//  // perform translation if necessary
-//  id = ObjectTracker::translateID( id, assignNewUUID );
 
     OSLM_DEBUG("ObjectsFromXml : manage Object " << xmlNode->name );
     if ( ObjectTracker::isAlreadyInstanciated( idXML ) )
@@ -392,7 +391,7 @@ void Serializer::serialize( ::boost::shared_ptr< fwTools::Object> object, bool s
             else
             {
                 OSLM_DEBUG( "ObjectsFromXml : " <<  xmlNode->name << " accept " << child->name );
-                ::fwTools::Object::sptr newChild = ObjectsFromXml( child, loadExtraXML, assignNewUUID );
+                ::fwTools::Object::sptr newChild = ObjectsFromXml( child, loadExtraXML );
                 assert (newChild);
                 newObject->children().push_back( newChild );
             }
@@ -438,7 +437,7 @@ void Serializer::serialize( ::boost::shared_ptr< fwTools::Object> object, bool s
 
 
 
-::boost::shared_ptr< fwTools::Object>  Serializer::deSerialize( boost::filesystem::path filePath , bool loadExtraXML , bool validateWithSchema , bool generateNewUUID  ) throw (::fwTools::Failed)
+::boost::shared_ptr< fwTools::Object>  Serializer::deSerialize( boost::filesystem::path filePath , bool loadExtraXML , bool validateWithSchema   ) throw (::fwTools::Failed)
 {
     xmlDocPtr xmlDoc = NULL;
     xmlNodePtr xmlRoot = NULL;
@@ -492,7 +491,7 @@ void Serializer::serialize( ::boost::shared_ptr< fwTools::Object> object, bool s
     //recreateObjects;
     ObjectTracker::clear();
 
-     ::boost::shared_ptr< fwTools::Object> objRoot = ObjectsFromXml( rootObject , loadExtraXML, generateNewUUID );
+     ::boost::shared_ptr< fwTools::Object> objRoot = ObjectsFromXml( rootObject , loadExtraXML );
 
     if (loadExtraXML)
     {

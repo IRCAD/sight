@@ -34,7 +34,9 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::gui::editor::DummyEditor , ::fwTool
 
 
 DummyEditor::DummyEditor() throw()
-{}
+{
+    m_text="";
+}
 
 //-----------------------------------------------------------------------------
 
@@ -49,7 +51,8 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 
     wxBoxSizer* bSizer;
     bSizer = new wxBoxSizer( wxVERTICAL );
-    wxStaticText*  staticText = new wxStaticText( m_container, wxID_ANY, ::fwWX::std2wx(this->getUUID()), wxDefaultPosition, wxDefaultSize, 0 );
+    std::string text = m_text.empty() ? this->getUUID() : m_text;
+    wxStaticText*  staticText = new wxStaticText( m_container, wxID_ANY, ::fwWX::std2wx(text), wxDefaultPosition, wxDefaultSize, 0 );
     bSizer->Add( staticText, 1, wxALL|wxEXPAND, 5 );
     m_container->SetSizer( bSizer );
     m_container->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
@@ -68,8 +71,15 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
 
 void DummyEditor::configuring()  throw ( ::fwTools::Failed )
 {
-    ::gui::editor::IEditor::configuring();
     SLM_TRACE_FUNC();
+    ::gui::editor::IEditor::configuring();
+
+    ::fwRuntime::ConfigurationElement::sptr viewsCfgElt = m_configuration->findConfigurationElement("text");
+
+    if(viewsCfgElt)
+    {
+        m_text = viewsCfgElt->getValue();
+    }
 }
 
 //-----------------------------------------------------------------------------

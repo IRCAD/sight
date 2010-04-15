@@ -38,7 +38,7 @@ public :
     /// the object type related
     typedef DATATYPE DataType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectReader<DATATYPE>)(::fwDataIO::reader::IObjectReader::Baseclass) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectReader<DATATYPE>)(::fwDataIO::reader::IObjectReader) );
 
     /// Constructor. Do nothing.
     GenericObjectReader(){};

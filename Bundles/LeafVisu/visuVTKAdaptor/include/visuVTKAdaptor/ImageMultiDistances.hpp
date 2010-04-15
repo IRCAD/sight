@@ -26,7 +26,7 @@ class VISUVTKADAPTOR_CLASS_API ImageMultiDistances: public ::fwRenderVTK::IVtkAd
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageMultiDistances)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageMultiDistances)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API ImageMultiDistances() throw();
 

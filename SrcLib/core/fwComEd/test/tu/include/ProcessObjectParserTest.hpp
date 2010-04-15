@@ -53,7 +53,7 @@ class TestService : public ::fwServices::IService
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) ) ;
     TestService() throw()
     :   m_isUpdated(false),
         m_isUpdatedMessage(false)
@@ -83,7 +83,7 @@ class TestServiceImplementation : public TestService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation)(::TestService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation)(::TestService) ) ;
     TestServiceImplementation() throw() {};
     virtual ~TestServiceImplementation() throw() {};
 

@@ -33,7 +33,7 @@ class GUI_CLASS_API SelectConfigurationAction : public ::gui::action::IAction
 
 public :
    
-    fwCoreServiceClassDefinitionsMacro ( (SelectConfigurationAction)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SelectConfigurationAction)(::gui::action::IAction) ) ;
 
     /**
     * @brief Constructor. Do nothing.

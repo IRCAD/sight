@@ -8,6 +8,7 @@
 #include <utility>
 
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
@@ -29,9 +30,9 @@
 namespace fwServices
 {
 
-
-
 ObjectServiceRegistry::sptr ObjectServiceRegistry::m_instance;
+
+//------------------------------------------------------------------------------
 
 ObjectServiceRegistry::ObjectServiceRegistry()
 {
@@ -40,36 +41,50 @@ ObjectServiceRegistry::ObjectServiceRegistry()
     m_isRootInitialized = false ;
 }
 
+//------------------------------------------------------------------------------
+
 ObjectServiceRegistry::~ObjectServiceRegistry()
 {
     m_instance.reset() ;
 }
+
+//------------------------------------------------------------------------------
+
 void ObjectServiceRegistry::setRootObjectClassName(std::string name)
 {
     getDefault()->m_rootObjectClassName = std::pair< bool , std::string >( true , name ) ;
 }
+
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
 {
     getDefault()->m_rootObject = obj;
 }
 
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::setRootObjectConfigurationName(std::string name)
 {
     getDefault()->m_rootObjectConfigurationName = std::pair< bool , std::string >( true , name ) ;
 }
 
+//------------------------------------------------------------------------------
+
 void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObjectConfigurationFile)
 {
     getDefault()->m_rootObjectConfigurationFile = std::pair< bool , std::string >( true , _rootObjectConfigurationFile ) ;
 }
 
+//------------------------------------------------------------------------------
 
 ::fwTools::Object::sptr ObjectServiceRegistry::getRootObject()
 {
     return getDefault()->m_rootObject ;
 }
+
+//------------------------------------------------------------------------------
+
 bool ObjectServiceRegistry::isRootObjectConfigurationValid()
 {
     if( getDefault()->m_rootObjectClassName.first && getDefault()->m_rootObjectConfigurationName.first )
@@ -77,21 +92,23 @@ bool ObjectServiceRegistry::isRootObjectConfigurationValid()
         assert( getDefault()->m_rootObjectClassName.first ) ;
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
         std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-       for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
-       {
-           if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
-           {
-               return ::fwServices::validation::checkObject( *((*iter)->begin()) ) ;
-           }
-       }
+        for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
+        {
+            if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
+            {
+                return ::fwServices::validation::checkObject( *((*iter)->begin()) ) ;
+            }
+        }
     }
-   return true ;
+    return true ;
 }
+
+//------------------------------------------------------------------------------
+
 void ObjectServiceRegistry::initializeRootObject()
 {
     if( !getDefault()->m_isRootInitialized && getDefault()->m_rootObjectClassName.first && getDefault()->m_rootObjectConfigurationName.first )
     {
-
         // Load another bundle
         if ( getDefault()->m_rootObjectConfigurationFile.first )
         {
@@ -120,6 +137,9 @@ void ObjectServiceRegistry::initializeRootObject()
         getDefault()->m_isRootInitialized = true ;
     }
 }
+
+//------------------------------------------------------------------------------
+
 void ObjectServiceRegistry::uninitializeRootObject()
 {
     SLM_TRACE_FUNC();
@@ -142,10 +162,14 @@ void ObjectServiceRegistry::uninitializeRootObject()
     }
 }
 
+//------------------------------------------------------------------------------
+
 bool ObjectServiceRegistry::isRootObjectInitialized()
 {
     return getDefault()->m_isRootInitialized ;
 }
+
+//------------------------------------------------------------------------------
 
 void  ObjectServiceRegistry::updateObjectDeleter( ::fwTools::Object::sptr object)
 {
@@ -154,6 +178,8 @@ void  ObjectServiceRegistry::updateObjectDeleter( ::fwTools::Object::sptr object
         object->setDeleter( ::fwServices::DefaultObjectDeleter::New() ) ;
     }
 }
+
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::registerObject( ::fwTools::Object::sptr obj )
 {
@@ -173,12 +199,14 @@ void ObjectServiceRegistry::registerObject( ::fwTools::Object::sptr obj )
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::registerService(  fwTools::Object * obj, ::fwServices::IService::sptr service)
 {
     OSR::registerService( OSR::shared_from( obj ) , service ) ;
 }
+
+//------------------------------------------------------------------------------
 
 ObjectServiceRegistry::sptr ObjectServiceRegistry::getDefault()
 {
@@ -189,7 +217,7 @@ ObjectServiceRegistry::sptr ObjectServiceRegistry::getDefault()
     return m_instance;
 }
 
-
+//------------------------------------------------------------------------------
 
 void  ObjectServiceRegistry::registerService( ::fwTools::Object::sptr object , ::fwServices::IService::sptr service)
 {
@@ -226,104 +254,109 @@ void  ObjectServiceRegistry::registerService( ::fwTools::Object::sptr object , :
     getDefault()->updateObjectDeleter(object);
 }
 
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::swapService(  ::fwTools::Object::sptr  _objSrc, ::fwTools::Object::sptr  _objDst, ::fwServices::IService::sptr _service )
 {
-        std::vector< ::fwTools::Object::wptr >   lobjects;
-        for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter != getDefault()->m_container.end() ; ++iter )
+    std::vector< ::fwTools::Object::wptr >   lobjects;
+    for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter != getDefault()->m_container.end() ; ++iter )
+    {
+        // Usually, unregisterServices is invoked at obj destruction (from its destructor) : its weak_ptr has therefore expired
+        // For this reason, for that method only, one unregister all fwServices because expired weak_ptr can (but not sure) correspond to the considered obj
+        if( iter->first.expired() )
         {
-            // Usually, unregisterServices is invoked at obj destruction (from its destructor) : its weak_ptr has therefore expired
-            // For this reason, for that method only, one unregister all fwServices because expired weak_ptr can (but not sure) correspond to the considered obj
-            if( iter->first.expired() )
+            SLM_WARN( "Expired object discovered : swap on expired object !" ) ;
+        }
+        // Normal case : obj is not expired
+        else if( iter->first.lock() == _objSrc )
+        {
+            SContainer::iterator lIter = iter->second.begin() ;
+            bool bFind = false;
+            while(  !bFind  && lIter != iter->second.end() )
             {
-                SLM_WARN( "Expired object discovered : swap on expired object !" ) ;
-            }
-            // Normal case : obj is not expired
-            else if( iter->first.lock() == _objSrc )
-            {
-                SContainer::iterator lIter = iter->second.begin() ;
-                bool bFind = false;
-                while(  !bFind  && lIter != iter->second.end() )
+                if ( (*lIter) == _service )
                 {
-                    if ( (*lIter) == _service )
-                    {
-                        iter->second.erase(lIter);
-                        bFind = true;
-                    }
-                    else
-                    {
-                        ++lIter;
-                    }
+                    iter->second.erase(lIter);
+                    bFind = true;
+                }
+                else
+                {
+                    ++lIter;
                 }
             }
         }
-        getDefault()->registerService(_objDst, _service);
+    }
+    getDefault()->registerService(_objDst, _service);
 }
+
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
 {
-        std::vector< ::fwTools::Object::wptr >   lobjects;
-        for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter != getDefault()->m_container.end() ; ++iter )
+    std::vector< ::fwTools::Object::wptr >   lobjects;
+    BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
+    {
+        ::fwTools::Object::wptr lobject = objSrvMap.first;
+
+        // TODO Normally always true (shared_ptr definition)
+        SLM_ASSERT("ACH : shared_ptr def ?", ! lobject.expired() || lobject.use_count() == 0  );
+        SLM_ASSERT("ACH : wptr in the map not initialized ?", lobject.expired() || lobject.use_count() != 0 );
+
+        // Usually, unregisterServices is invoked at obj destruction (from its destructor) : its weak_ptr has therefore expired
+        // For this reason, for that method only, one unregister all fwServices because expired weak_ptr can (but not sure) correspond to the considered obj
+        if( lobject.expired() )
         {
-
-            // TODO Normally always true (shared_ptr definition)
-            SLM_ASSERT("ACH : shared_ptr def ?", ! iter->first.expired() || iter->first.use_count() == 0  );
-            SLM_ASSERT("ACH : wptr in the map not initialized ?", iter->first.expired() || iter->first.use_count() != 0 );
-
-            // Usually, unregisterServices is invoked at obj destruction (from its destructor) : its weak_ptr has therefore expired
-            // For this reason, for that method only, one unregister all fwServices because expired weak_ptr can (but not sure) correspond to the considered obj
-            if( iter->first.expired() )
+            SLM_WARN( "Expired object discovered : stopping and unregistering all associated fwServices" ) ;
+            lobjects.push_back( lobject ) ;
+            // Clean service vector clearing
+            SContainer services = objSrvMap.second;
+            size_t tmpsize = services.size() ;
+            BOOST_FOREACH(::fwServices::IService::sptr srv, services)
             {
-                ::fwTools::Object::wptr tmp1 = iter->first;
-
-                SLM_WARN( "Expired object discovered : stopping and unregistering all associated fwServices" ) ;
-                lobjects.push_back( iter->first ) ;
-                // Clean service vector clearing
-                OSContainer::iterator _pos = iter ;
-                size_t tmpsize = _pos->second.size() ;
-                for( SContainer::iterator lIter = _pos->second.begin() ; lIter != _pos->second.end() ; ++lIter )
+                assert( srv.use_count() != 0 );
+                if (srv != NULL )
                 {
-                    assert( (*lIter).use_count() != 0 );
-                    if (*lIter != NULL )
-                    {
-                        ( *lIter)->stop();
-                        ::fwServices::unregisterComChannels( (*lIter) ) ;
-                    }
+                    srv->stop();
+                    ::fwServices::unregisterComChannels( srv ) ;
                 }
-                _pos->second.clear() ;
             }
-            // Normal case : obj is not expired
-            else if( iter->first.lock() == obj )
-            {
-                lobjects.push_back( iter->first ) ;
-                // Clean service vector clearing
-                OSContainer::iterator _pos = iter ;
-                for( SContainer::iterator lIter = _pos->second.begin() ; lIter != _pos->second.end() ; ++lIter )
-                {
-                    if (*lIter != NULL)
-                    {
-                        ( *lIter)->stop();
-                        fwServices::unregisterComChannels( (*lIter) ) ;
-                    }
-                }
-                _pos->second.clear() ;
-            }
+            services.clear() ;
         }
-        // Erase all associated object with the refKey
-        for ( std::vector< ::fwTools::Object::wptr >::iterator iter = lobjects.begin(); iter != lobjects.end() ; ++iter )
+        // Normal case : obj is not expired
+        else if( lobject.lock() == obj )
         {
-            getDefault()->m_container.erase( *iter ) ;
+            lobjects.push_back( lobject ) ;
+            // Clean service vector clearing
+            SContainer services = objSrvMap.second;
+            BOOST_FOREACH(::fwServices::IService::sptr srv, services)
+            {
+                if (srv != NULL)
+                {
+                    srv->stop();
+                    ::fwServices::unregisterComChannels( srv ) ;
+                }
+            }
+            services.clear() ;
         }
+    }
+    // Erase all associated object with the refKey
+    BOOST_FOREACH(::fwTools::Object::wptr lobject, lobjects)
+    {
+        getDefault()->m_container.erase( lobject ) ;
+    }
 }
+
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _service )
 {
     SLM_TRACE_FUNC();
     _service->stop();
-    fwServices::unregisterComChannels( _service ) ;
+    ::fwServices::unregisterComChannels( _service ) ;
     removeFromContainer( _service );
 }
 
+//------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _service )
 {
@@ -361,74 +394,81 @@ void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _s
     }
 }
 
-
-
-
+//------------------------------------------------------------------------------
 
 bool ObjectServiceRegistry::hasObject(::fwServices::IService * _service)
 {
     return _service->m_associatedObject.use_count();
 }
 
+//------------------------------------------------------------------------------
+
 ::fwTools::Object::sptr ObjectServiceRegistry::shared_from( ::fwTools::Object *obj )
 {
-    for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
+    BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
     {
-        assert( !pos->first.expired() ) ;
-        if ( (pos->first.lock()).get() == obj )
+        ::fwTools::Object::wptr lobject = objSrvMap.first;
+        assert( !lobject.expired() ) ;
+        if ( (lobject.lock()).get() == obj )
         {
-            return  pos->first.lock() ;
+            return  lobject.lock() ;
         }
     }
-    std::stringstream msg;
-    msg << "Requested ObjectServiceRegistry::shared_from( fwTools::Object *obj [(" << obj << "]) for object not registred in  ObjectServiceRegistry";
-    OSLM_WARN( msg.str() ); ;
+
+    OSLM_WARN( "Requested ObjectServiceRegistry::shared_from( fwTools::Object *obj [("
+            << obj << "]) for object not registered in  ObjectServiceRegistry" ); ;
 
     // avoid compilation warning
     return ::fwTools::Object::sptr();
-
 }
+
+//------------------------------------------------------------------------------
+
 ::fwServices::IService::sptr ObjectServiceRegistry::shared_from( fwServices::IService *_service )
 {
-    for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
+    BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
     {
-            assert( !pos->first.expired() ) ;
-            for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
+        SLM_ASSERT("Object has expired", !objSrvMap.first.expired() ) ;
+        SContainer services = objSrvMap.second;
+        BOOST_FOREACH(::fwServices::IService::sptr srv, services)
+        {
+            if (srv.get() == _service )
             {
-                if ((*lIter).get() == _service )
-                {
-                    return (*lIter) ;
-                }
+                return srv ;
             }
+        }
     }
-    std::stringstream msg;
-    msg << "Requested ObjectServiceRegistry::shared_from( fwServices::IService *_service [(" << _service << "]) for object not registred in  ObjectServiceRegistry";
-    OSLM_WARN( msg.str() ); ;
+    OSLM_WARN( "Requested ObjectServiceRegistry::shared_from( fwServices::IService *_service [("
+            << _service << "]) for object not registered in  ObjectServiceRegistry" ); ;
 
     // avoid compilation warning
-    return ::boost::shared_ptr< fwServices::IService >();
+    return ::fwServices::IService::sptr();
 }
 
+//------------------------------------------------------------------------------
 
 std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
 {
     std::vector< ::fwTools::Object::sptr > allObjects ;
-    for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
+    BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
     {
-            assert( !pos->first.expired() ) ;
-            if( std::find( allObjects.begin() , allObjects.end() , pos->first.lock() ) == allObjects.end() )
-            {
-                allObjects.push_back( pos->first.lock( ) ) ;
-            }
+        ::fwTools::Object::wptr obj = objSrvMap.first;
+        SLM_ASSERT("Object has expired", !obj.expired() ) ;
+        if( std::find( allObjects.begin() , allObjects.end() , obj.lock() ) == allObjects.end() )
+        {
+            allObjects.push_back( obj.lock( ) ) ;
+        }
     }
-
     return allObjects ;
 }
+
+//------------------------------------------------------------------------------
 
 const ObjectServiceRegistry::OSContainer  & ObjectServiceRegistry::getOSContainer()
 {
     return getDefault()->m_container;
 }
 
+//------------------------------------------------------------------------------
 
 }

@@ -15,6 +15,7 @@
 #include <fwServices/Factory.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
+#include <fwComEd/TriangularMeshMsg.hpp>
 
 #include <vtkIO/vtk.hpp>
 
@@ -426,6 +427,7 @@ TriangularMesh::TriangularMesh() throw()
 #endif
 
     addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
 }
 
 //------------------------------------------------------------------------------
@@ -456,12 +458,15 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
+    std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
     std::string color = m_configuration->getAttributeValue("color");
     std::string unclippedColor = m_configuration->getAttributeValue("unclippedcolor");
 
     m_material->ambient()->setRGBA(color.empty() ? "#ffffffff" : color );
 
     m_unclippedPartMaterial->ambient()->setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
+
+    m_autoResetCamera = (autoresetcamera == "yes");
 
     this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
     this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
@@ -480,9 +485,18 @@ void TriangularMesh::doUpdate() throw(fwTools::Failed)
 void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
+    ::fwComEd::TriangularMeshMsg::csptr meshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(msg);
+
     if( materialMsg && materialMsg->hasEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED) )
     {
         this->updateOptionsMode();
+    }
+
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::TriangularMeshMsg::NEW_MESH) )
+    {
+        ::fwData::TriangularMesh::sptr triangularMesh
+            = this->getObject < ::fwData::TriangularMesh >();
+        this->updateTriangularMesh( triangularMesh );
     }
 }
 
@@ -779,8 +793,6 @@ void TriangularMesh::buildPipeline()
 
 void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 {
-    if (m_triangularMesh.expired() || mesh != m_triangularMesh.lock())
-    {
         m_triangularMesh = mesh;
 
         vtkPolyData * polyData = ::vtkIO::toVTKMesh(mesh);
@@ -789,8 +801,12 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 
         polyData->Delete();
 
+        if (m_autoResetCamera)
+        {
+            this->getRenderer()->ResetCamera();
+        }
+
         this->setVtkPipelineModified();
-    }
 }
 
 //------------------------------------------------------------------------------

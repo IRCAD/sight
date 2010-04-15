@@ -118,7 +118,7 @@ std::string FwXMLPatientDBWriterService::getPersistanceId()
 
 //------------------------------------------------------------------------------
 
-void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path inrFileDir, ::boost::shared_ptr< ::fwData::PatientDB > _pPatient )
+void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path inrFileDir, ::fwData::PatientDB::sptr _pPatient )
 {
     SLM_TRACE("FwXMLPatientDBWriterService::createPatientDB");
     ::fwXML::writer::FwXMLObjectWriter myWriter;
@@ -157,8 +157,7 @@ void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
     if( m_bServiceIsConfigured )
     {
         // Retrieve dataStruct associated with this service
-        ::boost::shared_ptr< ::fwTools::Object > associatedObject = this->getObject();
-        ::boost::shared_ptr< ::fwData::PatientDB > associatedPatientDB = ::boost::dynamic_pointer_cast< ::fwData::PatientDB >( associatedObject ) ;
+        ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
         assert( associatedPatientDB ) ;
 
         wxBeginBusyCursor();

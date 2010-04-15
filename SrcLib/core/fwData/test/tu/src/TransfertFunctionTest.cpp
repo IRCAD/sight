@@ -32,8 +32,8 @@ void TransfertFunctionTest::tearDown()
 void TransfertFunctionTest::methode1()
 {
     //-----------test values
-    const ::fwData::Color::sptr C1(new ::fwData::Color(0.5f, 0.4f ,0.6f, 0.1f));
-    const ::fwData::Color::sptr C2(new ::fwData::Color());
+    const ::fwData::Color::sptr C1 = ::fwData::Color::New(0.5f, 0.4f ,0.6f, 0.1f);
+    const ::fwData::Color::sptr C2 = ::fwData::Color::New();
     const int INDEX1 = 2;
     const int INDEX2 = 5;
     const std::string NAME = "tfName";

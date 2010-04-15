@@ -58,6 +58,14 @@ std::string Edge::getToPortID() const
 
 //------------------------------------------------------------------------------
 
+
+std::string Edge::getPortID(bool upStream) const
+{
+	return upStream?m_fromPortIdentifier:m_toPortIdentifier;
+}
+
+//------------------------------------------------------------------------------
+
 void Edge::setNature(std::string nature)
 {
     m_nature =  nature;

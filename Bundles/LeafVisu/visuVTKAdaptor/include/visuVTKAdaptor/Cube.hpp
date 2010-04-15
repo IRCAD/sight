@@ -17,7 +17,7 @@ class VISUVTKADAPTOR_CLASS_API Cube: public ::fwRenderVTK::IVtkAdaptorService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Cube)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Cube)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
 protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);

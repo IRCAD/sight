@@ -31,7 +31,7 @@ class GUI_CLASS_API TestAction : public ::gui::action::IAction
 
 public :
    
-    fwCoreServiceClassDefinitionsMacro ( (TestAction)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestAction)(::gui::action::IAction) ) ;
     
 
     /**

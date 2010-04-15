@@ -38,7 +38,7 @@ class IOVTK_CLASS_API MeshReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader) ) ;
     /**
      * @brief   Constructor
      *

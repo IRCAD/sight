@@ -26,7 +26,7 @@ class FWDATA_CLASS_API None : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< None >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object), (()), ::fwTools::Factory::New< None >) ;
 
     /// Constructor
     FWDATA_API None();

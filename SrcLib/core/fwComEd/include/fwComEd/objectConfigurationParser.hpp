@@ -29,7 +29,7 @@ namespace fwComEd
 class FWCOMED_CLASS_API IProcessObjectParser : public ::fwServices::IXMLParser
 {
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IProcessObjectParser)(::fwServices::IXMLParser::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IProcessObjectParser)(::fwServices::IXMLParser) ) ;
 
     /**
      * @brief   Constructor : does nothing.
@@ -71,7 +71,7 @@ class FWCOMED_CLASS_API ICompositeParser : public ::fwServices::IXMLParser
 {
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (ICompositeParser)(::fwServices::IXMLParser::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ICompositeParser)(::fwServices::IXMLParser) ) ;
 
     /**
      * @brief   Constructor : does nothing.

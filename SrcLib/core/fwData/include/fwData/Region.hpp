@@ -25,8 +25,14 @@ namespace fwData
 class FWDATA_CLASS_API Region : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Region)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Region >) ;
+    fwCoreClassDefinitionsWithNFactoriesMacro( (Region)(::fwData::Object),
+       ((::fwTools::Factory::New< Region > ,() ))
+       ((RegionFactory ,((const boost::uint8_t)) ))
+       );
 
+
+    typedef std::vector<double> OriginType;
+    typedef std::vector<boost::int32_t> SizeType;
     /// Constructor
     FWDATA_API  Region();
 
@@ -36,6 +42,7 @@ public:
      */
     FWDATA_API  Region(boost::uint8_t  _dim);
 
+    static sptr RegionFactory(const boost::uint8_t _dim);
     /**
      * @brief Destructor
      */
@@ -48,10 +55,10 @@ public:
 protected:
 
     //! Origin of the region
-    std::vector<double> m_vOrigin;
+    OriginType m_vOrigin;
 
     //! Size of the region (in terms of points)
-    std::vector<boost::int32_t>  m_vSize;
+    SizeType  m_vSize;
 
 };
 

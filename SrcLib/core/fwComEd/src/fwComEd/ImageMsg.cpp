@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwCore/base.hpp>
 #include "fwComEd/ImageMsg.hpp"
 
 namespace fwComEd
@@ -37,6 +38,44 @@ ImageMsg::~ImageMsg() throw()
 {}
 
 //-----------------------------------------------------------------------------
+
+void ImageMsg::setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s, ::fwData::Object::sptr _pDataInfo )
+{
+
+    this->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, _pDataInfo );
+    m_axialIndex = a;
+    m_frontalIndex = f;
+    m_sagittalIndex = s;
+}
+    
+//-----------------------------------------------------------------------------
+
+void ImageMsg::setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo )
+{
+    this->addEvent( ::fwComEd::ImageMsg::WINDOWING, _pDataInfo);
+    m_windowMin = min;
+    m_windowMax = max;
+}
+
+
+//-----------------------------------------------------------------------------
+
+void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s) const
+{
+    SLM_ASSERT( "SLICE_INDEX Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ));
+    a->deepCopy(m_axialIndex   );
+    f->deepCopy(m_frontalIndex );
+    s->deepCopy(m_sagittalIndex);
+}
+    
+//-----------------------------------------------------------------------------
+
+void ImageMsg::getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max) const
+{
+    SLM_ASSERT( "SLICE_INDEX Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
+    min->deepCopy(m_windowMin);
+    max->deepCopy(m_windowMax);
+}
 
 } // namespace fwComEd
 

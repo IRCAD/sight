@@ -24,7 +24,7 @@ class UIRECONSTRUCTION_CLASS_API RepresentationEditor : public ::gui::editor::IE
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (RepresentationEditor)(::gui::editor::IEditor::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (RepresentationEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTION_API RepresentationEditor() throw() ;

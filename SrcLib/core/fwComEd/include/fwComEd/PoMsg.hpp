@@ -27,7 +27,7 @@ namespace fwComEd
 //class FWCOMED_CLASS_API ProcessObjectMsg : public ::fwServices::ObjectMsg
 //{
 //public:
-//  fwCoreClassDefinitionsWithFactoryMacro((ProcessObjectMsg)(::fwServices::ObjectMsg::Baseclass), ( ((::boost::shared_ptr< ::fwData::ProcessObject>)) ), new ProcessObjectMsg );
+//  fwCoreClassDefinitionsWithFactoryMacro((ProcessObjectMsg)(::fwServices::ObjectMsg), ( ((::boost::shared_ptr< ::fwData::ProcessObject>)) ), new ProcessObjectMsg );
 //  /**
 //   * @brief   constructor
 //   */

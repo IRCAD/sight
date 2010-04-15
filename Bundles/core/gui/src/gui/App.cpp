@@ -33,6 +33,7 @@
 #include <fwServices/bundle/runtime.hpp>
 
 #include <fwWX/convert.hpp>
+#include <fwWX/LoggerInitializer.hpp>
 
 
 #include "gui/App.hpp"
@@ -67,6 +68,8 @@ void App::usage( const std::string & mes ) const
 
 bool App::OnInit()
 {
+    ::fwWX::LoggerInitializer::initialize();
+
     m_profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", m_profile);
 

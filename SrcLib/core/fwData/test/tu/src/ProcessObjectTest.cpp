@@ -19,11 +19,11 @@ void ProcessObjectTest::constructeur()
     const std::string FIELDID2 = "myField2";
     ::fwData::Image::sptr image1 = ::fwData::Image::New();
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    ::fwData::Integer::sptr field1 (new ::fwData::Integer(3));
-    ::fwData::Integer::sptr field2 (new ::fwData::Integer(8));
+    ::fwData::Integer::sptr field1 = ::fwData::Integer::New(3);
+    ::fwData::Integer::sptr field2 = ::fwData::Integer::New(8);
 
     // process
-    ::fwData::ProcessObject * po = new ::fwData::ProcessObject();
+    ::fwData::ProcessObject::NewSptr po;
     po->setInputValue(IMAGEID1, image1);
     po->setInputValue(FIELDID1, field1);
     po->setInputValue(FIELDID2, field2);

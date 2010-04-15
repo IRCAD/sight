@@ -15,6 +15,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/Object.hpp>
+#include <fwTools/DynamicAttributes.hxx>
 #include <fwTools/Factory.hpp>
 
 #include "fwData/macros.hpp"
@@ -43,10 +44,10 @@ namespace fwData
  */
 
 
-class FWDATA_CLASS_API Object  : public ::fwTools::Object
+class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object::Baseclass), (( )), ::fwTools::Factory::New< Object > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwTools::Factory::New< Object > );
 
     /// Constructor
     FWDATA_API Object(); // FIXME set private

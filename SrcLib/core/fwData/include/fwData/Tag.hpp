@@ -31,7 +31,7 @@ class FWDATA_CLASS_API Tag : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Tag >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwTools::Factory::New< Tag >) ;
 
     /// Constructor
     FWDATA_API Tag();

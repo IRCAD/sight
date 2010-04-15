@@ -8,18 +8,19 @@
 #define _VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP_
 
 #include <vector>
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
 
 namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera: public ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API SliceFollowerCamera() throw();
 

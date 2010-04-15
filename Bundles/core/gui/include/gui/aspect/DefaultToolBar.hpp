@@ -30,7 +30,7 @@ class GUI_CLASS_API DefaultToolBar : public IToolBar
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultToolBar)(::gui::aspect::IToolBar::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultToolBar)(::gui::aspect::IToolBar) ) ;
 
     /// Constructor. Do nothing.
     GUI_API DefaultToolBar() throw();

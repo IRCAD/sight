@@ -46,7 +46,7 @@ public:
     FWXML_API void serialize(::boost::shared_ptr< fwTools::Object> object,bool saveSchema = true) throw (::fwTools::Failed);
 
     /// deserialize to the given object, UPDATE rootFolde static ivar
-    FWXML_API ::boost::shared_ptr< fwTools::Object> deSerialize(boost::filesystem::path filePath , bool loadExtraXml=false, bool validateWithSchema = true, bool assignNewUUID=true) throw (::fwTools::Failed);
+    FWXML_API ::boost::shared_ptr< fwTools::Object> deSerialize(boost::filesystem::path filePath , bool loadExtraXml=false, bool validateWithSchema = true) throw (::fwTools::Failed);
 
     /// allow to change Path policy : by default use "ClassName-PTRADDR.xml"
     FWXML_API void setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy);
@@ -61,7 +61,7 @@ public:
          * \li xmlNodePtr child for fwTools::Object information
          * @param loadExtraXML : if true extra XML information (exple image buffer are also loaded)
          */
-        ::boost::shared_ptr< fwTools::Object > ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML, bool assignNewUUID );
+        ::boost::shared_ptr< fwTools::Object > ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML );
 
     protected :
 

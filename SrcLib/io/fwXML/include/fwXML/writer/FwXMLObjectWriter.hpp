@@ -34,7 +34,7 @@ class FWXML_CLASS_API FwXMLObjectWriter : public ::fwDataIO::writer::IObjectWrit
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (FwXMLObjectWriter)(::fwDataIO::writer::IObjectWriter::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (FwXMLObjectWriter)(::fwDataIO::writer::IObjectWriter),
                                                  (( (bool)(true) )),
                                                  new  FwXMLObjectWriter
                                             );

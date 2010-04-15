@@ -30,7 +30,7 @@ class IOXML_CLASS_API FwXMLImageReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageReaderService)(::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageReaderService)(::io::IReader) ) ;
 
     /**
      * @brief   constructor
@@ -42,6 +42,8 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLImageReaderService() throw();
+
+protected:
 
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;

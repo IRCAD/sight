@@ -8,6 +8,7 @@
 #ifndef _IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_
 #define _IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_
 
+#include <wx/string.h>
 #include <string>
 #include <boost/filesystem/path.hpp>
 
@@ -31,7 +32,7 @@ class IOXML_CLASS_API FwXMLPatientDBReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatientDBReaderService)(::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatientDBReaderService)(::io::IReader) ) ;
 
     /**
      * @brief   constructor
@@ -43,6 +44,12 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLPatientDBReaderService() throw();
+
+    /// Simple API to convert wxString to boost path and valid the
+    //configuration
+    void fixFilename(wxString _filename);
+
+protected:
 
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
@@ -66,14 +73,10 @@ public :
     IOXML_API virtual std::vector< std::string > getSupportedExtensions() ;
 
     /// Override
-    IOXML_API virtual wxString getSelectorDialogTitle();
+    IOXML_API virtual std::string getSelectorDialogTitle();
 
     /// Override
     IOXML_API virtual void configureWithIHM();
-
-    /// Simple API to convert wxString to boost path and valid the
-    //configuration
-    void fixFilename(wxString _filename);
 
 private :
 
@@ -91,6 +94,6 @@ private :
 
 };
 
-} // namespace ioDicom
+} // namespace ioXML
 
 #endif //_IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_

@@ -9,6 +9,7 @@
 
 #include <fwData/TransfertFunction.hpp>
 
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
@@ -20,12 +21,12 @@ namespace visuVTKAdaptor
 
 
 
-class VISUVTKADAPTOR_CLASS_API NegatoWindowingInteractor: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API NegatoWindowingInteractor: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService 
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoWindowingInteractor)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoWindowingInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API NegatoWindowingInteractor() throw();
 

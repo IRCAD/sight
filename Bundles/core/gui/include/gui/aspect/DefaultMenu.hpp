@@ -32,7 +32,7 @@ class GUI_CLASS_API DefaultMenu : public IMenu
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultMenu)(::gui::aspect::IMenu::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultMenu)(::gui::aspect::IMenu) ) ;
 
     /// Constructor. Do nothing.
     GUI_API DefaultMenu() throw();

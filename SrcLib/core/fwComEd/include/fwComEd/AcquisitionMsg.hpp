@@ -25,7 +25,7 @@ namespace fwComEd
 class FWCOMED_CLASS_API AcquisitionMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((AcquisitionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new AcquisitionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((AcquisitionMsg)(::fwServices::ObjectMsg), ( () ), new AcquisitionMsg );
 
     /**
      * @name Event identifier

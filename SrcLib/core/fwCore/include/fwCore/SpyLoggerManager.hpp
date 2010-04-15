@@ -28,7 +28,7 @@ class SpyLoggerManager : public ::fwCore::BaseObject
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (SpyLoggerManager)(BaseObject::Baseclass), (()), new SpyLoggerManager) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (SpyLoggerManager)(BaseObject), (()), new SpyLoggerManager) ;
 
     FWCORE_API static SpyLoggerManager::sptr getSpyLoggerManager();
 

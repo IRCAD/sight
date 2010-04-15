@@ -37,7 +37,7 @@
 #include <vtkPolyData.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
-
+#include <vtkTransform.h>
 
 #include "fwRenderVTK/vtk/Helpers.hpp"
 #include "visuVTKAdaptor/ImageText.hpp"
@@ -94,6 +94,7 @@ public:
                     m_mouseMoveObserved = true;
                     SetAbortFlag(1);
                     m_adaptor->setVisibility(true);
+                    m_adaptor->StartProbeCursor();
                     process();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, m_priority);
                 }
@@ -168,7 +169,10 @@ ProbeCursor::ProbeCursor() throw()
 , m_cursorMapper  ( vtkPolyDataMapper::New() )
 , m_cursorActor(    vtkActor::New() )
 {
-    handlingEventOff();
+    //handlingEventOff();
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
 }
 
 //------------------------------------------------------------------------------
@@ -203,7 +207,10 @@ void ProbeCursor::configuring() throw(fwTools::Failed)
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
-
+    if(m_configuration->hasAttribute("transform") )
+    {
+        this->setTransformId( m_configuration->getAttributeValue("transform") );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -239,6 +246,10 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,0,0);
+    if(!this->getTransformId().empty())
+    {
+        m_cursorActor->SetUserTransform(this->getTransform());
+    }
     this->addToRenderer(m_cursorActor);
 
     ProbingCallback *observer = ProbingCallback::New();
@@ -251,6 +262,10 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
 
     this->getInteractor()->AddObserver(START_PROBE_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_PROBE_EVENT, m_vtkObserver, m_priority);
+
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+
 
 }
 
@@ -265,6 +280,8 @@ void ProbeCursor::doUpdate() throw(fwTools::Failed)
 void ProbeCursor::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
 }
 
 //------------------------------------------------------------------------------
@@ -283,9 +300,24 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
 void ProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        this->updateImageInfos(image);
+    }
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
+    {
+        ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+    }
 }
 
 //------------------------------------------------------------------------------
+
+void ProbeCursor::StartProbeCursor( )
+{
+}
 
 void ProbeCursor::updateView( double world[3] )
 {
@@ -297,7 +329,8 @@ void ProbeCursor::updateView( double world[3] )
 
     std::string txt;
 
-    if ( world[0]<0  || world[1]<0  || world[2]<0  ||
+    static const double epsilon = -0.00001;
+    if ( world[0]<epsilon  || world[1]<epsilon  || world[2]<epsilon  ||
          index[0]< 0 || index[1]< 0 || index[2]< 0 ||
          index[0]>= image->getSize()[0] ||
          index[1]>= image->getSize()[1] ||
@@ -338,9 +371,9 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
 
     unsigned int sliceIndex[3]; // the current sliceIndex
 
-    sliceIndex[2] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId )->value();
-    sliceIndex[1] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId )->value();
-    sliceIndex[0] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
+    sliceIndex[2] = m_axialIndex->value();
+    sliceIndex[1] = m_frontalIndex->value();
+    sliceIndex[0] = m_sagittalIndex->value();
 
     double probeWorld[3]; // probe index in world positioning system
     for (int dim=0; dim<3; ++dim )

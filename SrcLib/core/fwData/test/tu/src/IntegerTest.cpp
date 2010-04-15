@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+#include <limits>
+
 #include <fwData/Integer.hpp>
 
 #include "IntegerTest.hpp"
@@ -24,12 +27,22 @@ void IntegerTest::tearDown()
 
 void IntegerTest::methode1()
 {
-    const int VALUE = 13 ;
+    const int VALUES[]  = {
+        std::numeric_limits< int >::min(),
+        -1654, 0, 123456,
+        std::numeric_limits< int >::max()
+    };
 
-    // process
-    ::fwData::Integer::NewSptr p1(VALUE );
+    BOOST_FOREACH ( int VALUE, VALUES )
+    {
+        ::fwData::Integer::sptr i0 = ::fwData::Integer::New();
+        i0->value() = VALUE;
+        ::fwData::Integer::NewSptr i1( VALUE );
 
-    // check
-    CPPUNIT_ASSERT_EQUAL(p1->value(),   VALUE);
+        CPPUNIT_ASSERT_EQUAL( VALUE , i0->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE , i1->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE , ::fwData::Integer::New( VALUE )->value() );
+    }
+
 
 }

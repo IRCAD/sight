@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API SplineMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new SplineMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg), ( ( ) ), new SplineMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_SPLINE;

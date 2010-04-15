@@ -46,23 +46,11 @@ bool ObjectTracker::isAlreadyInstanciated( const std::string &uniqueID  )
 
 
 
-std::string  ObjectTracker::translateID( const std::string &xmlID, bool assignNewUUID)
+std::string  ObjectTracker::xmlID2RuntimeID( const std::string &xmlID )
 {
-    if (!assignNewUUID || xmlID.empty() )
-    {
-        return xmlID;
-    }
+   assert(  m_oldNewUUIDTranslation.find(xmlID)  != m_oldNewUUIDTranslation.end() );
 
-    OldNewUUIDMap::iterator  i = m_oldNewUUIDTranslation.find(xmlID);
-
-    if (   i == m_oldNewUUIDTranslation.end() )
-    {
-            std::string newID = ::fwTools::UUID::generateExtendedUUID();
-            m_oldNewUUIDTranslation[xmlID] = newID;
-            return newID;
-    }
-
-    return i->second;
+   return m_oldNewUUIDTranslation[xmlID];
 }
 
 
@@ -123,11 +111,14 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
         if ( ::fwTools::UUID::supervise(newObject) == false )
         {
             std::string newID = ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED); // generate a new one
+            m_oldNewUUIDTranslation[uniqueIDXML] = newID;
             OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " new UUID : "
                         << ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED) );
         }
         else
         {
+            std::string currentID = ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED);
+            m_oldNewUUIDTranslation[uniqueIDXML] = currentID;
             OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " use previous UUID : "
                                     << ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED) );
         }

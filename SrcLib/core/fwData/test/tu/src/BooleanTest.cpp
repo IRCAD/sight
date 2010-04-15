@@ -24,12 +24,17 @@ void BooleanTest::tearDown()
 
 void BooleanTest::methode1()
 {
-    const bool VALUE    = true ;
+    const bool TRUE  = true ;
+    const bool FALSE = not TRUE ;
 
-    // process
-    ::fwData::Boolean::NewSptr p1( VALUE );// = new ::fwData::Boolean( VALUE );
+    ::fwData::Boolean::NewSptr p1( TRUE );
+    ::fwData::Boolean::NewSptr p2( FALSE );
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->value(),   VALUE);
+    CPPUNIT_ASSERT_EQUAL(TRUE , ::fwData::Boolean::New( TRUE )->value());
+    CPPUNIT_ASSERT_EQUAL(FALSE, ::fwData::Boolean::New( FALSE )->value());
+
+    CPPUNIT_ASSERT_EQUAL(TRUE , p1->value());
+    CPPUNIT_ASSERT_EQUAL(FALSE, p2->value());
 
 }

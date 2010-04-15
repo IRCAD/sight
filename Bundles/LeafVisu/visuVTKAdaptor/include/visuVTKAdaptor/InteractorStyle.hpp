@@ -23,7 +23,7 @@ class VISUVTKADAPTOR_CLASS_API InteractorStyle: public ::fwRenderVTK::IVtkAdapto
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (InteractorStyle)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (InteractorStyle)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API InteractorStyle() throw();
 

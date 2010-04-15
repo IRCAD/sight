@@ -23,7 +23,7 @@ class VISUVTKADAPTOR_CLASS_API Acquisition: public ::fwRenderVTK::IVtkAdaptorSer
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Acquisition)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Acquisition)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Acquisition() throw();
 

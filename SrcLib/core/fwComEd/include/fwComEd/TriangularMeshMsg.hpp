@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API TriangularMeshMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshMsg)(::fwServices::ObjectMsg::Baseclass), (( )) , new TriangularMeshMsg );
+    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshMsg)(::fwServices::ObjectMsg), (( )) , new TriangularMeshMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_MESH;

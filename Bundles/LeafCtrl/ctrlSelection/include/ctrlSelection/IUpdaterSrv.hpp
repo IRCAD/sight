@@ -38,7 +38,7 @@ public:
         ADD_OR_SWAP
     };
 
-    fwCoreServiceClassDefinitionsMacro ( (IUpdaterSrv)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IUpdaterSrv)(::fwServices::IService) ) ;
 
     ///@brief IUpdaterSrv constructor. Do nothing.
     CTRLSELECTION_API IUpdaterSrv();

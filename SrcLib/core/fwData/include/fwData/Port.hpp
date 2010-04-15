@@ -21,7 +21,7 @@ namespace fwData
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Port >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwTools::Factory::New< Port >) ;
 
     /// Constructor
     FWDATA_API Port();
@@ -33,7 +33,11 @@ public:
 
     fwGettersSettersDocMacro(Type, type, std::string, the port type (example : "Image", "Mesh", a %data className));
 
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Port::csptr _source );
 
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Port::csptr _source );
 
 protected :
 

@@ -45,7 +45,7 @@ class FWRENDER_CLASS_API IRender : public ::fwWX::IGuiContainer
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IRender)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IRender)(::fwServices::IService) ) ;
 
     /// Clock rate identifiant (for persistance)
     static const std::string ClockRateId ;

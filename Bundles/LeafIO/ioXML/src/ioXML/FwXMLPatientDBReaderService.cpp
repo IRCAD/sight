@@ -133,7 +133,7 @@ void FwXMLPatientDBReaderService::configuring() throw(::fwTools::Failed)
 void FwXMLPatientDBReaderService::configureWithIHM()
 {
     static wxString _sDefaultPath = _("");
-    wxString title = getSelectorDialogTitle();
+    wxString title = ::fwWX::std2wx( this->getSelectorDialogTitle());
     wxString file = wxFileSelector(
             title,
             _sDefaultPath,
@@ -158,7 +158,7 @@ void FwXMLPatientDBReaderService::configureWithIHM()
 //
 void FwXMLPatientDBReaderService::fixFilename(wxString _filename)
 {
-    m_fsPatientDBPath = ::boost::filesystem::path( wxConvertWX2MB(_filename), ::boost::filesystem::native );
+    m_fsPatientDBPath = ::boost::filesystem::path( ::fwWX::wx2std(_filename), ::boost::filesystem::native );
     m_bServiceIsConfigured = true;
 
 }
@@ -202,17 +202,18 @@ std::vector< std::string > FwXMLPatientDBReaderService::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-wxString FwXMLPatientDBReaderService::getSelectorDialogTitle()
+std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 {
-    return _("Choose a fxz or a xml file");
+    return "Choose a fxz or a xml file";
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwData::PatientDB > FwXMLPatientDBReaderService::createPatientDB( const ::boost::filesystem::path inrFileDir )
+::fwData::PatientDB::sptr FwXMLPatientDBReaderService::createPatientDB( const ::boost::filesystem::path inrFileDir )
 {
     SLM_TRACE("FwXMLPatientDBReaderService::createPatientDB");
     ::fwXML::reader::FwXMLObjectReader myLoader;
+    ::fwData::PatientDB::sptr pPatientDB;
 
     myLoader.setFile(inrFileDir);
 
@@ -229,7 +230,7 @@ wxString FwXMLPatientDBReaderService::getSelectorDialogTitle()
         ss << wxConvertWX2MB(msg.c_str()) << e.what();
         wxString wxStmp( ss.str().c_str(), wxConvLocal );
         wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
-        return ::boost::shared_ptr< ::fwData::PatientDB >();
+        return pPatientDB;
     }
     catch( ... )
     {
@@ -237,10 +238,10 @@ wxString FwXMLPatientDBReaderService::getSelectorDialogTitle()
         ss << "Warning during loading : ";
         wxString wxStmp( ss.str().c_str(), wxConvLocal );
         wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
-        return ::boost::shared_ptr< ::fwData::PatientDB >();
+        return pPatientDB;
     }
 
-    ::boost::shared_ptr< ::fwData::PatientDB > pPatientDB = ::boost::dynamic_pointer_cast< ::fwData::PatientDB > ( myLoader.getObject() );
+    pPatientDB = ::fwData::PatientDB::dynamicCast( myLoader.getObject() );
 
     return pPatientDB;
 }
@@ -254,7 +255,7 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
     if( m_bServiceIsConfigured )
     {
 
-        ::boost::shared_ptr< ::fwData::PatientDB > patientDB;
+        ::fwData::PatientDB::sptr patientDB;
         if ( isAnFwxmlArchive( m_fsPatientDBPath ) )
         {
             patientDB = manageZipAndCreatePatientDB( m_fsPatientDBPath );
@@ -269,8 +270,7 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             if( patientDB->getPatientSize() > 0 )
             {
                 // Retrieve dataStruct associated with this service
-                ::boost::shared_ptr< ::fwTools::Object > associatedObject = this->getObject();
-                ::boost::shared_ptr< ::fwData::PatientDB > associatedPatientDB = ::boost::dynamic_pointer_cast< ::fwData::PatientDB >( associatedObject ) ;
+                ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
                 assert( associatedPatientDB ) ;
 
                 associatedPatientDB->shallowCopy( patientDB );

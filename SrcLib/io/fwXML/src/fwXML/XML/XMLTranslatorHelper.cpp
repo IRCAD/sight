@@ -77,11 +77,32 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
     assert( toUpdate->getLeafClassname() ==  nameInXML );
 
     ::boost::shared_ptr< ::fwXML::XMLTranslator > translator;
-    translator = fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  typeid(*toUpdate)  );
+    translator = fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  toUpdate->getRootedClassname() );
 
     if (translator.get() )
     {
         translator->updateDataFromXML(toUpdate,source);
+        xmlNodePtr child = source->children;
+        bool classicObject = ( xmlStrcmp( source->name, BAD_CAST "Field" ) != 0 ) ;
+        while ( child!=NULL )
+        {
+            if ( child->type == XML_ELEMENT_NODE )
+            {
+                // normal parent object ignore chlidren which are not Field
+                if ( classicObject &&  xmlStrcmp( child->name, BAD_CAST "Field" ) )
+                {
+                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " << source->name << " ignoring " << child->name );
+                }
+                else
+                {
+                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " <<  source->name << " accept " << child->name );
+                    ::fwTools::Object::sptr newChild = XMLTranslatorHelper::fromXML( child );
+                    assert (newChild);
+                    toUpdate->children().push_back( newChild );
+                }
+            }
+            child = child->next;
+        }
     }
     else
     {

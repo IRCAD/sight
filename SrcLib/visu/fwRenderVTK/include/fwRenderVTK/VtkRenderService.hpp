@@ -44,7 +44,7 @@ class IVtkAdaptorService;
 class FWRENDERVTK_CLASS_API VtkRenderService : public ::fwRender::IRender
 {
 public :
-    fwCoreServiceClassDefinitionsMacro ( (VtkRenderService)(::fwRender::IRender::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (VtkRenderService)(::fwRender::IRender) ) ;
 
     typedef std::string RendererIdType;
     typedef std::string PickerIdType;

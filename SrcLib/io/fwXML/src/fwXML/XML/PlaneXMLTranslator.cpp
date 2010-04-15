@@ -75,7 +75,7 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
                     {
                         // Load Point
                         ::fwTools::Object::sptr valueObj;
-                        valueObj = Serializer().ObjectsFromXml( pointsNode, true, true );
+                        valueObj = Serializer().ObjectsFromXml( pointsNode, true );
 
                         // Add point in the vector
                         assert( valueObj );

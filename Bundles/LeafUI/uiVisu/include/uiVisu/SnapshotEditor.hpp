@@ -26,7 +26,7 @@ class UIVISU_CLASS_API SnapshotEditor : public ::gui::editor::IEditor
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (SnapshotEditor)(::gui::editor::IEditor::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SnapshotEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
     UIVISU_API SnapshotEditor() throw() ;

@@ -46,7 +46,7 @@ class FWSERVICES_CLASS_API ObjectMsg : public ::fwTools::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object::Baseclass), (()), ::fwTools::Factory::New< ObjectMsg > );
+    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwTools::Factory::New< ObjectMsg > );
 
     /// Constructor, do nothing.
     FWSERVICES_API ObjectMsg();
@@ -54,9 +54,21 @@ public:
     /// Destructor, do nothing.
     FWSERVICES_API virtual ~ObjectMsg();
 
+    // generic message
+
+    /// Event identifier used to inform that an object was created
+    FWSERVICES_API static std::string NEW_OBJECT;
+
+    /// Event identifier used to inform that an object was modified
+    FWSERVICES_API static std::string UPDATED_OBJECT;
+
+    /// Event identifier used to inform that an object has to be removed
+    FWSERVICES_API static std::string DELETE_OBJECT;
+
+
 
     /**
-     * @name Event managment
+     * @name Event management
      */
     //@{
 

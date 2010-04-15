@@ -27,7 +27,7 @@ class FWDATA_CLASS_API PointList : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (PointList)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (PointList)(::fwData::Object),
         (()), ::fwTools::Factory::New< PointList >) ;
 
     typedef std::vector< ::fwData::Point::sptr > PointListContainer;

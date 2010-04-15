@@ -16,7 +16,7 @@ namespace opImageFilter
 
 
 /**
- * @brief   Implements a plugin for the basicVRCtrl bundle.
+ * @brief   Implements a plugin for the opImageFilter bundle.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {

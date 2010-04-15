@@ -45,7 +45,9 @@ void Render::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    assert(m_configuration->getName() == "config");
+    SLM_ASSERT("Sorry, config tag is missing", m_configuration->getName() == "config");
+    SLM_ASSERT("Sorry, renderer attribute is missing", m_configuration->hasAttribute("renderer"));
+    this->setRenderId( m_configuration->getAttributeValue("renderer") );
     // TODO allow to add other object
 }
 

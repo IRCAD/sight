@@ -27,7 +27,7 @@ class OPVTKMESH_CLASS_API IMesher : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IMesher)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IMesher)(::fwServices::IService) ) ;
 
     ///@brief IMesher constructor. Do nothing.
     OPVTKMESH_API IMesher();

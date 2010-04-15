@@ -31,7 +31,7 @@ namespace ioVTK
 class IOVTK_CLASS_API MaxMeshReaderService : public ::io::IReader
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (MaxMeshReaderService)( ::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MaxMeshReaderService)( ::io::IReader) ) ;
     typedef ::io::IReader   SuperClass;
     /**
      * @brief   Constructor

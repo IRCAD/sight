@@ -37,7 +37,7 @@ namespace vtkSimpleNegato
 class VTKSIMPLENEGATO_CLASS_API RendererService : public fwRender::IRender
 {
 public :
-    fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender::Baseclass) );
+    fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) );
 
     /**
     * @brief    Constructor

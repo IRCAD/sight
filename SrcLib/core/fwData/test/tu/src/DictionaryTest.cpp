@@ -30,7 +30,7 @@ void DictionaryTest::methode1()
     // process
     ::fwData::Dictionary::NewSptr p1;
     ::fwData::DictionaryOrgan::sptr defaultOrgan ; //NULL shared_ptr
-    ::fwData::DictionaryOrgan::sptr dictionaryOrgan(new ::fwData::DictionaryOrgan);
+    ::fwData::DictionaryOrgan::sptr dictionaryOrgan(::fwData::DictionaryOrgan::New());
     dictionaryOrgan->setCRefStructureType(DICTIONARYORGANNAME) ;
 
 

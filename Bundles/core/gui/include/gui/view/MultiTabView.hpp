@@ -38,18 +38,20 @@ class GUI_CLASS_API MultiTabView : public ::gui::view::IView
             m_panel (0),
             m_uid(""),
             m_name(""),
-            m_autostart(false)
+            m_autostart(false),
+            m_isSelect(false)
         {}
 
         std::string  m_uid;
         std::string  m_name;
         wxPanel *    m_panel;
         bool         m_autostart;
+        bool         m_isSelect;
     };
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (MultiTabView)(::gui::view::IView::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MultiTabView)(::gui::view::IView) ) ;
 
     /// Constructor, does nothing.
     GUI_API MultiTabView() throw() ;

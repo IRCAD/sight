@@ -26,7 +26,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION( GraphTest );
 void GraphTest::setUp()
 {
         // Set up context before running a test.
-        //ptCubeDeTest =  new Cube();
 }
 
 //------------------------------------------------------------------------------
@@ -34,7 +33,6 @@ void GraphTest::setUp()
 void GraphTest::tearDown()
 {
         // Clean up after the test run.
-        //delete ptCubeDeTest;
 }
 
 //------------------------------------------------------------------------------
@@ -44,21 +42,21 @@ void GraphTest::normalCase()
     // G :
     // n1 --e--> n2
     using namespace fwData;
-    ::boost::shared_ptr< Graph > g( new Graph() );
+    ::fwData::Graph::sptr g( ::fwData::Graph::New() );
 
-    ::boost::shared_ptr< Node > n1( new Node() );
-    ::boost::shared_ptr< Port > p1( new Port() );
+    ::fwData::Node::sptr n1( ::fwData::Node::New() );
+    ::fwData::Port::sptr p1( ::fwData::Port::New() );
     p1->setIdentifier("sizex");
     p1->setType("float");
     n1->addOutputPort( p1 );
 
-    ::boost::shared_ptr< Node > n2( new Node() );
-    ::boost::shared_ptr< Port > p2( new Port() );
+    ::fwData::Node::sptr n2( ::fwData::Node::New() );
+    ::fwData::Port::sptr p2( ::fwData::Port::New() );
     p2->setIdentifier("threshold");
     p2->setType("float");
     n2->addInputPort( p2 );
 
-    ::boost::shared_ptr< Edge > e( new Edge() );
+    ::fwData::Edge::sptr e( ::fwData::Edge::New() );
     e->setIdentifiers("sizex","threshold");
 
     g->addNode(n1);
@@ -96,21 +94,21 @@ void GraphTest::limitCase1()
     // G :
     // n1 --e1--> n2
     using namespace fwData;
-    ::boost::shared_ptr< Graph > g( new Graph() );
+    ::fwData::Graph::sptr g( ::fwData::Graph::New() );
 
-    ::boost::shared_ptr< Node > n1( new Node() );
-    ::boost::shared_ptr< Port > p1( new Port() );
+    ::fwData::Node::sptr n1( ::fwData::Node::New() );
+    ::fwData::Port::sptr p1( ::fwData::Port::New() );
     p1->setIdentifier("sizex");
     p1->setType("float");
     n1->addOutputPort( p1 );
 
-    ::boost::shared_ptr< Node > n2( new Node() );
-    ::boost::shared_ptr< Port > p2( new Port() );
+    ::fwData::Node::sptr n2( ::fwData::Node::New() );
+    ::fwData::Port::sptr p2( ::fwData::Port::New() );
     p2->setIdentifier("threshold");
     p2->setType("float");
     n2->addInputPort( p2 );
 
-    ::boost::shared_ptr< Edge > e1( new Edge() );
+    ::fwData::Edge::sptr e1( ::fwData::Edge::New() );
     e1->setIdentifiers("sizex","threshold");
 
     bool success;
@@ -144,8 +142,8 @@ void GraphTest::limitCase1()
     CPPUNIT_ASSERT_EQUAL( g->getNbNodes(), (unsigned int) 2 );
     CPPUNIT_ASSERT_EQUAL( g->getNbEdges(), (unsigned int) 1 );
 
-    ::boost::shared_ptr< Node > n3( new Node() );
-    ::boost::shared_ptr< Port > p3( new Port() );
+    ::fwData::Node::sptr n3( ::fwData::Node::New() );
+    ::fwData::Port::sptr p3( ::fwData::Port::New() );
     p3->setIdentifier("sizex");
     p3->setType("float");
     n3->addOutputPort( p3 );
@@ -160,7 +158,7 @@ void GraphTest::limitCase1()
     CPPUNIT_ASSERT_EQUAL( g->getNbNodes(), (unsigned int) 2 );
     CPPUNIT_ASSERT_EQUAL( g->getNbEdges(), (unsigned int) 1 );
 
-    ::boost::shared_ptr< Edge > e2( new Edge() );
+    ::fwData::Edge::sptr e2( ::fwData::Edge::New() );
     e2->setIdentifiers("sizex","BADID");
 
     success = g->addEdge(e2,n1,n2);
@@ -168,7 +166,7 @@ void GraphTest::limitCase1()
     CPPUNIT_ASSERT_EQUAL( g->getNbNodes(), (unsigned int) 2 );
     CPPUNIT_ASSERT_EQUAL( g->getNbEdges(), (unsigned int) 1 );
 
-    ::boost::shared_ptr< Edge > e3( new Edge() );
+    ::fwData::Edge::sptr e3( ::fwData::Edge::New() );
     e3->setIdentifiers("BADID","threshold");
 
     success = g->addEdge(e3,n1,n2);
@@ -176,8 +174,8 @@ void GraphTest::limitCase1()
     CPPUNIT_ASSERT_EQUAL( g->getNbNodes(), (unsigned int) 2 );
     CPPUNIT_ASSERT_EQUAL( g->getNbEdges(), (unsigned int) 1 );
 
-    ::boost::shared_ptr< Node > n4( new Node() );
-    ::boost::shared_ptr< Port > p4( new Port() );
+    ::fwData::Node::sptr n4( ::fwData::Node::New() );
+    ::fwData::Port::sptr p4( ::fwData::Port::New() );
     p4->setIdentifier("threshold");
     p4->setType("BADTYPE");
     n4->addInputPort( p4 );
@@ -191,7 +189,7 @@ void GraphTest::limitCase1()
     // n1, n2, n4
     // e1 : n1 -> n2
 
-    ::boost::shared_ptr< Edge > e4( new Edge() );
+    ::fwData::Edge::sptr e4( ::fwData::Edge::New() );
     e4->setIdentifiers("sizex","threshold");
 
     success = g->addEdge(e4,n1,n4);
@@ -205,23 +203,23 @@ void GraphTest::limitCase2()
     // G :
     // n1 --e1--> n2
     using namespace fwData;
-    ::boost::shared_ptr< Graph > g( new Graph() );
+    ::fwData::Graph::sptr g( ::fwData::Graph::New() );
 
-    ::boost::shared_ptr< Node > n1( new Node() );
-    ::boost::shared_ptr< Port > p1( new Port() );
+    ::fwData::Node::sptr n1( ::fwData::Node::New() );
+    ::fwData::Port::sptr p1( ::fwData::Port::New() );
     p1->setIdentifier("sizex");
     p1->setType("float");
     n1->addOutputPort( p1 );
     g->addNode(n1);
 
-    ::boost::shared_ptr< Node > n2( new Node() );
-    ::boost::shared_ptr< Port > p2( new Port() );
+    ::fwData::Node::sptr n2( ::fwData::Node::New() );
+    ::fwData::Port::sptr p2( ::fwData::Port::New() );
     p2->setIdentifier("threshold");
     p2->setType("float");
     n2->addInputPort( p2 );
     g->addNode(n2);
 
-    ::boost::shared_ptr< Edge > e1( new Edge() );
+    ::fwData::Edge::sptr e1( ::fwData::Edge::New() );
     e1->setIdentifiers("sizex","threshold");
     g->addEdge(e1,n1,n2);
 
@@ -234,7 +232,7 @@ void GraphTest::limitCase2()
     CPPUNIT_ASSERT_EQUAL( g->getNbNodes(), (unsigned int) 2 );
     CPPUNIT_ASSERT_EQUAL( g->getNbEdges(), (unsigned int) 1 );
 
-    ::boost::shared_ptr< Edge > e2( new Edge() );
+    ::fwData::Edge::sptr e2( ::fwData::Edge::New() );
     e2->setIdentifiers("sizex","threshold");
 
 
@@ -243,7 +241,7 @@ void GraphTest::limitCase2()
     CPPUNIT_ASSERT_EQUAL( g->getNbNodes(), (unsigned int) 2 );
     CPPUNIT_ASSERT_EQUAL( g->getNbEdges(), (unsigned int) 1 );
 
-    ::boost::shared_ptr<Node> nullNode;
+    ::fwData::Node::sptr nullNode;
     CPPUNIT_ASSERT_EQUAL( g->getSourceNode(e2), nullNode );
     CPPUNIT_ASSERT_EQUAL( g->getDestinationNode(e2), nullNode );
 

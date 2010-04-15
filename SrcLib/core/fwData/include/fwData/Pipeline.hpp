@@ -29,7 +29,7 @@ class FWDATA_CLASS_API Pipeline : public ProcessObject
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Pipeline)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Pipeline >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Pipeline)(::fwData::Object), (()), ::fwTools::Factory::New< Pipeline >) ;
 
     typedef enum
         {

@@ -28,7 +28,7 @@ class IOXML_CLASS_API FwXMLPatient2PatientDBWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatient2PatientDBWriterService)(::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLPatient2PatientDBWriterService)(::io::IWriter) ) ;
 
     /**
      * @brief   constructor
@@ -40,6 +40,8 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLPatient2PatientDBWriterService() throw();
+
+protected:
 
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;

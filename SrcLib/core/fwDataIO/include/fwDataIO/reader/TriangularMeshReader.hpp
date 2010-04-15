@@ -44,7 +44,7 @@ class FWDATAIO_CLASS_API TriangularMeshReader :
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (TriangularMeshReader)(GenericObjectReader< ::fwData::TriangularMesh >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (TriangularMeshReader)(GenericObjectReader< ::fwData::TriangularMesh >),
                                                  (()),
                                                  new  TriangularMeshReader
                                             );

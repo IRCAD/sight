@@ -31,20 +31,20 @@ namespace bundle
 FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findExtensions(std::string _identifier ) ;
 
 /**
- * @brief Return extensions contributing to extension point or point identified by the _identified parameter
+ * @brief Return extensions contributing to extension point or point identified by the _pointId parameter
  * @note Complementary with ::fwRuntime::Runtime::findExtensionsForPoint
  * @note Move to fwRuntime library
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findExtensionsForPoint(std::string _identifier ) ;
+FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findExtensionsForPoint(std::string _pointId ) ;
 
 /**
- * @brief Return service compliant extensions contributing to the point (or extension point) named _identified
+ * @brief Return service compliant extensions contributing to the point (or extension point) named _pointId
  * @note A configuration compliant extension is an extension having only one configuration element (one child)
  * @note Use the findExtensionsForPoint(std::string ) method
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findConfigurationExtensionsForPoint(std::string _identifier ) ;
+FWSERVICES_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findConfigurationExtensionsForPoint(std::string _pointId ) ;
 
 /**
  * @brief Return the configuration element associated with an extension implementing _pointId with id="_cfgId"

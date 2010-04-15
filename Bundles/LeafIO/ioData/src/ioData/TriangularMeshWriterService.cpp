@@ -18,6 +18,8 @@
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 
+#include <fwWX/convert.hpp>
+
 #include <fwDataIO/writer/TriangularMeshWriter.hpp>
 
 #include "ioData/TriangularMeshWriterService.hpp"
@@ -27,7 +29,9 @@ REGISTER_SERVICE( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwDa
 namespace ioData
 {
 
-TriangularMeshWriterService::TriangularMeshWriterService()
+TriangularMeshWriterService::TriangularMeshWriterService():
+        m_filename (""),
+        m_bServiceIsConfigured(false)
 {
 }
 
@@ -63,8 +67,8 @@ void TriangularMeshWriterService::configuring( ) throw(::fwTools::Failed)
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
         OSLM_INFO( "TriangularMeshWriterService::configure filename: " << filename );
-        ::boost::filesystem::path location = boost::filesystem::path( filename ) ;
-        m_filename = location;
+        m_filename = ::boost::filesystem::path( filename ) ;
+        m_bServiceIsConfigured = true;
     }
 }
 
@@ -85,8 +89,9 @@ void TriangularMeshWriterService::configureWithIHM()
 
     if( folder.IsEmpty() == false)
     {
-        m_filename = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-        _sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
+        m_filename = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
+        _sDefaultPath = ::fwWX::std2wx( m_filename.branch_path().string() );
+        m_bServiceIsConfigured = true;
     }
 }
 
@@ -94,9 +99,8 @@ void TriangularMeshWriterService::configureWithIHM()
 
 void TriangularMeshWriterService::updating() throw(::fwTools::Failed)
 {
-    SLM_INFO("[TriangularMeshWriterService::update]");
-
-    if ( !m_filename.empty() )
+    SLM_TRACE_FUNC();
+    if(m_bServiceIsConfigured)
     {
         // Retrieve object
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );

@@ -34,7 +34,7 @@ class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::io::IReade
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3DReaderService)(::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3DReaderService)(::io::IReader) ) ;
 
     /// Super class of reader services
     typedef ::io::IReader   SuperClass;

@@ -1,4 +1,4 @@
-USE     = ['wx','vtk','boost']
+USE     = ['wxCore','boost']
 LIB     = ['fwRuntime_0-3','fwServices_0-1','fwTools_0-1','fwCore_0-1','fwWX_0-1']
 
 TYPE    = 'shared'

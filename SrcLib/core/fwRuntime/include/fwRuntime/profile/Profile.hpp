@@ -45,7 +45,7 @@ struct Profile : public ::fwCore::BaseObject
 {
     typedef std::vector< std::string >  ParamsContainer;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject::Baseclass), (()), new Profile) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), new Profile) ;
 
     /**
      * @brief   Constructor : does nothing.

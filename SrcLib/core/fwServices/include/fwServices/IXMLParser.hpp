@@ -32,7 +32,7 @@ namespace fwServices
 class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {
     public :
-    fwCoreServiceClassDefinitionsMacro ( (IXMLParser)(::fwServices::IService::Baseclass) ) ;
+        fwCoreServiceClassDefinitionsMacro ( (IXMLParser)(::fwServices::IService) ) ;
         /**
          * @brief Constructor. Does nothing.
          */

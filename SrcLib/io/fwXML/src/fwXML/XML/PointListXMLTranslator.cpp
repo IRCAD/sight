@@ -73,7 +73,7 @@ void PointListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
 
                 // Load Point
                 ::fwTools::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true, true );
+                valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
 
                 // Add point in the vector
                 assert( valueObj );

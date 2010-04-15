@@ -14,6 +14,8 @@
 #include <fwServices/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <fwWX/convert.hpp>
+
 #include "gui/view/MultiSizerView.hpp"
 
 namespace gui
@@ -80,6 +82,12 @@ void MultiSizerView::configuring() throw( ::fwTools::Failed )
             vi.m_border = ::boost::lexical_cast< int >(border) ;
         }
 
+        if( (*iter)->hasAttribute("caption") )
+        {
+            vi.m_caption.first = true;
+            vi.m_caption.second = (*iter)->getExistingAttributeValue("caption") ;
+        }
+
         if( (*iter)->hasAttribute("minWidth") )
         {
             std::string width = (*iter)->getExistingAttributeValue("minWidth") ;
@@ -126,18 +134,32 @@ void MultiSizerView::starting() throw(::fwTools::Failed)
     assert( wxTheApp->GetTopWindow() );
 
     wxWindow * wxContainer = this->getWxContainer();
-    m_sizer = new wxBoxSizer( m_orient );
-    wxContainer->SetSizer( m_sizer );
+    wxBoxSizer* boxSizer = new wxBoxSizer( m_orient );
+    wxContainer->SetSizer( boxSizer );
     wxContainer->Layout();
 
     std::list<ViewInfo>::iterator pi = m_views.begin();
     for ( pi; pi!= m_views.end() ; ++pi )
     {
         wxPanel * viewPanel = new wxPanel(  wxContainer, wxNewId() , wxDefaultPosition, wxSize( pi->m_minSize.first, pi->m_minSize.second ), wxNO_BORDER | wxTAB_TRAVERSAL );
-
         // Set the panel
         pi->m_panel = viewPanel;
-        m_sizer->Add( viewPanel, pi->m_proportion, wxALL|wxEXPAND, pi->m_border);
+
+#ifndef __MACOSX__
+        if(pi->m_caption.first)
+        {
+            wxStaticBoxSizer* sizer = new wxStaticBoxSizer( m_orient, wxContainer, ::fwWX::std2wx(pi->m_caption.second));
+            sizer->Add( viewPanel, 1, wxALL|wxEXPAND, pi->m_border);
+            boxSizer->Add(sizer, pi->m_proportion, wxALL|wxEXPAND);
+        }
+        else
+        {
+            boxSizer->Add( viewPanel, pi->m_proportion, wxALL|wxEXPAND, pi->m_border);
+        }
+#else
+        boxSizer->Add( viewPanel, pi->m_proportion, wxALL|wxEXPAND, pi->m_border);
+#endif
+
         this->registerWxContainer(pi->m_uid, pi->m_panel);
 
         if(pi->m_autostart)

@@ -6,6 +6,7 @@
 
 #include <sstream>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 
 #include <fwCore/base.hpp>
@@ -54,7 +55,7 @@ void ComChannelService::setSrc(IEditionService::sptr  _src)
 
 void ComChannelService::configuring() throw( ::fwTools::Failed )
 {
-    SLM_ASSERT("Deprecated tag source", !m_configuration->findConfigurationElement("source"));
+    SLM_ASSERT("Depreciated tag source", !m_configuration->findConfigurationElement("source"));
 
     if( m_configuration->findConfigurationElement("target") )
     {

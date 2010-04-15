@@ -38,11 +38,9 @@ void ObjectTest::methode1()
 
     // process
     //Patient::ID_STUDIES
-    //::fwData::Object * o1 ( new ::fwData::Object );
-    //::fwData::Object obj = new ::fwData::Object() ;
 
     ::fwData::Object::NewSptr  o1;
-    ::fwTools::Field::sptr f1 (new ::fwTools::Field );
+    ::fwTools::Field::sptr f1 (::fwTools::Field::New() );
     ::fwTools::Field::sptr f0 ; //shared_ptr NULL
     f1 = o1->setField(FIELDID1) ;
 
@@ -61,11 +59,9 @@ void ObjectTest::methode2()
 
     // process
     //Patient::ID_STUDIES
-    //::fwData::Object * o1 ( new ::fwData::Object );
-    //::fwData::Object obj = new ::fwData::Object() ;
 
     ::fwData::Object::NewSptr  o1;
-    ::fwTools::Field::sptr f1(new ::fwTools::Field);
+    ::fwTools::Field::sptr f1(::fwTools::Field::New());
     ::fwData::Object::NewSptr  o2;
     f1 = o1->setFieldSingleElement(FIELDID1,  o2) ;
 
@@ -85,11 +81,9 @@ void ObjectTest::methode3()
 
     // process
     //Patient::ID_STUDIES
-    //::fwData::Object * o1 ( new ::fwData::Object );
-    //::fwData::Object obj = new ::fwData::Object() ;
 
     ::fwData::Object::NewSptr o1;
-    ::fwTools::Field::sptr f1(new ::fwTools::Field);
+    ::fwTools::Field::sptr f1(::fwTools::Field::New());
     ::fwTools::Field::sptr f0 ;
     ::fwData::Object::NewSptr  o2;
     f1 = o1->addFieldElement(FIELDID1, o2) ;

@@ -23,7 +23,7 @@ class OPVTKMESH_CLASS_API VTKMeshCreation : public ::gui::action::IAction
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (VTKMeshCreation)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (VTKMeshCreation)(::gui::action::IAction) ) ;
 
     OPVTKMESH_API VTKMeshCreation() throw() ;
 

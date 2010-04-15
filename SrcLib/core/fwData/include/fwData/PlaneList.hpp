@@ -27,7 +27,7 @@ class FWDATA_CLASS_API PlaneList : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object),
         (()), ::fwTools::Factory::New< PlaneList >) ;
 
     typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;

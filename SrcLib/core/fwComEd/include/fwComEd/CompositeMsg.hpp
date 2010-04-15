@@ -35,7 +35,7 @@ class FWCOMED_CLASS_API CompositeMsg : public ::fwServices::ObjectMsg
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((CompositeMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new CompositeMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((CompositeMsg)(::fwServices::ObjectMsg), ( () ), new CompositeMsg );
 
     /// Event identifier used to inform that fields were modified
     FWCOMED_API static std::string MODIFIED_FIELDS;
@@ -101,7 +101,7 @@ private :
     ::fwData::Composite::sptr m_swappedOldFields;
     ::fwData::Composite::sptr m_swappedNewFields;
 
-//  fwCoreClassDefinitionsWithFactoryMacro((CompositeMsg)(::fwServices::ObjectMsg::Baseclass), ( ((::boost::shared_ptr< ::fwData::Composite>)) ), new CompositeMsg );
+//  fwCoreClassDefinitionsWithFactoryMacro((CompositeMsg)(::fwServices::ObjectMsg), ( ((::boost::shared_ptr< ::fwData::Composite>)) ), new CompositeMsg );
 //
 //  /**
 //   * @brief   constructor
