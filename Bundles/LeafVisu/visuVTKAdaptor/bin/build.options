@@ -14,7 +14,7 @@ LIB = [
     'fwServices_0-1',
     'fwTools_0-1',
     'fwWX_0-1',
-    'vtkIO_0-1',
+    'fwVtkIO_0-1',
     ]
 
 # USE_COVERAGE_CULLER and USE_DEPTH_SORT are effectives only if
