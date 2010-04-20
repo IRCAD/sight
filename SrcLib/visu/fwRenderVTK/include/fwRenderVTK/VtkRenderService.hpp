@@ -84,6 +84,9 @@ protected:
 
     FWRENDERVTK_API void updating() throw( ::fwTools::Failed);
 
+    /// Add a vtk object in the VtkRenderService, referenced by a key.
+    void addVtkObject( VtkObjectIdType _id, vtkObject * _vtkObj );
+
 private :
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;

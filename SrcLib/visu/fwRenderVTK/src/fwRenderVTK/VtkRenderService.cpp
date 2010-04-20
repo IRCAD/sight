@@ -274,6 +274,18 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
+void VtkRenderService::addVtkObject( VtkObjectIdType _id, vtkObject * _vtkObj )
+{
+    assert( ! _id.empty() );
+    
+    if( m_vtkObjects.count(_id) == 0 )
+    {
+        m_vtkObjects[_id] = _vtkObj;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void VtkRenderService::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
