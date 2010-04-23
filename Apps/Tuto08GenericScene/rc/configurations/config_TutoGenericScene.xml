@@ -40,17 +40,24 @@
 
             <service uid="menu_File" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="File" autoComChannel="no">
                 <action uid="action_openFile" />
+                <action uid="action_quit"/>
             </service>
 
             <service uid="action_openFile" implementation="::gui::action::StarterActionService" name="OpenFile" type="::gui::action::IAction" shortcut="Ctrl+O" autoComChannel="no">
                 <start uid="myReaderPathFile" />
             </service>
+            <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
 
             <!-- myPatientDB description -->
             <object id="myPatientDB" uid="myPatientDB" type="::fwData::PatientDB">
 
-                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />
-
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no">
+                    <type mode="reader" />
+                    <selection mode="exclude" />
+                    <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
+                </service>
+                <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+                
                 <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
                     <target>myUpdaterAcq</target>
                 </service>
@@ -124,7 +131,9 @@
             <start uid="myManager" />
             <start uid="myUpdaterComCannelAcq" />
             <start uid="myUpdaterComCannelImg" />
+            <start uid="newOBject2newPatientDB"/>
 
+            <stop uid="newOBject2newPatientDB"/>
             <stop uid="myUpdaterComCannelImg" />
             <stop uid="myUpdaterComCannelAcq" />
             <stop uid="myManager" />

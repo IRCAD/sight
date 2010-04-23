@@ -45,18 +45,26 @@ FwXMLObjectReader::~FwXMLObjectReader()
 
 void FwXMLObjectReader::read()
 {
-    ::boost::filesystem::path file = this->getFile();
-    assert( ::boost::filesystem::exists( file ) );
-    ::fwXML::Serializer serializer;
+    try {
+        ::boost::filesystem::path file = this->getFile();
+        if(!::boost::filesystem::exists( file ))
+            throw std::exception("The version of your fwXML file is invalid or your file is corrupted.");
 
-    // forward event progress to its parents
-    ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &FwXMLObjectReader::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
-    serializer.addHandler ( handler );
+        ::fwXML::Serializer serializer;
 
-    ::boost::shared_ptr< ::fwTools::Object > object = serializer.deSerialize( file, true, true );
-    assert(object);
-    m_object = object;
-    m_pObject = object; //FIXME hackk to be FIXED in #739
+        // forward event progress to its parents
+        ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &FwXMLObjectReader::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
+        serializer.addHandler ( handler );
+
+        ::boost::shared_ptr< ::fwTools::Object > object = serializer.deSerialize( file, true, true );
+        assert(object);
+        m_object = object;
+        m_pObject = object; //FIXME hackk to be FIXED in #739
+    }
+    catch ( const std::exception& e)
+    {
+       throw(e);
+    }
 }
 
 

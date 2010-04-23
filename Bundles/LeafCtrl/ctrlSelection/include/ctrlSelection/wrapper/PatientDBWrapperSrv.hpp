@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MANAGER_GRAPHWRAPPERSRV_HPP_
-#define _CTRLSELECTION_MANAGER_GRAPHWRAPPERSRV_HPP_
+#ifndef _CTRLSELECTION_MANAGER_PATIENTDBWRAPPERSRV_HPP_
+#define _CTRLSELECTION_MANAGER_PATIENTDBWRAPPERSRV_HPP_
 
 #include <fwServices/IService.hpp>
 
@@ -19,23 +19,23 @@ namespace wrapper
 {
 
 /**
- * @class  GraphWrapperSrv.
+ * @class  PatientDBWrapperSrv.
  * @author IRCAD (Research and Development Team).
 
  * @date   2007-2009.
  */
-class CTRLSELECTION_CLASS_API GraphWrapperSrv : public ::ctrlSelection::IWrapperSrv
+class CTRLSELECTION_CLASS_API PatientDBWrapperSrv : public ::ctrlSelection::IWrapperSrv
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (GraphWrapperSrv)(::ctrlSelection::IWrapperSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PatientDBWrapperSrv)(::ctrlSelection::IWrapperSrv) ) ;
 
 //    /// Constructor.  Do nothing.
-    CTRLSELECTION_API GraphWrapperSrv() throw() ;
+    CTRLSELECTION_API PatientDBWrapperSrv() throw() ;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~GraphWrapperSrv() throw() {};
+    CTRLSELECTION_API virtual ~PatientDBWrapperSrv() throw() {};
 
     /// Implements starting method derived from IService. Do nothing.
    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed ) {};
@@ -63,4 +63,4 @@ public :
 } // wrapper
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP_
+#endif // _CTRLSELECTION_MANAGER_PATIENTDBWRAPPERSRV_HPP_

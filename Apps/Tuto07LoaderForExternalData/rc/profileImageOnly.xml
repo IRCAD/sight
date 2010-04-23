@@ -18,6 +18,7 @@
     <activate id="ioData" version="0-1"/>
     <activate id="ioTuto" version="0-1"/>    
     <activate id="uiIO" version="0-1" />
+    <activate id="ctrlSelection" version="0-1" />
 
     <activate id="visu" version="0-1" />
     <activate id="vtkSimpleNegato" version="0-1" />
