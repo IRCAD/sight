@@ -10,6 +10,9 @@
 #include <boost/lambda/lambda.hpp>
 
 #include <fwCore/base.hpp>
+
+#include <fwTools/Failed.hpp>
+
 #include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
 
@@ -45,10 +48,13 @@ FwXMLObjectReader::~FwXMLObjectReader()
 
 void FwXMLObjectReader::read()
 {
-    try {
+    try
+    {
         ::boost::filesystem::path file = this->getFile();
         if(!::boost::filesystem::exists( file ))
-            throw std::exception("The version of your fwXML file is invalid or your file is corrupted.");
+        {
+            throw ::fwTools::Failed("The version of your fwXML file is invalid or your file is corrupted.");
+        }
 
         ::fwXML::Serializer serializer;
 
@@ -59,7 +65,7 @@ void FwXMLObjectReader::read()
         ::boost::shared_ptr< ::fwTools::Object > object = serializer.deSerialize( file, true, true );
         assert(object);
         m_object = object;
-        m_pObject = object; //FIXME hackk to be FIXED in #739
+        m_pObject = object; //FIXME hack to be FIXED in #739
     }
     catch ( const std::exception& e)
     {
