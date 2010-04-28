@@ -277,7 +277,7 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 void VtkRenderService::addVtkObject( VtkObjectIdType _id, vtkObject * _vtkObj )
 {
     assert( ! _id.empty() );
-    
+
     if( m_vtkObjects.count(_id) == 0 )
     {
         m_vtkObjects[_id] = _vtkObj;
@@ -297,7 +297,18 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
     //assert(m_configuration->getName() == "scene");
     assert(!vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
+}
 
+//-----------------------------------------------------------------------------
+
+void VtkRenderService::starting() throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+
+    this->initRender();
+    this->startContext();
+
+    // Instantiate vtk object, class...
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = m_sceneConfiguration->begin() ; iter != m_sceneConfiguration->end() ; ++iter)
     {
@@ -322,16 +333,6 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void VtkRenderService::starting() throw(fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    this->initRender();
-
-    this->startContext();
 
     m_interactor->GetRenderWindow()->SetNumberOfLayers(m_renderers.size());
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
@@ -339,12 +340,9 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         vtkRenderer *renderer = (*iter).second;
         m_interactor->GetRenderWindow()->AddRenderer(renderer);
     }
-
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
 
-
     SceneAdaptorsMapType::iterator adaptorIter ;
-
     for ( adaptorIter = m_sceneAdaptors.begin();
           adaptorIter != m_sceneAdaptors.end();
           ++adaptorIter)
@@ -369,19 +367,20 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
           ++adaptorIter)
     {
         adaptorIter->second.getService()->stop();
+        ::fwServices::erase(adaptorIter->second.getService());
+        adaptorIter->second.getService().reset();
     }
 
     this->stopContext();
 
     this->stopRender();
+    m_sceneAdaptors.clear();
 }
 
 //-----------------------------------------------------------------------------
 
 void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(::fwTools::Failed)
 {
-
-
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
@@ -408,13 +407,7 @@ void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(
 //-----------------------------------------------------------------------------
 
 void VtkRenderService::updating() throw(fwTools::Failed)
-{
-
-//  assert( m_wxmanager );
-//  assert( m_interactor );
-
-//    m_interactor->Render();
-}
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -454,10 +447,7 @@ void VtkRenderService::startContext()
 //    m_interactor->GetRenderWindow()->PointSmoothingOn();
 //    m_interactor->GetRenderWindow()->LineSmoothingOn();
 //    m_interactor->GetRenderWindow()->PolygonSmoothingOn();
-
 //    m_interactor->Register(NULL);
-
-
 //    m_interactor->SetInteractorStyle( vtkInteractorStyleTrackballCamera::New() );
 
     m_interactor->SetRenderModeToDirect();
@@ -474,7 +464,6 @@ void VtkRenderService::startContext()
 
 void VtkRenderService::stopContext()
 {
-
     SLM_TRACE_FUNC();
 
     if( m_wxmanager )
@@ -543,6 +532,8 @@ vtkObject * VtkRenderService::getVtkObject(VtkObjectIdType objectId)
     }
     return m_vtkObjects[objectId];
 }
+
+//-----------------------------------------------------------------------------
 
 } //namespace fwRenderVTK
 
