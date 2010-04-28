@@ -33,7 +33,9 @@ public :
 
     typedef double PointCoordType;
 
-    typedef fwVec3d PointCoordArray;
+    typedef fwVec3d PointCoordArrayType;
+    typedef PointCoordArrayType PointCoordArray; // Remove me
+
     /// Constructor
     FWDATA_API Point();
     /// Destructor
@@ -59,7 +61,7 @@ public :
 protected :
 
     /// point coordinates
-    fwVec3d m_vCoord;
+    PointCoordArrayType m_vCoord;
 
 }; // end class Point
 

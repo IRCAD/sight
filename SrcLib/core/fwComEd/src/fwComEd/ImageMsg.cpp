@@ -12,6 +12,7 @@ namespace fwComEd
 
 std::string ImageMsg::NEW_IMAGE = "NEW_IMAGE";
 std::string ImageMsg::BUFFER = "BUFFER";
+std::string ImageMsg::MODIFIED = "MODIFIED";
 std::string ImageMsg::DIMENSION = "DIMENSION";
 std::string ImageMsg::SPACING = "SPACING";
 std::string ImageMsg::REGION = "REGION";

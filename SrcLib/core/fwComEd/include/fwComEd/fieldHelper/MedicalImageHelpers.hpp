@@ -9,12 +9,18 @@
 
 #include <utility> // std::pair
 
+
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/TransfertFunction.hpp>
+
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/NumericRoundCast.hxx>
 
 #include "fwComEd/export.hpp"
 
@@ -179,7 +185,53 @@ public :
      * @param[in]   pImage      image to set the label.
      */
     FWCOMED_API static void setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage);
+
+    template < typename T > 
+    static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T value);
 };
+
+
+template < typename VALUE >
+class CastAndSetFunctor
+{
+public:
+    class Param
+    {
+        typedef VALUE ValueType;
+        ::fwData::Image::sptr image;
+        ::fwData::Point::sptr point;
+        VALUE value;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        ::fwData::Point::PointCoordArrayType p = param.point->getCoord();
+        std::vector<boost::int32_t>       size = param.image->getSize();
+        int sx = size[0];
+        int sy = size[1];
+        int offset = p[0] + sx*p[1] + p[2]*sx*sy;
+        *(buffer+offset) = ::fwTools::numericRoundCast<Param::ValueType, IMAGE>(param.value);
+    }
+
+};
+
+
+
+template < typename T > 
+void setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T value)
+{
+    typename CastAndSetFunctor<T>::Param param;
+    param.image = image;
+    param.value = value;
+
+    ::fwTools::DynamicType type = image->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndSetFunctor<T> >::invoke( type, param );
+}
+
+
+
 
 } // fieldHelper
 } // fwComEd
