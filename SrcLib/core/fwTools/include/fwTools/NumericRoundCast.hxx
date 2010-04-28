@@ -15,22 +15,22 @@
 namespace fwTools
 {
 
-template < typename IN, typename OUT, typename T1, typename T2>
-OUT numericRoundCast (IN value, T1, T2)
+template < typename TYPEIN, typename TYPEOUT, typename T1, typename T2>
+TYPEOUT numericRoundCast (TYPEIN value, T1, T2)
 {
-    return static_cast< OUT >(value);
+    return static_cast< TYPEOUT >(value);
 }
 
-template < typename IN, typename OUT>
-OUT numericRoundCast (IN value, const boost::true_type &in_is_float, const boost::true_type &out_is_int)
+template < typename TYPEIN, typename TYPEOUT>
+TYPEOUT numericRoundCast (TYPEIN value, const boost::true_type &in_is_float, const boost::true_type &out_is_int)
 {
-    return static_cast< OUT >(std::floor(value + 0.5));
+    return static_cast< TYPEOUT >(std::floor(value + 0.5));
 }
 
-template < typename IN, typename OUT>
-OUT numericRoundCast (IN &value)
+template < typename TYPEIN, typename TYPEOUT>
+TYPEOUT numericRoundCast (TYPEIN &value)
 {
-    return numericRoundCast< IN, OUT >(value, ::boost::is_floating_point<OUT>(), ::boost::is_integral<IN>());
+    return numericRoundCast< TYPEIN, TYPEOUT >(value, ::boost::is_floating_point<TYPEOUT>(), ::boost::is_integral<TYPEIN>());
 }
 
 } // namespace fwTools
