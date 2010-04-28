@@ -19,6 +19,7 @@ namespace fwComEd
 namespace fieldHelper
 {
 
+
 //------------------------------------------------------------------------------
 
 std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _pImg )

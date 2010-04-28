@@ -197,6 +197,7 @@ class CastAndSetFunctor
 public:
     class Param
     {
+        public:
         typedef VALUE ValueType;
         ::fwData::Image::sptr image;
         ::fwData::Point::sptr point;
@@ -212,7 +213,7 @@ public:
         int sx = size[0];
         int sy = size[1];
         int offset = p[0] + sx*p[1] + p[2]*sx*sy;
-        *(buffer+offset) = ::fwTools::numericRoundCast<Param::ValueType, IMAGE>(param.value);
+        *(buffer+offset) = ::fwTools::numericRoundCast<typename Param::ValueType, IMAGE>(param.value);
     }
 
 };
@@ -220,17 +221,19 @@ public:
 
 
 template < typename T > 
-void setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T value)
+void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T value)
 {
     typename CastAndSetFunctor<T>::Param param;
     param.image = image;
     param.value = value;
+    param.point = point;
 
     ::fwTools::DynamicType type = image->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndSetFunctor<T> >::invoke( type, param );
 }
 
 
+//template void MedicalImageHelpers::setPixel<float>(::fwData::Image::sptr image, ::fwData::Point::sptr point, float value);
 
 
 } // fieldHelper
