@@ -140,6 +140,7 @@ NegatoOneSlice::NegatoOneSlice() throw()
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED );
     addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
     addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
@@ -227,6 +228,12 @@ void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
             doUpdate();
+        }
+
+        if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
+        {
+            m_imageData->Modified();
+            this->setVtkPipelineModified();
         }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
