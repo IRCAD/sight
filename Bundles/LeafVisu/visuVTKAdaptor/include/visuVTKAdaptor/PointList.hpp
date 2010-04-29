@@ -21,6 +21,8 @@ class VISUVTKADAPTOR_CLASS_API PointList: public ::fwRenderVTK::IVtkAdaptorServi
 {
 
 public:
+    typedef std::vector< WPTR(::fwData::Point) > WeakPointListType;
+    typedef std::set< WPTR(::fwData::Point) > WeakPointSetType;
 
     fwCoreServiceClassDefinitionsMacro ( (PointList)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
@@ -37,6 +39,13 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+
+    VISUVTKADAPTOR_API void createServices(WeakPointListType &wPtList);
+    VISUVTKADAPTOR_API WeakPointListType getWeakPointList();
+    VISUVTKADAPTOR_API WeakPointListType getNewPoints();
+
+    VISUVTKADAPTOR_API WeakPointListType m_oldWeakPointList;
+    VISUVTKADAPTOR_API WeakPointListType m_weakPointList;
 
 };
 
