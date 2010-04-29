@@ -44,8 +44,8 @@ protected:
     VISUVTKADAPTOR_API WeakPointListType getWeakPointList();
     VISUVTKADAPTOR_API WeakPointListType getNewPoints();
 
-    VISUVTKADAPTOR_API WeakPointListType m_oldWeakPointList;
-    VISUVTKADAPTOR_API WeakPointListType m_weakPointList;
+     WeakPointListType m_oldWeakPointList;
+     WeakPointListType m_weakPointList;
 
 };
 
