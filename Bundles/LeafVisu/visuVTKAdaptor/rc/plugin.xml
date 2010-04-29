@@ -74,6 +74,12 @@
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::PointList</implements>
     </point>
+    
+    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::PointListInteractor ) ; -->
+    <point id="::visuVTKAdaptor::PointListInteractor" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::PointList</implements>
+    </point>
 
     <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::PointList ) ; -->
     <point id="::visuVTKAdaptor::Distance" >

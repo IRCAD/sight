@@ -12,6 +12,8 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Material.hpp>
 
+#include <fwComEd/PointListMsg.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 
@@ -33,7 +35,9 @@ namespace visuVTKAdaptor
 
 PointList::PointList() throw()
 {
-    handlingEventOff();
+    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
+    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
+    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 PointList::~PointList() throw()
@@ -76,6 +80,19 @@ void PointList::doUpdate() throw(fwTools::Failed)
         service->start();
 
         this->registerService(service);
+    }
+}
+
+void PointList::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+
+    if ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED )
+         || ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED ))
+         || ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED )) )
+    {
+        doUpdate();
+        setVtkPipelineModified();
     }
 }
 
