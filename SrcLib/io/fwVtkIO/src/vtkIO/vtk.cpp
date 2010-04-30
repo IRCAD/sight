@@ -23,6 +23,7 @@
 #include <vtkImageImport.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPolyDataNormals.h>
+#include <vtkLookupTable.h>
 
 #include <vtkMassProperties.h>
 
@@ -559,7 +560,7 @@ bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::spt
 void convertTF2vtkTF(
         ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
         vtkLookupTable * lookupTableDst,
-        bool allow_transparency = false
+        bool allow_transparency
         )
 {
     SLM_TRACE_FUNC();

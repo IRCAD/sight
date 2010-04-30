@@ -230,6 +230,21 @@
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
+
+    <!--REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ) ;-->
+    <point id="::visuVTKAdaptor::Image" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::Image</implements>
+    </point>
+
+    <!--REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite ) ;-->
+    <point id="::visuVTKAdaptor::ImageSlice" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+
+
+
 </plugin>
 
 
