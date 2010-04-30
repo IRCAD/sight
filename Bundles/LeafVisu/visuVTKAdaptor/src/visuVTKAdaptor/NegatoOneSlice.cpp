@@ -26,6 +26,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkImageActor.h>
 #include <vtkCellArray.h>
+#include <vtkTransform.h>
 
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 
@@ -274,6 +275,8 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
+    this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
+
     if(m_configuration->hasAttribute("sliceIndex"))
     {
          std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
@@ -375,6 +378,12 @@ void NegatoOneSlice::buildPipeline( )
     m_imageActor->SetInput(m_map2colors->GetOutput());
 //  m_imageActor->InterpolateOff();
     buildOutline();
+
+    if( ! this->getTransformId().empty() )
+    {
+        m_imageActor->SetUserTransform( this->getTransform() );
+    }
+
     setVtkPipelineModified();
 }
 
