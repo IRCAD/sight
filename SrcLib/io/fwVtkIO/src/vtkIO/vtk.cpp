@@ -90,6 +90,8 @@ const char *myScalarTypeCallback(void *imageData)
     return vtkImageScalarTypeNameMacro( PixelTypeTranslation.left.at( trueImageData->getPixelType() ) );
 }
 
+//-----------------------------------------------------------------------------
+
 vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImageData *dst)
 {
     vtkImageImport *importer = vtkImageImport::New();
@@ -139,6 +141,7 @@ vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImage
 
 }
 
+//-----------------------------------------------------------------------------
 
 bool fromVTKImage( vtkImageData* source, ::boost::shared_ptr< ::fwData::Image > destination )
 {
@@ -336,6 +339,7 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::boost::shared_
 
 }
 
+//-----------------------------------------------------------------------------
 
 vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr mesh )
 {
@@ -378,6 +382,8 @@ vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr mesh )
     return polygonGrid;
 }
 
+//-----------------------------------------------------------------------------
+
 bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangularMesh)
 {
     SLM_TRACE_FUNC();
@@ -419,6 +425,7 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
     return res;
 }
 
+//-----------------------------------------------------------------------------
 
 double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
 {
@@ -455,6 +462,9 @@ double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangul
     filter->Delete();
     return volume;
 }
+
+//-----------------------------------------------------------------------------
+//
 
 double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
 {
@@ -510,6 +520,7 @@ double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh 
     return nbVoxel;
 }
 
+//-----------------------------------------------------------------------------
 
 
 vtkMatrix4x4 *  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
@@ -524,6 +535,8 @@ vtkMatrix4x4 *  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatr
     }
     return matrix;
 }
+
+//-----------------------------------------------------------------------------
 
 bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::sptr _transfoMatrix)
 {
@@ -540,4 +553,124 @@ bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::spt
     return res;
 }
 
-} // end namespace
+
+//-----------------------------------------------------------------------------
+
+void convertTF2vtkTF(
+        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
+        vtkLookupTable * lookupTableDst,
+        bool allow_transparency = false
+        )
+{
+    SLM_TRACE_FUNC();
+    //vtkWindowLevelLookupTable * lookupTable = vtkWindowLevelLookupTable::New();
+
+    // Compute center and width
+    std::pair< double, ::boost::int32_t > centerAndWidth = _pTransfertFunctionSrc->getCenterWidth();
+    double width = centerAndWidth.second;
+
+    // Compute min and max
+    typedef ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPCIterator;
+    std::pair< TFPCIterator, TFPCIterator > range = _pTransfertFunctionSrc->getTransfertFunctionPoints();
+    int min = (*range.first)->getValue();
+
+
+    // Convert tf points
+    //-------------------
+
+    // Init iterator
+    TFPCIterator iterTF = range.first;
+    TFPCIterator iterTFNext = range.first + 1;
+    TFPCIterator end = range.second;
+
+    // Must have point in data tf
+    assert( iterTF != end );
+
+    // Init parameters
+    double r, g, b, x;
+    int    i          = 0;
+    double alpha      = 1.0;
+    double widthScale = 255.0 / width;
+    int    value      = 0;
+
+
+    // Set first point
+    value = ((*iterTF)->getValue() - min) * widthScale;
+    const ::fwData::Color::ColorArray & vRGBA0 = (*iterTF)->getColor()->getCRefRGBA();
+
+    if(allow_transparency)
+    {
+        alpha = vRGBA0[3];
+    }
+    lookupTableDst->SetTableValue(i, vRGBA0[0], vRGBA0[1], vRGBA0[2], alpha);
+
+    i++;
+
+    ::fwData::Color::ColorType R, G, B, A;
+    ::fwData::Color::ColorType deltaR, deltaV, deltaB, deltaA;
+    int valueNext, deltaValue;
+
+    while ( iterTFNext != end )
+    {
+        // First point
+        const ::fwData::Color::ColorArray &vRGBA     = (*iterTF)->getColor()->getCRefRGBA();
+        // Second point
+        const ::fwData::Color::ColorArray &vRGBANext = (*iterTFNext)->getColor()->getCRefRGBA();
+
+
+        value = ((*iterTF)->getValue() - min) * widthScale;
+        valueNext = ((*iterTFNext)->getValue() - min) * widthScale;
+
+        R = vRGBA[0];
+        G = vRGBA[1];
+        B = vRGBA[2];
+        A = vRGBA[3];
+        deltaR = vRGBANext[0] - vRGBA[0];
+        deltaV = vRGBANext[1] - vRGBA[1];
+        deltaB = vRGBANext[2] - vRGBA[2];
+        deltaA = vRGBANext[3] - vRGBA[3];
+        deltaValue = valueNext - value;
+
+        // Interpolation
+        if(allow_transparency)
+        {
+            while (i <= valueNext)
+            {
+                x = (double)(i - value) / (double)(deltaValue);
+                r     = ( R + (deltaR * x) );
+                g     = ( G + (deltaV * x) );
+                b     = ( B + (deltaB * x) );
+                alpha = ( A + (deltaA * x) );
+
+                lookupTableDst->SetTableValue( i, r, g, b , alpha );
+                i++;
+            }
+        }
+        else
+        {
+            while (i <= valueNext)
+            {
+                x = (double)(i - value) / (double)(deltaValue);
+                r     = ( R + (deltaR * x) );
+                g     = ( G + (deltaV * x) );
+                b     = ( B + (deltaB * x) );
+
+                lookupTableDst->SetTableValue( i, r, g, b , alpha );
+                i++;
+            }
+        }
+
+        iterTF++;
+        iterTFNext++;
+    }
+
+    lookupTableDst->SetTableRange( min, min + width );
+
+    lookupTableDst->Build();
+
+}
+
+
+
+
+} // namespace vtkIO
