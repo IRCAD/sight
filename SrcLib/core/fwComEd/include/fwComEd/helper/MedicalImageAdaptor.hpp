@@ -25,8 +25,7 @@ namespace helper
 {
 
 
-
-class FWCOMED_CLASS_API MedicalImageAdaptor: public ::fwComEd::helper::ImageGetter<>
+class FWCOMED_CLASS_API MedicalImageAdaptor
 {
 
 public:
@@ -77,7 +76,12 @@ protected:
 
     FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
 
+    ::fwData::Image::sptr getImage();
+
     Orientation m_orientation;
+
+
+    ::fwData::Image::wptr m_weakImage;
 
     ::fwData::Integer::sptr m_axialIndex;
     ::fwData::Integer::sptr m_frontalIndex;
@@ -90,6 +94,15 @@ protected:
     ::fwData::String::sptr m_transfertFunctionId;
 };
 
+struct Image0 {} ;
+struct Image1 {} ;
+
+template < typename IMAGEID >
+class FWCOMED_CLASS_API MedicalImageAdaptorTpl : public MedicalImageAdaptor
+{};
+
+typedef MedicalImageAdaptorTpl<Image0> MedicalImageAdaptorImg0;
+typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
 
 } //namespace helper
 

@@ -203,6 +203,8 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 
 void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 {
+    m_weakImage = image;
+
     ::fwTools::getFieldFromObject(m_axialIndex   , image, ::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
     ::fwTools::getFieldFromObject(m_frontalIndex , image, ::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
     ::fwTools::getFieldFromObject(m_sagittalIndex, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
@@ -231,6 +233,13 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 ::fwData::TransfertFunction::sptr MedicalImageAdaptor::getCurrentTransfertFunction()
 {
     return ::fwData::TransfertFunction::dynamicCast((*m_transfertFunctions)[m_transfertFunctionId->value()]);
+}
+
+
+::fwData::Image::sptr MedicalImageAdaptor::getImage()
+{
+    SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
+    return m_weakImage.lock();
 }
 
 } //namespace helper
