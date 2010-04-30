@@ -64,13 +64,15 @@ void convertTF2vtkTF(
     assert( iterTF != end );
 
     // Init parameters
-    int i = 0;
-    double r, g, b;
-    double alpha = 1.0;
-    int value = 0;
+    double r, g, b, x;
+    int    i          = 0;
+    double alpha      = 1.0;
+    double widthScale = 255.0 / width;
+    int    value      = 0;
+
 
     // Set first point
-    value = ((*iterTF)->getValue() - min) * 255.0 / width;
+    value = ((*iterTF)->getValue() - min) * widthScale;
     const ::fwData::Color::ColorArray & vRGBA0 = (*iterTF)->getColor()->getCRefRGBA();
 
     if(allow_transparency)
@@ -80,30 +82,59 @@ void convertTF2vtkTF(
     lookupTableDst->SetTableValue(i, vRGBA0[0], vRGBA0[1], vRGBA0[2], alpha);
 
     i++;
+
+    ::fwData::Color::ColorType R, G, B, A;
+    ::fwData::Color::ColorType deltaR, deltaV, deltaB, deltaA;
+    int valueNext, deltaValue;
+
     while ( iterTFNext != end )
     {
         // First point
-        value = ((*iterTF)->getValue() - min) * 255.0 / width;
-        const ::fwData::Color::ColorArray & vRGBA = (*iterTF)->getColor()->getCRefRGBA();
-
+        const ::fwData::Color::ColorArray &vRGBA     = (*iterTF)->getColor()->getCRefRGBA();
         // Second point
-        int valueNext = ((*iterTFNext)->getValue() - min) * 255.0 / width;
-        const ::fwData::Color::ColorArray & vRGBANext = (*iterTFNext)->getColor()->getCRefRGBA();
+        const ::fwData::Color::ColorArray &vRGBANext = (*iterTFNext)->getColor()->getCRefRGBA();
+
+
+        value = ((*iterTF)->getValue() - min) * widthScale;
+        valueNext = ((*iterTFNext)->getValue() - min) * widthScale;
+
+        R = vRGBA[0];
+        G = vRGBA[1];
+        B = vRGBA[2];
+        A = vRGBA[3];
+        deltaR = vRGBANext[0] - vRGBA[0];
+        deltaV = vRGBANext[1] - vRGBA[1];
+        deltaB = vRGBANext[2] - vRGBA[2];
+        deltaA = vRGBANext[3] - vRGBA[3];
+        deltaValue = valueNext - value;
 
         // Interpolation
-        while (i <= valueNext)
+        if(allow_transparency)
         {
-            double x = (double)(i - value) / (double)(valueNext - value);
-            r = ( vRGBA[0] + ( vRGBANext[0] - vRGBA[0] ) * x ) ;
-            g = ( vRGBA[1] + ( vRGBANext[1] - vRGBA[1] ) * x ) ;
-            b = ( vRGBA[2] + ( vRGBANext[2] - vRGBA[2] ) * x ) ;
-            if(allow_transparency)
+            while (i <= valueNext)
             {
-                alpha = ( vRGBA[3] + ( vRGBANext[3] - vRGBA[3] ) * x ) ;
-            }
+                x = (double)(i - value) / (double)(deltaValue);
+                r     = ( R + (deltaR * x) );
+                g     = ( G + (deltaV * x) );
+                b     = ( B + (deltaB * x) );
+                alpha = ( A + (deltaA * x) );
 
-            lookupTableDst->SetTableValue( i, r, g, b , alpha );
-            i++;
+                lookupTableDst->SetTableValue( i, r, g, b , alpha );
+                i++;
+            }
+        }
+        else
+        {
+            while (i <= valueNext)
+            {
+                x = (double)(i - value) / (double)(deltaValue);
+                r     = ( R + (deltaR * x) );
+                g     = ( G + (deltaV * x) );
+                b     = ( B + (deltaB * x) );
+
+                lookupTableDst->SetTableValue( i, r, g, b , alpha );
+                i++;
+            }
         }
 
         iterTF++;

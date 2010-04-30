@@ -137,9 +137,6 @@ PointList::WeakPointListType PointList::getWeakPointList()
 
     std::copy(ptList->getRefPoints().begin(), ptList->getRefPoints().end(), std::back_inserter(weakList));
 
-    //std::insert_iterator<WeakPointListType> insert_it(weakList, weakList.begin());
-    //std::copy(ptList->getPoints().begin(), ptList->getPoints().end(), insert_it);
-
     return weakList;
 }
 
@@ -147,18 +144,11 @@ PointList::WeakPointListType PointList::getNewPoints()
 {
     WeakPointListType newPoints;
 
-    //::boost::function1<bool, PointList::WeakPointListType::value_type> predicate;
-    //predicate = std::bind1st( std::mem_fun(&PointList::belongToOldList), this);
-    //std::remove_if(newPoints.begin(), newPoints.end(), predicate);
-
-
     std::set_difference (
             m_weakPointList.begin(), m_weakPointList.end(),
             m_oldWeakPointList.begin(), m_oldWeakPointList.end(),
             std::back_inserter(newPoints)
             );
-    //std::insert_iterator<WeakPointListType> insert_it(newPoints, newPoints.begin());
-    //std::set_difference (m_oldWeakPointList.begin(), m_oldWeakPointList.end(), m_weakPointList.begin(), m_weakPointList.end(), insert_it);
     return newPoints;
 
 }

@@ -12,6 +12,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 #include "vtkIO/config.hpp"
 
@@ -21,6 +22,7 @@ class vtkPolyData;
 class vtkImageData;
 class vtkImageImport;
 class vtkMatrix4x4;
+class vtkLookupTable;
 
 /**
  * @brief   Namespace vtkIO.
@@ -34,9 +36,9 @@ namespace vtkIO
 {
 
 /**
- * @brief Allocate a new vtkImageData* from a ::boost::shared_ptr< ::fwData::Image >.
+ * @brief Allocate a new vtkImageData* from a ::fwData::Image::sptr.
  *
- * @param[in] _data ::boost::shared_ptr< ::fwData::Image >.
+ * @param[in] _data ::fwData::Image::sptr.
  * @param[out] dst, the vtk image to fill if provided
  * @return vtkImageData*.
  *
@@ -44,86 +46,100 @@ namespace vtkIO
  * allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
  *
  */
-VTKIO_API vtkImageData*  toVTKImage( ::boost::shared_ptr< ::fwData::Image > _data ,  vtkImageData *dst=NULL);
+VTKIO_API vtkImageData*  toVTKImage( ::fwData::Image::sptr _data ,  vtkImageData *dst=NULL);
 
 /*!
- * @brief Convert a vtkImageData* to a ::boost::shared_ptr< ::fwData::Image >.
+ * @brief Convert a vtkImageData* to a ::fwData::Image::sptr.
  *
  * @param[in] _source vtkImageData*.
- * @param[out] _destination ::boost::shared_ptr< ::fwData::Image >.
+ * @param[out] _destination ::fwData::Image::sptr.
  * @return bool.
  *
  * Returns \b true if the conversion is a success and \b false if it fails
  */
-VTKIO_API bool fromVTKImage( vtkImageData* _source, ::boost::shared_ptr< ::fwData::Image > _destination );
+VTKIO_API bool fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _destination );
 
 /*!
- * @brief Convert a ::boost::shared_ptr< ::fwData::Image > to a vtkImageImport*.
+ * @brief Convert a ::fwData::Image::sptr to a vtkImageImport*.
  *
- * @param[in] _data ::boost::shared_ptr< ::fwData::Image >.
+ * @param[in] _data ::fwData::Image::sptr.
  * @return vtkImageImport*.
  */
-VTKIO_API vtkImageImport* convertToVTKImageImport( ::boost::shared_ptr< ::fwData::Image > _data );
+VTKIO_API vtkImageImport* convertToVTKImageImport( ::fwData::Image::sptr _data );
 
 /*!
- * @brief Configure a vtkImageImport* from a ::boost::shared_ptr< ::fwData::Image >.
+ * @brief Configure a vtkImageImport* from a ::fwData::Image::sptr.
  *
- * @param[in] _pDataImage ::boost::shared_ptr< ::fwData::Image >.
+ * @param[in] _pDataImage ::fwData::Image::sptr.
  * @param[out] _pImageImport ::vtkImageImport*.
  */
-VTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::boost::shared_ptr< ::fwData::Image > _pDataImage );
+VTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage );
 
 /*!
- * @brief Convert a ::boost::shared_ptr< ::fwData::TriangularMesh > to a vtkPolyData*.
+ * @brief Convert a ::fwData::TriangularMesh::sptr to a vtkPolyData*.
  *
- * @param[in] _mesh ::boost::shared_ptr< ::fwData::TriangularMesh >.
+ * @param[in] _mesh ::fwData::TriangularMesh::sptr.
  * @return vtkPolyData*.
  */
-VTKIO_API vtkPolyData*  toVTKMesh( ::boost::shared_ptr< ::fwData::TriangularMesh > _mesh );
+VTKIO_API vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr _mesh );
 
 /*!
- * @brief Convert a vtkPolyData* to a ::boost::shared_ptr< ::fwData::TriangularMesh >.
+ * @brief Convert a vtkPolyData* to a ::fwData::TriangularMesh::sptr.
  *
  * @param[in] _polyData vtkPolyData*.
- * @param[out] _triangularMesh ::boost::shared_ptr< ::fwData::TriangularMesh >.
+ * @param[out] _triangularMesh ::fwData::TriangularMesh::sptr.
  * @return bool.
  *
  * Returns \b true if the conversion is a success and \b false if it fails
  */
-VTKIO_API  bool fromVTKMesh( vtkPolyData *_polyData, ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh );
+VTKIO_API  bool fromVTKMesh( vtkPolyData *_polyData, ::fwData::TriangularMesh::sptr _triangularMesh );
 
 
 /*
  * @brief compute the volume of the mesh using MassProperties vtk class
  */
-VTKIO_API  double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh );
+VTKIO_API  double computeVolume(  ::fwData::TriangularMesh::sptr _triangularMesh );
 
 /*
 * @brief compute the volume of the mesh using ImageStencil
 */
-VTKIO_API  double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh );
+VTKIO_API  double computeVolumeWithStencil(  ::fwData::TriangularMesh::sptr _triangularMesh );
 
 /*!
- * @brief Convert a ::boost::shared_ptr< ::fwData::TransformationMatrix3D > to a vtkMatrix4x4*.
+ * @brief Convert a ::fwData::TransformationMatrix3D::sptr to a vtkMatrix4x4*.
  *
- * @param[in] _transfoMatrix ::boost::shared_ptr< ::fwData::TransformationMatrix3D >.
+ * @param[in] _transfoMatrix ::fwData::TransformationMatrix3D::sptr.
  * @return vtkPolyData*.
  */
-VTKIO_API vtkMatrix4x4 *  toVTKMatrix(  ::boost::shared_ptr< ::fwData::TransformationMatrix3D > _transfoMatrix );
+VTKIO_API vtkMatrix4x4 *  toVTKMatrix(  ::fwData::TransformationMatrix3D::sptr _transfoMatrix );
 
 /*!
- * @brief Convert a vtkMatrix4x4* to a ::boost::shared_ptr< ::fwData::TransformationMatrix3D >.
+ * @brief Convert a vtkMatrix4x4* to a ::fwData::TransformationMatrix3D::sptr.
  *
  * @param[in] _matrix vtkMatrix4x4*.
- * @param[out] _transfoMatrix ::boost::shared_ptr< ::fwData::TransformationMatrix3D >.
+ * @param[out] _transfoMatrix ::fwData::TransformationMatrix3D::sptr.
  * @return bool.
  *
  * Returns \b true if the conversion is a success and \b false if it fails
  */
-VTKIO_API  bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::boost::shared_ptr< ::fwData::TransformationMatrix3D > _transfoMatrix);
+VTKIO_API  bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::fwData::TransformationMatrix3D::sptr _transfoMatrix);
 
 // not implemented since unused : perhaps when image edition using VTK is possible
-//void DATACONVERT_API ::boost::shared_ptr< ::fwData::Image > toDataImage( vtkImageData *vtkIm  ) ;
+//void DATACONVERT_API ::fwData::Image::sptr toDataImage( vtkImageData *vtkIm  ) ;
+
+/*!
+ * @brief Convert a ::fwData::TransfertFunction to a vtkLookupTable.
+ *
+ * @param[in] _pTransfertFunctionSrc ::fwData::TransfertFunction
+ * @param[out] lookupTableDst vtkLookupTable
+ * @param[in] allow_transparency Enable convertion of ::fwData::TransfertFunction alpha channel
+ *
+ */
+void convertTF2vtkTF(
+        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
+        vtkLookupTable * lookupTableDst,
+        bool allow_transparency = false
+        );
 
 }
 
