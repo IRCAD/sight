@@ -36,6 +36,7 @@ namespace visuVTKAdaptor
 
 Image::Image() throw()
 {
+    SLM_TRACE_FUNC();
     m_lut        = vtkLookupTable::New();
     m_map2colors = vtkImageMapToColors::New();
     m_imageData  = vtkImageData::New();
@@ -54,6 +55,7 @@ Image::Image() throw()
 
 Image::~Image() throw()
 {
+    SLM_TRACE_FUNC();
     m_lut->Delete();
     m_lut = NULL;
 
@@ -68,18 +70,23 @@ Image::~Image() throw()
 
 void Image::doStart() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
+
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
 void Image::doStop() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void Image::doSwap() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     doUpdate();
 }
 
@@ -87,6 +94,7 @@ void Image::doSwap() throw(fwTools::Failed)
 
 void Image::doUpdate() throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -104,6 +112,7 @@ void Image::doUpdate() throw(::fwTools::Failed)
 
 void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -128,7 +137,8 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
         {
-            ::fwComEd::ImageMsg::dynamicConstCast(msg)->getWindowMinMax( m_windowMin, m_windowMax);
+            ::fwComEd::ImageMsg::csptr imsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
+            imsg->getWindowMinMax( m_windowMin, m_windowMax);
             updateWindowing(image);
         }
 
@@ -146,7 +156,10 @@ void Image::configuring() throw(fwTools::Failed)
     {
         this->setVtkImageRegisterId( m_configuration->getAttributeValue("vtkimageregister") );
     }
-
+    if(m_configuration->hasAttribute("opacity") )
+    {
+    this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -154,6 +167,7 @@ void Image::configuring() throw(fwTools::Failed)
 
 void Image::updateImage( ::fwData::Image::sptr image  )
 {
+    SLM_TRACE_FUNC();
     ::vtkIO::toVTKImage(image,m_imageData);
 
     this->updateImageInfos(image);
@@ -165,6 +179,7 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 
 void Image::updateWindowing( ::fwData::Image::sptr image )
 {
+    SLM_TRACE_FUNC();
     //std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
     // Temp test because theses cases are not manage ( need to notify if there are modifications of Min/Max/TF )
     //assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
@@ -178,10 +193,11 @@ void Image::updateWindowing( ::fwData::Image::sptr image )
 
 void Image::updateTransfertFunction( ::fwData::Image::sptr image )
 {
+    SLM_TRACE_FUNC();
     ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
     std::string tfName = m_transfertFunctionId->value();
     ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
-    ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut );
+    ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, true );
     setVtkPipelineModified();
 }
 
@@ -189,10 +205,12 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
 
 void Image::updateImageOpacity()
 {
+    SLM_TRACE_FUNC();
     if (m_imagePortId>= 0)
     {
         vtkImageBlend *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
         imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
+        OSLM_TRACE( "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
     }
 }
 
@@ -200,8 +218,15 @@ void Image::updateImageOpacity()
 
 void Image::buildPipeline( )
 {
+    SLM_TRACE_FUNC();
     m_map2colors->SetInput(m_imageData);
     m_map2colors->SetLookupTable(m_lut);
+    m_map2colors->SetOutputFormatToRGBA();
+
+    if (!m_imageRegisterId.empty())
+    {
+        m_imageRegister = this->getVtkObject(m_imageRegisterId);
+    }
 
     vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
     vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageRegister);
@@ -210,16 +235,19 @@ void Image::buildPipeline( )
     SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend )
     if (imageBlend)
     {
-        m_imagePortId = imageBlend->GetNumberOfInputs();
-        imageBlend->SetInputConnection(m_imagePortId, m_map2colors->GetOutputPort());
-        OSLM_TRACE("" << this->getUUID() << " Added to port " << m_imagePortId << " of vtkImageBlend");
+        SLM_TRACE("Register is a vtkImageBlend");
+        m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
+        imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
+        OSLM_TRACE(this->getUUID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
     }
     else if (algorithm)
     {
+        SLM_TRACE("Register is a vtkImageAlgorithm");
         algorithm->SetInput(imageData);
     }
     else if (imageData)
     {
+        SLM_TRACE("Register is a vtkImageData");
         m_map2colors->SetOutput(imageData);
     }
 

@@ -7,6 +7,7 @@
 #include <fwTools/helpers.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
@@ -20,16 +21,15 @@
 
 #include <vtkIO/vtk.hpp>
 
-#include <vtkCubeSource.h>
-#include <vtkImageData.h>
-#include <vtkRenderer.h>
 #include <vtkActor.h>
-#include <vtkLookupTable.h>
-#include <vtkProperty.h>
-#include <vtkImageMapToColors.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkImageActor.h>
 #include <vtkCellArray.h>
+#include <vtkImageActor.h>
+#include <vtkImageBlend.h>
+#include <vtkImageData.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
 #include <vtkTransform.h>
 
 #include "visuVTKAdaptor/ImageSlice.hpp"
@@ -45,6 +45,7 @@ namespace visuVTKAdaptor
 
 ImageSlice::ImageSlice() throw()
 {
+    SLM_TRACE_FUNC();
     m_imageActor = vtkImageActor::New();
 
     //m_planeSource = vtkPlaneSource::New();
@@ -55,14 +56,16 @@ ImageSlice::ImageSlice() throw()
     m_interpolation = true;
 
     // Manage events
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
+    this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
 }
 
 //------------------------------------------------------------------------------
 
 ImageSlice::~ImageSlice() throw()
 {
+    SLM_TRACE_FUNC();
     m_imageActor->Delete();
     m_imageActor = NULL;
 
@@ -80,6 +83,7 @@ ImageSlice::~ImageSlice() throw()
 
 void ImageSlice::doStart() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->addToRenderer(m_imageActor);
     this->addToRenderer(m_planeOutlineActor);
     this->addToPicker(m_imageActor);
@@ -89,6 +93,7 @@ void ImageSlice::doStart() throw(fwTools::Failed)
 
 void ImageSlice::doStop() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->removeFromPicker(m_imageActor);
     this->removeAllPropFromRenderer();
 }
@@ -97,6 +102,7 @@ void ImageSlice::doStop() throw(fwTools::Failed)
 
 void ImageSlice::doSwap() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->doUpdate();
 }
 
@@ -104,6 +110,7 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
     if (!m_ctrlImageId.empty())
@@ -122,7 +129,12 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = m_ctrlImage.lock();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-    ::fwServices::registerCommunicationChannel(image, this->getSptr())->start(); //TODO:unregister
+    if (!m_imageComChannel.expired())
+    {
+        ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
+    }
+    m_imageComChannel = ::fwServices::registerCommunicationChannel(image, this->getSptr());
+    m_imageComChannel.lock()->start();
 
     if (imageIsValid)
     {
@@ -137,11 +149,20 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
 
 void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = m_ctrlImage.lock();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
+    if ( msg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
+    {
+        SLM_TRACE("Has event MODIFIED_FIELDS");
+        doUpdate();
+    }
+
+
     if (imageIsValid)
     {
+
         if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {
             ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
@@ -221,6 +242,7 @@ void ImageSlice::configuring() throw(fwTools::Failed)
 
 void ImageSlice::updateImage( ::fwData::Image::sptr image  )
 {
+    SLM_TRACE_FUNC();
     SLM_ASSERT("Null control image", !m_ctrlImage.expired());
     this->updateImageInfos(m_ctrlImage.lock());
 
@@ -231,6 +253,7 @@ void ImageSlice::updateImage( ::fwData::Image::sptr image  )
 
 void ImageSlice::updateSliceIndex( ::fwData::Image::sptr image )
 {
+    SLM_TRACE_FUNC();
     unsigned int axialIndex    = m_axialIndex->value();
     unsigned int frontalIndex  = m_frontalIndex->value();
     unsigned int sagittalIndex = m_sagittalIndex->value();
@@ -248,6 +271,7 @@ void ImageSlice::updateSliceIndex( ::fwData::Image::sptr image )
 
 void ImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
 {
+    SLM_TRACE_FUNC();
     int extent[6];
     std::fill(  extent, extent+6, 0);
     extent[1] = image->getSize()[0]-1;
@@ -270,20 +294,26 @@ void ImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
 
 void ImageSlice::buildPipeline( )
 {
+    SLM_TRACE_FUNC();
 
     if (!m_imageSourceId.empty())
     {
         m_imageSource = this->getVtkObject(m_imageSourceId);
     }
 
-    vtkImageAlgorithm *algorithm = vtkImageAlgorithm::SafeDownCast(m_imageSource);
-    vtkImageData      *imageData = vtkImageData::SafeDownCast(m_imageSource);
+    vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageSource);
+    vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageSource);
+    vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageSource);
 
     SLM_ASSERT("Invalid vtk image source", algorithm||imageData )
     if (algorithm)
     {
         SLM_TRACE("Input is a vtkImageAlgorithm");
         m_imageActor->SetInput(algorithm->GetOutput());
+        if (imageBlend)
+        {
+            imageBlend->SetBlendModeToCompound();
+        }
     }
     else if (imageData)
     {
@@ -305,6 +335,7 @@ void ImageSlice::buildPipeline( )
 //------------------------------------------------------------------------------
 void ImageSlice::buildOutline()
 {
+    SLM_TRACE_FUNC();
     vtkPoints* points   = vtkPoints::New(VTK_DOUBLE);
     points->SetNumberOfPoints(4);
     int i;
@@ -349,6 +380,7 @@ void ImageSlice::buildOutline()
 
 void ImageSlice::updateOutline()
 {
+    SLM_TRACE_FUNC();
     static const int indexZ[12] = { 0,2,4, 1,2,4,  1,3,4 ,0,3,4 };
     static const int indexY[12] = { 0,2,4, 1,2,4,  1,2,5 ,0,2,5 };
     static const int indexX[12] = { 0,2,4, 0,2,5,  0,3,5 ,0,3,4 };

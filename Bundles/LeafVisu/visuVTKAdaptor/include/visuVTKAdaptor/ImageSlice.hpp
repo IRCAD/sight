@@ -76,6 +76,7 @@ protected :
     vtkPolyDataMapper *m_planeOutlineMapper;
     vtkActor *m_planeOutlineActor;
 
+    ::fwServices::IService::wptr m_imageComChannel;
 
 };
 
