@@ -92,8 +92,8 @@ void Image::doUpdate() throw(::fwTools::Failed)
 
     if (imageIsValid)
     {
-        buildPipeline();
         updateImage(image);
+        buildPipeline();
         updateTransfertFunction(image);
         updateWindowing(image);
         updateImageOpacity();
@@ -156,9 +156,6 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 {
     ::vtkIO::toVTKImage(image,m_imageData);
 
-    m_map2colors->SetInput(m_imageData);
-
-
     this->updateImageInfos(image);
 
     this->setVtkPipelineModified();
@@ -203,8 +200,8 @@ void Image::updateImageOpacity()
 
 void Image::buildPipeline( )
 {
+    m_map2colors->SetInput(m_imageData);
     m_map2colors->SetLookupTable(m_lut);
-    this->setVtkPipelineModified();
 
     vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
     vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageRegister);
@@ -214,7 +211,8 @@ void Image::buildPipeline( )
     if (imageBlend)
     {
         m_imagePortId = imageBlend->GetNumberOfInputs();
-        imageBlend->SetInput(m_imagePortId, algorithm->GetOutput());
+        imageBlend->SetInputConnection(m_imagePortId, m_map2colors->GetOutputPort());
+        OSLM_TRACE("" << this->getUUID() << " Added to port " << m_imagePortId << " of vtkImageBlend");
     }
     else if (algorithm)
     {
@@ -225,7 +223,7 @@ void Image::buildPipeline( )
         m_map2colors->SetOutput(imageData);
     }
 
-
+    this->setVtkPipelineModified();
 }
 
 
