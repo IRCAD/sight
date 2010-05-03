@@ -135,7 +135,7 @@ VTKIO_API  bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::fwData::TransformationM
  * @param[in] allow_transparency Enable convertion of ::fwData::TransfertFunction alpha channel
  *
  */
-void convertTF2vtkTF(
+VTKIO_API void convertTF2vtkTF(
         ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
         vtkLookupTable * lookupTableDst,
         bool allow_transparency = false
