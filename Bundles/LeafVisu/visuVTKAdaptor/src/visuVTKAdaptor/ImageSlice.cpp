@@ -56,6 +56,8 @@ ImageSlice::ImageSlice() throw()
     m_interpolation = true;
 
     // Manage events
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
     this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
@@ -162,6 +164,10 @@ void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
 
     if (imageIsValid)
     {
+        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
+        {
+            doUpdate();
+        }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {

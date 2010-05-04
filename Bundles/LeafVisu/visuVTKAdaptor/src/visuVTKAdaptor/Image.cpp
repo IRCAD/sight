@@ -6,6 +6,8 @@
 
 #include <fwTools/helpers.hpp>
 
+#include <fwServices/IEditionService.hpp>
+
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
@@ -123,7 +125,12 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
             doUpdate();
-        }
+
+            // Hack to force imageSlice update until it is not able to detect a new image
+            ::fwComEd::ImageMsg::NewSptr msg;
+            msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
+            ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+            }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
         {
