@@ -186,12 +186,16 @@ public :
      */
     FWCOMED_API static void setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage);
 
+    template < typename T , typename INT_INDEX> 
+    static void setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value);
+
     template < typename T > 
-    static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T value);
+    static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T &value);
+
 };
 
 
-template < typename VALUE >
+template < typename VALUE, typename INT_INDEX >
 class CastAndSetFunctor
 {
 public:
@@ -199,21 +203,27 @@ public:
     {
         public:
         typedef VALUE ValueType;
+        typedef INT_INDEX PointType;
+
+            Param(PointType &p, ValueType &v):
+                value (v), point(p)
+            {};
+
         ::fwData::Image::sptr image;
-        ::fwData::Point::sptr point;
-        VALUE value;
+        const ValueType &value;
+        const PointType &point;
     };
 
     template < typename IMAGE >
     void operator()( Param &param )
     {
         IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
-        ::fwData::Point::PointCoordArrayType p = param.point->getCoord();
-        std::vector<boost::int32_t>       size = param.image->getSize();
-        int sx = size[0];
-        int sy = size[1];
-        int offset = p[0] + sx*p[1] + p[2]*sx*sy;
-        *(buffer+offset) = ::fwTools::numericRoundCast<typename Param::ValueType, IMAGE>(param.value);
+        const INT_INDEX &p = param.point;
+        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        const int &sx = size[0];
+        const int &sy = size[1];
+        const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
+        *(buffer+offset) = ::fwTools::numericRoundCast<IMAGE>(param.value);
     }
 
 };
@@ -221,19 +231,25 @@ public:
 
 
 template < typename T > 
-void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T value)
+void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T &value)
 {
-    typename CastAndSetFunctor<T>::Param param;
-    param.image = image;
-    param.value = value;
-    param.point = point;
-
-    ::fwTools::DynamicType type = image->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndSetFunctor<T> >::invoke( type, param );
+    setPixel(image, point->getCoord(), value);
 }
 
 
-//template void MedicalImageHelpers::setPixel<float>(::fwData::Image::sptr image, ::fwData::Point::sptr point, float value);
+template < typename T , typename INT_INDEX> 
+void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value)
+{
+    typename CastAndSetFunctor<T,INT_INDEX>::Param param(point, value);
+    param.image = image;
+
+    ::fwTools::DynamicType type = image->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndSetFunctor<T, INT_INDEX> >::invoke( type, param );
+}
+
+
+
+
 
 
 } // fieldHelper

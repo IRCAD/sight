@@ -48,7 +48,6 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3])
     ::fwData::Image::sptr image = this->getImage();;
 
     std::copy(image->getRefSpacing().begin(), image->getRefSpacing().end(), spacing);
-
 }
 
 void MedicalImageAdaptor::getImageDataSize(int size[3])
