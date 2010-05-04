@@ -27,6 +27,7 @@ std::string ImageMsg::SLICE_INDEX = "SLICE_INDEX";
 std::string ImageMsg::ACTIVATE_SYNC_CROSS = "ACTIVATE_SYNC_CROSS";
 std::string ImageMsg::INACTIVATE_SYNC_CROSS = "INACTIVATE_SYNC_CROSS";
 std::string ImageMsg::CHANGE_SLICE_TYPE = "CHANGE_SLICE_TYPE";
+std::string ImageMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
@@ -48,7 +49,7 @@ void ImageMsg::setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
     m_frontalIndex = f;
     m_sagittalIndex = s;
 }
-    
+
 //-----------------------------------------------------------------------------
 
 void ImageMsg::setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo )
@@ -68,7 +69,7 @@ void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
     f->deepCopy(m_frontalIndex );
     s->deepCopy(m_sagittalIndex);
 }
-    
+
 //-----------------------------------------------------------------------------
 
 void ImageMsg::getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max) const
