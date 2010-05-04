@@ -30,16 +30,11 @@ namespace fwData
 
 boost::int32_t  imageSizeInBytes( const ::fwData::Image &image )
 {
-    if  ( image.getCRefSize().empty() )
-    {
-        return 0; // an image without Region specified
-    }
+    SLM_ASSERT("Image size must be specified", !image.getCRefSize().empty() );
+    SLM_ASSERT("Image must have a valid PixelType", image.getPixelType() != ::fwTools::DynamicType() );
 
-    boost::int32_t  size = std::accumulate( image.getCRefSize().begin() ,  image.getCRefSize().end(), 1, std::multiplies<boost::int32_t> () );
-
-    assert(image.getPixelType() != ::fwTools::DynamicType() );
+    ::boost::int32_t  size = std::accumulate( image.getCRefSize().begin() ,  image.getCRefSize().end(), 1, std::multiplies<boost::int32_t> () );
     size  *= image.getPixelType().sizeOf();
-
     return size;
  }
 
@@ -170,11 +165,18 @@ void Image::deepCopy( Image::csptr _source )
     this->m_dWindowWidth        = _source->m_dWindowWidth;
     this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
 
-    char * src = static_cast<char *>( _source->getBuffer() );
-    ::boost::int32_t size = imageSizeInBytes( *_source );
-    char * dest = new char[size];
-    ::std::copy( src, src + size , dest );
-    this->setBuffer( dest );
+    if(this->getPixelType() != ::fwTools::DynamicType() )
+    {
+        char * src = static_cast<char *>( _source->getBuffer() );
+        ::boost::int32_t size = imageSizeInBytes( *_source );
+        char * dest = new char[size];
+        ::std::copy( src, src + size , dest );
+        this->setBuffer( dest );
+    }
+    else
+    {
+        this->setBuffer( NULL );
+    }
 }
 
 //------------------------------------------------------------------------------

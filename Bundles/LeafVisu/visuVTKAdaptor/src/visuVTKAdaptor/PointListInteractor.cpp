@@ -138,7 +138,7 @@ protected :
 
 };
 
-
+//------------------------------------------------------------------------------
 
 PointListInteractor::PointListInteractor() throw()
     : m_priority(0.999)
@@ -146,11 +146,13 @@ PointListInteractor::PointListInteractor() throw()
     handlingEventOff();
 }
 
+//------------------------------------------------------------------------------
+
 PointListInteractor::~PointListInteractor() throw()
 {
-
 }
 
+//------------------------------------------------------------------------------
 
 void PointListInteractor::configuring() throw(fwTools::Failed)
 {
@@ -160,6 +162,8 @@ void PointListInteractor::configuring() throw(fwTools::Failed)
     this->setPickerId( m_configuration->getAttributeValue("picker") );
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
+
+//------------------------------------------------------------------------------
 
 void PointListInteractor::doStart() throw(fwTools::Failed)
 {
@@ -174,14 +178,19 @@ void PointListInteractor::doStart() throw(fwTools::Failed)
     this->getInteractor()->AddObserver(STOP_INTERACTION_EVENT, m_interactionCommand, m_priority);
 }
 
+//------------------------------------------------------------------------------
+
 void PointListInteractor::doUpdate() throw(fwTools::Failed)
 {
-
 }
+
+//------------------------------------------------------------------------------
 
 void PointListInteractor::doSwap() throw(fwTools::Failed)
 {
 }
+
+//------------------------------------------------------------------------------
 
 void PointListInteractor::doStop() throw(fwTools::Failed)
 {
@@ -192,6 +201,8 @@ void PointListInteractor::doStop() throw(fwTools::Failed)
     this->unregisterServices();
 }
 
+//------------------------------------------------------------------------------
+
 void PointListInteractor::resetPointList()
 {
     ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
@@ -201,6 +212,8 @@ void PointListInteractor::resetPointList()
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
     ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
 }
+
+//------------------------------------------------------------------------------
 
 void PointListInteractor::addPoint(const double &x, const double &y, const double &z)
 {
@@ -216,5 +229,6 @@ void PointListInteractor::addPoint(const double &x, const double &y, const doubl
     ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
 }
 
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

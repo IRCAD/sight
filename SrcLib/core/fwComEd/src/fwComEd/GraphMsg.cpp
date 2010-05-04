@@ -42,52 +42,56 @@ void GraphMsg::addedNode( ::fwData::Node::sptr node )
     addEvent( GraphMsg::ADD_NODE , node );
 }
 
-
+//-----------------------------------------------------------------------------
 
 ::fwData::Node::csptr GraphMsg::getAddedNode() const
 {
     return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::ADD_NODE ) );
 }
 
-
+//-----------------------------------------------------------------------------
 
 void GraphMsg::removedNode( ::fwData::Node::sptr node )
 {
     addEvent( GraphMsg::REMOVE_NODE , node );
 }
 
-
+//-----------------------------------------------------------------------------
 
 ::fwData::Node::csptr GraphMsg::getRemovedNode() const
 {
     return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::REMOVE_NODE ) );
 }
 
-
+//-----------------------------------------------------------------------------
 
 void GraphMsg::selectedNode( ::fwData::Node::sptr node )
 {
     addEvent( GraphMsg::SELECTED_NODE , node );
 }
 
-
+//-----------------------------------------------------------------------------
 
 ::fwData::Node::csptr GraphMsg::getSelectedNode() const
 {
     return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::SELECTED_NODE ) );
 }
 
+//-----------------------------------------------------------------------------
+
 void GraphMsg::unselectedNode( ::fwData::Node::sptr node )
 {
     addEvent( GraphMsg::UNSELECTED_NODE , node );
 }
+
+//-----------------------------------------------------------------------------
 
 ::fwData::Node::csptr GraphMsg::getUnselectedNode() const
 {
     return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::UNSELECTED_NODE ) );
 }
 
-
+//-----------------------------------------------------------------------------
 
 } // namespace fwComEd
 
