@@ -161,8 +161,10 @@ void Image::configuring() throw(fwTools::Failed)
     {
     this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
     }
-
-    this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
+    if(m_configuration->hasAttribute("tfalpha") )
+    {
+        this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -201,7 +203,6 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
     std::string tfName = m_transfertFunctionId->value();
     ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
     ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
-    OSLM_ERROR("USE ALPHA: " << m_allowAlphaInTF);
     setVtkPipelineModified();
 }
 
@@ -247,7 +248,7 @@ void Image::buildPipeline( )
     else if (algorithm)
     {
         SLM_TRACE("Register is a vtkImageAlgorithm");
-        algorithm->SetInput(imageData);
+        algorithm->SetInputConnection(m_map2colors->GetOutputPort());
     }
     else if (imageData)
     {

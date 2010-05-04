@@ -230,9 +230,9 @@ void ImageSlice::configuring() throw(fwTools::Failed)
     {
         this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
     }
-    if(m_configuration->getAttributeValue("interpolation") == std::string("off") )
+    if (m_configuration->hasAttribute("interpolation"))
     {
-        m_interpolation = false;
+        this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "off"));
     }
 }
 

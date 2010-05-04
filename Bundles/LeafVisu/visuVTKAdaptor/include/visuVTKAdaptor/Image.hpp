@@ -37,10 +37,10 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Image() throw();
 
-    void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
-    void setVtkImageRegister(vtkObject *obj)   {m_imageRegister = obj;};
-    void setImageOpacity(double opacity)       {m_imageOpacity = opacity;};
-    void setAllowAlphaInTF(bool allow)         {m_allowAlphaInTF = allow;};
+    VISUVTKADAPTOR_API void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
+    VISUVTKADAPTOR_API void setVtkImageRegister(vtkObject *obj)   {m_imageRegister = obj;};
+    VISUVTKADAPTOR_API void setImageOpacity(double opacity)       {m_imageOpacity = opacity;};
+    VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow)         {m_allowAlphaInTF = allow;};
 
 protected :
 

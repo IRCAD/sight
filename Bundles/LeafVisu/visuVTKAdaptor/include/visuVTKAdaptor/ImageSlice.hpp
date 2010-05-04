@@ -41,6 +41,7 @@ public:
     void setCtrlImage(::fwData::Image::sptr image)      {m_ctrlImage = image;};
     void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
     void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
+    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
 
 protected :
 
