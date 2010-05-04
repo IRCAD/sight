@@ -42,6 +42,7 @@ Image::Image() throw()
     m_imageData  = vtkImageData::New();
 
     m_imagePortId = -1;
+    m_allowAlphaInTF = false;
 
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
@@ -160,6 +161,8 @@ void Image::configuring() throw(fwTools::Failed)
     {
     this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
     }
+
+    this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
 }
 
 //------------------------------------------------------------------------------
@@ -197,7 +200,8 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
     ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
     std::string tfName = m_transfertFunctionId->value();
     ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
-    ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, true );
+    ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
+    OSLM_ERROR("USE ALPHA: " << m_allowAlphaInTF);
     setVtkPipelineModified();
 }
 

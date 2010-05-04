@@ -303,17 +303,18 @@ void ImageSlice::buildPipeline( )
 
     vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageSource);
     vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageSource);
-    vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageSource);
+    //vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageSource);
 
     SLM_ASSERT("Invalid vtk image source", algorithm||imageData )
     if (algorithm)
     {
         SLM_TRACE("Input is a vtkImageAlgorithm");
         m_imageActor->SetInput(algorithm->GetOutput());
-        if (imageBlend)
-        {
-            imageBlend->SetBlendModeToCompound();
-        }
+        //if (imageBlend)
+        //{
+            //imageBlend->SetBlendModeToCompound();
+            //imageBlend->SetCompoundThreshold(0);
+        //}
     }
     else if (imageData)
     {

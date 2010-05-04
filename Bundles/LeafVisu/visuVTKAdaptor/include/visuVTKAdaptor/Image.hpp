@@ -40,6 +40,7 @@ public:
     void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
     void setVtkImageRegister(vtkObject *obj)   {m_imageRegister = obj;};
     void setImageOpacity(double opacity)       {m_imageOpacity = opacity;};
+    void setAllowAlphaInTF(bool allow)         {m_allowAlphaInTF = allow;};
 
 protected :
 
@@ -64,6 +65,7 @@ protected :
 
     int    m_imagePortId;
     double m_imageOpacity;
+    bool   m_allowAlphaInTF;
 
     vtkLookupTable *m_lut;
     vtkImageMapToColors *m_map2colors;
