@@ -283,6 +283,10 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "off"));
     }
+    if (m_configuration->hasAttribute("vtkimagesource"))
+    {
+        this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -346,6 +350,10 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     {
         negatoAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
         negatoAdaptor->setInterpolation(m_interpolation);
+        if (!m_imageSourceId.empty())
+        {
+            negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
+        }
     }
 
     service->setRenderService(this->getRenderService());

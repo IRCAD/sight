@@ -14,7 +14,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-class vtkImageData;
+class vtkObject;
 
 
 namespace visuVTKAdaptor
@@ -33,6 +33,8 @@ public:
 
     VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
     VISUVTKADAPTOR_API void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    VISUVTKADAPTOR_API void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
+    VISUVTKADAPTOR_API void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
 
 protected :
 
@@ -44,10 +46,14 @@ protected :
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
-    vtkImageData *m_imageData;
+    bool m_manageImageSource;
+    std::string m_imageSourceId;
+    vtkObject  *m_imageSource;
+
     bool m_allowAlphaInTF;
     bool m_interpolation;
 
+    vtkObject* getImageSource();
     ::fwRenderVTK::IVtkAdaptorService::sptr getImageSliceAdaptor();
     ::fwRenderVTK::IVtkAdaptorService::sptr getImageAdaptor();
 

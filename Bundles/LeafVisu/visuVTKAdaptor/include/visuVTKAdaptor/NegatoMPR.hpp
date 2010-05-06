@@ -38,6 +38,7 @@ public:
 
     VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
     VISUVTKADAPTOR_API void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    VISUVTKADAPTOR_API void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
 
 protected :
 
@@ -60,8 +61,10 @@ protected :
 
 private:
 
-    bool   m_allowAlphaInTF;
+    bool m_allowAlphaInTF;
     bool m_interpolation;
+
+    std::string m_imageSourceId;
 
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;

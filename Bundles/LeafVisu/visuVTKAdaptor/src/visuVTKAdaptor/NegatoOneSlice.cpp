@@ -36,10 +36,11 @@ namespace visuVTKAdaptor
 
 NegatoOneSlice::NegatoOneSlice() throw()
 {
-    m_imageData = vtkImageData::New();
-
     m_allowAlphaInTF = false;
     m_interpolation  = false;
+    m_manageImageSource = false;
+
+    m_imageSource = NULL;
 
     this->handlingEventOff();
 }
@@ -48,11 +49,34 @@ NegatoOneSlice::NegatoOneSlice() throw()
 
 NegatoOneSlice::~NegatoOneSlice() throw()
 {
-    m_imageData->Delete();
-    m_imageData = NULL;
+    if (m_manageImageSource && m_imageSource)
+    {
+        m_imageSource->Delete();
+        m_imageSource = NULL;
+    }
 }
 
 //------------------------------------------------------------------------------
+vtkObject* NegatoOneSlice::getImageSource()
+{
+    if ( !m_imageSource )
+    {
+        if (!m_imageSourceId.empty())
+        {
+            m_imageSource = this->getVtkObject(m_imageSourceId);
+        }
+        else
+        {
+            m_imageSource = vtkImageData::New();
+            m_manageImageSource = true;
+        }
+    }
+
+    return m_imageSource;
+}
+
+//------------------------------------------------------------------------------
+
 ::fwRenderVTK::IVtkAdaptorService::sptr NegatoOneSlice::getImageSliceAdaptor()
 {
     ::fwRenderVTK::IVtkAdaptorService::sptr imageSliceAdaptor;
@@ -76,7 +100,7 @@ NegatoOneSlice::~NegatoOneSlice() throw()
 
         ::visuVTKAdaptor::ImageSlice::sptr ISA;
         ISA = ::visuVTKAdaptor::ImageSlice::dynamicCast(imageSliceAdaptor);
-        ISA->setVtkImageSource(m_imageData);
+        ISA->setVtkImageSource(this->getImageSource());
         ISA->setCtrlImage(image);
         ISA->setInterpolation(m_interpolation);
 
@@ -113,7 +137,7 @@ NegatoOneSlice::~NegatoOneSlice() throw()
 
         ::visuVTKAdaptor::Image::sptr IA;
         IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
-        IA->setVtkImageRegister(m_imageData);
+        IA->setVtkImageRegister(this->getImageSource());
         IA->setImageOpacity(1.);
         IA->setAllowAlphaInTF(m_allowAlphaInTF);
 
@@ -203,6 +227,10 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     if (m_configuration->hasAttribute("interpolation"))
     {
         this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "off"));
+    }
+    if (m_configuration->hasAttribute("vtkimagesource"))
+    {
+        this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
     }
 }
 
