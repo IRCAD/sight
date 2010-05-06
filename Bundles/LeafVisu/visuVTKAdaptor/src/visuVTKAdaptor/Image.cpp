@@ -43,6 +43,8 @@ Image::Image() throw()
     m_map2colors = vtkImageMapToColors::New();
     m_imageData  = vtkImageData::New();
 
+    m_imageRegister = NULL;
+
     m_imagePortId = -1;
     m_allowAlphaInTF = false;
 
@@ -135,6 +137,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
         if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
         {
             m_imageData->Modified();
+
             this->setVtkPipelineModified();
         }
 
@@ -248,9 +251,12 @@ void Image::buildPipeline( )
     if (imageBlend)
     {
         SLM_TRACE("Register is a vtkImageBlend");
-        m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
-        imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
-        OSLM_TRACE(this->getUUID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
+        if (m_imagePortId < 0)
+        {
+            m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
+            imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
+            OSLM_TRACE(this->getUUID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
+        }
     }
     else if (algorithm)
     {
