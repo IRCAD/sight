@@ -134,14 +134,12 @@ vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImage
     if (dst)
     {
         dst->ShallowCopy(vtkImage);
-    }
-    else
-    {
-        importer->SetOutput(0);
-        vtkImage->Register(0);
+        importer->Delete();
     }
 
-    importer->Delete();
+    SLM_ERROR_IF("::vtkIO::toVTKImage will not longer return a vtkImageData."
+                  "You should update the usage of this function in your code, "
+                  "and pass a vtkImageData as second argument", dst == NULL);
 
     return vtkImage;
 
