@@ -96,10 +96,6 @@ const char *myScalarTypeCallback(void *imageData)
 vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImageData *dst)
 {
     vtkImageImport *importer = vtkImageImport::New();
-    if (dst)
-    {
-        importer->SetOutput(dst);
-    }
 
     importer->SetDataSpacing( data->getSpacing().at(0),
                               data->getSpacing().at(1),
@@ -131,12 +127,21 @@ vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImage
     importer->SetScalarTypeCallback( myScalarTypeCallback );
 
 
-
     importer->Update();
 
     vtkImageData *vtkImage = importer->GetOutput();
 
-    //importer->Delete(); // danger, correct use , what about  importer->GetOutput()? ????
+    if (dst)
+    {
+        dst->ShallowCopy(vtkImage);
+    }
+    else
+    {
+        importer->SetOutput(0);
+        vtkImage->Register(0);
+    }
+
+    importer->Delete();
 
     return vtkImage;
 
