@@ -48,6 +48,8 @@ ImageSlice::ImageSlice() throw()
     SLM_TRACE_FUNC();
     m_imageActor = vtkImageActor::New();
 
+    m_imageSource = NULL;
+
     //m_planeSource = vtkPlaneSource::New();
     m_planeOutlinePolyData = vtkPolyData::New();
     m_planeOutlineMapper   = vtkPolyDataMapper::New();
@@ -96,6 +98,10 @@ void ImageSlice::doStart() throw(fwTools::Failed)
 void ImageSlice::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    if (!m_imageComChannel.expired())
+    {
+        ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
+    }
     this->removeFromPicker(m_imageActor);
     this->removeAllPropFromRenderer();
 }
@@ -109,26 +115,30 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
+::fwData::Image::sptr ImageSlice::getCtrlImage()
+{
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    if (m_ctrlImage.expired())
+    {
+        if (!m_ctrlImageId.empty())
+        {
+            m_ctrlImage.reset();
+            ::fwData::Composite::iterator it = (*composite).find(m_ctrlImageId);
+            if (it != (*composite).end())
+            {
+                m_ctrlImage = ::fwData::Image::dynamicCast((*it).second);
+            }
+        }
+    }
+    SLM_ASSERT("Null control image", !m_ctrlImage.expired());
+    return m_ctrlImage.lock();
+}
 
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    ::fwData::Image::sptr         image = this->getCtrlImage();
 
-    if (!m_ctrlImageId.empty())
-    {
-        m_ctrlImage.reset();
-        ::fwData::Composite::iterator it = (*composite).find(m_ctrlImageId);
-        if (it != (*composite).end())
-        {
-            m_ctrlImage = ::fwData::Image::dynamicCast((*it).second);
-        }
-    }
-    SLM_ASSERT("Null control image", !m_ctrlImage.expired());
-
-
-
-    ::fwData::Image::sptr image = m_ctrlImage.lock();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (!m_imageComChannel.expired())

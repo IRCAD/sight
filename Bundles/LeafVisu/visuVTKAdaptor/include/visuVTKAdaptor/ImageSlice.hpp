@@ -58,6 +58,8 @@ protected :
 
     void setSlice( int slice, ::fwData::Image::sptr image  );
 
+    ::fwData::Image::sptr getCtrlImage();
+
     void updateOutline();
     void updateImage( ::fwData::Image::sptr ImageSlice  );
     void updateSliceIndex( ::fwData::Image::sptr ImageSlice );
