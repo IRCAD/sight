@@ -77,7 +77,7 @@ vtkObject* NegatoOneSlice::getImageSource()
 
 //------------------------------------------------------------------------------
 
-vtkObject* NegatoOneSlice::cleanImageSource()
+void NegatoOneSlice::cleanImageSource()
 {
     if (m_manageImageSource && m_imageSource)
     {

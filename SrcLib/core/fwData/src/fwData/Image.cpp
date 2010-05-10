@@ -28,12 +28,13 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-boost::int32_t  imageSizeInBytes( const ::fwData::Image &image )
+::boost::int32_t  imageSizeInBytes( const ::fwData::Image &image )
 {
+    SLM_TRACE_FUNC();
     SLM_ASSERT("Image size must be specified", !image.getCRefSize().empty() );
     SLM_ASSERT("Image must have a valid PixelType", image.getPixelType() != ::fwTools::DynamicType() );
 
-    ::boost::int32_t  size = std::accumulate( image.getCRefSize().begin() ,  image.getCRefSize().end(), 1, std::multiplies<boost::int32_t> () );
+    ::boost::int32_t  size = std::accumulate( image.getCRefSize().begin() ,  image.getCRefSize().end(), 1, std::multiplies< ::boost::int32_t > () );
     size  *= image.getPixelType().sizeOf();
     return size;
  }

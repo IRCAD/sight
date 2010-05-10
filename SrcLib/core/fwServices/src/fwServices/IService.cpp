@@ -108,7 +108,7 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IService::start() throw(fwTools::Failed)
+void IService::start() throw( ::fwTools::Failed)
 {
     if( m_globalState == STOPPED )
     {
@@ -122,7 +122,7 @@ void IService::start() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IService::stop() throw(fwTools::Failed)
+void IService::stop() throw( ::fwTools::Failed)
 {
     if( m_globalState == STARTED )
     {
@@ -194,7 +194,7 @@ bool IService::isHandlingAllEvents()
 
 //-----------------------------------------------------------------------------
 
-void IService::update() throw(fwTools::Failed)
+void IService::update() throw( ::fwTools::Failed)
 {
     OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
     OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );

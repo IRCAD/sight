@@ -20,7 +20,7 @@ class vtkObject;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API NegatoOneSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API NegatoOneSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
@@ -54,7 +54,7 @@ protected :
     bool m_interpolation;
 
     vtkObject* getImageSource();
-    vtkObject* cleanImageSource();
+    void cleanImageSource();
     ::fwRenderVTK::IVtkAdaptorService::sptr getImageSliceAdaptor();
     ::fwRenderVTK::IVtkAdaptorService::sptr getImageAdaptor();
 
