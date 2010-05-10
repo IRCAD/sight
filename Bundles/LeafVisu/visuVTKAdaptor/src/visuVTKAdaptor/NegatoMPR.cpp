@@ -89,6 +89,7 @@ void NegatoMPR::doSwap() throw(fwTools::Failed)
             {
                 OSLM_ASSERT("sub services expired in service : " << ::fwTools::UUID::get(this->getSptr() ), !service.expired());
                 service.lock()->swap(image);
+                service.lock()->update();
             }
         }
     }

@@ -54,6 +54,7 @@ protected :
     bool m_interpolation;
 
     vtkObject* getImageSource();
+    vtkObject* cleanImageSource();
     ::fwRenderVTK::IVtkAdaptorService::sptr getImageSliceAdaptor();
     ::fwRenderVTK::IVtkAdaptorService::sptr getImageAdaptor();
 

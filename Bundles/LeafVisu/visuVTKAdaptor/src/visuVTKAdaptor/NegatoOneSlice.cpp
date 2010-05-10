@@ -36,8 +36,9 @@ namespace visuVTKAdaptor
 
 NegatoOneSlice::NegatoOneSlice() throw()
 {
+    SLM_TRACE_FUNC();
     m_allowAlphaInTF = false;
-    m_interpolation  = false;
+    m_interpolation  = true;
     m_manageImageSource = false;
 
     m_imageSource = NULL;
@@ -49,11 +50,9 @@ NegatoOneSlice::NegatoOneSlice() throw()
 
 NegatoOneSlice::~NegatoOneSlice() throw()
 {
-    if (m_manageImageSource && m_imageSource)
-    {
-        m_imageSource->Delete();
-        m_imageSource = NULL;
-    }
+    SLM_TRACE_FUNC();
+    this->unregisterServices();
+    this->cleanImageSource();
 }
 
 //------------------------------------------------------------------------------
@@ -61,6 +60,7 @@ vtkObject* NegatoOneSlice::getImageSource()
 {
     if ( !m_imageSource )
     {
+        OSLM_TRACE(this->getUUID() << ": Create ImageSource");
         if (!m_imageSourceId.empty())
         {
             m_imageSource = this->getVtkObject(m_imageSourceId);
@@ -77,12 +77,24 @@ vtkObject* NegatoOneSlice::getImageSource()
 
 //------------------------------------------------------------------------------
 
+vtkObject* NegatoOneSlice::cleanImageSource()
+{
+    if (m_manageImageSource && m_imageSource)
+    {
+        m_imageSource->Delete();
+        m_imageSource = NULL;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 ::fwRenderVTK::IVtkAdaptorService::sptr NegatoOneSlice::getImageSliceAdaptor()
 {
     ::fwRenderVTK::IVtkAdaptorService::sptr imageSliceAdaptor;
 
     if (m_imageSliceAdaptor.expired())
     {
+        OSLM_TRACE(this->getUUID() << ": Create ImageSlice Adaptor Service");
         ::fwData::Image::sptr image;
         ::fwData::Composite::sptr sceneComposite;
 
@@ -123,6 +135,7 @@ vtkObject* NegatoOneSlice::getImageSource()
 
     if (m_imageAdaptor.expired())
     {
+        OSLM_TRACE(this->getUUID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image;
         image = this->getObject< ::fwData::Image >();
         imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
@@ -155,6 +168,7 @@ vtkObject* NegatoOneSlice::getImageSource()
 
 void NegatoOneSlice::doStart() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->getImageAdaptor()->start();
     this->getImageSliceAdaptor()->start();
 }
@@ -163,15 +177,18 @@ void NegatoOneSlice::doStart() throw(fwTools::Failed)
 
 void NegatoOneSlice::doStop() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->getImageAdaptor()->stop();
     this->getImageSliceAdaptor()->stop();
     this->unregisterServices();
+    this->cleanImageSource();
 }
 
 //------------------------------------------------------------------------------
 
 void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->doStop();
     this->doStart();
 }
@@ -180,6 +197,7 @@ void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 
 void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->getImageAdaptor()->update();
     this->getImageSliceAdaptor()->update();
 }
@@ -188,6 +206,7 @@ void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 
 void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     //No event handled
 }
 

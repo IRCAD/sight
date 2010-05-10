@@ -50,7 +50,6 @@ ImageSlice::ImageSlice() throw()
 
     m_imageSource = NULL;
 
-    //m_planeSource = vtkPlaneSource::New();
     m_planeOutlinePolyData = vtkPolyData::New();
     m_planeOutlineMapper   = vtkPolyDataMapper::New();
     m_planeOutlineActor    = vtkActor::New();
