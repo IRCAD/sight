@@ -7,7 +7,12 @@
 #include <limits>
 
 #include <fwCore/base.hpp>
+
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwComEd/InteractionMsg.hpp"
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::InteractionMsg, ::fwComEd::InteractionMsg );
 
 namespace fwComEd
 {
@@ -49,7 +54,7 @@ void InteractionMsg::setEvent(std::string event)
 
 void InteractionMsg::setModifiersStatus(Modifiers k, bool state)
 {
-    if (state) 
+    if (state)
     {
         m_modifiersStatus = static_cast<Modifiers>(m_modifiersStatus | k);
     }

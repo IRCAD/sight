@@ -143,8 +143,8 @@ public:
         msg->setEventPoint(world[0], world[1], world[2]);
         msg->setEvent(event);
 
-        msg->setControlKeyStatus( ::fwComEd::InteractionMsg::CTRL,  m_caller->GetControlKey());
-        msg->setControlKeyStatus( ::fwComEd::InteractionMsg::SHIFT, m_caller->GetShiftKey());
+        msg->setModifiersStatus( ::fwComEd::InteractionMsg::CTRL,  m_caller->GetControlKey());
+        msg->setModifiersStatus( ::fwComEd::InteractionMsg::SHIFT, m_caller->GetShiftKey());
 
         m_adaptor->notifyEvent( msg );
     }

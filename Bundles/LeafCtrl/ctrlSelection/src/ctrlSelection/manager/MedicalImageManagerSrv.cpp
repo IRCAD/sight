@@ -5,21 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-//
-//#include <fwTools/UUID.hpp>
-//
-//#include <fwServices/helper.hpp>
+>
 #include <fwServices/macros.hpp>
-//#include <fwServices/op/Add.hpp>
-//
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-//#include <fwData/Acquisition.hpp>
 
 #include "ctrlSelection/manager/MedicalImageManagerSrv.hpp"
 

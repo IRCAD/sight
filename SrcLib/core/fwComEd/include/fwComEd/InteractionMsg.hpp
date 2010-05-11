@@ -33,7 +33,7 @@ public:
 
     typedef ::fwData::Point::PointCoordType PointCoordType;
 
-    //typedef enum 
+    //typedef enum
     //{
         //KEY_UP    ,
         //KEY_DOWN  ,
@@ -42,7 +42,7 @@ public:
         //MOUSE_MOVE
     //} EventType;
 
-    //typedef enum 
+    //typedef enum
     //{
         //LEFT           = (1 << 0),
         //MIDDLE         = (1 << 1),
@@ -51,7 +51,7 @@ public:
         //WHEEL_BACKWARD = (1 << 4),
     //} MouseButtons;
 
-    typedef enum 
+    typedef enum
     {
         CTRL      = (1 << 0),
         SHIFT     = (1 << 1),
@@ -95,18 +95,18 @@ public:
     FWCOMED_API virtual ~InteractionMsg() throw();
 
 
-    void setModifiersStatus(Modifiers k, bool state = true);
-    bool getModifiersStatus(Modifiers k);
+    FWCOMED_API void setModifiersStatus(Modifiers k, bool state = true);
+    FWCOMED_API bool getModifiersStatus(Modifiers k);
 
-    bool getControlStatus(){return getModifiersStatus(CTRL);}
-    bool getShiftStatus(){return getModifiersStatus(SHIFT);}
+    FWCOMED_API bool getControlStatus(){return getModifiersStatus(CTRL);}
+    FWCOMED_API bool getShiftStatus(){return getModifiersStatus(SHIFT);}
 
-    void setEvent(std::string event);
+    FWCOMED_API void setEvent(std::string event);
 
-    void setEventPoint(::fwData::Point::csptr point);
-    void setEventPoint(PointCoordType x, PointCoordType y, PointCoordType z);
+    FWCOMED_API void setEventPoint(::fwData::Point::csptr point);
+    FWCOMED_API void setEventPoint(PointCoordType x, PointCoordType y, PointCoordType z);
 
-    ::fwData::Point::csptr getEventPoint();
+    FWCOMED_API ::fwData::Point::csptr getEventPoint();
 
 protected:
 
