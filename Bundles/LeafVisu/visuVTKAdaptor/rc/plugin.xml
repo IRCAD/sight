@@ -9,235 +9,241 @@
 
     
 
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Render, ::fwTools::Object ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Render,::fwTools::Object ); -->
     <point id="::visuVTKAdaptor::Render" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwTools::Object</implements>
     </point>
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Cube, ::fwTools::Object ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Cube, ::fwTools::Object ); -->
     <point id="::visuVTKAdaptor::Cube" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwTools::Object</implements>
     </point>
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ); -->
     <point id="::visuVTKAdaptor::Material" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Material</implements>
     </point>
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::TriangularMesh, ::fwData::TriangularMesh ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::TriangularMesh, ::fwData::TriangularMesh ); -->
     <point id="::visuVTKAdaptor::TriangularMesh" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::TriangularMesh</implements>
     </point>
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction, ::fwData::Reconstruction ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction, ::fwData::Reconstruction ); -->
     <point id="::visuVTKAdaptor::Reconstruction" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Reconstruction</implements>
     </point>
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::Acquisition ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::Acquisition ); -->
     <point id="::visuVTKAdaptor::Acquisition" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Acquisition</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB ); -->
     <point id="::visuVTKAdaptor::ResectionDB" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::ResectionDB</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection ); -->
     <point id="::visuVTKAdaptor::Resection" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Resection</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::Point ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Point, ::fwData::Point ); -->
     <point id="::visuVTKAdaptor::Point" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Point</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::Point ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point ); -->
     <point id="::visuVTKAdaptor::PointLabel" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Point</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::PointList ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ); -->
     <point id="::visuVTKAdaptor::PointList" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::PointList</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::PointListInteractor ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor, ::fwData::PointList ); -->
     <point id="::visuVTKAdaptor::PointListInteractor" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::PointList</implements>
     </point>
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::PointList ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PickerInteractor, ::fwData::Composite ); -->
+    <point id="::visuVTKAdaptor::PickerInteractor" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList ); -->
     <point id="::visuVTKAdaptor::Distance" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::PointList</implements>
     </point>
  
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMultiDistances , ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::ImageMultiDistances" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>  
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLandmarks , ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLandmarks, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::ImageLandmarks" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point> 
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Text , ::fwTools::Object ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Text, ::fwTools::Object ); -->
     <point id="::visuVTKAdaptor::Text" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwTools::Object</implements>
     </point> 
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageText , ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageText, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::ImageText" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point> 
 
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Model, ::fwData::Model ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Model, ::fwData::Model ); -->
     <point id="::visuVTKAdaptor::Model" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Model</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ); -->
     <point id="::visuVTKAdaptor::Transform" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::TransformationMatrix3D</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Video, ::fwData::Video ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Video, ::fwData::Video ); -->
     <point id="::visuVTKAdaptor::Video" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Video</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera, ::fwData::Video ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera, ::fwData::Video ); -->
     <point id="::visuVTKAdaptor::Camera" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Video</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::NegatoOneSlice" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::SlicesCursor" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
     
-     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image ) ; -->
+     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::SliceFollowerCamera" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
     
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Normals, ::fwData::TriangularMesh ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Normals, ::fwData::TriangularMesh ); -->
     <point id="::visuVTKAdaptor::Normals" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::TriangularMesh</implements>
     </point>
 
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwTools::Object ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwTools::Object ); -->
     <point id="::visuVTKAdaptor::InteractorStyle" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwTools::Object</implements>
     </point>
     
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::NegatoWindowingInteractor" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
     
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::NegatoSlicingInteractor" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
     
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::ProbeCursor" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
 
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::NegatoMPR" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
      
-    <!--REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwData::Plane ) ;-->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwTools::Object ); -->
     <point id="::visuVTKAdaptor::PlaneSelector" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwTools::Object</implements>
     </point>   
 
-    <!--REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier, ::fwData::Composite ) ;-->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier, ::fwData::Composite ); -->
     <point id="::visuVTKAdaptor::PlaneSelectionNotifier" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Composite</implements>
     </point>
 
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Plane) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwTools::Object ); -->
     <point id="::visuVTKAdaptor::PlaneInteractor" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwTools::Object</implements>
     </point> 
 
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ); -->
     <point id="::visuVTKAdaptor::PlaneList" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::PlaneList</implements>
     </point>
     
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane ); -->
     <point id="::visuVTKAdaptor::Plane" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Plane</implements>
     </point>
     
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Snapshot, ::fwData::Composite ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Snapshot, ::fwData::Composite ); -->
     <point id="::visuVTKAdaptor::Snapshot" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Composite</implements>
     </point>
     
-    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Image ) ; -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::Medical3DCamera" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
 
-    <!--REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ) ;-->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::Image" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Image</implements>
     </point>
 
-    <!--REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite ) ;-->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite ); -->
     <point id="::visuVTKAdaptor::ImageSlice" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::Composite</implements>
