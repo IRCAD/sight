@@ -58,7 +58,7 @@ public:
         //ALT     = (1 << 2),
         //SUPER     = (1 << 3),
         //APPLE_CMD = (1 << 4),
-    } ControlKey;
+    } Modifiers;
 
     /**
      * @name Event identifier
@@ -95,8 +95,11 @@ public:
     FWCOMED_API virtual ~InteractionMsg() throw();
 
 
-    void setControlKeyStatus(ControlKey k, bool state = true);
-    bool getControlKeyStatus(ControlKey k);
+    void setModifiersStatus(Modifiers k, bool state = true);
+    bool getModifiersStatus(Modifiers k);
+
+    bool getControlStatus(){return getModifiersStatus(CTRL);}
+    bool getShiftStatus(){return getModifiersStatus(SHIFT);}
 
     void setEvent(std::string event);
 
@@ -109,7 +112,7 @@ protected:
 
     ::fwData::Point::sptr m_eventPoint;
 
-    ControlKey m_controlKeysStatus;
+    Modifiers m_modifiersStatus;
 
 
 };

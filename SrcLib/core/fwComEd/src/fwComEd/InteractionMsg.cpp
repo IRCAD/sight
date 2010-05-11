@@ -47,23 +47,23 @@ void InteractionMsg::setEvent(std::string event)
 
 //-----------------------------------------------------------------------------
 
-void InteractionMsg::setControlKeyStatus(ControlKey k, bool state)
+void InteractionMsg::setModifiersStatus(Modifiers k, bool state)
 {
     if (state) 
     {
-        m_controlKeysStatus = static_cast<ControlKey>(m_controlKeysStatus | k);
+        m_modifiersStatus = static_cast<Modifiers>(m_modifiersStatus | k);
     }
     else
     {
-        m_controlKeysStatus = static_cast<ControlKey>( m_controlKeysStatus & (std::numeric_limits<ControlKey>::max() - k));
+        m_modifiersStatus = static_cast<Modifiers>( m_modifiersStatus & (std::numeric_limits<Modifiers>::max() - k));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool InteractionMsg::getControlKeyStatus(ControlKey k)
+bool InteractionMsg::getModifiersStatus(Modifiers k)
 {
-    return m_controlKeysStatus & k;
+    return m_modifiersStatus & k;
 }
 
 //-----------------------------------------------------------------------------
