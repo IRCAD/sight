@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
->
+
 #include <fwServices/macros.hpp>
 
 #include <fwData/Composite.hpp>
