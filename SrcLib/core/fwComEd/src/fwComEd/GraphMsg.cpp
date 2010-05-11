@@ -4,12 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwComEd/GraphMsg.hpp"
 
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::GraphMsg, ::fwComEd::GraphMsg );
 
 namespace fwComEd
 {
-
 
 //-----------------------------------------------------------------------------
 

@@ -4,7 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwComEd/IntegerMsg.hpp"
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::IntegerMsg, ::fwComEd::IntegerMsg );
 
 namespace fwComEd
 {

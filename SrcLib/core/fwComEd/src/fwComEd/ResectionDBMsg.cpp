@@ -4,15 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
-#include <fwComEd/Dictionary.hpp>
-
+#include "fwComEd/fieldHelper/BackupHelper.hpp"
+#include "fwComEd/Dictionary.hpp"
 #include "fwComEd/ResectionDBMsg.hpp"
 
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::ResectionDBMsg, ::fwComEd::ResectionDBMsg );
 
 namespace fwComEd
 {

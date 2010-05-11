@@ -4,8 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwComEd/TagMsg.hpp"
 
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::TagMsg, ::fwComEd::TagMsg );
 
 namespace fwComEd
 {

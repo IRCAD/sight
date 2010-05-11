@@ -8,8 +8,12 @@
 
 #include <boost/regex.hpp>
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwServices/ObjectMsg.hpp"
 #include "fwServices/IService.hpp"
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwServices::ObjectMsg, ::fwServices::ObjectMsg );
 
 namespace fwServices
 {
