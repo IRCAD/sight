@@ -91,7 +91,7 @@ void InteractionMsg::setEventPoint(PointCoordType x, PointCoordType y, PointCoor
 
 
 //-----------------------------------------------------------------------------
-::fwData::Point::csptr InteractionMsg::getEventPoint()
+::fwData::Point::csptr InteractionMsg::getEventPoint() const
 {
     return m_eventPoint;
 }

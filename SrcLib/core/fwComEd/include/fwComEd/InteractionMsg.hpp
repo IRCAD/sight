@@ -106,7 +106,7 @@ public:
     FWCOMED_API void setEventPoint(::fwData::Point::csptr point);
     FWCOMED_API void setEventPoint(PointCoordType x, PointCoordType y, PointCoordType z);
 
-    FWCOMED_API ::fwData::Point::csptr getEventPoint();
+    FWCOMED_API ::fwData::Point::csptr getEventPoint() const;
 
 protected:
 

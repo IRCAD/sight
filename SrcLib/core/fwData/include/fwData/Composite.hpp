@@ -16,7 +16,7 @@
 namespace fwData
 {
 
-typedef std::map< std::string, Object::sptr > ObjectMapType;
+typedef std::map< std::string, ::fwData::Object::sptr > ObjectMapType;
 
 /**
  * @class   Composite
