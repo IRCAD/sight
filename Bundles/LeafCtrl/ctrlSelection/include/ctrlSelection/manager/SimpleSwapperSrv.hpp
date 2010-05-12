@@ -45,7 +45,30 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+    * @brief Implements configuring method derived from IService. .
+    *
+    * Sample of declaration configuration for a simple swapper service
+    *
+    * @verbatim
+     <service uid="myManagerImageSelected" implementation="::ctrlSelection::manager::SimpleSwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes">
+            <config>
+                <object id="MySelectedImage" dummyObjectUID="DummyImage" type="::fwData::Image" >
+                    <service uid="myService" />
+                    <service uid="myService2" />
+                </object>
+            </config>
+        </service>
+     @endverbatim
+    * With:
+    * @li id: Object id of the composite where services will be attached.(In your sample myService).
+    * @li dummyObjectUID: (mandatory) object uid on dummy object use to swap the attached services when the object is deleted
+    * (in our sample myService and myService2 will be attached to DummyImage if MySelectedImage is deleted).
+    * @li <service uid= "myService" />: declares the service attached to the MySelectedImage object. its will be swapped when the MySelectedImage object data will be changed
+    * It can have several services on the same object.
+
+
+    */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.
