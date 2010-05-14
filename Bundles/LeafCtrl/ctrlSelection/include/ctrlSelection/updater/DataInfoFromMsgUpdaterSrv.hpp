@@ -17,9 +17,9 @@ namespace updater
 {
 
 /**
- * @class   DataInfoFromMsgUpdaterSrv : Update the composite related to this service according to the data stored (dataInfo)
- * in the event :
- * @warn  datainfo MUST be always provided (but can be null), dataInfo MUST have the same type
+ * @class   DataInfoFromMsgUpdaterSrv
+ * @brief   Update the composite related to this service according to the data stored (dataInfo) in the event :
+ * @warning datainfo MUST be always provided (but can be null), dataInfo MUST have the same type
  * @author IRCAD (Research and Development Team).
 
  * @date    2009-2010.
@@ -45,7 +45,16 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Configure the services : declare the event to react.
+     * @verbatim
+         <service uid="myUpdater" implementation="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no"  >
+            <update compositeKey="myObject" onEvent="NEW_OBJECT" fromUID="myPatient" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myObject" onEvent="CLEAR_OBJECT" fromUID="myPatient" actionType="REMOVE"/>
+        </service>
+      @endverbatim
+     * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.

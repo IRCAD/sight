@@ -20,6 +20,7 @@ namespace manager
 
 /**
  * @class  SimpleSwapperSrv.
+ * @brief  This service is a manager which doesn't start and stop services but just swap them.
  * @author IRCAD (Research and Development Team).
 
  * @date   2007-2009.
@@ -66,8 +67,6 @@ protected:
     * (in our sample myService and myService2 will be attached to DummyImage if MySelectedImage is deleted).
     * @li <service uid= "myService" />: declares the service attached to the MySelectedImage object. its will be swapped when the MySelectedImage object data will be changed
     * It can have several services on the same object.
-
-
     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
@@ -80,11 +79,26 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
+    /// Reacts on specifics event (ADDED_FIELDS, REMOVED_FIELDS and SWAPPED_FIELDS) and swap the managed services
+    /// on the objects defined in the message or dummy objects
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
-
+    /**
+     * @brief Swap the managed services attached to an object which key is contained in the composite on the new added object.
+     * @param _composite Composite containing the map of the added objects.
+     */
     CTRLSELECTION_API void addedObjects( ::fwData::Composite::sptr _composite );
+
+    /**
+    * @brief Swap the managed services attached to an object which key is contained in the composite on the new swapped object.
+    * @param _composite Composite containing the map of the swapped objects.
+    */
     CTRLSELECTION_API void swappedObjects( ::fwData::Composite::sptr _composite );
+
+    /**
+    * @brief Swap the managed services attached to an object which key is contained in the composite on the dummy object.
+    * @param _composite Composite containing the map of the removed objects.
+    */
     CTRLSELECTION_API void removedObjects( ::fwData::Composite::sptr _composite );
 
 

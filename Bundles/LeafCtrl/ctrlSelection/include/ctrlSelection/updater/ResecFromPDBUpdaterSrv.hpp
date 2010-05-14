@@ -20,7 +20,8 @@ namespace updater
 {
 
 /**
- * @class   ResecFromPDBUpdaterSrv.
+ * @class  ResecFromPDBUpdaterSrv.
+ * @brief  Specific updater to update Resection from a patientDB.
  * @author IRCAD (Research and Development Team).
 
  * @date    2009-2010.
@@ -46,7 +47,16 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Configure the services : declare the event to react.
+     * @verbatim
+         <service uid="myUpdater" implementation="::ctrlSelection::updater::ResecFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myResection" onEvent="NEW_RESECTION" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myResection" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
+        </service>
+      @endverbatim
+     * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.

@@ -20,6 +20,7 @@ namespace wrapper
 
 /**
  * @class  PatientDBWrapperSrv.
+ * @brief  Convert generic message by specific message from PatientDB
  * @author IRCAD (Research and Development Team).
 
  * @date   2007-2009.
@@ -55,6 +56,9 @@ public :
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream ) {};
 
+    /**
+     * @brief Convert the Object message with "UPDATED_OBJECT" event sent on PatientDB by PatientDBMsg with "NEW_PATIENT" event
+     */
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 

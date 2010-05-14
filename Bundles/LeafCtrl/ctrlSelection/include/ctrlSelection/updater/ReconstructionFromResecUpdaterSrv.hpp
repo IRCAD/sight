@@ -20,6 +20,7 @@ namespace updater
 
 /**
  * @class  ReconstructionFromResecUpdaterSrv.
+ * @brief  Specific updater to update PlaneList from a resection.
  * @author IRCAD (Research and Development Team).
 
  * @date    2009-2010.
@@ -45,7 +46,18 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Configure the services : declare the event to react.
+     * @verbatim
+         <service uid="myUpdater" implementation="::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION" fromUID="myResection" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION" fromUID="*" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myReconstruction" onEvent="CLEAR" fromUID="myResection" actionType="REMOVE"/>
+        </service>
+      @endverbatim
+     * The '*' value for "fromUID" mean that the message could be received from every objects
+     * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.

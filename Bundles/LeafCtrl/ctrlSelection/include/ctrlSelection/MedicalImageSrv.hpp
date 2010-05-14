@@ -18,6 +18,7 @@ namespace ctrlSelection
 
 /**
  * @class  MedicalImageSrv.
+ * @brief  This service convert its attached image to a medical image by adding specific fields.
  * @author IRCAD (Research and Development Team).
 
  * @date   2010.
@@ -35,13 +36,13 @@ public :
     /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~MedicalImageSrv() throw() ;
 
-    /// Implements starting method derived from IService.
+    /// Implements starting method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements swapping method derived from IService.
+    /// Implements swapping method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
 
     /// Implements configuring method derived from IService. Do nothing.
