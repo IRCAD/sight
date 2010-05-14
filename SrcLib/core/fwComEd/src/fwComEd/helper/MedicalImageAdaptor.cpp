@@ -19,10 +19,6 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
-//#include <vtkIO/vtk.hpp>
-
-//#include <vtkMath.h>
-
 #include "fwComEd/helper/MedicalImageAdaptor.hpp"
 
 
@@ -32,16 +28,17 @@ namespace fwComEd
 namespace helper
 {
 
-
+//------------------------------------------------------------------------------
 
 MedicalImageAdaptor::MedicalImageAdaptor() : m_orientation(Z_AXIS)
-{
+{}
 
-}
+//------------------------------------------------------------------------------
 
 MedicalImageAdaptor::~MedicalImageAdaptor()
-{
-}
+{}
+
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::getImageSpacing(double spacing[3])
 {
@@ -50,12 +47,16 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3])
     std::copy(image->getRefSpacing().begin(), image->getRefSpacing().end(), spacing);
 }
 
+//------------------------------------------------------------------------------
+
 void MedicalImageAdaptor::getImageDataSize(int size[3])
 {
     ::fwData::Image::sptr image = this->getImage();;
 
     std::copy(image->getRefSize().begin(), image->getRefSize().end(), size);
 }
+
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::getImageSize(double size[3])
 {
@@ -68,8 +69,9 @@ void MedicalImageAdaptor::getImageSize(double size[3])
     size[0] *= spacing[0];
     size[1] *= spacing[1];
     size[2] *= spacing[2];
-
 }
+
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
 {
@@ -90,10 +92,14 @@ void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
     center[m_orientation] = index[m_orientation]*spacing[m_orientation];
 }
 
+//------------------------------------------------------------------------------
+
 void MedicalImageAdaptor::setOrientation( MedicalImageAdaptor::Orientation orientation )
 {
     m_orientation = orientation;
 }
+
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::setOrientation( int orientation )
 {
@@ -101,6 +107,7 @@ void MedicalImageAdaptor::setOrientation( int orientation )
     m_orientation = static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation >(orientation);
 }
 
+//------------------------------------------------------------------------------
 
 static const int indexZ[12] = { 0,2,4, 1,2,4,  1,3,4 ,0,3,4 };
 static const int indexY[12] = { 0,2,4, 1,2,4,  1,2,5 ,0,2,5 };
@@ -118,34 +125,37 @@ void MedicalImageAdaptor::getPlane( double points[4][3] , int sliceNumber)
     extent[2*m_orientation] = sliceNumber*image->getSpacing()[m_orientation];
     extent[2*m_orientation+1] = sliceNumber*image->getSpacing()[m_orientation];
 
-
     const int *extentIndex = indexSet[ m_orientation ];
     for (int p=0; p<4 ; ++p)
+    {
         for (int i=0; i<3 ; ++i)
         {
             points[p][i]= extent[ *(extentIndex++) ];
         }
+    }
 }
+
+//------------------------------------------------------------------------------
 
 //float MedicalImageAdaptor::getPixelvalue( double worldPosition)
 //{
 //  assert(false); // TODO
 //}
 
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::worldToSliceIndex(const double world[3], int index[3] )
 {
-
     double spacing[3];
     this->getImageSpacing(spacing);
     for ( int i=0 ; i<3 ; ++i )
     {
         // nearest integer
-        //index[i] =  vtkMath::Round( world[i]/spacing[i] );
-        index[i] = static_cast<int>((world[i]/spacing[i])+0.5);
+        index[i] = static_cast<int>( (world[i]/spacing[i]) + ( (world[i]/spacing[i]) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::worldToImageSliceIndex(const double world[3], int index[3] )
 {
@@ -169,6 +179,7 @@ void MedicalImageAdaptor::worldToImageSliceIndex(const double world[3], int inde
     }
 }
 
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
 {
@@ -176,6 +187,8 @@ void MedicalImageAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
     index[1] = m_frontalIndex;
     index[2] = m_axialIndex;
 }
+
+//------------------------------------------------------------------------------
 
 bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 {
@@ -195,10 +208,10 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
         sliceIndex[2]->value() = index[2];
         isModified = true;
     }
-
     return isModified;
 }
 
+//------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 {
@@ -229,17 +242,22 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
     ::fwTools::getFieldFromObject(m_transfertFunctions, image, ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
 }
 
+//------------------------------------------------------------------------------
+
 ::fwData::TransfertFunction::sptr MedicalImageAdaptor::getCurrentTransfertFunction()
 {
     return ::fwData::TransfertFunction::dynamicCast((*m_transfertFunctions)[m_transfertFunctionId->value()]);
 }
 
+//------------------------------------------------------------------------------
 
 ::fwData::Image::sptr MedicalImageAdaptor::getImage()
 {
     SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
     return m_weakImage.lock();
 }
+
+//------------------------------------------------------------------------------
 
 } //namespace helper
 

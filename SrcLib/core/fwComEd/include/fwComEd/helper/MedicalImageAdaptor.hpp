@@ -145,7 +145,7 @@ void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX index )
     this->getImageSpacing(spacing);
     for ( int i=0 ; i<3 ; ++i )
     {
-        index[i] = static_cast<int>((world[i]/spacing[i])+0.5);
+        index[i] = static_cast< int >( (world[i]/spacing[i]) + ( (world[i]/spacing[i]) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 
