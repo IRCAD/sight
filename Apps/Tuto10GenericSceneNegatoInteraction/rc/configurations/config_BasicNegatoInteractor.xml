@@ -1,0 +1,44 @@
+<plugin id="config">
+
+<extension id="config" implements="::fwData::Composite">
+        <object id="config" type="::fwData::Composite">
+<!-- BEGIN CORE OBJECT -->
+            <object id="myImage" uid="myImage" type="::fwData::Image">
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />
+                <service uid="MPRNegatoScene3D" implementation="::visuVTKAdaptor::NegatoOneSlice" type="::fwRenderVTK::IVtkAdaptorService" autoComChannel="no" id="MPRNegato3D">
+                    <config scene="genericScene" renderer="default" picker="myPicker" sliceIndex="axial" />
+                    <service uid="basicInteraction1" implementation="::visuVTKAdaptor::ShowPickedPointInfo" type="::visuVTKAdaptor::INegatoInteractor" autoComChannel="no"/>
+                </service>
+                <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />            
+                <service uid="CameraSynchro" type="::fwRenderVTK::IVtkAdaptorService" implementation="::visuVTKAdaptor::SliceFollowerCamera" autoComChannel="no" >            
+                    <config scene="genericScene" renderer="default" sliceIndex="axial" />
+                </service>
+             </object>
+<!-- END CORE OBJECT -->
+<!-- BEGIN SCENE 3D -->
+            <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                 <scene>
+                    <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+                    <style>InteractorStyle2DForNegato</style>
+                    <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="config">
+                            <config renderer="default" picker="" />
+                    </adaptor>
+                 </scene>
+            </service>
+<!-- END SCENE 3D -->
+            
+            <start type="::gui::editor::IEditor" />
+            <start type="::fwRender::IRender" />
+            <start type="::fwRenderVTK::IVtkAdaptorService" />
+            <start type="::visuVTKAdaptor::INegatoInteractor" />
+
+            <update uid="myReaderPathFile" />
+
+            <stop type="::visuVTKAdaptor::INegatoInteractor" />            
+            <stop type="::fwRenderVTK::IVtkAdaptorService" />
+            <stop type="::fwRender::IRender" />
+            <stop type="::gui::editor::IEditor" />            
+        </object>
+    </extension>
+</plugin>

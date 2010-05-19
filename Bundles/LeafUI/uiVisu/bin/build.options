@@ -10,7 +10,7 @@ LIB     = [
            'fwTools_0-1',
            'fwWX_0-1'
            ]
-USE     = ['wx','boost']
+USE     = ['wxCore','boost', 'boostFilesystem']
 BUNDLES = ['gui_0-1']
 
 

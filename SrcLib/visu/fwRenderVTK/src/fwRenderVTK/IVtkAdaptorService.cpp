@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #include <boost/foreach.hpp>
 
@@ -27,6 +31,7 @@ namespace fwRenderVTK
 IVtkAdaptorService::IVtkAdaptorService() throw()
     : m_comChannelPriority(0.5),
       m_vtkPipelineModified(true),
+      m_sceneId(""),
       m_rendererId ("default") ,
       m_pickerId   (""), // by default no Picker
       m_transformId   (""), // by default no Transform
@@ -61,8 +66,14 @@ void IVtkAdaptorService::starting() throw(fwTools::Failed)
         m_communicationChannelService = communicationChannelService;
     }
 
-    assert( m_renderService.lock() );
-
+    if( m_renderService.expired() )
+    {
+        if( !m_sceneId.empty() )
+        {
+            m_renderService = ::fwTools::UUID::get< ::fwRenderVTK::VtkRenderService >(m_sceneId) ;
+            assert( !m_renderService.expired() );
+        }
+    }
     doStart();
     //requestRender();
 }
@@ -119,6 +130,20 @@ void IVtkAdaptorService::setRenderService( VtkRenderService::sptr service)
 void IVtkAdaptorService::setRenderId(VtkRenderService::RendererIdType newID)
 {
     m_rendererId =  newID;
+}
+
+//------------------------------------------------------------------------------
+
+void IVtkAdaptorService::setSceneId(IVtkAdaptorService::SceneIdType newID)
+{
+    m_sceneId =  newID;
+}
+
+//------------------------------------------------------------------------------
+
+IVtkAdaptorService::SceneIdType IVtkAdaptorService::getSceneId()
+{
+    return m_sceneId ;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 TYPE    = 'shared'
-USE     = ['boost', 'libxml2']
+USE     = ['boost', 'boostFilesystem', 'boostRegex', 'libxml2']
 LIB     = ['fwCore_0-1']
 VERSION = '0-3'
 

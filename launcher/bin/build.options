@@ -1,7 +1,10 @@
-USE   = ['boost']
+USE   = ['boost', 'boostFilesystem']
 LIB   = ['fwCore_0-1','fwRuntime_0-3']
 
 VERSION = '0-1'
 TYPE    = 'exec'
 
 #CONSOLE = 'yes'
+#import os
+#if os.name == 'posix' :
+#    USE+=['icu']

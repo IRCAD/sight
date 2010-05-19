@@ -7,6 +7,16 @@
     <requirement id="visu" />
     <requirement id="visuVTK" />
 
+    <!--     DECLARE NEW SERVICE TYPE -->
+    <point id="::visuVTKAdaptor::INegatoInteractor">
+        <implements>::fwServices::IService</implements>
+    </point>
+
+    <!-- REGISTER_SERVICE( ::visuVTKAdaptor::INegatoInteractor , ::visuVTKAdaptor::ShowPickedPointInfo , ::visuVTKAdaptor::NegatoOneSlice ) ; -->
+    <point id="::visuVTKAdaptor::ShowPickedPointInfo" >
+        <implements>::visuVTKAdaptor::INegatoInteractor</implements>
+        <implements>::visuVTKAdaptor::NegatoOneSlice</implements>
+    </point>
     
 
     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Render, ::fwTools::Object ) ; -->

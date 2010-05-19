@@ -3,12 +3,17 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #include <fwData/Integer.hpp>
 #include <fwData/TransfertFunction.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/PointList.hpp>
+#include <fwData/Float.hpp>
 
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
@@ -407,6 +412,22 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
 }
 
 //------------------------------------------------------------------------------
+
+bool MedicalImageHelpers::checkOpacity( ::fwData::Image::sptr _pImg)
+{
+    bool fieldIsModified = false;
+
+    // Manage image landmarks
+    if ( ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_opacityId ) )
+    {
+        ::fwData::Float::NewSptr opacity;
+        opacity->value() = 1.0;
+        _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_opacityId, opacity );
+        fieldIsModified = true;
+    }
+
+    return fieldIsModified;
+}
 
 } // fieldHelper
 } // fwComEd

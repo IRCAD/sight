@@ -1,0 +1,29 @@
+<profile name="Tuto10GenericSceneNegatoInteraction" version="0.1" check-single-instance="true"> 
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" /> 
+
+    <activate id="gui" version="0-1" >
+        <param id="startingMode" value="windows" />
+        <param id="rootObject" value="::fwData::Composite" />
+        <param id="config" value="config" />
+        <param id="configFile" value="./Bundles/Tuto10GenericSceneNegatoInteraction_0-1/configurations/config_BasicNegatoImplicitGUI.xml" />
+    </activate>
+
+    <activate id="io" version="0-1" />
+    <activate id="ioVTK" version="0-1" />
+
+    <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKAdaptor" version="0-1" />
+
+    <activate id="uiIO" version="0-1" />
+    <activate id="uiImage" version="0-1" />
+
+    <activate id="Tuto10GenericSceneNegatoInteraction" version="0-1" />
+ 
+    <start id="visuVTK" />
+    <start id="visuVTKAdaptor" />
+    <start id="gui" />
+
+</profile>

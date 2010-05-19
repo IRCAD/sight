@@ -1,0 +1,80 @@
+<!-- REFERENCE EXAMPLE FROM TUTO08GENERICSCENE -->
+<plugin id="config">
+
+<extension id="config" implements="::fwData::Composite">
+
+        <object id="config" type="::fwData::Composite">
+<!-- BEGIN IHM LAYOUT -->
+            <service uid="MyIHM" implementation="::gui::frame::MainFrame" type="::gui::frame::IFrame" autoComChannel="no">
+                <name>Tuto10GenericSceneNegatoInteractionExample1</name>
+                <icon>Bundles/Tuto10GenericSceneNegatoInteraction_0-1/tuto.ico</icon>
+                <view uid="multiView_scene1" autoStart="yes" />
+            </service>
+            <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
+                <views>
+                    <view uid="genericScene" align="center" autoStart="yes" />
+                    <view uid="multiView_scene1_bottom" align="bottom" minHeight="30" resizable="no" autoStart="yes" />
+                </views>
+            </service>
+<!-- END IHM LAYOUT -->
+<!-- BEGIN IHM TOOLBAR -->
+            <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
+                <menus>
+                    <menu uid="menu_File"/>
+                </menus>
+            </service>
+            <service uid="menu_File" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="File" autoComChannel="no">
+                <action uid="action_openFile" />
+            </service>
+            <service uid="action_openFile" implementation="::gui::action::StarterActionService" name="OpenFile" type="::gui::action::IAction" shortcut="Ctrl+O" autoComChannel="no">
+                <start uid="myReaderPathFile" />
+            </service>
+<!-- END IHM TOOLBAR -->
+<!-- BEGIN CORE OBJECT -->
+            <object id="myImage" uid="myImage" type="::fwData::Image">
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />
+                <service uid="MPRNegatoScene3D" implementation="::visuVTKAdaptor::NegatoOneSlice" type="::fwRenderVTK::IVtkAdaptorService" autoComChannel="no" id="MPRNegato3D">
+                    <config scene="genericScene" renderer="default" picker="myPicker" sliceIndex="axial" />
+                </service>
+                <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />            
+                <service uid="CameraSynchro" type="::fwRenderVTK::IVtkAdaptorService" implementation="::visuVTKAdaptor::SliceFollowerCamera" autoComChannel="no" >            
+                    <config scene="genericScene" renderer="default" sliceIndex="axial" />
+                </service>
+             </object>
+<!-- END CORE OBJECT -->
+<!-- BEGIN SCENE 3D -->
+            <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                 <scene>
+                    <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+                    <style>InteractorStyle2DForNegato</style>
+                    <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="config">
+                            <config renderer="default" picker="" />
+                    </adaptor>
+                 </scene>
+            </service>
+<!-- END SCENE 3D -->
+<!-- BEGIN BOTTOM CONTROLS -->
+            <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
+                <views orientation="horizontal">
+                    <view uid="sliderIndexEditor" proportion="1" autoStart="yes"/>
+                </views>
+            </service>
+<!-- END BOTTOM CONTROLS -->
+
+            
+            
+            <start uid="MyIHM" />
+            <start uid="myMenuBar" />
+            <start type="::fwRenderVTK::IVtkAdaptorService" />
+
+            <start uid="myReaderPathFile" />
+
+            <update uid="myReaderPathFile" />
+
+            <stop type="::fwRenderVTK::IVtkAdaptorService" />
+            <stop uid="myMenuBar" />
+            <stop uid="MyIHM" />
+        </object>
+    </extension>
+</plugin>

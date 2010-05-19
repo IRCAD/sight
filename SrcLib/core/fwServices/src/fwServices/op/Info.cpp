@@ -24,7 +24,24 @@
 #include "fwServices/library/Factory.hpp"
 #include "fwServices/IEditionService.hpp"
 
-
+#if defined(_WIN32) && _MSC_VER > 1499 // Visual C++ 2008 only
+#include <boost/functional/hash/hash.hpp>
+namespace std
+{
+namespace tr1
+{
+template<typename a>
+class hash< std::pair<a, a> >
+{
+public:
+   size_t operator()(const std::pair<a, a> &p) const
+   {
+      return ::boost::hash_value(p);
+   }
+};
+} //namespace tr1
+} //namespace std
+#endif
 
 typedef std::pair<std::string, std::string> StringPair;
 typedef std::tr1::unordered_map< StringPair, bool > SupportMapType;

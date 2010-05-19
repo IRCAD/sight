@@ -3,7 +3,6 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 #ifndef _VISUVTKADAPTOR_IIMAGESADAPTOR_HPP_
 #define _VISUVTKADAPTOR_IIMAGESADAPTOR_HPP_
 
@@ -38,6 +37,11 @@ public:
 
     VISUVTKADAPTOR_API void setOrientation( Orientation orientation );
     VISUVTKADAPTOR_API Orientation getOrientation(){ return m_orientation; }
+    /// retreive the grey level from an image from physicial world
+    //float getPixelvalue( double worldPosition[3]);
+
+    VISUVTKADAPTOR_API     void worldToSliceIndex(const double world[3],int index[3] );
+    VISUVTKADAPTOR_API     void worldToImageSliceIndex(const double world[3], int index[3] );
 
 protected:
 
@@ -50,11 +54,6 @@ protected:
     void getImageSize(double size[3]);
     void getCurrentSliceCenter(double center[3]);
 
-    /// retreive the grey level from an image from physicial world
-    //float getPixelvalue( double worldPosition[3]);
-
-    void worldToSliceIndex(const double world[3],int index[3] );
-    void worldToImageSliceIndex(const double world[3], int index[3] );
     /// return the 4 points of the image plane
     /// points are ordered in the following way : image origin is the first point
     /// points are insterted using the preference follow X axis if exist, if not exist follow Y axis

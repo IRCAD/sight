@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #include "fwComEd/ImageMsg.hpp"
 
@@ -25,6 +29,7 @@ std::string ImageMsg::SLICE_INDEX = "SLICE_INDEX";
 std::string ImageMsg::ACTIVATE_SYNC_CROSS = "ACTIVATE_SYNC_CROSS";
 std::string ImageMsg::INACTIVATE_SYNC_CROSS = "INACTIVATE_SYNC_CROSS";
 std::string ImageMsg::CHANGE_SLICE_TYPE = "CHANGE_SLICE_TYPE";
+std::string ImageMsg::OPACITY = "OPACITY";
 
 //-----------------------------------------------------------------------------
 

@@ -22,5 +22,12 @@
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwData::Image</implements>
     </point>
+
+
+    <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::OpacityEditor , ::fwData::Image ) ;-->
+    <point id="::uiImage::OpacityEditor" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Image</implements>
+    </point>
     
 </plugin>

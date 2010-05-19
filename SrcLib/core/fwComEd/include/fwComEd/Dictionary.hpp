@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #ifndef _FWCOMED_DICTIONARY_HPP_
 #define _FWCOMED_DICTIONARY_HPP_
@@ -51,6 +55,8 @@ struct FWCOMED_CLASS_API Dictionary
     FWCOMED_API static const std::string m_relatedServiceId; ///< to store uid (simple) of service which create the object
     FWCOMED_API static const std::string m_imageLabelId;
     FWCOMED_API static const std::string m_acquisitionCountId;
+    FWCOMED_API static const std::string m_opacityId; ///< Notion of opacity. Used for negatoscope management at first time
+
     /// @}
 
     /// selection oriented IDs

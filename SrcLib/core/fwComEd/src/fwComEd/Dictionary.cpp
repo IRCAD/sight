@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #include "fwComEd/Dictionary.hpp"
 
@@ -34,6 +38,7 @@ const std::string Dictionary::m_colorId             ("m_colorId");
 const std::string Dictionary::m_relatedServiceId    ("m_relatedServiceId");
 const std::string Dictionary::m_imageLabelId        ("m_imageLabelId");
 const std::string Dictionary::m_acquisitionCountId  ("m_acquisitionCountId");
+const std::string Dictionary::m_opacityId              ("m_opacityId");
 
 const std::string Dictionary::m_globalMatrixId      ("Global Matrix");
 const std::string Dictionary::m_errorId             ("Error");

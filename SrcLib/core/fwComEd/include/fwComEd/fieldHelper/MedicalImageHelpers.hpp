@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #ifndef _FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP_
 #define _FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP_
@@ -159,6 +163,16 @@ public :
      * @param[in]   pImage      image to set the label.
      */
     FWCOMED_API static void setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage);
+
+    /**
+     * @brief       Set an opacity in a (Float) field of the image.
+     *
+     * Notion of opacity. Used for negatoscope management at first time.
+     * The opacity is assumed to belong to the [0.0,1.0] range and is initialized to 1.0
+     *
+     * @param[in]   _pImg      image to set the label.
+     */
+    FWCOMED_API static bool checkOpacity( ::fwData::Image::sptr _pImg);
 };
 
 } // fieldHelper

@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #ifndef _VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP_
 #define _VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP_
@@ -30,6 +34,12 @@ protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
+    /**
+     * @brief Configuration managment.
+     *
+     * Management of two kind of configurations. Case where follower is <adaptor /> XML elements of the generic scene
+     * and case where negato is directly attached to image object.
+     */
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     // redraw all (stop then restart sub services)

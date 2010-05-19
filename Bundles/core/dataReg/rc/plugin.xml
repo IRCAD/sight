@@ -45,5 +45,17 @@
     <point id="::fwData::None">
         <implements>::fwTools::Object</implements>
     </point>
+    <point id="::fwData::Point">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::PointList">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::ValuedPoint">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::ValuedPointList">
+        <implements>::fwTools::Object</implements>
+    </point>
 
 </plugin>

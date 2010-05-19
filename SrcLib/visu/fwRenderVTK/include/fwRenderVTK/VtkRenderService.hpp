@@ -3,10 +3,13 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #ifndef _FWRENDERVTK_VTKRENDERSERVICE_HPP_
 #define _FWRENDERVTK_VTKRENDERSERVICE_HPP_
-
 
 #include <map>
 
@@ -15,8 +18,6 @@
 #include <fwRender/IRender.hpp>
 
 #include <fwData/Composite.hpp>
-
-//#include "fwRenderVTK/IVtkAdaptorService.hpp"
 
 #include "fwRenderVTK/config.hpp"
 
@@ -51,6 +52,7 @@ public :
     typedef std::string ObjectIdType;
     typedef std::string AdaptorIdType;
     typedef std::string VtkObjectIdType;
+    typedef    std::string InteractorStyleIdType;
 
     FWRENDERVTK_API VtkRenderService() throw() ;
 
@@ -106,8 +108,12 @@ private :
 
     };
 
-
-
+    /**
+     * @brief Ability to configure the interactorStyle, stores the name of the interactor style given in the XML configuration
+     * @note If empty, no interactor style is set to the interactor (i.e. set to NULL)
+     * It uses the vtkInstantiator::CreateInstance factory. Useful e.g. to easily affect overall interaction.
+     */
+    InteractorStyleIdType      m_interactorStyle;
     /// @brief required to facilitate resize of an empty vtk rendering window : why ?
     wxAuiManager* m_wxmanager;
 

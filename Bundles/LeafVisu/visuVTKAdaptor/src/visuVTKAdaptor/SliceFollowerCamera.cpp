@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #include <boost/foreach.hpp>
 
@@ -59,12 +63,39 @@ SliceFollowerCamera::~SliceFollowerCamera() throw()
 void SliceFollowerCamera::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    if(m_configuration->hasAttribute("sliceIndex"))
+    ::fwRuntime::ConfigurationElement::sptr cfg;
+    //To be managed by ::fwRenderVTK::VtkRenderService
+    if(m_configuration->getName() == "config")
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
+        cfg = m_configuration;
+    }
+    //When directly declared as an image service
+    else if( m_configuration->findConfigurationElement("config") )
+    {
+        cfg = m_configuration->findConfigurationElement("config") ;
+    }
+    else
+    {
+        assert(false);
+    }
+
+    if( cfg->hasAttribute("scene") )
+    {
+        OSLM_TRACE("m_configuration->hasAttributeValue scene: true");
+        this->setSceneId(cfg->getAttributeValue("scene"));
+    }
+    else
+    {
+        OSLM_TRACE("m_configuration->hasAttributeValue scene: false");
+    }
+
+    this->setRenderId( cfg->getAttributeValue("renderer") );
+
+//    assert(m_configuration->getName() == "config");
+//    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    if(cfg->hasAttribute("sliceIndex"))
+    {
+         std::string  orientation = cfg->getAttributeValue("sliceIndex");
          if(orientation == "axial" )
          {
              m_orientation = Z_AXIS;

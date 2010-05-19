@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #ifndef _FWRENDERVTK_VTKADAPTORSERVICE_HPP_
 #define _FWRENDERVTK_VTKADAPTORSERVICE_HPP_
@@ -24,6 +28,15 @@ class vtkTransform;
 namespace fwRenderVTK
 {
 
+/**
+ * @brief Adapt a fwData to be visualized in vtk world
+ *
+ * @note user case evolution : integration of the notion of scene identifier to be
+ * directly configured in the adaptor: the rendering scene is retrieved through
+ * its (unique) identifier. An adaptor can be specified as a service (xml node
+ * name=service) on the data it represents, and not necessarly only the 
+ * VtkRenderService.
+ */
 class FWRENDERVTK_CLASS_API IVtkAdaptorService : public fwServices::IService
 {
     friend class VtkRenderService;
@@ -31,6 +44,7 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService::Baseclass) ) ;
 
     typedef fwServices::IService SuperClass ;
+    typedef std::string SceneIdType;
 
 
     /**
@@ -47,6 +61,16 @@ public :
     /// To set a representation
     FWRENDERVTK_API virtual void show(bool b = true) {};
     FWRENDERVTK_API virtual void hide() {this->show(false);};
+
+    /**
+     * @brief Set the scene identifier concerned by this adaptor (visu window)
+     */
+    FWRENDERVTK_API void setSceneId(IVtkAdaptorService::SceneIdType newID);
+    /**
+     * @brief Get the scene identifier concerned by this adaptor (visu window)
+     */
+    FWRENDERVTK_API IVtkAdaptorService::SceneIdType getSceneId();
+
 
 
     FWRENDERVTK_API void setRenderService( VtkRenderService::sptr service );
@@ -100,6 +124,12 @@ protected :
 
     /// state of the pipeline
     bool m_vtkPipelineModified;
+
+    /**
+     * @brief Stores the identifier of the scene
+     */
+    VtkRenderService::RendererIdType   m_sceneId;
+
     VtkRenderService::RendererIdType   m_rendererId;
     VtkRenderService::PickerIdType     m_pickerId;
     VtkRenderService::VtkObjectIdType  m_transformId;
