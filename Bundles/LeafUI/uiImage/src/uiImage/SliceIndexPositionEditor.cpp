@@ -39,9 +39,9 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::SliceIndexPositionEditor ,
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
-    &fwComEd::Dictionary::m_sagittalSliceIndexId,
-    &fwComEd::Dictionary::m_frontalSliceIndexId,
-    &fwComEd::Dictionary::m_axialSliceIndexId
+        &fwComEd::Dictionary::m_sagittalSliceIndexId,
+        &fwComEd::Dictionary::m_frontalSliceIndexId,
+        &fwComEd::Dictionary::m_axialSliceIndexId
 };
 
 //------------------------------------------------------------------------------
@@ -50,6 +50,8 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() throw() : m_sliceType(Z_AXI
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 }
 
 //------------------------------------------------------------------------------
@@ -106,19 +108,19 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_sliceType = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_sliceType = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_sliceType = X_AXIS;
-         }
+        std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
+        if(orientation == "axial" )
+        {
+            m_sliceType = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_sliceType = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_sliceType = X_AXIS;
+        }
     }
 }
 
@@ -169,6 +171,15 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             }
             this->updateSliceType(m_sliceType);
         }
+        if ( imageMessage->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( imageMessage->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
+        {
+            //Takes image extend into account to initialize selector panel
+            this->updateSliceIndex();
+            //To enable the selector panel
+            this->update();
+        }
+
+
     }
 }
 
@@ -184,6 +195,7 @@ void SliceIndexPositionEditor::info( std::ostream &_sstream )
 void SliceIndexPositionEditor::updateSliceIndex()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    bool fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( image );
     // Get Index
     std::string fieldID = *SLICE_INDEX_FIELDID[m_sliceType];
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
@@ -203,7 +215,9 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Get Index
-     std::string fieldID = *SLICE_INDEX_FIELDID[m_sliceType];
+    bool fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( image );
+
+    std::string fieldID = *SLICE_INDEX_FIELDID[m_sliceType];
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
     int max = image->getSize()[m_sliceType]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
