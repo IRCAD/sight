@@ -186,10 +186,16 @@ public :
      */
     FWCOMED_API static void setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage);
 
-    template < typename T , typename INT_INDEX> 
+    /**
+     * @brief       Return true if the pixel value is not 0.
+     */
+    template < typename INT_INDEX>
+    static bool isPixelInROI(::fwData::Image::sptr roiImage, INT_INDEX &point);
+
+    template < typename T , typename INT_INDEX>
     static void setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value);
 
-    template < typename T > 
+    template < typename T >
     static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T &value);
 
 };
@@ -230,14 +236,14 @@ public:
 
 
 
-template < typename T > 
+template < typename T >
 void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T &value)
 {
     setPixel(image, point->getCoord(), value);
 }
 
 
-template < typename T , typename INT_INDEX> 
+template < typename T , typename INT_INDEX>
 void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value)
 {
     typename CastAndSetFunctor<T,INT_INDEX>::Param param(point, value);
@@ -249,7 +255,50 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point
 
 
 
+template < typename INT_INDEX >
+class CastAndCheckFunctor
+{
+public:
+    class Param
+    {
+        public:
+        typedef INT_INDEX PointType;
 
+            Param(PointType &p, bool &b):
+                point(p), isInRoi(b)
+            {};
+
+        ::fwData::Image::sptr image;
+        bool &isInRoi;
+        const PointType &point;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        const INT_INDEX &p = param.point;
+        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        const int &sx = size[0];
+        const int &sy = size[1];
+        const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
+        param.isInRoi = (*(buffer+offset) != 0);
+    }
+
+};
+
+template < typename INT_INDEX>
+bool MedicalImageHelpers::isPixelInROI(::fwData::Image::sptr roiImage, INT_INDEX &point)
+{
+    bool isInROI;
+    typename CastAndCheckFunctor<INT_INDEX>::Param param(point, isInROI);
+    param.image = roiImage;
+
+    ::fwTools::DynamicType type = roiImage->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndCheckFunctor<INT_INDEX> >::invoke( type, param );
+
+    return isInROI;
+}
 
 
 } // fieldHelper
