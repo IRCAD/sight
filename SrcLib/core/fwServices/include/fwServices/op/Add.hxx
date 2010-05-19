@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #ifndef _FWSERVICES_ADD_HXX_
 #define _FWSERVICES_ADD_HXX_
@@ -38,6 +42,7 @@ SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId 
     assert( castedService );
     return castedService ;
 }
+
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId , std::string _id)
 {
@@ -49,6 +54,17 @@ SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId 
     return castedService ;
 }
 
+template<class SERVICETYPE, class IMPLEMENTATION>
+SPTR(IMPLEMENTATION) add( ::fwTools::Object::sptr obj  )
+{
+    std::string serviceId = ::fwCore::TypeDemangler< SERVICETYPE >().getClassname() ;
+    std::string implementationId = ::fwCore::TypeDemangler< IMPLEMENTATION >().getClassname() ;
+    ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceId , implementationId ) ;
+    assert( service );
+    SPTR(IMPLEMENTATION) castedService = boost::dynamic_pointer_cast< IMPLEMENTATION >( service ) ;
+    assert( castedService );
+    return castedService ;
+}
 
 }
 

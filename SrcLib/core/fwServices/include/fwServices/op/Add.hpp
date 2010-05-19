@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+/* ***** BEGIN CONTRIBUTORS BLOCK *****
+ * Contributors:
+ *  - Jean-Baptiste.Fasquel (LISA Laboratory, Angers University, France)
+ * ****** END CONTRIBUTORS BLOCK ****** */
 
 #ifndef _FWSERVICES_ADD_HPP_
 #define _FWSERVICES_ADD_HPP_
@@ -44,6 +48,17 @@ FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , s
 
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId ) ;
+
+/**
+ * @brief Create and attach to the object obj a service described by template parameters.
+ * @return the instance of the new service
+ *
+ * Template method for adding a service to an object. Template parameters are the service type and implementation.
+ * It returns a shared pointer on the implementation. Usefull to directly access to the low level API of a service (i.e. its implementation). 
+ * In such a case, it avoids directly specifying the implementation as a string, and also compilation time verification instead of later runtime verification.
+ */
+template<class SERVICETYPE, class IMPLEMENTATION>
+SPTR(IMPLEMENTATION) add( ::fwTools::Object::sptr obj  );
 
 /**
  * @brief Create and attach to the object obj a service of type serviceId, implementation _implementationId with the universal unique identifier _id
