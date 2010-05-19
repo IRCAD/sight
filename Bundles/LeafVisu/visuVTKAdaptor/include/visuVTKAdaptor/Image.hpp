@@ -26,7 +26,7 @@ class vtkActor;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Image: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API Image: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
@@ -54,6 +54,7 @@ protected :
 
 
     virtual void buildPipeline();
+    virtual void destroyPipeline();
 
     void updateImage( ::fwData::Image::sptr image  );
     void updateImageOpacity();

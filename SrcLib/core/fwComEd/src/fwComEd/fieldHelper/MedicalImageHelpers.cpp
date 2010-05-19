@@ -358,8 +358,8 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 
 std::pair<bool, bool> MedicalImageHelpers::checkMinMaxTFAndSetBWTF( ::fwData::Image::sptr _pImg )
 {
-    std::pair<bool, bool> minmaxIsModified = checkMinMaxTF(_pImg);
-    setBWTF(_pImg);
+    std::pair<bool, bool> minmaxIsModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF(_pImg);
+    ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(_pImg);
 
     return minmaxIsModified;
 }

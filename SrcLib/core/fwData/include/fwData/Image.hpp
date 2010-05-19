@@ -55,12 +55,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Image::csptr _source );
 
-    /// Clone
-    //FWDATA_API Image::sptr clone() const;
-
-    /// Copy
-    //FWDATA_API Image &operator=(const Image & _img) ;
-
 
     /**
      * @brief an R/W accessor to the buffer (can involve unserialization/restoration)

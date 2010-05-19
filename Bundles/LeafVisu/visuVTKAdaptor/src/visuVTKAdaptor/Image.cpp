@@ -76,6 +76,7 @@ Image::~Image() throw()
 void Image::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    OSLM_TRACE("starting " << this->getName());
 
     this->doUpdate();
 }
@@ -85,6 +86,7 @@ void Image::doStart() throw(fwTools::Failed)
 void Image::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->destroyPipeline();
 }
 
 //------------------------------------------------------------------------------
@@ -247,7 +249,7 @@ void Image::buildPipeline( )
     vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageRegister);
     vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
 
-    SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend )
+    SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend );
     if (imageBlend)
     {
         SLM_TRACE("Register is a vtkImageBlend");
@@ -272,5 +274,34 @@ void Image::buildPipeline( )
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
+void Image::destroyPipeline( )
+{
+    vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
+    vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageRegister);
+    vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
+
+    SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend );
+    if (imageBlend)
+    {
+        if (m_imagePortId >= 0)
+        {
+            //Warning : only the removal of the last input connection in the image blend is safe.
+            imageBlend->RemoveInputConnection(0, m_map2colors->GetOutputPort());
+            m_imagePortId = -1;
+        }
+    }
+    else if (algorithm)
+    {
+        algorithm->RemoveInputConnection(0, m_map2colors->GetOutputPort());
+    }
+    else if (imageData)
+    {
+        m_map2colors->SetOutput(0);
+    }
+
+    this->setVtkPipelineModified();
+}
 
 } //namespace visuVTKAdaptor
