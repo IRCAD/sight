@@ -134,6 +134,9 @@ void InteractorStyle2DForNegato::OnMouseWheelBackward()
 {
     if (!this->Interactor->GetShiftKey())
     {
+        int x = this->Interactor->GetEventPosition()[0];
+        int y = this->Interactor->GetEventPosition()[1];
+        this->FindPokedRenderer(x, y);
         this->GrabFocus(this->EventCallbackCommand);
         this->StartDolly();
         double factor = this->MotionFactor * -0.2 * this->MouseWheelMotionFactor;
@@ -149,6 +152,9 @@ void InteractorStyle2DForNegato::OnMouseWheelForward()
 {
     if (!this->Interactor->GetShiftKey())
     {
+        int x = this->Interactor->GetEventPosition()[0];
+        int y = this->Interactor->GetEventPosition()[1];
+        this->FindPokedRenderer(x, y);
         this->GrabFocus(this->EventCallbackCommand);
         this->StartDolly();
         double factor = this->MotionFactor * 0.2 * this->MouseWheelMotionFactor;
