@@ -282,7 +282,6 @@ void Image::destroyPipeline( )
     vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageRegister);
     vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
 
-    SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend );
     if (imageBlend)
     {
         if (m_imagePortId >= 0)
