@@ -66,6 +66,30 @@ public :
 protected:
 
     /// Analyses xml configuration to configure this service, espacially umber of panel and the layout of this view.
+    /**
+     * @brief Configuring method allows to configure an application with several tab views.
+     * Here a sample of the multiSizerView service declaration with two views:
+     * @verbatim
+            <service uid="multiViewOrgans" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
+                <views orientation="vertical" >
+                    <view uid="view1" proportion="1" />
+                    <view uid="view2" minHeight="80" proportion="0" />
+                </views>
+            </service>
+       @endverbatim
+     *  for which:\n
+     * <views> node is mandatory and can only contain <view> node.It has the following parameter\n
+     *  - orientation can be {vertical|horizontal}. It indicates if the views are put in column or in row.\n
+     * Each <view> node must contain uid attribute and the following attribute can be used but aren't mandatory.\n
+     *  - proportion is an integer . -- Default value: 1.\n
+     *    If the proportion tag is setted to 0, the view can't be resized, If the value is above zero, the view can be resized depending on the proportion factor
+     *    of the others view inside of the service. the direction of resize is fixed by the tag orientation  {vertical|horizontal} in the views node.\n
+     *  - border is an integer.It is the size of the border around the view -- Default value: 0.
+     *  - caption -- No default value.
+     *  - minWidth is the min width of the view. -- Default value: -1.
+     *  - minHeight is the min height of the view -- Default value: -1.
+     *  - autoStart can be {yes|no}   -- Default value: false.
+     */
     GUI_API void configuring() throw( ::fwTools::Failed );
 
     /// Reconfigures service, does nothing.

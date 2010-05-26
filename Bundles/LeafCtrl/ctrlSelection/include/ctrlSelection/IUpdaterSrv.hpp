@@ -71,8 +71,8 @@ protected:
          <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
          <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
        @endverbatim
-     * Here, when the updater receive the a message with the NEW_PATIENT event from the object "myPatientDB" the object myImage is added or swapped in the composite.
-     * when the updater receive the a message with the CLEAR_PATIENT event from the object "myPatientDB" the object myImage is removed from the composite
+     * Here, when the updater receives a message with the NEW_PATIENT event from the object "myPatientDB" the object myImage is added or swapped in the composite.
+     * When the updater receives a message with the CLEAR_PATIENT event from the object "myPatientDB" the object myImage is removed from the composite
      *
      * The actionType can be : ADD, ADD_OR_SWAP, SWAP, REMOVE, REMOVE_IF_PRESENT and DO_NOTHING
      */

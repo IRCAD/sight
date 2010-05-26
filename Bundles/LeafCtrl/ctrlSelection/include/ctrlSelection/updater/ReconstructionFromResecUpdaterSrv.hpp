@@ -55,7 +55,7 @@ protected:
             <update compositeKey="myReconstruction" onEvent="CLEAR" fromUID="myResection" actionType="REMOVE"/>
         </service>
       @endverbatim
-     * The '*' value for "fromUID" mean that the message could be received from every objects
+     * The '*' value for "fromUID" means that the message could be received from every objects
      * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
