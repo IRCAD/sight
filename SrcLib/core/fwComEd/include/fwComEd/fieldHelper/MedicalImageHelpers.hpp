@@ -199,7 +199,7 @@ public :
      * @brief       Return true if the pixel value is not 0.
      */
     template < typename INT_INDEX>
-    static bool isPixelInROI(::fwData::Image::sptr roiImage, INT_INDEX &point);
+    static bool isPixelNull(::fwData::Image::sptr image, INT_INDEX &point);
 
     template < typename T , typename INT_INDEX>
     static void setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value);
@@ -273,12 +273,12 @@ public:
         public:
         typedef INT_INDEX PointType;
 
-            Param(PointType &p, bool &b):
-                point(p), isInRoi(b)
-            {};
+        Param(PointType &p, bool &b):
+            point(p), isNull(b)
+        {};
 
         ::fwData::Image::sptr image;
-        bool &isInRoi;
+        bool &isNull;
         const PointType &point;
     };
 
@@ -291,22 +291,22 @@ public:
         const int &sx = size[0];
         const int &sy = size[1];
         const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
-        param.isInRoi = (*(buffer+offset) != 0);
+        param.isNull = (*(buffer+offset) != 0);
     }
 
 };
 
 template < typename INT_INDEX>
-bool MedicalImageHelpers::isPixelInROI(::fwData::Image::sptr roiImage, INT_INDEX &point)
+bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &point)
 {
-    bool isInROI;
-    typename CastAndCheckFunctor<INT_INDEX>::Param param(point, isInROI);
-    param.image = roiImage;
+    bool isNull;
+    typename CastAndCheckFunctor<INT_INDEX>::Param param(point, isNull);
+    param.image = image;
 
-    ::fwTools::DynamicType type = roiImage->getPixelType();
+    ::fwTools::DynamicType type = image->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndCheckFunctor<INT_INDEX> >::invoke( type, param );
 
-    return isInROI;
+    return isNull;
 }
 
 
