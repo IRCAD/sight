@@ -7,6 +7,8 @@
 #include <cassert>
 #include <set>
 
+#include <boost/foreach.hpp>
+
 #include <fwTools/ClassFactoryRegistry.hpp>
 
 #include "fwServices/ComChannelService.hpp"
@@ -161,7 +163,7 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
     SLM_ASSERT("ACH : The ComChannelService, given in parameter, is already registered", !isAttached( observer ) );
 
     // Get the service observer
-    IService::sptr service = observer->getDest();
+    ::fwServices::IService::sptr service = observer->getDest();
 
     // Test if this service handling all events or if it has a specific configuration
     if ( service->isHandlingAllEvents() )
@@ -175,11 +177,8 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
     {
         OSLM_DEBUG("This service not handling all events : " << service->getClassname() );
         std::vector< std::string > handlingEvents = service->getHandledEvents();
-        for (   std::vector< std::string >::iterator iter = handlingEvents.begin();
-                iter != handlingEvents.end();
-                ++iter )
+        BOOST_FOREACH(std::string handlingEvent, handlingEvents)
         {
-            std::string handlingEvent = *iter;
             ObserverContainer & specificObservers = m_event2SpecificObservers[ handlingEvent ];
             specificObservers.push_back( observer );
             specificObservers.sort( Less );
@@ -221,22 +220,16 @@ void IEditionService::detach( ::fwServices::ComChannelService::sptr observer ) t
     else
     {
         std::vector< std::string > handlingEvents = service->getHandledEvents();
-        for (   std::vector< std::string >::iterator iter = handlingEvents.begin();
-                iter != handlingEvents.end();
-                ++iter )
+        BOOST_FOREACH(std::string handlingEvent, handlingEvents)
         {
-            std::string handlingEvent = *iter;
             ObserverContainer & specificObservers = m_event2SpecificObservers[ handlingEvent ];
             specificObservers.remove_if( IsEqual(observer) );
         }
     }
 
-
     /* OLD METHOD
-
     // Removes the desired observer.
     m_observers.remove_if( IsEqual(observer) );
-
      */
 }
 
@@ -248,7 +241,7 @@ const bool IEditionService::isAttached( ::fwServices::ComChannelService::sptr ob
     bool isAttached = false;
 
     // Get the service observer
-    IService::sptr service = observer->getDest();
+    ::fwServices::IService::sptr service = observer->getDest();
 
     // Test if this service handling all events or if it has a specific configuration
     if ( service->isHandlingAllEvents() )
@@ -352,29 +345,21 @@ void IEditionService::notify( ::fwServices::ObjectMsg::csptr eventMessage, ::fwS
 
     // Insert global observers
     OSLM_DEBUG( "m_globalObservers.size() == " << m_globalObservers.size() );
-    for(    ObserverContainer::iterator iter = m_globalObservers.begin() ;
-            iter != m_globalObservers.end() ;
-            ++iter )
+    BOOST_FOREACH(::fwServices::ComChannelService::wptr comChannel, m_globalObservers)
     {
-        notifiedObservers.insert( *iter );
+        notifiedObservers.insert( comChannel );
     }
 
-
     std::vector< std::string > eventIds = eventMessage->getEventIds();
-    for (   std::vector< std::string >::iterator iter = eventIds.begin();
-            iter != eventIds.end();
-            ++iter )
+    BOOST_FOREACH(std::string eventId, eventIds)
     {
-        std::string eventId = *iter;
         Event2ObserversContainer::iterator itOnSpecificObservers = m_event2SpecificObservers.find( eventId );
         if ( itOnSpecificObservers != m_event2SpecificObservers.end() )
         {
             ObserverContainer & specificObservers = itOnSpecificObservers->second;
-            for(    ObserverContainer::iterator iter = specificObservers.begin();
-                    iter != specificObservers.end() ;
-                    ++iter )
+            BOOST_FOREACH(::fwServices::ComChannelService::wptr comChannel, specificObservers)
             {
-                notifiedObservers.insert( *iter );
+                notifiedObservers.insert( comChannel );
             }
         }
     }

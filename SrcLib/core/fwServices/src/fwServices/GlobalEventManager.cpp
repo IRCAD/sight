@@ -38,6 +38,7 @@ GlobalEventManager::GlobalEventManager() :
     SLM_TRACE_FUNC();
 }
 
+//-----------------------------------------------------------------------------
 
 GlobalEventManager::~GlobalEventManager()
 {
@@ -93,11 +94,12 @@ GlobalEventManager::~GlobalEventManager()
 
 //-----------------------------------------------------------------------------
 
-
 bool GlobalEventManager::pending()
 {
     return !m_msgDeque.empty();
 }
+
+//-----------------------------------------------------------------------------
 
 void GlobalEventManager::dispatch()
 {
@@ -123,6 +125,8 @@ void GlobalEventManager::dispatch()
     m_msgDeque.pop_front();
     m_dispatching = false;
 }
+
+//-----------------------------------------------------------------------------
 
 void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options )
 {

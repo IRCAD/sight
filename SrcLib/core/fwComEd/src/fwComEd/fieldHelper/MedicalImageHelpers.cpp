@@ -9,6 +9,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/PointList.hpp>
+#include <fwData/StandardBuffer.hpp>
 
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
@@ -422,6 +423,23 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     ::fwData::String::NewSptr labelField;
     labelField->value() = label.str();
     pImage->setFieldSingleElement(::fwComEd::Dictionary::m_imageLabelId, labelField);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpers::initializerImage( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize)
+{
+    SLM_ASSERT("Image source must be initialized", imgSrc);
+    SLM_ASSERT("Image to initialized must be instanced", imgToInitialize);
+    SLM_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
+
+    imgToInitialize->shallowCopy(imgSrc);
+    imgToInitialize->setBufferDelegate( ::fwData::StandardBuffer::New());
+
+    ::boost::int32_t size = ::fwData::imageSizeInBytes( *imgSrc );
+    char * dest = new char[size];
+    std::fill(dest, dest + size, 0);
+    imgToInitialize->setBuffer( dest );
 }
 
 //------------------------------------------------------------------------------

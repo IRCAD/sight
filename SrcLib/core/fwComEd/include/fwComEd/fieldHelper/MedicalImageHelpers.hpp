@@ -187,6 +187,15 @@ public :
     FWCOMED_API static void setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage);
 
     /**
+     * @brief       Initialized an image to 0 from image source (same field, pixel type, buffer size...).
+     *
+     *
+     * @param[in]   imgSrc             image which gives information (field, pixel type, buffer size...).
+     * @param[in]   imgToInitialize    image to initialized.
+     */
+    FWCOMED_API static void initializerImage( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize);
+
+    /**
      * @brief       Return true if the pixel value is not 0.
      */
     template < typename INT_INDEX>
