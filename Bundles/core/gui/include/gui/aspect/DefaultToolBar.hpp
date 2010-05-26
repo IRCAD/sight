@@ -47,6 +47,30 @@ protected:
     /**
      * @brief This method create a new ToolBar in frame.
      */
+    /**
+     * @brief Configuring method allows to create a toolBar with several actions. The created toolbar is a horizontal one without border.
+     * Each icon has a size of 32x32 by default.
+     * Here a sample of the DefaultToolBar service declaration with two actions:
+     * @verbatim
+        <service uid="toolBar" type="::gui::aspect::IToolBar" implementation="::gui::aspect::DefaultToolBar" autoComChannel="no">
+            <toolBitmapSize height="40" width="40" />
+            <action uid="action_new" name="New file" icon="Bundles/MyApplication/icons/newFile.png"/>
+            <separator/>
+            <action uid="action_3Dview" style="radio" name="3D view" icon="Bundles/MyApplication/icons//icon-3D.png" />
+            <action uid="action_2Dview" style="radio" name="2D view" icon="Bundles/MyApplication/icons/icon-2D.png" />
+            <separator/>
+            <action uid="action_hideInformation"  style="check" name="Show information window" icon="Bundles/MyApplication/icons/View-INFO.png" />
+        </service>
+       @endverbatim
+      * - <toolBitmapSize height="40" width="40" /> : has to change the size of the icon used in the toolbar.
+      * - <separator /> : allows to put a separation in the tool bar.
+      * - Action Attributes:
+      *       - icon is the icon file to use.
+      *       - name is the text that will be put inside the tool tip.
+      *       - state can be {check}. This attribute is available only with the style radio and check.
+      *       - style is the style of the button. The available choice is {radio|check}. If style isn't specified normal state(without 'state')is used.
+      */
+
     GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
 
     /**

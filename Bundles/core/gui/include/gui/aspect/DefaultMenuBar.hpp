@@ -44,7 +44,7 @@ protected :
 
     /// Retrieve DefaultMenuBar::m_menuName in configuration element
     /**
-     * @brief Configuring method allows to configure an application with several tab views.
+     * @brief Configuring method allows to configure an application with menu bar.
      * Here a sample of the DefaultMenuBar service declaration with two menus:
      * @verbatim
             <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no">
@@ -54,7 +54,7 @@ protected :
                 </menus>
             </service>
        @endverbatim
-      * <menus> node is mandatory even if there is only one <menu.../> item.
+      * - <menus> node is mandatory even if there is only one <menu.../> item.
       * No specific attribute are available.
      */
     GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;

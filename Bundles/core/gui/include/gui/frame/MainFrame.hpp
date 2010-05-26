@@ -47,6 +47,22 @@ protected :
     /**
      * @brief This method is used to configure the class parameters.
      */
+    /**
+     * @brief Configuring method allows to configure the main frame.
+     * Here a sample of the MainFrame service declaration:
+     * @verbatim
+            <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no">
+                <name>VRPipe 0.4</name>
+                <icon>Bundles/VRPipe_0-4/vrpipe.ico</icon>
+                <minSize width="800" height="600" />
+                <view uid="multiView_1" autoStart="yes" />
+            </service>
+       @endverbatim
+      * - <name> is the name of the application that will appear on the title bar.
+      * - <icon> is the icon  that will appear on the title bar.
+      * - <minSize ../> is the size of the application for the first launch.
+      * - <view ../> is the main wiew of the application.
+     */
     GUI_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**

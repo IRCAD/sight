@@ -67,7 +67,7 @@ protected:
 
     /// Analyses xml configuration to configure this service, espacially umber of panel and the layout of this view.
     /**
-     * @brief Configuring method allows to configure an application with several tab views.
+     * @brief Configuring method allows to configure an application with several sizer views.
      * Here a sample of the multiSizerView service declaration with two views:
      * @verbatim
             <service uid="multiViewOrgans" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
