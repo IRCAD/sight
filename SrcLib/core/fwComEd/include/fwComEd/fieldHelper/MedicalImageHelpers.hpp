@@ -191,9 +191,11 @@ public :
      *
      *
      * @param[in]   imgSrc             image which gives information (field, pixel type, buffer size...).
-     * @param[in]   imgToInitialize    image to initialized.
+     * @param[in]   imgToInitialize    image to initialized (if not null).
+     *
+     * @return      Returns initialized image.
      */
-    FWCOMED_API static void initializerImage( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize);
+    FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize = ::fwData::Image::sptr());
 
     /**
      * @brief       Return true if the pixel value is not 0.

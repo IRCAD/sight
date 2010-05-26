@@ -39,6 +39,8 @@ namespace fwData
     return size;
  }
 
+//------------------------------------------------------------------------------
+
 /**
  * @brief return the pixel value of the image in given coordinates
  */
@@ -53,6 +55,8 @@ T getPixel( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsign
     return *(buffer+offset);
 }
 
+//------------------------------------------------------------------------------
+
 /**
  * @class StringGetter
  * @brief This class is use to convert a pixel value of an image in a string value
@@ -60,33 +64,35 @@ T getPixel( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsign
 class StringGetter
 {
 
+public:
+
+    /**
+     * @class Parameter
+     * @brief This class defines the parameter use to get a pixel in an image
+     */
+    class Parameter
+    {
     public:
+        Parameter(::fwData::Image::csptr _image, unsigned int _x, unsigned int _y, unsigned int _z)
+        : image(_image), x(_x), y(_y), z(_z) {};
 
-        /**
-         * @class Parameter
-         * @brief This class defines the parameter use to get a pixel in an image
-         */
-        class Parameter
-        {
-            public:
-                Parameter(::fwData::Image::csptr _image, unsigned int _x, unsigned int _y, unsigned int _z)
-                    : image(_image), x(_x), y(_y), z(_z) {};
+        ::fwData::Image::csptr image;
+        unsigned int x;
+        unsigned int y;
+        unsigned int z;
+        std::string output;
+    };
 
-                ::fwData::Image::csptr image;
-                unsigned int x;
-                unsigned int y;
-                unsigned int z;
-                std::string output;
-        };
+    template < class T >
+    void operator()(Parameter &param)
+    {
 
-        template < class T >
-            void operator()(Parameter &param)
-            {
-
-                T value = getPixel< T >(param.image, param.x, param.y, param.z);
-                param.output = ::boost::lexical_cast < std::string , double> (value);
-            }
+        T value = getPixel< T >(param.image, param.x, param.y, param.z);
+        param.output = ::boost::lexical_cast < std::string , double> (value);
+    }
 };
+
+//------------------------------------------------------------------------------
 
 std::string  getPixelAsString( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsigned int z )
 {
@@ -155,9 +161,10 @@ void Image::deepCopy( Image::csptr _source )
     this->m_dWindowWidth        = _source->m_dWindowWidth;
     this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
 
-    if(this->getPixelType() != ::fwTools::DynamicType() )
+    if(this->getPixelType() != ::fwTools::DynamicType() && _source->getBufferDelegate() )
     {
         char * src = static_cast<char *>( _source->getBuffer() );
+        SLM_ASSERT("Image source has not buffer", src);
         ::boost::int32_t size = imageSizeInBytes( *_source );
         char * dest = new char[size];
         ::std::copy( src, src + size , dest );
@@ -185,23 +192,8 @@ void Image::setBuffer(void *_buffer)
 
 //------------------------------------------------------------------------------
 
-void Image::setBufferDelegate(IBufferDelegate::sptr bufferDelegate)
-{
-    m_bufferDelegate = bufferDelegate;
-}
-
-//------------------------------------------------------------------------------
-
-IBufferDelegate::sptr  Image::getBufferDelegate()
-{
-    return m_bufferDelegate;
-}
-
-//------------------------------------------------------------------------------
-
 void Image::setManagesBuff( const bool _bManagesBuff )
 {
-//  m_bManagesBuff = _bManagesBuff;
     this->m_bufferDelegate->setManagesBuff( _bManagesBuff ) ;
 }
 
@@ -209,7 +201,6 @@ void Image::setManagesBuff( const bool _bManagesBuff )
 
 void Image::setCRefManagesBuff( const bool & _bManagesBuff )
 {
-//  m_bManagesBuff = _bManagesBuff;
     this->m_bufferDelegate->setCRefManagesBuff( _bManagesBuff ) ;
 }
 
@@ -217,7 +208,6 @@ void Image::setCRefManagesBuff( const bool & _bManagesBuff )
 
 const bool Image::getManagesBuff() const
 {
-//  return m_bManagesBuff;
     return this->m_bufferDelegate->getManagesBuff() ;
 }
 
@@ -225,7 +215,6 @@ const bool Image::getManagesBuff() const
 
 const bool & Image::getCRefManagesBuff() const
 {
-//  return m_bManagesBuff;
     return this->m_bufferDelegate->getCRefManagesBuff() ;
 }
 
@@ -233,7 +222,6 @@ const bool & Image::getCRefManagesBuff() const
 
 bool & Image::getRefManagesBuff()
 {
-//  return m_bManagesBuff;
     return this->m_bufferDelegate->getRefManagesBuff() ;
 }
 

@@ -68,18 +68,6 @@ public:
     FWDATA_API void setBuffer(void *_buffer);
 
 
-    /**
-     * @brief delegateBuffer setter : by default use StandardBuffer
-     */
-    FWDATA_API void setBufferDelegate(IBufferDelegate::sptr bufferDelegate);
-
-
-    /**
-     * @brief delegateBuffer getter : by default use StandardBuffer
-     */
-    FWDATA_API IBufferDelegate::sptr  getBufferDelegate();
-
-
     // Generator result---------------------------------------------------------
 
     /** @name ManagesBuff accessor */
@@ -114,32 +102,27 @@ public:
 
     fwGettersSettersDocMacro(RescaleIntercept, dRescaleIntercept, double, rescale intercept);
 
+    fwGettersSettersDocMacro(BufferDelegate, bufferDelegate, ::fwData::IBufferDelegate::sptr, by default use StandardBuffer);
 
 protected :
 
     //! image dimension, ex : 3 for image 3D
-    boost::uint8_t  m_ui8Dimension;
+    ::boost::uint8_t  m_ui8Dimension;
 
     //! type of image pixel
-    fwTools::DynamicType m_dtPixelType;
-
-    //! buffer of image
-    //void * m_pBuffer;
-
-
-    // bool m_bManagesBuff ;
+    ::fwTools::DynamicType m_dtPixelType;
 
     //! An array on the voxel size of the image
-    std::vector<double> m_vSpacing;
+    std::vector< double > m_vSpacing;
 
     //! Origin of the image in 3D repair
-    std::vector<double> m_vOrigin;
+    std::vector< double > m_vOrigin;
 
     //! Size of the image (in terms of points)
-    std::vector<boost::int32_t>  m_vSize;
+    std::vector< ::boost::int32_t >  m_vSize;
 
     //! the path to save/load this image
-    boost::filesystem::path m_fsFilename;
+    ::boost::filesystem::path m_fsFilename;
 
     /** @{
      * @brief Visu control to adjust contrast image (come from dicom image ?)
@@ -150,14 +133,13 @@ protected :
     // @}
 
     //! image buffer
-    IBufferDelegate::sptr  m_bufferDelegate;
+    ::fwData::IBufferDelegate::sptr  m_bufferDelegate;
 
 };
 
 /// @brief return the size in bytes of the image
 FWDATA_API boost::int32_t  imageSizeInBytes( const ::fwData::Image &image);
 
-//template < class T > T getPixel( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsigned int z );
 /**
  * @brief Get a string containing pixel value
  * @param[in] _image image containing the pixel
@@ -168,7 +150,6 @@ FWDATA_API boost::int32_t  imageSizeInBytes( const ::fwData::Image &image);
  * @return pixel value
  */
 FWDATA_API std::string  getPixelAsString( ::fwData::Image::csptr _image, unsigned int _x, unsigned int _y, unsigned int _z );
-
 
 
 };

@@ -427,19 +427,27 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpers::initializerImage( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize)
+::fwData::Image::sptr MedicalImageHelpers::initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize)
 {
     SLM_ASSERT("Image source must be initialized", imgSrc);
-    SLM_ASSERT("Image to initialized must be instanced", imgToInitialize);
     SLM_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
 
-    imgToInitialize->shallowCopy(imgSrc);
-    imgToInitialize->setBufferDelegate( ::fwData::StandardBuffer::New());
+    if(!imgToInitialize)
+    {
+        imgToInitialize = ::fwData::Image::New();
+    }
+    ::fwData::IBufferDelegate::sptr buffImgSrc = imgSrc->getBufferDelegate();
+    imgSrc->setBufferDelegate( ::fwData::StandardBuffer::sptr() );
+
+    imgToInitialize->deepCopy(imgSrc);
+    imgSrc->setBufferDelegate( buffImgSrc );
 
     ::boost::int32_t size = ::fwData::imageSizeInBytes( *imgSrc );
     char * dest = new char[size];
     std::fill(dest, dest + size, 0);
     imgToInitialize->setBuffer( dest );
+
+    return imgToInitialize;
 }
 
 //------------------------------------------------------------------------------
