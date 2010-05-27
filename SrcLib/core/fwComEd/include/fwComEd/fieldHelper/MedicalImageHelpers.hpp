@@ -293,7 +293,7 @@ public:
         const int &sx = size[0];
         const int &sy = size[1];
         const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
-        param.isNull = (*(buffer+offset) != 0);
+        param.isNull = (*(buffer+offset) == 0);
     }
 
 };
