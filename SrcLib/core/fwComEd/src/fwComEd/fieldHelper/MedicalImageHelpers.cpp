@@ -444,7 +444,6 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
 
     ::boost::int32_t size = ::fwData::imageSizeInBytes( *imgSrc );
     char * dest = new char[size];
-    std::fill(dest, dest + size, 0);
     imgToInitialize->setBuffer( dest );
 
     return imgToInitialize;
