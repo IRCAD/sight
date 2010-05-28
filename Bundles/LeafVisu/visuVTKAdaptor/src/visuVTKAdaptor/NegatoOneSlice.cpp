@@ -43,7 +43,10 @@ NegatoOneSlice::NegatoOneSlice() throw()
 
     m_imageSource = NULL;
 
-    this->handlingEventOff();
+    // Manage events
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
+    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
 }
 
 //------------------------------------------------------------------------------
@@ -207,7 +210,9 @@ void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    //No event handled
+    this->doStop();
+    this->doStart();
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
