@@ -34,6 +34,8 @@ class IODATA_CLASS_API TriangularMeshWriterService : public ::io::IWriter
 
 public:
 
+    fwCoreServiceClassDefinitionsMacro ( (TriangularMeshWriterService)(::io::IWriter::Baseclass) ) ;
+
      /// Super class of writer services
     typedef ::io::IWriter   SuperClass;
 

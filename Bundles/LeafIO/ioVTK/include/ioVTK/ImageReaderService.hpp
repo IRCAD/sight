@@ -38,7 +38,7 @@ class IOVTK_CLASS_API ImageReaderService : public ::io::IReader
 {
 
 public :
-
+    fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader::Baseclass) ) ;
     /**
      * @brief Service constructor, default parameter initialization
      * @post ImageReaderService::m_bServiceIsConfigured is equal to false : service not configured

@@ -24,6 +24,8 @@ class VISUVTKADAPTOR_CLASS_API ImageLandmarks: public ::fwRenderVTK::IVtkAdaptor
 
 public:
 
+    fwCoreServiceClassDefinitionsMacro ( (ImageLandmarks)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+
     VISUVTKADAPTOR_API ImageLandmarks() throw();
 
     VISUVTKADAPTOR_API virtual ~ImageLandmarks() throw();

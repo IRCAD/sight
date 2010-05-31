@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_STARTERACTIONSERVICE_HPP_
-#define _GUI_ACTION_STARTERACTIONSERVICE_HPP_
+#ifndef _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
+#define _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
 
 #include <vector>
 #include <fwServices/IService.hpp>
@@ -26,30 +26,29 @@ namespace action
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  */
-class GUI_CLASS_API StarterActionService : public ::gui::action::IAction
+class GUI_CLASS_API ActionNotifyService : public ::gui::action::IAction
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::gui::action::IAction::Baseclass) ) ;
 
     /**
     * @brief Constructor. Do nothing.
     */
-    GUI_API StarterActionService() throw();
+    GUI_API ActionNotifyService() throw();
 
     /**
     * @brief Destructor. Do nothing.
     */
-    GUI_API virtual ~StarterActionService() throw();
+    GUI_API virtual ~ActionNotifyService() throw();
 
 protected:
 
-    enum ActionType {
-        START,
-        STOP,
-        START_IF_EXISTS,
-        STOP_IF_EXISTS,
+    enum MessageType {
+        REMOVE,
+        ADD,
+        ADD_OR_REMOVE,
         DO_NOTHING
     };
 
@@ -61,7 +60,9 @@ protected:
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating()throw (fwTools::Failed);
+    GUI_API void updating()throw (fwTools::Failed);    
+    
+    GUI_API void updating(::fwServices::ObjectMsg::csptr _msg )throw (fwTools::Failed);
 
     /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
@@ -70,7 +71,9 @@ protected:
 
 private:
     // vector representing uuid's services that must be started (true) or stopped (false)
-    std::vector< std::pair< std::string, ActionType > > m_uuidServices;
+    std::vector< std::pair< std::string, MessageType > > m_uuidServices;
+    
+    std::string m_onevent;
 };
 
 
@@ -78,4 +81,4 @@ private:
 } // namespace gui
 
 
-#endif /*_GUI_ACTION_STARTERACTIONSERVICE_HPP_*/
+#endif /*_GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_*/

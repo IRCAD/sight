@@ -92,9 +92,26 @@ bool initFwDir()
     // old style parameters
     // 1 argument :
     // launcher path/profile.xml
+
     if ( m_argc >= 2 )
     {
-        profilePath = m_argv[1];
+        int profileArg = 1;
+#ifdef __MACOSX__
+        // In graphical context, OSX add a Process Number like parameter
+        std::string strPSN = m_argv[1];
+        std::string strPSN1 = "-psn";
+        if ( strPSN.substr(0,4).compare( strPSN1 ) == 0)
+        {
+            SLM_TRACE("PSN used");
+        }
+        else
+        {
+            SLM_TRACE("PSN not used");
+            profilePath = m_argv[profileArg];
+        }
+#else
+        profilePath = m_argv[profileArg];
+#endif
     }
 
     return profilePath;
@@ -110,6 +127,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
 #else
 int main(int argc, char* argv[])
 {
+#ifdef __MACOSX__
+    ::boost::filesystem::path pathOSX = argv[0];
+    bool isChdirOkOSX = ( chdir(pathOSX.parent_path().string().c_str()) == 0);
+    SLM_FATAL_IF("Current dir initialization failed" , !isChdirOkOSX);
+#endif
     m_argc = argc;
     m_argv = argv;
 #endif
