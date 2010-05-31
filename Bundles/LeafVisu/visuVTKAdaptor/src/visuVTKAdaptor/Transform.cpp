@@ -36,15 +36,19 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform
 namespace visuVTKAdaptor
 {
 
+//------------------------------------------------------------------------------
 
-Transform::Transform() throw() : bForceRender(false)
+Transform::Transform() throw()
 {
+    addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
+
+//------------------------------------------------------------------------------
 
 Transform::~Transform() throw()
-{
+{}
 
-}
+//------------------------------------------------------------------------------
 
 void Transform::configuring() throw(fwTools::Failed)
 {
@@ -53,19 +57,16 @@ void Transform::configuring() throw(fwTools::Failed)
 
     assert(m_configuration->getName() == "config");
     this->setTransformId( m_configuration->getAttributeValue("transform") );
-    // only to force render
-    if(m_configuration->hasAttribute("forceRender") )
-    {
-        std::string value(m_configuration->getAttributeValue("forceRender"));
-        std::transform(value.begin(), value.end(), value.begin(), tolower);
-        this->bForceRender = ( value != "no" );
-    }
 }
+
+//------------------------------------------------------------------------------
 
 void Transform::doStart() throw(fwTools::Failed)
 {
     this->doUpdate();
 }
+
+//------------------------------------------------------------------------------
 
 void Transform::doUpdate() throw(fwTools::Failed)
 {
@@ -83,23 +84,24 @@ void Transform::doUpdate() throw(fwTools::Failed)
     vtkTransform* vtkTrf = this->getTransform();
     vtkTrf->SetMatrix(mat);
     this->getTransform()->Modified();
-    // @TODO : Hack to force render !! (pb with tracking)
-    if( bForceRender )
-    {
-        this->getRenderService()->render();
-    }
+    this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
 
 void Transform::doSwap() throw(fwTools::Failed)
 {
     this->doUpdate();
 }
 
+//------------------------------------------------------------------------------
+
 void Transform::doStop() throw(fwTools::Failed)
 {
     this->unregisterServices();
 }
 
+//------------------------------------------------------------------------------
 
 void Transform::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
@@ -129,8 +131,5 @@ void Transform::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fai
 //        }
     }
 }
-
-
-
 
 } //namespace visuVTKAdaptor

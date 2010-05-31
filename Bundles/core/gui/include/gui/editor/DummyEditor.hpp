@@ -35,7 +35,7 @@ class GUI_CLASS_API DummyEditor : public ::gui::editor::IEditor
 public :
 
 
-    fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
     GUI_API DummyEditor() throw() ;
@@ -44,6 +44,11 @@ public :
     GUI_API virtual ~DummyEditor() throw() ;
 
 protected:
+
+    /**
+     * @brief optionnal text
+     */
+    std::string m_text;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{

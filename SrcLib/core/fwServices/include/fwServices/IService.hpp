@@ -56,7 +56,7 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) ) ;
 
     fwCoreAllowSharedFromThis();
 

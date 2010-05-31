@@ -113,7 +113,7 @@ std::string FwXMLImageWriterService::getPersistanceId()
 
 //------------------------------------------------------------------------------
 
-void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFileDir, ::boost::shared_ptr< ::fwData::Image > _pPatient )
+void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr _pPatient )
 {
     SLM_TRACE("FwXMLImageWriterService::createImage");
     ::fwXML::writer::FwXMLObjectWriter myWriter;
@@ -152,8 +152,7 @@ void FwXMLImageWriterService::updating() throw(fwTools::Failed)
     if( m_bServiceIsConfigured )
     {
         // Retrieve dataStruct associated with this service
-        ::boost::shared_ptr< ::fwTools::Object > associatedObject = this->getObject();
-        ::boost::shared_ptr< ::fwData::Image > associatedImage = ::boost::dynamic_pointer_cast< ::fwData::Image >( associatedObject ) ;
+        ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
         assert( associatedImage ) ;
 
         wxBeginBusyCursor();

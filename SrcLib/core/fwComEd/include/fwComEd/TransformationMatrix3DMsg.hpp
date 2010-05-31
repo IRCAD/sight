@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API TransformationMatrix3DMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((TransformationMatrix3DMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new TransformationMatrix3DMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((TransformationMatrix3DMsg)(::fwServices::ObjectMsg), ( ( ) ), new TransformationMatrix3DMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string MATRIX_IS_MODIFIED;

@@ -59,7 +59,7 @@ class TestService : public ::fwServices::IService
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) ) ;
     TestService() throw()
     :   m_isUpdated(false),
         m_isUpdatedMessage(false)
@@ -95,7 +95,7 @@ class TestServiceImplementationComposite : public TestService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationComposite)(::TestService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationComposite)(::TestService) ) ;
     TestServiceImplementationComposite() throw() {};
     virtual ~TestServiceImplementationComposite() throw() {};
 
@@ -124,7 +124,7 @@ class TestServiceImplementationImage : public TestService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::TestService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::TestService) ) ;
     TestServiceImplementationImage() throw() {};
     virtual ~TestServiceImplementationImage() throw() {};
 

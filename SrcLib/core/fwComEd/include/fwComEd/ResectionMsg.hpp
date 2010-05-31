@@ -25,7 +25,7 @@ namespace fwComEd
 class FWCOMED_CLASS_API ResectionMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ResectionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ResectionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ResectionMsg)(::fwServices::ObjectMsg), ( () ), new ResectionMsg );
 
     /**
      * @name Event identifier

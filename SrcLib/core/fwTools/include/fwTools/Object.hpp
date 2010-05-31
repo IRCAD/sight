@@ -326,7 +326,7 @@ private :
 class FWTOOLS_CLASS_API Field :  public ::fwTools::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Field)(::fwTools::Object::Baseclass), (()) ( ((const std::string &)) ) , new Field );
+    fwCoreClassDefinitionsWithFactoryMacro((Field)(::fwTools::Object), (()) ( ((const std::string &)) ) , new Field );
 
     /// default constructor label is empty
     FWTOOLS_API Field();

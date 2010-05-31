@@ -31,7 +31,7 @@ class GUI_CLASS_API ActionNotifyService : public ::gui::action::IAction
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::gui::action::IAction) ) ;
 
     /**
     * @brief Constructor. Do nothing.

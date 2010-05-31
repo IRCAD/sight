@@ -32,7 +32,7 @@ class VISUVTKADAPTOR_CLASS_API TriangularMesh: public ::fwRenderVTK::IVtkAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TriangularMesh)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TriangularMesh)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API TriangularMesh() throw();
     VISUVTKADAPTOR_API virtual ~TriangularMesh() throw();
@@ -102,6 +102,7 @@ protected:
     bool   m_showClippedPart;
     double m_sharpEdgeAngle;
     bool   m_manageMapperInput;
+    bool   m_autoResetCamera;
 
     vtkAlgorithmOutput *m_mapperInput;
     vtkPolyDataNormals *m_normals;

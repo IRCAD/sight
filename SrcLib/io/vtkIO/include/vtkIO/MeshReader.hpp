@@ -37,7 +37,7 @@ class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Tri
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >),
                                                      (()),
                                                      new  MeshReader
                                                 );

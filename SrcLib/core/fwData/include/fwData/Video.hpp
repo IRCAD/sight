@@ -30,7 +30,7 @@ namespace fwData
 class FWDATA_CLASS_API Video : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Video >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwTools::Factory::New< Video >) ;
 
     typedef ::boost::uint8_t VideoType;
 

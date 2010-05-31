@@ -33,7 +33,7 @@ namespace fwData
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Reconstruction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwTools::Factory::New< Reconstruction >) ;
 
     /// Constructor
     FWDATA_API Reconstruction();

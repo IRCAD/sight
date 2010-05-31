@@ -22,7 +22,7 @@ class VISUVTKADAPTOR_CLASS_API Render: public ::fwRenderVTK::IVtkAdaptorService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Render)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Render)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Render() throw();
 

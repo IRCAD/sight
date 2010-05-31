@@ -29,7 +29,7 @@ class WindowLocation : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (WindowLocation)(::fwCore::BaseObject::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (WindowLocation)(::fwCore::BaseObject),
                 ( ((wxWindow*))  ) ( ((wxTopLevelWindow*)) ) ( ((const wxString)) ),
                 new WindowLocation) ;
 

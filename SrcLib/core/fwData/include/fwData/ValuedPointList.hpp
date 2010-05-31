@@ -28,8 +28,7 @@ class FWDATA_CLASS_API ValuedPointList : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (ValuedPointList)(::fwData::Object::Baseclass),
-        (()), ::fwTools::Factory::New< ValuedPointList >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ValuedPointList)(::fwData::Object), (()), ::fwTools::Factory::New< ValuedPointList >) ;
 
     typedef std::vector< ::fwData::ValuedPoint::sptr > PointListContainer;
 

@@ -33,7 +33,7 @@ namespace ioData
 class IODATA_CLASS_API CameraReaderService : public ::io::IReader
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (CameraReaderService)( ::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (CameraReaderService)( ::io::IReader) ) ;
     /// Super class of reader services
     typedef ::io::IReader   SuperClass;
     /**

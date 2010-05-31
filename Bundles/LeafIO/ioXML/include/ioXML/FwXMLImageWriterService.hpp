@@ -29,7 +29,7 @@ class IOXML_CLASS_API FwXMLImageWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageWriterService)(::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLImageWriterService)(::io::IWriter) ) ;
 
     /**
      * @brief   constructor
@@ -41,6 +41,8 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLImageWriterService() throw();
+
+protected:
 
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;

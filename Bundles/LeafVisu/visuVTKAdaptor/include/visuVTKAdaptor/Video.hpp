@@ -27,7 +27,7 @@ class VISUVTKADAPTOR_CLASS_API Video: public ::fwRenderVTK::IVtkAdaptorService, 
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Video)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Video)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     Video() throw();
     virtual ~Video() throw();
@@ -50,7 +50,6 @@ private:
     vtkTexture* m_texture ;
 
     bool bText_init;
-    bool bForceRender;
 //  enum ARL_VIDEO_FLIP { VIDEO_FLIP_VERTICAL, VIDEO_FLIP_HORIZONTAL, VIDEO_FLIP_RADIAL, VIDEO_NBFLIP };
 
 };

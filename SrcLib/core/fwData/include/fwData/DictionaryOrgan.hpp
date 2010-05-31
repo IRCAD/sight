@@ -26,7 +26,7 @@ class FWDATA_CLASS_API DictionaryOrgan : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< DictionaryOrgan >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwTools::Factory::New< DictionaryOrgan >) ;
 
     /// Constructor
     FWDATA_API DictionaryOrgan();

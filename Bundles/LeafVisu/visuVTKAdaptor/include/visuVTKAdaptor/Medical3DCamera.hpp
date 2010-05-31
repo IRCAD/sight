@@ -7,18 +7,19 @@
 #ifndef _VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP_
 #define _VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP_
 
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
 
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Medical3DCamera: public ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API Medical3DCamera: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Medical3DCamera)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Medical3DCamera)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Medical3DCamera() throw();
 
@@ -46,7 +47,7 @@ private:
 
 
     vtkCamera* m_camera;
-    static std::map< std::string, ::visuVTKAdaptor::IImagesAdaptor::Orientation > m_orientationConversion;
+    static std::map< std::string, ::fwComEd::helper::MedicalImageAdaptor::Orientation > m_orientationConversion;
 };
 
 

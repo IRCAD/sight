@@ -35,7 +35,7 @@ class IODATA_CLASS_API TransformationMatrix3DWriterService : public ::io::IWrite
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3DWriterService)(::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3DWriterService)(::io::IWriter) ) ;
 
     /// Super class of writer services
     typedef ::io::IWriter   SuperClass;

@@ -27,7 +27,7 @@ class CTRLSELECTION_CLASS_API ObjFromMsgUpdaterSrv : public ::ctrlSelection::IUp
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (ObjFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ObjFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API ObjFromMsgUpdaterSrv() throw() ;

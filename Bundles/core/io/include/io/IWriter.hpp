@@ -31,7 +31,7 @@ class IO_CLASS_API IWriter : public fwServices::IService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IWriter)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IWriter)(::fwServices::IService) ) ;
 
     /**
      * @brief   Constructor (by default does nothing)

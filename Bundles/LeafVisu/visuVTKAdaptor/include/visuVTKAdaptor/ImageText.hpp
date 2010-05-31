@@ -8,6 +8,7 @@
 #include <string>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include "visuVTKAdaptor/Text.hpp"
 #include "visuVTKAdaptor/config.hpp"
@@ -17,18 +18,20 @@ class vtkTextActor;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API ImageText: public Text
+class VISUVTKADAPTOR_CLASS_API ImageText: public Text, public ::fwComEd::helper::MedicalImageAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageText)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageText)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API ImageText() throw();
 
     VISUVTKADAPTOR_API virtual ~ImageText() throw();
 
 protected:
+
+    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 

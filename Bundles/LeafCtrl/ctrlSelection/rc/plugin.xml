@@ -12,6 +12,10 @@
     <point id="::ctrlSelection::IUpdaterSrv">
         <implements>::fwServices::IService</implements>
     </point>
+    
+    <point id="::ctrlSelection::IWrapperSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
 
     <point id="::ctrlSelection::updater::AcqFromPDBUpdaterSrv">
         <implements>::ctrlSelection::IUpdaterSrv</implements>
@@ -63,6 +67,16 @@
         <implements>::fwData::Composite</implements>
     </point>
     
+   <point id="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+   </point>
+    
+   <point id="::ctrlSelection::updater::SelectedNodeIOUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
     <point id="::ctrlSelection::manager::SwapperSrv">
         <implements>::ctrlSelection::IManagerSrv</implements>
         <implements>::fwData::Composite</implements>
@@ -82,6 +96,13 @@
         <implements>::fwServices::IController</implements>
         <implements>::fwData::Image</implements>
     </point>
+    
+    
+    <point id="::ctrlSelection::wrapper::GraphWrapperSrv">
+        <implements>::ctrlSelection::IWrapperSrv</implements>
+        <implements>::fwData::Graph</implements>
+    </point>
+    
     
 </plugin>
 

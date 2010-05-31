@@ -279,7 +279,7 @@ void ReconstructionTest::methode2()
 void ReconstructionTest::image()
 {
     ::fwData::Reconstruction::NewSptr p1;
-    ::fwData::Image::sptr i1(new ::fwData::Image) ;
+    ::fwData::Image::sptr i1(::fwData::Image::New()) ;
 
     p1->setImage(i1) ;
     CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1 ) ;

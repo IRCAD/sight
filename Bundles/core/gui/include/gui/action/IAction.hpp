@@ -37,7 +37,7 @@ class GUI_CLASS_API IAction : public ::fwServices::IService
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IAction)( ::fwServices::IService::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IAction)( ::fwServices::IService) ) ;
     fwCoreAllowSharedFromThis();
 
     /**

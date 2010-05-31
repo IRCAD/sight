@@ -9,8 +9,10 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
 
 
 class VISUVTKADAPTOR_CLASS_API vtkPolyData;
@@ -22,11 +24,11 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API SlicesCursor: public ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API SlicesCursor: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API SlicesCursor()  throw();
 

@@ -42,19 +42,24 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Video, ::
 namespace visuVTKAdaptor
 {
 
+//------------------------------------------------------------------------------
+
 Video::Video() throw()
 {
     m_imageData   = vtkImageData::New();
     m_array = vtkUnsignedCharArray::New();
     m_texture = vtkTexture::New();
-    bForceRender = false;
     bText_init  = false;
+
+    addNewHandledEvent( ::fwComEd::VideoMsg::VIDEO_IS_REFRESHED );
 }
+
+//------------------------------------------------------------------------------
 
 Video::~Video() throw()
-{
-}
+{}
 
+//------------------------------------------------------------------------------
 
 void Video::configuring() throw(fwTools::Failed)
 {
@@ -62,13 +67,9 @@ void Video::configuring() throw(fwTools::Failed)
 
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    if(m_configuration->hasAttribute("forceRender") )
-    {
-        std::string value(m_configuration->getAttributeValue("forceRender"));
-        std::transform(value.begin(), value.end(), value.begin(), tolower);
-        this->bForceRender = ( value != "no" );
-    }
 }
+
+//------------------------------------------------------------------------------
 
 void Video::doStart() throw(fwTools::Failed)
 {
@@ -80,6 +81,8 @@ void Video::doStart() throw(fwTools::Failed)
     this->setVtkPipelineModified();
     this->doUpdate();
 }
+
+//------------------------------------------------------------------------------
 
 void Video::doUpdate() throw(fwTools::Failed)
 {
@@ -126,7 +129,7 @@ void Video::doUpdate() throw(fwTools::Failed)
         bText_init  = true;
 
         vtkProperty *property = this->getActor()->GetProperty();
-        ::boost::filesystem::path pathShader ( "share/fwRenderVTK_" + std::string(VISUVTKADAPTOR_VER) + "/video.xml" );
+        ::boost::filesystem::path pathShader ( "Bundles/visuVTKAdaptor_" + std::string(VISUVTKADAPTOR_VER) + "/video.xml" );
         property->LoadMaterial(pathShader.string().c_str());
         property->SetTexture("texture", m_texture);
         property->ShadingOn();
@@ -135,16 +138,21 @@ void Video::doUpdate() throw(fwTools::Failed)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
 void Video::doSwap() throw(fwTools::Failed)
 {
     this->doUpdate();
 }
+
+//------------------------------------------------------------------------------
 
 void Video::doStop() throw(fwTools::Failed)
 {
     this->unregisterServices();
 }
 
+//------------------------------------------------------------------------------
 
 void Video::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
@@ -155,11 +163,6 @@ void Video::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
             ( videoMsg->hasEvent( ::fwComEd::VideoMsg::VIDEO_IS_REFRESHED ) /* ||  videoMsg->hasEvent( ::fwComEd::VideoMsg::VIDEO_IS_INITIALIZED ) */ ) )
     {
         doUpdate();
-        // @TODO : Hack to force render
-        if( bForceRender )
-        {
-            this->getRenderService()->render();
-        }
     }
 }
 

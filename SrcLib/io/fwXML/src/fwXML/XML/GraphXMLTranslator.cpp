@@ -51,7 +51,7 @@ xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> 
     EdgeXMLTranslator translator;
     for ( i= graph->getCRefConnections().begin(); i != graph->getCRefConnections().end() ;++i)
     {
-        xmlNodePtr anEdge = translator.getXMLFrom( (*i).first );
+        xmlNodePtr anEdge = XMLTH::toXMLRecursive( (*i).first );
         // hack by adding port ptr
         XMLTH::addProp( anEdge , "fromNode", ::fwTools::UUID::get( (*i).second.first  , ::fwTools::UUID::EXTENDED) );
         XMLTH::addProp( anEdge , "toNode",   ::fwTools::UUID::get( (*i).second.second , ::fwTools::UUID::EXTENDED) );
@@ -81,37 +81,42 @@ void GraphXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object>
     assert(NodeXMLList); // <Nodes> entry must exist
     XMLTH::containerFromXml(NodeXMLList, std::inserter( graph->getRefNodes(), graph->getRefNodes().begin() ) );
 
-    assert( graph->getNbNodes() );
-
-    // get Edges
-    xmlNodePtr edgesList = XMLParser::findChildNamed( source, "Edges");
-    assert(edgesList); // <Nodes> entry must exist
-
-    xmlNodePtr connectionNode = XMLParser::nextXMLElement(edgesList->children);
-    while (connectionNode )
+    //assert( graph->getNbNodes() );
+    if(graph->getNbNodes() != 0)
     {
-        assert( strcmp((const char *)connectionNode->name,"Edge") == 0 );
+        // get Edges
+        xmlNodePtr edgesList = XMLParser::findChildNamed( source, "Edges");
+        assert(edgesList); // <Nodes> entry must exist
 
-        ::boost::shared_ptr< ::fwTools::Object > obj = XMLTH::fromXML(connectionNode);
-        ::boost::shared_ptr< ::fwData::Edge >  edge = ::boost::dynamic_pointer_cast< ::fwData::Edge >( obj );
-        assert ( edge );
+        xmlNodePtr connectionNode = XMLParser::nextXMLElement(edgesList->children);
+        while (connectionNode )
+        {
+            assert( strcmp((const char *)connectionNode->name,"Edge") == 0 );
 
-        std::string uuidSrc = XMLTH::getProp<std::string>(connectionNode,"fromNode");
-        std::string uuidDst = XMLTH::getProp<std::string>(connectionNode,"toNode");
-        ::boost::shared_ptr< ::fwData::Node > srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc , ::fwTools::UUID::EXTENDED);
-        ::boost::shared_ptr< ::fwData::Node > dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst , ::fwTools::UUID::EXTENDED);
-        assert( srcNode );
-        assert( dstNode );
+            ::boost::shared_ptr< ::fwTools::Object > obj = XMLTH::fromXML(connectionNode);
+            ::boost::shared_ptr< ::fwData::Edge >  edge = ::boost::dynamic_pointer_cast< ::fwData::Edge >( obj );
+            assert ( edge );
 
 
-        // insert edge
-        bool success = graph->addEdge(edge,srcNode, dstNode);
-        assert(success);
+            std::string uuidSrcXML = XMLTH::getProp<std::string>(connectionNode,"fromNode");
+            std::string uuidDstXML = XMLTH::getProp<std::string>(connectionNode,"toNode");
+            std::string uuidSrc = ObjectTracker::xmlID2RuntimeID( uuidSrcXML );
+            std::string uuidDst = ObjectTracker::xmlID2RuntimeID(uuidDstXML );
 
-        // go to next element
-        connectionNode = XMLParser::nextXMLElement(connectionNode->next);
+            ::boost::shared_ptr< ::fwData::Node > srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc , ::fwTools::UUID::EXTENDED);
+            ::boost::shared_ptr< ::fwData::Node > dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst , ::fwTools::UUID::EXTENDED);
+            assert( srcNode );
+            assert( dstNode );
+
+
+            // insert edge
+            bool success = graph->addEdge(edge,srcNode, dstNode);
+            assert(success);
+
+            // go to next element
+            connectionNode = XMLParser::nextXMLElement(connectionNode->next);
+        }
     }
 }
-
 
 }

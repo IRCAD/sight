@@ -28,7 +28,7 @@ class VISUVTKADAPTOR_CLASS_API ShowPickedPointInfo : public ::visuVTKAdaptor::IN
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ShowPickedPointInfo)(::visuVTKAdaptor::INegatoInteractor::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ShowPickedPointInfo)(::visuVTKAdaptor::INegatoInteractor) ) ;
 
     ///Constructor
     VISUVTKADAPTOR_API ShowPickedPointInfo() throw() ;

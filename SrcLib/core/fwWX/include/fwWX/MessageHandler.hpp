@@ -36,7 +36,7 @@ class FWWX_CLASS_API MessageHandler : public ::fwServices::IDeliveryDelegate
 
 public:
     /// Definitions
-    fwCoreServiceClassDefinitionsMacro ( (MessageHandler)(::fwServices::IDeliveryDelegate::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MessageHandler)(::fwServices::IDeliveryDelegate) ) ;
     fwCoreAllowSharedFromThis();
 
 

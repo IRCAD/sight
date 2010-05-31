@@ -13,7 +13,7 @@ void PipelineTest::constructeur() //la classe Pipeline n'est pas terminée
 {
 
     // process
-    ::fwData::Pipeline * p1 = new ::fwData::Pipeline();
+    ::fwData::Pipeline::NewSptr p1;
 
     // check
     //CPPUNIT_ASSERT_EQUAL(,    );

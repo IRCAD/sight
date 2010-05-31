@@ -51,10 +51,9 @@ void CompositeReaderService::starting( ) throw(::fwTools::Failed)
 {
     ::boost::shared_ptr< ::fwData::Composite > composite = this->getObject< ::fwData::Composite >() ;
     assert( composite ) ;
-    std::map< std::string , ::boost::shared_ptr< ::fwData::Object > > inputs = composite->getRefMap() ;
     // For each input, one tries to start the io service.
     // For configured input io service, the configuration is applied
-    for(std::map< std::string , ::boost::shared_ptr< ::fwData::Object > >::iterator iter = inputs.begin() ; iter != inputs.end() ; ++iter )
+    for(::fwData::Composite::ContainerType::iterator iter = composite->begin() ; iter != composite->end() ; ++iter )
     {
         // Only if io is supported by current input
         if( fwServices::has< ::io::IReader >( iter->second ) )
@@ -131,10 +130,9 @@ void CompositeReaderService::updating() throw(::fwTools::Failed)
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
     assert( composite ) ;
-    std::map< std::string , ::boost::shared_ptr< ::fwData::Object > > inputs =  composite->getRefMap() ;
     // For each input, one tries to start the io service
     // For configured input io service, the configuration is applied
-    for(std::map< std::string , ::boost::shared_ptr< ::fwData::Object > >::iterator iter = inputs.begin() ; iter != inputs.end() ; ++iter )
+    for(::fwData::Composite::ContainerType::iterator iter = composite->begin() ; iter != composite->end() ; ++iter )
     {
         if( fwServices::has< ::io::IReader >( iter->second ) )
         {

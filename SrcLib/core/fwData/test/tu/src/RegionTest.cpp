@@ -32,7 +32,7 @@ void RegionTest::methode1()
     //vOrigin.push_back( DIM ) ;
 
     // process
-    ::fwData::Region::sptr p1(new ::fwData::Region(DIM));
+    ::fwData::Region::NewSptr p1(DIM);
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getRefOrigin().back(), vOrigin.back());

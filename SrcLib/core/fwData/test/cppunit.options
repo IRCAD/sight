@@ -13,6 +13,7 @@ CLASSTEST=[
     'GraphTest',
     'ImageTest',
     'IntegerTest',
+    'IsTypeOfTest',
     'MaterialTest',
     'ModelTest',
     'ObjectTest',
@@ -33,8 +34,6 @@ CLASSTEST=[
 # probleme avec ImageTest::Buffer
 ]
 
-
-
-USE = ['boost']
+USE = ['boost','boostDateTime', 'boostRegex']
 LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1']
 CONSOLE = 'yes'

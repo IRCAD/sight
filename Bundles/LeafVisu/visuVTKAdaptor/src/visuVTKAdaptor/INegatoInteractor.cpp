@@ -109,25 +109,25 @@ void INegatoInteractor::updateWorldPickedPoint(double _point[3])
     m_worldPoint->getRefCoord()[2] = _point[2];
 }
 
-::visuVTKAdaptor::IImagesAdaptor::Orientation INegatoInteractor::getOrientation()
+::fwComEd::helper::MedicalImageAdaptor::Orientation INegatoInteractor::getOrientation()
 {
-    ::visuVTKAdaptor::IImagesAdaptor::Orientation orientation = this->m_adaptor.lock()->getOrientation();
+	::fwComEd::helper::MedicalImageAdaptor::Orientation orientation = this->m_adaptor.lock()->getOrientation();
     return orientation;
 }
 
 ::visuVTKAdaptor::INegatoInteractor::TAxis    INegatoInteractor::getPlaneAxis()
 {
     ::visuVTKAdaptor::INegatoInteractor::TAxis indices;
-    ::visuVTKAdaptor::IImagesAdaptor::Orientation    orientation = this->getOrientation();
+    ::fwComEd::helper::MedicalImageAdaptor::Orientation    orientation = this->getOrientation();
     switch( orientation )
     {
-    case ::visuVTKAdaptor::IImagesAdaptor::X_AXIS :
+    case ::fwComEd::helper::MedicalImageAdaptor::X_AXIS :
                                                         indices = ::visuVTKAdaptor::INegatoInteractor::TAxis(1,2);
                                                         break;
-    case ::visuVTKAdaptor::IImagesAdaptor::Y_AXIS :
+    case ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS :
                                                         indices = ::visuVTKAdaptor::INegatoInteractor::TAxis(0,2);
                                                         break;
-    case ::visuVTKAdaptor::IImagesAdaptor::Z_AXIS :
+    case ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS :
                                                         indices = ::visuVTKAdaptor::INegatoInteractor::TAxis(0,1);
                                                         break;
     default : assert(false);

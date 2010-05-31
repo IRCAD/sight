@@ -95,8 +95,17 @@ std::string Demangler::demangle(  )
     const char * mangled = m_name.c_str();
 #ifndef _WIN32
     char * c_demangled = abi::__cxa_demangle( mangled, 0, 0, 0);
-    std::string res(c_demangled);
-    free(c_demangled);
+    std::string res;
+    if (c_demangled)
+    {
+        res = c_demangled;
+        free(c_demangled);
+        return res;
+    }
+    else
+    {
+        res = mangled;
+    }
     return res;
 #else
    static std::vector<std::string> keywords;

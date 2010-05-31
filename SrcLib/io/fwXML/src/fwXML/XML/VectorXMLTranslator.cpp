@@ -69,7 +69,7 @@ void VectorXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object
                     while ( containerNode )
                     {
                         // Load Object
-                        ::fwTools::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true, true );
+                        ::fwTools::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true  );
                         assert( valueObj );
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
                         myVector->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );

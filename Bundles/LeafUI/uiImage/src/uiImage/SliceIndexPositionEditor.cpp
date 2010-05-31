@@ -46,7 +46,7 @@ const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 
 //------------------------------------------------------------------------------
 
-SliceIndexPositionEditor::SliceIndexPositionEditor() throw() : m_sliceType(Z_AXIS)
+SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
@@ -79,7 +79,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
     sizer->Add( m_sliceSelectorPanel, 1, wxALL|wxEXPAND, 1 );
 
-    this->updateSliceType(m_sliceType);
+    this->updateSliceType(m_orientation);
 
     m_container->SetSizer( sizer );
     m_container->Layout();
@@ -111,15 +111,15 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
         if(orientation == "axial" )
         {
-            m_sliceType = Z_AXIS;
+            m_orientation = Z_AXIS;
         }
         else if(orientation == "frontal" )
         {
-            m_sliceType = Y_AXIS;
+            m_orientation = Y_AXIS;
         }
         else if(orientation == "sagittal" )
         {
-            m_sliceType = X_AXIS;
+            m_orientation = X_AXIS;
         }
     }
 }
@@ -131,6 +131,7 @@ void SliceIndexPositionEditor::updating() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
+    this->updateImageInfos(image);
     this->updateSliceIndex();
 }
 
@@ -150,6 +151,7 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
     {
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::SLICE_INDEX ) )
         {
+            imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
@@ -161,15 +163,15 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] );
             ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] );
 
-            if( toSliceType->value() == static_cast< int > ( m_sliceType ) )
+            if( toSliceType->value() == static_cast< int > ( m_orientation ) )
             {
-                m_sliceType = static_cast< Orientation > ( fromSliceType->value() );
+                m_orientation = static_cast< Orientation > ( fromSliceType->value() );
             }
-            else if(fromSliceType->value() == static_cast<int>(m_sliceType))
+            else if(fromSliceType->value() == static_cast<int>(m_orientation))
             {
-                m_sliceType = static_cast< Orientation >( toSliceType->value() );
+                m_orientation = static_cast< Orientation >( toSliceType->value() );
             }
-            this->updateSliceType(m_sliceType);
+            this->updateSliceType(m_orientation);
         }
         if ( imageMessage->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( imageMessage->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
@@ -197,11 +199,11 @@ void SliceIndexPositionEditor::updateSliceIndex()
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( image );
     // Get Index
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_sliceType];
+    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
 
     // Update wxSlider
-    int max = image->getSize()[m_sliceType]-1;
+    int max = image->getSize()[m_orientation]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
     m_sliceSelectorPanel->setSliceValue( index );
 }
@@ -217,9 +219,9 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
     // Get Index
     bool fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( image );
 
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_sliceType];
+    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
-    int max = image->getSize()[m_sliceType]-1;
+    int max = image->getSize()[m_orientation]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
     m_sliceSelectorPanel->setSliceValue( index );
     this->updateSliceIndex();
@@ -231,11 +233,11 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 {
     // Fire the message
     ::fwComEd::ImageMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
+    msg->setSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    SliceIndexPositionEditor::SLICE_INDEX_FIELDID[m_sliceType];
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_sliceType];
+    SliceIndexPositionEditor::SLICE_INDEX_FIELDID[m_orientation];
+    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value() = index;
 
     ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);
@@ -254,13 +256,13 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     ::fwData::Composite::NewSptr info;
     ::fwData::Integer::NewSptr fromSliceType;
     ::fwData::Integer::NewSptr toSliceType;
-    fromSliceType->value() = static_cast< int > ( m_sliceType ) ;
+    fromSliceType->value() = static_cast< int > ( m_orientation ) ;
     toSliceType->value() = static_cast< int > ( type ) ;
     info->getRefMap()["fromSliceType"] = fromSliceType;
     info->getRefMap()["toSliceType"] = toSliceType;
 
     // Change slice type
-    m_sliceType = type;
+    m_orientation = type;
 
     // Fire the message
     ::fwComEd::ImageMsg::NewSptr msg;

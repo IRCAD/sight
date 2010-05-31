@@ -7,6 +7,8 @@
 #include <boost/foreach.hpp>
 
 
+#include <fwTools/helpers.hpp>
+
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/TransfertFunction.hpp>
@@ -24,8 +26,10 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkCommand.h>
 
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
+
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
-#include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ) ;
 
@@ -73,10 +77,10 @@ public:
                 if ( m_picker->Pick( display , m_adaptor->getRenderer() ) )
                 {
                     assert(!m_mouseMoveObserved);
+                    m_adaptor->startWindowing();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, 1.);
                     m_mouseMoveObserved = true;
                     SetAbortFlag(1);
-                    m_adaptor->startWindowing();
                     m_adaptor->update();
                 }
 
@@ -151,7 +155,9 @@ protected :
 NegatoWindowingInteractor::NegatoWindowingInteractor() throw()
 {
     m_priority = .6;
-    handlingEventOff();
+    //handlingEventOff();
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 }
 
 //------------------------------------------------------------------------------
@@ -186,6 +192,8 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
     this->getInteractor()->AddObserver(START_WINDOWING_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_WINDOWING_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent  , m_vtkObserver, m_priority);
+
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -193,6 +201,8 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
 void NegatoWindowingInteractor::doUpdate() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
 }
 
 //------------------------------------------------------------------------------
@@ -200,6 +210,7 @@ void NegatoWindowingInteractor::doUpdate() throw(fwTools::Failed)
 void NegatoWindowingInteractor::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -218,6 +229,16 @@ void NegatoWindowingInteractor::doStop() throw(fwTools::Failed)
 
 void NegatoWindowingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+
+    if (imageIsValid)
+    {
+        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
+        {
+            doUpdate();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -225,14 +246,12 @@ void NegatoWindowingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) th
 void NegatoWindowingInteractor::startWindowing( )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->doUpdate();
 
-    ::fwData::Integer::sptr imageMin = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr imageMax = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
+    ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
 
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( image );
-
-    int max = imageMax->value();
-    int min = imageMin->value();
+    int max = m_windowMax->value();
+    int min = m_windowMin->value();
 
     m_initialLevel = 0.5*(min + max);
     m_initialWindow = max - min;
@@ -248,9 +267,6 @@ void NegatoWindowingInteractor::stopWindowing( )
 void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-    ::fwData::Integer::sptr imageMin = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr imageMax = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
 
     double newWindow = m_initialWindow + dw;
     double newLevel  = m_initialLevel - dl;
@@ -273,23 +289,17 @@ void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
     SLM_ASSERT("Max should be greater than min", rmax > rmin );
     SLM_ASSERT("TF doesn't support max - min <= 10 [see ACH]", rmax - rmin > 10 );
 
-    if(imageMax->value() != rmax || imageMin->value() != rmin)
+    if(m_windowMax->value() != rmax || m_windowMin->value() != rmin)
     {
-        imageMax->value() = rmax;
-        imageMin->value() = rmin;
+        m_windowMax->value() = rmax;
+        m_windowMin->value() = rmin;
 
         // Update TF
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( image );
-
-        // Check if fields exist and are valid
-        std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
-
-        // Temp test because theses cases are not manage ( need to notify if there are modifications of Min/Max/TF )
-        assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
+        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::WINDOWING ) ;
+        msg->setWindowMinMax(m_windowMin, m_windowMax);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 
         this->setVtkPipelineModified();
@@ -303,32 +313,23 @@ void NegatoWindowingInteractor::resetWindowing()
     double newLevel  = image->getWindowCenter();
     double rmin, rmax;
 
-    ::fwData::Integer::sptr imageMin = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr imageMax = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
-
     rmin = newLevel - 0.5*fabs( newWindow );
     rmax = rmin + fabs( newWindow );
 
     SLM_ASSERT("Max should be greater than min", rmax > rmin );
     SLM_ASSERT("TF doesn't support max - min <= 10 [see ACH]", rmax - rmin > 10 );
 
-    if(imageMax->value() != rmax || imageMin->value() != rmin)
+    if(m_windowMax->value() != rmax || m_windowMin->value() != rmin)
     {
-        imageMax->value() = rmax;
-        imageMin->value() = rmin;
+        m_windowMax->value() = rmax;
+        m_windowMin->value() = rmin;
 
         // Update TF
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( image );
-
-        // Check if fields exist and are valid
-        std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
-
-        // Temp test because theses cases are not manage ( need to notify if there are modifications of Min/Max/TF )
-        assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
+        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::WINDOWING ) ;
+        msg->setWindowMinMax(m_windowMin, m_windowMax);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 
         this->setVtkPipelineModified();

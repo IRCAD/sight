@@ -23,7 +23,7 @@ class OPIMAGEFILTER_CLASS_API imageFilter : public ::gui::action::IAction
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (imageFilter)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (imageFilter)(::gui::action::IAction) ) ;
 
     OPIMAGEFILTER_API imageFilter() throw() ;
 

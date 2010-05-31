@@ -23,7 +23,7 @@ class VISUVTKADAPTOR_CLASS_API Camera: public ::fwRenderVTK::IVtkAdaptorService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Camera)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Camera)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Camera() throw();
 

@@ -398,9 +398,8 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
 
     int sizeX = this->getRenderer()->GetRenderWindow()->GetSize()[0];
     int sizeY = this->getRenderer()->GetRenderWindow()->GetSize()[1];
-    this->getRenderer()->Print(std::cout);
-    this->getRenderer()->GetRenderWindow()->Print(std::cout);
-    OSLM_ASSERT("invalid RenderWindow size",  sizeX>0 && sizeY>0 )
+
+    SLM_ASSERT("invalid RenderWindow size",  sizeX>0 && sizeY>0 );
     ::fwData::Point::sptr pt1 = this->screenToWorld(sizeX/3.0, sizeY/2.0);
     ::fwData::Point::sptr pt2 = this->screenToWorld(2*sizeX/3.0, sizeY/2.0);
 

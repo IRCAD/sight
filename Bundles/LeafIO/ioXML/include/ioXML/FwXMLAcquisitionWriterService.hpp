@@ -28,7 +28,7 @@ class IOXML_CLASS_API FwXMLAcquisitionWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (FwXMLAcquisitionWriterService)(::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FwXMLAcquisitionWriterService)(::io::IWriter) ) ;
 
     /**
      * @brief   constructor
@@ -40,6 +40,8 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLAcquisitionWriterService() throw();
+
+protected:
 
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;

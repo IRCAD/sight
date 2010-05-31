@@ -24,7 +24,7 @@ namespace fwXML
 class FWXML_CLASS_API ImageFileFormatService : public IFileFormatService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ImageFileFormatService)(::fwXML::IFileFormatService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageFileFormatService)(::fwXML::IFileFormatService) ) ;
     FWXML_API ImageFileFormatService();
 
     FWXML_API virtual ~ImageFileFormatService();

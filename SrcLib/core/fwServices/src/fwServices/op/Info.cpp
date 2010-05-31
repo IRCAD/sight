@@ -28,13 +28,13 @@
 #include <boost/functional/hash/hash.hpp>
 namespace std
 {
-namespace tr1
+namespace tr1 
 {
 template<typename a>
-class hash< std::pair<a, a> >
+class hash< std::pair<a, a> > 
 {
 public:
-   size_t operator()(const std::pair<a, a> &p) const
+   size_t operator()(const std::pair<a, a> &p) const 
    {
       return ::boost::hash_value(p);
    }

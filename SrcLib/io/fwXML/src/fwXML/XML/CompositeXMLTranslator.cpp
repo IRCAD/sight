@@ -83,7 +83,7 @@ void CompositeXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Obj
 
 
             ::fwTools::Object::sptr valueObj;
-            valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true, true );
+            valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
 
             assert( valueObj );
             assert( ::fwData::Object::dynamicCast( valueObj ));
@@ -93,7 +93,7 @@ void CompositeXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Obj
 
         //elementNode = XMLParser::nextXMLElement(elementNode->next);
         elementNode = xmlNextElementSibling(elementNode->next);
-        
+
     }
 
 }

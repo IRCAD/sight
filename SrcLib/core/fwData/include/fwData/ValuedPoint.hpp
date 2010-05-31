@@ -28,8 +28,7 @@ class FWDATA_CLASS_API ValuedPoint : public Point
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (ValuedPoint)(::fwData::Object::Baseclass),
-        (()), ::fwTools::Factory::New< ValuedPoint >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ValuedPoint)(::fwData::Object), (()), ::fwTools::Factory::New< ValuedPoint >) ;
 
     typedef double PointValueType;
 

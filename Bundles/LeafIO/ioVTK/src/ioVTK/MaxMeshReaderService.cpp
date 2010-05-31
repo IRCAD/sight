@@ -6,6 +6,9 @@
 
 #include <iostream>
 #include <fstream>
+#include <wx/string.h>
+#include <wx/filedlg.h>
+#include <wx/app.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -22,6 +25,7 @@
 
 #include <fwComEd/ModelMsg.hpp>
 
+#include <fwWX/convert.hpp>
 
 #include "ioVTK/MaxMeshReaderService.hpp"
 
@@ -74,7 +78,7 @@ std::vector< std::string > MaxMeshReaderService::getSupportedExtensions()
 
 MaxMeshReaderService::~MaxMeshReaderService() throw()
 {
-    SLM_INFO( "[MaxMeshReaderService::~MaxMeshReaderService]");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -98,9 +102,9 @@ void MaxMeshReaderService::configureWithIHM()
 
     if( folder.IsEmpty() == false)
     {
-        m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
+        m_fsMeshPath = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
+        _sDefaultPath = ::fwWX::std2wx( m_fsMeshPath.branch_path().string() );
     }
 }
 
@@ -108,7 +112,7 @@ void MaxMeshReaderService::configureWithIHM()
 
 void MaxMeshReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    SLM_INFO( "[MaxMeshReaderService::configure]");
+    SLM_TRACE_FUNC();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
@@ -127,10 +131,9 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
         /// Retrieve object
         ::fwData::Model::sptr model = this->getObject< ::fwData::Model >( );
         assert( model ) ;
+        ::fwData::Model::NewSptr backupModel;
+        backupModel->shallowCopy(model);
         model->getRefMap().clear();
-        /// Retrieve Reader for location
-        ::io::IReader *readerInfo = dynamic_cast< ::io::IReader *>( this ) ;
-        assert( readerInfo ) ;
 
         vtk3DSImporter *importer1 = vtk3DSImporter::New();
         importer1->SetFileName(m_fsMeshPath.native_file_string().c_str());
@@ -180,12 +183,8 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
 
         }
         /// Notify reading
-//      ::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< ::fwServices::IEditionService >( model ) ;
-        //::boost::shared_ptr< ::fwServices::ObjectMsg > msg( new ::fwServices::ObjectMsg(model) ) ;
-        //msg->setAllModified( ) ;
         ::fwComEd::ModelMsg::NewSptr msg;;
-        msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL ) ;
-//      editor->notify( msg );
+        msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL, backupModel ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), model, msg);
         importer1->Delete();
     }

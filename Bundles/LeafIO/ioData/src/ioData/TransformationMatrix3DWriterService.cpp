@@ -19,6 +19,8 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/bundle/runtime.hpp>
 
+#include <fwWX/convert.hpp>
+
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwDataIO/writer/TransformationMatrix3DWriter.hpp>
@@ -100,8 +102,8 @@ void TransformationMatrix3DWriterService::configureWithIHM()
 
     if( file.IsEmpty() == false )
     {
-        m_filename = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
-        _sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
+        m_filename = ::boost::filesystem::path( ::fwWX::wx2std(file), ::boost::filesystem::native );
+        _sDefaultPath = ::fwWX::std2wx( m_filename.branch_path().string() );
         m_bServiceIsConfigured = true;
     }
 }

@@ -25,7 +25,7 @@ class FWSERVICES_CLASS_API IController : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IController)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IController)(::fwServices::IService) ) ;
 
     ///@brief IController constructor. Do nothing.
     FWSERVICES_API IController();

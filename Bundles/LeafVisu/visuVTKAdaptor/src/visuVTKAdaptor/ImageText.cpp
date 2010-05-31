@@ -43,6 +43,13 @@ ImageText::~ImageText() throw()
 
 //-----------------------------------------------------------------------------
 
+void ImageText::doStart() throw(::fwTools::Failed)
+{
+    Text::doStart();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+}
+
 void ImageText::doUpdate() throw(::fwTools::Failed)
 {
     std::stringstream ss;
@@ -50,11 +57,13 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 
     if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        unsigned int axialIndex    = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId )->value();
-        unsigned int frontalIndex  = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId )->value();
-        unsigned int sagittalIndex = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
-        int min = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId )->value();
-        int max = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId )->value();
+        unsigned int axialIndex    = m_axialIndex->value();
+        unsigned int frontalIndex  = m_frontalIndex->value();
+        unsigned int sagittalIndex = m_sagittalIndex->value();
+
+        int min = m_windowMin->value();
+        int max = m_windowMax->value();
+
         double window = max - min;
         double level = min + window*0.5;
 
@@ -73,12 +82,13 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
-     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    if ( imgMsg &&
-               ( imgMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX )
-                 || imgMsg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ))
-                 || imgMsg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ))
+    ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    if ( imgMsg )
     {
+        if( imgMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ))
+        {
+            imgMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+        }
         doUpdate();
     }
 }
@@ -87,6 +97,8 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
 
 void ImageText::doSwap() throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
     this->doUpdate();
 }
 

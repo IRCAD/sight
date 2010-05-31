@@ -29,7 +29,7 @@ class CTRLSELECTION_CLASS_API MedicalImageManagerSrv : public ::ctrlSelection::I
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (MedicalImageManagerSrv)(::ctrlSelection::IManagerSrv::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MedicalImageManagerSrv)(::ctrlSelection::IManagerSrv) ) ;
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API MedicalImageManagerSrv() throw() ;

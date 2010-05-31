@@ -30,15 +30,15 @@ Vector::~Vector()
 }
 
 
-Vector::Container &Vector::getRefContainer()
+Vector &Vector::getRefContainer()
 {
-    return m_container;
+    return *this;
 }
 
 
-Vector::Container const &Vector::getRefContainer() const
+Vector const &Vector::getRefContainer() const
 {
-    return m_container;
+    return *this;
 }
 
 //------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ Vector::Container const &Vector::getRefContainer() const
 void Vector::shallowCopy( Vector::csptr _source )
 {
     ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_container = _source->m_container;
+    (ObjectVectorType)(*this) = (ObjectVectorType)(*(_source.get()));
 }
 
 //------------------------------------------------------------------------------
@@ -55,15 +55,15 @@ void Vector::deepCopy( Vector::csptr _source )
 {
     ::fwTools::Object::deepCopyOfChildren( _source );
 
-    this->m_container.clear();
+    this->clear();
 
-    for(    Vector::Container::const_iterator iter = _source->m_container.begin();
-            iter != _source->m_container.end();
+    for(    Vector::Container::const_iterator iter = _source->begin();
+            iter != _source->end();
             ++iter )
     {
         ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( (*iter)->getClassname() );
         newObj->deepCopy( *iter );
-        this->m_container.push_back( ::fwData::Object::dynamicCast( newObj ) );
+        this->push_back( ::fwData::Object::dynamicCast( newObj ) );
     }
 }
 

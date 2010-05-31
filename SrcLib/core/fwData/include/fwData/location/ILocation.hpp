@@ -32,7 +32,7 @@ namespace location
 class FWDATA_CLASS_API ILocation : public ::fwData::Object
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object::Baseclass) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object) );
 
 protected:
 

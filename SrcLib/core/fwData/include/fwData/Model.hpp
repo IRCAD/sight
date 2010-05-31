@@ -34,7 +34,7 @@ namespace fwData
 class FWDATA_CLASS_API Model : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Model >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object), (()), ::fwTools::Factory::New< Model >) ;
 
     /// mesh and material container
     typedef std::map< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr  > Container ;
@@ -58,6 +58,12 @@ public:
      * @brief returns read-only mesh container
      */
     FWDATA_API const Container &getCRefMap() const ;
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Model::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Model::csptr _source );
 
 protected:
     Container m_map;

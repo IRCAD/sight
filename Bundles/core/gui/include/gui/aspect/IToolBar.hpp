@@ -28,7 +28,7 @@ class GUI_CLASS_API IToolBar : public ::fwServices::IService
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IToolBar)( ::fwServices::IService::Baseclass) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IToolBar)( ::fwServices::IService) ) ;
 
     /**
      * @brief Constructor. Do nothing (Just initialize parameters).

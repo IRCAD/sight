@@ -44,7 +44,7 @@ namespace visuVTKAdaptor
 {
 
 
-SliceFollowerCamera::SliceFollowerCamera() throw() : IImagesAdaptor()
+SliceFollowerCamera::SliceFollowerCamera() throw()
 {
     m_comChannelPriority = 0.49;
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
@@ -115,6 +115,9 @@ void SliceFollowerCamera::configuring() throw(fwTools::Failed)
 
 void SliceFollowerCamera::doStart() throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+
     m_camera = this->getRenderer()->GetActiveCamera();
     this->initializeCamera();
     this->doUpdate();
@@ -153,6 +156,7 @@ void SliceFollowerCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fw
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
             initializeCamera();
+            this->updateImageInfos(image);
         }
         if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {

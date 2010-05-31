@@ -27,7 +27,7 @@ namespace location
 class FWDATA_CLASS_API Folder  : public ILocation
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Folder)(ILocation::Baseclass), (()), new Folder ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Folder)(ILocation), (()), new Folder ) ;
 
     /// Constructor
     FWDATA_API Folder();

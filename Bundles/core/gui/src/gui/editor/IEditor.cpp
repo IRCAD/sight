@@ -29,7 +29,10 @@ IEditor::~IEditor() throw()
 void IEditor::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
+    if (m_configuration)
+    {
+        SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
+    }
 }
 
 //-----------------------------------------------------------------------------

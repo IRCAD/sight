@@ -30,15 +30,15 @@ List::~List()
 }
 
 
-List::Container &List::getRefContainer()
+List &List::getRefContainer()
 {
-    return m_container;
+    return *this;
 }
 
 
-List::Container const &List::getRefContainer() const
+List const &List::getRefContainer() const
 {
-    return m_container;
+    return *this;
 }
 
 //------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ List::Container const &List::getRefContainer() const
 void List::shallowCopy( List::csptr _source )
 {
     ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_container = _source->m_container;
+    (ObjectListType)(*this) = (ObjectListType)(*(_source.get()));
 }
 
 //------------------------------------------------------------------------------
@@ -55,15 +55,15 @@ void List::deepCopy( List::csptr _source )
 {
     ::fwTools::Object::deepCopyOfChildren( _source );
 
-    this->m_container.clear();
+    this->clear();
 
-    for(    List::Container::const_iterator iter = _source->m_container.begin();
-            iter != _source->m_container.end();
+    for(    List::Container::const_iterator iter = _source->begin();
+            iter != _source->end();
             ++iter )
     {
         ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( (*iter)->getClassname() );
         newObj->deepCopy( *iter );
-        this->m_container.push_back( ::fwData::Object::dynamicCast( newObj ) );
+        this->push_back( ::fwData::Object::dynamicCast( newObj ) );
     }
 }
 

@@ -8,11 +8,14 @@
 
 #include "fwXML/visitor/CollectFileFormatService.hpp"
 #include <fwServices/helper.hpp>
+#include <fwTools/UUID.hpp>
 #include <fwData/visitor/accept.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Resection.hpp>
 #include <fwData/Vector.hpp>
 #include <fwData/List.hpp>
+#include <fwData/Node.hpp>
+#include <fwData/Graph.hpp>
 
 //#include <libxml/tree.h>
 
@@ -31,6 +34,15 @@ CollectFileFormatService::~CollectFileFormatService()
 
 void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
 {
+    std::string uuid = ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
+    std::string srcUuid = m_source?::fwTools::UUID::get(m_source,::fwTools::UUID::EXTENDED):"NoSOURCENOUUID";
+    OSLM_TRACE( "CollectFileFormatService Visitor Visiting : Class " << obj->className() <<
+                "(" <<  uuid    <<
+                ") HASt<FileFormatService>" <<  (fwServices::has< ::fwXML::IFileFormatService >(obj)?"yes":"no") <<
+                "ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
+                );
+
+
     assert(obj);
     if ( fwServices::has< ::fwXML::IFileFormatService >( obj ) )
     {
@@ -86,6 +98,23 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
         {
             ::fwData::visitor::accept( *j , this);
         }
+    }
+
+    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast( src );
+    if ( graph )
+    {
+        ::fwData::Graph::NodeContainer::iterator i;
+        for ( i = graph->getRefNodes().begin(); i != graph->getRefNodes().end(); ++i)
+        {
+            ::fwData::visitor::accept( *i , this);
+        }
+    }
+
+
+    ::fwData::Node::sptr node = ::fwData::Node::dynamicCast( src );
+    if ( node )
+    {
+        ::fwData::visitor::accept( node->getObject() , this);
     }
 }
 

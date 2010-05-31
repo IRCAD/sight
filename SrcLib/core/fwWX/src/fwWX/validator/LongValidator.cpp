@@ -18,7 +18,8 @@ LongValidator::LongValidator( const LongValidator & validator ):
     m_maxValue( validator.m_maxValue )
 
 {
-    this->SetStyle(wxFILTER_NUMERIC);
+    this->SetStyle(wxFILTER_INCLUDE_CHAR_LIST);
+    this->SetCharIncludes("-0123456789");
 }
 
 LongValidator::LongValidator( long & value):

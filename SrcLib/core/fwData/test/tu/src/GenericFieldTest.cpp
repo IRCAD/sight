@@ -24,16 +24,16 @@ void GenericFieldTest::tearDown()
     // Clean up after the test run.
 }
 
+
 void GenericFieldTest::methode1()
 {
-    const int VALUE = 13 ;
+    typedef double TestType;
 
-    // process
-    ::fwData::GenericField<int> * p1 = new ::fwData::GenericField<int>( VALUE) ;
+    const TestType VALUE = 13.456789 ;
+
+    ::fwData::GenericField<TestType>::NewSptr p1( VALUE ) ;
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->value(),   VALUE);
-
-
+    CPPUNIT_ASSERT_EQUAL( p1->value(),   VALUE);
 }
 

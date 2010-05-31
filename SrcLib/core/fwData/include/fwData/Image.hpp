@@ -33,7 +33,7 @@ namespace fwData
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Image > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwTools::Factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
 
     /**

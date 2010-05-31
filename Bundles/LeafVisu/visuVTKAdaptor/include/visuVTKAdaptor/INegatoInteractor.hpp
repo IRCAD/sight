@@ -14,6 +14,7 @@
 #include <utility>
 #include <fwServices/IService.hpp>
 #include <fwData/ValuedPoint.hpp>
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 #include "visuVTKAdaptor/config.hpp"
@@ -37,7 +38,7 @@ class VISUVTKADAPTOR_CLASS_API INegatoInteractor : public ::fwServices::IService
 public:
 
 
-    fwCoreServiceClassDefinitionsMacro ( (INegatoInteractor)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (INegatoInteractor)(::fwServices::IService) ) ;
 
     ///Constructor
     VISUVTKADAPTOR_API INegatoInteractor() throw() ;
@@ -132,7 +133,7 @@ protected :
     VISUVTKADAPTOR_API ::fwData::Image::wptr                            getImage();
 
     ///Return negatoscope orientation
-    VISUVTKADAPTOR_API ::visuVTKAdaptor::IImagesAdaptor::Orientation    getOrientation();
+    VISUVTKADAPTOR_API ::fwComEd::helper::MedicalImageAdaptor::Orientation    getOrientation();
 
     ///Use to store axis of plane orthogonal to the current orientation
     typedef std::pair< int , int > TAxis;

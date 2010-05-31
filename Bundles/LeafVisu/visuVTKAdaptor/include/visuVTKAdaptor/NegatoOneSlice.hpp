@@ -13,7 +13,8 @@
 
 #include <fwData/Image.hpp>
 
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -29,12 +30,12 @@ class vtkActor;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API NegatoOneSlice: public ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API NegatoOneSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService 
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API NegatoOneSlice() throw();
 
@@ -87,6 +88,7 @@ protected :
     vtkPolyData *m_planeOutlinePolyData;
     vtkPolyDataMapper *m_planeOutlineMapper;
     vtkActor *m_planeOutlineActor;
+
 
 };
 

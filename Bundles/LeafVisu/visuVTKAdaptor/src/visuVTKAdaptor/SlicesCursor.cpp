@@ -23,6 +23,7 @@
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkLine.h> // CELL
+#include <vtkTransform.h>
 
 #include <fwCore/base.hpp>
 
@@ -46,6 +47,8 @@ SlicesCursor::SlicesCursor()  throw()
 
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
     addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
     addNewHandledEvent( "CROSS_TYPE" );
 }
 
@@ -79,7 +82,10 @@ void SlicesCursor::configuring() throw(fwTools::Failed)
         SLM_ASSERT("scale attribute must be in a config", m_configuration->getName() == "config");
         m_scale = ::boost::lexical_cast<double>(scaleStr);
     }
-
+    if(m_configuration->hasAttribute("transform") )
+    {
+        this->setTransformId( m_configuration->getAttributeValue("transform") );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -93,12 +99,18 @@ void SlicesCursor::reconfiguring() throw(fwTools::Failed)
 
 void SlicesCursor::doStart() throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     //setOrientation( static_cast< Orientation >( 0 ) );
     buildPolyData();
     buildColorAttribute();
+    this->updateImageInfos(image);
     updateColors();
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
+    if(!this->getTransformId().empty())
+    {
+        m_cursorActor->SetUserTransform(this->getTransform());
+    }
     this->addToRenderer(m_cursorActor);
     this->setVtkPipelineModified();
 }
@@ -269,6 +281,8 @@ void SlicesCursor::updateColors()
 
 void SlicesCursor::doSwap() throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
     this->updating();
 }
 
@@ -281,8 +295,8 @@ void SlicesCursor::doUpdate() throw(fwTools::Failed)
 
     if ( imageIsValid)
     {
-        updateSliceIndex(image);
-        updateColors();
+        this->updateSliceIndex(image);
+        this->updateColors();
     }
 }
 
@@ -292,9 +306,9 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 {
     unsigned int pos[3];
 
-    pos[2] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId )->value();
-    pos[1] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId )->value();
-    pos[0] = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
+    pos[2] = m_axialIndex->value();
+    pos[1] = m_frontalIndex->value();
+    pos[0] = m_sagittalIndex->value();
 
     double sliceWorld[3];
     for (int dim=0; dim<3; ++dim )
@@ -347,9 +361,16 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
     if(imageIsValid && imageMsg)
     {
+
+        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
+        {
+            this->updateImageInfos(image);
+        }
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {
             ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo(::fwComEd::ImageMsg::SLICE_INDEX);
+            imageMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+
             if(dataInfo && dataInfo->getFieldSize("SLICE_MODE"))
             {
                 ::fwData::String::sptr sliceMode = dataInfo->getFieldSingleElement< ::fwData::String >("SLICE_MODE");

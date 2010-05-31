@@ -33,7 +33,7 @@ class FWXML_CLASS_API FwXMLObjectReader :  public ::fwDataIO::reader::IObjectRea
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (FwXMLObjectReader)(::fwDataIO::reader::IObjectReader::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (FwXMLObjectReader)(::fwDataIO::reader::IObjectReader),
                                                  (()),
                                                  new  FwXMLObjectReader
                                             );

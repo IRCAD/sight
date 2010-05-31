@@ -40,20 +40,22 @@ class GUI_CLASS_API MultiSizerView : public ::gui::view::IView
             m_panel (0),
             m_uid(""),
             m_minSize (std::make_pair(-1,-1)),
-            m_autostart(false)
+            m_autostart(false),
+            m_caption (std::make_pair(false,""))
         {}
 
-        int                     m_proportion;
-        int                     m_border;
-        std::string             m_uid;
-        wxPanel *               m_panel;
-        std::pair< int, int >   m_minSize;
-        bool                    m_autostart;
+        int                            m_proportion;
+        int                            m_border;
+        std::string                    m_uid;
+        wxPanel *                      m_panel;
+        std::pair< int, int >          m_minSize;
+        bool                           m_autostart;
+        std::pair< bool, std::string > m_caption;
     };
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (MultiSizerView)(::gui::view::IView::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MultiSizerView)(::gui::view::IView) ) ;
 
     /// Constructor, does nothing.
     GUI_API MultiSizerView() throw() ;
@@ -90,9 +92,6 @@ protected:
 private :
 
     int m_orient;
-
-    /// Layout manager of this view
-    wxBoxSizer * m_sizer;
 
     /// Save layout configuration definition and created container
     std::list< ViewInfo>  m_views;

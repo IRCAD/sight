@@ -26,7 +26,7 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
             (()), ::fwTools::Factory::New< TransformationMatrix3D >) ;
 
     typedef double TM3DType;

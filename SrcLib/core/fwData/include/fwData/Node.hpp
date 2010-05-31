@@ -31,9 +31,10 @@ namespace fwData
 class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Node >) ;
 
-    /// %Port container
+    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwTools::Factory::New< Node >) ;
+
+    /// Port container
     typedef std::vector< ::fwData::Port::sptr > PortContainer;
 
     /// constructor
@@ -69,6 +70,12 @@ public:
      * @return input or output port with given identifier
      */
     FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput);
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Node::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Node::csptr _source );
 
 protected :
 

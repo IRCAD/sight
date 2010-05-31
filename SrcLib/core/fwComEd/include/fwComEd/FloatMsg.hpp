@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_FloatMSG_HPP_
-#define _FWCOMED_FloatMSG_HPP_
+#ifndef _FWCOMED_FLOATMSG_HPP_
+#define _FWCOMED_FLOATMSG_HPP_
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API FloatMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((FloatMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new FloatMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((FloatMsg)(::fwServices::ObjectMsg), ( ( ) ), new FloatMsg );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;

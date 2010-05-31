@@ -8,6 +8,7 @@
 #define _FWDATA_LINE_HPP_
 
 #include <vector>
+#include <utility>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
@@ -27,7 +28,7 @@ class FWDATA_CLASS_API Line : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
         (()), ::fwTools::Factory::New< Line >) ;
 
     /// Constructor

@@ -37,7 +37,7 @@ class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Tri
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >),
                                                      (()),
                                                      new  MeshWriter
                                                 );

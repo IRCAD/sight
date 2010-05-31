@@ -9,7 +9,8 @@
 
 #include <boost/logic/tribool.hpp>
 
-#include "visuVTKAdaptor/IImagesAdaptor.hpp"
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -17,12 +18,12 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API NegatoMPR: public ::visuVTKAdaptor::IImagesAdaptor
+class VISUVTKADAPTOR_CLASS_API NegatoMPR: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API NegatoMPR() throw();
 

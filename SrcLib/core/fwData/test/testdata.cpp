@@ -34,7 +34,7 @@
      ::boost::shared_ptr< ::fwData::ProcessObject > op = fwTools::Factory::New< ::fwData::ProcessObject >() ;
     if( _name == "mean" )
     {
-         ::boost::shared_ptr< ::fwData::String > name( new ::fwData::String ) ;
+         ::boost::shared_ptr< ::fwData::String > name( ::fwData::String::New() ) ;
         name->value() = "mean" ;
         op->setFieldSingleElement("ID_NAME",  name) ;
 
@@ -49,7 +49,7 @@
     }
     if( _name == "erode" )
     {
-         ::boost::shared_ptr< ::fwData::String > name( new ::fwData::String ) ;
+         ::boost::shared_ptr< ::fwData::String > name( ::fwData::String::New() ) ;
         name->value() = "erode" ;
         op->setFieldSingleElement("ID_NAME",  name) ;
 
@@ -64,7 +64,7 @@
     }
     if( _name == "threshold" )
     {
-         ::boost::shared_ptr< ::fwData::String > name( new ::fwData::String ) ;
+         ::boost::shared_ptr< ::fwData::String > name( ::fwData::String::New() ) ;
         name->value() = "threshold" ;
         op->setFieldSingleElement("ID_NAME",  name) ;
 

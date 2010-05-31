@@ -31,7 +31,7 @@ class GUI_CLASS_API StarterActionService : public ::gui::action::IAction
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::gui::action::IAction) ) ;
 
     /**
     * @brief Constructor. Do nothing.
@@ -48,6 +48,7 @@ protected:
     enum ActionType {
         START,
         STOP,
+        START_OR_STOP,
         START_IF_EXISTS,
         STOP_IF_EXISTS,
         DO_NOTHING

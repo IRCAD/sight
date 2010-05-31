@@ -14,6 +14,10 @@
 namespace fwServices
 {
 
+std::string ObjectMsg::NEW_OBJECT     = "ObjectMsg::NEW_OBJECT";
+std::string ObjectMsg::UPDATED_OBJECT = "ObjectMsg::UPDATED_OBJECT";
+std::string ObjectMsg::DELETE_OBJECT  = "ObjectMsg::DELETE_OBJECT";
+
 //-----------------------------------------------------------------------------
 
 ObjectMsg::ObjectMsg()

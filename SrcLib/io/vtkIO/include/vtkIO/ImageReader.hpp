@@ -36,7 +36,7 @@ class ImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Im
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (ImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (ImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
                                                      (()),
                                                      new  ImageReader
                                                 );

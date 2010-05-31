@@ -28,7 +28,7 @@ class VISUVTKADAPTOR_CLASS_API Material: public ::fwRenderVTK::IVtkAdaptorServic
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Material)(::fwRenderVTK::IVtkAdaptorService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Material)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API Material() throw();
 

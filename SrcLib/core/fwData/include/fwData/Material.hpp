@@ -26,7 +26,7 @@ class FWDATA_CLASS_API Material : public Object {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Material >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwTools::Factory::New< Material >) ;
 
     /// Constructor
     FWDATA_API Material();

@@ -46,7 +46,7 @@ class FWSERVICES_CLASS_API IEditionService : public fwServices::IService
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (IEditionService)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IEditionService)(::fwServices::IService) ) ;
 
     /**
      * @brief Invoke the IEditionService::notify( ObjectMsg::csptr ) method on _pSubject.

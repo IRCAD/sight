@@ -203,7 +203,7 @@ void ImageTest::methode2()
 /*
 void ImageTest::Buffer()
 {
-    ::boost::shared_ptr< ::fwData::Image> i1 (new ::fwData::Image);
+    ::boost::shared_ptr< ::fwData::Image> i1 (::fwData::Image::New());
 
     void * BUFFER = (void *)43 ;
 

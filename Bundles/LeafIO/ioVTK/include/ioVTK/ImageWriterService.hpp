@@ -39,7 +39,7 @@ class IOVTK_CLASS_API ImageWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter) ) ;
     /**
      * @brief   Constructor
      *

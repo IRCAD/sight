@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API TagMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((TagMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new TagMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((TagMsg)(::fwServices::ObjectMsg), ( () ), new TagMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string TAG_IS_MODIFIED;

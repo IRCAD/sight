@@ -29,7 +29,7 @@ class GUI_CLASS_API CloseAction : public ::gui::action::IAction
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (CloseAction)(::gui::action::IAction::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (CloseAction)(::gui::action::IAction) ) ;
 
     /**
     * @brief Constructor. Do nothing.

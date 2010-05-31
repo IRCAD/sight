@@ -38,7 +38,7 @@ class ReconstructionWriter : public ::fwDataIO::writer::GenericObjectWriter< ::f
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (ReconstructionWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (ReconstructionWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >),
                                                      (()),
                                                      new  ReconstructionWriter
                                                 );

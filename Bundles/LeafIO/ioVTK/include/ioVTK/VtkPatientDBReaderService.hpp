@@ -39,7 +39,7 @@ class IOVTK_CLASS_API VtkPatientDBReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (VtkPatientDBReaderService)( ::io::IReader::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (VtkPatientDBReaderService)( ::io::IReader) ) ;
     /**
      * @brief   Constructor
      *

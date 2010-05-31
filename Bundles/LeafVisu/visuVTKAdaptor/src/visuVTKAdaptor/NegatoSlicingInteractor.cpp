@@ -169,27 +169,27 @@ public:
 
                 if (std::string(keySym) == "T")
                 {
-                    m_adaptor->pushSlice(-1, IImagesAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
                 }
                 else if (std::string(keySym) == "Y")
                 {
-                    m_adaptor->pushSlice(1, IImagesAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
                 }
                 else if (std::string(keySym) == "G")
                 {
-                    m_adaptor->pushSlice(-1, IImagesAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
                 }
                 else if (std::string(keySym) == "H")
                 {
-                    m_adaptor->pushSlice(1, IImagesAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
                 }
                 else if (std::string(keySym) == "B")
                 {
-                    m_adaptor->pushSlice(-1, IImagesAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
                 }
                 else if (std::string(keySym) == "N")
                 {
-                    m_adaptor->pushSlice(1, IImagesAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
                 }
             }
         }
@@ -234,7 +234,10 @@ protected :
 NegatoSlicingInteractor::NegatoSlicingInteractor() throw()
 {
     m_priority = .6;
-    handlingEventOff();
+    //handlingEventOff();
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
 }
 
 //-----------------------------------------------------------------------------
@@ -252,7 +255,6 @@ void NegatoSlicingInteractor::configuring() throw(fwTools::Failed)
     SLM_ASSERT("Tag config is required", m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
-
 }
 
 //-----------------------------------------------------------------------------
@@ -270,6 +272,9 @@ void NegatoSlicingInteractor::doStart() throw(fwTools::Failed)
     this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent  , m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(vtkCommand::MouseWheelForwardEvent, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver, m_priority);
+
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
@@ -283,6 +288,8 @@ void NegatoSlicingInteractor::doUpdate() throw(fwTools::Failed)
 void NegatoSlicingInteractor::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
@@ -303,6 +310,16 @@ void NegatoSlicingInteractor::doStop() throw(fwTools::Failed)
 
 void NegatoSlicingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        this->updateImageInfos(image);
+    }
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
+    {
+        ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -315,9 +332,10 @@ void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
     int index[3];
     this->worldToImageSliceIndex(pickedPoint, index);
 
-    if (index[m_orientation] != sliceIndex[m_orientation]->value())
-    {
-        for (int i=0; i<3; i++)
+    //if (index[m_orientation] != sliceIndex[m_orientation]->value())
+    //{
+        int i;
+        for (i=0; i<3; i++)
         {
             if (index[i] == sliceIndex[i]->value())
             {
@@ -325,7 +343,8 @@ void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
                 break;
             }
         }
-    }
+        SLM_ASSERT( "unknown orientation", i != 3 );
+    //}
    this->updateSlicing(pickedPoint);
 }
 
@@ -340,7 +359,7 @@ void NegatoSlicingInteractor::stopSlicing( )
     sliceMode->value() = "STOP_SLICING";
     dataInfo->setFieldSingleElement("SLICE_MODE", sliceMode);
     ::fwComEd::ImageMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, dataInfo ) ;
+    msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
 
@@ -381,10 +400,12 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, dataInfo ) ;
+        msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 {
@@ -420,7 +441,7 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, dataInfo ) ;
+        msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
 }

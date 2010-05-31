@@ -30,7 +30,7 @@ class FWSERVICES_CLASS_API ICommunication : public ::fwServices::IService
 public:
 
     /// Definitions
-    fwCoreServiceClassDefinitionsMacro ( (ICommunication)(::fwServices::IService::Baseclass) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ICommunication)(::fwServices::IService) ) ;
 
     ///@brief ICommunication constructor. Do nothing.
     FWSERVICES_API ICommunication();

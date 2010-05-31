@@ -48,7 +48,9 @@ void EdgeXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object> 
 
     ::boost::shared_ptr< ::fwData::Edge> edge = boost::dynamic_pointer_cast< ::fwData::Edge>(toUpdate);
 
-    edge->setIdentifiers( XMLTH::getProp<std::string>(source,"fromPort"), XMLTH::getProp<std::string>(source,"toPort") );
+    std::string fromPort =  XMLTH::getProp<std::string>(source,"fromPort") ;
+    std::string toPort   =  XMLTH::getProp<std::string>(source,"toPort") ;
+    edge->setIdentifiers( fromPort , toPort );
     edge->setNature( XMLTH::getProp<std::string >(source,"nature") );
 
 }

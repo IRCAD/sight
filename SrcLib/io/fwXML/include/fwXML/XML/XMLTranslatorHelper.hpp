@@ -180,22 +180,25 @@ public:
     {
         // parse rootNode child then generateObject and insertit
         assert(rootNode );
-        xmlNodePtr currentNode = XMLParser::nextXMLElement(rootNode->children);
-        while (currentNode )
+        if ( rootNode->children != NULL )
         {
-            OSLM_DEBUG(" containerFromXml" << (const char*)currentNode->name << currentNode );
-            // dot not create duplicate object
-            ::fwTools::Object::sptr obj = fromXML(currentNode);
+            xmlNodePtr currentNode = XMLParser::nextXMLElement(rootNode->children);
+            while (currentNode )
+            {
+                OSLM_DEBUG(" containerFromXml" << (const char*)currentNode->name << currentNode );
+                // dot not create duplicate object
+                ::fwTools::Object::sptr obj = fromXML(currentNode);
 
-            // append to container
-            typedef typename InserterIterator::container_type::value_type SharedPtrConcreteObject;
-            SharedPtrConcreteObject cobj;
-            cobj = ::boost::dynamic_pointer_cast< typename SharedPtrConcreteObject::element_type >( obj );
-            assert ( cobj );
-            *inserter = cobj;
+                // append to container
+                typedef typename InserterIterator::container_type::value_type SharedPtrConcreteObject;
+                SharedPtrConcreteObject cobj;
+                cobj = ::boost::dynamic_pointer_cast< typename SharedPtrConcreteObject::element_type >( obj );
+                assert ( cobj );
+                *inserter = cobj;
 
-            // go to next element
-            currentNode = XMLParser::nextXMLElement(currentNode->next);
+                // go to next element
+                currentNode = XMLParser::nextXMLElement(currentNode->next);
+            }
         }
     }
 

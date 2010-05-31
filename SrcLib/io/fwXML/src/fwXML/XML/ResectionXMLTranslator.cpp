@@ -97,7 +97,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                     {
                         // Load Reconstruction
                         ::fwTools::Object::sptr valueObj;
-                        valueObj = Serializer().ObjectsFromXml( inputsNode, true, true );
+                        valueObj = Serializer().ObjectsFromXml( inputsNode, true );
 
                         // Add reconstruction in the vector
                         assert( valueObj );
@@ -117,7 +117,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                     {
                         // Load Reconstruction
                         ::fwTools::Object::sptr valueObj;
-                        valueObj = Serializer().ObjectsFromXml( outputsNode, true, true );
+                        valueObj = Serializer().ObjectsFromXml( outputsNode, true );
 
                         // Add reconstruction in the vector
                         assert( valueObj );
@@ -131,7 +131,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
             else if ( nodeName == "PlaneList" )
             {
                 ::fwTools::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( elementNode, true, true );
+                valueObj = Serializer().ObjectsFromXml( elementNode, true );
 
                 // Add PlaneList in the vector
                 assert( valueObj );

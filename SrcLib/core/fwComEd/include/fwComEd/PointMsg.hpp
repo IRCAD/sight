@@ -27,7 +27,7 @@ class FWCOMED_CLASS_API PointMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PointMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new PointMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PointMsg)(::fwServices::ObjectMsg), ( () ), new PointMsg );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string POINT_IS_MODIFIED;

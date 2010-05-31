@@ -80,9 +80,6 @@ void fw_xml_iarchive::load(const std::string &t)
 {
     assert(m_current);
     const_cast<std::string &>(t) = ::fwXML::XMLParser::getTextValue( m_current );
-//  std::cout << "STRINGvoid load( T &t))0 XMLNODESTART" <<std::endl;
-//  std::cout << ::fwXML::XMLParser::toString( m_current );
-//  std::cout << " XMLNODEEND\n \nreaded string " << t << std::endl;
 }
 
 

@@ -4,6 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/** 
+ * @file fwData/macros.hpp
+ * @brief fwData specific macros.
+ *
+ * @author IRCAD (Research and Development Team).
+ */
+
+
+
 /*
  * macros used for getters/setters
  *

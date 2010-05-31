@@ -27,7 +27,13 @@ namespace location
 class FWDATA_CLASS_API SingleFile  : public ILocation
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SingleFile)(ILocation::Baseclass), (()), new SingleFile ) ;
+    fwCoreClassDefinitionsWithNFactoriesMacro(
+            (SingleFile)(ILocation),
+            ((::fwTools::Factory::New< SingleFile > ,() ))
+            ((SingleFileFactory ,((::boost::filesystem::path)) ))
+            );
+
+    FWDATA_API static sptr SingleFileFactory(::boost::filesystem::path _path);
 
     /// Constructor
     FWDATA_API SingleFile();

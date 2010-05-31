@@ -29,7 +29,11 @@ namespace fwXML
 
 TriangularMeshXMLTranslator::TriangularMeshXMLTranslator() {};
 
+//------------------------------------------------------------------------------
+
 TriangularMeshXMLTranslator::~TriangularMeshXMLTranslator() {};
+
+//------------------------------------------------------------------------------
 
 void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> mesh )
 {
@@ -47,17 +51,16 @@ void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer 
     {
         XMLTH::addProp( boostXMLBuffer, "filename",  "" );
     }
-
-
-
 }
+
+//------------------------------------------------------------------------------
 
 void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> mesh )
 {
     // get XML node related to Buffer //FIXMEXPATH
     ::boost::shared_ptr< IFileFormatService > binLoader = fwServices::get<  IFileFormatService >(mesh,0);
-    std::cout << "READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename");
-    boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
+    OSLM_TRACE("READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename"));
+    ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
     binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
     binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
     binLoader->localFolder() = fileLocation.branch_path();
@@ -82,16 +85,11 @@ void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer
     assert(reader);
 
     // assign to FileFormatService
-     ::boost::shared_ptr< IFileFormatService > binReader = fwServices::get<  IFileFormatService >(mesh,0);
+     ::boost::shared_ptr< IFileFormatService > binReader = ::fwServices::get<  IFileFormatService >(mesh,0);
     binReader->setReader( reader );
 }
 
-
-
-
-
-
-
+//------------------------------------------------------------------------------
 
 xmlNodePtr TriangularMeshXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
 {
@@ -104,8 +102,9 @@ xmlNodePtr TriangularMeshXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools:
     return node;
 }
 
+//------------------------------------------------------------------------------
 
-void TriangularMeshXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+void TriangularMeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
     assert( XMLTH::check< ::fwData::TriangularMesh >(toUpdate,source) );
 
@@ -113,11 +112,9 @@ void TriangularMeshXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools
     xmlNodePtr bufferNode = XMLParser::findChildNamed( source, std::string("Buffer") );
     assert( bufferNode ); // bufferNode must be found !!!
     manageLoadingBuffer( bufferNode , ::boost::dynamic_pointer_cast< ::fwData::TriangularMesh >(toUpdate) );
-
-
-
-
 }
+
+//------------------------------------------------------------------------------
 
 
 }

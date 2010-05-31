@@ -5,7 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 #include <iostream>
 #include <fstream>
+
 #include <boost/filesystem/operations.hpp>
+
+#include <wx/wx.h>
+
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 
