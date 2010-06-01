@@ -128,6 +128,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
+            this->destroyPipeline();
             doUpdate();
 
             // Hack to force imageSlice update until it is not able to detect a new image
