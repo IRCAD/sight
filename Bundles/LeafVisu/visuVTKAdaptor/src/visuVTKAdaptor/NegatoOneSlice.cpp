@@ -301,9 +301,7 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     }
 }
 
-
 //------------------------------------------------------------------------------
-
 
 void NegatoOneSlice::updateImage( ::fwData::Image::sptr image  )
 {
