@@ -17,7 +17,8 @@ namespace updater
 {
 
 /**
- * @class   ObjFromMsgUpdaterSrv : Update Object from message
+ * @class  ObjFromMsgUpdaterSrv : Update Object from message
+ * @brief  Update the composite with the object which send the message.
  * @author IRCAD (Research and Development Team).
 
  * @date    2009-2010.
@@ -43,7 +44,17 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Configure the services : declare the event to react.
+     * @verbatim
+         <service uid="myUpdater" implementation="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <update compositeKey="myImage" onEvent="NEW_IMAGE_SELECTED" fromUID="myImage" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myObject" onEvent="NEW_OBJECT" fromUID="myObject" actionType="ADD_OR_SWAP"/>
+            <update compositeKey="myObject" onEvent="REMOVE_OBJECT" fromUID="myObject" actionType="REMOVE"/>
+        </service>
+      @endverbatim
+     * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.

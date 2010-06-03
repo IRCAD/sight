@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwTools/UUID.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -108,7 +110,7 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IService::start() throw(fwTools::Failed)
+void IService::start() throw( ::fwTools::Failed)
 {
     if( m_globalState == STOPPED )
     {
@@ -122,12 +124,12 @@ void IService::start() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IService::stop() throw(fwTools::Failed)
+void IService::stop() throw( ::fwTools::Failed)
 {
     if( m_globalState == STARTED )
     {
         m_globalState = STOPPING ;
-        fwServices::stopComChannels( this->getSptr() ) ;
+        ::fwServices::stopComChannels( this->getSptr() ) ;
         this->stopping() ;
         m_globalState = STOPPED ;
     }
@@ -154,7 +156,7 @@ void IService::update( ::fwServices::ObjectMsg::csptr _msg )
         m_notificationState = RECEIVING_MSG ;
         this->updating( _msg ) ;
         m_notificationState = IDLE ;
-        processingPendingMessages();
+        this->processingPendingMessages();
     }
 
     //  OSLM_ASSERT("INVOKING update(msg) WHILE NOT IDLED ("<<m_notificationState<<") on this = " << this->className(), m_notificationState == IDLE );
@@ -194,7 +196,7 @@ bool IService::isHandlingAllEvents()
 
 //-----------------------------------------------------------------------------
 
-void IService::update() throw(fwTools::Failed)
+void IService::update() throw( ::fwTools::Failed)
 {
     OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
     OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
@@ -210,7 +212,7 @@ void IService::update() throw(fwTools::Failed)
 
 void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 {
-    SLM_ASSERT("Swapping on "<< this->getUUID() << " with same Object " << _obj->getUUID(), m_associatedObject.lock() != _obj );
+    OSLM_ASSERT("Swapping on "<< this->getUUID() << " with same Object " << _obj->getUUID(), m_associatedObject.lock() != _obj );
 
     if( m_globalState == STARTED ) // FIXME ???
     {
@@ -219,16 +221,16 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
         ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock())  ;
         ::fwServices::IEditionService::sptr newEditor = ::fwServices::get< ::fwServices::IEditionService >( _obj ) ;
         typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
-        OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService>() ;
-        for( OContainerType::iterator iter = obs.begin() ; iter != obs.end() ; ++iter )
+        OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
+        BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
         {
-            /// Check wether _service is the subject (IEditionService) or the destination service
-            if( (*iter)->getDest() == this->getSptr() && (*iter)->getSrc() == oldEditor )
+            /// Check if _service is the subject (IEditionService) or the destination service
+            if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
             {
-                (*iter)->stop() ;
-                (*iter)->setSrc(newEditor);
-                ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , *iter );
-                (*iter)->start();
+                comChannel->stop() ;
+                comChannel->setSrc(newEditor);
+                ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , comChannel );
+                comChannel->start();
             }
         }
 
@@ -322,7 +324,7 @@ void IService::sendingModeOff()
     else
     {
         m_notificationState = IDLE;
-        processingPendingMessages();
+        this->processingPendingMessages();
     }
 }
 
@@ -340,7 +342,7 @@ void IService::sendingModeOff()
         {
             ::fwServices::ObjectMsg::csptr msg = m_msgDeque.front();
             m_msgDeque.pop_front();
-            update(msg);
+            this->update(msg);
         }
  }
 

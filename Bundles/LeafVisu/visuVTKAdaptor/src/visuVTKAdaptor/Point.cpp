@@ -75,7 +75,7 @@ public :
 
         ::fwComEd::PointMsg::NewSptr msg;// (  new fwServices::ObjectMsg(point) );
 
-        if ( (m_pickLimiter-- == 0 && eventId == vtkCommand::InteractionEvent) 
+        if ( (m_pickLimiter-- == 0 && eventId == vtkCommand::InteractionEvent)
                 || eventId == vtkCommand::EndInteractionEvent )
         {
             m_pickLimiter=2;
@@ -112,6 +112,7 @@ protected :
     int m_pickLimiter;
 };
 
+//------------------------------------------------------------------------------
 
 Point::Point() throw() :
     m_handle( vtkHandleWidget::New() ),
@@ -136,9 +137,10 @@ Point::Point() throw() :
     rep->GetMarkerProperty()->SetOpacity(.3);
     rep->SetHandleSize(7);
 
-
     addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
+
+//------------------------------------------------------------------------------
 
 Point::~Point() throw()
 {
@@ -153,6 +155,7 @@ Point::~Point() throw()
 
 }
 
+//------------------------------------------------------------------------------
 
 void Point::configuring() throw(fwTools::Failed)
 {
@@ -163,16 +166,17 @@ void Point::configuring() throw(fwTools::Failed)
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
+//------------------------------------------------------------------------------
+
 void Point::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     m_handle->SetInteractor(  this->getInteractor() );
     m_handle->KeyPressActivationOff();
-    
+
     m_pointUpdateCommand = vtkPointUpdateCallBack::New(this);
 
     m_handle->AddObserver( "StartInteractionEvent", m_pointUpdateCommand );
-
 
     m_handle->On();
 
@@ -180,15 +184,18 @@ void Point::doStart() throw(fwTools::Failed)
     // is already managing that.
     this->registerProp(m_representation);
 
-
     this->doUpdate();
 }
+
+//------------------------------------------------------------------------------
 
 void Point::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE("SWAPPING Point");
+    SLM_TRACE_FUNC();
     this->doUpdate();
 }
+
+//------------------------------------------------------------------------------
 
 void Point::doUpdate() throw(fwTools::Failed)
 {
@@ -205,6 +212,8 @@ void Point::doUpdate() throw(fwTools::Failed)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
 void Point::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_ASSERT("ACH : receive a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
@@ -214,6 +223,8 @@ void Point::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Fai
         this->doUpdate();
     }
 }
+
+//------------------------------------------------------------------------------
 
 void Point::doStop() throw(fwTools::Failed)
 {
@@ -228,6 +239,8 @@ void Point::doStop() throw(fwTools::Failed)
     this->unregisterProps();
 }
 
+//------------------------------------------------------------------------------
+
 void Point::setColor(double red, double green, double blue, double alpha)
 {
     ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
@@ -237,6 +250,8 @@ void Point::setColor(double red, double green, double blue, double alpha)
     rep->GetProperty()->SetOpacity(alpha);
     this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
 
 void Point::setSelectedColor(double red, double green, double blue, double alpha)
 {
@@ -248,5 +263,6 @@ void Point::setSelectedColor(double red, double green, double blue, double alpha
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

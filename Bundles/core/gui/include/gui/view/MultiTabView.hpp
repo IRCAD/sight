@@ -61,7 +61,27 @@ public :
 
 protected:
 
-    /// Analyses xml configuration to configure this service, espacially umber of panel and the layout of this view.
+    /// Analyses xml configuration to configure this service, especially number of panel and the layout of this view.
+    /**
+     * @brief Configuring method allows to configure an application with several tab views.
+     * Here a sample of the multiTabView service declaration with two views:
+     * @verbatim
+            <service uid="multiTabView" type="::gui::view::IView" implementation="::gui::view::MultiTabView" autoComChannel="no">
+                <views>
+                    <view uid="multiViewTab1" name="Tab1" selected="yes" autoStart="yes" />
+                    <view uid="multiViewTab2" name="Tab2" autoStart="yes" />
+                </views>
+            </service>
+       @endverbatim
+     *  for which:\n
+     * <views> node is mandatory and can only contain <view> node.\n
+     * Each <view> node must contain uid attribute and the following attribute can be used but aren't mandatory.\n
+     *  - name is a string . -- Default value: "" \n
+     *    It is the name of the tab.\n
+     *  - selected can be {yes|no} -- Default value: false \n
+     *  It indicates which tab will be selected at start of the service. \n
+     *  - autoStart can be {yes|no}   -- Default value: false
+     */
     GUI_API void configuring() throw( ::fwTools::Failed );
 
     /// Reconfigures service, does nothing.

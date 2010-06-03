@@ -4,14 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include <fwCore/base.hpp>
+
 #include "fwComEd/ImageMsg.hpp"
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::ImageMsg, ::fwComEd::ImageMsg );
 
 namespace fwComEd
 {
 
 std::string ImageMsg::NEW_IMAGE = "NEW_IMAGE";
 std::string ImageMsg::BUFFER = "BUFFER";
+std::string ImageMsg::MODIFIED = "MODIFIED";
 std::string ImageMsg::DIMENSION = "DIMENSION";
 std::string ImageMsg::SPACING = "SPACING";
 std::string ImageMsg::REGION = "REGION";
@@ -26,6 +32,7 @@ std::string ImageMsg::SLICE_INDEX = "SLICE_INDEX";
 std::string ImageMsg::ACTIVATE_SYNC_CROSS = "ACTIVATE_SYNC_CROSS";
 std::string ImageMsg::INACTIVATE_SYNC_CROSS = "INACTIVATE_SYNC_CROSS";
 std::string ImageMsg::CHANGE_SLICE_TYPE = "CHANGE_SLICE_TYPE";
+std::string ImageMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
@@ -47,7 +54,7 @@ void ImageMsg::setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
     m_frontalIndex = f;
     m_sagittalIndex = s;
 }
-    
+
 //-----------------------------------------------------------------------------
 
 void ImageMsg::setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo )
@@ -67,7 +74,7 @@ void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
     f->deepCopy(m_frontalIndex );
     s->deepCopy(m_sagittalIndex);
 }
-    
+
 //-----------------------------------------------------------------------------
 
 void ImageMsg::getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max) const

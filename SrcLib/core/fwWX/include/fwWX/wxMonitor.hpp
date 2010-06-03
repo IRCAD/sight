@@ -65,7 +65,7 @@ public:
 private :
 
     wxTreeCtrl * m_tree ;
-    ::boost::shared_ptr< ::fwData::Object > m_ObjPtr ;
+    ::fwData::Object::sptr m_ObjPtr ;
     wxRadioBox* m_radioBox ;
 
     wxMonitorCallback::ptr m_onSelectionCallback;

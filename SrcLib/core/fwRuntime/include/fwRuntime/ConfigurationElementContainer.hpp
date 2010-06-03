@@ -66,6 +66,13 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
     FWRUNTIME_API Iterator end();
 
     /**
+    * @brief   Returns the configuration element container
+    *
+    * @return  an configuration element container
+    */
+    FWRUNTIME_API const Container getElements();
+
+    /**
      * @brief       Retrieves the first configuration corresponding to the specified name.
      *
      * @param[in]   name    a string containing a configuration element name

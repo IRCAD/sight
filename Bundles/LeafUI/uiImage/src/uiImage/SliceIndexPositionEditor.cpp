@@ -50,6 +50,7 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
 }
 
 //------------------------------------------------------------------------------
@@ -147,6 +148,10 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
 
     if ( imageMessage )
     {
+        if ( imageMessage->hasEvent( fwComEd::ImageMsg::BUFFER ) )
+        {
+            this->updating();
+        }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::SLICE_INDEX ) )
         {
             imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);

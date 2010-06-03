@@ -4,7 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwComEd/LocationMsg.hpp"
+
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::LocationMsg, ::fwComEd::LocationMsg );
 
 namespace fwComEd
 {

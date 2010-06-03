@@ -61,7 +61,10 @@ ConfigurationElementContainer::Iterator ConfigurationElementContainer::end()
     return m_elements.end();
 }
 
-
+const ConfigurationElementContainer::Container ConfigurationElementContainer::getElements()
+{
+    return m_elements;
+}
 
 const ::boost::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement( const std::string & name ) const
 {

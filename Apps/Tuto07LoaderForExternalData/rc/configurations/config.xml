@@ -15,6 +15,8 @@
         </service>
         <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myReaderPathFile" autoComChannel="no">
             <type mode="reader" />
+            <selection mode="exclude" />
+            <addSelection service="::ioXML::FwXMLGenericReaderService" />
         </service>
 
         <!-- The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
@@ -26,6 +28,8 @@
         </service>
         <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myWriterPathFile" autoComChannel="no">
             <type mode="writer" />
+            <selection mode="exclude" />
+            <addSelection service="::ioXML::FwXMLGenericWriterService" />
         </service>
 
         <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images.
@@ -112,7 +116,7 @@
 -->
     <start type="::gui::frame::IFrame" />
     <start type="::gui::aspect::IMenuBar" />
-    
+
     <stop type="::gui::aspect::IMenuBar" />
     <stop type="::gui::frame::IFrame" />
 </object>

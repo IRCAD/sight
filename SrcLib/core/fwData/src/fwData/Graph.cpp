@@ -215,8 +215,8 @@ std::vector< Edge::sptr > Graph::getOutputEdges( Node::sptr node )
 
 std::vector< Edge::sptr > Graph::getEdges( Node::sptr node, bool upStream, std::string nature , std::string portID)
 {
-    assert( m_nodes.find(node) != m_nodes.end() );
-    assert( portID.empty() || node->findPort(portID,upStream) ); // portID if specified must be on node
+    OSLM_ASSERT("Node "<<node->getUUID() <<" not found in graph", m_nodes.find(node) != m_nodes.end() );
+    OSLM_ASSERT("Port "<< portID <<" not found in graph", portID.empty() || node->findPort(portID,upStream) ); // portID if specified must be on node
 
     std::vector< Edge::sptr > result;
     result.reserve(4);
@@ -289,13 +289,13 @@ const Graph::ConnectionContainer &Graph::getCRefConnections() const
     return m_connections;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Graph::shallowCopy( Graph::csptr _source )
 {
-	Object::shallowCopyOfChildren(_source );
-	m_nodes = _source->m_nodes;
-	m_connections = _source->m_connections;
+    ::fwData::Object::shallowCopyOfChildren(_source );
+    m_nodes = _source->m_nodes;
+    m_connections = _source->m_connections;
 }
 
 //------------------------------------------------------------------------------

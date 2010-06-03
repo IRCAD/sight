@@ -10,7 +10,6 @@
 #include <fwServices/ObjectMsg.hpp>
 
 #include "fwComEd/ProcessObjectEditor.hpp"
-#include "fwComEd/PoMsg.hpp"
 
 namespace fwComEd
 {

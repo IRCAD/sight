@@ -31,10 +31,13 @@ PlaneSelector::PlaneSelector() throw()
     handlingEventOff();
 }
 
+//------------------------------------------------------------------------------
+
 PlaneSelector::~PlaneSelector() throw()
 {
-
 }
+
+//------------------------------------------------------------------------------
 
 void PlaneSelector::configuring() throw(fwTools::Failed)
 {
@@ -45,8 +48,9 @@ void PlaneSelector::configuring() throw(fwTools::Failed)
 
     //this->setPlaneListId( m_configuration->getAttributeValue("planelist") );
     //this->setPlaneSelectionId( m_configuration->getAttributeValue("planeselection") );
-
 }
+
+//------------------------------------------------------------------------------
 
 void PlaneSelector::doStart() throw(fwTools::Failed)
 {
@@ -61,11 +65,15 @@ void PlaneSelector::doStart() throw(fwTools::Failed)
     this->selectObject(object);
 }
 
+//------------------------------------------------------------------------------
+
 void PlaneSelector::doUpdate() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     SLM_ASSERT("NOT IMPLEMENTED",false);
 }
+
+//------------------------------------------------------------------------------
 
 void PlaneSelector::doSwap() throw(fwTools::Failed)
 {
@@ -73,8 +81,9 @@ void PlaneSelector::doSwap() throw(fwTools::Failed)
 
     ::fwData::Object::sptr object = ::fwData::Object::dynamicCast(this->getObject());
     this->selectObject(object);
-
 }
+
+//------------------------------------------------------------------------------
 
 void PlaneSelector::doStop() throw(fwTools::Failed)
 {
@@ -83,11 +92,14 @@ void PlaneSelector::doStop() throw(fwTools::Failed)
     this->selectObject( ::fwData::None::New() );
 }
 
+//------------------------------------------------------------------------------
 
 void PlaneSelector::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
+
+//------------------------------------------------------------------------------
 
 void PlaneSelector::selectObject( ::fwData::Object::sptr object )
 {
@@ -122,9 +134,7 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
     }
 }
 
-
-
-
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
 

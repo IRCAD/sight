@@ -63,7 +63,7 @@ void ComChannelService::configuring() throw( ::fwTools::Failed )
         m_destUUID.second = m_configuration->findConfigurationElement("target")->getValue() ;
         OSLM_INFO("Destination = " << m_destUUID.second ) ;
     }
-    
+
     if( m_configuration->findConfigurationElement("priority") )
     {
         m_priority = ::boost::lexical_cast<float>(m_configuration->findConfigurationElement("priority")->getValue());

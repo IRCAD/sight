@@ -103,6 +103,8 @@ void SliceFollowerCamera::doUpdate() throw(fwTools::Failed)
 
 void SliceFollowerCamera::doSwap() throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
     initializeCamera();
 }
 

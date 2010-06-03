@@ -5,12 +5,18 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include <iterator>
+#include <algorithm>
+#include <functional>
 
 #include <boost/foreach.hpp>
+#include <boost/function.hpp>
 
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Material.hpp>
+
+#include <fwComEd/PointListMsg.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -33,7 +39,9 @@ namespace visuVTKAdaptor
 
 PointList::PointList() throw()
 {
-    handlingEventOff();
+    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
+    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
+    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 PointList::~PointList() throw()
@@ -54,17 +62,60 @@ void PointList::configuring() throw(fwTools::Failed)
 
 void PointList::doStart() throw(fwTools::Failed)
 {
+    m_oldWeakPointList.clear();
+
+    m_weakPointList = this->getWeakPointList();
+
     this->doUpdate();
 }
 
 void PointList::doUpdate() throw(fwTools::Failed)
 {
-    this->doStop();
+    WeakPointListType points = this->getNewPoints();
+    this->createServices( points );
+}
 
-    ::fwData::PointList::sptr ptList = this->getObject< ::fwData::PointList >();
+void PointList::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
 
-    BOOST_FOREACH( ::fwData::Point::sptr pt, ptList->getPoints() )
+    if ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED )
+         || ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED )) )
     {
+        this->doStop();
+        this->doUpdate();
+        setVtkPipelineModified();
+    }
+    else if ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED ))
+    {
+        m_oldWeakPointList = m_weakPointList;
+        m_weakPointList    = this->getWeakPointList();
+        this->doUpdate();
+        setVtkPipelineModified();
+    }
+}
+
+void PointList::doSwap() throw(fwTools::Failed)
+{
+    this->doStop();
+    this->doUpdate();
+}
+
+void PointList::doStop() throw(fwTools::Failed)
+{
+    m_oldWeakPointList.clear();
+    m_weakPointList.clear();
+    this->unregisterServices();
+}
+
+void PointList::createServices(WeakPointListType &wPtList)
+{
+
+    BOOST_FOREACH( ::fwData::Point::wptr wpt, wPtList )
+    {
+        SLM_ASSERT("Point Expired", !wpt.expired());
+
+        ::fwData::Point::sptr pt = wpt.lock();
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
                 ( pt, "::visuVTKAdaptor::Point" );
@@ -79,16 +130,28 @@ void PointList::doUpdate() throw(fwTools::Failed)
     }
 }
 
-void PointList::doSwap() throw(fwTools::Failed)
+PointList::WeakPointListType PointList::getWeakPointList()
 {
-    this->doUpdate();
+    ::fwData::PointList::sptr ptList = this->getObject< ::fwData::PointList >();
+    WeakPointListType weakList;
+
+    std::copy(ptList->getRefPoints().begin(), ptList->getRefPoints().end(), std::back_inserter(weakList));
+
+    return weakList;
 }
 
-void PointList::doStop() throw(fwTools::Failed)
+PointList::WeakPointListType PointList::getNewPoints()
 {
-    this->unregisterServices();
-}
+    WeakPointListType newPoints;
 
+    std::set_difference (
+            m_weakPointList.begin(), m_weakPointList.end(),
+            m_oldWeakPointList.begin(), m_oldWeakPointList.end(),
+            std::back_inserter(newPoints)
+            );
+    return newPoints;
+
+}
 
 
 } //namespace visuVTKAdaptor

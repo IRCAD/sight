@@ -1,5 +1,6 @@
 TYPE    = 'shared'
 USE     = ['boost']
+#USE     = ['boost_1-38-0']
 import os
 if os.name == 'nt':
     USE += ['log4cxx']

@@ -4,8 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwComEd/TransformationMatrix3DMsg.hpp"
 
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::TransformationMatrix3DMsg, ::fwComEd::TransformationMatrix3DMsg );
 
 namespace fwComEd
 {

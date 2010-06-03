@@ -6,7 +6,7 @@ LIB     = [
           'fwData_0-1',
           'fwServices_0-1',
           'fwComEd_0-1',
-          'vtkIO_0-1',
+          'fwVtkIO_0-1',
           'fwTools_0-1',
           'fwWX_0-1',
           'fwDataIO_0-2',

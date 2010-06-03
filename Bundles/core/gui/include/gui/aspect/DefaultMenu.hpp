@@ -47,6 +47,20 @@ protected :
      */
 
     /// Retrieve DefaultMenu::m_menuName in configuration element
+    /**
+     * @brief Configuring method allows to configure a menu with several actions.
+     * Here a sample of the DefaultMenu service declaration with three actions:
+     * @verbatim
+            <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no">
+                <action uid="action_loadFile"/>
+                <action uid="action_saveFile"/>
+                <separator />
+                <action uid="action_quit" />
+            </service>
+       @endverbatim
+      * - <separator /> : allows to put a separatorin the menu
+      * No specific attribute are available for action.
+     */
     GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
     GUI_API virtual void starting() throw( ::fwTools::Failed ) ;

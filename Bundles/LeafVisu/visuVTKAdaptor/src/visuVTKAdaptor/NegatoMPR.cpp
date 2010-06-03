@@ -22,6 +22,7 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
+#include "visuVTKAdaptor/NegatoOneSlice.hpp"
 #include "visuVTKAdaptor/NegatoMPR.hpp"
 
 
@@ -39,6 +40,10 @@ NegatoMPR::NegatoMPR() throw() :
         m_backupedSliceMode(THREE_SLICES)
 {
     SLM_TRACE_FUNC();
+
+    m_allowAlphaInTF = false;
+    m_interpolation  = false;
+
     addNewHandledEvent("SLICE_MODE");
     addNewHandledEvent("SCAN_SHOW");
     addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
@@ -84,6 +89,7 @@ void NegatoMPR::doSwap() throw(fwTools::Failed)
             {
                 OSLM_ASSERT("sub services expired in service : " << ::fwTools::UUID::get(this->getSptr() ), !service.expired());
                 service.lock()->swap(image);
+                service.lock()->update();
             }
         }
     }
@@ -270,6 +276,18 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
+    if(m_configuration->hasAttribute("tfalpha") )
+    {
+        this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
+    }
+    if (m_configuration->hasAttribute("interpolation"))
+    {
+        this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "off"));
+    }
+    if (m_configuration->hasAttribute("vtkimagesource"))
+    {
+        this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -323,6 +341,20 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     {
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
         assert(service);
+    }
+
+
+    ::visuVTKAdaptor::NegatoOneSlice::sptr negatoAdaptor;
+    negatoAdaptor = ::visuVTKAdaptor::NegatoOneSlice::dynamicCast(service);
+
+    if (negatoAdaptor)
+    {
+        negatoAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
+        negatoAdaptor->setInterpolation(m_interpolation);
+        if (!m_imageSourceId.empty())
+        {
+            negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
+        }
     }
 
     service->setRenderService(this->getRenderService());
