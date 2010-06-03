@@ -17,5 +17,6 @@ BUNDLES = [
     'uiIO_0-1'          ,
     'visuVTK_0-1'       ,
     'visuVTKAdaptor_0-1',
-    'visu_0-1'   
+    'visu_0-1'          ,
+    'launcher_0-1'      ,
  ]
