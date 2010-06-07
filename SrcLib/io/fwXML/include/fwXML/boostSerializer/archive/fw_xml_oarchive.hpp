@@ -53,7 +53,13 @@ class fw_xml_oarchive : public detail::common_oarchive< fw_xml_oarchive > // , p
     // permit serialization system priviledged access to permit
     // implementation of inline templates for maximum speed.
       friend class boost::archive::save_access; // for operator & : ARCHIVEInstance & object :  is ok
+    #if BOOST_VERSION >= 104000
+      friend class boost::archive::detail::archive_serializer_map<boost::archive::fw_xml_oarchive>;
+    #else
       friend class boost::archive::detail::archive_pointer_oserializer<boost::archive::fw_xml_oarchive>;
+    #endif
+
+
 
 
 public:

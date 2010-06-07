@@ -7,7 +7,11 @@
 #include <fwXML/boostSerializer/archive/fw_xml_oarchive.hpp>
 
 #ifndef WIN32
+#if BOOST_VERSION >= 104000
+ #include <boost/archive/impl/archive_serializer_map.ipp>
+#else
  #include <boost/archive/impl/archive_pointer_oserializer.ipp>
+#endif
  #include <boost/archive/impl/basic_text_oprimitive.ipp>
 #endif
 
@@ -22,10 +26,15 @@
 
 //// explicit instanciation like xml_oarchive.cpp
 #ifndef WIN32
-  // VAG  this generate an insternal compilator error under windows, to avoid this create
+  // VAG  this generate an internal compilator error under windows, to avoid this create
   // an external file. This class should is required if we want to save a pointer in the archive
-  template
-  class boost::archive::detail::archive_pointer_oserializer<boost::archive::fw_xml_oarchive>;
+  #if BOOST_VERSION >= 104000
+     template
+     class boost::archive::detail::archive_serializer_map<boost::archive::fw_xml_oarchive>;
+  #else
+     template
+     class boost::archive::detail::archive_pointer_oserializer<boost::archive::fw_xml_oarchive>;
+  #endif
 #endif
 
 // VAG disable this generate an insternal compilator error under windows, to avoid this create
