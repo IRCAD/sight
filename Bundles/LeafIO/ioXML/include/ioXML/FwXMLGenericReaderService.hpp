@@ -26,7 +26,8 @@ namespace ioXML
 {
 
 /**
- * @class a generic reader which can load any kind of object in a fxz archive
+ * @class FwXMLGenericReaderService
+ * @brief A generic reader which can load any kind of object in a fxz archive
  * after loading data are shallow copied then some notifications are send. configuration
  * of service allow to define what event are send
  * @example :
