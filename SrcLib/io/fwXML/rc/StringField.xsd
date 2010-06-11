@@ -6,12 +6,12 @@
 
 
  <xsd:complexType name="StringFieldXSDType">
-	<xsd:simpleContent>
-		<xsd:extension base="xsd:string">
-			<xsd:attribute name="id" type="xsd:string" />
-			<xsd:attribute name="class" type="xsd:string"/>
-      		</xsd:extension>
-    	</xsd:simpleContent>
+    <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+            <xsd:attribute name="id" type="xsd:string" />
+            <xsd:attribute name="class" type="xsd:string"/>
+              </xsd:extension>
+        </xsd:simpleContent>
  </xsd:complexType>
 
 

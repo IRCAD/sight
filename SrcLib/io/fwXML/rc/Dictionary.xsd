@@ -4,11 +4,11 @@
 <xsd:include schemaLocation="Field.xsd"/>
 
 <xsd:complexType name="DictionaryXSDType">
-	<xsd:sequence>
-		<xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
-	</xsd:sequence>
-	<xsd:attribute name="id" type="xsd:string" />
-	<xsd:attribute name="class" type="xsd:string"/>
+    <xsd:sequence>
+        <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:string" />
+    <xsd:attribute name="class" type="xsd:string"/>
 </xsd:complexType>
 
 <xsd:element name="Dictionary" type="DictionaryXSDType"/>
