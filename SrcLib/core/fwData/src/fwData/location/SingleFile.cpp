@@ -10,21 +10,23 @@
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::location::SingleFile, ::fwData::location::SingleFile);
 
-namespace fwData {
-namespace location {
-
-SingleFile::SingleFile()
+namespace fwData
 {
-    // TODO Auto-generated constructor stub
-
-}
-
-SingleFile::~SingleFile()
+namespace location
 {
-    // TODO Auto-generated destructor stub
-}
 
 //------------------------------------------------------------------------------
+
+SingleFile::SingleFile()
+{}
+
+//------------------------------------------------------------------------------
+
+SingleFile::~SingleFile()
+{}
+
+//------------------------------------------------------------------------------
+
 SingleFile::sptr SingleFile::SingleFileFactory(::boost::filesystem::path _path)
 {
     SingleFile::sptr singlefile = SingleFile::New();
@@ -46,7 +48,7 @@ void SingleFile::setPath( ::boost::filesystem::path path)
     return m_path;
 }
 
-
+//------------------------------------------------------------------------------
 
 }
 }

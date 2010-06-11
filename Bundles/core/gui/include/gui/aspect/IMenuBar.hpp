@@ -31,6 +31,8 @@ public :
 
     fwCoreNonInstanciableClassDefinitionsMacro ( (IMenuBar)( ::fwServices::IService) ) ;
 
+protected:
+
     /// Default constructor, do nothing.
     GUI_API IMenuBar() throw() ;
 

@@ -27,6 +27,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (IController)(::fwServices::IService) ) ;
 
+protected:
+
     ///@brief IController constructor. Do nothing.
     FWSERVICES_API IController();
 

@@ -69,8 +69,6 @@ inline bool have(RW *rw)
     return LOCATION::dynamicCast( rw->getLocation() );
 }
 
-
-
 }
 }
 

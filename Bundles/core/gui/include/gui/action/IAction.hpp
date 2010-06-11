@@ -41,18 +41,6 @@ public :
     fwCoreAllowSharedFromThis();
 
     /**
-    * @brief Constructor. Do nothing (Just initialize parameters).
-    *
-    * By default, the m_shortcutDef is not defined.
-    */
-    GUI_API IAction() throw() ;
-
-    /*
-     * @brief Destructor. Do nothing.
-     */
-    GUI_API virtual ~IAction() throw() ;
-
-    /**
      * @brief This method is used to change the menu name (IAction::m_menuName).
      *
      * @param[in] _menuName Name of the new menu.
@@ -133,6 +121,18 @@ public :
 
 protected :
 
+    /**
+    * @brief Constructor. Do nothing (Just initialize parameters).
+    *
+    * By default, the m_shortcutDef is not defined.
+    */
+    GUI_API IAction() throw() ;
+
+    /*
+     * @brief Destructor. Do nothing.
+     */
+    GUI_API virtual ~IAction() throw() ;
+
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
      */
@@ -205,7 +205,6 @@ protected :
 
     /// Name of the wxMenu.
     std::string m_menuName ;
-
 };
 
 

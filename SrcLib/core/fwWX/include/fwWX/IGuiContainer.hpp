@@ -31,7 +31,7 @@ namespace fwWX
  * @date    2009-2010.
  *
  */
-class FWWX_CLASS_API IGuiContainer : public fwServices::IService
+class FWWX_CLASS_API IGuiContainer : public ::fwServices::IService
 {
 
 public :
@@ -39,18 +39,6 @@ public :
     typedef std::map< std::string , wxWindow* > ContainerMapType;
 
     fwCoreServiceClassDefinitionsMacro ( (IGuiContainer)(::fwServices::IService) ) ;
-
-
-
-    /**
-     * @brief   Constructor. Initialize default values.
-     */
-    FWWX_API IGuiContainer() throw() ;
-
-    /**
-     * @brief   Destructor. Do nothing.
-     */
-    FWWX_API virtual ~IGuiContainer() throw() ;
 
     /**
      * @name    Helper service methods
@@ -105,6 +93,17 @@ public :
     //@}
 
 protected :
+
+    /**
+     * @brief   Constructor. Initialize default values.
+     */
+    FWWX_API IGuiContainer() throw() ;
+
+    /**
+     * @brief   Destructor. Do nothing.
+     */
+    FWWX_API virtual ~IGuiContainer() throw() ;
+
 
     static ContainerMapType m_globalUIDToWxContainer;
 

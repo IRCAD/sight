@@ -10,42 +10,50 @@
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::location::Folder, ::fwData::location::Folder);
 
-namespace fwData {
-namespace location {
+namespace fwData
+{
+namespace location
+{
+
+//------------------------------------------------------------------------------
 
 Folder::Folder()
-{
-    // TODO Auto-generated constructor stub
+{}
 
-}
+//------------------------------------------------------------------------------
 
 Folder::~Folder()
-{
-    // TODO Auto-generated destructor stub
-}
+{}
 
+//------------------------------------------------------------------------------
 
 void Folder::setFolder( ::boost::filesystem::path folder)
 {
     m_folder = folder;
 }
 
+//------------------------------------------------------------------------------
+
 ::boost::filesystem::path Folder::getFolder()
 {
     return m_folder;
 }
+
+//------------------------------------------------------------------------------
 
 void Folder::setRecursive( bool recursive)
 {
     m_isRecursive = recursive;
 }
 
+//------------------------------------------------------------------------------
+
 bool Folder::getRecursive()
 {
     return m_isRecursive;
 }
 
-
+//------------------------------------------------------------------------------
 
 }
 }

@@ -69,42 +69,42 @@ protected :
 template<class RW> // reader or writter class should only need to implement get/setLocation
 struct enableFolder
 {
-     /**
-      * @brief constructor
-      * @param[in] rw reader or writer
-      */
-     enableFolder(RW *rw) : m_rw(rw) { assert(m_rw); }
+    /**
+     * @brief constructor
+     * @param[in] rw reader or writer
+     */
+    enableFolder(RW *rw) : m_rw(rw) { assert(m_rw); }
 
-     /// @brief Set folder filesystem path
-     void setFolder(::boost::filesystem::path folder)
-     {
-         getLocation<Folder>(m_rw)->setFolder(folder);
-     }
+    /// @brief Set folder filesystem path
+    void setFolder(::boost::filesystem::path folder)
+    {
+        getLocation<Folder>(m_rw)->setFolder(folder);
+    }
 
-     /// @brief Get folder filesystem path
-     ::boost::filesystem::path getFolder()
-     {
-         return getLocation<Folder>(m_rw)->getFolder();
-     }
+    /// @brief Get folder filesystem path
+    ::boost::filesystem::path getFolder()
+    {
+        return getLocation<Folder>(m_rw)->getFolder();
+    }
 
-     /// @brief Set the flag if folder location is recursive
-     void setRecursive( bool val)
-     {
-         getLocation<Folder>(m_rw)->setRecursive(val);
-     }
+    /// @brief Set the flag if folder location is recursive
+    void setRecursive( bool val)
+    {
+        getLocation<Folder>(m_rw)->setRecursive(val);
+    }
 
-     /// @brief Get the flag if folder location is recursive
-     bool getRecursive()
-     {
-         return getLocation<Folder>(m_rw)->getRecursive();
-     }
+    /// @brief Get the flag if folder location is recursive
+    bool getRecursive()
+    {
+        return getLocation<Folder>(m_rw)->getRecursive();
+    }
 
 private :
     /// Not implemented must use constructor with one parameter
     enableFolder();
 
     /// Reader or writer
-     RW *m_rw;
+    RW *m_rw;
 
 };
 

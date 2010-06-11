@@ -30,6 +30,8 @@ public :
 
     fwCoreNonInstanciableClassDefinitionsMacro ( (IToolBar)( ::fwServices::IService) ) ;
 
+protected :
+
     /**
      * @brief Constructor. Do nothing (Just initialize parameters).
      */
@@ -40,45 +42,6 @@ public :
      */
     GUI_API virtual ~IToolBar() throw() ;
 
-protected :
-
-    /** @name Service methods ( override from ::fwServices::IService )
-     * @{
-     */
-
-    /**
-     * @brief This method create a new ToolBar in frame, and add tools with IToolBar::m_actionIds list.
-     */
-    GUI_API virtual void starting() throw( ::fwTools::Failed ) = 0;
-
-    /**
-     * @brief This method remove the tools situated in the ToolBar and delete ToolBar.
-     */
-    GUI_API virtual void stopping() throw( ::fwTools::Failed ) = 0;
-
-    /**
-     * @brief This method is used to update services on notification. Do nothing.
-     * @attention An IToolBar service does not received a message.
-     */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) = 0 ;
-
-    /**
-     * @brief This method is used to update services. Do nothing.
-     */
-    GUI_API virtual void updating() throw(::fwTools::Failed) = 0;
-
-    /**
-     * @brief This method is used to configure the class parameters. Do nothing.
-    */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed ) = 0;
-
-    /**
-     * @brief This method is used to give information about the service. Do nothing.
-     * @todo Must be not implemented and class child declaration should be imposed.
-     */
-    GUI_API virtual void info(std::ostream &_sstream ) = 0;
-
-    ///@}
 };
 
 }

@@ -36,6 +36,8 @@ public :
 
     fwCoreNonInstanciableClassDefinitionsMacro ( (IFrame)( ::fwServices::IService) ) ;
 
+protected:
+
     /**
     * @brief Constructor. Do nothing (Just initialize parameters).
     */

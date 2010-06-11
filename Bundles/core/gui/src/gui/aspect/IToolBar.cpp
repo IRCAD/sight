@@ -11,6 +11,8 @@ namespace gui
 namespace aspect
 {
 
+//-----------------------------------------------------------------------------
+
 IToolBar::IToolBar() throw()
 {}
 

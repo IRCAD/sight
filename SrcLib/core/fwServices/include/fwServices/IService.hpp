@@ -104,30 +104,6 @@ public :
 
 
     /**
-     * @name Constructor and Destructor
-     */
-
-    //@{
-
-    /**
-     * @brief IService constructor.
-     *
-     * This constructor does nothing. By default, m_associatedObject is null and
-     * service is considered as STOPPED, IDLE and UNCONFIGURED.
-     */
-    FWSERVICES_API IService() ;
-
-    /**
-     * @brief IService desctructor.
-     *
-     * This destructor does nothing.
-     */
-    FWSERVICES_API virtual ~IService() ;
-
-    //@}
-
-
-    /**
      * @name Key service API
      */
 
@@ -342,6 +318,29 @@ public :
     //@}
 
 protected :
+
+    /**
+     * @name Constructor and Destructor
+     */
+
+    //@{
+
+    /**
+     * @brief IService constructor.
+     *
+     * This constructor does nothing. By default, m_associatedObject is null and
+     * service is considered as STOPPED, IDLE and UNCONFIGURED.
+     */
+    FWSERVICES_API IService() ;
+
+    /**
+     * @brief IService desctructor.
+     *
+     * This destructor does nothing.
+     */
+    FWSERVICES_API virtual ~IService() ;
+
+    //@}
 
     /**
      * @name Interface to override (implementation contract)

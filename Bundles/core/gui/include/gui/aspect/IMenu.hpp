@@ -31,6 +31,8 @@ public :
 
     fwCoreNonInstanciableClassDefinitionsMacro ( (IMenu)( ::fwServices::IService) ) ;
 
+protected:
+
     /// Default constructor, do nothing.
     GUI_API IMenu() throw() ;
 

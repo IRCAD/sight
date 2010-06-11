@@ -47,8 +47,6 @@ DummyEditor::~DummyEditor() throw()
 
 void DummyEditor::starting() throw(::fwTools::Failed)
 {
-    ::gui::editor::IEditor::starting();
-
     wxBoxSizer* bSizer;
     bSizer = new wxBoxSizer( wxVERTICAL );
     std::string text = m_text.empty() ? this->getUUID() : m_text;
@@ -72,7 +70,6 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
 void DummyEditor::configuring()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::configuring();
 
     ::fwRuntime::ConfigurationElement::sptr viewsCfgElt = m_configuration->findConfigurationElement("text");
 

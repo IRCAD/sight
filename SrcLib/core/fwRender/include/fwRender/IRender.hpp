@@ -51,18 +51,6 @@ public :
     static const std::string ClockRateId ;
 
     /**
-     * @brief   Constructor. Initialize default values.
-     */
-    FWRENDER_API IRender() throw() ;
-
-    /**
-     * @brief   Destructor. Do nothing.
-     */
-    FWRENDER_API virtual ~IRender() throw() ;
-
-
-
-    /**
      * @name    Helper service methods
      */
     //@{
@@ -136,6 +124,15 @@ public :
 
 protected :
 
+    /**
+     * @brief   Constructor. Initialize default values.
+     */
+    FWRENDER_API IRender() throw() ;
+
+    /**
+     * @brief   Destructor. Do nothing.
+     */
+    FWRENDER_API virtual ~IRender() throw() ;
 
     /**
      * @brief gui container indentifier
