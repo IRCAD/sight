@@ -24,7 +24,12 @@ namespace fwComEd
 namespace helper
 {
 
-
+/**
+ * @class   MedicalImageAdaptor
+ * @brief   Helpers for medical image.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2010
+ */
 class FWCOMED_CLASS_API MedicalImageAdaptor
 {
 
@@ -32,78 +37,157 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (MedicalImageAdaptor) );
 
 
-
+    /// Image orientation
     typedef enum {
         X_AXIS = 0,
         Y_AXIS,
         Z_AXIS
     } Orientation ;
 
+    /// Destructor. Do nothing.
     FWCOMED_API virtual ~MedicalImageAdaptor();
 
+    /// Set the image orientation.
     FWCOMED_API void setOrientation( Orientation orientation );
+
+    /// Return the image orientation.
     FWCOMED_API Orientation getOrientation(){ return m_orientation; }
 
 protected:
 
+    /// Constructor. Do nothing.
     FWCOMED_API MedicalImageAdaptor(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
 
+    /**
+     * @brief Set the orientation of the image.
+     * @param[in] orientation must be 0 (X_AXIS), 1 (Y_AXIS) or 2 (Z_AXIS).
+     */
     FWCOMED_API void setOrientation( int orientation );
 
+    /**
+     * @brief Get the image spacing.
+     * @param[out] spacing : the image spacing
+     */
     FWCOMED_API void getImageSpacing(double spacing[3]);
+
+    /**
+     * @brief Get the image data size (number of slices).
+     * @param[out] size : the image size
+     */
     FWCOMED_API void getImageDataSize(int size[3]);
+
+    /**
+     * @brief Get the image size ( = dataSize * spacing ).
+     * @param[out] size : the image size
+     */
     FWCOMED_API void getImageSize(double size[3]);
+
+    /**
+     * @brief Get the slice center
+     * @param[out] center : the slice center
+     */
     FWCOMED_API void getCurrentSliceCenter(double center[3]);
 
-    /// retreive the grey level from an image from physicial world
+    // retreive the grey level from an image from physicial world
     //float getPixelvalue( double worldPosition[3]);
 
+    /**
+     * @brief Convert world coordinates to slice index coordinates
+     * @param[in] world : coordinate in the world
+     * @param[out] index : coordinate in the slice index
+     */
     FWCOMED_API void worldToSliceIndex(const double world[3],int index[3] );
+
+    /**
+     * @brief Convert coordinates in the world to coordinates in the image
+     * @param[in] world : coordinate in the world
+     * @param[out] index : coordinate in the image
+     */
     FWCOMED_API void worldToImageSliceIndex(const double world[3], int index[3] );
 
+
+    /**
+     * @brief Get the image spacing.
+     * @param[out] spacing : the image spacing
+     */
     template< typename FLOAT_ARRAY_3 >
     void getImageSpacing(FLOAT_ARRAY_3 spacing);
-    template< typename INDEX >
-    void getImageDataSize(INDEX size);
-    template< typename WORLD, typename INDEX >
-    void worldToSliceIndex(const WORLD world, INDEX index );
-    template< typename WORLD, typename INDEX >
-    void worldToImageSliceIndex(const WORLD world, INDEX index );
+
+    /**
+     * @brief Get the image data size (number of slices).
+     * @param[out] size : the image size
+     */
+    template< typename INT_INDEX >
+    void getImageDataSize(INT_INDEX size);
+
+    /**
+     * @brief Convert world coordinates to slice index coordinates
+     * @param[in] world : coordinate in the world
+     * @param[out] index : coordinate in the slice index
+     */
+    template< typename WORLD, typename INT_INDEX >
+    void worldToSliceIndex(const WORLD world, INT_INDEX index );
+
+    /**
+     * @brief Convert coordinates in the world to coordinates in the image
+     * @param[in] world : coordinate in the world
+     * @param[out] index : coordinate in the image
+     */
+    template< typename WORLD, typename INT_INDEX >
+    void worldToImageSliceIndex(const WORLD world, INT_INDEX index );
 
 
 
 
-    /// return the 4 points of the image plane
-    /// points are ordered in the following way : image origin is the first point
-    /// points are insterted using the preference follow X axis if exist, if not exist follow Y axis
-    /// if Y axis is not present follow Z axis
+    /**
+     * @brief Return the 4 points of the image plane
+     *
+     * - points are ordered in the following way : image origin is the first point
+     * - points are inserted using the preference follow X axis if exists, if not exists follow Y axis
+     * if Y axis is not present follow Z axis
+     */
     FWCOMED_API void getPlane( double points[4][3], int sliceNumber );
 
+    /// Set the slice index
     FWCOMED_API bool setSliceIndex(const int index[3]);
+    /// Get the slice index
     FWCOMED_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
+    /// Set the current slice index
     FWCOMED_API ::fwData::Integer::sptr getCurrentSliceIndex();
+    /// Get the current slice index
     FWCOMED_API void setCurrentSliceIndex(::fwData::Integer::sptr);
 
+    /// Get the current transfert function
     FWCOMED_API ::fwData::TransfertFunction::sptr getCurrentTransfertFunction();
 
+    /// Update the image information (slice index, min/max, TF,...)
     FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
 
+    /// Return the image
     ::fwData::Image::sptr getImage();
 
+    /// Image orientation
     Orientation m_orientation;
 
-
+    /// Current image
     ::fwData::Image::wptr m_weakImage;
 
+    /// Axial slice index
     ::fwData::Integer::sptr m_axialIndex;
+    /// Frontal slice index
     ::fwData::Integer::sptr m_frontalIndex;
+    /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
+    /// Windowing minimum
     ::fwData::Integer::sptr m_windowMin;
+    /// Windowing maximum
     ::fwData::Integer::sptr m_windowMax;
 
+    /// Transfert function composite
     ::fwData::Composite::sptr m_transfertFunctions;
+    /// Name of the current transfert function
     ::fwData::String::sptr m_transfertFunctionId;
 };
 

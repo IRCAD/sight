@@ -79,7 +79,7 @@ void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
 
 void ImageMsg::getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max) const
 {
-    SLM_ASSERT( "SLICE_INDEX Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
+    SLM_ASSERT( "WINDOWING Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
     min->deepCopy(m_windowMin);
     max->deepCopy(m_windowMax);
 }

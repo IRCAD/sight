@@ -34,7 +34,7 @@ public:
      * @name Event identifier
      */
     /// @{
-    /// Event identifier used to inform for modification
+    /// @brief Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_RESECTIONDB_SELECTED;
     FWCOMED_API static std::string RESECTIONDB_SELECTED;
     FWCOMED_API static std::string NEW_RESECTION_SELECTED;
@@ -55,12 +55,32 @@ public:
      */
     FWCOMED_API virtual ~ResectionDBMsg() throw();
 
+    /**
+     * @brief Return the selected Resection.
+     * @pre   The message subject must be a PatientDB.
+     * @pre   A Resection must be selected.
+     */
     FWCOMED_API ::fwData::Resection::sptr getResectionSelected() const;
 
+    /**
+     * @brief Return the selected safe part (Resection).
+     * @pre   The message subject must be a PatientDB.
+     * @pre   A ResectionDB must be selected.
+     */
     FWCOMED_API ::fwData::Resection::sptr getSafePartSelected() const;
 
+    /**
+     * @brief Return the selected operation (=ResectionDB).
+     * @pre   The message subject must be a PatientDB.
+     * @pre   A ResectionDB must be selected.
+     */
     FWCOMED_API ::fwData::ResectionDB::sptr getResectionDBSelected() const;
 
+    /**
+     * @brief Return the name of the selected operation (=ResectionDB).
+     * @pre   The message subject must be a PatientDB.
+     * @pre   A ResectionDB must be selected.
+     */
     FWCOMED_API std::string getResectionOpName() const;
 };
 

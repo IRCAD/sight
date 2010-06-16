@@ -21,7 +21,7 @@ namespace helper
 {
 
 /**
- * @brief   Defines an helper to modify an ::fwData::Composite and create in parallel the message to annouce this modification.
+ * @brief   Defines an helper to modify an ::fwData::Composite and create in parallel the message to announce this modification.
  * @struct  Composite
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
@@ -31,16 +31,39 @@ class FWCOMED_CLASS_API Composite
 
 public :
 
+    /// Constructor. Initialize parameters.
     FWCOMED_API Composite( ::fwData::Composite::wptr _composite );
 
+    /// Destrucotr. Do nothing.
     FWCOMED_API ~Composite();
 
+    /**
+     * @brief Add an object in the composite.
+     * @param[in] _compositeKey key of the object in the composite.
+     * @param[in] _newObject    object to add in the composite
+     *
+     * Prepare the message to announce the modification.
+     */
     FWCOMED_API void add( std::string _compositeKey, ::fwData::Object::sptr _newObject );
 
+    /**
+     * @brief Remove an object in the composite.
+     * @param[in] _compositeKey key of the object in the composite.
+     *
+     * Prepare the message to announce the modification.
+     */
     FWCOMED_API void remove( std::string _compositeKey );
 
+    /**
+     * @brief Replace an object in the composite.
+     * @param[in] _compositeKey key of the object in the composite.
+     * @param[in] _newObject    the new object to add in the composite.
+     *
+     * Prepare the message to announce the modification.
+     */
     FWCOMED_API void swap( std::string _compositeKey, ::fwData::Object::sptr _newObject );
 
+    /// Send the message of modification
     FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
 
 private :

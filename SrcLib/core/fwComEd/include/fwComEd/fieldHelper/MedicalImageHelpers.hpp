@@ -198,14 +198,28 @@ public :
     FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize = ::fwData::Image::sptr());
 
     /**
-     * @brief       Return true if the pixel value is not 0.
+     * @brief       Return true if the pixel value is null.
+     * @param[in] image : image containing the pixel
+     * @param[in] point : the coordinate of the pixel in the image.
      */
     template < typename INT_INDEX>
     static bool isPixelNull(::fwData::Image::sptr image, INT_INDEX &point);
 
+    /**
+     * @brief Set a pixel value.
+     * @param[in] image : image containing the pixel
+     * @param[in] point : coordinate of the pixel
+     * @param[in] value : the pixel value
+     */
     template < typename T , typename INT_INDEX>
     static void setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value);
 
+    /**
+     * @brief Set a pixel value.
+     * @param[in] pImage : image containing the pixel
+     * @param[in] point : coordinate of the pixel
+     * @param[in] value : the pixel value
+     */
     template < typename T >
     static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T &value);
 

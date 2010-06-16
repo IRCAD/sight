@@ -20,7 +20,7 @@ namespace fwComEd
 {
 
 /**
- * @brief   Object event message specialized for image : store modification information
+ * @brief   Object event message specialized for interaction : store modification information
  * @class   InteractionMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
@@ -94,24 +94,36 @@ public:
      */
     FWCOMED_API virtual ~InteractionMsg() throw();
 
-
+    /// Set the state of the modifier k.
     FWCOMED_API void setModifiersStatus(Modifiers k, bool state = true);
+    /// Get the state of the modifier k.
     FWCOMED_API bool getModifiersStatus(Modifiers k);
 
+    /// Get the control status.
     FWCOMED_API bool getControlStatus(){return getModifiersStatus(CTRL);}
+    /// Get the shift status.
     FWCOMED_API bool getShiftStatus(){return getModifiersStatus(SHIFT);}
 
+    /**
+     * @brief Set the message event
+     * @note  An InteractionMsg can only handle one event.
+     */
     FWCOMED_API void setEvent(std::string event);
 
+    /// Set the point coordinates of the event.
     FWCOMED_API void setEventPoint(::fwData::Point::csptr point);
+    /// Set the point coordinates of the event.
     FWCOMED_API void setEventPoint(PointCoordType x, PointCoordType y, PointCoordType z);
 
+    /// Return the point coordinates of the event.
     FWCOMED_API ::fwData::Point::csptr getEventPoint() const;
 
 protected:
 
+    /// Event point coordinates
     ::fwData::Point::sptr m_eventPoint;
 
+    /// Modifiers status
     Modifiers m_modifiersStatus;
 
 

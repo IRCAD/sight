@@ -31,7 +31,7 @@ public:
      * @name Event identifier
      */
     /// @{
-    /// Event identifier used to inform for modification
+    /// @brief Event identifier used to inform for modification
     FWCOMED_API static std::string ADD_RECONSTRUCTION;
     FWCOMED_API static std::string VISIBILITY;
     FWCOMED_API static std::string NEW_RECONSTRUCTION_SELECTED;

@@ -16,7 +16,7 @@ namespace fwComEd
 {
 
 /**
- * @brief   Object event message specialized for float field : store modification information
+ * @brief   Object event message specialized for Boolean : store modification information
  * @class   BooleanMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
