@@ -29,13 +29,22 @@ void VectorFunctionsTest::tearDown()
 void VectorFunctionsTest::checkDot()
 {
     // Produit scalaire.
-    const double NORME_CARRE = 0.32;
-    const fwVec3d V1 = {0.1, 0.2, 0.3};
-    const fwVec3d V2 = {0.4, 0.5, 0.6};
+    const double V1_X = 0.1;
+    const double V1_Y =rand()%30+0.1;
+    const double V1_Z =rand()%20+0.4;
+
+    const double V2_X = rand()%50+0.4;
+    const double V2_Y =0.5;
+    const double V2_Z =rand()%10+0.8;
+
+    const fwVec3d V1 = {V1_X, V1_Y, V1_Z};
+    const fwVec3d V2 = {V2_X, V2_Y, V2_Z};
     double result;
     result = ::fwMath::dot(V1, V2);
 
-    CPPUNIT_ASSERT_EQUAL(result, NORME_CARRE);
+    double dotResult = V1_X*V2_X + V1_Y*V2_Y + V1_Z*V2_Z;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(result, dotResult, 0.00001);
 }
 
 void VectorFunctionsTest::checkDot_fwMath_Solib()

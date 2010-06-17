@@ -42,7 +42,7 @@ public:
      */
     FWDATA_API  Region(boost::uint8_t  _dim);
 
-    static sptr RegionFactory(const boost::uint8_t _dim);
+    FWDATA_API static sptr RegionFactory(const boost::uint8_t _dim);
     /**
      * @brief Destructor
      */
