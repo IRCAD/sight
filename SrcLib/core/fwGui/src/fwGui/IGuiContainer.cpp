@@ -53,8 +53,6 @@ void IGuiContainer::resetGuiParentContainer()
     {
         SLM_TRACE("Cleaning container");
         m_container->clean();
-//        m_container->SetSizer(NULL);
-//        m_container->DestroyChildren();
     }
 }
 
@@ -89,8 +87,6 @@ void IGuiContainer::unregisterContainer(std::string uid)
 
     // Destroys the container safely
     container->destroyContainer();
-//    container->Destroy();
-//    container = 0;
 
     // Removes container in internal map
     m_subUIDToContainer.erase(uid);

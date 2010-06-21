@@ -7,7 +7,7 @@
 #ifndef _FWGUI_FWCONTAINER_HPP_
 #define _FWGUI_FWCONTAINER_HPP_
 
-#include "fwCore/base.hpp"
+#include <fwCore/base.hpp>
 
 #include "fwGui/config.hpp"
 
