@@ -43,7 +43,7 @@ void SingleFile::setPath( ::boost::filesystem::path path)
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path SingleFile::getPath()
+::boost::filesystem::path SingleFile::getPath() const
 {
     return m_path;
 }

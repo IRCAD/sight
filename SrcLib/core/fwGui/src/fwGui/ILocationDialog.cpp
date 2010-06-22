@@ -1,0 +1,27 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+
+#include "fwGui/ILocationDialog.hpp"
+
+namespace fwGui
+{
+
+const ILocationDialog::FactoryRegistryKeyType
+ILocationDialog::factoryRegistryKey =  "an unique key for all ILocationDialog (factories are exclusives)";
+
+ILocationDialog::ILocationDialog()
+{}
+
+
+ILocationDialog::~ILocationDialog()
+{}
+
+
+} // namespace fwGui
+
+
+

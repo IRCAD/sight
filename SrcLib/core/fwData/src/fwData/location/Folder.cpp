@@ -25,6 +25,15 @@ Folder::Folder()
 Folder::~Folder()
 {}
 
+
+Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursive )
+{
+    Folder::sptr folder = Folder::New();
+    folder->setFolder(_path);
+    return folder;
+}
+
+
 //------------------------------------------------------------------------------
 
 void Folder::setFolder( ::boost::filesystem::path folder)
@@ -34,7 +43,7 @@ void Folder::setFolder( ::boost::filesystem::path folder)
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path Folder::getFolder()
+::boost::filesystem::path Folder::getFolder() const
 {
     return m_folder;
 }

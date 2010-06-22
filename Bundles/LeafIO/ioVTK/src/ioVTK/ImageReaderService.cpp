@@ -26,6 +26,9 @@
 #include "ioVTK/ImageReaderService.hpp"
 
 
+#include <fwGui/LocationDialog.hpp>
+#include <fwData/location/Folder.hpp>
+
 namespace ioVTK
 {
 
@@ -71,26 +74,23 @@ void ImageReaderService::configuring() throw ( ::fwTools::Failed )
 void ImageReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an vtk file to load an image"); // use _("...") for support string internationalization
+    static ::boost::filesystem::path _sDefaultPath;
 
-    // Create a dialog box to choose a file of type .vtk
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_OPEN,
-            wxTheApp->GetTopWindow() );
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an vtk file to load an image");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
 
-    // If the user choose an vtk file, the image path is initialized and we tag the service as configured.
-    if( file.IsEmpty() == false )
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImgPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+        _sDefaultPath = result->getPath();
+        m_fsImgPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImgPath.branch_path().string().c_str() );
     }
+
+
 }
 
 //------------------------------------------------------------------------------

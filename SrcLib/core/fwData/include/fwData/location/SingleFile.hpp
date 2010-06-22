@@ -45,7 +45,7 @@ public:
     FWDATA_API void setPath( ::boost::filesystem::path path);
 
     /// Get file system path
-    FWDATA_API ::boost::filesystem::path getPath();
+    FWDATA_API ::boost::filesystem::path getPath() const;
 
 protected :
 
