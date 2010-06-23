@@ -63,6 +63,7 @@ SliceListEditor::~SliceListEditor() throw()
 void SliceListEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initGuiParentContainer();
 
     m_dropDownButton = new wxButton( m_container, m_idDropDown, _T(">"), wxDefaultPosition, wxSize(25,-1) );
     m_dropDownButton->SetToolTip(_("Manage slice visibility"));
@@ -102,6 +103,8 @@ void SliceListEditor::stopping() throw(::fwTools::Failed)
     m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_oneSliceItem->GetId());
     m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_threeSlicesItem->GetId());
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this, m_idDropDown);
+
+    this->resetGuiParentContainer();
 
 }
 

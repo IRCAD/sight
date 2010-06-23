@@ -51,6 +51,8 @@ OrganListEditor::~OrganListEditor() throw()
 void OrganListEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initGuiParentContainer();
+
     m_showCheckBox = new wxCheckBox( m_container, wxNewId(), _("Hide all organs"));
     m_showCheckBox->SetToolTip(_("Show or hide all organs"));
     m_organChoice = new wxCheckListBox( m_container, wxNewId(), wxDefaultPosition, wxDefaultSize) ;
@@ -80,6 +82,8 @@ void OrganListEditor::stopping() throw(::fwTools::Failed)
     m_container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this, m_showCheckBox->GetId());
     m_container->Unbind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
     m_container->Unbind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
+
+    this->resetGuiParentContainer();
 }
 
 //------------------------------------------------------------------------------

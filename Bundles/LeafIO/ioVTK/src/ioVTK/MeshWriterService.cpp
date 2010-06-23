@@ -19,6 +19,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
 
 #include <fwWX/ProgressTowx.hpp>
 #include <vtkIO/MeshWriter.hpp>
@@ -60,23 +64,22 @@ void MeshWriterService::configuring() throw(::fwTools::Failed)
 
 void MeshWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an vtk file to save Mesh");
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_SAVE,
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath("");
 
-            wxTheApp->GetTopWindow() );
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a vtk file to save Mesh");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
 
-    if( file.IsEmpty() == false)
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+        m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
+        _sDefaultPath = m_fsMeshPath.branch_path();
     }
 }
 

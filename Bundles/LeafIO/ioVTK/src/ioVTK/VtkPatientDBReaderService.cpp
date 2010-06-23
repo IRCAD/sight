@@ -22,6 +22,11 @@
 #include <fwData/Patient.hpp>
 #include <fwData/Study.hpp>
 #include <fwData/Acquisition.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
+
 #include <fwTools/Factory.hpp>
 
 #include <vtkIO/ImageReader.hpp>
@@ -64,22 +69,23 @@ void VtkPatientDBReaderService::configuring() throw(::fwTools::Failed)
 
 void VtkPatientDBReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an Vtkimage file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtkimage (*.vtk)|*.vtk"),
-            wxFD_FILE_MUST_EXIST,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
 
-    if( folder.IsEmpty() == false)
+    static ::boost::filesystem::path _sDefaultPath("");
+
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a VtkImage file");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("VtkImage","*.vtk");
+    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImagePath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
+        m_fsImagePath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImagePath.branch_path().string().c_str() );
+        _sDefaultPath = m_fsImagePath.branch_path();
     }
 }
 

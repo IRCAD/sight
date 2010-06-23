@@ -24,6 +24,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
 
 #include <fwWX/ProgressTowx.hpp>
 #include <vtkIO/MeshReader.hpp>
@@ -65,22 +69,22 @@ void MeshReaderService::configuring() throw(::fwTools::Failed)
 
 void MeshReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an vtk file to load Mesh");
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_OPEN,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
 
-    if( file.IsEmpty() == false)
+    static ::boost::filesystem::path _sDefaultPath("");
+
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a vtk file to load Mesh");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+        m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
+        _sDefaultPath = m_fsMeshPath.branch_path();
     }
 }
 

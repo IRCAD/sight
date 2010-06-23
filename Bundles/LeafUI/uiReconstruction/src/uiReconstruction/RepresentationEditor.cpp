@@ -44,6 +44,7 @@ RepresentationEditor::~RepresentationEditor() throw()
 void RepresentationEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initGuiParentContainer();
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
@@ -85,6 +86,7 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
     m_container->Unbind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeShading, this,  m_radioBoxShading->GetId());
     m_container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &RepresentationEditor::onShowNormals, this,  m_normalsCheckBox->GetId());
 
+    this->resetGuiParentContainer();
 }
 
 //------------------------------------------------------------------------------

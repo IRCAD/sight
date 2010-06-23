@@ -56,6 +56,7 @@ SnapshotEditor::~SnapshotEditor() throw()
 void SnapshotEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initGuiParentContainer();
 
     namespace fs = ::boost::filesystem;
     fs::path pathImageSnap ("Bundles/uiVisu_" + std::string(UIVISU_VER) + "/camera-photo.png");
@@ -79,6 +80,8 @@ void SnapshotEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SnapshotEditor::onSnapButton, this, m_idSnapButton);
+    this->resetGuiParentContainer();
+
 }
 
 //------------------------------------------------------------------------------
@@ -86,6 +89,7 @@ void SnapshotEditor::stopping() throw(::fwTools::Failed)
 void SnapshotEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
     std::vector < Configuration > snapConfig = m_configuration->find("snap");
     if(!snapConfig.empty())
     {

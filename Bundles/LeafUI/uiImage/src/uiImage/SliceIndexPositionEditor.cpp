@@ -63,6 +63,7 @@ SliceIndexPositionEditor::~SliceIndexPositionEditor() throw()
 void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 {
 
+    this->initGuiParentContainer();
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
     m_sliceSelectorPanel = new ::fwWX::SliceSelector( m_container );
@@ -93,6 +94,8 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
         delete m_sliceSelectorPanel;
         m_sliceSelectorPanel = 0;
     }
+    this->resetGuiParentContainer();
+
 }
 
 //------------------------------------------------------------------------------

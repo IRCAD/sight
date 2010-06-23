@@ -19,6 +19,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
 
 #include <fwWX/ProgressTowx.hpp>
 #include <vtkIO/ImageWriter.hpp>
@@ -60,23 +64,22 @@ void ImageWriterService::configuring() throw(::fwTools::Failed)
 
 void ImageWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an vtk file to save image");
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_SAVE,
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath("");
 
-            wxTheApp->GetTopWindow() );
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an vtk file to save an image");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
 
-    if( file.IsEmpty() == false)
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImgPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+        m_fsImgPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImgPath.branch_path().string().c_str() );
+        _sDefaultPath = m_fsImgPath.branch_path();
     }
 }
 

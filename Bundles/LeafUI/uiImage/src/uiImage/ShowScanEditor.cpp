@@ -60,6 +60,7 @@ ShowScanEditor::~ShowScanEditor() throw()
 void ShowScanEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initGuiParentContainer();
 
     namespace fs = ::boost::filesystem;
     fs::path pathImageScan ("Bundles/uiImage_" + std::string(UIIMAGE_VER) + "/sliceShow.png");
@@ -88,6 +89,8 @@ void ShowScanEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this, m_showScanButton->GetId());
+
+    this->resetGuiParentContainer();
 }
 
 //------------------------------------------------------------------------------
