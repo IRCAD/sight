@@ -21,7 +21,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 
 #include "ioXML/FwXMLImageWriterService.hpp"
 
@@ -123,7 +123,7 @@ void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFile
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }

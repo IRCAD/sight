@@ -32,7 +32,7 @@
 
 #include <ioXML/FwXMLGenericReaderService.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 #include <fwWX/convert.hpp>
 
@@ -137,7 +137,7 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading data ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading data ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }

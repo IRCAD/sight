@@ -24,7 +24,7 @@
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
@@ -127,7 +127,7 @@ void FwXMLAcquisitionWriterService::saveAcquisition( const ::boost::filesystem::
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }

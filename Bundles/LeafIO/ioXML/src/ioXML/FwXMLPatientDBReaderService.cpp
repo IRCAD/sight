@@ -30,7 +30,7 @@
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 #include <fwWX/convert.hpp>
 
@@ -219,7 +219,7 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }

@@ -24,7 +24,7 @@
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
@@ -126,7 +126,7 @@ void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, 
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving data ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving data ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }

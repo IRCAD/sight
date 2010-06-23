@@ -20,7 +20,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 
 #include <fwGui/MessageDialog.hpp>
 
@@ -120,7 +120,7 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }

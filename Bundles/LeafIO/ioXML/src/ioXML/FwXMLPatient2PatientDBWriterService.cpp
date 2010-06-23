@@ -27,7 +27,7 @@
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 
 #include "ioXML/FwXMLPatient2PatientDBWriterService.hpp"
@@ -128,7 +128,7 @@ void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesyst
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }
