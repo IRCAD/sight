@@ -13,8 +13,7 @@ namespace fwGui
 
 LocationDialog::LocationDialog()
 {
-        m_implementation = fwTools::ClassFactoryRegistry::create< ILocationDialog>( ILocationDialog::factoryRegistryKey);
-
+    m_implementation = fwTools::ClassFactoryRegistry::create< ILocationDialog>( ILocationDialog::factoryRegistryKey);
 }
 
 
@@ -35,7 +34,7 @@ void LocationDialog::setTitle(const std::string &title)
 
 void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr loc)
 {
-    return m_implementation->setDefaultLocation( loc );
+    m_implementation->setDefaultLocation( loc );
 }
 
 
@@ -43,7 +42,7 @@ void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr lo
 // exemple ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
 {
-    return m_implementation->addFilter(filterName,wildcardList);
+    m_implementation->addFilter(filterName,wildcardList);
 }
 
 

@@ -4,13 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_LocationDialog_HPP_
-#define _FWGUI_LocationDialog_HPP_
+#ifndef _FWGUI_LOCATIONDIALOG_HPP_
+#define _FWGUI_LOCATIONDIALOG_HPP_
 
 #include <fwCore/base.hpp>
 
 #include "fwGui/config.hpp"
 #include "fwGui/ILocationDialog.hpp"
+
 namespace fwGui
 {
 
@@ -26,9 +27,6 @@ class FWGUI_CLASS_API LocationDialog : public ILocationDialog
 {
 
 public:
-
-
-
 
     FWGUI_API LocationDialog();
 
@@ -54,6 +52,6 @@ protected :
 
 } // namespace fwGui
 
-#endif /*_FWGUI_LocationDialog_HPP_*/
+#endif /*_FWGUI_LOCATIONDIALOG_HPP_*/
 
 
