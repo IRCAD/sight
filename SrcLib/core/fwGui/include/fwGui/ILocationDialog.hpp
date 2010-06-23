@@ -36,19 +36,19 @@ public:
     } Options;
 
     typedef std::string FactoryRegistryKeyType;
-    static const FactoryRegistryKeyType factoryRegistryKey;
+    FWGUI_API static const FactoryRegistryKeyType factoryRegistryKey;
 
-    virtual void setTitle(const std::string &title) = 0;
-    virtual void setDefaultLocation( ::fwData::location::ILocation::csptr ) =0;
-    virtual ILocationDialog& setOption( Options option) =0;
+    FWGUI_API virtual void setTitle(const std::string &title) = 0;
+    FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::csptr ) =0;
+    FWGUI_API virtual ILocationDialog& setOption( Options option) =0;
 
     // exemple ( addFilter("images","*.png *.jpg");
-    virtual void addFilter(const std::string &filterName, const std::string &wildcardList )=0;
+    FWGUI_API virtual void addFilter(const std::string &filterName, const std::string &wildcardList )=0;
 
-    virtual ::fwData::location::ILocation::sptr show() = 0;
+    FWGUI_API virtual ::fwData::location::ILocation::sptr show() = 0;
 
-    virtual ~ILocationDialog();
-    ILocationDialog();
+    FWGUI_API virtual ~ILocationDialog();
+    FWGUI_API ILocationDialog();
 
 
 

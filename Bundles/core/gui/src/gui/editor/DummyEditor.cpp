@@ -62,7 +62,6 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 void DummyEditor::stopping() throw(::fwTools::Failed)
 {
     m_container->SetBackgroundColour(wxNullColour);
-    ::gui::editor::IEditor::stopping();
 }
 
 //-----------------------------------------------------------------------------

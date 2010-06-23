@@ -64,7 +64,7 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
     //  <addSelection service="::ioMfo::MfoPatientDBReaderService" />
     //  <addSelection service="::ioMfo::MfoDBPatientDBReaderService" />
 
-    //this->::gui::editor::IEditor::configuring() ;
+//    this->::gui::editor::IEditor::configuring() ;
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
     for( ; iter != this->m_configuration->end() ; ++iter )
@@ -119,13 +119,6 @@ void IOSelectorService::stopping() throw( ::fwTools::Failed )
 }
 
 //------------------------------------------------------------------------------
-
-
-void IOSelectorService::updating( fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
-{
-    SLM_FATAL("gui::editor::IEditor::updating is now pure virtual why ?");
-}
-
 
 void IOSelectorService::updating() throw( ::fwTools::Failed )
 {
@@ -271,6 +264,12 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     {
         ::fwServices::eraseServices< ::io::IWriter >( this->getObject() ) ;
     }
+}
+
+//------------------------------------------------------------------------------
+void IOSelectorService::updating( fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

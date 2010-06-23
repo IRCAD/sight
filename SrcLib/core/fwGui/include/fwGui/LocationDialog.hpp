@@ -30,17 +30,17 @@ public:
 
 
 
-    LocationDialog();
+    FWGUI_API LocationDialog();
 
-    void setTitle(const std::string &title);
+    FWGUI_API void setTitle(const std::string &title);
 
-    ::fwData::location::ILocation::sptr show();
+    FWGUI_API ::fwData::location::ILocation::sptr show();
 
-    void setDefaultLocation( ::fwData::location::ILocation::csptr );
-    ILocationDialog& setOption( ILocationDialog::Options option);
+    FWGUI_API void setDefaultLocation( ::fwData::location::ILocation::csptr );
+    FWGUI_API ILocationDialog& setOption( ILocationDialog::Options option);
 
     // exemple ( addFilter("images","*.png *.jpg");
-    void addFilter(const std::string &filterName, const std::string &wildcardList );
+    FWGUI_API void addFilter(const std::string &filterName, const std::string &wildcardList );
 
 protected :
 
