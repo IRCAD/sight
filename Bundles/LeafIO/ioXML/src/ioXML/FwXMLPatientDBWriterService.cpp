@@ -23,10 +23,12 @@
 #include <fwTools/System.hpp>
 
 #include <fwData/PatientDB.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
 #include <fwGui/ProgressDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
@@ -60,26 +62,21 @@ void FwXMLPatientDBWriterService::configuring() throw(::fwTools::Failed)
 
 void FwXMLPatientDBWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a fxz or a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML archive (*.fxz)|*.fxz|fwXML (*.xml)|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_SAVE,
-#else
-            wxSAVE,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsPatientDBPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
+        _sDefaultPath = result->getPath() ;
+        m_fsPatientDBPath = result->getPath() ;
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsPatientDBPath.branch_path().string().c_str() );
     }
 }
 

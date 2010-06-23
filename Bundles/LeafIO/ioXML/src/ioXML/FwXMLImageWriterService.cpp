@@ -19,8 +19,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
+#include <fwGui/LocationDialog.hpp>
 #include <fwGui/ProgressDialog.hpp>
 
 #include "ioXML/FwXMLImageWriterService.hpp"
@@ -53,26 +55,21 @@ void FwXMLImageWriterService::configuring() throw(::fwTools::Failed)
 
 void FwXMLImageWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML (*.xml)|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_SAVE,
-#else
-            wxSAVE,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImagePath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
+        _sDefaultPath = result->getPath() ;
+        m_fsImagePath = result->getPath() ;
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImagePath.branch_path().string().c_str() );
     }
 }
 

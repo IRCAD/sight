@@ -21,10 +21,12 @@
 #include <fwTools/System.hpp>
 
 #include <fwData/Acquisition.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
 #include <fwGui/ProgressDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
@@ -57,25 +59,22 @@ void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 
 void FwXMLGenericWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a fxz or a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML archive (*.fxz)|*.fxz|fwXML (*.xml)|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_SAVE,
-#else
-            wxSAVE,
-#endif
-            wxTheApp->GetTopWindow() );
 
-    if( folder.IsEmpty() == false)
+    static ::boost::filesystem::path _sDefaultPath;
+
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_writer.setFile(  ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native ) );
-        _sDefaultPath = wxConvertMB2WX( m_writer.getFile().branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_writer.setFile( result->getPath() );
     }
 }
 

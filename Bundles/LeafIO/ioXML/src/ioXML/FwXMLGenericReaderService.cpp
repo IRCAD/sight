@@ -17,6 +17,7 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwServices/Factory.hpp>
 #include <fwServices/macros.hpp>
@@ -33,6 +34,7 @@
 #include <ioXML/FwXMLGenericReaderService.hpp>
 
 #include <fwGui/ProgressDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 #include <fwWX/convert.hpp>
 
@@ -69,25 +71,21 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 
 void FwXMLGenericReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = ::fwWX::std2wx( this->getSelectorDialogTitle());
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML (*.fxz;*.xml)|*.fxz;*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_FILE_MUST_EXIST,
-#else
-            wxFILE_MUST_EXIST,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( file.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( this->getSelectorDialogTitle() );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_reader.setFile(  ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native ) );
-        _sDefaultPath = wxConvertMB2WX( m_fsObjectPath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_reader.setFile( result->getPath() );
     }
 }
 

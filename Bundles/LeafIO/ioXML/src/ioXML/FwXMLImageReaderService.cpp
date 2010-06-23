@@ -18,8 +18,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
+#include <fwGui/LocationDialog.hpp>
 #include <fwGui/ProgressDialog.hpp>
 
 #include <fwGui/MessageDialog.hpp>
@@ -65,26 +67,21 @@ void FwXMLImageReaderService::configuring() throw(::fwTools::Failed)
 
 void FwXMLImageReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_FILE_MUST_EXIST,
-#else
-            wxFILE_MUST_EXIST,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImagePath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImagePath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_fsImagePath = result->getPath();
     }
 }
 
