@@ -29,6 +29,8 @@
 #include <fwWX/ProgressTowx.hpp>
 #include <fwWX/wxZipFolder.hpp>
 
+#include <fwGui/MessageDialog.hpp>
+
 #include "ioXML/FwXMLPatientDBWriterService.hpp"
 
 namespace ioXML
@@ -136,15 +138,26 @@ void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 

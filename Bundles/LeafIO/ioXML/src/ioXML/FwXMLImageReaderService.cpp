@@ -22,6 +22,8 @@
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 #include <fwWX/ProgressTowx.hpp>
 
+#include <fwGui/MessageDialog.hpp>
+
 #include "ioXML/FwXMLImageReaderService.hpp"
 
 
@@ -126,15 +128,25 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 
     ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( myLoader.getObject() );
@@ -173,11 +185,13 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
             xmlFile << "Sorry, the xml file \""
             << m_fsImagePath.string()
             << "\" does not content a Image. This xml file has not been loaded.";
-            wxString mes ( wxConvertMB2WX( xmlFile.str().c_str() ));
-            wxMessageBox (  mes,
-                    _("FwXML Image Reader"),
-                    wxOK|wxICON_WARNING,
-                    wxTheApp->GetTopWindow() );
+            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("FwXML Image Reader");
+            messageBox.setMessage( xmlFile.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
     }
 }

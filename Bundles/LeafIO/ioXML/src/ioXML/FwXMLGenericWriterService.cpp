@@ -27,6 +27,8 @@
 #include <fwWX/ProgressTowx.hpp>
 #include <fwWX/wxZipFolder.hpp>
 
+#include <fwGui/MessageDialog.hpp>
+
 #include "ioXML/FwXMLGenericWriterService.hpp"
 
 namespace ioXML
@@ -48,7 +50,7 @@ FwXMLGenericWriterService::~FwXMLGenericWriterService() throw()
 
 void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
-	 m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
+    m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
 }
 
 //------------------------------------------------------------------------------
@@ -132,15 +134,25 @@ void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, 
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 
