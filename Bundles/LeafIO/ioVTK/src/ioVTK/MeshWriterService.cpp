@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -24,6 +21,7 @@
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/MeshWriter.hpp>
@@ -127,7 +125,6 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -140,7 +137,6 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
         std::stringstream ss;
         ss << "Warning during loading : ";
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -162,9 +158,13 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
         // Retrieve dataStruct associated with this service
         ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
         assert(pTriangularMesh);
-        wxBeginBusyCursor();
+
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         saveMesh(m_fsMeshPath,pTriangularMesh);
-        wxEndBusyCursor();
+
+        cursor.setDefaultCursor();
 
         m_bServiceIsConfigured = false;
     }

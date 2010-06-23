@@ -3,9 +3,6 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <wx/wx.h>
-
 #include <boost/filesystem/operations.hpp>
 
 #include <fwCore/base.hpp>
@@ -27,6 +24,7 @@
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include <fwData/location/Folder.hpp>
 
@@ -90,8 +88,6 @@ void ImageReaderService::configureWithIHM()
         m_fsImgPath = result->getPath();
         m_bServiceIsConfigured = true;
     }
-
-
 }
 
 //------------------------------------------------------------------------------
@@ -125,19 +121,19 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 
     if( m_bServiceIsConfigured )
     {
-
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
         assert(pImage);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image has been modified.
-        wxBeginBusyCursor();
+
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
         if ( loadImage( m_fsImgPath, pImage ) )
         {
             notificationOfDBUpdate();
         }
-        wxEndBusyCursor();
-
+        cursor.setDefaultCursor();
     }
 }
 
@@ -170,7 +166,6 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );

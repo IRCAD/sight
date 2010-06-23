@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -27,6 +24,7 @@
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include <fwTools/Factory.hpp>
 
@@ -119,7 +117,6 @@ bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtk
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -132,7 +129,6 @@ bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtk
         std::stringstream ss;
         ss << "Warning during loading. ";
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -176,9 +172,12 @@ void VtkPatientDBReaderService::updating() throw(::fwTools::Failed)
             //( *( pPatientDB ) ) = ( *( pNewPatientDB.get() ) ) ;
             pPatientDB->shallowCopy( pNewPatientDB );
 
-            wxBeginBusyCursor();
+            ::fwGui::Cursor cursor;
+            cursor.setCursor(::fwGui::ICursor::BUSY);
+
             notificationOfDBUpdate();
-            wxEndBusyCursor();
+
+            cursor.setDefaultCursor();
         }
     }
 }

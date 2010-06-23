@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -24,6 +21,7 @@
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include <fwData/location/Folder.hpp>
 
@@ -130,7 +128,6 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::b
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -145,7 +142,6 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::b
         std::stringstream ss;
         ss << "Warning during loading. ";
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -170,9 +166,12 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
         assert(pImage);
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         saveImage(m_fsImgPath,pImage);
-        wxEndBusyCursor();
+
+        cursor.setDefaultCursor();
     }
 }
 

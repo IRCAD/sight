@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <boost/filesystem/operations.hpp>
 
 #include <fwServices/macros.hpp>
@@ -29,6 +26,7 @@
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/MeshReader.hpp>
@@ -132,7 +130,6 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -145,7 +142,6 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -168,10 +164,13 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
         assert(pTriangularMesh);
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         loadMesh(m_fsMeshPath, pTriangularMesh);
         notificationOfUpdate();
-        wxEndBusyCursor();
+
+        cursor.setDefaultCursor();
     }
 }
 

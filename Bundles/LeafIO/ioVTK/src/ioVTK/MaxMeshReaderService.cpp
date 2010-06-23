@@ -6,9 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <wx/string.h>
-#include <wx/filedlg.h>
-#include <wx/app.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -26,11 +23,10 @@
 
 #include <fwGui/LocationDialog.hpp>
 
+
 #include <fwCore/base.hpp>
 
 #include <fwComEd/ModelMsg.hpp>
-
-#include <fwWX/convert.hpp>
 
 #include "ioVTK/MaxMeshReaderService.hpp"
 
