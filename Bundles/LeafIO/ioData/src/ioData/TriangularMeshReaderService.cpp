@@ -15,6 +15,11 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 
@@ -78,22 +83,21 @@ void TriangularMeshReaderService::configuring( ) throw(::fwTools::Failed)
 
 void TriangularMeshReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an transformation matrix file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("TrianMesh (*.trian)|*.trian"),
-            wxFD_FILE_MUST_EXIST,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an transformation matrix file");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("TrianMesh","*.trian");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsMeshPath = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
-        _sDefaultPath = ::fwWX::std2wx( m_fsMeshPath.branch_path().string() );
+        m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
+        _sDefaultPath = m_fsMeshPath.branch_path();
     }
 }
 

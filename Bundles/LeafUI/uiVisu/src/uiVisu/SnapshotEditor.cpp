@@ -32,6 +32,7 @@
 #include <fwServices/op/Get.hpp>
 
 #include <fwWX/convert.hpp>
+#include <fwGui/MessageDialog.hpp>
 
 #include "uiVisu/SnapshotEditor.hpp"
 
@@ -161,11 +162,14 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
     }
     else
     {
-        wxMessageBox(
-                _("Sorry, it is not possible to snapshot the negato view. This view is not shown on screen."),
-                _("Negato view snapshot"),
-                wxOK | wxICON_WARNING,
-                m_container );
+        std::string msgInfo("Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.");
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Negato view snapshot");
+        messageBox.setMessage( msgInfo );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 

@@ -23,6 +23,7 @@
 #include <fwWX/convert.hpp>
 
 #include "gui/action/ActionNotifyService.hpp"
+#include <fwGui/MessageDialog.hpp>
 
 
 namespace gui
@@ -54,12 +55,12 @@ void ActionNotifyService::info(std::ostream &_sstream )
 
 void ActionNotifyService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    SLM_TRACE("updating(msg) ActionNotifyService") ;    
+    SLM_TRACE("updating(msg) ActionNotifyService") ;
 
     if(_msg->hasEvent(m_onevent))
     {
         if(m_isCheckable)
-        {   
+        {
             m_isCheck=true;
             setCheck(m_isCheck);
         }
@@ -79,18 +80,18 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
         std::string uid =  m_uuidServices.at(i).first;
         bool obj_exists = ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE );
 
-        ::fwData::Object::sptr object = ::fwTools::UUID::get< ::fwData::Object >( uid ) ;     
-             
-        ::fwData::PatientDB::sptr patientDB = ::fwTools::UUID::get< ::fwData::PatientDB >( uid ) ; 
-        
+        ::fwData::Object::sptr object = ::fwTools::UUID::get< ::fwData::Object >( uid ) ;
+
+        ::fwData::PatientDB::sptr patientDB = ::fwTools::UUID::get< ::fwData::PatientDB >( uid ) ;
+
         if(patientDB)
-        {         
+        {
             if(patientDB->getPatientSize()==0)
             {
                 SLM_WARN("Please insert a image.");
                 m_isCheck=false;
                 setCheck(m_isCheck);
-                
+
                 return;
             }
         }
@@ -107,8 +108,8 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
                 message = REMOVE;
             }
         }
-        
-        if ( message == ADD_OR_REMOVE && !m_isCheckable)        
+
+        if ( message == ADD_OR_REMOVE && !m_isCheckable)
         {
             SLM_FATAL("Sorry, but to use \"ADD_OR_REMOVE\", the action needs to be checkable.");
         }
@@ -116,7 +117,7 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
 
         if( message != DO_NOTHING)
         {
-      
+
             switch ( message )
             {
             case ADD :
@@ -144,10 +145,13 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
         else
         {
             std::string msgInfo = "Sorry, the service is unavailable.";
-            wxMessageBox( ::fwWX::std2wx(msgInfo),
-                    _("Service unavailable"),
-                    wxOK | wxICON_WARNING,
-                    wxTheApp->GetTopWindow() );
+            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Warning");
+            messageBox.setMessage( msgInfo );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
             OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
     }
@@ -164,7 +168,7 @@ void ActionNotifyService::configuring() throw( ::fwTools::Failed )
     for( ; iter != this->m_configuration->end() ; ++iter )
     {
         OSLM_INFO( "ActionNotifyService "  << (*iter)->getName());
-        
+
         SLM_ASSERT("Attribute event missing", (*iter)->hasAttribute("event")) ;
         std::string messageType =  (*iter)->getExistingAttributeValue("event") ;
 
@@ -176,9 +180,9 @@ void ActionNotifyService::configuring() throw( ::fwTools::Failed )
         {
             OSLM_FATAL("Sorry this type of \"messageType\":" << messageType <<" is not managed by ActionNotifyService");
         }
-        
+
         std::string uuid = (this->getObject< ::fwData::Object >())->getUUID();
-        
+
         m_onevent =  (*iter)->getExistingAttributeValue("checkonEvent") ;
 
         m_uuidServices.push_back( std::make_pair(uuid, message) );

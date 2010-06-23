@@ -13,6 +13,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
@@ -89,23 +93,23 @@ void TransformationMatrix3DWriterService::configuring( ) throw(::fwTools::Failed
 void TransformationMatrix3DWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a file to save a transformation matrix");
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("TRF files (*.trf)|*.trf"),
-            wxFD_SAVE,
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath("");
 
-    if( file.IsEmpty() == false )
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a file to save a transformation matrix");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("TRF files","*.trf");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_filename = ::boost::filesystem::path( ::fwWX::wx2std(file), ::boost::filesystem::native );
-        _sDefaultPath = ::fwWX::std2wx( m_filename.branch_path().string() );
+        m_filename = result->getPath();
         m_bServiceIsConfigured = true;
+        _sDefaultPath = m_filename.branch_path();
     }
+
 }
 
 //-----------------------------------------------------------------------------

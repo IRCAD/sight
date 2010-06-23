@@ -35,6 +35,7 @@
 #include <fwWX/convert.hpp>
 #include <fwWX/LoggerInitializer.hpp>
 
+#include <fwGui/MessageDialog.hpp>
 
 #include "gui/App.hpp"
 
@@ -59,8 +60,14 @@ App::App()
 
 void App::usage( const std::string & mes ) const
 {
+    ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+    ::fwGui::MessageDialog messageBox;
+    messageBox.setTitle("Exception Caught");
+    messageBox.setMessage( mes );
+    messageBox.setIcon(::fwGui::IMessageDialog::CRITICAL);
+    messageBox.addButton(::fwGui::IMessageDialog::OK);
+    messageBox.show();
 
-    wxMessageBox(wxConvertMB2WX(mes.c_str()), _("Exception Caught"), wxOK|wxICON_ERROR);
 
 }
 

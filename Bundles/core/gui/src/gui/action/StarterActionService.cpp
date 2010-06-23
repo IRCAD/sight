@@ -20,6 +20,7 @@
 #include <fwWX/convert.hpp>
 
 #include "gui/action/StarterActionService.hpp"
+#include <fwGui/MessageDialog.hpp>
 
 
 namespace gui
@@ -131,10 +132,14 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
         else
         {
             std::string msgInfo = "Sorry, the service is unavailable.";
-            wxMessageBox( ::fwWX::std2wx(msgInfo),
-                    _("Service unavailable"),
-                    wxOK | wxICON_WARNING,
-                    wxTheApp->GetTopWindow() );
+            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Service unavailable");
+            messageBox.setMessage( msgInfo );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
+
             OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
     }

@@ -14,6 +14,7 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/bundle/runtime.hpp>
+#include <fwGui/MessageDialog.hpp>
 
 #include "uiIO/action/ExportAcquisition.hpp"
 
@@ -88,10 +89,14 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
         ::fwData::Acquisition::sptr pAcquisition = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(pPatientDB);
         if(!pAcquisition)
         {
-            wxMessageBox(   _("Sorry, it is impossible to export acquisition. There are not selected patients in the software."),
-                                    _("Acquisition export"),
-                                    wxOK | wxICON_WARNING,
-                                    wxTheApp->GetTopWindow() );
+            std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not selected patients in the software.";
+            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Acquisition export");
+            messageBox.setMessage( msgInfo );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
         else
         {
@@ -112,10 +117,15 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
     }
     else
     {
-        wxMessageBox(   _("Sorry, it is impossible to export acquisition. There are not loaded patients in the software."),
-                        _("Image export"),
-                        wxOK | wxICON_WARNING,
-                        wxTheApp->GetTopWindow() );
+
+        std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not loaded patients in the software.";
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Image export");
+        messageBox.setMessage( msgInfo );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 
 

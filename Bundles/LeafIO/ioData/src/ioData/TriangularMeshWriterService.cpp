@@ -15,6 +15,11 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 
@@ -76,23 +81,24 @@ void TriangularMeshWriterService::configuring( ) throw(::fwTools::Failed)
 
 void TriangularMeshWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an TrianMesh file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("TrianMesh (*.trian)|*.trian"),
-            wxFD_SAVE,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath("");
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a TrianMesh file");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("TrianMesh","*.trian");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_filename = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
-        _sDefaultPath = ::fwWX::std2wx( m_filename.branch_path().string() );
+        m_filename = result->getPath();
         m_bServiceIsConfigured = true;
+        _sDefaultPath = m_filename.branch_path();
     }
+
 }
 
 //------------------------------------------------------------------------------
