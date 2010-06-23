@@ -31,7 +31,7 @@
 #include <fwTools/Factory.hpp>
 
 #include <vtkIO/ImageReader.hpp>
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 
 #include "ioVTK/VtkPatientDBReaderService.hpp"
 
@@ -109,7 +109,7 @@ bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtk
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
         res = true;

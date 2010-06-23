@@ -27,7 +27,7 @@
 
 #include <fwData/location/Folder.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/ImageWriter.hpp>
 
 #include "ioVTK/ImageWriterService.hpp"
@@ -120,7 +120,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::b
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Images ");
+        fwGui::ProgressDialog progressMeterGUI("Saving Images ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
 

@@ -30,7 +30,7 @@
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/MeshReader.hpp>
 
 #include "ioVTK/MeshReaderService.hpp"
@@ -122,7 +122,7 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Meshs ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Meshs ");
         myReader.addHandler( progressMeterGUI );
         myReader.read();
 

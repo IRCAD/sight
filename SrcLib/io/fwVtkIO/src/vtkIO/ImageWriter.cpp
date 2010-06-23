@@ -14,6 +14,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/ImageWriter.hpp"
+#include "vtkIO/ProgressVtktoFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::ImageWriter, ::vtkIO::ImageWriter );
 
@@ -48,6 +49,9 @@ void ImageWriter::write()
     writer->SetInput( ::vtkIO::toVTKImage( pImage ) );
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary ();
+
+    //add progress observation
+    ::vtkIO::ProgressVtktoFw( writer, this, getFile().string() );
 
     writer->Write();
     writer->Delete();

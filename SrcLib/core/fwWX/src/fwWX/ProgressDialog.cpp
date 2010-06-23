@@ -5,18 +5,23 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwCore/base.hpp"
+#include <fwCore/base.hpp>
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwWX/convert.hpp"
 #include "fwWX/widgets/fwProgressDialog.hpp"
+#include "fwWX/ProgressDialog.hpp"
 
-#include "fwWX/ProgressTowx.hpp"
+
+REGISTER_BINDING( ::fwGui::IProgressDialog, ::fwWX::ProgressDialog, ::fwGui::IProgressDialog::FactoryRegistryKeyType , ::fwGui::IProgressDialog::factoryRegistryKey );
+
 
 namespace fwWX
 {
 
 //------------------------------------------------------------------------------
 
-ProgressTowx::ProgressTowx( const std::string title, const std::string message)
+ProgressDialog::ProgressDialog( const std::string title, const std::string message)
 {
     fwProgressDialog *wxpd = new fwProgressDialog(
                                     ::fwWX::std2wx(title),
@@ -25,25 +30,41 @@ ProgressTowx::ProgressTowx( const std::string title, const std::string message)
                                     NULL, wxPD_AUTO_HIDE | wxPD_APP_MODAL //| wxPD_REMAINING_TIME
                             );
     m_pdialog = ::boost::shared_ptr<fwProgressDialog>(wxpd);
+    m_pdialog->Show();
+    m_pdialog->Update();
 }
 
 //------------------------------------------------------------------------------
 
-ProgressTowx::~ProgressTowx()
+ProgressDialog::~ProgressDialog()
 {
     // auto clean dialog
 }
 
 //------------------------------------------------------------------------------
 
-FWWX_API void ProgressTowx::operator()(float percent,std::string msg)
+FWWX_API void ProgressDialog::operator()(float percent,std::string msg)
 {
     assert(m_pdialog);
     int value = (int)(percent*100);
+    OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
     m_pdialog->Show(true); // can be hidden if previous load as finished
     m_pdialog->Update(value, ::fwWX::std2wx(msg) );
 }
 
 //------------------------------------------------------------------------------
+
+void ProgressDialog::setTitle(const std::string &title)
+{
+    m_pdialog->SetTitle(::fwWX::std2wx(title));
+}
+
+
+void ProgressDialog::setMessage(const std::string &msg)
+{
+    m_pdialog->UpdateMessage( ::fwWX::std2wx(msg) );
+}
+
+
 
 }

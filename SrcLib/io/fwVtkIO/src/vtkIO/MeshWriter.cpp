@@ -14,6 +14,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/MeshWriter.hpp"
+#include "vtkIO/ProgressVtktoFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::MeshWriter, ::vtkIO::MeshWriter );
 
@@ -49,6 +50,9 @@ void MeshWriter::write()
     writer->SetInput( ::vtkIO::toVTKMesh( pTriangularMesh ) );
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary ();
+
+    //add progress observation
+    ::vtkIO::ProgressVtktoFw( writer, this, getFile().string() );
 
     writer->Write();
     writer->Delete();

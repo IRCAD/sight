@@ -13,6 +13,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/MeshReader.hpp"
+#include "vtkIO/ProgressVtktoFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::MeshReader, ::vtkIO::MeshReader );
 
@@ -46,6 +47,10 @@ void MeshReader::read()
 
     vtkGenericDataObjectReader *reader = vtkGenericDataObjectReader::New();
     reader->SetFileName(this->getFile().string().c_str());
+
+    //add progress observation
+    ::vtkIO::ProgressVtktoFw( reader, this, getFile().string() );
+
     reader->Update();
 
     vtkDataObject *obj = reader->GetOutput();

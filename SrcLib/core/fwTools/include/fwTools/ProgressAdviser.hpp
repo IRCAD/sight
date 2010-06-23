@@ -16,7 +16,7 @@
 namespace fwTools {
 
 /**
- * @brief   Inherited from class ProgressAdviser can notify progression
+ * @brief   Subclasses Inherited from  ProgressAdviser can notify progression
  * This class is used as base class to add the functionalities of progress notification. To notify a progress then simply call
  * notifyProgress() method by given the progression [0, 1.0] and a message. The ProgressAdviser will automatically call handler (=Observer).
  * Handlers can be added using addHandler(). the Handler of type ProgessHandler can be a function or functor or boost::signal with a signature

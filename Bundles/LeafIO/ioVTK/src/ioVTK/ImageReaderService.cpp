@@ -20,7 +20,7 @@
 
 #include <io/IReader.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/ImageReader.hpp>
 
 #include "ioVTK/ImageReaderService.hpp"
@@ -159,7 +159,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
     try
     {
         // Create a progress bar and attach it to reader
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Images ");
+        fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myReader.addHandler( progressMeterGUI );
         // Launch reading process
         myReader.read();

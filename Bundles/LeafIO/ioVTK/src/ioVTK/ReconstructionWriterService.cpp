@@ -25,7 +25,7 @@
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/ReconstructionWriter.hpp>
 
 #include "ioVTK/ReconstructionWriterService.hpp"
@@ -117,7 +117,7 @@ void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem:
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Reconstructions ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Reconstructions ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
 

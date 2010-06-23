@@ -36,19 +36,37 @@ public:
     } Options;
 
     typedef std::string FactoryRegistryKeyType;
-    FWGUI_API static const FactoryRegistryKeyType factoryRegistryKey;
 
-    FWGUI_API virtual void setTitle(const std::string &title) = 0;
-    FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::csptr ) =0;
-    FWGUI_API virtual ILocationDialog& setOption( Options option) =0;
-
-    // exemple ( addFilter("images","*.png *.jpg");
-    FWGUI_API virtual void addFilter(const std::string &filterName, const std::string &wildcardList )=0;
-
-    FWGUI_API virtual ::fwData::location::ILocation::sptr show() = 0;
+    /// this *unique* key should  be used *for all* factory for specific LocationDialog(qt,wx,...)
+    static const FactoryRegistryKeyType factoryRegistryKey;
 
     FWGUI_API virtual ~ILocationDialog();
     FWGUI_API ILocationDialog();
+
+    ///set the title for the dialog
+    FWGUI_API virtual void setTitle(const std::string &title) = 0;
+
+    /// set the initial location for the dialog
+    FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::csptr ) =0;
+
+    /// allow to set option to the file dialog mode=READ/WRITE , check=FILE_MUST_EXIST
+    FWGUI_API virtual ILocationDialog& setOption( Options option) =0;
+
+    /**
+     * @brief specify some filtering when browsing files:
+     * @param[in] filterName a string that will be displayed as filter name
+     * @param[in] wildcardList a string of extension (glob syntax) separated by spaces
+     * example : addFilter("images","*.png *.jpg")
+     */
+    FWGUI_API virtual void addFilter(const std::string &filterName, const std::string &wildcardList )=0;
+
+    /**
+     * Display the dialog
+     * @return the ILocation selected or null sptr if user cancel the operation
+     */
+    FWGUI_API virtual ::fwData::location::ILocation::sptr show() = 0;
+
+
 
 
 

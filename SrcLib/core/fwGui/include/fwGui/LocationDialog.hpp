@@ -17,7 +17,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the generic file/folder dialog for IHM.
- * Use the Delegate design pattern
+ * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry
+ * The specific implementation are in fwWX and fwQT libraries
  * @class   LocationDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
@@ -28,16 +29,22 @@ class FWGUI_CLASS_API LocationDialog : public ILocationDialog
 
 public:
 
+    /// will instanciate the concrete implementation
     FWGUI_API LocationDialog();
 
+    /// override
     FWGUI_API void setTitle(const std::string &title);
 
+    /// override
+    FWGUI_API void setDefaultLocation( ::fwData::location::ILocation::csptr );
+
+    /// override
     FWGUI_API ::fwData::location::ILocation::sptr show();
 
-    FWGUI_API void setDefaultLocation( ::fwData::location::ILocation::csptr );
+    /// override
     FWGUI_API ILocationDialog& setOption( ILocationDialog::Options option);
 
-    // exemple ( addFilter("images","*.png *.jpg");
+    /// override
     FWGUI_API void addFilter(const std::string &filterName, const std::string &wildcardList );
 
 protected :

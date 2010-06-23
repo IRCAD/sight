@@ -25,7 +25,7 @@
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/MeshWriter.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
@@ -117,7 +117,7 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Meshs ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Meshs ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
 
