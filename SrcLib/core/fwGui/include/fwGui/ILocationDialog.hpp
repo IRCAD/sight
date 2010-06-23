@@ -38,7 +38,7 @@ public:
     typedef std::string FactoryRegistryKeyType;
 
     /// this *unique* key should  be used *for all* factory for specific LocationDialog(qt,wx,...)
-    static const FactoryRegistryKeyType factoryRegistryKey;
+    FWGUI_API static const FactoryRegistryKeyType factoryRegistryKey;
 
     FWGUI_API virtual ~ILocationDialog();
     FWGUI_API ILocationDialog();

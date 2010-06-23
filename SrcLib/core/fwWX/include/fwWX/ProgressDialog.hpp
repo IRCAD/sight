@@ -39,10 +39,10 @@ public:
     FWWX_API void operator()(float percent,std::string msg);
 
     /// override
-    FWGUI_API void setTitle(const std::string &title);
+    FWWX_API void setTitle(const std::string &title);
 
     /// override
-    FWGUI_API void setMessage(const std::string &message);
+    FWWX_API void setMessage(const std::string &message);
 
 protected :
 
