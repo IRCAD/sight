@@ -64,8 +64,6 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
     //  <addSelection service="::ioMfo::MfoPatientDBReaderService" />
     //  <addSelection service="::ioMfo::MfoDBPatientDBReaderService" />
 
-//    this->::gui::editor::IEditor::configuring() ;
-
     ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
     for( ; iter != this->m_configuration->end() ; ++iter )
     {

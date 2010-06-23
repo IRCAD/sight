@@ -62,7 +62,6 @@ SliceIndexPositionEditor::~SliceIndexPositionEditor() throw()
 
 void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 {
-    ::gui::editor::IEditor::starting();
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
@@ -94,8 +93,6 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
         delete m_sliceSelectorPanel;
         m_sliceSelectorPanel = 0;
     }
-
-    ::gui::editor::IEditor::stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +100,6 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
 void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::configuring();
 
     if(m_configuration->hasAttribute("sliceIndex"))
     {

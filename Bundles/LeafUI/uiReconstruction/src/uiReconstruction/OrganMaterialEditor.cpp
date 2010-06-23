@@ -44,7 +44,6 @@ OrganMaterialEditor::~OrganMaterialEditor() throw()
 void OrganMaterialEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::starting();
 
     m_colourButton = new wxColourPickerCtrl( m_container, wxNewId() ) ;
     m_colourButton->SetToolTip(_T("Selected organ's color"));
@@ -80,7 +79,6 @@ void OrganMaterialEditor::stopping() throw(::fwTools::Failed)
     m_container->Unbind( wxEVT_COMMAND_SLIDER_UPDATED, &OrganMaterialEditor::onOpacitySlider, this,  m_opacitySlider->GetId());
     m_container->Unbind( wxEVT_COMMAND_COLOURPICKER_CHANGED, &OrganMaterialEditor::onColorButton, this,  m_colourButton->GetId());
 
-    ::gui::editor::IEditor::stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +86,6 @@ void OrganMaterialEditor::stopping() throw(::fwTools::Failed)
 void OrganMaterialEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::configuring();
 }
 
 //------------------------------------------------------------------------------

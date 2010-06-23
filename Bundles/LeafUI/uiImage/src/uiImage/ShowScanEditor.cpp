@@ -60,7 +60,6 @@ ShowScanEditor::~ShowScanEditor() throw()
 void ShowScanEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::starting();
 
     namespace fs = ::boost::filesystem;
     fs::path pathImageScan ("Bundles/uiImage_" + std::string(UIIMAGE_VER) + "/sliceShow.png");
@@ -89,8 +88,6 @@ void ShowScanEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this, m_showScanButton->GetId());
-
-    ::gui::editor::IEditor::stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -98,7 +95,6 @@ void ShowScanEditor::stopping() throw(::fwTools::Failed)
 void ShowScanEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::configuring();
 
     std::vector < Configuration > placeInSceneConfig = m_configuration->find("negatoAdaptor");
     SLM_ASSERT("Tag negatoAdaptor required!", !placeInSceneConfig.empty());
