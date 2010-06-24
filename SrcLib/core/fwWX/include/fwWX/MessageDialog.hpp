@@ -31,6 +31,8 @@ class FWWX_CLASS_API MessageDialog : public ::fwGui::IMessageDialog
 
 public:
 
+    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::IMessageDialog), (()), new MessageDialog );
+
     /// Constructor. Do nothing.
     FWWX_API MessageDialog();
     /// Destructor. Do nothing.

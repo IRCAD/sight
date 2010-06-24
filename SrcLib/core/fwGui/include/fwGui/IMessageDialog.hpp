@@ -22,10 +22,12 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMessageDialog
+class FWGUI_CLASS_API IMessageDialog : public ::fwCore::BaseObject
 {
 
 public:
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMessageDialog)(::fwCore::BaseObject) )
 
     /// Icon type
     typedef enum {

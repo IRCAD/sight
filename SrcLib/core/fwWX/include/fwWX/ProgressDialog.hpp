@@ -32,6 +32,9 @@ namespace fwWX
 class FWWX_CLASS_API ProgressDialog : public ::fwGui::IProgressDialog
 {
 public:
+
+    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::IProgressDialog), (()), new ProgressDialog );
+
     FWWX_API ProgressDialog( const std::string title="Progression", std::string message= std::string(86,' '));
 
     FWWX_API virtual ~ProgressDialog();

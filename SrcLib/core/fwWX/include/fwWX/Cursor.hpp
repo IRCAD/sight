@@ -31,7 +31,8 @@ class FWWX_CLASS_API Cursor : public ::fwGui::ICursor
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor) )
+
+    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor), (()), new Cursor );
 
     /// Constructor. Do nothing.
     FWWX_API Cursor();

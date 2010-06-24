@@ -31,6 +31,8 @@ class FWWX_CLASS_API LocationDialog : public ::fwGui::ILocationDialog
 
 public:
 
+    fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::ILocationDialog), (()), new LocationDialog );
+
     LocationDialog();
 
     void setTitle(const std::string &title);

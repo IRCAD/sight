@@ -24,10 +24,12 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API MessageDialog
+class FWGUI_CLASS_API MessageDialog : public ::fwGui::IMessageDialog
 {
 
 public:
+
+    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::IMessageDialog), (()), new MessageDialog );
 
     /// Constructor. Create the implementation of the specific message box
     FWGUI_API MessageDialog();
@@ -52,7 +54,7 @@ public:
 protected:
 
     /// Implementation of a message box in a specific IHM (wx/Qt)
-    ::boost::shared_ptr< IMessageDialog > m_implementation;
+    ::fwGui::IMessageDialog::sptr m_implementation;
 };
 
 } // namespace fwGui

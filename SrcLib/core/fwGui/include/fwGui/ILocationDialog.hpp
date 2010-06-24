@@ -24,10 +24,12 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ILocationDialog
+class FWGUI_CLASS_API ILocationDialog : public ::fwCore::BaseObject
 {
 
 public:
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (ILocationDialog)(::fwCore::BaseObject) )
 
     typedef enum {
         READ,
@@ -65,13 +67,6 @@ public:
      * @return the ILocation selected or null sptr if user cancel the operation
      */
     FWGUI_API virtual ::fwData::location::ILocation::sptr show() = 0;
-
-
-
-
-
-
-
 
 };
 

@@ -29,6 +29,8 @@ class FWGUI_CLASS_API LocationDialog : public ILocationDialog
 
 public:
 
+    fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::ILocationDialog), (()), new LocationDialog );
+
     /// will instanciate the concrete implementation
     FWGUI_API LocationDialog();
 
@@ -42,14 +44,14 @@ public:
     FWGUI_API ::fwData::location::ILocation::sptr show();
 
     /// override
-    FWGUI_API ILocationDialog& setOption( ILocationDialog::Options option);
+    FWGUI_API ILocationDialog& setOption( ::fwGui::ILocationDialog::Options option);
 
     /// override
     FWGUI_API void addFilter(const std::string &filterName, const std::string &wildcardList );
 
 protected :
 
-    ::boost::shared_ptr< ILocationDialog > m_implementation;
+    ::fwGui::ILocationDialog::sptr m_implementation;
 
 
 

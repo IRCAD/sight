@@ -26,10 +26,12 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IProgressDialog : public ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
+class FWGUI_CLASS_API IProgressDialog : public ::fwCore::BaseObject, ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
 {
 
 public:
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (IProgressDialog)(::fwCore::BaseObject) )
 
     typedef std::string FactoryRegistryKeyType;
 
