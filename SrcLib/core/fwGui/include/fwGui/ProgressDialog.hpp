@@ -47,10 +47,6 @@ protected :
 
     ::fwGui::IProgressDialog::sptr m_implementation;
 
-
-
-
-
 };
 
 } // namespace fwGui

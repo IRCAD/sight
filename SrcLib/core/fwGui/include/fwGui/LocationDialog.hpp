@@ -44,7 +44,7 @@ public:
     FWGUI_API ::fwData::location::ILocation::sptr show();
 
     /// override
-    FWGUI_API ILocationDialog& setOption( ::fwGui::ILocationDialog::Options option);
+    FWGUI_API ::fwGui::ILocationDialog& setOption( ::fwGui::ILocationDialog::Options option);
 
     /// override
     FWGUI_API void addFilter(const std::string &filterName, const std::string &wildcardList );
@@ -52,10 +52,6 @@ public:
 protected :
 
     ::fwGui::ILocationDialog::sptr m_implementation;
-
-
-
-
 
 };
 
