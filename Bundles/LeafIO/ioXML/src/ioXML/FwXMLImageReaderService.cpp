@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -25,6 +22,7 @@
 #include <fwGui/ProgressDialog.hpp>
 
 #include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLImageReaderService.hpp"
 
@@ -171,9 +169,11 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
             //( *( associatedImage ) ) = ( *( image.get() ) ) ;
             associatedImage->shallowCopy( image );
 
-            wxBeginBusyCursor();
+            ::fwGui::Cursor cursor;
+            cursor.setCursor(::fwGui::ICursor::BUSY);
+
             notificationOfDBUpdate();
-            wxEndBusyCursor();
+            cursor.setDefaultCursor();
 
         }
         else
@@ -182,7 +182,6 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
             xmlFile << "Sorry, the xml file \""
             << m_fsImagePath.string()
             << "\" does not content a Image. This xml file has not been loaded.";
-            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
             ::fwGui::MessageDialog messageBox;
             messageBox.setTitle("FwXML Image Reader");
             messageBox.setMessage( xmlFile.str() );

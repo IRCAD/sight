@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -30,6 +27,7 @@
 #include <fwWX/wxZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLGenericWriterService.hpp"
 
@@ -167,7 +165,9 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
         ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
         SLM_ASSERT("data is null", obj);
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         m_writer.setFile( correctFileFormat( m_writer.getFile() ));
         if ( isAnFwxmlArchive( m_writer.getFile() ) )
         {
@@ -177,7 +177,7 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
         {
             saveData(m_writer.getFile(), obj);
         }
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 

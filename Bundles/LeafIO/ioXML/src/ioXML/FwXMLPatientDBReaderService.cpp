@@ -4,10 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-#include <wx/event.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -35,6 +31,9 @@
 #include <fwGui/LocationDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
 #include <fwWX/convert.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLPatientDBReaderService.hpp"
 
@@ -76,9 +75,12 @@ class wxEvtHandlerOpenFile : public wxEvtHandler
                 assert(reader);
                 reader->fixFilename( _event.GetString() );
                 reader->start();
-                wxBeginBusyCursor();
+
+                ::fwGui::Cursor cursor;
+                cursor.setCursor(::fwGui::ICursor::BUSY);
+
                 reader->update();
-                wxEndBusyCursor();
+                cursor.setDefaultCursor();
                 reader->stop();
             }
         }
@@ -220,16 +222,24 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
         std::stringstream ss;
         wxString msg = _("Warning during loading : ");
         ss << wxConvertWX2MB(msg.c_str()) << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
         return pPatientDB;
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
         return pPatientDB;
     }
 
@@ -267,16 +277,20 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
 
                 associatedPatientDB->shallowCopy( patientDB );
 
-                wxBeginBusyCursor();
+                ::fwGui::Cursor cursor;
+                cursor.setCursor(::fwGui::ICursor::BUSY);
+
                 notificationOfDBUpdate();
-                wxEndBusyCursor();
+                cursor.setDefaultCursor();
             }
             else
             {
-                wxMessageBox(   _("File format unknown. Retry with another file reader."),
-                        _("Image Reader"),
-                        wxOK|wxICON_WARNING,
-                        wxTheApp->GetTopWindow() );
+                ::fwGui::MessageDialog messageBox;
+                messageBox.setTitle("Image Reader");
+                messageBox.setMessage( "File format unknown. Retry with another file reader." );
+                messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+                messageBox.addButton(::fwGui::IMessageDialog::OK);
+                messageBox.show();
             }
         }
         else
@@ -285,11 +299,13 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             xmlFile << "Sorry, the xml file \""
             << m_fsPatientDBPath.string()
             << "\" does not content a PatientDB. This xml file has not been loaded.";
-            wxString mes ( wxConvertMB2WX( xmlFile.str().c_str() ));
-            wxMessageBox (  mes,
-                    _("FwXML PatientDB Reader"),
-                    wxOK|wxICON_WARNING,
-                    wxTheApp->GetTopWindow() );
+
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("FwXML PatientDB Reader");
+            messageBox.setMessage( xmlFile.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
     }
 }

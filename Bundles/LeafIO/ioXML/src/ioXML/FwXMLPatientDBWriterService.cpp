@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -32,6 +29,7 @@
 #include <fwWX/wxZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLPatientDBWriterService.hpp"
 
@@ -170,7 +168,8 @@ void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
         ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
         assert( associatedPatientDB ) ;
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
         m_fsPatientDBPath = correctFileFormat( m_fsPatientDBPath );
 
         if ( isAnFwxmlArchive( m_fsPatientDBPath ) )
@@ -181,7 +180,7 @@ void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
         {
             savePatientDB(m_fsPatientDBPath,associatedPatientDB);
         }
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 

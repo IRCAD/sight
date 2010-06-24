@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -31,6 +28,9 @@
 #include <fwGui/ProgressDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
 #include <fwWX/wxZipFolder.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLPatient2PatientDBWriterService.hpp"
 
@@ -134,15 +134,23 @@ void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesyst
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 
@@ -160,7 +168,9 @@ void FwXMLPatient2PatientDBWriterService::updating() throw(::fwTools::Failed)
         ::fwData::PatientDB::NewSptr patientDB;
         patientDB->addPatient(associatedPatient);
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         m_fsPatientDBPath = correctFileFormat( m_fsPatientDBPath );
         if ( isAnFwxmlArchive( m_fsPatientDBPath ) )
         {
@@ -170,7 +180,7 @@ void FwXMLPatient2PatientDBWriterService::updating() throw(::fwTools::Failed)
         {
             savePatientDB(m_fsPatientDBPath, patientDB);
         }
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 

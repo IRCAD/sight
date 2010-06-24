@@ -4,14 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-#include <wx/event.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
-
 
 #include <fwCore/base.hpp>
 
@@ -39,6 +34,7 @@
 #include <fwWX/convert.hpp>
 
 #include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLGenericReaderService.hpp"
 
@@ -144,7 +140,6 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
         std::stringstream ss;
         wxString msg = _("Warning during loading : ");
         ss << wxConvertWX2MB(msg.c_str()) << e.what();
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -157,7 +152,6 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -184,7 +178,9 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
     {
         ::fwTools::Object::sptr obj; // object loaded
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         m_reader.setFile( correctFileFormat( m_reader.getFile() ));
         if ( isAnFwxmlArchive( m_reader.getFile() ) )
         {
@@ -204,7 +200,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 
             notificationOfUpdate();
         }
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 
