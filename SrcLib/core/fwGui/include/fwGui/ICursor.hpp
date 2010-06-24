@@ -24,7 +24,7 @@ namespace fwGui
 class FWGUI_CLASS_API ICursor : public ::fwCore::BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ICursor)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (ICursor)(::fwCore::BaseObject) )
 
     /// Cursor type
     typedef enum {
