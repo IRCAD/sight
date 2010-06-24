@@ -24,10 +24,12 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API Cursor
+class FWGUI_CLASS_API Cursor : public ::fwGui::ICursor
 {
 
 public:
+
+    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor) )
 
     /// Constructor. Create the implementation of the specific cursor
     FWGUI_API Cursor();
@@ -35,7 +37,7 @@ public:
     FWGUI_API virtual ~Cursor();
 
     /// Set the cursor
-    FWGUI_API virtual void setCursor( ICursor::CursorType cursor);
+    FWGUI_API virtual void setCursor( ::fwGui::ICursor::CursorType cursor);
 
     /// Set the default cursor
     FWGUI_API virtual void setDefaultCursor();
@@ -43,7 +45,7 @@ public:
 protected:
 
     /// Implementation of a cursor in a specific IHM (wx/Qt)
-    ::boost::shared_ptr< ICursor > m_implementation;
+    ::fwGui::ICursor::sptr m_implementation;
 };
 
 } // namespace fwGui

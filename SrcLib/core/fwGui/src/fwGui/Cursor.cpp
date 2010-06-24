@@ -11,26 +11,33 @@
 namespace fwGui
 {
 
+//-----------------------------------------------------------------------------
+
 Cursor::Cursor()
 {
-    m_implementation = fwTools::ClassFactoryRegistry::create< ICursor>( ICursor::factoryRegistryKey);
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ICursor>( ::fwGui::ICursor::factoryRegistryKey);
 }
 
+//-----------------------------------------------------------------------------
 
 Cursor::~Cursor()
 {}
 
-void Cursor::setCursor( ICursor::CursorType cursor)
+//-----------------------------------------------------------------------------
+
+void Cursor::setCursor( ::fwGui::ICursor::CursorType cursor)
 {
     m_implementation->setCursor(cursor);
 }
 
-
+//-----------------------------------------------------------------------------
 
 void Cursor::setDefaultCursor()
 {
     m_implementation->setDefaultCursor();
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwGui
 

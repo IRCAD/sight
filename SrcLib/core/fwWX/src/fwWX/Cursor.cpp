@@ -16,15 +16,19 @@ REGISTER_BINDING( ::fwGui::ICursor, ::fwWX::Cursor, ::fwGui::ICursor::FactoryReg
 
 namespace fwWX
 {
+//-----------------------------------------------------------------------------
 
 Cursor::Cursor()
 {}
 
+//-----------------------------------------------------------------------------
 
 Cursor::~Cursor()
 {}
 
-void Cursor::setCursor( ICursor::CursorType cursor)
+//-----------------------------------------------------------------------------
+
+void Cursor::setCursor( ::fwGui::ICursor::CursorType cursor)
 {
     if (cursor == ICursor::DEFAULT)
     {
@@ -44,12 +48,14 @@ void Cursor::setCursor( ICursor::CursorType cursor)
     }
 }
 
-
+//-----------------------------------------------------------------------------
 
 void Cursor::setDefaultCursor()
 {
     wxEndBusyCursor();
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwWX
 

@@ -31,6 +31,7 @@ class FWWX_CLASS_API Cursor : public ::fwGui::ICursor
 {
 
 public:
+    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor) )
 
     /// Constructor. Do nothing.
     FWWX_API Cursor();
@@ -38,7 +39,7 @@ public:
     FWWX_API virtual ~Cursor();
 
     /// Set the cursor
-    FWWX_API virtual void setCursor( ICursor::CursorType cursor);
+    FWWX_API virtual void setCursor( ::fwGui::ICursor::CursorType cursor);
 
     /// Set the default cursor
     FWWX_API virtual void setDefaultCursor();

@@ -7,7 +7,6 @@
 #ifndef _FWGUI_ICURSOR_HPP_
 #define _FWGUI_ICURSOR_HPP_
 
-#include <string>
 #include <fwCore/base.hpp>
 
 #include "fwGui/config.hpp"
@@ -22,10 +21,10 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ICursor
+class FWGUI_CLASS_API ICursor : public ::fwCore::BaseObject
 {
-
 public:
+    fwCoreClassDefinitionsWithFactoryMacro( (ICursor)(::fwCore::BaseObject) )
 
     /// Cursor type
     typedef enum {
