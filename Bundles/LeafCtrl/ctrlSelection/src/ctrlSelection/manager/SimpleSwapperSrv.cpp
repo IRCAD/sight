@@ -115,12 +115,12 @@ void SimpleSwapperSrv::swappedObjects( ::fwData::Composite::sptr _composite )
 
 void SimpleSwapperSrv::removedObjects( ::fwData::Composite::sptr _composite )
 {
-    BOOST_FOREACH( ::fwData::Composite::Container::value_type  swappedObjectId, _composite->getRefMap())
+    BOOST_FOREACH( ::fwData::Composite::Container::value_type  removedObjectId, _composite->getRefMap())
     {
-        OSLM_ASSERT("Sorry, object "<<swappedObjectId.first<<" not found in composite.",
-                m_objectsSubServices.find(swappedObjectId.first) != m_objectsSubServices.end() );
+        OSLM_ASSERT("Sorry, object "<<removedObjectId.first<<" not found in composite.",
+                m_objectsSubServices.find(removedObjectId.first) != m_objectsSubServices.end() );
 
-        SubServicesVecType subServices = m_objectsSubServices[swappedObjectId.first];
+        SubServicesVecType subServices = m_objectsSubServices[removedObjectId.first];
         BOOST_FOREACH( SubServicesVecType::value_type subSrv, subServices )
         {
             OSLM_ASSERT("Object "<<subSrv->m_dummyObjectUID<<" doesn't exist.",

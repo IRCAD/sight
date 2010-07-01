@@ -7,7 +7,8 @@
                 <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />
                 <service uid="MPRNegatoScene3D" implementation="::visuVTKAdaptor::NegatoOneSlice" type="::fwRenderVTK::IVtkAdaptorService" autoComChannel="no" id="MPRNegato3D">
                     <config scene="genericScene" renderer="default" picker="myPicker" sliceIndex="axial" />
-                    <service uid="basicInteraction1" implementation="::visuVTKAdaptor::ShowPickedPointInfo" type="::visuVTKAdaptor::INegatoInteractor" autoComChannel="no"/>
+					<service implementation="::visuVTKAdaptor::NegatoWindower" type="::fwRenderVTK::IVtkAdaptorService" autoComChannel="no"/>
+                    <service implementation="::visuVTKAdaptor::NegatoPointPicker" type="::fwRenderVTK::IVtkAdaptorService" autoComChannel="no" mode="single" text="off"/> 
                 </service>
                 <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />            
                 <service uid="CameraSynchro" type="::fwRenderVTK::IVtkAdaptorService" implementation="::visuVTKAdaptor::SliceFollowerCamera" autoComChannel="no" >            
@@ -31,11 +32,9 @@
             <start type="::gui::editor::IEditor" />
             <start type="::fwRender::IRender" />
             <start type="::fwRenderVTK::IVtkAdaptorService" />
-            <start type="::visuVTKAdaptor::INegatoInteractor" />
 
             <update uid="myReaderPathFile" />
 
-            <stop type="::visuVTKAdaptor::INegatoInteractor" />            
             <stop type="::fwRenderVTK::IVtkAdaptorService" />
             <stop type="::fwRender::IRender" />
             <stop type="::gui::editor::IEditor" />            

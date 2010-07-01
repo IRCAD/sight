@@ -25,6 +25,7 @@
 namespace fwServices
 {
 
+//------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index ) throw(fwTools::Failed )
 {
@@ -51,6 +52,8 @@ namespace fwServices
     return ::fwServices::IService::sptr ();
 }
 
+//------------------------------------------------------------------------------
+
 ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, std::string uid ) throw(fwTools::Failed )
 {
     ::fwServices::IService::sptr service ;
@@ -66,15 +69,18 @@ namespace fwServices
             }
         }
     }
-
     return service ;
 }
+
+//------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed )
 {
     OSLM_ASSERT("service not exist with uid "<<uid, ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE )) ;
     return ::fwTools::UUID::get< ::fwServices::IService >( uid ) ;
 }
+
+//------------------------------------------------------------------------------
 
 std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceId )
 {
@@ -93,6 +99,8 @@ std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr
     }
     return services ;
 }
+
+//------------------------------------------------------------------------------
 
 std::vector< ::fwServices::IService::sptr > getServices( std::string serviceId )
 {
@@ -123,6 +131,8 @@ std::vector< ::fwServices::IService::sptr > getServices( std::string serviceId )
     return services ;
 }
 
+//------------------------------------------------------------------------------
+
 unsigned int getServicePosition( IService * _service )
 {
     typedef std::vector< ::fwServices::IService::sptr > VectType ;
@@ -151,18 +161,22 @@ unsigned int getServicePosition( IService * _service )
     {
         if((*iter).get() == _service )
         {
-            pos = counter ;std::stringstream id ;
+            pos = counter;
         }
         ++counter ;
     }
     return pos ;
 }
 
+//------------------------------------------------------------------------------
+
 std::vector< ::fwServices::IService::sptr > getRegisteredServices( ::fwTools::Object::sptr _obj )
 {
     std::vector< ::fwServices::IService::sptr >  lfwServices = OSR::getServices<IService>(_obj);
     return lfwServices;
 }
+
+//------------------------------------------------------------------------------
 
 }
 

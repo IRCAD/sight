@@ -4,12 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwWX/wxImageZoom.hpp"
-
 #include <sstream>
+
+#include "fwWX/wxImageZoom.hpp"
+#include "fwWX/convert.hpp"
 
 namespace fwWX
 {
+
+//------------------------------------------------------------------------------
 
 void wxImageZoom::OnMouseEvent(wxMouseEvent& event)
 {
@@ -31,67 +34,68 @@ void wxImageZoom::OnMouseEvent(wxMouseEvent& event)
 
 }
 
-/*
-void wxImageZoom::OnMouseEvent(wxMouseEvent& event)
-{
-    if (event.LeftDown())
-    {
-        m_dragStartPos = event.GetPosition() ;
-    }
-    else if (event.LeftUp() )
-    {
-        if (m_dragImage)
-        {
-            m_Pos = m_Pos + event.GetPosition() - m_dragStartPos ;
-            m_dragImage->Hide() ;
-            m_dragImage->EndDrag();
-            delete m_dragImage;
-            m_dragImage = NULL;
-
-            Refresh(true);
-            Update();
-        }
+//------------------------------------------------------------------------------
 
 
+//void wxImageZoom::OnMouseEvent(wxMouseEvent& event)
+//{
+//    if (event.LeftDown())
+//    {
+//        m_dragStartPos = event.GetPosition() ;
+//    }
+//    else if (event.LeftUp() )
+//    {
+//        if (m_dragImage)
+//        {
+//            m_Pos = m_Pos + event.GetPosition() - m_dragStartPos ;
+//            m_dragImage->Hide() ;
+//            m_dragImage->EndDrag();
+//            delete m_dragImage;
+//            m_dragImage = NULL;
+//
+//            Refresh(true);
+//            Update();
+//        }
+//
+//
+//
+//    }
+//    else if (event.Dragging() )
+//    {
+//        if (m_dragImage)
+//        {
+//            delete m_dragImage ;
+//            m_dragImage = new wxDragImage( m_bmp ) ;
+//            m_dragImage->Show();
+//            m_dragImage->BeginDrag(  ( m_dragStartPos - m_Pos ) , this) ;
+//
+//            m_dragImage->Move(event.GetPosition());
+//            m_dragImage->Show();
+//
+//        }
+//        else
+//        {
+//            m_dragImage = new wxDragImage( m_bmp ) ;
+//        }
+//    }
+//
+//}
 
-    }
-    else if (event.Dragging() )
-    {
-        if (m_dragImage)
-        {
-            delete m_dragImage ;
-            m_dragImage = new wxDragImage( m_bmp ) ;
-            m_dragImage->Show();
-            m_dragImage->BeginDrag(  ( m_dragStartPos - m_Pos ) , this) ;
-
-            m_dragImage->Move(event.GetPosition());
-            m_dragImage->Show();
-
-        }
-        else
-        {
-            m_dragImage = new wxDragImage( m_bmp ) ;
-        }
-    }
-
-}
-*/
+//------------------------------------------------------------------------------
 
 wxImageZoom::wxImageZoom(wxWindow* parent, ::boost::filesystem::path _path_png )
 :wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX )
 {
-
-
     m_compteur = 0 ;
     //m_txt_ctrl_etat = new wxTextCtrl(this, -3, _T("evt detecte"), wxPoint( 0,50 ),wxDefaultSize) ;
     std::string path = _path_png.native_directory_string() ;
-    wxString wx_path = wxString::FromAscii(path.data()) ;
+    wxString wx_path = ::fwWX::std2wx(path) ;
     m_img = wxImage( wx_path, wxBITMAP_TYPE_PNG) ;
     m_bmp = wxBitmap( m_img ) ;
 
     m_Pos = wxPoint( 20, 20) ;
     //m_txt1 = new wxStaticText(this, wxID_ANY, _T("txt1"), wxPoint(10,10 ), wxSize(80,25)) ;
-    this->SetScrollbars(100,100,100,100) ;
+    this->SetScrollbars(100, 100, 100, 100) ;
     this->EnableScrolling(true, true) ;
 
     this->Connect(wxEVT_PAINT, wxPaintEventHandler(wxImageZoom::OnPaint)) ;
@@ -104,8 +108,9 @@ wxImageZoom::wxImageZoom(wxWindow* parent, ::boost::filesystem::path _path_png )
     this->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(wxImageZoom::OnMouseEvent)) ;
     this->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(wxImageZoom::OnMouseEvent)) ;
     this->Connect(wxEVT_MOTION, wxMouseEventHandler(wxImageZoom::OnMouseEvent)) ;
-
 }
+
+//------------------------------------------------------------------------------
 
 void wxImageZoom::OnPaint(wxPaintEvent& event)
 {
@@ -113,6 +118,8 @@ void wxImageZoom::OnPaint(wxPaintEvent& event)
     PrepareDC( dc );
     dc.DrawBitmap(m_bmp, m_Pos.x , m_Pos.y, false) ;
 }
+
+//------------------------------------------------------------------------------
 
 void wxImageZoom::Scale()
 {
@@ -127,17 +134,23 @@ void wxImageZoom::Scale()
     this->Refresh() ;
 }
 
+//------------------------------------------------------------------------------
+
 void wxImageZoom::OnMouseUp(wxMouseEvent& event)
 {
     m_compteur++ ;
-    Scale() ;
+    this->Scale() ;
 }
+
+//------------------------------------------------------------------------------
 
 void wxImageZoom::OnMouseDown(wxMouseEvent& event)
 {
     m_compteur-- ;
-    Scale() ;
+    this->Scale() ;
 }
+
+//------------------------------------------------------------------------------
 
 void wxImageZoom::OnMouseWheel(wxMouseEvent& event)
 {
@@ -149,9 +162,10 @@ void wxImageZoom::OnMouseWheel(wxMouseEvent& event)
     {
         m_compteur-- ;
     }
-    Scale() ;
+    this->Scale() ;
 }
 
+//------------------------------------------------------------------------------
 
 } //end namespace fwWX
 

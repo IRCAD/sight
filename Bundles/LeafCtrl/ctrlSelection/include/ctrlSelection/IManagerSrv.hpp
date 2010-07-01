@@ -17,6 +17,8 @@ namespace ctrlSelection
 
 /**
  * @class   IManagerSrv.
+ * @brief   Base class for manager.
+ * A manager starts, stops or swaps services on object contained in a composite when it receive specific message.
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */

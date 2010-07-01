@@ -41,6 +41,7 @@ public:
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_IMAGE;
     FWCOMED_API static std::string BUFFER;
+    FWCOMED_API static std::string MODIFIED;
     FWCOMED_API static std::string DIMENSION;
     FWCOMED_API static std::string SPACING;
     FWCOMED_API static std::string REGION;
@@ -56,6 +57,10 @@ public:
     FWCOMED_API static std::string INACTIVATE_SYNC_CROSS;
     FWCOMED_API static std::string CHANGE_SLICE_TYPE;
     FWCOMED_API static std::string OPACITY; ///< Notion of opacity. Used for negatoscope management at first time
+    /// Event identifier used to inform that the value is modified.
+    FWCOMED_API static std::string VALUE_IS_MODIFIED;
+    /// To manage picking on image negatoscope
+    FWCOMED_API static std::string PICKEDPOINTS;
     /// @}
 
     /**

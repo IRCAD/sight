@@ -64,7 +64,6 @@
 
 #include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 
-
 REGISTER_SERVICE( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite ) ;
 
 using namespace fwServices;
@@ -136,6 +135,28 @@ void VtkRenderService::configureRenderer( ConfigurationType conf )
             m_renderers[id]->SetBackground(color, color, color);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void VtkRenderService::configureStyle ( ConfigurationType conf )
+{
+    assert(conf->getName() == "style");
+
+    m_interactorStyle = conf->getValue();
+    // Affect the interactor style according the configuration (m_interactorStyle)
+    if( m_interactorStyle.empty() )
+    {
+        m_interactor->SetInteractorStyle( NULL );
+    }
+    else
+    {
+        vtkObject *styleObject = vtkInstantiator::CreateInstance(m_interactorStyle.c_str());
+        vtkInteractorStyle *style = vtkInteractorStyle::SafeDownCast( styleObject );
+        OSLM_ASSERT("Style unknown: " << m_interactorStyle , styleObject && style);
+        m_interactor->SetInteractorStyle( style );
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -281,6 +302,18 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
+void VtkRenderService::addVtkObject( VtkObjectIdType _id, vtkObject * _vtkObj )
+{
+    assert( ! _id.empty() );
+
+    if( m_vtkObjects.count(_id) == 0 )
+    {
+        m_vtkObjects[_id] = _vtkObj;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void VtkRenderService::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
@@ -292,13 +325,25 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
     //assert(m_configuration->getName() == "scene");
     assert(!vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
+}
 
+//-----------------------------------------------------------------------------
+
+void VtkRenderService::starting() throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+
+    this->initRender();
+    this->startContext();
+
+    // Instantiate vtk object, class...
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = m_sceneConfiguration->begin() ; iter != m_sceneConfiguration->end() ; ++iter)
     {
         if( (*iter)->getName() == "style" )
         {
-            m_interactorStyle = (*iter)->getValue();
+        	this->configureStyle(*iter);
+//            m_interactorStyle = (*iter)->getValue();
         }
         else if ((*iter)->getName() == "renderer")
         {
@@ -321,16 +366,6 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void VtkRenderService::starting() throw(fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    this->initRender();
-
-    this->startContext();
 
     m_interactor->GetRenderWindow()->SetNumberOfLayers(m_renderers.size());
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
@@ -338,12 +373,9 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         vtkRenderer *renderer = (*iter).second;
         m_interactor->GetRenderWindow()->AddRenderer(renderer);
     }
-
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
 
-
     SceneAdaptorsMapType::iterator adaptorIter ;
-
     for ( adaptorIter = m_sceneAdaptors.begin();
           adaptorIter != m_sceneAdaptors.end();
           ++adaptorIter)
@@ -368,19 +400,20 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
           ++adaptorIter)
     {
         adaptorIter->second.getService()->stop();
+        ::fwServices::erase(adaptorIter->second.getService());
+        adaptorIter->second.getService().reset();
     }
 
     this->stopContext();
 
     this->stopRender();
+    m_sceneAdaptors.clear();
 }
 
 //-----------------------------------------------------------------------------
 
 void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(::fwTools::Failed)
 {
-
-
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
@@ -407,13 +440,7 @@ void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(
 //-----------------------------------------------------------------------------
 
 void VtkRenderService::updating() throw(fwTools::Failed)
-{
-
-//  assert( m_wxmanager );
-//  assert( m_interactor );
-
-//    m_interactor->Render();
-}
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -453,20 +480,7 @@ void VtkRenderService::startContext()
 //    m_interactor->GetRenderWindow()->PointSmoothingOn();
 //    m_interactor->GetRenderWindow()->LineSmoothingOn();
 //    m_interactor->GetRenderWindow()->PolygonSmoothingOn();
-
 //    m_interactor->Register(NULL);
-    // Affect the interactor style according the configuration (m_interactorStyle)
-    if( m_interactorStyle.empty() )
-    {
-        m_interactor->SetInteractorStyle( NULL );
-    }
-    else
-    {
-        vtkObject *styleObject = vtkInstantiator::CreateInstance(m_interactorStyle.c_str());
-        vtkInteractorStyle *style = vtkInteractorStyle::SafeDownCast( styleObject );
-        OSLM_ASSERT("Style unknown: " << m_interactorStyle , styleObject && style);
-        m_interactor->SetInteractorStyle( style );
-    }
 
     m_interactor->SetRenderModeToDirect();
     //m_interactor->SetRenderModeToFrameRated();
@@ -482,7 +496,6 @@ void VtkRenderService::startContext()
 
 void VtkRenderService::stopContext()
 {
-
     SLM_TRACE_FUNC();
 
     if( m_wxmanager )
@@ -551,6 +564,8 @@ vtkObject * VtkRenderService::getVtkObject(VtkObjectIdType objectId)
     }
     return m_vtkObjects[objectId];
 }
+
+//-----------------------------------------------------------------------------
 
 } //namespace fwRenderVTK
 

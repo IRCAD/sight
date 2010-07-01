@@ -120,7 +120,7 @@ void IVtkAdaptorService::setRenderService( VtkRenderService::sptr service)
 {
     /// Preconditions
     assert( service ) ;
-    assert( this->isStopped() ) ;
+//    assert( this->isStopped() ) ;
 
     m_renderService = service ;
 }

@@ -7,11 +7,15 @@
 #include <fwCore/base.hpp>
 
 #include "fwWX/validator/LongValidator.hpp"
+#include "fwWX/convert.hpp"
 
 namespace fwWX
 {
 namespace validator
 {
+
+//------------------------------------------------------------------------------
+
 LongValidator::LongValidator( const LongValidator & validator ):
     m_value( validator.m_value ),
     m_minValue( validator.m_minValue ),
@@ -22,11 +26,15 @@ LongValidator::LongValidator( const LongValidator & validator ):
     this->SetCharIncludes("-0123456789");
 }
 
+//------------------------------------------------------------------------------
+
 LongValidator::LongValidator( long & value):
     m_value( value ),
     m_minValue( 0 ),
     m_maxValue( 0 )
 {}
+
+//------------------------------------------------------------------------------
 
 LongValidator::LongValidator( long & value, long minValue):
     m_value( value ),
@@ -34,16 +42,22 @@ LongValidator::LongValidator( long & value, long minValue):
     m_maxValue( minValue-1 )
 {}
 
+//------------------------------------------------------------------------------
+
 LongValidator::LongValidator( long & value, long minValue, long maxValue ):
     m_value( value ),
     m_minValue( minValue ),
     m_maxValue( maxValue )
 {}
 
+//------------------------------------------------------------------------------
+
 wxObject * LongValidator::Clone() const
 {
     return new LongValidator( *this );
 }
+
+//------------------------------------------------------------------------------
 
 bool LongValidator::TransferFromWindow()
 {
@@ -63,6 +77,8 @@ bool LongValidator::TransferFromWindow()
     return success;
 }
 
+//------------------------------------------------------------------------------
+
 bool LongValidator::TransferToWindow()
 {
     wxTextCtrl  * textCtrl = wxStaticCast( GetWindow(), wxTextCtrl );
@@ -75,16 +91,12 @@ bool LongValidator::TransferToWindow()
     return true;
 }
 
+//------------------------------------------------------------------------------
+
 bool LongValidator::Validate( wxWindow * parent )
 {
-    wxTextCtrl * textCtrl( wxStaticCast(GetWindow(), wxTextCtrl) );
-    wxString textValue( textCtrl->GetValue() );
-    long dummy;
-    bool success = textValue.ToLong( &dummy );
-
-    if(     !success ||
-            m_minValue < m_maxValue && (dummy < m_minValue || dummy > m_maxValue ) ||
-            m_minValue > m_maxValue && dummy < m_minValue)
+    bool success = this->TransferFromWindow();
+    if( !success )
     {
         std::stringstream ss;
         ss << "At least one value is either empty or not a valid integer. "<< std::endl;
@@ -97,20 +109,18 @@ bool LongValidator::Validate( wxWindow * parent )
             ss << "It must be an integer greater than " << m_minValue;
         }
 
-
         ::wxMessageBox(
-                wxConvertMB2WX(ss.str().c_str()),
+                ::fwWX::std2wx( ss.str() ),
                 _("Invalid value"),
                 wxOK|wxICON_ERROR,
                 parent );
         GetWindow()->SetFocus();
-        return false;
     }
-    else
-    {
-        return true;
-    }
+
+    return success;
 }
+
+//------------------------------------------------------------------------------
 
 } // validator
 } // fwWX

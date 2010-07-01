@@ -69,7 +69,32 @@ public :
     /// Destructor, does nothing.
     GUI_API virtual ~MultiView() throw() ;
 
-    /// Analyses xml configuration to configure this service, espacially umber of panel and the layout of this view.
+    /// Analyses xml configuration to configure this service, especially number of panel and the layout of this view.
+    /**
+     * @brief Configuring method allows to configure an application with several views.
+     * Here a sample of the multiview service declaration with two views:
+     * @verbatim
+            <service uid="multiView_1" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
+                <views>
+                    <view uid="multiViewIO" align="center" minWidth="250" autoStart="no" />
+                    <view uid="multiViewGraphEditors" align="right" minWidth="250"  autoStart="yes" />
+                </views>
+            </service>
+       @endverbatim
+     * for which:\n
+     * <views> node can only contain <view> node.\n
+     * Each <view> node must contain uid attribute and the following attribute can be used but aren't mandatory.\n
+     *  - align can be {center|right|left|bottom|top}. -- Default value: "center"
+     *  - minWidth is the min width of the view. -- Default value: -1
+     *  - minHeight is the min height of the view -- Default value: -1
+     *  - resizable can be {yes|no}. -- Default value: true
+     *  - position is a integer -- Default value: 0
+     *  - layer -- Default value: 0
+     *  - row is a integer -- Default value: 0
+     *  - visible can be {yes|true|no|false} -- Default value: true
+     *  - caption -- No default value.
+     *  - autoStart can be {yes|no}   -- Default value: false
+     */
     GUI_API void configuring() throw( ::fwTools::Failed );
 
     /// Reconfigures service, does nothing.

@@ -42,6 +42,7 @@
     <service uid="menu_File" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="File" autoComChannel="no" >
             <action uid="action_openFile"/>
             <action uid="action_saveFile"/>
+            <action uid="action_quit"/>
     </service>
     <service uid="menu_Mesher" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="Mesher" autoComChannel="no" >
             <action uid="action_createMesh50"/>
@@ -54,6 +55,7 @@
     <service uid="action_saveFile" implementation="::gui::action::StarterActionService" name="Save File" type="::gui::action::IAction"  shortcut="Ctrl+S" autoComChannel="no" >
             <start uid="myWriterPathFile"/>
     </service>
+    <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
     <service uid="action_createMesh50" implementation="::gui::action::StarterActionService" name="Create Mesh 50" type="::gui::action::IAction" autoComChannel="no" >
             <start_if_exists uid="mesher50ServiceUID"/>
     </service>
@@ -65,11 +67,17 @@
     <object id="myPatientDB" uid="myPatientDB" type="::fwData::PatientDB">
         
         <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" >
-            <type mode="reader"/>
+            <type mode="reader" />
+            <selection mode="exclude" />
+            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
         </service>
         <service uid="myWriterPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" >
            <type mode="writer"/>
+           <selection mode="exclude" />
+           <addSelection service="::ioXML::FwXMLPatientDBWriterService" />
         </service>
+        <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+
         <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
             <target>myUpdaterAcq</target>
         </service>
@@ -172,7 +180,9 @@
     <start uid="myUpdaterComCannelAcq"/>
     <start uid="myUpdaterComCannelImg"/>
     <start uid="myUpdaterComCannelReconst"/>
-    
+    <start uid="newOBject2newPatientDB"/>
+        
+    <stop uid="newOBject2newPatientDB"/>
     <stop uid="myUpdaterComCannelReconst"/>
     <stop uid="myUpdaterComCannelImg"/>
     <stop uid="myUpdaterComCannelAcq"/>

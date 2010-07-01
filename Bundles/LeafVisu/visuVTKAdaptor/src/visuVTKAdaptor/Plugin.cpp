@@ -9,6 +9,7 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 
+#include "visuVTKAdaptor/NegatoWindower.hpp"
 #include "visuVTKAdaptor/Plugin.hpp"
 
 
@@ -22,7 +23,9 @@ Plugin::~Plugin() throw()
 {}
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
-{}
+{
+	REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindower, ::visuVTKAdaptor::NegatoOneSlice ) ;
+}
 
 void Plugin::stop() throw()
 {}

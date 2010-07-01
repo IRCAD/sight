@@ -319,6 +319,8 @@ void ProbeCursor::StartProbeCursor( )
 {
 }
 
+//------------------------------------------------------------------------------
+
 void ProbeCursor::updateView( double world[3] )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();

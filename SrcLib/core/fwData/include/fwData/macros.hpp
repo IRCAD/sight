@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/** 
+/**
  * @file fwData/macros.hpp
  * @brief fwData specific macros.
  *
@@ -50,7 +50,7 @@
 //-----------------------------------
 //
 #define fwSetMacro(funcName, var, type)               \
-    FWDATA_API void set##funcName (const type _##var) \
+    void set##funcName (const type _##var)            \
     {                                                 \
         this->m_##var = _##var;                       \
     }
@@ -58,7 +58,7 @@
 //-----------------------------------
 //
 #define fwSetCRefMacro(funcName, var, type)                 \
-    FWDATA_API void setCRef##funcName (const type & _##var) \
+    void setCRef##funcName (const type & _##var)            \
     {                                                       \
         this->m_##var = _##var;                             \
     }
@@ -78,7 +78,7 @@
 //-----------------------------------
 //
 #define fwGetMacro(funcName, var, type)          \
-    FWDATA_API const type get##funcName () const \
+    const type get##funcName () const            \
     {                                            \
         return m_##var;                          \
     }
@@ -86,7 +86,7 @@
 //-----------------------------------
 //
 #define fwGetRefMacro(funcName, var, type)     \
-    FWDATA_API type & getRef##funcName ()      \
+    type & getRef##funcName ()                 \
     {                                          \
         return this->m_##var;                  \
     }
@@ -94,7 +94,7 @@
 //-----------------------------------
 //
 #define fwGetCRefMacro(funcName, var, type)            \
-    FWDATA_API const type & getCRef##funcName () const \
+    const type & getCRef##funcName () const            \
     {                                                  \
         return this->m_##var;                          \
     }

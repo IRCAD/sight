@@ -13,12 +13,18 @@
 
 #include <utility> // std::pair
 
+
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/TransfertFunction.hpp>
+
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/NumericRoundCast.hxx>
 
 #include "fwComEd/export.hpp"
 
@@ -193,7 +199,132 @@ public :
      * @param[in]   _pImg      image to set the label.
      */
     FWCOMED_API static bool checkOpacity( ::fwData::Image::sptr _pImg);
+
+    /**
+     * @brief       Initialized an image to 0 from image source (same field, pixel type, buffer size...).
+     *
+     *
+     * @param[in]   imgSrc             image which gives information (field, pixel type, buffer size...).
+     * @param[in]   imgToInitialize    image to initialized (if not null).
+     *
+     * @return      Returns initialized image.
+     */
+    FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize = ::fwData::Image::sptr());
+
+    /**
+     * @brief       Return true if the pixel value is not 0.
+     */
+    template < typename INT_INDEX>
+    static bool isPixelNull(::fwData::Image::sptr image, INT_INDEX &point);
+
+    template < typename T , typename INT_INDEX>
+    static void setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value);
+
+    template < typename T >
+    static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T &value);
+
 };
+
+
+template < typename VALUE, typename INT_INDEX >
+class CastAndSetFunctor
+{
+public:
+    class Param
+    {
+        public:
+        typedef VALUE ValueType;
+        typedef INT_INDEX PointType;
+
+            Param(PointType &p, ValueType &v):
+                value (v), point(p)
+            {};
+
+        ::fwData::Image::sptr image;
+        const ValueType &value;
+        const PointType &point;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        const INT_INDEX &p = param.point;
+        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        const int &sx = size[0];
+        const int &sy = size[1];
+        const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
+        *(buffer+offset) = ::fwTools::numericRoundCast<IMAGE>(param.value);
+    }
+
+};
+
+
+
+template < typename T >
+void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T &value)
+{
+    setPixel(image, point->getCoord(), value);
+}
+
+
+template < typename T , typename INT_INDEX>
+void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value)
+{
+    typename CastAndSetFunctor<T,INT_INDEX>::Param param(point, value);
+    param.image = image;
+
+    ::fwTools::DynamicType type = image->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndSetFunctor<T, INT_INDEX> >::invoke( type, param );
+}
+
+
+
+template < typename INT_INDEX >
+class CastAndCheckFunctor
+{
+public:
+    class Param
+    {
+        public:
+        typedef INT_INDEX PointType;
+
+        Param(PointType &p, bool &b):
+            point(p), isNull(b)
+        {};
+
+        ::fwData::Image::sptr image;
+        bool &isNull;
+        const PointType &point;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        const INT_INDEX &p = param.point;
+        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        const int &sx = size[0];
+        const int &sy = size[1];
+        const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
+        param.isNull = (*(buffer+offset) == 0);
+    }
+
+};
+
+template < typename INT_INDEX>
+bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &point)
+{
+    bool isNull;
+    typename CastAndCheckFunctor<INT_INDEX>::Param param(point, isNull);
+    param.image = image;
+
+    ::fwTools::DynamicType type = image->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndCheckFunctor<INT_INDEX> >::invoke( type, param );
+
+    return isNull;
+}
+
 
 } // fieldHelper
 } // fwComEd

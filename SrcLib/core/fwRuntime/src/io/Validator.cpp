@@ -4,11 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+//#include <ios_base.h> not necessary on win32
 #include <boost/filesystem/operations.hpp>
 #include <libxml/xmlversion.h>
 #ifndef LIBXML_SCHEMAS_ENABLED
     #warning "Error libxml schemas disabled"
 #endif
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xinclude.h>
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
 
@@ -96,7 +100,25 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
     xmlSchemaSetParserStructuredErrors(schemaParserContext, Validator::ErrorHandler, this );
     xmlSchemaSetValidStructuredErrors( schemaValidContext, Validator::ErrorHandler, this );
 
-    result = xmlSchemaValidateFile(schemaValidContext, xmlFile.native_file_string().c_str(), 0 );
+
+    xmlDocPtr xmlDoc = xmlParseFile ( xmlFile.string().c_str () );
+    if (xmlDoc == NULL)
+    {
+        xmlCleanupParser ();
+        throw std::ios_base::failure("Unable to parse the XML file " + xmlFile.string() );
+    }
+    xmlNodePtr xmlRoot = xmlDocGetRootElement (xmlDoc);
+    if (xmlXIncludeProcessTree (xmlRoot) == -1)
+    {
+        xmlFreeDoc(xmlDoc);
+        throw std::ios_base::failure(std::string ("Unable to manage xinclude !"));
+    }
+
+
+
+    result = xmlSchemaValidateDoc(schemaValidContext, xmlDoc );
+
+    xmlFreeDoc(xmlDoc);
 
     if ( result !=0 )
     {

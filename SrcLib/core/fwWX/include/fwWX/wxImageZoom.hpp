@@ -34,7 +34,15 @@ public:
     *
     * @ param image Image to load in the wxImageZoom.
     */
+    FWWX_API wxImageZoom(wxWindow* parent, ::boost::filesystem::path _path_png ) ;
+    FWWX_API void Scale() ;
+    FWWX_API void OnPaint(wxPaintEvent& event) ;
+    FWWX_API void OnMouseUp(wxMouseEvent& event) ;
+    FWWX_API void OnMouseDown(wxMouseEvent& event) ;
+    FWWX_API void OnMouseWheel(wxMouseEvent& event) ;
+    FWWX_API void OnMouseEvent(wxMouseEvent& event) ;
 
+private:
     wxImage m_img ;
     wxBitmap m_bmp ;
 
@@ -44,15 +52,6 @@ public:
     wxPoint m_Pos ;
     int m_dragMode ;
     int m_state ;
-
-
-    FWWX_API wxImageZoom(wxWindow* parent, ::boost::filesystem::path _path_png ) ;
-    FWWX_API void Scale() ;
-    FWWX_API void OnPaint(wxPaintEvent& event) ;
-    FWWX_API void OnMouseUp(wxMouseEvent& event) ;
-    FWWX_API void OnMouseDown(wxMouseEvent& event) ;
-    FWWX_API void OnMouseWheel(wxMouseEvent& event) ;
-    FWWX_API void OnMouseEvent(wxMouseEvent& event) ;
 };
 
 } // end namespace fwWX

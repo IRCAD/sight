@@ -14,6 +14,7 @@
 #include <fwData/String.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Float.hpp>
+#include <fwData/StandardBuffer.hpp>
 
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
@@ -23,6 +24,7 @@ namespace fwComEd
 
 namespace fieldHelper
 {
+
 
 //------------------------------------------------------------------------------
 
@@ -362,8 +364,8 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 
 std::pair<bool, bool> MedicalImageHelpers::checkMinMaxTFAndSetBWTF( ::fwData::Image::sptr _pImg )
 {
-    std::pair<bool, bool> minmaxIsModified = checkMinMaxTF(_pImg);
-    setBWTF(_pImg);
+    std::pair<bool, bool> minmaxIsModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF(_pImg);
+    ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(_pImg);
 
     return minmaxIsModified;
 }
@@ -445,6 +447,30 @@ bool MedicalImageHelpers::checkOpacity( ::fwData::Image::sptr _pImg)
 
     return fieldIsModified;
 }
+
+::fwData::Image::sptr MedicalImageHelpers::initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize)
+{
+    SLM_ASSERT("Image source must be initialized", imgSrc);
+    SLM_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
+
+    if(!imgToInitialize)
+    {
+        imgToInitialize = ::fwData::Image::New();
+    }
+    ::fwData::IBufferDelegate::sptr buffImgSrc = imgSrc->getBufferDelegate();
+    imgSrc->setBufferDelegate( ::fwData::StandardBuffer::sptr() );
+
+    imgToInitialize->deepCopy(imgSrc);
+    imgSrc->setBufferDelegate( buffImgSrc );
+
+    ::boost::int32_t size = ::fwData::imageSizeInBytes( *imgSrc );
+    char * dest = new char[size];
+    imgToInitialize->setBuffer( dest );
+
+    return imgToInitialize;
+}
+
+//------------------------------------------------------------------------------
 
 } // fieldHelper
 } // fwComEd

@@ -39,9 +39,9 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::SliceIndexPositionEditor ,
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
-        &fwComEd::Dictionary::m_sagittalSliceIndexId,
-        &fwComEd::Dictionary::m_frontalSliceIndexId,
-        &fwComEd::Dictionary::m_axialSliceIndexId
+    &fwComEd::Dictionary::m_sagittalSliceIndexId,
+    &fwComEd::Dictionary::m_frontalSliceIndexId,
+    &fwComEd::Dictionary::m_axialSliceIndexId
 };
 
 //------------------------------------------------------------------------------
@@ -108,19 +108,19 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-        std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-        if(orientation == "axial" )
-        {
-            m_orientation = Z_AXIS;
-        }
-        else if(orientation == "frontal" )
-        {
-            m_orientation = Y_AXIS;
-        }
-        else if(orientation == "sagittal" )
-        {
-            m_orientation = X_AXIS;
-        }
+         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
+         if(orientation == "axial" )
+         {
+             m_orientation = Z_AXIS;
+         }
+         else if(orientation == "frontal" )
+         {
+             m_orientation = Y_AXIS;
+         }
+         else if(orientation == "sagittal" )
+         {
+             m_orientation = X_AXIS;
+         }
     }
 }
 
@@ -149,6 +149,10 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
 
     if ( imageMessage )
     {
+        if ( imageMessage->hasEvent( fwComEd::ImageMsg::BUFFER ) )
+        {
+            this->updating();
+        }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::SLICE_INDEX ) )
         {
             imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
@@ -173,15 +177,6 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             }
             this->updateSliceType(m_orientation);
         }
-        if ( imageMessage->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( imageMessage->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            //Takes image extend into account to initialize selector panel
-            this->updateSliceIndex();
-            //To enable the selector panel
-            this->update();
-        }
-
-
     }
 }
 

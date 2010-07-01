@@ -17,7 +17,8 @@ namespace updater
 {
 
 /**
- * @class   SelectedNodeIOUpdaterSrv : Update the composite related to this service according to port information
+ * @class  SelectedNodeIOUpdaterSrv
+ * @brief  Update the composite related to this service according to port information
  * ( key= portID , value= data in dataNode ), port mode can be "input" or "output"
  * @author IRCAD (Research and Development Team).
 
@@ -44,7 +45,16 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Implements configuring method derived from IService.
+     *
+     * @verbatim
+         <service uid="myUpdater" implementation="::ctrlSelection::updater::ResecFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+             <mode>input</mode>
+         </service>
+      @endverbatim
+      The mode must be "input" or "output"
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.
@@ -56,6 +66,10 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
+    /**
+     * Update the composite related to this service according to node port information
+     * ( key= portID , value= data in dataNode ), port mode can be "input" or "output"
+     */
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// to sepcify if the updater manage input (upStream=true) or output (default)

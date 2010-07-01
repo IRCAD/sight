@@ -104,6 +104,12 @@
     </point>
     
     
+    <point id="::ctrlSelection::wrapper::PatientDBWrapperSrv">
+        <implements>::ctrlSelection::IWrapperSrv</implements>
+        <implements>::fwData::PatientDB</implements>
+    </point>
+
+
 </plugin>
 
 
