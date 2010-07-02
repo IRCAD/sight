@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "fwGui/GuiRegistry.hpp"
 #include "fwGui/ViewManager.hpp"
 
 namespace fwGui
@@ -38,7 +39,22 @@ void ViewManager::initialize( ::fwRuntime::ConfigurationElement::sptr configurat
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewManager",
             configuration->getName() == "viewManager");
 
-    std::vector < ConfigurationType > vectViews = configuration->find("scene");
+    // find parent container
+    std::vector < ConfigurationType > vectParent = configuration->find("parent");
+    if(!vectParent.empty())
+    {
+        ConfigurationType parent = vectParent.at(0);
+        SLM_ASSERT("<parent> tag must have wid attribute", parent->hasAttribute("wid"));
+        std::string wid = parent->getAttributeValue("wid");
+        this->m_parentContainer = ::fwGui::GuiRegistry::getWIDContainer(wid);
+    }
+    else
+    {
+        this->m_parentContainer = ::fwGui::GuiRegistry::getSIDContainer(m_sid);
+    }
+
+    // initialize m_sids and m_wids map with configuration
+    std::vector < ConfigurationType > vectViews = configuration->find("view");
     BOOST_FOREACH( ConfigurationType view, vectViews)
     {
         SLM_ASSERT("<view> tag must have sid or wid attribute",
