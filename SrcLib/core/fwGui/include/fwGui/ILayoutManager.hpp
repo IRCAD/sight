@@ -10,7 +10,7 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/IGuiContainer.hpp"
+#include "fwGui/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -46,12 +46,14 @@ public:
 
     /**
      * @brief Instantiate layout with parent container.
+     * @pre LayoutManager must be initialized before.
+     * @pre parent containers must be instanced.
      */
     FWGUI_API virtual void createLayout( ::fwGui::fwContainer::sptr parent ) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
-     * Be careful services using this sub containers must be stopped before!
+     * @pre services using this sub containers must be stopped before.
      */
     FWGUI_API virtual void destroyLayout() = 0;
 

@@ -21,12 +21,12 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API fwContainer : public ::fwTools::Object
+class FWGUI_CLASS_API fwContainer : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (fwContainer)(::fwTools::Object) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (fwContainer)(::fwCore::BaseObject) ) ;
 
     FWGUI_API virtual void clean() = 0;
     FWGUI_API virtual void destroyContainer() = 0;
