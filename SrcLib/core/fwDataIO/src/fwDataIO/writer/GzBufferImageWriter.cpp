@@ -43,7 +43,7 @@ void GzBufferImageWriter::write()
 {
     assert( getFile().empty() ==  false );
 
-    ::boost::shared_ptr< ::fwData::Image > image = getConcreteObject();
+    ::fwData::Image::sptr image = getConcreteObject();
     OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className()) ;
 
     /// test if can open archive
@@ -74,6 +74,7 @@ void GzBufferImageWriter::write()
     gzclose(rawFile);
 }
 
+//------------------------------------------------------------------------------
 
 std::string  GzBufferImageWriter::extension()
 {
