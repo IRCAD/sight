@@ -41,7 +41,7 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid ) ;
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister container.",service->isStopped())
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister container.",service->isStopped());
     }
 
     OSLM_ASSERT("Sorry, fwContainer for "<<sid<<" not exists in SID container map.",

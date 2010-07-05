@@ -94,6 +94,7 @@ void ViewManager::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
     ::fwGui::fwContainer::sptr container;
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
     {
+        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < subViews.size());
         container = subViews.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDContainer(sid.first, container);
         if(sid.second.second) //service is auto started?
@@ -106,6 +107,7 @@ void ViewManager::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
 
     BOOST_FOREACH( WIDContainerMapType::value_type wid, m_wids)
     {
+        OSLM_ASSERT("Container index "<< wid.second <<" is bigger than subViews size!", wid.second < subViews.size());
         container = subViews.at( wid.second );
         ::fwGui::GuiRegistry::registerWIDContainer(wid.first, container);
     }

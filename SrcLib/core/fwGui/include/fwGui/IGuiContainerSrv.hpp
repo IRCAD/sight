@@ -38,11 +38,8 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (IGuiContainerSrv)(::fwServices::IService) ) ;
 
-    void createViewManager( ::fwRuntime::ConfigurationElement::sptr viewMngConfig );
-
-    void createLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
-
 protected :
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief   Constructor. Initialize default values.
@@ -54,11 +51,17 @@ protected :
      */
     FWGUI_API virtual ~IGuiContainerSrv() ;
 
+    FWGUI_API void createLayoutManager();
+
 private:
 
-    ::fwGui::ViewManager::sptr m_viewManager;
+    void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
     ::fwGui::ILayoutManager::sptr m_layoutManager;
+    ::fwGui::ViewManager::sptr    m_viewManager;
+
+    ConfigurationType m_viewMngConfig;
+    ConfigurationType m_layoutConfig;
 };
 
 } // namespace fwGui

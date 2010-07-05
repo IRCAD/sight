@@ -16,9 +16,7 @@ namespace fwGui
 {
 
 IGuiContainerSrv::IGuiContainerSrv()
-{
-    m_viewManager = ::fwGui::ViewManager::NewSptr(this->getUUID());
-}
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -27,22 +25,50 @@ IGuiContainerSrv::~IGuiContainerSrv()
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::createViewManager( ::fwRuntime::ConfigurationElement::sptr viewMngConfig )
+void IGuiContainerSrv::createLayoutManager()
 {
-    m_viewManager->initialize(viewMngConfig);
+    m_viewManager = ::fwGui::ViewManager::NewSptr(this->getUUID());
+    // find ViewManager configuration
+    std::vector < ConfigurationType > vectViewMng = m_configuration->find("viewManager");
+    if(!vectViewMng.empty())
+    {
+        m_viewMngConfig = vectViewMng.at(0);
+    }
+    m_viewManager->initialize(m_viewMngConfig);
+
+
+    // find LayoutManager configuration
+    std::vector < ConfigurationType > vectLayoutMng = m_configuration->find("viewManager");
+    if(!vectLayoutMng.empty())
+    {
+        m_layoutConfig = vectLayoutMng.at(0);
+    }
+    this->initializeLayoutManager(m_layoutConfig);
+
+    ::fwGui::fwContainer::sptr container = m_viewManager->getParent();
+    SLM_ASSERT("Parent container is unknown.", container);
+    m_layoutManager->createLayout(container);
+
+
+    m_viewManager->manage(m_layoutManager->getSubViews());
 }
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::createLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig )
+void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    SLM_FATAL("TODO: manage not yet available");
-    // TODO:
-    // - use Factory to instanced a LayoutManager implementation
-    // - m_layoutManager = instanced_LayoutManager_implementation
-    // - m_layoutManager->initialize(layoutConfig);
-    // - m_layoutManager->createLayout(m_viewManager->getParent());
-    // - m_viewManager->manage(m_layoutManager->getSubViews());
+    OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
+            layoutConfig->getName() == "layout");
+    SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
+    std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
+    ::fwTools::Object::sptr layout = ::fwTools::Factory::New(layoutManagerClassName);
+    OSLM_ASSERT("Unable to create "<< layoutManagerClassName, layout);
+    m_layoutManager = ::fwGui::ILayoutManager::dynamicCast(layout);
+    OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_layoutManager);
+
+    m_layoutManager->initialize(layoutConfig);
 }
+
+//-----------------------------------------------------------------------------
 
 }
