@@ -62,15 +62,16 @@ public:
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
+    typedef std::map< std::string, std::pair<int, bool> > SIDContainerMapType;
+    typedef std::map< std::string, int > WIDContainerMapType;
     /**
      * @brief All services ID managed and associated with pair containing:
      * subViews index vector and boolean describing if is started by the manager.
      */
-    std::map< std::string, std::pair<int, bool> > m_sids;
+    SIDContainerMapType m_sids;
 
     /// All windows containers ID managed (and associated with subViews index vector).
-    std::map< std::string, int > m_wids;
+    WIDContainerMapType m_wids;
 
     ::fwGui::fwContainer::sptr m_parentContainer;
 

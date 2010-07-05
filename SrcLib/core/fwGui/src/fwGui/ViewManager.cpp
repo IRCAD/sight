@@ -7,7 +7,9 @@
 #include <utility>
 
 #include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
+
+#include <fwTools/UUID.hpp>
+#include <fwServices/helper.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
 #include "fwGui/ViewManager.hpp"
@@ -52,7 +54,8 @@ void ViewManager::initialize( ::fwRuntime::ConfigurationElement::sptr configurat
     {
         this->m_parentContainer = ::fwGui::GuiRegistry::getSIDContainer(m_sid);
     }
-
+    // index represents associated container with position in subViews vector
+    int index = 0;
     // initialize m_sids and m_wids map with configuration
     std::vector < ConfigurationType > vectViews = configuration->find("view");
     BOOST_FOREACH( ConfigurationType view, vectViews)
@@ -61,8 +64,6 @@ void ViewManager::initialize( ::fwRuntime::ConfigurationElement::sptr configurat
                 view->hasAttribute("sid") || view->hasAttribute("wid"));
         SLM_ASSERT("<view> tag must have index attribute",
                         view->hasAttribute("index"));
-
-        int index = ::boost::lexical_cast< int >(view->getAttributeValue("index"));
         if(view->hasAttribute("sid"))
         {
             bool start = false;
@@ -77,11 +78,12 @@ void ViewManager::initialize( ::fwRuntime::ConfigurationElement::sptr configurat
             std::pair<int, bool> indexStart =  std::make_pair( index, start);
             m_sids[sid] = indexStart;
         }
-        if(view->hasAttribute("wid"))
+        else if(view->hasAttribute("wid"))
         {
             std::string wid = view->getAttributeValue("wid");
             m_wids[wid] = index;
         }
+        index++;
     }
 }
 
@@ -89,14 +91,45 @@ void ViewManager::initialize( ::fwRuntime::ConfigurationElement::sptr configurat
 
 void ViewManager::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
 {
-    SLM_FATAL("TODO: manage not yet available");
+    ::fwGui::fwContainer::sptr container;
+    BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
+    {
+        container = subViews.at( sid.second.first );
+        ::fwGui::GuiRegistry::registerSIDContainer(sid.first, container);
+        if(sid.second.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            service->start();
+        }
+    }
+
+    BOOST_FOREACH( WIDContainerMapType::value_type wid, m_wids)
+    {
+        container = subViews.at( wid.second );
+        ::fwGui::GuiRegistry::registerWIDContainer(wid.first, container);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void ViewManager::unmanage()
 {
-    SLM_FATAL("TODO: unmanage not yet available");
+    BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
+    {
+        if(sid.second.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);
+    }
+
+    BOOST_FOREACH( WIDContainerMapType::value_type wid, m_wids)
+    {
+        ::fwGui::GuiRegistry::unregisterWIDContainer(wid.first);
+    }
 }
 
 //-----------------------------------------------------------------------------
