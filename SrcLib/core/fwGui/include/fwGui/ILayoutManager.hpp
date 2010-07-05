@@ -40,11 +40,6 @@ public:
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration) = 0;
 
     /**
-     * @brief Returns all sub containers managed by this layout.
-     */
-    FWGUI_API virtual std::vector< ::fwGui::fwContainer::sptr > getSubViews() = 0;
-
-    /**
      * @brief Instantiate layout with parent container.
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
@@ -57,7 +52,17 @@ public:
      */
     FWGUI_API virtual void destroyLayout() = 0;
 
+    /**
+     * @brief Returns all sub containers managed by this layout.
+     */
+    FWGUI_API virtual std::vector< ::fwGui::fwContainer::sptr > getSubViews();
+
 protected:
+
+    /**
+     * @brief Helper to destroy local sub views.
+     */
+    FWGUI_API virtual void destroySubViews();
 
     /// All sub containers managed by this layout.
     std::vector< ::fwGui::fwContainer::sptr > m_subViews;

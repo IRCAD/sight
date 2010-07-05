@@ -4,18 +4,42 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
 
 #include "fwGui/ILayoutManager.hpp"
 
 namespace fwGui
 {
 
+//-----------------------------------------------------------------------------
+
 ILayoutManager::ILayoutManager()
 {}
 
+//-----------------------------------------------------------------------------
 
 ILayoutManager::~ILayoutManager()
 {}
+
+//-----------------------------------------------------------------------------
+
+void ILayoutManager::destroySubViews()
+{
+    BOOST_FOREACH( ::fwGui::fwContainer::sptr container, m_subViews)
+    {
+        container->destroyContainer();
+    }
+    m_subViews.clear();
+}
+
+//-----------------------------------------------------------------------------
+
+std::vector< ::fwGui::fwContainer::sptr > ILayoutManager::getSubViews()
+{
+    return this->m_subViews;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwGui
 
