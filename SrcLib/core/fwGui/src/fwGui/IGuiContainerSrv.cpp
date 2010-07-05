@@ -63,7 +63,7 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
     ::fwTools::Object::sptr layout = ::fwTools::Factory::New(layoutManagerClassName);
     OSLM_ASSERT("Unable to create "<< layoutManagerClassName, layout);
-    m_layoutManager = ::fwGui::layoutManager::ILayoutManager::dynamicCast(layout);
+    m_layoutManager = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(layout);
     OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);

@@ -20,21 +20,21 @@ namespace layoutManager
 
 /**
  * @brief   Defines the generic layout manager for IHM.
- * @class   ILayoutManager.
+ * @class   IViewLayoutManager.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ILayoutManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IViewLayoutManager : public ::fwCore::BaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (ILayoutManager)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IViewLayoutManager)(::fwCore::BaseObject) )
 
     /// Constructor. Do nothing.
-    FWGUI_API ILayoutManager();
+    FWGUI_API IViewLayoutManager();
 
     /// Destructor. Do nothing.
-    FWGUI_API virtual ~ILayoutManager();
+    FWGUI_API virtual ~IViewLayoutManager();
 
     /**
      * @brief Configure the layout before creation.

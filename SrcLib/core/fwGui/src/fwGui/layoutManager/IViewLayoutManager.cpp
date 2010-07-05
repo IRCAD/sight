@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include "fwGui/layoutManager/ILayoutManager.hpp"
+#include "fwGui/layoutManager/IViewLayoutManager.hpp"
 
 namespace fwGui
 {
@@ -15,17 +15,17 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-ILayoutManager::ILayoutManager()
+IViewLayoutManager::IViewLayoutManager()
 {}
 
 //-----------------------------------------------------------------------------
 
-ILayoutManager::~ILayoutManager()
+IViewLayoutManager::~IViewLayoutManager()
 {}
 
 //-----------------------------------------------------------------------------
 
-void ILayoutManager::destroySubViews()
+void IViewLayoutManager::destroySubViews()
 {
     BOOST_FOREACH( ::fwGui::fwContainer::sptr container, m_subViews)
     {
@@ -36,7 +36,7 @@ void ILayoutManager::destroySubViews()
 
 //-----------------------------------------------------------------------------
 
-std::vector< ::fwGui::fwContainer::sptr > ILayoutManager::getSubViews()
+std::vector< ::fwGui::fwContainer::sptr > IViewLayoutManager::getSubViews()
 {
     return this->m_subViews;
 }
