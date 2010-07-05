@@ -41,17 +41,11 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid ) ;
-        service->stop();
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister container.",service->isStopped())
     }
 
     OSLM_ASSERT("Sorry, fwContainer for "<<sid<<" not exists in SID container map.",
             m_globalSIDToFwContainer.find(sid) != m_globalSIDToFwContainer.end());
-
-    ::fwGui::fwContainer::sptr container = m_globalSIDToFwContainer[sid];
-    SLM_ASSERT("Sorry, fwContainer is not correctly initialized", container);
-
-    // Destroys the container safely
-    container->destroyContainer();
 
     // Removes container in SID container map
     m_globalSIDToFwContainer.erase(sid);
@@ -82,12 +76,6 @@ void GuiRegistry::unregisterWIDContainer(std::string wid)
 {
     OSLM_ASSERT("Sorry, fwContainer with wid "<<wid<<" not exists in WID container map.",
             m_globalWIDToFwContainer.find(wid) != m_globalWIDToFwContainer.end());
-
-    ::fwGui::fwContainer::sptr container = m_globalWIDToFwContainer[wid];
-    SLM_ASSERT("Sorry, fwContainer is not correctly initialized", container);
-
-    // Destroys the container safely
-    container->destroyContainer();
 
     // Removes container in WID container map
     m_globalWIDToFwContainer.erase(wid);
