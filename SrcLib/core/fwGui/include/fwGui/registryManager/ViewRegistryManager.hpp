@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_VIEWMANAGER_HPP_
-#define _FWGUI_VIEWMANAGER_HPP_
+#ifndef _FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_
+#define _FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -17,25 +17,28 @@
 namespace fwGui
 {
 
+namespace registryManager
+{
+
 /**
  * @brief   Defines the generic view manager for IHM.
- * @class   ViewManager.
+ * @class   ViewRegistryManager.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ViewManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ViewRegistryManager : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ViewManager)(::fwCore::BaseObject), (( (const std::string) )), new ViewManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistryManager)(::fwCore::BaseObject), (( (const std::string) )), new ViewRegistryManager );
 
     /// Constructor.
-    FWGUI_API ViewManager( const std::string sid);
+    FWGUI_API ViewRegistryManager( const std::string sid);
 
     /// Destructor. Do nothing
-    FWGUI_API virtual ~ViewManager();
+    FWGUI_API virtual ~ViewRegistryManager();
 
     FWGUI_API virtual ::fwGui::fwContainer::sptr getParent();
 
@@ -48,7 +51,7 @@ public:
      * @brief Starting view manager.
      * All services managed in local subViews
      * and with start="yes" in configuration will be started.
-     * @pre ViewManager must be initialized before.
+     * @pre ViewRegistryManager must be initialized before.
      * @pre sub containers must be instanced before.
      */
     FWGUI_API virtual void manage(std::vector< ::fwGui::fwContainer::sptr > subViews );
@@ -75,12 +78,13 @@ protected:
 
     ::fwGui::fwContainer::sptr m_parentContainer;
 
-    /// Main service ID associate with this ViewManager
+    /// Main service ID associate with this ViewRegistryManager
     std::string m_sid;
 };
 
+} // namespace registryManager
 } // namespace fwGui
 
-#endif /*_FWGUI_VIEWMANAGER_HPP_*/
+#endif /*_FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_*/
 
 

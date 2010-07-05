@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ILAYOUTMANAGER_HPP_
-#define _FWGUI_ILAYOUTMANAGER_HPP_
+#ifndef _FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_
+#define _FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -14,6 +14,8 @@
 #include "fwGui/config.hpp"
 
 namespace fwGui
+{
+namespace layoutManager
 {
 
 /**
@@ -69,8 +71,9 @@ protected:
 
 };
 
+} // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_ILAYOUTMANAGER_HPP_*/
+#endif /*_FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_*/
 
 

@@ -12,31 +12,33 @@
 #include <fwServices/helper.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
-#include "fwGui/ViewManager.hpp"
+#include "fwGui/registryManager/ViewRegistryManager.hpp"
 
 namespace fwGui
+{
+namespace registryManager
 {
 
 //-----------------------------------------------------------------------------
 
-ViewManager::ViewManager(const std::string sid) : m_sid(sid)
+ViewRegistryManager::ViewRegistryManager(const std::string sid) : m_sid(sid)
 {}
 
 //-----------------------------------------------------------------------------
 
-ViewManager::~ViewManager()
+ViewRegistryManager::~ViewRegistryManager()
 {}
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwContainer::sptr ViewManager::getParent()
+::fwGui::fwContainer::sptr ViewRegistryManager::getParent()
 {
     return this->m_parentContainer;
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewManager::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
+void ViewRegistryManager::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewManager",
             configuration->getName() == "viewManager");
@@ -89,7 +91,7 @@ void ViewManager::initialize( ::fwRuntime::ConfigurationElement::sptr configurat
 
 //-----------------------------------------------------------------------------
 
-void ViewManager::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
+void ViewRegistryManager::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
 {
     ::fwGui::fwContainer::sptr container;
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
@@ -115,7 +117,7 @@ void ViewManager::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
 
 //-----------------------------------------------------------------------------
 
-void ViewManager::unmanage()
+void ViewRegistryManager::unmanage()
 {
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
     {
@@ -136,4 +138,5 @@ void ViewManager::unmanage()
 
 //-----------------------------------------------------------------------------
 
+} // namespace registryManager
 } //namespace fwGui

@@ -27,8 +27,8 @@ IGuiContainerSrv::~IGuiContainerSrv()
 
 void IGuiContainerSrv::createLayoutManager()
 {
-    m_viewManager = ::fwGui::ViewManager::NewSptr(this->getUUID());
-    // find ViewManager configuration
+    m_viewManager = ::fwGui::registryManager::ViewRegistryManager::NewSptr(this->getUUID());
+    // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("viewManager");
     if(!vectViewMng.empty())
     {
@@ -63,7 +63,7 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
     ::fwTools::Object::sptr layout = ::fwTools::Factory::New(layoutManagerClassName);
     OSLM_ASSERT("Unable to create "<< layoutManagerClassName, layout);
-    m_layoutManager = ::fwGui::ILayoutManager::dynamicCast(layout);
+    m_layoutManager = ::fwGui::layoutManager::ILayoutManager::dynamicCast(layout);
     OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);

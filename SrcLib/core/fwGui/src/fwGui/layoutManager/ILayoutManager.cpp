@@ -6,9 +6,11 @@
 
 #include <boost/foreach.hpp>
 
-#include "fwGui/ILayoutManager.hpp"
+#include "fwGui/layoutManager/ILayoutManager.hpp"
 
 namespace fwGui
+{
+namespace layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -41,6 +43,7 @@ std::vector< ::fwGui::fwContainer::sptr > ILayoutManager::getSubViews()
 
 //-----------------------------------------------------------------------------
 
+} // namespace layoutManager
 } // namespace fwGui
 
 

@@ -11,8 +11,9 @@
 
 #include "fwGui/config.hpp"
 #include "fwGui/fwContainer.hpp"
-#include "fwGui/ViewManager.hpp"
-#include "fwGui/ILayoutManager.hpp"
+
+#include "fwGui/registryManager/ViewRegistryManager.hpp"
+#include "fwGui/layoutManager/ILayoutManager.hpp"
 
 /**
  * @brief   The namespace fwGui contains the base interface for IHM services.
@@ -57,8 +58,8 @@ private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
-    ::fwGui::ILayoutManager::sptr m_layoutManager;
-    ::fwGui::ViewManager::sptr    m_viewManager;
+    ::fwGui::layoutManager::ILayoutManager::sptr m_layoutManager;
+    ::fwGui::registryManager::ViewRegistryManager::sptr    m_viewManager;
 
     ConfigurationType m_viewMngConfig;
     ConfigurationType m_layoutConfig;
