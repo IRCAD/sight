@@ -30,6 +30,8 @@ class FWGUI_CLASS_API IViewLayoutManager : public ::fwCore::BaseObject
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (IViewLayoutManager)(::fwCore::BaseObject) )
 
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+
     /// Constructor. Do nothing.
     FWGUI_API IViewLayoutManager();
 
@@ -39,7 +41,7 @@ public:
     /**
      * @brief Configure the layout before creation.
      */
-    FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration) = 0;
+    FWGUI_API virtual void initialize( ConfigurationType configuration) = 0;
 
     /**
      * @brief Instantiate layout with parent container.
