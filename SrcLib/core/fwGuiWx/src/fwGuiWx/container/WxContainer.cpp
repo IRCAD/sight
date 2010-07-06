@@ -43,14 +43,14 @@ void WxContainer::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-FWGUIWX_API void WxContainer::setWxContainer(wxWindow* container)
+void WxContainer::setWxContainer(wxWindow* container)
 {
     this->m_container = container;
 }
 
 //-----------------------------------------------------------------------------
 
-FWGUIWX_API wxWindow* WxContainer::getWxContainer()
+wxWindow* WxContainer::getWxContainer()
 {
     return this->m_container;
 }
