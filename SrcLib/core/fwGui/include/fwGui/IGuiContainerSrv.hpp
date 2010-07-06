@@ -58,10 +58,10 @@ private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
-    ::fwGui::layoutManager::IViewLayoutManager::sptr m_layoutManager;
-    ::fwGui::registrar::ViewRegistrar::sptr    m_viewManager;
+    ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
+    ::fwGui::registrar::ViewRegistrar::sptr    m_viewRegistrar;
 
-    ConfigurationType m_viewMngConfig;
+    ConfigurationType m_viewRegistrarConfig;
     ConfigurationType m_layoutConfig;
 };
 

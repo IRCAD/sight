@@ -27,30 +27,30 @@ IGuiContainerSrv::~IGuiContainerSrv()
 
 void IGuiContainerSrv::createLayoutManager()
 {
-    m_viewManager = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
+    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
     // find ViewRegistrar configuration
-    std::vector < ConfigurationType > vectViewMng = m_configuration->find("viewManager");
+    std::vector < ConfigurationType > vectViewMng = m_configuration->find("viewRegistrar");
     if(!vectViewMng.empty())
     {
-        m_viewMngConfig = vectViewMng.at(0);
+        m_viewRegistrarConfig = vectViewMng.at(0);
     }
-    m_viewManager->initialize(m_viewMngConfig);
+    m_viewRegistrar->initialize(m_viewRegistrarConfig);
 
 
     // find LayoutManager configuration
-    std::vector < ConfigurationType > vectLayoutMng = m_configuration->find("viewManager");
+    std::vector < ConfigurationType > vectLayoutMng = m_configuration->find("viewRegistrar");
     if(!vectLayoutMng.empty())
     {
         m_layoutConfig = vectLayoutMng.at(0);
     }
     this->initializeLayoutManager(m_layoutConfig);
 
-    ::fwGui::fwContainer::sptr container = m_viewManager->getParent();
+    ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", container);
-    m_layoutManager->createLayout(container);
+    m_viewLayoutManager->createLayout(container);
 
 
-    m_viewManager->manage(m_layoutManager->getSubViews());
+    m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
 }
 
 //-----------------------------------------------------------------------------
@@ -63,10 +63,10 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
     ::fwTools::Object::sptr layout = ::fwTools::Factory::New(layoutManagerClassName);
     OSLM_ASSERT("Unable to create "<< layoutManagerClassName, layout);
-    m_layoutManager = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(layout);
-    OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_layoutManager);
+    m_viewLayoutManager = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(layout);
+    OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_viewLayoutManager);
 
-    m_layoutManager->initialize(layoutConfig);
+    m_viewLayoutManager->initialize(layoutConfig);
 }
 
 //-----------------------------------------------------------------------------
