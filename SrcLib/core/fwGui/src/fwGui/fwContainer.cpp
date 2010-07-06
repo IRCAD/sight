@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwGui/IGuiContainer.hpp"
+#include "fwGui/fwContainer.hpp"
 
 namespace fwGui
 {

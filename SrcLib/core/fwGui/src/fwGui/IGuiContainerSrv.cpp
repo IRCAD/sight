@@ -25,7 +25,7 @@ IGuiContainerSrv::~IGuiContainerSrv()
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::createLayoutManager()
+void IGuiContainerSrv::initialize()
 {
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
     // find ViewRegistrar configuration

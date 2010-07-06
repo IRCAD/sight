@@ -52,7 +52,7 @@ protected :
      */
     FWGUI_API virtual ~IGuiContainerSrv() ;
 
-    FWGUI_API void createLayoutManager();
+    FWGUI_API void initialize();
 
 private:
 

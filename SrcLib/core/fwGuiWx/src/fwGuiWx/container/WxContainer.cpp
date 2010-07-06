@@ -4,24 +4,26 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwWX/wxContainer.hpp"
+#include "fwGuiWX/container/WxContainer.hpp"
 
-namespace fwWX
+namespace fwGuiWX
+{
+namespace container
 {
 
 //-----------------------------------------------------------------------------
 
-wxContainer::wxContainer() throw() : m_container(0)
+WxContainer::WxContainer() throw() : m_container(0)
 {}
 
 //-----------------------------------------------------------------------------
 
-wxContainer::~wxContainer() throw()
+WxContainer::~WxContainer() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-void wxContainer::clean()
+void WxContainer::clean()
 {
     SLM_ASSERT("Sorry, wxWindows not yet initialized, cleaning impossible", m_container);
 
@@ -31,7 +33,7 @@ void wxContainer::clean()
 
 //-----------------------------------------------------------------------------
 
-void wxContainer::destroyContainer()
+void WxContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, wxWindows not yet initialized", m_container);
 
@@ -41,18 +43,19 @@ void wxContainer::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-FWWX_API void wxContainer::setWxContainer(wxWindow* container)
+FWGUIWX_API void WxContainer::setWxContainer(wxWindow* container)
 {
     this->m_container = container;
 }
 
 //-----------------------------------------------------------------------------
 
-FWWX_API wxWindow* wxContainer::getWxContainer()
+FWGUIWX_API wxWindow* WxContainer::getWxContainer()
 {
     return this->m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace container
+} // namespace fwGuiWX
