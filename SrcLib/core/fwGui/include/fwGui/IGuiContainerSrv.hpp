@@ -12,7 +12,7 @@
 #include "fwGui/config.hpp"
 #include "fwGui/fwContainer.hpp"
 
-#include "fwGui/registryManager/ViewRegistryManager.hpp"
+#include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
 
 /**
@@ -59,7 +59,7 @@ private:
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
     ::fwGui::layoutManager::IViewLayoutManager::sptr m_layoutManager;
-    ::fwGui::registryManager::ViewRegistryManager::sptr    m_viewManager;
+    ::fwGui::registrar::ViewRegistrar::sptr    m_viewManager;
 
     ConfigurationType m_viewMngConfig;
     ConfigurationType m_layoutConfig;

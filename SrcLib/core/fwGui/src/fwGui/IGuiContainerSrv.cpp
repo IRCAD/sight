@@ -27,8 +27,8 @@ IGuiContainerSrv::~IGuiContainerSrv()
 
 void IGuiContainerSrv::createLayoutManager()
 {
-    m_viewManager = ::fwGui::registryManager::ViewRegistryManager::NewSptr(this->getUUID());
-    // find ViewRegistryManager configuration
+    m_viewManager = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
+    // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("viewManager");
     if(!vectViewMng.empty())
     {

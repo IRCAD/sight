@@ -17,28 +17,28 @@
 namespace fwGui
 {
 
-namespace registryManager
+namespace registrar
 {
 
 /**
  * @brief   Defines the generic view manager for IHM.
- * @class   ViewRegistryManager.
+ * @class   ViewRegistrar.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ViewRegistryManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ViewRegistrar : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistryManager)(::fwCore::BaseObject), (( (const std::string) )), new ViewRegistryManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwCore::BaseObject), (( (const std::string) )), new ViewRegistrar );
 
     /// Constructor.
-    FWGUI_API ViewRegistryManager( const std::string sid);
+    FWGUI_API ViewRegistrar( const std::string sid);
 
     /// Destructor. Do nothing
-    FWGUI_API virtual ~ViewRegistryManager();
+    FWGUI_API virtual ~ViewRegistrar();
 
     FWGUI_API virtual ::fwGui::fwContainer::sptr getParent();
 
@@ -51,7 +51,7 @@ public:
      * @brief Starting view manager.
      * All services managed in local subViews
      * and with start="yes" in configuration will be started.
-     * @pre ViewRegistryManager must be initialized before.
+     * @pre ViewRegistrar must be initialized before.
      * @pre sub containers must be instanced before.
      */
     FWGUI_API virtual void manage(std::vector< ::fwGui::fwContainer::sptr > subViews );
@@ -78,11 +78,11 @@ protected:
 
     ::fwGui::fwContainer::sptr m_parentContainer;
 
-    /// Main service ID associate with this ViewRegistryManager
+    /// Main service ID associate with this ViewRegistrar
     std::string m_sid;
 };
 
-} // namespace registryManager
+} // namespace registrar
 } // namespace fwGui
 
 #endif /*_FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_*/

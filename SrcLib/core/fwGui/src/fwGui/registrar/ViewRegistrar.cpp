@@ -12,33 +12,33 @@
 #include <fwServices/helper.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
-#include "fwGui/registryManager/ViewRegistryManager.hpp"
+#include "fwGui/registrar/ViewRegistrar.hpp"
 
 namespace fwGui
 {
-namespace registryManager
+namespace registrar
 {
 
 //-----------------------------------------------------------------------------
 
-ViewRegistryManager::ViewRegistryManager(const std::string sid) : m_sid(sid)
+ViewRegistrar::ViewRegistrar(const std::string sid) : m_sid(sid)
 {}
 
 //-----------------------------------------------------------------------------
 
-ViewRegistryManager::~ViewRegistryManager()
+ViewRegistrar::~ViewRegistrar()
 {}
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwContainer::sptr ViewRegistryManager::getParent()
+::fwGui::fwContainer::sptr ViewRegistrar::getParent()
 {
     return this->m_parentContainer;
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewRegistryManager::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
+void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewManager",
             configuration->getName() == "viewManager");
@@ -90,7 +90,7 @@ void ViewRegistryManager::initialize( ::fwRuntime::ConfigurationElement::sptr co
 
 //-----------------------------------------------------------------------------
 
-void ViewRegistryManager::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
+void ViewRegistrar::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
 {
     ::fwGui::fwContainer::sptr container;
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
@@ -116,7 +116,7 @@ void ViewRegistryManager::manage(std::vector< ::fwGui::fwContainer::sptr > subVi
 
 //-----------------------------------------------------------------------------
 
-void ViewRegistryManager::unmanage()
+void ViewRegistrar::unmanage()
 {
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
     {
@@ -137,5 +137,5 @@ void ViewRegistryManager::unmanage()
 
 //-----------------------------------------------------------------------------
 
-} // namespace registryManager
+} // namespace registrar
 } //namespace fwGui
