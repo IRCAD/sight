@@ -4,8 +4,8 @@
 // * published by the Free Software Foundation.
 // * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIWX_WXCONTAINER_HPP_
-#define _FWGUIWX_WXCONTAINER_HPP_
+#ifndef _FWGUIWX_CONTAINER_WXCONTAINER_HPP_
+#define _FWGUIWX_CONTAINER_WXCONTAINER_HPP_
 
 #include <wx/window.h>
 
@@ -14,9 +14,9 @@
 
 #include <fwGui/fwContainer.hpp>
 
-#include "fwGuiWX/config.hpp"
+#include "fwGuiWx/config.hpp"
 
-namespace fwGuiWX
+namespace fwGuiWx
 {
 namespace container
 {
@@ -58,8 +58,8 @@ private :
 };
 
 } // namespace container
-} // namespace fwGuiWX
+} // namespace fwGuiWx
 
-#endif /*_FWGUIWX_WXCONTAINER_HPP_*/
+#endif /*_FWGUIWX_CONTAINER_WXCONTAINER_HPP_*/
 
 

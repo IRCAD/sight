@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGuiWX/container/WxContainer.hpp"
+#include "fwGuiWx/container/WxContainer.hpp"
 
-namespace fwGuiWX
+namespace fwGuiWx
 {
 namespace container
 {
@@ -58,4 +58,4 @@ FWGUIWX_API wxWindow* WxContainer::getWxContainer()
 //-----------------------------------------------------------------------------
 
 } // namespace container
-} // namespace fwGuiWX
+} // namespace fwGuiWx

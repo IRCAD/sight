@@ -11,7 +11,7 @@
 
 #include <fwGui/layoutManager/LineLayoutManagerBase.hpp>
 
-#include "fwGuiWX/container/WxContainer.hpp"
+#include "fwGuiWx/container/WxContainer.hpp"
 #include "fwGuiWx/config.hpp"
 
 namespace fwGui
@@ -51,7 +51,7 @@ public:
     FWGUIWX_API virtual void destroyLayout();
 
 private:
-    ::fwGuiWX::container::WxContainer::sptr m_parentContainer;
+    ::fwGuiWx::container::WxContainer::sptr m_parentContainer;
 };
 
 } // namespace fwGui

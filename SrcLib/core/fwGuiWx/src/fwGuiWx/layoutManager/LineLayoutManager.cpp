@@ -33,7 +33,7 @@ LineLayoutManager::~LineLayoutManager()
 void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
-//    m_parentContainer = ::fwGuiWx::container::WxContainer::dynamicCast(parent);
+    m_parentContainer = ::fwGuiWx::container::WxContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to WxContainer failed", m_parentContainer);
 
     wxWindow* wxContainer = m_parentContainer->getWxContainer();
@@ -47,7 +47,7 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     BOOST_FOREACH ( ViewInfo viewInfo, views)
     {
         wxPanel * viewPanel = new wxPanel(  wxContainer, wxNewId() , wxDefaultPosition, wxSize( viewInfo.m_minSize.first, viewInfo.m_minSize.second ), wxNO_BORDER | wxTAB_TRAVERSAL );
-        ::fwGuiWX::container::WxContainer::NewSptr subContainer;
+        ::fwGuiWx::container::WxContainer::NewSptr subContainer;
         subContainer->setWxContainer(viewPanel);
         m_subViews.push_back(subContainer);
 #ifndef __MACOSX__
