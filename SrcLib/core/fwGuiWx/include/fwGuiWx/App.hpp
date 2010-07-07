@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef GUI_APP_HPP_
-#define GUI_APP_HPP_
+#ifndef FWGUIWX_APP_HPP_
+#define FWGUIWX_APP_HPP_
 
 #include <wx/app.h>
 #include <wx/intl.h>
 
 #include <fwRuntime/profile/Profile.hpp>
 
-#include "gui/export.hpp"
+#include "fwGuiWx/config.hpp"
 
 class WXDLLEXPORT wxLocale;
 class wxSingleInstanceChecker;
@@ -22,7 +22,7 @@ wxLanguage GetUILanguage();
 wxLanguage ChooseLanguage();
 void ChangeUILanguage();
 
-namespace gui
+namespace fwGuiWx
 {
 
 /**
@@ -32,38 +32,38 @@ namespace gui
  * @date    2009.
  */
 
-GUI_CLASS_API class App : public wxApp
+class FWGUIWX_CLASS_API App : public wxApp
 {
 public:
 
     /**
      * @brief   Constructor
      */
-    App();
+    FWGUIWX_API App();
 
     /**
      * @name    Overrides
      */
     /// @{
 
-    bool OnInit();
+    FWGUIWX_API bool OnInit();
 
-    int OnExit();
+    FWGUIWX_API int OnExit();
 
-    void usage(const std::string & mes) const;
+    FWGUIWX_API void usage(const std::string & mes) const;
 
-    bool OnCmdLineParsed(wxCmdLineParser & parser);
+    FWGUIWX_API bool OnCmdLineParsed(wxCmdLineParser & parser);
 
-    void OnInitCmdLine(wxCmdLineParser & parser);
+    FWGUIWX_API void OnInitCmdLine(wxCmdLineParser & parser);
 
 #ifdef __WXMAC__
-    virtual void MacOpenFile (  const wxString & fileName);
+    FWGUIWX_API virtual void MacOpenFile (  const wxString & fileName);
 
-    virtual void MacReopenApp (  const wxString & fileName);
+    FWGUIWX_API virtual void MacReopenApp (  const wxString & fileName);
 
-    virtual void MacNewFile (  const wxString & fileName);
+    FWGUIWX_API virtual void MacNewFile (  const wxString & fileName);
 
-    void eventMac(const wxString & fileName);
+    FWGUIWX_API void eventMac(const wxString & fileName);
 #endif
 
     /// @}
@@ -85,7 +85,7 @@ private:
 };
 
 
-} // namespace gui
+} // namespace fwGuiWx
 
 
-#endif /*GUI_APP_HPP_*/
+#endif /*FWGUIWX_APP_HPP_*/

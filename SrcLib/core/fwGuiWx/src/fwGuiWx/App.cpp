@@ -37,12 +37,10 @@
 
 #include <fwGui/MessageDialog.hpp>
 
-#include "gui/App.hpp"
+#include "fwGuiWx/App.hpp"
 
-namespace gui
+namespace fwGuiWx
 {
-
-IMPLEMENT_APP_NO_MAIN(gui::App) ;
 
 //-----------------------------------------------------------------------------
 
@@ -67,8 +65,6 @@ void App::usage( const std::string & mes ) const
     messageBox.setIcon(::fwGui::IMessageDialog::CRITICAL);
     messageBox.addButton(::fwGui::IMessageDialog::OK);
     messageBox.show();
-
-
 }
 
 //-----------------------------------------------------------------------------
@@ -247,8 +243,10 @@ void App::eventMac(const wxString & fileName)
 
 #endif
 
-}
+} // namespace fwGuiWx
 
+
+//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
 #if NEED_CHOOSELANG_UI

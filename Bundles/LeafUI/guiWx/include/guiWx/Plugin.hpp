@@ -9,7 +9,7 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-#include "config.hpp"
+#include "guiWx/config.hpp"
 
 namespace guiWx
 {
