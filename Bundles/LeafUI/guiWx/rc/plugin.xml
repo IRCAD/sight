@@ -1,0 +1,9 @@
+<plugin id="guiWx" class="::guiWx::Plugin">
+    <library name="guiWx"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    
+    
+</plugin>
