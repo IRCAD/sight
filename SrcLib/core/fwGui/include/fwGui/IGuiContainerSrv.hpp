@@ -55,6 +55,10 @@ protected :
 
     FWGUI_API void initialize();
 
+    FWGUI_API void create();
+
+    FWGUI_API void destroy();
+
 private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
