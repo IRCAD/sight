@@ -10,24 +10,24 @@
 #include <fwTools/UUID.hpp>
 #include <fwServices/helper.hpp>
 
-#include "fwGui/IMenuBarSrv.hpp"
+#include "fwGui/IMenuSrv.hpp"
 
 namespace fwGui
 {
 
-IMenuBarSrv::IMenuBarSrv()
+IMenuSrv::IMenuSrv()
 {}
 
 //-----------------------------------------------------------------------------
 
-IMenuBarSrv::~IMenuBarSrv()
+IMenuSrv::~IMenuSrv()
 {}
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::initialize()
+void IMenuSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::MenuBarRegistrar::NewSptr(this->getUUID());
+    m_registrar = ::fwGui::registrar::MenuRegistrar::NewSptr(this->getUUID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registrar");
     if(!vectRegistrar.empty())
@@ -45,49 +45,49 @@ void IMenuBarSrv::initialize()
     }
     this->initializeLayoutManager(m_layoutConfig);
 
-    ::fwGui::fwMenuBar::sptr menuBar = m_registrar->getParent();
-    SLM_ASSERT("Parent menuBar is unknown.", menuBar);
-    m_layoutManager->createLayout(menuBar);
+    ::fwGui::fwMenu::sptr menu = m_registrar->getParent();
+    SLM_ASSERT("Parent menu is unknown.", menu);
+    m_layoutManager->createLayout(menu);
 
 
-    m_registrar->manage(m_layoutManager->getMenus());
+    m_registrar->manage(m_layoutManager->getMenuItems());
 }
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
+void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
-    if (m_hideMenus)
+    if (m_hideActions)
     {
-        m_layoutManager->menuIsVisible(menu, false);
+        m_layoutManager->actionIsVisible(menuItem, false);
     }
     else
     {
-        m_layoutManager->menuIsEnabled(menu, false);
+        m_layoutManager->actionIsEnabled(menuItem, false);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
+void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
-    if (m_hideMenus)
+    if (m_hideActions)
     {
-        m_layoutManager->menuIsVisible(menu, true);
+        m_layoutManager->actionIsVisible(menuItem, true);
     }
     else
     {
-        m_layoutManager->menuIsEnabled(menu, true);
+        m_layoutManager->actionIsEnabled(menuItem, true);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
+void IMenuSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
@@ -95,7 +95,7 @@ void IMenuBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
     ::fwTools::Object::sptr layout = ::fwTools::Factory::New(layoutManagerClassName);
     OSLM_ASSERT("Unable to create "<< layoutManagerClassName, layout);
-    m_layoutManager = ::fwGui::layoutManager::IMenuBarLayoutManager::dynamicCast(layout);
+    m_layoutManager = ::fwGui::layoutManager::IMenuLayoutManager::dynamicCast(layout);
     OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);

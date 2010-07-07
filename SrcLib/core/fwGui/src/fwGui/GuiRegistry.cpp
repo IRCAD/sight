@@ -7,15 +7,17 @@
 #include <fwTools/UUID.hpp>
 #include <fwServices/helper.hpp>
 
+#include "fwGui/IMenuSrv.hpp"
 #include "fwGui/GuiRegistry.hpp"
 
 namespace fwGui
 {
 
-GuiRegistry::ContainerMapType GuiRegistry::m_globalSIDToFwContainer;
-GuiRegistry::ContainerMapType GuiRegistry::m_globalWIDToFwContainer;
-GuiRegistry::MenuBarMapType   GuiRegistry::m_globalSIDToFwMenuBar;
-GuiRegistry::MenuMapType      GuiRegistry::m_globalSIDToFwMenu;
+GuiRegistry::ContainerMapType     GuiRegistry::m_globalSIDToFwContainer;
+GuiRegistry::ContainerMapType     GuiRegistry::m_globalWIDToFwContainer;
+GuiRegistry::MenuBarMapType       GuiRegistry::m_globalSIDToFwMenuBar;
+GuiRegistry::MenuMapType          GuiRegistry::m_globalSIDToFwMenu;
+GuiRegistry::ActionToMenuMapType  GuiRegistry::m_actionSIDToParentSID;
 
 GuiRegistry::GuiRegistry()
 {}
@@ -170,5 +172,76 @@ void GuiRegistry::unregisterSIDMenu(std::string sid)
 }
 
 //-----------------------------------------------------------------------------
+
+void GuiRegistry::registerActionSIDToParentSID(std::string actionSid , std::string parentSidm)
+{
+    OSLM_ASSERT("Sorry, action for "<<actionSid<<" already exists in SID action map.",
+                m_actionSIDToParentSID.find(actionSid) == m_actionSIDToParentSID.end());
+    m_actionSIDToParentSID[actionSid] = parentSidm;
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid)
+{
+    bool service_exists = ::fwTools::UUID::exist(actionSid, ::fwTools::UUID::SIMPLE );
+    OSLM_INFO_IF("Service "<<actionSid <<" not exists.",!service_exists );
+    if(service_exists)
+    {
+        ::fwServices::IService::sptr service = ::fwServices::get( actionSid ) ;
+        OSLM_ASSERT("Service "<<actionSid<<" must be stopped before unregister action.",service->isStopped());
+    }
+
+    OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
+                m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
+
+    // Removes container in SID container map
+    m_actionSIDToParentSID.erase(actionSid);
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiRegistry::actionServiceStopping(std::string actionSid)
+{
+    OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
+                    m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
+
+    std::string parentSid = m_actionSIDToParentSID[actionSid];
+    bool service_exists = ::fwTools::UUID::exist(parentSid, ::fwTools::UUID::SIMPLE );
+    OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+    if(service_exists)
+    {
+        ::fwServices::IService::sptr service = ::fwServices::get( parentSid ) ;
+        ::fwGui::IMenuSrv::sptr menuSrv = ::fwGui::IMenuSrv::dynamicCast(service);
+        if (menuSrv)
+        {
+            menuSrv->actionServiceStopping(actionSid);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiRegistry::actionServiceStarting(std::string actionSid)
+{
+    OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
+                    m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
+
+    std::string parentSid = m_actionSIDToParentSID[actionSid];
+    bool service_exists = ::fwTools::UUID::exist(parentSid, ::fwTools::UUID::SIMPLE );
+    OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+    if(service_exists)
+    {
+        ::fwServices::IService::sptr service = ::fwServices::get( parentSid ) ;
+        ::fwGui::IMenuSrv::sptr menuSrv = ::fwGui::IMenuSrv::dynamicCast(service);
+        if (menuSrv)
+        {
+            menuSrv->actionServiceStarting(actionSid);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 
 }

@@ -72,7 +72,7 @@ private:
     ConfigurationType m_layoutConfig;
     ConfigurationType m_menuBarConfig;
 
-    bool hasMenuBar;
+    bool m_hasMenuBar;
 };
 
 } // namespace fwGui

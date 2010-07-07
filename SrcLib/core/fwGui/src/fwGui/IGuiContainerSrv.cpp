@@ -15,7 +15,7 @@
 namespace fwGui
 {
 
-IGuiContainerSrv::IGuiContainerSrv() : hasMenuBar(false)
+IGuiContainerSrv::IGuiContainerSrv() : m_hasMenuBar(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -56,7 +56,8 @@ void IGuiContainerSrv::initialize()
         {
             m_menuBarConfig = vectMBBuilder.at(0);
             this->initializeMenuBarBuilder(m_menuBarConfig);
-            hasMenuBar = true;
+
+            m_hasMenuBar = true;
         }
     }
 }
@@ -74,7 +75,7 @@ void IGuiContainerSrv::create()
 
     m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
 
-    if (hasMenuBar)
+    if (m_hasMenuBar)
     {
         m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
     }
@@ -84,16 +85,17 @@ void IGuiContainerSrv::create()
 
 void IGuiContainerSrv::destroy()
 {
-    if (hasMenuBar)
-    {
-        m_menuBarBuilder->destroyMenuBar();
-    }
-
     SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
     m_viewRegistrar->unmanage();
 
     SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
     m_viewLayoutManager->destroyLayout();
+
+    if (m_hasMenuBar)
+    {
+        SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
+        m_menuBarBuilder->destroyMenuBar();
+    }
 }
 
 //-----------------------------------------------------------------------------

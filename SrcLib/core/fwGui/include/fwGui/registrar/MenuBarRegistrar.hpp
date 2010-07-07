@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_REGISTRYMANAGER_MENUBARREGISTRYMANAGER_HPP_
-#define _FWGUI_REGISTRYMANAGER_MENUBARREGISTRYMANAGER_HPP_
+#ifndef _FWGUI_REGISTRAR_MENUBARREGISTRYMANAGER_HPP_
+#define _FWGUI_REGISTRAR_MENUBARREGISTRYMANAGER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -22,7 +22,7 @@ namespace registrar
 {
 
 /**
- * @brief   Defines the generic view manager for IHM.
+ * @brief   Defines the menuBar registrar for IHM.
  * @class   MenuBarRegistrar.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
@@ -45,12 +45,19 @@ public:
     FWGUI_API virtual ::fwGui::fwMenuBar::sptr getParent();
 
     /**
+     * @brief Return the fwMenu associated with the menuSid.
+     * @param menuSid sid of the menu service
+     * @param menus  vector containing the fwMenu manages by this registrar.
+     */
+    FWGUI_API virtual ::fwGui::fwMenu::sptr getFwMenu(std::string menuSid, std::vector< ::fwGui::fwMenu::sptr > menus);
+
+    /**
      * @brief Configure views managed.
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**
-     * @brief Starting menu bar registry manager.
+     * @brief Starting menu bar registrar.
      * All services managed in local menus
      * and with start="yes" in configuration will be started.
      * @pre MenuBarRegistrar must be initialized before.
@@ -84,6 +91,6 @@ protected:
 } // namespace registrar
 } // namespace fwGui
 
-#endif /*_FWGUI_REGISTRYMANAGER_MENUBARREGISTRYMANAGER_HPP_*/
+#endif /*_FWGUI_REGISTRAR_MENUBARREGISTRYMANAGER_HPP_*/
 
 

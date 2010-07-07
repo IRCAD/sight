@@ -13,6 +13,7 @@
 #include "fwGui/fwContainer.hpp"
 #include "fwGui/fwMenuBar.hpp"
 #include "fwGui/fwMenu.hpp"
+#include "fwGui/fwMenuItem.hpp"
 
 /**
  * @brief   The namespace fwGui contains the base interface for IHM services.
@@ -37,8 +38,9 @@ class FWGUI_CLASS_API GuiRegistry : public ::fwCore::BaseObject
 public :
 
     typedef std::map< std::string , ::fwGui::fwContainer::sptr > ContainerMapType;
-    typedef std::map< std::string , ::fwGui::fwMenuBar::sptr > MenuBarMapType;
-    typedef std::map< std::string , ::fwGui::fwMenu::sptr > MenuMapType;
+    typedef std::map< std::string , ::fwGui::fwMenuBar::sptr >   MenuBarMapType;
+    typedef std::map< std::string , ::fwGui::fwMenu::sptr >      MenuMapType;
+    typedef std::map< std::string , std::string >                ActionToMenuMapType;
 
     fwCoreNonInstanciableClassDefinitionsMacro( (GuiRegistry)(::fwCore::BaseObject) )
 
@@ -144,12 +146,43 @@ public :
     FWGUI_API static ::fwGui::fwMenu::sptr getSIDMenu(std::string sid);
     ///@}
 
+    //-----------------------------------------------------------------------------
+
+    /**
+     * @name    Helper Action-Menu methods
+     */
+    ///@{
+
+    /**
+     * @brief Registers action sid associted with a parent sid.
+     */
+    FWGUI_API static void registerActionSIDToParentSID(std::string actionSid, std::string parentSid);
+
+    /**
+     * @brief Unregisters action sid associted with a parent sid.
+     */
+    FWGUI_API static void unregisterActionSIDToParentSID(std::string actionSid);
+
+    /**
+     * @brief Method called when the action service is stopping.
+     * Call parent service actionServiceStopping() method
+     */
+    FWGUI_API static void actionServiceStopping(std::string actionSid);
+
+    /**
+     * @brief Method called when the action service is starting.
+     * Call parent service actionServiceStarting() method
+     */
+    FWGUI_API static void actionServiceStarting(std::string actionSid);
+    ///@}
+
 protected :
 
-    static ContainerMapType m_globalSIDToFwContainer;
-    static ContainerMapType m_globalWIDToFwContainer;
-    static MenuBarMapType   m_globalSIDToFwMenuBar;
-    static MenuMapType      m_globalSIDToFwMenu;
+    static ContainerMapType     m_globalSIDToFwContainer;
+    static ContainerMapType     m_globalWIDToFwContainer;
+    static MenuBarMapType       m_globalSIDToFwMenuBar;
+    static MenuMapType          m_globalSIDToFwMenu;
+    static ActionToMenuMapType  m_actionSIDToParentSID;
 
 };
 

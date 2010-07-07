@@ -33,6 +33,12 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (IMenuBarSrv)(::fwServices::IService) ) ;
 
+    /// Method called when a menu service is stopping
+    FWGUI_API void menuServiceStopping(std::string menuSrvSID);
+
+    /// Method called when a menu service is starting
+    FWGUI_API void menuServiceStarting(std::string menuSrvSID);
+
 protected :
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -48,12 +54,6 @@ protected :
 
     /// Initialize the layout and registry managers.
     FWGUI_API void initialize();
-
-    /// Method called when a menu service is stopping
-    FWGUI_API void menuServiceStopping(std::string menuSrvSID);
-
-    /// Method called when a menu service is starting
-    FWGUI_API void menuServiceStarting(std::string menuSrvSID);
 
 private:
 
