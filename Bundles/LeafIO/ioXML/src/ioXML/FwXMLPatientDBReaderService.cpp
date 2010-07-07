@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 
 #ifdef __WXMAC__
-
+/*
 class wxEvtHandlerOpenFile : public wxEvtHandler
 {
     public:
@@ -88,7 +88,7 @@ class wxEvtHandlerOpenFile : public wxEvtHandler
 
     DECLARE_DYNAMIC_CLASS( wxEvtHandlerOpenFile )
 };
-
+*/
 #endif
 
 //------------------------------------------------------------------------------
@@ -163,11 +163,13 @@ void FwXMLPatientDBReaderService::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE("FwXMLPatientDBReaderService::starting()");
 #ifdef __WXMAC__
+    /*
     wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
     if (frame != NULL)
         frame->Connect( wxIDEventFwOpen, wxEventFwOpen, wxCommandEventHandler(wxEvtHandlerOpenFile::open) );
     else
         SLM_FATAL ("Window not found !")
+        */
 #endif
 }
 

@@ -8,6 +8,7 @@ BUNDLES = [
     'ioData_0-1'        ,
     'ioVTK_0-1'         ,
     'ioXML_0-1'         ,
+    'ioXMLWx_0-1'       ,
     'io_0-1'            ,
     'servicesReg_0-1'   ,
     'uiVisu_0-1'        ,
