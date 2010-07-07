@@ -56,10 +56,8 @@ void IGuiContainerSrv::initialize()
         {
             m_menuBarConfig = vectMBBuilder.at(0);
             this->initializeMenuBarBuilder(m_menuBarConfig);
-
             hasMenuBar = true;
         }
-
     }
 }
 
@@ -86,11 +84,16 @@ void IGuiContainerSrv::create()
 
 void IGuiContainerSrv::destroy()
 {
-    SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
-    m_viewLayoutManager->destroyLayout();
+    if (hasMenuBar)
+    {
+        m_menuBarBuilder->destroyMenuBar();
+    }
 
     SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
     m_viewRegistrar->unmanage();
+
+    SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
+    m_viewLayoutManager->destroyLayout();
 }
 
 //-----------------------------------------------------------------------------
