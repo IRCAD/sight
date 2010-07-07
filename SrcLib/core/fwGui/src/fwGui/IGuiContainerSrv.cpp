@@ -15,7 +15,7 @@
 namespace fwGui
 {
 
-IGuiContainerSrv::IGuiContainerSrv()
+IGuiContainerSrv::IGuiContainerSrv() : hasMenuBar(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -37,20 +37,39 @@ void IGuiContainerSrv::initialize()
     m_viewRegistrar->initialize(m_viewRegistrarConfig);
 
 
-    // find LayoutManager configuration
-    std::vector < ConfigurationType > vectLayoutMng = m_configuration->find("viewRegistrar");
-    if(!vectLayoutMng.empty())
+    // find gui configuration
+    std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+    if(!vectGui.empty())
     {
-        m_layoutConfig = vectLayoutMng.at(0);
+        // find LayoutManager configuration
+        std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
+        if(!vectLayoutMng.empty())
+        {
+            m_layoutConfig = vectLayoutMng.at(0);
+        }
+        this->initializeLayoutManager(m_layoutConfig);
+
+        ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
+        SLM_ASSERT("Parent container is unknown.", container);
+        m_viewLayoutManager->createLayout(container);
+
+
+        // find mebuBarBuilder configuration
+        std::vector < ConfigurationType > vectMBBuilder = vectGui.at(0)->find("menuBar");
+        if(!vectMBBuilder.empty())
+        {
+            m_menuBarConfig = vectMBBuilder.at(0);
+            this->initializeMenuBarBuilder(m_menuBarConfig);
+            m_menuBarBuilder->createMenuBar(container);
+            hasMenuBar = true;
+        }
     }
-    this->initializeLayoutManager(m_layoutConfig);
-
-    ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
-    SLM_ASSERT("Parent container is unknown.", container);
-    m_viewLayoutManager->createLayout(container);
-
-
     m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
+
+    if (hasMenuBar)
+    {
+        m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -69,6 +88,21 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     m_viewLayoutManager->initialize(layoutConfig);
 }
 
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
+{
+    OSLM_ASSERT("Bad configuration name "<<menuBarConfig->getName()<< ", must be menuBar",
+                menuBarConfig->getName() == "menuBar");
+    SLM_ASSERT("<menuBar> tag must have type attribute", menuBarConfig->hasAttribute("type"));
+    std::string menuBarClassName = menuBarConfig->getAttributeValue("type");
+    ::fwTools::Object::sptr menuBarBuilder = ::fwTools::Factory::New(menuBarClassName);
+    OSLM_ASSERT("Unable to create "<< menuBarClassName, menuBarBuilder);
+    m_menuBarBuilder = ::fwGui::builder::IMenuBarBuilder::dynamicCast(menuBarBuilder);
+    OSLM_ASSERT("Unable to cast "<< menuBarClassName << " in layout manager", m_menuBarBuilder);
+
+    m_menuBarBuilder->initialize(menuBarConfig);
+}
 //-----------------------------------------------------------------------------
 
 }

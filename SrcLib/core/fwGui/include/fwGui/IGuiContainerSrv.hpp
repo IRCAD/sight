@@ -14,6 +14,7 @@
 
 #include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
+#include "fwGui/builder/IMenuBarBuilder.hpp"
 
 /**
  * @brief   The namespace fwGui contains the base interface for IHM services.
@@ -57,12 +58,17 @@ protected :
 private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
+    void initializeMenuBarBuilder( ::fwRuntime::ConfigurationElement::sptr menuBarConfig );
 
     ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
-    ::fwGui::registrar::ViewRegistrar::sptr    m_viewRegistrar;
+    ::fwGui::registrar::ViewRegistrar::sptr          m_viewRegistrar;
+    ::fwGui::builder::IMenuBarBuilder::sptr          m_menuBarBuilder;
 
     ConfigurationType m_viewRegistrarConfig;
     ConfigurationType m_layoutConfig;
+    ConfigurationType m_menuBarConfig;
+
+    bool hasMenuBar;
 };
 
 } // namespace fwGui

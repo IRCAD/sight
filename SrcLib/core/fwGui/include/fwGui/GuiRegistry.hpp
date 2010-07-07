@@ -11,6 +11,8 @@
 
 #include "fwGui/config.hpp"
 #include "fwGui/fwContainer.hpp"
+#include "fwGui/fwMenuBar.hpp"
+#include "fwGui/fwMenu.hpp"
 
 /**
  * @brief   The namespace fwGui contains the base interface for IHM services.
@@ -35,6 +37,8 @@ class FWGUI_CLASS_API GuiRegistry : public ::fwCore::BaseObject
 public :
 
     typedef std::map< std::string , ::fwGui::fwContainer::sptr > ContainerMapType;
+    typedef std::map< std::string , ::fwGui::fwMenuBar::sptr > MenuBarMapType;
+    typedef std::map< std::string , ::fwGui::fwMenu::sptr > MenuMapType;
 
     fwCoreNonInstanciableClassDefinitionsMacro( (GuiRegistry)(::fwCore::BaseObject) )
 
@@ -53,7 +57,7 @@ public :
     /**
      * @name    Helper SID-container methods
      */
-    //@{
+    ///@{
 
     /**
      * @brief Registers container associate with service ID.
@@ -70,14 +74,14 @@ public :
      */
     FWGUI_API static ::fwGui::fwContainer::sptr getSIDContainer(std::string sid);
 
-    //@}
+    ///@}
 
     //-----------------------------------------------------------------------------
 
     /**
      * @name    Helper WID-container methods
      */
-    //@{
+    ///@{
 
     /**
      * @brief Registers container associate with window ID.
@@ -94,14 +98,58 @@ public :
      */
     FWGUI_API static ::fwGui::fwContainer::sptr getWIDContainer(std::string wid);
 
-    //@}
+    ///@}
 
     //-----------------------------------------------------------------------------
+
+    /**
+     * @name    Helper SID-MenuBar methods
+     */
+    ///@{
+
+    /**
+     * @brief Registers fwMenuBar associate with service ID.
+     */
+    FWGUI_API static void registerSIDMenuBar(std::string sid, ::fwGui::fwMenuBar::sptr menuBar);
+
+    /**
+     * @brief Unregisters fwMenuBar associate with service ID.
+     */
+    FWGUI_API static void unregisterSIDMenuBar(std::string sid);
+    /**
+     * @brief Returns fwMenuBar associate with service ID.
+     */
+    FWGUI_API static ::fwGui::fwMenuBar::sptr getSIDMenuBar(std::string sid);
+    ///@}
+
+    //-----------------------------------------------------------------------------
+
+    /**
+     * @name    Helper SID-Menu methods
+     */
+    ///@{
+
+    /**
+     * @brief Registers fwMenu associate with service ID.
+     */
+    FWGUI_API static void registerSIDMenu(std::string sid, ::fwGui::fwMenu::sptr menu);
+
+    /**
+     * @brief Unregisters fwMenu associate with service ID.
+     */
+    FWGUI_API static void unregisterSIDMenu(std::string sid);
+    /**
+     * @brief Returns fwMenu associate with service ID.
+     */
+    FWGUI_API static ::fwGui::fwMenu::sptr getSIDMenu(std::string sid);
+    ///@}
 
 protected :
 
     static ContainerMapType m_globalSIDToFwContainer;
     static ContainerMapType m_globalWIDToFwContainer;
+    static MenuBarMapType   m_globalSIDToFwMenuBar;
+    static MenuMapType      m_globalSIDToFwMenu;
 
 };
 

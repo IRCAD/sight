@@ -86,6 +86,26 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
         }
         index++;
     }
+
+    // find menuBar
+    std::vector < ConfigurationType > vectmenuBar = configuration->find("menuBar");
+    if(!vectmenuBar.empty())
+    {
+        ConfigurationType menuBarCfg = vectmenuBar.at(0);
+        if (menuBarCfg->hasAttribute("sid"))
+        {
+            bool start = false;
+            if (menuBarCfg->hasAttribute("start"))
+            {
+                std::string startValue = menuBarCfg->getAttributeValue("start");
+                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
+                           startValue == "yes" || startValue == "no");
+                start = (startValue=="yes");
+            }
+            std::string sid = menuBarCfg->getAttributeValue("sid");
+            m_menuBarSid =  std::make_pair( sid, start);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -111,6 +131,19 @@ void ViewRegistrar::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
         OSLM_ASSERT("Container index "<< wid.second <<" is bigger than subViews size!", wid.second < subViews.size());
         container = subViews.at( wid.second );
         ::fwGui::GuiRegistry::registerWIDContainer(wid.first, container);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ViewRegistrar::manageMenuBar(::fwGui::fwMenuBar::sptr menuBar )
+{
+    ::fwGui::GuiRegistry::registerSIDMenuBar(m_menuBarSid.first, menuBar);
+    if(m_menuBarSid.second) //service is auto started?
+    {
+        OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_menuBarSid.first, ::fwTools::UUID::SIMPLE ) );
+        ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first ) ;
+        service->start();
     }
 }
 
