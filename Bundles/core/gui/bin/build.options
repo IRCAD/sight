@@ -8,6 +8,8 @@ LIB      = [
             'fwCore_0-1',
             'fwData_0-1',
             'fwComEd_0-1',
+            'fwGui_0-1',
+            
             'fwWX_0-1'
             ]
 
