@@ -155,7 +155,14 @@ void FwXMLPatientDBReaderService::configureWithIHM()
     }
 }
 
+//------------------------------------------------------------------------------
 
+void FwXMLPatientDBReaderService::fixFilename(wxString _filename)
+{
+    m_fsPatientDBPath = ::boost::filesystem::path( ::fwWX::wx2std(_filename), ::boost::filesystem::native );
+    m_bServiceIsConfigured = true;
+
+}
 
 //------------------------------------------------------------------------------
 
