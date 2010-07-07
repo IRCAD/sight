@@ -27,6 +27,7 @@ IGuiContainerSrv::~IGuiContainerSrv()
 
 void IGuiContainerSrv::initialize()
 {
+    SLM_ASSERT("Service hasn't configuration", m_configuration);
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
     // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("viewRegistrar");
@@ -46,13 +47,8 @@ void IGuiContainerSrv::initialize()
         if(!vectLayoutMng.empty())
         {
             m_layoutConfig = vectLayoutMng.at(0);
+            this->initializeLayoutManager(m_layoutConfig);
         }
-        this->initializeLayoutManager(m_layoutConfig);
-
-        ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
-        SLM_ASSERT("Parent container is unknown.", container);
-        m_viewLayoutManager->createLayout(container);
-
 
         // find mebuBarBuilder configuration
         std::vector < ConfigurationType > vectMBBuilder = vectGui.at(0)->find("menuBar");
@@ -60,16 +56,41 @@ void IGuiContainerSrv::initialize()
         {
             m_menuBarConfig = vectMBBuilder.at(0);
             this->initializeMenuBarBuilder(m_menuBarConfig);
-            m_menuBarBuilder->createMenuBar(container);
+
             hasMenuBar = true;
         }
+
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::create()
+{
+    SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
+    ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
+    SLM_ASSERT("Parent container is unknown.", container);
+
+    SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
+    m_viewLayoutManager->createLayout(container);
+
     m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
 
     if (hasMenuBar)
     {
         m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::destroy()
+{
+    SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
+    m_viewLayoutManager->destroyLayout();
+
+    SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
+    m_viewRegistrar->unmanage();
 }
 
 //-----------------------------------------------------------------------------
