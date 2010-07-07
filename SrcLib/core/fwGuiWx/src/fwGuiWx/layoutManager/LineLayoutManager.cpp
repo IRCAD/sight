@@ -10,10 +10,18 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwTools/ClassRegistrar.hpp>
 
 #include <fwWX/convert.hpp>
 
 #include "fwGuiWx/layoutManager/LineLayoutManager.hpp"
+
+
+REGISTER_BINDING( ::fwGui::layoutManager::LineLayoutManagerBase,
+        ::fwGui::LineLayoutManager,
+         ::fwGui::layoutManager::LineLayoutManagerBase::RegistryKeyType,
+          ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
+
 
 namespace fwGui
 {
