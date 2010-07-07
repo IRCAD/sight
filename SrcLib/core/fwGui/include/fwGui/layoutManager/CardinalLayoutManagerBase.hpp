@@ -87,11 +87,9 @@ public:
 
     FWGUI_API std::list< ViewInfo> getViewsInfo(){ return m_views;};
 
-protected:
-
-    FWGUI_API static const std::map<std::string, Align> STRING_TO_ALIGN;
-
 private:
+
+    static const std::map<std::string, Align> STRING_TO_ALIGN;
 
     /// Save layout configuration definition
     std::list< ViewInfo>  m_views;
