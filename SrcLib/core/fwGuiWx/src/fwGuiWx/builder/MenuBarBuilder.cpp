@@ -9,8 +9,8 @@
 
 #include <boost/foreach.hpp>
 
-#include "fwGuiWX/container/WxContainer.hpp"
-#include "fwGuiWX/container/WxMenuBarContainer.hpp"
+#include "fwGuiWx/container/WxContainer.hpp"
+#include "fwGuiWx/container/WxMenuBarContainer.hpp"
 #include "fwGuiWx/builder/MenuBarBuilder.hpp"
 
 namespace fwGui

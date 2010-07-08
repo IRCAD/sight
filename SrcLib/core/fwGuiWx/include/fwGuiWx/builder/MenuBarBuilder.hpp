@@ -14,7 +14,7 @@
 #include <fwGui/fwMenuBar.hpp>
 #include <fwGui/fwContainer.hpp>
 
-#include "fwGuiWX/config.hpp"
+#include "fwGuiWx/config.hpp"
 
 namespace fwGui
 {
