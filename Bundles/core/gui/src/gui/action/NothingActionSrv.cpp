@@ -4,80 +4,75 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include <fwCore/base.hpp>
 
-#include <fwTools/UUID.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
 #include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
-
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include "gui/aspect/DefaultMenuBarSrv.hpp"
+#include <fwServices/macros.hpp>
 
 
-REGISTER_SERVICE( ::fwGui::IMenuBarSrv , ::gui::aspect::DefaultMenuBarSrv , ::fwTools::Object );
+#include "gui/action/NothingActionSrv.hpp"
 
 namespace gui
 {
-
-namespace aspect
+namespace action
 {
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::NothingActionSrv , ::fwTools::Object ) ;
 
 
-//-----------------------------------------------------------------------------
-
-DefaultMenuBarSrv::DefaultMenuBarSrv() throw()
-{}
-
-//-----------------------------------------------------------------------------
-
-DefaultMenuBarSrv::~DefaultMenuBarSrv() throw()
-{}
+NothingActionSrv::NothingActionSrv() throw()
+{
+}
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::configuring() throw( ::fwTools::Failed )
+NothingActionSrv::~NothingActionSrv() throw()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void NothingActionSrv::configuring() throw( ::fwTools::Failed )
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::starting() throw( ::fwTools::Failed )
+void NothingActionSrv::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->create();
+    this->actionServiceStarting();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::stopping() throw( ::fwTools::Failed )
+void NothingActionSrv::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->destroy();
+    this->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::updating() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
-void DefaultMenuBarSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void NothingActionSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
+void NothingActionSrv::updating() throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void NothingActionSrv::info(std::ostream &_sstream )
+{
+    _sstream << "Nothing Action" << std::endl;
 }
 
 }
+}
+

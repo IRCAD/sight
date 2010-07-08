@@ -4,9 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwTools/UUID.hpp>
+#include <wx/app.h>
+#include <wx/wx.h>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -17,38 +16,42 @@
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "gui/aspect/DefaultMenuBarSrv.hpp"
+#include <fwWX/convert.hpp>
+
+#include "gui/action/IAction.hpp"
+#include "gui/aspect/IMenu.hpp"
+#include "gui/aspect/DefaultMenuSrv.hpp"
 
 
-REGISTER_SERVICE( ::fwGui::IMenuBarSrv , ::gui::aspect::DefaultMenuBarSrv , ::fwTools::Object );
+REGISTER_SERVICE( ::fwGui::IMenuSrv , ::gui::aspect::DefaultMenuSrv , ::fwTools::Object );
 
 namespace gui
 {
 
 namespace aspect
 {
-
+const std::string  DefaultMenuSrv::SEPARATOR_UID = "SEPARATOR_UID";
 
 //-----------------------------------------------------------------------------
 
-DefaultMenuBarSrv::DefaultMenuBarSrv() throw()
+DefaultMenuSrv::DefaultMenuSrv() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-DefaultMenuBarSrv::~DefaultMenuBarSrv() throw()
+DefaultMenuSrv::~DefaultMenuSrv() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::configuring() throw( ::fwTools::Failed )
+void DefaultMenuSrv::configuring() throw( ::fwTools::Failed )
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::starting() throw( ::fwTools::Failed )
+void DefaultMenuSrv::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -56,7 +59,7 @@ void DefaultMenuBarSrv::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::stopping() throw( ::fwTools::Failed )
+void DefaultMenuSrv::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -64,14 +67,14 @@ void DefaultMenuBarSrv::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::updating() throw(::fwTools::Failed)
+void DefaultMenuSrv::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void DefaultMenuSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

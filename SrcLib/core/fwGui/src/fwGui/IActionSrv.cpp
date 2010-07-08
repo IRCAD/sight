@@ -30,6 +30,19 @@ void IActionSrv::initialize()
     m_registrar = ::fwGui::registrar::ActionRegistrar::NewSptr(this->getUUID());
 }
 
+//-----------------------------------------------------------------------------
+
+void IActionSrv::actionServiceStopping()
+{
+    this->m_registrar->actionServiceStopping();
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::actionServiceStarting()
+{
+    this->m_registrar->actionServiceStarting();
+}
 
 //-----------------------------------------------------------------------------
 

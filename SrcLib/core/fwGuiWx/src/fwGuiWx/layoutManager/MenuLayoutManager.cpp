@@ -79,7 +79,11 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionInfo.m_name ),_(""), kind ) ;
         menu->Append( menuItemWx );
         menuItem->setWxMenuItem(menuItemWx);
-        m_menuItems.push_back(menuItem);
+
+        if(!actionInfo.m_isSeparator)
+        {
+            m_menuItems.push_back(menuItem);
+        }
     }
 }
 

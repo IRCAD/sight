@@ -44,7 +44,17 @@
         <implements>::fwTools::Object</implements>
     </point>
     
+    <point id="::gui::aspect::DefaultMenuSrv">
+        <implements>::fwGui::IMenuSrv</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
     <point id="::gui::aspect::DefaultMenuBar">
+        <implements>::gui::aspect::IMenuBar</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
+   <point id="::gui::aspect::DefaultMenuBarSrv">
         <implements>::fwGui::IMenuBarSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
@@ -64,8 +74,8 @@
         <implements>::fwTools::Object</implements>
     </point>
         
-    <point id="::gui::action::NothingAction">
-        <implements>::gui::action::IAction</implements>
+    <point id="::gui::action::NothingActionSrv">
+        <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
     

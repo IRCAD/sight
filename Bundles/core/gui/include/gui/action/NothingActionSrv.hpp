@@ -10,8 +10,9 @@
 
 #include <fwServices/IService.hpp>
 
+#include <fwGui/IActionSrv.hpp>
+
 #include "gui/export.hpp"
-#include "gui/action/IAction.hpp"
 
 namespace gui
 {
@@ -20,40 +21,60 @@ namespace action
 
 /**
  * @brief   This action does nothing.
- * @class   NothingAction.
+ * @class   NothingActionSrv.
  * @author  IRCAD (Research and Development Team).
 
  * @date    2009.
  */
-class GUI_CLASS_API NothingAction : public ::gui::action::IAction
+class GUI_CLASS_API NothingActionSrv : public ::fwGui::IActionSrv
 {
 
 public :
-   
-    fwCoreServiceClassDefinitionsMacro ( (NothingAction)(::gui::action::IAction) ) ;
+
+    fwCoreServiceClassDefinitionsMacro ( (NothingActionSrv)(::fwGui::IActionSrv) ) ;
 
     /**
     * @brief Constructor. Do nothing.
     */
-    GUI_API NothingAction() throw() ;
+    GUI_API NothingActionSrv() throw() ;
 
     /**
     * @brief Destructor. Do nothing.
     */
-    GUI_API virtual ~NothingAction() throw() ;
+    GUI_API virtual ~NothingActionSrv() throw() ;
 
 protected:
+
+    /** @name Service methods ( override from ::fwServices::IService )
+     * @{
+     */
+
+    /**
+     * @brief This method is used to configure the action.
+     */
+    GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
+
+    GUI_API virtual void starting() throw(::fwTools::Failed);
+
+    GUI_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+
+    /**
+     * @brief Process the action. Do nothing.
+     */
     GUI_API virtual void updating() throw(::fwTools::Failed);
 
     /**
-     * @brief This method gives information about the class. Do nothing.
+     * @brief This method gives information about the class.
      */
     GUI_API virtual void info(std::ostream &_sstream ) ;
-    
+
+    ///@}
+
 };
 
 

@@ -69,8 +69,6 @@ protected :
 
     /**
      * @brief Stop all actions and separator of this menu and remove menu to wxMenuBar
-     * @todo ACH : uncomment assert => all actions must be started
-     * @todo Menu not empty on MAC with specials Actions like help, Quit...
      */
     GUI_API virtual void stopping() throw( ::fwTools::Failed ) ;
 

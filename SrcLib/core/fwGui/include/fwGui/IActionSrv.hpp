@@ -47,6 +47,12 @@ protected :
     /// Initialize the layout manager and registrar.
     FWGUI_API void initialize();
 
+    /// Method called when the action service is stopping
+    FWGUI_API void actionServiceStopping();
+
+    /// Method called when the action service is starting
+    FWGUI_API void actionServiceStarting();
+
 private:
 
     ::fwGui::registrar::ActionRegistrar::sptr    m_registrar;
