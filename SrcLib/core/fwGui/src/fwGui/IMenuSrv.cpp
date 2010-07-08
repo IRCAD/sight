@@ -44,13 +44,25 @@ void IMenuSrv::initialize()
         m_layoutConfig = vectLayoutMng.at(0);
     }
     this->initializeLayoutManager(m_layoutConfig);
+}
 
+//-----------------------------------------------------------------------------
+
+void IMenuSrv::create()
+{
     ::fwGui::fwMenu::sptr menu = m_registrar->getParent();
     SLM_ASSERT("Parent menu is unknown.", menu);
     m_layoutManager->createLayout(menu);
 
-
     m_registrar->manage(m_layoutManager->getMenuItems());
+}
+
+//-----------------------------------------------------------------------------
+
+void IMenuSrv::destroy()
+{
+    m_layoutManager->destroyLayout();
+    m_registrar->unmanage();
 }
 
 //-----------------------------------------------------------------------------

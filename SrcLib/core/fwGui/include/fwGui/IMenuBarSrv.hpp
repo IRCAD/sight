@@ -55,6 +55,12 @@ protected :
     /// Initialize the layout and registry managers.
     FWGUI_API void initialize();
 
+    /// Create the layout and start the managed services.
+    FWGUI_API void create();
+
+    /// Destroy the layout and stop the managed services.
+    FWGUI_API void destroy();
+
 private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );

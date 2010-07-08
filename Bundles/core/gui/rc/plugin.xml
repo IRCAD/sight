@@ -45,7 +45,7 @@
     </point>
     
     <point id="::gui::aspect::DefaultMenuBar">
-        <implements>::gui::aspect::IMenuBar</implements>
+        <implements>::fwGui::IMenuBarSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
         
