@@ -16,6 +16,7 @@ namespace fwGui
 {
 
 IGuiContainerSrv::IGuiContainerSrv()
+    : m_viewLayoutManagerIsCreated (false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -28,26 +29,30 @@ IGuiContainerSrv::~IGuiContainerSrv()
 void IGuiContainerSrv::initialize()
 {
     SLM_ASSERT("Service hasn't configuration", m_configuration);
-    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
+
+    // Create view registrar
+    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getUUID() );
     // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
-    SLM_ASSERT("<viewRegistrar> xml element must exist", !vectViewMng.empty());
+    if ( ! vectViewMng.empty() )
+    {
+        m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getUUID() );
+        m_viewRegistrarConfig = vectViewMng.at(0);
+        m_viewRegistrar->initialize(m_viewRegistrarConfig);
+    }
 
-    m_viewRegistrarConfig = vectViewMng.at(0);
-    m_viewRegistrar->initialize(m_viewRegistrarConfig);
-
-
-
+    // Create initializeLayoutManager
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-    if(!vectGui.empty())
+    if( ! vectGui.empty() )
     {
         // find view LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-        if(!vectLayoutMng.empty())
+        if( ! vectLayoutMng.empty() )
         {
             m_viewLayoutConfig = vectLayoutMng.at(0);
-            this->initializeLayoutManager(m_viewLayoutConfig);
+            this->initializeLayoutManager( m_viewLayoutConfig );
+            m_viewLayoutManagerIsCreated = true;
         }
     }
 }
@@ -60,10 +65,11 @@ void IGuiContainerSrv::create()
     ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", container);
 
-    SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
-    m_viewLayoutManager->createLayout(container);
-
-    m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
+    if ( m_viewLayoutManagerIsCreated )
+    {
+        m_viewLayoutManager->createLayout(container);
+        m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -71,10 +77,13 @@ void IGuiContainerSrv::create()
 void IGuiContainerSrv::destroy()
 {
     SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
-    m_viewRegistrar->unmanage();
 
-    SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
-    m_viewLayoutManager->destroyLayout();
+    if ( m_viewLayoutManagerIsCreated )
+    {
+        m_viewRegistrar->unmanage();
+        SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
+        m_viewLayoutManager->destroyLayout();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -90,6 +99,13 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_viewLayoutManager);
 
     m_viewLayoutManager->initialize(layoutConfig);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwGui::fwContainer::sptr IGuiContainerSrv::getContainer()
+{
+    return m_viewRegistrar->getParent();
 }
 
 //-----------------------------------------------------------------------------

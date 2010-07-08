@@ -10,8 +10,7 @@
 #include <fwTools/Failed.hpp>
 #include <fwServices/IService.hpp>
 
-#include <fwWX/Timer.hpp>
-#include <fwWX/IGuiContainer.hpp>
+#include <fwGui/IGuiContainerSrv.hpp>
 
 #include "fwRender/config.hpp"
 
@@ -41,86 +40,12 @@ namespace fwRender
  * @li Finally we must call stop() before deleting the service
  *
  */
-class FWRENDER_CLASS_API IRender : public ::fwWX::IGuiContainer
+class FWRENDER_CLASS_API IRender : public ::fwGui::IGuiContainerSrv
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IRender)(::fwServices::IService) ) ;
 
-    /// Clock rate identifiant (for persistance)
-    static const std::string ClockRateId ;
-
-    /**
-     * @name    Helper service methods
-     */
-    //@{
-
-    /**
-     * @brief Configure the service (use it in configuring, before start).
-     *
-     * Configure clock rate if it's specified in the configuration.
-     */
-    FWRENDER_API void initClockRate();
-
-
-    /**
-     * @brief Initialize the Render.
-     *
-     * This method initializes the gui container ( create a new frame if the container is not configured).
-     * It starts timer if clock is configured and register communication channel.
-     *
-     * @note This method should be called in starting() method by concrete services.
-     */
-    FWRENDER_API void initRender();
-
-    /**
-     * @brief Stop the timer and destroy the container if they where configured.
-     *
-     * @note This method should be called in stopping() method by concrete services.
-     */
-    FWRENDER_API void stopRender();
-    //@}
-
-
-
-    /**
-     * @name    Standard service methods
-     */
-    //@{
-
-    /**
-     * @brief Info method.
-     *
-     * This method is used to give
-     * informations about the service clock rate.
-     *
-     * @param[out] _sstream output stream
-     */
-    FWRENDER_API virtual void info(std::ostream &_sstream ) ;
-
-    //@}
-
-    /**
-     * @name    Specific service methods for visualization management
-     */
-    //@{
-
-    /**
-     * @brief   defines the clock rate
-     *
-     * @param[in] _rate clock rate
-     */
-    FWRENDER_API virtual void setClockRate(int _rate) ;
-
-    /**
-     * @brief   retrieve the clock rate
-     *
-     * @li m_clockRate.first == true if clock rate is configured
-     * @li m_clockRate.second = clock rate value
-     */
-    FWRENDER_API  virtual std::pair< bool , int > getClockRate() ;
-
-    //@}
+    fwCoreServiceClassDefinitionsMacro ( (IRender)(::fwGui::IGuiContainerSrv) ) ;
 
 protected :
 
@@ -133,17 +58,6 @@ protected :
      * @brief   Destructor. Do nothing.
      */
     FWRENDER_API virtual ~IRender() throw() ;
-
-    /**
-     * @brief gui container indentifier
-     *
-     * @li m_clockRate.first == true if clock rate is configured
-     * @li m_clockRate.second = clock rate value
-     **/
-    std::pair< bool , int > m_clockRate ;
-
-    /// Clock used to refresh view
-    ::fwWX::Timer<>::ptr m_timer ;
 
 };
 

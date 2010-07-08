@@ -59,11 +59,15 @@ protected :
 
     FWGUI_API void destroy();
 
+    FWGUI_API ::fwGui::fwContainer::sptr getContainer();
+
 private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
+    bool m_viewLayoutManagerIsCreated;
     ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
+
     ::fwGui::registrar::ViewRegistrar::sptr          m_viewRegistrar;
 
     ConfigurationType m_viewRegistrarConfig;
