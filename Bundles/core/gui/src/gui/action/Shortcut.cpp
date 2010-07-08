@@ -196,7 +196,7 @@ const int Shortcut::getKeyCodeFromString( const std::string & shortcut )
             else if ( token == HOME     )   keyCode = WXK_HOME;
             else if ( token == END      )   keyCode = WXK_END;
             else if ( token == RETURN   )   keyCode = WXK_RETURN;
-#ifdef wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(2, 9, 0)
             else if ( token == PAGEUP   )   keyCode = WXK_PAGEUP;
             else if ( token == PAGEDOWN )   keyCode = WXK_PAGEDOWN;
 #else
@@ -290,7 +290,7 @@ const std::string Shortcut::getStringFromKeyCode( const int keyCode )
     case WXK_HOME:      result = HOME;      break;
     case WXK_END:       result = END;       break;
     case WXK_RETURN:    result = RETURN;    break;
-#ifdef wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(2, 9, 0)
     case WXK_PAGEUP:        result = PAGEUP;    break;
     case WXK_PAGEDOWN:      result = PAGEDOWN;  break;
 #else

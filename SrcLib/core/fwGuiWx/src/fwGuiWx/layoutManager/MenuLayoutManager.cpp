@@ -28,7 +28,7 @@ namespace fwGui
 namespace layoutManager
 {
 
-const std::map<::fwGui::layoutManager::IMenuLayoutManager::ActionType, int> MenuLayoutManager::SPECIAL_ACTION_TO_WXID =
+const std::map< ::fwGui::layoutManager::IMenuLayoutManager::ActionType, int> MenuLayoutManager::SPECIAL_ACTION_TO_WXID =
                                                 ::boost::assign::map_list_of(::fwGui::layoutManager::IMenuLayoutManager::QUIT,wxID_EXIT)
                                                                             (::fwGui::layoutManager::IMenuLayoutManager::ABOUT,wxID_ABOUT)
                                                                             (::fwGui::layoutManager::IMenuLayoutManager::HELP,wxID_HELP)
