@@ -15,7 +15,7 @@
 namespace fwGui
 {
 
-IFrameSrv::IFrameSrv()
+IFrameSrv::IFrameSrv() : m_hasMenuBar(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -27,17 +27,31 @@ IFrameSrv::~IFrameSrv()
 
 void IFrameSrv::initialize()
 {
-    // find LayoutManager configuration
-    std::vector < ConfigurationType > vectLayoutMng = m_configuration->find("frame");
-    SLM_ASSERT("<frame> xml element must exist", !vectLayoutMng.empty());
-    m_frameConfig = vectLayoutMng.at(0);
-    this->initializeLayoutManager(m_frameConfig);
+    // find gui configuration
+    std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+    if(!vectGui.empty())
+    {
+        // find LayoutManager configuration
+        std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("frame");
+        SLM_ASSERT("<frame> xml element must exist", !vectLayoutMng.empty());
+        m_frameConfig = vectLayoutMng.at(0);
+        this->initializeLayoutManager(m_frameConfig);
 
+        // find mebuBarBuilder configuration
+        std::vector < ConfigurationType > vectMBBuilder = vectGui.at(0)->find("menuBar");
+        if(!vectMBBuilder.empty())
+        {
+            m_menuBarConfig = vectMBBuilder.at(0);
+            this->initializeMenuBarBuilder(m_menuBarConfig);
+
+            m_hasMenuBar = true;
+        }
+    }
 
 
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("viewRegistrar");
+    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     if(!vectRegistrar.empty())
     {
         m_registrarConfig = vectRegistrar.at(0);
@@ -55,6 +69,12 @@ void IFrameSrv::create()
     std::vector< ::fwGui::fwContainer::sptr > subViews;
     subViews.push_back(frame);
     m_viewRegistrar->manage(subViews);
+
+    if (m_hasMenuBar)
+    {
+        m_menuBarBuilder->createMenuBar(frame);
+        m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +86,12 @@ void IFrameSrv::destroy()
 
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
     m_frameLayoutManager->destroyFrame();
+
+    if (m_hasMenuBar)
+    {
+        SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
+        m_menuBarBuilder->destroyMenuBar();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -79,6 +105,21 @@ void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY, m_frameLayoutManager);
 
     m_frameLayoutManager->initialize(frameConfig);
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
+{
+    OSLM_ASSERT("Bad configuration name "<<menuBarConfig->getName()<< ", must be menuBar",
+                menuBarConfig->getName() == "menuBar");
+    SLM_ASSERT("<menuBar> tag must have type attribute", menuBarConfig->hasAttribute("type"));
+    const std::string menuBarClassName = menuBarConfig->getAttributeValue("type");
+
+    m_menuBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IMenuBarBuilder >( menuBarClassName);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< menuBarClassName, m_menuBarBuilder);
+
+    m_menuBarBuilder->initialize(menuBarConfig);
 }
 
 //-----------------------------------------------------------------------------

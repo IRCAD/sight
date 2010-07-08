@@ -64,7 +64,11 @@ public:
     FWGUIWX_API virtual void actionIsEnabled(::fwGui::fwMenuItem::sptr menuItem, bool isEnabled);
 
 protected:
+
     ::fwGuiWx::container::WxMenuContainer::sptr m_parent;
+
+    /// Vector of separators
+    std::vector< ::fwGui::fwMenuItem::sptr > m_separators;
 
     static const std::map< ::fwGui::layoutManager::IMenuLayoutManager::ActionType, int> SPECIAL_ACTION_TO_WXID;
 };

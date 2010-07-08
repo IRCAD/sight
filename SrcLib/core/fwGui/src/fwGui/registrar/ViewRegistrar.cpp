@@ -50,7 +50,7 @@ ViewRegistrar::~ViewRegistrar()
 void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewRegistrar",
-            configuration->getName() == "viewRegistrar");
+            configuration->getName() == "registry");
 
     // find parent container
     std::vector < ConfigurationType > vectParent = configuration->find("parent");

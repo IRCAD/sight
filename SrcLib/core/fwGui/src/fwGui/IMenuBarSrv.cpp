@@ -29,7 +29,7 @@ void IMenuBarSrv::initialize()
 {
     m_registrar = ::fwGui::registrar::MenuBarRegistrar::NewSptr(this->getUUID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("viewRegistrar");
+    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     if(!vectRegistrar.empty())
     {
         m_registrarConfig = vectRegistrar.at(0);

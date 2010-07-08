@@ -84,6 +84,10 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         {
             m_menuItems.push_back(menuItem);
         }
+        else
+        {
+            m_separators.push_back(menuItem);
+        }
     }
 }
 
@@ -97,9 +101,17 @@ void MenuLayoutManager::destroyLayout()
     {
         ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(menuItem);
         wxMenuItem *item = menuItemContainer->getWxMenuItem();
-        menu->Remove(item);
+        menu->Destroy(item);
+    }
+
+    BOOST_FOREACH(::fwGui::fwMenuItem::sptr menuItem, m_separators)
+    {
+        ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(menuItem);
+        wxMenuItem *item = menuItemContainer->getWxMenuItem();
+        menu->Destroy(item);
     }
     m_menuItems.clear();
+    m_separators.clear();
 }
 
 //-----------------------------------------------------------------------------
