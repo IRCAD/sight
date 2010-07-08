@@ -39,8 +39,9 @@ public:
         QUIT,
         ABOUT,
         HELP,
-        NEW
-    }actionType;
+        NEW,
+        SEPARATOR
+    }ActionType;
 
     class ActionInfo
          {
@@ -61,11 +62,11 @@ public:
             bool        m_isRadio;
             bool        m_isChecked;
             bool        m_isEnabled;
-            actionType  m_type;
+            ActionType  m_type;
             bool        m_isSeparator;
          };
 
-    const static RegistryKeyType REGISTRAR_KEY;
+    FWGUI_API const static RegistryKeyType REGISTRAR_KEY;
 
     /// Constructor. Do nothing.
     FWGUI_API IMenuLayoutManager();
