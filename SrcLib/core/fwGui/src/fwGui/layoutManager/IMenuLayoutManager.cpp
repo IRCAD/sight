@@ -106,6 +106,7 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
         {
             ActionInfo info;
             info.m_isSeparator = true;
+            info.m_type = SEPARATOR;
             m_actionInfo.push_back( info ) ;
         }
     }

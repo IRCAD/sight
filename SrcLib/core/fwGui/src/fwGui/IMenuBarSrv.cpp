@@ -66,8 +66,8 @@ void IMenuBarSrv::create()
 
 void IMenuBarSrv::destroy()
 {
-    m_layoutManager->destroyLayout();
     m_registrar->unmanage();
+    m_layoutManager->destroyLayout();
 }
 
 //-----------------------------------------------------------------------------

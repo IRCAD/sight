@@ -22,6 +22,8 @@
                 <gui>
                     <layout>
                         <menu name="My Menu"/>
+                        <menu name="My Menu 2"/>
+                        <menu name="My Menu 3"/>
                     </layout>
                 </gui>
                 <registry>
@@ -33,6 +35,7 @@
                 <gui>
                     <layout>
                         <menuItem name="My item 1"/>
+                        <separator />
                         <menuItem name="My item 2"/>
                     </layout>
                 </gui>

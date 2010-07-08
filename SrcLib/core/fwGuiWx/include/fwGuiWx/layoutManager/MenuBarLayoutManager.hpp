@@ -65,6 +65,10 @@ public:
     FWGUIWX_API virtual void menuIsEnabled(::fwGui::fwMenu::sptr fwMenu, bool isEnabled);
 
 protected:
+
+    /// Return the position of the menu in the menuBar
+    int MenuBarLayoutManager::getMenuPosition(::fwGui::fwMenu::sptr fwMenu);
+
     ::fwGuiWx::container::WxMenuBarContainer::sptr m_parent;
 };
 
