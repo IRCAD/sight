@@ -106,10 +106,9 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
             layoutConfig->getName() == "layout");
     SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
     std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
-    ::fwTools::Object::sptr layout = ::fwTools::Factory::New(layoutManagerClassName);
-    OSLM_ASSERT("Unable to create "<< layoutManagerClassName, layout);
-    m_viewLayoutManager = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(layout);
-    OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_viewLayoutManager);
+
+    m_viewLayoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IViewLayoutManager >( layoutManagerClassName);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_viewLayoutManager);
 
     m_viewLayoutManager->initialize(layoutConfig);
 }
@@ -122,10 +121,9 @@ void IGuiContainerSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
                 menuBarConfig->getName() == "menuBar");
     SLM_ASSERT("<menuBar> tag must have type attribute", menuBarConfig->hasAttribute("type"));
     std::string menuBarClassName = menuBarConfig->getAttributeValue("type");
-    ::fwTools::Object::sptr menuBarBuilder = ::fwTools::Factory::New(menuBarClassName);
-    OSLM_ASSERT("Unable to create "<< menuBarClassName, menuBarBuilder);
-    m_menuBarBuilder = ::fwGui::builder::IMenuBarBuilder::dynamicCast(menuBarBuilder);
-    OSLM_ASSERT("Unable to cast "<< menuBarClassName << " in layout manager", m_menuBarBuilder);
+
+    m_menuBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IMenuBarBuilder >( menuBarClassName);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< menuBarClassName, m_menuBarBuilder);
 
     m_menuBarBuilder->initialize(menuBarConfig);
 }

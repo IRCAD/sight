@@ -105,10 +105,9 @@ void IMenuSrv::initializeLayoutManager(ConfigurationType layoutConfig)
             layoutConfig->getName() == "layout");
     SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
     std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
-    ::fwTools::Object::sptr layout = ::fwTools::Factory::New(layoutManagerClassName);
-    OSLM_ASSERT("Unable to create "<< layoutManagerClassName, layout);
-    m_layoutManager = ::fwGui::layoutManager::IMenuLayoutManager::dynamicCast(layout);
-    OSLM_ASSERT("Unable to cast "<< layoutManagerClassName << " in layout manager", m_layoutManager);
+
+    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuLayoutManager >( layoutManagerClassName);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

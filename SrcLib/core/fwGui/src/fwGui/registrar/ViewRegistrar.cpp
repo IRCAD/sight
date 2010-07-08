@@ -69,7 +69,6 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     {
         SLM_ASSERT("<view> tag must have sid or wid attribute",
                 view->hasAttribute("sid") || view->hasAttribute("wid"));
-        SLM_ASSERT("<view> tag must have index attribute", view->hasAttribute("index"));
         if(view->hasAttribute("sid"))
         {
             bool start = false;

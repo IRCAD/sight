@@ -76,7 +76,7 @@ void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
             frameConfig->getName() == "frame");
 
     m_frameLayoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IFrameLayoutManager >( ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
-    OSLM_ASSERT("Unable to cast "<< ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY << " in frame layout manager", m_frameLayoutManager);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY, m_frameLayoutManager);
 
     m_frameLayoutManager->initialize(frameConfig);
 }
