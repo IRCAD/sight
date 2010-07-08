@@ -1,0 +1,79 @@
+<plugin id="tutoGuiConfig">
+
+    <extension id="tutoGuiConfig" implements="::fwTools::Object">
+        <object id="tutoGuiConfig" type="::fwTools::Object">
+
+            <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+                <frame>
+                    <name>tutoGui</name>
+                    <icon>Bundles/TutoGui_0-1/tuto.ico</icon>
+                    <minSize width="800" height="600"/>
+                </frame>
+                <viewRegistrar>
+                    <view sid="view" start="yes" />
+                </viewRegistrar>
+            </service>
+            
+            <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view caption="view1" />
+                        <view caption="view2" />
+                    </layout>
+                </gui>
+                <viewRegistrar>
+                    <view wid="myView" />
+                    <view sid="subView2" start="yes" />
+                </viewRegistrar>
+            </service>
+            
+            <service uid="subView1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view caption="view3" />
+                        <view caption="view4" />
+                        <view caption="view5" />
+                    </layout>
+                </gui>
+                <viewRegistrar>
+                    <parent wid="myView" />
+                    <view sid="subView3" start="yes"/>
+                </viewRegistrar>
+            </service>
+            
+            
+            <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager" >
+                        <view caption="CardinalView1" align="center" />
+                        <view caption="CardinalView2" align="right" minWidth="400" />
+                        <view caption="CardinalView3" align="right" minWidth="400" />
+                    </layout>
+                </gui>
+                <viewRegistrar/>
+            </service>
+            
+            <service uid="subView3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <gui>
+                    <layout type="::fwGui::TabLayoutManager" >
+                        <view caption="TabView1" align="center" />
+                        <view caption="TabView2" minWidth="100" selected="yes" />
+                        <view caption="TabView3" minWidth="100" />
+                    </layout>
+                </gui>
+                <viewRegistrar/>
+            </service>
+            
+            <start type="::fwGui::IFrameSrv" />
+            
+            <start uid="subView1" />
+            <stop uid="subView1" />
+
+            <stop type="::fwGui::IFrameSrv" />
+
+        </object>
+    </extension>
+
+</plugin>
