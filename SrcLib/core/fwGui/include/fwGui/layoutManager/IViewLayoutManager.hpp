@@ -28,6 +28,7 @@ namespace layoutManager
 class FWGUI_CLASS_API IViewLayoutManager : public ::fwCore::BaseObject
 {
 public:
+
     fwCoreNonInstanciableClassDefinitionsMacro( (IViewLayoutManager)(::fwCore::BaseObject) )
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;

@@ -69,7 +69,7 @@ private:
     ::fwGui::builder::IMenuBarBuilder::sptr          m_menuBarBuilder;
 
     ConfigurationType m_viewRegistrarConfig;
-    ConfigurationType m_layoutConfig;
+    ConfigurationType m_viewLayoutConfig;
     ConfigurationType m_menuBarConfig;
 
     bool m_hasMenuBar;

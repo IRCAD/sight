@@ -31,23 +31,23 @@ void IGuiContainerSrv::initialize()
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
     // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("viewRegistrar");
-    if(!vectViewMng.empty())
-    {
-        m_viewRegistrarConfig = vectViewMng.at(0);
-    }
+    SLM_ASSERT("<viewRegistrar> xml element must exist", !vectViewMng.empty());
+
+    m_viewRegistrarConfig = vectViewMng.at(0);
     m_viewRegistrar->initialize(m_viewRegistrarConfig);
+
 
 
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
     if(!vectGui.empty())
     {
-        // find LayoutManager configuration
+        // find view LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
         if(!vectLayoutMng.empty())
         {
-            m_layoutConfig = vectLayoutMng.at(0);
-            this->initializeLayoutManager(m_layoutConfig);
+            m_viewLayoutConfig = vectLayoutMng.at(0);
+            this->initializeLayoutManager(m_viewLayoutConfig);
         }
 
         // find mebuBarBuilder configuration

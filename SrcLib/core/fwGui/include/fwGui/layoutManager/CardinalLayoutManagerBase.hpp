@@ -85,6 +85,8 @@ public:
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;
 
+protected:
+
     FWGUI_API std::list< ViewInfo> getViewsInfo(){ return m_views;};
 
 private:

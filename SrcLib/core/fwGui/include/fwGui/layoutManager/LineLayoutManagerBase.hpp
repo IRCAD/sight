@@ -75,6 +75,8 @@ public:
 
     FWGUI_API Orientation getOrientation(){ return m_orientation;};
 
+protected:
+
     FWGUI_API std::list< ViewInfo> getViewsInfo(){ return m_views;};
 
 private:
