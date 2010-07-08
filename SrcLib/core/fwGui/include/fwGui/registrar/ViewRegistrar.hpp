@@ -87,6 +87,7 @@ protected:
     /// Menu bar service ID associate with this ViewRegistrar
     SIDMenuBarPairType m_menuBarSid;
 
+    std::string m_parentWid;
     ::fwGui::fwContainer::sptr m_parentContainer;
 
     /// Main service ID associate with this ViewRegistrar

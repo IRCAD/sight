@@ -21,7 +21,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ViewRegistrar::ViewRegistrar(const std::string sid) : m_sid(sid)
+ViewRegistrar::ViewRegistrar(const std::string sid) : m_sid(sid), m_parentWid("")
 {}
 
 //-----------------------------------------------------------------------------
@@ -33,15 +33,24 @@ ViewRegistrar::~ViewRegistrar()
 
 ::fwGui::fwContainer::sptr ViewRegistrar::getParent()
 {
-    return this->m_parentContainer;
+    ::fwGui::fwContainer::sptr parentContainer;
+    if(!m_parentWid.empty())
+    {
+        parentContainer = ::fwGui::GuiRegistry::getWIDContainer(m_parentWid);
+    }
+    else
+    {
+        parentContainer = ::fwGui::GuiRegistry::getSIDContainer(m_sid);
+    }
+    return parentContainer;
 }
 
 //-----------------------------------------------------------------------------
 
 void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewManager",
-            configuration->getName() == "viewManager");
+    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewRegistrar",
+            configuration->getName() == "viewRegistrar");
 
     // find parent container
     std::vector < ConfigurationType > vectParent = configuration->find("parent");
@@ -49,13 +58,9 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     {
         ConfigurationType parent = vectParent.at(0);
         SLM_ASSERT("<parent> tag must have wid attribute", parent->hasAttribute("wid"));
-        std::string wid = parent->getAttributeValue("wid");
-        this->m_parentContainer = ::fwGui::GuiRegistry::getWIDContainer(wid);
+        m_parentWid = parent->getAttributeValue("wid");
     }
-    else
-    {
-        this->m_parentContainer = ::fwGui::GuiRegistry::getSIDContainer(m_sid);
-    }
+
     // index represents associated container with position in subViews vector
     int index = 0;
     // initialize m_sids and m_wids map with configuration

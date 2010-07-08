@@ -26,20 +26,15 @@
         <implements>::fwServices::IService</implements>
     </point>
     
-    <point id="::gui::frame::IFrame">
+    <point id="::fwGui::IFrameSrv">
         <implements>::fwServices::IService</implements>
     </point>
-    
+        
     <point id="::gui::frame::DefaultFrame">
-        <implements>::gui::frame::IFrame</implements>
+        <implements>::fwGui::IFrameSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
-    
-    <point id="::gui::frame::MainFrame">
-        <implements>::gui::frame::IFrame</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
+        
     <point id="::gui::aspect::IMenuBar">
         <implements>::fwServices::IService</implements>
     </point>

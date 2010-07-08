@@ -74,12 +74,9 @@ void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<frameConfig->getName()<< ", must be frame",
             frameConfig->getName() == "frame");
-    SLM_ASSERT("<frame> tag must have type attribute", frameConfig->hasAttribute("type"));
-    std::string frameLayoutManagerClassName = frameConfig->getAttributeValue("type");
-    ::fwTools::Object::sptr layout = ::fwTools::Factory::New(frameLayoutManagerClassName);
-    OSLM_ASSERT("Unable to create "<< frameLayoutManagerClassName, layout);
-    m_frameLayoutManager = ::fwGui::layoutManager::IFrameLayoutManager::dynamicCast(layout);
-    OSLM_ASSERT("Unable to cast "<< frameLayoutManagerClassName << " in frame layout manager", m_frameLayoutManager);
+
+    m_frameLayoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IFrameLayoutManager >( ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
+    OSLM_ASSERT("Unable to cast "<< ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY << " in frame layout manager", m_frameLayoutManager);
 
     m_frameLayoutManager->initialize(frameConfig);
 }
