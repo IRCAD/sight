@@ -33,7 +33,7 @@ MenuRegistrar::~MenuRegistrar()
 
 ::fwGui::fwMenu::sptr MenuRegistrar::getParent()
 {
-    return this->m_parent;
+    return ::fwGui::GuiRegistry::getSIDMenu(m_sid);
 }
 
 //-----------------------------------------------------------------------------
@@ -50,10 +50,7 @@ MenuRegistrar::~MenuRegistrar()
 void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be registrar",
-            configuration->getName() == "registrar");
-
-    // find parent container
-    this->m_parent = ::fwGui::GuiRegistry::getSIDMenu(m_sid);
+            configuration->getName() == "registry");
 
     // index represents associated menu with position in menus vector
     int index = 0;
@@ -62,7 +59,6 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     BOOST_FOREACH( ConfigurationType menuItem, vectMenuItems)
     {
         SLM_ASSERT("<menuItem> tag must have sid attribute", menuItem->hasAttribute("sid"));
-        SLM_ASSERT("<menuItem> tag must have index attribute", menuItem->hasAttribute("index"));
         if(menuItem->hasAttribute("sid"))
         {
             bool start = false;

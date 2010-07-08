@@ -9,9 +9,16 @@
 
 #include <boost/foreach.hpp>
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwGuiWx/container/WxContainer.hpp"
 #include "fwGuiWx/container/WxMenuBarContainer.hpp"
 #include "fwGuiWx/builder/MenuBarBuilder.hpp"
+
+REGISTER_BINDING( ::fwGui::builder::IMenuBarBuilder,
+        ::fwGui::builder::MenuBarBuilder,
+         ::fwGui::builder::IMenuBarBuilder::RegistryKeyType,
+          ::fwGui::builder::IMenuBarBuilder::REGISTRAR_KEY );
 
 namespace fwGui
 {

@@ -31,6 +31,10 @@ class FWGUI_CLASS_API IMenuBarBuilder : public ::fwCore::BaseObject
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (IMenuBarBuilder)(::fwCore::BaseObject) )
 
+    typedef std::string RegistryKeyType;
+
+    FWGUI_API const static RegistryKeyType REGISTRAR_KEY;
+
     /// Constructor. Do nothing.
     FWGUI_API IMenuBarBuilder();
 

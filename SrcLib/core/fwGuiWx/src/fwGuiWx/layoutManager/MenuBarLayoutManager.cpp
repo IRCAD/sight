@@ -49,7 +49,7 @@ void MenuBarLayoutManager::createLayout( ::fwGui::fwMenuBar::sptr parent )
     BOOST_FOREACH ( std::string name, m_menuNames)
     {
         ::fwGuiWx::container::WxMenuContainer::NewSptr menu;
-        wxMenu *menuWx = new wxMenu(::fwWX::std2wx( name ));
+        wxMenu *menuWx = new wxMenu();
         menu->setWxMenu(menuWx);
         menuBar->Append( menuWx , ::fwWX::std2wx( name ));
         m_menus.push_back(menu);

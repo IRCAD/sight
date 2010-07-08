@@ -10,10 +10,33 @@
                         <icon>Bundles/TutoGui_0-1/tuto.ico</icon>
                         <minSize width="800" height="600"/>
                     </frame>
+                    <menuBar />
                 </gui>
                 <registry>
+                    <menuBar sid="menuBar" start="yes" />
                     <view sid="view" start="yes" />
                 </registry>
+            </service>
+            
+            <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+                <gui>
+                    <layout>
+                        <menu name="My Menu"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="myMenu" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+                <gui>
+                    <layout>
+                        <menuItem name="My item 1"/>
+                        <menuItem name="My item 2"/>
+                    </layout>
+                </gui>
+                <registry />
             </service>
             
             <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >

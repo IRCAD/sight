@@ -27,23 +27,28 @@ IMenuBarSrv::~IMenuBarSrv()
 
 void IMenuBarSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::MenuBarRegistrar::NewSptr(this->getUUID());
-    // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-    if(!vectRegistrar.empty())
-    {
-        m_registrarConfig = vectRegistrar.at(0);
-    }
-    m_registrar->initialize(m_registrarConfig);
 
+        m_registrar = ::fwGui::registrar::MenuBarRegistrar::NewSptr(this->getUUID());
+        // find ViewRegistryManager configuration
+        std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
+        if(!vectRegistrar.empty())
+        {
+            m_registrarConfig = vectRegistrar.at(0);
+            m_registrar->initialize(m_registrarConfig);
+        }
 
-    // find LayoutManager configuration
-    std::vector < ConfigurationType > vectLayoutMng = m_configuration->find("layout");
-    if(!vectLayoutMng.empty())
-    {
-        m_layoutConfig = vectLayoutMng.at(0);
-    }
-    this->initializeLayoutManager(m_layoutConfig);
+        // find gui configuration
+        std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+        if(!vectGui.empty())
+        {
+            // find LayoutManager configuration
+            std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
+            if(!vectLayoutMng.empty())
+            {
+                m_layoutConfig = vectLayoutMng.at(0);
+                this->initializeLayoutManager(m_layoutConfig);
+            }
+        }
 }
 
 //-----------------------------------------------------------------------------
@@ -103,11 +108,9 @@ void IMenuBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
-    SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
-    std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
 
-    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuBarLayoutManager >( layoutManagerClassName);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_layoutManager);
+    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuBarLayoutManager >( ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRAR_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRAR_KEY, m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

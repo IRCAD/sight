@@ -82,8 +82,6 @@ protected:
      */
     SIDMenuMapType m_menuSids;
 
-    ::fwGui::fwMenuBar::sptr m_parent;
-
     /// Main service ID associate with this MenuBarRegistrar
     std::string m_sid;
 };

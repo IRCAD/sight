@@ -84,14 +84,14 @@ void IFrameSrv::destroy()
     SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
     m_viewRegistrar->unmanage();
 
-    SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
-    m_frameLayoutManager->destroyFrame();
-
     if (m_hasMenuBar)
     {
         SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
         m_menuBarBuilder->destroyMenuBar();
     }
+
+    SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
+    m_frameLayoutManager->destroyFrame();
 }
 
 //-----------------------------------------------------------------------------
@@ -113,11 +113,9 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<menuBarConfig->getName()<< ", must be menuBar",
                 menuBarConfig->getName() == "menuBar");
-    SLM_ASSERT("<menuBar> tag must have type attribute", menuBarConfig->hasAttribute("type"));
-    const std::string menuBarClassName = menuBarConfig->getAttributeValue("type");
 
-    m_menuBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IMenuBarBuilder >( menuBarClassName);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< menuBarClassName, m_menuBarBuilder);
+    m_menuBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IMenuBarBuilder >( ::fwGui::builder::IMenuBarBuilder::REGISTRAR_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRAR_KEY, m_menuBarBuilder);
 
     m_menuBarBuilder->initialize(menuBarConfig);
 }
