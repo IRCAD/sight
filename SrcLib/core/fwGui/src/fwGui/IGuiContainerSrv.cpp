@@ -105,7 +105,7 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
     SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
-    std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
+    const std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
 
     m_viewLayoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IViewLayoutManager >( layoutManagerClassName);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_viewLayoutManager);

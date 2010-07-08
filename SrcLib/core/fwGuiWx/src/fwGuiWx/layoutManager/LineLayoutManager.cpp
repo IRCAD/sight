@@ -17,7 +17,7 @@
 #include "fwGuiWx/layoutManager/LineLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::LineLayoutManagerBase,
+REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
         ::fwGui::LineLayoutManager,
          ::fwGui::layoutManager::LineLayoutManagerBase::RegistryKeyType,
           ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
@@ -49,7 +49,6 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     int wxOrientation = ( (orientation==VERTICAL) ? wxVERTICAL : wxHORIZONTAL);
     wxBoxSizer* boxSizer = new wxBoxSizer( wxOrientation );
     wxContainer->SetSizer( boxSizer );
-    wxContainer->Layout();
 
     std::list< ViewInfo> views = this->getViewsInfo();
     BOOST_FOREACH ( ViewInfo viewInfo, views)
@@ -73,6 +72,8 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
         boxSizer->Add( viewPanel, viewInfo.m_proportion, wxALL|wxEXPAND, viewInfo.m_border);
 #endif
     }
+
+    wxContainer->Layout();
 }
 
 //-----------------------------------------------------------------------------

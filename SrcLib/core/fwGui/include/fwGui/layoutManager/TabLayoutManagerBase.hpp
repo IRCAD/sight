@@ -42,11 +42,11 @@ public:
      public :
 
          ViewInfo() :
-             m_name(""),
+             m_caption(""),
              m_isSelect(false)
          {}
 
-         std::string  m_name;
+         std::string  m_caption;
          bool         m_isSelect;
      };
 

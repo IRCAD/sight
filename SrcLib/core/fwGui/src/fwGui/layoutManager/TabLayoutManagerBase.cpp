@@ -19,7 +19,7 @@ namespace layoutManager
 {
 //-----------------------------------------------------------------------------
 
-const TabLayoutManagerBase::RegistryKeyType TabLayoutManagerBase::REGISTRY_KEY =  "::fwGui::CardinalLayoutManager";
+const TabLayoutManagerBase::RegistryKeyType TabLayoutManagerBase::REGISTRY_KEY =  "::fwGui::TabLayoutManager";
 
 //-----------------------------------------------------------------------------
 
@@ -44,9 +44,9 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
     BOOST_FOREACH (ConfigurationType view, vectViews)
     {
         ViewInfo vi;
-        if( view->hasAttribute("name") )
+        if( view->hasAttribute("caption") )
         {
-            vi.m_name = view->getExistingAttributeValue("name") ;
+            vi.m_caption = view->getExistingAttributeValue("caption") ;
         }
         if( view->hasAttribute("selected") )
         {

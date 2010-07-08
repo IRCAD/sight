@@ -17,7 +17,7 @@
 #include "fwGuiWx/layoutManager/CardinalLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::CardinalLayoutManagerBase,
+REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
         ::fwGui::CardinalLayoutManager,
          ::fwGui::layoutManager::CardinalLayoutManagerBase::RegistryKeyType,
           ::fwGui::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );

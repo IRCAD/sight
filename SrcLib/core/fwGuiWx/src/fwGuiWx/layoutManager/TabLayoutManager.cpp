@@ -17,7 +17,7 @@
 #include "fwGuiWx/layoutManager/TabLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::TabLayoutManagerBase,
+REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
         ::fwGui::TabLayoutManager,
          ::fwGui::layoutManager::TabLayoutManagerBase::RegistryKeyType,
           ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
@@ -59,8 +59,9 @@ void TabLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
         subContainer->setWxContainer(viewPanel);
         m_subViews.push_back(subContainer);
 
-        m_notebook->AddPage( viewPanel, ::fwWX::std2wx(viewInfo.m_name), viewInfo.m_isSelect );
+        m_notebook->AddPage( viewPanel, ::fwWX::std2wx(viewInfo.m_caption), viewInfo.m_isSelect );
     }
+    wxContainer->Layout();
 }
 
 //-----------------------------------------------------------------------------
