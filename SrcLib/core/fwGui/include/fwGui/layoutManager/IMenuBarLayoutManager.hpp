@@ -69,12 +69,12 @@ public:
     /**
      * @brief Set the menu visibility.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwMenu::sptr > menuIsVisible(::fwGui::fwMenu::sptr, bool isVisible) = 0;
+    FWGUI_API virtual void menuIsVisible(::fwGui::fwMenu::sptr, bool isVisible) = 0;
 
     /**
      * @brief Set the menu enable or not.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwMenu::sptr > menuIsEnabled(::fwGui::fwMenu::sptr, bool isEnabled) = 0;
+    FWGUI_API virtual void menuIsEnabled(::fwGui::fwMenu::sptr, bool isEnabled) = 0;
 
 
 protected:

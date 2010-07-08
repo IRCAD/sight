@@ -47,6 +47,7 @@ public:
          public :
 
             ActionInfo() :
+                m_isSeparator(false),
                 m_isCheckable (false),
                 m_isRadio(false),
                 m_isChecked (false),
@@ -61,6 +62,7 @@ public:
             bool        m_isChecked;
             bool        m_isEnabled;
             actionType  m_type;
+            bool        m_isSeparator;
          };
 
     const static RegistryKeyType REGISTRAR_KEY;
@@ -96,12 +98,12 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwMenuItem::sptr > actionIsVisible(::fwGui::fwMenuItem::sptr, bool isVisible) = 0;
+    FWGUI_API virtual void actionIsVisible(::fwGui::fwMenuItem::sptr, bool isVisible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwMenuItem::sptr > actionIsEnabled(::fwGui::fwMenuItem::sptr, bool isEnabled) = 0;
+    FWGUI_API virtual void actionIsEnabled(::fwGui::fwMenuItem::sptr, bool isEnabled) = 0;
 
 
 protected:

@@ -166,6 +166,17 @@ void ViewRegistrar::unmanage()
     {
         ::fwGui::GuiRegistry::unregisterWIDContainer(wid.first);
     }
+
+    if ( !m_menuBarSid.first.empty() )
+    {
+        if(m_menuBarSid.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_menuBarSid.first, ::fwTools::UUID::SIMPLE ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDMenuBar(m_menuBarSid.first);
+    }
 }
 
 //-----------------------------------------------------------------------------

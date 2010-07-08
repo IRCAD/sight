@@ -15,7 +15,7 @@
 namespace fwGui
 {
 
-IMenuBarSrv::IMenuBarSrv()
+IMenuBarSrv::IMenuBarSrv() : m_hideMenus(false)
 {}
 
 //-----------------------------------------------------------------------------

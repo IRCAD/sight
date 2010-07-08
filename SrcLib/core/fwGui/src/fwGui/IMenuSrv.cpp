@@ -15,7 +15,7 @@
 namespace fwGui
 {
 
-IMenuSrv::IMenuSrv()
+IMenuSrv::IMenuSrv() : m_hideActions (false)
 {}
 
 //-----------------------------------------------------------------------------

@@ -32,73 +32,82 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
                 configuration->getName() == "layout");
 
-    std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
-    SLM_TRACE_IF("No menu define.", vectMenuItems.empty() );
-    m_actionInfo.clear();
-    BOOST_FOREACH (ConfigurationType menuItem, vectMenuItems)
+
+    ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
+    for( iter = configuration->begin() ; iter != configuration->end() ; ++iter )
     {
-        ActionInfo info;
-        SLM_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
-        if( menuItem->hasAttribute("name") )
+        if( (*iter)->getName() == "menuItem" )
         {
-            info.m_name = menuItem->getExistingAttributeValue("name") ;
-        }
+            ConfigurationType menuItem = *iter;
+            ActionInfo info;
+            SLM_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
+            if( menuItem->hasAttribute("name") )
+            {
+                info.m_name = menuItem->getExistingAttributeValue("name") ;
+            }
 
-        if( menuItem->hasAttribute("shortcut") )
+            if( menuItem->hasAttribute("shortcut") )
+            {
+                info.m_shortcut = menuItem->getExistingAttributeValue("shortcut") ;
+            }
+
+            if( menuItem->hasAttribute("style") )
+            {
+                std::string style = menuItem->getExistingAttributeValue("style") ;
+                info.m_isCheckable = (style == "check");
+                info.m_isRadio = (style == "radio");
+
+                if ((info.m_isCheckable || info.m_isRadio) && menuItem->hasAttribute("state") )
+                {
+                    std::string state = menuItem->getExistingAttributeValue("state");
+                    info.m_isChecked = (state == "checked");
+                }
+            }
+
+            if( menuItem->hasAttribute("enable") )
+            {
+                std::string enable = menuItem->getExistingAttributeValue("enable") ;
+                OSLM_TRACE("enable : " << enable ) ;
+                info.m_isEnabled = (enable =="true");
+            }
+
+            if( menuItem->hasAttribute("specialAction") )
+            {
+                std::string specialActionName = menuItem->getExistingAttributeValue("specialAction") ;
+                if (specialActionName == "DEFAULT")
+                {
+                    info.m_type = DEFAULT;
+                }
+                else if (specialActionName == "QUIT")
+                {
+                    info.m_type = QUIT;
+                }
+                else if (specialActionName == "ABOUT")
+                {
+                    info.m_type = ABOUT;
+                }
+                else if (specialActionName == "HELP")
+                {
+                    info.m_type = HELP;
+                }
+                else if (specialActionName == "NEW")
+                {
+                    info.m_type = NEW;
+                }
+                else
+                {
+                    OSLM_FATAL("specialAction " << specialActionName << " is unknown." );
+                }
+            }
+
+            m_actionInfo.push_back(info);
+        }
+        if( (*iter)->getName() == "separator" )
         {
-            info.m_shortcut = menuItem->getExistingAttributeValue("shortcut") ;
+            ActionInfo info;
+            info.m_isSeparator = true;
+            m_actionInfo.push_back( info ) ;
         }
-
-        if( menuItem->hasAttribute("style") )
-        {
-            std::string style = menuItem->getExistingAttributeValue("style") ;
-            info.m_isCheckable = (style == "check");
-            info.m_isRadio = (style == "radio");
-
-            if ((info.m_isCheckable || info.m_isRadio) && menuItem->hasAttribute("state") )
-            {
-                std::string state = menuItem->getExistingAttributeValue("state");
-                info.m_isChecked = (state == "checked");
-            }
-        }
-
-        if( menuItem->hasAttribute("enable") )
-        {
-            std::string enable = menuItem->getExistingAttributeValue("enable") ;
-            OSLM_TRACE("enable : " << enable ) ;
-            info.m_isEnabled = (enable =="true");
-        }
-
-        if( menuItem->hasAttribute("specialAction") )
-        {
-            std::string specialActionName = menuItem->getExistingAttributeValue("specialAction") ;
-            if (specialActionName == "DEFAULT")
-            {
-                info.m_type = DEFAULT;
-            }
-            else if (specialActionName == "QUIT")
-            {
-                info.m_type = QUIT;
-            }
-            else if (specialActionName == "ABOUT")
-            {
-                info.m_type = ABOUT;
-            }
-            else if (specialActionName == "HELP")
-            {
-                info.m_type = HELP;
-            }
-            else if (specialActionName == "NEW")
-            {
-                info.m_type = NEW;
-            }
-            else
-            {
-                OSLM_FATAL("specialAction " << specialActionName << " is unknown." );
-            }
-        }
-
-         m_actionInfo.push_back(info);
     }
 }
 
