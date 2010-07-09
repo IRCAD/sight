@@ -4,11 +4,13 @@
         <object id="tutoBasicObject" type="::fwTools::Object">
 
             <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
-                <frame>
-                    <name>tutoBasicApplicationName</name>
-                    <icon>Bundles/Tuto01Basic_0-1/tuto.ico</icon>
-                    <minSize width="800" height="600"/>
-                </frame>
+                <gui>
+                    <frame>
+                        <name>tutoBasicApplicationName</name>
+                        <icon>Bundles/Tuto01Basic_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600"/>
+                    </frame>
+                </gui>
             </service>
 
             <start type="::fwGui::IFrameSrv" />
