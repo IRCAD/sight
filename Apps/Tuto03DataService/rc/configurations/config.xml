@@ -20,12 +20,12 @@
                 <menuBar />
             </gui>
             <registry>
-                <menuBar sid="myMenuBar" start="no" />
-                <!--  <view sid="myRenderingTuto" start="yes" />-->
+                <menuBar sid="myMenuBar" start="yes" />
+                <view sid="myRenderingTuto" start="yes" />
             </registry>
         </service>
 
-        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -42,18 +42,21 @@
         <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
             <gui>
                 <layout>
-                    <menuItem name="Open file"/>
+                    <menuItem name="Open file" shortcut="Ctrl+O" />
                     <separator />
-                    <menuItem name="Quit"/>
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                 </layout>
             </gui>
-            <registry />
+            <registry>
+                <menuItem sid="action_openFile" start="yes" />
+                <menuItem sid="action_quit" start="yes" />
+            </registry>
         </service>
         
         <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
         we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "OpenFile".
         In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile". -->
-        <service uid="action_openFile" name="OpenFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" shortcut="Ctrl+O" autoComChannel="no" >
+        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
             <start uid="myReaderPathFile"/>
         </service>
         <!-- The second service (::gui::action::QuitAction) is a generic action that will close the application
@@ -64,7 +67,7 @@
                But on Mac OS, this value installs the menuItem in the system menu bar,
                and on Linux this value installs the default 'Quit' system icon in the menuItem.)    
                The attribute "shortcut" is set with the value "Ctrl+Q" to close the application with this specific shortcut. -->
-        <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+        <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
 
 
         <!-- The service ::gui::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::StarterActionService. 
@@ -81,9 +84,7 @@
         <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
 
         <start type="::fwGui::IFrameSrv" />
-        
-        <start uid="myMenuBar" />
-        
+
         <stop type="::fwGui::IFrameSrv" />
 
     </object>
