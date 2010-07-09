@@ -12,6 +12,7 @@
 
 #include "fwGui/fwMenu.hpp"
 #include "fwGui/fwMenuItem.hpp"
+#include "fwGui/ActionCallbackBase.hpp"
 #include "fwGui/config.hpp"
 
 
@@ -34,6 +35,7 @@ class FWGUI_CLASS_API MenuRegistrar : public ::fwCore::BaseObject
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwCore::BaseObject), (( (const std::string) )), new MenuRegistrar );
+    typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
     FWGUI_API MenuRegistrar( const std::string sid);
@@ -76,6 +78,11 @@ public:
      */
     FWGUI_API virtual void onItemAction();
 
+    /**
+     * @brief Returns callbacks associate with menu items.
+     */
+    FWGUI_API virtual CallbacksType getCallbacks(){ return m_callbacks;};
+
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -89,6 +96,9 @@ protected:
 
     /// Main service ID associate with this MenuRegistrar
     std::string m_sid;
+
+    /// Callback associate with menu items
+    CallbacksType m_callbacks;
 };
 
 } // namespace registrar

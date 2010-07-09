@@ -54,6 +54,7 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
 
     // index represents associated menu with position in menus vector
     int index = 0;
+    m_callbacks.clear();
     // initialize m_actionSids map with configuration
     std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
     BOOST_FOREACH( ConfigurationType menuItem, vectMenuItems)
@@ -72,6 +73,13 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
             std::string sid = menuItem->getAttributeValue("sid");
             std::pair<int, bool> indexStart =  std::make_pair( index, start);
             m_actionSids[sid] = indexStart;
+
+            ::fwGui::ActionCallbackBase::sptr callback ;
+            callback = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ActionCallbackBase >( ::fwGui::ActionCallbackBase::REGISTRY_KEY );
+            OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::ActionCallbackBase::REGISTRY_KEY, callback);
+
+            callback->setSID(sid);
+            m_callbacks.push_back(callback);
         }
         index++;
     }

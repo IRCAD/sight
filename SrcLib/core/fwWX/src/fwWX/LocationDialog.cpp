@@ -18,7 +18,7 @@
 
 
 
-REGISTER_BINDING( ::fwGui::ILocationDialog, ::fwWX::LocationDialog, ::fwGui::ILocationDialog::FactoryRegistryKeyType , ::fwGui::ILocationDialog::factoryRegistryKey );
+REGISTER_BINDING( ::fwGui::ILocationDialog, ::fwWX::LocationDialog, ::fwGui::ILocationDialog::FactoryRegistryKeyType , ::fwGui::ILocationDialog::REGISTRY_KEY );
 
 
 namespace fwWX

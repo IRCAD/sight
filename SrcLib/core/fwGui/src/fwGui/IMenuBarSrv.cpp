@@ -109,8 +109,8 @@ void IMenuBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
 
-    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuBarLayoutManager >( ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRAR_KEY );
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRAR_KEY, m_layoutManager);
+    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuBarLayoutManager >( ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY, m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

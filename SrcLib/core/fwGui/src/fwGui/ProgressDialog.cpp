@@ -14,7 +14,7 @@ namespace fwGui
 
 ProgressDialog::ProgressDialog(const std::string &title,const std::string &message)
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::IProgressDialog>( ::fwGui::IProgressDialog::factoryRegistryKey);
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::IProgressDialog>( ::fwGui::IProgressDialog::REGISTRY_KEY);
     m_implementation->setTitle(title);
     m_implementation->setMessage(message);
 }

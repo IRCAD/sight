@@ -15,7 +15,7 @@ namespace fwGui
 
 Cursor::Cursor()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ICursor>( ::fwGui::ICursor::factoryRegistryKey);
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ICursor>( ::fwGui::ICursor::REGISTRY_KEY);
 }
 
 //-----------------------------------------------------------------------------

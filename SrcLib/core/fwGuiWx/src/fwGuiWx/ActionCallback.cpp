@@ -4,27 +4,36 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
 
-#include "fwGui/ICursor.hpp"
+#include "fwGuiWx/ActionCallback.hpp"
 
-namespace fwGui
+
+REGISTER_BINDING( ::fwGui::ActionCallbackBase,
+        ::fwGuiWx::ActionCallback,
+         ::fwGui::ActionCallbackBase::RegistryKeyType,
+          ::fwGui::ActionCallbackBase::REGISTRY_KEY );
+
+namespace fwGuiWx
 {
 
-const ICursor::FactoryRegistryKeyType ICursor::REGISTRY_KEY =  "::fwGui::Cursor";
-
 //-----------------------------------------------------------------------------
 
-ICursor::ICursor()
+ActionCallback::ActionCallback()
 {}
 
 //-----------------------------------------------------------------------------
 
-ICursor::~ICursor()
+ActionCallback::~ActionCallback()
 {}
 
 //-----------------------------------------------------------------------------
 
-} // namespace fwGui
+void ActionCallback::executeWx(wxCommandEvent& event)
+{
+    this->execute();
+}
 
+} // namespace fwGuiWx
 
 

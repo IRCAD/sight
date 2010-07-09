@@ -114,8 +114,8 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
     OSLM_ASSERT("Bad configuration name "<<menuBarConfig->getName()<< ", must be menuBar",
                 menuBarConfig->getName() == "menuBar");
 
-    m_menuBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IMenuBarBuilder >( ::fwGui::builder::IMenuBarBuilder::REGISTRAR_KEY );
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRAR_KEY, m_menuBarBuilder);
+    m_menuBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IMenuBarBuilder >( ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY, m_menuBarBuilder);
 
     m_menuBarBuilder->initialize(menuBarConfig);
 }

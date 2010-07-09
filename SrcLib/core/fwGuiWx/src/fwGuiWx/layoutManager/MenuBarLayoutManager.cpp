@@ -18,7 +18,7 @@
 REGISTER_BINDING( ::fwGui::layoutManager::IMenuBarLayoutManager,
         ::fwGui::layoutManager::MenuBarLayoutManager,
          ::fwGui::layoutManager::IMenuBarLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRAR_KEY );
+          ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {

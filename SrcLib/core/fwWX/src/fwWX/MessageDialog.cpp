@@ -10,7 +10,7 @@
 #include "fwWX/MessageDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::IMessageDialog, ::fwWX::MessageDialog, ::fwGui::IMessageDialog::FactoryRegistryKeyType , ::fwGui::IMessageDialog::factoryRegistryKey );
+REGISTER_BINDING( ::fwGui::IMessageDialog, ::fwWX::MessageDialog, ::fwGui::IMessageDialog::FactoryRegistryKeyType , ::fwGui::IMessageDialog::REGISTRY_KEY );
 
 namespace fwWX
 {

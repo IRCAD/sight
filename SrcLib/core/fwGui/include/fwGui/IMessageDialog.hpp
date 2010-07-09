@@ -53,7 +53,7 @@ public:
 
 
     typedef std::string FactoryRegistryKeyType;
-    FWGUI_API static const FactoryRegistryKeyType factoryRegistryKey;
+    FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
     /// Set the title of the message box
     FWGUI_API virtual void setTitle(const std::string &title) = 0;

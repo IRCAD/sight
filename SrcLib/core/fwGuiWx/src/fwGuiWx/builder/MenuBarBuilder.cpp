@@ -18,7 +18,7 @@
 REGISTER_BINDING( ::fwGui::builder::IMenuBarBuilder,
         ::fwGui::builder::MenuBarBuilder,
          ::fwGui::builder::IMenuBarBuilder::RegistryKeyType,
-          ::fwGui::builder::IMenuBarBuilder::REGISTRAR_KEY );
+          ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY );
 
 namespace fwGui
 {

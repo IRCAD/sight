@@ -12,7 +12,7 @@
 #include "fwWX/Cursor.hpp"
 
 
-REGISTER_BINDING( ::fwGui::ICursor, ::fwWX::Cursor, ::fwGui::ICursor::FactoryRegistryKeyType , ::fwGui::ICursor::factoryRegistryKey );
+REGISTER_BINDING( ::fwGui::ICursor, ::fwWX::Cursor, ::fwGui::ICursor::FactoryRegistryKeyType , ::fwGui::ICursor::REGISTRY_KEY );
 
 namespace fwWX
 {

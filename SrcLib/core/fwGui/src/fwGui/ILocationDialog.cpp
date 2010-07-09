@@ -11,7 +11,7 @@ namespace fwGui
 {
 
 const ILocationDialog::FactoryRegistryKeyType
-ILocationDialog::factoryRegistryKey =  "an unique key for all ILocationDialog (factories are exclusives)";
+ILocationDialog::REGISTRY_KEY =  "an unique key for all ILocationDialog (factories are exclusives)";
 
 ILocationDialog::ILocationDialog()
 {}

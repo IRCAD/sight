@@ -13,7 +13,7 @@ namespace fwGui
 namespace builder
 {
 
-const IMenuBarBuilder::RegistryKeyType IMenuBarBuilder::REGISTRAR_KEY = "::fwGui::MenuBarBuilder";
+const IMenuBarBuilder::RegistryKeyType IMenuBarBuilder::REGISTRY_KEY = "::fwGui::MenuBarBuilder";
 
 //-----------------------------------------------------------------------------
 

@@ -41,7 +41,7 @@ public:
 
 
     typedef std::string FactoryRegistryKeyType;
-    FWGUI_API static const FactoryRegistryKeyType factoryRegistryKey;
+    FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
     /// Set the cursor
     FWGUI_API virtual void setCursor( CursorType cursor) = 0;

@@ -73,6 +73,7 @@ protected:
     static const std::map< ::fwGui::layoutManager::IMenuLayoutManager::ActionType, int> SPECIAL_ACTION_TO_WXID;
 };
 
+
 } // namespace layoutManager
 } // namespace fwGui
 

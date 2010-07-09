@@ -12,6 +12,7 @@
 
 #include "fwGui/fwMenu.hpp"
 #include "fwGui/fwMenuItem.hpp"
+#include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -33,6 +34,7 @@ public:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
+    typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     typedef enum {
         DEFAULT,
@@ -68,7 +70,7 @@ public:
             bool        m_isSeparator;
          };
 
-    FWGUI_API const static RegistryKeyType REGISTRAR_KEY;
+    FWGUI_API const static RegistryKeyType REGISTRY_KEY;
 
     /// Constructor. Do nothing.
     FWGUI_API IMenuLayoutManager();
@@ -108,6 +110,10 @@ public:
      */
     FWGUI_API virtual void actionIsEnabled(::fwGui::fwMenuItem::sptr, bool isEnabled) = 0;
 
+    /**
+     * @brief Sets callbacks associate with menu items.
+     */
+    FWGUI_API virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
 
 protected:
 
@@ -122,6 +128,8 @@ protected:
     /// Save action informations from configuration.
     std::vector< ActionInfo > m_actionInfo;
 
+    /// Callbacks associate with menu items
+    CallbacksType m_callbacks;
 };
 
 } // namespace layoutManager

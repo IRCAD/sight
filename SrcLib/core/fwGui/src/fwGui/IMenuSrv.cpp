@@ -10,6 +10,7 @@
 #include <fwTools/UUID.hpp>
 #include <fwServices/helper.hpp>
 
+#include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/IMenuSrv.hpp"
 
 namespace fwGui
@@ -55,7 +56,10 @@ void IMenuSrv::initialize()
 void IMenuSrv::create()
 {
     ::fwGui::fwMenu::sptr menu = m_registrar->getParent();
+    std::vector< ::fwGui::IMenuItemCallback::sptr > callbacks = m_registrar->getCallbacks();
+
     SLM_ASSERT("Parent menu is unknown.", menu);
+    m_layoutManager->setCallbacks(callbacks);
     m_layoutManager->createLayout(menu);
 
     m_registrar->manage(m_layoutManager->getMenuItems());
@@ -108,8 +112,8 @@ void IMenuSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
 
-    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuLayoutManager >( ::fwGui::layoutManager::IMenuLayoutManager::REGISTRAR_KEY );
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRAR_KEY, m_layoutManager);
+    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuLayoutManager >( ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY, m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

@@ -13,7 +13,7 @@
 #include "fwWX/ProgressDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::IProgressDialog, ::fwWX::ProgressDialog, ::fwGui::IProgressDialog::FactoryRegistryKeyType , ::fwGui::IProgressDialog::factoryRegistryKey );
+REGISTER_BINDING( ::fwGui::IProgressDialog, ::fwWX::ProgressDialog, ::fwGui::IProgressDialog::FactoryRegistryKeyType , ::fwGui::IProgressDialog::REGISTRY_KEY );
 
 
 namespace fwWX

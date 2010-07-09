@@ -6,6 +6,9 @@
 
 #include <wx/menu.h>
 
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/function.hpp>
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
@@ -13,6 +16,7 @@
 
 #include <fwWX/convert.hpp>
 
+#include "fwGuiWx/ActionCallback.hpp"
 #include "fwGuiWx/container/WxMenuContainer.hpp"
 #include "fwGuiWx/container/WxMenuItemContainer.hpp"
 #include "fwGuiWx/layoutManager/MenuLayoutManager.hpp"
@@ -22,7 +26,7 @@
 REGISTER_BINDING( ::fwGui::layoutManager::IMenuLayoutManager,
         ::fwGui::layoutManager::MenuLayoutManager,
          ::fwGui::layoutManager::IMenuLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuLayoutManager::REGISTRAR_KEY );
+          ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -56,7 +60,7 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
     SLM_ASSERT("dynamicCast fwMenu to WxMenuContainer failed", m_parent);
 
     wxMenu* menu = m_parent->getWxMenu();
-
+    unsigned int menuItemIndex = 0;
     BOOST_FOREACH ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo, m_actionInfo)
     {
         ::fwGuiWx::container::WxMenuItemContainer::NewSptr menuItem;
@@ -95,6 +99,17 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         if(!actionInfo.m_isSeparator)
         {
             m_menuItems.push_back(menuItem);
+            OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            ::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
+
+            ::fwGuiWx::ActionCallback::sptr wxCallback = ::fwGuiWx::ActionCallback::dynamicCast(callback);
+            SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", wxCallback);
+
+            typedef ::boost::function1< void, wxCommandEvent& > MenuItemCallback;
+            MenuItemCallback call = ::boost::bind( &::fwGuiWx::ActionCallback::executeWx, wxCallback, _1 );
+            menu->Bind( wxEVT_COMMAND_MENU_SELECTED, call, actionIdInMenu);
+
+            menuItemIndex++;
         }
         else
         {

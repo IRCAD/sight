@@ -33,7 +33,7 @@ public:
 
     typedef std::string RegistryKeyType;
 
-    FWGUI_API const static RegistryKeyType REGISTRAR_KEY;
+    FWGUI_API const static RegistryKeyType REGISTRY_KEY;
 
     /// Constructor. Do nothing.
     FWGUI_API IMenuBarBuilder();

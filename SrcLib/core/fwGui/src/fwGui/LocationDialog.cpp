@@ -14,7 +14,7 @@ namespace fwGui
 
 LocationDialog::LocationDialog()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ILocationDialog>( ::fwGui::ILocationDialog::factoryRegistryKey);
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ILocationDialog>( ::fwGui::ILocationDialog::REGISTRY_KEY);
 }
 
 //-----------------------------------------------------------------------------

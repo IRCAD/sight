@@ -11,7 +11,7 @@ namespace fwGui
 {
 
 const IProgressDialog::FactoryRegistryKeyType
-IProgressDialog::factoryRegistryKey =  "an unique key for all IProgressDialog (factories are exclusives)";
+IProgressDialog::REGISTRY_KEY =  "an unique key for all IProgressDialog (factories are exclusives)";
 
 IProgressDialog::IProgressDialog()
 {}

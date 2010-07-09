@@ -15,7 +15,7 @@ namespace fwGui
 
 MessageDialog::MessageDialog()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::IMessageDialog>( IMessageDialog::factoryRegistryKey);
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
 }
 
 //-----------------------------------------------------------------------------
