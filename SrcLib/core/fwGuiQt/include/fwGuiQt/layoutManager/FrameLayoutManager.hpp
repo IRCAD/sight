@@ -56,7 +56,7 @@ public:
 private:
 
     //void onCloseFrame(wxCloseEvent& event);
-    QPointer<QMainWindow> m_qtFrame;
+    QPointer<QMainWindow> m_qtWindow;
 };
 
 } // namespace fwGui

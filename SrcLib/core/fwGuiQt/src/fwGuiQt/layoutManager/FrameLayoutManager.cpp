@@ -43,9 +43,9 @@ void FrameLayoutManager::createFrame()
     FrameInfo frameInfo = this->getFrameInfo();
 
 
-    m_qtFrame = new QMainWindow();
-    m_qtFrame->setWindowTitle(QString::fromStdString(frameInfo.m_name));
-    m_qtFrame->setMinimumSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second);
+    m_qtWindow = new QMainWindow();
+    m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
+    m_qtWindow->setMinimumSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second);
 
     if(!frameInfo.m_iconPath.empty())
     {
@@ -53,13 +53,15 @@ void FrameLayoutManager::createFrame()
 
         OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.native_file_string(), !icon.isNull());
 
-        m_qtFrame->setWindowIcon(icon);
+        m_qtWindow->setWindowIcon(icon);
     }
-    qApp->setActiveWindow(m_qtFrame); // ?
-    m_qtFrame->show();
+    qApp->setActiveWindow(m_qtWindow); // ?
+    m_qtWindow->show();
 
+    m_qtWindow->setCentralWidget(new QWidget(m_qtWindow));
     ::fwGuiQt::container::QtContainer::NewSptr frameContainer;
-    frameContainer->setQtContainer(m_qtFrame);
+    //frameContainer->setQtContainer(m_qtWindow);
+    frameContainer->setQtContainer(m_qtWindow->centralWidget());
     m_frame = frameContainer;
 }
 
@@ -67,9 +69,9 @@ void FrameLayoutManager::createFrame()
 
 void FrameLayoutManager::destroyFrame()
 {
-    m_qtFrame->hide();
-    m_qtFrame->setParent(0);
-    m_qtFrame->deleteLater();
+    m_qtWindow->hide();
+    m_qtWindow->setParent(0);
+    m_qtWindow->deleteLater();
 }
 
 //-----------------------------------------------------------------------------
