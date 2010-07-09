@@ -10,24 +10,44 @@
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
         it's an FW4SPL identifier. -->
-        <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no">
-            <name>tutoDataService</name>
-            <icon>Bundles/Tuto03DataService_0-1/tuto.ico</icon>
-            <view uid="myRenderingTuto" autoStart="yes"  />
+        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <gui>
+                <frame>
+                    <name>tutoDataService</name>
+                    <icon>Bundles/Tuto03DataService_0-1/tuto.ico</icon>
+                    <minSize width="800" height="600" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="myMenuBar" start="no" />
+                <!--  <view sid="myRenderingTuto" start="yes" />-->
+            </registry>
         </service>
 
-        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
-            <menus>
-                <menu uid="menu_File" />
-            </menus>
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+            <gui>
+                <layout>
+                    <menu name="File" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="myMenu" start="yes" />
+            </registry>
         </service>
         
-        <!-- The ::gui::aspect::DefaultMenu service creates the menu "File". This menu contains two menuItems (with a separator).
-        The actions associated with these two menuItem are identified with the uid "action_openFile" and "action_quit". -->
-        <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
-            <action uid="action_openFile"/>
-            <separator/>
-            <action uid="action_quit"/>
+        <!-- The ::gui::aspect::DefaultMenuSrv service manage the menu creates the menu "File". This menu contains two menuItems (with a separator).
+        The actions associated with these two menuItem are identified with the uid "action_openFile" and "action_quit".
+        -->
+        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Open file"/>
+                    <separator />
+                    <menuItem name="Quit"/>
+                </layout>
+            </gui>
+            <registry />
         </service>
         
         <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
@@ -60,11 +80,11 @@
         <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images. -->
         <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
 
-        <start type="::gui::frame::IFrame" />
-        <start type="::gui::aspect::IMenuBar" />
+        <start type="::fwGui::IFrameSrv" />
         
-        <stop type="::gui::aspect::IMenuBar" />
-        <stop type="::gui::frame::IFrame" />
+        <start uid="myMenuBar" />
+        
+        <stop type="::fwGui::IFrameSrv" />
 
     </object>
 

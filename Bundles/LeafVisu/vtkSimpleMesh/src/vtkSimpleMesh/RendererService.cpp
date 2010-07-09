@@ -30,6 +30,7 @@
 #include <fwServices/macros.hpp>
 
 #include <vtkIO/vtk.hpp>
+
 #include <fwGuiWx/container/WxContainer.hpp>
 
 #include "vtkSimpleMesh/RendererService.hpp"
@@ -94,11 +95,13 @@ void RendererService::starting() throw(fwTools::Failed)
 {
     this->create();
 
-    m_bPipelineIsInit = false;
-
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container );
+    assert( container ) ;
+
+    m_bPipelineIsInit = false;
+
+
     m_wxmanager = new wxAuiManager( container );
     // Create a VTK-compliant window and insert it
     m_interactor = new ::wxVTKRenderWindowInteractor( container, -1 );
@@ -117,6 +120,8 @@ void RendererService::starting() throw(fwTools::Failed)
 
 void RendererService::configuring() throw(::fwTools::Failed)
 {
+    this->initialize();
+
     if( m_configuration->findConfigurationElement("masterSlaveRelation") )
     {
         m_isCamMaster = ( m_configuration->findConfigurationElement("masterSlaveRelation")->getValue() == "master" );

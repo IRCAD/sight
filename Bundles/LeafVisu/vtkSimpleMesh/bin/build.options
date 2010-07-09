@@ -8,7 +8,7 @@ LIB     = [
           'fwComEd_0-1',
           'fwVtkIO_0-1',
           'fwTools_0-1',
-          'fwWX_0-1',
+          'fwGuiWx_0-1',
           'fwDataIO_0-2',
           'fwRender_0-1',
           'fwGuiWx_0-1'
