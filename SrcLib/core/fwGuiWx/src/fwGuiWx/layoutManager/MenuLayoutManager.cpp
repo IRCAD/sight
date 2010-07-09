@@ -105,9 +105,13 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
             ::fwGuiWx::ActionCallback::sptr wxCallback = ::fwGuiWx::ActionCallback::dynamicCast(callback);
             SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", wxCallback);
 
+            // get MainFrame for binding
+            wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
+            SLM_ASSERT( "No wxFrame", frame ) ;
+
             typedef ::boost::function1< void, wxCommandEvent& > MenuItemCallback;
             MenuItemCallback call = ::boost::bind( &::fwGuiWx::ActionCallback::executeWx, wxCallback, _1 );
-            menu->Bind( wxEVT_COMMAND_MENU_SELECTED, call, actionIdInMenu);
+            frame->Bind( wxEVT_COMMAND_MENU_SELECTED, call, actionIdInMenu);
 
             menuItemIndex++;
         }
