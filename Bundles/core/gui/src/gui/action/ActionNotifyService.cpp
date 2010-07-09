@@ -4,58 +4,51 @@
 // * published by the Free Software Foundation.
 // * ****** END LICENSE BLOCK ****** */
 //
-//#include <wx/app.h>
-//#include <wx/msgdlg.h>
-//
 //#include <fwCore/base.hpp>
 //
 //#include <fwTools/ClassFactoryRegistry.hpp>
 //#include <fwTools/UUID.hpp>
 //
-//#include <fwServices/ObjectMsg.hpp>
 //#include <fwData/PatientDB.hpp>
 //
 //#include <fwRuntime/helper.hpp>
 //#include <fwRuntime/Extension.hpp>
 //
+//#include <fwServices/ObjectMsg.hpp>
 //#include <fwServices/macros.hpp>
 //#include <fwServices/helper.hpp>
-//#include <fwWX/convert.hpp>
 //
-//#include "gui/action/ActionNotifyService.hpp"
 //#include <fwGui/MessageDialog.hpp>
 //
+//#include "gui/action/ActionNotifyService.hpp"
 //
 //namespace gui
 //{
 //namespace action
 //{
 //
-//REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::ActionNotifyService , ::fwTools::Object ) ;
+//REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService , ::fwTools::Object ) ;
 //
 //
-//ActionNotifyService::ActionNotifyService() throw()
-//{
-//    m_onevent="";
-//}
+//ActionNotifyService::ActionNotifyService() throw() : m_onevent("")
+//{}
 //
 ////-----------------------------------------------------------------------------
 //
 //ActionNotifyService::~ActionNotifyService() throw()
-//{
-//}
+//{}
 //
 ////-----------------------------------------------------------------------------
 //
 //void ActionNotifyService::info(std::ostream &_sstream )
 //{
-//    _sstream << "Starter Action" << std::endl;
+//    _sstream << "NotifyService Action" << std::endl;
 //}
 ////-----------------------------------------------------------------------------
 //
 //void ActionNotifyService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 //{
-//    SLM_TRACE("updating(msg) ActionNotifyService") ;
+//    SLM_TRACE_FUNC() ;
 //
 //    if(_msg->hasEvent(m_onevent))
 //    {
@@ -173,9 +166,9 @@
 //        std::string messageType =  (*iter)->getExistingAttributeValue("event") ;
 //
 //        MessageType message;
-//        if ( messageType == "REMOVE" )                { message = REMOVE; }
+//        if ( messageType == "REMOVE" )              { message = REMOVE; }
 //        else if ( messageType == "ADD" )            { message = ADD; }
-//        else if ( messageType == "ADD_OR_REMOVE" )            { message = ADD_OR_REMOVE; }
+//        else if ( messageType == "ADD_OR_REMOVE" )  { message = ADD_OR_REMOVE; }
 //        else
 //        {
 //            OSLM_FATAL("Sorry this type of \"messageType\":" << messageType <<" is not managed by ActionNotifyService");

@@ -5,42 +5,22 @@
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
 
-
     <point id="::gui::editor::IEditor">
         <implements>::fwServices::IService</implements>
     </point>
-    
-    <point id="::gui::action::IAction">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::gui::aspect::IMenu">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::gui::aspect::IToolBar">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
+        
     <point id="::gui::view::IView">
         <implements>::fwServices::IService</implements>
     </point>
-    
+
     <point id="::fwGui::IFrameSrv">
         <implements>::fwServices::IService</implements>
     </point>
-        
+    
+    
+    
     <point id="::gui::frame::DefaultFrame">
         <implements>::fwGui::IFrameSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-        
-    <point id="::gui::aspect::IMenuBar">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::gui::aspect::DefaultMenu">
-        <implements>::gui::aspect::IMenu</implements>
         <implements>::fwTools::Object</implements>
     </point>
     
@@ -49,46 +29,26 @@
         <implements>::fwTools::Object</implements>
     </point>
     
-    <point id="::gui::aspect::DefaultMenuBar">
-        <implements>::gui::aspect::IMenuBar</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-   <point id="::gui::aspect::DefaultMenuBarSrv">
+    <point id="::gui::aspect::DefaultMenuBarSrv">
         <implements>::fwGui::IMenuBarSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
         
-    <point id="::gui::aspect::DefaultToolBar">
-        <implements>::gui::aspect::IToolBar</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
     <point id="::gui::view::DefaultView">
         <implements>::gui::view::IView</implements>
         <implements>::fwTools::Object</implements>
     </point>
-        
+    
     <point id="::gui::editor::DummyEditor">
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwTools::Object</implements>
     </point>
-        
+    
     <point id="::gui::action::NothingActionSrv">
         <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
-    
-    <point id="::gui::action::RunRootObjectServiceAction">
-        <implements>::gui::action::IAction</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::gui::action::SelectConfigurationAction">
-        <implements>::gui::action::IAction</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
+        
     <point id="::gui::action::CloseAction">
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
@@ -98,25 +58,21 @@
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
     </point>
-    
-    <point id="::gui::action::TestAction">
-        <implements>::gui::action::IAction</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::gui::action::FullScreenActionService">
-        <implements>::gui::action::IAction</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
+        
     <point id="::gui::action::StarterActionService">
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
     </point>    
     
+    <!-- 
+    <point id="::gui::aspect::DefaultToolBar">
+        <implements>::gui::aspect::IToolBar</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
     <point id="::gui::action::ActionNotifyService">
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
     </point>
-
+    -->
+    
 </plugin>

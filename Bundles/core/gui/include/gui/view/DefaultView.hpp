@@ -9,8 +9,9 @@
 
 #include <fwTools/Failed.hpp>
 
-#include "gui/export.hpp"
 #include "gui/view/IView.hpp"
+
+#include "gui/export.hpp"
 
 namespace gui
 {

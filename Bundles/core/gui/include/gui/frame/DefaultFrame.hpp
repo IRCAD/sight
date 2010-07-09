@@ -11,7 +11,6 @@
 #include <fwGui/IFrameSrv.hpp>
 
 #include "gui/export.hpp"
-#include "gui/frame/IFrame.hpp"
 
 namespace gui
 {

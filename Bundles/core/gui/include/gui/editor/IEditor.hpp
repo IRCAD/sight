@@ -10,11 +10,10 @@
 #include <fwTools/Failed.hpp>
 #include <fwServices/IService.hpp>
 
-#include <fwWX/IGuiContainer.hpp>
+#include <fwGui/IGuiContainerSrv.hpp>
 
 #include "gui/export.hpp"
 
-class wxWindow;
 
 namespace gui
 {
@@ -33,11 +32,12 @@ namespace editor
  *  The problem is that the IEditor::starting method create another useless container in this case.
  */
 
-class GUI_CLASS_API IEditor : public ::fwWX::IGuiContainer
+class GUI_CLASS_API IEditor : public ::fwGui::IGuiContainerSrv
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (IEditor)(::fwServices::IService) ) ;
+
+    fwCoreServiceClassDefinitionsMacro ( (IEditor)(::fwGui::IGuiContainerSrv) ) ;
 
 protected :
 

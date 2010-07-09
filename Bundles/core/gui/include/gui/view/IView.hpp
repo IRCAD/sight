@@ -39,7 +39,7 @@ class GUI_CLASS_API IView : public ::fwGui::IGuiContainerSrv
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IView)( ::fwServices::IService) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IView)(::fwGui::IGuiContainerSrv) ) ;
 
 protected:
 

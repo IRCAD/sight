@@ -1,13 +1,12 @@
-TYPE    = "shared"
-USE     = [ 'boost' ]
+TYPE    = 'shared'
 VERSION = '0-1'
-import os
-import sys
+USE     = [ 'boost' ]
+LIB     = [
+          'fwData_0-1',
+          'fwServices_0-1',
+          'fwCore_0-1',
+          'fwTools_0-1',
+          'fwRuntime_0-3'
+          ]
 
-LIB = [ 'fwData_0-1',
-        'fwServices_0-1','fwCore_0-1','fwTools_0-1','fwRuntime_0-3']
-
-
-#/usr/bin/ld: src/fwComEd/action/DEBUG_posix_gcc/GenericSerializeAction.os(.gnu.linkonce.t._ZN11DynamicType7setTypeIaEEvv[void DynamicType::setType<signed char>()]+0x24): unresolvable R_386_GOTOFF relocation against symbol `DynamicType::m_managedTypes'
-#/usr/bin/ld: final link failed: Nonrepresentable section on output
 

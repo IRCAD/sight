@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-
 #include <fwTools/UUID.hpp>
 
 #include <fwServices/helper.hpp>

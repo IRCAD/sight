@@ -10,7 +10,8 @@
 //#include <vector>
 //#include <fwServices/IService.hpp>
 //
-//#include "gui/action/IAction.hpp"
+//#include <fwGui/IActionSrv.hpp>
+//
 //#include "gui/export.hpp"
 //
 //
@@ -26,12 +27,12 @@
 // * @author  IRCAD (Research and Development Team).
 // * @date    2009.
 // */
-//class GUI_CLASS_API ActionNotifyService : public ::gui::action::IAction
+//class GUI_CLASS_API ActionNotifyService : public ::fwGui::IActionSrv
 //{
 //
 //public :
 //
-//    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::gui::action::IAction) ) ;
+//    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::fwGui::IActionSrv) ) ;
 //
 //    /**
 //    * @brief Constructor. Do nothing.
@@ -56,6 +57,10 @@
 //     * @brief This method gives information about the class. Do nothing.
 //     */
 //    GUI_API virtual void info(std::ostream &_sstream ) ;
+//
+//    GUI_API virtual void starting() throw(::fwTools::Failed);
+//
+//    GUI_API virtual void stopping() throw(::fwTools::Failed);
 //
 //    /**
 //     * @brief This method starts-updates or stops the specified services

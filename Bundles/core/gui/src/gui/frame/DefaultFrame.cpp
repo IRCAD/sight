@@ -31,7 +31,7 @@ DefaultFrame::~DefaultFrame() throw()
 
 void DefaultFrame::configuring() throw( ::fwTools::Failed )
 {
-    assert( m_configuration->getName() == "service" );
+    SLM_ASSERT( "<service> tag is required.", m_configuration->getName() == "service" );
     this->initialize();
 }
 
