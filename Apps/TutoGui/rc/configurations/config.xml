@@ -39,8 +39,15 @@
                         <menuItem name="My item 2"/>
                     </layout>
                 </gui>
-                <registry />
+                <registry>
+                    <menuItem sid="item1" start="yes" />
+                    <menuItem sid="item2" start="yes" />
+                </registry>
             </service>
+            
+            <service uid="item1" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            <service uid="item2" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            
             
             <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
                 <gui>

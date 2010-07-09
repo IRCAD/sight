@@ -49,7 +49,7 @@ MenuRegistrar::~MenuRegistrar()
 
 void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be registrar",
+    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be registry",
             configuration->getName() == "registry");
 
     // index represents associated menu with position in menus vector
@@ -86,7 +86,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::fwMenuItem::sptr > menuItems )
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < menuItems.size());
         menuItem = menuItems.at( sid.second.first );
-//        ::fwGui::GuiRegistry::registerSIDMenuItem(sid.first, menuItem);
+        ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
         {
             OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
@@ -108,7 +108,7 @@ void MenuRegistrar::unmanage()
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             service->stop();
         }
-        ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);
+        ::fwGui::GuiRegistry::unregisterActionSIDToParentSID(sid.first);
     }
 }
 
