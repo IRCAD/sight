@@ -58,7 +58,6 @@ void RendererService::configuring() throw(::fwTools::Failed)
 
 void RendererService::starting() throw(fwTools::Failed)
 {
-    //this->initRender();
     this->create();
 
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
@@ -106,14 +105,11 @@ void RendererService::stopping() throw(fwTools::Failed)
     delete m_wxmanager;
     m_wxmanager = 0;
 
-    //m_container->DestroyChildren() ;
-
     assert( m_render );
     m_render->Delete();
     m_render = 0;
 
     this->destroy();
-    //this->stopRender();
 }
 
 //-----------------------------------------------------------------------------

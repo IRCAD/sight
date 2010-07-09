@@ -30,6 +30,7 @@
 #include <fwServices/macros.hpp>
 
 #include <vtkIO/vtk.hpp>
+#include <fwGuiWx/container/WxContainer.hpp>
 
 #include "vtkSimpleMesh/RendererService.hpp"
 
@@ -91,11 +92,12 @@ RendererService::~RendererService() throw()
 
 void RendererService::starting() throw(fwTools::Failed)
 {
-    this->initRender();
+    this->create();
 
     m_bPipelineIsInit = false;
 
-    wxWindow* const container = m_container;
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
     assert( container );
     m_wxmanager = new wxAuiManager( container );
     // Create a VTK-compliant window and insert it
@@ -142,13 +144,11 @@ void RendererService::stopping() throw(fwTools::Failed)
     delete m_wxmanager;
     m_wxmanager = 0;
 
-    m_container->DestroyChildren() ;
-
     assert( m_render );
     m_render->Delete();
     m_render = 0;
 
-    this->stopRender();
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
