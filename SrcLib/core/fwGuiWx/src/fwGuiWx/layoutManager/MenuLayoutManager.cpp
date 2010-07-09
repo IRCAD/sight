@@ -16,6 +16,7 @@
 #include "fwGuiWx/container/WxMenuContainer.hpp"
 #include "fwGuiWx/container/WxMenuItemContainer.hpp"
 #include "fwGuiWx/layoutManager/MenuLayoutManager.hpp"
+#include "fwGuiWx/Shortcut.hpp"
 
 
 REGISTER_BINDING( ::fwGui::layoutManager::IMenuLayoutManager,
@@ -67,8 +68,11 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         }
         else
         {
+            OSLM_ASSERT("Action type "<<actionInfo.m_type<< " is unknown.",
+                           SPECIAL_ACTION_TO_WXID.find(actionInfo.m_type) != SPECIAL_ACTION_TO_WXID.end());
             actionIdInMenu = SPECIAL_ACTION_TO_WXID.find(actionInfo.m_type)->second;
         }
+
         wxMenuItem *menuItemWx;
         wxItemKind kind = wxITEM_NORMAL;
         if(actionInfo.m_isCheckable || actionInfo.m_isRadio)
@@ -76,7 +80,15 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
             kind = actionInfo.m_isRadio ? wxITEM_RADIO : wxITEM_CHECK;
 
         }
-        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionInfo.m_name ),_(""), kind ) ;
+
+        std::string actionNameInMenu = actionInfo.m_name;
+        // create shortcut
+        if( !actionInfo.m_shortcut.empty() )
+        {
+            ::fwGuiWx::Shortcut::sptr shortcut =  ::fwGuiWx::Shortcut::New( actionInfo.m_shortcut );
+            actionNameInMenu += "\t" + shortcut->toString();
+        }
+        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionNameInMenu ),_(""), kind ) ;
         menu->Append( menuItemWx );
         menuItem->setWxMenuItem(menuItemWx);
 

@@ -4,29 +4,26 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/action/Shortcut.hpp"
-
 #include <cassert>
 #include <iostream>
 #include <sstream>
+
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/tokenizer.hpp>
+
 #include <wx/wx.h>
 #include <wx/version.h>
 #include <wx/accel.h>
 
+#include "fwGuiWx/Shortcut.hpp"
 
-
-namespace gui
-{
-
-namespace action
+namespace fwGuiWx
 {
 
 namespace
 {
     /**
-     * @brief   Defines the character sperator type for the shortcut definition string tokenizer.
+     * @brief   Defines the character separator type for the shortcut definition string tokenizer.
      */
     typedef ::boost::char_separator< char >         char_separator;
 
@@ -358,7 +355,4 @@ Shortcut::operator std::string () const
     return toString();
 }
 
-
-} // namespace action
-
-} // namespace gui
+} // namespace fwGuiWx
