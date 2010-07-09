@@ -1,0 +1,4 @@
+USE     = ['boost','qtGui']
+LIB     = ['fwGui_0-1','fwData_0-1', 'fwTools_0-1', 'fwCore_0-1','fwServices_0-1']
+TYPE    = 'shared'
+VERSION = '0-1'
