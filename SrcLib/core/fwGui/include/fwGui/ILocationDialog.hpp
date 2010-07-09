@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ILocationDialog_HPP_
-#define _FWGUI_ILocationDialog_HPP_
+#ifndef _FWGUI_ILOCATIONDIALOG_HPP_
+#define _FWGUI_ILOCATIONDIALOG_HPP_
 
 #include <string>
 #include <fwCore/base.hpp>
@@ -72,6 +72,6 @@ public:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_LocationDialog_HPP_*/
+#endif /*_FWGUI_ILOCATIONDIALOG_HPP_*/
 
 

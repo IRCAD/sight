@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/app.h>
-#include <wx/wx.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 #include <fwServices/helper.hpp>
@@ -16,10 +13,6 @@
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwWX/convert.hpp>
-
-#include "gui/action/IAction.hpp"
-#include "gui/aspect/IMenu.hpp"
 #include "gui/aspect/DefaultMenuSrv.hpp"
 
 
@@ -30,7 +23,6 @@ namespace gui
 
 namespace aspect
 {
-const std::string  DefaultMenuSrv::SEPARATOR_UID = "SEPARATOR_UID";
 
 //-----------------------------------------------------------------------------
 

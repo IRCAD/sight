@@ -79,12 +79,6 @@ protected :
     GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     ///@}
 
-private:
-
-    std::vector< std::string >      m_actionsUID ;
-    std::set< wxMenuItem * >        m_separators ;
-    std::string                     m_menuName ;
-    const static std::string        SEPARATOR_UID;
 };
 
 }
