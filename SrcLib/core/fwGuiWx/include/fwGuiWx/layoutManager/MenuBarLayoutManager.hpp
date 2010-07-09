@@ -67,7 +67,7 @@ public:
 protected:
 
     /// Return the position of the menu in the menuBar
-    int MenuBarLayoutManager::getMenuPosition(::fwGui::fwMenu::sptr fwMenu);
+    int getMenuPosition(::fwGui::fwMenu::sptr fwMenu);
 
     ::fwGuiWx::container::WxMenuBarContainer::sptr m_parent;
 };
