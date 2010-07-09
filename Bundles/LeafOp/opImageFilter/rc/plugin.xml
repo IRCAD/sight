@@ -5,7 +5,7 @@
     <requirement id="dataReg" />
     <requirement id="gui" />
 
-    <point id="::opImageFilter::action::imageFilter" >
+    <point id="::opImageFilter::action::ImageFilter" >
         <implements>::gui::action::IAction</implements>
         <implements>::fwTools::Object</implements>
     </point>
