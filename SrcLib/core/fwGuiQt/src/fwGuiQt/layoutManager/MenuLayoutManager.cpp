@@ -19,7 +19,6 @@
 #include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/container/QtMenuItemContainer.hpp"
 #include "fwGuiQt/layoutManager/MenuLayoutManager.hpp"
-//#include "fwGuiQt/Shortcut.hpp"
 
 
 REGISTER_BINDING( ::fwGui::layoutManager::IMenuLayoutManager,
@@ -79,13 +78,11 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
 
         action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
 
-        //std::string actionNameInMenu = actionInfo.m_name;
-        //// create shortcut
-        //if( !actionInfo.m_shortcut.empty() )
-        //{
-            //::fwGuiQt::Shortcut::sptr shortcut =  ::fwGuiQt::Shortcut::New( actionInfo.m_shortcut );
-            //actionNameInMenu += "\t" + shortcut->toString();
-        //}
+        // create shortcut
+        if( !actionInfo.m_shortcut.empty() )
+        {
+            action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
+        }
 
         menuItem->setQtMenuItem(action);
 
