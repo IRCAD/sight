@@ -12,7 +12,7 @@
             </gui>
             <registry>
                 <menuBar sid="myMenuBar" start="yes" />
-                <view sid="multiView_scene1" autoStart="yes" />
+                <view sid="multiView_scene1" start="yes" />
             </registry>
         </service>
         <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
@@ -70,9 +70,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sliceListEditor" start="yes" />
-                <view sid="showScanEditor" start="yes" />
-                <view sid="sliderIndexEditor" start="yes" />
+                <view sid="sliceListEditor" start="no" />
+                <view sid="showScanEditor" start="no" />
+                <view sid="sliderIndexEditor" start="no" />
                 <view sid="snapshotScene1Editor" start="yes" />
             </registry>
         </service>
