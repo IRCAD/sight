@@ -4,16 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/string.h>
-#include <wx/filedlg.h>
-#include <wx/app.h>
+#include <fstream>
+#include <iostream>
+#include <boost/filesystem/operations.hpp>
 
 #include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
 #include <io/IReader.hpp>
+
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/bundle/runtime.hpp>
+#include <fwServices/macros.hpp>
+
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -21,14 +24,9 @@
 #include <fwGui/LocationDialog.hpp>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
-#include <fwServices/macros.hpp>
-#include <fwWX/convert.hpp>
 
-#include <fstream>
 #include <fwCore/base.hpp>
-#include <iostream>
 
-#include <boost/filesystem/operations.hpp>
 
 #include "ioData/TransformationMatrix3DReaderService.hpp"
 

@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <wx/wx.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -22,8 +21,6 @@
 
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwWX/convert.hpp>
 
 #include <fwDataIO/reader/TriangularMeshReader.hpp>
 
@@ -69,7 +66,7 @@ TriangularMeshReaderService::~TriangularMeshReaderService() throw()
 
 void TriangularMeshReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    OSLM_INFO( "TriangularMeshReaderService::configure : " << *m_configuration );
+    SLM_TRACE_FUNC();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;

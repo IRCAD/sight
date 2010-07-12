@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <wx/wx.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -22,8 +21,6 @@
 
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwWX/convert.hpp>
 
 #include <fwDataIO/writer/TriangularMeshWriter.hpp>
 
@@ -60,14 +57,14 @@ std::vector< std::string > TriangularMeshWriterService::getSupportedExtensions()
 //-----------------------------------------------------------------------------
 
 TriangularMeshWriterService::~TriangularMeshWriterService() throw()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void TriangularMeshWriterService::configuring( ) throw(::fwTools::Failed)
 {
-    OSLM_INFO( "TriangularMeshWriterService::configure : " << *m_configuration );
+    SLM_TRACE_FUNC();
+
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
@@ -118,4 +115,7 @@ void TriangularMeshWriterService::updating() throw(::fwTools::Failed)
         writer.write();
     }
 }
+
+//------------------------------------------------------------------------------
+
 }

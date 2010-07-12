@@ -6,7 +6,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <wx/wx.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -22,8 +21,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/bundle/runtime.hpp>
-
-#include <fwWX/convert.hpp>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 
