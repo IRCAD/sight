@@ -8,6 +8,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -20,13 +21,11 @@
 #include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/ImageReader.hpp>
 
-#include "ioVTK/ImageReaderService.hpp"
-
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
-#include <fwData/location/Folder.hpp>
+#include "ioVTK/ImageReaderService.hpp"
 
 namespace ioVTK
 {

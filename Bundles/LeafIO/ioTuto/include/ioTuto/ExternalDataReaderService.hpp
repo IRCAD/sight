@@ -9,7 +9,7 @@
 
 #include <io/IReader.hpp>
 #include <boost/filesystem/path.hpp>
-#include "ioTuto/config.hpp"
+
 #include "ioTuto/config.hpp"
 
 namespace ioTuto

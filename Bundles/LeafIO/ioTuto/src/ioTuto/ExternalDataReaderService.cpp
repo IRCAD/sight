@@ -3,20 +3,25 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
 #include <iostream>
 #include <fstream>
 
 #include <boost/filesystem/operations.hpp>
 
-#include <wx/wx.h>
-
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+
 #include "ioTuto/ExternalDataReaderService.hpp"
-#include "fwData/Composite.hpp"
-#include "fwData/String.hpp"
-#include "fwData/TransformationMatrix3D.hpp"
 
 REGISTER_SERVICE( ::io::IReader , ::ioTuto::ExternalDataReaderService , ::fwData::Composite ) ;
 
@@ -24,11 +29,12 @@ namespace ioTuto
 {
 
 //-----------------------------------------------------------------------------
+
 ExternalDataReaderService::ExternalDataReaderService()
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
+
 void ExternalDataReaderService::info(std::ostream &_sstream )
 {
     this->::io::IReader::info( _sstream ) ;
@@ -36,6 +42,7 @@ void ExternalDataReaderService::info(std::ostream &_sstream )
 }
 
 //-----------------------------------------------------------------------------
+
 std::vector< std::string > ExternalDataReaderService::getSupportedExtensions()
 {
     std::vector< std::string > extensions ;
@@ -44,14 +51,15 @@ std::vector< std::string > ExternalDataReaderService::getSupportedExtensions()
 }
 
 //-----------------------------------------------------------------------------
+
 ExternalDataReaderService::~ExternalDataReaderService() throw()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
+
 void ExternalDataReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    OSLM_INFO( "ExternalDataReaderService::configure : " << *m_configuration );
+    SLM_TRACE_FUNC();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
@@ -61,37 +69,39 @@ void ExternalDataReaderService::configuring( ) throw(::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
+
 void ExternalDataReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an external data file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("External data (*.us)|*.us"),
-            wxFD_FILE_MUST_EXIST,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an external data file");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("us", "*.us");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsExternalDataPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-        _sDefaultPath = wxConvertMB2WX( m_fsExternalDataPath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_fsExternalDataPath = result->getPath();
     }
 }
 
 //------------------------------------------------------------------------------
+
 void ExternalDataReaderService::updating() throw(::fwTools::Failed)
 {
-    SLM_INFO("[ExternalDataReaderService::update]");
+    SLM_TRACE_FUNC();
 
-    configureWithIHM();
+    this->configureWithIHM();
 
     std::string imageName;
     ::fwData::Composite::sptr dataComposite = this->getObject< ::fwData::Composite >();
     assert( dataComposite ) ;
-    try {
+    try
+    {
         if (::boost::filesystem::exists(m_fsExternalDataPath))
         {
             // reading of the file
@@ -144,7 +154,10 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
     catch(std::ios_base::failure exception)
     {
         OSLM_ERROR( "External data file loading error for " << exception.what());
+    }
 }
-}
+
+//------------------------------------------------------------------------------
+
 }
 

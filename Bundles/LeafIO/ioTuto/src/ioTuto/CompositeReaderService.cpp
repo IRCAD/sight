@@ -4,17 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/bundle/runtime.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 
 #include "ioTuto/CompositeReaderService.hpp"
@@ -57,10 +60,9 @@ void CompositeReaderService::stopping() throw( ::fwTools::Failed )
 //------------------------------------------------------------------------------
 void CompositeReaderService::updating( ) throw(::fwTools::Failed)
 {
-    configureWithIHM();
+    this->configureWithIHM();
     ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
     assert( pComposite );
-
 
     ::fwXML::reader::FwXMLObjectReader myReader;
 
@@ -72,7 +74,6 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
             myReader.read();
             ::fwData::Composite::sptr newCompo;
             newCompo = ::fwData::Composite::dynamicCast( myReader.getObject() );
-//            *pComposite = *newCompo;
             pComposite->shallowCopy(newCompo);
             std::copy( newCompo->children().begin(),  newCompo->children().end(), std::back_inserter( pComposite->children() ) );
 
@@ -81,42 +82,55 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
-            wxString wxStmp( ss.str().c_str(), wxConvLocal );
-            wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Warning");
+            messageBox.setMessage( ss.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
         catch( ... )
         {
             std::stringstream ss;
-            ss << "Warning during loading : ";
-            wxString wxStmp( ss.str().c_str(), wxConvLocal );
-            wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+            ss << "Warning during loading.";
+
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Warning");
+            messageBox.setMessage( ss.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
     }
 }
 
 //------------------------------------------------------------------------------
-void CompositeReaderService::updating(::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg) throw(::fwTools::Failed)
+void CompositeReaderService::updating( ::fwServices::ObjectMsg::csptr _msg) throw(::fwTools::Failed)
 {
 }
 
 //------------------------------------------------------------------------------
+
 void CompositeReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Xml file to read");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("xml file (*.xml)|*.xml"),
-             wxFD_FILE_MUST_EXIST,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an xml file to read");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("xml", "*.xml");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsExternalDataPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-        _sDefaultPath = wxConvertMB2WX( m_fsExternalDataPath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_fsExternalDataPath = result->getPath();
+    }
 }
-}
+
+//------------------------------------------------------------------------------
+
 } // namespace ioTuto
