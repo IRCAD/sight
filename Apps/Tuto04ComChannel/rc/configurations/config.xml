@@ -35,9 +35,9 @@
          <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager" >
-                    <view caption="myRenderingTuto1" align="center" />
-                    <view caption="myRenderingTuto2" align="right" minWidth="400" minHeight="100" />
-                    <view caption="myRenderingTuto3" align="right" minWidth="400" minHeight="100" />
+                    <view caption="Rendering 1" align="center" />
+                    <view caption="Rendering 2" align="right" minWidth="400" minHeight="100" />
+                    <view caption="Rendering 3" align="right" minWidth="400" minHeight="100" />
                 </layout>
             </gui>
             <registry>

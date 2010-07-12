@@ -6,7 +6,7 @@
     <requirement id="gui" />
 
     <point id="::opImageFilter::action::ImageFilter" >
-        <implements>::gui::action::IAction</implements>
+        <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
     

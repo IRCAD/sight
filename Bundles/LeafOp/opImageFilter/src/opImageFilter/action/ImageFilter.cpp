@@ -81,8 +81,8 @@ struct ThresholdFilter
     struct Parameter
     {
         double thresholdValue;
-        ::boost::shared_ptr< ::fwData::Image >  imageIn;
-        ::boost::shared_ptr< ::fwData::Image >  imageOut;
+        ::fwData::Image::sptr  imageIn;
+        ::fwData::Image::sptr  imageOut;
     };
 
     template<class PIXELTYPE>
@@ -91,7 +91,7 @@ struct ThresholdFilter
         assert( param.imageIn->getSize().size()==3 );
 //        *param.imageOut = *param.imageIn; // La copie serait utile uniquement lors du changement de l'image d'origine
         param.imageOut->shallowCopy(param.imageIn);
-        // Il serait pr�f�reable de copier uniquement les attributs de l'image et d'allouer le buffer sans le copier
+        // Il serait prefereable de copier uniquement les attributs de l'image et d'allouer le buffer sans le copier
         PIXELTYPE *buffer1 = (PIXELTYPE *)param.imageIn->getBuffer();
         PIXELTYPE *buffer2 = (PIXELTYPE *)param.imageOut->getBuffer();
         const unsigned int NbPixels = param.imageIn->getSize()[0] * param.imageIn->getSize()[1] * param.imageIn->getSize()[2];
@@ -118,11 +118,11 @@ void ImageFilter::updating() throw ( ::fwTools::Failed )
     param.thresholdValue = Threshold;
 
     ::fwTools::DynamicType type = param.imageIn->getPixelType();
-    fwTools::Dispatcher< fwTools::IntrinsicTypes , ThresholdFilter >::invoke( type , param );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ThresholdFilter >::invoke( type , param );
 
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
-//  msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ; // Ne fonctionne pas
+//  msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
 
     // Notify message to all service listeners
     ::fwServices::IEditionService::notify(this->getSptr(), param.imageOut, msg);

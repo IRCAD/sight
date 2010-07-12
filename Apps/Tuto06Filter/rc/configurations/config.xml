@@ -3,42 +3,78 @@
     <!-- Root object -->
     <object id="FilterConfig" type="::fwData::Composite">
         <!-- Windows & Main Menu -->
-        <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
-            <name>Filter</name>
-            <icon>Bundles/Tuto06Filter_0-1/tuto.ico</icon>
-            <minSize width="720" height="600"/>
-            <view uid="myDefaultView" autoStart="yes" />
+        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+            <gui>
+                <frame>
+                    <name>Filter</name>
+                    <icon>Bundles/Tuto06Filter_0-1/tuto.ico</icon>
+                    <minSize width="720" height="600"/>
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="myMenuBar" start="yes" />
+                <view sid="myDefaultView" start="yes" />
+            </registry>
         </service>
         
-       <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
-            <menus>
-                <menu uid="menuFile"/>
-                <menu uid="menuFilter"/>
-            </menus>
+       <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                     <menu name="File" />
+                     <menu name="Filter" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menuFile" start="yes" />
+                <menu sid="menuFilter" start="yes" />
+            </registry>
         </service>
         
         <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
-            <views>
-                <view uid="RenderingImage1" autoStart="yes" />
-                <view uid="RenderingImage2" minWidth="500" minHeight="100" autoStart="yes" />
-            </views>
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager" >
+                    <view align="center" />
+                    <view align="right" minWidth="500" minHeight="100" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="RenderingImage1" start="yes" />
+                <view sid="RenderingImage2" start="yes" />
+            </registry>
         </service> 
         
         <!-- Menus -->
-        <service name="File" uid="menuFile" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
-            <action uid="actionOpenImageFile"/>
-            <separator/>
-            <action uid="actionQuit"/>
-        </service>         
-        <service name="Filter" uid="menuFilter" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
-            <action uid="actionImageFilter"/>
+        <service uid="menuFile" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Open image file" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionOpenImageFile" start="yes" />
+                <menuItem sid="actionQuit" start="yes" />
+            </registry>
         </service>
+        <service uid="menuFilter" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Compute Image Filter" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionImageFilter" start="yes" />
+            </registry>
+        </service>
+        
         <!-- Actions on Menus -->         
-        <service uid="actionQuit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
-        <service uid="actionOpenImageFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="Open image file" autoComChannel="no" >
+        <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+        <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
             <start uid="readerPathImageFile"/>
         </service>
-        <service uid="actionImageFilter" type="::gui::action::IAction" implementation="::opImageFilter::action::imageFilter" name="Compute Image Filter" autoComChannel="no" >
+        <service uid="actionImageFilter" type="::fwGui::IActionSrv" implementation="::opImageFilter::action::ImageFilter" autoComChannel="no" >
             <imageIn  uid="myImage1"/>
             <imageOut uid="myImage2"/>
         </service>
@@ -56,11 +92,9 @@
         </object> 
     
     <!-- Starting order of services -->
-    <start type="::gui::frame::IFrame" />
-    <start type="::gui::aspect::IMenuBar" />
-    
-    <stop type="::gui::aspect::IMenuBar" />
-    <stop type="::gui::frame::IFrame" />
+    <start type="::fwGui::IFrameSrv" />
+
+    <stop type="::fwGui::IFrameSrv" />
   </object>
   </extension>
 </plugin>    
