@@ -37,6 +37,8 @@
 
 #include <fwWX/convert.hpp>
 
+#include <fwGuiWx/container/WxContainer.hpp>
+
 #include "uiImage/ShowScanEditor.hpp"
 
 namespace uiImage
@@ -60,7 +62,11 @@ ShowScanEditor::~ShowScanEditor() throw()
 void ShowScanEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->initGuiParentContainer();
+    this->create();
+
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
     namespace fs = ::boost::filesystem;
     fs::path pathImageScan ("Bundles/uiImage_" + std::string(UIIMAGE_VER) + "/sliceShow.png");
@@ -72,15 +78,15 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
     m_imageHideScan.LoadFile(::fwWX::std2wx(pathImageScan.string()));
 
 
-    m_showScanButton = new wxBitmapButton( m_container, wxNewId(), m_imageShowScan, wxDefaultPosition, wxSize(40,-1) ) ;
+    m_showScanButton = new wxBitmapButton( container, wxNewId(), m_imageShowScan, wxDefaultPosition, wxSize(40,-1) ) ;
     m_showScanButton->SetToolTip(_("Show/Hide Scan"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
     sizer->Add( m_showScanButton, 1, wxALL|wxEXPAND, 1 );
-    m_container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this,  m_showScanButton->GetId());
+    container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this,  m_showScanButton->GetId());
 
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    container->SetSizer( sizer );
+    container->Layout();
 }
 
 //------------------------------------------------------------------------------
@@ -88,9 +94,14 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
 void ShowScanEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this, m_showScanButton->GetId());
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
-    this->resetGuiParentContainer();
+    container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &ShowScanEditor::onChangeScanMode, this, m_showScanButton->GetId());
+
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -99,11 +110,12 @@ void ShowScanEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
+    this->initialize();
+
     std::vector < Configuration > placeInSceneConfig = m_configuration->find("negatoAdaptor");
     SLM_ASSERT("Tag negatoAdaptor required!", !placeInSceneConfig.empty());
     SLM_ASSERT("UID attribute is missing", placeInSceneConfig.at(0)->hasAttribute("uid"));
     m_adaptorUID = placeInSceneConfig.at(0)->getAttributeValue("uid");
-
 }
 
 //------------------------------------------------------------------------------

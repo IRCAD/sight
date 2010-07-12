@@ -38,6 +38,8 @@
 
 #include <fwWX/convert.hpp>
 
+#include <fwGuiWx/container/WxContainer.hpp>
+
 #include "uiImage/SliceListEditor.hpp"
 
 namespace uiImage
@@ -63,9 +65,13 @@ SliceListEditor::~SliceListEditor() throw()
 void SliceListEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->initGuiParentContainer();
+    this->create();
 
-    m_dropDownButton = new wxButton( m_container, m_idDropDown, _T(">"), wxDefaultPosition, wxSize(25,-1) );
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
+
+    m_dropDownButton = new wxButton( container, m_idDropDown, _T(">"), wxDefaultPosition, wxSize(25,-1) );
     m_dropDownButton->SetToolTip(_("Manage slice visibility"));
 
     m_pDropDownMenu = new wxMenu();
@@ -88,10 +94,10 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     m_threeSlicesItem->Check(m_nbSlice == 3);
 //  m_obliqueSliceItem->Check(m_nbSlice == -1);
 
-    m_container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this,  m_idDropDown);
+    container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this,  m_idDropDown);
 
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    container->SetSizer( sizer );
+    container->Layout();
 }
 
 //------------------------------------------------------------------------------
@@ -99,13 +105,16 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 void SliceListEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
     m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_oneSliceItem->GetId());
     m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_threeSlicesItem->GetId());
-    m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this, m_idDropDown);
+    container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SliceListEditor::onDropDownButton, this, m_idDropDown);
 
-    this->resetGuiParentContainer();
-
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -113,6 +122,8 @@ void SliceListEditor::stopping() throw(::fwTools::Failed)
 void SliceListEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    this->initialize();
 
     std::vector < Configuration > placeInSceneConfig = m_configuration->find("negatoAdaptor");
     SLM_ASSERT("Tag negatoAdaptor required!", !placeInSceneConfig.empty());

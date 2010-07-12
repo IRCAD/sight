@@ -25,18 +25,6 @@
 #include <boost/lambda/lambda.hpp>
 #include <boost/function.hpp>
 
-
-#include <fwServices/helper.hpp>
-#include <fwServices/macros.hpp>
-#include <fwComEd/CompositeEditor.hpp>
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwTools/UUID.hpp>
-#include <fwData/Color.hpp>
-
-#include <fwRuntime/ConfigurationElementContainer.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-
 #include <vtkActor.h>
 #include <vtkCellPicker.h>
 #include <vtkFrustumCoverageCuller.h>
@@ -49,12 +37,23 @@
 #include <vtkSphereSource.h>
 #include <vtkInstantiator.h>
 #include <vtkTransform.h>
-
-#include <fwRenderVTK/wxVTKRenderWindowInteractor.hpp>
-
 #include <vtkCamera.h>
-#include <fwComEd/CameraMsg.hpp>
 
+
+#include <fwServices/helper.hpp>
+#include <fwServices/macros.hpp>
+#include <fwComEd/CompositeEditor.hpp>
+#include <fwComEd/CompositeMsg.hpp>
+#include <fwTools/UUID.hpp>
+#include <fwData/Color.hpp>
+
+#include <fwRuntime/ConfigurationElementContainer.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwComEd/CameraMsg.hpp>
+#include <fwGuiWx/container/WxContainer.hpp>
+
+#include "fwRenderVTK/wxVTKRenderWindowInteractor.hpp"
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 #include "fwRenderVTK/VtkRenderService.hpp"
 
@@ -290,8 +289,7 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
-
-    this->initClockRate();
+    this->initialize();
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
     //assert(m_configuration->getName() == "scene");
@@ -305,7 +303,7 @@ void VtkRenderService::starting() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    this->initRender();
+    this->create();
     this->startContext();
 
     // Instantiate vtk object, class...
@@ -373,7 +371,7 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 
     this->stopContext();
 
-    this->stopRender();
+    this->getContainer()->clean();
     m_sceneAdaptors.clear();
 }
 
@@ -429,12 +427,14 @@ bool VtkRenderService::isShownOnScreen()
 void VtkRenderService::startContext()
 {
     // Create the window manager
-    assert( m_container ) ;
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
-    m_wxmanager = new wxAuiManager( m_container );
+    m_wxmanager = new wxAuiManager( container );
 
     // Create a VTK-compliant window and insert it
-    m_interactor = new ::fwRenderVTK::fwWxVTKRenderWindowInteractor( m_container, -1 );
+    m_interactor = new ::fwRenderVTK::fwWxVTKRenderWindowInteractor( container, -1 );
     // For Depth peeling (translucent rendering)
 
     m_interactor->SetRenderWhenDisabled(false);
@@ -492,8 +492,9 @@ void VtkRenderService::stopContext()
         m_interactor->Delete();
         m_interactor = 0;
     }
-
-    m_container->DestroyChildren();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    container->DestroyChildren();
 }
 
 //-----------------------------------------------------------------------------

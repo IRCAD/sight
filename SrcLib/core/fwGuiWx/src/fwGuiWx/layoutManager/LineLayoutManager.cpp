@@ -81,7 +81,6 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 void LineLayoutManager::destroyLayout()
 {
     this->destroySubViews();
-    m_parentContainer->clean();
 }
 
 //-----------------------------------------------------------------------------

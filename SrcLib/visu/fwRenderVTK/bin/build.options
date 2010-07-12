@@ -16,6 +16,7 @@ LIB = [
     'fwTools_0-1',
     'fwWX_0-1',
     'fwVtkIO_0-1',
+    'fwGuiWx_0-1'
     ]
 TYPE = 'shared'
 VERSION = '0-1'

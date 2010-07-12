@@ -30,6 +30,8 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
+#include <fwGuiWx/container/WxContainer.hpp>
+
 #include "uiImage/SliceIndexPositionEditor.hpp"
 
 namespace uiImage
@@ -62,11 +64,15 @@ SliceIndexPositionEditor::~SliceIndexPositionEditor() throw()
 
 void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 {
+    this->create();
 
-    this->initGuiParentContainer();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
+
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
-    m_sliceSelectorPanel = new ::fwWX::SliceSelector( m_container );
+    m_sliceSelectorPanel = new ::fwWX::SliceSelector( container );
     m_sliceSelectorPanel->setEnable(false);
 
     ::fwWX::SliceSelector::ChangeIndexCallback changeIndexCallback;
@@ -80,8 +86,8 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
     this->updateSliceType(m_orientation);
 
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    container->SetSizer( sizer );
+    container->Layout();
     this->updating();
 }
 
@@ -94,8 +100,12 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
         delete m_sliceSelectorPanel;
         m_sliceSelectorPanel = 0;
     }
-    this->resetGuiParentContainer();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -103,6 +113,8 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
 void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    this->initialize();
 
     if(m_configuration->hasAttribute("sliceIndex"))
     {

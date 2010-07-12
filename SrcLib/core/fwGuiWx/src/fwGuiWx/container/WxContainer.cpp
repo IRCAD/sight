@@ -36,7 +36,7 @@ void WxContainer::clean()
 void WxContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, wxWindows not yet initialized", m_container);
-
+    SLM_ASSERT("Container must be empty.", m_container->GetChildren().IsEmpty());
     m_container->Destroy();
     m_container = 0;
 }

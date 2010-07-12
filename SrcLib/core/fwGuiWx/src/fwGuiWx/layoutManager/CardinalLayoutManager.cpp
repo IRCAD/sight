@@ -94,9 +94,8 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 
 void CardinalLayoutManager::destroyLayout()
 {
-    this->destroySubViews();
-    m_parentContainer->clean();
     m_manager->UnInit() ;
+    this->destroySubViews();
 }
 
 //-----------------------------------------------------------------------------

@@ -8,7 +8,9 @@ LIB     = [
            'fwRuntime_0-3',
            'fwCore_0-1',
            'fwTools_0-1',
-           'fwWX_0-1'
+           'fwWX_0-1',
+           'fwGui_0-1',
+           'fwGuiWx_0-1'
            ]
 USE     = ['wxCore','boost', 'boostFilesystem']
 BUNDLES = ['gui_0-1']

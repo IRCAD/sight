@@ -33,6 +33,7 @@
 
 #include <fwWX/convert.hpp>
 #include <fwGui/MessageDialog.hpp>
+#include <fwGuiWx/container/WxContainer.hpp>
 
 #include "uiVisu/SnapshotEditor.hpp"
 
@@ -57,7 +58,11 @@ SnapshotEditor::~SnapshotEditor() throw()
 void SnapshotEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->initGuiParentContainer();
+    this->create();
+
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
     namespace fs = ::boost::filesystem;
     fs::path pathImageSnap ("Bundles/uiVisu_" + std::string(UIVISU_VER) + "/camera-photo.png");
@@ -65,14 +70,14 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
     wxString filenameSnap ( ::fwWX::std2wx(pathImageSnap.string() ) );
     wxImage imageSnap;
     imageSnap.LoadFile(filenameSnap);
-    wxBitmapButton* snapButton = new wxBitmapButton( m_container, m_idSnapButton, imageSnap, wxDefaultPosition, wxSize(25,-1) ) ;
+    wxBitmapButton* snapButton = new wxBitmapButton( container, m_idSnapButton, imageSnap, wxDefaultPosition, wxSize(25,-1) ) ;
     snapButton->SetToolTip(_("Snapshot"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
-    m_container->SetSizer( sizer );
-    sizer->Fit( m_container );
+    container->SetSizer( sizer );
+    sizer->Fit( container );
     sizer->Add( snapButton, 1, wxALL|wxEXPAND, 1 );
-    m_container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &SnapshotEditor::onSnapButton, this,  m_idSnapButton);
+    container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &SnapshotEditor::onSnapButton, this,  m_idSnapButton);
 }
 
 //------------------------------------------------------------------------------
@@ -80,9 +85,13 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
 void SnapshotEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    m_container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SnapshotEditor::onSnapButton, this, m_idSnapButton);
-    this->resetGuiParentContainer();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
+    container->Unbind( wxEVT_COMMAND_BUTTON_CLICKED, &SnapshotEditor::onSnapButton, this, m_idSnapButton);
 
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -90,6 +99,8 @@ void SnapshotEditor::stopping() throw(::fwTools::Failed)
 void SnapshotEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    this->initialize();
 
     std::vector < Configuration > snapConfig = m_configuration->find("snap");
     if(!snapConfig.empty())
@@ -135,7 +146,10 @@ void SnapshotEditor::info( std::ostream &_sstream )
 void SnapshotEditor::onSnapButton( wxCommandEvent& event )
 {
     SLM_TRACE_FUNC();
-    if( m_container->IsShownOnScreen() )
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
+    if( container->IsShownOnScreen() )
     {
         for(unsigned int i=0; i < m_scenesUID.size(); i++)
         {
