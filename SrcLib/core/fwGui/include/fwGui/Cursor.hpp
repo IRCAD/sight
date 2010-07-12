@@ -36,6 +36,7 @@ public:
     /// Destructor. Do nothing
     FWGUI_API virtual ~Cursor();
 
+    // TODO : update API to reflect the cursor stack
     /// Set the cursor
     FWGUI_API virtual void setCursor( ::fwGui::ICursor::CursorType cursor);
 
