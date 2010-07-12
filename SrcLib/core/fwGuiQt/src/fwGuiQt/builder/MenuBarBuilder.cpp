@@ -67,6 +67,10 @@ void MenuBarBuilder::destroyMenuBar()
     SLM_ASSERT("Sorry, Menu not initialized", m_menuBar);
     SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
     QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() ) ;
+    if ( !window )
+    {
+        window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() ) ;
+    }
     SLM_ASSERT("Sorry, the parent container must be a QMainWindow", window ) ;
     if (window)
     {

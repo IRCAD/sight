@@ -38,9 +38,12 @@ void QtContainer::clean()
     foreach (QObject *o, list)
     {
         w = qobject_cast<QWidget*>(o);
-        w->hide();
-        w->setParent(0);
-        w->deleteLater();
+        if (w)
+        {
+            w->hide();
+            w->setParent(0);
+            w->deleteLater();
+        }
     }
 
 }
