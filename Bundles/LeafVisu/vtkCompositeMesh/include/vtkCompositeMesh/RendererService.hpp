@@ -43,7 +43,7 @@ namespace vtkCompositeMesh
  * Service registered details : \n
  * REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::TriangularMesh)
  */
-class VTKCOMPOSITEMESH_CLASS_API RendererService : public fwRender::IRender
+class VTKCOMPOSITEMESH_CLASS_API RendererService : public ::fwRender::IRender
 {
 public :
 

@@ -96,9 +96,11 @@
 
 
 
-            <!-- Service associated to the Composite data :
-        menu services creation.
-        Actions in relationship with images and meshes-->
+            <!--
+                Service associated to the Composite data :
+                menu services creation.
+                Actions in relationship with images and meshe
+            -->
             <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                 <start uid="readerPathImageFile" />
             </service>
@@ -118,16 +120,20 @@
             <service uid="actionCreateVTKMesh" type="::fwGui::IActionSrv" implementation="::opVTKMesh::action::VTKMeshCreation" autoComChannel="no">
                 <image uid="myImage" />
                 <mesh uid="myMesh" />
+                <percentReduction value="0" />
             </service>
 
 
-            <!-- Image object creation 
-        Services contained between the tags <object> and </object>
-        are associated to the Image data. -->
+            <!--
+                Image object creation Services contained between the tags <object> and </object>
+                are associated to the Image data.
+            -->
             <object id="myImage" uid="myImage" type="::fwData::Image">
 
-                <!-- Services associated to the Image data :
-            Visualization, reading and writing service creation. -->
+                <!--
+                Services associated to the Image data :
+                Visualization, reading and writing service creation.
+                -->
                 <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
 
                 <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no">
@@ -141,13 +147,15 @@
             </object>
 
             <!--
-                TriangularMesh objet creation. Services contained between the tags <object> and </object> are
+                TriangularMesh object creation. Services contained between the tags <object> and </object> are
                 associated to the TriangularMesh data.
              -->
             <object id="myMesh" uid="myMesh" type="::fwData::TriangularMesh">
 
-                <!-- Services associated to the TriangularMesh data :
-            Visualization, reading and writing service creation. -->
+                <!--
+                    Services associated to the TriangularMesh data :
+                    Visualization, reading and writing service creation.
+                -->
                 <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes">
                     <masterSlaveRelation>master</masterSlaveRelation>
                 </service>
@@ -163,10 +171,8 @@
             </object>
 
             <!--
-                In order to start the different services, it does not need to follow the objects creation order.
-                Note that the services associated to the Image and TriangularMesh data are not started
-                between the tags corresponding to these two data definitions but, before the end of the 
-                Composite data definition.
+                In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and TriangularMesh data are not started
+                between the tags corresponding to these two data definitions but, before the end of the Composite data definition.
             -->
             <start type="::fwGui::IFrameSrv" />
 
