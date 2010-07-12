@@ -21,7 +21,6 @@
   <activate id="uiIO" version="0-1" />
   <activate id="opImageFilter" version="0-1" />
   
-  <start id="opImageFilter" />
   <start id="dataReg" />
   <start id="guiWx" />
 </profile>

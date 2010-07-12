@@ -16,7 +16,7 @@
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
             </service>
-            <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+            <service implementation="::ctrlSelection::wrapper::ImageWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newImage" autoComChannel="yes" />
     
             <!-- The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
             we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "save image".
@@ -92,9 +92,9 @@
     
         <!-- Definition of the starting and closing order of the different services. -->
         <start type="::fwGui::IFrameSrv" />
-        <start uid="newOBject2newPatientDB"/>
+        <start uid="newOBject2newImage"/>
     
-        <stop uid="newOBject2newPatientDB"/>
+        <stop uid="newOBject2newImage"/>
         <stop type="::fwGui::IFrameSrv" />
     </object>
 </extension>

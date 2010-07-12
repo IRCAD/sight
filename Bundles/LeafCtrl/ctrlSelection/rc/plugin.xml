@@ -103,6 +103,10 @@
         <implements>::fwData::Graph</implements>
     </point>
     
+    <point id="::ctrlSelection::wrapper::ImageWrapperSrv">
+        <implements>::ctrlSelection::IWrapperSrv</implements>
+        <implements>::fwData::Image</implements>
+    </point>
     
     <point id="::ctrlSelection::wrapper::PatientDBWrapperSrv">
         <implements>::ctrlSelection::IWrapperSrv</implements>
