@@ -1,0 +1,150 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#include <QAction>
+#include <QMenu>
+
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/function.hpp>
+#include <boost/foreach.hpp>
+#include <boost/assign/list_of.hpp>
+
+#include <fwTools/ClassRegistrar.hpp>
+
+//#include "fwGuiQt/ActionCallback.hpp"
+#include "fwGuiQt/container/QtMenuContainer.hpp"
+#include "fwGuiQt/container/QtMenuItemContainer.hpp"
+#include "fwGuiQt/layoutManager/MenuLayoutManager.hpp"
+//#include "fwGuiQt/Shortcut.hpp"
+
+
+REGISTER_BINDING( ::fwGui::layoutManager::IMenuLayoutManager,
+        ::fwGui::layoutManager::MenuLayoutManager,
+         ::fwGui::layoutManager::IMenuLayoutManager::RegistryKeyType,
+          ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
+
+namespace fwGui
+{
+namespace layoutManager
+{
+
+//-----------------------------------------------------------------------------
+
+MenuLayoutManager::MenuLayoutManager()
+{}
+
+//-----------------------------------------------------------------------------
+
+MenuLayoutManager::~MenuLayoutManager()
+{}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
+{
+    SLM_TRACE_FUNC();
+
+    m_parent = ::fwGuiQt::container::QtMenuContainer::dynamicCast(parent);
+    SLM_ASSERT("dynamicCast fwMenu to QtMenuContainer failed", m_parent);
+
+    QMenu* menu = m_parent->getQtMenu();
+
+    unsigned int menuItemIndex = 0;
+    BOOST_FOREACH ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo, m_actionInfo)
+    {
+        ::fwGuiQt::container::QtMenuItemContainer::NewSptr menuItem;
+
+        QAction *action = menu->addAction( QString::fromStdString(actionInfo.m_name) );
+
+        action->setSeparator(actionInfo.m_isSeparator);
+
+
+        if (actionInfo.m_type == ::fwGui::layoutManager::IMenuLayoutManager::QUIT)
+        {
+            SLM_ERROR("QUIT ROLE");
+            action->setMenuRole(QAction::QuitRole);
+        }
+        else if (actionInfo.m_type == ::fwGui::layoutManager::IMenuLayoutManager::ABOUT)
+        {
+            action->setMenuRole(QAction::AboutRole);
+        }
+        else
+        {
+            action->setMenuRole(QAction::NoRole);
+        }
+
+        action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
+
+        //std::string actionNameInMenu = actionInfo.m_name;
+        //// create shortcut
+        //if( !actionInfo.m_shortcut.empty() )
+        //{
+            //::fwGuiQt::Shortcut::sptr shortcut =  ::fwGuiQt::Shortcut::New( actionInfo.m_shortcut );
+            //actionNameInMenu += "\t" + shortcut->toString();
+        //}
+
+        menuItem->setQtMenuItem(action);
+
+        if(!actionInfo.m_isSeparator)
+        {
+            m_menuItems.push_back(menuItem);
+            //OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            //::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
+
+            //::fwGuiQt::ActionCallback::sptr wxCallback = ::fwGuiQt::ActionCallback::dynamicCast(callback);
+            //SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", wxCallback);
+
+            //// get MainFrame for binding
+            //wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
+            //SLM_ASSERT( "No wxFrame", frame ) ;
+
+            //typedef ::boost::function1< void, wxCommandEvent& > MenuItemCallback;
+            //MenuItemCallback call = ::boost::bind( &::fwGuiQt::ActionCallback::executeQt, wxCallback, _1 );
+            //frame->Bind( wxEVT_COMMAND_MENU_SELECTED, call, actionIdInMenu);
+
+            //menuItemIndex++;
+        }
+
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::destroyLayout()
+{
+    QMenu* menu = m_parent->getQtMenu();
+
+    m_menuItems.clear();
+    menu->clear();
+}
+
+//-----------------------------------------------------------------------------
+
+
+void MenuLayoutManager::actionIsVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+{
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    QAction *action = menuItemContainer->getQtMenuItem();
+    action->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+{
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    QAction *action = menuItemContainer->getQtMenuItem();
+    action->setEnabled(isEnabled);
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace layoutManager
+} // namespace fwGui
+
+
+
