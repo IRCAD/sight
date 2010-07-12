@@ -5,7 +5,8 @@
     <activate id="servicesReg" version="0-1" />
     <activate id="io" version="0-1" />
 
-    <activate id="gui" version="0-1" >
+    <activate id="gui" version="0-1" />
+    <activate id="guiWx" version="0-1" >
         <param id="startingMode" value="windows" />
         <param id="rootObject" value="::fwData::Composite" />
         <param id="config" value="tutoLoaderExternalDataConfig" />
@@ -27,5 +28,5 @@
     <start id="ioXML" />
     <start id="ioData"/>
     <start id="ioTuto"/>
-    <start id="gui" />
+    <start id="guiWx" />
 </profile>

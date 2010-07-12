@@ -27,10 +27,6 @@ namespace wrapper
 
 //-----------------------------------------------------------------------------
 
-
-
-//-----------------------------------------------------------------------------
-
 GraphWrapperSrv::GraphWrapperSrv() throw()
 {
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::NEW_OBJECT );
@@ -40,8 +36,8 @@ GraphWrapperSrv::GraphWrapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-//GraphWrapperSrv::~GraphWrapperSrv() throw()
-//{}
+GraphWrapperSrv::~GraphWrapperSrv() throw()
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -56,15 +52,8 @@ void GraphWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw (
         msg->addEvent( fwComEd::GraphMsg::NEW_GRAPH , this->getObject< ::fwData::Object>() );
         ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg,::fwServices::ComChannelService::NOTIFY_SOURCE);
     }
-
     //TODO other event
-
 }
-
-
-
-
-
 
 //-----------------------------------------------------------------------------
 
