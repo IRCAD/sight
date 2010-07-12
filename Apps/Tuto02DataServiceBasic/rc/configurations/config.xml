@@ -39,7 +39,7 @@
         </service>
         
         <!-- Definition of the starting and closing order of the different services.
-        Here, the three services ::gui::frame::IFrame, and myReaderPathFile are started,
+        Here, the three services ::fwGui::IFrameSrv, and myReaderPathFile are started,
         nevertheless, only the myReaderPathFile service is updated after the launching.
         Indeed, as the image location is known (contained in the configuration file),
         the image can be loaded since the application starting. It corresponds to the update flag for myReaderPathFile.

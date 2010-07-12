@@ -17,7 +17,9 @@
         <implements>::fwServices::IService</implements>
     </point>
     
-    
+    <point id="::fwGui::IActionSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
     
     <point id="::gui::frame::DefaultFrame">
         <implements>::fwGui::IFrameSrv</implements>
@@ -45,17 +47,17 @@
     </point>
         
     <point id="::gui::action::CloseAction">
-        <implements>::gui::action::IAction</implements>
+        <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
     
     <point id="::gui::action::QuitAction">
-        <implements>::gui::action::IAction</implements>
+        <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
         
     <point id="::gui::action::StarterActionService">
-        <implements>::gui::action::IAction</implements>
+        <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>    
     
@@ -65,7 +67,7 @@
         <implements>::fwTools::Object</implements>
     </point>
     <point id="::gui::action::ActionNotifyService">
-        <implements>::gui::action::IAction</implements>
+        <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
     -->
