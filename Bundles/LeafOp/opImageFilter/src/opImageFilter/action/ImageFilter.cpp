@@ -98,8 +98,9 @@ struct ThresholdFilter
         const PIXELTYPE ThresholdValue = ( PIXELTYPE )param.thresholdValue;
         unsigned int i;
         for( i=0 ; i<NbPixels ; ++i , ++buffer1, ++buffer2 )
-            if ( *buffer1 < ThresholdValue ) *buffer2 = 0;
-            else *buffer2 =  std::numeric_limits<PIXELTYPE>::max();
+        {
+            *buffer2 = ( *buffer1 < ThresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
+        }
     }
 };
 
