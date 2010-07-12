@@ -15,7 +15,7 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
-//#include "fwGuiQt/ActionCallback.hpp"
+#include "fwGuiQt/ActionCallback.hpp"
 #include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/container/QtMenuItemContainer.hpp"
 #include "fwGuiQt/layoutManager/MenuLayoutManager.hpp"
@@ -92,21 +92,13 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         if(!actionInfo.m_isSeparator)
         {
             m_menuItems.push_back(menuItem);
-            //OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
-            //::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
+            OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            ::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
 
-            //::fwGuiQt::ActionCallback::sptr wxCallback = ::fwGuiQt::ActionCallback::dynamicCast(callback);
-            //SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", wxCallback);
+            ::fwGuiQt::ActionCallback::sptr qtCallback = ::fwGuiQt::ActionCallback::dynamicCast(callback);
+            SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
 
-            //// get MainFrame for binding
-            //wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
-            //SLM_ASSERT( "No wxFrame", frame ) ;
-
-            //typedef ::boost::function1< void, wxCommandEvent& > MenuItemCallback;
-            //MenuItemCallback call = ::boost::bind( &::fwGuiQt::ActionCallback::executeQt, wxCallback, _1 );
-            //frame->Bind( wxEVT_COMMAND_MENU_SELECTED, call, actionIdInMenu);
-
-            //menuItemIndex++;
+            QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
         }
 
     }
