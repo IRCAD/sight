@@ -3,7 +3,8 @@
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" /> 
 
-    <activate id="gui" version="0-1" >
+    <activate id="gui" version="0-1" />
+    <activate id="guiWx" version="0-1" >
         <param id="startingMode" value="windows" />
         <param id="rootObject" value="::fwData::Composite" />
         <param id="config" value="Tuto09MesherWithGenericScene" />
@@ -31,6 +32,6 @@
     <!-- Start components -->
     <start id="visuVTK" />
     <start id="visuVTKAdaptor" />
-    <start id="gui" />
+    <start id="guiWx" />
 
 </profile>

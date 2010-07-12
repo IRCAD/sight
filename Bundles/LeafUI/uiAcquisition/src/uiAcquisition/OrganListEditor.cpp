@@ -26,6 +26,8 @@
 
 #include <fwWX/convert.hpp>
 
+#include <fwGuiWx/container/WxContainer.hpp>
+
 #include "uiAcquisition/OrganListEditor.hpp"
 
 namespace uiAcquisition
@@ -51,26 +53,29 @@ OrganListEditor::~OrganListEditor() throw()
 void OrganListEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->initGuiParentContainer();
+    this->create();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
-    m_showCheckBox = new wxCheckBox( m_container, wxNewId(), _("Hide all organs"));
+    m_showCheckBox = new wxCheckBox( container, wxNewId(), _("Hide all organs"));
     m_showCheckBox->SetToolTip(_("Show or hide all organs"));
-    m_organChoice = new wxCheckListBox( m_container, wxNewId(), wxDefaultPosition, wxDefaultSize) ;
+    m_organChoice = new wxCheckListBox( container, wxNewId(), wxDefaultPosition, wxDefaultSize) ;
 
 #ifdef __MACOSX__
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 #else
-    wxSizer* sizer = new wxStaticBoxSizer( wxVERTICAL, m_container, wxT("Organs"));
+    wxSizer* sizer = new wxStaticBoxSizer( wxVERTICAL, container, wxT("Organs"));
 #endif
     sizer->Add( m_showCheckBox, 0, wxEXPAND|wxALL);
     sizer->Add( m_organChoice, 1, wxEXPAND|wxALL);
 
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    container->SetSizer( sizer );
+    container->Layout();
 
-    m_container->Bind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this,  m_showCheckBox->GetId());
-    m_container->Bind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
-    m_container->Bind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
+    container->Bind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this,  m_showCheckBox->GetId());
+    container->Bind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
+    container->Bind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
     this->updating();
 }
 
@@ -79,11 +84,15 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
 void OrganListEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    m_container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this, m_showCheckBox->GetId());
-    m_container->Unbind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
-    m_container->Unbind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
+    container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this, m_showCheckBox->GetId());
+    container->Unbind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
+    container->Unbind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
 
-    this->resetGuiParentContainer();
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -91,6 +100,7 @@ void OrganListEditor::stopping() throw(::fwTools::Failed)
 void OrganListEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +131,6 @@ void OrganListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
             this->updating();
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -136,9 +145,11 @@ void OrganListEditor::updateReconstructions()
 {
     m_organChoice->Clear();
     m_map.clear();
-
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    m_container->Enable(acq->getReconstructions().first != acq->getReconstructions().second);
+    container->Enable(acq->getReconstructions().first != acq->getReconstructions().second);
 
     if(acq->getReconstructions().first != acq->getReconstructions().second)
     {

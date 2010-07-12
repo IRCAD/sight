@@ -21,6 +21,8 @@
 
 #include <fwWX/convert.hpp>
 
+#include <fwGuiWx/container/WxContainer.hpp>
+
 #include "uiReconstruction/OrganMaterialEditor.hpp"
 
 namespace uiReconstruction
@@ -44,14 +46,17 @@ OrganMaterialEditor::~OrganMaterialEditor() throw()
 void OrganMaterialEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->initGuiParentContainer();
+    this->create();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
-    m_colourButton = new wxColourPickerCtrl( m_container, wxNewId() ) ;
+    m_colourButton = new wxColourPickerCtrl( container, wxNewId() ) ;
     m_colourButton->SetToolTip(_T("Selected organ's color"));
     m_colourButton->SetMinSize(wxSize(120,35));
 
-    wxStaticText* transparencyST = new wxStaticText( m_container, wxID_ANY, _("Transparency : "));
-    m_opacitySlider = new wxSlider( m_container, wxNewId(), 100, 0, 100, wxDefaultPosition, wxDefaultSize , wxSL_BOTH|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP ) ;
+    wxStaticText* transparencyST = new wxStaticText( container, wxID_ANY, _("Transparency : "));
+    m_opacitySlider = new wxSlider( container, wxNewId(), 100, 0, 100, wxDefaultPosition, wxDefaultSize , wxSL_BOTH|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP ) ;
     m_opacitySlider->SetToolTip(_T("Selected organ's opacity"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
@@ -62,13 +67,13 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     transparencySizer->Add( m_opacitySlider, 1, wxEXPAND|wxALL );
     sizer->Add( transparencySizer, 0, wxEXPAND|wxALL ) ;
 
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    container->SetSizer( sizer );
+    container->Layout();
 
-    m_container->Enable(false);
+    container->Enable(false);
 
-    m_container->Bind( wxEVT_COMMAND_SLIDER_UPDATED, &OrganMaterialEditor::onOpacitySlider, this,  m_opacitySlider->GetId());
-    m_container->Bind( wxEVT_COMMAND_COLOURPICKER_CHANGED, &OrganMaterialEditor::onColorButton, this,  m_colourButton->GetId());
+    container->Bind( wxEVT_COMMAND_SLIDER_UPDATED, &OrganMaterialEditor::onOpacitySlider, this,  m_opacitySlider->GetId());
+    container->Bind( wxEVT_COMMAND_COLOURPICKER_CHANGED, &OrganMaterialEditor::onColorButton, this,  m_colourButton->GetId());
     this->updating();
 }
 
@@ -77,10 +82,15 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
 void OrganMaterialEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    m_container->Unbind( wxEVT_COMMAND_SLIDER_UPDATED, &OrganMaterialEditor::onOpacitySlider, this,  m_opacitySlider->GetId());
-    m_container->Unbind( wxEVT_COMMAND_COLOURPICKER_CHANGED, &OrganMaterialEditor::onColorButton, this,  m_colourButton->GetId());
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
-    this->resetGuiParentContainer();
+    container->Unbind( wxEVT_COMMAND_SLIDER_UPDATED, &OrganMaterialEditor::onOpacitySlider, this,  m_opacitySlider->GetId());
+    container->Unbind( wxEVT_COMMAND_COLOURPICKER_CHANGED, &OrganMaterialEditor::onColorButton, this,  m_colourButton->GetId());
+
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -88,6 +98,7 @@ void OrganMaterialEditor::stopping() throw(::fwTools::Failed)
 void OrganMaterialEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -159,7 +170,11 @@ void OrganMaterialEditor::refreshMaterial( )
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    m_container->Enable(!reconstruction->getOrganName().empty());
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
+
+    container->Enable(!reconstruction->getOrganName().empty());
 
     ::fwData::Material::sptr material = reconstruction->getMaterial() ;
     wxColour wxMaterialColor = wxColour (

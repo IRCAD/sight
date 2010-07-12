@@ -109,7 +109,6 @@ void ShowScanEditor::stopping() throw(::fwTools::Failed)
 void ShowScanEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
     this->initialize();
 
     std::vector < Configuration > placeInSceneConfig = m_configuration->find("negatoAdaptor");

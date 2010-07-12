@@ -21,6 +21,8 @@
 
 #include <fwWX/convert.hpp>
 
+#include <fwGuiWx/container/WxContainer.hpp>
+
 #include "uiReconstruction/RepresentationEditor.hpp"
 
 namespace uiReconstruction
@@ -44,21 +46,24 @@ RepresentationEditor::~RepresentationEditor() throw()
 void RepresentationEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->initGuiParentContainer();
+    this->create();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
     wxString radioBoxRepresentationChoices[] = { wxT("Surface"), wxT("Point"), wxT("Wireframe"), wxT("Edge") };
     int radioBoxRepresentationNChoices = sizeof( radioBoxRepresentationChoices ) / sizeof( wxString );
-    m_radioBoxRepresentation = new wxRadioBox( m_container, wxNewId(), wxT("Representation"), wxDefaultPosition, wxDefaultSize, radioBoxRepresentationNChoices, radioBoxRepresentationChoices, 1, wxRA_SPECIFY_COLS );
+    m_radioBoxRepresentation = new wxRadioBox( container, wxNewId(), wxT("Representation"), wxDefaultPosition, wxDefaultSize, radioBoxRepresentationNChoices, radioBoxRepresentationChoices, 1, wxRA_SPECIFY_COLS );
     m_radioBoxRepresentation->SetSelection(0);
 
     wxString radioBoxShadingChoices[] = { wxT("Flat"), wxT("Gouraud"), wxT("Phong") };
     int radioBoxShadingNChoices = sizeof( radioBoxShadingChoices ) / sizeof( wxString );
-    m_radioBoxShading = new wxRadioBox( m_container, wxNewId(), wxT("Shading"), wxDefaultPosition, wxDefaultSize, radioBoxShadingNChoices, radioBoxShadingChoices, 1, wxRA_SPECIFY_COLS );
+    m_radioBoxShading = new wxRadioBox( container, wxNewId(), wxT("Shading"), wxDefaultPosition, wxDefaultSize, radioBoxShadingNChoices, radioBoxShadingChoices, 1, wxRA_SPECIFY_COLS );
     m_radioBoxShading->SetSelection(0);
 
-    m_normalsCheckBox = new wxCheckBox( m_container, wxNewId(), _("Show normals"));
+    m_normalsCheckBox = new wxCheckBox( container, wxNewId(), _("Show normals"));
     m_normalsCheckBox->SetToolTip(_("Show or hide normals"));
 
     int border = 3;
@@ -66,14 +71,14 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     sizer->Add( m_radioBoxShading, 1, wxEXPAND|wxALL, border);
     sizer->Add( m_normalsCheckBox, 1, wxEXPAND|wxALL, border);
 
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    container->SetSizer( sizer );
+    container->Layout();
 
-    m_container->Enable(false);
+    container->Enable(false);
 
-    m_container->Bind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeRepresentation, this,  m_radioBoxRepresentation->GetId());
-    m_container->Bind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeShading, this,  m_radioBoxShading->GetId());
-    m_container->Bind( wxEVT_COMMAND_CHECKBOX_CLICKED, &RepresentationEditor::onShowNormals, this,  m_normalsCheckBox->GetId());
+    container->Bind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeRepresentation, this,  m_radioBoxRepresentation->GetId());
+    container->Bind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeShading, this,  m_radioBoxShading->GetId());
+    container->Bind( wxEVT_COMMAND_CHECKBOX_CLICKED, &RepresentationEditor::onShowNormals, this,  m_normalsCheckBox->GetId());
     this->updating();
 }
 
@@ -82,11 +87,16 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
 void RepresentationEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    m_container->Unbind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeRepresentation, this,  m_radioBoxRepresentation->GetId());
-    m_container->Unbind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeShading, this,  m_radioBoxShading->GetId());
-    m_container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &RepresentationEditor::onShowNormals, this,  m_normalsCheckBox->GetId());
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
-    this->resetGuiParentContainer();
+    container->Unbind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeRepresentation, this,  m_radioBoxRepresentation->GetId());
+    container->Unbind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeShading, this,  m_radioBoxShading->GetId());
+    container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &RepresentationEditor::onShowNormals, this,  m_normalsCheckBox->GetId());
+
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -94,6 +104,7 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
 void RepresentationEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -102,9 +113,11 @@ void RepresentationEditor::updating() throw(::fwTools::Failed)
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
-
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
     m_material = reconstruction->getMaterial() ;
-    m_container->Enable(!reconstruction->getOrganName().empty());
+    container->Enable(!reconstruction->getOrganName().empty());
 
     this->refreshRepresentation();
     this->refreshNormals();

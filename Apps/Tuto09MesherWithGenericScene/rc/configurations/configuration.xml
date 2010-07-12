@@ -3,63 +3,116 @@
 <extension id="Tuto09MesherWithGenericScene" implements="::fwData::Composite">
 <object id="Tuto09MesherWithGenericScene" type="::fwData::Composite">
 
-    <service uid="MyIHM" implementation="::gui::frame::MainFrame" type="::gui::frame::IFrame" autoComChannel="no" >
-        <name>Tuto09MesherWithGenericScene</name>
-        <icon>Bundles/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
-        <view uid="multiView_scene1" autoStart="yes" />
+    <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+        <gui>
+            <frame>
+                <name>Tuto09MesherWithGenericScene</name>
+                <icon>Bundles/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
+            </frame>
+            <menuBar />
+        </gui>
+        <registry>
+            <menuBar sid="myMenuBar" start="yes" />
+            <view sid="multiView_scene1" start="yes" />
+        </registry>
     </service>
     
-    <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
-        <menus>
-            <menu uid="menu_File" />
-            <menu uid="menu_Mesher" />
-        </menus>
+    <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+        <gui>
+            <layout>
+                <menu name="File" />
+                <menu name="Mesher" />
+            </layout>
+        </gui>
+        <registry>
+            <menu sid="menu_File" start="yes" />
+            <menu sid="menu_Mesher" start="yes" />
+        </registry>
     </service>
+    
         
-    <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
-        <views>
-            <view uid="genericScene" align="center" autoStart="yes" />
-            <view uid="listOrganEditor" align="right" minWidth="200" minHeight="200" position="0" />
-            <view uid="organMaterialEditor" align="right" minWidth="200" minHeight="80" position="1" />
-            <view uid="representationEditor" align="right" minWidth="200" minHeight="200" position="2" />
-            <view uid="multiView_scene1_bottom" align="bottom" minHeight="30" resizable="no" autoStart="yes" />
-        </views>
+    <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+        <gui>
+            <layout type="::fwGui::CardinalLayoutManager" >
+                <view align="center" />
+                <view align="right" minWidth="200" minHeight="200" position="0" />
+                <view align="right" minWidth="200" minHeight="80" position="1" />
+                <view align="right" minWidth="200" minHeight="200" position="2" />
+                <view align="bottom" minHeight="30" resizable="no" />
+            </layout>
+        </gui>
+        <registry>
+            <view sid="genericScene" start="yes" />
+            <view sid="listOrganEditor" />
+            <view sid="organMaterialEditor"  />
+            <view sid="representationEditor" />
+            <view sid="multiView_scene1_bottom" start="yes" />
+        </registry>
     </service>
-    <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::MultiSizerView" autoComChannel="no">
-        <views orientation="horizontal" >
-            <view uid="sliceListEditor" proportion="0" minWidth="30" />
-            <view uid="showScanEditor" proportion="0" minWidth="50" />
-            <view uid="sliderIndexEditor" proportion="1" />
-            <view uid="snapshotScene1Editor" proportion="0" minWidth="30" autoStart="yes" />
-        </views>
+    <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+        <gui>
+            <layout type="::fwGui::LineLayoutManager">
+                <orientation value="horizontal" />
+                <view proportion="0" minWidth="30" />
+                <view proportion="0" minWidth="50" />
+                <view proportion="1" />
+                <view proportion="0" minWidth="30" />
+            </layout>
+        </gui>
+        <registry>
+            <view sid="sliceListEditor" />
+            <view sid="showScanEditor" />
+            <view sid="sliderIndexEditor" />
+            <view sid="snapshotScene1Editor" start="yes" />
+        </registry>
     </service>
+
+    
     <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
         <snap>
             <scene uid="genericScene" />
         </snap>
     </service>
     
-    <service uid="menu_File" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="File" autoComChannel="no" >
-            <action uid="action_openFile"/>
-            <action uid="action_saveFile"/>
-            <action uid="action_quit"/>
+    <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <gui>
+            <layout>
+                <menuItem name="Open file" shortcut="Ctrl+O" />
+                <menuItem name="Save File" shortcut="Ctrl+S" />
+                <separator />
+                <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+            </layout>
+        </gui>
+        <registry>
+            <menuItem sid="action_openFile" start="yes" />
+            <menuItem sid="action_saveFile" start="yes" />
+            <menuItem sid="action_quit" start="yes" />
+        </registry>
     </service>
-    <service uid="menu_Mesher" implementation="::gui::aspect::DefaultMenu" type="::gui::aspect::IMenu" name="Mesher" autoComChannel="no" >
-            <action uid="action_createMesh50"/>
-            <action uid="action_createMesh80"/>
+    <service uid="menu_Mesher" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <gui>
+            <layout>
+                <menuItem name="Create Mesh 50" />
+                <menuItem name="Create Mesh 80" />
+            </layout>
+        </gui>
+        <registry>
+            <menuItem sid="action_createMesh50" start="yes" />
+            <menuItem sid="action_createMesh80" start="yes" />
+        </registry>
     </service>
 
-   <service uid="action_openFile" implementation="::gui::action::StarterActionService" name="Open File" type="::gui::action::IAction"  shortcut="Ctrl+O" autoComChannel="no" >
-            <start uid="myReaderPathFile"/>
+    <service uid="action_openFile" implementation="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoComChannel="no" >
+        <start uid="myReaderPathFile"/>
     </service>
-    <service uid="action_saveFile" implementation="::gui::action::StarterActionService" name="Save File" type="::gui::action::IAction"  shortcut="Ctrl+S" autoComChannel="no" >
-            <start uid="myWriterPathFile"/>
+    <service uid="action_saveFile" implementation="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoComChannel="no" >
+        <start uid="myWriterPathFile"/>
     </service>
-    <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
-    <service uid="action_createMesh50" implementation="::gui::action::StarterActionService" name="Create Mesh 50" type="::gui::action::IAction" autoComChannel="no" >
+    <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+    <service uid="action_createMesh50" implementation="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoComChannel="no" >
             <start_if_exists uid="mesher50ServiceUID"/>
     </service>
-    <service uid="action_createMesh80" implementation="::gui::action::StarterActionService" name="Create Mesh 80" type="::gui::action::IAction" autoComChannel="no" >
+    <service uid="action_createMesh80" implementation="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoComChannel="no" >
             <start_if_exists uid="mesher80ServiceUID"/>
     </service>  
 
@@ -171,7 +224,6 @@
     </object>
 
     <start uid="MyIHM"/>
-    <start uid="myMenuBar" />
     <start uid="myUpdaterAcq"/>
     <start uid="myUpdaterImg"/>
     <start uid="myUpdaterReconst"/>
@@ -191,7 +243,6 @@
     <stop uid="myUpdaterReconst"/>
     <stop uid="myUpdaterImg"/>
     <stop uid="myUpdaterAcq"/>
-    <stop uid="myMenuBar" />
     <stop uid="MyIHM"/>
 
 </object>
