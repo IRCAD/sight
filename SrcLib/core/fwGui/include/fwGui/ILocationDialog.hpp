@@ -32,9 +32,10 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (ILocationDialog)(::fwCore::BaseObject) )
 
     typedef enum {
-        READ,
-        WRITE,
-        FILE_MUST_EXIST
+        NONE            = 0,
+        READ            = 1 << 1,
+        WRITE           = 1 << 2,
+        FILE_MUST_EXIST = 1 << 3,
     } Options;
 
     typedef std::string FactoryRegistryKeyType;
