@@ -32,7 +32,6 @@ namespace ioXML
 {
 
 REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLImageWriterService , ::fwData::Image ) ;
-//REGISTER_EXECUTABLE( ::ioXML::FwXMLImageWriterService, "ioXML::FwXMLImageWriterService" );
 
 //------------------------------------------------------------------------------
 

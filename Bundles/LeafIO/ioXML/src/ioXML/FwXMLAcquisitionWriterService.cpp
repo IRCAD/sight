@@ -23,7 +23,7 @@
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
 #include <fwGui/ProgressDialog.hpp>
-#include <fwWX/wxZipFolder.hpp>
+#include <fwZip/ZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -210,9 +210,7 @@ void FwXMLAcquisitionWriterService::manageZipAndSaveAcquisition( const ::boost::
     saveAcquisition(xmlfile,_pAcquisition);
 
     // Zip
-    wxString destZipFileName ( wxConvertMB2WX( inrFileDir.string().c_str() ) );
-    wxString srcFolderName ( wxConvertMB2WX( srcFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::packFolder( srcFolderName, destZipFileName );
+    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

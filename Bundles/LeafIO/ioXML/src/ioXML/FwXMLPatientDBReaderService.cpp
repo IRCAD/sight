@@ -29,8 +29,7 @@
 
 #include <fwGui/ProgressDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
-#include <fwWX/wxZipFolder.hpp>
-#include <fwWX/convert.hpp>
+#include <fwZip/ZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -157,9 +156,9 @@ void FwXMLPatientDBReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void FwXMLPatientDBReaderService::fixFilename(wxString _filename)
+void FwXMLPatientDBReaderService::fixFilename(std::string _filename)
 {
-    m_fsPatientDBPath = ::boost::filesystem::path( ::fwWX::wx2std(_filename), ::boost::filesystem::native );
+    m_fsPatientDBPath = ::boost::filesystem::path( _filename, ::boost::filesystem::native );
     m_bServiceIsConfigured = true;
 
 }
@@ -229,8 +228,8 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
     catch (const std::exception & e)
     {
         std::stringstream ss;
-        wxString msg = _("Warning during loading : ");
-        ss << wxConvertWX2MB(msg.c_str()) << e.what();
+        ss << "Warning during loading : ";
+        ss << e.what();
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -355,9 +354,7 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
 
-    wxString srcZipFileName ( wxConvertMB2WX( _pArchivePath.string().c_str() ) );
-    wxString destFolderName ( wxConvertMB2WX( destFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::unpackFolder( srcZipFileName, destFolderName );
+    ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
 
     // Load
     patientDB = createPatientDB( xmlfile );

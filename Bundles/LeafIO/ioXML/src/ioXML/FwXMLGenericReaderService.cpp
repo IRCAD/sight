@@ -30,8 +30,7 @@
 
 #include <fwGui/ProgressDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
-#include <fwWX/wxZipFolder.hpp>
-#include <fwWX/convert.hpp>
+#include <fwZip/ZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -40,7 +39,7 @@
 
 
 //------------------------------------------------------------------------------
-//
+
 namespace ioXML
 {
 
@@ -91,14 +90,14 @@ void FwXMLGenericReaderService::configureWithIHM()
 
 void FwXMLGenericReaderService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLGenericReaderService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLGenericReaderService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLGenericReaderService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -138,8 +137,7 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
     catch (const std::exception & e)
     {
         std::stringstream ss;
-        wxString msg = _("Warning during loading : ");
-        ss << wxConvertWX2MB(msg.c_str()) << e.what();
+        ss << "Warning during loading : " << e.what();
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -228,7 +226,6 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 
 ::fwTools::Object::sptr FwXMLGenericReaderService::manageZipAndLoadData( const ::boost::filesystem::path _pArchivePath )
 {
-
     ::fwTools::Object::sptr obj;
 
     // Unzip folder
@@ -238,9 +235,7 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
 
-    wxString srcZipFileName ( wxConvertMB2WX( _pArchivePath.string().c_str() ) );
-    wxString destFolderName ( wxConvertMB2WX( destFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::unpackFolder( srcZipFileName, destFolderName );
+    ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
 
     // Load
     obj = loadData( xmlfile );

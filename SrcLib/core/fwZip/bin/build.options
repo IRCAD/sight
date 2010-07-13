@@ -1,0 +1,9 @@
+USE     = ['boost', 'boostFilesystem']
+LIB     = [
+          'fwTools_0-1',
+          'fwCore_0-1',
+          #temporary link with wx
+          'fwWX_0-1'
+          ]
+TYPE    = 'shared'
+VERSION = '0-1'

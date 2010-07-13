@@ -30,9 +30,7 @@
 namespace ioXML
 {
 
-//REGISTER_SERVICE( ::io::IReader , FwXMLImageReaderService , ::fwData::Image ) ;
 REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLImageReaderService , ::fwData::Image ) ;
-//REGISTER_EXECUTABLE( ::ioXML::FwXMLImageReaderService, "ioXML::FwXMLImageReaderService" );
 
 //------------------------------------------------------------------------------
 

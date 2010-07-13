@@ -26,7 +26,7 @@
 
 #include <fwGui/ProgressDialog.hpp>
 #include <fwGui/LocationDialog.hpp>
-#include <fwWX/wxZipFolder.hpp>
+#include <fwZip/ZipFolder.hpp>
 
 #include <fwGui/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -37,7 +37,6 @@ namespace ioXML
 {
 
 REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLPatientDBWriterService , ::fwData::PatientDB ) ;
-//REGISTER_EXECUTABLE( ::ioXML::FwXMLPatientDBWriterService, "ioXML::FwXMLPatientDBWriterService" );
 
 //------------------------------------------------------------------------------
 
@@ -217,9 +216,7 @@ void FwXMLPatientDBWriterService::manageZipAndSavePatientDB( const ::boost::file
     savePatientDB(xmlfile,_pPatient);
 
     // Zip
-    wxString destZipFileName ( wxConvertMB2WX( inrFileDir.string().c_str() ) );
-    wxString srcFolderName ( wxConvertMB2WX( srcFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::packFolder( srcFolderName, destZipFileName );
+    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );
