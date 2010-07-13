@@ -1,5 +1,5 @@
-<plugin id="uiImage" class="::uiImage::Plugin">
-    <library name="uiImage"/>
+<plugin id="uiImageQt" class="::uiImage::Plugin">
+    <library name="uiImageQt"/>
     
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>

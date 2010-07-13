@@ -1,5 +1,5 @@
-<plugin id="uiReconstruction" class="::uiReconstruction::Plugin">
-    <library name="uiReconstruction"/>
+<plugin id="uiReconstructionQt" class="::uiReconstruction::Plugin">
+    <library name="uiReconstructionQt"/>
     
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>

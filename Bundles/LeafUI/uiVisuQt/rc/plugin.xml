@@ -1,5 +1,5 @@
-<plugin id="uiVisu" class="::uiVisu::Plugin">
-    <library name="uiVisu"/>
+<plugin id="uiVisuQt" class="::uiVisu::Plugin">
+    <library name="uiVisuQt"/>
     
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>

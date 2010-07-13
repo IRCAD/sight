@@ -22,10 +22,10 @@
     <activate id="visuVTKAdaptor" version="0-1" />
     
     <activate id="uiIO" version="0-1" />
-    <activate id="uiVisu" version="0-1" />
-    <activate id="uiImage" version="0-1" />
-    <activate id="uiReconstruction" version="0-1" />
-    <activate id="uiAcquisition" version="0-1" />
+    <activate id="uiVisuWx" version="0-1" />
+    <activate id="uiImageWx" version="0-1" />
+    <activate id="uiReconstructionWx" version="0-1" />
+    <activate id="uiAcquisitionWx" version="0-1" />
     
     <activate id="opVTKMesh" version="0-1" />
     
