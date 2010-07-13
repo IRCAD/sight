@@ -8,7 +8,7 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiReconstruction/config.hpp"
+#include "uiReconstructionWx/config.hpp"
 
 namespace uiReconstruction
 {

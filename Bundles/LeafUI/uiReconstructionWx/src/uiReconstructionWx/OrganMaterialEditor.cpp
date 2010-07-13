@@ -23,7 +23,7 @@
 
 #include <fwGuiWx/container/WxContainer.hpp>
 
-#include "uiReconstruction/OrganMaterialEditor.hpp"
+#include "uiReconstructionWx/OrganMaterialEditor.hpp"
 
 namespace uiReconstruction
 {

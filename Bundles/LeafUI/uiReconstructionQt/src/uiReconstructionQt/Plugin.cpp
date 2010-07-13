@@ -7,7 +7,7 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
 
-#include "uiReconstruction/Plugin.hpp"
+#include "uiReconstructionQt/Plugin.hpp"
 
 namespace uiReconstruction
 {
@@ -18,7 +18,8 @@ Plugin::~Plugin() throw()
 {}
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
-{}
+{
+}
 
 void Plugin::stop() throw()
 {}

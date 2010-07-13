@@ -23,7 +23,7 @@
 
 #include <fwGuiWx/container/WxContainer.hpp>
 
-#include "uiReconstruction/RepresentationEditor.hpp"
+#include "uiReconstructionWx/RepresentationEditor.hpp"
 
 namespace uiReconstruction
 {
