@@ -5,6 +5,7 @@ BUNDLES = [
     'io_0-1'                ,
     'gui_0-1'               ,
     'guiWx_0-1'             ,
+    'guiQt_0-1'             ,
     'dataReg_0-1'           ,
     'servicesReg_0-1'       ,
     'visu_0-1'              ,
