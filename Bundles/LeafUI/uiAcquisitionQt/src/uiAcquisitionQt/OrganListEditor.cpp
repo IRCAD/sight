@@ -26,9 +26,9 @@
 
 #include <fwWX/convert.hpp>
 
-#include <fwGuiWx/container/WxContainer.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiAcquisition/OrganListEditor.hpp"
+#include "uiAcquisitionQt/OrganListEditor.hpp"
 
 namespace uiAcquisition
 {
@@ -54,8 +54,8 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = qtContainer->getQtContainer();
     assert( container ) ;
 
     m_showCheckBox = new wxCheckBox( container, wxNewId(), _("Hide all organs"));
@@ -84,14 +84,15 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
 void OrganListEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = qtContainer->getQtContainer();
+
     assert( container ) ;
     container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this, m_showCheckBox->GetId());
     container->Unbind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
     container->Unbind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
 
-    wxContainer->clean();
+    qtContainer->clean();
     this->destroy();
 }
 
@@ -145,8 +146,9 @@ void OrganListEditor::updateReconstructions()
 {
     m_organChoice->Clear();
     m_map.clear();
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = qtContainer->getQtContainer();
+
     assert( container ) ;
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     container->Enable(acq->getReconstructions().first != acq->getReconstructions().second);

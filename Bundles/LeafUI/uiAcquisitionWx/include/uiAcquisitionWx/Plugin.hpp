@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIACQUISITION_PLUGIN_HPP_
-#define _UIACQUISITION_PLUGIN_HPP_
+#ifndef _UIACQUISITIONWX_PLUGIN_HPP_
+#define _UIACQUISITIONWX_PLUGIN_HPP_
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -32,4 +32,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace uiAcquisition
 
-#endif //_UIACQUISITION_PLUGIN_HPP_
+#endif //_UIACQUISITIONWX_PLUGIN_HPP_

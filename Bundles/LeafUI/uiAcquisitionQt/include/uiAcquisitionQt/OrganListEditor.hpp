@@ -1,5 +1,5 @@
-#ifndef _UIACQUISITION_ORGAN_LIST_EDITOR_HPP_
-#define _UIACQUISITION_ORGAN_LIST_EDITOR_HPP_
+#ifndef _UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_
+#define _UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_
 
 #include <wx/checklst.h>
 #include <wx/checkbox.h>
@@ -7,7 +7,7 @@
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
 
-#include "uiAcquisition/config.hpp"
+#include "uiAcquisitionQt/config.hpp"
 
 namespace uiAcquisition
 {
@@ -18,7 +18,7 @@ namespace uiAcquisition
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIACQUISITION_CLASS_API OrganListEditor : public ::gui::editor::IEditor
+class UIACQUISITIONQT_CLASS_API OrganListEditor : public ::gui::editor::IEditor
 {
 
 public :
@@ -26,10 +26,10 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (OrganListEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIACQUISITION_API OrganListEditor() throw() ;
+    UIACQUISITIONQT_API OrganListEditor() throw() ;
 
     /// Destructor. Do nothing.
-    UIACQUISITION_API virtual ~OrganListEditor() throw() ;
+    UIACQUISITIONQT_API virtual ~OrganListEditor() throw() ;
 
 protected:
 
@@ -73,6 +73,6 @@ private:
 
 } // uiAcquisition
 
-#endif /*_UIACQUISITION_ORGAN_LIST_EDITOR_HPP_*/
+#endif /*_UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_*/
 
 

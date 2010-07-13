@@ -7,7 +7,7 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
 
-#include "uiAcquisition/Plugin.hpp"
+#include "uiAcquisitionQt/Plugin.hpp"
 
 namespace uiAcquisition
 {
