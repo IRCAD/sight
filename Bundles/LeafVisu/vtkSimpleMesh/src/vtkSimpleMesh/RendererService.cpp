@@ -154,6 +154,7 @@ void RendererService::stopping() throw(fwTools::Failed)
     m_render->Delete();
     m_render = 0;
 
+    this->getContainer()->clean();
     this->destroy();
 }
 
