@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISU_SNAPSHOTEDITOR_HPP_
-#define _UIVISU_SNAPSHOTEDITOR_HPP_
+#ifndef _UIVISUWX_SNAPSHOTEDITOR_HPP_
+#define _UIVISUWX_SNAPSHOTEDITOR_HPP_
 
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
 
-#include "uiVisu/config.hpp"
+#include "uiVisuWx/config.hpp"
 
 namespace uiVisu
 {
@@ -21,7 +21,7 @@ namespace uiVisu
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIVISU_CLASS_API SnapshotEditor : public ::gui::editor::IEditor
+class UIVISUWX_CLASS_API SnapshotEditor : public ::gui::editor::IEditor
 {
 
 public :
@@ -29,10 +29,10 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (SnapshotEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIVISU_API SnapshotEditor() throw() ;
+    UIVISUWX_API SnapshotEditor() throw() ;
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~SnapshotEditor() throw() ;
+    UIVISUWX_API virtual ~SnapshotEditor() throw() ;
 
 protected:
 
@@ -68,6 +68,6 @@ private:
 
 } // uiVisu
 
-#endif /*_UIVISU_SNAPSHOTEDITOR_HPP_*/
+#endif /*_UIVISUWX_SNAPSHOTEDITOR_HPP_*/
 
 

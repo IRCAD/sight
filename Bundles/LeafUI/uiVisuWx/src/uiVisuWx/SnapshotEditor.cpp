@@ -11,14 +11,16 @@
 #include <wx/event.h>
 #include <wx/filedlg.h>
 
-#include <fwCore/base.hpp>
-
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 
+#include <fwCore/base.hpp>
+
 #include <fwTools/Object.hpp>
+
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/location/SingleFile.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 
@@ -32,10 +34,13 @@
 #include <fwServices/op/Get.hpp>
 
 #include <fwWX/convert.hpp>
+
 #include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+
 #include <fwGuiWx/container/WxContainer.hpp>
 
-#include "uiVisu/SnapshotEditor.hpp"
+#include "uiVisuWx/SnapshotEditor.hpp"
 
 namespace uiVisu
 {
@@ -61,11 +66,11 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
     this->create();
 
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
+    wxWindow* container = wxContainer->getWxContainer();
     assert( container ) ;
 
     namespace fs = ::boost::filesystem;
-    fs::path pathImageSnap ("Bundles/uiVisu_" + std::string(UIVISU_VER) + "/camera-photo.png");
+    fs::path pathImageSnap ("Bundles/uiVisuWx_" + std::string(UIVISUWX_VER) + "/camera-photo.png");
     OSLM_ASSERT("Image "<< pathImageSnap << "is missing", fs::exists(pathImageSnap));
     wxString filenameSnap ( ::fwWX::std2wx(pathImageSnap.string() ) );
     wxImage imageSnap;
@@ -74,9 +79,11 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
     snapButton->SetToolTip(_("Snapshot"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
-    container->SetSizer( sizer );
-    sizer->Fit( container );
     sizer->Add( snapButton, 1, wxALL|wxEXPAND, 1 );
+
+    container->SetSizer( sizer );
+    container->Layout();
+
     container->Bind( wxEVT_COMMAND_BUTTON_CLICKED, &SnapshotEditor::onSnapButton, this,  m_idSnapButton);
 }
 
@@ -177,7 +184,6 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
     else
     {
         std::string msgInfo("Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.");
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
         ::fwGui::MessageDialog messageBox;
         messageBox.setTitle("Negato view snapshot");
         messageBox.setMessage( msgInfo );
@@ -193,24 +199,23 @@ std::string SnapshotEditor::requestFileName()
 {
     std::string fileName = "";
 
-    wxFileDialog* myFileDialog = new wxFileDialog(wxTheApp->GetTopWindow(),
-            wxT("Save snapshot as"),
-            wxT(""), wxT(""),
-            wxT("Image file (*.jpg;*.jpeg;*.bmp;*.png;*.tiff)|*.jpg;*.jpeg;*.bmp;*.png;*.tiff|")
-            wxT("jpeg (*.jpg;*.jpeg)|*.jpg;*.jpeg|")
-            wxT("bmp (*.bmp)|*.bmp|")
-            wxT("png (*.png)|*.png|")
-            wxT("tiff (*.tiff)|*.tiff|")
-            wxT("all (*.*)|*.*"),
-            wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT, wxDefaultPosition);
-    myFileDialog->Centre(wxBOTH);
-    int OK = myFileDialog->ShowModal();
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Save snapshot as");
+//    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Image file","*.jpg *.jpeg *.bmp *.png *.tiff");
+    dialogFile.addFilter("jpeg","*.jpg *.jpeg");
+    dialogFile.addFilter("bmp","*.bmp");
+    dialogFile.addFilter("png","*.png");
+    dialogFile.addFilter("tiff","*.tiff");
+    dialogFile.addFilter("all","*.*");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
 
-    if( OK==wxID_OK )
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        fileName = ::fwWX::wx2std(myFileDialog->GetPath());
+        fileName = result->getPath().string();
     }
-    myFileDialog->Destroy();
 
     return fileName;
 }

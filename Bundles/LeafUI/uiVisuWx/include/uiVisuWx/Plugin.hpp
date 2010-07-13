@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISU_PLUGIN_HPP_
-#define _UIVISU_PLUGIN_HPP_
+#ifndef _UIVISUWX_PLUGIN_HPP_
+#define _UIVISUWX_PLUGIN_HPP_
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -32,4 +32,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace uiVisu
 
-#endif //_UIVISU_PLUGIN_HPP_
+#endif //_UIVISUWX_PLUGIN_HPP_

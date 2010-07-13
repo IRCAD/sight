@@ -7,7 +7,7 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
 
-#include "uiVisu/Plugin.hpp"
+#include "uiVisuQt/Plugin.hpp"
 
 namespace uiVisu
 {
