@@ -38,7 +38,7 @@ public:
 
     FWRENDERVTK_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
-    static IVtkRenderWindowInteractorManager::sptr createManager();
+    FWRENDERVTK_API static IVtkRenderWindowInteractorManager::sptr createManager();
 
     /// Constructor. Do nothing.
     FWRENDERVTK_API IVtkRenderWindowInteractorManager();
