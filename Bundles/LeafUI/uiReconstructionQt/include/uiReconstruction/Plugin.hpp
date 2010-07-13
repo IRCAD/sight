@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIRECONSTRUCTION_PLUGIN_HPP_
-#define _UIRECONSTRUCTION_PLUGIN_HPP_
+#ifndef _UIRECONSTRUCTIONQT_PLUGIN_HPP_
+#define _UIRECONSTRUCTIONQT_PLUGIN_HPP_
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -32,4 +32,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace uiReconstruction
 
-#endif //_UIRECONSTRUCTION_PLUGIN_HPP_
+#endif //_UIRECONSTRUCTIONQT_PLUGIN_HPP_
