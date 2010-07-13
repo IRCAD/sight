@@ -36,7 +36,7 @@ void Cursor::setCursor( ::fwGui::ICursor::CursorType cursor)
     }
     else if (cursor == ICursor::BUSY)
     {
-        wxBeginBusyCursor(new wxCursor(wxCURSOR_QUESTION_ARROW));
+        wxBeginBusyCursor(wxHOURGLASS_CURSOR);
     }
     else if (cursor == ICursor::WAIT)
     {
