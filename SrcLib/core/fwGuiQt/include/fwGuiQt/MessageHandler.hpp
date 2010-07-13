@@ -4,23 +4,25 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWWX_MESSAGEHANDLER_HPP_
-#define FWWX_MESSAGEHANDLER_HPP_
+#ifndef FWGUIQT_MESSAGEHANDLER_HPP_
+#define FWGUIQT_MESSAGEHANDLER_HPP_
 
-#include <boost/function.hpp>
-
-
-#include <wx/event.h>
+#include <QObject>
 
 #include <fwCore/base.hpp>
 #include <fwServices/IDeliveryDelegate.hpp>
 
-#include "fwWX/config.hpp"
+#include "fwGuiQt/config.hpp"
 
 fwCorePredeclare( (fwServices)(GlobalEventManager) );
-fwCorePredeclare( (fwWX)(MessageEvent) );
 
-namespace fwWX
+QT_BEGIN_NAMESPACE
+class QEvent;
+QT_END_NAMESPACE
+
+
+
+namespace fwGuiQt
 {
 
 /**
@@ -30,7 +32,7 @@ namespace fwWX
  * @todo    MessageHandler is not commented.
  */
 
-class FWWX_CLASS_API MessageHandler : public ::fwServices::IDeliveryDelegate
+class FWGUIQT_CLASS_API MessageHandler : public QObject, public ::fwServices::IDeliveryDelegate
 {
 
 public:
@@ -39,32 +41,33 @@ public:
     fwCoreAllowSharedFromThis();
 
 
-     FWWX_API MessageHandler() throw() ;
-     FWWX_API ~MessageHandler() throw() ;
+     FWGUIQT_API MessageHandler() throw() ;
+     FWGUIQT_API ~MessageHandler() throw() ;
 
-     static void addNewMessageToWxQueue();
+     virtual bool event ( QEvent * e );
 
 protected:
     /**
      * @brief If configuration is set, both subject (data) and observer (service) uuid are retrieved
      */
-    FWWX_API virtual void configuring() throw( ::fwTools::Failed ) ;
-    FWWX_API virtual void starting() throw( ::fwTools::Failed );
-    FWWX_API virtual void stopping() throw( ::fwTools::Failed );
-    FWWX_API virtual void updating() throw( ::fwTools::Failed );
-    FWWX_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
-    FWWX_API virtual void info( std::ostream &_sstream ) ;
+    FWGUIQT_API virtual void configuring() throw( ::fwTools::Failed ) ;
+    FWGUIQT_API virtual void starting() throw( ::fwTools::Failed );
+    FWGUIQT_API virtual void stopping() throw( ::fwTools::Failed );
+    FWGUIQT_API virtual void updating() throw( ::fwTools::Failed );
+    FWGUIQT_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
+    FWGUIQT_API virtual void info( std::ostream &_sstream ) ;
+
+     void addNewMessageToQtQueue();
 
 private:
 
     SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
     ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;
 
-    ::boost::function1< void , ::fwWX::MessageEvent & > m_onMessageHandler;
-    void onMessage(::fwWX::MessageEvent& event);
+    static int s_qtMessageHandlerEventType;
 };
 
 }
 
-#endif /*FWWX_MESSAGEHANDLER_HPP_*/
+#endif /*FWGUIQT_MESSAGEHANDLER_HPP_*/
 
