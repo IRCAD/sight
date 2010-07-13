@@ -7,6 +7,8 @@
 #include <string>
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
@@ -17,7 +19,9 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwWX/Selector.hpp>
+#include <fwGui/ISelector.hpp>
+#include <fwGui/Cursor.hpp>
+#include <fwGui/MessageDialog.hpp>
 
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
@@ -56,6 +60,7 @@ IOSelectorService::~IOSelectorService()  throw()
 void IOSelectorService::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    this->initialize();
 
     bool vectorIsAlreadyCleared = false;
 
@@ -107,6 +112,7 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
 void IOSelectorService::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    this->create();
 }
 
 //------------------------------------------------------------------------------
@@ -114,6 +120,8 @@ void IOSelectorService::starting() throw( ::fwTools::Failed )
 void IOSelectorService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    this->getContainer()->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -183,22 +191,26 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         bool extensionIdFound = false;
         if ( availableExtensionsSelector.size() > 1 )
         {
-            ::fwWX::Selector selector( wxTheApp->GetTopWindow() , _("Reader to use") , availableExtensionsSelector );
+            ::fwGui::ISelector::sptr selector = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ISelector >( ::fwGui::ISelector::REGISTRY_KEY );
+            OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::ISelector::REGISTRY_KEY, selector);
 
             if ( m_mode != READER_MODE )
             {
-                selector.SetTitle( _("Writer to use") );
+                selector->setTitle("Writer to use");
             }
-
-            int choice;
-            choice = selector.ShowModal();
-            if( choice == wxID_OK )
+            else
+            {
+                selector->setTitle("Reader to use");
+            }
+            selector->setSelections(availableExtensionsSelector);
+            std::string selection = selector->show();
+            if( !selection.empty() )
             {
                 for(    std::vector< std::pair < std::string, std::string > >::iterator itExt = availableExtensionsMap.begin();
                         itExt < availableExtensionsMap.end();
                         itExt++ )
                     {
-                        if (itExt->second == selector.getSelectedString())
+                        if (itExt->second == selection )
                         {
                             extensionId = itExt->first ;
                             extensionIdFound = true;
@@ -220,9 +232,12 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( this->getObject() , extensionId ) ;
                 reader->start();
                 reader->configureWithIHM();
-                wxBeginBusyCursor();
+
+                ::fwGui::Cursor cursor;
+                cursor.setCursor(::fwGui::ICursor::BUSY);
                 reader->update();
-                wxEndBusyCursor();
+                cursor.setDefaultCursor();
+
                 reader->stop();
             }
             else
@@ -230,9 +245,12 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject() , extensionId ) ;
                 writer->start();
                 writer->configureWithIHM();
-                wxBeginBusyCursor();
+
+                ::fwGui::Cursor cursor;
+                cursor.setCursor(::fwGui::ICursor::BUSY);
                 writer->update();
-                wxEndBusyCursor();
+                cursor.setDefaultCursor();
+
                 writer->stop();
             }
         }
@@ -242,13 +260,21 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         SLM_WARN("IOSelectorService::load : availableExtensions is empty.");
         if ( m_mode == READER_MODE )
         {
-            wxMessageDialog msgDlg ( wxTheApp->GetTopWindow(), _("Sorry, there are not available readers for this data type."), _("Reader not found"), wxOK | wxICON_WARNING );
-            msgDlg.ShowModal();
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Reader not found");
+            messageBox.setMessage( "Sorry, there are not available readers for this data type." );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
         else // m_mode == WRITER_MODE
         {
-            wxMessageDialog msgDlg ( wxTheApp->GetTopWindow(), _("Sorry, there are not available writers for this data type."), _("Writer not found"), wxOK | wxICON_WARNING );
-            msgDlg.ShowModal();
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Writer not found");
+            messageBox.setMessage( "Sorry, there are not available writers for this data type." );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
     }
 

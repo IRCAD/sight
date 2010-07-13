@@ -61,12 +61,12 @@ void IGuiContainerSrv::initialize()
 
 void IGuiContainerSrv::create()
 {
-    SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
-    ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
-    SLM_ASSERT("Parent container is unknown.", container);
-
     if ( m_viewLayoutManagerIsCreated )
     {
+        SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
+        ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
+        SLM_ASSERT("Parent container is unknown.", container);
+
         m_viewLayoutManager->createLayout(container);
         m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
     }

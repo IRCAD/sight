@@ -59,6 +59,7 @@ void ProgressDialog::setTitle(const std::string &title)
     m_pdialog->SetTitle(::fwWX::std2wx(title));
 }
 
+//------------------------------------------------------------------------------
 
 void ProgressDialog::setMessage(const std::string &msg)
 {

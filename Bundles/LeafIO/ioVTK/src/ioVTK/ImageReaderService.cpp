@@ -154,7 +154,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
     try
     {
         // Create a progress bar and attach it to reader
-        fwGui::ProgressDialog progressMeterGUI("Loading Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myReader.addHandler( progressMeterGUI );
         // Launch reading process
         myReader.read();

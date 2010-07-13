@@ -6,12 +6,10 @@
 
 #ifndef FWWX_SELECTOR_HPP_
 #define FWWX_SELECTOR_HPP_
-#include <wx/wx.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
+
 #include <vector>
-#include <map>
+
+#include <fwGui/ISelector.hpp>
 
 #include "fwWX/config.hpp"
 
@@ -27,14 +25,16 @@ namespace fwWX
  * @date    2009.
  */
 
-class FWWX_CLASS_API Selector :  public wxDialog
+class FWWX_CLASS_API Selector : public ::fwGui::ISelector,  public wxDialog
 {
 public:
 
-    enum
-    {
-        ID_ITEM_SELECTED = wxID_HIGHEST + 1
-    };
+    fwCoreClassDefinitionsWithFactoryMacro( (Selector)(::fwGui::ISelector), (()), new Selector );
+
+    /// Default constructor.
+    FWWX_API Selector() ;
+
+    FWWX_API virtual ~Selector();
 
     /**
      * @brief Constructor builds a dialog box proposing a string list
@@ -45,29 +45,28 @@ public:
      */
     FWWX_API Selector( wxWindow * _parent , wxString _title , std::vector< std::string > _selections) ;
 
-    /**
-     * @brief Returns the selection (among those defined in _selections)
-     * @return The selected string
-     */
-    FWWX_API std::string getSelectedString() ;
-
-protected :
 
     /**
-     * @brief Method called on selection modification. Do nothing at this time.
+     * @brief The string list that can be chosen by the selector.
      */
-    FWWX_API void onSelectedItem( wxCommandEvent & event ) ;
-
-    /// Editor Fields
-    wxChoice * m_typeCtrl;
+    FWWX_API virtual void setSelections(std::vector< std::string > _selections);
 
     /**
-     * @brief Map to associate each string of the string list with its own translation.
-     * in order to be able to untranslate each string contained in the initial string list
+     * @brief Sets the selector title.
      */
-    ::std::map< wxString, wxString > m_translateToUntranslate;
+    FWWX_API virtual void setTitle(std::string _title);
 
-    DECLARE_EVENT_TABLE()
+    /**
+     * @brief Show the selector and return the selection.
+     * @param[in] _parent Parent container for the selector.
+     */
+    FWWX_API virtual std::string show();
+
+private :
+
+    std::vector< std::string > m_selections;
+
+    std::string m_title;
 };
 
 

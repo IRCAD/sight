@@ -10,8 +10,7 @@
 namespace fwGui
 {
 
-const IMessageDialog::FactoryRegistryKeyType
-IMessageDialog::REGISTRY_KEY =  "an unique key for all IMessageDialog (factories are exclusives)";
+const IMessageDialog::FactoryRegistryKeyType IMessageDialog::REGISTRY_KEY =  "::fwGui::MessageDialog";
 
 IMessageDialog::IMessageDialog()
 {}
