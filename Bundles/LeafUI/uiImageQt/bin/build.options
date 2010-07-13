@@ -9,7 +9,6 @@ LIB     = [
           'fwTools_0-1',
           'fwGui_0-1',
           'fwGuiQt_0-1',
-          'fwWX_0-1'
           ]
 USE     = ['qtCore','boost', 'boostFilesystem']
 BUNDLES = ['gui_0-1']
