@@ -4,16 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IProgressDialog_HPP_
-#define _FWGUI_IProgressDialog_HPP_
+#ifndef _FWGUI_IPROGRESSDIALOG_HPP_
+#define _FWGUI_IPROGRESSDIALOG_HPP_
 
 #include <string>
 #include <boost/signals/trackable.hpp>
 #include <fwCore/base.hpp>
+#include <fwData/location/ILocation.hpp>
 
 #include "fwGui/config.hpp"
 
-#include <fwData/location/ILocation.hpp>
 
 namespace fwGui
 {
@@ -54,6 +54,6 @@ public:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_LocationDialog_HPP_*/
+#endif /*_FWGUI_LOCATIONDIALOG_HPP_*/
 
 
