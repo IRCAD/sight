@@ -34,16 +34,20 @@ public:
         CRITICAL,
         WARNING,
         INFO,
-        QUESTION
+        QUESTION,
+        NONE
     } Icons;
 
     /// Buttons type
     typedef enum {
-        OK,
-        YES_NO,
-        YES,
-        NO,
-        CANCEL
+        NOBUTTON = 0, // invalid
+
+        OK     = 1 << 1,
+        YES    = 1 << 2,
+        NO     = 1 << 3,
+        CANCEL = 1 << 4,
+
+        YES_NO = YES | NO
     } Buttons;
 
     /// Constructor. Do nothing.
