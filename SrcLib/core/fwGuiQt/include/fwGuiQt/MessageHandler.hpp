@@ -44,7 +44,7 @@ public:
      FWGUIQT_API MessageHandler() throw() ;
      FWGUIQT_API ~MessageHandler() throw() ;
 
-     virtual bool event ( QEvent * e );
+     FWGUIQT_API virtual bool event ( QEvent * e );
 
 protected:
     /**
@@ -57,7 +57,7 @@ protected:
     FWGUIQT_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
     FWGUIQT_API virtual void info( std::ostream &_sstream ) ;
 
-     void addNewMessageToQtQueue();
+    void addNewMessageToQtQueue();
 
 private:
 

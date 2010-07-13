@@ -95,6 +95,7 @@ void MessageHandler::addNewMessageToQtQueue()
 
 bool MessageHandler::event ( QEvent * e )
 {
+    bool bRes = false;
     if (e->type() == s_qtMessageHandlerEventType)
     {
         if (m_msgHandler->pending())
@@ -102,7 +103,9 @@ bool MessageHandler::event ( QEvent * e )
             m_msgHandler->dispatch();
         }
         e->accept();
+        bRes = true;
     }
+    return bRes;
 }
 
 //------------------------------------------------------------------------------
