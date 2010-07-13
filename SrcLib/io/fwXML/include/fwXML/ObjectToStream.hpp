@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
 #ifndef _FWXML_OBJECTTOSTREAM_HPP_
 #define _FWXML_OBJECTTOSTREAM_HPP_
 
@@ -25,14 +23,14 @@ namespace fwXML
 
 class FWXML_CLASS_API ObjectToStream
 {
-    
+
 public:
 
     /** Convert an object in a xml string representation.
-     * 
+     *
      * @param object : the
-     * @param option : select the desired information level ( 0 = short, 1 = fields without splitted fields, 2 = all fields )  
-     * @return an object string representation   
+     * @param option : select the desired information level ( 0 = short, 1 = fields without splitted fields, 2 = all fields )
+     * @return an object string representation
      */
     FWXML_API static const std::string toString( ::boost::shared_ptr< fwTools::Object > object, unsigned int option = 0 );
 

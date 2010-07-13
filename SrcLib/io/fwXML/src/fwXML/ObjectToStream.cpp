@@ -4,15 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwXML/ObjectToStream.hpp"
-
-
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwCore/base.hpp>
 
-#include "fwXML/visitor/Serialize.hpp"
 #include <fwData/visitor/accept.hpp>
 
+#include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLHierarchy.hpp"
 #include "fwXML/XML/XMLStream.hpp"
 #include "fwXML/XML/XMLTranslator.hpp"
@@ -21,11 +18,14 @@
 
 #include "fwXML/policy/NeverSplitPolicy.hpp"
 #include "fwXML/XML/XMLPartitioner.hpp"
+#include "fwXML/ObjectToStream.hpp"
 
 namespace fwXML
 {
 
-const std::string ObjectToStream::toString( ::boost::shared_ptr< fwTools::Object > object, unsigned int option )
+//------------------------------------------------------------------------------
+
+const std::string ObjectToStream::toString( ::fwTools::Object::sptr object, unsigned int option )
 {
     std::stringstream os;
 
@@ -41,11 +41,10 @@ const std::string ObjectToStream::toString( ::boost::shared_ptr< fwTools::Object
         ::fwXML::XMLHierarchy::getDefault()->mapObjectXMLNode().clear();
 
         ::visitor::Serialize visitor;
-        //object->accept( &visitor );
         ::fwData::visitor::accept(object, &visitor);
 
         // For option 3 only
-        std::set< ::boost::shared_ptr< ::fwXML::XMLAggregator > > savedAggregator;
+        std::set< ::fwXML::XMLAggregator::sptr > savedAggregator;
 
         // find node
         for(    ::fwXML::XMLHierarchy::ObjectAggregatorMap::iterator aggIter = ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator().begin();
@@ -53,7 +52,7 @@ const std::string ObjectToStream::toString( ::boost::shared_ptr< fwTools::Object
                 ++aggIter )
         {
             // Get aggregator
-            ::boost::shared_ptr< ::fwXML::XMLAggregator > aggregator =  aggIter->second;
+            ::fwXML::XMLAggregator::sptr aggregator =  aggIter->second;
 
             if ( option == 1 ) // Option 2
             {
@@ -76,7 +75,7 @@ const std::string ObjectToStream::toString( ::boost::shared_ptr< fwTools::Object
     else if ( option == 0 )
     {
 
-        ::boost::shared_ptr< ::fwXML::XMLTranslator > translator = fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  typeid(*object)  );
+        ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  typeid(*object)  );
 
         if ( translator == NULL )
         {
@@ -91,6 +90,8 @@ const std::string ObjectToStream::toString( ::boost::shared_ptr< fwTools::Object
 
     return os.str();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace fwXML
 

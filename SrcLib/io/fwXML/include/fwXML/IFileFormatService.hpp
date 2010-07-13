@@ -5,28 +5,26 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#ifndef FILEFORMAT_H_
-#define FILEFORMAT_H_
+#ifndef _FWWXML_IFILEFORMATSERVICE_HPP_
+#define _FWWXML_IFILEFORMATSERVICE_HPP_
 
 #include <boost/filesystem/path.hpp>
 
-#include "fwXML/config.hpp"
-#include "fwXML/FSLocation.hpp"
 #include <fwServices/IService.hpp>
 #include <fwTools/ProgressAdviser.hpp>
 
-
-
+#include "fwXML/config.hpp"
+#include "fwXML/FSLocation.hpp"
 
 namespace fwDataIO
 {
 namespace reader
 {
-    class IObjectReader;
+class IObjectReader;
 }
 namespace writer
 {
-    class IObjectWriter;
+class IObjectWriter;
 }
 }
 
@@ -45,51 +43,42 @@ public:
 
     FWXML_API virtual ~IFileFormatService();
 
-    FWXML_API virtual void starting() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void stopping() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void configuring() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void updating() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
-
-
     /// load image from this->rootFolder()/ this->localFolder()  / this->filename() location
     FWXML_API virtual void load() = 0;
 
     /// save image to this->rootFolder()/ this->localFolder()  / this->filename() location
     FWXML_API virtual void save() = 0;
 
-//  /// return the default filename extension ( used for initialization )
-//  FWXML_API virtual const std::string defaultExtension() = 0;
-
     // ovveride
     FWXML_API virtual std::string getPersistanceId();
 
-    // ovveride
-    FWXML_API virtual void info(std::ostream &_sstream );
 
     /**
      * @brief allow to change reader policy
      */
-    FWXML_API void setReader( boost::shared_ptr< ::fwDataIO::reader::IObjectReader > _reader);
-    FWXML_API void setWriter( boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > _writer);
+    FWXML_API void setReader( SPTR(::fwDataIO::reader::IObjectReader) _reader);
+    FWXML_API void setWriter( SPTR(::fwDataIO::writer::IObjectWriter) _writer);
 
     /// RW accessor policy
-    FWXML_API  boost::shared_ptr< ::fwDataIO::reader::IObjectReader > getReader();
-    FWXML_API  boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > getWriter();
+    FWXML_API  SPTR(::fwDataIO::reader::IObjectReader) getReader();
+    FWXML_API  SPTR(::fwDataIO::writer::IObjectWriter) getWriter();
 
 
 protected :
 
+    FWXML_API virtual void starting() throw(::fwTools::Failed) {} ;
+    FWXML_API virtual void stopping() throw(::fwTools::Failed) {} ;
+    FWXML_API virtual void configuring() throw(::fwTools::Failed) {} ;
+    FWXML_API virtual void updating() throw(::fwTools::Failed) {} ;
+    FWXML_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
 
-    boost::shared_ptr< ::fwDataIO::reader::IObjectReader > m_reader;
-    boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > m_writer;
+    // Override
+    FWXML_API virtual void info(std::ostream &_sstream );
 
-
-
-
-
+    SPTR(::fwDataIO::reader::IObjectReader) m_reader;
+    SPTR(::fwDataIO::writer::IObjectWriter) m_writer;
 };
 
 }
 
-#endif /*FILEFORMAT_H_*/
+#endif /* _FWWXML_IFILEFORMATSERVICE_HPP_*/

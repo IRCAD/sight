@@ -4,10 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
-#ifndef OBJECTTRACKER_H_
-#define OBJECTTRACKER_H_
+#ifndef _FWXML_OBJECTTRACKER_HPP_
+#define _FWXML_OBJECTTRACKER_HPP_
 
 #include <string>
 #include <map>
@@ -48,7 +46,7 @@ public:
      * @param className the name of object to build
      * @param id the unique ID for an object : if no one specified the object is created via ObjectFactory
      */
-    FWXML_API static ::boost::shared_ptr< fwTools::Object > buildObject( const std::string &className, const std::string &uniqueID  );
+    FWXML_API static ::fwTools::Object::sptr buildObject( const std::string &className, const std::string &uniqueID  );
 
     /// return true if its already instanciated
     FWXML_API static bool isAlreadyInstanciated( const std::string &uniqueID  );
@@ -65,10 +63,7 @@ public:
      */
     FWXML_API static void clear();
 
-
 protected:
-
-
 
     /**
      * @brief typedef of mapping bettwen object id <-> object created
@@ -92,4 +87,4 @@ protected:
 
 }
 
-#endif /*OBJECTTRACKER_H_*/
+#endif /*_FWXML_OBJECTTRACKER_HPP_*/

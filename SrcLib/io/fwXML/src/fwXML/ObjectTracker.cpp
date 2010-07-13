@@ -18,15 +18,17 @@ namespace fwXML
 ObjectTracker::Registry ObjectTracker::m_buildedObject;
 ObjectTracker::OldNewUUIDMap ObjectTracker::m_oldNewUUIDTranslation;
 
+//------------------------------------------------------------------------------
 
 ObjectTracker::ObjectTracker()
-{
-}
+{}
+
+//------------------------------------------------------------------------------
 
 ObjectTracker::~ObjectTracker()
-{
-}
+{}
 
+//------------------------------------------------------------------------------
 
 void ObjectTracker::clear()
 {
@@ -34,8 +36,7 @@ void ObjectTracker::clear()
     m_oldNewUUIDTranslation.clear();
 }
 
-
-
+//------------------------------------------------------------------------------
 
 bool ObjectTracker::isAlreadyInstanciated( const std::string &uniqueID  )
 {
@@ -44,7 +45,7 @@ bool ObjectTracker::isAlreadyInstanciated( const std::string &uniqueID  )
     return  result;
 }
 
-
+//------------------------------------------------------------------------------
 
 std::string  ObjectTracker::xmlID2RuntimeID( const std::string &xmlID )
 {
@@ -53,7 +54,7 @@ std::string  ObjectTracker::xmlID2RuntimeID( const std::string &xmlID )
    return m_oldNewUUIDTranslation[xmlID];
 }
 
-
+//------------------------------------------------------------------------------
 
 std::string ObjectTracker::getID( xmlNodePtr xmlNode )
 {
@@ -70,8 +71,7 @@ std::string ObjectTracker::getID( xmlNodePtr xmlNode )
     return id;
 }
 
-
-
+//------------------------------------------------------------------------------
 
 std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
 {
@@ -88,11 +88,9 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     return className;
 }
 
+//------------------------------------------------------------------------------
 
-
-
-
-::boost::shared_ptr< fwTools::Object > ObjectTracker::buildObject( const std::string &className, const std::string &uniqueIDXML  )
+::fwTools::Object::sptr ObjectTracker::buildObject( const std::string &className, const std::string &uniqueIDXML  )
 {
     if ( uniqueIDXML.empty() )
     {
@@ -105,12 +103,12 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     if ( i == m_buildedObject.end() )
     {
         // not already registred : create it then register it
-        ::boost::shared_ptr< fwTools::Object > newObject = ::boost::dynamic_pointer_cast< fwTools::Object >( ::fwTools::Factory::buildData( className ) ) ;
+        ::fwTools::Object::sptr newObject = ::fwTools::Object::dynamicCast( ::fwTools::Factory::buildData( className ) ) ;
         m_buildedObject[uniqueIDXML] = newObject;
-        OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " first instanciation");
+        OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " first instantiation");
         if ( ::fwTools::UUID::supervise(newObject) == false )
         {
-            std::string newID = ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED); // generate a new one
+            std::string newID = ::fwTools::UUID::get(newObject, ::fwTools::UUID::EXTENDED); // generate a new one
             m_oldNewUUIDTranslation[uniqueIDXML] = newID;
             OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " new UUID : "
                         << ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED) );
@@ -132,6 +130,6 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 }

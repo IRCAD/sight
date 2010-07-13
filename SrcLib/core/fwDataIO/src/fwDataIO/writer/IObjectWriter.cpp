@@ -26,34 +26,36 @@ IObjectWriter::IObjectWriter()
 IObjectWriter::~IObjectWriter()
 {}
 
+//------------------------------------------------------------------------------
 
-
-void IObjectWriter::setObject( ::boost::shared_ptr< ::fwTools::Object > _pObject )
+void IObjectWriter::setObject( ::fwTools::Object::sptr _pObject )
 {
     m_object = _pObject;
 }
 
+//------------------------------------------------------------------------------
 
-
-::boost::shared_ptr< ::fwTools::Object >  IObjectWriter::getObject()
+::fwTools::Object::sptr  IObjectWriter::getObject()
 {
     assert( !m_object.expired() );
     return m_object.lock();
 }
 
+//------------------------------------------------------------------------------
 
-
-void IObjectWriter::setLocation( ::boost::shared_ptr< ::fwData::location::ILocation > _location )
+void IObjectWriter::setLocation( const ::fwData::location::ILocation::sptr _location )
 {
     m_location = _location;
 }
 
-::boost::shared_ptr< ::fwData::location::ILocation > IObjectWriter::getLocation()
+//------------------------------------------------------------------------------
+
+::fwData::location::ILocation::sptr IObjectWriter::getLocation()
 {
     return m_location;
 }
 
-
+//------------------------------------------------------------------------------
 
 std::string  IObjectWriter::extension()
 {

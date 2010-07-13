@@ -13,12 +13,10 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "fwXML/config.hpp"
 #include "fwXML/FSLocation.hpp"
-
-
-#include <boost/lexical_cast.hpp> //FIXME VAG used by Version
 
 
 namespace fwData
@@ -36,9 +34,11 @@ namespace fwXML
  * This node only contain intrinsic information of object ( aggregation ignored )
  * @author IRCAD (Research and Development Team).
  */
-class FWXML_CLASS_API XMLAggregator : public FSLocation
+class FWXML_CLASS_API XMLAggregator : public ::fwCore::BaseObject, public FSLocation
 {
 public:
+
+    fwCoreClassDefinitionsWithFactoryMacro( (XMLAggregator)(::fwCore::BaseObject), (()), new XMLAggregator );
 
     /// define XML Aggregator Version
     class  Version
@@ -55,7 +55,7 @@ public:
         std::string string()
         {
             return ::boost::lexical_cast<std::string>(m_major) + "."
-                   + ::boost::lexical_cast<std::string>(m_minor);
+                    + ::boost::lexical_cast<std::string>(m_minor);
         }
 
         static Version current()
@@ -65,9 +65,6 @@ public:
 
     };
 
-
-
-
     FWXML_API XMLAggregator();
 
     FWXML_API virtual ~XMLAggregator();
@@ -76,7 +73,7 @@ public:
      * @brief append object in the XML Aggregator
      * Object hierarchy is implicitly stored in object its self
      */
-    FWXML_API virtual void append( ::boost::weak_ptr<fwTools::Object>  obj );
+    FWXML_API virtual void append( ::boost::weak_ptr< ::fwTools::Object>  obj );
 
     /**
      * @brief return a document viewable
@@ -84,36 +81,33 @@ public:
      * if a child of object is not in the same XMLAggregator. it add an xi:include with path according to the other XMLAggregator
      *
      */
-    FWXML_API xmlDocPtr getXMLDoc( /*std::list<boost::filesystem::path>  xincludePaths */);
+    FWXML_API xmlDocPtr getXMLDoc();
 
 
     /**
      *  @brief helper wich retreive the root object from m_objects using child information.
      *   (used by  getXMLDoc)
      */
-     ::boost::weak_ptr<fwTools::Object>  getRootObject();
+     ::boost::weak_ptr< ::fwTools::Object>  getRootObject();
 
 
 protected :
 
-
-
-
     /**
      * @brief An helper wich give the relative path form this aggregator to obj aggregator
      */
-    std::string getXMLIncludePathValue(::boost::weak_ptr< fwTools::Object > obj);
+    std::string getXMLIncludePathValue(::boost::weak_ptr< ::fwTools::Object > obj);
 
     /**
      * @brief manage xi::include
      */
-    xmlNodePtr getXMLInclude( ::boost::weak_ptr<fwTools::Object> obj);
+    xmlNodePtr getXMLInclude( ::boost::weak_ptr< ::fwTools::Object> obj);
 
     /// container of aggregator elements
-    typedef std::set< ::boost::weak_ptr<fwTools::Object >  > Elements;
+    typedef std::set< ::boost::weak_ptr< ::fwTools::Object >  > Elements;
 
     /// store objects which are in this Aggregator
-    std::set< ::boost::weak_ptr<fwTools::Object >  > m_objects;
+    std::set< ::boost::weak_ptr< ::fwTools::Object >  > m_objects;
 
     /// the protocol version used for this XML aggregator
     Version m_version;

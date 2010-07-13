@@ -20,17 +20,15 @@
 namespace fwXML
 {
 
-
-
 /**
  * @brief the Pupose of this class is to manage the sml spliiting in several parts
  * @author IRCAD (Research and Development Team).
  */
-class FWXML_CLASS_API XMLPartitioner // WINSUX : public Singleton< XMLPartitioner >
+class FWXML_CLASS_API XMLPartitioner : public ::fwCore::BaseObject
 {
 public:
 
-    // WINSUX friend class Singleton< XMLPartitioner >;
+    fwCoreClassDefinitionsWithFactoryMacro( (XMLPartitioner)(::fwCore::BaseObject), (()), new XMLPartitioner );
 
     // WINSUX
     FWXML_API static ::boost::shared_ptr< XMLPartitioner > getDefault()
@@ -47,10 +45,10 @@ public:
     /// manage the new object son
     /// return a xml pointer node on xml_unit (XMLAggregator) containing son ( not mandatory )
     FWXML_API xmlNodePtr manage( ::boost::shared_ptr< fwTools::Object > father, ::boost::shared_ptr< fwTools::Object > son );
-    
+
     /// allow to change Path policy
     FWXML_API void setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy);
-    
+
     /// allow to change split policy
     FWXML_API void setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSplitPolicy);
 
@@ -65,15 +63,12 @@ protected :
 
     //WINSUX
     FWXML_API static ::boost::shared_ptr< XMLPartitioner > m_ClassInstance;
-    
+
     /// manage file name policy
     ::boost::shared_ptr< IPathPolicy > m_pathPolicy;
-    
+
     /// manage file splitting policy
     ::boost::shared_ptr< ISplitPolicy > m_splitPolicy;
-    
-    
-
 };
 
 }

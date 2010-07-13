@@ -5,14 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#ifndef IMAGEFILEFORMAT_H_
-#define IMAGEFILEFORMAT_H_
-
-
+#ifndef _FWXML_IMAGEFILEFORMATSERVICE_HPP_
+#define _FWXML_IMAGEFILEFORMATSERVICE_HPP_
 
 #include "fwXML/config.hpp"
 #include "fwXML/IFileFormatService.hpp"
-
 
 namespace fwXML
 {
@@ -46,12 +43,8 @@ protected :
 
     static std::string m_preferedWriter;
 
-
-
-
-
 };
 
 }
 
-#endif /*IMAGEFILEFORMAT_H_*/
+#endif /*_FWXML_IMAGEFILEFORMATSERVICE_HPP_*/
