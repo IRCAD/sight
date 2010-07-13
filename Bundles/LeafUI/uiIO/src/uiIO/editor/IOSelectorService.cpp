@@ -120,7 +120,6 @@ void IOSelectorService::starting() throw( ::fwTools::Failed )
 void IOSelectorService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->getContainer()->clean();
     this->destroy();
 }
 
