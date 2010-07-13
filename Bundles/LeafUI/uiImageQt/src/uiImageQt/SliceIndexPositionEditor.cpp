@@ -30,9 +30,9 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
-#include <fwGuiWx/container/WxContainer.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiImage/SliceIndexPositionEditor.hpp"
+#include "uiImageQt/SliceIndexPositionEditor.hpp"
 
 namespace uiImage
 {

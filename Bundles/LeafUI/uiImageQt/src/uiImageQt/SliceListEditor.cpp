@@ -38,9 +38,9 @@
 
 #include <fwWX/convert.hpp>
 
-#include <fwGuiWx/container/WxContainer.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiImage/SliceListEditor.hpp"
+#include "uiImageQt/SliceListEditor.hpp"
 
 namespace uiImage
 {

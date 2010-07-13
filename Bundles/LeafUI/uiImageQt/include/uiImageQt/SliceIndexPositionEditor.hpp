@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGE_SLICEINDEXPOSITIONEDITOR_HPP_
-#define _UIIMAGE_SLICEINDEXPOSITIONEDITOR_HPP_
+#ifndef _UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP_
+#define _UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP_
 
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
@@ -13,7 +13,7 @@
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 #include <fwWX/SliceSelector.hpp>
 
-#include "uiImage/config.hpp"
+#include "uiImageQt/config.hpp"
 
 namespace uiImage
 {
@@ -24,7 +24,7 @@ namespace uiImage
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIIMAGE_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor, public ::fwComEd::helper::MedicalImageAdaptor
+class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor, public ::fwComEd::helper::MedicalImageAdaptor
 {
 
 public :
@@ -33,10 +33,10 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (SliceIndexPositionEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIIMAGE_API SliceIndexPositionEditor() throw() ;
+    UIIMAGEQT_API SliceIndexPositionEditor() throw() ;
 
     /// Destructor. Do nothing.
-    UIIMAGE_API virtual ~SliceIndexPositionEditor() throw() ;
+    UIIMAGEQT_API virtual ~SliceIndexPositionEditor() throw() ;
 
 protected:
 
@@ -59,15 +59,15 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    UIIMAGE_API virtual void info( std::ostream &_sstream ) ;
+    UIIMAGEQT_API virtual void info( std::ostream &_sstream ) ;
 
-    UIIMAGE_API void updateSliceIndex();
+    UIIMAGEQT_API void updateSliceIndex();
 
-    UIIMAGE_API void updateSliceType(Orientation type );
+    UIIMAGEQT_API void updateSliceType(Orientation type );
 
-    UIIMAGE_API void sliceIndexNotification(unsigned int index);
+    UIIMAGEQT_API void sliceIndexNotification(unsigned int index);
 
-    UIIMAGE_API void sliceTypeNotification( int type );
+    UIIMAGEQT_API void sliceTypeNotification( int type );
 
 private:
 
@@ -80,6 +80,6 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGE_SLICEINDEXPOSITIONEDITOR_HPP_*/
+#endif /*_UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP_*/
 
 

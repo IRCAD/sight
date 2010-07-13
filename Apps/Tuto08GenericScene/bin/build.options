@@ -12,7 +12,7 @@ BUNDLES = [
     'io_0-1'            ,
     'servicesReg_0-1'   ,
     'uiVisu_0-1'        ,
-    'uiImage_0-1'       ,
+    'uiImageWx_0-1'       ,
     'uiIO_0-1'          ,
     'visuVTK_0-1'       ,
     'visuVTKAdaptor_0-1',

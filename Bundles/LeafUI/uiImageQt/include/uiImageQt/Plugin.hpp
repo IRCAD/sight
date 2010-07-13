@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGE_PLUGIN_HPP_
-#define _UIIMAGE_PLUGIN_HPP_
+#ifndef _UIIMAGEQT_PLUGIN_HPP_
+#define _UIIMAGEQT_PLUGIN_HPP_
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -32,4 +32,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace uiImage
 
-#endif //_UIIMAGE_PLUGIN_HPP_
+#endif //_UIIMAGEQT_PLUGIN_HPP_

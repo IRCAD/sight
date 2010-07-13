@@ -4,35 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGE_SLICE_LIST_EDITOR_HPP_
-#define _UIIMAGE_SLICE_LIST_EDITOR_HPP_
+#ifndef _UIIMAGEQT_SHOW_SCAN_EDITOR_HPP_
+#define _UIIMAGEQT_SHOW_SCAN_EDITOR_HPP_
 
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
 
-#include "uiImage/config.hpp"
+#include "uiImageQt/config.hpp"
 
 namespace uiImage
 {
 
 /**
- * @brief   SliceListEditor service.
- * @class   SliceListEditor.
+ * @brief   ShowScanEditor service.
+ * @class   ShowScanEditor.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIIMAGE_CLASS_API SliceListEditor : public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API ShowScanEditor : public ::gui::editor::IEditor
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (SliceListEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ShowScanEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIIMAGE_API SliceListEditor() throw() ;
+    UIIMAGEQT_API ShowScanEditor() throw() ;
 
     /// Destructor. Do nothing.
-    UIIMAGE_API virtual ~SliceListEditor() throw() ;
+    UIIMAGEQT_API virtual ~ShowScanEditor() throw() ;
 
 protected:
 
@@ -44,7 +44,7 @@ protected:
     ///This method launches the IEditor::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Managment of observations ( overides )
+    /// Managment of observations ( overrides )
     virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
@@ -56,26 +56,21 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-    void onDropDownButton( wxCommandEvent& event );
-
-    void onChangeSliceMode(  wxCommandEvent& event );
+    void onChangeScanMode(  wxCommandEvent& event );
 
 private:
 
     std::string m_adaptorUID;
-    int m_idDropDown;
 
-    wxMenu* m_pDropDownMenu;
-    wxButton* m_dropDownButton;
-    wxMenuItem * m_oneSliceItem;
-    wxMenuItem * m_threeSlicesItem;
-    wxMenuItem * m_obliqueSliceItem;
-    int m_nbSlice;
+    wxImage m_imageShowScan;
+    wxImage m_imageHideScan;
+    bool m_scanAreShown;
+    wxBitmapButton* m_showScanButton;
 
 };
 
 } // uiImage
 
-#endif /*_UIIMAGE_SLICE_LIST_EDITOR_HPP_*/
+#endif /*_UIIMAGEQT_SHOW_SCAN_EDITOR_HPP_*/
 
 

@@ -39,7 +39,7 @@
 
 #include <fwGuiWx/container/WxContainer.hpp>
 
-#include "uiImage/ShowScanEditor.hpp"
+#include "uiImageWx/ShowScanEditor.hpp"
 
 namespace uiImage
 {
@@ -69,11 +69,11 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
     assert( container ) ;
 
     namespace fs = ::boost::filesystem;
-    fs::path pathImageScan ("Bundles/uiImage_" + std::string(UIIMAGE_VER) + "/sliceShow.png");
+    fs::path pathImageScan ("Bundles/uiImage_" + std::string(UIIMAGEWX_VER) + "/sliceShow.png");
     OSLM_ASSERT("Image "<< pathImageScan << "is missing", fs::exists(pathImageScan));
     m_imageShowScan.LoadFile(::fwWX::std2wx(pathImageScan.string()));
 
-    pathImageScan  = "Bundles/uiImage_" + std::string(UIIMAGE_VER) + "/sliceHide.png";
+    pathImageScan  = "Bundles/uiImage_" + std::string(UIIMAGEWX_VER) + "/sliceHide.png";
     OSLM_ASSERT("Image "<< pathImageScan << "is missing", fs::exists(pathImageScan));
     m_imageHideScan.LoadFile(::fwWX::std2wx(pathImageScan.string()));
 

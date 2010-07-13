@@ -7,7 +7,7 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
 
-#include "uiImage/Plugin.hpp"
+#include "uiImageWx/Plugin.hpp"
 
 namespace uiImage
 {
