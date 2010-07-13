@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/panel.h>
-#include <wx/window.h>
-
 #include <vtkCellPicker.h>
 #include <vtkCommand.h>
 #include <vtkImageData.h>
@@ -23,15 +20,18 @@
 
 #include <vtkIO/vtk.hpp>
 
-#include <fwGuiWx/container/WxContainer.hpp>
-
 #include "vtkSimpleNegato/RendererService.hpp"
+
+//-----------------------------------------------------------------------------
 
 REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image) ;
 
+//-----------------------------------------------------------------------------
 
 namespace vtkSimpleNegato
 {
+
+//-----------------------------------------------------------------------------
 
 RendererService::RendererService() throw()
     : m_render( 0 ), m_bPipelineIsInit(false)
@@ -60,24 +60,15 @@ void RendererService::starting() throw(fwTools::Failed)
 {
     this->create();
 
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+    m_interactorManager->installInteractor( this->getContainer() );
 
     m_bPipelineIsInit = false;
 
-    m_wxmanager = new wxAuiManager( container );
-    // Create a VTK-compliant window and insert it
-    m_interactor = new ::wxVTKRenderWindowInteractor( container, -1 );
-    m_wxmanager->AddPane( m_interactor, wxAuiPaneInfo().CentrePane() );
-    // Repaint and resize window
-    m_wxmanager->Update();
-
     // Renderer
     m_render = vtkRenderer::New();
-    m_interactor->GetRenderWindow()->AddRenderer(m_render);
-    // Repaint and resize window
-    m_wxmanager->Update();
+    m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(m_render);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -85,8 +76,6 @@ void RendererService::starting() throw(fwTools::Failed)
 void RendererService::stopping() throw(fwTools::Failed)
 {
     if( m_render == 0 ) return;
-
-    if( m_wxmanager == 0 ) return;
 
     if(m_bPipelineIsInit)
     {
@@ -96,20 +85,14 @@ void RendererService::stopping() throw(fwTools::Failed)
         m_outline->Delete();
     }
 
-    assert( m_interactor );
-    m_interactor->Delete();
-    m_interactor = 0;
-
-    assert( m_wxmanager );
-    m_wxmanager->UnInit();
-    delete m_wxmanager;
-    m_wxmanager = 0;
-
     assert( m_render );
     m_render->Delete();
     m_render = 0;
 
-    this->getContainer()->clean();
+    m_interactorManager->uninstallInteractor();
+    m_interactorManager.reset();
+
+//    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -117,7 +100,7 @@ void RendererService::stopping() throw(fwTools::Failed)
 
 void RendererService::updating() throw(fwTools::Failed)
 {
-    m_interactor->Render();
+    m_interactorManager->getInteractor()->Render();
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +133,7 @@ void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTo
             m_negatoAxial->SetSliceIndex( axialIndex );
             m_negatoFrontal->SetSliceIndex( frontalIndex );
             m_negatoSagittal->SetSliceIndex( sagittalIndex );
-            m_interactor->Render();
+            m_interactorManager->getInteractor()->Render();
         }
     }
 }
@@ -176,7 +159,7 @@ void RendererService::initVTKPipeline()
     //assign default props to the ipw's texture plane actor
 
     m_negatoSagittal = vtkImagePlaneWidget::New();
-    m_negatoSagittal->SetInteractor( m_interactor);
+    m_negatoSagittal->SetInteractor( m_interactorManager->getInteractor() );
     m_negatoSagittal->SetKeyPressActivationValue('x');
     m_negatoSagittal->SetPicker(picker);
     m_negatoSagittal->GetPlaneProperty()->SetColor(1,0,0);
@@ -188,7 +171,7 @@ void RendererService::initVTKPipeline()
     m_negatoSagittal->InteractionOn();
 
     m_negatoFrontal = vtkImagePlaneWidget::New();
-    m_negatoFrontal->SetInteractor( m_interactor);
+    m_negatoFrontal->SetInteractor( m_interactorManager->getInteractor() );
     m_negatoFrontal->SetKeyPressActivationValue('y');
     m_negatoFrontal->SetPicker(picker);
     m_negatoFrontal->GetPlaneProperty()->SetColor(0,1,0);
@@ -201,7 +184,7 @@ void RendererService::initVTKPipeline()
     m_negatoFrontal->On();
 
     m_negatoAxial = vtkImagePlaneWidget::New();
-    m_negatoAxial->SetInteractor( m_interactor);
+    m_negatoAxial->SetInteractor( m_interactorManager->getInteractor() );
     m_negatoAxial->SetKeyPressActivationValue('z');
     m_negatoAxial->SetPicker(picker);
     m_negatoAxial->GetPlaneProperty()->SetColor(0,0,1);
@@ -216,7 +199,7 @@ void RendererService::initVTKPipeline()
     m_render->AddActor( outlineActor);
 
     // Repaint and resize window
-    m_wxmanager->Update();
+    //m_wxmanager->Update();
     m_render->ResetCamera();
 
     picker->Delete();
@@ -236,5 +219,7 @@ void RendererService::updateVTKPipeline()
     m_negatoFrontal->SetInput(vtk_img);
     m_negatoAxial->SetInput(vtk_img);
 }
+
+//-----------------------------------------------------------------------------
 
 }

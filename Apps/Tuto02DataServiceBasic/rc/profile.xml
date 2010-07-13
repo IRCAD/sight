@@ -6,6 +6,7 @@
     
     <!-- The visu bundle (visualization) is needed to use the vtkSimpleNegato bundle. -->
     <activate id="visu" version="0-1" />
+    <activate id="visuVTKWx" version="0-1" />
 
     <activate id="gui" version="0-1" />
     <activate id="guiWx" version="0-1" >
@@ -22,6 +23,7 @@
     <activate id="vtkSimpleNegato" version="0-1" />
 
     <start id="dataReg" />
+    <start id="visuVTKWx" />
     <start id="guiWx" />  
        
 </profile>

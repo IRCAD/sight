@@ -7,12 +7,7 @@
 #ifndef VTKSIMPLEMESH_RENDERER_SERVICE_HPP_
 #define VTKSIMPLEMESH_RENDERER_SERVICE_HPP_
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include <wx/aui/aui.h>
-
-
-#include <vtkinria3d/wxVTKRenderWindowInteractor.h>
+#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
 #include <vtkCommand.h>
 
@@ -120,10 +115,8 @@ protected :
 
 private :
 
-    /// @brief required to facilitate resize of an empty vtk rendering window : why ?
-    wxAuiManager* m_wxmanager;
-    /// @brief VTK Interactor window
-    ::wxVTKRenderWindowInteractor* m_interactor;
+    /// @brief VTK Interactor window manager
+    ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
     /**
     * @brief VTK pipeline initialization method.

@@ -1,5 +1,5 @@
 TYPE     = 'bundle'
-USE      = ['wxCore','vtkWidgets','boost','vtkInria3dWxVtk']
+USE      = ['vtkWidgets','boost']
 LIB      = [
            'fwCore_0-1',
            'fwRuntime_0-3',
@@ -8,10 +8,9 @@ LIB      = [
            'fwComEd_0-1',
            'fwVtkIO_0-1',
            'fwTools_0-1',
-           'fwWX_0-1',
            'fwDataIO_0-2',
            'fwRender_0-1',
-           'fwGuiWx_0-1'
+           'fwRenderVTK_0-1',
            ]
 BUNDLES  = ['gui_0-1']
 VERSION  = '0-1'
