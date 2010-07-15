@@ -47,7 +47,7 @@ public:
     FWRENDERVTK_API virtual ~IVtkRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.
-    FWRENDERVTK_API virtual void installInteractor( ::fwGui::fwContainer::wptr _parent ) = 0;
+    FWRENDERVTK_API virtual void installInteractor( ::fwGui::fwContainer::sptr _parent ) = 0;
 
     /// Deletes interactor and manage correctly the window (removing layout).
     FWRENDERVTK_API virtual void uninstallInteractor() = 0;

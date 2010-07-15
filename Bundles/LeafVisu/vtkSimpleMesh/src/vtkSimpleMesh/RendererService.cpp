@@ -28,8 +28,6 @@
 
 #include <vtkIO/vtk.hpp>
 
-#include <fwGuiWx/container/WxContainer.hpp>
-
 #include "vtkSimpleMesh/RendererService.hpp"
 
 REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::TriangularMesh );

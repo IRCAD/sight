@@ -38,9 +38,9 @@ VtkRenderWindowInteractorManager::~VtkRenderWindowInteractorManager()
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::wptr _parent )
+void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::sptr _parent )
 {
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( _parent.lock() );
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( _parent );
     wxWindow* const container = wxContainer->getWxContainer();
     SLM_ASSERT("The container is not a wxContainer.", container ) ;
 

@@ -4,16 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKWX_VTKRENDERWINDOWINTERACTORMANAGER_HPP_
-#define _VISUVTKWX_VTKRENDERWINDOWINTERACTORMANAGER_HPP_
+#ifndef _VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP_
+#define _VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP_
 
 #include <string>
-
-#include <wx/aui/aui.h>
-
-#include <vtkRenderWindowInteractor.h>
-
-#include <vtkinria3d/wxVTKRenderWindowInteractor.h>
 
 #include <fwCore/base.hpp>
 
@@ -21,9 +15,16 @@
 
 #include <fwGui/fwContainer.hpp>
 
-#include "visuVTKWx/config.hpp"
+#include "visuVTKQt/config.hpp"
 
-namespace visuVTKWx
+class vtkRenderWindowInteractor;
+
+QT_BEGIN_NAMESPACE
+class QVTKWidget;
+QT_END_NAMESPACE
+
+
+namespace visuVTKQt
 {
 
 /**
@@ -33,7 +34,7 @@ namespace visuVTKWx
  * @date    2009-2010.
  *
  */
-class VISUVTKWX_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVTK::IVtkRenderWindowInteractorManager
+class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVTK::IVtkRenderWindowInteractorManager
 {
 
 public:
@@ -41,30 +42,30 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)(::fwRenderVTK::IVtkRenderWindowInteractorManager) )
 
     /// Constructor. Do nothing.
-    VISUVTKWX_API VtkRenderWindowInteractorManager();
+    VISUVTKQT_API VtkRenderWindowInteractorManager();
 
     /// Destructor. Do nothing.
-    VISUVTKWX_API virtual ~VtkRenderWindowInteractorManager();
+    VISUVTKQT_API virtual ~VtkRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.
-    VISUVTKWX_API virtual void installInteractor( ::fwGui::fwContainer::sptr _parent );
+    VISUVTKQT_API virtual void installInteractor( ::fwGui::fwContainer::sptr _parent );
 
     /// Deletes interactor and manage correctly the window (removing layout).
-    VISUVTKWX_API virtual void uninstallInteractor();
+    VISUVTKQT_API virtual void uninstallInteractor();
 
     /// Return a pointer on interactor
-    VISUVTKWX_API virtual ::vtkRenderWindowInteractor * getInteractor();
+    VISUVTKQT_API virtual ::vtkRenderWindowInteractor * getInteractor();
 
 private:
 
-    wxAuiManager * m_wxmanager;
+    QPointer<QVTKWidget> m_qVTKWidget;
 
-    wxVTKRenderWindowInteractor * m_interactor;
+    vtkRenderWindowInteractor *m_interactor;
 
 };
 
-} // namespace visuVTKWx
+} // namespace visuVTKQt
 
-#endif // _VISUVTKWX_VTKRENDERWINDOWINTERACTORMANAGER_HPP_
+#endif // _VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP_
 
 

@@ -11,13 +11,20 @@
 #include <string>
 
 // Defined QT_NO_KEYWORDS because of conflict with boost::signals namespace. 
-// be carefull when including ProgressDialog.hpp
+#ifndef QT_NO_KEYWORDS
 #define QT_NO_KEYWORDS 
+#define QT_NO_KEYWORDS_FWDEF
+#endif
 
 #include <QProgressDialog>
 #include <QPointer>
 
 #include <fwGui/ProgressDialog.hpp>
+
+#ifdef QT_NO_KEYWORDS_FWDEF
+#undef QT_NO_KEYWORDS
+#undef QT_NO_KEYWORDS_FWDEF
+#endif
 
 #include "fwGuiQt/config.hpp"
 
