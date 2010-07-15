@@ -63,9 +63,11 @@ std::string Selector::show()
         selectionList->addItem(QString::fromStdString ( selection ));
     }
 
-    //    selectionList->setCurrentIndex(0);
-    QPushButton* okButton = new QPushButton("Ok");
-    QPushButton* cancelButton = new QPushButton("Cancel");
+    QListWidgetItem* firstItem = selectionList->item(0);
+    selectionList->setCurrentItem(firstItem);
+
+    QPushButton* okButton = new QPushButton(tr("Ok"));
+    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);
