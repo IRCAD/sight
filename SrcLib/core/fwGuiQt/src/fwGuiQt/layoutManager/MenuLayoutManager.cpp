@@ -96,8 +96,8 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
             SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
 
             QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
+            menuItemIndex++;
         }
-
     }
 }
 
