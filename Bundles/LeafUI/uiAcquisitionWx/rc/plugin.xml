@@ -1,5 +1,5 @@
-<plugin id="uiAcquisition" class="::uiAcquisition::Plugin">
-    <library name="uiAcquisition"/>
+<plugin id="uiAcquisitionWx" class="::uiAcquisition::Plugin">
+    <library name="uiAcquisitionWx"/>
     
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
