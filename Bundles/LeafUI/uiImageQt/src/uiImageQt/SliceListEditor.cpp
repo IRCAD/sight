@@ -70,6 +70,7 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 
     m_dropDownButton = new QPushButton( QObject::tr(">"), container );
     m_dropDownButton->setToolTip( QObject::tr("Manage slice visibility"));
+    m_dropDownButton->setMaximumWidth(40);
 
     m_pDropDownMenu = new QMenu(container);
     QActionGroup * actionGroup = new QActionGroup(m_pDropDownMenu);
@@ -93,8 +94,8 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 //    QObject::connect(m_obliqueSliceItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
 
     QVBoxLayout * vLayout = new QVBoxLayout(container);
-
     vLayout->addWidget( m_dropDownButton);
+    vLayout->setContentsMargins(0,0,0,0);
 
     m_oneSliceItem->setChecked(m_nbSlice == 1);
     m_threeSlicesItem->setChecked(m_nbSlice == 3);

@@ -78,6 +78,7 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
 
     QVBoxLayout* layout = new QVBoxLayout( container );
     layout->addWidget( m_showScanButton );
+    layout->setContentsMargins(0,0,0,0);
 
     QObject::connect(m_showScanButton, SIGNAL(clicked()), this, SLOT(onChangeScanMode()));
 

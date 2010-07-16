@@ -63,7 +63,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 insideWidget = groupbox;
             }
-            else 
+            else
             {
                 insideWidget = new QWidget(qtContainer);
             }
@@ -106,9 +106,9 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
             //TODO
         }
 
-        widget->setMinimumSize(viewInfo.m_minSize.first, viewInfo.m_minSize.second);
-        widget->setVisible(viewInfo.m_visible);
-        //TODO 
+        insideWidget->setMinimumSize(viewInfo.m_minSize.first, viewInfo.m_minSize.second);
+        insideWidget->setVisible(viewInfo.m_visible);
+        //TODO
         // - viewInfo.m_position
         // - viewInfo.m_layer
         // - viewInfo.m_row

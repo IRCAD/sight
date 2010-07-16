@@ -72,6 +72,7 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
 
     QHBoxLayout *hlayout = new QHBoxLayout(container);
     hlayout->addWidget(m_snapButton);
+    hlayout->setContentsMargins(0,0,0,0);
 
     container->setLayout(hlayout);
 

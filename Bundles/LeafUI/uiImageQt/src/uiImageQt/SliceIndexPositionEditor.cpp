@@ -81,6 +81,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     changeTypeCallback = ::boost::bind( &::uiImage::SliceIndexPositionEditor::sliceTypeNotification, this, _1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
     layout->addWidget( m_sliceSelectorPanel );
+    layout->setContentsMargins(0,0,0,0);
 
     this->updateSliceType(m_orientation);
 

@@ -38,11 +38,13 @@ SliceSelector::SliceSelector(QWidget* const parent ) throw(): QWidget( parent )
 
     m_pSliceIndexText = new QLineEdit(this);
     m_pSliceIndexText->setReadOnly(true);
+    m_pSliceIndexText->setMaximumWidth(80);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(m_sliceType, 0);
     layout->addWidget(m_sliceIndex, 1);
     layout->addWidget(m_pSliceIndexText, 0);
+    layout->setContentsMargins(0,0,0,0);
 
     QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
     QObject::connect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));

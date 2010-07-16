@@ -80,6 +80,7 @@ std::string Selector::show()
     dialog->setLayout(vLayout);
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+    QObject::connect(selectionList, SIGNAL(itemDoubleClicked( QListWidgetItem * )), dialog, SLOT(accept()));
 
     std::string selection = "";
     if(dialog->exec())

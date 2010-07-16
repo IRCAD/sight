@@ -44,6 +44,8 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    layout->setContentsMargins(0, 0, 0, 0);
+
     QWidget *qtContainer = m_parentContainer->getQtContainer();
     Orientation orientation = this->getOrientation();
 

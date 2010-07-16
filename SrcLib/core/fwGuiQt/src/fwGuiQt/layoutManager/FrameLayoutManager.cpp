@@ -49,7 +49,7 @@ void FrameLayoutManager::createFrame()
 
     if(!frameInfo.m_iconPath.empty())
     {
-        QIcon icon(QString::fromStdString(frameInfo.m_name));
+        QIcon icon(QString::fromStdString(frameInfo.m_iconPath.string()));
 
         OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.native_file_string(), !icon.isNull());
 
