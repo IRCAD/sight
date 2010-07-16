@@ -4,45 +4,47 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_
-#define _UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_
+#ifndef _UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_
+#define _UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_
 
-#include <QPointer>
 #include <QObject>
+#include <QPointer>
 
 #include <fwTools/Failed.hpp>
+#include <fwData/Material.hpp>
 
-#include <fwData/Reconstruction.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiAcquisitionQt/config.hpp"
+#include "uiReconstructionQt/config.hpp"
 
-class QListWidget;
+class QRadioButton;
 class QCheckBox;
-class QListWidgetItem;
+class QButtonGroup;
+class QAbstractButton;
 
-namespace uiAcquisition
+namespace uiReconstruction
 {
 
 /**
- * @brief   OrganListEditor service.
- * @class   OrganListEditor.
+ * @brief   RepresentationEditor service.
+ * @class   RepresentationEditor.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIACQUISITIONQT_CLASS_API OrganListEditor :  public QObject, public ::gui::editor::IEditor
+class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public  QObject, public ::gui::editor::IEditor
 {
     Q_OBJECT
+
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (OrganListEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (RepresentationEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIACQUISITIONQT_API OrganListEditor() throw() ;
+    UIRECONSTRUCTIONQT_API RepresentationEditor() throw() ;
 
     /// Destructor. Do nothing.
-    UIACQUISITIONQT_API virtual ~OrganListEditor() throw() ;
+    UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() throw() ;
 
 protected:
 
@@ -67,28 +69,32 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-    typedef std::map< std::string, ::fwData::Reconstruction::sptr > OrganNameReconstruction;
+    void notifyMaterial();
+    void notifyTriangularMesh();
 
-    void updateReconstructions();
-    void notifyOrganChoiceSelection();
+protected slots:
 
-    protected slots:
+    void onChangeRepresentation( int id );
+    void onChangeShading( int id );
+    void onShowNormals(int state );
 
-    void onShowReconstructions(int state);
-    void onOrganChoiceVisibility(QListWidgetItem * item);
-    void onOrganChoiceSelection();
 
 private:
 
-    void refreshVisibility();
-    QPointer< QCheckBox > m_showCheckBox;
-    QPointer< QListWidget > m_organChoice;
-    OrganNameReconstruction m_map ;
+    void refreshNormals();
+    void refreshRepresentation() ;
+    void refreshShading() ;
+
+    QPointer<QButtonGroup> m_buttonGroup;
+    QPointer<QButtonGroup> m_buttonGroupShading;
+    QPointer<QCheckBox> m_normalsCheckBox;
+
+    ::fwData::Material::sptr m_material ;
 
 };
 
-} // uiAcquisition
+} // uiReconstruction
 
-#endif /*_UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_*/
+#endif /*_UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_*/
 
 
