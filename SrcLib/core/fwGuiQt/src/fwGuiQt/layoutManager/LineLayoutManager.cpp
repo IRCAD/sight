@@ -89,6 +89,8 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 void LineLayoutManager::destroyLayout()
 {
     this->destroySubViews();
+    QWidget *qtContainer = m_parentContainer->getQtContainer();
+    qtContainer->layout()->deleteLater();
     m_parentContainer->clean();
 }
 

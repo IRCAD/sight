@@ -76,6 +76,8 @@ void TabLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 
 void TabLayoutManager::destroyLayout()
 {
+    QWidget* qtContainer = m_parentContainer->getQtContainer();
+    qtContainer->layout()->deleteLater();
     this->destroySubViews();
     m_tabWidget->clear();
     m_parentContainer->clean();

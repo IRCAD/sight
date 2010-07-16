@@ -74,9 +74,7 @@ void VtkRenderWindowInteractorManager::uninstallInteractor()
 
     if (container)
     {
-        QLayout *layout = container->layout();
-        container->setLayout(0);
-        layout->deleteLater();
+        container->layout()->deleteLater();
     }
 
     m_qVTKWidget->hide();
