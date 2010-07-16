@@ -40,8 +40,8 @@ public :
     FWDATA_API Color();
     /// Constructor
     FWDATA_API Color(ColorType red, ColorType green=1.0, ColorType blue=1.0, ColorType alpha=1.0);
-    
-    static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
+
+    FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
 
     /// Destructor
     FWDATA_API virtual ~Color();

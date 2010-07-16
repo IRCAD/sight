@@ -16,7 +16,7 @@ namespace uiImage
 {
 
 /**
- * @brief   ShowScanEditor service.
+ * @brief   This editor service represent a button to show/hide scan in a generic scene.
  * @class   ShowScanEditor.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
@@ -38,24 +38,50 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
-    ///This method launches the IEditor::starting method.
+    /**
+     * @brief Install the layout.
+     *
+     * This method launches the IEditor::starting method.
+     */
     virtual void starting() throw(::fwTools::Failed);
 
-    ///This method launches the IEditor::stopping method.
+    /**
+     * @brief Destroy the layout.
+     *
+     * This method launches the IEditor::stopping method.
+     */
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Managment of observations ( overrides )
+    /// Do nothing
     virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void swapping() throw(::fwTools::Failed);
 
+    /**
+     * @brief Configure the editor.
+     *
+     * Example of configuration
+     * @verbatim
+     <service uid="showScanNegato3DEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+         <negatoAdaptor uid="myNegatoMPR" />
+     </service>
+       @endverbatim
+       \b myNegatoMPR is the uid of the ::visuVTKAdaptor::NegatoMPR service where the scan will be show/hide.
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
+    /**
+     * @brief This method is called when the scan button is clicked.
+     *
+     * This service notifies the modification.
+     */
     void onChangeScanMode(  wxCommandEvent& event );
 
 private:

@@ -11,6 +11,7 @@
 
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
+#include <fwData/Image.hpp>
 
 #include "fwComEd/export.hpp"
 
@@ -38,11 +39,11 @@ class FWCOMED_CLASS_API BackupHelper
          *
          * @param[in]   _pPatientDB patientDB root containing the selected image
          * @param[in]   _MsgSource  source service for the notification.
-         * @return      true if backup successed.
+         * @return      the backup of the image if successed, else a null pointer.
          *
-         * @note        If pPatientDB haven't fwComEd::Dictionary::m_imageSelectedId field, this method do nothing and return false.
+         * @note        If pPatientDB haven't fwComEd::Dictionary::m_imageSelectedId field, this method do nothing and return a null pointer.
          */
-        FWCOMED_API static bool backupSelectedImage( ::fwData::PatientDB::sptr _pPatientDB, ::fwServices::IService::sptr _MsgSource);
+        FWCOMED_API static ::fwData::Image::sptr backupSelectedImage( ::fwData::PatientDB::sptr _pPatientDB, ::fwServices::IService::sptr _MsgSource);
 
         /**
          * @brief   Return the selected image in the patientDB.

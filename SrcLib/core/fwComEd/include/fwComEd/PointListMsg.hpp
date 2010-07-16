@@ -29,10 +29,15 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((PointListMsg)(::fwServices::ObjectMsg), ( ( ) ), new PointListMsg );
 
-    /// Event identifier used to inform that the value is modified.
+    /**
+     * @name Event identifier
+     * @{
+     */
+    /// Event identifier used to inform for modification
     FWCOMED_API static std::string ELEMENT_MODIFIED;
     FWCOMED_API static std::string ELEMENT_ADDED;
     FWCOMED_API static std::string ELEMENT_REMOVED;
+    /// @}
 
     /**
      * @brief   Constructor : does nothing.

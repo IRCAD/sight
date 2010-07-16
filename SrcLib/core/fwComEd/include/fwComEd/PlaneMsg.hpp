@@ -29,12 +29,17 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((PlaneMsg)(::fwServices::ObjectMsg), ( () ), new PlaneMsg );
 
+    /**
+     * @name Event identifier
+     * @{
+     */
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string PLANE_MODIFIED;
     FWCOMED_API static std::string START_PLANE_INTERACTION;
     FWCOMED_API static std::string DESELECT_PLANE;
     FWCOMED_API static std::string WAS_SELECTED;
     FWCOMED_API static std::string WAS_DESELECTED;
+    /// @}
 
     /**
       * @brief  Constructor : does nothing.

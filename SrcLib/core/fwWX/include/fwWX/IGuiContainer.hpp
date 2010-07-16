@@ -95,6 +95,13 @@ public :
 protected :
 
     /**
+     * @brief This method is called when the container is locally created and it is closed.
+     * This stop the service.
+     */
+    FWWX_API void onCloseContainer(wxCloseEvent& event);
+
+
+    /**
      * @brief   Constructor. Initialize default values.
      */
     FWWX_API IGuiContainer() throw() ;
