@@ -12,9 +12,12 @@
 namespace uiVisu
 {
 /**
+ * @namespace uiVisu
+ * @brief   Contains editors for visualization.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  */
+
 struct Plugin : public ::fwRuntime::Plugin
 {
     /**

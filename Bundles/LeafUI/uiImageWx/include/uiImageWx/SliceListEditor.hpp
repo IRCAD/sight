@@ -40,15 +40,11 @@ protected:
 
     /**
      * @brief Install the layout.
-     *
-     * This method launches the IEditor::starting method.
      */
     virtual void starting() throw(::fwTools::Failed);
 
     /**
      * @brief Destroy the layout.
-     *
-     * This method launches the IEditor::stopping method.
      */
     virtual void stopping() throw(::fwTools::Failed);
 

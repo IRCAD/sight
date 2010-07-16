@@ -21,7 +21,7 @@ namespace uiVisu
 {
 
 /**
- * @brief   SnapshotEditor service.
+ * @brief   SnapshotEditor service is represented by a button. It allows to snap shot a generic scene.
  * @class   SnapshotEditor.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
@@ -45,25 +45,47 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
-    ///This method launches the IEditor::starting method.
+    /**
+     * @brief Install the layout.
+     */
     virtual void starting() throw(::fwTools::Failed);
 
-    ///This method launches the IEditor::stopping method.
+    /**
+     * @brief Destroy the layout.
+     */
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Managment of observations ( overides )
+    /// Do nothing
     virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void swapping() throw(::fwTools::Failed);
 
+    /**
+     * @brief Configure the editor.
+     *
+     * Example of configuration
+     * @verbatim
+    <service uid="snapshotEditor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+        <snap>
+            <scene uid="genericScene" />
+        </snap>
+    </service>
+       @endverbatim
+       \b genericScene is the uid of the ::fwRenderVTK::VtkRenderService representing the generic scene which will be printed.
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
 protected slots:
+    /**
+     * @brief Show a file dialog and notify the scene must be printed.
+     */
     void onSnapButton();
 
 private:
