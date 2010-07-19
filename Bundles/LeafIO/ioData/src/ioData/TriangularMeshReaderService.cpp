@@ -84,7 +84,7 @@ void TriangularMeshReaderService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose an transformation matrix file");
+    dialogFile.setTitle("Choose an triangular mesh file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TrianMesh","*.trian");
 

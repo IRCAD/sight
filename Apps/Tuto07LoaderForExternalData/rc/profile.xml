@@ -21,6 +21,7 @@
     <activate id="uiIO" version="0-1" />
 
     <activate id="visu" version="0-1" />
+    <activate id="visuVTKWx" version="0-1" />
     <activate id="vtkSimpleNegato" version="0-1" />
     
     <!-- List of the specific bundles that need to be loaded in this application context. -->
@@ -28,5 +29,6 @@
     <start id="ioXML" />
     <start id="ioData"/>
     <start id="ioTuto"/>
+    <start id="visuVTKWx" />
     <start id="guiWx" />
 </profile>
