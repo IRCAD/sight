@@ -19,6 +19,7 @@
     <activate id="ioXML" version="0-1" />
     
     <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKWx" version="0-1" />
     <activate id="visuVTKAdaptor" version="0-1" />
     
     <activate id="uiIO" version="0-1" />
@@ -31,6 +32,7 @@
     
     <!-- Start components -->
     <start id="visuVTK" />
+    <start id="visuVTKWx" />
     <start id="visuVTKAdaptor" />
     <start id="guiWx" />
 

@@ -34,7 +34,7 @@
     <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
         <gui>
             <layout type="::fwGui::CardinalLayoutManager" >
-                <view align="center" />
+                <view align="center" minWidth="200"/>
                 <view align="right" minWidth="200" minHeight="200" position="0" />
                 <view align="right" minWidth="200" minHeight="80" position="1" />
                 <view align="right" minWidth="200" minHeight="200" position="2" />

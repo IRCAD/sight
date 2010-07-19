@@ -213,11 +213,17 @@ void OrganListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
     std::string organSelected = item->text().toStdString();
     ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
     assert(rec) ;
-    rec->setIsVisible(!rec->getIsVisible());
 
-    ::fwComEd::ReconstructionMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::ReconstructionMsg::VISIBILITY ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), rec, msg);
+    bool itemIsChecked = (item->checkState() == Qt::Checked);
+
+    if (rec->getIsVisible() != itemIsChecked)
+    {
+        rec->setIsVisible(item->checkState());
+
+        ::fwComEd::ReconstructionMsg::NewSptr msg;
+        msg->addEvent( ::fwComEd::ReconstructionMsg::VISIBILITY ) ;
+        ::fwServices::IEditionService::notify(this->getSptr(), rec, msg);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -225,7 +231,7 @@ void OrganListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
 void OrganListEditor::onShowReconstructions(int state )
 {
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    acq->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Checked) );
+    acq->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
 
     ::fwComEd::AcquisitionMsg::NewSptr msg;
     msg->addEvent( "ShowReconstructions" );

@@ -83,7 +83,9 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     layout->addWidget( m_sliceSelectorPanel );
     layout->setContentsMargins(0,0,0,0);
 
+    this->updateImageInfos(this->getObject< ::fwData::Image >());
     this->updateSliceType(m_orientation);
+
 
     container->setLayout( layout );
 

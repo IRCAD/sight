@@ -53,17 +53,21 @@ void LocationDialog::setTitle(const std::string &title)
     //QString selectedFilter; // TODO
 
     QFileDialog dialog( parent, caption, path, filter );
+    dialog.setWindowTitle( QString::fromStdString(m_title) );
 
     if ( m_style & ::fwGui::ILocationDialog::WRITE )
     {
-        dialog.setAcceptMode(QFileDialog::AcceptOpen);
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
     }
     else if ( m_style & ::fwGui::ILocationDialog::READ )
     {
-        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.setAcceptMode(QFileDialog::AcceptOpen);
     }
 
-    dialog.setConfirmOverwrite(m_style & ::fwGui::ILocationDialog::FILE_MUST_EXIST);
+    if (m_style & ::fwGui::ILocationDialog::FILE_MUST_EXIST)
+    {
+        dialog.setFileMode(QFileDialog::ExistingFile);
+    }
 
     if( dialog.exec() )
     {

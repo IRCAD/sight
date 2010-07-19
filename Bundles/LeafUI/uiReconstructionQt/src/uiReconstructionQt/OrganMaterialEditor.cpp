@@ -69,6 +69,8 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     QLabel* transparencyLabel = new QLabel(tr("Transparency : "), container);
     m_opacitySlider = new QSlider( Qt::Horizontal, container) ;
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
+    m_opacitySlider->setTickInterval(20);
+    m_opacitySlider->setTickPosition(QSlider::TicksBelow);
 
     QVBoxLayout* layout = new QVBoxLayout(container);
     layout->addWidget( m_colourButton, 0 ) ;

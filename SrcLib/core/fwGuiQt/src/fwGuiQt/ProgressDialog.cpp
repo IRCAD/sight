@@ -50,7 +50,6 @@ void ProgressDialog::operator()(float percent,std::string msg)
     int value = (int)(percent*100);
     OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
     this->setMessage(msg);
-    m_pdialog->show();
     m_pdialog->setValue(value);
 }
 
