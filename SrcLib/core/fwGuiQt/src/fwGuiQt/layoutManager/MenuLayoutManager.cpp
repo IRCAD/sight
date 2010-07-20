@@ -64,7 +64,6 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
 
         if (actionInfo.m_type == ::fwGui::layoutManager::IMenuLayoutManager::QUIT)
         {
-            SLM_ERROR("QUIT ROLE");
             action->setMenuRole(QAction::QuitRole);
         }
         else if (actionInfo.m_type == ::fwGui::layoutManager::IMenuLayoutManager::ABOUT)
