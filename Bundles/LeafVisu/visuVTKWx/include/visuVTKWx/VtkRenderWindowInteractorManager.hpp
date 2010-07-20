@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include <wx/aui/aui.h>
+#include <wx/sizer.h>
 
 #include <vtkRenderWindowInteractor.h>
 
@@ -57,7 +57,7 @@ public:
 
 private:
 
-    wxAuiManager * m_wxmanager;
+    wxBoxSizer* m_wxsizer;
 
     wxVTKRenderWindowInteractor * m_interactor;
 

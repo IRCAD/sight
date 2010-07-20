@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/aui/aui.h>
-
 #include <fwTools/ClassRegistrar.hpp>
 
 #include <fwGuiWx/container/WxContainer.hpp>
@@ -41,43 +38,35 @@ VtkRenderWindowInteractorManager::~VtkRenderWindowInteractorManager()
 void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::sptr _parent )
 {
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( _parent );
-    wxWindow* const container = wxContainer->getWxContainer();
-    SLM_ASSERT("The container is not a wxContainer.", container ) ;
+    SLM_ASSERT("dynamicCast fwContainer to WxContainer failed", wxContainer);
+
+    wxWindow* container = wxContainer->getWxContainer();
+    SLM_ASSERT("Parent container is not available.", container);
 
     // Create a VTK-compliant window and insert it
     m_interactor = new ::wxVTKRenderWindowInteractor( container, -1 );
 
-    // Manage wxManager
-    m_wxmanager = new wxAuiManager( container );
+    m_wxsizer = new wxBoxSizer( wxVERTICAL );
+    m_wxsizer->Add( m_interactor, 1, wxEXPAND | wxALL, 1);
+    container->SetSizer( m_wxsizer );
 
-    // Add interactor in layout
-    m_wxmanager->AddPane( m_interactor, wxAuiPaneInfo().CentrePane() );
-    m_wxmanager->Update();
+    container->Layout();
 }
 
 //-----------------------------------------------------------------------------
 
 void VtkRenderWindowInteractorManager::uninstallInteractor()
 {
-    wxWindow* container = m_wxmanager->GetManagedWindow();
-
-    m_wxmanager->DetachPane(m_interactor);
-    m_wxmanager->UnInit();
+    SLM_ASSERT("Vtk interactor must be defined.", m_interactor );
+    wxWindow* container = m_interactor->GetParent();
+    SLM_ASSERT("Parent container is not available.", container);
 
     // Destroy interactor
-    SLM_ASSERT("Vtk interactor must be defined.", m_interactor );
     m_interactor->GetRenderWindow()->Finalize();
-
     m_interactor->Delete();
     m_interactor = 0;
 
-    // Destroy wxmanager
-    SLM_ASSERT("wxmanager must be defined.", m_wxmanager );
-    delete m_wxmanager;
-    m_wxmanager = 0;
-
-    // wxAuiManager creates frame in container
-    container->DestroyChildren();
+    container->SetSizer(NULL);
 }
 
 //-----------------------------------------------------------------------------
