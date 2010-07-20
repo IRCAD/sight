@@ -8,10 +8,9 @@
 #define _FWZIP_ZIPENGINE_HPP_
 
 #include <zip.h>
+
 #include <boost/shared_ptr.hpp>
 
-#include "fwZip/config.hpp"
-#include "fwZip/reader/IObjectReader.hpp"
 #include "fwZip/config.hpp"
 
 
