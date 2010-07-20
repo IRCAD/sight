@@ -7,6 +7,8 @@
 #ifndef _FWZIP_ZIPENGINE_HPP_
 #define _FWZIP_ZIPENGINE_HPP_
 
+#include <string>
+
 #include <zip.h>
 
 #include <boost/shared_ptr.hpp>
@@ -51,7 +53,7 @@ protected :
     void processFile( ::boost::filesystem::path file );
 
     // return the relative path of the abspath relative to m_root path
-    const char * stripPath( ::boost::filesystem::path abspath );
+    std::string stripPath( ::boost::filesystem::path abspath );
 
     //char m_defaultLeveLCompression; //0-9
     //std::map< std::string, char > m_specificLevelCompression;

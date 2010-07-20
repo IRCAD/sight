@@ -30,9 +30,9 @@ ZipEngine::ZipEngine()
 
 
 
-const char *ZipEngine::stripPath( ::boost::filesystem::path path )
+std::string ZipEngine::stripPath( ::boost::filesystem::path path )
 {
-    return ::fwTools::getPathDifference(m_root,path).string().c_str();
+    return ::fwTools::getPathDifference(m_root,path).string();
 }
 
 
@@ -45,7 +45,7 @@ void ZipEngine::processFolder( ::boost::filesystem::path folder, bool skip )
     if ( !skip )
     {
         int index = 0;
-        index = zip_add_dir( m_zip, stripPath( folder ) );
+        index = zip_add_dir( m_zip, stripPath( folder ).c_str() );
         SLM_ASSERT( "error adding in zip archive the folder " << folder.string(), index>=0 );
     }
 
@@ -74,7 +74,7 @@ void ZipEngine::processFile( ::boost::filesystem::path file )
 {
     int err;
     zip_source *source = zip_source_file( m_zip, file.string().c_str(), 0, 0);
-    err = zip_add(m_zip, stripPath(file) , source );
+    err = zip_add(m_zip, stripPath(file).c_str() , source );
     SLM_ASSERT( "error adding in zip archive the file " << file.string(), err!=-1 );
 }
 
