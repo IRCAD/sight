@@ -51,6 +51,8 @@ public:
 
     FWGUIWX_API virtual void setWxContainer(wxWindow* container);
     FWGUIWX_API virtual wxWindow* getWxContainer();
+    FWGUIWX_API virtual bool isShownOnScreen();
+
 
 private :
 

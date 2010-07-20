@@ -4,23 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wxprec.h>
-#ifdef __BORLANDC__
-# pragma hdrstop
-#endif
-
-// wxWidgets
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#include <wx/panel.h>
-#include <wx/sizer.h>
-#include <wx/slider.h>
-#include <wx/window.h>
-#include <wx/string.h>
-#endif
-
-#include <wx/aui/aui.h>
-
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/function.hpp>
@@ -33,6 +16,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRendererCollection.h>
+#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkSphereSource.h>
 #include <vtkInstantiator.h>
@@ -51,9 +35,7 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwComEd/CameraMsg.hpp>
-#include <fwGuiWx/container/WxContainer.hpp>
 
-#include "fwRenderVTK/wxVTKRenderWindowInteractor.hpp"
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 #include "fwRenderVTK/VtkRenderService.hpp"
 
@@ -69,8 +51,6 @@ namespace fwRenderVTK
 //-----------------------------------------------------------------------------
 
 VtkRenderService::VtkRenderService() throw() :
-     m_wxmanager( 0 ) ,
-     m_interactor( 0 ),
      m_pendingRenderRequest(false)
 {
     addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
@@ -332,11 +312,11 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         }
     }
 
-    m_interactor->GetRenderWindow()->SetNumberOfLayers(m_renderers.size());
+    m_interactorManager->getInteractor()->GetRenderWindow()->SetNumberOfLayers(m_renderers.size());
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
     {
         vtkRenderer *renderer = (*iter).second;
-        m_interactor->GetRenderWindow()->AddRenderer(renderer);
+        m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(renderer);
     }
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
 
@@ -411,7 +391,7 @@ void VtkRenderService::updating() throw(fwTools::Failed)
 
 void VtkRenderService::render()
 {
-   m_interactor->Render();
+    m_interactorManager->getInteractor()->Render();
 }
 
 
@@ -419,30 +399,23 @@ void VtkRenderService::render()
 
 bool VtkRenderService::isShownOnScreen()
 {
-   return m_interactor->IsShownOnScreen();
+   return this->getContainer()->isShownOnScreen();
 }
 
 //-----------------------------------------------------------------------------
 
 void VtkRenderService::startContext()
 {
-    // Create the window manager
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+    m_interactorManager->installInteractor( this->getContainer() );
 
-    m_wxmanager = new wxAuiManager( container );
-
-    // Create a VTK-compliant window and insert it
-    m_interactor = new ::fwRenderVTK::fwWxVTKRenderWindowInteractor( container, -1 );
     // For Depth peeling (translucent rendering)
-
-    m_interactor->SetRenderWhenDisabled(false);
-
-#ifdef USE_DEPTH_PEELING //Depth peeling is only fonctionnal in win32 right now
-    m_interactor->GetRenderWindow()->SetAlphaBitPlanes(1);
-    m_interactor->GetRenderWindow()->SetMultiSamples(0);
-#endif
+//    m_interactorManager->getInteractor()->SetRenderWhenDisabled(false);
+//
+//#ifdef USE_DEPTH_PEELING //Depth peeling is only fonctionnal in win32 right now
+//    m_interactorManager->getInteractor()->GetRenderWindow()->SetAlphaBitPlanes(1);
+//    m_interactorManager->getInteractor()->GetRenderWindow()->SetMultiSamples(0);
+//#endif
 
 //    m_interactor->GetRenderWindow()->PointSmoothingOn();
 //    m_interactor->GetRenderWindow()->LineSmoothingOn();
@@ -450,14 +423,10 @@ void VtkRenderService::startContext()
 //    m_interactor->Register(NULL);
 //    m_interactor->SetInteractorStyle( vtkInteractorStyleTrackballCamera::New() );
 
-    m_interactor->SetRenderModeToDirect();
+//    m_interactorManager->getInteractor()->SetRenderModeToDirect();
     //m_interactor->SetRenderModeToFrameRated();
 //    m_interactor->SetRenderModeToOneShot();
 //    m_interactor->SetRenderModeToMeanTime();
-
-    m_wxmanager->AddPane( m_interactor, wxAuiPaneInfo().CentrePane() );
-    m_wxmanager->Update();
-
 }
 
 //-----------------------------------------------------------------------------
@@ -466,35 +435,18 @@ void VtkRenderService::stopContext()
 {
     SLM_TRACE_FUNC();
 
-    if( m_wxmanager )
-    {
-        //UnInit have to be called before panels destruction
-        m_wxmanager->UnInit() ;
-        delete m_wxmanager;
-        m_wxmanager = 0 ;
-    }
-
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
     {
         vtkRenderer *renderer = iter->second;
         renderer->InteractiveOff();
-        m_interactor->GetRenderWindow()->RemoveRenderer(renderer);
+        m_interactorManager->getInteractor()->GetRenderWindow()->RemoveRenderer(renderer);
         renderer->Delete();
     }
 
     m_renderers.clear();
 
-    if(m_interactor){
-        m_interactor->DestroyChildren();
-        m_interactor->GetRenderWindow()->Finalize();
-        m_interactor->UseCaptureMouseOff();
-        m_interactor->Disable();
-        m_interactor->Delete();
-        m_interactor = 0;
-    }
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
-    container->DestroyChildren();
+    m_interactorManager->uninstallInteractor();
+    m_interactorManager.reset();
 }
 
 //-----------------------------------------------------------------------------

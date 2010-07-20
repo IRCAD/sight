@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 USE = [
     'boost',
-    'vtkInria3dWxVtk',
-    'wxCore',
+    'vtkWidgets'
     ]
 LIB = [
     'fwComEd_0-1',
@@ -14,9 +13,8 @@ LIB = [
     'fwRuntime_0-3',
     'fwServices_0-1',
     'fwTools_0-1',
-    'fwWX_0-1',
     'fwVtkIO_0-1',
-    'fwGuiWx_0-1'
+    'fwGui_0-1'
     ]
 TYPE = 'shared'
 VERSION = '0-1'

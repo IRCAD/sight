@@ -57,6 +57,8 @@ public:
 
     FWGUIQT_API virtual void setQtContainer(QWidget *container);
     FWGUIQT_API virtual QWidget* getQtContainer();
+    FWGUIQT_API virtual bool isShownOnScreen();
+
 
 private :
 

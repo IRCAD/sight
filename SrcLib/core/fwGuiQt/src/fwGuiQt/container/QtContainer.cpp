@@ -74,5 +74,11 @@ QWidget* QtContainer::getQtContainer()
 
 //-----------------------------------------------------------------------------
 
+bool QtContainer::isShownOnScreen()
+{
+    SLM_ASSERT("Sorry, wxWindows not yet initialized, cleaning impossible", m_container);
+    return m_container->isVisible();
+}
+
 } // namespace container
 } // namespace fwGuiQt

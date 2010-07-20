@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 USE = [
     'boost',
-    'QVtk',
+    'QVtk'
     ]
 LIB = [
     'fwRuntime_0-3',

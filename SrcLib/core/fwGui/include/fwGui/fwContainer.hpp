@@ -30,6 +30,7 @@ public:
 
     FWGUI_API virtual void clean() = 0;
     FWGUI_API virtual void destroyContainer() = 0;
+    FWGUI_API virtual bool isShownOnScreen() = 0;
 
 };
 
