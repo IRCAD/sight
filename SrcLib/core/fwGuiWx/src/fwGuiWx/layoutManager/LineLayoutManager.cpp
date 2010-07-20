@@ -81,6 +81,9 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 void LineLayoutManager::destroyLayout()
 {
     this->destroySubViews();
+    SLM_ASSERT("Parent container is not available.", m_parentContainer);
+    wxWindow* wxContainer = m_parentContainer->getWxContainer();
+    wxContainer->SetSizer(NULL);
 }
 
 //-----------------------------------------------------------------------------

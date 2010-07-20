@@ -96,6 +96,9 @@ void CardinalLayoutManager::destroyLayout()
 {
     m_manager->UnInit() ;
     this->destroySubViews();
+
+    // wxAuiManager creates frame in container
+    m_parentContainer->clean();
 }
 
 //-----------------------------------------------------------------------------

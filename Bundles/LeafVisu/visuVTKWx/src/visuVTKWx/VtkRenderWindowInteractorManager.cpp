@@ -59,11 +59,15 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::
 
 void VtkRenderWindowInteractorManager::uninstallInteractor()
 {
+    wxWindow* container = m_wxmanager->GetManagedWindow();
+
+    m_wxmanager->DetachPane(m_interactor);
     m_wxmanager->UnInit();
 
     // Destroy interactor
     SLM_ASSERT("Vtk interactor must be defined.", m_interactor );
     m_interactor->GetRenderWindow()->Finalize();
+
     m_interactor->Delete();
     m_interactor = 0;
 
@@ -71,6 +75,9 @@ void VtkRenderWindowInteractorManager::uninstallInteractor()
     SLM_ASSERT("wxmanager must be defined.", m_wxmanager );
     delete m_wxmanager;
     m_wxmanager = 0;
+
+    // wxAuiManager creates frame in container
+    container->DestroyChildren();
 }
 
 //-----------------------------------------------------------------------------

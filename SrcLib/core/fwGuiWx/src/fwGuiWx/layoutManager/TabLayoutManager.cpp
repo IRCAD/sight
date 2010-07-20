@@ -79,6 +79,7 @@ void TabLayoutManager::destroyLayout()
         m_notebook->RemovePage( pageNumber );
     }
     this->destroySubViews();
+    m_notebook->Destroy();
 }
 
 //-----------------------------------------------------------------------------
