@@ -4,14 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// TODO remove me
-#include <wx/string.h>
-#include <fwWX/wxZipFolder.hpp>
-#include <fwWX/convert.hpp>
-//
-
 #include <fwCore/base.hpp>
 
+#include "microzip/Unzipper.hpp"
+#include "microzip/Zipper.hpp"
 #include "fwZip/ZipFolder.hpp"
 
 namespace fwZip
@@ -21,20 +17,15 @@ namespace fwZip
 
 bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, const ::boost::filesystem::path& _destZipFileName )
 {
-    // TODO remove wxWidgets code and link with fwWX
-    wxString srcFolderName = ::fwWX::std2wx(_srcFolderName.string());
-    wxString destZipFileName = ::fwWX::std2wx(_destZipFileName.string());
-    return ::fwWX::wxZipFolder::packFolder(srcFolderName, destZipFileName);
+    return ::microzip::Zipper::ZipFolder(_srcFolderName, _destZipFileName);
 }
 
 //------------------------------------------------------------------------------
 
 bool ZipFolder::unpackFolder( const ::boost::filesystem::path & _srcZipFileName, const ::boost::filesystem::path & _destFolderName )
 {
-    // TODO remove wxWidgets code and link with fwWX
-    wxString srcZipFileName = ::fwWX::std2wx(_srcZipFileName.string());
-    wxString destFolderName = ::fwWX::std2wx(_destFolderName.string());
-    return ::fwWX::wxZipFolder::unpackFolder(srcZipFileName, destFolderName);
+    //FIXME: bIgnoreFilePath temporarily set to true
+    return ::microzip::Unzipper::Unzip(_srcZipFileName, _destFolderName, true);
 }
 
 //------------------------------------------------------------------------------
