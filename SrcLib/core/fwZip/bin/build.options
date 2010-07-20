@@ -1,4 +1,4 @@
-USE     = ['boost', 'boostFilesystem','zip']
+USE     = ['boost', 'boostFilesystem']#,'zip']
 LIB     = [
           'fwTools_0-1',
           'fwCore_0-1',
