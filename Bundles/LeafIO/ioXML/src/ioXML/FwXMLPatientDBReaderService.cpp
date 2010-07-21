@@ -344,12 +344,9 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
 
 ::fwData::PatientDB::sptr FwXMLPatientDBReaderService::manageZipAndCreatePatientDB( const ::boost::filesystem::path _pArchivePath )
 {
-
     ::fwData::PatientDB::sptr patientDB;
-
     // Unzip folder
     ::boost::filesystem::path destFolder = ::fwTools::System::getTemporaryFolder() / "fwxmlArchiveFolder";
-    ::boost::filesystem::path xmlfile = destFolder / "patient.xml";
 
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
@@ -357,6 +354,7 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
     ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
 
     // Load
+    ::boost::filesystem::path xmlfile = destFolder / "patient.xml";
     patientDB = createPatientDB( xmlfile );
 
     // Remove temp folder

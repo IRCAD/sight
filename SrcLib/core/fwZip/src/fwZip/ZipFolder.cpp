@@ -17,15 +17,22 @@ namespace fwZip
 
 bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, const ::boost::filesystem::path& _destZipFileName )
 {
-    return ::microzip::Zipper::ZipFolder(_srcFolderName, _destZipFileName);
+    // folder '_srcFolderName' must not be present in the archive,
+    // so this folder is the root of the archive
+    bool bRes = false;
+    ::microzip::Zipper zip;
+    if (zip.OpenZip(_destZipFileName, _srcFolderName))
+    {
+        bRes = zip.AddFolderToZip(_srcFolderName);
+    }
+    return bRes;
 }
 
 //------------------------------------------------------------------------------
 
 bool ZipFolder::unpackFolder( const ::boost::filesystem::path & _srcZipFileName, const ::boost::filesystem::path & _destFolderName )
 {
-    //FIXME: bIgnoreFilePath temporarily set to true
-    return ::microzip::Unzipper::Unzip(_srcZipFileName, _destFolderName, true);
+    return ::microzip::Unzipper::Unzip(_srcZipFileName, _destFolderName);
 }
 
 //------------------------------------------------------------------------------

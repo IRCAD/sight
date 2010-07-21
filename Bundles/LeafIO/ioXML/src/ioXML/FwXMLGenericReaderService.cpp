@@ -227,10 +227,8 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 ::fwTools::Object::sptr FwXMLGenericReaderService::manageZipAndLoadData( const ::boost::filesystem::path _pArchivePath )
 {
     ::fwTools::Object::sptr obj;
-
     // Unzip folder
     ::boost::filesystem::path destFolder = ::fwTools::System::getTemporaryFolder() / "fwxmlArchiveFolder";
-    ::boost::filesystem::path xmlfile = destFolder / "root.xml";
 
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
@@ -238,6 +236,7 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
 
     // Load
+    ::boost::filesystem::path xmlfile = destFolder / "root.xml";
     obj = loadData( xmlfile );
 
     // Remove temp folder
