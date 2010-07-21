@@ -1,4 +1,4 @@
-﻿#ifndef ZIPPER_HPP_
+#ifndef ZIPPER_HPP_
 #define ZIPPER_HPP_
 
 #include <string>
