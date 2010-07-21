@@ -69,8 +69,11 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     QLabel* transparencyLabel = new QLabel(tr("Transparency : "), container);
     m_opacitySlider = new QSlider( Qt::Horizontal, container) ;
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
+    m_opacitySlider->setRange(0,100);
     m_opacitySlider->setTickInterval(20);
     m_opacitySlider->setTickPosition(QSlider::TicksBelow);
+
+    m_transparencyValue = new QLabel("", container);
 
     QVBoxLayout* layout = new QVBoxLayout(container);
     layout->addWidget( m_colourButton, 0 ) ;
@@ -78,6 +81,7 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     QHBoxLayout* transparencyLayout= new QHBoxLayout( container );
     transparencyLayout->addWidget( transparencyLabel, 0) ;
     transparencyLayout->addWidget( m_opacitySlider, 1 );
+    transparencyLayout->addWidget( m_transparencyValue, 0) ;
     layout->addLayout( transparencyLayout, 0) ;
 
     container->setLayout( layout );
@@ -175,6 +179,9 @@ void OrganMaterialEditor::onOpacitySlider(int value )
 
     ::fwData::Material::sptr material = reconstruction->getMaterial() ;
     material->ambient()->alpha() = value/100.0;
+    std::stringstream ss;
+    ss << value << "%";
+    m_transparencyValue->setText(QString::fromStdString(ss.str()));
 
     this->materialNotification();
 }
@@ -208,6 +215,9 @@ void OrganMaterialEditor::refreshMaterial( )
 
     int a = material->ambient()->alpha()*100;
     m_opacitySlider->setValue( a ) ;
+    std::stringstream ss;
+    ss << a << "%";
+    m_transparencyValue->setText(QString::fromStdString(ss.str()));
 }
 
 //------------------------------------------------------------------------------

@@ -18,6 +18,7 @@
 
 class QSlider;
 class QPushButton;
+class QLabel;
 
 namespace uiReconstruction
 {
@@ -76,7 +77,7 @@ private:
 
     QPointer<QPushButton> m_colourButton ;
     QPointer<QSlider> m_opacitySlider ;
-
+    QPointer<QLabel> m_transparencyValue;
 };
 
 } // uiReconstruction
