@@ -1,4 +1,4 @@
-#include <cstring>
+﻿#include <cstring>
 #include <iostream>
 #include <fstream>
 
@@ -7,7 +7,7 @@
 
 #include "microzip/Unzipper.hpp"
 
-#ifndef _WIN3
+#ifndef _WIN32
 #include <sys/stat.h>
 #endif
 

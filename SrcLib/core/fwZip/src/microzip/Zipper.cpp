@@ -1,11 +1,9 @@
-#include <cstring>
+﻿#include <cstring>
 #include <ctime>
 #include <iostream>
 #include <fstream>
 
-#ifdef _WIN3
-#include <WinBase.h>
-#else
+#ifndef _WIN32
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif

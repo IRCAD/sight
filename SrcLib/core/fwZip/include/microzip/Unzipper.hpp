@@ -1,4 +1,4 @@
-#ifndef UNZIPPER_HPP_
+﻿#ifndef UNZIPPER_HPP_
 #define UNZIPPER_HPP_
 
 #include <string>
