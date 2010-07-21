@@ -1,6 +1,6 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
-USE     = ['wxCore','boost']
+USE     = ['boost']
 LIB     = [
         'fwCore_0-1',
         'fwTools_0-1',
