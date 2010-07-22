@@ -53,6 +53,7 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::
     m_qVTKWidget = new QVTKWidget(container);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
 
     //m_qVTKWidget->resize(container->width(), container->height());
     //m_qVTKWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);

@@ -97,6 +97,12 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
             {
                 dockWidget->setWindowTitle( QString::fromStdString(viewInfo.m_caption.second) );
             }
+            else
+            {
+                // Remove title bar
+                QWidget *widget = new QWidget();
+                dockWidget->setTitleBarWidget(widget);
+            }
 
             dockWidget->setWidget(insideWidget);
         }

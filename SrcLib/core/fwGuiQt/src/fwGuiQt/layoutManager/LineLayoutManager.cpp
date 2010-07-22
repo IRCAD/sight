@@ -8,6 +8,7 @@
 
 #include <QBoxLayout>
 #include <QGroupBox>
+#include <QStyle>
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
@@ -63,17 +64,20 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     BOOST_FOREACH ( ViewInfo viewInfo, views)
     {
         QWidget *panel;
+        int border = viewInfo.m_border;
         if(viewInfo.m_caption.first)
         {
             QGroupBox *groupbox = new QGroupBox(qtContainer);
             groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
             panel = groupbox;
+            border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
         }
         else
         {
             panel = new QWidget(qtContainer);
         }
         panel->setMinimumSize(viewInfo.m_minSize.first, viewInfo.m_minSize.second);
+        panel->setContentsMargins(border, border,border, border);
 
         ::fwGuiQt::container::QtContainer::NewSptr subContainer;
         subContainer->setQtContainer(panel);
