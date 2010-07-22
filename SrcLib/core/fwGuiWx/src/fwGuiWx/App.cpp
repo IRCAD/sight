@@ -132,7 +132,16 @@ bool App::OnInit()
 
 int App::OnExit()
 {
+    SLM_TRACE_FUNC();
+
+    wxBeginBusyCursor();
+    ::fwServices::OSR::uninitializeRootObject();
+    wxEndBusyCursor();
+
+    SLM_TRACE("Stopping Profile");
     m_profile->stop();
+    SLM_TRACE("Profile Stopped");
+
     delete m_checker;
     return 0;
 }

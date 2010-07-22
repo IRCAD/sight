@@ -8,6 +8,7 @@
 #define _FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP_
 
 #include <QPointer>
+#include <QObject>
 
 #include <fwCore/base.hpp>
 
@@ -30,9 +31,9 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUIQT_CLASS_API FrameLayoutManager : public ::fwGui::layoutManager::IFrameLayoutManager
+class FWGUIQT_CLASS_API FrameLayoutManager : public QObject, public ::fwGui::layoutManager::IFrameLayoutManager
 {
-
+    Q_OBJECT
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (FrameLayoutManager)(::fwGui::layoutManager::IFrameLayoutManager), (()), new FrameLayoutManager );
@@ -52,6 +53,9 @@ public:
      * @brief Destroy local frame with sub containers.
      */
     FWGUIQT_API virtual void destroyFrame();
+
+private slots:
+    void onCloseFrame();
 
 private:
 

@@ -57,6 +57,7 @@ protected :
 
 private:
 
+    void onClose();
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
     void initializeMenuBarBuilder( ::fwRuntime::ConfigurationElement::sptr menuBarConfig );
 

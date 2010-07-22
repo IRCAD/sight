@@ -55,10 +55,16 @@ void FrameLayoutManager::createFrame()
 
         m_qtWindow->setWindowIcon(icon);
     }
-    qApp->setActiveWindow(m_qtWindow); // ?
+    if(!qApp->activeWindow())
+    {
+        qApp->setActiveWindow(m_qtWindow);
+    }
     m_qtWindow->show();
 
     m_qtWindow->setCentralWidget(new QWidget(m_qtWindow));
+
+    QObject::connect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
+
     ::fwGuiQt::container::QtContainer::NewSptr frameContainer;
     //frameContainer->setQtContainer(m_qtWindow);
     frameContainer->setQtContainer(m_qtWindow->centralWidget());
@@ -69,18 +75,18 @@ void FrameLayoutManager::createFrame()
 
 void FrameLayoutManager::destroyFrame()
 {
-    m_qtWindow->hide();
+    QObject::disconnect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
     m_qtWindow->setParent(0);
     m_qtWindow->deleteLater();
 }
 
 //-----------------------------------------------------------------------------
 
-//void FrameLayoutManager::onCloseFrame(wxCloseEvent& event)
-//{
-    //SLM_TRACE_FUNC();
-    ////::fwServices::OSR::uninitializeRootObject();
-//}
+void FrameLayoutManager::onCloseFrame()
+{
+    SLM_TRACE_FUNC();
+    this->m_closeCallback();
+}
 
 //-----------------------------------------------------------------------------
 

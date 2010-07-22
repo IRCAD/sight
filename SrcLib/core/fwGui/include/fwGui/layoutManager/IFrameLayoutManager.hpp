@@ -8,6 +8,8 @@
 #define _FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGERB_HPP_
 
 #include <list>
+
+#include <boost/function.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <fwCore/base.hpp>
@@ -39,11 +41,10 @@ public:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
-    /// Defines all possible orientation for a LineLayout
+    /// Defines all possible style for a frame
     typedef enum
     {
-        VERTICAL,
-        HORIZONTAL
+        NONE
      } Style;
 
      typedef std::string RegistryKeyType;
@@ -93,16 +94,24 @@ public:
 
     FWGUI_API virtual ::fwGui::fwContainer::sptr getFrame(){ return m_frame;};
 
+
+    typedef ::boost::function0< void > CloseCallback;
+    FWGUI_API virtual void setCloseCallback(CloseCallback fct);
+
 protected:
 
     FWGUI_API FrameInfo getFrameInfo(){ return m_frameInfo;};
 
     ::fwGui::fwContainer::sptr m_frame;
+    CloseCallback m_closeCallback;
 
 private:
 
+    void defaultCloseCallback();
+
     /// Save frame configuration definition
     FrameInfo  m_frameInfo;
+
 };
 
 } // namespace layoutManager

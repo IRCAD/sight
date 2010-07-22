@@ -34,7 +34,7 @@ namespace fwGuiQt
 //-----------------------------------------------------------------------------
 
 App::App(int & argc, char ** argv)
-    : QApplication (argc, argv) 
+    : QApplication (argc, argv)
 {
     SLM_TRACE_FUNC();
 
@@ -70,10 +70,7 @@ App::App(int & argc, char ** argv)
         //}
     //}
 
-    // Initialize root object : root object, views, ...
-    ::fwServices::OSR::initializeRootObject();
-
-    QObject::connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onLastWindowClosed()));
+    QObject::connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
     QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(onExit()));
 
 //#ifdef __MACOSX__
@@ -81,16 +78,9 @@ App::App(int & argc, char ** argv)
     //GetCurrentProcess(&PSN);
     //TransformProcessType(&PSN,kProcessTransformToForegroundApplication);
 //#endif
-}
 
-//-----------------------------------------------------------------------------
-
-void App::onLastWindowClosed()
-{
-    SLM_TRACE_FUNC();
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    ::fwServices::OSR::uninitializeRootObject();
-    QApplication::restoreOverrideCursor();
+    // Initialize root object : root object, views, ...
+    ::fwServices::OSR::initializeRootObject();
 }
 
 //-----------------------------------------------------------------------------
@@ -98,6 +88,10 @@ void App::onLastWindowClosed()
 void App::onExit()
 {
     SLM_TRACE_FUNC();
+
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    ::fwServices::OSR::uninitializeRootObject();
+    QApplication::restoreOverrideCursor();
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_TRACE("Stopping Profile");

@@ -59,7 +59,12 @@ void FrameLayoutManager::createFrame()
             wxDefaultSize,
             wxDEFAULT_FRAME_STYLE
             );
-    wxTheApp->SetTopWindow( m_wxFrame ) ;
+
+    if(!wxTheApp->GetTopWindow())
+    {
+        wxTheApp->SetTopWindow( m_wxFrame ) ;
+    }
+
     m_wxFrame->SetMinSize(wxSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second));
 
     if(!frameInfo.m_iconPath.empty())
@@ -91,9 +96,7 @@ void FrameLayoutManager::destroyFrame()
 void FrameLayoutManager::onCloseFrame(wxCloseEvent& event)
 {
     SLM_TRACE_FUNC();
-    wxBeginBusyCursor();
-    ::fwServices::OSR::uninitializeRootObject();
-    wxEndBusyCursor();
+    this->m_closeCallback();
 }
 
 //-----------------------------------------------------------------------------

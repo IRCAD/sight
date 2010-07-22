@@ -6,6 +6,8 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -23,7 +25,10 @@ const IFrameLayoutManager::RegistryKeyType IFrameLayoutManager::REGISTRY_KEY =  
 //-----------------------------------------------------------------------------
 
 IFrameLayoutManager::IFrameLayoutManager()
-{}
+{
+    CloseCallback fct = ::boost::bind( &::fwGui::layoutManager::IFrameLayoutManager::defaultCloseCallback, this);
+    this->setCloseCallback(fct);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -69,6 +74,20 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     {
         SLM_FATAL("[TODO] Styles not yet available");
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameLayoutManager::setCloseCallback(CloseCallback fct)
+{
+    this->m_closeCallback = fct;
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameLayoutManager::defaultCloseCallback()
+{
+    SLM_WARN("No specific close callback defined");
 }
 
 //-----------------------------------------------------------------------------

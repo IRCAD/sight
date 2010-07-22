@@ -5,6 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwTools/UUID.hpp>
@@ -70,6 +72,9 @@ void IFrameSrv::create()
     subViews.push_back(frame);
     m_viewRegistrar->manage(subViews);
 
+    ::fwGui::layoutManager::IFrameLayoutManager::CloseCallback fct = ::boost::bind( &::fwGui::IFrameSrv::onClose, this);
+    m_frameLayoutManager->setCloseCallback(fct);
+
     if (m_hasMenuBar)
     {
         m_menuBarBuilder->createMenuBar(frame);
@@ -118,6 +123,14 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY, m_menuBarBuilder);
 
     m_menuBarBuilder->initialize(menuBarConfig);
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::onClose()
+{
+    SLM_TRACE_FUNC();
+    this->stop();
 }
 
 //-----------------------------------------------------------------------------
