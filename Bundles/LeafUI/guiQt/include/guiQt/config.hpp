@@ -4,37 +4,37 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUIWX_CONFIG_HPP_
-#define _GUIWX_CONFIG_HPP_
+#ifndef _GUIQT_CONFIG_HPP_
+#define _GUIQT_CONFIG_HPP_
 
 
 #ifdef _WIN32
 
-    #ifdef GUIWX_EXPORTS
-    #define GUIWX_API __declspec(dllexport)
+    #ifdef GUIQT_EXPORTS
+    #define GUIQT_API __declspec(dllexport)
     #else
-    #define GUIWX_API __declspec(dllimport)
+    #define GUIQT_API __declspec(dllimport)
     #endif
 
-    #define GUIWX_CLASS_API
+    #define GUIQT_CLASS_API
 
     #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-    #ifdef GUIWX_EXPORTS
-    #define GUIWX_API __attribute__ ((visibility("default")))
-    #define GUIWX_CLASS_API __attribute__ ((visibility("default")))
+    #ifdef GUIQT_EXPORTS
+    #define GUIQT_API __attribute__ ((visibility("default")))
+    #define GUIQT_CLASS_API __attribute__ ((visibility("default")))
     #else
-    #define GUIWX_API __attribute__ ((visibility("hidden")))
-    #define GUIWX_CLASS_API __attribute__ ((visibility("hidden")))
+    #define GUIQT_API __attribute__ ((visibility("hidden")))
+    #define GUIQT_CLASS_API __attribute__ ((visibility("hidden")))
     #endif
 
 #else
 
-    #define GUIWX_API
-    #define GUIWX_CLASS_API
+    #define GUIQT_API
+    #define GUIQT_CLASS_API
 
 #endif
 
-#endif //_GUIWX_CONFIG_HPP_
+#endif //_GUIQT_CONFIG_HPP_
