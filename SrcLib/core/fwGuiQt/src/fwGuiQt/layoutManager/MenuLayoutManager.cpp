@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <QAction>
+#include <QActionGroup>
 #include <QMenu>
 
 #include <boost/bind.hpp>
@@ -52,6 +53,7 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
 
     QMenu* menu = m_parent->getQtMenu();
 
+    QActionGroup * actionGroup = 0;
     unsigned int menuItemIndex = 0;
     BOOST_FOREACH ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo, m_actionInfo)
     {
@@ -76,6 +78,14 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         }
 
         action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
+        if (actionInfo.m_isRadio)
+        {
+            if (!actionGroup)
+            {
+                actionGroup = new QActionGroup(menu);
+            }
+            actionGroup->addAction(action);
+        }
 
         // create shortcut
         if( !actionInfo.m_shortcut.empty() )

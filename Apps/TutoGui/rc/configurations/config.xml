@@ -34,11 +34,10 @@
             <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
                 <gui>
                     <layout>
-                        <menuItem name="My item 1"/>
+                        <menuItem name="My item 1" style="radio" />
+                        <menuItem name="My item 2" style="radio" />
                         <separator />
-                        <menuItem name="My item 2"/>
-                        <separator />
-                        <menuItem name="Quit"/>
+                        <menuItem name="Quit" specialAction="QUIT" />
                     </layout>
                 </gui>
                 <registry>
@@ -50,7 +49,7 @@
             
             <service uid="item1" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item2" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
-            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" specialAction="QUIT" autoComChannel="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
             
             
             <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
