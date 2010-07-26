@@ -130,7 +130,7 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 void IFrameSrv::onClose()
 {
     SLM_TRACE_FUNC();
-    this->stop();
+    ::fwServices::OSR::uninitializeRootObject();
 }
 
 //-----------------------------------------------------------------------------

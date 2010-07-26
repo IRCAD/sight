@@ -59,7 +59,6 @@ private slots:
 
 private:
 
-    //void onCloseFrame(wxCloseEvent& event);
     QPointer<QMainWindow> m_qtWindow;
 };
 

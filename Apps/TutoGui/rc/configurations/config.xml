@@ -37,16 +37,20 @@
                         <menuItem name="My item 1"/>
                         <separator />
                         <menuItem name="My item 2"/>
+                        <separator />
+                        <menuItem name="Quit"/>
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item2" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
             
             <service uid="item1" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item2" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" specialAction="QUIT" autoComChannel="no" />
             
             
             <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >

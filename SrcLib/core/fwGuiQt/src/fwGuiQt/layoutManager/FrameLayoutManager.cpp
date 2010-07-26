@@ -8,11 +8,15 @@
 #include <QMainWindow>
 #include <QIcon>
 
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
 #include <fwServices/ObjectServiceRegistry.hpp>
 
+#include "fwGuiQt/QtMainFrame.hpp"
 #include "fwGuiQt/layoutManager/FrameLayoutManager.hpp"
 
 
@@ -42,8 +46,12 @@ void FrameLayoutManager::createFrame()
     SLM_TRACE_FUNC();
     FrameInfo frameInfo = this->getFrameInfo();
 
+    ::fwGuiQt::QtMainFrame *mainframe = new ::fwGuiQt::QtMainFrame();
 
-    m_qtWindow = new QMainWindow();
+    ::fwGuiQt::QtMainFrame::CloseCallback fct = ::boost::bind( &::fwGui::FrameLayoutManager::onCloseFrame, this);
+    mainframe->setCloseCallback(fct);
+
+    m_qtWindow = mainframe;
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
     m_qtWindow->setMinimumSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second);
 

@@ -59,7 +59,7 @@ wxWindow* WxContainer::getWxContainer()
 
 bool WxContainer::isShownOnScreen()
 {
-    SLM_ASSERT("Sorry, wxWindows not yet initialized, cleaning impossible", m_container);
+    SLM_ASSERT("Sorry, wxWindow not yet initialized, cleaning impossible", m_container);
     return m_container->IsShownOnScreen();
 }
 
