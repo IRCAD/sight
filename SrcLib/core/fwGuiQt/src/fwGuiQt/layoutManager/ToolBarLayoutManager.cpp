@@ -60,6 +60,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
         if (actionInfo.m_isSeparator)
         {
             toolBar->addSeparator();
+            actionGroup = 0;
         }
         else
         {

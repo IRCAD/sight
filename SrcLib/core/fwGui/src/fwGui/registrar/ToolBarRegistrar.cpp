@@ -72,6 +72,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
             }
             std::string sid = menuItem->getAttributeValue("sid");
             std::pair<int, bool> indexStart =  std::make_pair( index, start);
+            OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_actionSids.find(sid) == m_actionSids.end());
             m_actionSids[sid] = indexStart;
 
             ::fwGui::ActionCallbackBase::sptr callback ;

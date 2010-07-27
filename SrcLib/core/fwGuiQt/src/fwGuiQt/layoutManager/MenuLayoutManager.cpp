@@ -107,6 +107,10 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
             QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
             menuItemIndex++;
         }
+        else
+        {
+            actionGroup = 0;
+        }
     }
 }
 

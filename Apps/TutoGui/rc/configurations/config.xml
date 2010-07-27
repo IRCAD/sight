@@ -42,6 +42,11 @@
                         <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                         <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                         <separator />
+                        <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                        <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                        <separator />
+                        <menuItem name="My item 6" icon="Bundles/TutoGui_0-1/icons/important.png" />
+                        <separator />
                         <menuItem name="Quit" icon="Bundles/TutoGui_0-1/icons/unreadable.png"/>
                     </layout>
                 </gui>
@@ -49,6 +54,9 @@
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item2" start="yes" />
                     <menuItem sid="item3" start="yes" />
+                    <menuItem sid="item4" start="yes" />
+                    <menuItem sid="item5" start="yes" />
+                    <menuItem sid="item6" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -61,6 +69,9 @@
                         <menuItem name="My item 2" style="radio" />
                         <menuItem name="My item 3" style="radio" />
                         <separator />
+                        <menuItem name="My item A" style="radio" />
+                        <menuItem name="My item B" style="radio" />
+                        <separator />
                         <menuItem name="Quit" specialAction="QUIT" />
                     </layout>
                 </gui>
@@ -68,6 +79,8 @@
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item2" start="yes" />
                     <menuItem sid="item3" start="yes" />
+                    <menuItem sid="item4" start="yes" />
+                    <menuItem sid="item5" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -76,16 +89,21 @@
                 <gui>
                     <layout>
                         <menuItem name="My item 1" style="check" />
+                        <menuItem name="My item 6" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="item1" start="yes" />
+                    <menuItem sid="item6" start="yes" />
                 </registry>
             </service>
             
             <service uid="item1" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item2" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item3" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            <service uid="item4" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            <service uid="item5" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            <service uid="item6" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
             
             
