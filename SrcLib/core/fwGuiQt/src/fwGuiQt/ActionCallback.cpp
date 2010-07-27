@@ -31,6 +31,7 @@ ActionCallback::~ActionCallback()
 
 void ActionCallback::executeQt(bool checked)
 {
+    this->check(checked);
     this->execute();
 }
 
