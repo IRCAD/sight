@@ -64,6 +64,7 @@ void NothingActionSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::
 void NothingActionSrv::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    this->actionServiceChecked(!this->getActionServiceIsChecked());
 }
 
 //-----------------------------------------------------------------------------

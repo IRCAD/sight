@@ -12,6 +12,7 @@
 #include "fwGui/config.hpp"
 #include "fwGui/fwContainer.hpp"
 #include "fwGui/fwMenuBar.hpp"
+#include "fwGui/fwToolBar.hpp"
 #include "fwGui/fwMenu.hpp"
 #include "fwGui/fwMenuItem.hpp"
 
@@ -39,8 +40,10 @@ public :
 
     typedef std::map< std::string , ::fwGui::fwContainer::sptr > ContainerMapType;
     typedef std::map< std::string , ::fwGui::fwMenuBar::sptr >   MenuBarMapType;
+    typedef std::map< std::string , ::fwGui::fwToolBar::sptr >   ToolBarMapType;
     typedef std::map< std::string , ::fwGui::fwMenu::sptr >      MenuMapType;
-    typedef std::map< std::string , std::string >                ActionToMenuMapType;
+    typedef std::vector< std::string >                           ParentSidsType;
+    typedef std::map< std::string , ParentSidsType > ActionToParentMapType;
 
     fwCoreNonInstanciableClassDefinitionsMacro( (GuiRegistry)(::fwCore::BaseObject) )
 
@@ -124,6 +127,29 @@ public :
     FWGUI_API static ::fwGui::fwMenuBar::sptr getSIDMenuBar(std::string sid);
     ///@}
 
+
+    //-----------------------------------------------------------------------------
+
+    /**
+     * @name    Helper SID-ToolBar methods
+     */
+    ///@{
+
+    /**
+     * @brief Registers fwToolBar associate with service ID.
+     */
+    FWGUI_API static void registerSIDToolBar(std::string sid, ::fwGui::fwToolBar::sptr toolBar);
+
+    /**
+     * @brief Unregisters fwToolBar associate with service ID.
+     */
+    FWGUI_API static void unregisterSIDToolBar(std::string sid);
+    /**
+     * @brief Returns fwToolBar associate with service ID.
+     */
+    FWGUI_API static ::fwGui::fwToolBar::sptr getSIDToolBar(std::string sid);
+    ///@}
+
     //-----------------------------------------------------------------------------
 
     /**
@@ -161,7 +187,7 @@ public :
     /**
      * @brief Unregisters action sid associted with a parent sid.
      */
-    FWGUI_API static void unregisterActionSIDToParentSID(std::string actionSid);
+    FWGUI_API static void unregisterActionSIDToParentSID(std::string actionSid, std::string parentSid);
 
     /**
      * @brief Method called when the action service is stopping.
@@ -174,15 +200,24 @@ public :
      * Call parent service actionServiceStarting() method
      */
     FWGUI_API static void actionServiceStarting(std::string actionSid);
+
+    /**
+     * @brief Method called when the action service is checked/unchecked.
+     * Call parent service actionServiceChecked() method
+     */
+    FWGUI_API static void actionServiceChecked(std::string actionSid, bool checked=true);
     ///@}
 
 protected :
 
-    static ContainerMapType     m_globalSIDToFwContainer;
-    static ContainerMapType     m_globalWIDToFwContainer;
-    static MenuBarMapType       m_globalSIDToFwMenuBar;
-    static MenuMapType          m_globalSIDToFwMenu;
-    static ActionToMenuMapType  m_actionSIDToParentSID;
+    static ContainerMapType       m_globalSIDToFwContainer;
+    static ContainerMapType       m_globalWIDToFwContainer;
+    static MenuBarMapType         m_globalSIDToFwMenuBar;
+    static ToolBarMapType         m_globalSIDToFwToolBar;
+    static MenuMapType            m_globalSIDToFwMenu;
+
+    /// Parent sid can be Menu sid or ToolBar sid
+    static ActionToParentMapType  m_actionSIDToParentSID;
 
 };
 

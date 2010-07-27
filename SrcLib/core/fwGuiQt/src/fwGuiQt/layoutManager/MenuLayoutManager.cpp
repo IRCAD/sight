@@ -141,6 +141,15 @@ void MenuLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bo
 
 //-----------------------------------------------------------------------------
 
+void MenuLayoutManager::actionIsChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+{
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    QAction *action = menuItemContainer->getQtMenuItem();
+    action->setChecked(isChecked);
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace layoutManager
 } // namespace fwGui
 

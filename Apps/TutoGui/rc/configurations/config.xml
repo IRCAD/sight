@@ -28,14 +28,15 @@
                 </gui>
                 <registry>
                     <menu sid="myMenu" start="yes" />
+                    <menu sid="myMenu2" start="yes" />
                 </registry>
             </service>
             
             <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
                 <gui>
                     <layout>
-                        <menuItem name="My item 1" style="radio" />
-                        <menuItem name="My item 2" style="radio" />
+                        <menuItem name="My item 1" style="check" />
+                        <menuItem name="My item 2" style="check" />
                         <separator />
                         <menuItem name="Quit" specialAction="QUIT" />
                     </layout>
@@ -44,6 +45,17 @@
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item2" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="myMenu2" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+                <gui>
+                    <layout>
+                        <menuItem name="My item 1" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="item1" start="yes" />
                 </registry>
             </service>
             

@@ -15,6 +15,7 @@
 #include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 #include "fwGui/builder/IMenuBarBuilder.hpp"
+#include "fwGui/builder/IToolBarBuilder.hpp"
 
 
 namespace fwGui
@@ -60,16 +61,20 @@ private:
     void onClose();
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
     void initializeMenuBarBuilder( ::fwRuntime::ConfigurationElement::sptr menuBarConfig );
+    void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
 
     ::fwGui::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
     ::fwGui::registrar::ViewRegistrar::sptr           m_viewRegistrar;
     ::fwGui::builder::IMenuBarBuilder::sptr           m_menuBarBuilder;
+    ::fwGui::builder::IToolBarBuilder::sptr           m_toolBarBuilder;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_frameConfig;
     ConfigurationType m_menuBarConfig;
+    ConfigurationType m_toolBarConfig;
 
     bool m_hasMenuBar;
+    bool m_hasToolBar;
 };
 
 } // namespace fwGui

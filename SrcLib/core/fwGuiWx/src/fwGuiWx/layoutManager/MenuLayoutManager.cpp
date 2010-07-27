@@ -164,6 +164,15 @@ void MenuLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bo
 
 //-----------------------------------------------------------------------------
 
+void MenuLayoutManager::actionIsChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+{
+    ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
+    wxMenuItem *menuItem = menuItemContainer->getWxMenuItem();
+    menuItem->Check(isChecked);
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace layoutManager
 } // namespace fwGui
 

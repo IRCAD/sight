@@ -10,6 +10,7 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/fwToolBar.hpp"
 #include "fwGui/fwMenuBar.hpp"
 #include "fwGui/fwContainer.hpp"
 #include "fwGui/config.hpp"
@@ -64,6 +65,12 @@ public:
     FWGUI_API virtual void manageMenuBar(::fwGui::fwMenuBar::sptr menuBar );
 
     /**
+     * @brief Register tool bar.
+     * If start="yes" in configuration the tool bar services will be started.
+     */
+    FWGUI_API virtual void manageToolBar(::fwGui::fwToolBar::sptr toolBar );
+
+    /**
      * @brief Stopping view manager.
      * All services managed in local subViews will be stopped.
      */
@@ -75,6 +82,8 @@ protected:
     typedef std::map< std::string, std::pair<int, bool> > SIDContainerMapType;
     typedef std::map< std::string, int > WIDContainerMapType;
     typedef std::pair< std::string, bool > SIDMenuBarPairType;
+    typedef std::pair< std::string, bool > SIDToolBarPairType;
+
     /**
      * @brief All services ID managed and associated with pair containing:
      * subViews index vector and boolean describing if is started by the manager.
@@ -86,6 +95,9 @@ protected:
 
     /// Menu bar service ID associate with this ViewRegistrar
     SIDMenuBarPairType m_menuBarSid;
+
+    /// Tool bar service ID associate with this ViewRegistrar
+    SIDToolBarPairType m_toolBarSid;
 
     std::string m_parentWid;
     ::fwGui::fwContainer::sptr m_parentContainer;

@@ -67,6 +67,8 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC() ;
 
+    this->actionServiceChecked(!this->getActionServiceIsChecked());
+
     for(size_t i = 0; i < m_uuidServices.size(); i++)
     {
         ActionType action =  m_uuidServices.at(i).second;

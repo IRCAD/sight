@@ -17,7 +17,9 @@
 namespace fwGui
 {
 
-IFrameSrv::IFrameSrv() : m_hasMenuBar(false)
+IFrameSrv::IFrameSrv() :
+        m_hasMenuBar(false),
+        m_hasToolBar(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -47,6 +49,16 @@ void IFrameSrv::initialize()
             this->initializeMenuBarBuilder(m_menuBarConfig);
 
             m_hasMenuBar = true;
+        }
+
+        // find mebuBarBuilder configuration
+        std::vector < ConfigurationType > vectTBBuilder = vectGui.at(0)->find("toolBar");
+        if(!vectTBBuilder.empty())
+        {
+            m_toolBarConfig = vectTBBuilder.at(0);
+            this->initializeToolBarBuilder(m_toolBarConfig);
+
+            m_hasToolBar = true;
         }
     }
 
@@ -95,6 +107,12 @@ void IFrameSrv::destroy()
         m_menuBarBuilder->destroyMenuBar();
     }
 
+    if (m_hasToolBar)
+    {
+        SLM_ASSERT("ToolBarBuilder must be initialized.",m_toolBarBuilder);
+        m_toolBarBuilder->destroyToolBar();
+    }
+
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
     m_frameLayoutManager->destroyFrame();
 }
@@ -123,6 +141,19 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY, m_menuBarBuilder);
 
     m_menuBarBuilder->initialize(menuBarConfig);
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
+{
+    OSLM_ASSERT("Bad configuration name "<<toolBarConfig->getName()<< ", must be toolBar",
+                toolBarConfig->getName() == "toolBar");
+
+    m_toolBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IToolBarBuilder >( ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY, m_toolBarBuilder);
+
+    m_toolBarBuilder->initialize(toolBarConfig);
 }
 
 //-----------------------------------------------------------------------------

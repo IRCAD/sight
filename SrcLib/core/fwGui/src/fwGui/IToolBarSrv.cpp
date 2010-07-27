@@ -11,24 +11,24 @@
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IMenuItemCallback.hpp"
-#include "fwGui/IMenuSrv.hpp"
+#include "fwGui/IToolBarSrv.hpp"
 
 namespace fwGui
 {
 
-IMenuSrv::IMenuSrv() : m_hideActions (false)
+IToolBarSrv::IToolBarSrv() : m_hideActions (false)
 {}
 
 //-----------------------------------------------------------------------------
 
-IMenuSrv::~IMenuSrv()
+IToolBarSrv::~IToolBarSrv()
 {}
 
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::initialize()
+void IToolBarSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::MenuRegistrar::NewSptr(this->getUUID());
+    m_registrar = ::fwGui::registrar::ToolBarRegistrar::NewSptr(this->getUUID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     if(!vectRegistrar.empty())
@@ -53,21 +53,21 @@ void IMenuSrv::initialize()
 
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::create()
+void IToolBarSrv::create()
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getParent();
+    ::fwGui::fwToolBar::sptr toolBar = m_registrar->getParent();
     std::vector< ::fwGui::IMenuItemCallback::sptr > callbacks = m_registrar->getCallbacks();
 
-    SLM_ASSERT("Parent menu is unknown.", menu);
+    SLM_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
-    m_layoutManager->createLayout(menu);
+    m_layoutManager->createLayout(toolBar);
 
     m_registrar->manage(m_layoutManager->getMenuItems());
 }
 
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::destroy()
+void IToolBarSrv::destroy()
 {
     m_registrar->unmanage();
     m_layoutManager->destroyLayout();
@@ -75,7 +75,7 @@ void IMenuSrv::destroy()
 
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
+void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 {
     ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
@@ -91,7 +91,7 @@ void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
+void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
 {
     ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
@@ -105,9 +105,10 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
     }
 }
 
+
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::actionServiceChecked(std::string actionSrvSID, bool checked)
+void IToolBarSrv::actionServiceChecked(std::string actionSrvSID, bool checked)
 {
     ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
@@ -117,13 +118,13 @@ void IMenuSrv::actionServiceChecked(std::string actionSrvSID, bool checked)
 
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::initializeLayoutManager(ConfigurationType layoutConfig)
+void IToolBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
 
-    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuLayoutManager >( ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY, m_layoutManager);
+    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IToolBarLayoutManager >( ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY, m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

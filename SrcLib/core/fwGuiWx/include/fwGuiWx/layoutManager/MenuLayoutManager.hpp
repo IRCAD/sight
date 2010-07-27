@@ -63,6 +63,11 @@ public:
      */
     FWGUIWX_API virtual void actionIsEnabled(::fwGui::fwMenuItem::sptr menuItem, bool isEnabled);
 
+    /**
+     * @brief Set the action checked or not.
+     */
+    FWGUIWX_API virtual void actionIsChecked(::fwGui::fwMenuItem::sptr, bool isChecked);
+
 protected:
 
     ::fwGuiWx::container::WxMenuContainer::sptr m_parent;

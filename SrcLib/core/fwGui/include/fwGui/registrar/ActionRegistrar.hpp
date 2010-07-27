@@ -47,6 +47,9 @@ public:
     /// Method called when the action service is starting
     FWGUI_API void actionServiceStarting();
 
+    /// Method called when the action service is checked/unchecked
+    FWGUI_API void actionServiceChecked(bool checked = true);
+
 protected:
 
     /// Main service ID associate with this ActionRegistrar

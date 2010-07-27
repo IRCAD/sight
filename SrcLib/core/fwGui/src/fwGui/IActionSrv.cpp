@@ -15,7 +15,7 @@
 namespace fwGui
 {
 
-IActionSrv::IActionSrv()
+IActionSrv::IActionSrv() : m_actionIsChecked(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -42,6 +42,21 @@ void IActionSrv::actionServiceStopping()
 void IActionSrv::actionServiceStarting()
 {
     this->m_registrar->actionServiceStarting();
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::actionServiceChecked(bool checked)
+{
+    m_actionIsChecked = checked;
+    this->m_registrar->actionServiceChecked(checked);
+}
+
+//-----------------------------------------------------------------------------
+
+bool IActionSrv::getActionServiceIsChecked()
+{
+    return m_actionIsChecked;
 }
 
 //-----------------------------------------------------------------------------

@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
-#define _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
+#ifndef _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
+#define _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwMenu.hpp"
+#include "fwGui/fwToolBar.hpp"
 #include "fwGui/fwMenuItem.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/config.hpp"
@@ -21,16 +21,16 @@ namespace layoutManager
 {
 
 /**
- * @brief   Defines the menu layout manager for IHM.
- * @class   IMenuLayoutManager.
+ * @brief   Defines the toolBar layout manager for IHM.
+ * @class   IToolBarLayoutManager.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMenuLayoutManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwCore::BaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuLayoutManager)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarLayoutManager)(::fwCore::BaseObject) )
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
@@ -73,10 +73,10 @@ public:
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    FWGUI_API IMenuLayoutManager();
+    FWGUI_API IToolBarLayoutManager();
 
     /// Destructor. Do nothing.
-    FWGUI_API virtual ~IMenuLayoutManager();
+    FWGUI_API virtual ~IToolBarLayoutManager();
 
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
@@ -89,9 +89,9 @@ public:
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
     /**
-     * @brief Instantiate actions with parent menu.
+     * @brief Instantiate actions with parent toolBar.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::fwMenu::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::fwToolBar::sptr parent ) = 0;
 
     /**
      * @brief Destroy local actions.
@@ -116,7 +116,7 @@ public:
     FWGUI_API virtual void actionIsChecked(::fwGui::fwMenuItem::sptr, bool isChecked) = 0;
 
     /**
-     * @brief Sets callbacks associate with menu items.
+     * @brief Sets callbacks associate with toolBar items.
      */
     FWGUI_API virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
 
@@ -133,13 +133,13 @@ protected:
     /// Save action informations from configuration.
     std::vector< ActionInfo > m_actionInfo;
 
-    /// Callbacks associate with menu items
+    /// Callbacks associate with toolBar items
     CallbacksType m_callbacks;
 };
 
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_*/
+#endif /*_FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_*/
 
 

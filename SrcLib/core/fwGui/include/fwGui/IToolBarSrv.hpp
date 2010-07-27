@@ -4,33 +4,33 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IMENUSRV_HPP_
-#define _FWGUI_IMENUSRV_HPP_
+#ifndef _FWGUI_ITOOLBARSRV_HPP_
+#define _FWGUI_ITOOLBARSRV_HPP_
 
 #include <fwServices/IService.hpp>
 
 #include "fwGui/config.hpp"
 
-#include "fwGui/registrar/MenuRegistrar.hpp"
-#include "fwGui/layoutManager/IMenuLayoutManager.hpp"
+#include "fwGui/registrar/ToolBarRegistrar.hpp"
+#include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
 
 
 namespace fwGui
 {
 
 /**
- * @brief   Defines the service interface managing the menu.
- * @class   IMenuSrv.
+ * @brief   Defines the service interface managing the toolBar.
+ * @class   IToolBarSrv.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMenuSrv : public ::fwServices::IService
+class FWGUI_CLASS_API IToolBarSrv : public ::fwServices::IService
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (IMenuSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IToolBarSrv)(::fwServices::IService) ) ;
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -47,12 +47,12 @@ protected :
     /**
      * @brief   Constructor. Initialize default values.
      */
-    FWGUI_API IMenuSrv() ;
+    FWGUI_API IToolBarSrv() ;
 
     /**
      * @brief   Destructor. Do nothing.
      */
-    FWGUI_API virtual ~IMenuSrv() ;
+    FWGUI_API virtual ~IToolBarSrv() ;
 
     /// Initialize the layout manager and registrar.
     FWGUI_API void initialize();
@@ -67,8 +67,8 @@ private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
-    ::fwGui::layoutManager::IMenuLayoutManager::sptr m_layoutManager;
-    ::fwGui::registrar::MenuRegistrar::sptr    m_registrar;
+    ::fwGui::layoutManager::IToolBarLayoutManager::sptr m_layoutManager;
+    ::fwGui::registrar::ToolBarRegistrar::sptr    m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;
@@ -79,6 +79,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IMENUSRV_HPP_*/
+#endif /*_FWGUI_ITOOLBARSRV_HPP_*/
 
 

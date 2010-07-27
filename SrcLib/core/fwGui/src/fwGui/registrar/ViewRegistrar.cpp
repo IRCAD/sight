@@ -110,6 +110,26 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
             m_menuBarSid =  std::make_pair( sid, start);
         }
     }
+
+    // find toolBar
+    std::vector < ConfigurationType > vectToolBar = configuration->find("toolBar");
+    if(!vectToolBar.empty())
+    {
+        ConfigurationType toolBarCfg = vectToolBar.at(0);
+        if (toolBarCfg->hasAttribute("sid"))
+        {
+            bool start = false;
+            if (toolBarCfg->hasAttribute("start"))
+            {
+                std::string startValue = toolBarCfg->getAttributeValue("start");
+                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
+                           startValue == "yes" || startValue == "no");
+                start = (startValue=="yes");
+            }
+            std::string sid = toolBarCfg->getAttributeValue("sid");
+            m_toolBarSid =  std::make_pair( sid, start);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -153,6 +173,19 @@ void ViewRegistrar::manageMenuBar(::fwGui::fwMenuBar::sptr menuBar )
 
 //-----------------------------------------------------------------------------
 
+void ViewRegistrar::manageToolBar(::fwGui::fwToolBar::sptr toolBar )
+{
+    ::fwGui::GuiRegistry::registerSIDToolBar(m_toolBarSid.first, toolBar);
+    if(m_toolBarSid.second) //service is auto started?
+    {
+        OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_toolBarSid.first, ::fwTools::UUID::SIMPLE ) );
+        ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
+        service->start();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void ViewRegistrar::unmanage()
 {
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
@@ -180,6 +213,17 @@ void ViewRegistrar::unmanage()
             service->stop();
         }
         ::fwGui::GuiRegistry::unregisterSIDMenuBar(m_menuBarSid.first);
+    }
+
+    if ( !m_toolBarSid.first.empty() )
+    {
+        if(m_toolBarSid.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_toolBarSid.first, ::fwTools::UUID::SIMPLE ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
     }
 }
 

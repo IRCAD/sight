@@ -45,5 +45,12 @@ void ActionRegistrar::actionServiceStarting()
 
 //-----------------------------------------------------------------------------
 
+void ActionRegistrar::actionServiceChecked(bool checked)
+{
+    ::fwGui::GuiRegistry::actionServiceChecked(m_sid, checked);
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace registrar
 } //namespace fwGui

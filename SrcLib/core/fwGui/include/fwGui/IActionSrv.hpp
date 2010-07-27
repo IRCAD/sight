@@ -53,13 +53,17 @@ protected :
     /// Method called when the action service is starting
     FWGUI_API void actionServiceStarting();
 
+    /// Method called when the action service is checked/unchecked
+    FWGUI_API void actionServiceChecked(bool checked = true);
+
+    /// Return action service is checked
+    FWGUI_API bool getActionServiceIsChecked();
+
 private:
 
     ::fwGui::registrar::ActionRegistrar::sptr    m_registrar;
 
-
-    /// Flag to hide or disable the actions if the service is stopped
-    bool m_hideActions;
+    bool m_actionIsChecked;
 };
 
 } // namespace fwGui
