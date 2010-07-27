@@ -51,5 +51,19 @@ wxMenuItem* WxMenuItemContainer::getWxMenuItem()
 
 //-----------------------------------------------------------------------------
 
+void WxMenuItemContainer::setWxToolItem(wxToolBarToolBase* menuItem)
+{
+    this->m_toolBarToolBase = menuItem;
+}
+
+//-----------------------------------------------------------------------------
+
+wxToolBarToolBase* WxMenuItemContainer::getWxToolItem()
+{
+    return this->m_toolBarToolBase;
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace container
 } // namespace fwGuiWx

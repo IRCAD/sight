@@ -42,6 +42,11 @@ public :
      */
     FWGUI_API virtual void execute();
 
+    /**
+     * @brief  Called method when callback is checked.
+     */
+    FWGUI_API virtual void check(bool checked);
+
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;
 
 protected:

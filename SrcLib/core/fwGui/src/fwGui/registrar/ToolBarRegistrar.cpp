@@ -40,7 +40,7 @@ ToolBarRegistrar::~ToolBarRegistrar()
 
 ::fwGui::fwMenuItem::sptr ToolBarRegistrar::getFwMenuItem(std::string actionSid, std::vector< ::fwGui::fwMenuItem::sptr > menuItems)
 {
-    SLM_ASSERT("toolBarItem not found", m_actionSids.find(actionSid) != m_actionSids.end());
+    SLM_ASSERT("menuItem not found", m_actionSids.find(actionSid) != m_actionSids.end());
     ::fwGui::fwMenuItem::sptr menuItem = menuItems.at( m_actionSids[actionSid].first );
     return menuItem;
 }
@@ -56,21 +56,21 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
     int index = 0;
     m_callbacks.clear();
     // initialize m_actionSids map with configuration
-    std::vector < ConfigurationType > vectToolBarItems = configuration->find("toolBarItem");
-    BOOST_FOREACH( ConfigurationType toolBarItem, vectToolBarItems)
+    std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
+    BOOST_FOREACH( ConfigurationType menuItem, vectMenuItems)
     {
-        SLM_ASSERT("<toolBarItem> tag must have sid attribute", toolBarItem->hasAttribute("sid"));
-        if(toolBarItem->hasAttribute("sid"))
+        SLM_ASSERT("<menuItem> tag must have sid attribute", menuItem->hasAttribute("sid"));
+        if(menuItem->hasAttribute("sid"))
         {
             bool start = false;
-            if(toolBarItem->hasAttribute("start"))
+            if(menuItem->hasAttribute("start"))
             {
-                std::string startValue = toolBarItem->getAttributeValue("start");
+                std::string startValue = menuItem->getAttributeValue("start");
                 SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                         startValue == "yes" || startValue == "no");
                 start = (startValue=="yes");
             }
-            std::string sid = toolBarItem->getAttributeValue("sid");
+            std::string sid = menuItem->getAttributeValue("sid");
             std::pair<int, bool> indexStart =  std::make_pair( index, start);
             m_actionSids[sid] = indexStart;
 
@@ -87,13 +87,13 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
 
 //-----------------------------------------------------------------------------
 
-void ToolBarRegistrar::manage(std::vector< ::fwGui::fwMenuItem::sptr > toolBarItems )
+void ToolBarRegistrar::manage(std::vector< ::fwGui::fwMenuItem::sptr > menuItems )
 {
-    ::fwGui::fwMenuItem::sptr toolBarItem;
+    ::fwGui::fwMenuItem::sptr menuItem;
     BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_actionSids)
     {
-        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < toolBarItems.size());
-        toolBarItem = toolBarItems.at( sid.second.first );
+        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < menuItems.size());
+        menuItem = menuItems.at( sid.second.first );
         ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
         {

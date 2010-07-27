@@ -36,7 +36,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
     ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
     for( iter = configuration->begin() ; iter != configuration->end() ; ++iter )
     {
-        if( (*iter)->getName() == "toolBarItem" )
+        if( (*iter)->getName() == "menuItem" )
         {
             ConfigurationType toolBarItem = *iter;
             ActionInfo info;
@@ -46,9 +46,10 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
                 info.m_name = toolBarItem->getExistingAttributeValue("name") ;
             }
 
-            if( toolBarItem->hasAttribute("shortcut") )
+            SLM_ASSERT("missing <icon> attribute", toolBarItem->hasAttribute("icon"));
+            if( toolBarItem->hasAttribute("icon") )
             {
-                info.m_shortcut = toolBarItem->getExistingAttributeValue("shortcut") ;
+                info.m_icon = toolBarItem->getExistingAttributeValue("icon") ;
             }
 
             if( toolBarItem->hasAttribute("style") )
@@ -71,42 +72,12 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
                 info.m_isEnabled = (enable =="true");
             }
 
-            if( toolBarItem->hasAttribute("specialAction") )
-            {
-                std::string specialActionName = toolBarItem->getExistingAttributeValue("specialAction") ;
-                if (specialActionName == "DEFAULT")
-                {
-                    info.m_type = DEFAULT;
-                }
-                else if (specialActionName == "QUIT")
-                {
-                    info.m_type = QUIT;
-                }
-                else if (specialActionName == "ABOUT")
-                {
-                    info.m_type = ABOUT;
-                }
-                else if (specialActionName == "HELP")
-                {
-                    info.m_type = HELP;
-                }
-                else if (specialActionName == "NEW")
-                {
-                    info.m_type = NEW;
-                }
-                else
-                {
-                    OSLM_FATAL("specialAction " << specialActionName << " is unknown." );
-                }
-            }
-
             m_actionInfo.push_back(info);
         }
         if( (*iter)->getName() == "separator" )
         {
             ActionInfo info;
             info.m_isSeparator = true;
-            info.m_type = SEPARATOR;
             m_actionInfo.push_back( info ) ;
         }
     }

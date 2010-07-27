@@ -92,6 +92,12 @@ void IFrameSrv::create()
         m_menuBarBuilder->createMenuBar(frame);
         m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
     }
+
+    if (m_hasToolBar)
+    {
+        m_toolBarBuilder->createToolBar(frame);
+        m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
+    }
 }
 
 //-----------------------------------------------------------------------------

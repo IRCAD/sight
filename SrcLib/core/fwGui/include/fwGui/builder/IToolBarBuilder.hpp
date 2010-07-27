@@ -69,6 +69,8 @@ protected:
     /// ToolBar.
     ::fwGui::fwToolBar::sptr m_toolBar;
 
+    std::pair< int, int > m_toolBitmapSize;
+
 };
 
 } // namespace builder

@@ -4,75 +4,72 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
+#include <fwTools/Object.hpp>
+#include <fwServices/Base.hpp>
 
-#include <fwServices/helper.hpp>
-#include <fwServices/macros.hpp>
+#include "gui/aspect/DefaultToolBarSrv.hpp"
 
-
-#include "gui/action/NothingActionSrv.hpp"
+REGISTER_SERVICE( ::fwGui::IToolBarSrv , ::gui::aspect::DefaultToolBarSrv , ::fwTools::Object ) ;
 
 namespace gui
 {
-namespace action
-{
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::NothingActionSrv , ::fwTools::Object ) ;
 
-
-NothingActionSrv::NothingActionSrv() throw()
+namespace aspect
 {
+
+DefaultToolBarSrv::DefaultToolBarSrv() throw()
+{}
+
+//-----------------------------------------------------------------------------
+
+DefaultToolBarSrv::~DefaultToolBarSrv() throw()
+{}
+
+//-----------------------------------------------------------------------------
+
+void DefaultToolBarSrv::starting()  throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->create();
 }
 
 //-----------------------------------------------------------------------------
 
-NothingActionSrv::~NothingActionSrv() throw()
+void DefaultToolBarSrv::stopping()  throw ( ::fwTools::Failed )
 {
+    SLM_TRACE_FUNC();
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::configuring() throw( ::fwTools::Failed )
+void DefaultToolBarSrv::configuring()  throw ( ::fwTools::Failed )
 {
+    SLM_TRACE_FUNC();
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::starting() throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-    this->actionServiceStarting();
-}
-
-//-----------------------------------------------------------------------------
-
-void NothingActionSrv::stopping() throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-    this->actionServiceStopping();
-}
-
-//-----------------------------------------------------------------------------
-
-void NothingActionSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void DefaultToolBarSrv::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::updating() throw( ::fwTools::Failed )
+void DefaultToolBarSrv::updating(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::info(std::ostream &_sstream )
+void DefaultToolBarSrv::info( std::ostream &_sstream )
 {
-    _sstream << "Nothing Action" << std::endl;
+    SLM_TRACE_FUNC();
 }
 
 }
-}
 
+}

@@ -168,7 +168,10 @@ void MenuLayoutManager::actionIsChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bo
 {
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
     wxMenuItem *menuItem = menuItemContainer->getWxMenuItem();
-    menuItem->Check(isChecked);
+    if (menuItem->GetKind() == wxITEM_RADIO || menuItem->GetKind() == wxITEM_CHECK)
+    {
+        menuItem->Check(isChecked);
+    }
 }
 
 //-----------------------------------------------------------------------------

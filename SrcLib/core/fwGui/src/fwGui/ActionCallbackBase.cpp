@@ -8,6 +8,7 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/Base.hpp>
 
+#include "fwGui/IActionSrv.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
 
 namespace fwGui
@@ -42,6 +43,18 @@ void ActionCallbackBase::execute()
     ::fwServices::IService::sptr service = ::fwServices::get( m_sid ) ;
     OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     service->update();
+}
+
+//-----------------------------------------------------------------------------
+
+void ActionCallbackBase::check(bool checked)
+{
+    OSLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::UUID::exist(m_sid, ::fwTools::UUID::SIMPLE ));
+    ::fwServices::IService::sptr service = ::fwServices::get( m_sid ) ;
+    OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
+    ::fwGui::IActionSrv::sptr action = ::fwGui::IActionSrv::dynamicCast(service);
+    OSLM_ASSERT("Service "<<m_sid<<" is not an action.", action);
+    action->actionServiceChecked(checked);
 }
 
 //-----------------------------------------------------------------------------

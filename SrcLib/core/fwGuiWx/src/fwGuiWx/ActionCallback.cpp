@@ -31,6 +31,7 @@ ActionCallback::~ActionCallback()
 
 void ActionCallback::executeWx(wxCommandEvent& event)
 {
+    this->check(event.IsChecked());
     this->execute();
 }
 

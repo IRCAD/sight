@@ -8,6 +8,7 @@
 #define _FWGUIWX_CONTAINER_WXMENUITEMCONTAINER_HPP_
 
 #include <wx/menu.h>
+#include <wx/toolbar.h>
 
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
@@ -52,9 +53,13 @@ public:
     FWGUIWX_API virtual void setWxMenuItem(wxMenuItem* menuItem);
     FWGUIWX_API virtual wxMenuItem* getWxMenuItem();
 
+    FWGUIWX_API virtual void setWxToolItem(wxToolBarToolBase* menuItem);
+    FWGUIWX_API virtual wxToolBarToolBase* getWxToolItem();
+
 private :
 
     wxMenuItem* m_menuItem;
+    wxToolBarToolBase* m_toolBarToolBase;
 };
 
 } // namespace container

@@ -61,11 +61,12 @@
         <implements>::fwTools::Object</implements>
     </point>    
     
-    <!-- 
-    <point id="::gui::aspect::DefaultToolBar">
+    <point id="::gui::aspect::DefaultToolBarSrv">
         <implements>::gui::aspect::IToolBar</implements>
         <implements>::fwTools::Object</implements>
     </point>
+    
+    <!-- 
     <point id="::gui::action::ActionNotifyService">
         <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>

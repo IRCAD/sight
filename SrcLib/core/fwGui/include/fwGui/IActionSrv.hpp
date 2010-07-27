@@ -31,6 +31,18 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (IActionSrv)(::fwServices::IService) ) ;
 
+    /// Method called when the action service is stopping
+    FWGUI_API void actionServiceStopping();
+
+    /// Method called when the action service is starting
+    FWGUI_API void actionServiceStarting();
+
+    /// Method called when the action service is checked/unchecked
+    FWGUI_API void actionServiceChecked(bool checked = true);
+
+    /// Return action service is checked. Is not correct with radio action.
+    FWGUI_API bool getActionServiceIsChecked();
+
 protected :
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -47,17 +59,6 @@ protected :
     /// Initialize the layout manager and registrar.
     FWGUI_API void initialize();
 
-    /// Method called when the action service is stopping
-    FWGUI_API void actionServiceStopping();
-
-    /// Method called when the action service is starting
-    FWGUI_API void actionServiceStarting();
-
-    /// Method called when the action service is checked/unchecked
-    FWGUI_API void actionServiceChecked(bool checked = true);
-
-    /// Return action service is checked
-    FWGUI_API bool getActionServiceIsChecked();
 
 private:
 

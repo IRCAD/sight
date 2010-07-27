@@ -36,37 +36,26 @@ public:
     typedef std::string RegistryKeyType;
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
-    typedef enum {
-        DEFAULT,
-        QUIT,
-        ABOUT,
-        HELP,
-        NEW,
-        SEPARATOR
-    }ActionType;
-
     class ActionInfo
          {
          public :
 
             ActionInfo() :
                 m_name(""),
-                m_shortcut(""),
+                m_icon(""),
                 m_isSeparator(false),
                 m_isCheckable (false),
                 m_isRadio(false),
                 m_isChecked (false),
-                m_isEnabled(true),
-                m_type(DEFAULT)
+                m_isEnabled(true)
             {}
 
             std::string m_name;
-            std::string m_shortcut;
+            std::string m_icon;
             bool        m_isCheckable;
             bool        m_isRadio;
             bool        m_isChecked;
             bool        m_isEnabled;
-            ActionType  m_type;
             bool        m_isSeparator;
          };
 
@@ -84,7 +73,27 @@ public:
     FWGUI_API virtual std::vector< ::fwGui::fwMenuItem::sptr > getMenuItems();
 
     /**
-     * @brief Configure the actions before creation.
+     * @brief Configuring method allows to create a toolBar with several actions. The created toolbar is a horizontal one without border.
+     * Each icon has a size of 32x32 by default.
+     * Here a sample of the DefaultToolBar service declaration with two actions:
+     * @verbatim
+        <service uid="toolBar" type="::gui::aspect::IToolBar" implementation="::gui::aspect::DefaultToolBar" autoComChannel="no">
+            <toolBitmapSize height="40" width="40" />
+            <action uid="action_new" name="New file" icon="Bundles/MyApplication/icons/newFile.png"/>
+            <separator/>
+            <action uid="action_3Dview" style="radio" name="3D view" icon="Bundles/MyApplication/icons//icon-3D.png" />
+            <action uid="action_2Dview" style="radio" name="2D view" icon="Bundles/MyApplication/icons/icon-2D.png" />
+            <separator/>
+            <action uid="action_hideInformation"  style="check" name="Show information window" icon="Bundles/MyApplication/icons/View-INFO.png" />
+        </service>
+       @endverbatim
+     * - <toolBitmapSize height="40" width="40" /> : has to change the size of the icon used in the toolbar.
+     * - <separator /> : allows to put a separation in the tool bar.
+     * - Action Attributes:
+     *       - icon is the icon file to use.
+     *       - name is the text that will be put inside the tool tip.
+     *       - state can be {check}. This attribute is available only with the style radio and check.
+     *       - style is the style of the button. The available choice is {radio|check}. If style isn't specified normal state(without 'state')is used.
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
