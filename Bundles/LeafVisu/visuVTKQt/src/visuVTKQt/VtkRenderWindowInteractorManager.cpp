@@ -62,7 +62,6 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::
     container->setLayout(layout);
 
     m_interactor = m_qVTKWidget->GetRenderWindow()->GetInteractor();
-    m_qVTKWidget->GetRenderWindow()->AddRenderer(vtkRenderer::New());
 }
 
 //-----------------------------------------------------------------------------
