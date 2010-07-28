@@ -7,7 +7,7 @@
 #ifndef _FWGUIWX_CONTAINER_WXTOOLBARCONTAINER_HPP_
 #define _FWGUIWX_CONTAINER_WXTOOLBARCONTAINER_HPP_
 
-#include <wx/toolBar.h>
+#include <wx/toolbar.h>
 
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
