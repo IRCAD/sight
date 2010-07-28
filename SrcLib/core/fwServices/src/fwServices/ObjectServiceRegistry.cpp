@@ -159,6 +159,9 @@ void ObjectServiceRegistry::uninitializeRootObject()
         assert( getDefault()->m_rootObject.use_count() == 0 );
         // Setting initialization to false
         getDefault()->m_isRootInitialized = false ;
+
+        // Clear all factories before stop application.
+        ::fwTools::ClassFactoryRegistry::getFactories().clear();
     }
 }
 
