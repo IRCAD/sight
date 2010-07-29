@@ -78,6 +78,9 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         }
 
         action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
+        action->setChecked(actionInfo.m_isChecked);
+        action->setEnabled(actionInfo.m_isEnabled);
+
         if (actionInfo.m_isRadio)
         {
             if (!actionGroup)

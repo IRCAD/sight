@@ -8,6 +8,7 @@
 
 #include <QMainWindow>
 #include <QToolBar>
+#include <QHBoxLayout>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -49,17 +50,28 @@ void ToolBarBuilder::createToolBar( ::fwGui::fwContainer::sptr parent )
     {
         window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() ) ;
     }
-    SLM_ASSERT("Sorry, the parent container must be a QMainWindow", window ) ;
+//    SLM_ASSERT("Sorry, the parent container must be a QMainWindow", window ) ;
+
+    QToolBar *toolBar = new QToolBar(QObject::tr("ToolBar"), m_parent->getQtContainer());
+    toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
+    toolBar->setFloatable(false);
+
+    ::fwGuiQt::container::QtToolBarContainer::NewSptr toolBarContainer;
     if (window)
     {
-        ::fwGuiQt::container::QtToolBarContainer::sptr toolBarContainer = ::fwGuiQt::container::QtToolBarContainer::New();
-        QToolBar *toolBar = new QToolBar(0);
-        toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
-        toolBar->setFloatable(false);
-        toolBarContainer->setQtToolBar(toolBar);
         window->addToolBar( toolBar );
-        m_toolBar = toolBarContainer;
     }
+    else // parent is not a QMainWindow
+    {
+        QWidget * widget = m_parent->getQtContainer();
+        QVBoxLayout * layout = new QVBoxLayout(widget);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->addWidget(toolBar);
+        widget->setLayout(layout);
+    }
+
+    toolBarContainer->setQtToolBar(toolBar);
+    m_toolBar = toolBarContainer;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +85,7 @@ void ToolBarBuilder::destroyToolBar()
     {
         window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() ) ;
     }
-    SLM_ASSERT("Sorry, the parent container must be a QMainWindow", window ) ;
+//    SLM_ASSERT("Sorry, the parent container must be a QMainWindow", window ) ;
     if (window)
     {
         ::fwGuiQt::container::QtToolBarContainer::sptr qtToolBar = ::fwGuiQt::container::QtToolBarContainer::dynamicCast(m_toolBar);

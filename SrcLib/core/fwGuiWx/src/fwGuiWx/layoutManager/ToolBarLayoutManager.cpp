@@ -77,6 +77,13 @@ void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
         if(!actionInfo.m_isSeparator)
         {
             wxToolBarToolBase * toolBarToolBase = toolBar->AddTool(actionIdInMenu, ::fwWX::std2wx(actionInfo.m_name), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, ::fwWX::std2wx( actionInfo.m_name));
+            if((actionInfo.m_isCheckable || actionInfo.m_isRadio) && actionInfo.m_isChecked)
+            {
+                toolBar->ToggleTool(actionIdInMenu, true);
+            }
+
+            toolBar->EnableTool(actionIdInMenu, actionInfo.m_isEnabled);
+
             menuItem->setWxToolItem(toolBarToolBase);
             m_menuItems.push_back(menuItem);
             OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());

@@ -127,9 +127,18 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     }
 
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    if(qtContainer->layout())
+    if(qtContainer->layout() && qobject_cast<QVBoxLayout*> ( qtContainer->layout() ) )
     {
-        qtContainer->layout()->deleteLater();
+        QVBoxLayout * vLayout = qobject_cast<QVBoxLayout*> ( qtContainer->layout() );
+        vLayout->addLayout(layout);
+    }
+    else
+    {
+        if (qtContainer->layout())
+        {
+            qtContainer->layout()->deleteLater();
+        }
+        qtContainer->setLayout(layout);
     }
     qtContainer->setLayout(layout);
     m_qtWindow->setParent(qtContainer);

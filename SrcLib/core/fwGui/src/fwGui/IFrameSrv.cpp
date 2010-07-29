@@ -41,7 +41,7 @@ void IFrameSrv::initialize()
         m_frameConfig = vectLayoutMng.at(0);
         this->initializeLayoutManager(m_frameConfig);
 
-        // find mebuBarBuilder configuration
+        // find menuBarBuilder configuration
         std::vector < ConfigurationType > vectMBBuilder = vectGui.at(0)->find("menuBar");
         if(!vectMBBuilder.empty())
         {
@@ -51,7 +51,7 @@ void IFrameSrv::initialize()
             m_hasMenuBar = true;
         }
 
-        // find mebuBarBuilder configuration
+        // find toolBarBuilder configuration
         std::vector < ConfigurationType > vectTBBuilder = vectGui.at(0)->find("toolBar");
         if(!vectTBBuilder.empty())
         {

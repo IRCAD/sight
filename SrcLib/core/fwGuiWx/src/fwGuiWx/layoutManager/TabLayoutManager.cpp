@@ -46,7 +46,16 @@ void TabLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 
     wxWindow* wxContainer = m_parentContainer->getWxContainer();
     wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
-    wxContainer->SetSizer( boxSizer );
+
+    if (wxContainer->GetSizer())
+    {
+        wxContainer->GetSizer()->Add(boxSizer, 1, wxEXPAND|wxALL);
+    }
+    else
+    {
+        wxContainer->SetSizer( boxSizer );
+    }
+
     m_notebook = new wxNotebook( wxContainer, wxNewId() );
     boxSizer->Add( m_notebook, 1, wxALL|wxEXPAND, 0);
 

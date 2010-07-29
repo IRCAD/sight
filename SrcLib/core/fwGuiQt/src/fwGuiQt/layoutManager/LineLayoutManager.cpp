@@ -54,11 +54,20 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     {
         layout->setDirection(QBoxLayout::TopToBottom);
     }
-    if(qtContainer->layout())
+
+    if(qtContainer->layout() && qobject_cast<QVBoxLayout*> ( qtContainer->layout() ) )
     {
-        qtContainer->layout()->deleteLater();
+        QVBoxLayout * vLayout = qobject_cast<QVBoxLayout*> ( qtContainer->layout() );
+        vLayout->addLayout(layout);
     }
-    qtContainer->setLayout(layout);
+    else
+    {
+        if (qtContainer->layout())
+        {
+            qtContainer->layout()->deleteLater();
+        }
+        qtContainer->setLayout(layout);
+    }
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
     BOOST_FOREACH ( ViewInfo viewInfo, views)

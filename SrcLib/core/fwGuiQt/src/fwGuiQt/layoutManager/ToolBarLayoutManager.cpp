@@ -71,6 +71,9 @@ void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
             QAction *action = toolBar->addAction( icon, QString::fromStdString(actionInfo.m_name) );
 
             action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
+            action->setChecked(actionInfo.m_isChecked);
+            action->setEnabled(actionInfo.m_isEnabled);
+
             if (actionInfo.m_isRadio)
             {
                 if (!actionGroup)

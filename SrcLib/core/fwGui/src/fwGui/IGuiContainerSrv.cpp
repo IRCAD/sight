@@ -16,7 +16,8 @@ namespace fwGui
 {
 
 IGuiContainerSrv::IGuiContainerSrv()
-    : m_viewLayoutManagerIsCreated (false)
+    : m_viewLayoutManagerIsCreated (false),
+      m_hasToolBar(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -54,6 +55,16 @@ void IGuiContainerSrv::initialize()
             this->initializeLayoutManager( m_viewLayoutConfig );
             m_viewLayoutManagerIsCreated = true;
         }
+
+        // find toolBarBuilder configuration
+        std::vector < ConfigurationType > vectTBBuilder = vectGui.at(0)->find("toolBar");
+        if(!vectTBBuilder.empty())
+        {
+            m_toolBarConfig = vectTBBuilder.at(0);
+            this->initializeToolBarBuilder(m_toolBarConfig);
+
+            m_hasToolBar = true;
+        }
     }
 }
 
@@ -66,6 +77,12 @@ void IGuiContainerSrv::create()
         SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
         ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
         SLM_ASSERT("Parent container is unknown.", container);
+
+        if (m_hasToolBar)
+        {
+            m_toolBarBuilder->createToolBar(container);
+            m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
+        }
 
         m_viewLayoutManager->createLayout(container);
         m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
@@ -81,6 +98,13 @@ void IGuiContainerSrv::destroy()
     if ( m_viewLayoutManagerIsCreated )
     {
         m_viewRegistrar->unmanage();
+
+        if (m_hasToolBar)
+        {
+            SLM_ASSERT("ToolBarBuilder must be initialized.",m_toolBarBuilder);
+            m_toolBarBuilder->destroyToolBar();
+        }
+
         SLM_ASSERT("ViewLayoutManager must be initialized.",m_viewLayoutManager);
         m_viewLayoutManager->destroyLayout();
     }
@@ -99,6 +123,20 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_viewLayoutManager);
 
     m_viewLayoutManager->initialize(layoutConfig);
+}
+
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
+{
+    OSLM_ASSERT("Bad configuration name "<<toolBarConfig->getName()<< ", must be toolBar",
+                toolBarConfig->getName() == "toolBar");
+
+    m_toolBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IToolBarBuilder >( ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY, m_toolBarBuilder);
+
+    m_toolBarBuilder->initialize(toolBarConfig);
 }
 
 //-----------------------------------------------------------------------------

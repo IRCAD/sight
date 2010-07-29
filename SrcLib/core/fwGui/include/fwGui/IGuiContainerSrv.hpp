@@ -14,6 +14,7 @@
 
 #include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
+#include "fwGui/builder/IToolBarBuilder.hpp"
 
 
 /**
@@ -64,14 +65,19 @@ protected :
 private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
+    void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
 
     bool m_viewLayoutManagerIsCreated;
     ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
 
     ::fwGui::registrar::ViewRegistrar::sptr          m_viewRegistrar;
+    ::fwGui::builder::IToolBarBuilder::sptr           m_toolBarBuilder;
 
     ConfigurationType m_viewRegistrarConfig;
     ConfigurationType m_viewLayoutConfig;
+    ConfigurationType m_toolBarConfig;
+
+    bool m_hasToolBar;
 };
 
 } // namespace fwGui
