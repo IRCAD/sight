@@ -35,6 +35,13 @@ void ActionCallback::executeQt(bool checked)
     this->execute();
 }
 
+//-----------------------------------------------------------------------------
+
+void ActionCallback::checkQt(bool checked)
+{
+    this->check(checked);
+}
+
 } // namespace fwGuiQt
 
 

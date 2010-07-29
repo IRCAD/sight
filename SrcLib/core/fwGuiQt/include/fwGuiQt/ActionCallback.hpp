@@ -49,6 +49,7 @@ public :
      */
     public slots:
     void executeQt(bool checked = false);
+    void checkQt(bool checked);
 
 };
 

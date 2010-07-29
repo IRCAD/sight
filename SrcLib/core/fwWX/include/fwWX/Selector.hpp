@@ -25,7 +25,7 @@ namespace fwWX
  * @date    2009.
  */
 
-class FWWX_CLASS_API Selector : public ::fwGui::ISelector,  public wxDialog
+class FWWX_CLASS_API Selector : public ::fwGui::ISelector
 {
 public:
 

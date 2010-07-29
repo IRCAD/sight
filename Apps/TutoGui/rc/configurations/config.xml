@@ -45,7 +45,8 @@
                         <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                         <menuItem name="My item B" style="radio" state="checked" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                         <separator />
-                        <menuItem name="My item 6" icon="Bundles/TutoGui_0-1/icons/important.png" />
+                        <menuItem name="start 2-3 / stop A-B" style="radio" state="checked" icon="Bundles/TutoGui_0-1/icons/important.png" />
+                        <menuItem name="start A-B / stop 2-3" style="radio" icon="Bundles/TutoGui_0-1/icons/important.png" />
                         <separator />
                         <menuItem name="Quit" icon="Bundles/TutoGui_0-1/icons/unreadable.png"/>
                     </layout>
@@ -54,9 +55,10 @@
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item2" start="yes" />
                     <menuItem sid="item3" start="yes" />
-                    <menuItem sid="item4" start="yes" />
-                    <menuItem sid="item5" start="yes" />
+                    <menuItem sid="item4" start="no" />
+                    <menuItem sid="item5" start="no" />
                     <menuItem sid="item6" start="yes" />
+                    <menuItem sid="item7" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -79,8 +81,8 @@
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item2" start="yes" />
                     <menuItem sid="item3" start="yes" />
-                    <menuItem sid="item4" start="yes" />
-                    <menuItem sid="item5" start="yes" />
+                    <menuItem sid="item4" start="no" />
+                    <menuItem sid="item5" start="no" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -89,12 +91,15 @@
                 <gui>
                     <layout>
                         <menuItem name="My item 1" style="check" />
-                        <menuItem name="My item 6" />
+                        <separator />
+                        <menuItem name="start 2-3 / stop A-B" style="radio" state="checked" />
+                        <menuItem name="start A-B / stop 2-3" style="radio" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item6" start="yes" />
+                    <menuItem sid="item7" start="yes" />
                 </registry>
             </service>
             
@@ -103,7 +108,20 @@
             <service uid="item3" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item4" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item5" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
-            <service uid="item6" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            
+            <service uid="item6" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="item2" />
+                <start uid="item3" />
+                <stop uid="item4" />
+                <stop uid="item5" />
+            </service>
+            <service uid="item7" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <stop uid="item2" />
+                <stop uid="item3" />
+                <start uid="item4" />
+                <start uid="item5" />
+            </service>
+            
             <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
             
             
@@ -186,8 +204,8 @@
                 <registry>
                     <menuItem sid="item2" start="yes" />
                     <menuItem sid="item3" start="yes" />
-                    <menuItem sid="item4" start="yes" />
-                    <menuItem sid="item5" start="yes" />
+                    <menuItem sid="item4" start="no" />
+                    <menuItem sid="item5" start="no" />
                 </registry>
             </service>
             

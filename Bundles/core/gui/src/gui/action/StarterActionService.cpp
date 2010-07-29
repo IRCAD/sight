@@ -51,6 +51,17 @@ void StarterActionService::starting() throw( ::fwTools::Failed )
 void StarterActionService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    typedef std::pair< std::string, ActionType > ServiceUidPair;
+    BOOST_FOREACH( ServiceUidPair serviceUid, m_uuidServices)
+    {
+        bool srv_exists = ::fwTools::UUID::exist(serviceUid.first, ::fwTools::UUID::SIMPLE );
+        if (srv_exists)
+        {
+            ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first ) ;
+            service->stop();
+        }
+    }
+
     this->actionServiceStopping();
 }
 
