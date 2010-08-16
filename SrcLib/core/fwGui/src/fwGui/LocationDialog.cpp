@@ -40,6 +40,13 @@ void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr lo
 
 //-----------------------------------------------------------------------------
 
+void LocationDialog::setType( ::fwGui::ILocationDialog::Types type)
+{
+    m_implementation->setType( type );
+}
+
+//-----------------------------------------------------------------------------
+
 // exemple ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
 {

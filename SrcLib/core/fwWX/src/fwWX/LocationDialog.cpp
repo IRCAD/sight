@@ -5,12 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/filesystem/path.hpp>
-#include<boost/tokenizer.hpp>
+#include <boost/tokenizer.hpp>
 
 
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/MultiFiles.hpp>
 
 #include <fwGui/ILocationDialog.hpp>
 #include "fwWX/LocationDialog.hpp"
@@ -24,22 +25,30 @@ REGISTER_BINDING( ::fwGui::ILocationDialog, ::fwWX::LocationDialog, ::fwGui::ILo
 namespace fwWX
 {
 
-LocationDialog::LocationDialog() : m_style(wxFD_DEFAULT_STYLE)
+//------------------------------------------------------------------------------
+
+LocationDialog::LocationDialog() :
+        m_style(wxFD_DEFAULT_STYLE),
+        m_type(::fwGui::ILocationDialog::SINGLE_FILE)
 {
 }
 
-
+//------------------------------------------------------------------------------
 
 void LocationDialog::setTitle(const std::string &title)
 {
     m_title = title;
 }
 
-
+//------------------------------------------------------------------------------
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    wxString file = wxFileSelector(
+    ::fwData::location::ILocation::sptr location;
+
+    if (m_type == ::fwGui::ILocationDialog::SINGLE_FILE)
+    {
+        wxString file = wxFileSelector(
             ::fwWX::std2wx(m_title) ,
             ::fwWX::std2wx( m_path.parent_path().string() ),
             wxT(""),
@@ -48,18 +57,57 @@ void LocationDialog::setTitle(const std::string &title)
             m_style,
             wxTheApp->GetTopWindow() );
 
-    if( file.IsEmpty() == false )
-    {
-        ::boost::filesystem::path bpath( ::fwWX::wx2std(file)  );
-        return  ::fwData::location::SingleFile::New(bpath);
+        if( file.IsEmpty() == false )
+        {
+            ::boost::filesystem::path bpath( ::fwWX::wx2std(file)  );
+            location = ::fwData::location::SingleFile::New(bpath);
+        }
     }
-    else
+    else if (m_type == ::fwGui::ILocationDialog::FOLDER)
     {
-        return  ::fwData::location::ILocation::sptr();
+        wxString file = wxDirSelector(
+                ::fwWX::std2wx(m_title) ,
+                 ::fwWX::std2wx( m_path.parent_path().string() ),
+                  m_style,
+                  wxDefaultPosition,
+                  wxTheApp->GetTopWindow() );
+
+        if( file.IsEmpty() == false )
+        {
+            ::boost::filesystem::path bpath( ::fwWX::wx2std(file)  );
+            location = ::fwData::location::Folder::New(bpath);
+        }
     }
+    else if (m_type == ::fwGui::ILocationDialog::MULTI_FILES)
+    {
+        wxFileDialog *fileDialog = new wxFileDialog(wxTheApp->GetTopWindow(),
+                                                   ::fwWX::std2wx(m_title),
+                                                   ::fwWX::std2wx( m_path.parent_path().string() ),
+                                                   "",
+                                                   fileFilters(),
+                                                   m_style | wxFD_MULTIPLE);
+
+        if (fileDialog->ShowModal() != wxID_CANCEL)
+        {
+            wxArrayString paths;
+            fileDialog->GetPaths(paths);
+            std::vector < ::boost::filesystem::path > vPaths;
+            for (unsigned int i=0 ; i< paths.GetCount() ; i++)
+            {
+                ::boost::filesystem::path bpath( ::fwWX::wx2std(paths[i]) );
+                vPaths.push_back(bpath);
+            }
+            ::fwData::location::MultiFiles::NewSptr multiFiles;
+            multiFiles->setPaths(vPaths);
+            location = multiFiles;
+        }
+    }
+
+
+    return location;
 }
 
-
+//------------------------------------------------------------------------------
 
 void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr loc)
 {
@@ -81,6 +129,7 @@ void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr lo
 
 }
 
+//------------------------------------------------------------------------------
 
 ::fwGui::ILocationDialog&  LocationDialog::setOption( ::fwGui::ILocationDialog::Options option)
 {
@@ -102,12 +151,22 @@ void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr lo
 return *this;
 }
 
+//------------------------------------------------------------------------------
+
+void LocationDialog::setType( ::fwGui::ILocationDialog::Types type )
+{
+    m_type = type;
+}
+
+//------------------------------------------------------------------------------
 
 // exemple ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
 {
     m_filters.insert( std::make_pair( filterName, wildcardList ));
 }
+
+//------------------------------------------------------------------------------
 
 // "BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
 wxString LocationDialog::fileFilters()
@@ -139,7 +198,5 @@ wxString LocationDialog::fileFilters()
     }
     return ::fwWX::std2wx(result);
 }
-
-
 
 }

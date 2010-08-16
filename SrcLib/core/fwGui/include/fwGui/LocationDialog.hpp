@@ -47,6 +47,10 @@ public:
     FWGUI_API ::fwGui::ILocationDialog& setOption( ::fwGui::ILocationDialog::Options option);
 
     /// override
+    FWGUI_API void setType( ::fwGui::ILocationDialog::Types type);
+
+
+    /// override
     FWGUI_API void addFilter(const std::string &filterName, const std::string &wildcardList );
 
 protected :

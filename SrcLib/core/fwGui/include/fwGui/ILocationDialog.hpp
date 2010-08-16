@@ -38,6 +38,12 @@ public:
         FILE_MUST_EXIST = 1 << 3,
     } Options;
 
+    typedef enum {
+        SINGLE_FILE,
+        FOLDER,
+        MULTI_FILES
+    } Types;
+
     typedef std::string FactoryRegistryKeyType;
 
     /// this *unique* key should  be used *for all* factory for specific LocationDialog(qt,wx,...)
@@ -46,11 +52,14 @@ public:
     FWGUI_API virtual ~ILocationDialog();
     FWGUI_API ILocationDialog();
 
-    ///set the title for the dialog
+    /// set the title for the dialog
     FWGUI_API virtual void setTitle(const std::string &title) = 0;
 
     /// set the initial location for the dialog
     FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::csptr ) =0;
+
+    /// set the type of location for the dialog (SINGLE_FILE, FORLDER, MULTI_FILES)
+    FWGUI_API virtual void setType( Types type ) =0;
 
     /// allow to set option to the file dialog mode=READ/WRITE , check=FILE_MUST_EXIST
     FWGUI_API virtual ILocationDialog& setOption( Options option) =0;

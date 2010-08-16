@@ -44,6 +44,8 @@ public:
     // FIXME ok with Folder but not singleFile
     void setDefaultLocation( ::fwData::location::ILocation::csptr );
 
+    void setType( ::fwGui::ILocationDialog::Types type );
+
     ::fwGui::ILocationDialog& setOption( ::fwGui::ILocationDialog::Options option);
 
     // exemple ( addFilter("images","*.png *.jpg");
@@ -54,6 +56,7 @@ protected:
     std::string m_title;
     ::boost::filesystem::path m_path;
     ::fwGui::ILocationDialog::Options m_style;
+    ::fwGui::ILocationDialog::Types m_type;
     std::multimap< std::string, std::string > m_filters;
 
     /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"

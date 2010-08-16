@@ -14,6 +14,7 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/MultiFiles.hpp>
 
 #include <fwGui/ILocationDialog.hpp>
 
@@ -30,19 +31,22 @@ REGISTER_BINDING( ::fwGui::ILocationDialog,
 namespace fwGuiQt
 {
 
+//------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog() : m_style(::fwGui::ILocationDialog::NONE)
+LocationDialog::LocationDialog() :
+        m_style(::fwGui::ILocationDialog::NONE),
+        m_type(::fwGui::ILocationDialog::SINGLE_FILE)
 {
 }
 
-
+//------------------------------------------------------------------------------
 
 void LocationDialog::setTitle(const std::string &title)
 {
     m_title = title;
 }
 
-
+//------------------------------------------------------------------------------
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
@@ -69,18 +73,44 @@ void LocationDialog::setTitle(const std::string &title)
         dialog.setFileMode(QFileDialog::ExistingFile);
     }
 
+    if (m_type == ::fwGui::ILocationDialog::FOLDER)
+    {
+        dialog.setFileMode(QFileDialog::DirectoryOnly);
+    }
+
+    ::fwData::location::ILocation::sptr location;
+
     if( dialog.exec() )
     {
-        ::boost::filesystem::path bpath( dialog.selectedFiles().at(0).toStdString()  );
-        return  ::fwData::location::SingleFile::New(bpath);
+        if (m_type == ::fwGui::ILocationDialog::SINGLE_FILE)
+        {
+            ::boost::filesystem::path bpath( dialog.selectedFiles().at(0).toStdString()  );
+            location = ::fwData::location::SingleFile::New(bpath);
+        }
+        else if (m_type == ::fwGui::ILocationDialog::FOLDER)
+        {
+            ::boost::filesystem::path bpath( dialog.selectedFiles().at(0).toStdString()  );
+            location = ::fwData::location::Folder::New(bpath);
+        }
+        else if (m_type == ::fwGui::ILocationDialog::MULTI_FILES)
+        {
+            ::fwData::location::MultiFiles::NewSptr multifiles;
+            std::vector< ::boost::filesystem::path > paths;
+            BOOST_FOREACH (QString filename, dialog.selectedFiles())
+            {
+                ::boost::filesystem::path bpath( filename.toStdString() );
+                paths.push_back(bpath);
+            }
+
+            multifiles->setPaths(paths);
+            location = multifiles;
+        }
+
     }
-    else
-    {
-        return  ::fwData::location::ILocation::sptr();
-    }
+   return location;
 }
 
-
+//------------------------------------------------------------------------------
 
 void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr loc)
 {
@@ -102,6 +132,14 @@ void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr lo
 
 }
 
+//------------------------------------------------------------------------------
+
+void LocationDialog::setType( ::fwGui::ILocationDialog::Types type )
+{
+    m_type = type;
+}
+
+//------------------------------------------------------------------------------
 
 ::fwGui::ILocationDialog&  LocationDialog::setOption( ::fwGui::ILocationDialog::Options option)
 {
@@ -123,12 +161,15 @@ void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr lo
     return *this;
 }
 
+//------------------------------------------------------------------------------
 
 // exemple ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
 {
     m_filters.insert( std::make_pair( filterName, wildcardList ));
 }
+
+//------------------------------------------------------------------------------
 
 // "BMP and GIF files (*.bmp *.gif)|*.bmp *.gif|PNG files (*.png)|*.png"
 QString LocationDialog::fileFilters()
@@ -149,6 +190,6 @@ QString LocationDialog::fileFilters()
     return QString::fromStdString(result);
 }
 
-
+//------------------------------------------------------------------------------
 
 } //namespace fwGuiQt

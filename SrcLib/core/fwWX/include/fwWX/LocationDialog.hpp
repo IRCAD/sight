@@ -44,6 +44,9 @@ public:
 
     ::fwGui::ILocationDialog& setOption( ::fwGui::ILocationDialog::Options option);
 
+    /// set the style of location for the dialog
+    void setType( ::fwGui::ILocationDialog::Types type );
+
     // exemple ( addFilter("images","*.png *.jpg");
     void addFilter(const std::string &filterName, const std::string &wildcardList );
 
@@ -56,6 +59,7 @@ protected:
     ::boost::filesystem::path m_path;
     unsigned long m_style;
     std::multimap< std::string, std::string > m_filters;
+    ::fwGui::ILocationDialog::Types m_type;
 
     /// helper to transform m_filters into wx encoding ("BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
     wxString fileFilters();
