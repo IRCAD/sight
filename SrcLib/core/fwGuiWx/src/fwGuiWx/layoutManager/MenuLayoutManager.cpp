@@ -93,9 +93,9 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
             actionNameInMenu += "\t" + shortcut->toString();
         }
         menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionNameInMenu ),_(""), kind ) ;
-        menuItemWx->Enable(actionInfo.m_isEnabled);
         menu->Append( menuItemWx );
         menuItem->setWxMenuItem(menuItemWx);
+        menuItemWx->Enable(actionInfo.m_isEnabled);
 
         if(!actionInfo.m_isSeparator)
         {
