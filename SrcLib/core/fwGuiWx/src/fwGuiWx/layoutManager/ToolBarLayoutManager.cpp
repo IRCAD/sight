@@ -122,14 +122,14 @@ void ToolBarLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void ToolBarLayoutManager::actionIsVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void ToolBarLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.")
 }
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     wxToolBar* toolBar = m_parent->getWxToolBar();
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
@@ -139,7 +139,7 @@ void ToolBarLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::actionIsChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void ToolBarLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     wxToolBar* toolBar = m_parent->getWxToolBar();
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);

@@ -37,11 +37,18 @@ public :
     /// Method called when the action service is starting
     FWGUI_API void actionServiceStarting();
 
-    /// Method called when the action service is checked/unchecked
-    FWGUI_API void actionServiceChecked(bool checked = true);
+    /// Set the action service is activated/inactivated.
+    FWGUI_API void setIsActive(bool isActive);
 
-    /// Return action service is checked. Is not correct with radio action.
-    FWGUI_API bool getActionServiceIsChecked();
+    /// Return action service is active.
+    FWGUI_API bool getIsActive();
+
+    /// Set the action service executable or not.
+    FWGUI_API void setIsExecutable(bool isExecutable);
+
+    /// Return action service is executable.
+    FWGUI_API bool getIsExecutable();
+
 
 protected :
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -64,7 +71,8 @@ private:
 
     ::fwGui::registrar::ActionRegistrar::sptr    m_registrar;
 
-    bool m_actionIsChecked;
+    bool m_isActive;
+    bool m_isExecutable;
 };
 
 } // namespace fwGui

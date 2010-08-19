@@ -38,8 +38,11 @@ public :
     /// Method called when an action service is starting
     FWGUI_API void actionServiceStarting(std::string actionSrvSID);
 
-    /// Method called when the action service is checked/unchecked
-    FWGUI_API void actionServiceChecked(std::string actionSrvSID, bool checked = true);
+    /// Method called when the action service is activated
+    FWGUI_API void actionServiceSetActive(std::string actionSrvSID, bool isActive);
+
+    /// Method called when the action service is executable
+    FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
 protected :
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;

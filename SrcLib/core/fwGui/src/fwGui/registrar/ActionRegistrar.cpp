@@ -45,9 +45,16 @@ void ActionRegistrar::actionServiceStarting()
 
 //-----------------------------------------------------------------------------
 
-void ActionRegistrar::actionServiceChecked(bool checked)
+void ActionRegistrar::actionServiceSetActive(bool isActive)
 {
-    ::fwGui::GuiRegistry::actionServiceChecked(m_sid, checked);
+    ::fwGui::GuiRegistry::actionServiceSetActive(m_sid, isActive);
+}
+
+//-----------------------------------------------------------------------------
+
+void ActionRegistrar::actionServiceSetExecutable(bool isExecutable)
+{
+    ::fwGui::GuiRegistry::actionServiceSetExecutable(m_sid, isExecutable);
 }
 
 //-----------------------------------------------------------------------------

@@ -15,7 +15,9 @@
 namespace fwGui
 {
 
-IActionSrv::IActionSrv() : m_actionIsChecked(false)
+IActionSrv::IActionSrv() :
+        m_isActive(false),
+        m_isExecutable(true)
 {}
 
 //-----------------------------------------------------------------------------
@@ -28,6 +30,29 @@ IActionSrv::~IActionSrv()
 void IActionSrv::initialize()
 {
     m_registrar = ::fwGui::registrar::ActionRegistrar::NewSptr(this->getUUID());
+
+    ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
+    for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
+    {
+        if( (*iter)->getName() == "state" )
+        {
+            ConfigurationType stateCfg = *iter;
+
+            if( stateCfg->hasAttribute("active") )
+            {
+                std::string isActive = stateCfg->getExistingAttributeValue("active");
+                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'", (isActive == "true") || (isActive == "false"));
+                m_isActive = (isActive == "true") ;
+            }
+
+            if( stateCfg->hasAttribute("executable") )
+            {
+                std::string isExecutable = stateCfg->getExistingAttributeValue("executable");
+                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'", (isExecutable == "true") || (isExecutable == "false"));
+                m_isExecutable = (isExecutable == "true") ;
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -46,17 +71,32 @@ void IActionSrv::actionServiceStarting()
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::actionServiceChecked(bool checked)
+void IActionSrv::setIsActive(bool isActive)
 {
-    m_actionIsChecked = checked;
-    this->m_registrar->actionServiceChecked(checked);
+    m_isActive = isActive;
+    this->m_registrar->actionServiceSetActive(isActive);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::getActionServiceIsChecked()
+bool IActionSrv::getIsActive()
 {
-    return m_actionIsChecked;
+    return m_isActive;
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::setIsExecutable(bool isExecutable)
+{
+    m_isExecutable = isExecutable;
+    this->m_registrar->actionServiceSetExecutable(isExecutable);
+}
+
+//-----------------------------------------------------------------------------
+
+bool IActionSrv::getIsExecutable()
+{
+    return m_isExecutable;
 }
 
 //-----------------------------------------------------------------------------

@@ -115,7 +115,7 @@ void ToolBarLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void ToolBarLayoutManager::actionIsVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void ToolBarLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -124,7 +124,7 @@ void ToolBarLayoutManager::actionIsVisible(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -133,7 +133,7 @@ void ToolBarLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::actionIsChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void ToolBarLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();

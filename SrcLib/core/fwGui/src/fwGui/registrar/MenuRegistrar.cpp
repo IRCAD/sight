@@ -100,6 +100,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::fwMenuItem::sptr > menuItems )
         {
             OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
             service->start();
         }
         else

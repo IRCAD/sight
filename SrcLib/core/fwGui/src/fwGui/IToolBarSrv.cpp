@@ -81,11 +81,11 @@ void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->actionIsVisible(menuItem, false);
+        m_layoutManager->menuItemSetVisible(menuItem, false);
     }
     else
     {
-        m_layoutManager->actionIsEnabled(menuItem, false);
+        m_layoutManager->menuItemSetEnabled(menuItem, false);
     }
 }
 
@@ -97,22 +97,32 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->actionIsVisible(menuItem, true);
+        m_layoutManager->menuItemSetVisible(menuItem, true);
     }
     else
     {
-        m_layoutManager->actionIsEnabled(menuItem, true);
+        m_layoutManager->menuItemSetEnabled(menuItem, true);
     }
 }
 
 
 //-----------------------------------------------------------------------------
 
-void IToolBarSrv::actionServiceChecked(std::string actionSrvSID, bool checked)
+void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
     ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
-    m_layoutManager->actionIsChecked(menuItem, checked);
+    m_layoutManager->menuItemSetChecked(menuItem, isActive);
+
+}
+
+//-----------------------------------------------------------------------------
+
+void IToolBarSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
+{
+    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+
+    m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
 
 }
 

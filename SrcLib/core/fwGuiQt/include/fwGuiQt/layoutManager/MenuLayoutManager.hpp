@@ -56,17 +56,17 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    FWGUIQT_API virtual void actionIsVisible(::fwGui::fwMenuItem::sptr menuItem, bool isVisible);
+    FWGUIQT_API virtual void menuItemSetVisible(::fwGui::fwMenuItem::sptr menuItem, bool isVisible);
 
     /**
      * @brief Set the action enable or not.
      */
-    FWGUIQT_API virtual void actionIsEnabled(::fwGui::fwMenuItem::sptr menuItem, bool isEnabled);
+    FWGUIQT_API virtual void menuItemSetEnabled(::fwGui::fwMenuItem::sptr menuItem, bool isEnabled);
 
     /**
      * @brief Set the action checked or not.
      */
-    FWGUIQT_API virtual void actionIsChecked(::fwGui::fwMenuItem::sptr, bool isChecked);
+    FWGUIQT_API virtual void menuItemSetChecked(::fwGui::fwMenuItem::sptr, bool isChecked);
 
 protected:
     ::fwGuiQt::container::QtMenuContainer::sptr m_parent;

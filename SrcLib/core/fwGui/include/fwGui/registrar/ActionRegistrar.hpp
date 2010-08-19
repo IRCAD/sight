@@ -47,8 +47,11 @@ public:
     /// Method called when the action service is starting
     FWGUI_API void actionServiceStarting();
 
-    /// Method called when the action service is checked/unchecked
-    FWGUI_API void actionServiceChecked(bool checked = true);
+    /// Method called when the action service is activated or not
+    FWGUI_API void actionServiceSetActive(bool isActive);
+
+    /// Method called when the action service is executable or not
+    FWGUI_API void actionServiceSetExecutable(bool isExecutable);
 
 protected:
 

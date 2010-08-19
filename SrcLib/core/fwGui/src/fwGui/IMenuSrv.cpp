@@ -11,6 +11,7 @@
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IMenuItemCallback.hpp"
+#include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuSrv.hpp"
 
 namespace fwGui
@@ -81,11 +82,11 @@ void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->actionIsVisible(menuItem, false);
+        m_layoutManager->menuItemSetVisible(menuItem, false);
     }
     else
     {
-        m_layoutManager->actionIsEnabled(menuItem, false);
+        m_layoutManager->menuItemSetEnabled(menuItem, false);
     }
 }
 
@@ -97,21 +98,33 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->actionIsVisible(menuItem, true);
+        m_layoutManager->menuItemSetVisible(menuItem, true);
     }
     else
     {
-        m_layoutManager->actionIsEnabled(menuItem, true);
+        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID ) ;
+        ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
+        m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void IMenuSrv::actionServiceChecked(std::string actionSrvSID, bool checked)
+void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
     ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
-    m_layoutManager->actionIsChecked(menuItem, checked);
+    m_layoutManager->menuItemSetChecked(menuItem, isActive);
+
+}
+
+//-----------------------------------------------------------------------------
+
+void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
+{
+    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+
+    m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
 
 }
 

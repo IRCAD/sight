@@ -326,7 +326,7 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::actionServiceChecked(std::string actionSid, bool checked)
+void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 {
     OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
                 m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
@@ -345,11 +345,46 @@ void GuiRegistry::actionServiceChecked(std::string actionSid, bool checked)
             ::fwGui::IToolBarSrv::sptr toolbarSrv = ::fwGui::IToolBarSrv::dynamicCast(service);
             if (menuSrv)
             {
-                menuSrv->actionServiceChecked(actionSid, checked);
+                menuSrv->actionServiceSetActive(actionSid, isActive);
             }
             else if (toolbarSrv)
             {
-                toolbarSrv->actionServiceChecked(actionSid, checked);
+                toolbarSrv->actionServiceSetActive(actionSid, isActive);
+            }
+            else
+            {
+                SLM_FATAL("Unknown service");
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecutable)
+{
+    OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
+                m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
+
+    ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
+
+
+    BOOST_FOREACH(std::string parentSid, parentSids)
+    {
+        bool service_exists = ::fwTools::UUID::exist(parentSid, ::fwTools::UUID::SIMPLE );
+        OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+        if(service_exists)
+        {
+            ::fwServices::IService::sptr service = ::fwServices::get( parentSid ) ;
+            ::fwGui::IMenuSrv::sptr menuSrv = ::fwGui::IMenuSrv::dynamicCast(service);
+            ::fwGui::IToolBarSrv::sptr toolbarSrv = ::fwGui::IToolBarSrv::dynamicCast(service);
+            if (menuSrv)
+            {
+                menuSrv->actionServiceSetExecutable(actionSid, isExecutable);
+            }
+            else if (toolbarSrv)
+            {
+                toolbarSrv->actionServiceSetExecutable(actionSid, isExecutable);
             }
             else
             {

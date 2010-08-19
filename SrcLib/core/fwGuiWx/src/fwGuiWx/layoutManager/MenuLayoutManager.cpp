@@ -154,14 +154,14 @@ void MenuLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void MenuLayoutManager::actionIsVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void MenuLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     SLM_FATAL("TODO : MenuLayoutManager::actionIsVisible not yet implemented.")
 }
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void MenuLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
     wxMenuItem *menuItem = menuItemContainer->getWxMenuItem();
@@ -170,7 +170,7 @@ void MenuLayoutManager::actionIsEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bo
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::actionIsChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void MenuLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
     wxMenuItem *menuItem = menuItemContainer->getWxMenuItem();

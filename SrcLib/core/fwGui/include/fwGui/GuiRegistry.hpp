@@ -202,10 +202,16 @@ public :
     FWGUI_API static void actionServiceStarting(std::string actionSid);
 
     /**
-     * @brief Method called when the action service is checked/unchecked.
-     * Call parent service actionServiceChecked() method
+     * @brief Method called when the action service is activated or not.
+     * Call parent service actionServiceSetActive() method
      */
-    FWGUI_API static void actionServiceChecked(std::string actionSid, bool checked=true);
+    FWGUI_API static void actionServiceSetActive(std::string actionSid, bool isActive);
+
+    /**
+     * @brief Method called when the action service is executable or not.
+     * Call parent service actionServiceSetExecutable() method
+     */
+    FWGUI_API static void actionServiceSetExecutable(std::string actionSid, bool isExecutable);
     ///@}
 
 protected :

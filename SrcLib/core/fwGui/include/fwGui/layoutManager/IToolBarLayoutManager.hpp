@@ -112,17 +112,17 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    FWGUI_API virtual void actionIsVisible(::fwGui::fwMenuItem::sptr, bool isVisible) = 0;
+    FWGUI_API virtual void menuItemSetVisible(::fwGui::fwMenuItem::sptr, bool isVisible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    FWGUI_API virtual void actionIsEnabled(::fwGui::fwMenuItem::sptr, bool isEnabled) = 0;
+    FWGUI_API virtual void menuItemSetEnabled(::fwGui::fwMenuItem::sptr, bool isEnabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    FWGUI_API virtual void actionIsChecked(::fwGui::fwMenuItem::sptr, bool isChecked) = 0;
+    FWGUI_API virtual void menuItemSetChecked(::fwGui::fwMenuItem::sptr, bool isChecked) = 0;
 
     /**
      * @brief Sets callbacks associate with toolBar items.
