@@ -40,6 +40,9 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
         {
             ConfigurationType toolBarItem = *iter;
             ActionInfo info;
+            SLM_ASSERT("Depreciated tag <state>", ! toolBarItem->hasAttribute("state"));
+            SLM_ASSERT("Depreciated tag <enable>", ! toolBarItem->hasAttribute("enable"));
+
             SLM_ASSERT("missing <name> attribute", toolBarItem->hasAttribute("name"));
             if( toolBarItem->hasAttribute("name") )
             {
@@ -57,19 +60,6 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
                 std::string style = toolBarItem->getExistingAttributeValue("style") ;
                 info.m_isCheckable = (style == "check");
                 info.m_isRadio = (style == "radio");
-
-                if ((info.m_isCheckable || info.m_isRadio) && toolBarItem->hasAttribute("state") )
-                {
-                    std::string state = toolBarItem->getExistingAttributeValue("state");
-                    info.m_isChecked = (state == "checked");
-                }
-            }
-
-            if( toolBarItem->hasAttribute("enable") )
-            {
-                std::string enable = toolBarItem->getExistingAttributeValue("enable") ;
-                OSLM_TRACE("enable : " << enable ) ;
-                info.m_isEnabled = (enable =="true");
             }
 
             m_actionInfo.push_back(info);

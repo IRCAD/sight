@@ -39,15 +39,15 @@
                     <layout>
                         <menuItem name="My item 1" style="check" icon="Bundles/TutoGui_0-1/icons/important.png" />
                         <separator />
-                        <menuItem name="My item 2" style="radio" state="checked" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                        <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                         <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                         <separator />
                         <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
-                        <menuItem name="My item B" style="radio" state="checked" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                        <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                         <separator />
-                        <menuItem name="start 2-3 / stop A-B" style="radio" state="checked" icon="Bundles/TutoGui_0-1/icons/important.png" />
+                        <separator />
+                        <menuItem name="start 2-3 / stop A-B" style="radio" icon="Bundles/TutoGui_0-1/icons/important.png" />
                         <menuItem name="start A-B / stop 2-3" style="radio" icon="Bundles/TutoGui_0-1/icons/important.png" />
-                        <separator />
                         <menuItem name="Quit" icon="Bundles/TutoGui_0-1/icons/unreadable.png"/>
                     </layout>
                 </gui>
@@ -57,8 +57,8 @@
                     <menuItem sid="item3" start="yes" />
                     <menuItem sid="item4" start="no" />
                     <menuItem sid="item5" start="no" />
-                    <menuItem sid="item6" start="yes" />
-                    <menuItem sid="item7" start="yes" />
+                    <menuItem sid="item16" start="yes" />
+                    <menuItem sid="item17" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -68,22 +68,22 @@
                     <layout>
                         <menuItem name="My item 1" shortcut="1" style="check" />
                         <separator />
-                        <menuItem name="My item 2" shortcut="2" state="checked" style="radio" />
+                        <menuItem name="My item 2" shortcut="2" style="radio" />
                         <menuItem name="My item 3" shortcut="3" style="radio" />
                         <separator />
                         <menuItem name="My item A" shortcut="A" style="radio" />
-                        <menuItem name="My item B" shortcut="B" state="checked" style="radio" />
+                        <menuItem name="My item B" shortcut="B" style="radio" />
                         <separator />
                         <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="item1" start="yes" />
-                    <menuItem sid="item2" start="yes" />
-                    <menuItem sid="item3" start="yes" />
+                    <menuItem sid="item1" start="no" />
+                    <menuItem sid="item2" start="no" />
+                    <menuItem sid="item3" start="no" />
                     <menuItem sid="item4" start="no" />
                     <menuItem sid="item5" start="no" />
-                    <menuItem sid="actionQuit" start="yes" />
+                    <menuItem sid="actionQuit" start="no" />
                 </registry>
             </service>
             
@@ -92,30 +92,37 @@
                     <layout>
                         <menuItem name="My item 1" style="check" />
                         <separator />
-                        <menuItem name="start 2-3 / stop A-B" style="radio" state="checked" />
+                        <menuItem name="start 2-3 / stop A-B" style="radio" />
                         <menuItem name="start A-B / stop 2-3" style="radio" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="item1" start="yes" />
-                    <menuItem sid="item6" start="yes" />
-                    <menuItem sid="item7" start="yes" />
+                    <menuItem sid="item1" start="no" />
+                    <menuItem sid="item16" start="no" />
+                    <menuItem sid="item17" start="no" />
                 </registry>
             </service>
             
-            <service uid="item1" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
-            <service uid="item2" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            <service uid="item1" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no">
+                <state active="true" />
+            </service>
+            <service uid="item2" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" >
+                <state active="true" />
+            </service>
             <service uid="item3" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item4" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
-            <service uid="item5" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
+            <service uid="item5" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" >
+                <state active="true" />
+            </service>
             
-            <service uid="item6" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="item16" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <state active="true" />
                 <start uid="item2" />
                 <start uid="item3" />
                 <stop uid="item4" />
                 <stop uid="item5" />
             </service>
-            <service uid="item7" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="item17" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                 <stop uid="item2" />
                 <stop uid="item3" />
                 <start uid="item4" />
@@ -194,18 +201,18 @@
             <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
                 <gui>
                     <layout>
-                        <menuItem name="My item 2" style="radio" state="checked" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                        <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                         <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                         <separator />
                         <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
-                        <menuItem name="My item B" style="radio" state="checked" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                        <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="item2" start="yes" />
-                    <menuItem sid="item3" start="yes" />
-                    <menuItem sid="item4" start="no" />
-                    <menuItem sid="item5" start="no" />
+                    <menuItem sid="item2" />
+                    <menuItem sid="item3" />
+                    <menuItem sid="item4" />
+                    <menuItem sid="item5" />
                 </registry>
             </service>
             

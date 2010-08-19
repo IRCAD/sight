@@ -55,8 +55,6 @@ public:
                 m_isSeparator(false),
                 m_isCheckable (false),
                 m_isRadio(false),
-                m_isChecked (false),
-                m_isEnabled(true),
                 m_type(DEFAULT)
             {}
 
@@ -64,8 +62,6 @@ public:
             std::string m_shortcut;
             bool        m_isCheckable;
             bool        m_isRadio;
-            bool        m_isChecked;
-            bool        m_isEnabled;
             ActionType  m_type;
             bool        m_isSeparator;
          };

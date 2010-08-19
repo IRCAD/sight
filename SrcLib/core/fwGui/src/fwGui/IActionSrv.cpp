@@ -31,6 +31,13 @@ void IActionSrv::initialize()
 {
     m_registrar = ::fwGui::registrar::ActionRegistrar::NewSptr(this->getUUID());
 
+    OSLM_ASSERT("Depreciated tag <name> in "<< this->getUUID() << " configuration.", ! m_configuration->hasAttribute("name"));
+    OSLM_ASSERT("Depreciated tag <shortcut> in "<< this->getUUID() << " configuration.", ! m_configuration->hasAttribute("shortcut"));
+    OSLM_ASSERT("Depreciated tag <enable> in "<< this->getUUID() << " configuration.", ! m_configuration->hasAttribute("enable"));
+    OSLM_ASSERT("Depreciated tag <specialAction> in "<< this->getUUID() << " configuration.", ! m_configuration->hasAttribute("specialAction"));
+    OSLM_ASSERT("Depreciated tag <style> in "<< this->getUUID() << " configuration.", ! m_configuration->hasAttribute("style"));
+    OSLM_ASSERT("Depreciated tag <state> in "<< this->getUUID() << " configuration.", ! m_configuration->hasAttribute("state"));
+
     ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
     for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
     {
@@ -67,6 +74,7 @@ void IActionSrv::actionServiceStopping()
 void IActionSrv::actionServiceStarting()
 {
     this->m_registrar->actionServiceStarting();
+    this->m_registrar->actionServiceSetActive(m_isActive);
 }
 
 //-----------------------------------------------------------------------------

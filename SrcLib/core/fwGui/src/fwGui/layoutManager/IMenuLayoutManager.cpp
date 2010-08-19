@@ -40,6 +40,10 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
         {
             ConfigurationType menuItem = *iter;
             ActionInfo info;
+
+            SLM_ASSERT("Depreciated tag <state>", ! menuItem->hasAttribute("state"));
+            SLM_ASSERT("Depreciated tag <enable>", ! menuItem->hasAttribute("enable"));
+
             SLM_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
             if( menuItem->hasAttribute("name") )
             {
@@ -56,19 +60,6 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
                 std::string style = menuItem->getExistingAttributeValue("style") ;
                 info.m_isCheckable = (style == "check");
                 info.m_isRadio = (style == "radio");
-
-                if ((info.m_isCheckable || info.m_isRadio) && menuItem->hasAttribute("state") )
-                {
-                    std::string state = menuItem->getExistingAttributeValue("state");
-                    info.m_isChecked = (state == "checked");
-                }
-            }
-
-            if( menuItem->hasAttribute("enable") )
-            {
-                std::string enable = menuItem->getExistingAttributeValue("enable") ;
-                OSLM_TRACE("enable : " << enable ) ;
-                info.m_isEnabled = (enable =="true");
             }
 
             if( menuItem->hasAttribute("specialAction") )

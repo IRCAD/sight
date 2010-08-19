@@ -45,17 +45,13 @@ public:
                 m_icon(""),
                 m_isSeparator(false),
                 m_isCheckable (false),
-                m_isRadio(false),
-                m_isChecked (false),
-                m_isEnabled(true)
+                m_isRadio(false)
             {}
 
             std::string m_name;
             std::string m_icon;
             bool        m_isCheckable;
             bool        m_isRadio;
-            bool        m_isChecked;
-            bool        m_isEnabled;
             bool        m_isSeparator;
          };
 

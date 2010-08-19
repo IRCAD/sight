@@ -95,15 +95,9 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
         menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionNameInMenu ),_(""), kind ) ;
         menu->Append( menuItemWx );
         menuItem->setWxMenuItem(menuItemWx);
-        menuItemWx->Enable(actionInfo.m_isEnabled);
 
         if(!actionInfo.m_isSeparator)
         {
-            if((actionInfo.m_isCheckable || actionInfo.m_isRadio) && actionInfo.m_isChecked)
-            {
-                menuItemWx->Check(true);
-            }
-
             m_menuItems.push_back(menuItem);
             OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
             ::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);

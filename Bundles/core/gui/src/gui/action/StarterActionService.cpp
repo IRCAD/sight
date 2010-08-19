@@ -195,7 +195,8 @@ void StarterActionService::configuring() throw( ::fwTools::Failed )
         else if ( actionType == "stop_if_exists" )  { action = STOP_IF_EXISTS; }
         else
         {
-            OSLM_FATAL("Sorry this type of \"actionType\":" << actionType <<" is not managed by StarterActionService");
+            OSLM_WARN("Sorry this type of \"actionType\":" << actionType <<" is not managed by StarterActionService");
+            continue;
         }
         SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid")) ;
         std::string uuid = actionCfg->getExistingAttributeValue("uid") ;
