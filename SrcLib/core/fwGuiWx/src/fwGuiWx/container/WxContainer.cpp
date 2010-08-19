@@ -19,7 +19,9 @@ WxContainer::WxContainer() throw() : m_container(0)
 //-----------------------------------------------------------------------------
 
 WxContainer::~WxContainer() throw()
-{}
+{
+    SLM_ASSERT( "Error during destruction : The wx container included in this class is still allocated, please call destroyContainer() before.", m_container == 0 );
+}
 
 //-----------------------------------------------------------------------------
 

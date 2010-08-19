@@ -10,16 +10,22 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/UUID.hpp>
+
 #include <fwServices/helper.hpp>
+#include <fwServices/ObjectMsg.hpp>
 
 #include "fwGui/IFrameSrv.hpp"
 
 namespace fwGui
 {
 
+const std::string IFrameSrv::CLOSE_POLICY_EXIT   = "exit";
+const std::string IFrameSrv::CLOSE_POLICY_NOTIFY = "notify";
+
 IFrameSrv::IFrameSrv() :
         m_hasMenuBar(false),
-        m_hasToolBar(false)
+        m_hasToolBar(false),
+        m_closePolicy("exit")
 {}
 
 //-----------------------------------------------------------------------------
@@ -33,6 +39,8 @@ void IFrameSrv::initialize()
 {
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+    std::vector < ConfigurationType > vectWindow = m_configuration->find("window");
+
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
@@ -62,6 +70,16 @@ void IFrameSrv::initialize()
         }
     }
 
+    if(!vectWindow.empty())
+    {
+        ConfigurationType window = vectWindow.at(0);
+        std::string onclose = window->getAttributeValue("onclose");
+        if ( !onclose.empty() )
+        {
+            m_closePolicy = onclose;
+        }
+        SLM_ASSERT("Invalid onclose value : " << m_closePolicy << ". Should be 'exit' or 'notify'", m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT);
+    }
 
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
     // find ViewRegistryManager configuration
@@ -84,7 +102,17 @@ void IFrameSrv::create()
     subViews.push_back(frame);
     m_viewRegistrar->manage(subViews);
 
-    ::fwGui::layoutManager::IFrameLayoutManager::CloseCallback fct = ::boost::bind( &::fwGui::IFrameSrv::onClose, this);
+    ::fwGui::layoutManager::IFrameLayoutManager::CloseCallback fct;
+
+     if (m_closePolicy == CLOSE_POLICY_EXIT)
+    {
+         fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseExit, this);
+    }
+    else if (m_closePolicy == CLOSE_POLICY_NOTIFY)
+    {
+        fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseNotify, this);
+    }
+
     m_frameLayoutManager->setCloseCallback(fct);
 
     if (m_hasMenuBar)
@@ -164,10 +192,21 @@ void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::onClose()
+void IFrameSrv::onCloseExit()
 {
     SLM_TRACE_FUNC();
     ::fwServices::OSR::uninitializeRootObject();
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::onCloseNotify()
+{
+    SLM_TRACE_FUNC();
+    ::fwServices::ObjectMsg::NewSptr objectMsg;
+    ::fwTools::Object::sptr srvObj = this->getObject();
+    objectMsg->addEvent( "WINDOW_CLOSED" );
+    ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
 }
 
 //-----------------------------------------------------------------------------

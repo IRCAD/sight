@@ -56,9 +56,13 @@ protected :
 
     FWGUI_API void destroy();
 
+    static const std::string CLOSE_POLICY_EXIT;
+    static const std::string CLOSE_POLICY_NOTIFY;
+
 private:
 
-    void onClose();
+    void onCloseExit();
+    void onCloseNotify();
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
     void initializeMenuBarBuilder( ::fwRuntime::ConfigurationElement::sptr menuBarConfig );
     void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
@@ -75,6 +79,10 @@ private:
 
     bool m_hasMenuBar;
     bool m_hasToolBar;
+
+    std::string m_closePolicy;
+
+
 };
 
 } // namespace fwGui
