@@ -188,21 +188,6 @@ void ViewRegistrar::manageToolBar(::fwGui::fwToolBar::sptr toolBar )
 
 void ViewRegistrar::unmanage()
 {
-    BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
-    {
-        if(sid.second.second) //service is auto started?
-        {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
-            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
-            service->stop();
-        }
-        ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);
-    }
-
-    BOOST_FOREACH( WIDContainerMapType::value_type wid, m_wids)
-    {
-        ::fwGui::GuiRegistry::unregisterWIDContainer(wid.first);
-    }
 
     if ( !m_menuBarSid.first.empty() )
     {
@@ -225,6 +210,24 @@ void ViewRegistrar::unmanage()
         }
         ::fwGui::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
     }
+
+    BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
+    {
+        if(sid.second.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);
+    }
+
+    BOOST_FOREACH( WIDContainerMapType::value_type wid, m_wids)
+    {
+        ::fwGui::GuiRegistry::unregisterWIDContainer(wid.first);
+    }
+
+
 }
 
 //-----------------------------------------------------------------------------
