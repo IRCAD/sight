@@ -89,6 +89,9 @@ void FrameLayoutManager::destroyFrame()
     m_wxFrame->Show(false);
     m_wxFrame->Unbind( wxEVT_CLOSE_WINDOW, &FrameLayoutManager::onCloseFrame, this,  m_wxFrame->GetId());
     m_wxFrame->Destroy();
+
+    m_frame->destroyContainer();
+    m_frame.reset();
 }
 
 //-----------------------------------------------------------------------------
