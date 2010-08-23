@@ -34,6 +34,7 @@ void WxToolBarContainer::clean()
 void WxToolBarContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, wxToolBar not yet initialized, cleaning impossible", m_toolBar);
+    OSLM_ASSERT("ToolBar container must be empty ( " << m_toolBar->GetChildren().GetCount() << " children).", m_toolBar->GetChildren().IsEmpty());
     m_toolBar->Destroy();
     m_toolBar = 0;
 }

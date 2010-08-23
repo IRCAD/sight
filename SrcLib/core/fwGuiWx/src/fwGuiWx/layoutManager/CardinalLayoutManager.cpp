@@ -45,7 +45,10 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     SLM_ASSERT("dynamicCast fwContainer to WxContainer failed", m_parentContainer);
 
     wxWindow* wxContainer = m_parentContainer->getWxContainer();
-    m_manager = new wxAuiManager(  wxContainer  );
+
+    // Set no flags on wxAuiManager constructor to disable m_hint_wind internal frame construction
+    // this frame is not correctly destroyed
+    m_manager = new wxAuiManager(  wxContainer, 0 /* no flag */);
     std::list< ViewInfo> views = this->getViewsInfo();
 
     BOOST_FOREACH ( ViewInfo viewInfo, views)
@@ -96,9 +99,7 @@ void CardinalLayoutManager::destroyLayout()
 {
     m_manager->UnInit() ;
     this->destroySubViews();
-
-    // wxAuiManager creates frame in container
-    m_parentContainer->clean();
+    delete m_manager;
 }
 
 //-----------------------------------------------------------------------------

@@ -188,6 +188,16 @@ void ViewRegistrar::manageToolBar(::fwGui::fwToolBar::sptr toolBar )
 
 void ViewRegistrar::unmanage()
 {
+    if ( !m_toolBarSid.first.empty() )
+    {
+        if(m_toolBarSid.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_toolBarSid.first, ::fwTools::UUID::SIMPLE ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
+    }
 
     if ( !m_menuBarSid.first.empty() )
     {
@@ -200,16 +210,6 @@ void ViewRegistrar::unmanage()
         ::fwGui::GuiRegistry::unregisterSIDMenuBar(m_menuBarSid.first);
     }
 
-    if ( !m_toolBarSid.first.empty() )
-    {
-        if(m_toolBarSid.second) //service is auto started?
-        {
-            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_toolBarSid.first, ::fwTools::UUID::SIMPLE ) );
-            ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
-            service->stop();
-        }
-        ::fwGui::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
-    }
 
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
     {

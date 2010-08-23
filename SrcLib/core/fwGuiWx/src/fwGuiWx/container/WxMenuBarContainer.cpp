@@ -35,7 +35,7 @@ void WxMenuBarContainer::clean()
 void WxMenuBarContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, wxMenuBar not yet initialized", m_menuBar);
-
+    OSLM_ASSERT("ToolBar container must be empty ( " << m_menuBar->GetMenuCount() << " children).", m_menuBar->GetMenuCount() == 0);
     m_menuBar->Destroy();
     m_menuBar = 0;
 }

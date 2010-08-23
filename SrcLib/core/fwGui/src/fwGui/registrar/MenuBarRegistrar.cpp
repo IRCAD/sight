@@ -94,6 +94,14 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::fwMenu::sptr > menus )
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             service->start();
         }
+        else
+        {
+            bool service_exists = ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE );
+            if (!service_exists || ::fwServices::get( sid.first )->isStopped())
+            {
+                ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
+            }
+        }
     }
 }
 

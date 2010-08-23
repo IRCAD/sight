@@ -57,12 +57,12 @@ void MenuBarBuilder::createMenuBar( ::fwGui::fwContainer::sptr parent )
 
 void MenuBarBuilder::destroyMenuBar()
 {
-    this->m_menuBar->clean();
     SLM_ASSERT("Sorry, the parent container is not a WxContainer", m_parent);
     wxFrame *frame = wxDynamicCast( m_parent->getWxContainer() , wxFrame ) ;
     SLM_ASSERT("Sorry, the parent container must be a wxFrame", frame ) ;
     if (frame)
     {
+        OSLM_ASSERT("ToolBar container must be empty ( " << frame->GetMenuBar()->GetMenuCount() << " children).", frame->GetMenuBar()->GetMenuCount() == 0);
         frame->SetMenuBar( NULL );
     }
 }

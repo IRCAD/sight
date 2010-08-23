@@ -88,7 +88,7 @@ std::string Selector::show()
     {
         selection = typeCtrl->GetStringSelection();
     }
-
+    dialog->Destroy();
     return selection;
 }
 
