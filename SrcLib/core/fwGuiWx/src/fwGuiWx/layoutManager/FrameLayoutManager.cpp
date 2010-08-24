@@ -52,17 +52,27 @@ void FrameLayoutManager::createFrame()
     }
     // wxWidget initialization
     wxInitAllImageHandlers();
-    m_wxFrame = new ::fwWX::wxMainFrame(wxTheApp->GetTopWindow(),
-            wxNewId(),
-            ::fwWX::std2wx(frameInfo.m_name),
-            wxDefaultPosition,
-            wxDefaultSize,
-            wxDEFAULT_FRAME_STYLE
-            );
 
     if(!wxTheApp->GetTopWindow())
     {
+        m_wxFrame = new ::fwWX::wxMainFrame(wxTheApp->GetTopWindow(),
+                wxNewId(),
+                ::fwWX::std2wx(frameInfo.m_name),
+                 wxDefaultPosition,
+                 wxDefaultSize,
+                 wxDEFAULT_FRAME_STYLE
+        );
         wxTheApp->SetTopWindow( m_wxFrame ) ;
+    }
+    else
+    {
+        m_wxFrame = new wxFrame(wxTheApp->GetTopWindow(),
+                wxNewId(),
+                ::fwWX::std2wx(frameInfo.m_name),
+                 wxDefaultPosition,
+                 wxDefaultSize,
+                 wxDEFAULT_FRAME_STYLE
+        );
     }
 
     m_wxFrame->SetMinSize(wxSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second));
@@ -89,7 +99,13 @@ void FrameLayoutManager::destroyFrame()
     m_wxFrame->Show(false);
     m_wxFrame->Unbind( wxEVT_CLOSE_WINDOW, &FrameLayoutManager::onCloseFrame, this,  m_wxFrame->GetId());
 
+    if ( wxTheApp->GetTopWindow() != m_wxFrame )
+    {
+        m_wxFrame->Reparent(NULL);
+    }
+
     m_frame->destroyContainer();
+
     m_frame.reset();
 }
 

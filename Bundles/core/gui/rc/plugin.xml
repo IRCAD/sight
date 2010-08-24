@@ -66,6 +66,11 @@
         <implements>::fwTools::Object</implements>
     </point>
     
+    <point id="::gui::action::ConfigActionSrv">
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
     <!-- 
     <point id="::gui::action::ActionNotifyService">
         <implements>::fwGui::IActionSrv</implements>
