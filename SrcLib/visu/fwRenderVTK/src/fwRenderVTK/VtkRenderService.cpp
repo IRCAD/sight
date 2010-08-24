@@ -149,7 +149,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     const std::string objectId      = conf->getAttributeValue("objectId");
     const std::string adaptor       = conf->getAttributeValue("class");
     const std::string uid           = conf->getAttributeValue("uid");
-    const std::string compositeName = composite->getName();
+    const std::string compositeName = "self";
 
     SLM_ASSERT( "'id' required attribute missing or empty"      , !id.empty() );
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );

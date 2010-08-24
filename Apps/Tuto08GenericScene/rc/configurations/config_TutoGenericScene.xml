@@ -139,7 +139,7 @@
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
 
                     <renderer id="default" background="0.0" />
-                    <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="myCompositeVisu">
+                    <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                         <config renderer="default" picker="" />
                     </adaptor>
 
@@ -150,7 +150,7 @@
                     <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
                         <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
                     </adaptor>
-                    <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="myCompositeVisu" >
+                    <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                         <config renderer="default" />
                     </adaptor>
                 </scene>
