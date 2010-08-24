@@ -57,6 +57,7 @@ protected :
      * @param[in]   list inputs/outputs configuration
      */
     void configureIO( ::fwTools::Object::sptr io, const ::fwRuntime::ConfigurationElement::sptr list) ;
+
 };
 
 /**
@@ -89,6 +90,12 @@ public :
      * Parse the composite configuratiob element to configure and add its objets.
      */
     FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
+
+private :
+
+    /// To verify some conditions in xml file
+    bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+
 };
 
 

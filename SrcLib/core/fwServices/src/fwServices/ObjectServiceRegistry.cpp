@@ -123,7 +123,9 @@ void ObjectServiceRegistry::initializeRootObject()
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
 
         std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-        for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
+        for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
+                iter != extensions.end() ;
+                ++iter )
         {
             if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
             {
