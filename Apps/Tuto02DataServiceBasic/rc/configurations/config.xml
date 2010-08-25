@@ -2,7 +2,7 @@
 <extension id="tutoDataServiceBasicConfig" implements="::fwData::Image">
 
     <!-- In tutoDataServiceBasic, the central data  object is a ::fwData::Image type.-->
-    <object id="tutoDataServiceBasicImage" type="::fwData::Image">
+    <object type="::fwData::Image">
 
         <!-- Reading service. Here, the service unique identifier (uid) is set to the myReaderPathFile value.
         In this tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.

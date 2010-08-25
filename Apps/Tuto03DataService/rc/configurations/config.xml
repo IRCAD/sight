@@ -2,7 +2,7 @@
 <extension id="tutoDataServiceConfig" implements="::fwData::Image">
 
     <!-- The root data object in tutoDataService is a ::fwData::Image. -->
-    <object id="tutoDataServiceImage" type="::fwData::Image">
+    <object type="::fwData::Image">
 
 
         <!-- Graphical user interface manager.

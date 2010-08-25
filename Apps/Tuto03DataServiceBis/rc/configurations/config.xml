@@ -2,7 +2,7 @@
 <extension id="tutoDataServiceConfig" implements="::fwData::TriangularMesh">
 
     <!-- The root data object in tutoDataService is a ::fwData::TriangularMesh. -->
-    <object id="tutoDataServiceTriangularMesh" type="::fwData::TriangularMesh">
+    <object type="::fwData::TriangularMesh">
 
 
         <!-- Graphical user interface manager. The identifier (id) of the container is 900, it's a wxWidgets id.

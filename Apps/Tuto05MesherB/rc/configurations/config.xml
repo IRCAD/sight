@@ -3,7 +3,7 @@
     <extension id="MesherV2Config" implements="::fwData::Composite">
 
         <!--  Composite data creation. -->
-        <object id="Img_And_Mesh" type="::fwData::Composite">
+        <object type="::fwData::Composite">
 
             <!-- Frame & View -->
 
@@ -123,55 +123,61 @@
                 Image object creation Services contained between the tags <object> and </object>
                 are associated to the Image data.
             -->
-            <object id="myImage" uid="myImage" type="::fwData::Image">
+            <item key="myImage">
+                <object uid="myImage" type="::fwData::Image">
 
-                <!--
-                Services associated to the Image data :
-                Visualization, reading and writing service creation.
-                -->
-                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
+                    <!--
+                    Services associated to the Image data :
+                    Visualization, reading and writing service creation.
+                    -->
+                    <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
 
-                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no">
-                    <type mode="reader" />
-                </service>
+                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no">
+                        <type mode="reader" />
+                    </service>
 
-                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerImageFile" autoComChannel="no">
-                    <type mode="writer" />
-                </service>
+                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerImageFile" autoComChannel="no">
+                        <type mode="writer" />
+                    </service>
 
-            </object>
+                </object>
+            </item>
 
             <!--
                 TriangularMesh objet creation. Services contained between the tags <object> and </object> are
                 associa ted to the TriangularMesh data.
              -->
-            <object id="myMesh1" uid="myMesh1" type="::fwData::TriangularMesh">
+            <item key="myMesh1">
+                <object uid="myMesh1" type="::fwData::TriangularMesh">
 
-                <!--
-                    Services associated to the TriangularMesh data :
-                    Visualization, reading and writing service creation.
-                -->
-                <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes">
-                    <masterSlaveRelation>master</masterSlaveRelation>
-                </service>
+                    <!--
+                        Services associated to the TriangularMesh data :
+                        Visualization, reading and writing service creation.
+                    -->
+                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes">
+                        <masterSlaveRelation>master</masterSlaveRelation>
+                    </service>
 
-            </object>
+                </object>
+            </item>
 
             <!--
                 TriangularMesh objet creation. Services contained between the tags <object> and </object> are
                 associa ted to the TriangularMesh data.
              -->
-            <object id="myMesh2" uid="myMesh2" type="::fwData::TriangularMesh">
+            <item key="myMesh2">
+                <object uid="myMesh2" type="::fwData::TriangularMesh">
 
-                <!--
-                    Services associated to the TriangularMesh data :
-                    Visualization, reading and writing service creation.
-                -->
-                <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes">
-                    <masterSlaveRelation>master</masterSlaveRelation>
-                </service>
+                    <!--
+                        Services associated to the TriangularMesh data :
+                        Visualization, reading and writing service creation.
+                    -->
+                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes">
+                        <masterSlaveRelation>master</masterSlaveRelation>
+                    </service>
 
-            </object>
+                </object>
+            </item>
 
             <!--
                 In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and TriangularMesh data are not started

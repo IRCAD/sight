@@ -2,7 +2,7 @@
 <extension id="tutoComChannelConfig" implements="::fwData::TriangularMesh">
 
     <!-- In tutoComChannel, the main data object type is ::fwData::TriangularMesh.-->
-    <object id="tutoComChannelMesh" type="::fwData::TriangularMesh">
+    <object type="::fwData::TriangularMesh">
 
         <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
             <gui>

@@ -2,62 +2,66 @@
 <extension id="tutoLoaderExternalDataConfig" implements="::fwData::Composite">
 
     <!-- The root data object in TutoConfigurations is a ::fwData::Composite. because it has to manage several objects-->
-    <object id="root" type="::fwData::Composite">
+    <object type="::fwData::Composite">
     
         <!--  a ::fwData::Image. -->
-        <object id="tutoLoaderExternalDataImage" type="::fwData::Image">
-            <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
-            we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "Open image".
-            In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile".
-            -->
-            <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
-                <start uid="myReaderPathFile"/>
-            </service>
-            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myReaderPathFile" autoComChannel="no">
-                <type mode="reader" />
-                <selection mode="exclude" />
-                <addSelection service="::ioXML::FwXMLGenericReaderService" />
-            </service>
-    
-            <!-- The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
-            we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "save image".
-            In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myWriterPathFile".
-            -->
-            <service uid="action_SaveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
-                <start uid="myWriterPathFile"/>
-            </service>
-            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myWriterPathFile" autoComChannel="no">
-                <type mode="writer" />
-                <selection mode="exclude" />
-                <addSelection service="::ioXML::FwXMLGenericWriterService" />
-            </service>
-    
-            <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images.-->
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
-            
-        </object>
+        <item key="tutoLoaderExternalDataImage">
+            <object type="::fwData::Image">
+                <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
+                we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "Open image".
+                In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile".
+                -->
+                <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+                    <start uid="myReaderPathFile"/>
+                </service>
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myReaderPathFile" autoComChannel="no">
+                    <type mode="reader" />
+                    <selection mode="exclude" />
+                    <addSelection service="::ioXML::FwXMLGenericReaderService" />
+                </service>
+        
+                <!-- The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
+                we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "save image".
+                In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myWriterPathFile".
+                -->
+                <service uid="action_SaveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+                    <start uid="myWriterPathFile"/>
+                </service>
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myWriterPathFile" autoComChannel="no">
+                    <type mode="writer" />
+                    <selection mode="exclude" />
+                    <addSelection service="::ioXML::FwXMLGenericWriterService" />
+                </service>
+        
+                <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images.-->
+                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
+                
+            </object>
+        </item>
         
         <!--  a ::fwData::Composite uses to store extra information. -->
-        <object id="ExternalData" type="::fwData::Composite">
-            <service implementation="::ioTuto::ExternalDataReaderService" type="::io::IReader" uid="loadExternalData" autoComChannel="no" >
-            </service>
-            <service implementation="::ioTuto::CompositeReaderService" type="::io::IReader" uid="loadExternalDataNative" autoComChannel="no" >
-            </service>
-            <service implementation="::ioTuto::CompositeWriterService" type="::io::IWriter" uid="saveExternalData" autoComChannel="no" >
-            </service>
-    
-            <service uid="ActionLoadExternalData" name="Import External data (*.us file)" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="loadExternalData" />
-            </service>
-    
-            <service uid="ActionSaveExternalData" name="Save External data (*.xml file)" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="saveExternalData" />
-            </service>
-              <service uid="ActionLoadExternalDataNative" name="Load External data (*.xml file)" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="loadExternalDataNative" />
-            </service>
-        </object>
-    
+        <item key="ExternalData">
+            <object type="::fwData::Composite">
+                <service implementation="::ioTuto::ExternalDataReaderService" type="::io::IReader" uid="loadExternalData" autoComChannel="no" >
+                </service>
+                <service implementation="::ioTuto::CompositeReaderService" type="::io::IReader" uid="loadExternalDataNative" autoComChannel="no" >
+                </service>
+                <service implementation="::ioTuto::CompositeWriterService" type="::io::IWriter" uid="saveExternalData" autoComChannel="no" >
+                </service>
+        
+                <service uid="ActionLoadExternalData" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                    <start uid="loadExternalData" />
+                </service>
+        
+                <service uid="ActionSaveExternalData" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                    <start uid="saveExternalData" />
+                </service>
+                  <service uid="ActionLoadExternalDataNative" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                    <start uid="loadExternalDataNative" />
+                </service>
+            </object>
+        </item>
+        
          <!-- Graphical user interface manager. The identifier (id) of the container is 900, it's a wxWidgets id.
          In the tag <menus> we specify the identifiers of different services for the different menus.
          In this tutorial, only one service (::gui::aspect::IMenu type) is created. 

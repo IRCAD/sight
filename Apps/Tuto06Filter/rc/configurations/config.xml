@@ -1,7 +1,7 @@
 <plugin id="FilterConfiguration">
     <extension id="FilterConfig" implements="::fwData::Composite">
     <!-- Root object -->
-    <object id="FilterConfig" type="::fwData::Composite">
+    <object type="::fwData::Composite">
         <!-- Windows & Main Menu -->
         <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
             <gui>
@@ -80,16 +80,20 @@
         </service>
         <!-- Services on objects -->
         <!-- 1st Object of the composite -->
-        <object id="myImage1" uid="myImage1" type="::fwData::Image">
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoComChannel="yes" />
-            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
-                <type mode="reader"/>
-            </service>
-        </object>
+        <item key="myImage1">
+            <object uid="myImage1" type="::fwData::Image">
+                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoComChannel="yes" />
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
+                    <type mode="reader"/>
+                </service>
+            </object>
+        </item>
         <!-- 2nd Object of the composite -->       
-        <object id="myImage2" uid="myImage2" type="::fwData::Image">
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage2" autoComChannel="yes" />
-        </object> 
+        <item key="myImage2">
+            <object uid="myImage2" type="::fwData::Image">
+                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage2" autoComChannel="yes" />
+            </object> 
+        </item>
     
     <!-- Starting order of services -->
     <start type="::fwGui::IFrameSrv" />

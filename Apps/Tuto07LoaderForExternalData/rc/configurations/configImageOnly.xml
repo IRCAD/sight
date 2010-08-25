@@ -2,36 +2,38 @@
 <extension id="tutoLoaderExternalDataConfig" implements="::fwData::Composite">
 
     <!-- The root data object in TutoConfigurations is a ::fwData::Composite. because it has to manage several objects -->
-    <object id="root" type="::fwData::Composite">
+    <object type="::fwData::Composite">
         <!--  a ::fwData::Image. -->
-         <object id="tutoLoaderExternalDataImage" type="::fwData::Image">
-            <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
-            we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "Open image".
-            In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile". -->
-            <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
-                <start uid="myReaderPathFile"/>
-            </service>
-            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myReaderPathFile" autoComChannel="no">
-                <type mode="reader" />
-                <selection mode="exclude" />
-                <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
-            </service>
-            <service implementation="::ctrlSelection::wrapper::ImageWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newImage" autoComChannel="yes" />
-    
-            <!-- The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
-            we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "save image".
-            In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myWriterPathFile". -->
-            <service uid="action_SaveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
-                <start uid="myWriterPathFile"/>
-            </service>
-            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myWriterPathFile" autoComChannel="no">
-                <type mode="writer" />
-            </service>
-    
-            <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images. -->
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
-            
-        </object>
+        <item key="tutoLoaderExternalDataImage">
+             <object type="::fwData::Image">
+                <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
+                we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "Open image".
+                In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile". -->
+                <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+                    <start uid="myReaderPathFile"/>
+                </service>
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myReaderPathFile" autoComChannel="no">
+                    <type mode="reader" />
+                    <selection mode="exclude" />
+                    <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
+                </service>
+                <service implementation="::ctrlSelection::wrapper::ImageWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newImage" autoComChannel="yes" />
+        
+                <!-- The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
+                we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "save image".
+                In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myWriterPathFile". -->
+                <service uid="action_SaveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+                    <start uid="myWriterPathFile"/>
+                </service>
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myWriterPathFile" autoComChannel="no">
+                    <type mode="writer" />
+                </service>
+        
+                <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images. -->
+                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
+                
+            </object>
+        </item>
         
          <!-- Graphical user interface manager. The identifier (id) of the container is 900, it's a wxWidgets id.
          In the tag <menus> we specify the identifiers of different services for the different menus.
