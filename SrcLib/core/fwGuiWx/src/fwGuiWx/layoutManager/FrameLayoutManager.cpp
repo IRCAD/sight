@@ -70,7 +70,7 @@ void FrameLayoutManager::createFrame()
                 wxNewId(),
                 ::fwWX::std2wx(frameInfo.m_name),
                  wxDefaultPosition,
-                 wxDefaultSize,
+                 wxSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second),
                  wxDEFAULT_FRAME_STYLE
         );
     }
