@@ -130,24 +130,25 @@ void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
 void SwapperSrv::starting()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    if(m_dummyStopMode)
+
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+
+    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+    for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
     {
-        ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-        for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
+        if ((*iter)->getName() == "object")
         {
-            if ((*iter)->getName() == "object")
+            const std::string objectId      = (*iter)->getAttributeValue("id");
+
+            if (composite->find(objectId) != composite->end())
             {
-                this->initOnDummyObject( *iter );
+                this->addObject(objectId, (*composite)[objectId]);
             }
-        }
-    }
-    BOOST_FOREACH( SubServicesMapType::value_type subServicesElt, m_objectsSubServices)
-    {
-        SubServicesVecType subServices = subServicesElt.second;
-        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
-        {
-            OSLM_ASSERT("SubService on " << subServicesElt.first <<" expired !", subSrv->getService() );
-            subSrv->getService()->start();
+            else if (m_dummyStopMode)
+            {
+                // Initialize on dummy objects
+                this->initOnDummyObject( objectId );
+            }
         }
     }
 }
@@ -295,67 +296,39 @@ void SwapperSrv::removeObject( const std::string objectId )
 }
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::initOnDummyObject( ConfigurationType conf )
+void SwapperSrv::initOnDummyObject( std::string objectId )
 {
-    SLM_ASSERT("Missing <object> tag!", conf->getName() == "object");
-     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+    SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
 
-     const std::string objectId      = conf->getAttributeValue("id");
-     const std::string objectType    = conf->getAttributeValue("type");
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
 
-     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
-     SLM_ASSERT( "'type' required attribute missing or empty", !objectType.empty() );
+    OSLM_ASSERT(objectId << " not found in composite.", composite->find(objectId) == composite->end());
 
-     const unsigned int compositeObjectCount = composite->getRefMap().count(objectId);
+    ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
+    const std::string objectType    = conf->getAttributeValue("type");
+    SLM_ASSERT( "'type' required attribute missing or empty", !objectType.empty() );
 
-     OSLM_TRACE_IF(objectId << " not found in composite.", !(compositeObjectCount == 1));
+    // Any subServices have been registered with object.
+    if ( m_objectsSubServices.count(objectId) == 0 )
+    {
+        OSLM_TRACE ( "'"<< objectId << "' nonexistent'");
 
-     ::fwTools::Object::sptr object;
-     if (compositeObjectCount)
-     {
-         object = ::fwTools::Object::dynamicCast(composite->getRefMap()[objectId]);
-     }
-
-     // Any subServices have been registered with object.
-     if ( m_objectsSubServices.count(objectId) == 0 )
-     {
-         // Object exists in Composite, so we create all associated subServices with it
-         if(object)
-         {
-             SubServicesVecType subVecSrv;
-             BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
-             {
-                 ::fwServices::IService::sptr srv = ::fwServices::add( object, cfg );
-                 OSLM_ASSERT("Instantiation Service failed on object "<<object, srv);
-                 srv->configure();
-                 SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
-                 subSrv->m_config = cfg;
-                 subSrv->m_service = srv;
-                 subVecSrv.push_back(subSrv);
-             }
-             m_objectsSubServices[objectId] = subVecSrv;
-         }
-         // Object isn't present in the Composite, so we create all associated subServices with a dummy object
-         else
-         {
-             OSLM_TRACE ( "'"<< objectId << "' nonexistent'");
-
-             ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
-             SubServicesVecType subVecSrv;
-             BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
-             {
-                 ::fwServices::IService::sptr srv = ::fwServices::add( dummyObj, cfg );
-                 OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
-                 srv->configure();
-                 SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
-                 subSrv->m_config = cfg;
-                 subSrv->m_service = srv;
-                 subSrv->m_dummy = dummyObj;
-                 subVecSrv.push_back(subSrv);
-             }
-             m_objectsSubServices[objectId] = subVecSrv;
-         }
-     }
+        ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
+        SubServicesVecType subVecSrv;
+        BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+        {
+            ::fwServices::IService::sptr srv = ::fwServices::add( dummyObj, cfg );
+            OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
+            srv->configure();
+            SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
+            subSrv->m_config = cfg;
+            subSrv->m_service = srv;
+            subSrv->m_dummy = dummyObj;
+            subVecSrv.push_back(subSrv);
+            subSrv->getService()->start();
+        }
+        m_objectsSubServices[objectId] = subVecSrv;
+    }
 }
 
 //-----------------------------------------------------------------------------

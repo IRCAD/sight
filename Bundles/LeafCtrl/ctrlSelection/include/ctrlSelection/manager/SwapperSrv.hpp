@@ -114,7 +114,7 @@ protected:
     typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
 
 
-    void initOnDummyObject( ConfigurationType conf );
+    void initOnDummyObject( std::string objectId );
     void addObjects( ::fwData::Composite::sptr _composite );
     void addObject( const std::string objectId, ::fwTools::Object::sptr object );
     void swapObjects( ::fwData::Composite::sptr _composite );
