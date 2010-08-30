@@ -7,6 +7,7 @@
 #include <wx/evtloop.h>
 
 #include <boost/foreach.hpp>
+#include <boost/assign/list_of.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
@@ -27,6 +28,12 @@ REGISTER_BINDING( ::fwGui::layoutManager::IFrameLayoutManager,
 
 namespace fwGui
 {
+
+//-----------------------------------------------------------------------------
+
+const std::map< ::fwGui::layoutManager::IFrameLayoutManager::Style, long> FrameLayoutManager::FWSTYLE_TO_WXSTYLE =
+        ::boost::assign::map_list_of(::fwGui::layoutManager::IFrameLayoutManager::DEFAULT,wxDEFAULT_FRAME_STYLE)
+                                    (::fwGui::layoutManager::IFrameLayoutManager::STAY_ON_TOP, wxDEFAULT_FRAME_STYLE | wxSTAY_ON_TOP);
 
 //-----------------------------------------------------------------------------
 
@@ -60,7 +67,7 @@ void FrameLayoutManager::createFrame()
                 ::fwWX::std2wx(frameInfo.m_name),
                  wxDefaultPosition,
                  wxDefaultSize,
-                 wxDEFAULT_FRAME_STYLE
+                 FWSTYLE_TO_WXSTYLE.find(frameInfo.m_style)->second
         );
         wxTheApp->SetTopWindow( m_wxFrame ) ;
     }
@@ -71,7 +78,7 @@ void FrameLayoutManager::createFrame()
                 ::fwWX::std2wx(frameInfo.m_name),
                  wxDefaultPosition,
                  wxSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second),
-                 wxDEFAULT_FRAME_STYLE
+                 FWSTYLE_TO_WXSTYLE.find(frameInfo.m_style)->second
         );
     }
 

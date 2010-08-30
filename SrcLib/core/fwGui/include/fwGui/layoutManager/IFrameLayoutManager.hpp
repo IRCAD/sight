@@ -44,7 +44,8 @@ public:
     /// Defines all possible style for a frame
     typedef enum
     {
-        NONE
+        DEFAULT,
+        STAY_ON_TOP
      } Style;
 
      typedef std::string RegistryKeyType;
@@ -55,7 +56,8 @@ public:
 
          FrameInfo() :
              m_name (""),
-             m_minSize (std::make_pair(-1,-1))
+             m_minSize (std::make_pair(-1,-1)),
+             m_style (DEFAULT)
          {}
 
          /// Application name.
@@ -64,7 +66,6 @@ public:
          ::boost::filesystem::path        m_iconPath;
          /// Application minimum size (min width and min height)
          std::pair< int, int >            m_minSize;
-         /// Application minimum width.
          /// Style
          Style                            m_style;
      };

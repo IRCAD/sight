@@ -45,7 +45,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     std::vector < ConfigurationType > name    = configuration->find("name");
     std::vector < ConfigurationType > icon    = configuration->find("icon");
     std::vector < ConfigurationType > minSize = configuration->find("minSize");
-    std::vector < ConfigurationType > styles = configuration->find("styles");
+    std::vector < ConfigurationType > styles = configuration->find("style");
 
     if(!name.empty())
     {
@@ -72,7 +72,22 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
 
     if(!styles.empty())
     {
-        SLM_FATAL("[TODO] Styles not yet available");
+        ::fwRuntime::ConfigurationElement::sptr stylesCfgElt = styles.at(0);
+        SLM_FATAL_IF("<style> node must contain mode attribute", !stylesCfgElt->hasAttribute("mode") );
+        const std::string style = stylesCfgElt->getExistingAttributeValue("mode");
+
+        if (style == "DEFAULT")
+        {
+            m_frameInfo.m_style = DEFAULT;
+        }
+        else if (style == "STAY_ON_TOP")
+        {
+            m_frameInfo.m_style = STAY_ON_TOP;
+        }
+        else
+        {
+            OSLM_FATAL("Sorry, style "<<style<< " is unknown.")
+        }
     }
 }
 

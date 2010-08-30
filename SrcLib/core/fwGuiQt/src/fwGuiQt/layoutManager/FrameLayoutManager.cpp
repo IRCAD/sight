@@ -67,6 +67,11 @@ void FrameLayoutManager::createFrame()
     {
         qApp->setActiveWindow(m_qtWindow);
     }
+    if (frameInfo.m_style == ::fwGui::layoutManager::IFrameLayoutManager::STAY_ON_TOP)
+    {
+        m_qtWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
+    }
+
     m_qtWindow->show();
 
     m_qtWindow->setCentralWidget(new QWidget(m_qtWindow));
