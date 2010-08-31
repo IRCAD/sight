@@ -123,6 +123,9 @@ public:
      */
     FWSERVICES_API static ::fwTools::Object::sptr getRootObject() ;
 
+    /// Return some informations contain in the registry
+    FWSERVICES_API static std::string getRegistryInformation();
+
     //@}
 
     /**
