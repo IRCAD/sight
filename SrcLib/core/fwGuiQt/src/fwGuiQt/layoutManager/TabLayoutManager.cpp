@@ -87,6 +87,7 @@ void TabLayoutManager::destroyLayout()
 {
     QWidget* qtContainer = m_parentContainer->getQtContainer();
     qtContainer->layout()->deleteLater();
+    qtContainer->setLayout(0);
     this->destroySubViews();
     m_tabWidget->clear();
     m_parentContainer->clean();

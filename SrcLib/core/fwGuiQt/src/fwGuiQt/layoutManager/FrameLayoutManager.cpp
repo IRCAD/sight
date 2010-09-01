@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QIcon>
+#include <QLayout>
 
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -89,8 +90,16 @@ void FrameLayoutManager::createFrame()
 void FrameLayoutManager::destroyFrame()
 {
     QObject::disconnect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
+
+    if (m_qtWindow->layout())
+    {
+        m_qtWindow->layout()->deleteLater();
+        m_qtWindow->setLayout(0);
+    }
+
     m_qtWindow->setParent(0);
     m_qtWindow->deleteLater();
+    m_frame->destroyContainer();
 }
 
 //-----------------------------------------------------------------------------

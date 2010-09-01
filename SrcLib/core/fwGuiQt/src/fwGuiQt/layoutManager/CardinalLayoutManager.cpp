@@ -153,13 +153,16 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 
 void CardinalLayoutManager::destroyLayout()
 {
-    QWidget *qtContainer = m_parentContainer->getQtContainer();
-    qtContainer->layout()->deleteLater();
-    this->destroySubViews();
-    m_parentContainer->clean();
     m_qtWindow->hide();
     m_qtWindow->setParent(0);
     m_qtWindow->deleteLater();
+    m_parentContainer->clean();
+    this->destroySubViews();
+    QWidget *qtContainer = m_parentContainer->getQtContainer();
+    qtContainer->layout()->deleteLater();
+    qtContainer->setLayout(0);
+    m_parentContainer->clean();
+
 }
 
 //-----------------------------------------------------------------------------

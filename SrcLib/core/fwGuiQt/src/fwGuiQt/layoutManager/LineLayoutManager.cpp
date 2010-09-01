@@ -104,6 +104,7 @@ void LineLayoutManager::destroyLayout()
     this->destroySubViews();
     QWidget *qtContainer = m_parentContainer->getQtContainer();
     qtContainer->layout()->deleteLater();
+    qtContainer->setLayout(0);
     m_parentContainer->clean();
 }
 
