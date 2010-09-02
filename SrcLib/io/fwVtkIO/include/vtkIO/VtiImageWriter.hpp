@@ -36,7 +36,7 @@ class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData:
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (VtiImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (VtiImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
                                                      (()),
                                                      new  VtiImageWriter
                                                 );

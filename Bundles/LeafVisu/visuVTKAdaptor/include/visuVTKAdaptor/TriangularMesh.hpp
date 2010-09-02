@@ -66,7 +66,6 @@ public:
     VISUVTKADAPTOR_API void removeDepthSortCommand        ();
 #endif
 
-
 protected:
 
    VISUVTKADAPTOR_API void doStart    () throw(fwTools::Failed);
@@ -132,6 +131,11 @@ protected:
     vtkDepthSortPolyData *m_depthSort;
     bool m_hasAlpha;
 #endif
+
+public :
+
+   VISUVTKADAPTOR_API vtkActor * getActor(){ return m_actor; }
+
 };
 
 

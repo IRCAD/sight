@@ -36,7 +36,7 @@ class VtiImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData:
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (VtiImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro(     (VtiImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
                                                      (()),
                                                      new  VtiImageReader
                                                 );
