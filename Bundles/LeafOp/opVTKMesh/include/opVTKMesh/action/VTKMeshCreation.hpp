@@ -7,8 +7,7 @@
 #ifndef _OPVTKMESH_ACTION_VTKMESHCREATION_HPP_
 #define _OPVTKMESH_ACTION_VTKMESHCREATION_HPP_
 
-#include <gui/action/IAction.hpp>
-
+#include <fwGui/IActionSrv.hpp>
 
 #include "opVTKMesh/config.hpp"
 
@@ -18,33 +17,36 @@ namespace opVTKMesh
 namespace action
 {
 
-class OPVTKMESH_CLASS_API VTKMeshCreation : public ::gui::action::IAction
+class OPVTKMESH_CLASS_API VTKMeshCreation : public ::fwGui::IActionSrv
 {
 
 public :
 
-	OPVTKMESH_API VTKMeshCreation() throw() ;
+    fwCoreServiceClassDefinitionsMacro ( (VTKMeshCreation)(::fwGui::IActionSrv) ) ;
 
-	OPVTKMESH_API virtual ~VTKMeshCreation() throw() ;
+    OPVTKMESH_API VTKMeshCreation() throw() ;
 
-	OPVTKMESH_API void starting() throw ( ::fwTools::Failed );
+    OPVTKMESH_API virtual ~VTKMeshCreation() throw() ;
 
-	OPVTKMESH_API void stopping() throw ( ::fwTools::Failed );
+protected:
 
-	OPVTKMESH_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    OPVTKMESH_API void starting() throw ( ::fwTools::Failed );
 
-	OPVTKMESH_API void configuring() throw ( ::fwTools::Failed );
+    OPVTKMESH_API void stopping() throw ( ::fwTools::Failed );
 
-	OPVTKMESH_API void updating() throw ( ::fwTools::Failed );
+    OPVTKMESH_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
-	OPVTKMESH_API void info ( std::ostream &_sstream ) ;
+    OPVTKMESH_API void configuring() throw ( ::fwTools::Failed );
+
+    OPVTKMESH_API void updating() throw ( ::fwTools::Failed );
+
+    OPVTKMESH_API void info ( std::ostream &_sstream ) ;
 
 private :
 
-	std::string m_imageUID;
-	std::string m_meshUID;
-	unsigned int m_reduction;
-
+    std::string m_imageUID;
+    std::string m_meshUID;
+    unsigned int m_reduction;
 };
 
 

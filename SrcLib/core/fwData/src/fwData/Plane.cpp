@@ -23,80 +23,103 @@ namespace fwData
 Plane::Plane ()
 : m_isIntersection(true)
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 Plane::Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3) {
-	m_vPoints[0] = _point1;
-	m_vPoints[1] = _point2;
-	m_vPoints[2] = _point3;
-	computePlaneFromPoints();
+    m_vPoints[0] = _point1;
+    m_vPoints[1] = _point2;
+    m_vPoints[2] = _point3;
+    computePlaneFromPoints();
 }
 
 //------------------------------------------------------------------------------
 
 Plane::~Plane ()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-Plane::sptr Plane::clone() const
+void Plane::shallowCopy( Plane::csptr _source )
 {
-	SLM_TRACE_FUNC();
-
-	Plane::NewSptr pNewPlane;
-
-	pNewPlane->m_vPoints[0] = this->m_vPoints[0];
-	pNewPlane->m_vPoints[1] = this->m_vPoints[1];
-	pNewPlane->m_vPoints[2] = this->m_vPoints[2];
-
-	return pNewPlane;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    //this->m_vPoints[0] = _source->m_vPoints[0];
+    //this->m_vPoints[1] = _source->m_vPoints[1];
+    //this->m_vPoints[2] = _source->m_vPoints[2];
+    this->m_vPoints = _source->m_vPoints;
+    this->m_plane = _source->m_plane;
 }
 
 //------------------------------------------------------------------------------
 
-Plane & Plane::operator=( const Plane & _plane )
+void Plane::deepCopy( Plane::csptr _source )
 {
-	// Copy encoding
-	m_vPoints = _plane.m_vPoints;
-
-	return *this;
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_vPoints[0]->deepCopy( _source->m_vPoints[0] );
+    this->m_vPoints[1]->deepCopy( _source->m_vPoints[1] );
+    this->m_vPoints[2]->deepCopy( _source->m_vPoints[2] );
+    this->m_plane = _source->m_plane;
 }
+//------------------------------------------------------------------------------
+
+//Plane::sptr Plane::clone() const
+//{
+//    SLM_TRACE_FUNC();
+//
+//    Plane::NewSptr pNewPlane;
+//
+//    pNewPlane->m_vPoints[0] = this->m_vPoints[0];
+//    pNewPlane->m_vPoints[1] = this->m_vPoints[1];
+//    pNewPlane->m_vPoints[2] = this->m_vPoints[2];
+//
+//    return pNewPlane;
+//}
+//
+////------------------------------------------------------------------------------
+//
+//Plane & Plane::operator=( const Plane & _plane )
+//{
+//    // Copy encoding
+//    m_vPoints = _plane.m_vPoints;
+//
+//    return *this;
+//}
+
 //------------------------------------------------------------------------------
 
 bool Plane::operator==( const Plane & _plane )
 {
-	bool result = false;
-	float dx = float(m_plane[0] - _plane.getPlane()[0] );
-	float dy = float(m_plane[1] - _plane.getPlane()[1] );
-	float dz = float(m_plane[2] - _plane.getPlane()[2] );
-	float dd = float(m_plane[3] - _plane.getPlane()[3] );
+    bool result = false;
+    float dx = float(m_plane[0] - _plane.getPlane()[0] );
+    float dy = float(m_plane[1] - _plane.getPlane()[1] );
+    float dz = float(m_plane[2] - _plane.getPlane()[2] );
+    float dd = float(m_plane[3] - _plane.getPlane()[3] );
 
-	if (fabs(dx) < EPSILON && fabs(dy) < EPSILON &&	fabs(dz) < EPSILON && fabs(dd) < EPSILON)
-	{
-		result = true;
-	}
+    if (fabs(dx) < EPSILON && fabs(dy) < EPSILON && fabs(dz) < EPSILON && fabs(dd) < EPSILON)
+    {
+        result = true;
+    }
 
-	return result;
+    return result;
 }
 //------------------------------------------------------------------------------
 
 void Plane::setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3)
 {
-	m_vPoints[0] = _point1;
-	m_vPoints[1] = _point2;
-	m_vPoints[2] = _point3;
-	computePlaneFromPoints();
+    m_vPoints[0] = _point1;
+    m_vPoints[1] = _point2;
+    m_vPoints[2] = _point3;
+    computePlaneFromPoints();
 
 }
 
 void Plane::computePlaneFromPoints()
 {
-	::fwMath::setValues(m_plane, m_vPoints[0]->getCRefCoord(), m_vPoints[1]->getCRefCoord(), m_vPoints[2]->getCRefCoord());
+    ::fwMath::setValues(m_plane, m_vPoints[0]->getCRefCoord(), m_vPoints[1]->getCRefCoord(), m_vPoints[2]->getCRefCoord());
 }
 
 //------------------------------------------------------------------------------

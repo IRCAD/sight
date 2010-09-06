@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <wx/wx.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -15,6 +14,11 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 
@@ -27,7 +31,9 @@ REGISTER_SERVICE( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwDa
 namespace ioData
 {
 
-TriangularMeshWriterService::TriangularMeshWriterService()
+TriangularMeshWriterService::TriangularMeshWriterService():
+        m_filename (""),
+        m_bServiceIsConfigured(false)
 {
 }
 
@@ -35,77 +41,81 @@ TriangularMeshWriterService::TriangularMeshWriterService()
 
 void TriangularMeshWriterService::info(std::ostream &_sstream )
 {
-	this->SuperClass::info( _sstream ) ;
-	_sstream << std::endl << " Triangular Mesh writer" ;
+    this->SuperClass::info( _sstream ) ;
+    _sstream << std::endl << " Triangular Mesh writer" ;
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > TriangularMeshWriterService::getSupportedExtensions()
 {
-	std::vector< std::string > extensions ;
-	extensions.push_back(".trian");
-	return extensions ;
+    std::vector< std::string > extensions ;
+    extensions.push_back(".trian");
+    return extensions ;
 }
 
 //-----------------------------------------------------------------------------
 
 TriangularMeshWriterService::~TriangularMeshWriterService() throw()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void TriangularMeshWriterService::configuring( ) throw(::fwTools::Failed)
 {
-	OSLM_INFO( "TriangularMeshWriterService::configure : " << *m_configuration );
-	if( m_configuration->findConfigurationElement("filename") )
-	{
-		std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-		OSLM_INFO( "TriangularMeshWriterService::configure filename: " << filename );
-		::boost::filesystem::path location = boost::filesystem::path( filename ) ;
-		m_filename = location;
-	}
+    SLM_TRACE_FUNC();
+
+    if( m_configuration->findConfigurationElement("filename") )
+    {
+        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
+        OSLM_INFO( "TriangularMeshWriterService::configure filename: " << filename );
+        m_filename = ::boost::filesystem::path( filename ) ;
+        m_bServiceIsConfigured = true;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void TriangularMeshWriterService::configureWithIHM()
 {
-	static wxString _sDefaultPath = _("");
-	wxString title = _("Choose an TrianMesh file");
-	wxString folder = wxFileSelector(
-			title,
-			_sDefaultPath,
-			wxT(""),
-			wxT(""),
-			wxT("TrianMesh (*.trian)|*.trian"),
-			wxFD_SAVE,
-			wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath("");
 
-	if( folder.IsEmpty() == false)
-	{
-		m_filename = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-		_sDefaultPath = wxConvertMB2WX( m_filename.branch_path().string().c_str() );
-	}
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a TrianMesh file");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("TrianMesh","*.trian");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
+    {
+        m_filename = result->getPath();
+        m_bServiceIsConfigured = true;
+        _sDefaultPath = m_filename.branch_path();
+    }
+
 }
 
 //------------------------------------------------------------------------------
 
 void TriangularMeshWriterService::updating() throw(::fwTools::Failed)
 {
-	SLM_INFO("[TriangularMeshWriterService::update]");
+    SLM_TRACE_FUNC();
+    if(m_bServiceIsConfigured)
+    {
+        // Retrieve object
+        ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
+        assert( mesh ) ;
 
-	if ( !m_filename.empty() )
-	{
-		// Retrieve object
-		::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
-		assert( mesh ) ;
-
-		::fwDataIO::writer::TriangularMeshWriter writer;
-		writer.setObject( mesh );
-		writer.setFile(m_filename);
-		writer.write();
-	}
+        ::fwDataIO::writer::TriangularMeshWriter writer;
+        writer.setObject( mesh );
+        writer.setFile(m_filename);
+        writer.write();
+    }
 }
+
+//------------------------------------------------------------------------------
+
 }

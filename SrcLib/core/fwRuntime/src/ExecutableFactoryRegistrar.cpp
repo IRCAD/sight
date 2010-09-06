@@ -20,16 +20,16 @@ namespace fwRuntime
 
 ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( ::boost::shared_ptr< ExecutableFactory > factory )
 {
-	// Pre-condition
-	assert( Bundle::getLoadingBundle() != 0 );
+    // Pre-condition
+    assert( Bundle::getLoadingBundle() != 0 );
 
-	// Retrieves the bundle that is currently loading.
-	 ::boost::shared_ptr< Bundle >	loadingBundle	( Bundle::getLoadingBundle()	);
-	Runtime					* runtime		( Runtime::getDefault()			);
+    // Retrieves the bundle that is currently loading.
+     ::boost::shared_ptr< Bundle >  loadingBundle   ( Bundle::getLoadingBundle()    );
+    Runtime                 * runtime       ( Runtime::getDefault()         );
 
-	// Stores the factory into that bundle and the default runtime instance.
-	loadingBundle->addExecutableFactory( factory );
-	runtime->addExecutableFactory( factory );
+    // Stores the factory into that bundle and the default runtime instance.
+    loadingBundle->addExecutableFactory( factory );
+    runtime->addExecutableFactory( factory );
 }
 
 

@@ -13,13 +13,13 @@ namespace fwWX
 wxDialogMonitor::wxDialogMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesNames map_string , wxString title )
 : wxMiniFrame(parent, wxID_ANY, title , wxDefaultPosition, wxSize(600,700), wxDEFAULT_FRAME_STYLE)
 {
-	m_monitor = new wxMonitor(this, map_string ) ;
+    m_monitor = new wxMonitor(this, map_string ) ;
 }
 
 wxDialogMonitor::wxDialogMonitor(wxWindow* parent, fwServices::monitor::string_map map_string , wxString title )
 : wxMiniFrame(parent, wxID_ANY, title , wxDefaultPosition, wxSize(600,700), wxDEFAULT_FRAME_STYLE)
 {
-	m_monitor = new wxMonitor(this, map_string ) ;
+    m_monitor = new wxMonitor(this, map_string ) ;
 }
 
 void wxDialogMonitor::setOnSelectionCallback( wxMonitorCallback::ptr callback)

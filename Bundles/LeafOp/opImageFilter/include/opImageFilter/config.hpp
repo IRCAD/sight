@@ -10,30 +10,30 @@
 
 #ifdef _WIN32
 
-	#ifdef OPIMAGEFILTER_EXPORTS
-	#define OPIMAGEFILTER_API __declspec(dllexport)
-	#else
-	#define OPIMAGEFILTER_API __declspec(dllimport)
-	#endif
+    #ifdef OPIMAGEFILTER_EXPORTS
+    #define OPIMAGEFILTER_API __declspec(dllexport)
+    #else
+    #define OPIMAGEFILTER_API __declspec(dllimport)
+    #endif
 
-	#define OPIMAGEFILTER_CLASS_API
+    #define OPIMAGEFILTER_CLASS_API
 
-	#pragma warning(disable: 4290)
+    #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-	#ifdef OPIMAGEFILTER_EXPORTS
-	#define OPIMAGEFILTER_API __attribute__ ((visibility("default")))
-	#define OPIMAGEFILTER_CLASS_API __attribute__ ((visibility("default")))
-	#else
-	#define OPIMAGEFILTER_API __attribute__ ((visibility("hidden")))
-	#define OPIMAGEFILTER_CLASS_API __attribute__ ((visibility("hidden")))
-	#endif
+    #ifdef OPIMAGEFILTER_EXPORTS
+    #define OPIMAGEFILTER_API __attribute__ ((visibility("default")))
+    #define OPIMAGEFILTER_CLASS_API __attribute__ ((visibility("default")))
+    #else
+    #define OPIMAGEFILTER_API __attribute__ ((visibility("hidden")))
+    #define OPIMAGEFILTER_CLASS_API __attribute__ ((visibility("hidden")))
+    #endif
 
 #else
 
-	#define OPIMAGEFILTER_API
-	#define OPIMAGEFILTER_CLASS_API
+    #define OPIMAGEFILTER_API
+    #define OPIMAGEFILTER_CLASS_API
 
 #endif
 

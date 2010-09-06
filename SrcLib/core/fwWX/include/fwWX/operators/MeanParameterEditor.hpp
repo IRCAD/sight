@@ -19,35 +19,35 @@ namespace operators
 
 
 /**
- * @brief	This class proposes a dialog box to edit operator parameters.
- * @class	MeanParameterEditor.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
- * @note 	This class is not commented, because it is not used in the open framework tutorial.
- * @todo 	MeanParameterEditor is not commented.
+ * @brief   This class proposes a dialog box to edit operator parameters.
+ * @class   MeanParameterEditor.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
+ * @note    This class is not commented, because it is not used in the open framework tutorial.
+ * @todo    MeanParameterEditor is not commented.
  */
 class FWWX_CLASS_API MeanParameterEditor : public wxDialog
 {
 
 public :
 
-	FWWX_API MeanParameterEditor( wxWindow * parent, wxString title=_("Mean image") );
+    FWWX_API MeanParameterEditor( wxWindow * parent, wxString title=_("Mean image") );
 
-	FWWX_API ~MeanParameterEditor();
+    FWWX_API ~MeanParameterEditor();
 
-	FWWX_API float getX() ;
-	FWWX_API float getY() ;
-	FWWX_API float getZ() ;
+    FWWX_API float getX() ;
+    FWWX_API float getY() ;
+    FWWX_API float getZ() ;
 
 private :
 
-	wxTextCtrl * textCtrl1 ;
-	wxTextCtrl * textCtrl2 ;
-	wxTextCtrl * textCtrl3 ;
+    wxTextCtrl * textCtrl1 ;
+    wxTextCtrl * textCtrl2 ;
+    wxTextCtrl * textCtrl3 ;
 
-	long m_x ;
-	long m_y ;
-	long m_z ;
+    long m_x ;
+    long m_y ;
+    long m_z ;
 
 
 };

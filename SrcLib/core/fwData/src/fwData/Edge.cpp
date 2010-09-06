@@ -17,57 +17,65 @@ std::string Edge::NATURE_DATA = "data";
 
 Edge::Edge() : m_fromPortIdentifier("not defined"), m_toPortIdentifier("not defined"), m_nature("not defined")
 {
-	// TODO Auto-generated constructor stub
+    // TODO Auto-generated constructor stub
 }
 
 //------------------------------------------------------------------------------
 
 Edge::~Edge()
 {
-	// TODO Auto-generated destructor stub
+    // TODO Auto-generated destructor stub
 }
 
 //------------------------------------------------------------------------------
 
 void Edge::setIdentifiers(const std::string & fromPortIndentifier, const std::string & toPortIndentifier)
 {
-	m_fromPortIdentifier = fromPortIndentifier;
-	m_toPortIdentifier = toPortIndentifier;
+    m_fromPortIdentifier = fromPortIndentifier;
+    m_toPortIdentifier = toPortIndentifier;
 }
 
 //------------------------------------------------------------------------------
 
 std::pair<std::string,std::string> Edge::getIdentifiers() const
 {
-	return make_pair(m_fromPortIdentifier , m_toPortIdentifier);
+    return make_pair(m_fromPortIdentifier , m_toPortIdentifier);
 }
 
 //------------------------------------------------------------------------------
 
 std::string Edge::getFromPortID() const
 {
-	return m_fromPortIdentifier;
+    return m_fromPortIdentifier;
 }
 
 //------------------------------------------------------------------------------
 
 std::string Edge::getToPortID() const
 {
-	return m_toPortIdentifier;
+    return m_toPortIdentifier;
+}
+
+//------------------------------------------------------------------------------
+
+
+std::string Edge::getPortID(bool upStream) const
+{
+	return upStream?m_fromPortIdentifier:m_toPortIdentifier;
 }
 
 //------------------------------------------------------------------------------
 
 void Edge::setNature(std::string nature)
 {
-	m_nature =  nature;
+    m_nature =  nature;
 }
 
 //------------------------------------------------------------------------------
 
 const std::string &Edge::getNature() const
 {
-	return m_nature;
+    return m_nature;
 }
 
 //------------------------------------------------------------------------------

@@ -1,0 +1,43 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#include <fwCore/base.hpp>
+#include <fwTools/UUID.hpp>
+
+#include "fwXML/visitor/Serialize.hpp"
+#include "fwXML/XML/XMLPartitioner.hpp"
+
+
+//#include <libxml/tree.h>
+
+namespace visitor
+{
+
+Serialize::Serialize()
+{
+}
+
+Serialize::~Serialize()
+{
+}
+
+
+
+void Serialize::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
+{
+    assert(obj);
+    std::string uuid = ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
+    std::string srcUuid = m_source?::fwTools::UUID::get(m_source,::fwTools::UUID::EXTENDED):"NoSOURCENOUUID";
+    OSLM_TRACE( "Serialize Visitor Visiting : Class " << obj->className() << " (" <<  uuid    <<
+                ") ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
+                );
+    ::fwXML::XMLPartitioner::getDefault()->manage( m_source, obj );
+}
+
+
+
+}
+

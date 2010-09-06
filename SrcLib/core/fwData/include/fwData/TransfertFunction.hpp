@@ -24,126 +24,135 @@
 namespace fwData
 {
 /**
- * @class 	TransfertFunction
- * @brief 	This class defines a transfert function.
+ * @class   TransfertFunction
+ * @brief   This class defines a transfert function.
  *
  * A transfert function is composed of some points which have a color and a value.
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API TransfertFunction : public Object
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< TransfertFunction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction)(::fwData::Object), (()), ::fwTools::Factory::New< TransfertFunction >) ;
 
-	/// Constructor
-	FWDATA_API TransfertFunction();
-	/// Destructor
-	FWDATA_API virtual ~TransfertFunction();
+    /// Constructor
+    FWDATA_API TransfertFunction();
+    /// Destructor
+    FWDATA_API virtual ~TransfertFunction();
 
-	/// Constructor by copy
-	FWDATA_API TransfertFunction( const TransfertFunction & _transfertFunction );
+    /// Maccro for deep and shallow copies
+    fwDataObjectMacro();
 
-	/// Copy method
-	FWDATA_API TransfertFunction & operator=( const TransfertFunction & _transfertFunction );
+    /// Shallow copy method
+    FWDATA_API void shallowCopy( TransfertFunction::csptr _source );
 
-	/// Clone method
-	FWDATA_API TransfertFunction::sptr clone() const;
+    /// Deep copy method
+    FWDATA_API void deepCopy( TransfertFunction::csptr _source );
 
-	// TransfertFunctionPoints ---------------------------------------------------------------------
-	/// Field identifier for transfert function points
-	static const Object::FieldID ID_TRANSFERTFUNCTIONPOINTS;
+    /// Constructor by copy
+    //FWDATA_API TransfertFunction( const TransfertFunction & _transfertFunction );
 
-	typedef ContainerCaster< TransfertFunctionPoint >::iterator		 TransfertFunctionPointIterator;
-	typedef ContainerCaster< TransfertFunctionPoint >::const_iterator TransfertFunctionPointConstIterator;
+    /// Copy method
+    //FWDATA_API TransfertFunction & operator=( const TransfertFunction & _transfertFunction );
 
-	/**
-	 * @brief Get the number of points in the transfert function
-	 */
-	FWDATA_API boost::uint32_t  getTransfertFunctionPointSize() const;
+    /// Clone method
+    //FWDATA_API TransfertFunction::sptr clone() const;
 
-	/**@{
-	 * Get iterator on the first and the last points. Use to browse all points (::fwData::TransfertFunctionPoint)
-	 * @return std::pair( TransfertFunctionPoint.begin(), TransfertFunctionPoint.end() )
-	 */
-	FWDATA_API std::pair< TransfertFunctionPointIterator, TransfertFunctionPointIterator > getTransfertFunctionPoints();
-	FWDATA_API std::pair< TransfertFunctionPointConstIterator, TransfertFunctionPointConstIterator > getTransfertFunctionPoints() const;
-	// @}
+    // TransfertFunctionPoints ---------------------------------------------------------------------
+    /// Field identifier for transfert function points
+    static const Object::FieldID ID_TRANSFERTFUNCTIONPOINTS;
 
-	/// insert a new point in graph, remove previous entry if any
-	FWDATA_API void insert( ::fwData::TransfertFunctionPoint::sptr );
+    typedef ContainerCaster< TransfertFunctionPoint >::iterator      TransfertFunctionPointIterator;
+    typedef ContainerCaster< TransfertFunctionPoint >::const_iterator TransfertFunctionPointConstIterator;
 
-	/**
-	 * @brief Get the color of the point whith given value.
-	 *
-	 * @note if value doesn't exist a default point is created then its color is returned
-	 * @param[in] _i32Value point value
-	 * @return point color
-	 */
-	FWDATA_API ::fwData::Color::sptr getColor( ::fwData::TransfertFunctionPoint::TFValueType  _i32Value );
+    /**
+     * @brief Get the number of points in the transfert function
+     */
+    FWDATA_API boost::uint32_t  getTransfertFunctionPointSize() const;
 
-	/**
-	 * @brief erase point
-	 *
-	 * @param[in] _i32Value value of the point to erase
-	 */
-	FWDATA_API void erase( ::fwData::TransfertFunctionPoint::TFValueType  _i32Value );
+    /**@{
+     * Get iterator on the first and the last points. Use to browse all points (::fwData::TransfertFunctionPoint)
+     * @return std::pair( TransfertFunctionPoint.begin(), TransfertFunctionPoint.end() )
+     */
+    FWDATA_API std::pair< TransfertFunctionPointIterator, TransfertFunctionPointIterator > getTransfertFunctionPoints();
+    FWDATA_API std::pair< TransfertFunctionPointConstIterator, TransfertFunctionPointConstIterator > getTransfertFunctionPoints() const;
+    // @}
 
-	/// @brief erase all points
-	FWDATA_API void clear();
+    /// insert a new point in graph, remove previous entry if any
+    FWDATA_API void insert( ::fwData::TransfertFunctionPoint::sptr );
 
-	//  Encoding -----------------------------------------------------------------------------------------------
-	fwGettersSettersDocMacro(Encoding, sEncoding, std::string, the encoding)
+    /**
+     * @brief Get the color of the point whith given value.
+     *
+     * @note if value doesn't exist a default point is created then its color is returned
+     * @param[in] _i32Value point value
+     * @return point color
+     */
+    FWDATA_API ::fwData::Color::sptr getColor( ::fwData::TransfertFunctionPoint::TFValueType  _i32Value );
 
-	//  Name -----------------------------------------------------------------------------------------------
-	fwGettersSettersDocMacro(Name, sName, std::string, transfert function name)
+    /**
+     * @brief erase point
+     *
+     * @param[in] _i32Value value of the point to erase
+     */
+    FWDATA_API void erase( ::fwData::TransfertFunctionPoint::TFValueType  _i32Value );
+
+    /// @brief erase all points
+    FWDATA_API void clear();
+
+    //  Encoding -----------------------------------------------------------------------------------------------
+    fwGettersSettersDocMacro(Encoding, sEncoding, std::string, the encoding)
+
+    //  Name -----------------------------------------------------------------------------------------------
+    fwGettersSettersDocMacro(Name, sName, std::string, transfert function name)
 
 
-	//  Helpers ----------------------------------------------------------------
+    //  Helpers ----------------------------------------------------------------
 
-	typedef std::pair< ::fwData::TransfertFunctionPoint::TFValueType, ::fwData::TransfertFunctionPoint::TFValueType > MinMaxType;
-	typedef std::pair< double, ::fwData::TransfertFunctionPoint::TFValueType > CenterWidthType;
+    typedef std::pair< ::fwData::TransfertFunctionPoint::TFValueType, ::fwData::TransfertFunctionPoint::TFValueType > MinMaxType;
+    typedef std::pair< double, ::fwData::TransfertFunctionPoint::TFValueType > CenterWidthType;
 
-	/// Default transfert function name
-	FWDATA_API static const std::string defaultTransfertFunctionName;
+    /// Default transfert function name
+    FWDATA_API static const std::string defaultTransfertFunctionName;
 
-	/**
-	 * @brief Create the default transfert function with two points
-	 *
-	 * Use the window and level of the image to calculate points values.
-	 *
-	 * @param[in] _pImage image use to create transfert function
-	 */
-	FWDATA_API static TransfertFunction::sptr createDefaultTransfertFunction( ::fwData::Image::sptr _pImage );
+    /**
+     * @brief Create the default transfert function with two points
+     *
+     * Use the window and level of the image to calculate points values.
+     *
+     * @param[in] _pImage image use to create transfert function
+     */
+    FWDATA_API static TransfertFunction::sptr createDefaultTransfertFunction( ::fwData::Image::sptr _pImage );
 
-	/// @brief Get transfert function center-width
-	FWDATA_API CenterWidthType getCenterWidth() const;
-	/// @brief Get transfert function Min-Max
-	FWDATA_API MinMaxType getMinMax() const;
+    /// @brief Get transfert function center-width
+    FWDATA_API CenterWidthType getCenterWidth() const;
+    /// @brief Get transfert function Min-Max
+    FWDATA_API MinMaxType getMinMax() const;
 
-	/**
-	 * @brief Rescale transfert function with the given min and max
-	 *
-	 * The first and last points get min and max value, the other point value are calculate proportionately.
-	 *
-	 * @param[in] _min minimal value (first point value)
-	 * @param[in] _max maximal value (last point value)
-	 */
-	FWDATA_API void setMinMax( ::fwData::TransfertFunctionPoint::TFValueType _min, ::fwData::TransfertFunctionPoint::TFValueType _max );
+    /**
+     * @brief Rescale transfert function with the given min and max
+     *
+     * The first and last points get min and max value, the other point value are calculate proportionately.
+     *
+     * @param[in] _min minimal value (first point value)
+     * @param[in] _max maximal value (last point value)
+     */
+    FWDATA_API void setMinMax( ::fwData::TransfertFunctionPoint::TFValueType _min, ::fwData::TransfertFunctionPoint::TFValueType _max );
 
 
 protected :
 
-	/// Copy method
-	void copy( const TransfertFunction & _transfertFunction );
+    /// Copy method
+    //void copy( const TransfertFunction & _transfertFunction );
 
-	//! Encoding
-	std::string m_sEncoding;
+    //! Encoding
+    std::string m_sEncoding;
 
-	//! Name
-	std::string m_sName;
+    //! Name
+    std::string m_sName;
 
 }; // end class TransfertFunctionPoint
 

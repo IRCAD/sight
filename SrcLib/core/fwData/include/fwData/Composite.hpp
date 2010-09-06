@@ -15,39 +15,97 @@
 
 namespace fwData
 {
+
+typedef std::map< std::string, ::fwData::Object::sptr > ObjectMapType;
+
 /**
- * @class 	Composite
- * @brief 	This class defines a composite object.
+ * @class   Composite
+ * @brief   This class defines a composite object.
  *
  * Composite contains a map of ::fwData::Object.
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 
-class FWDATA_CLASS_API Composite : public Object{
+class FWDATA_CLASS_API Composite : public Object, private ObjectMapType
+{
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Composite >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwTools::Factory::New< Composite >) ;
 
-	typedef std::map< std::string, Object::sptr > Container;
+    typedef Composite Container;
+    typedef ObjectMapType ContainerType;
 
-	/// Constructor
-	FWDATA_API Composite();
+    using ObjectMapType::key_type;
+    using ObjectMapType::mapped_type;
+    using ObjectMapType::value_type;
+    using ObjectMapType::key_compare;
+    using ObjectMapType::value_compare;
+    using ObjectMapType::allocator_type;
+    using ObjectMapType::reference;
+    using ObjectMapType::const_reference;
+    using ObjectMapType::iterator;
+    using ObjectMapType::const_iterator;
+    using ObjectMapType::size_type;
+    using ObjectMapType::difference_type;
+    using ObjectMapType::pointer;
+    using ObjectMapType::const_pointer;
+    using ObjectMapType::reverse_iterator;
+    using ObjectMapType::const_reverse_iterator;
 
-	/// Destructor
-	FWDATA_API virtual ~Composite();
 
-	/// @brief get the container of ::fwData::Object
-	FWDATA_API Container &getRefMap();
-	/// @brief get the container of ::fwData::Object
-	FWDATA_API Container const &getRefMap() const;
+    using ObjectMapType::begin;
+    using ObjectMapType::end;
+    using ObjectMapType::rbegin;
+    using ObjectMapType::rend;
 
-    FWDATA_API Composite & operator=( const Composite & _composite );
+    using ObjectMapType::empty;
+    using ObjectMapType::size;
+    using ObjectMapType::max_size;
 
-protected:
-	/// container of ::fwData::Object
-	Container m_map;
+    using ObjectMapType::operator[];
+
+    using ObjectMapType::insert;
+    using ObjectMapType::erase;
+    using ObjectMapType::swap;
+    using ObjectMapType::clear;
+
+    using ObjectMapType::key_comp;
+    using ObjectMapType::value_comp;
+
+    using ObjectMapType::find;
+    using ObjectMapType::count;
+    using ObjectMapType::lower_bound;
+    using ObjectMapType::upper_bound;
+    using ObjectMapType::equal_range;
+
+    using ObjectMapType::get_allocator;
+
+    /// Constructor
+    FWDATA_API Composite();
+
+    /// Destructor
+    FWDATA_API virtual ~Composite();
+
+    /// @brief get the container of ::fwData::Object
+    FWDATA_API Composite &getRefMap();
+    /// @brief get the container of ::fwData::Object
+    FWDATA_API Composite const &getRefMap() const;
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Composite::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Composite::csptr _source );
+
+    //FWDATA_API Composite & operator=( const Composite & _composite );
+
 };
-}
+
+
+} //namespace fwData
+
 #endif /* _FWDATA_COMPOSITE_HPP_ */
 

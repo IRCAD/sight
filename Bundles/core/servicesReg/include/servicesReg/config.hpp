@@ -9,30 +9,30 @@
 
 #ifdef _WIN32
 
-	#ifdef SERVICESREG_EXPORTS
-	#define SERVICESREG_API __declspec(dllexport)
-	#else
-	#define SERVICESREG_API __declspec(dllimport)
-	#endif
+    #ifdef SERVICESREG_EXPORTS
+    #define SERVICESREG_API __declspec(dllexport)
+    #else
+    #define SERVICESREG_API __declspec(dllimport)
+    #endif
 
-	#define SERVICESREG_CLASS_API
+    #define SERVICESREG_CLASS_API
 
-	#pragma warning(disable: 4290)
+    #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-	#ifdef SERVICESREG_EXPORTS
-	#define SERVICESREG_API __attribute__ ((visibility("default")))
-	#define SERVICESREG_CLASS_API __attribute__ ((visibility("default")))
-	#else
-	#define SERVICESREG_API __attribute__ ((visibility("hidden")))
-	#define SERVICESREG_CLASS_API __attribute__ ((visibility("hidden")))
-	#endif
+    #ifdef SERVICESREG_EXPORTS
+    #define SERVICESREG_API __attribute__ ((visibility("default")))
+    #define SERVICESREG_CLASS_API __attribute__ ((visibility("default")))
+    #else
+    #define SERVICESREG_API __attribute__ ((visibility("hidden")))
+    #define SERVICESREG_CLASS_API __attribute__ ((visibility("hidden")))
+    #endif
 
 #else
 
-	#define SERVICESREG_API
-	#define SERVICESREG_CLASS_API
+    #define SERVICESREG_API
+    #define SERVICESREG_CLASS_API
 
 #endif
 

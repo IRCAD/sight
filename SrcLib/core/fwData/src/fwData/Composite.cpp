@@ -18,37 +18,63 @@ namespace fwData
 
 Composite::Composite()
 {
-	SLM_TRACE_FUNC();
-	// TODO Auto-generated constructor stub
+    SLM_TRACE_FUNC();
+    // TODO Auto-generated constructor stub
 }
 
 
 Composite::~Composite()
 {
-	SLM_TRACE_FUNC();
-	// TODO Auto-generated destructor stub
+    SLM_TRACE_FUNC();
+    // TODO Auto-generated destructor stub
 }
 
 
-Composite::Container &Composite::getRefMap()
+Composite &Composite::getRefMap()
 {
-	return m_map;
+    return *this;
 }
 
 
-Composite::Container const &Composite::getRefMap() const
+Composite const &Composite::getRefMap() const
 {
-	return m_map;
+    return *this;
 }
 
 //------------------------------------------------------------------------------
 
-Composite & Composite::operator=( const Composite & _composite )
+void Composite::shallowCopy( Composite::csptr _source )
 {
-   //Copy encoding
-    m_map = _composite.m_map;
-
-    return *this;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    (ObjectMapType)(*this) = (ObjectMapType)(*(_source.get()));
 }
+
+//------------------------------------------------------------------------------
+
+void Composite::deepCopy( Composite::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+
+    this->clear();
+
+    for(    Composite::Container::const_iterator iter = _source->begin();
+            iter != _source->end();
+            ++iter )
+    {
+        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( iter->second->getClassname() );
+        newObj->deepCopy( iter->second );
+        (*this)[ iter->first ] = ::fwData::Object::dynamicCast( newObj );
+    }
+}
+
+//------------------------------------------------------------------------------
+
+//Composite & Composite::operator=( const Composite & _composite )
+//{
+//   //Copy encoding
+//    m_map = _composite.m_map;
+//
+//    return *this;
+//}
 
 }

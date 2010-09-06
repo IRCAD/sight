@@ -10,30 +10,30 @@
 
 #ifdef _WIN32
 
-	#ifdef IO_EXPORTS
-	#define IO_API __declspec(dllexport)
-	#else
-	#define IO_API __declspec(dllimport)
-	#endif
+    #ifdef IO_EXPORTS
+    #define IO_API __declspec(dllexport)
+    #else
+    #define IO_API __declspec(dllimport)
+    #endif
 
-	#define IO_CLASS_API
+    #define IO_CLASS_API
 
-	#pragma warning(disable: 4290)
+    #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
-	#ifdef IO_EXPORTS
-	#define IO_API __attribute__ ((visibility("default")))
-	#define IO_CLASS_API __attribute__ ((visibility("default")))
-	#else
-	#define IO_API __attribute__ ((visibility("hidden")))
-	#define IO_CLASS_API __attribute__ ((visibility("hidden")))
-	#endif
+    #ifdef IO_EXPORTS
+    #define IO_API __attribute__ ((visibility("default")))
+    #define IO_CLASS_API __attribute__ ((visibility("default")))
+    #else
+    #define IO_API __attribute__ ((visibility("hidden")))
+    #define IO_CLASS_API __attribute__ ((visibility("hidden")))
+    #endif
 
 #else
 
-	#define IO_API
-	#define IO_CLASS_API
+    #define IO_API
+    #define IO_CLASS_API
 
 #endif
 

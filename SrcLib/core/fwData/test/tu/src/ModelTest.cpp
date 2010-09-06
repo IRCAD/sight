@@ -22,26 +22,26 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ModelTest );
 
 void ModelTest::setUp()
 {
-	// Set up context before running a test.
+    // Set up context before running a test.
 
 }
 void ModelTest::tearDown()
 {
-	// Clean up after the test run.
+    // Clean up after the test run.
 }
 
 void ModelTest::methode1()
 {
-	//-----------test values
-	::fwData::TriangularMesh::sptr tri = ::fwData::TriangularMesh::New();
-	::fwData::Material::sptr mat = ::fwData::Material::New();
+    //-----------test values
+    ::fwData::TriangularMesh::sptr tri = ::fwData::TriangularMesh::New();
+    ::fwData::Material::sptr mat = ::fwData::Material::New();
 
-	::fwData::Model::NewSptr model;
+    ::fwData::Model::NewSptr model;
 
-	model->getRefMap()[tri] = mat;
+    model->getRefMap()[tri] = mat;
 
-	CPPUNIT_ASSERT(model->getRefMap().find(tri) != model->getRefMap().end());
-	CPPUNIT_ASSERT_EQUAL(model->getRefMap()[tri], mat);
+    CPPUNIT_ASSERT(model->getRefMap().find(tri) != model->getRefMap().end());
+    CPPUNIT_ASSERT_EQUAL(model->getRefMap()[tri], mat);
 }
 
 

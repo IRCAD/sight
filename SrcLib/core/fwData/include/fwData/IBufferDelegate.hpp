@@ -15,36 +15,36 @@
 namespace fwData
 {
 /**
- * @class 	IBufferDelegate
- * @brief 	This class is an abstract class, it defines a delegate buffer. It is use in ::fwData::Image.
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class   IBufferDelegate
+ * @brief   This class is an abstract class, it defines a delegate buffer. It is use in ::fwData::Image.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API IBufferDelegate
 {
 public:
-	fwCoreNonInstanciableClassDefinitionsMacro( (IBufferDelegate) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (IBufferDelegate) );
 
-	/// Constructor
-	FWDATA_API IBufferDelegate();
+    /// Constructor
+    FWDATA_API IBufferDelegate();
 
-	/// Destructor
-	FWDATA_API virtual ~IBufferDelegate();
+    /// Destructor
+    FWDATA_API virtual ~IBufferDelegate();
 
-	/// @return the buffer
-	FWDATA_API virtual void *getBuffer() = 0;
+    /// @return the buffer
+    FWDATA_API virtual void *getBuffer() = 0;
 
-	/// Set the buffer
-	FWDATA_API virtual void setBuffer(void *) = 0;
+    /// Set the buffer
+    FWDATA_API virtual void setBuffer(void *) = 0;
 
-	fwGettersSettersDocMacro(ManagesBuff, bManagesBuff, bool, if buffer is managed);
+    fwGettersSettersDocMacro(ManagesBuff, bManagesBuff, bool, if buffer is managed);
 
 
 protected :
 
-	void *m_buffer;
+    void *m_buffer;
 
-	bool m_bManagesBuff;
+    bool m_bManagesBuff;
 };
 
 } // namespace fwData

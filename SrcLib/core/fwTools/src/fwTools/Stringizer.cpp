@@ -18,7 +18,7 @@ namespace fwTools
 template<>
 std::string getString(const std::string &aString)
 {
-	return aString;
+    return aString;
 }
 
 
@@ -26,46 +26,46 @@ template<>
 std::string getString(const std::type_info &ti)
 {
 #ifndef WIN32
-	char *demangled = abi::__cxa_demangle(ti.name(),0,0,0);
-	if (demangled)
-	{
-		std::string res(demangled);
-		free(demangled);
-		return res;
-	}
-	else
-	{
-		return ti.name();
-	}
+    char *demangled = abi::__cxa_demangle(ti.name(),0,0,0);
+    if (demangled)
+    {
+        std::string res(demangled);
+        free(demangled);
+        return res;
+    }
+    else
+    {
+        return ti.name();
+    }
 #else
-	return ti.name();
+    return ti.name();
 #endif
 }
 
 template<>
 std::string getString(const TypeInfo &ti)
 {
-	return getString(ti.type_info());
+    return getString(ti.type_info());
 }
 
 
 template<>
 std::string getString(const signed char &c)
 {
-	return boost::lexical_cast<std::string>((short)c);
+    return boost::lexical_cast<std::string>((short)c);
 }
 
 
 template<>
 std::string getString(const  char &c)
 {
-	return boost::lexical_cast<std::string>((short)c);
+    return boost::lexical_cast<std::string>((short)c);
 }
 
 template<>
 std::string getString(const unsigned char &c)
 {
-	return boost::lexical_cast<std::string>((short)c);
+    return boost::lexical_cast<std::string>((short)c);
 }
 
 

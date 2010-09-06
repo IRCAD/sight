@@ -15,42 +15,42 @@ namespace fwTools
 
 TypeInfo::TypeInfo()
 {
-	class Nil {};
-	pInfo_ = &typeid(Nil);
-	assert(pInfo_);
+    class Nil {};
+    pInfo_ = &typeid(Nil);
+    assert(pInfo_);
 }
 
 TypeInfo::TypeInfo(const std::type_info& ti)
 : pInfo_(&ti)
 {
-	assert(pInfo_);
+    assert(pInfo_);
 }
 
 bool TypeInfo::before(const TypeInfo& rhs) const
 {
-	assert(pInfo_);
-	// type_info::before return type is int in some VC libraries
-	return pInfo_->before(*rhs.pInfo_) != 0;
+    assert(pInfo_);
+    // type_info::before return type is int in some VC libraries
+    return pInfo_->before(*rhs.pInfo_) != 0;
 }
 
 const std::type_info& TypeInfo::type_info() const
 {
-	assert(pInfo_);
-	return *pInfo_;
+    assert(pInfo_);
+    return *pInfo_;
 }
 
 const char* TypeInfo::name() const
 {
-	assert(pInfo_);
-	return pInfo_->name();
+    assert(pInfo_);
+    return pInfo_->name();
 }
 
 
 
 TypeInfo &TypeInfo::operator=(const TypeInfo &rhs)
 {
-	pInfo_ = rhs.pInfo_;
-	return *this;
+    pInfo_ = rhs.pInfo_;
+    return *this;
 }
 
 
@@ -61,36 +61,36 @@ bool operator==(const TypeInfo& lhs, const TypeInfo& rhs)
 // typeinfo can have different ptr on the same strucure !!!!
 //http://gcc.gnu.org/ml/gcc/2002-05/msg02085.html
 {
-	return strcmp(lhs.type_info().name() , rhs.type_info().name() )== 0;
+    return strcmp(lhs.type_info().name() , rhs.type_info().name() )== 0;
 }
 
 
 bool operator!=(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-	return !(lhs == rhs);
+    return !(lhs == rhs);
 }
 
 
 bool operator<(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-	return strcmp(lhs.type_info().name() , rhs.type_info().name() )<  0;
+    return strcmp(lhs.type_info().name() , rhs.type_info().name() )<  0;
 }
 
 
 
 bool operator>(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-	return strcmp(lhs.type_info().name() , rhs.type_info().name() )>  0;
+    return strcmp(lhs.type_info().name() , rhs.type_info().name() )>  0;
 }
 
 bool operator<=(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-	return strcmp(lhs.type_info().name() , rhs.type_info().name() )<= 0;
+    return strcmp(lhs.type_info().name() , rhs.type_info().name() )<= 0;
 }
 
 bool operator>=(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-	return strcmp(lhs.type_info().name() , rhs.type_info().name() )>= 0;
+    return strcmp(lhs.type_info().name() , rhs.type_info().name() )>= 0;
 }
 
 

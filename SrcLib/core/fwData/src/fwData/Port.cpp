@@ -9,19 +9,42 @@
 #include "fwData/Port.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Port, ::fwData::Port );
-namespace fwData {
+
+namespace fwData
+{
 //------------------------------------------------------------------------------
 
 Port::Port() : m_identifier("IDNOTdefined") , m_type("TypeNotDefined")
 {
-	// TODO Auto-generated constructor stub
+    // TODO Auto-generated constructor stub
 }
 
 //------------------------------------------------------------------------------
 
 Port::~Port()
 {
-	// TODO Auto-generated destructor stub
+    // TODO Auto-generated destructor stub
+}
+
+//------------------------------------------------------------------------------
+
+void Port::shallowCopy( Port::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+
+    this->m_identifier = _source->m_identifier;
+    this->m_type = _source->m_type;
+}
+
+//------------------------------------------------------------------------------
+
+void Port::deepCopy( Port::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+
+    this->m_identifier = _source->m_identifier;
+    this->m_type = _source->m_type;
+
 }
 
 //------------------------------------------------------------------------------

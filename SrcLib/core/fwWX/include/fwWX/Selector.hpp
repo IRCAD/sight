@@ -6,12 +6,10 @@
 
 #ifndef FWWX_SELECTOR_HPP_
 #define FWWX_SELECTOR_HPP_
-#include <wx/wx.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
+
 #include <vector>
-#include <map>
+
+#include <fwGui/ISelector.hpp>
 
 #include "fwWX/config.hpp"
 
@@ -21,53 +19,44 @@ namespace fwWX
 //------------------------------------------------------------------------------
 
 /**
- * @brief	Selector allowing the choice of an element among severals (_selections)
- * @class	Selector.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   Selector allowing the choice of an element among severals (_selections)
+ * @class   Selector.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  */
 
-class FWWX_CLASS_API Selector :  public wxDialog
+class FWWX_CLASS_API Selector : public ::fwGui::ISelector
 {
 public:
 
-	enum
-	{
-		ID_ITEM_SELECTED = wxID_HIGHEST + 1
-	};
+    fwCoreClassDefinitionsWithFactoryMacro( (Selector)(::fwGui::ISelector), (()), new Selector );
 
-	/**
-	 * @brief Constructor builds a dialog box proposing a string list
-	 * @param[in] _parent Pointer to a wxWindow to use as the parent window
-	 * @param[in] _title Dialog box title
-	 * @param[in] _selections The string list that can be chosen with the dialog box.
-	 * The constructor builds a dialog box proposing a string list and translates the string list with a wxWidgets dictionary loaded by the application.
-	 */
-	FWWX_API Selector( wxWindow * _parent , wxString _title , std::vector< std::string > _selections) ;
+    /// Default constructor.
+    FWWX_API Selector() ;
 
-	/**
-	 * @brief Returns the selection (among those defined in _selections)
-	 * @return The selected string
-	 */
-	FWWX_API std::string getSelectedString() ;
+    FWWX_API virtual ~Selector();
 
-protected :
+    /**
+     * @brief The string list that can be chosen by the selector.
+     */
+    FWWX_API virtual void setSelections(std::vector< std::string > _selections);
 
-	/**
-	 * @brief Method called on selection modification. Do nothing at this time.
-	 */
-	FWWX_API void onSelectedItem( wxCommandEvent & event ) ;
+    /**
+     * @brief Sets the selector title.
+     */
+    FWWX_API virtual void setTitle(std::string _title);
 
-	/// Editor Fields
-	wxChoice * m_typeCtrl;
+    /**
+     * @brief Show the selector and return the selection.
+     * @param[in] _parent Parent container for the selector.
+     */
+    FWWX_API virtual std::string show();
 
-	/**
-	 * @brief Map to associate each string of the string list with its own translation.
-	 * in order to be able to untranslate each string contained in the initial string list
-	 */
-	::std::map< wxString, wxString > m_translateToUntranslate;
+private :
 
-	DECLARE_EVENT_TABLE()
+    std::vector< std::string > m_selections;
+
+    std::string m_title;
 };
 
 

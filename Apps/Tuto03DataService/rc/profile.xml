@@ -4,9 +4,12 @@
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
     <activate id="io" version="0-1" />
+    
     <activate id="visu" version="0-1" />
+    <activate id="visuVTKWx" version="0-1" />
 
-    <activate id="gui" version="0-1" >
+    <activate id="gui" version="0-1" />
+    <activate id="guiWx" version="0-1" >
         <param id="startingMode" value="windows" />
         <param id="rootObject" value="::fwData::Image" />
         <param id="config" value="tutoDataServiceConfig" />
@@ -19,5 +22,6 @@
     <activate id="vtkSimpleNegato" version="0-1" />
 
     <start id="dataReg" />
-    <start id="gui" />   
+    <start id="visuVTKWx" />
+    <start id="guiWx" />   
 </profile>

@@ -21,27 +21,30 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MaterialTest );
 
 void MaterialTest::setUp()
 {
-	// Set up context before running a test.
+    // Set up context before running a test.
 
 }
 void MaterialTest::tearDown()
 {
-	// Clean up after the test run.
+    // Clean up after the test run.
 }
 
 void MaterialTest::methode1()
 {
-	//-----------test values
-	const ::fwData::Color CAMBIENT = ::fwData::Color(0.5f,0.5f,0.5f,0.5f);
-	const ::fwData::Color CDIFF = ::fwData::Color(0.8f,0.2f,0.5f,0.4f);
+    //-----------test values
+    ::fwData::Color::NewSptr CAMBIENT;
+    CAMBIENT->setRGBA(0.5f,0.5f,0.5f,0.5f);
 
-	::fwData::Material::NewSptr material;
+    ::fwData::Color::NewSptr CDIFF;
+    CDIFF->setRGBA(0.8f,0.2f,0.5f,0.4f);
 
-	material->ambient() = CAMBIENT;
-	material->diffuse() = CDIFF;
+    ::fwData::Material::NewSptr material;
 
-	CPPUNIT_ASSERT_EQUAL(material->ambient().getRGBA()[0], CAMBIENT.getRGBA()[0]);
-	CPPUNIT_ASSERT_EQUAL(material->diffuse().getRGBA()[0], CDIFF.getRGBA()[0]);
+    material->ambient()->deepCopy( CAMBIENT );
+    material->diffuse()->deepCopy( CDIFF );
+
+    CPPUNIT_ASSERT_EQUAL(material->ambient()->getRGBA()[0], CAMBIENT->getRGBA()[0]);
+    CPPUNIT_ASSERT_EQUAL(material->diffuse()->getRGBA()[0], CDIFF->getRGBA()[0]);
 }
 
 

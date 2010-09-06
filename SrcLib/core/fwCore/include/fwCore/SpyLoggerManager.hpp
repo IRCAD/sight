@@ -20,7 +20,7 @@ namespace spyLog
 {
 
 /**
- * @brief	Implements the SpyLoggerManager.
+ * @brief   Implements the SpyLoggerManager.
  * 
  * @author IRCAD (Research and Development Team).
  */
@@ -28,29 +28,29 @@ class SpyLoggerManager : public ::fwCore::BaseObject
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (SpyLoggerManager)(BaseObject::Baseclass), (()), new SpyLoggerManager) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (SpyLoggerManager)(BaseObject), (()), new SpyLoggerManager) ;
 
-	FWCORE_API static SpyLoggerManager::sptr getSpyLoggerManager();
+    FWCORE_API static SpyLoggerManager::sptr getSpyLoggerManager();
 
-	FWCORE_API static void kill();
+    FWCORE_API static void kill();
 
-	// FWCORE_API static void initMainSpyLogger(const SpyLogger & logger);
+    // FWCORE_API static void initMainSpyLogger(const SpyLogger & logger);
 
-	FWCORE_API SpyLogger & getMainSpyLogger();
+    FWCORE_API SpyLogger & getMainSpyLogger();
 
-	FWCORE_API SpyLogger & getSpyLogger(const std::string & loggerName);
+    FWCORE_API SpyLogger & getSpyLogger(const std::string & loggerName);
 
-	~SpyLoggerManager();
+    ~SpyLoggerManager();
 
 private :
 
-	SpyLoggerManager();
+    SpyLoggerManager();
 
-	static SpyLoggerManager::sptr m_manager;
+    static SpyLoggerManager::sptr m_manager;
 
-	std::map< std::string, SpyLogger > m_loggerNameToLogger;
+    std::map< std::string, SpyLogger > m_loggerNameToLogger;
 
-	SpyLogger m_mainSpyLogger;
+    SpyLogger m_mainSpyLogger;
 
 
 }; // SpyLoggerManager

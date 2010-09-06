@@ -20,20 +20,27 @@ REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwWX::MessageHandler , ::f
 namespace fwWX
 {
 
+//------------------------------------------------------------------------------
+
 MessageHandler::MessageHandler() throw()
 {
     SLM_TRACE_FUNC();
     m_msgHandler = ::fwServices::GlobalEventManager::getDefault();
 }
 
+//------------------------------------------------------------------------------
+
 MessageHandler::~MessageHandler() throw()
 {
     SLM_TRACE_FUNC();
 }
 
-void MessageHandler::configuring() throw( ::fwTools::Failed ) 
-{
-}
+//------------------------------------------------------------------------------
+
+void MessageHandler::configuring() throw( ::fwTools::Failed )
+{}
+
+//------------------------------------------------------------------------------
 
 void MessageHandler::starting() throw( ::fwTools::Failed )
 {
@@ -41,34 +48,38 @@ void MessageHandler::starting() throw( ::fwTools::Failed )
     m_msgHandler->setNotifyHandler(&MessageHandler::addNewMessageToWxQueue);
 
     m_onMessageHandler = ::boost::bind( &MessageHandler::onMessage, this, _1 );
-    wxTheApp->Bind( MESSAGE_EVENT, m_onMessageHandler ); 
+    wxTheApp->Bind( MESSAGE_EVENT, m_onMessageHandler );
 
     m_oldDeliveryType = m_msgHandler->getDeliveryType();
     m_msgHandler->setDeliveryType(::fwServices::GlobalEventManager::DELEGATED_BREADTH_FIRST);
 }
 
+//------------------------------------------------------------------------------
+
 void MessageHandler::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     m_msgHandler->setDeliveryType(m_oldDeliveryType);
-    wxTheApp->Unbind( MESSAGE_EVENT, m_onMessageHandler ); 
+    wxTheApp->Unbind( MESSAGE_EVENT, m_onMessageHandler );
     m_msgHandler->setNotifyHandler(NULL);
 }
 
-void MessageHandler::updating() throw( ::fwTools::Failed ) 
-{
-}
+//------------------------------------------------------------------------------
+
+void MessageHandler::updating() throw( ::fwTools::Failed )
+{}
+
+//------------------------------------------------------------------------------
 
 void MessageHandler::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
-{
-}
+{}
 
-void MessageHandler::info( std::ostream &_sstream ) 
-{
-}
+//------------------------------------------------------------------------------
 
+void MessageHandler::info( std::ostream &_sstream )
+{}
 
-
+//------------------------------------------------------------------------------
 
 void MessageHandler::addNewMessageToWxQueue()
 {
@@ -77,6 +88,7 @@ void MessageHandler::addNewMessageToWxQueue()
     //wxTheApp->QueueEvent( msgevt.Clone() );
 }
 
+//------------------------------------------------------------------------------
 
 void MessageHandler::onMessage(::fwWX::MessageEvent &event)
 {
@@ -87,6 +99,8 @@ void MessageHandler::onMessage(::fwWX::MessageEvent &event)
     event.Skip(true);
     event.StopPropagation();
 }
+
+//------------------------------------------------------------------------------
 
 }
 

@@ -8,14 +8,5 @@
 		<implements>::fwRender::IRender</implements>
 		<implements>::fwData::Composite</implements>
 	</point>
-	
-	
-	<!-- 	REGISTER_SERVICE( ::gui::action::IAction , ::vtkCompositeMesh::action::ChangeMaterialService , ::fwData::Composite );	-->
-	<point id="::vtkCompositeMesh::action::ChangeMaterialService" >
-		<implements>::gui::action::IAction</implements>
-		<implements>::fwData::Composite</implements>
-	</point>
-	
-	
-    
+	    
 </plugin>

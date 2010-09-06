@@ -22,6 +22,26 @@ TriangularMesh::~TriangularMesh()
     m_cells.clear();
 }
 
+//-----------------------------------------------------------------------------
+
+void TriangularMesh::shallowCopy( TriangularMesh::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_points = _source->m_points;
+    this->m_cells = _source->m_cells;
+}
+
+//-----------------------------------------------------------------------------
+
+void TriangularMesh::deepCopy( TriangularMesh::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_points = _source->m_points;
+    this->m_cells = _source->m_cells;
+}
+
+//-----------------------------------------------------------------------------
+
 TriangularMesh::PointContainer &TriangularMesh::points()
 {
     return m_points ;
@@ -56,7 +76,7 @@ void TriangularMesh::setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _
     m_cells[_iIndex][2] = _p3;
 }
 
-double* TriangularMesh::getOneVectorFromPointList(int _pt) const 
+double* TriangularMesh::getOneVectorFromPointList(int _pt) const
 {
     double *vec  = new double[3];
     vec[0] = (double) m_points[_pt][0];

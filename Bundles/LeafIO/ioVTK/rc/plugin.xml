@@ -1,78 +1,78 @@
 <plugin id="ioVTK" class="::ioVTK::Plugin" >
-	<library name="ioVTK" />
+    <library name="ioVTK" />
 
-	<requirement id="io" />
-	
-	<!--	REGISTER_SERVICE( ::io::IReader , ::ioVTK::MaxMeshReaderService , ::fwData::Model ) ;-->
-	<point id="::ioVTK::MaxMeshReaderService" >
-		<implements>::io::IReader</implements>
-		<implements>::fwData::Model</implements>
-	</point>
-	
-	<!--	REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwData::Acquisition ) ;-->
-	<point id="::ioVTK::ReconstructionWriterService" >
-		<implements>::io::IWriter</implements>
-		<implements>::fwData::Acquisition</implements>
-	</point>	
-	
-	<!--	REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image ) ;-->
-	<point id="::ioVTK::ImageWriterService" >
-		<implements>::io::IWriter</implements>
-		<implements>::fwData::Image</implements>
-	</point>	
+    <requirement id="io" />
+    
+    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::MaxMeshReaderService , ::fwData::Model ) ;-->
+    <point id="::ioVTK::MaxMeshReaderService" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::Model</implements>
+    </point>
+    
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwData::Acquisition ) ;-->
+    <point id="::ioVTK::ReconstructionWriterService" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>    
+    
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image ) ;-->
+    <point id="::ioVTK::ImageWriterService" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::Image</implements>
+    </point>    
 
-	<!--	REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image ) ;-->
-	<point id="::ioVTK::ImageReaderService" >
-		<implements>::io::IReader</implements>
-		<implements>::fwData::Image</implements>
-	</point>	
-	
-	
-	<!--	REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::TriangularMesh) ;-->
-	<point id="::ioVTK::MeshReaderService" >
-		<implements>::io::IReader</implements>
-		<implements>::fwData::TriangularMesh</implements>
-	</point>
-	
-	<!--	REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::TriangularMesh ) ;-->
-	<point id="::ioVTK::MeshWriterService" >
-		<implements>::io::IWriter</implements>
-		<implements>::fwData::TriangularMesh</implements>
-	</point>	
+    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image ) ;-->
+    <point id="::ioVTK::ImageReaderService" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::Image</implements>
+    </point>    
+    
+    
+    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::TriangularMesh) ;-->
+    <point id="::ioVTK::MeshReaderService" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::TriangularMesh</implements>
+    </point>
+    
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::TriangularMesh ) ;-->
+    <point id="::ioVTK::MeshWriterService" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::TriangularMesh</implements>
+    </point>    
 
 
-	<!--	REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData::PatientDB ) ;-->
-	<point id="::ioVTK::VtkPatientDBReaderService" >
-		<implements>::io::IReader</implements>
-		<implements>::fwData::PatientDB</implements>
-	</point>	
-	
-	<extension implements="::ioVTK::ReconstructionWriterService" >
-		<info text="Reconstructions Writer (VTK)"/>
-	</extension>
-	
-	<extension implements="::ioVTK::ImageWriterService" >
-		<info text="VTK Image Writer (VTK)"/>
-	</extension>
-	
-	<extension implements="::ioVTK::MeshWriterService" >
-		<info text="VTK Mesh Writer (VTK)"/>
-	</extension>
-	
-	<extension implements="::ioVTK::MaxMeshReaderService" >
-		<info text="3ds Reader (VTK)"/>
-	</extension>
-	
-	<extension implements="::ioVTK::ImageReaderService" >
-		<info text="VTK Image Reader (VTK)"/>
-	</extension>
-	
-	<extension implements="::ioVTK::MeshReaderService" >
-		<info text="VTK Mesh Reader (VTK)"/>
-	</extension>
-	
-	<extension implements="::ioVTK::VtkPatientDBReaderService" >
-		<info text="VTK Image Reader (VTK)"/>
-	</extension>
-	
+    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData::PatientDB ) ;-->
+    <point id="::ioVTK::VtkPatientDBReaderService" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::PatientDB</implements>
+    </point>    
+    
+    <extension implements="::ioVTK::ReconstructionWriterService" >
+        <info text="Reconstructions Writer (VTK)"/>
+    </extension>
+    
+    <extension implements="::ioVTK::ImageWriterService" >
+        <info text="VTK Image Writer (VTK)"/>
+    </extension>
+    
+    <extension implements="::ioVTK::MeshWriterService" >
+        <info text="VTK Mesh Writer (VTK)"/>
+    </extension>
+    
+    <extension implements="::ioVTK::MaxMeshReaderService" >
+        <info text="3ds Reader (VTK)"/>
+    </extension>
+    
+    <extension implements="::ioVTK::ImageReaderService" >
+        <info text="VTK Image Reader (VTK)"/>
+    </extension>
+    
+    <extension implements="::ioVTK::MeshReaderService" >
+        <info text="VTK Mesh Reader (VTK)"/>
+    </extension>
+    
+    <extension implements="::ioVTK::VtkPatientDBReaderService" >
+        <info text="VTK Image Reader (VTK)"/>
+    </extension>
+    
 </plugin>

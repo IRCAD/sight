@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+
+    
+    
+ <xsd:complexType name="FloatFieldXSDType">
+        <xsd:sequence>
+        <xsd:element name="value" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:string" />
+    <xsd:attribute name="class" type="xsd:string"/>
+  </xsd:complexType>
+
+ <xsd:element  name="FloatField"  type="FloatFieldXSDType"/>
+  
+</xsd:schema>
+

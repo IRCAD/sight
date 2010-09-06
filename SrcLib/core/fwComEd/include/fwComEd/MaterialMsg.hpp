@@ -16,34 +16,34 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object event message specialized for material : store modification information
- * @class 	MaterialMsg
+ * @brief   Object event message specialized for material : store modification information
+ * @class   MaterialMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API MaterialMsg : public ::fwServices::ObjectMsg
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro((MaterialMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new MaterialMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((MaterialMsg)(::fwServices::ObjectMsg), ( () ), new MaterialMsg );
 
-	/**
-	 * @name Event identifier
-	 */
-	/// @{
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string MATERIAL_IS_MODIFIED;
-	/// @}
+    /**
+     * @name Event identifier
+     */
+    /// @{
+    /// Event identifier used to inform for modification
+    FWCOMED_API static std::string MATERIAL_IS_MODIFIED;
+    /// @}
 
-	/**
-	 * @brief 	Constructor : do nothing.
-	 */
-	FWCOMED_API MaterialMsg() throw();
+    /**
+     * @brief   Constructor : do nothing.
+     */
+    FWCOMED_API MaterialMsg() throw();
 
-	/**
-	 * @brief	Destuctor : do nothing.
-	 */
-	FWCOMED_API virtual ~MaterialMsg() throw();
+    /**
+     * @brief   Destuctor : do nothing.
+     */
+    FWCOMED_API virtual ~MaterialMsg() throw();
 
 };
 

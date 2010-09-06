@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+
+<!-- The purpose of this schema is to include all schema to use xmllint tools
+     : xmllint - -xinclude root.xml | xmllint - -schema ValidateAll.xsd -
+-->
+
+
+<xsd:include schemaLocation="FloatField.xsd"/>
+<xsd:include schemaLocation="IntegerField.xsd"/>
+<xsd:include schemaLocation="StringField.xsd"/>
+<xsd:include schemaLocation="DynamicType.xsd"/>
+<xsd:include schemaLocation="Field.xsd"/>
+<xsd:include schemaLocation="Image.xsd"/>
+<xsd:include schemaLocation="ProcessObject.xsd"/>
+<xsd:include schemaLocation="Patient.xsd"/>
+<xsd:include schemaLocation="Acquisition.xsd"/>
+<xsd:include schemaLocation="Study.xsd"/>
+<xsd:include schemaLocation="Reconstruction.xsd"/>
+<xsd:include schemaLocation="TransfertFunction.xsd"/>
+<xsd:include schemaLocation="TransfertFunctionPoint.xsd"/>
+<xsd:include schemaLocation="Color.xsd"/>
+
+
+</xsd:schema>

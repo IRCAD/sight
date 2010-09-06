@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/app.h>
-#include <wx/window.h>
-
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
+
+#include <fwGui/Cursor.hpp>
 
 #include "gui/action/QuitAction.hpp"
 
@@ -19,34 +18,70 @@ namespace gui
 {
 namespace action
 {
-REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::QuitAction , ::fwTools::Object ) ;
+
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::QuitAction , ::fwTools::Object ) ;
+
+//-----------------------------------------------------------------------------
 
 QuitAction::QuitAction() throw()
+{}
+
+//-----------------------------------------------------------------------------
+
+QuitAction::~QuitAction() throw()
+{}
+
+//-----------------------------------------------------------------------------
+
+void QuitAction::configuring() throw( ::fwTools::Failed )
 {
+    SLM_TRACE_FUNC() ;
+    this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-QuitAction::~QuitAction() throw() 
+void QuitAction::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void QuitAction::starting() throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->actionServiceStarting();
+}
+
+//-----------------------------------------------------------------------------
+
+void QuitAction::stopping() throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
 void QuitAction::info(std::ostream &_sstream )
 {
-	_sstream << "Quit Action" << std::endl;
+    _sstream << "Quit Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void QuitAction::updating() throw( ::fwTools::Failed )
 {
-	wxBeginBusyCursor();
-	::fwServices::OSR::uninitializeRootObject();
-	wxEndBusyCursor();
-	wxTheApp->GetTopWindow()->Close();
+    ::fwGui::Cursor cursor;
+    cursor.setCursor(::fwGui::ICursor::BUSY);
+    ::fwServices::OSR::uninitializeRootObject();
+    cursor.setDefaultCursor();
 
+//    wxTheApp->GetTopWindow()->Close();
 }
+
+//-----------------------------------------------------------------------------
+
 }
 }

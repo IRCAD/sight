@@ -6,7 +6,6 @@
     name="Controls"
     type="win32"
 />
-<description>wxWindows application</description>
 <dependency>
     <dependentAssembly>
         <assemblyIdentity

@@ -10,10 +10,10 @@
 #include <fwRuntime/Plugin.hpp>
 
 /**
- * @brief	Namespace uiIO.
- * @namespace	uiIO.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   Namespace uiIO.
+ * @namespace   uiIO.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  *
  *  The namespace uiIO contains a simple service to manipulate IO with IHM.
  */
@@ -25,15 +25,15 @@ class Plugin : public ::fwRuntime::Plugin
 
 public :
 
-	/// PLugin destructor
-	~Plugin() throw();
-	
-	/// This method is used by runtime to initialize the bundle.
-	void start() throw( ::fwRuntime::RuntimeException );
+    /// PLugin destructor
+    ~Plugin() throw();
+    
+    /// This method is used by runtime to initialize the bundle.
+    void start() throw( ::fwRuntime::RuntimeException );
 
-	/// This method is used by runtime to stop the bundle.
-	void stop() throw();
-	
+    /// This method is used by runtime to stop the bundle.
+    void stop() throw();
+    
 };
 
 } // namespace uiIO

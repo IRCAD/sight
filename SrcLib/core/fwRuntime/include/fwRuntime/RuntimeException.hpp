@@ -18,47 +18,47 @@ namespace fwRuntime
 
 
 /**
- * @brief	Defines the runtime exception class.
- * @struct 	RuntimeException
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief   Defines the runtime exception class.
+ * @struct  RuntimeException
+ * @date    2004-2009
+ * @author  IRCAD (Research and Development Team).
  */
 struct FWRUNTIME_CLASS_API RuntimeException : public std::exception
 {
 
-	/**
-	 * @brief		Copy constructor.
-	 *
-	 * @param[in]	exception	an exception instance to copy
-	 */
-	FWRUNTIME_API RuntimeException(const RuntimeException& exception) throw();
+    /**
+     * @brief       Copy constructor.
+     *
+     * @param[in]   exception   an exception instance to copy
+     */
+    FWRUNTIME_API RuntimeException(const RuntimeException& exception) throw();
 
-	/**
-	 * @brief		Constructor.
-	 *
-	 * @param[in]	message	a string containing the exception message
-	 */
-	FWRUNTIME_API RuntimeException(const std::string& message) throw();
+    /**
+     * @brief       Constructor.
+     *
+     * @param[in]   message a string containing the exception message
+     */
+    FWRUNTIME_API RuntimeException(const std::string& message) throw();
 
-	/**
-	 * @brief	Destructor : does nothing.
-	 */
-	FWRUNTIME_API virtual ~RuntimeException() throw();
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    FWRUNTIME_API virtual ~RuntimeException() throw();
 
-	/**
-	 * @brief	Retrieves the exception message.
-	 *
-	 * @return	a pointer to a string containing the exception message.
-	 */
-	FWRUNTIME_API virtual const char* what() const throw();
+    /**
+     * @brief   Retrieves the exception message.
+     *
+     * @return  a pointer to a string containing the exception message.
+     */
+    FWRUNTIME_API virtual const char* what() const throw();
 
 
 private:
 
-	/**
-	 * A string containing the exception message.
-	 */
-	std::string m_message;
+    /**
+     * A string containing the exception message.
+     */
+    std::string m_message;
 };
 
 

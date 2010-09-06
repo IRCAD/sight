@@ -22,11 +22,11 @@ namespace fwServices
  */
 class FWSERVICES_CLASS_API ObjectXMLParser : public ::fwServices::IXMLParser
 {
-	public :
-    fwCoreServiceClassDefinitionsMacro ( (ObjectXMLParser)(::fwServices::IXMLParser::Baseclass) ) ;
+    public :
+        fwCoreServiceClassDefinitionsMacro ( (ObjectXMLParser)(::fwServices::IXMLParser) ) ;
 
-		FWSERVICES_API ObjectXMLParser( ) ;
-		FWSERVICES_API virtual ~ObjectXMLParser() ;
+        FWSERVICES_API ObjectXMLParser( ) ;
+        FWSERVICES_API virtual ~ObjectXMLParser() ;
 
 };
 

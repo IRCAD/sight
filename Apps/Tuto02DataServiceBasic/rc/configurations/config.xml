@@ -2,7 +2,7 @@
 <extension id="tutoDataServiceBasicConfig" implements="::fwData::Image">
 
     <!-- In tutoDataServiceBasic, the central data  object is a ::fwData::Image type.-->
-    <object id="tutoDataServiceBasicImage" type="::fwData::Image">
+    <object type="::fwData::Image">
 
         <!-- Reading service. Here, the service unique identifier (uid) is set to the myReaderPathFile value.
         In this tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.
@@ -17,44 +17,42 @@
         Here, the value of the service unique identifier (uid) is myRenderingTuto.
         In our tutorial, this service needs to receive information about its linked data,
         indeed, it has to receive a message when the image is effectively loaded. Therefore, the autoComChannel value is fixed to yes.
-        Furthermore, a guiContainerId attribut is also associated to the service.
-        It is the container identifier (arbitrarily set to "900") where the visualization service will be installed. 
-        A container, which identifier is "900" must be created. -->
-        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" > 
-            <win guiContainerId="900"/>
-        </service>
-
+        Furthermore, a guiContainerId attribut is also associated to the service.-->
+        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
+        
         <!-- Description service of the HMI.
-        Creation of a container, which id's value is 900.
         Here, the container will be used by the 3D visualization service previously described. 
-        The ::gui::aspect::DefaultAspect service automaticly positions the different containers in the application main window.
+        The ::gui::frame::MainFrame service automaticly positions the different containers in the application main window.
         In our tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.
         Remember we will see in details the use of communications in the tutoComChannel tutorial.-->
-        <service type="::gui::aspect::IAspect" implementation="::gui::aspect::DefaultAspect" autoComChannel="no" >
-            <name>tutoDataServiceBasic</name>
-            <icon>Bundles/Tuto02DataServiceBasic_0-1/tuto.ico</icon>
-            <views>
-                <view guiContainerId="900" />
-            </views>
+        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <gui>
+                <frame>
+                    <name>tutoDataServiceBasic</name>
+                    <icon>Bundles/Tuto02DataServiceBasic_0-1/tuto.ico</icon>
+                    <minSize width="800" height="600" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="myRenderingTuto" start="yes" />
+            </registry>
         </service>
-
+        
         <!-- Definition of the starting and closing order of the different services.
-        Here, the three services ::gui::aspect::IAspect, myRenderingTuto, and myReaderPathFile are started,
+        Here, the three services ::fwGui::IFrameSrv, and myReaderPathFile are started,
         nevertheless, only the myReaderPathFile service is updated after the launching.
         Indeed, as the image location is known (contained in the configuration file),
         the image can be loaded since the application starting. It corresponds to the update flag for myReaderPathFile.
         The HMI service must be started first, then the rendering service, and finaly the reading service.
         The stopping of the services is done in the reverse order compared to the starting one. -->
         
-        <start type="::gui::aspect::IAspect" />
-        <start uid="myRenderingTuto"/>
+        <start type="::fwGui::IFrameSrv" />
         <start uid="myReaderPathFile"/>
 
         <update uid="myReaderPathFile"/>
 
         <stop uid="myReaderPathFile"/>
-        <stop uid="myRenderingTuto"/>
-        <stop type="::gui::aspect::IAspect" />
+        <stop type="::fwGui::IFrameSrv" />
 
     </object>
 </extension>

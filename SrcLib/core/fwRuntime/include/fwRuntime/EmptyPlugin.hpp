@@ -17,32 +17,32 @@ namespace fwRuntime
 
 
 /**
- * @struct 	EmptyPlugin
- * @brief	Implements a default plugin for bundles that don't provide a
- *			::fwRuntime::IPlugin interface implementation. This plugin does nothing
- * 			by default. It has not been design to be subclassed, but subclassing
- * 			is neither forbidden.
+ * @struct  EmptyPlugin
+ * @brief   Implements a default plugin for bundles that don't provide a
+ *          ::fwRuntime::IPlugin interface implementation. This plugin does nothing
+ *          by default. It has not been design to be subclassed, but subclassing
+ *          is neither forbidden.
  *
- * @remark	The factory for this executable structure is registered by the runtime
- * 			it-self.
+ * @remark  The factory for this executable structure is registered by the runtime
+ *          it-self.
  *
- * @date	2004-2005
- * @author 	IRCAD (Research and Development Team).
+ * @date    2004-2005
+ * @author  IRCAD (Research and Development Team).
  */
 struct EmptyPlugin : public Plugin
 {
 
-	/**
-	 * @brief	Destructor : does nothing.
-	 */
-	FWRUNTIME_API virtual ~EmptyPlugin() throw() {}
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    FWRUNTIME_API virtual ~EmptyPlugin() throw() {}
 
 
-	// Overrides
-	virtual void start() throw(::fwRuntime::RuntimeException);
+    // Overrides
+    virtual void start() throw(::fwRuntime::RuntimeException);
 
-	// Overrides
-	virtual void stop() throw();
+    // Overrides
+    virtual void stop() throw();
 
 };
 

@@ -21,52 +21,61 @@
 namespace fwData
 {
 /**
- * @class 	PatientDB
- * @brief 	This class defines a patients container.
+ * @class   PatientDB
+ * @brief   This class defines a patients container.
  *
- * @see 	::fwData::Patient
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @see     ::fwData::Patient
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API PatientDB : public Object
 {
 
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< PatientDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwTools::Factory::New< PatientDB >) ;
 
-	/// Constructor
-	FWDATA_API PatientDB ();
+    /// Constructor
+    FWDATA_API PatientDB ();
 
-	/// Destructor
-	FWDATA_API virtual ~PatientDB ();
+    /// Destructor
+    FWDATA_API virtual ~PatientDB ();
 
-	/// Copy method
-	FWDATA_API PatientDB &operator=( const PatientDB & _patientDB ) ;
 
-	// Patients ----------------------------------------------------------------
-	/// Field identifier for patients
-	FWDATA_API static const Object::FieldID ID_PATIENTS;
+    fwDataObjectMacro();
 
-	typedef ContainerCaster< Patient >::iterator		PatientIterator;
-	typedef ContainerCaster< Patient >::const_iterator	PatientConstIterator;
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( PatientDB::csptr _source );
 
-	/**
-	 * @brief Get the number of patients
-	 */
-	FWDATA_API boost::uint32_t  getPatientSize() const;
+    /// Defines deep copy
+    FWDATA_API void deepCopy( PatientDB::csptr _source );
 
-	/**
-	 * @brief add patient
-	 */
-	FWDATA_API void addPatient( ::fwData::Patient::sptr _patient );
+    /// Copy method
+    //FWDATA_API PatientDB &operator=( const PatientDB & _patientDB ) ;
 
-	/**@{
-	 * @brief Get iterator on the first and the last patient. Use it to browse all patients.
-	 * @return std::pair( patient.begin(), patient.end() )
-	 */
-	FWDATA_API std::pair< PatientIterator, PatientIterator > getPatients();
-	FWDATA_API std::pair< PatientConstIterator, PatientConstIterator > getPatients() const;
-	//@]
+    // Patients ----------------------------------------------------------------
+    /// Field identifier for patients
+    FWDATA_API static const Object::FieldID ID_PATIENTS;
+
+    typedef ContainerCaster< Patient >::iterator        PatientIterator;
+    typedef ContainerCaster< Patient >::const_iterator  PatientConstIterator;
+
+    /**
+     * @brief Get the number of patients
+     */
+    FWDATA_API boost::uint32_t  getPatientSize() const;
+
+    /**
+     * @brief add patient
+     */
+    FWDATA_API void addPatient( ::fwData::Patient::sptr _patient );
+
+    /**@{
+     * @brief Get iterator on the first and the last patient. Use it to browse all patients.
+     * @return std::pair( patient.begin(), patient.end() )
+     */
+    FWDATA_API std::pair< PatientIterator, PatientIterator > getPatients();
+    FWDATA_API std::pair< PatientConstIterator, PatientConstIterator > getPatients() const;
+    //@]
 
 };
 

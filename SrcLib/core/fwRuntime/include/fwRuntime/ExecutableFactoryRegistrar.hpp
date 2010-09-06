@@ -23,27 +23,27 @@ struct ExecutableFactory;
 
 
 /**
- * @brief	Defines an executable factory registrar class.
- * @struct 	ExecutableFactoryRegistrar
+ * @brief   Defines an executable factory registrar class.
+ * @struct  ExecutableFactoryRegistrar
  *
  * An instance of this class is responsible for the registration of an
  * executable factory instance in the runtime environment. The factory instace
  * gets registered as soon as a registrar instance gets created.
  * That's why this class is design to be instanciated as static object.
  *
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @date    2004-2009
+ * @author  IRCAD (Research and Development Team).
  */
 struct ExecutableFactoryRegistrar
 {
 
-	/**
-	 * @brief		Constructor
-	 *
-	 * @param[in]	factory	a shared pointer to an executable factory instance to manage
-	 * @pre			Loading bundle exists.
-	 */
-	FWRUNTIME_API ExecutableFactoryRegistrar( ::boost::shared_ptr< ExecutableFactory > factory );
+    /**
+     * @brief       Constructor
+     *
+     * @param[in]   factory a shared pointer to an executable factory instance to manage
+     * @pre         Loading bundle exists.
+     */
+    FWRUNTIME_API ExecutableFactoryRegistrar( ::boost::shared_ptr< ExecutableFactory > factory );
 
 };
 

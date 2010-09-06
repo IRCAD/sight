@@ -1,5 +1,5 @@
-TYPE 	= 'bundle'
-LIB  	= ['fwServices_0-1','fwCore_0-1','fwRuntime_0-3','fwTools_0-1']
-USE  	= ['boost','wx']
+TYPE    = 'bundle'
+LIB     = ['fwServices_0-1','fwCore_0-1','fwRuntime_0-3','fwTools_0-1']
+USE     = ['boost']
 VERSION = '0-1'
 

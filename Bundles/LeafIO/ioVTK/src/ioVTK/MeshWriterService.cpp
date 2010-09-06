@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -19,8 +16,14 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
+
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/MeshWriter.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
@@ -34,8 +37,8 @@ REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Triangu
 //------------------------------------------------------------------------------
 
 MeshWriterService::MeshWriterService() throw() :
-	m_bServiceIsConfigured(false),
-	m_fsMeshPath("")
+    m_bServiceIsConfigured(false),
+    m_fsMeshPath("")
 {}
 
 //------------------------------------------------------------------------------
@@ -47,110 +50,124 @@ MeshWriterService::~MeshWriterService() throw()
 
 void MeshWriterService::configuring() throw(::fwTools::Failed)
 {
-	if( m_configuration->findConfigurationElement("filename") )
-	{
-		std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-		m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-		m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsMeshPath);
-		OSLM_TRACE("Filename found" << filename ) ;
-	}
+    if( m_configuration->findConfigurationElement("filename") )
+    {
+        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
+        m_fsMeshPath = ::boost::filesystem::path( filename ) ;
+        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsMeshPath);
+        OSLM_TRACE("Filename found" << filename ) ;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::configureWithIHM()
 {
-	static wxString _sDefaultPath = _("");
-	wxString title = _("Choose an vtk file to save Mesh");
-	wxString file = wxFileSelector(
-			title,
-			_sDefaultPath,
-			wxT(""),
-			wxT(""),
-			wxT("Vtk (*.vtk)|*.vtk"),
-			wxFD_SAVE,
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath("");
 
-			wxTheApp->GetTopWindow() );
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a vtk file to save Mesh");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
 
-	if( file.IsEmpty() == false)
-	{
-		m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
-		m_bServiceIsConfigured = true;
-		_sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
-	}
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
+    {
+        m_fsMeshPath = result->getPath();
+        m_bServiceIsConfigured = true;
+        _sDefaultPath = m_fsMeshPath.branch_path();
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::starting() throw(::fwTools::Failed)
 {
-	SLM_TRACE("MeshWriterService::starting()");
+    SLM_TRACE("MeshWriterService::starting()");
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::stopping() throw(::fwTools::Failed)
 {
-	SLM_TRACE("MeshWriterService::stopping()");
+    SLM_TRACE("MeshWriterService::stopping()");
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::info(std::ostream &_sstream )
 {
-	_sstream << "MeshWriterService::info";
+    _sstream << "MeshWriterService::info";
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boost::shared_ptr< ::fwData::TriangularMesh > _pMesh )
 {
-	SLM_TRACE("MeshWriterService::saveMesh");
-	::vtkIO::MeshWriter myWriter;
+    SLM_TRACE("MeshWriterService::saveMesh");
+    ::vtkIO::MeshWriter myWriter;
 
-	myWriter.setObject(_pMesh);
-	myWriter.setFile(vtkFile);
+    myWriter.setObject(_pMesh);
+    myWriter.setFile(vtkFile);
 
-	try
-	{
-		::fwWX::ProgressTowx progressMeterGUI("Saving Meshs ");
-		myWriter.addHandler( progressMeterGUI );
-		myWriter.write();
+    try
+    {
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Meshs ");
+        myWriter.addHandler( progressMeterGUI );
+        myWriter.write();
 
-	}
-	catch (const std::exception & e)
-	{
-		std::stringstream ss;
-		ss << "Warning during loading : " << e.what();
-		wxString wxStmp( ss.str().c_str(), wxConvLocal );
-		wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
-	}
-	catch( ... )
-	{
-		std::stringstream ss;
-		ss << "Warning during loading : ";
-		wxString wxStmp( ss.str().c_str(), wxConvLocal );
-		wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
-	}
+    }
+    catch (const std::exception & e)
+    {
+        std::stringstream ss;
+        ss << "Warning during loading : " << e.what();
+
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
+    }
+    catch( ... )
+    {
+        std::stringstream ss;
+        ss << "Warning during loading : ";
+
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
+
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::updating() throw(::fwTools::Failed)
 {
-	SLM_TRACE("MeshWriterService::updating()");
+    SLM_TRACE("MeshWriterService::updating()");
 
-	if( m_bServiceIsConfigured )
-	{
-		// Retrieve dataStruct associated with this service
-		::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
-		assert(pTriangularMesh);
-		wxBeginBusyCursor();
-		saveMesh(m_fsMeshPath,pTriangularMesh);
-		wxEndBusyCursor();
+    if( m_bServiceIsConfigured )
+    {
+        // Retrieve dataStruct associated with this service
+        ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
+        assert(pTriangularMesh);
 
-		m_bServiceIsConfigured = false;
-	}
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
+        saveMesh(m_fsMeshPath,pTriangularMesh);
+
+        cursor.setDefaultCursor();
+
+        m_bServiceIsConfigured = false;
+    }
 }
 
 //------------------------------------------------------------------------------

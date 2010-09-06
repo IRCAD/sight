@@ -10,10 +10,10 @@
 #include <fwRuntime/Plugin.hpp>
 
 /**
- * @brief	The namespace ioData contains reader and writer services for basic ::fwData::Object which doesn't need external library.
- * @namespace	ioData.
- * @author	IRCAD (Research and Development Team).
- * @date	2009.
+ * @brief   The namespace ioData contains reader and writer services for basic ::fwData::Object which doesn't need external library.
+ * @namespace   ioData.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  *
  */
 namespace ioData
@@ -21,25 +21,25 @@ namespace ioData
 
 struct Plugin : public ::fwRuntime::Plugin
 {
-	/**
-	 * @brief	Destructor
-	 */
-	~Plugin() throw();
+    /**
+     * @brief   Destructor
+     */
+    ~Plugin() throw();
 
-	/**
-	 * @brief Start method.
-	 *
-	 * @exception ::fwRuntime::RuntimeException.
-	 * This method is used by runtime in order to initialize the bundle.
-	 */
-	void start() throw(::fwRuntime::RuntimeException);
+    /**
+     * @brief Start method.
+     *
+     * @exception ::fwRuntime::RuntimeException.
+     * This method is used by runtime in order to initialize the bundle.
+     */
+    void start() throw(::fwRuntime::RuntimeException);
 
-	/**
-	 * @brief Stop method.
-	 *
-	 * This method is used by runtime in order to close the bundle.
-	 */
-	void stop() throw();
+    /**
+     * @brief Stop method.
+     *
+     * This method is used by runtime in order to close the bundle.
+     */
+    void stop() throw();
 
 };
 

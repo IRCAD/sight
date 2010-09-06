@@ -4,44 +4,65 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwData/location/Folder.hpp"
 
-namespace fwData {
-namespace location {
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::location::Folder, ::fwData::location::Folder);
+
+namespace fwData
+{
+namespace location
+{
+
+//------------------------------------------------------------------------------
 
 Folder::Folder()
-{
-	// TODO Auto-generated constructor stub
+{}
 
-}
+//------------------------------------------------------------------------------
 
 Folder::~Folder()
+{}
+
+
+Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursive )
 {
-	// TODO Auto-generated destructor stub
+    Folder::sptr folder = Folder::New();
+    folder->setFolder(_path);
+    return folder;
 }
 
+
+//------------------------------------------------------------------------------
 
 void Folder::setFolder( ::boost::filesystem::path folder)
 {
-	m_folder = folder;
+    m_folder = folder;
 }
 
-::boost::filesystem::path Folder::getFolder()
+//------------------------------------------------------------------------------
+
+::boost::filesystem::path Folder::getFolder() const
 {
-	return m_folder;
+    return m_folder;
 }
+
+//------------------------------------------------------------------------------
 
 void Folder::setRecursive( bool recursive)
 {
-	m_isRecursive = recursive;
+    m_isRecursive = recursive;
 }
+
+//------------------------------------------------------------------------------
 
 bool Folder::getRecursive()
 {
-	return m_isRecursive;
+    return m_isRecursive;
 }
 
-
+//------------------------------------------------------------------------------
 
 }
 }

@@ -1,8 +1,9 @@
-TYPE	= 'shared'
-USE		= ['boost']
+TYPE    = 'shared'
+USE     = ['boost']
+#USE     = ['boost_1-38-0']
 import os
 if os.name == 'nt':
-	USE	+= ['log4cxx']
-	DEF = ['USE_LOG4CXX']
+    USE += ['log4cxx']
+    DEF = ['USE_LOG4CXX']
 
-VERSION	= '0-1'
+VERSION = '0-1'

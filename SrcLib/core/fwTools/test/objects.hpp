@@ -8,12 +8,12 @@
 
 struct Base1
 {
-	virtual ~Base1(){} // class should be polymorphic
+    virtual ~Base1(){} // class should be polymorphic
 };
 
 struct Base2
 {
-	virtual ~Base2(){} // class should be polymorphic
+    virtual ~Base2(){} // class should be polymorphic
 };
 
 // data

@@ -10,7 +10,6 @@
 #include <boost/function.hpp>
 
 
-#include <wx/timer.h>
 #include <wx/event.h>
 
 #include <fwCore/base.hpp>
@@ -35,8 +34,8 @@ class FWWX_CLASS_API MessageHandler : public ::fwServices::IDeliveryDelegate
 {
 
 public:
-	/// Definitions
-	fwCoreServiceClassDefinitionsMacro ( (MessageHandler)(::fwServices::IDeliveryDelegate::Baseclass) ) ;
+    /// Definitions
+    fwCoreServiceClassDefinitionsMacro ( (MessageHandler)(::fwServices::IDeliveryDelegate) ) ;
     fwCoreAllowSharedFromThis();
 
 
@@ -46,24 +45,17 @@ public:
      static void addNewMessageToWxQueue();
 
 protected:
-	/**
-	 * @brief If configuration is set, both subject (data) and observer (service) uuid are retrieved
-	 */
-	FWWX_API virtual void configuring() throw( ::fwTools::Failed ) ;
-	FWWX_API virtual void starting() throw( ::fwTools::Failed );
-	FWWX_API virtual void stopping() throw( ::fwTools::Failed );
-	FWWX_API virtual void updating() throw( ::fwTools::Failed );
-	FWWX_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
-	FWWX_API virtual void info( std::ostream &_sstream ) ;
+    /**
+     * @brief If configuration is set, both subject (data) and observer (service) uuid are retrieved
+     */
+    FWWX_API virtual void configuring() throw( ::fwTools::Failed ) ;
+    FWWX_API virtual void starting() throw( ::fwTools::Failed );
+    FWWX_API virtual void stopping() throw( ::fwTools::Failed );
+    FWWX_API virtual void updating() throw( ::fwTools::Failed );
+    FWWX_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
+    FWWX_API virtual void info( std::ostream &_sstream ) ;
 
 private:
-
-    /*
-     * @brief   declares the wxWidgets event table
-     */
-
-    int      m_rate;
-	wxTimer *m_wxTimer;
 
     SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
     ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;

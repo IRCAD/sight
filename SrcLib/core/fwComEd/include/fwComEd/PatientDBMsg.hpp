@@ -16,41 +16,41 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object message specialized for PatientDB : store modification information
- * @class 	PatientDBMsg
+ * @brief   Object message specialized for PatientDB : store modification information
+ * @class   PatientDBMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API PatientDBMsg : public ::fwServices::ObjectMsg
 {
 
 public:
 
-	fwCoreClassDefinitionsWithFactoryMacro((PatientDBMsg)(::fwServices::ObjectMsg::Baseclass), (()), new PatientDBMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PatientDBMsg)(::fwServices::ObjectMsg), (()), new PatientDBMsg );
 
-	/**
-	 * @name Event identifier
-	 */
-	/// @{
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string NEW_PATIENT;
-	FWCOMED_API static std::string ADD_PATIENT;
-	FWCOMED_API static std::string CLEAR_PATIENT;
-	FWCOMED_API static std::string NEW_IMAGE_SELECTED;
-	FWCOMED_API static std::string NEW_LOADED_PATIENT; /*!< Event when the patient is modified from a file loading (uses a reader). */
-	FWCOMED_API static std::string NEW_RESECTION_SELECTED;
-	/// @}
+    /**
+     * @name Event identifier
+     */
+    /// @{
+    /// Event identifier used to inform for modification
+    FWCOMED_API static std::string NEW_PATIENT;
+    FWCOMED_API static std::string ADD_PATIENT;
+    FWCOMED_API static std::string CLEAR_PATIENT;
+    FWCOMED_API static std::string NEW_IMAGE_SELECTED;
+    FWCOMED_API static std::string NEW_LOADED_PATIENT; /*!< Event when the patient is modified from a file loading (uses a reader). */
+    FWCOMED_API static std::string NEW_RESECTION_SELECTED;
+    /// @}
 
-	/**
-	 * @brief Constructor : does nothing.
-	 */
-	FWCOMED_API PatientDBMsg() throw();
+    /**
+     * @brief Constructor : does nothing.
+     */
+    FWCOMED_API PatientDBMsg() throw();
 
-	/**
-	 * @brief Destructor : does nothing.
-	 */
-	FWCOMED_API virtual ~PatientDBMsg() throw();
+    /**
+     * @brief Destructor : does nothing.
+     */
+    FWCOMED_API virtual ~PatientDBMsg() throw();
 
 };
 

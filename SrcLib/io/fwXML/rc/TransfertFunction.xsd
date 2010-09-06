@@ -1,0 +1,23 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ -->     
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+    
+<xsd:include schemaLocation="Field.xsd"/>
+
+<xsd:complexType name="TransfertFunctionXSDType">
+    
+    <xsd:sequence>
+        <xsd:element name="Name" type="xsd:string"/>
+        <xsd:element name="Encoding" type="xsd:string"/>
+        <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    
+    <xsd:attribute name="id" type="xsd:string"/>
+    <xsd:attribute name="class" type="xsd:string"/>
+    <xsd:attribute ref="xml:base" />
+    
+</xsd:complexType>
+
+<xsd:element name="TransfertFunction" type="TransfertFunctionXSDType"/>
+
+</xsd:schema>

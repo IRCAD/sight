@@ -24,27 +24,27 @@ namespace profile
 
 
 /**
- * @brief	Stops a given bundle.
- * @struct 	Stopper
- * @date	2007-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief   Stops a given bundle.
+ * @struct  Stopper
+ * @date    2007-2009
+ * @author  IRCAD (Research and Development Team).
  */
 struct Stopper : public ::fwRuntime::profile::Starter
 {
 
-	/**
-	 * @brief		Constructor
-	 *
-	 * @param[in]	identifier	a string containing a bundle identifier
-	 */
-	FWRUNTIME_API Stopper( ::boost::shared_ptr< Starter > starter );
+    /**
+     * @brief       Constructor
+     *
+     * @param[in]   identifier  a string containing a bundle identifier
+     */
+    FWRUNTIME_API Stopper( ::boost::shared_ptr< Starter > starter );
 
-	/**
-	 * @brief	Applies the Stopper on the system.
-	 *
-	 * @remark	This method should be called directly.
-	 */
-	void apply();
+    /**
+     * @brief   Applies the Stopper on the system.
+     *
+     * @remark  This method should be called directly.
+     */
+    void apply();
 
 
 };

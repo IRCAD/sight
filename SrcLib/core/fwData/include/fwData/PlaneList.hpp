@@ -17,43 +17,51 @@
 namespace fwData
 {
 /**
- * @class 	PlaneList
- * @brief 	This class defines a list of planes
- * @see 	::fwData::Point
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class   PlaneList
+ * @brief   This class defines a list of planes
+ * @see     ::fwData::Point
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API PlaneList : public Object
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object),
         (()), ::fwTools::Factory::New< PlaneList >) ;
 
-	typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;
+    typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;
 
-	/// Constructor
-	FWDATA_API PlaneList();
+    /// Constructor
+    FWDATA_API PlaneList();
 
-	/// Destructor
-	FWDATA_API virtual ~PlaneList();
+    /// Destructor
+    FWDATA_API virtual ~PlaneList();
 
-	/// Clone method
-	FWDATA_API PlaneList::sptr clone() const;
+    fwDataObjectMacro();
 
-	/// Copy method
-	FWDATA_API PlaneList &operator=( const PlaneList & _planetList ) ;
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( PlaneList::csptr _source );
 
-	// Looking for duplicate plan
-	FWDATA_API void deleteDuplicatedPlan(void);
+    /// Defines deep copy
+    FWDATA_API void deepCopy( PlaneList::csptr _source );
 
-	/// Planes container
-	fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, a container of all planes);
+    /// Clone method
+    //FWDATA_API PlaneList::sptr clone() const;
+
+    /// Copy method
+    //FWDATA_API PlaneList &operator=( const PlaneList & _planetList ) ;
+
+    // Looking for duplicate plan
+    FWDATA_API void deleteDuplicatedPlan(void);
+
+    /// Planes container
+    fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, a container of all planes);
 
 protected :
 
-	//! Planes container
-	PlaneListContainer m_vPlanes;
+    //! Planes container
+    PlaneListContainer m_vPlanes;
 
 }; // end class PlaneList
 
