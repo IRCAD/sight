@@ -43,8 +43,15 @@ GlobalEventManager::GlobalEventManager() :
 GlobalEventManager::~GlobalEventManager()
 {
     SLM_TRACE_FUNC();
+    this->clearMessages();
 }
 
+//-----------------------------------------------------------------------------
+
+void GlobalEventManager::clearMessages()
+{
+    m_msgDeque.clear();
+}
 
 //-----------------------------------------------------------------------------
 

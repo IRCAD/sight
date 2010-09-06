@@ -43,7 +43,7 @@ public:
 
     FWSERVICES_API void notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
 
-    
+
     FWSERVICES_API void setNotifyHandler(void (*handler)())
     {
         m_notifyHandler = handler;
@@ -53,6 +53,9 @@ public:
     FWSERVICES_API void setDeliveryType(DeliveryType t){m_deliveryType = t;}
 
     virtual ~GlobalEventManager();
+
+    FWSERVICES_API void clearMessages();
+
 protected :
 
     GlobalEventManager();
