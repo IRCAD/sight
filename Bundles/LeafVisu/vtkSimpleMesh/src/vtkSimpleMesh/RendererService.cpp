@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/panel.h>
-#include <wx/window.h>
-
 #include <vtkCommand.h>
 #include <vtkCamera.h>
 #include <vtkPolyData.h>
@@ -78,7 +75,8 @@ private:
 RendererService::RendererService() throw()
 : m_render( 0 ), m_bPipelineIsInit(false), m_isCamMaster(false)
 {
-
+    this->IService::addNewHandledEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH );
+    this->IService::addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
 }
 
 //-----------------------------------------------------------------------------
@@ -91,30 +89,24 @@ RendererService::~RendererService() throw()
 
 void RendererService::starting() throw(fwTools::Failed)
 {
-    this->initRender();
+    this->create();
+
+    m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+    m_interactorManager->installInteractor( this->getContainer() );
 
     m_bPipelineIsInit = false;
 
-    wxWindow* const container = m_container;
-    assert( container );
-    m_wxmanager = new wxAuiManager( container );
-    // Create a VTK-compliant window and insert it
-    m_interactor = new ::wxVTKRenderWindowInteractor( container, -1 );
-    m_wxmanager->AddPane( m_interactor, wxAuiPaneInfo().CentrePane() );
-    // Repaint and resize window
-    m_wxmanager->Update();
-
     // Renderer
     m_render = vtkRenderer::New();
-    m_interactor->GetRenderWindow()->AddRenderer(m_render);
-    // Repaint and resize window
-    m_wxmanager->Update();
+    m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(m_render);
 }
 
 //-----------------------------------------------------------------------------
 
 void RendererService::configuring() throw(::fwTools::Failed)
 {
+    this->initialize();
+
     if( m_configuration->findConfigurationElement("masterSlaveRelation") )
     {
         m_isCamMaster = ( m_configuration->findConfigurationElement("masterSlaveRelation")->getValue() == "master" );
@@ -127,35 +119,26 @@ void RendererService::stopping() throw(fwTools::Failed)
 {
     if( m_render == 0 ) return;
 
-    if( m_wxmanager == 0 ) return;
-
-    assert( m_interactor );
     if ( m_isCamMaster )
     {
-        m_interactor->RemoveObserver(m_loc);
+        m_interactorManager->getInteractor()->RemoveObserver(m_loc);
     }
-    m_interactor->Delete();
-    m_interactor = 0;
 
-    assert( m_wxmanager );
-    m_wxmanager->UnInit();
-    delete m_wxmanager;
-    m_wxmanager = 0;
-
-    m_container->DestroyChildren() ;
+    m_interactorManager->uninstallInteractor();
+    m_interactorManager.reset();
 
     assert( m_render );
     m_render->Delete();
     m_render = 0;
 
-    this->stopRender();
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
 void RendererService::updating() throw(fwTools::Failed)
 {
-    m_interactor->Render();
+    m_interactorManager->getInteractor()->Render();
 }
 
 //-----------------------------------------------------------------------------
@@ -191,7 +174,7 @@ void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTo
             }
         }
     }
-    m_interactor->Render();
+    m_interactorManager->getInteractor()->Render();
 }
 
 //-----------------------------------------------------------------------------
@@ -212,14 +195,14 @@ void RendererService::initVTKPipeline()
     // Add the actors
     m_render->AddActor( actor);
 
-    m_interactor->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
+    m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
     m_loc = new vtkLocalCommand(this);
     if ( m_isCamMaster )
     {
-        m_interactor->AddObserver(vtkCommand::AnyEvent, m_loc);
+        m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);
     }
+
     // Repaint and resize window
-    m_wxmanager->Update();
     m_render->ResetCamera();
 
     mapper->Delete();

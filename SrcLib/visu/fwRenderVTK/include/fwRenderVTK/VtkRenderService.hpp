@@ -16,12 +16,10 @@
 
 #include <fwData/Composite.hpp>
 
-//#include "fwRenderVTK/IVtkAdaptorService.hpp"
-
 #include "fwRenderVTK/config.hpp"
+#include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
 
 
-class wxAuiManager;
 class vtkRenderWindow;
 class vtkRenderer;
 class vtkAbstractPropPicker;
@@ -38,7 +36,6 @@ class TransformationMatrix3D;
 namespace fwRenderVTK
 {
 
-class fwWxVTKRenderWindowInteractor;
 class IVtkAdaptorService;
 
 class FWRENDERVTK_CLASS_API VtkRenderService : public ::fwRender::IRender
@@ -65,9 +62,6 @@ public :
 
     FWRENDERVTK_API vtkObject * getVtkObject(VtkObjectIdType objectId);
 
-    // For temporary NegatoAdaptor use
-    FWRENDERVTK_API wxAuiManager* getWxManager(){return m_wxmanager;};
-
     FWRENDERVTK_API bool getPendingRenderRequest(){return m_pendingRenderRequest;}
     FWRENDERVTK_API void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
 
@@ -91,6 +85,11 @@ private :
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     ConfigurationType m_sceneConfiguration;
+
+    /// @brief VTK Interactor window manager
+    ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
+
+
     class SceneAdaptor {
 
         public:
@@ -108,14 +107,6 @@ private :
         WPTR(IVtkAdaptorService) m_service;
 
     };
-
-
-
-    /// @brief required to facilitate resize of an empty vtk rendering window : why ?
-    wxAuiManager* m_wxmanager;
-
-    /// @brief VTK Interactor window
-    ::fwRenderVTK::fwWxVTKRenderWindowInteractor* m_interactor;
 
     /// @brief scene's renderers
     typedef std::map< RendererIdType , vtkRenderer* > RenderersMapType ;

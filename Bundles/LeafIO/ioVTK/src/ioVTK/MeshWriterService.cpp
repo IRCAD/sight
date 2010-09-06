@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -19,8 +16,14 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
+
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/MeshWriter.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
@@ -60,23 +63,22 @@ void MeshWriterService::configuring() throw(::fwTools::Failed)
 
 void MeshWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an vtk file to save Mesh");
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_SAVE,
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath("");
 
-            wxTheApp->GetTopWindow() );
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a vtk file to save Mesh");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
 
-    if( file.IsEmpty() == false)
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+        m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
+        _sDefaultPath = m_fsMeshPath.branch_path();
     }
 }
 
@@ -113,7 +115,7 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Meshs ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Meshs ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
 
@@ -122,15 +124,26 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
+
     }
 }
 
@@ -145,9 +158,13 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
         // Retrieve dataStruct associated with this service
         ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
         assert(pTriangularMesh);
-        wxBeginBusyCursor();
+
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         saveMesh(m_fsMeshPath,pTriangularMesh);
-        wxEndBusyCursor();
+
+        cursor.setDefaultCursor();
 
         m_bServiceIsConfigured = false;
     }

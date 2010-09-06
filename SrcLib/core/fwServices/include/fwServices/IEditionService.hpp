@@ -63,14 +63,6 @@ public :
             ObjectMsg::sptr _pMsg,
             ::fwServices::ComChannelService::MsgOptionsType options = ::fwServices::ComChannelService::NONE );
 
-
-    /// Constructor. Do nothing.
-    FWSERVICES_API IEditionService() ;
-
-    /// Destructor. Do nothing.
-    FWSERVICES_API virtual ~IEditionService() throw();
-
-
     /**
      * @name Methods to manage observations (observer design pattern)
      */
@@ -97,6 +89,23 @@ public :
     FWSERVICES_API const bool isAttached( ::fwServices::ComChannelService::sptr observer ) const throw();
 
     //@}
+
+protected:
+
+    /// Constructor. Do nothing.
+    FWSERVICES_API IEditionService() ;
+
+    /// Destructor. Do nothing.
+    FWSERVICES_API virtual ~IEditionService() throw();
+
+    /**
+     * @brief This method forwards an eventMessage to all related observing services (generally through a ICommunication service).
+     * @param[in] eventMessage message forwards at all listeners
+     * @param[in] allowLoops Allow loops (be really carefull)
+     * @todo Conflict with notify in IService class
+     * @todo In this method, observers expired are also removed, can be optimized.
+     */
+    FWSERVICES_API void notify( ObjectMsg::csptr eventMessage, ::fwServices::ComChannelService::MsgOptionsType options ) ;
 
 private :
 
@@ -140,17 +149,6 @@ private :
     bool hasExpiredObserver();
 
     //@}
-
-protected :
-
-    /**
-     * @brief This method forwards an eventMessage to all related observing services (generally through a ICommunication service).
-     * @param[in] eventMessage message forwards at all listeners
-     * @param[in] allowLoops Allow loops (be really carefull)
-     * @todo Conflict with notify in IService class
-     * @todo In this method, observers expired are also removed, can be optimized.
-     */
-    FWSERVICES_API void notify( ObjectMsg::csptr eventMessage, ::fwServices::ComChannelService::MsgOptionsType options ) ;
 
 };
 

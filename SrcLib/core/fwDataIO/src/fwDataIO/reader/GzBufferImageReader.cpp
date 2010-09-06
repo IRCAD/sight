@@ -41,12 +41,12 @@ GzBufferImageReader::~GzBufferImageReader()
 
 void GzBufferImageReader::read()
 {
-    assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path file = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    assert( ::fwData::location::SingleFile::dynamicCast(m_location) );
+    ::boost::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
 
     assert( file.empty() ==  false );
 
-    ::boost::shared_ptr< ::fwData::Image > image = getConcreteObject();
+    ::fwData::Image::sptr image = getConcreteObject();
     ::boost::uint32_t imageSizeInBytes = ::fwData::imageSizeInBytes(*image);
 
     char *ptr =new char[imageSizeInBytes];
@@ -76,13 +76,14 @@ void GzBufferImageReader::read()
     gzclose(rawFile);
 }
 
-
+//------------------------------------------------------------------------------
 
 std::string  GzBufferImageReader::extension()
 {
     return (".raw.gz");
 }
 
+//------------------------------------------------------------------------------
 
 } // namespace reader
 

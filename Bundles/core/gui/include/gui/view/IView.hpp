@@ -9,7 +9,7 @@
 
 #include <fwServices/IService.hpp>
 
-#include <fwWX/IGuiContainer.hpp>
+#include <fwGui/IGuiContainerSrv.hpp>
 
 #include "gui/export.hpp"
 
@@ -19,6 +19,9 @@ namespace gui
 /**
  * @namespace ::gui::view
  * @brief This namespace contains the classes which define container.
+ * @author  IRCAD (Research and Development Team)
+ *
+ * @date    2009-2010.
  */
 namespace view
 {
@@ -27,16 +30,18 @@ namespace view
  * @brief   Defines the service interface managing a view placed in main frame.
  * @class   IView.
  * @author  IRCAD (Research and Development Team).
-
- * @date    2009.
+ *
+ * @date    2009-2010.
  *
  */
-class GUI_CLASS_API IView : public ::fwWX::IGuiContainer
+class GUI_CLASS_API IView : public ::fwGui::IGuiContainerSrv
 {
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IView)( ::fwServices::IService) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IView)(::fwGui::IGuiContainerSrv) ) ;
+
+protected:
 
     /**
     * @brief Constructor. Do nothing (Just initialize parameters).

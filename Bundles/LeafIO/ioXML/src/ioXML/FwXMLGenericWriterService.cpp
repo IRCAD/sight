@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -21,11 +18,16 @@
 #include <fwTools/System.hpp>
 
 #include <fwData/Acquisition.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
-#include <fwWX/wxZipFolder.hpp>
+#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwZip/ZipFolder.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLGenericWriterService.hpp"
 
@@ -48,32 +50,29 @@ FwXMLGenericWriterService::~FwXMLGenericWriterService() throw()
 
 void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
-	 m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
+    m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLGenericWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a fxz or a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML archive (*.fxz)|*.fxz|fwXML (*.xml)|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_SAVE,
-#else
-            wxSAVE,
-#endif
-            wxTheApp->GetTopWindow() );
 
-    if( folder.IsEmpty() == false)
+    static ::boost::filesystem::path _sDefaultPath;
+
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_writer.setFile(  ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native ) );
-        _sDefaultPath = wxConvertMB2WX( m_writer.getFile().branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_writer.setFile( result->getPath() );
     }
 }
 
@@ -124,7 +123,7 @@ void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, 
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving data ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving data ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }
@@ -132,15 +131,25 @@ void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, 
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 
@@ -156,7 +165,9 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
         ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
         SLM_ASSERT("data is null", obj);
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         m_writer.setFile( correctFileFormat( m_writer.getFile() ));
         if ( isAnFwxmlArchive( m_writer.getFile() ) )
         {
@@ -166,7 +177,7 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
         {
             saveData(m_writer.getFile(), obj);
         }
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 
@@ -201,9 +212,7 @@ void FwXMLGenericWriterService::manageZipAndSaveData( const ::boost::filesystem:
     saveData(xmlfile,_obj);
 
     // Zip
-    wxString destZipFileName ( wxConvertMB2WX( path.string().c_str() ) );
-    wxString srcFolderName ( wxConvertMB2WX( srcFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::packFolder( srcFolderName, destZipFileName );
+    ::fwZip::ZipFolder::packFolder( srcFolder, path );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

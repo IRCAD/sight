@@ -4,11 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
-#ifndef MeshFILEFORMAT_H_
-#define MeshFILEFORMAT_H_
-
+#ifndef _FWXML_MESHFILEFORMATSERVICE_HPP_
+#define _FWXML_MESHFILEFORMATSERVICE_HPP_
 
 
 #include "fwXML/config.hpp"
@@ -43,12 +40,8 @@ protected :
      */
     void RWPoliciesInstall();
 
-
-
-
-
 };
 
 }
 
-#endif /*MeshFILEFORMAT_H_*/
+#endif /*_FWXML_MESHFILEFORMATSERVICE_HPP_*/

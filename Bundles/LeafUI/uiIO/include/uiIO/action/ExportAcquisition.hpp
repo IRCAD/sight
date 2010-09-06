@@ -1,7 +1,7 @@
 #ifndef _UIIO_ACTION_EXPORTACQUISITION_HPP_
 #define _UIIO_ACTION_EXPORTACQUISITION_HPP_
 
-#include <gui/action/IAction.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 #include "uiIO/config.hpp"
 
@@ -15,13 +15,14 @@ namespace action
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
- * @see     ::gui::action::IAction
+ * @see     ::fwGui::IActionSrv
  */
-class UIIO_CLASS_API ExportAcquisition : public ::gui::action::IAction
+class UIIO_CLASS_API ExportAcquisition : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ExportAcquisition)(::gui::action::IAction) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ExportAcquisition)(::fwGui::IActionSrv) ) ;
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Constructor. Do nothing (Just initialize parameters).
     UIIO_API ExportAcquisition() throw() ;
@@ -30,6 +31,7 @@ public:
     UIIO_API virtual ~ExportAcquisition() throw() ;
 
 protected:
+
     /**
      * @brief   This method initializes class member parameters from configuration elements.
      * @note    Call action base class configuring() method.

@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -18,9 +15,14 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwGui/ProgressDialog.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLImageReaderService.hpp"
 
@@ -28,9 +30,7 @@
 namespace ioXML
 {
 
-//REGISTER_SERVICE( ::io::IReader , FwXMLImageReaderService , ::fwData::Image ) ;
 REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLImageReaderService , ::fwData::Image ) ;
-//REGISTER_EXECUTABLE( ::ioXML::FwXMLImageReaderService, "ioXML::FwXMLImageReaderService" );
 
 //------------------------------------------------------------------------------
 
@@ -63,26 +63,21 @@ void FwXMLImageReaderService::configuring() throw(::fwTools::Failed)
 
 void FwXMLImageReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_FILE_MUST_EXIST,
-#else
-            wxFILE_MUST_EXIST,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImagePath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImagePath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_fsImagePath = result->getPath();
     }
 }
 
@@ -118,7 +113,7 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }
@@ -126,15 +121,25 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 
     ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( myLoader.getObject() );
@@ -162,9 +167,11 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
             //( *( associatedImage ) ) = ( *( image.get() ) ) ;
             associatedImage->shallowCopy( image );
 
-            wxBeginBusyCursor();
+            ::fwGui::Cursor cursor;
+            cursor.setCursor(::fwGui::ICursor::BUSY);
+
             notificationOfDBUpdate();
-            wxEndBusyCursor();
+            cursor.setDefaultCursor();
 
         }
         else
@@ -173,11 +180,12 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
             xmlFile << "Sorry, the xml file \""
             << m_fsImagePath.string()
             << "\" does not content a Image. This xml file has not been loaded.";
-            wxString mes ( wxConvertMB2WX( xmlFile.str().c_str() ));
-            wxMessageBox (  mes,
-                    _("FwXML Image Reader"),
-                    wxOK|wxICON_WARNING,
-                    wxTheApp->GetTopWindow() );
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("FwXML Image Reader");
+            messageBox.setMessage( xmlFile.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
     }
 }

@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <wx/wx.h>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectMsg.hpp>
@@ -50,14 +49,13 @@ std::vector< std::string > CameraReaderService::getSupportedExtensions()
 //-----------------------------------------------------------------------------
 
 CameraReaderService::~CameraReaderService() throw()
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 
 void CameraReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    OSLM_INFO( "CameraReaderService::configure : " << *m_configuration );
+    SLM_TRACE_FUNC();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
@@ -74,7 +72,7 @@ void CameraReaderService::configuring( ) throw(::fwTools::Failed)
 
 void CameraReaderService::updating() throw(::fwTools::Failed)
 {
-    OSLM_INFO("CameraReaderService::update");
+    SLM_TRACE_FUNC();
     // Retrieve object
     ::fwData::Camera::sptr cam = this->getObject< ::fwData::Camera>( );
     assert( cam ) ;
@@ -86,7 +84,6 @@ void CameraReaderService::updating() throw(::fwTools::Failed)
     ::fwComEd::CameraMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::CameraMsg::NEW_CAMERA ) ;
 
-
     ::fwServices::IEditionService::notify(this->getSptr(), cam, msg);
 }
 
@@ -94,7 +91,6 @@ void CameraReaderService::updating() throw(::fwTools::Failed)
 
 bool CameraReaderService::loadCalibration( const std::string &fileName, ::fwData::Camera::sptr cam )
 {
-
     std::ifstream f;
     f.open (fileName.c_str(), std::fstream::in);
     if (!f.is_open())
@@ -137,5 +133,7 @@ bool CameraReaderService::loadCalibration( const std::string &fileName, ::fwData
 
     return true;
 }
+
+//-----------------------------------------------------------------------------
 
 }

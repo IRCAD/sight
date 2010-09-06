@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -24,11 +21,16 @@
 
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
-#include <fwWX/wxZipFolder.hpp>
+#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwZip/ZipFolder.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLPatient2PatientDBWriterService.hpp"
 
@@ -58,26 +60,22 @@ void FwXMLPatient2PatientDBWriterService::configuring() throw(::fwTools::Failed)
 
 void FwXMLPatient2PatientDBWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a fxz or a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML archive (*.fxz)|*.fxz|fwXML (*.xml)|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_SAVE,
-#else
-            wxSAVE,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsPatientDBPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
+        _sDefaultPath = result->getPath() ;
+        m_fsPatientDBPath = result->getPath() ;
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsPatientDBPath.branch_path().string().c_str() );
     }
 }
 
@@ -128,7 +126,7 @@ void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesyst
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }
@@ -136,15 +134,23 @@ void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesyst
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 
@@ -162,7 +168,9 @@ void FwXMLPatient2PatientDBWriterService::updating() throw(::fwTools::Failed)
         ::fwData::PatientDB::NewSptr patientDB;
         patientDB->addPatient(associatedPatient);
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         m_fsPatientDBPath = correctFileFormat( m_fsPatientDBPath );
         if ( isAnFwxmlArchive( m_fsPatientDBPath ) )
         {
@@ -172,7 +180,7 @@ void FwXMLPatient2PatientDBWriterService::updating() throw(::fwTools::Failed)
         {
             savePatientDB(m_fsPatientDBPath, patientDB);
         }
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 
@@ -207,9 +215,7 @@ void FwXMLPatient2PatientDBWriterService::manageZipAndSavePatientDB( const ::boo
     savePatientDB(xmlfile,_pPatient);
 
     // Zip
-    wxString destZipFileName ( wxConvertMB2WX( inrFileDir.string().c_str() ) );
-    wxString srcFolderName ( wxConvertMB2WX( srcFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::packFolder( srcFolderName, destZipFileName );
+    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

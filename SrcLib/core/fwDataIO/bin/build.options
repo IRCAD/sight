@@ -1,10 +1,7 @@
 TYPE = 'shared'
 
 LIB  = ['fwRuntime_0-3','fwData_0-1','fwTools_0-1','fwCore_0-1','fwServices_0-1', 'fwMath_0-1']
-USE  = ['boost','boostFilesystem','libxml2','z'] # 'wxCore'
-
-#STDLIB = ['z']
-#use of wxCore is required to provide a wxPanel for xmlview service
+USE  = ['boost','boostFilesystem','libxml2','z']
 
 
 VERSION = '0-2'

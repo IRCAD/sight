@@ -35,29 +35,29 @@ public:
     /// Destructor
     FWDATA_API virtual ~MultiFiles();
 
-    /// Set file system pathes
+    /// Set file system paths
     FWDATA_API void setPaths( std::vector< ::boost::filesystem::path>  paths );
 
-    /// Set file system pathes
+    /// Set file system paths
     FWDATA_API std::vector< ::boost::filesystem::path> getPaths();
 
 protected :
 
-    /// file system pathes
+    /// file system paths
     std::vector< ::boost::filesystem::path> m_paths;
 
 };
 
 /**
-* @struct enableMultiFiles
-* @brief This class is derivated by reader/writter.
-*
-* Reader/Writter classes should only need to implement get/setLocation
-*
-* @author   IRCAD (Research and Development Team).
-* @date 2007-2009.
-*/
-template<class RW> // reader or writter class should only need to implement get/setLocation
+ * @struct enableMultiFiles
+ * @brief This class is derivated by reader/writer.
+ *
+ * Reader/Writer classes should only need to implement get/setLocation
+ *
+ * @author   IRCAD (Research and Development Team).
+ * @date 2007-2009.
+ */
+template<class RW> // reader or writer class should only need to implement get/setLocation
 struct enableMultiFiles
 {
     /**
@@ -66,27 +66,24 @@ struct enableMultiFiles
      */
     enableMultiFiles(RW *rw) : m_rw(rw) {assert(m_rw);}
 
-    /// Set file system pathes
-     void setFiles( std::vector< ::boost::filesystem::path>  paths )
-     {
-         getLocation<MultiFiles>(m_rw)->setPaths(paths);
-     }
+    /// Set file system paths
+    void setFiles( std::vector< ::boost::filesystem::path>  paths )
+    {
+        getLocation<MultiFiles>(m_rw)->setPaths(paths);
+    }
 
-     /// Get file system pathes
-     std::vector< ::boost::filesystem::path> getFiles()
-     {
-         return getLocation<MultiFiles>(m_rw)->getPaths();
-     }
+    /// Get file system paths
+    std::vector< ::boost::filesystem::path> getFiles()
+                     {
+        return getLocation<MultiFiles>(m_rw)->getPaths();
+                     }
 
 private :
     /// Not implemented must use constructor with one parameter
     enableMultiFiles();
-     RW *m_rw;
+    RW *m_rw;
 
 };
-
-
-
 
 }
 }

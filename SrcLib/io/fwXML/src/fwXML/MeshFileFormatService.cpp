@@ -22,23 +22,19 @@ REGISTER_SERVICE( ::fwXML::IFileFormatService , fwXML::MeshFileFormatService , :
 namespace fwXML
 {
 
-
+//------------------------------------------------------------------------------
 
 MeshFileFormatService::MeshFileFormatService()
 {
     RWPoliciesInstall();
 }
 
-
+//------------------------------------------------------------------------------
 
 MeshFileFormatService::~MeshFileFormatService()
-{
-}
+{}
 
-
-
-
-
+//------------------------------------------------------------------------------
 
 void MeshFileFormatService::RWPoliciesInstall()
 {
@@ -49,58 +45,52 @@ void MeshFileFormatService::RWPoliciesInstall()
     m_writer = ::boost::shared_ptr< ::fwDataIO::writer::TriangularMeshWriter >( new ::fwDataIO::writer::TriangularMeshWriter() );
 }
 
+//------------------------------------------------------------------------------
 
-
- void MeshFileFormatService::load()
+void MeshFileFormatService::load()
 {
     SLM_TRACE("MeshFileFormatService::load");
     // precondition
 
     assert( !m_filename.empty() );
-    // assert( !m_localFolder.empty() ); not mandatory can be saved at root Folder
     assert( !m_rootFolder.empty() );
 
-    //RWPoliciesInstall();
     assert( m_reader );
 
-     ::boost::shared_ptr< ::fwData::TriangularMesh > mesh = this->getObject< ::fwData::TriangularMesh >() ;
+    ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >() ;
     assert( mesh ) ;
 
     m_reader->setObject(mesh);
-    ::boost::shared_ptr< ::fwData::location::SingleFile > path( new ::fwData::location::SingleFile() );
+    ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
     path->setPath( this->getFullPath() );
     m_reader->setLocation( path );
     m_reader->read();
 }
 
-
+//------------------------------------------------------------------------------
 
 void MeshFileFormatService::save()
 {
-    SLM_TRACE("MeshFileFormatService::save");
+    SLM_TRACE_FUNC();
 
     assert( !m_filename.empty() );
-    // assert( !m_localFolder.empty() ); not mandatory can be saved at root Folder
     assert( !m_rootFolder.empty() );
 
-    //RWPoliciesInstall();
     assert( m_writer );
 
-     ::boost::shared_ptr< ::fwData::TriangularMesh > mesh = this->getObject< ::fwData::TriangularMesh >() ;
+    ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >() ;
     assert( mesh ) ;
 
     assert(mesh->points().size());
 
     m_writer->setObject(mesh);
     this->extension() = m_writer->extension();
-    ::boost::shared_ptr< ::fwData::location::SingleFile > path( new ::fwData::location::SingleFile() );
+    ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
     path->setPath( this->getFullPath() );
     m_writer->setLocation( path );
     m_writer->write();
 }
 
-
-
-
+//------------------------------------------------------------------------------
 
 }

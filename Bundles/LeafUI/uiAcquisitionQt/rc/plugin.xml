@@ -1,0 +1,14 @@
+<plugin id="uiAcquisitionQt" class="::uiAcquisition::Plugin">
+    <library name="uiAcquisitionQt"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    
+    <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiAcquisition::OrganListEditor , ::fwData::Acquisition ) ;-->
+    <point id="::uiAcquisition::OrganListEditor" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+    
+</plugin>

@@ -59,7 +59,7 @@ SplineReaderService::~SplineReaderService() throw()
 
 void SplineReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    SLM_INFO("start SplineReaderService::ConfigurationElementContainer");
+    SLM_TRACE_FUNC();
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter) {
@@ -89,7 +89,7 @@ void SplineReaderService::configuring( ) throw(::fwTools::Failed)
             }
 
             ::fwRuntime::ConfigurationElementContainer::Iterator iter2;
-            const ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > m_configuration2 = m_configuration->findConfigurationElement("spline");
+            ::fwRuntime::ConfigurationElement::sptr m_configuration2 = m_configuration->findConfigurationElement("spline");
             for (iter2 = m_configuration2->begin() ; iter2 != m_configuration2->end() ; ++iter2)
             {
                 if ((*iter2)->getName() == "point"
@@ -107,15 +107,13 @@ void SplineReaderService::configuring( ) throw(::fwTools::Failed)
             }
         }
     }
-//  update();
-    SLM_INFO("end ConfigurationElementContainer");
 }
 
 //-----------------------------------------------------------------------------
 
 void SplineReaderService::updating() throw(::fwTools::Failed)
 {
-    SLM_INFO("Start SplineReaderService::update()");
+    SLM_TRACE_FUNC();
     // Retrieve object
     ::fwData::Spline::wptr spline = this->getObject< ::fwData::Spline >( );
 
@@ -125,32 +123,24 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
     spline.lock()->setIdSpline(m_idSpline);
 
     // Notify reading
-    //   ::boost::shared_ptr< fwServices::IEditionService > editor = fwServices::get< fwServices::IEditionService >( mesh.lock() ) ;
-    //::boost::shared_ptr< fwServices::ObjectMsg > msg( new fwServices::ObjectMsg(mesh.lock()) ) ;
-    //msg->setAllModified( ) ;
     ::fwComEd::SplineMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::SplineMsg::NEW_SPLINE ) ;
-//  editor->notify( msg );
-
 
     if(isTransfo)
     {
         spline.lock()->setFieldSingleElement( ::fwComEd::Dictionary::position, objectMatrix ) ;
         msg->addEvent( ::fwComEd::Dictionary::position ) ;
-//      editor->notify( msg ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), spline.lock(), msg);
     }
     else
     {
         ::fwServices::IEditionService::notify(this->getSptr(), spline.lock(), msg);
     }
-
-    SLM_INFO("End SplineReaderService::update()");
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwData::TransformationMatrix3D > SplineReaderService::loadObjectTransformationMatrix3D(std::string m_file)
+::fwData::TransformationMatrix3D::sptr SplineReaderService::loadObjectTransformationMatrix3D(std::string m_file)
 {
     ::fwData::TransformationMatrix3D::NewSptr matrix;
     ::boost::filesystem::path location(m_file) ;
@@ -171,7 +161,6 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
             matrix->setCoefficient(l, c, val);
         }
     }
-    OSLM_DEBUG("matrix fin: \n" << *matrix);
     return matrix;
 }
 

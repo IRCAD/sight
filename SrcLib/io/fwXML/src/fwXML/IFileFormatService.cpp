@@ -14,40 +14,35 @@
 namespace fwXML
 {
 
-
-
 IFileFormatService::IFileFormatService()
-{
-}
+{}
 
-
+//------------------------------------------------------------------------------
 
 IFileFormatService::~IFileFormatService()
-{
-}
+{}
 
-
+//------------------------------------------------------------------------------
 
 std::string IFileFormatService::getPersistanceId()
 {
     return std::string("ioIFileFormatService") ;
 }
 
+//------------------------------------------------------------------------------
 
 void IFileFormatService::info(std::ostream &_sstream )
 {
     _sstream <<  "FileFormat IO Service : " << (  rootFolder()/localFolder()/filename() ).string();
 }
 
+//------------------------------------------------------------------------------
 
-
-void IFileFormatService::setReader( boost::shared_ptr< ::fwDataIO::reader::IObjectReader > _reader)
+void IFileFormatService::setReader( ::fwDataIO::reader::IObjectReader::sptr _reader)
 {
-
     m_reader = _reader;
     ::fwTools::ProgressAdviser * progadviser;
 
-    // progadviser = ::fwTools::ProgressAdviser::dynamicCast( m_reader );
     progadviser = dynamic_cast< ::fwTools::ProgressAdviser *>( m_reader.get() );
 
     using namespace boost::lambda;
@@ -58,14 +53,11 @@ void IFileFormatService::setReader( boost::shared_ptr< ::fwDataIO::reader::IObje
         ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &::fwTools::ProgressAdviser::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
         progadviser->addHandler( handler  );
     }
-
-
-
 }
 
+//------------------------------------------------------------------------------
 
-
-void IFileFormatService::setWriter( boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > _writer)
+void IFileFormatService::setWriter( ::fwDataIO::writer::IObjectWriter::sptr _writer)
 {
     m_writer = _writer;
     ::fwTools::ProgressAdviser *progadviser;
@@ -82,20 +74,20 @@ void IFileFormatService::setWriter( boost::shared_ptr< ::fwDataIO::writer::IObje
     }
 }
 
+//------------------------------------------------------------------------------
 
-
-
-boost::shared_ptr< ::fwDataIO::reader::IObjectReader > IFileFormatService::getReader()
+::fwDataIO::reader::IObjectReader::sptr IFileFormatService::getReader()
 {
     return m_reader;
 }
 
+//------------------------------------------------------------------------------
 
-
-boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > IFileFormatService::getWriter()
+::fwDataIO::writer::IObjectWriter::sptr IFileFormatService::getWriter()
 {
     return m_writer;
 }
 
+//------------------------------------------------------------------------------
 
 }

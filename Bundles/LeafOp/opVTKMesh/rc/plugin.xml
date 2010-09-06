@@ -10,7 +10,7 @@
     </point>
     
     <point id="::opVTKMesh::action::VTKMeshCreation" >
-        <implements>::gui::action::IAction</implements>
+        <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
     

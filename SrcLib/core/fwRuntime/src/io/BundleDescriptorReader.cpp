@@ -167,8 +167,11 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
 ::boost::shared_ptr<Bundle> BundleDescriptorReader::createBundleFromXmlPlugin( const boost::filesystem::path & location ) throw ( RuntimeException )
 {
     // Get the descriptor location.
-    const boost::filesystem::path tmpCompleteLocation ( location.is_complete() == true ? location : boost::filesystem::current_path() / location);
+    boost::filesystem::path tmpCompleteLocation ( location.is_complete() == true ? location : boost::filesystem::current_path() / location);
+    tmpCompleteLocation.normalize();
+
     const boost::filesystem::path completeLocation ( tmpCompleteLocation.branch_path() );
+
 
     ::boost::filesystem::path descriptorLocation ( tmpCompleteLocation );
     if( ::boost::filesystem::exists(descriptorLocation) == false )

@@ -1,0 +1,20 @@
+<plugin id="uiReconstructionWx" class="::uiReconstruction::Plugin">
+    <library name="uiReconstructionWx"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    
+    <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiReconstruction::RepresentationEditor , ::fwData::Reconstruction ) ;-->
+    <point id="::uiReconstruction::RepresentationEditor" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Reconstruction</implements>
+    </point>
+    
+    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiReconstruction::OrganMaterialEditor, ::fwData::Reconstruction ) ;-->
+    <point id="::uiReconstruction::OrganMaterialEditor" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Reconstruction</implements>
+    </point>
+        
+</plugin>

@@ -36,7 +36,9 @@ public :
     CTRLSELECTION_API PatientDBWrapperSrv() throw() ;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~PatientDBWrapperSrv() throw() {};
+    CTRLSELECTION_API virtual ~PatientDBWrapperSrv() throw();
+
+protected:
 
     /// Implements starting method derived from IService. Do nothing.
    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed ) {};

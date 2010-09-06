@@ -7,6 +7,8 @@
 #ifndef _FWSERVICES_GLOBALEVENTMANAGER_HPP_
 #define _FWSERVICES_GLOBALEVENTMANAGER_HPP_
 
+#include <boost/function.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwTools/Singleton.hpp>
 
@@ -43,8 +45,7 @@ public:
 
     FWSERVICES_API void notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
 
-
-    FWSERVICES_API void setNotifyHandler(void (*handler)())
+    FWSERVICES_API void setNotifyHandler(::boost::function0< void > handler)
     {
         m_notifyHandler = handler;
     };
@@ -73,7 +74,7 @@ protected :
     DeliveryType m_deliveryType;
     bool        m_dispatching;
 
-    void (*m_notifyHandler)();
+    ::boost::function0< void > m_notifyHandler;
 
 };
 

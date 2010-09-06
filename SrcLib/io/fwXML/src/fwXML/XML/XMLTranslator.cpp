@@ -13,11 +13,9 @@ namespace fwXML
 {
 
 XMLTranslator::XMLTranslator()
-{
-}
+{}
 
 XMLTranslator::~XMLTranslator()
-{
-}
+{}
 
 }

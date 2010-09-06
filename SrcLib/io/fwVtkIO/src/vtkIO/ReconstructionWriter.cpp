@@ -77,6 +77,8 @@ void ReconstructionWriter::write()
     exporter->SetFilePrefix(prefix.c_str());
     exporter->Write();
 
+    // can not observe progression, not a vtkAlgorithm ...
+
     renderer->Delete();
     renderWindow->Delete();
     exporter->Delete();

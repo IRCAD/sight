@@ -74,14 +74,8 @@ public:
     // load/save extra xml information form obj and its children
     void IOforExtraXML( ::boost::shared_ptr< fwTools::Object > object , bool savingMode);
 
-
-
-
     /// here rootFolder is mandatory *static* because sub classes processing serialization must k,ow the basename of patient Folder
     FWXML_API static    boost::filesystem::path m_rootFolder;
-
-
-
 
 };
 

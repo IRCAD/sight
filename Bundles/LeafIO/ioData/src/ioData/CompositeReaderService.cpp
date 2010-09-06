@@ -49,7 +49,7 @@ std::vector< std::string > CompositeReaderService::getSupportedExtensions()
 
 void CompositeReaderService::starting( ) throw(::fwTools::Failed)
 {
-    ::boost::shared_ptr< ::fwData::Composite > composite = this->getObject< ::fwData::Composite >() ;
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
     assert( composite ) ;
     // For each input, one tries to start the io service.
     // For configured input io service, the configuration is applied
@@ -74,7 +74,7 @@ CompositeReaderService::~CompositeReaderService() throw()
 void CompositeReaderService::configuring( ) throw(::fwTools::Failed)
 {
     OSLM_INFO( "CompositeReaderService::configure : " << *m_configuration );
-    ::boost::shared_ptr< ::fwData::Composite > composite = this->getObject< ::fwData::Composite >() ;
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
     ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
     for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
     {
@@ -82,24 +82,20 @@ void CompositeReaderService::configuring( ) throw(::fwTools::Failed)
         if( (*iter)->getName() == "input" )
         {
             assert( (*iter)->hasAttribute("id")) ;
-            ::boost::shared_ptr< ::fwData::Object > obj = composite->getRefMap()[(*iter)->getExistingAttributeValue("id")] ;
+            ::fwData::Object::sptr obj = composite->getRefMap()[(*iter)->getExistingAttributeValue("id")] ;
             assert( obj ) ;
-//           ::boost::shared_ptr< ::io::IReader > srv = ::fwServices::add< ::io::IReader >( obj ) ;
-//          assert( srv ) ;
-//          srv->setConfiguration( *iter ) ;
-//          srv->configure() ;
             // Finding out the specified IReader implementation to attach to input
-            ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > implementation = (*iter)->findConfigurationElement( "service" ) ;
+            ::fwRuntime::ConfigurationElement::sptr implementation = (*iter)->findConfigurationElement( "service" ) ;
             assert( implementation ) ;
             assert( implementation->hasAttribute("type")) ;
             std::string implementationId = implementation->getExistingAttributeValue("type") ;
-            ::boost::shared_ptr< ::io::IReader > srv = ::fwServices::add< ::io::IReader >( obj , implementationId ) ;
+            ::io::IReader::sptr srv = ::fwServices::add< ::io::IReader >( obj , implementationId ) ;
             assert( srv ) ;
             // Finding its configuration
             if( implementation->hasAttribute("config"))
             {
                 std::string configId = implementation->getExistingAttributeValue("config") ;
-                ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > cfg = ::fwServices::bundle::findConfigurationForPoint( configId , implementationId ) ;
+                ::fwRuntime::ConfigurationElement::sptr cfg = ::fwServices::bundle::findConfigurationForPoint( configId , implementationId ) ;
                 srv->setConfiguration( cfg ) ;
             }
             else

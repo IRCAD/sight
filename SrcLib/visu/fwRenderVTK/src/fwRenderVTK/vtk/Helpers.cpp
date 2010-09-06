@@ -18,11 +18,13 @@
 #include <fwCore/base.hpp>
 #include "fwRenderVTK/vtk/Helpers.hpp"
 
-namespace fwRenderVTK {
+namespace fwRenderVTK
+{
 
-namespace vtk {
+namespace vtk
+{
 
-
+//------------------------------------------------------------------------------
 
 vtkIdType getNearestPointId(vtkPoints* pts, vtkRenderer* renderer)
 {
@@ -45,6 +47,8 @@ vtkIdType getNearestPointId(vtkPoints* pts, vtkRenderer* renderer)
 
     return id;
 }
+
+//------------------------------------------------------------------------------
 
 vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *renderer)
 {
@@ -85,10 +89,10 @@ vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *rende
     {
         res = picker->GetProp3D();
     }
-
     return res;
 }
 
+//------------------------------------------------------------------------------
 
 bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *renderer, double position[3])
 {
@@ -124,11 +128,10 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
         std::copy(point, point + 3, position);
         res = true;
     }
-
     return res;
 }
 
-
+//------------------------------------------------------------------------------
 
 } //vtk
 

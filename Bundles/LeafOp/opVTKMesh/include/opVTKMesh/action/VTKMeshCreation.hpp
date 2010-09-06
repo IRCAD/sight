@@ -7,8 +7,7 @@
 #ifndef _OPVTKMESH_ACTION_VTKMESHCREATION_HPP_
 #define _OPVTKMESH_ACTION_VTKMESHCREATION_HPP_
 
-#include <gui/action/IAction.hpp>
-
+#include <fwGui/IActionSrv.hpp>
 
 #include "opVTKMesh/config.hpp"
 
@@ -18,16 +17,18 @@ namespace opVTKMesh
 namespace action
 {
 
-class OPVTKMESH_CLASS_API VTKMeshCreation : public ::gui::action::IAction
+class OPVTKMESH_CLASS_API VTKMeshCreation : public ::fwGui::IActionSrv
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (VTKMeshCreation)(::gui::action::IAction) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (VTKMeshCreation)(::fwGui::IActionSrv) ) ;
 
     OPVTKMESH_API VTKMeshCreation() throw() ;
 
     OPVTKMESH_API virtual ~VTKMeshCreation() throw() ;
+
+protected:
 
     OPVTKMESH_API void starting() throw ( ::fwTools::Failed );
 
@@ -46,7 +47,6 @@ private :
     std::string m_imageUID;
     std::string m_meshUID;
     unsigned int m_reduction;
-
 };
 
 

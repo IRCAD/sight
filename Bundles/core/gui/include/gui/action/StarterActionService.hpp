@@ -10,7 +10,8 @@
 #include <vector>
 #include <fwServices/IService.hpp>
 
-#include "gui/action/IAction.hpp"
+#include <fwGui/IActionSrv.hpp>
+
 #include "gui/export.hpp"
 
 
@@ -26,12 +27,13 @@ namespace action
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  */
-class GUI_CLASS_API StarterActionService : public ::gui::action::IAction
+class GUI_CLASS_API StarterActionService : public ::fwGui::IActionSrv
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::gui::action::IAction) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::fwGui::IActionSrv) ) ;
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
     * @brief Constructor. Do nothing.
@@ -65,9 +67,18 @@ protected:
     GUI_API void updating()throw (fwTools::Failed);
 
     /**
+     * @brief This method is used to update services on notification. Do nothing.
+     */
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+
+    /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
      */
     GUI_API void configuring() throw( ::fwTools::Failed );
+
+    GUI_API virtual void starting() throw(::fwTools::Failed);
+
+    GUI_API virtual void stopping() throw(::fwTools::Failed);
 
 private:
     // vector representing uuid's services that must be started (true) or stopped (false)

@@ -6,9 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <wx/string.h>
-#include <wx/filedlg.h>
-#include <wx/app.h>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -21,11 +18,15 @@
 
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Model.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
+
+
 #include <fwCore/base.hpp>
 
 #include <fwComEd/ModelMsg.hpp>
-
-#include <fwWX/convert.hpp>
 
 #include "ioVTK/MaxMeshReaderService.hpp"
 
@@ -85,26 +86,22 @@ MaxMeshReaderService::~MaxMeshReaderService() throw()
 
 void MaxMeshReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a 3ds file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("3DS|*.3ds"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_FILE_MUST_EXIST,
-#else
-            wxFILE_MUST_EXIST,
-#endif
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
 
-    if( folder.IsEmpty() == false)
+    static ::boost::filesystem::path _sDefaultPath("");
+
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an 3ds file");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("3DS","*.3ds");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsMeshPath = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
+        m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = ::fwWX::std2wx( m_fsMeshPath.branch_path().string() );
+        _sDefaultPath = m_fsMeshPath.branch_path();
     }
 }
 

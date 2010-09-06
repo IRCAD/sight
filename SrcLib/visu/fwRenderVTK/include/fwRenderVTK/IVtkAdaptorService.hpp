@@ -33,17 +33,6 @@ public :
     typedef fwServices::IService SuperClass ;
 
 
-    /**
-     * @brief   constructor
-     */
-    FWRENDERVTK_API IVtkAdaptorService() throw() ;
-
-    /**
-     * @brief   destructor
-     */
-    FWRENDERVTK_API virtual ~IVtkAdaptorService() throw() ;
-
-
     /// To set a representation
     FWRENDERVTK_API virtual void show(bool b = true) {};
     FWRENDERVTK_API virtual void hide() {this->show(false);};
@@ -78,6 +67,16 @@ public :
     FWRENDERVTK_API void setVtkPipelineModified();
 
 protected :
+
+    /**
+     * @brief   constructor
+     */
+    FWRENDERVTK_API IVtkAdaptorService() throw() ;
+
+    /**
+     * @brief   destructor
+     */
+    FWRENDERVTK_API virtual ~IVtkAdaptorService() throw() ;
 
     ::fwServices::ObjectMsg::sptr m_message;
 

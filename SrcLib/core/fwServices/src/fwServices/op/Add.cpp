@@ -55,7 +55,7 @@ namespace fwServices
     {
         service =  ::fwServices::add( obj , serviceType , implementationType )  ;
     }
-    OSLM_ASSERT("Instantiation service "<<implementationType<<" failed", service);
+    OSLM_ASSERT("Instantiation service "<<implementationType<<" failed on " << obj->getClassname() << " object", service);
 
     // Search for configuration : inline or offline
     ::fwRuntime::ConfigurationElement::sptr cfg;

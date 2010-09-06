@@ -68,7 +68,11 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
 
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     SLM_ASSERT("m_currentPlaneList should be expired", m_currentPlaneList.expired());
-    m_currentPlaneList = ::fwData::PlaneList::dynamicCast(composite->getRefMap()[m_planeListId]);
+
+    if (composite->find(m_planeListId) != composite->end())
+    {
+        m_currentPlaneList = ::fwData::PlaneList::dynamicCast(composite->getRefMap()[m_planeListId]);
+    }
 
     ::fwData::PlaneList::sptr planeList = m_currentPlaneList.lock();
     if(planeList)

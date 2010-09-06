@@ -24,7 +24,7 @@ IReader::~IReader() throw()
 
 std::string IReader::getSelectorDialogTitle()
 {
-    return "Title of selector dialog box";
+    return "Choose a file";
 }
 
 //-----------------------------------------------------------------------------

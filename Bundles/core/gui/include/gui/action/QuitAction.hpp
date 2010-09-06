@@ -10,8 +10,9 @@
 
 #include <fwServices/IService.hpp>
 
+#include <fwGui/IActionSrv.hpp>
+
 #include "gui/export.hpp"
-#include "gui/action/IAction.hpp"
 
 namespace gui
 {
@@ -23,14 +24,14 @@ namespace action
  * @class   QuitAction.
  * @author  IRCAD (Research and Development Team).
 
- * @date    2009.
+ * @date    2009-2010.
  */
-class GUI_CLASS_API QuitAction : public ::gui::action::IAction
+class GUI_CLASS_API QuitAction : public ::fwGui::IActionSrv
 {
 
 public :
-    
-     fwCoreServiceClassDefinitionsMacro ( (QuitAction)(::gui::action::IAction) ) ;
+
+     fwCoreServiceClassDefinitionsMacro ( (QuitAction)(::fwGui::IActionSrv) ) ;
 
     /**
     * @brief Constructor. Do nothing.
@@ -43,6 +44,20 @@ public :
     GUI_API virtual ~QuitAction() throw() ;
 
 protected:
+
+    /**
+     * @brief This method is used to update services on notification. Do nothing.
+     */
+    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+
+    /**
+     * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
+     */
+    GUI_API void configuring() throw( ::fwTools::Failed );
+
+    GUI_API virtual void starting() throw(::fwTools::Failed);
+
+    GUI_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
      * @brief This method tries to close the window and reset root object.

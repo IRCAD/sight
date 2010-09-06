@@ -2,43 +2,71 @@
 <extension id="tutoComChannelConfig" implements="::fwData::TriangularMesh">
 
     <!-- In tutoComChannel, the main data object type is ::fwData::TriangularMesh.-->
-    <object id="tutoComChannelMesh" type="::fwData::TriangularMesh">
+    <object type="::fwData::TriangularMesh">
 
-        <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no" >
-            <name>tutoComChannel</name>
-            <icon>Bundles/Tuto04ComChannel_0-1/tuto.ico</icon>
-            <minSize width="720" height="600"/>
-            <view uid="myDefaultView" autoStart="yes" />
+        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+            <gui>
+                <frame>
+                    <name>tutoComChannel</name>
+                    <icon>Bundles/Tuto04ComChannel_0-1/tuto.ico</icon>
+                    <minSize width="720" height="600"/>
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="myMenuBar" start="yes" />
+                <view sid="myDefaultView" start="yes" />
+            </registry>
         </service>
 
-        <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no" >
-            <menus>
-                <menu uid="menu_File" />
-            </menus>
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+             <gui>
+                <layout>
+                     <menu name="File" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menu_File" start="yes" />
+            </registry>
         </service>
         
         <!-- The application contains three different views. The different views are characterized by their associated service uid.
                  Furthermore, a minimum window height and a width are given to the last two views.-->
          <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
-            <views>
-                <view uid="myRenderingTuto1" autoStart="yes" />
-                <view uid="myRenderingTuto2" minWidth="400" minHeight="100" autoStart="yes" />
-                <view uid="myRenderingTuto3" minWidth="400" minHeight="100" autoStart="yes" />
-            </views>
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager" >
+                    <view caption="Rendering 1" align="center" />
+                    <view caption="Rendering 2" align="right" minWidth="400" minHeight="100" />
+                    <view caption="Rendering 3" align="right" minWidth="400" minHeight="100" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="myRenderingTuto1" start="yes" />
+                <view sid="myRenderingTuto2" start="yes" />
+                <view sid="myRenderingTuto3" start="yes" />
+            </registry>
         </service>
         
-        <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no" >
-            <action uid="action_openFile"/>
-            <separator/>
-            <action uid="action_quit"/>
+        <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Open file" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_openFile" start="yes" />
+                <menuItem sid="action_quit" start="yes" />
+            </registry>
         </service>
 
 
-        <service uid="action_openFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" name="OpenFile" shortcut="Ctrl+O" autoComChannel="no" >
+        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
             <start uid="myReaderPathFile"/>
         </service>
 
-        <service uid="action_quit" specialAction="QUIT"  name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+        <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
 
 
 
@@ -68,11 +96,9 @@
             <masterSlaveRelation>master</masterSlaveRelation>
         </service>
 
-        <start type="::gui::frame::IFrame" />
-        <start type="::gui::aspect::IMenuBar" />
-        
-        <stop type="::gui::aspect::IMenuBar" />
-        <stop type="::gui::frame::IFrame" />
+        <start type="::fwGui::IFrameSrv" />
+
+        <stop type="::fwGui::IFrameSrv" />
 
     </object>
 

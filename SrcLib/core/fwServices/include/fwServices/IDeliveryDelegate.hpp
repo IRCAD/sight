@@ -27,6 +27,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (IDeliveryDelegate)(::fwServices::IService) ) ;
 
+protected:
+
     ///@brief IDeliveryDelegate constructor. Do nothing.
     FWSERVICES_API IDeliveryDelegate();
 

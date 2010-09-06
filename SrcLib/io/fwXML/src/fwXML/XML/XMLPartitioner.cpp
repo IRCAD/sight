@@ -7,30 +7,27 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include "fwXML/XML/XMLPartitioner.hpp"
-#include "fwXML/XML/XMLHierarchy.hpp"
-#include "fwXML/XML/XMLTranslator.hpp"
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
-#include "fwXML/ImageFileFormatService.hpp"
+
 #include <fwDataIO/writer/IObjectWriter.hpp>
-
-
 
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwCore/base.hpp>
 
+#include "fwXML/ImageFileFormatService.hpp"
+#include "fwXML/XML/XMLPartitioner.hpp"
+#include "fwXML/XML/XMLHierarchy.hpp"
+#include "fwXML/XML/XMLTranslator.hpp"
 // default policies
 #include "fwXML/policy/AlwaysSplitPolicy.hpp"
 #include "fwXML/policy/DefaultPathPolicy.hpp"
 
 
-// WINSUX
-//IMPLEMENT_SINGLETON( fwXML::XMLPartitioner );
 boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = boost::shared_ptr< fwXML::XMLPartitioner >();
 
 
@@ -50,8 +47,7 @@ XMLPartitioner::XMLPartitioner()
 //------------------------------------------------------------------------------
 
 XMLPartitioner::~XMLPartitioner()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -82,16 +78,7 @@ void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSpli
      return root;
 }
 
-
-
-//boost::filesystem::path DefaultPathPolicy( ::boost::weak_ptr< fwTools::Object > obj)
-//{
-//   std::string filename = obj.lock()->className() + "-" + boost::lexical_cast<std::string>( obj.lock() ) + ".xml";
-//
-//   return  filename;
-//}
-
-
+//------------------------------------------------------------------------------
 
 // test if object manage extra data aka FileFormat
 // no  : do nothing
@@ -100,11 +87,11 @@ void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSpli
 
 // saver->directory the same as the aggregator
 
-void XMLPartitioner::manageExtraData( ::boost::shared_ptr<fwTools::Object> obj )
+void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
 {
-    if ( fwServices::support< IFileFormatService >(obj) )
+    if ( ::fwServices::support< IFileFormatService >(obj) )
     {
-        ::boost::shared_ptr< IFileFormatService >  saver =fwServices::get< IFileFormatService >(obj,0);
+        ::fwXML::IFileFormatService::sptr  saver = ::fwServices::get< ::fwXML::IFileFormatService >(obj,0);
 
         if (saver)
         {
@@ -148,8 +135,7 @@ xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father
     if  (splitXML==false)
     {
         // no splitting :  append in the same serialisation unit of its father
-        ::boost::shared_ptr< XMLAggregator > fatherAggregator =
-                XMLHierarchy::getDefault()->mapObjectAggregator()[father];
+        ::fwXML::XMLAggregator::sptr fatherAggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[father];
 
         assert( fatherAggregator );
         fatherAggregator->append( son );

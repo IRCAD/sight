@@ -8,7 +8,6 @@
 #ifndef _IOXML_FWXMLGENERICREADERSERVICE_HPP_
 #define _IOXML_FWXMLGENERICREADERSERVICE_HPP_
 
-#include <wx/string.h>
 #include <string>
 #include <boost/filesystem/path.hpp>
 
@@ -17,9 +16,6 @@
 #include <fwTools/Object.hpp>
 
 #include "ioXML/config.hpp"
-
-
-
 
 
 namespace ioXML
@@ -53,10 +49,6 @@ public :
      */
     IOXML_API virtual ~FwXMLGenericReaderService() throw();
 
-    /// Simple API to convert wxString to boost path and valid the
-    //configuration
-    void fixFilename(wxString _filename);
-
 protected:
 
     /// Override
@@ -88,7 +80,7 @@ private :
 
     void notificationOfUpdate();
 
-    ::boost::shared_ptr< ::fwTools::Object > loadData( const ::boost::filesystem::path inrFileDir );
+    ::fwTools::Object::sptr loadData( const ::boost::filesystem::path inrFileDir );
 
     bool isAnFwxmlArchive( const ::boost::filesystem::path filePath );
 
@@ -97,9 +89,7 @@ private :
 
     ::boost::filesystem::path m_fsObjectPath;
 
-    //void createObject( const ::boost::filesystem::path path, ::fwTools::Object::sptr _obj );
-
-    ::boost::shared_ptr< ::fwTools::Object > manageZipAndLoadData( const ::boost::filesystem::path path );
+    ::fwTools::Object::sptr manageZipAndLoadData( const ::boost::filesystem::path path );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
 
     ::fwXML::reader::FwXMLObjectReader m_reader;

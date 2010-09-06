@@ -10,7 +10,6 @@
 #include <boost/function.hpp>
 
 
-#include <wx/timer.h>
 #include <wx/event.h>
 
 #include <fwCore/base.hpp>
@@ -57,13 +56,6 @@ protected:
     FWWX_API virtual void info( std::ostream &_sstream ) ;
 
 private:
-
-    /*
-     * @brief   declares the wxWidgets event table
-     */
-
-    int      m_rate;
-    wxTimer *m_wxTimer;
 
     SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
     ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;

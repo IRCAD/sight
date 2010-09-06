@@ -1,6 +1,6 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
-USE     = ['boost', 'boostFilesystem','vtkHybrid','wxCore']
+USE     = ['boost', 'boostFilesystem','vtkHybrid']
 LIB     = [
     'fwTools_0-1',
     'fwRuntime_0-3',
@@ -10,7 +10,7 @@ LIB     = [
     'fwCore_0-1',
     'fwComEd_0-1',
     'fwVtkIO_0-1',
-    'fwWX_0-1',
+    'fwGui_0-1',
     ]
 BUNDLES = ['io_0-1']
 

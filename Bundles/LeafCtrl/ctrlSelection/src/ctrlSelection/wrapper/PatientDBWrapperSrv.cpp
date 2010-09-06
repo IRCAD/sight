@@ -27,10 +27,6 @@ namespace wrapper
 
 //-----------------------------------------------------------------------------
 
-
-
-//-----------------------------------------------------------------------------
-
 PatientDBWrapperSrv::PatientDBWrapperSrv() throw()
 {
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::NEW_OBJECT );
@@ -40,8 +36,8 @@ PatientDBWrapperSrv::PatientDBWrapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-//PatientDBWrapperSrv::~PatientDBWrapperSrv() throw()
-//{}
+PatientDBWrapperSrv::~PatientDBWrapperSrv() throw()
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +50,6 @@ void PatientDBWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) thr
         ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >();
         assert( pDPDB );
 
-        //assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
         assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == pDPDB );
 
         ::fwComEd::PatientDBMsg::NewSptr msg;
@@ -62,17 +57,9 @@ void PatientDBWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) thr
         msg->addEvent( ::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT );
 
         ::fwServices::IEditionService::notify( this->getSptr(),  pDPDB, msg, ::fwServices::ComChannelService::NOTIFY_SOURCE );
-//        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg,::fwServices::ComChannelService::NOTIFY_SOURCE);
     }
-
     //TODO other event
-
 }
-
-
-
-
-
 
 //-----------------------------------------------------------------------------
 

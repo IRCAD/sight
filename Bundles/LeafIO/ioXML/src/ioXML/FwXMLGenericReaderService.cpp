@@ -4,19 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-#include <wx/event.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
-
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwServices/Factory.hpp>
 #include <fwServices/macros.hpp>
@@ -32,15 +28,18 @@
 
 #include <ioXML/FwXMLGenericReaderService.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
-#include <fwWX/wxZipFolder.hpp>
-#include <fwWX/convert.hpp>
+#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwZip/ZipFolder.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLGenericReaderService.hpp"
 
 
 //------------------------------------------------------------------------------
-//
+
 namespace ioXML
 {
 
@@ -67,25 +66,21 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 
 void FwXMLGenericReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = ::fwWX::std2wx( this->getSelectorDialogTitle());
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML (*.fxz;*.xml)|*.fxz;*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_FILE_MUST_EXIST,
-#else
-            wxFILE_MUST_EXIST,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( file.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( this->getSelectorDialogTitle() );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_reader.setFile(  ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native ) );
-        _sDefaultPath = wxConvertMB2WX( m_fsObjectPath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_reader.setFile( result->getPath() );
     }
 }
 
@@ -95,14 +90,14 @@ void FwXMLGenericReaderService::configureWithIHM()
 
 void FwXMLGenericReaderService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLGenericReaderService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLGenericReaderService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLGenericReaderService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -135,25 +130,32 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading data ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading data ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }
     catch (const std::exception & e)
     {
         std::stringstream ss;
-        wxString msg = _("Warning during loading : ");
-        ss << wxConvertWX2MB(msg.c_str()) << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ss << "Warning during loading : " << e.what();
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
         return pObject;
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
         return pObject;
     }
 
@@ -174,7 +176,9 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
     {
         ::fwTools::Object::sptr obj; // object loaded
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         m_reader.setFile( correctFileFormat( m_reader.getFile() ));
         if ( isAnFwxmlArchive( m_reader.getFile() ) )
         {
@@ -194,7 +198,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 
             notificationOfUpdate();
         }
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 
@@ -222,21 +226,17 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 
 ::fwTools::Object::sptr FwXMLGenericReaderService::manageZipAndLoadData( const ::boost::filesystem::path _pArchivePath )
 {
-
     ::fwTools::Object::sptr obj;
-
     // Unzip folder
     ::boost::filesystem::path destFolder = ::fwTools::System::getTemporaryFolder() / "fwxmlArchiveFolder";
-    ::boost::filesystem::path xmlfile = destFolder / "root.xml";
 
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
 
-    wxString srcZipFileName ( wxConvertMB2WX( _pArchivePath.string().c_str() ) );
-    wxString destFolderName ( wxConvertMB2WX( destFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::unpackFolder( srcZipFileName, destFolderName );
+    ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
 
     // Load
+    ::boost::filesystem::path xmlfile = destFolder / "root.xml";
     obj = loadData( xmlfile );
 
     // Remove temp folder

@@ -11,9 +11,10 @@
 #include <fwData/Image.hpp>
 #include <fwData/PatientDB.hpp>
 #include <fwData/TriangularMesh.hpp>
+#include <fwXML/ImageFileFormatService.hpp>
 
-#include "io/IReader.hpp"
-#include "io/IWriter.hpp"
+#include <io/IReader.hpp>
+#include <io/IWriter.hpp>
 
 #include "ioXML/Plugin.hpp"
 
@@ -22,7 +23,6 @@
 #include "ioXML/FwXMLPatientDBReaderService.hpp"
 #include "ioXML/FwXMLPatientDBWriterService.hpp"
 #include "ioXML/FwXMLPatient2PatientDBWriterService.hpp"
-#include <fwXML/ImageFileFormatService.hpp>
 
 
 namespace ioXML

@@ -3,14 +3,12 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <wx/wx.h>
-
 #include <boost/filesystem/operations.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -20,11 +18,14 @@
 
 #include <io/IReader.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/ImageReader.hpp>
 
-#include "ioVTK/ImageReaderService.hpp"
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
+#include "ioVTK/ImageReaderService.hpp"
 
 namespace ioVTK
 {
@@ -71,25 +72,20 @@ void ImageReaderService::configuring() throw ( ::fwTools::Failed )
 void ImageReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an vtk file to load an image"); // use _("...") for support string internationalization
+    static ::boost::filesystem::path _sDefaultPath;
 
-    // Create a dialog box to choose a file of type .vtk
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_OPEN,
-            wxTheApp->GetTopWindow() );
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an vtk file to load an image");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
 
-    // If the user choose an vtk file, the image path is initialized and we tag the service as configured.
-    if( file.IsEmpty() == false )
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImgPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+        _sDefaultPath = result->getPath();
+        m_fsImgPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImgPath.branch_path().string().c_str() );
     }
 }
 
@@ -124,19 +120,19 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 
     if( m_bServiceIsConfigured )
     {
-
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
         assert(pImage);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image has been modified.
-        wxBeginBusyCursor();
+
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
         if ( loadImage( m_fsImgPath, pImage ) )
         {
             notificationOfDBUpdate();
         }
-        wxEndBusyCursor();
-
+        cursor.setDefaultCursor();
     }
 }
 
@@ -158,7 +154,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
     try
     {
         // Create a progress bar and attach it to reader
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Images ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myReader.addHandler( progressMeterGUI );
         // Launch reading process
         myReader.read();
@@ -168,16 +164,28 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
+
         ok = false;
     }
     catch( ... )
     {
         std::stringstream ss;
-        ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ss << "Warning during loading.";
+
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
+
         ok = false;
     }
 

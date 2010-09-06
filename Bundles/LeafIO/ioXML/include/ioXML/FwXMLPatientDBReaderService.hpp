@@ -8,7 +8,6 @@
 #ifndef _IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_
 #define _IOXML_FWXMLPATIENTDBREADERSERVICE_HPP_
 
-#include <wx/string.h>
 #include <string>
 #include <boost/filesystem/path.hpp>
 
@@ -45,10 +44,6 @@ public :
      */
     IOXML_API virtual ~FwXMLPatientDBReaderService() throw();
 
-    /// Simple API to convert wxString to boost path and valid the
-    //configuration
-    void fixFilename(wxString _filename);
-
 protected:
 
     /// Override
@@ -79,6 +74,9 @@ protected:
     IOXML_API virtual void configureWithIHM();
 
 private :
+
+    /// Simple API to convert wxString to boost path and valid the configuration
+    void fixFilename(std::string _filename);
 
     void notificationOfDBUpdate();
 

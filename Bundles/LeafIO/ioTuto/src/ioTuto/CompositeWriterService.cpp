@@ -4,11 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -16,6 +15,9 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/bundle/runtime.hpp>
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
 
 #include "ioTuto/CompositeWriterService.hpp"
 
@@ -25,39 +27,41 @@ namespace ioTuto
 REGISTER_SERVICE( ::io::IWriter , ioTuto::CompositeWriterService , ::fwData::Composite ) ;
 
 //------------------------------------------------------------------------------
+
 CompositeWriterService::CompositeWriterService( )throw()
-: m_fsExternalDataPath("")
-{
-}
+        : m_fsExternalDataPath("")
+{}
 
 //------------------------------------------------------------------------------
+
 CompositeWriterService::~CompositeWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
+
 void CompositeWriterService::info(std::ostream &_sstream )
-{
-}
+{}
 
 //------------------------------------------------------------------------------
+
 void CompositeWriterService::configuring() throw( ::fwTools::Failed )
-{
-}
+{}
 
 //------------------------------------------------------------------------------
+
 void CompositeWriterService::starting() throw( ::fwTools::Failed )
-{
-}
+{}
 
 //------------------------------------------------------------------------------
+
 void CompositeWriterService::stopping() throw( ::fwTools::Failed )
-{
-}
+{}
 
 //------------------------------------------------------------------------------
+
 void CompositeWriterService::updating( ) throw(::fwTools::Failed)
 {
-    configureWithIHM();
+    this->configureWithIHM();
     ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
     assert( pComposite );
 
@@ -76,42 +80,55 @@ void CompositeWriterService::updating( ) throw(::fwTools::Failed)
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
-            wxString wxStmp( ss.str().c_str(), wxConvLocal );
-            wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Warning");
+            messageBox.setMessage( ss.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
         catch( ... )
         {
             std::stringstream ss;
-            ss << "Warning during loading : ";
-            wxString wxStmp( ss.str().c_str(), wxConvLocal );
-            wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+            ss << "Warning during loading.";
+
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("Warning");
+            messageBox.setMessage( ss.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
     }
 }
 
 //------------------------------------------------------------------------------
+
 void CompositeWriterService::updating(::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg) throw(::fwTools::Failed)
-{
-}
+{}
+
 //-----------------------------------------------------------------------------
+
 void CompositeWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Xml file to save");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("xml file (*.xml)|*.xml"),
-            wxFD_SAVE,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an xml file to read");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("xml", "*.xml");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsExternalDataPath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
-        _sDefaultPath = wxConvertMB2WX( m_fsExternalDataPath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_fsExternalDataPath = result->getPath();
+    }
 }
-}
+
 //------------------------------------------------------------------------------
+
 } // namespace ioTuto

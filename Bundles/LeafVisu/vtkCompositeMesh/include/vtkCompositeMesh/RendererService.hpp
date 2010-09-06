@@ -7,12 +7,7 @@
 #ifndef VTKCOMPOSITEMESH_RENDERER_SERVICE_HPP_
 #define VTKCOMPOSITEMESH_RENDERER_SERVICE_HPP_
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include <wx/aui/aui.h>
-
-
-#include <vtkinria3d/wxVTKRenderWindowInteractor.h>
+#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
 #include <vtkCommand.h>
 
@@ -43,7 +38,7 @@ namespace vtkCompositeMesh
  * Service registered details : \n
  * REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::TriangularMesh)
  */
-class VTKCOMPOSITEMESH_CLASS_API RendererService : public fwRender::IRender
+class VTKCOMPOSITEMESH_CLASS_API RendererService : public ::fwRender::IRender
 {
 public :
 
@@ -121,10 +116,8 @@ protected :
 
 private :
 
-    /// @brief required to facilitate resize of an empty vtk rendering window : why ?
-    wxAuiManager* m_wxmanager;
-    /// @brief VTK Interactor window
-    ::wxVTKRenderWindowInteractor* m_interactor;
+    /// @brief VTK Interactor window manager
+    ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
     /**
     * @brief Creating  and rendering of an actor method.

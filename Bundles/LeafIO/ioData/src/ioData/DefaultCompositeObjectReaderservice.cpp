@@ -50,17 +50,17 @@ std::vector< std::string > DefaultCompositeObjectReaderService::getSupportedExte
 
 void DefaultCompositeObjectReaderService::starting( ) throw(::fwTools::Failed)
 {
-     ::boost::shared_ptr< ::fwData::ProcessObject > po = this->getObject< ::fwData::ProcessObject>() ;
+    ::fwData::ProcessObject::sptr po = this->getObject< ::fwData::ProcessObject>() ;
     assert( po ) ;
-    std::map< std::string , ::boost::weak_ptr< ::fwData::Object > > inputs =    po->getInputMap() ;
+    std::map< std::string ,::fwData::Object::wptr > inputs =    po->getInputMap() ;
     // For each input, one tries to start the io service
     // For configured input io service, the configuration is applied
-    for(std::map< std::string , ::boost::weak_ptr< ::fwData::Object > >::iterator iter = inputs.begin() ; iter != inputs.end() ; ++iter )
+    for(std::map< std::string , ::fwData::Object::wptr >::iterator iter = inputs.begin() ; iter != inputs.end() ; ++iter )
     {
         // Only if io is supported by current input
-        if( fwServices::has< ::io::IReader >( iter->second.lock() ) )
+        if( ::fwServices::has< ::io::IReader >( iter->second.lock() ) )
         {
-            fwServices::get< ::io::IReader >( iter->second.lock() )->start();
+            ::fwServices::get< ::io::IReader >( iter->second.lock() )->start();
         }
     }
 }
@@ -75,8 +75,9 @@ DefaultCompositeObjectReaderService::~DefaultCompositeObjectReaderService() thro
 
 void DefaultCompositeObjectReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    OSLM_INFO( "DefaultCompositeObjectReaderService::configure : " << *m_configuration );
-     ::boost::shared_ptr< ::fwData::ProcessObject > po = this->getObject< ::fwData::ProcessObject>() ;
+    SLM_TRACE_FUNC();
+    ::fwData::ProcessObject::sptr po = this->getObject< ::fwData::ProcessObject>() ;
+
     ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
     for( iter = m_configuration->begin() ; iter != m_configuration->end() ; ++iter )
     {
@@ -84,24 +85,21 @@ void DefaultCompositeObjectReaderService::configuring( ) throw(::fwTools::Failed
         if( (*iter)->getName() == "input" )
         {
             assert( (*iter)->hasAttribute("id")) ;
-             ::boost::shared_ptr< ::fwData::Object > obj = po->getInput( (*iter)->getExistingAttributeValue("id") ) ;
+            ::fwData::Object::sptr obj = po->getInput( (*iter)->getExistingAttributeValue("id") ) ;
             assert( obj ) ;
-//           ::boost::shared_ptr< ::io::IReader > srv = ::fwServices::add< ::io::IReader >( obj ) ;
-//          assert( srv ) ;
-//          srv->setConfiguration( *iter ) ;
-//          srv->configure() ;
+
             // Finding out the specified IReader implementation to attach to input
-             ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > implementation = (*iter)->findConfigurationElement( "service" ) ;
+            ::fwRuntime::ConfigurationElement::sptr implementation = (*iter)->findConfigurationElement( "service" ) ;
             assert( implementation ) ;
             assert( implementation->hasAttribute("type")) ;
             std::string implementationId = implementation->getExistingAttributeValue("type") ;
-             ::boost::shared_ptr< ::io::IReader > srv = ::fwServices::add< ::io::IReader >( obj , implementationId ) ;
+            ::io::IReader::sptr srv = ::fwServices::add< ::io::IReader >( obj , implementationId ) ;
             assert( srv ) ;
             // Finding its configuration
             if( implementation->hasAttribute("config"))
             {
                 std::string configId = implementation->getExistingAttributeValue("config") ;
-                 ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > cfg = ::fwServices::bundle::findConfigurationForPoint( configId , implementationId ) ;
+                ::fwRuntime::ConfigurationElement::sptr cfg = ::fwServices::bundle::findConfigurationForPoint( configId , implementationId ) ;
                 srv->setConfiguration( cfg ) ;
             }
             else
@@ -125,16 +123,16 @@ void DefaultCompositeObjectReaderService::stopping() throw(::fwTools::Failed)
 
 void DefaultCompositeObjectReaderService::updating() throw(::fwTools::Failed)
 {
-     ::boost::shared_ptr< ::fwData::ProcessObject > po = this->getObject< ::fwData::ProcessObject>() ;
+    ::fwData::ProcessObject::sptr po = this->getObject< ::fwData::ProcessObject>() ;
     assert( po ) ;
-    std::map< std::string , ::boost::weak_ptr< ::fwData::Object > > inputs =    po->getInputMap() ;
+    std::map< std::string , ::fwData::Object::wptr > inputs =    po->getInputMap() ;
     // For each input, one tries to start the io service
     // For configured input io service, the configuration is applied
-    for(std::map< std::string , ::boost::weak_ptr< ::fwData::Object > >::iterator iter = inputs.begin() ; iter != inputs.end() ; ++iter )
+    for(std::map< std::string , ::fwData::Object::wptr >::iterator iter = inputs.begin() ; iter != inputs.end() ; ++iter )
     {
-        if( fwServices::has< ::io::IReader >( iter->second.lock() ) )
+        if( ::fwServices::has< ::io::IReader >( iter->second.lock() ) )
         {
-            fwServices::get< ::io::IReader >(iter->second.lock())->update() ;
+            ::fwServices::get< ::io::IReader >(iter->second.lock())->update() ;
         }
     }
 }

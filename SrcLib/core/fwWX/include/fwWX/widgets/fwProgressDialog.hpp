@@ -72,6 +72,9 @@ public:
     FWWX_API int GetRange() const;
     FWWX_API wxString GetMessage() const;
 
+    // updates the label message
+    FWWX_API void UpdateMessage(const wxString &newmsg);
+
 protected:
     // callback for optional abort button
     void OnCancel(wxCommandEvent&);
@@ -91,8 +94,7 @@ private:
     // as the next windows in the sizer, returns the created control
     wxStaticText *CreateLabel(const wxString& text, wxSizer *sizer);
 
-    // updates the label message
-    void UpdateMessage(const wxString &newmsg);
+
 
     // common part of Update() and Pulse(), returns true if not cancelled
     bool DoAfterUpdate(bool *skip);

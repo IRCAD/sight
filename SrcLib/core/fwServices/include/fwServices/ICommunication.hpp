@@ -32,6 +32,8 @@ public:
     /// Definitions
     fwCoreServiceClassDefinitionsMacro ( (ICommunication)(::fwServices::IService) ) ;
 
+protected:
+
     ///@brief ICommunication constructor. Do nothing.
     FWSERVICES_API ICommunication();
 

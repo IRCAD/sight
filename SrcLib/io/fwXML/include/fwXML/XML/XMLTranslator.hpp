@@ -11,6 +11,8 @@
 
 #include <libxml/tree.h>
 
+#include <fwCore/base.hpp>
+
 #include "fwXML/config.hpp"
 
 namespace fwTools
@@ -18,31 +20,30 @@ namespace fwTools
 class Object;
 }
 
-
-
 namespace fwXML
 {
 
-
 /*
  * @brief The purpose of this class is provide a translation scheme within XML and fwTools::Object.
- * Each specializated subClass have the responsability of providing the implementation
+ * Each specialized subClass have the responsibility of providing the implementation
  * @note : all informations are created on demand. No information are cached
  * @author IRCAD (Research and Development Team).
  */
-class FWXML_CLASS_API XMLTranslator
+class FWXML_CLASS_API XMLTranslator : public ::fwCore::BaseObject
 {
 public:
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (XMLTranslator)(::fwCore::BaseObject) )
 
     FWXML_API XMLTranslator();
 
     FWXML_API virtual ~XMLTranslator();
 
     /// get XML from current object
-    FWXML_API virtual xmlNodePtr getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj ) = 0;
+    FWXML_API virtual xmlNodePtr getXMLFrom( ::boost::shared_ptr< ::fwTools::Object> obj ) = 0;
 
     /// get Object from an XML node
-    FWXML_API virtual void updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source) = 0;
+    FWXML_API virtual void updateDataFromXML( ::boost::shared_ptr< ::fwTools::Object> toUpdate,  xmlNodePtr source) = 0;
 
 };
 

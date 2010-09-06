@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwXML/ImageFileFormatService.hpp"
-
 #include <fwData/Image.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwCore/base.hpp>
@@ -15,44 +13,43 @@
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwServices/macros.hpp>
 
-//#include <fwMemory/MemoryMonitor.hpp>
-
 #include <fwDataIO/writer/GzBufferImageWriter.hpp>
 #include <fwDataIO/reader/GzBufferImageReader.hpp>
 
+#include "fwXML/ImageFileFormatService.hpp"
 
 REGISTER_SERVICE( ::fwXML::IFileFormatService , fwXML::ImageFileFormatService , ::fwData::Image);
 
 namespace fwXML
 {
 
-
 std::string ImageFileFormatService::m_preferedWriter;
 
+//------------------------------------------------------------------------------
 
 ImageFileFormatService::ImageFileFormatService()
 {
     RWPoliciesInstall();
 }
 
-
+//------------------------------------------------------------------------------
 
 ImageFileFormatService::~ImageFileFormatService()
-{
-}
+{}
 
+//------------------------------------------------------------------------------
 
 void ImageFileFormatService::setPreferedWriter( std::string libwriter )
 {
     m_preferedWriter = libwriter;
 }
 
-
+//------------------------------------------------------------------------------
 
 void ImageFileFormatService::RWPoliciesInstall()
 {
     // try to install inrReader
-    ::boost::shared_ptr< ::fwDataIO::reader::IObjectReader > reader;
+    ::fwDataIO::reader::IObjectReader::sptr reader;
 
     reader = fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader, std::string >("::vtkIO::ImageReader" );
     if(reader)
@@ -72,22 +69,21 @@ void ImageFileFormatService::RWPoliciesInstall()
         }
     }
 
-
     // try to install Writrer
-     ::boost::shared_ptr< ::fwDataIO::writer::IObjectWriter > writer;
-     writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >(m_preferedWriter);
-     OSLM_WARN_IF(" prefered Writer" << m_preferedWriter << " cannot be instanciated => use default one", !m_preferedWriter.empty() && !writer);
-     if ( writer )
-     {
-         setWriter( writer );
-     }
-     else
-     {
-         writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::vtkIO::ImageWriter" );
-         if ( writer )
-         {
-             setWriter( writer );
-         }
+    ::fwDataIO::writer::IObjectWriter::sptr writer;
+    writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >(m_preferedWriter);
+    OSLM_WARN_IF(" prefered Writer" << m_preferedWriter << " cannot be instanciated => use default one", !m_preferedWriter.empty() && !writer);
+    if ( writer )
+    {
+        setWriter( writer );
+    }
+    else
+    {
+        writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::vtkIO::ImageWriter" );
+        if ( writer )
+        {
+            setWriter( writer );
+        }
         else
         {
             writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::itkIO::ImageWriter" );
@@ -101,70 +97,55 @@ void ImageFileFormatService::RWPoliciesInstall()
             }
 
         }
-     }
+    }
 
 }
 
+//------------------------------------------------------------------------------
 
-
- void ImageFileFormatService::load()
+void ImageFileFormatService::load()
 {
-    // precondition
-    // WPoliciesInstall();
-
     assert( !m_filename.empty() );
     // assert( !m_localFolder.empty() ); not mandatory can be loaded at root Folder
 
     //RWPoliciesInstall();
     assert( m_reader );
 
-     ::boost::shared_ptr< ::fwData::Image > image = this->getObject< ::fwData::Image >() ;
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >() ;
     assert( image ) ;
 
     m_reader->setObject(image);
-    ::boost::shared_ptr< ::fwData::location::SingleFile > path( new ::fwData::location::SingleFile() );
+    ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
     path->setPath( this->getFullPath() );
     m_reader->setLocation( path );
-
-    //FIXME JMO
-    // reserve memory (300Mo)
-    /*if ( ! ::fwMemory::MemoryMonitor::getDefault()->reserveMemory(1024*1024*300) )
-    {
-        throw ::fwTools::Failed("can not reserve enough memory");
-    }*/
-
     m_reader->read();
 }
 
-
+//------------------------------------------------------------------------------
 
 void ImageFileFormatService::save()
 {
-    SLM_TRACE("ImageFileFormatService::save");
+    SLM_TRACE_FUNC();
 
-    assert( !m_filename.empty() );
-    // assert( !m_localFolder.empty() ); not mandatory can be saved at root Folder
+    SLM_ASSERT("Filename is empty", !m_filename.empty() );
 
     RWPoliciesInstall();
     assert( m_writer );
 
-     ::boost::shared_ptr< ::fwData::Image > image = this->getObject< ::fwData::Image >() ;
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >() ;
     assert( image ) ;
 
     if (image->getBuffer() )
     {
         m_writer->setObject(image);
         this->extension() = m_writer->extension();
-        ::boost::shared_ptr< ::fwData::location::SingleFile > path( new ::fwData::location::SingleFile() );
+        ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
         path->setPath( this->getFullPath() );
         m_writer->setLocation( path );
         m_writer->write();
     }
-
 }
 
-
-
-
+//------------------------------------------------------------------------------
 
 }

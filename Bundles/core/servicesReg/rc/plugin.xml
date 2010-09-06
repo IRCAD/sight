@@ -30,7 +30,8 @@
         <implements>::fwServices::IService</implements>
     </point>
 
-    
+    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+    <extension-point id="::fwServices::ServiceObjectConfig"/>
 
 
     <!-- SPECIFIC SERVICES -->

@@ -4,10 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-#include <wx/event.h>
-
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -15,6 +11,7 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/PatientDB.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwServices/Factory.hpp>
 #include <fwServices/macros.hpp>
@@ -30,16 +27,19 @@
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
-#include <fwWX/wxZipFolder.hpp>
-#include <fwWX/convert.hpp>
+#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwZip/ZipFolder.hpp>
+
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLPatientDBReaderService.hpp"
 
 //------------------------------------------------------------------------------
 
 #ifdef __WXMAC__
-
+/*
 class wxEvtHandlerOpenFile : public wxEvtHandler
 {
     public:
@@ -74,9 +74,12 @@ class wxEvtHandlerOpenFile : public wxEvtHandler
                 assert(reader);
                 reader->fixFilename( _event.GetString() );
                 reader->start();
-                wxBeginBusyCursor();
+
+                ::fwGui::Cursor cursor;
+                cursor.setCursor(::fwGui::ICursor::BUSY);
+
                 reader->update();
-                wxEndBusyCursor();
+                cursor.setDefaultCursor();
                 reader->stop();
             }
         }
@@ -84,7 +87,7 @@ class wxEvtHandlerOpenFile : public wxEvtHandler
 
     DECLARE_DYNAMIC_CLASS( wxEvtHandlerOpenFile )
 };
-
+*/
 #endif
 
 //------------------------------------------------------------------------------
@@ -132,33 +135,30 @@ void FwXMLPatientDBReaderService::configuring() throw(::fwTools::Failed)
 
 void FwXMLPatientDBReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = ::fwWX::std2wx( this->getSelectorDialogTitle());
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML (*.fxz;*.xml)|*.fxz;*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_FILE_MUST_EXIST,
-#else
-            wxFILE_MUST_EXIST,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( file.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( this->getSelectorDialogTitle() );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        fixFilename(file);
-        _sDefaultPath = wxConvertMB2WX( m_fsPatientDBPath.branch_path().string().c_str() );
+        _sDefaultPath = result->getPath();
+        m_fsPatientDBPath = result->getPath();
+        m_bServiceIsConfigured = true;
     }
 }
 
 //------------------------------------------------------------------------------
-//
-void FwXMLPatientDBReaderService::fixFilename(wxString _filename)
+
+void FwXMLPatientDBReaderService::fixFilename(std::string _filename)
 {
-    m_fsPatientDBPath = ::boost::filesystem::path( ::fwWX::wx2std(_filename), ::boost::filesystem::native );
+    m_fsPatientDBPath = ::boost::filesystem::path( _filename, ::boost::filesystem::native );
     m_bServiceIsConfigured = true;
 
 }
@@ -169,11 +169,13 @@ void FwXMLPatientDBReaderService::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE("FwXMLPatientDBReaderService::starting()");
 #ifdef __WXMAC__
+    /*
     wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
     if (frame != NULL)
         frame->Connect( wxIDEventFwOpen, wxEventFwOpen, wxCommandEventHandler(wxEvtHandlerOpenFile::open) );
     else
         SLM_FATAL ("Window not found !")
+        */
 #endif
 }
 
@@ -219,25 +221,33 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }
     catch (const std::exception & e)
     {
         std::stringstream ss;
-        wxString msg = _("Warning during loading : ");
-        ss << wxConvertWX2MB(msg.c_str()) << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ss << "Warning during loading : ";
+        ss << e.what();
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
         return pPatientDB;
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
         return pPatientDB;
     }
 
@@ -275,16 +285,20 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
 
                 associatedPatientDB->shallowCopy( patientDB );
 
-                wxBeginBusyCursor();
+                ::fwGui::Cursor cursor;
+                cursor.setCursor(::fwGui::ICursor::BUSY);
+
                 notificationOfDBUpdate();
-                wxEndBusyCursor();
+                cursor.setDefaultCursor();
             }
             else
             {
-                wxMessageBox(   _("File format unknown. Retry with another file reader."),
-                        _("Image Reader"),
-                        wxOK|wxICON_WARNING,
-                        wxTheApp->GetTopWindow() );
+                ::fwGui::MessageDialog messageBox;
+                messageBox.setTitle("Image Reader");
+                messageBox.setMessage( "File format unknown. Retry with another file reader." );
+                messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+                messageBox.addButton(::fwGui::IMessageDialog::OK);
+                messageBox.show();
             }
         }
         else
@@ -293,11 +307,13 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             xmlFile << "Sorry, the xml file \""
             << m_fsPatientDBPath.string()
             << "\" does not content a PatientDB. This xml file has not been loaded.";
-            wxString mes ( wxConvertMB2WX( xmlFile.str().c_str() ));
-            wxMessageBox (  mes,
-                    _("FwXML PatientDB Reader"),
-                    wxOK|wxICON_WARNING,
-                    wxTheApp->GetTopWindow() );
+
+            ::fwGui::MessageDialog messageBox;
+            messageBox.setTitle("FwXML PatientDB Reader");
+            messageBox.setMessage( xmlFile.str() );
+            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.show();
         }
     }
 }
@@ -328,21 +344,17 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
 
 ::fwData::PatientDB::sptr FwXMLPatientDBReaderService::manageZipAndCreatePatientDB( const ::boost::filesystem::path _pArchivePath )
 {
-
     ::fwData::PatientDB::sptr patientDB;
-
     // Unzip folder
     ::boost::filesystem::path destFolder = ::fwTools::System::getTemporaryFolder() / "fwxmlArchiveFolder";
-    ::boost::filesystem::path xmlfile = destFolder / "patient.xml";
 
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
 
-    wxString srcZipFileName ( wxConvertMB2WX( _pArchivePath.string().c_str() ) );
-    wxString destFolderName ( wxConvertMB2WX( destFolder.string().c_str() ) );
-    ::fwWX::wxZipFolder::unpackFolder( srcZipFileName, destFolderName );
+    ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
 
     // Load
+    ::boost::filesystem::path xmlfile = destFolder / "patient.xml";
     patientDB = createPatientDB( xmlfile );
 
     // Remove temp folder

@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <iostream>
+#include <sstream>
 #include <utility>
 
 #include <boost/filesystem.hpp>
@@ -125,7 +126,9 @@ void ObjectServiceRegistry::initializeRootObject()
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
 
         std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-        for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
+        for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
+                iter != extensions.end() ;
+                ++iter )
         {
             if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
             {
@@ -152,6 +155,10 @@ void ObjectServiceRegistry::uninitializeRootObject()
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
         // Stop services reported in m_rootObjectConfiguration before stopping everything
         ::fwServices::stopAndUnregister(getDefault()->m_rootObjectConfiguration) ;
+
+        OSLM_WARN_IF("Sorry, few services still exist before erasing root object ( cf debug following message )" << std::endl << ::fwServices::OSR::getRegistryInformation(),
+                        getDefault()->m_container.size() != 1 || getDefault()->m_container.begin()->second.size() != 0 );
+
         // Unregister root object services
         ::fwServices::OSR::unregisterServices(getDefault()->m_rootObject);
 
@@ -164,6 +171,9 @@ void ObjectServiceRegistry::uninitializeRootObject()
         assert( getDefault()->m_rootObject.use_count() == 0 );
         // Setting initialization to false
         getDefault()->m_isRootInitialized = false ;
+
+        // Clear all factories before stop application.
+        ::fwTools::ClassFactoryRegistry::getFactories().clear();
     }
 }
 
@@ -472,6 +482,32 @@ std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
 const ObjectServiceRegistry::OSContainer  & ObjectServiceRegistry::getOSContainer()
 {
     return getDefault()->m_container;
+}
+
+//------------------------------------------------------------------------------
+
+std::string ObjectServiceRegistry::getRegistryInformation()
+{
+    std::stringstream info;
+    ObjectServiceRegistry::OSContainer registry = getDefault()->m_container;
+    BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
+    {
+        SLM_ASSERT("Object has expired", !objSrvMap.first.expired() ) ;
+
+        ::fwTools::Object::sptr obj = objSrvMap.first.lock();
+        SContainer services = objSrvMap.second;
+
+        info << "New object found in OSR" << std::endl;
+        info << "Object ( uid = "<< obj->getUUID() <<" , classname = "<< obj->getClassname() <<" ) has "<< services.size() <<" services." << std::endl;
+
+        BOOST_FOREACH( IService::sptr service, services )
+        {
+            info << "    srv : uid = "<< service->getUUID() <<" , classname = "<< service->getClassname() <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
+        }
+    }
+
+    return info.str();
+
 }
 
 //------------------------------------------------------------------------------

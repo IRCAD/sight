@@ -36,8 +36,6 @@ public :
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-public :
-
     fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IEditor) ) ;
 
     /**
@@ -49,6 +47,15 @@ public :
 
     /// Destructor. Do nothing.
     UIIO_API virtual ~IOSelectorService() throw() ;
+
+    /**
+     * @brief This method allows to configure the service in reader or writer mode (set IOSelectorService::m_mode).
+     *
+     *@param[in] _mode the value can be IOSelectorService::READER_MODE or IOSelectorService::WRITER_MODE.
+     */
+    UIIO_API void setIOMode( IOMode _mode ) ;
+
+protected:
 
     ///Starts the service. Do nothing.
     UIIO_API void starting() throw( ::fwTools::Failed ) ;
@@ -67,15 +74,11 @@ public :
     /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated objects. Then, the selected reader (writer) is executed.
     UIIO_API void updating() throw( ::fwTools::Failed ) ;
 
+    /// SLM_FATAL require an implementation gui::editor::IEditor::updating(msg)
+    UIIO_API void updating( fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
+
     /// Gives the name of the class. Do nothing.
     UIIO_API void info( std::ostream &_sstream ) ;
-
-    /**
-     * @brief This method allows to configure the service in reader or writer mode (set IOSelectorService::m_mode).
-     *
-     *@param[in] _mode the value can be IOSelectorService::READER_MODE or IOSelectorService::WRITER_MODE.
-     */
-    UIIO_API void setIOMode( IOMode _mode ) ;
 
 private :
 
@@ -95,7 +98,7 @@ private :
 
 } // namespace editor
 
-} // namespace uiio
+} // namespace uiIO
 
 #endif // _UIIO_EDITOR_IOSELECTORSERVICE_HPP_
 

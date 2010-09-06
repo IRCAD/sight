@@ -6,8 +6,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <wx/slider.h>
-
 #include <vtkMath.h>
 #include <vtkCamera.h>
 #include <vtkCallbackCommand.h>

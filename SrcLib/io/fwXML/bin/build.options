@@ -1,11 +1,13 @@
 TYPE = 'shared'
-
-LIB  = ['fwRuntime_0-3','fwData_0-1','fwTools_0-1','fwCore_0-1','fwServices_0-1','fwDataIO_0-2']
-USE  = ['boost','boostFilesystem','boostSerialization','libxml2'] # 'wxCore'
-
-#STDLIB = ['z'] #if you need zlib, please use BinPkg 'z'
-#use of wxCore is required to provide a wxPanel for xmlview service
-
+LIB  = [
+       'fwRuntime_0-3',
+       'fwData_0-1',
+       'fwTools_0-1',
+       'fwCore_0-1',
+       'fwServices_0-1',
+       'fwDataIO_0-2'
+       ]
+USE  = ['boost','boostFilesystem','boostSerialization','libxml2']
 
 CPPUNIT='no'
 

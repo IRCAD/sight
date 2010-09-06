@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <boost/filesystem/operations.hpp>
 
 #include <fwServices/macros.hpp>
@@ -24,8 +21,14 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 
-#include <fwWX/ProgressTowx.hpp>
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/LocationDialog.hpp>
+#include <fwGui/Cursor.hpp>
+
+#include <fwGui/ProgressDialog.hpp>
 #include <vtkIO/MeshReader.hpp>
 
 #include "ioVTK/MeshReaderService.hpp"
@@ -65,22 +68,22 @@ void MeshReaderService::configuring() throw(::fwTools::Failed)
 
 void MeshReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose an vtk file to load Mesh");
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_OPEN,
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
 
-    if( file.IsEmpty() == false)
+    static ::boost::filesystem::path _sDefaultPath("");
+
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a vtk file to load Mesh");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsMeshPath = ::boost::filesystem::path( wxConvertWX2MB(file), ::boost::filesystem::native );
+        m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsMeshPath.branch_path().string().c_str() );
+        _sDefaultPath = m_fsMeshPath.branch_path();
     }
 }
 
@@ -117,7 +120,7 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Meshs ");
+        ::fwGui::ProgressDialog progressMeterGUI("Loading Meshs ");
         myReader.addHandler( progressMeterGUI );
         myReader.read();
 
@@ -126,15 +129,26 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
+
     }
     catch( ... )
     {
         std::stringstream ss;
-        ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ss << "Warning during loading. ";
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
+
     }
 }
 
@@ -150,10 +164,13 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
         assert(pTriangularMesh);
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         loadMesh(m_fsMeshPath, pTriangularMesh);
         notificationOfUpdate();
-        wxEndBusyCursor();
+
+        cursor.setDefaultCursor();
     }
 }
 

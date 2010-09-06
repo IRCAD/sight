@@ -4,26 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/string.h>
-#include <wx/filedlg.h>
-#include <wx/app.h>
+#include <fstream>
+#include <iostream>
+#include <boost/filesystem/operations.hpp>
 
 #include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
 #include <io/IReader.hpp>
+
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/bundle/runtime.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 #include <fwServices/macros.hpp>
-#include <fwWX/convert.hpp>
 
-#include <fstream>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/LocationDialog.hpp>
+
+#include <fwComEd/TransformationMatrix3DMsg.hpp>
+
 #include <fwCore/base.hpp>
-#include <iostream>
 
-#include <boost/filesystem/operations.hpp>
 
 #include "ioData/TransformationMatrix3DReaderService.hpp"
 
@@ -88,24 +91,24 @@ void TransformationMatrix3DReaderService::configuring( ) throw(::fwTools::Failed
 
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a file to load a transformation matrix");
-    wxString file = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("TRF files (*.trf)|*.trf"),
-            wxFD_OPEN | wxFD_FILE_MUST_EXIST,
-            wxTheApp->GetTopWindow() );
 
-    if( file.IsEmpty() == false )
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath;
+
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a file to load a transformation matrix");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("TRF files","*.trf");
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_filename = ::boost::filesystem::path( ::fwWX::wx2std(file), ::boost::filesystem::native );
-        _sDefaultPath = ::fwWX::std2wx( m_filename.branch_path().string() );
+        m_filename = result->getPath();
         m_bServiceIsConfigured = true;
+        _sDefaultPath = m_filename.branch_path();
     }
+
 }
 
 //-----------------------------------------------------------------------------

@@ -27,10 +27,18 @@ namespace location
 class FWDATA_CLASS_API Folder  : public ILocation
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Folder)(ILocation), (()), new Folder ) ;
+    //fwCoreClassDefinitionsWithFactoryMacro( (Folder)(ILocation), (()), new Folder ) ;
+
+    fwCoreClassDefinitionsWithNFactoriesMacro(
+            (Folder)(ILocation),
+            ((::fwTools::Factory::New< Folder > ,() ))
+            ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
+    );
 
     /// Constructor
     FWDATA_API Folder();
+
+    FWDATA_API static sptr FolderFactory(::boost::filesystem::path _path, bool recursive=false );
 
     /// Destructor
     FWDATA_API virtual ~Folder();
@@ -39,7 +47,7 @@ public:
     FWDATA_API void setFolder( ::boost::filesystem::path folder);
 
     /// @brief Get folder filesystem path
-    FWDATA_API ::boost::filesystem::path getFolder();
+    FWDATA_API ::boost::filesystem::path getFolder() const;
 
     /// @brief Set the flag if folder location is recursive
     FWDATA_API void setRecursive( bool recursive);
@@ -69,42 +77,42 @@ protected :
 template<class RW> // reader or writter class should only need to implement get/setLocation
 struct enableFolder
 {
-     /**
-      * @brief constructor
-      * @param[in] rw reader or writer
-      */
-     enableFolder(RW *rw) : m_rw(rw) { assert(m_rw); }
+    /**
+     * @brief constructor
+     * @param[in] rw reader or writer
+     */
+    enableFolder(RW *rw) : m_rw(rw) { assert(m_rw); }
 
-     /// @brief Set folder filesystem path
-     void setFolder(::boost::filesystem::path folder)
-     {
-         getLocation<Folder>(m_rw)->setFolder(folder);
-     }
+    /// @brief Set folder filesystem path
+    void setFolder(::boost::filesystem::path folder)
+    {
+        getLocation<Folder>(m_rw)->setFolder(folder);
+    }
 
-     /// @brief Get folder filesystem path
-     ::boost::filesystem::path getFolder()
-     {
-         return getLocation<Folder>(m_rw)->getFolder();
-     }
+    /// @brief Get folder filesystem path
+    ::boost::filesystem::path getFolder()
+    {
+        return getLocation<Folder>(m_rw)->getFolder();
+    }
 
-     /// @brief Set the flag if folder location is recursive
-     void setRecursive( bool val)
-     {
-         getLocation<Folder>(m_rw)->setRecursive(val);
-     }
+    /// @brief Set the flag if folder location is recursive
+    void setRecursive( bool val)
+    {
+        getLocation<Folder>(m_rw)->setRecursive(val);
+    }
 
-     /// @brief Get the flag if folder location is recursive
-     bool getRecursive()
-     {
-         return getLocation<Folder>(m_rw)->getRecursive();
-     }
+    /// @brief Get the flag if folder location is recursive
+    bool getRecursive()
+    {
+        return getLocation<Folder>(m_rw)->getRecursive();
+    }
 
 private :
     /// Not implemented must use constructor with one parameter
     enableFolder();
 
     /// Reader or writer
-     RW *m_rw;
+    RW *m_rw;
 
 };
 

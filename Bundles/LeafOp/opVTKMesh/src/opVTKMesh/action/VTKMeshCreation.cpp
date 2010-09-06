@@ -33,7 +33,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::action::IAction , ::opVTKMesh::action::VTKMeshCreation , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::opVTKMesh::action::VTKMeshCreation , ::fwTools::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -52,14 +52,16 @@ VTKMeshCreation::~VTKMeshCreation() throw()
 
 void VTKMeshCreation::starting() throw ( ::fwTools::Failed )
 {
-    ::gui::action::IAction::starting();
+    SLM_TRACE_FUNC();
+    this->actionServiceStarting();
 }
 
 //-----------------------------------------------------------------------------
 
 void VTKMeshCreation::stopping() throw ( ::fwTools::Failed )
 {
-    ::gui::action::IAction::stopping();
+    SLM_TRACE_FUNC();
+    this->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
@@ -71,11 +73,12 @@ void VTKMeshCreation::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::f
 
 void VTKMeshCreation::configuring() throw ( ::fwTools::Failed )
 {
-    ::gui::action::IAction::configuring();
+    SLM_TRACE_FUNC() ;
+    this->initialize();
 
     SLM_ASSERT( "Mesh UID andImage UID must be defined in the service configuration",  m_configuration->findConfigurationElement("image") && m_configuration->findConfigurationElement("mesh") );
 
-    
+
     m_imageUID = m_configuration->findConfigurationElement("image")->getExistingAttributeValue("uid");
 
     m_meshUID = m_configuration->findConfigurationElement("mesh")->getExistingAttributeValue("uid");

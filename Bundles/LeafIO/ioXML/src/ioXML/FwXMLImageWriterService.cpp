@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
-#include <wx/version.h>
-
 #include <fwServices/macros.hpp>
 
 #include <fwServices/helper.hpp>
@@ -19,9 +16,14 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
-#include <fwWX/ProgressTowx.hpp>
+
+#include <fwGui/LocationDialog.hpp>
+#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/MessageDialog.hpp>
+#include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLImageWriterService.hpp"
 
@@ -30,7 +32,6 @@ namespace ioXML
 {
 
 REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLImageWriterService , ::fwData::Image ) ;
-//REGISTER_EXECUTABLE( ::ioXML::FwXMLImageWriterService, "ioXML::FwXMLImageWriterService" );
 
 //------------------------------------------------------------------------------
 
@@ -53,26 +54,21 @@ void FwXMLImageWriterService::configuring() throw(::fwTools::Failed)
 
 void FwXMLImageWriterService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a xml file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("fwXML (*.xml)|*.xml"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_SAVE,
-#else
-            wxSAVE,
-#endif
-            wxTheApp->GetTopWindow() );
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::LocationDialog dialogFile;
+    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImagePath = ::boost::filesystem::path( wxConvertWX2MB(folder), ::boost::filesystem::native );
+        _sDefaultPath = result->getPath() ;
+        m_fsImagePath = result->getPath() ;
         m_bServiceIsConfigured = true;
-        _sDefaultPath = wxConvertMB2WX( m_fsImagePath.branch_path().string().c_str() );
     }
 }
 
@@ -123,7 +119,7 @@ void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFile
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Saving Image ");
+        ::fwGui::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }
@@ -131,15 +127,23 @@ void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFile
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
-        ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ss << "Warning during loading. ";
+        ::fwGui::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 
@@ -155,9 +159,11 @@ void FwXMLImageWriterService::updating() throw(fwTools::Failed)
         ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
         assert( associatedImage ) ;
 
-        wxBeginBusyCursor();
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+
         saveImage(m_fsImagePath,associatedImage);
-        wxEndBusyCursor();
+        cursor.setDefaultCursor();
     }
 }
 

@@ -31,7 +31,7 @@ public:
             (SingleFile)(ILocation),
             ((::fwTools::Factory::New< SingleFile > ,() ))
             ((SingleFileFactory ,((::boost::filesystem::path)) ))
-            );
+    );
 
     FWDATA_API static sptr SingleFileFactory(::boost::filesystem::path _path);
 
@@ -45,7 +45,7 @@ public:
     FWDATA_API void setPath( ::boost::filesystem::path path);
 
     /// Get file system path
-    FWDATA_API ::boost::filesystem::path getPath();
+    FWDATA_API ::boost::filesystem::path getPath() const;
 
 protected :
 
@@ -56,14 +56,14 @@ protected :
 
 /**
  * @struct enableSingleFile
- * @brief This class is derivated by reader/writter.
+ * @brief This class is derivated by reader/writer.
  *
  * Reader/Writter classes should only need to implement get/setLocation
  *
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-template<typename RW> // reader or writter class should only need to implement get/setLocation
+template<typename RW> // reader or writer class should only need to implement get/setLocation
 struct enableSingleFile
 {
     /**
@@ -75,19 +75,19 @@ struct enableSingleFile
     /// Set file system path
     void setFile(::boost::filesystem::path path)
     {
-         getLocation<SingleFile>(m_rw)->setPath(path);
+        getLocation<SingleFile>(m_rw)->setPath(path);
     }
 
     /// Get file system path
-     ::boost::filesystem::path getFile()
-     {
-         return (getLocation<SingleFile>(m_rw))->getPath();
-     }
+    ::boost::filesystem::path getFile()
+    {
+        return (getLocation<SingleFile>(m_rw))->getPath();
+    }
 
 private :
     /// Not implemented must use constructor with one parameter
     enableSingleFile();
-     RW *m_rw;
+    RW *m_rw;
 
 };
 
