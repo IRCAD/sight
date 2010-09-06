@@ -9,6 +9,12 @@
 
 #include <fwRuntime/Plugin.hpp>
 
+/**
+ * @namespace uiVisu
+ * @brief   Contains editors for visualization.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
+ */
 namespace uiVisu
 {
 /**

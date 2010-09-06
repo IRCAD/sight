@@ -111,9 +111,9 @@ namespace fieldHelper
 
 //-----------------------------------------------------------------------------
 
-bool BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::fwServices::IService::sptr _MsgSource)
+::fwData::Image::sptr BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::fwServices::IService::sptr _MsgSource)
 {
-    bool bRes = false;
+    ::fwData::Image::sptr backupImage;
     if( _pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId) )
     {
         // Get Selection
@@ -146,7 +146,7 @@ bool BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::
         ::fwData::Acquisition::NewSptr pAquisitionBackup;
         pAquisitionBackup->deepCopy( *acquisitionIter );
         (*studyIter)->addAcquisition( pAquisitionBackup );
-        bRes = true;
+        backupImage = pAquisitionBackup->getImage();
 
         // Fire Event
         ::fwComEd::PatientDBMsg::NewSptr msg;
@@ -154,7 +154,7 @@ bool BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::
 
         ::fwServices::IEditionService::notify(_MsgSource, _pPatientDB, msg);
     }
-    return bRes;
+    return backupImage;
 }
 
 //------------------------------------------------------------------------------

@@ -1,26 +1,26 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ --> 	
+<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ -->     
 <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
-	
+    
 <xsd:include schemaLocation="Field.xsd"/>
 
 <xsd:element name="Patient" type="PatientXSDType"/>
 
 <xsd:complexType name="PatientXSDType">
-	<xsd:sequence>
-	<xsd:element name="Name" type="xsd:string"/>
-	<xsd:element name="Firstname" type="xsd:string"/>
-	<xsd:element name="IDDicom" type="xsd:string"/>
-	<xsd:element name="Birthdate" type="xsd:dateTime"/>
-	<xsd:element name="IsMale" type="xsd:boolean"/>
-	<xsd:element name="DbID" type="xsd:int"/>
-	
-	<xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
-	
-	</xsd:sequence>
-	<xsd:attribute name="id" type="xsd:string"/>
-	<xsd:attribute name="class" type="xsd:string"/>
-	<xsd:attribute ref="xml:base" />
+    <xsd:sequence>
+    <xsd:element name="Name" type="xsd:string"/>
+    <xsd:element name="Firstname" type="xsd:string"/>
+    <xsd:element name="IDDicom" type="xsd:string"/>
+    <xsd:element name="Birthdate" type="xsd:dateTime"/>
+    <xsd:element name="IsMale" type="xsd:boolean"/>
+    <xsd:element name="DbID" type="xsd:int"/>
+    
+    <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:string"/>
+    <xsd:attribute name="class" type="xsd:string"/>
+    <xsd:attribute ref="xml:base" />
 </xsd:complexType>
 
 </xsd:schema>

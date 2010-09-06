@@ -3,9 +3,9 @@
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         elementFormDefault="qualified"
         attributeFormDefault="unqualified">
-	
+    
 
-<!-- import xml schema for xml:base xml:lang & co --> 	
+<!-- import xml schema for xml:base xml:lang & co -->     
 <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
 
 <!-- import is used to allow declaration of an attribut with REF="xml:base" Indeed
@@ -13,19 +13,19 @@
      <xsd:attribute ref="xml:base" /> is recognized
 -->
 
-	
-	
+    
+    
 <!-- predeclaration needed to manage  processContents="strict" ceacuse a Field can contain a Field -->
 <xsd:element name="Field" type="FieldXSDType"/>
 
  <xsd:complexType name="FieldXSDType">
         <xsd:sequence>
-	<!-- <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="strict"/> -->
-	<xsd:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    <!-- <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="strict"/> -->
+    <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
         </xsd:sequence>
-	<xsd:attribute name="label" type="xsd:string" />
-	<xsd:attribute name="id" type="xsd:string" />
-	<xsd:attribute name="class" type="xsd:string"/>
+    <xsd:attribute name="label" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
+    <xsd:attribute name="class" type="xsd:string"/>
   </xsd:complexType>
 
 
@@ -33,35 +33,35 @@
 
 <!-- define XSDtype for container in Field -->
 <xsd:complexType name="GenericContainerXSDType">
-	<xsd:sequence>
-		<xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
-		<xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
-		<xsd:element name="item" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:sequence>
+        <xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="item" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
 </xsd:complexType>
 
 
 <xsd:complexType name="FloatContainerXSDType">
-	<xsd:sequence>
-		<xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
-		<xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
-		<xsd:element name="item" type="xsd:float" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:sequence>
+        <xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="item" type="xsd:float" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
 </xsd:complexType>
 
 <xsd:complexType name="IntegerContainerXSDType">
-	<xsd:sequence>
-		<xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
-		<xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
-		<xsd:element name="item" type="xsd:integer" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:sequence>
+        <xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="item" type="xsd:integer" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
 </xsd:complexType>
 
 <xsd:complexType name="StringContainerXSDType">
-	<xsd:sequence>
-		<xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
-		<xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
-		<xsd:element name="item" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:sequence>
+        <xsd:element name="count" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="item_version" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="item" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
 </xsd:complexType>
 

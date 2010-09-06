@@ -16,7 +16,7 @@ namespace uiImage
 {
 
 /**
- * @brief   SliceListEditor service.
+ * @brief   SliceListEditor service allows to change the number of slice to show.
  * @class   SliceListEditor.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
@@ -38,26 +38,50 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
-    ///This method launches the IEditor::starting method.
+    /**
+     * @brief Install the layout.
+     *
+     * This method launches the IEditor::starting method.
+     */
     virtual void starting() throw(::fwTools::Failed);
 
-    ///This method launches the IEditor::stopping method.
+    /**
+     * @brief Destroy the layout.
+     *
+     * This method launches the IEditor::stopping method.
+     */
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Managment of observations ( overides )
+    /// Management of observations : update editor according to the received message
     virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void swapping() throw(::fwTools::Failed);
 
+    /**
+     * @brief Configure the editor.
+     *
+     * Example of configuration
+     * @verbatim
+     <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
+         <negatoAdaptor uid="myNegatoMPR" slices="1"/>
+     </service>
+       @endverbatim
+        - \b uid is the uid of the ::visuVTKAdaptor::NegatoMPR service where the scan will be show/hide.
+        - \b slices is the number of slide to show
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
+    /// This method is called when the button is pressed. Show a pop up menu to select the slice to show.
     void onDropDownButton( wxCommandEvent& event );
 
+    /// This method is called when the popup menu is clicked. Notify the slice mode changed.
     void onChangeSliceMode(  wxCommandEvent& event );
 
 private:

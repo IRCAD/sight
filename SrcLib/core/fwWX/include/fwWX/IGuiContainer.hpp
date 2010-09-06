@@ -106,6 +106,12 @@ public :
 
 protected :
 
+    /**
+     * @brief This method is called when the container is locally created and it is closed.
+     * This stop the service.
+     */
+    FWWX_API void onCloseContainer(wxCloseEvent& event);
+
     static ContainerMapType m_globalUIDToWxContainer;
 
     /// Parent WxContainer

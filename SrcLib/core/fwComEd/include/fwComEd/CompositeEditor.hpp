@@ -23,6 +23,7 @@ namespace fwComEd
 {
 
 /**
+ * @deprecated Do not use this edition service.
  * @brief   Defines the composite edition service.
  * @struct  CompositeEditor
  * @author  IRCAD (Research and Development Team).

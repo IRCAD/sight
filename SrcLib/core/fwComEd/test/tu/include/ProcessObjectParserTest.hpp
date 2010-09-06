@@ -15,8 +15,6 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IService.hpp>
 
-#include <fwComEd/PoMsg.hpp>
-
 #include <fwRuntime/EConfigurationElement.hpp>
 
 /**

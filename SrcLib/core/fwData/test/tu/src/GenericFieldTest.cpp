@@ -27,7 +27,7 @@ void GenericFieldTest::tearDown()
 
 void GenericFieldTest::methode1()
 {
-    typedef double TestType;
+    typedef float TestType;
 
     const TestType VALUE = 13.456789 ;
 

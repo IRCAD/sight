@@ -7,7 +7,11 @@
 #include <fwXML/boostSerializer/archive/fw_xml_iarchive.hpp>
 
 #ifndef WIN32
+#if BOOST_VERSION >= 104000
+ #include <boost/archive/impl/archive_serializer_map.ipp>
+#else
  #include <boost/archive/impl/archive_pointer_iserializer.ipp>
+#endif
  #include <boost/archive/impl/basic_text_iprimitive.ipp>
 #endif
 
@@ -25,8 +29,13 @@
 #ifndef WIN32
   // VAG  this generate an insternal compilator error under windows, to avoid this create
   // an external file. This class should is required if we want to load a pointer in the archive
-  template
-  class boost::archive::detail::archive_pointer_iserializer<boost::archive::fw_xml_iarchive>;
+  #if BOOST_VERSION >= 104000
+     template
+     class boost::archive::detail::archive_serializer_map<boost::archive::fw_xml_iarchive>;
+  #else
+     template
+     class boost::archive::detail::archive_pointer_iserializer<boost::archive::fw_xml_iarchive>;
+  #endif
 #endif
 
 // VAG disable this generate an insternal compilator error under windows, to avoid this create

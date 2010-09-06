@@ -66,18 +66,51 @@ public:
      */
     FWCOMED_API virtual ~ImageMsg() throw();
 
+    /**
+     * @brief Add a SLICE_INDEX even with the slice index position.
+     * @param[in] a : axial position
+     * @param[in] f : frontal position
+     * @param[in] s : sagittal position
+     * @param[in] _pDataInfo : message data info (optional)
+     */
     FWCOMED_API void setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+
+    /**
+     * @brief Add a WINDOWING even with the min and max.
+     * @param[in] min : window min
+     * @param[in] max : window max
+     * @param[in] _pDataInfo : message data info (optional)
+     */
     FWCOMED_API void setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
 
+    /**
+     * @brief Get the slice index position.
+     * @pre   The message must have a SLICE_INDEX even
+     * @param[out] a : axial position
+     * @param[out] f : frontal position
+     * @param[out] s : sagittal position
+     */
     FWCOMED_API void getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s ) const;
+
+    /**
+     * @brief Get the window min and max.
+     * @pre   The message must have a WINDOWING even
+     * @param[out] min : window min
+     * @param[out] max : window max
+     */
     FWCOMED_API void getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max ) const;
 
 protected:
+    /// Axial slice index
     ::fwData::Integer::sptr m_axialIndex;
+    /// Frontal slice index
     ::fwData::Integer::sptr m_frontalIndex;
+    /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
+    /// Windowing min
     ::fwData::Integer::sptr m_windowMin;
+    /// Windowing max
     ::fwData::Integer::sptr m_windowMax;
 
 

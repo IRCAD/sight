@@ -58,6 +58,8 @@ void IGuiContainer::initGuiParentContainer()
         m_container->Show();
         m_container->Refresh();
         m_isContainerLocallyCreated = true ;
+
+        m_container->Bind( wxEVT_CLOSE_WINDOW, &IGuiContainer::onCloseContainer, this,  m_container->GetId());
     }
 }
 
@@ -72,6 +74,7 @@ void IGuiContainer::resetGuiParentContainer()
     }
     if( m_isContainerLocallyCreated && m_container != 0 )
     {
+        m_container->Unbind( wxEVT_CLOSE_WINDOW, &IGuiContainer::onCloseContainer, this,  m_container->GetId());
         SLM_DEBUG("Destroying container") ;
         m_container->Destroy();
         m_container = 0 ;
@@ -154,6 +157,17 @@ wxWindow* IGuiContainer::getWxContainer(std::string uid)
             m_globalUIDToWxContainer.find(uid) != m_globalUIDToWxContainer.end());
     // returns container in global map
     return  m_globalUIDToWxContainer[uid];
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainer::onCloseContainer(wxCloseEvent& event)
+{
+    SLM_TRACE_FUNC();
+    if( this->isStarted() )
+    {
+        this->stop();
+    }
 }
 
 }
