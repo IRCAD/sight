@@ -13,7 +13,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 
-#include <fwGui/PulseProgressDialog.hpp>
+#include <fwGui/IPulseProgressDialog.hpp>
 
 #include "fwWX/config.hpp"
 
