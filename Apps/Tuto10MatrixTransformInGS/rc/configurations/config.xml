@@ -1,0 +1,82 @@
+﻿<plugin id="tuto">
+
+    <extension id="tuto" implements="::fwData::Composite">
+
+        <object id="myCompositeVisu" type="::fwData::Composite">
+
+            <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no">
+                <name>tutoDataService bis</name>
+                <icon>Bundles/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
+                <view uid="genericScene" autoStart="yes" />
+            </service>
+
+            <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no">
+                <menus>
+                    <menu uid="menu_File" />
+                </menus>
+            </service>
+
+            <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no">
+                <action uid="action_openFile" />
+                <separator />
+                <action uid="action_quit" />
+            </service>
+
+            <service uid="action_openFile" name="OpenFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" shortcut="Ctrl+O" autoComChannel="no">
+                <start uid="myReaderPathFile" />
+            </service>
+
+            <service uid="action_quit" specialAction="QUIT" name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+
+            <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                <scene>
+
+                    <renderer id="default" background="0.0" />
+
+                    <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+
+                    <vtkObject id="mat1" class="vtkTransform" />
+
+                    <adaptor id="MatrixAdator" class="::visuVTKAdaptor::Transform" objectId="matrixA">
+                        <config renderer="default" picker="" transform="mat1" />
+                    </adaptor>
+
+                    <adaptor id="Renderer" class="::visuVTKAdaptor::Render" objectId="myCompositeVisu">
+                        <config renderer="default" picker="" />
+                    </adaptor>
+
+                    <adaptor id="TMAdaptor1" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                        <config renderer="default" picker="" />
+                    </adaptor>
+
+                    <adaptor id="TMAdaptor2" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                        <config renderer="default" picker="" transform="mat1" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <object id="matrixA" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                    10 2 3 4
+                    5 6 7 8
+                    9 10 11 12
+                    13 14 15 16 
+                </matrix>
+            </object>
+            
+
+            <object id="mesh" type="::fwData::TriangularMesh">
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />
+            </object>
+
+            <start type="::gui::frame::IFrame" />
+            <start type="::gui::aspect::IMenuBar" />
+
+            <stop type="::gui::aspect::IMenuBar" />
+            <stop type="::gui::frame::IFrame" />
+
+        </object>
+
+    </extension>
+</plugin>
