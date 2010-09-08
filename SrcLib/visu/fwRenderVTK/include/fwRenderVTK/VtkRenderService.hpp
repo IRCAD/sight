@@ -26,6 +26,7 @@ class vtkRenderWindow;
 class vtkRenderer;
 class vtkAbstractPropPicker;
 class vtkObject;
+class vtkTransform;
 
 namespace fwData
 {

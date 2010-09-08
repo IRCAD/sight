@@ -7,7 +7,7 @@
             <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no">
                 <name>tutoDataService bis</name>
                 <icon>Bundles/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
-                <view uid="genericScene" autoStart="yes" />
+                <view uid="multiView" autoStart="yes" />
             </service>
 
             <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no">
@@ -28,6 +28,14 @@
 
             <service uid="action_quit" specialAction="QUIT" name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
 
+            <service uid="multiView" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
+                <views>
+                    <view uid="genericScene" align="center" autoStart="yes" />
+                    <view uid="matrixEEditor" align="bottom" minHeight="40" position="0" autoStart="yes" />
+                </views>
+            </service>
+
+
             <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
                 <scene>
 
@@ -41,28 +49,33 @@
                     <vtkObject id="mat4" class="vtkTransform" />
                     <vtkObject id="mat5" class="vtkTransform" />
                     
-                    <!-- mat5 = mat1 x mat4 -->
+                    <!-- mat5 = mat5 x mat1 x mat4 -->
                     <vtkObject id="mat6" class="vtkTransform" >
                         <vtkTransform>
-                            <concatenate>mat1</concatenate>
                             <concatenate>mat5</concatenate>
+                            <concatenate>mat1</concatenate>
                             <concatenate>mat4</concatenate>
                         </vtkTransform>
                     </vtkObject>
                     
-                    <!-- mat6 = mat2 x mat4 x mat4 -->
+                    <!-- mat6 = mat5 x mat2 x mat5 x mat5 x mat5 x mat4 x mat4 -->
                     <vtkObject id="mat7" class="vtkTransform" >
                         <vtkTransform>
+                            <concatenate>mat5</concatenate>
                             <concatenate>mat2</concatenate>
+                            <concatenate>mat5</concatenate>
+                            <concatenate>mat5</concatenate>
+                            <concatenate>mat5</concatenate>
                             <concatenate>mat4</concatenate>
                             <concatenate>mat4</concatenate>
                         </vtkTransform>
                     </vtkObject>
                     
-                    <!-- mat7 = mat3 x mat4 x mat4 x mat4 -->
+                    <!-- mat7 = mat3 x mat5 x mat4 x mat4 x mat4 -->
                     <vtkObject id="mat8" class="vtkTransform" >
                         <vtkTransform>
                             <concatenate>mat3</concatenate>
+                            <concatenate>mat5</concatenate>
                             <concatenate>mat4</concatenate>
                             <concatenate>mat4</concatenate>
                             <concatenate>mat4</concatenate>
@@ -127,8 +140,8 @@
 
             <object id="matrixB" type="::fwData::TransformationMatrix3D">
                 <matrix>
-                    1 0 0 0
-                    0 1 0 2
+                    1 0 0 4
+                    0 1 0 0
                     0 0 1 0
                     0 0 0 1 
                 </matrix>
@@ -152,7 +165,9 @@
                 </matrix>
             </object>
             
-            <object id="matrixE" type="::fwData::TransformationMatrix3D"/>
+            <object id="matrixE" type="::fwData::TransformationMatrix3D">
+                <service uid="matrixEEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+            </object>
                         
 
             <object id="mesh" type="::fwData::TriangularMesh">

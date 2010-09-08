@@ -40,7 +40,7 @@ void TransformationMatrix3DParser::updating( ) throw(fwTools::Failed)
             matrix->getRefCoefficients().reserve(16);
 
             double coef;
-            for ( unsigned int k; k < 16; k++)
+            for ( unsigned int k=0; k < 16; k++)
             {
                 inputString >> coef;
                 OSLM_WARN("Coef = " <<  coef );

@@ -11,6 +11,7 @@ BUNDLES = [
     'ioVTK_0-1'             ,
     'ioData_0-1'            ,
     'uiIO_0-1'              ,
+    'uiVisu_0-1'              ,
     'visuVTK_0-1'           ,
     'visuVTKAdaptor_0-1'              
  ]

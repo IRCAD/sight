@@ -17,6 +17,7 @@
     <activate id="ioVTK" version="0-1" />
     <activate id="ioData" version="0-1" />
     <activate id="uiIO" version="0-1" />
+    <activate id="uiVisu" version="0-1" />
     <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKAdaptor" version="0-1" />
     
