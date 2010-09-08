@@ -262,14 +262,49 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 
     std::string id = conf->getAttributeValue("id");
     std::string vtkClass = conf->getAttributeValue("class");
-
     assert( !id.empty() );
     assert( !vtkClass.empty() );
 
-    if(m_vtkObjects.count(id) == 0)
+    if( m_vtkObjects.count(id) == 0 )
     {
-        m_vtkObjects[id] = vtkInstantiator::CreateInstance(vtkClass.c_str());
+
+        if ( vtkClass == "vtkTransform" && conf->size() == 1 )
+        {
+            m_vtkObjects[id] = createVtkTransform( conf );
+        }
+        else
+        {
+            m_vtkObjects[id] = vtkInstantiator::CreateInstance(vtkClass.c_str());
+        }
+
+
     }
+}
+
+//-----------------------------------------------------------------------------
+
+vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
+{
+    SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.", conf->size() == 1 && ( *conf->begin() )->getName() == "vtkTransform");
+
+    ConfigurationType vtkTransformXmlElem = *conf->begin();
+
+    vtkTransform * newMat = vtkTransform::New();
+
+    for(    ::fwRuntime::ConfigurationElement::Iterator elem = vtkTransformXmlElem->begin();
+            !(elem == vtkTransformXmlElem->end());
+            ++elem )
+    {
+        SLM_ASSERT("Sorry, the name of xml element must be concatenate.", (*elem)->getName() == "concatenate" );
+
+        std::string transformId = (*elem)->getValue();
+
+        vtkTransform * mat = vtkTransform::SafeDownCast( getVtkObject(transformId) );
+
+        newMat->Concatenate( mat );
+    }
+
+    return newMat;
 }
 
 //-----------------------------------------------------------------------------

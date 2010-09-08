@@ -36,11 +36,63 @@
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
 
                     <vtkObject id="mat1" class="vtkTransform" />
+                    <vtkObject id="mat2" class="vtkTransform" />
+                    <vtkObject id="mat3" class="vtkTransform" />
+                    <vtkObject id="mat4" class="vtkTransform" />
+                    <vtkObject id="mat5" class="vtkTransform" />
+                    
+                    <!-- mat5 = mat1 x mat4 -->
+                    <vtkObject id="mat6" class="vtkTransform" >
+                        <vtkTransform>
+                            <concatenate>mat1</concatenate>
+                            <concatenate>mat5</concatenate>
+                            <concatenate>mat4</concatenate>
+                        </vtkTransform>
+                    </vtkObject>
+                    
+                    <!-- mat6 = mat2 x mat4 x mat4 -->
+                    <vtkObject id="mat7" class="vtkTransform" >
+                        <vtkTransform>
+                            <concatenate>mat2</concatenate>
+                            <concatenate>mat4</concatenate>
+                            <concatenate>mat4</concatenate>
+                        </vtkTransform>
+                    </vtkObject>
+                    
+                    <!-- mat7 = mat3 x mat4 x mat4 x mat4 -->
+                    <vtkObject id="mat8" class="vtkTransform" >
+                        <vtkTransform>
+                            <concatenate>mat3</concatenate>
+                            <concatenate>mat4</concatenate>
+                            <concatenate>mat4</concatenate>
+                            <concatenate>mat4</concatenate>
+                        </vtkTransform>
+                    </vtkObject>
+                    
+                    
 
-                    <adaptor uid="MatrixAdator" id="MatrixAdator" class="::visuVTKAdaptor::Transform" objectId="matrixA">
+                    <adaptor id="MatrixAdatorA" class="::visuVTKAdaptor::Transform" objectId="matrixA">
                         <config renderer="default" picker="" transform="mat1" />
                     </adaptor>
 
+                    <adaptor id="MatrixAdatorB" class="::visuVTKAdaptor::Transform" objectId="matrixB">
+                        <config renderer="default" picker="" transform="mat2" />
+                    </adaptor>
+                    
+                    <adaptor id="MatrixAdatorC" class="::visuVTKAdaptor::Transform" objectId="matrixC">
+                        <config renderer="default" picker="" transform="mat3" />
+                    </adaptor>
+                    
+                    <adaptor id="MatrixAdatorD" class="::visuVTKAdaptor::Transform" objectId="matrixD">
+                        <config renderer="default" picker="" transform="mat4" />
+                    </adaptor>
+                    
+                    <adaptor id="MatrixAdatorE" class="::visuVTKAdaptor::Transform" objectId="matrixE">
+                        <config renderer="default" picker="" transform="mat5" />
+                    </adaptor>
+                    
+                    
+                    
                     <adaptor id="Renderer" class="::visuVTKAdaptor::Render" objectId="myCompositeVisu">
                         <config renderer="default" picker="" />
                     </adaptor>
@@ -50,13 +102,39 @@
                     </adaptor>
 
                     <adaptor id="TMAdaptor2" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
-                        <config renderer="default" picker="" transform="mat1" />
+                        <config renderer="default" picker="" transform="mat6" />
+                    </adaptor>
+                    
+                    <adaptor id="TMAdaptor3" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                        <config renderer="default" picker="" transform="mat7" />
+                    </adaptor>
+                    
+                    <adaptor id="TMAdaptor4" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                        <config renderer="default" picker="" transform="mat8" />
                     </adaptor>
 
                 </scene>
             </service>
 
             <object id="matrixA" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                    1 0 0 2
+                    0 1 0 0
+                    0 0 1 0
+                    0 0 0 1 
+                </matrix>
+            </object>
+
+            <object id="matrixB" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                    1 0 0 0
+                    0 1 0 2
+                    0 0 1 0
+                    0 0 0 1 
+                </matrix>
+            </object>
+            
+            <object id="matrixC" type="::fwData::TransformationMatrix3D">
                 <matrix>
                     1 0 0 0
                     0 1 0 0
@@ -65,6 +143,17 @@
                 </matrix>
             </object>
             
+            <object id="matrixD" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                    0.75 0 0 0
+                    0 0.75 0 0
+                    0 0 0.75 0
+                    0 0 0 1 
+                </matrix>
+            </object>
+            
+            <object id="matrixE" type="::fwData::TransformationMatrix3D"/>
+                        
 
             <object id="mesh" type="::fwData::TriangularMesh">
                 <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />

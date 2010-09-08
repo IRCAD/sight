@@ -143,6 +143,7 @@ private :
     void configureRenderer ( ConfigurationType conf );
     void configureObject   ( ConfigurationType conf );
     void configureVtkObject( ConfigurationType conf );
+    vtkTransform * createVtkTransform( ConfigurationType conf );
 };
 
 }
