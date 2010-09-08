@@ -79,6 +79,7 @@ void Transform::doUpdate() throw(fwTools::Failed)
         for(int ct=0; ct<4; ct++)
         {
             mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
+            OSLM_WARN( lt << " "<< ct << " " << trf->getCoefficient(lt,ct) );
         }
     }
     vtkTransform* vtkTrf = this->getTransform();

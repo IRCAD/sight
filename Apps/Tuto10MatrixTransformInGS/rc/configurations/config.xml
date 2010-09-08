@@ -37,7 +37,7 @@
 
                     <vtkObject id="mat1" class="vtkTransform" />
 
-                    <adaptor id="MatrixAdator" class="::visuVTKAdaptor::Transform" objectId="matrixA">
+                    <adaptor uid="MatrixAdator" id="MatrixAdator" class="::visuVTKAdaptor::Transform" objectId="matrixA">
                         <config renderer="default" picker="" transform="mat1" />
                     </adaptor>
 
@@ -58,10 +58,10 @@
 
             <object id="matrixA" type="::fwData::TransformationMatrix3D">
                 <matrix>
-                    10 2 3 4
-                    5 6 7 8
-                    9 10 11 12
-                    13 14 15 16 
+                    1 0 0 0
+                    0 1 0 0
+                    0 0 1 2
+                    0 0 0 1 
                 </matrix>
             </object>
             
@@ -72,7 +72,7 @@
 
             <start type="::gui::frame::IFrame" />
             <start type="::gui::aspect::IMenuBar" />
-
+            
             <stop type="::gui::aspect::IMenuBar" />
             <stop type="::gui::frame::IFrame" />
 
