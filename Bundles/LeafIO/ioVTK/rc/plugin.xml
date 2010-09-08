@@ -47,6 +47,12 @@
         <implements>::fwData::PatientDB</implements>
     </point>    
     
+    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::::ioVTK::VtkModelReaderService , ::fwData::PatientDB ) ;-->
+    <point id="::ioVTK::VtkModelReaderService" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::Model</implements>
+    </point>    
+    
     <extension implements="::ioVTK::ReconstructionWriterService" >
         <info text="Reconstructions Writer (VTK)"/>
     </extension>
