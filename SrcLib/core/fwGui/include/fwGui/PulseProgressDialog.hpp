@@ -34,7 +34,7 @@ public:
     /// will instanciate the concrete implementation
     FWGUI_API PulseProgressDialog(
             const std::string &title = std::string(),
-            Stuff &stuff = ::boost::function0<void>(),
+            Stuff stuff = ::boost::function0<void>(),
             const std::string &msg = std::string(),
             ::fwGui::IPulseProgressDialog::MilliSecond frequenceRefresh = 100 );
 
