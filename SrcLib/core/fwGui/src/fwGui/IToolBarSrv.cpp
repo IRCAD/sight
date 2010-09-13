@@ -12,6 +12,7 @@
 
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/IToolBarSrv.hpp"
+#include "fwGui/IActionSrv.hpp"
 
 namespace fwGui
 {
@@ -101,7 +102,10 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
     }
     else
     {
-        m_layoutManager->menuItemSetEnabled(menuItem, true);
+        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID ) ;
+        ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
+        m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+//        m_layoutManager->menuItemSetEnabled(menuItem, true);
     }
 }
 
