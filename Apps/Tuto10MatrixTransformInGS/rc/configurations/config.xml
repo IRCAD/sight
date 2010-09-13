@@ -61,7 +61,7 @@
                     <!-- mat6 = mat5 x mat2 x mat5 x mat5 x mat5 x mat4 x mat4 -->
                     <vtkObject id="mat7" class="vtkTransform" >
                         <vtkTransform>
-                            <concatenate>mat5</concatenate>
+                            <concatenate inverse="yes">mat5</concatenate>
                             <concatenate>mat2</concatenate>
                             <concatenate>mat5</concatenate>
                             <concatenate>mat5</concatenate>

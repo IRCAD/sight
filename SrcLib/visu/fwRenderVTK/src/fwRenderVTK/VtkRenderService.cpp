@@ -301,7 +301,15 @@ vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
 
         vtkTransform * mat = vtkTransform::SafeDownCast( getVtkObject(transformId) );
 
-        newMat->Concatenate( mat );
+        if ( (*elem)->hasAttribute( "inverse" ) && (*elem)->getAttributeValue( "inverse" ) == "yes" )
+        {
+            newMat->Concatenate( mat->GetLinearInverse() );
+        }
+        else
+        {
+            newMat->Concatenate( mat );
+        }
+
     }
 
     return newMat;
