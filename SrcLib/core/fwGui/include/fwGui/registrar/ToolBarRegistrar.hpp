@@ -54,7 +54,33 @@ public:
     FWGUI_API virtual ::fwGui::fwMenuItem::sptr getFwMenuItem(std::string toolBarSid, std::vector< ::fwGui::fwMenuItem::sptr > menuItems);
 
     /**
-     * @brief Configure views managed.
+     * @brief Initialize registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+           <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+               <gui>
+                   <layout>
+                       <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                       <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                       <separator />
+                       <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                       <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   </layout>
+               </gui>
+               <registry>
+                   <menuItem sid="item2" start="no" />
+                   <menuItem sid="item3" />
+                   <menuItem sid="item4" />
+                   <menuItem sid="item5" />
+               </registry>
+           </service>
+       @endverbatim
+     * This method analyzes the registry section of the configuration.
+     *
+     *  - <menuItem sid="item2" start="no" /> : define the service of the menuItem to add in the toolbar.
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the toolbar service.
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 

@@ -45,7 +45,47 @@ public:
     FWGUI_API virtual ::fwGui::fwContainer::sptr getParent();
 
     /**
-     * @brief Configure views managed.
+     * @brief Initialize managers.
+     *
+     * Example of configuration
+     * @verbatim
+        <service uid="subView1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view caption="view3" />
+                    <view caption="view4" />
+                    <view caption="view5" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="myView" />
+                <toolBar sid="toolbar1" start="yes" />
+                <view sid="subView3" start="yes" />
+                <view wid="subView4" />
+            </registry>
+        </service>
+      @endverbatim
+     * - <parent wid="myView" /> : This section isn't mandatory. When the parent section is present, the wid attribute is used to find its parent container.
+     * Otherwise, the service uid is used to find its parent container.
+     * - <toolBar sid="toolbar1" start="yes" /> : This section isn't mandatory.
+     *   - \b sid  (mandatory): the tool bar identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the tool bar service must be started by the service.
+     * - <menuBar sid="menubar1" start="yes" /> : This section isn't mandatory.
+     *   - \b sid  (mandatory): the menu bar identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the menu bar service must be started by the service.
+     * - <view sid="subView3" start="yes" /> : define the service of the view to add in the container.
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the view service must be started by the service.
+     * - <view wid="subView4" /> : reserve a sub container for the view in the parent container with the name "subView4". The service which want to use this sub container
+     *   will have define a parent with <parent wid="subView4" />.
+     *   - \b wid  (mandatory): the window identifier.
+     *   @warning
+     *   - The number of view item in the gui section must be equal or greater than in the registry section.
+     *   - The order of the menu in each section (gui and registry) must be the same.\n
+     *  For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It could also be a wid).
+     *
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 

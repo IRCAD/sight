@@ -57,7 +57,40 @@ protected :
      */
     FWGUI_API virtual ~IMenuSrv() ;
 
-    /// Initialize the layout manager and registrar.
+    /**
+     * @brief Initialize the layout and registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="My item 1" shortcut="1" style="check" />
+                    <separator />
+                    <menuItem name="My item 2" shortcut="2" style="radio" />
+                    <menuItem name="My item 3" shortcut="3" style="radio" />
+                    <separator />
+                    <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="item1" start="no" />
+                <menuItem sid="item2" start="no" />
+                <menuItem sid="item3" start="no" />
+                <menuItem sid="actionQuit" start="no" />
+            </registry>
+        </service>
+       @endverbatim
+     *  <gui> </gui> : (mandatory) describe the interface of the service. It must contain a layout section.
+     *
+     *  <registry> </registry> : (mandatory) describe the service management.
+     *   @warning
+     *   - The number of item in the gui section must be <b> EQUAL </b> to the registry section.
+     *   - The order of the menu item in each section (gui and registry) must be the same.\n
+     *  For example: the menu item named "My item 1" will be connected with the service which have the sid = "item1".
+     *   - A menu can't have the same service connected on two different menu items.
+     *  @see ::fwGui::registrar::MenuRegistrar::initialize(), ::fwGui::layoutManager::IMenuLayoutManager::initialize()
+     */
     FWGUI_API void initialize();
 
     /// Create the layout and start the managed services.

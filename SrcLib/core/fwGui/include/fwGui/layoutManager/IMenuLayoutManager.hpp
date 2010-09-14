@@ -80,8 +80,40 @@ public:
     FWGUI_API virtual std::vector< ::fwGui::fwMenuItem::sptr > getMenuItems();
 
     /**
-     * @brief Configure the actions before creation.
+     * @brief Initialize layout managers.
+     *
+     * Example of configuration
+     * @verbatim
+       <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+           <gui>
+               <layout>
+                   <menuItem name="My item 1" shortcut="1" style="check" />
+                   <separator />
+                   <menuItem name="My item 2" shortcut="2" style="radio" />
+                   <menuItem name="My item 3" shortcut="3" style="radio" />
+                   <separator />
+                   <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+               </layout>
+           </gui>
+           <registry>
+               <menuItem sid="item1" start="no" />
+               <menuItem sid="item2" start="no" />
+               <menuItem sid="item3" start="no" />
+               <menuItem sid="actionQuit" start="no" />
+           </registry>
+       </service>
+       @endverbatim
+     * This method analyzes the gui section of the configuration.
+     *
+     *  - <layout> (mandatory) : give the list of the menu item that will appear in the menu.
+     *  - <menuItem name="My item 1" shortcut="1" style="check" specialAction="NEW" /> :
+     *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
+     *   - \b shortcut : give the shortcut for this menu item.
+     *   - \b style {check|radio} : give the style of the menu item.
+     *   - \b specialAction {DEFAULT | QUIT | NEW | ABOUT | HELP}: specify a pre define action. If it isn't define the value is DEFAULT.
+     *  - <separator/> : allow to divide the menu by part (draw a line).
      */
+
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
     /**

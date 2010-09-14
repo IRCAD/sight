@@ -54,7 +54,35 @@ public:
     FWGUI_API virtual ::fwGui::fwMenuItem::sptr getFwMenuItem(std::string menuSid, std::vector< ::fwGui::fwMenuItem::sptr > menuItems);
 
     /**
-     * @brief Configure views managed.
+     * @brief Initialize registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="My item 1" shortcut="1" style="check" />
+                    <separator />
+                    <menuItem name="My item 2" shortcut="2" style="radio" />
+                    <menuItem name="My item 3" shortcut="3" style="radio" />
+                    <separator />
+                    <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="item1" start="no" />
+                <menuItem sid="item2" start="no" />
+                <menuItem sid="item3" start="no" />
+                <menuItem sid="actionQuit" start="no" />
+            </registry>
+        </service>
+       @endverbatim
+     * This method analyzes the registry section of the configuration.
+     *
+     *  - <menuItem sid="item1" start="no" /> : define the service of the menuItem to add in the menu.
+     *
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu service.
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 

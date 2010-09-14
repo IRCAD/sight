@@ -11,7 +11,9 @@
                         <minSize width="800" height="600"/>
                     </frame>
                     <menuBar />
-                    <toolBar />
+                    <toolBar >
+                        <toolBitmapSize height= "50" width="50" />
+                    </toolBar>
                 </gui>
                 <registry>
                     <menuBar sid="menuBar" start="yes" />
@@ -180,9 +182,9 @@
             <service uid="subView3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
                 <gui>
                     <layout type="::fwGui::TabLayoutManager" >
-                        <view caption="TabView1" align="center" />
-                        <view caption="TabView2" minWidth="100" selected="yes" />
-                        <view caption="TabView3" minWidth="100" />
+                        <view caption="TabView1"  />
+                        <view caption="TabView2" selected="yes" />
+                        <view caption="TabView3" />
                     </layout>
                 </gui>
                 <registry/>

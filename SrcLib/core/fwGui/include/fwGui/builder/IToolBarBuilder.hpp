@@ -47,8 +47,17 @@ public:
     FWGUI_API virtual ::fwGui::fwToolBar::sptr getToolBar();
 
     /**
-     * @brief Configure the layout before creation.
+     * @brief Initialize the tool bar.
+     *
+     * Example of configuration
+     * @verbatim
+        <toolBar >
+            <toolBitmapSize height= "50" width="50" />
+        </toolBar>
+       @endverbatim
+     *  - <toolBitmapSize height= "50" width="50"/> : give the size of the icon.
      */
+
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**

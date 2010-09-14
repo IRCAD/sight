@@ -69,27 +69,36 @@ public:
     FWGUI_API virtual std::vector< ::fwGui::fwMenuItem::sptr > getMenuItems();
 
     /**
-     * @brief Configuring method allows to create a toolBar with several actions. The created toolbar is a horizontal one without border.
-     * Each icon has a size of 32x32 by default.
-     * Here a sample of the DefaultToolBar service declaration with two actions:
+     * @brief Initialize layout managers.
+     *
+     * Example of configuration
      * @verbatim
-        <service uid="toolBar" type="::gui::aspect::IToolBar" implementation="::gui::aspect::DefaultToolBar" autoComChannel="no">
-            <toolBitmapSize height="40" width="40" />
-            <action uid="action_new" name="New file" icon="Bundles/MyApplication/icons/newFile.png"/>
-            <separator/>
-            <action uid="action_3Dview" style="radio" name="3D view" icon="Bundles/MyApplication/icons//icon-3D.png" />
-            <action uid="action_2Dview" style="radio" name="2D view" icon="Bundles/MyApplication/icons/icon-2D.png" />
-            <separator/>
-            <action uid="action_hideInformation"  style="check" name="Show information window" icon="Bundles/MyApplication/icons/View-INFO.png" />
-        </service>
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+           <gui>
+               <layout>
+                   <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <separator />
+                   <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+               </layout>
+           </gui>
+           <registry>
+               <menuItem sid="item2" />
+               <menuItem sid="item3" />
+               <menuItem sid="item4" />
+               <menuItem sid="item5" />
+           </registry>
+       </service>
        @endverbatim
-     * - <toolBitmapSize height="40" width="40" /> : has to change the size of the icon used in the toolbar.
-     * - <separator /> : allows to put a separation in the tool bar.
-     * - Action Attributes:
-     *       - icon is the icon file to use.
-     *       - name is the text that will be put inside the tool tip.
-     *       - state can be {check}. This attribute is available only with the style radio and check.
-     *       - style is the style of the button. The available choice is {radio|check}. If style isn't specified normal state(without 'state')is used.
+     * This method analyzes the gui section of the configuration.
+     *
+     *  - <layout> (mandatory) : give the list of the menu item that will appear in the toolbar.
+     *  - <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/> :
+     *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
+     *   - \b style {check|radio} : give the style of the menu item.
+     *   - \b icon : give the path of the icon file
+     *  - <separator/> : allow to divide the toolbar by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 

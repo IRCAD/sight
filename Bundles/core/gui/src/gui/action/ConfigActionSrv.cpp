@@ -1,33 +1,7 @@
-//#include <fwCore/base.hpp>
-//
-//#include <boost/filesystem.hpp>
-//#include <boost/filesystem/convenience.hpp>
-//#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
-//
-//#include <fwTools/Object.hpp>
-//#include <fwTools/UUID.hpp>
-//
-//#include <fwData/Image.hpp>
-//#include <fwData/PatientDB.hpp>
-//#include <fwData/Patient.hpp>
-//
-//#include <fwComEd/CompositeMsg.hpp>
-//#include <fwComEd/Dictionary.hpp>
-//#include <fwComEd/helper/Composite.hpp>
-//#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-//#include <fwComEd/fieldHelper/BackupHelper.hpp>
-//
-//#include <fwRuntime/operations.hpp>
-//
-#include <fwServices/helper.hpp>
-//#include <fwServices/macros.hpp>
-//#include <fwServices/ObjectServiceRegistry.hpp>
-//#include <fwServices/IService.hpp>
-//#include <fwServices/op/Get.hpp>
-#include <fwServices/bundle/runtime.hpp>
 
-//#include <fwGuiWx/container/WxContainer.hpp>
+#include <fwServices/helper.hpp>
+#include <fwServices/bundle/runtime.hpp>
 
 #include "gui/action/ConfigActionSrv.hpp"
 

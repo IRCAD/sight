@@ -32,6 +32,8 @@ void IToolBarSrv::initialize()
     m_registrar = ::fwGui::registrar::ToolBarRegistrar::NewSptr(this->getUUID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
+    SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );
+
     if(!vectRegistrar.empty())
     {
         m_registrarConfig = vectRegistrar.at(0);
@@ -40,10 +42,14 @@ void IToolBarSrv::initialize()
 
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+    SLM_ASSERT("Gui section is mandatory.", !vectGui.empty() );
+
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
+        SLM_ASSERT("layout section is mandatory.", !vectLayoutMng.empty() );
+
         if(!vectLayoutMng.empty())
         {
             m_layoutConfig = vectLayoutMng.at(0);

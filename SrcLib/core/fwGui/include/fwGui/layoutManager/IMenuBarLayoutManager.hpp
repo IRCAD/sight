@@ -48,8 +48,30 @@ public:
     FWGUI_API virtual std::vector< ::fwGui::fwMenu::sptr > getMenus();
 
     /**
-     * @brief Configure the menus before creation.
+     * @brief Initialize layout managers.
+     *
+     * Example of configuration
+     * @verbatim
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+          <gui>
+              <layout>
+                  <menu name="My Menu"/>
+                  <menu name="My Menu 2"/>
+              </layout>
+          </gui>
+          <registry>
+              <menu sid="myMenu" start="yes" />
+              <menu sid="myMenu2" start="yes" />
+          </registry>
+      </service>
+       @endverbatim
+     * This method analyzes the gui section of the configuration.
+     *
+     *  - <layout> (mandatory) : give the list of the menu that will appear in the menu bar.
+     *  - <menu name="My Menu"/> :
+     *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      */
+
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
     /**

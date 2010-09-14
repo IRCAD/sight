@@ -67,8 +67,39 @@ public:
     FWGUI_API virtual ~LineLayoutManagerBase();
 
     /**
-     * @brief Configure the layout before creation.
-     */
+     * @brief Initialize Line layout manager before the creation of layout.
+     *
+     * Example of configuration with cardinal layout.
+     * @verbatim
+       <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+           <gui>
+              <layout type="::fwGui::LineLayoutManager" >
+                   <orientation value="vertical" />
+                   <view caption="CardinalView1" align="center" />
+                   <view caption="CardinalView2" align="right" minWidth="400" />
+                   <view caption="CardinalView3" align="bottom" minHeight="400" />
+               </layout>
+           </gui>
+           <registry>
+               <view sid="view1" start="yes" />
+               <view sid="view2" start="yes" />
+               <view sid="view3" start="yes" />
+           </registry>
+       </service>
+      @endverbatim
+    *  - <layout type="::fwGui::CardinalLayoutManager" > : define a cardinal layout.
+    *  - <view caption="CardinalView1" align="center" /> : define a new view which can have the following attributes
+    *   - \b caption : name of the view (display on the screen).
+    *   - \b align  {center | bottom | top | right | left}: define the position of the view
+    *   - \b minWidth : minimal width of the view
+    *   - \b minHeight : minimal height of the view
+    *   - \b resizable  {yes | no}: define if the view can be resized.
+    *   - \b position : indicates the sequential position, starting with zero. It uses if more than one view as the same align value (available only with wxWidget see wxAuiManager in wxWidgets documenattion for more details).
+    *   - \b layer : available only with wxWidget. See wxAuiManager in wxWidgets documenattion for more details
+    *   - \b row : use to place several views next to each other (available only with wxWidget). See wxAuiManager in wxWidgets documenattion for more details
+    *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
+    */
+
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;

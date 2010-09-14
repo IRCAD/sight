@@ -52,8 +52,31 @@ public:
     FWGUI_API virtual ::fwGui::fwMenu::sptr getFwMenu(std::string menuSid, std::vector< ::fwGui::fwMenu::sptr > menus);
 
     /**
-     * @brief Configure views managed.
+     * @brief Initialize registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+          <gui>
+              <layout>
+                  <menu name="My Menu"/>
+                  <menu name="My Menu 2"/>
+              </layout>
+          </gui>
+          <registry>
+              <menu sid="myMenu" start="yes" />
+              <menu sid="myMenu2" start="yes" />
+          </registry>
+      </service>
+       @endverbatim
+     * This method analyzes the registry section of the configuration.
+     *
+     *  - <menu sid="myMenu" start="yes" /> : define the service of the menu to add in the menu bar.
+     *
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu bar service.
      */
+
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**
