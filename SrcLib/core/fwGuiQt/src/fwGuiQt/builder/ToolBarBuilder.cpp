@@ -59,11 +59,11 @@ void ToolBarBuilder::createToolBar( ::fwGui::fwContainer::sptr parent )
     ::fwGuiQt::container::QtToolBarContainer::NewSptr toolBarContainer;
     if (window)
     {
-		bool visible = window->isVisible();
+        bool visible = window->isVisible();
         window->addToolBar( toolBar );
-		
-		//on Os X, the window is hidden (???)
-		window->setVisible(visible);
+
+        //on Os X, the window is hidden (???)
+        window->setVisible(visible);
     }
     else // parent is not a QMainWindow
     {
