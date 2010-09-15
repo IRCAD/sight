@@ -4,34 +4,34 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_INPUTDIALOG_HPP_
-#define _FWGUIQT_INPUTDIALOG_HPP_
+#ifndef _FWGUIWX_INPUTDIALOG_HPP_
+#define _FWGUIWX_INPUTDIALOG_HPP_
 
 #include <string>
 #include <fwCore/base.hpp>
 
 #include <fwGui/IInputDialog.hpp>
 
-#include "fwGuiQt/config.hpp"
+#include "fwGuiWx/config.hpp"
 
-namespace fwGuiQt
+namespace fwGuiWx
 {
 
 /**
- * @brief   Defines an Input dialog.
+ * @brief   Defines an input dialog for IHM on WxWidget.
  * @class   InputDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUIQT_CLASS_API InputDialog : public ::fwGui::IInputDialog
+class FWGUIWX_CLASS_API InputDialog : public ::fwGui::IInputDialog
 {
 
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::IInputDialog), (()), new InputDialog );
 
-    /** @brief Constructor. Do nothing. \n
+    /** @brief Constructor. Do nothing.\n
      * Example of use: \n
      * @verbatinm
           ::fwGui::InputDialog inputDlg; \n
@@ -41,21 +41,23 @@ public:
           std::string inputText = inputDlg.getInput(); \n
      @endverbatim
      */
-    FWGUIQT_API InputDialog();
-    /// Destructor. Do nothing.
-    FWGUIQT_API virtual ~InputDialog();
 
-    /// Set the title of the message box
-    FWGUIQT_API virtual void setTitle( const std::string &title );
+    FWGUIWX_API InputDialog();
+    /// Destructor. Do nothing.
+    FWGUIWX_API virtual ~InputDialog();
+
+    /// Set the title of the message box.
+    FWGUIWX_API virtual void setTitle( const std::string &title );
 
     /// Set the message
-    FWGUIQT_API virtual void setMessage( const std::string &msg );
+    FWGUIWX_API virtual void setMessage( const std::string &msg );
 
-    /// Set the input text in the input field
-    FWGUIQT_API virtual void setInput(const std::string &text);
+    /// Set the input text in the input field.
+    FWGUIWX_API virtual void setInput(const std::string &text);
 
     /// Get the input text in the input field
-    FWGUIQT_API virtual std::string getInput();
+    FWGUIWX_API virtual std::string getInput();
+
 
 protected:
     /// Dialog title
@@ -67,8 +69,8 @@ protected:
 
 };
 
-} // namespace fwGuiQt
+} // namespace fwGuiWx
 
-#endif /*_FWGUIQT_INPUTDIALOG_HPP_*/
+#endif /*_FWGUIWX_INPUTDIALOG_HPP_*/
 
 

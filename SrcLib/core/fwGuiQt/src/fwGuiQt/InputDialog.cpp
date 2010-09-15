@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <QInputDialog>
+#include <QObject>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/foreach.hpp>
@@ -45,8 +46,8 @@ void InputDialog::setInput(const std::string &text)
 std::string InputDialog::getInput()
 {
 
-    QString title = QString::fromStdString(m_title);
-    QString text = QString::fromStdString(m_message);
+    QString title = QObject::tr(m_title.c_str());
+    QString text = QObject::tr(m_message.c_str());
     QWidget *parent = 0;
 
     bool IsOkClicked;

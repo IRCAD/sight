@@ -31,14 +31,14 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::IInputDialog), (()), new InputDialog );
 
-    /* @brief Constructor. Create the implementation of the specific input dialog box
-     * Example of use:
+    /** @brief Constructor. Create the implementation of the specific input dialog box \n
+     * Example of use: \n
      * @verbatinm
-          ::fwGui::InputDialog inputDlg;
-          inputDlg.setTitle("Identification dialog");
-          inputDlg.setMessage("Enter Pin Code: ");
-          inputDlg.setInput ("<Enter your code here>");
-          std::string inputText = inputDlg.getInput();
+          ::fwGui::InputDialog inputDlg; \n
+          inputDlg.setTitle("Identification dialog"); \n
+          inputDlg.setMessage("Enter Pin Code: "); \n
+          inputDlg.setInput ("<Enter your code here>");\n
+          std::string inputText = inputDlg.getInput();\n
      @endverbatim
      */
 
