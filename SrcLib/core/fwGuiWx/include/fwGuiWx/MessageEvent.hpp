@@ -9,7 +9,7 @@
 
 #include <wx/wx.h>
 
-#include "fwGuiWX/config.hpp"
+#include "fwGuiWx/config.hpp"
 
 namespace fwGui
 {
