@@ -22,7 +22,7 @@ QT_END_NAMESPACE
 
 
 
-namespace fwGuiQt
+namespace fwGui
 {
 
 /**

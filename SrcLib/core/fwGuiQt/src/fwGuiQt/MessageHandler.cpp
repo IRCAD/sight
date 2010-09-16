@@ -18,9 +18,9 @@
 #include "fwGuiQt/MessageHandler.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGuiQt::MessageHandler , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGui::MessageHandler , ::fwTools::Object ) ;
 
-namespace fwGuiQt
+namespace fwGui
 {
 
 int MessageHandler::s_qtMessageHandlerEventType = QEvent::registerEventType();

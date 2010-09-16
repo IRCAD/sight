@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWWX_MESSAGEEVENT_HPP_
-#define FWWX_MESSAGEEVENT_HPP_
+#ifndef FWGUIWX_MESSAGEEVENT_HPP_
+#define FWGUIWX_MESSAGEEVENT_HPP_
 
 #include <wx/wx.h>
 
-#include "fwWX/config.hpp"
+#include "fwGuiWX/config.hpp"
 
-namespace fwWX
+namespace fwGui
 {
 
 /**
@@ -36,7 +36,7 @@ public:
 wxDEFINE_EVENT(MESSAGE_EVENT, MessageEvent);
 
 
-} // end namespace fwWX
+} // end namespace fwGui
 
 
-#endif /* FWWX_MESSAGEEVENT_HPP_ */
+#endif /* FWGUIWX_MESSAGEEVENT_HPP_ */

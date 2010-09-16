@@ -11,13 +11,13 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/GlobalEventManager.hpp>
 
-#include "fwWX/MessageEvent.hpp"
-#include "fwWX/MessageHandler.hpp"
+#include "fwGuiWx/MessageEvent.hpp"
+#include "fwGuiWx/MessageHandler.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwWX::MessageHandler , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGui::MessageHandler , ::fwTools::Object ) ;
 
-namespace fwWX
+namespace fwGui
 {
 
 //------------------------------------------------------------------------------
@@ -83,14 +83,14 @@ void MessageHandler::info( std::ostream &_sstream )
 
 void MessageHandler::addNewMessageToWxQueue()
 {
-    ::fwWX::MessageEvent msgevt(MESSAGE_EVENT);
+    ::fwGui::MessageEvent msgevt(MESSAGE_EVENT);
     wxTheApp->AddPendingEvent( msgevt );
     //wxTheApp->QueueEvent( msgevt.Clone() );
 }
 
 //------------------------------------------------------------------------------
 
-void MessageHandler::onMessage(::fwWX::MessageEvent &event)
+void MessageHandler::onMessage(::fwGui::MessageEvent &event)
 {
     if (m_msgHandler->pending())
     {

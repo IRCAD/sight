@@ -4,23 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWWX_MESSAGEHANDLER_HPP_
-#define FWWX_MESSAGEHANDLER_HPP_
+#ifndef FWGUIWX_MESSAGEHANDLER_HPP_
+#define FWGUIWX_MESSAGEHANDLER_HPP_
 
 #include <boost/function.hpp>
-
 
 #include <wx/event.h>
 
 #include <fwCore/base.hpp>
 #include <fwServices/IDeliveryDelegate.hpp>
 
-#include "fwWX/config.hpp"
+#include "fwGuiWx/config.hpp"
 
 fwCorePredeclare( (fwServices)(GlobalEventManager) );
-fwCorePredeclare( (fwWX)(MessageEvent) );
+fwCorePredeclare( (fwGui)(MessageEvent) );
 
-namespace fwWX
+namespace fwGui
 {
 
 /**
@@ -30,7 +29,7 @@ namespace fwWX
  * @todo    MessageHandler is not commented.
  */
 
-class FWWX_CLASS_API MessageHandler : public ::fwServices::IDeliveryDelegate
+class FWGUIWX_CLASS_API MessageHandler : public ::fwServices::IDeliveryDelegate
 {
 
 public:
@@ -39,8 +38,8 @@ public:
     fwCoreAllowSharedFromThis();
 
 
-     FWWX_API MessageHandler() throw() ;
-     FWWX_API ~MessageHandler() throw() ;
+     FWGUIWX_API MessageHandler() throw() ;
+     FWGUIWX_API ~MessageHandler() throw() ;
 
      static void addNewMessageToWxQueue();
 
@@ -48,23 +47,23 @@ protected:
     /**
      * @brief If configuration is set, both subject (data) and observer (service) uuid are retrieved
      */
-    FWWX_API virtual void configuring() throw( ::fwTools::Failed ) ;
-    FWWX_API virtual void starting() throw( ::fwTools::Failed );
-    FWWX_API virtual void stopping() throw( ::fwTools::Failed );
-    FWWX_API virtual void updating() throw( ::fwTools::Failed );
-    FWWX_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
-    FWWX_API virtual void info( std::ostream &_sstream ) ;
+    FWGUIWX_API virtual void configuring() throw( ::fwTools::Failed ) ;
+    FWGUIWX_API virtual void starting() throw( ::fwTools::Failed );
+    FWGUIWX_API virtual void stopping() throw( ::fwTools::Failed );
+    FWGUIWX_API virtual void updating() throw( ::fwTools::Failed );
+    FWGUIWX_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed );
+    FWGUIWX_API virtual void info( std::ostream &_sstream ) ;
 
 private:
 
     SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
     ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;
 
-    ::boost::function1< void , ::fwWX::MessageEvent & > m_onMessageHandler;
-    void onMessage(::fwWX::MessageEvent& event);
+    ::boost::function1< void , ::fwGui::MessageEvent & > m_onMessageHandler;
+    void onMessage(::fwGui::MessageEvent& event);
 };
 
 }
 
-#endif /*FWWX_MESSAGEHANDLER_HPP_*/
+#endif /*FWGUIWX_MESSAGEHANDLER_HPP_*/
 
