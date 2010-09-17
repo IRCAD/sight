@@ -8,13 +8,14 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
-#include "fwWX/convert.hpp"
-#include "fwWX/Cursor.hpp"
+#include <fwWX/convert.hpp>
+
+#include "fwGuiWx/Cursor.hpp"
 
 
-REGISTER_BINDING( ::fwGui::ICursor, ::fwWX::Cursor, ::fwGui::ICursor::FactoryRegistryKeyType , ::fwGui::ICursor::REGISTRY_KEY );
+REGISTER_BINDING( ::fwGui::ICursor, ::fwGuiWx::Cursor, ::fwGui::ICursor::FactoryRegistryKeyType , ::fwGui::ICursor::REGISTRY_KEY );
 
-namespace fwWX
+namespace fwGuiWx
 {
 //-----------------------------------------------------------------------------
 
@@ -57,7 +58,7 @@ void Cursor::setDefaultCursor()
 
 //-----------------------------------------------------------------------------
 
-} // namespace fwWX
+} // namespace fwGuiWx
 
 
 

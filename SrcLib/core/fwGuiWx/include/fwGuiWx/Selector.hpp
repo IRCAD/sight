@@ -4,16 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWWX_SELECTOR_HPP_
-#define FWWX_SELECTOR_HPP_
+#ifndef FWGUIWX_SELECTOR_HPP_
+#define FWGUIWX_SELECTOR_HPP_
 
 #include <vector>
 
 #include <fwGui/ISelector.hpp>
 
-#include "fwWX/config.hpp"
+#include "fwGuiWx/config.hpp"
 
-namespace fwWX
+namespace fwGuiWx
 {
 
 //------------------------------------------------------------------------------
@@ -25,32 +25,32 @@ namespace fwWX
  * @date    2009.
  */
 
-class FWWX_CLASS_API Selector : public ::fwGui::ISelector
+class FWGUIWX_CLASS_API Selector : public ::fwGui::ISelector
 {
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Selector)(::fwGui::ISelector), (()), new Selector );
 
     /// Default constructor.
-    FWWX_API Selector() ;
+    FWGUIWX_API Selector() ;
 
-    FWWX_API virtual ~Selector();
+    FWGUIWX_API virtual ~Selector();
 
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    FWWX_API virtual void setSelections(std::vector< std::string > _selections);
+    FWGUIWX_API virtual void setSelections(std::vector< std::string > _selections);
 
     /**
      * @brief Sets the selector title.
      */
-    FWWX_API virtual void setTitle(std::string _title);
+    FWGUIWX_API virtual void setTitle(std::string _title);
 
     /**
      * @brief Show the selector and return the selection.
      * @param[in] _parent Parent container for the selector.
      */
-    FWWX_API virtual std::string show();
+    FWGUIWX_API virtual std::string show();
 
 private :
 
@@ -62,4 +62,4 @@ private :
 
 }
 
-#endif /*FWWX_SELECTOR_HPP_*/
+#endif /*FWGUIWX_SELECTOR_HPP_*/

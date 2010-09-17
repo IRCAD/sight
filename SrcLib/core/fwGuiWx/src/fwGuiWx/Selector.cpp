@@ -16,11 +16,11 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwWX/convert.hpp>
 
-#include "fwWX/Selector.hpp"
+#include "fwGuiWx/Selector.hpp"
 
-REGISTER_BINDING( ::fwGui::ISelector, ::fwWX::Selector, ::fwGui::ISelector::FactoryRegistryKeyType , ::fwGui::ISelector::REGISTRY_KEY );
+REGISTER_BINDING( ::fwGui::ISelector, ::fwGuiWx::Selector, ::fwGui::ISelector::FactoryRegistryKeyType , ::fwGui::ISelector::REGISTRY_KEY );
 
-namespace fwWX
+namespace fwGuiWx
 {
 
 //------------------------------------------------------------------------------
@@ -94,6 +94,6 @@ std::string Selector::show()
 
 //------------------------------------------------------------------------------
 
-} // namespace fwWX
+} // namespace fwGuiWx
 
 

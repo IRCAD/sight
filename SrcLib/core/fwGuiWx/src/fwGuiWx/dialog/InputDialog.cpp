@@ -7,7 +7,8 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwData/String.hpp>
 
-#include "fwWX/convert.hpp"
+#include <fwWX/convert.hpp>
+
 #include "fwGuiWx/dialog/InputDialog.hpp"
 
 REGISTER_BINDING( ::fwGui::dialog::IInputDialog, ::fwGuiWx::dialog::InputDialog, ::fwGui::dialog::IInputDialog::FactoryRegistryKeyType , ::fwGui::dialog::IInputDialog::REGISTRY_KEY );
