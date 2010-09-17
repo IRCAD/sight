@@ -18,11 +18,11 @@
 
 #include <io/IReader.hpp>
 
-#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <vtkIO/ImageReader.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include "ioVTK/ImageReaderService.hpp"
@@ -74,7 +74,7 @@ void ImageReaderService::configureWithIHM()
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose an vtk file to load an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
@@ -154,7 +154,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
     try
     {
         // Create a progress bar and attach it to reader
-        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
         myReader.addHandler( progressMeterGUI );
         // Launch reading process
         myReader.read();
@@ -165,11 +165,11 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
 
         ok = false;
@@ -179,11 +179,11 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
         std::stringstream ss;
         ss << "Warning during loading.";
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
 
         ok = false;

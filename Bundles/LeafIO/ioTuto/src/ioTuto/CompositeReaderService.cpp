@@ -15,8 +15,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/bundle/runtime.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 
@@ -83,11 +83,11 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage( ss.str() );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
         catch( ... )
@@ -95,11 +95,11 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
             std::stringstream ss;
             ss << "Warning during loading.";
 
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage( ss.str() );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }
@@ -117,7 +117,7 @@ void CompositeReaderService::configureWithIHM()
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose an xml file to read");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("xml", "*.xml");

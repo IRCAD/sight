@@ -18,7 +18,7 @@
 //#include <fwServices/macros.hpp>
 //#include <fwServices/helper.hpp>
 //
-//#include <fwGui/MessageDialog.hpp>
+//#include <fwGui/dialog/MessageDialog.hpp>
 //
 //#include "gui/action/ActionNotifyService.hpp"
 //
@@ -138,12 +138,12 @@
 //        else
 //        {
 //            std::string msgInfo = "Sorry, the service is unavailable.";
-//            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-//            ::fwGui::MessageDialog messageBox;
+//            ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+//            ::fwGui::dialog::MessageDialog messageBox;
 //            messageBox.setTitle("Warning");
 //            messageBox.setMessage( msgInfo );
-//            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-//            messageBox.addButton(::fwGui::IMessageDialog::OK);
+//            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+//            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
 //            messageBox.show();
 //            OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
 //        }

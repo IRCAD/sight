@@ -19,13 +19,13 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include <fwData/location/Folder.hpp>
 
-#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <vtkIO/ImageWriter.hpp>
 
 #include "ioVTK/ImageWriterService.hpp"
@@ -67,11 +67,11 @@ void ImageWriterService::configureWithIHM()
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath("");
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose an vtk file to save an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
-    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -118,7 +118,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::b
 
     try
     {
-        fwGui::ProgressDialog progressMeterGUI("Saving Images ");
+        fwGui::dialog::ProgressDialog progressMeterGUI("Saving Images ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
 
@@ -128,11 +128,11 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::b
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
 
         bValue = false;
@@ -142,11 +142,11 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::b
         std::stringstream ss;
         ss << "Warning during loading. ";
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
 
         bValue = false;

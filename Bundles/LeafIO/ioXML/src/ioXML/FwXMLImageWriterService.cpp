@@ -20,9 +20,9 @@
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
-#include <fwGui/LocationDialog.hpp>
-#include <fwGui/ProgressDialog.hpp>
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLImageWriterService.hpp"
@@ -56,11 +56,11 @@ void FwXMLImageWriterService::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle( "Choose a fxz or a xml file" );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("fwXML archive","*.xml");
-    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -119,7 +119,7 @@ void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFile
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Saving Image ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }
@@ -127,22 +127,22 @@ void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFile
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }

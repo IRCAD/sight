@@ -22,14 +22,14 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include <fwTools/Factory.hpp>
 
 #include <vtkIO/ImageReader.hpp>
-#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 
 #include "ioVTK/VtkPatientDBReaderService.hpp"
 
@@ -72,11 +72,11 @@ void VtkPatientDBReaderService::configureWithIHM()
 
     static ::boost::filesystem::path _sDefaultPath("");
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a VtkImage file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("VtkImage","*.vtk");
-    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -107,7 +107,7 @@ bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtk
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
         res = true;
@@ -117,11 +117,11 @@ bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtk
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     catch( ... )
@@ -129,11 +129,11 @@ bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtk
         std::stringstream ss;
         ss << "Warning during loading. ";
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 

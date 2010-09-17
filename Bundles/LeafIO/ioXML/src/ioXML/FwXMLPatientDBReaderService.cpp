@@ -27,11 +27,11 @@
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 
-#include <fwGui/ProgressDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwZip/ZipFolder.hpp>
 
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLPatientDBReaderService.hpp"
@@ -137,12 +137,12 @@ void FwXMLPatientDBReaderService::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle( this->getSelectorDialogTitle() );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("fwXML archive","*.fxz");
     dialogFile.addFilter("fwXML archive","*.xml");
-    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -221,7 +221,7 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }
@@ -230,11 +230,11 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
         std::stringstream ss;
         ss << "Warning during loading : ";
         ss << e.what();
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
         return pPatientDB;
     }
@@ -242,11 +242,11 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
         return pPatientDB;
     }
@@ -293,11 +293,11 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             }
             else
             {
-                ::fwGui::MessageDialog messageBox;
+                ::fwGui::dialog::MessageDialog messageBox;
                 messageBox.setTitle("Image Reader");
                 messageBox.setMessage( "File format unknown. Retry with another file reader." );
-                messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-                messageBox.addButton(::fwGui::IMessageDialog::OK);
+                messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+                messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
                 messageBox.show();
             }
         }
@@ -308,11 +308,11 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             << m_fsPatientDBPath.string()
             << "\" does not content a PatientDB. This xml file has not been loaded.";
 
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("FwXML PatientDB Reader");
             messageBox.setMessage( xmlFile.str() );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }

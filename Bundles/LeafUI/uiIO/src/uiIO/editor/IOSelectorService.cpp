@@ -21,7 +21,7 @@
 
 #include <fwGui/ISelector.hpp>
 #include <fwGui/Cursor.hpp>
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
@@ -259,20 +259,20 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         SLM_WARN("IOSelectorService::load : availableExtensions is empty.");
         if ( m_mode == READER_MODE )
         {
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Reader not found");
             messageBox.setMessage( "Sorry, there are not available readers for this data type." );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
         else // m_mode == WRITER_MODE
         {
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Writer not found");
             messageBox.setMessage( "Sorry, there are not available writers for this data type." );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }
