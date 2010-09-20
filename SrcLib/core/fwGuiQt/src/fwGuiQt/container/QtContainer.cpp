@@ -49,8 +49,14 @@ void QtContainer::clean()
             w->deleteLater();
         }
     }
-    m_container->layout()->deleteLater();
-    m_container->setLayout(0);
+    if (m_container->layout())
+    {
+        QLayout* layout = m_container->layout();
+        layout->deleteLater();
+        m_container->setLayout(0);
+        // FIXME destroy layout properly before to set another
+        delete layout;
+    }
 }
 
 //-----------------------------------------------------------------------------

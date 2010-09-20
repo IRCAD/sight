@@ -61,11 +61,14 @@ void ProgressDialog::setTitle(const std::string &title)
     m_pdialog->setWindowTitle(QString::fromStdString(title));
 }
 
+//------------------------------------------------------------------------------
 
 void ProgressDialog::setMessage(const std::string &msg)
 {
     m_pdialog->setLabelText(QString::fromStdString(msg));
 }
+
+//------------------------------------------------------------------------------
 
 
 } // namespace dialog
