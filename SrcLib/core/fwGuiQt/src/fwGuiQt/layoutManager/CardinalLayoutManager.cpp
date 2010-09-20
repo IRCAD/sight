@@ -140,6 +140,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
         }
         qtContainer->setLayout(layout);
     }
+    layout->setContentsMargins(0,0,0,0);
     qtContainer->setLayout(layout);
     m_qtWindow->setParent(qtContainer);
     m_qtWindow->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
