@@ -29,6 +29,7 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
     m_pdialog->setMinimum(0);
     m_pdialog->setMaximum(100);
     m_pdialog->setValue(0);
+    m_pdialog->setCancelButton(0);
 
     this->setTitle(title);
     this->setMessage(message);
