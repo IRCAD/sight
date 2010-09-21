@@ -25,7 +25,9 @@ namespace dialog
 ProgressDialog::ProgressDialog( const std::string title, const std::string message)
 {
     m_pdialog = new QProgressDialog( 0 );
-    m_pdialog->setWindowModality(Qt::WindowModal);
+
+    // FIXME modal dialog has conflict with MessageHandler
+    m_pdialog->setWindowModality(Qt::NonModal);
     m_pdialog->setMinimum(0);
     m_pdialog->setMaximum(100);
     m_pdialog->setValue(0);
@@ -41,7 +43,7 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
 
 ProgressDialog::~ProgressDialog()
 {
-    // auto clean dialog
+    m_pdialog->deleteLater();
 }
 
 //------------------------------------------------------------------------------
