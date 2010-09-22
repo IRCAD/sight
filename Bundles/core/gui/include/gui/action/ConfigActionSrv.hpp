@@ -91,6 +91,9 @@ private:
     /// Id of plugin extension where the configuration is defined.
     std::string m_viewConfigId;
 
+    /// to know if config is running
+    bool m_configIsRunning;
+
     // config manager
     ::fwServices::ConfigTemplateManager::sptr m_configTemplateManager;
 };

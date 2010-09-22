@@ -17,7 +17,8 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrv, ::fwTools
 //------------------------------------------------------------------------------
 
 ConfigActionSrv::ConfigActionSrv() throw() :
-    m_viewConfigId("")
+    m_viewConfigId(""),
+    m_configIsRunning(false)
 {
     addNewHandledEvent("WINDOW_CLOSED");
 }
@@ -123,20 +124,24 @@ void ConfigActionSrv::startConfig()
 
     // Add com channel
     ::fwServices::registerCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() )->start();
+
+    m_configIsRunning = true;
 }
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrv::stopConfig()
 {
-    SLM_ASSERT("m_object not exist (ConfigActionSrv is in 'style=check' in config?)", m_object);
+    if( m_configIsRunning )
+    {
+        // Remove com channel
+        ::fwServices::unregisterCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() );
 
-    // Remove com channel
-    ::fwServices::unregisterCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() );
-
-    // Delete manager
-    m_configTemplateManager->stopAndDestroy();
-    m_configTemplateManager.reset();
+        // Delete manager
+        m_configTemplateManager->stopAndDestroy();
+        m_configTemplateManager.reset();
+    }
+    m_configIsRunning = false;
 }
 
 //------------------------------------------------------------------------------
