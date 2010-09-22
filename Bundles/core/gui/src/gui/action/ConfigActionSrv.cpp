@@ -120,6 +120,7 @@ void ConfigActionSrv::startConfig()
 
 void ConfigActionSrv::stopConfig()
 {
+    SLM_ASSERT("m_object not exist (ConfigActionSrv is in 'style=check' in config?)", m_object);
     ::fwServices::unregisterCommunicationChannel(m_object, this->getSptr());
     ::fwServices::stopAndUnregister( m_createdConfiguration ) ;
     m_object.reset();
