@@ -86,6 +86,17 @@ void LocationDialog::setTitle(const std::string &title)
         if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
         {
             ::boost::filesystem::path bpath( dialog.selectedFiles().at(0).toStdString()  );
+            if( ::boost::filesystem::extension(bpath).empty() )
+            {
+                std::string selectedFile = dialog.selectedFiles().at(0).toStdString();
+                std::string seletedExtension = dialog.selectedNameFilter().toStdString();
+                size_t pos1 = seletedExtension.find("*.");
+                size_t pos2 = seletedExtension.find(")");
+                SLM_ASSERT("'*.' not found", pos1 != std::string::npos);
+                SLM_ASSERT("')' not found", pos2 != std::string::npos);
+                seletedExtension = seletedExtension.substr(pos1+1, pos2-pos1-1);
+                bpath = ::boost::filesystem::path(selectedFile + seletedExtension);
+            }
             location = ::fwData::location::SingleFile::New(bpath);
         }
         else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
