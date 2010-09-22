@@ -6,7 +6,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwData/Composite.hpp>
+#include <fwServices/ConfigTemplateManager.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -78,14 +78,6 @@ protected:
 
 private:
 
-    /// adapt the configuration : replace "GENERIC_UID" with a good uid.
-    ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem );
-
-    std::string completeValue( std::string _str );
-
-    /// Get the object service configuration given by the service config
-    ::fwRuntime::ConfigurationElement::sptr getServiceObjectConfig();
-
     /**
      * @brief Read the configuration and show the parameters view.
      */
@@ -96,25 +88,11 @@ private:
      */
     void stopConfig();
 
-    /**
-     * @brief Initialize the operator service and ProcessObject. Fill the parameters composite used in the view.
-     */
-    //void initOperator( std::string implementation );
-
-    /**
-     * @brief Execute the operator
-     */
-    //void processOperator();
-
-    ::fwRuntime::ConfigurationElement::sptr m_createdConfiguration;
-
-    //::fwData::ProcessObject::sptr m_po;
-    ::fwTools::Object::sptr m_object;
-
-    //std::string m_operatorImplementation;
-
     /// Id of plugin extension where the configuration is defined.
     std::string m_viewConfigId;
+
+    // config manager
+    ::fwServices::ConfigTemplateManager::sptr m_configTemplateManager;
 };
 
 } //action

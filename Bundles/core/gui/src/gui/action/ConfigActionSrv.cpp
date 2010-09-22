@@ -34,9 +34,6 @@ void ConfigActionSrv::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     this->::fwGui::IActionSrv::actionServiceStarting();
-
-    // Adpat generic configuration
-    m_createdConfiguration = this->adaptConfig( this->getServiceObjectConfig() );
 }
 
 //------------------------------------------------------------------------------
@@ -110,10 +107,22 @@ void ConfigActionSrv::info( std::ostream &_sstream )
 
 void ConfigActionSrv::startConfig()
 {
-    m_object = ::fwServices::New( m_createdConfiguration );
-    ::fwServices::registerCommunicationChannel(m_object, this->getSptr())->start();
-    ::fwServices::start( m_createdConfiguration ) ;
-    ::fwServices::update( m_createdConfiguration ) ;
+
+    // Generate generic UID
+    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getUUID() );
+
+    // Init manager
+    std::map< std::string, std::string > fieldAdaptors;
+    fieldAdaptors["GENERIC_UID"] = genericUidAdaptor;
+    m_configTemplateManager = ::fwServices::ConfigTemplateManager::New();
+    m_configTemplateManager->setConfig( m_viewConfigId, "::fwServices::ServiceObjectConfig" );
+    m_configTemplateManager->setFieldAdaptors( fieldAdaptors );
+
+    // Launch config
+    m_configTemplateManager->launch();
+
+    // Add com channel
+    ::fwServices::registerCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() )->start();
 }
 
 //------------------------------------------------------------------------------
@@ -121,57 +130,13 @@ void ConfigActionSrv::startConfig()
 void ConfigActionSrv::stopConfig()
 {
     SLM_ASSERT("m_object not exist (ConfigActionSrv is in 'style=check' in config?)", m_object);
-    ::fwServices::unregisterCommunicationChannel(m_object, this->getSptr());
-    ::fwServices::stopAndUnregister( m_createdConfiguration ) ;
-    m_object.reset();
-}
 
-//------------------------------------------------------------------------------
+    // Remove com channel
+    ::fwServices::unregisterCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() );
 
-std::string ConfigActionSrv::completeValue( std::string _str )
-{
-    std::string newStr = _str;
-
-    ::boost::regex uuidRegex ("(.*)GENERIC_UID(.*)");
-    std::stringstream machine_format;
-    machine_format << "\\1" << this->getUUID() << "\\2";
-
-    if ( ::boost::regex_match( _str, uuidRegex ) )
-    {
-        newStr = ::boost::regex_replace( _str, uuidRegex, machine_format.str(), ::boost::match_default | ::boost::format_sed );
-    }
-
-    return newStr;
-}
-
-//------------------------------------------------------------------------------
-
-::fwRuntime::EConfigurationElement::sptr ConfigActionSrv::adaptConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem )
-{
-    SLM_TRACE_FUNC();
-
-    ::fwRuntime::EConfigurationElement::NewSptr result ( _cfgElem->getName() );
-    result->setValue( this->completeValue( _cfgElem->getValue() ) );
-
-    typedef std::map<std::string, std::string> MapAttributesType;
-    BOOST_FOREACH( MapAttributesType::value_type attribute, _cfgElem->getAttributes() )
-    {
-        result->setAttributeValue( attribute.first, this->completeValue( attribute.second ) );
-    }
-
-    BOOST_FOREACH ( ::fwRuntime::ConfigurationElement::sptr subElem, _cfgElem->getElements())
-    {
-        result->addConfigurationElement( this->adaptConfig( subElem ) );
-    }
-
-    return result;
-}
-//------------------------------------------------------------------------------
-
-::fwRuntime::ConfigurationElement::sptr ConfigActionSrv::getServiceObjectConfig()
-{
-    ::fwRuntime::ConfigurationElement::sptr sgConfig = ::fwServices::bundle::findConfigurationForPoint(m_viewConfigId, "::fwServices::ServiceObjectConfig");
-    return sgConfig;
+    // Delete manager
+    m_configTemplateManager->stopAndDestroy();
+    m_configTemplateManager.reset();
 }
 
 //------------------------------------------------------------------------------
