@@ -14,12 +14,11 @@
 
 namespace fwTools {
 
-typedef boost::mpl::push_back<
-                               boost::mpl::push_back< IntegerTypes,
-                                                      float>::type,
-                               double
-                             >::type IntrinsicTypes;
-
+#ifdef DEBUG
+typedef boost::mpl::push_back< IntegerTypes, float  >::type IntrinsicTypes;
+#else
+typedef boost::mpl::push_back< boost::mpl::push_back< IntegerTypes, float >::type, double >::type IntrinsicTypes;
+#endif
 
 } // end namespace fwTools {
 
