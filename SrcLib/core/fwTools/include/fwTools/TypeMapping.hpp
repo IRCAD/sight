@@ -14,10 +14,9 @@
 
 #include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/bool.hpp>
-#include <boost/mpl/identity.hpp>
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/size.hpp>
-#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/if.hpp>
 
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/pop_front.hpp>
@@ -59,10 +58,10 @@ template< class TSingle_or_TSEQ, class KeyType_or_KeyTypeContainer >
 bool isMapping(const KeyType_or_KeyTypeContainer &key)
 {
     namespace mpl = boost::mpl;
-    typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
+    typedef BOOST_DEDUCED_TYPENAME mpl::if_<
                                         mpl::is_sequence< TSingle_or_TSEQ >,
-                                        mpl::identity< isMappingMultiMPLHelper<TSingle_or_TSEQ,KeyType_or_KeyTypeContainer> >,
-                                        mpl::identity< isMappingSingleMPLHelper<TSingle_or_TSEQ,KeyType_or_KeyTypeContainer> >
+                                        isMappingMultiMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >,
+                                        isMappingSingleMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >
                                     >::type typex;
     return typex::evaluate(key);
 
@@ -184,10 +183,10 @@ isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContain
         typedef BOOST_DEDUCED_TYPENAME mpl::front<TSEQ>::type Head;
         typedef BOOST_DEDUCED_TYPENAME mpl::pop_front<TSEQ>::type Tail;
 
-        typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typedef BOOST_DEDUCED_TYPENAME mpl::if_<
                 mpl::empty<Tail>,
-                mpl::identity< EmptyListMapping < KeyTypeContainer > >,
-                mpl::identity< isMappingMultiMPLHelper <Tail,KeyTypeContainer > >
+                EmptyListMapping < KeyTypeContainer >,
+                isMappingMultiMPLHelper <Tail,KeyTypeContainer >
                  >::type typex;
 
         bool firstKeyIsOK = isMapping< Head >( *begin ); // call a isMapping with a single key

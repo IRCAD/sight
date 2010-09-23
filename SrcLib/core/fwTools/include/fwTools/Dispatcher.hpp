@@ -8,11 +8,10 @@
 #define DISPATCHER_HPP_
 
 #include <stdexcept>
-#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/pop_front.hpp>
-#include <boost/mpl/identity.hpp>
 
 #include "fwTools/TypeMapping.hpp"
 
@@ -22,12 +21,12 @@ namespace fwTools {
 
 /**
  * @brief   Limit cases for empty typelist
- * @class   EnTypeListAction
+ * @class   EndTypeListAction
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  * @see ::fwTools::Dispatcher
  */
- struct EnTypeListAction
+ struct EndTypeListAction
  {
 
     /// Perform nothing see Dispatcher<...>::invoke
@@ -86,9 +85,9 @@ struct Dispatcher
       */
      static void invoke()
      {
-        namespace mpl = boost::mpl;
+         namespace mpl = boost::mpl;
 
-        // create the functor then excute it
+         // create the functor then excute it
          FUNCTOR f;
 #ifdef _WIN32
          f.operator()<Head>();
@@ -97,13 +96,13 @@ struct Dispatcher
 #endif
 
 
-        // recursively call other element in the list
-        typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
-                mpl::empty<Tail>,
-                mpl::identity< EnTypeListAction  >,
-                mpl::identity< Dispatcher<Tail,FUNCTOR > >
-            >::type typex;
-            typex::invoke();
+         // recursively call other element in the list
+         typedef BOOST_DEDUCED_TYPENAME mpl::if_<
+             mpl::empty<Tail>,
+             EndTypeListAction,
+             Dispatcher<Tail,FUNCTOR >
+                 >::type typex;
+         typex::invoke();
      }
 
 
@@ -114,29 +113,29 @@ struct Dispatcher
      template< class KeyType >
      static void invoke( const KeyType &keytype )
      {
-        namespace mpl = boost::mpl;
+         namespace mpl = boost::mpl;
 
-        if   ( isMapping< Head>(keytype) )
-        {
-                // create the functor then excute it
-                FUNCTOR f;
+         if   ( isMapping< Head>(keytype) )
+         {
+             // create the functor then excute it
+             FUNCTOR f;
 #ifdef _WIN32
-                f.operator()<Head>();
+             f.operator()<Head>();
 #else
-                f.template operator()<Head>();
+             f.template operator()<Head>();
 #endif
-        }
-        else
-        {
+         }
+         else
+         {
              // recursively call other element in the list
-                typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
-                mpl::empty<Tail>,
-                mpl::identity< EnTypeListAction  >,
-                mpl::identity< Dispatcher<Tail,FUNCTOR > >
-            >::type typex;
-            typex::invoke(keytype);
+             typedef BOOST_DEDUCED_TYPENAME mpl::if_<
+                 mpl::empty<Tail>,
+                 EndTypeListAction,
+                 Dispatcher< Tail,FUNCTOR >
+                     >::type typex;
+             typex::invoke(keytype);
 
-        }
+         }
      }
      // NOTE gcc seems unable to explicit call of static template fonction member :/
      // all arguments needs to be present specicied template seems ignored
@@ -149,30 +148,30 @@ struct Dispatcher
      template< class KeyType,class Parameter >
      static void invoke( const KeyType &keytype,  Parameter &param )
      {
-        namespace mpl = boost::mpl;
+         namespace mpl = boost::mpl;
 
-        if   ( isMapping< Head>(keytype) )
-        {
-            // create the functor then excute it
-                FUNCTOR f;
+         if   ( isMapping< Head>(keytype) )
+         {
+             // create the functor then excute it
+             FUNCTOR f;
 #ifdef _WIN32
-                f.operator()<Head>(param);
+             f.operator()<Head>(param);
 #else
-                f.template operator()<Head>(param);
+             f.template operator()<Head>(param);
 #endif
 
-        }
-        else
-        {
+         }
+         else
+         {
              // recursively call other element in the list
-                typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
-                mpl::empty<Tail>,
-                mpl::identity< EnTypeListAction  >,
-                mpl::identity< Dispatcher<Tail,FUNCTOR > >
-            >::type typex;
-            typex::invoke(keytype,param);
+             typedef BOOST_DEDUCED_TYPENAME mpl::if_<
+                 mpl::empty<Tail>,
+                 EndTypeListAction,
+                 Dispatcher<Tail,FUNCTOR >
+                     >::type typex;
+             typex::invoke(keytype,param);
 
-        }
+         }
      }
 
 
