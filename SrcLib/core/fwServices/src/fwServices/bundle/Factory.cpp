@@ -35,7 +35,7 @@ bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
 
     // Looking for services provided by components (n implementations)
     std::vector< std::string > extensionIds = ::fwServices::bundle::getValidExtensionIdsForObjectAndService( obj , serviceId ) ;
-    OSLM_ASSERT( "ImplementionId not found: " << _implementationId  , std::find(extensionIds.begin() , extensionIds.end() , _implementationId ) != extensionIds.end() );
+    OSLM_ASSERT( "ImplementionId not found: " << _implementationId << " for the object type " << obj->className() , std::find(extensionIds.begin() , extensionIds.end() , _implementationId ) != extensionIds.end() );
     if( std::find(extensionIds.begin() , extensionIds.end() , _implementationId ) == extensionIds.end() )
     {
         OSLM_ERROR( "FAILED to add implementation " << _implementationId << " (service type = " << serviceId << " )" << " to objet type " << obj->className() );
