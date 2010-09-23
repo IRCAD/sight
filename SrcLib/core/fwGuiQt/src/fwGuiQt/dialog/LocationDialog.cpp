@@ -55,71 +55,55 @@ void LocationDialog::setTitle(const std::string &title)
     QString caption = QString::fromStdString(m_title);
     QString path = QString::fromStdString(m_path.parent_path().string());
     QString filter = this->fileFilters();
-    //QString selectedFilter; // TODO
-
-    QFileDialog dialog( parent, caption, path, filter );
-    dialog.setWindowTitle( QString::fromStdString(m_title) );
-
-    if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
-    {
-        dialog.setAcceptMode(QFileDialog::AcceptSave);
-    }
-    else if ( m_style & ::fwGui::dialog::ILocationDialog::READ )
-    {
-        dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    }
-
-    if (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST)
-    {
-        dialog.setFileMode(QFileDialog::ExistingFile);
-    }
-
-    if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
-    {
-        dialog.setFileMode(QFileDialog::DirectoryOnly);
-    }
-
     ::fwData::location::ILocation::sptr location;
 
-    if( dialog.exec() )
+    if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
     {
-        if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
-        {
-            ::boost::filesystem::path bpath( dialog.selectedFiles().at(0).toStdString()  );
-            if( ::boost::filesystem::extension(bpath).empty() )
-            {
-                std::string selectedFile = dialog.selectedFiles().at(0).toStdString();
-                std::string seletedExtension = dialog.selectedNameFilter().toStdString();
-                size_t pos1 = seletedExtension.find("*.");
-                size_t pos2 = seletedExtension.find(")");
-                SLM_ASSERT("'*.' not found", pos1 != std::string::npos);
-                SLM_ASSERT("')' not found", pos2 != std::string::npos);
-                seletedExtension = seletedExtension.substr(pos1+1, pos2-pos1-1);
-                bpath = ::boost::filesystem::path(selectedFile + seletedExtension);
-            }
-            location = ::fwData::location::SingleFile::New(bpath);
-        }
-        else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
-        {
-            ::boost::filesystem::path bpath( dialog.selectedFiles().at(0).toStdString()  );
-            location = ::fwData::location::Folder::New(bpath);
-        }
-        else if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
+        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
+
+        QStringList files = QFileDialog::getOpenFileNames( parent, caption, path, filter);
+        if(!files.isEmpty())
         {
             ::fwData::location::MultiFiles::NewSptr multifiles;
             std::vector< ::boost::filesystem::path > paths;
-            BOOST_FOREACH (QString filename, dialog.selectedFiles())
+            BOOST_FOREACH (QString filename, files)
             {
                 ::boost::filesystem::path bpath( filename.toStdString() );
                 paths.push_back(bpath);
             }
-
             multifiles->setPaths(paths);
             location = multifiles;
         }
-
     }
-   return location;
+    else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
+    {
+        QString fileName;
+        if ( (m_style & ::fwGui::dialog::ILocationDialog::READ) || (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
+        {
+            fileName = QFileDialog::getOpenFileName(parent, caption, path, filter);
+
+        }
+        else if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
+        {
+            fileName = QFileDialog::getSaveFileName(parent, caption,  path,  filter);
+
+        }
+        if(!fileName.isNull())
+        {
+            ::boost::filesystem::path bpath( fileName.toStdString());
+            location = ::fwData::location::SingleFile::New(bpath);
+        }
+    }
+    else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
+    {
+        QString dir = QFileDialog::getExistingDirectory(parent, caption, path, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if(!dir.isNull())
+        {
+            ::boost::filesystem::path bpath( dir.toStdString()  );
+            location = ::fwData::location::Folder::New(bpath);
+        }
+    }
+    return location;
 }
 
 //------------------------------------------------------------------------------
