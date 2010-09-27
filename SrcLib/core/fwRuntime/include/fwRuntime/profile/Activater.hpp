@@ -27,12 +27,13 @@ namespace profile
 
 /**
  * @brief   Activates a given bundle with optional parameters.
- * @struct  Activater
+ * @class  Activater
  * @date    2007-2009.
  * @author  IRCAD (Research and Development Team).
  */
-struct Activater : public boost::noncopyable
+class Activater : public boost::noncopyable
 {
+public:
 
     /**
      * @brief       Constructor

@@ -28,6 +28,8 @@
 namespace fwRuntime
 {
 
+//------------------------------------------------------------------------------
+
 namespace
 {
 
@@ -52,21 +54,20 @@ namespace
 
         std::string m_type;
     };
-
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< Bundle > Bundle::m_loadingBundle;
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< Bundle > Bundle::getLoadingBundle()
 {
     return m_loadingBundle;
 }
 
-
+//------------------------------------------------------------------------------
 
 Bundle::Bundle( const boost::filesystem::path   & location,
                 const std::string               & id,
@@ -80,7 +81,7 @@ Bundle::Bundle( const boost::filesystem::path   & location,
     assert( m_location.is_complete() == true );
 }
 
-
+//------------------------------------------------------------------------------
 
 Bundle::Bundle(
             const boost::filesystem::path   & location,
@@ -97,53 +98,47 @@ Bundle::Bundle(
     assert( m_location.is_complete() == true );
 }
 
-
-
-//---
-
-
+//------------------------------------------------------------------------------
 
 void Bundle::addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory )
 {
     m_executableFactories.insert( factory );
 }
 
+//------------------------------------------------------------------------------
 
 Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesBegin() const
 {
     return m_executableFactories.begin();
 }
 
+//------------------------------------------------------------------------------
 
 Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesEnd() const
 {
     return m_executableFactories.end();
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ExecutableFactory > Bundle::findExecutableFactory( const std::string & type ) const
 {
-
     ExecutableFactoryConstIterator  found = std::find_if( m_executableFactories.begin(), m_executableFactories.end(), IsOfType(type) );
 
     return found != m_executableFactories.end() ? *found : ::boost::shared_ptr< ExecutableFactory >();
 }
 
-//---
-
-
+//------------------------------------------------------------------------------
 
 void Bundle::addExtension( ::boost::shared_ptr< Extension > extension )
 {
     m_extensions.insert( extension );
 }
 
-
+//------------------------------------------------------------------------------
 
 const bool Bundle::hasExtension(const std::string & identifier) const
 {
-
     ExtensionContainer::const_iterator extpt = m_extensions.begin();
     while( extpt != m_extensions.end() )
     {
@@ -157,13 +152,13 @@ const bool Bundle::hasExtension(const std::string & identifier) const
     return false;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::setEnableExtension(const std::string & identifier, const bool enable)
 {
     for( ExtensionContainer::iterator extpt = m_extensions.begin();
-         extpt != m_extensions.end();
-         ++extpt )
+            extpt != m_extensions.end();
+            ++extpt )
     {
 
         if( (*extpt)->getIdentifier() ==  identifier )
@@ -174,29 +169,27 @@ void Bundle::setEnableExtension(const std::string & identifier, const bool enabl
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 Bundle::ExtensionConstIterator Bundle::extensionsBegin() const
 {
     return m_extensions.begin();
 }
 
+//------------------------------------------------------------------------------
 
 Bundle::ExtensionConstIterator Bundle::extensionsEnd() const
 {
     return m_extensions.end();
 }
-
-
-//---
-
+//------------------------------------------------------------------------------
 
 void Bundle::addExtensionPoint( ::boost::shared_ptr< ExtensionPoint > extensionPoint )
 {
     m_extensionPoints.insert( extensionPoint );
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ExtensionPoint > Bundle::findExtensionPoint( const std::string & identifier ) const
 {
@@ -206,7 +199,7 @@ void Bundle::addExtensionPoint( ::boost::shared_ptr< ExtensionPoint > extensionP
     return (found != m_extensionPoints.end()) ? (*found) : ::boost::shared_ptr<ExtensionPoint>();
 }
 
-
+//------------------------------------------------------------------------------
 
 const bool Bundle::hasExtensionPoint(const std::string & identifier) const
 {
@@ -223,7 +216,7 @@ const bool Bundle::hasExtensionPoint(const std::string & identifier) const
     return false;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::setEnableExtensionPoint(const std::string & identifier, const bool enable)
 {
@@ -240,24 +233,21 @@ void Bundle::setEnableExtensionPoint(const std::string & identifier, const bool 
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 Bundle::ExtensionPointConstIterator Bundle::extensionPointsBegin() const
 {
     return m_extensionPoints.begin();
 }
 
+//------------------------------------------------------------------------------
 
 Bundle::ExtensionPointConstIterator Bundle::extensionPointsEnd() const
 {
     return m_extensionPoints.end();
 }
 
-
-
-//---
-
-
+//------------------------------------------------------------------------------
 
 void Bundle::addLibrary( ::boost::shared_ptr< dl::Library > library )
 {
@@ -265,65 +255,63 @@ void Bundle::addLibrary( ::boost::shared_ptr< dl::Library > library )
     m_libraries.insert(library);
 }
 
+//------------------------------------------------------------------------------
 
 Bundle::LibraryConstIterator Bundle::librariesBegin() const
 {
     return m_libraries.begin();
 }
 
+//------------------------------------------------------------------------------
 
 Bundle::LibraryConstIterator Bundle::librariesEnd() const
 {
     return m_libraries.end();
 }
 
-
-
-//---
-
-
+//------------------------------------------------------------------------------
 
 void Bundle::addRequirement(const std::string & requirement)
 {
     m_requirements.insert(requirement);
 }
 
-
+//------------------------------------------------------------------------------
 
 const std::string Bundle::getClass() const
 {
     return m_class;
 }
 
-
+//------------------------------------------------------------------------------
 
 const std::string & Bundle::getIdentifier() const
 {
     return m_identifier;
 }
 
-
+//------------------------------------------------------------------------------
 
 const boost::filesystem::path & Bundle::getLocation() const
 {
     return m_location;
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< IPlugin > Bundle::getPlugin() const
 {
     return m_plugin;
 }
 
-
+//------------------------------------------------------------------------------
 
 const Version & Bundle::getVersion() const
 {
     return m_version;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::loadLibraries() throw(RuntimeException)
 {
@@ -344,7 +332,7 @@ void Bundle::loadLibraries() throw(RuntimeException)
     LibraryContainer::iterator endEntry = m_libraries.end();
     for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
     {
-         ::boost::shared_ptr<dl::Library> library(*curEntry);
+        ::boost::shared_ptr<dl::Library> library(*curEntry);
         if(library->isLoaded() == false)
         {
             try
@@ -374,7 +362,7 @@ void Bundle::loadLibraries() throw(RuntimeException)
     assert( m_loadingBundle == 0 );
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::loadRequirements() throw(RuntimeException)
 {
@@ -408,7 +396,7 @@ void Bundle::loadRequirements() throw(RuntimeException)
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::start() throw(RuntimeException)
 {
@@ -432,7 +420,7 @@ void Bundle::start() throw(RuntimeException)
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::startPlugin() throw(RuntimeException)
 {
@@ -441,7 +429,7 @@ void Bundle::startPlugin() throw(RuntimeException)
 
     // According to the presence of a class or not, build and empty
     // plugin or attempt to instanciate a user defined plugin.
-     ::boost::shared_ptr< IPlugin > plugin;
+    ::boost::shared_ptr< IPlugin > plugin;
 
     if( pluginType.empty() == true )
     {
@@ -474,7 +462,7 @@ void Bundle::startPlugin() throw(RuntimeException)
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::stop() throw(RuntimeException)
 {
@@ -502,28 +490,28 @@ void Bundle::stop() throw(RuntimeException)
     //}
 }
 
-
+//------------------------------------------------------------------------------
 
 const bool Bundle::isEnable() const
 {
     return m_enable;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::setEnable( const bool state )
 {
     m_enable = state;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::addParameter( const std::string & identifier, const std::string & value )
 {
     m_parameters[identifier] = value;
 }
 
-
+//------------------------------------------------------------------------------
 
 const std::string Bundle::getParameterValue( const std::string & identifier ) const
 {
@@ -532,17 +520,18 @@ const std::string Bundle::getParameterValue( const std::string & identifier ) co
     return (found != m_parameters.end()) ? found->second : std::string();
 }
 
-
+//------------------------------------------------------------------------------
 
 const bool Bundle::hasParameter( const std::string & identifier ) const
 {
     return (m_parameters.find(identifier) != m_parameters.end());
 }
 
-
+//------------------------------------------------------------------------------
 
 void Bundle::operator= ( const Bundle & )
 {}
 
+//------------------------------------------------------------------------------
 
 } // namespace fwRuntime

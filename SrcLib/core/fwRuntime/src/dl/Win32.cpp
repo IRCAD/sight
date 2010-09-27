@@ -6,7 +6,7 @@
 
 #ifdef _WIN32
 
-
+#include <fwCore/base.hpp>
 
 #include "fwRuntime/dl/Win32.hpp"
 #include "fwRuntime/dl/Win32NameDecorator.hpp"
@@ -19,20 +19,21 @@ namespace fwRuntime
 namespace dl
 {
 
+//------------------------------------------------------------------------------
 
 Win32::Win32( const boost::filesystem::path & modulePath ) throw()
 : Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new Win32NameDecorator()) ),
   m_handle  ( 0 )
 {}
 
-
+//------------------------------------------------------------------------------
 
 const bool Win32::isLoaded() const throw()
 {
     return m_handle != 0;
 }
 
-
+//------------------------------------------------------------------------------
 
 void * Win32::getSymbol( const std::string& name ) const throw(RuntimeException)
 {
@@ -46,13 +47,14 @@ void * Win32::getSymbol( const std::string& name ) const throw(RuntimeException)
     return symbol;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Win32::load() throw(RuntimeException)
 {
     if(m_handle == 0)
     {
         // Opens the dynamic library.
+        OSLM_TRACE("Opens the dynamic library " << getFullPath(true).native_file_string());
         m_handle = LoadLibrary( getFullPath(true).native_file_string().c_str() );
         if(m_handle == 0)
         {
@@ -68,7 +70,7 @@ void Win32::load() throw(RuntimeException)
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void Win32::unload() throw(RuntimeException)
 {
@@ -84,7 +86,7 @@ void Win32::unload() throw(RuntimeException)
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 } // namespace dl
 

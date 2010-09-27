@@ -21,6 +21,8 @@ namespace fwGuiQt
 namespace dialog
 {
 
+//------------------------------------------------------------------------------
+
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, QMessageBox::Icon> MessageDialogQtIconsType;
 MessageDialogQtIconsType messageDialogQtIcons =
                         ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE     , QMessageBox::NoIcon     )
@@ -36,35 +38,45 @@ MessageDialogQtButtonType messageDialogQtButton =
                                                     (::fwGui::dialog::IMessageDialog::YES    , QMessageBox::Yes    )
                                                     (::fwGui::dialog::IMessageDialog::NO     , QMessageBox::No   );
 
-
-
+//------------------------------------------------------------------------------
 
 MessageDialog::MessageDialog() : m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON)
 {}
 
+//------------------------------------------------------------------------------
 
 MessageDialog::~MessageDialog()
 {}
+
+//------------------------------------------------------------------------------
 
 void MessageDialog::setTitle( const std::string &title )
 {
     m_title = title;
 }
 
+//------------------------------------------------------------------------------
+
 void MessageDialog::setMessage( const std::string &msg )
 {
     m_message = msg;
 }
+
+//------------------------------------------------------------------------------
 
 void MessageDialog::setIcon( ::fwGui::dialog::IMessageDialog::Icons icon )
 {
     m_icon = icon;
 }
 
+//------------------------------------------------------------------------------
+
 void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 {
     m_buttons = (::fwGui::dialog::IMessageDialog::Buttons) ( m_buttons | button );
 }
+
+//------------------------------------------------------------------------------
 
 ::fwGui::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
@@ -85,7 +97,6 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
         }
     }
 
-
     QMessageBox box(icon, title, text, buttons, parent);
     ::fwGui::dialog::IMessageDialog::Buttons result;
 
@@ -99,9 +110,11 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
             break;
         }
     }
-
     return result;
 }
+
+//------------------------------------------------------------------------------
+
 } // namespace dialog
 } // namespace fwGuiQt
 
