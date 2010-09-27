@@ -34,14 +34,14 @@ namespace reader
 
 FwXMLObjectReader::FwXMLObjectReader()  : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
-    SLM_TRACE("FwXMLObjectReader::FwXMLObjectReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 FwXMLObjectReader::~FwXMLObjectReader()
 {
-    SLM_TRACE("FwXMLObjectReader::~FwXMLObjectReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -51,13 +51,20 @@ void FwXMLObjectReader::read()
     try
     {
         ::boost::filesystem::path file = this->getFile();
-        if(!::boost::filesystem::exists( file ))
+        if(!::boost::filesystem::exists( file ) )
         {
-            throw ::fwTools::Failed("The version of your fwXML file is invalid or your file is corrupted.");
+            throw ::fwTools::Failed("The fwXML file doesn't exist.");
+        }
+        if( !::boost::filesystem::is_regular_file( file ))
+        {
+            throw ::fwTools::Failed("The fwXML file is not regular.");
+        }
+        if( ::boost::filesystem::file_size( file ) <= 0)
+        {
+            throw ::fwTools::Failed("The fwXML file is empty.");
         }
 
         ::fwXML::Serializer serializer;
-
         // forward event progress to its parents
         ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &FwXMLObjectReader::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
         serializer.addHandler ( handler );
@@ -69,12 +76,9 @@ void FwXMLObjectReader::read()
     }
     catch ( const std::exception& e)
     {
-       throw(e);
+        throw(e);
     }
 }
-
-
-
 
 //------------------------------------------------------------------------------
 
@@ -82,6 +86,7 @@ std::string  FwXMLObjectReader::extension()
 {
     return ".fxz";
 }
+
 } // namespace reader
 
 } // namespace fwXML
