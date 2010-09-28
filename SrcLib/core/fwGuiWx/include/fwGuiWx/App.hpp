@@ -56,7 +56,7 @@ public:
 
     FWGUIWX_API void OnInitCmdLine(wxCmdLineParser & parser);
 
-    FWGUIWX_API void App::OnUnhandledException();
+    FWGUIWX_API void OnUnhandledException();
 
 #ifdef __WXMAC__
     FWGUIWX_API virtual void MacOpenFile (  const wxString & fileName);
