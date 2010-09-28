@@ -322,7 +322,7 @@ void Bundle::loadLibraries() throw(RuntimeException)
     }
 
     // Pre-condition
-    assert( m_loadingBundle == 0 );
+    SLM_ASSERT("Bundle is already loaded", m_loadingBundle == 0 );
 
     // References the current bundle as the loading bundle.
     m_loadingBundle = shared_from_this();
@@ -348,6 +348,7 @@ void Bundle::loadLibraries() throw(RuntimeException)
                 message += ". ";
                 message += e.what();
 
+                SLM_ERROR(message);
                 m_loadingBundle.reset();
 
                 throw RuntimeException( message );
@@ -368,12 +369,12 @@ void Bundle::loadRequirements() throw(RuntimeException)
 {
     try
     {
-        Runtime                                 *rntm(Runtime::getDefault());
-        RequirementContainer::const_iterator    iter;
+        Runtime *rntm(Runtime::getDefault());
+        RequirementContainer::const_iterator iter;
         for(iter = m_requirements.begin(); iter != m_requirements.end(); ++iter)
         {
-            const std::string       requirement ( *iter                         );
-             ::boost::shared_ptr< Bundle >  bundle      ( rntm->findBundle(requirement) );
+            const std::string requirement ( *iter);
+            ::boost::shared_ptr< Bundle > bundle( rntm->findBundle(requirement) );
 
             // Ensure that a bundle has been retrieved.
             if( bundle == 0 )
@@ -428,7 +429,7 @@ void Bundle::startPlugin() throw(RuntimeException)
     const std::string   pluginType( getClass() );
 
     // According to the presence of a class or not, build and empty
-    // plugin or attempt to instanciate a user defined plugin.
+    // plugin or attempt to instantiate a user defined plugin.
     ::boost::shared_ptr< IPlugin > plugin;
 
     if( pluginType.empty() == true )
