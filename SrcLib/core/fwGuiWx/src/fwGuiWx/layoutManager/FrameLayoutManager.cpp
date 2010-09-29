@@ -15,7 +15,7 @@
 #include <fwServices/ObjectServiceRegistry.hpp>
 
 #include <fwWX/convert.hpp>
-#include <fwWX/wxMainFrame.hpp>
+#include <fwGuiWx/wxMainFrame.hpp>
 
 #include "fwGuiWx/layoutManager/FrameLayoutManager.hpp"
 
@@ -62,7 +62,7 @@ void FrameLayoutManager::createFrame()
 
     if(!wxTheApp->GetTopWindow())
     {
-        m_wxFrame = new ::fwWX::wxMainFrame(wxTheApp->GetTopWindow(),
+        m_wxFrame = new ::fwGuiWx::wxMainFrame(wxTheApp->GetTopWindow(),
                 wxNewId(),
                 ::fwWX::std2wx(frameInfo.m_name),
                  wxDefaultPosition,

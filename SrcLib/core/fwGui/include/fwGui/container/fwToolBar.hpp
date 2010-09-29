@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_FWMENUBAR_HPP_
-#define _FWGUI_FWMENUBAR_HPP_
+#ifndef _FWGUI_FWTOOLBAR_HPP_
+#define _FWGUI_FWTOOLBAR_HPP_
 
 #include <fwCore/base.hpp>
 
@@ -13,28 +13,29 @@
 
 namespace fwGui
 {
-
+namespace container
+{
 /**
- * @brief   Defines the menu bar for IHM.
- * @class   fwMenuBar.
+ * @brief   Defines the tool bar for IHM.
+ * @class   fwToolBar.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API fwMenuBar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API fwToolBar : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (fwMenuBar)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (fwToolBar)(::fwCore::BaseObject) ) ;
 
     FWGUI_API virtual void clean() = 0;
     FWGUI_API virtual void destroyContainer() = 0;
 
 };
-
+} // namespace container
 } // namespace fwGui
 
-#endif /*_FWGUI_FWMENUBAR_HPP_*/
+#endif /*_FWGUI_FWTOOLBAR_HPP_*/
 
 

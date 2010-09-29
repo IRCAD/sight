@@ -107,7 +107,7 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuLayoutManager::destroyActions()
 {
-    BOOST_FOREACH( ::fwGui::fwMenuItem::sptr menuItem, m_menuItems)
+    BOOST_FOREACH( ::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
     {
         menuItem->destroyContainer();
     }
@@ -116,7 +116,7 @@ void IMenuLayoutManager::destroyActions()
 
 //-----------------------------------------------------------------------------
 
-std::vector< ::fwGui::fwMenuItem::sptr > IMenuLayoutManager::getMenuItems()
+std::vector< ::fwGui::container::fwMenuItem::sptr > IMenuLayoutManager::getMenuItems()
 {
     return this->m_menuItems;
 }

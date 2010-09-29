@@ -60,7 +60,7 @@ void IMenuBarSrv::initialize()
 
 void IMenuBarSrv::create()
 {
-    ::fwGui::fwMenuBar::sptr menuBar = m_registrar->getParent();
+    ::fwGui::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
     m_layoutManager->createLayout(menuBar);
 
@@ -79,7 +79,7 @@ void IMenuBarSrv::destroy()
 
 void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ::fwGui::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
     if (m_hideMenus)
     {
@@ -95,7 +95,7 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 
 void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ::fwGui::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
     if (m_hideMenus)
     {

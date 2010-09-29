@@ -10,8 +10,8 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwMenu.hpp"
-#include "fwGui/fwMenuItem.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/config.hpp"
 
@@ -77,7 +77,7 @@ public:
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwMenuItem::sptr > getMenuItems();
+    FWGUI_API virtual std::vector< ::fwGui::container::fwMenuItem::sptr > getMenuItems();
 
     /**
      * @brief Initialize layout managers.
@@ -119,7 +119,7 @@ public:
     /**
      * @brief Instantiate actions with parent menu.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::fwMenu::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::container::fwMenu::sptr parent ) = 0;
 
     /**
      * @brief Destroy local actions.
@@ -131,17 +131,17 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    FWGUI_API virtual void menuItemSetVisible(::fwGui::fwMenuItem::sptr, bool isVisible) = 0;
+    FWGUI_API virtual void menuItemSetVisible(::fwGui::container::fwMenuItem::sptr, bool isVisible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    FWGUI_API virtual void menuItemSetEnabled(::fwGui::fwMenuItem::sptr, bool isEnabled) = 0;
+    FWGUI_API virtual void menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr, bool isEnabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    FWGUI_API virtual void menuItemSetChecked(::fwGui::fwMenuItem::sptr, bool isChecked) = 0;
+    FWGUI_API virtual void menuItemSetChecked(::fwGui::container::fwMenuItem::sptr, bool isChecked) = 0;
 
     /**
      * @brief Sets callbacks associate with menu items.
@@ -156,7 +156,7 @@ protected:
     FWGUI_API virtual void destroyActions();
 
     /// All actions managed by this layout.
-    std::vector< ::fwGui::fwMenuItem::sptr > m_menuItems;
+    std::vector< ::fwGui::container::fwMenuItem::sptr > m_menuItems;
 
     /// Save action informations from configuration.
     std::vector< ActionInfo > m_actionInfo;

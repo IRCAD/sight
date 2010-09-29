@@ -60,7 +60,7 @@ void IMenuSrv::initialize()
 
 void IMenuSrv::create()
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getParent();
+    ::fwGui::container::fwMenu::sptr menu = m_registrar->getParent();
     std::vector< ::fwGui::IMenuItemCallback::sptr > callbacks = m_registrar->getCallbacks();
 
     SLM_ASSERT("Parent menu is unknown.", menu);
@@ -82,7 +82,7 @@ void IMenuSrv::destroy()
 
 void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
@@ -98,7 +98,7 @@ void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 
 void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
@@ -116,7 +116,7 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 
 void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     m_layoutManager->menuItemSetChecked(menuItem, isActive);
 
@@ -126,7 +126,7 @@ void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 
 void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
 

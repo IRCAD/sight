@@ -7,10 +7,12 @@
 #include <wx/config.h>
 #include <wx/evtloop.h>
 
-#include "fwWX/wxMainFrame.hpp"
-#include "fwWX/WindowLocation.hpp"
+#include <fwWX/WindowLocation.hpp>
 
-namespace fwWX
+#include "fwGuiWx/wxMainFrame.hpp"
+
+
+namespace fwGuiWx
 {
 
 //-----------------------------------------------------------------------------
@@ -77,5 +79,5 @@ void wxMainFrame::writeConfig()
     config->Flush();
 }
 
-}//namespace fwWX
+}//namespace fwGuiWx
 

@@ -16,7 +16,7 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -93,7 +93,7 @@ public:
      */
     FWGUI_API virtual void destroyFrame() = 0;
 
-    FWGUI_API virtual ::fwGui::fwContainer::sptr getFrame(){ return m_frame;};
+    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getFrame(){ return m_frame;};
 
 
     typedef ::boost::function0< void > CloseCallback;
@@ -103,7 +103,7 @@ protected:
 
     FWGUI_API FrameInfo getFrameInfo(){ return m_frameInfo;};
 
-    ::fwGui::fwContainer::sptr m_frame;
+    ::fwGui::container::fwContainer::sptr m_frame;
     CloseCallback m_closeCallback;
 
 private:

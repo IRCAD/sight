@@ -10,8 +10,8 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwMenu.hpp"
-#include "fwGui/fwMenuItem.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/config.hpp"
 
 

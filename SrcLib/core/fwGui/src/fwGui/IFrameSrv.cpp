@@ -97,8 +97,8 @@ void IFrameSrv::create()
 {
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
     m_frameLayoutManager->createFrame();
-    ::fwGui::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
-    std::vector< ::fwGui::fwContainer::sptr > subViews;
+    ::fwGui::container::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
+    std::vector< ::fwGui::container::fwContainer::sptr > subViews;
     subViews.push_back(frame);
     m_viewRegistrar->manage(subViews);
 

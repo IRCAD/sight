@@ -38,7 +38,7 @@ MenuBarLayoutManager::~MenuBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void MenuBarLayoutManager::createLayout( ::fwGui::fwMenuBar::sptr parent )
+void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -68,7 +68,7 @@ void MenuBarLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void MenuBarLayoutManager::menuIsVisible(::fwGui::fwMenu::sptr fwMenu, bool isVisible)
+void MenuBarLayoutManager::menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(fwMenu);
     QMenu *menu = menuContainer->getQtMenu();
@@ -77,7 +77,7 @@ void MenuBarLayoutManager::menuIsVisible(::fwGui::fwMenu::sptr fwMenu, bool isVi
 
 //-----------------------------------------------------------------------------
 
-void MenuBarLayoutManager::menuIsEnabled(::fwGui::fwMenu::sptr fwMenu, bool isEnabled)
+void MenuBarLayoutManager::menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu, bool isEnabled)
 {
     ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(fwMenu);
     QMenu *menu = menuContainer->getQtMenu();

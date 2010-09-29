@@ -10,7 +10,7 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -49,7 +49,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::fwContainer::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::container::fwContainer::sptr parent ) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -60,7 +60,7 @@ public:
     /**
      * @brief Returns all sub containers managed by this layout.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwContainer::sptr > getSubViews();
+    FWGUI_API virtual std::vector< ::fwGui::container::fwContainer::sptr > getSubViews();
 
 protected:
 
@@ -70,7 +70,7 @@ protected:
     FWGUI_API virtual void destroySubViews();
 
     /// All sub containers managed by this layout.
-    std::vector< ::fwGui::fwContainer::sptr > m_subViews;
+    std::vector< ::fwGui::container::fwContainer::sptr > m_subViews;
 
 };
 

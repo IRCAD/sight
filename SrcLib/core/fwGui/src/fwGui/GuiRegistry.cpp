@@ -31,7 +31,7 @@ GuiRegistry::~GuiRegistry()
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::registerSIDContainer(std::string sid , ::fwGui::fwContainer::sptr container)
+void GuiRegistry::registerSIDContainer(std::string sid , ::fwGui::container::fwContainer::sptr container)
 {
     OSLM_ASSERT("Sorry, fwContainer for "<<sid<<" already exists in SID container map.",
             m_globalSIDToFwContainer.find(sid) == m_globalSIDToFwContainer.end());
@@ -59,7 +59,7 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwContainer::sptr GuiRegistry::getSIDContainer(std::string sid)
+::fwGui::container::fwContainer::sptr GuiRegistry::getSIDContainer(std::string sid)
 {
     OSLM_ASSERT("Sorry, fwContainer for "<<sid<<" not exists in SID container map.",
             m_globalSIDToFwContainer.find(sid) != m_globalSIDToFwContainer.end());
@@ -69,7 +69,7 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::registerWIDContainer(std::string wid , ::fwGui::fwContainer::sptr container)
+void GuiRegistry::registerWIDContainer(std::string wid , ::fwGui::container::fwContainer::sptr container)
 {
     OSLM_ASSERT("Sorry, fwContainer for "<<wid<<" already exists in WID container map.",
             m_globalWIDToFwContainer.find(wid) == m_globalWIDToFwContainer.end());
@@ -89,7 +89,7 @@ void GuiRegistry::unregisterWIDContainer(std::string wid)
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwContainer::sptr GuiRegistry::getWIDContainer(std::string wid)
+::fwGui::container::fwContainer::sptr GuiRegistry::getWIDContainer(std::string wid)
 {
     OSLM_ASSERT("Sorry, fwContainer for "<<wid<<" not exists in WID container map.",
             m_globalWIDToFwContainer.find(wid) != m_globalWIDToFwContainer.end());
@@ -99,7 +99,7 @@ void GuiRegistry::unregisterWIDContainer(std::string wid)
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::registerSIDMenuBar(std::string sid , ::fwGui::fwMenuBar::sptr menuBar)
+void GuiRegistry::registerSIDMenuBar(std::string sid , ::fwGui::container::fwMenuBar::sptr menuBar)
 {
     OSLM_ASSERT("Sorry, fwMenuBar for "<<sid<<" already exists in SID menuBar map.",
             m_globalSIDToFwMenuBar.find(sid) == m_globalSIDToFwMenuBar.end());
@@ -127,7 +127,7 @@ void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenuBar::sptr GuiRegistry::getSIDMenuBar(std::string sid)
+::fwGui::container::fwMenuBar::sptr GuiRegistry::getSIDMenuBar(std::string sid)
 {
     OSLM_ASSERT("Sorry, fwMenuBar for "<<sid<<" not exists in SID menuBar map.",
                 m_globalSIDToFwMenuBar.find(sid) != m_globalSIDToFwMenuBar.end());
@@ -137,7 +137,7 @@ void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::registerSIDToolBar(std::string sid , ::fwGui::fwToolBar::sptr toolBar)
+void GuiRegistry::registerSIDToolBar(std::string sid , ::fwGui::container::fwToolBar::sptr toolBar)
 {
     OSLM_ASSERT("Sorry, fwToolBar for "<<sid<<" already exists in SID toolBar map.",
             m_globalSIDToFwToolBar.find(sid) == m_globalSIDToFwToolBar.end());
@@ -165,7 +165,7 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwToolBar::sptr GuiRegistry::getSIDToolBar(std::string sid)
+::fwGui::container::fwToolBar::sptr GuiRegistry::getSIDToolBar(std::string sid)
 {
     OSLM_ASSERT("Sorry, fwToolBar for "<<sid<<" not exists in SID toolBar map.",
                 m_globalSIDToFwToolBar.find(sid) != m_globalSIDToFwToolBar.end());
@@ -176,7 +176,7 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
 
 //-----------------------------------------------------------------------------
 
-void GuiRegistry::registerSIDMenu(std::string sid , ::fwGui::fwMenu::sptr menu)
+void GuiRegistry::registerSIDMenu(std::string sid , ::fwGui::container::fwMenu::sptr menu)
 {
     OSLM_ASSERT("Sorry, fwMenu for "<<sid<<" already exists in SID menu map.",
             m_globalSIDToFwMenu.find(sid) == m_globalSIDToFwMenu.end());
@@ -204,7 +204,7 @@ void GuiRegistry::unregisterSIDMenu(std::string sid)
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenu::sptr GuiRegistry::getSIDMenu(std::string sid)
+::fwGui::container::fwMenu::sptr GuiRegistry::getSIDMenu(std::string sid)
 {
     OSLM_ASSERT("Sorry, fwMenu for "<<sid<<" not exists in SID menu map.",
                 m_globalSIDToFwMenu.find(sid) != m_globalSIDToFwMenu.end());

@@ -38,7 +38,7 @@ CardinalLayoutManager::~CardinalLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
+void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);

@@ -49,7 +49,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    FWGUIQT_API virtual void createLayout( ::fwGui::fwContainer::sptr parent );
+    FWGUIQT_API virtual void createLayout( ::fwGui::container::fwContainer::sptr parent );
 
     /**
      * @brief Destroy local layout with sub containers.

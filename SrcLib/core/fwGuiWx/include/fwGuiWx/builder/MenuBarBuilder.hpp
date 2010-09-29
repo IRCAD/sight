@@ -11,8 +11,8 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwGui/builder/IMenuBarBuilder.hpp>
-#include <fwGui/fwMenuBar.hpp>
-#include <fwGui/fwContainer.hpp>
+#include <fwGui/container/fwMenuBar.hpp>
+#include <fwGui/container/fwContainer.hpp>
 
 #include "fwGuiWx/config.hpp"
 
@@ -44,7 +44,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    FWGUIWX_API virtual void createMenuBar( ::fwGui::fwContainer::sptr parent );
+    FWGUIWX_API virtual void createMenuBar( ::fwGui::container::fwContainer::sptr parent );
 
     /**
      * @brief Destroy local layout with sub containers.

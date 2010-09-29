@@ -44,7 +44,7 @@ MenuLayoutManager::~MenuLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
+void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -129,7 +129,7 @@ void MenuLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void MenuLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void MenuLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -138,7 +138,7 @@ void MenuLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void MenuLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -147,7 +147,7 @@ void MenuLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();

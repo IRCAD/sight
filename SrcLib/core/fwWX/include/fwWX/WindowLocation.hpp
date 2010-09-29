@@ -12,6 +12,8 @@
 
 #include <fwCore/base.hpp>
 
+#include "fwWX/config.hpp"
+
 class wxTopLevelWindow;
 class wxWindow;
 
@@ -24,7 +26,7 @@ namespace fwWX
  * @author  IRCAD (Research and Development Team)
  * @date    2009.
  */
-class WindowLocation : public ::fwCore::BaseObject
+class FWWX_CLASS_API WindowLocation : public ::fwCore::BaseObject
 {
 
 public:
@@ -38,14 +40,14 @@ public:
      *
      * @param   window  a pointer to window
      */
-    WindowLocation( wxWindow * window );
+    FWWX_API WindowLocation( wxWindow * window );
 
     /**
      * @brief   Constructor
      *
      * @param   window  a pointer to a top level window
      */
-    WindowLocation( wxTopLevelWindow * window );
+    FWWX_API WindowLocation( wxTopLevelWindow * window );
 
     /**
      * @brief   Constructor
@@ -56,7 +58,7 @@ public:
      *
      * @see     toString
      */
-    WindowLocation( const wxString & definition );
+    FWWX_API WindowLocation( const wxString & definition );
 
 
     /**
@@ -64,21 +66,21 @@ public:
      *
      * @param   window  a pointer to a window to state will apply to
      */
-    void applyOn( wxWindow * window ) const;
+    FWWX_API void applyOn( wxWindow * window ) const;
 
     /**
      * @brief   Applies the state on the given top level window
      *
      * @param   topLevelWindow  a pointer to a window to state will apply to
      */
-    void applyOn( wxTopLevelWindow * topLevelWindow ) const;
+    FWWX_API void applyOn( wxTopLevelWindow * topLevelWindow ) const;
 
     /**
      * @brief   Represents the window state as a string.
      *
      * @return  a string containing the window state representation
      */
-    const wxString toString() const;
+    FWWX_API const wxString toString() const;
 
 
 private:

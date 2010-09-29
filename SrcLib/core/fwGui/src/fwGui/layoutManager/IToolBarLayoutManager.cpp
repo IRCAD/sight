@@ -77,7 +77,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IToolBarLayoutManager::destroyActions()
 {
-    BOOST_FOREACH( ::fwGui::fwMenuItem::sptr menuItem, m_menuItems)
+    BOOST_FOREACH( ::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
     {
         menuItem->destroyContainer();
     }
@@ -86,7 +86,7 @@ void IToolBarLayoutManager::destroyActions()
 
 //-----------------------------------------------------------------------------
 
-std::vector< ::fwGui::fwMenuItem::sptr > IToolBarLayoutManager::getMenuItems()
+std::vector< ::fwGui::container::fwMenuItem::sptr > IToolBarLayoutManager::getMenuItems()
 {
     return this->m_menuItems;
 }

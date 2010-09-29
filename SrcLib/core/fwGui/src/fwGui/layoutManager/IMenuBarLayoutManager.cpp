@@ -50,7 +50,7 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuBarLayoutManager::destroyMenus()
 {
-    BOOST_FOREACH( ::fwGui::fwMenu::sptr menu, m_menus)
+    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
     {
         menu->destroyContainer();
     }
@@ -59,7 +59,7 @@ void IMenuBarLayoutManager::destroyMenus()
 
 //-----------------------------------------------------------------------------
 
-std::vector< ::fwGui::fwMenu::sptr > IMenuBarLayoutManager::getMenus()
+std::vector< ::fwGui::container::fwMenu::sptr > IMenuBarLayoutManager::getMenus()
 {
     return this->m_menus;
 }

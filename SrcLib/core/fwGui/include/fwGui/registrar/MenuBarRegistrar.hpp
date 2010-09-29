@@ -10,8 +10,8 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwMenuBar.hpp"
-#include "fwGui/fwMenu.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/container/fwMenu.hpp"
 #include "fwGui/config.hpp"
 
 
@@ -42,14 +42,14 @@ public:
     FWGUI_API virtual ~MenuBarRegistrar();
 
     /// Return the parent container
-    FWGUI_API virtual ::fwGui::fwMenuBar::sptr getParent();
+    FWGUI_API virtual ::fwGui::container::fwMenuBar::sptr getParent();
 
     /**
      * @brief Return the fwMenu associated with the menuSid.
      * @param menuSid sid of the menu service
      * @param menus  vector containing the fwMenu manages by this registrar.
      */
-    FWGUI_API virtual ::fwGui::fwMenu::sptr getFwMenu(std::string menuSid, std::vector< ::fwGui::fwMenu::sptr > menus);
+    FWGUI_API virtual ::fwGui::container::fwMenu::sptr getFwMenu(std::string menuSid, std::vector< ::fwGui::container::fwMenu::sptr > menus);
 
     /**
      * @brief Initialize registry managers.
@@ -86,7 +86,7 @@ public:
      * @pre MenuBarRegistrar must be initialized before.
      * @pre sub menus must be instanced before.
      */
-    FWGUI_API virtual void manage(std::vector< ::fwGui::fwMenu::sptr > menus );
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenu::sptr > menus );
 
     /**
      * @brief Stopping view manager.

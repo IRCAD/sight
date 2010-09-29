@@ -35,7 +35,7 @@ VtkRenderWindowInteractorManager::~VtkRenderWindowInteractorManager()
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::sptr _parent )
+void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fwContainer::sptr _parent )
 {
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( _parent );
     SLM_ASSERT("dynamicCast fwContainer to WxContainer failed", wxContainer);

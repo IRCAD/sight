@@ -10,7 +10,7 @@
 #include <fwServices/IService.hpp>
 
 #include "fwGui/config.hpp"
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 
 #include "fwGui/registrar/MenuBarRegistrar.hpp"
 #include "fwGui/layoutManager/IMenuBarLayoutManager.hpp"

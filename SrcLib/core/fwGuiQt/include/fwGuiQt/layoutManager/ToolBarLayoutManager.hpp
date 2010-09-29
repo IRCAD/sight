@@ -10,7 +10,7 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwGui/fwToolBar.hpp>
+#include <fwGui/container/fwToolBar.hpp>
 #include <fwGui/layoutManager/IToolBarLayoutManager.hpp>
 
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
@@ -44,7 +44,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    FWGUIQT_API virtual void createLayout( ::fwGui::fwToolBar::sptr parent );
+    FWGUIQT_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent );
 
     /**
      * @brief Destroy local toolBars.
@@ -56,17 +56,17 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    FWGUIQT_API virtual void menuItemSetVisible(::fwGui::fwMenuItem::sptr menuItem, bool isVisible);
+    FWGUIQT_API virtual void menuItemSetVisible(::fwGui::container::fwMenuItem::sptr menuItem, bool isVisible);
 
     /**
      * @brief Set the action enable or not.
      */
-    FWGUIQT_API virtual void menuItemSetEnabled(::fwGui::fwMenuItem::sptr menuItem, bool isEnabled);
+    FWGUIQT_API virtual void menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr menuItem, bool isEnabled);
 
     /**
      * @brief Set the action checked or not.
      */
-    FWGUIQT_API virtual void menuItemSetChecked(::fwGui::fwMenuItem::sptr, bool isChecked);
+    FWGUIQT_API virtual void menuItemSetChecked(::fwGui::container::fwMenuItem::sptr, bool isChecked);
 
 protected:
     ::fwGuiQt::container::QtToolBarContainer::sptr m_parent;

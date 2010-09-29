@@ -10,7 +10,7 @@
 #include <vector>
 #include <fwCore/base.hpp>
 
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui

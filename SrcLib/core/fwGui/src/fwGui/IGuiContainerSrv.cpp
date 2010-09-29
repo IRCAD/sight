@@ -75,7 +75,7 @@ void IGuiContainerSrv::create()
     if ( m_viewLayoutManagerIsCreated )
     {
         SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
-        ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
+        ::fwGui::container::fwContainer::sptr container = m_viewRegistrar->getParent();
         SLM_ASSERT("Parent container is unknown.", container);
 
         if (m_hasToolBar)
@@ -141,7 +141,7 @@ void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwContainer::sptr IGuiContainerSrv::getContainer()
+::fwGui::container::fwContainer::sptr IGuiContainerSrv::getContainer()
 {
     return m_viewRegistrar->getParent();
 }

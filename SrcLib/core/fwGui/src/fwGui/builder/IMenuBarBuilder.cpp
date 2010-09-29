@@ -34,7 +34,7 @@ void IMenuBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenuBar::sptr IMenuBarBuilder::getMenuBar()
+::fwGui::container::fwMenuBar::sptr IMenuBarBuilder::getMenuBar()
 {
     return this->m_menuBar;
 }

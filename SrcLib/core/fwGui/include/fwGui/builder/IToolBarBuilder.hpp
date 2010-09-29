@@ -10,8 +10,8 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwToolBar.hpp"
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -44,7 +44,7 @@ public:
     /**
      * @brief Returns the builded tool bar.
      */
-    FWGUI_API virtual ::fwGui::fwToolBar::sptr getToolBar();
+    FWGUI_API virtual ::fwGui::container::fwToolBar::sptr getToolBar();
 
     /**
      * @brief Initialize the tool bar.
@@ -65,7 +65,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    FWGUI_API virtual void createToolBar( ::fwGui::fwContainer::sptr parent ) = 0;
+    FWGUI_API virtual void createToolBar( ::fwGui::container::fwContainer::sptr parent ) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -76,7 +76,7 @@ public:
 protected:
 
     /// ToolBar.
-    ::fwGui::fwToolBar::sptr m_toolBar;
+    ::fwGui::container::fwToolBar::sptr m_toolBar;
 
     std::pair< int, int > m_toolBitmapSize;
 

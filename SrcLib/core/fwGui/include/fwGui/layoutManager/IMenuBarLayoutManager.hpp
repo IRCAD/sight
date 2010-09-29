@@ -10,8 +10,8 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwMenuBar.hpp"
-#include "fwGui/fwMenu.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/container/fwMenu.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -45,7 +45,7 @@ public:
     /**
      * @brief Returns the vector of fwMenu managed by this layout.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwMenu::sptr > getMenus();
+    FWGUI_API virtual std::vector< ::fwGui::container::fwMenu::sptr > getMenus();
 
     /**
      * @brief Initialize layout managers.
@@ -79,7 +79,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::fwMenuBar::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::container::fwMenuBar::sptr parent ) = 0;
 
     /**
      * @brief Destroy local menus.
@@ -91,12 +91,12 @@ public:
     /**
      * @brief Set the menu visibility.
      */
-    FWGUI_API virtual void menuIsVisible(::fwGui::fwMenu::sptr, bool isVisible) = 0;
+    FWGUI_API virtual void menuIsVisible(::fwGui::container::fwMenu::sptr, bool isVisible) = 0;
 
     /**
      * @brief Set the menu enable or not.
      */
-    FWGUI_API virtual void menuIsEnabled(::fwGui::fwMenu::sptr, bool isEnabled) = 0;
+    FWGUI_API virtual void menuIsEnabled(::fwGui::container::fwMenu::sptr, bool isEnabled) = 0;
 
 
 protected:
@@ -107,7 +107,7 @@ protected:
     FWGUI_API virtual void destroyMenus();
 
     /// All sub containers managed by this layout.
-    std::vector< ::fwGui::fwMenu::sptr > m_menus;
+    std::vector< ::fwGui::container::fwMenu::sptr > m_menus;
 
     /// Save menu name from configuration.
     std::vector< std::string > m_menuNames;
