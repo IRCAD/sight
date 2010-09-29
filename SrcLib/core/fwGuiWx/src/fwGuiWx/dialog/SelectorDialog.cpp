@@ -9,6 +9,7 @@
 #include <wx/choice.h>
 #include <wx/arrstr.h>
 #include <wx/sizer.h>
+#include <wx/stattext.h>
 
 #include <boost/foreach.hpp>
 
@@ -27,7 +28,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog() : m_title("")
+SelectorDialog::SelectorDialog() : m_title(""), m_message("")
 {}
 
 //------------------------------------------------------------------------------
@@ -67,6 +68,7 @@ std::string SelectorDialog::show()
     wxChoice* typeCtrl = new wxChoice(dialog, wxNewId(), wxDefaultPosition, wxDefaultSize, items) ;
     typeCtrl->SetSelection(0);
 
+
     // Creates the default buttons.
     wxSizer  * defaultButtonSizer = new wxBoxSizer( wxHORIZONTAL );
     wxButton * okButton = new wxButton( dialog, wxID_OK, _("OK") );
@@ -79,6 +81,11 @@ std::string SelectorDialog::show()
 
     // Creates the root sizer.
     wxSizer * rootSizer = new wxBoxSizer( wxVERTICAL );
+    if(!m_message.empty())
+    {
+        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwWX::std2wx(m_message));
+        rootSizer->Add( msgText, 0, wxGROW|wxALL, 10 );
+    }
     rootSizer->Add( typeCtrl, 0, wxGROW|wxALL, 10 );
     rootSizer->Add( defaultButtonSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10 );
     dialog->SetSizerAndFit( rootSizer );
@@ -92,6 +99,13 @@ std::string SelectorDialog::show()
     }
     dialog->Destroy();
     return selection;
+}
+
+//------------------------------------------------------------------------------
+
+void SelectorDialog::setMessage(const std::string &msg)
+{
+    m_message = msg;
 }
 
 //------------------------------------------------------------------------------

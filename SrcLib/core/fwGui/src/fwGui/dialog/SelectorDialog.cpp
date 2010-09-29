@@ -42,5 +42,12 @@ void SelectorDialog::setSelections(std::vector< std::string > _selections)
 
 //-----------------------------------------------------------------------------
 
+void SelectorDialog::setMessage(const std::string &msg)
+{
+    m_implementation->setMessage( msg );
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace dialog
 } //namespace fwGui

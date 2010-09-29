@@ -60,6 +60,9 @@ public:
      * @param[in] _parent Parent container for the selector.
      */
     FWGUI_API virtual std::string show() = 0;
+
+    /// Set the message
+    FWGUI_API virtual void setMessage(const std::string &msg) = 0;
 };
 
 } //namespace dialog

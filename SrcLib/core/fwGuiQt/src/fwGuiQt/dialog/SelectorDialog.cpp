@@ -11,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QLabel>
 
 #include <boost/foreach.hpp>
 
@@ -28,7 +29,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog() : m_title("")
+SelectorDialog::SelectorDialog() : m_title(""), m_message("")
 {}
 
 //------------------------------------------------------------------------------
@@ -76,6 +77,11 @@ std::string SelectorDialog::show()
     hLayout->addWidget(cancelButton);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    if(!m_message.empty())
+    {
+        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
+        vLayout->addWidget( msgText);
+    }
     vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
@@ -91,6 +97,13 @@ std::string SelectorDialog::show()
     }
 
     return selection;
+}
+
+//------------------------------------------------------------------------------
+
+void SelectorDialog::setMessage(const std::string &msg)
+{
+    m_message = msg;
 }
 
 //------------------------------------------------------------------------------

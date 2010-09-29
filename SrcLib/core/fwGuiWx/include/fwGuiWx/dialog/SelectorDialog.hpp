@@ -53,10 +53,13 @@ public:
      */
     FWGUIWX_API virtual std::string show();
 
+    FWGUIWX_API virtual void setMessage(const std::string &msg);
+
 private :
 
     std::vector< std::string > m_selections;
-
+    /// Dialog box message
+    std::string m_message;
     std::string m_title;
 };
 

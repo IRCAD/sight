@@ -44,6 +44,9 @@ public:
     /// override
     FWGUI_API std::string show();
 
+    /// Set the message
+    FWGUI_API virtual void setMessage(const std::string &msg);
+
 protected :
 
     ::fwGui::dialog::ISelectorDialog::sptr m_implementation;
