@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWGUI_ISELECTORDIALOG_HPP_
-#define FWGUI_ISELECTORDIALOG_HPP_
+#ifndef FWGUI_IMULTISELECTORDIALOG_HPP_
+#define FWGUI_IMULTISELECTORDIALOG_HPP_
 
 #include <vector>
 #include <fwCore/base.hpp>
@@ -20,18 +20,19 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 /**
- * @brief   ISelectorDialog allowing the choice of an element among severals (_selections)
- * @class   ISelectorDialog.
+ * @brief   IMultiSelectorDialog allowing the choice of an element among severals (_selections)
+ * @class   IMultiSelectorDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  */
-class FWGUI_CLASS_API ISelectorDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMultiSelectorDialog : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ISelectorDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMultiSelectorDialog)(::fwCore::BaseObject) )
 
+    typedef std::map< std::string, bool > Selections;
     typedef std::string FactoryRegistryKeyType;
 
     /// this *unique* key should  be used *for all* factory for specific Selector(qt,wx,...)
@@ -40,15 +41,15 @@ public:
     /**
      * @brief Constructor builds a selector proposing a string list
      */
-    FWGUI_API ISelectorDialog() ;
+    FWGUI_API IMultiSelectorDialog() ;
 
     /// Destructor. Do nothing.
-    FWGUI_API virtual ~ISelectorDialog();
+    FWGUI_API virtual ~IMultiSelectorDialog();
 
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    FWGUI_API virtual void setSelections(std::vector< std::string > _selections) = 0;
+    FWGUI_API virtual void setSelections(Selections _selections) = 0;
 
     /**
      * @brief Sets the selector title.
@@ -59,7 +60,7 @@ public:
      * @brief Show the selector and return the selection.
      * @param[in] _parent Parent container for the selector.
      */
-    FWGUI_API virtual std::string show() = 0;
+    FWGUI_API virtual Selections show() = 0;
 
     /// Set the message
     FWGUI_API virtual void setMessage(const std::string &msg) = 0;
@@ -68,4 +69,4 @@ public:
 } //namespace dialog
 } //namespace fwGui
 
-#endif /*FWGUI_ISELECTORDIALOG_HPP_*/
+#endif /*FWGUI_IMULTISELECTORDIALOG_HPP_*/
