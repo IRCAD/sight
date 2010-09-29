@@ -16,40 +16,42 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwWX/convert.hpp>
 
-#include "fwGuiWx/Selector.hpp"
+#include "fwGuiWx/dialog/SelectorDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::ISelector, ::fwGuiWx::Selector, ::fwGui::ISelector::FactoryRegistryKeyType , ::fwGui::ISelector::REGISTRY_KEY );
+REGISTER_BINDING( ::fwGui::dialog::ISelectorDialog, ::fwGuiWx::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::FactoryRegistryKeyType , ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiWx
+{
+namespace dialog
 {
 
 //------------------------------------------------------------------------------
 
-Selector::Selector() : m_title("")
+SelectorDialog::SelectorDialog() : m_title("")
 {}
 
 //------------------------------------------------------------------------------
 
-Selector::~Selector()
+SelectorDialog::~SelectorDialog()
 {}
 
 //------------------------------------------------------------------------------
 
-void Selector::setSelections(std::vector< std::string > _selections)
+void SelectorDialog::setSelections(std::vector< std::string > _selections)
 {
     this->m_selections = _selections;
 }
 
 //------------------------------------------------------------------------------
 
-void Selector::setTitle(std::string _title)
+void SelectorDialog::setTitle(std::string _title)
 {
     this->m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-std::string Selector::show()
+std::string SelectorDialog::show()
 {
     wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwWX::std2wx(this->m_title),
             wxDefaultPosition, wxDefaultSize,
@@ -94,6 +96,7 @@ std::string Selector::show()
 
 //------------------------------------------------------------------------------
 
+} // namespace dialog
 } // namespace fwGuiWx
 
 

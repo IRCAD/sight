@@ -15,21 +15,22 @@
 
 namespace fwGui
 {
-
+namespace dialog
+{
 //------------------------------------------------------------------------------
 
 /**
- * @brief   ISelector allowing the choice of an element among severals (_selections)
- * @class   ISelector.
+ * @brief   ISelectorDialog allowing the choice of an element among severals (_selections)
+ * @class   ISelectorDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  */
-class FWGUI_CLASS_API ISelector : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ISelectorDialog : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ISelector)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (ISelectorDialog)(::fwCore::BaseObject) )
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -39,10 +40,10 @@ public:
     /**
      * @brief Constructor builds a selector proposing a string list
      */
-    FWGUI_API ISelector() ;
+    FWGUI_API ISelectorDialog() ;
 
     /// Destructor. Do nothing.
-    FWGUI_API virtual ~ISelector();
+    FWGUI_API virtual ~ISelectorDialog();
 
     /**
      * @brief The string list that can be chosen by the selector.
@@ -61,7 +62,7 @@ public:
     FWGUI_API virtual std::string show() = 0;
 };
 
-
-}
+} //namespace dialog
+} //namespace fwGui
 
 #endif /*FWGUI_SELECTOR_HPP_*/

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWGUIQT_SELECTOR_HPP_
-#define FWGUIQT_SELECTOR_HPP_
+#ifndef FWGUIQT_SELECTORDIALOG_HPP_
+#define FWGUIQT_SELECTORDIALOG_HPP_
 
 #include <vector>
 
@@ -13,32 +13,33 @@
 #include <QString>
 #include <QWidget>
 
-#include <fwGui/ISelector.hpp>
+#include <fwGui/dialog/ISelectorDialog.hpp>
 #include "fwGuiQt/config.hpp"
 
 
 namespace fwGuiQt
 {
-
+namespace dialog
+{
 //------------------------------------------------------------------------------
 
 /**
- * @brief   Selector allowing the choice of an element among severals (_selections)
- * @class   Selector.
+ * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
+ * @class   SelectorDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  */
 
-class FWGUIQT_CLASS_API Selector : public ::fwGui::ISelector,  public QDialog
+class FWGUIQT_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog,  public QDialog
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Selector)(::fwGui::ISelector), (()), new Selector );
+    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog), (()), new SelectorDialog );
 
     /// Default constructor.
-    FWGUIQT_API Selector() ;
+    FWGUIQT_API SelectorDialog() ;
 
-    FWGUIQT_API virtual ~Selector();
+    FWGUIQT_API virtual ~SelectorDialog();
 
     /**
      * @brief The string list that can be chosen by the selector.
@@ -63,7 +64,7 @@ private :
     std::string m_title;
 };
 
+} // namespace dialog
+} // namespace fwGuiQt
 
-}
-
-#endif /*FWGUIQT_SELECTOR_HPP_*/
+#endif /*FWGUIQT_SELECTORDIALOG_HPP_*/

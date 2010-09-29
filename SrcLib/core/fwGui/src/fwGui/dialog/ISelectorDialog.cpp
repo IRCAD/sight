@@ -5,21 +5,22 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwGui/ISelector.hpp"
+#include "fwGui/dialog/ISelectorDialog.hpp"
 
 namespace fwGui
 {
+namespace dialog
+{
 
-const ISelector::FactoryRegistryKeyType ISelector::REGISTRY_KEY =  "::fwGui::Selector";
+const ISelectorDialog::FactoryRegistryKeyType ISelectorDialog::REGISTRY_KEY =  "::fwGui::dialog::SelectorDialog";
 
-ISelector::ISelector()
+ISelectorDialog::ISelectorDialog()
 {}
 
-
-ISelector::~ISelector()
+ISelectorDialog::~ISelectorDialog()
 {}
 
-
+} //namespace dialog
 } // namespace fwGui
 
 
