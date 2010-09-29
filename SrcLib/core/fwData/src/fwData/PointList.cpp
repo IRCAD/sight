@@ -20,44 +20,70 @@ namespace fwData
 
 PointList::PointList ()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 PointList::~PointList ()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-PointList::sptr PointList::clone() const
+void PointList::shallowCopy( PointList::csptr _source )
 {
-	SLM_TRACE_FUNC();
+    ::fwTools::Object::shallowCopyOfChildren( _source );
 
-	PointList::NewSptr pNewPointList;
-
-	// Copy encoding
-	for ( 	PointList::PointListContainer::const_iterator iter = this->m_vPoints.begin();
-			iter != this->m_vPoints.end();
-			++iter )
-	{
-		pNewPointList->m_vPoints.push_back( (*iter)->clone() );
-	}
-
-	return pNewPointList;
+    this->m_vPoints = _source->m_vPoints;
 }
 
 //------------------------------------------------------------------------------
 
-PointList & PointList::operator=( const PointList & _pointList )
+void PointList::deepCopy( PointList::csptr _source )
 {
-	// Copy encoding
-	m_vPoints = _pointList.m_vPoints;
+    ::fwTools::Object::deepCopyOfChildren( _source );
 
-	return *this;
+    this->m_vPoints.clear();
+    for (   PointList::PointListContainer::const_iterator iter = _source->m_vPoints.begin();
+            iter != _source->m_vPoints.end();
+            ++iter )
+    {
+        Point::NewSptr newPoint;
+        newPoint->deepCopy( *iter );
+        this->m_vPoints.push_back( newPoint );
+    }
 }
+
+//------------------------------------------------------------------------------
+
+//PointList::sptr PointList::clone() const
+//{
+//    SLM_TRACE_FUNC();
+//
+//    PointList::NewSptr pNewPointList;
+//
+//    // Copy encoding
+//    for (   PointList::PointListContainer::const_iterator iter = this->m_vPoints.begin();
+//            iter != this->m_vPoints.end();
+//            ++iter )
+//    {
+//        pNewPointList->m_vPoints.push_back( (*iter)->clone() );
+//    }
+//
+//    return pNewPointList;
+//}
+//
+////------------------------------------------------------------------------------
+//
+//PointList & PointList::operator=( const PointList & _pointList )
+//{
+//    // Copy encoding
+//    m_vPoints = _pointList.m_vPoints;
+//
+//    return *this;
+//}
 
 //------------------------------------------------------------------------------
 

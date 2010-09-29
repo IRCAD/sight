@@ -17,10 +17,10 @@
 namespace fwData
 {
 /**
- * @class 	Point
- * @brief 	This class define a 3D point.
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class   Point
+ * @brief   This class define a 3D point.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 
 
@@ -28,30 +28,40 @@ class FWDATA_CLASS_API Point : public Object
 {
 
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object::Baseclass),
+    fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object),
         (()), ::fwTools::Factory::New< Point >) ;
 
-	typedef double PointCoordType;
+    typedef double PointCoordType;
 
-	typedef fwVec3d PointCoordArray;
-	/// Constructor
-	FWDATA_API Point();
-	/// Destructor
-	FWDATA_API virtual ~Point();
+    typedef fwVec3d PointCoordArrayType;
+    typedef PointCoordArrayType PointCoordArray; // Remove me
 
-	/// Clone method
-	FWDATA_API Point::sptr clone() const;
-	/// Copy method
-	FWDATA_API Point &operator=( const Point & _point ) ;
+    /// Constructor
+    FWDATA_API Point();
+    /// Destructor
+    FWDATA_API virtual ~Point();
 
-	/// Coordinates of point
-	fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Point::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Point::csptr _source );
+
+    /// Clone method
+    //FWDATA_API Point::sptr clone() const;
+    /// Copy method
+    //FWDATA_API Point &operator=( const Point & _point ) ;
+
+    /// Coordinates of point
+    fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
 
 
 protected :
 
-	/// point coordinates
-	fwVec3d m_vCoord;
+    /// point coordinates
+    PointCoordArrayType m_vCoord;
 
 }; // end class Point
 

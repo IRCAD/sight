@@ -12,31 +12,31 @@
 #include <fwCore/base.hpp>
 
 /**
- * @brief 	Test specified object messages.
+ * @brief   Test specified object messages.
  */
 class MessagesTest : public CPPUNIT_NS::TestFixture
 {
-	CPPUNIT_TEST_SUITE( MessagesTest );
-	CPPUNIT_TEST( testFloatMsg );
-	CPPUNIT_TEST( testImageMsg );
-	CPPUNIT_TEST( testPatientDBMsg );
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE( MessagesTest );
+    CPPUNIT_TEST( testFloatMsg );
+    CPPUNIT_TEST( testImageMsg );
+    CPPUNIT_TEST( testPatientDBMsg );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	// interface
-	void setUp();
-	void tearDown();
+    // interface
+    void setUp();
+    void tearDown();
 
-	// fonctions de tests
+    // fonctions de tests
 
-	/// test FloatMsg
-	void testFloatMsg();
+    /// test FloatMsg
+    void testFloatMsg();
 
-	/// test ImageMsg
-	void testImageMsg();
+    /// test ImageMsg
+    void testImageMsg();
 
-	/// test PatientDBMsg
-	void testPatientDBMsg();
+    /// test PatientDBMsg
+    void testPatientDBMsg();
 };
 
 

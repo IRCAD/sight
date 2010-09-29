@@ -17,41 +17,48 @@ namespace fwData
 {
 
 /**
- * @class 	Region
- * @brief 	Defines region, including origin and size
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class   Region
+ * @brief   Defines region, including origin and size
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API Region : public Object
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (Region)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Region >) ;
+    fwCoreClassDefinitionsWithNFactoriesMacro( (Region)(::fwData::Object),
+       ((::fwTools::Factory::New< Region > ,() ))
+       ((RegionFactory ,((const boost::uint8_t)) ))
+       );
 
-	/// Constructor
-	FWDATA_API	Region();
 
-	/**
-	 * @brief Constructor with specified dimension
-	 * @param[in] _dim dimension of the region
-	 */
-	FWDATA_API	Region(boost::uint8_t  _dim);
+    typedef std::vector<double> OriginType;
+    typedef std::vector<boost::int32_t> SizeType;
+    /// Constructor
+    FWDATA_API  Region();
 
-	/**
-	 * @brief Destructor
-	 */
-	FWDATA_API	virtual ~Region();
+    /**
+     * @brief Constructor with specified dimension
+     * @param[in] _dim dimension of the region
+     */
+    FWDATA_API  Region(boost::uint8_t  _dim);
 
-	fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the region origin);
+    FWDATA_API static sptr RegionFactory(const boost::uint8_t _dim);
+    /**
+     * @brief Destructor
+     */
+    FWDATA_API  virtual ~Region();
 
-	fwGettersSettersDocMacro(Size, vSize, std::vector< ::boost::int32_t >, the region size);
+    fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the region origin);
+
+    fwGettersSettersDocMacro(Size, vSize, std::vector< ::boost::int32_t >, the region size);
 
 protected:
 
-	//! Origin of the region
-	std::vector<double> m_vOrigin;
+    //! Origin of the region
+    OriginType m_vOrigin;
 
-	//! Size of the region (in terms of points)
-	std::vector<boost::int32_t>  m_vSize;
+    //! Size of the region (in terms of points)
+    SizeType  m_vSize;
 
 };
 

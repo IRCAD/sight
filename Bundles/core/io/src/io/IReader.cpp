@@ -13,21 +13,25 @@ namespace io
 {
 
 IReader::IReader() throw()
-{
-}
+{}
+
+//-----------------------------------------------------------------------------
 
 IReader::~IReader() throw()
+{}
+
+//-----------------------------------------------------------------------------
+
+std::string IReader::getSelectorDialogTitle()
 {
+    return "Choose a file";
 }
 
-wxString IReader::getSelectorDialogTitle()
-{
-	return _("Title of selector dialog box");
-}
+//-----------------------------------------------------------------------------
 
 std::vector< std::string > IReader::getSupportedExtensions()
 {
-	return std::vector< std::string >();
+    return std::vector< std::string >();
 }
 
 }

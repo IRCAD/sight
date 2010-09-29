@@ -18,20 +18,52 @@ Model::Model()
 
 Model::~Model() throw()
 {
-	m_map.clear();
+    m_map.clear();
 }
 
-FWDATA_API Model::Container &Model::getRefMap()
+//------------------------------------------------------------------------------
+
+Model::Container &Model::getRefMap()
 {
-	return m_map ;
+    return m_map ;
 }
 
+//------------------------------------------------------------------------------
 
-FWDATA_API const Model::Container &Model::getCRefMap() const
+const Model::Container &Model::getCRefMap() const
 {
-	return m_map ;
+    return m_map ;
 }
 
+//------------------------------------------------------------------------------
+
+void Model::shallowCopy( Model::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+
+    this->m_map.clear();
+    this->m_map = _source->m_map;
+}
+
+//------------------------------------------------------------------------------
+
+void Model::deepCopy( Model::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+
+    this->m_map.clear();
+    for(    Model::Container::const_iterator iter = _source->getCRefMap().begin();
+            iter != _source->getCRefMap().end();
+            ++iter )
+    {
+        ::fwData::TriangularMesh::NewSptr newTrian;
+        ::fwData::Material::NewSptr newMaterial;
+
+        newTrian->deepCopy( iter->first );
+        newMaterial->deepCopy( iter->second );
+        this->m_map[newTrian] = newMaterial;
+    }
+}
 
 } // namespace fwData
 

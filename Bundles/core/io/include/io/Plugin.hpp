@@ -10,39 +10,39 @@
 #include <fwRuntime/Plugin.hpp>
 
 /**
- * @brief	The namespace io contains the base interface for reader and writer services.
- * @namespace	io
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @brief   The namespace io contains the base interface for reader and writer services.
+ * @namespace   io
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  *
  */
 namespace io
 {
 /**
- * @brief	Implements a plugin for the io bundle.
+ * @brief   Implements a plugin for the io bundle.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
-	/**
-	 * @brief	Destructor
-	 */
-	~Plugin() throw();
+    /**
+     * @brief   Destructor
+     */
+    ~Plugin() throw();
 
-	/**
-	 * @brief Start method. (does nothing)
-	 *
-	 * This method is used by runtime in order to initialize the bundle.
-	 *
-	 * @exception ::fwRuntime::RuntimeException.
-	 */
-	void start() throw(::fwRuntime::RuntimeException);
+    /**
+     * @brief Start method. (does nothing)
+     *
+     * This method is used by runtime in order to initialize the bundle.
+     *
+     * @exception ::fwRuntime::RuntimeException.
+     */
+    void start() throw(::fwRuntime::RuntimeException);
 
-	/**
-	 * @brief Stop method. (does nothing)
-	 *
-	 * This method is used by runtime in order to close the bundle.
-	 */
-	void stop() throw();
+    /**
+     * @brief Stop method. (does nothing)
+     *
+     * This method is used by runtime in order to close the bundle.
+     */
+    void stop() throw();
 
 };
 

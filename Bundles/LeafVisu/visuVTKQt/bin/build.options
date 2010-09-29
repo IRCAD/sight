@@ -1,0 +1,33 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+USE = [
+    'boost',
+    'QVtk'
+    ]
+LIB = [
+    'fwRuntime_0-3',
+    'fwTools_0-1',
+    'fwCore_0-1',
+    'fwGuiQt_0-1',
+    'fwRenderVTK_0-1',
+    ]
+TYPE = 'bundle'
+VERSION = '0-1'
+
+# USE_COVERAGE_CULLER and USE_DEPTH_SORT are effectives only if
+# USE_DEPTH_PEELING is not.
+if racy.renv.system() == 'windows':
+    DEF = [
+            'USE_DEPTH_PEELING',
+            #'USE_DEPTH_SORT'
+            #'USE_COVERAGE_CULLER',
+#            'SHOW_ID_LABELS' ,
+            ]
+else:
+    DEF = [
+            #'USE_DEPTH_PEELING',
+            'USE_DEPTH_SORT',
+            'USE_COVERAGE_CULLER',
+#            'SHOW_ID_LABELS'  ,
+            ]
+

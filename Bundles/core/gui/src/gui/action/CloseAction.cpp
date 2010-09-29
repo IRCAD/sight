@@ -4,17 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/app.h>
-
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
-#include <fwServices/bundle/runtime.hpp>
 #include <fwServices/macros.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwData/Object.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Extension.hpp>
+#include <fwServices/ObjectServiceRegistry.hpp>
+
+#include <fwGui/Cursor.hpp>
 
 #include "gui/action/CloseAction.hpp"
 
@@ -22,30 +18,69 @@ namespace gui
 {
 namespace action
 {
-REGISTER_SERVICE( ::gui::action::IAction , ::gui::action::CloseAction , ::fwTools::Object ) ;
 
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::CloseAction , ::fwTools::Object ) ;
+
+//-----------------------------------------------------------------------------
 
 CloseAction::CloseAction() throw()
 {}
 
 //-----------------------------------------------------------------------------
 
-CloseAction::~CloseAction() throw() 
+CloseAction::~CloseAction() throw()
 {}
+
+//-----------------------------------------------------------------------------
+
+void CloseAction::configuring() throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC() ;
+    this->initialize();
+}
+
+//-----------------------------------------------------------------------------
+
+void CloseAction::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void CloseAction::starting() throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->actionServiceStarting();
+}
+
+//-----------------------------------------------------------------------------
+
+void CloseAction::stopping() throw( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->actionServiceStopping();
+}
 
 //-----------------------------------------------------------------------------
 
 void CloseAction::info(std::ostream &_sstream )
 {
-	_sstream << "Close Action" << std::endl;
+    _sstream << "Close Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void CloseAction::updating() throw( ::fwTools::Failed )
 {
-	::fwServices::OSR::uninitializeRootObject();
+    ::fwGui::Cursor cursor;
+    cursor.setCursor(::fwGui::ICursor::BUSY);
+    ::fwServices::OSR::uninitializeRootObject();
+    cursor.setDefaultCursor();
 }
+
+//-----------------------------------------------------------------------------
 
 }
 }
+

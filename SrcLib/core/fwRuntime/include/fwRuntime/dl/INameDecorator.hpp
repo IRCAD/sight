@@ -16,9 +16,9 @@ namespace fwRuntime
 
 /**
  * @namespace ::fwRuntime::dl
- * @brief 	Namespace ::fwRuntime::dl
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief   Namespace ::fwRuntime::dl
+ * @date    2004-2009
+ * @author  IRCAD (Research and Development Team).
  */
 namespace dl
 {
@@ -26,27 +26,27 @@ namespace dl
 
 
 /**
- * @brief	Defines the interface of library name decorators.
- * @struct	INameDecorator
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief   Defines the interface of library name decorators.
+ * @struct  INameDecorator
+ * @date    2004-2009
+ * @author  IRCAD (Research and Development Team).
  */
 struct INameDecorator
 {
 
-	/**
-	 * @brief	Destructor : does nothing.
-	 */
-	virtual ~INameDecorator();
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    virtual ~INameDecorator();
 
-	/**
-	 * @brief		Retrieves the native library file name for the given abstract file name.
-	 *
-	 * The native name can be a pattern and will be used for string matching.
-	 *
-	 * @param[in]	abstractName		the abstract library file name to convert to native library file name
-	 */
-	virtual const std::string getNativeName( const std::string & abstractName ) const throw() = 0;
+    /**
+     * @brief       Retrieves the native library file name for the given abstract file name.
+     *
+     * The native name can be a pattern and will be used for string matching.
+     *
+     * @param[in]   abstractName        the abstract library file name to convert to native library file name
+     */
+    virtual const std::string getNativeName( const std::string & abstractName ) const throw() = 0;
 
 };
 

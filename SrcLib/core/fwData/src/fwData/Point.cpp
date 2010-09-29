@@ -20,42 +20,58 @@ namespace fwData
 
 Point::Point ()
 {
-	SLM_TRACE_FUNC();
-	m_vCoord[0] = 0.0;
-	m_vCoord[1] = 0.0;
-	m_vCoord[2] = 0.0;
+    SLM_TRACE_FUNC();
+    m_vCoord[0] = 0.0;
+    m_vCoord[1] = 0.0;
+    m_vCoord[2] = 0.0;
 }
 
 //------------------------------------------------------------------------------
 
 Point::~Point ()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-Point::sptr Point::clone() const
+void Point::shallowCopy( Point::csptr _source )
 {
-	SLM_TRACE_FUNC();
-
-	Point::NewSptr pNewPoint;
-
-	// Copy encoding
-	pNewPoint->m_vCoord = this->m_vCoord;
-
-	return pNewPoint;
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_vCoord = _source->m_vCoord;
 }
 
 //------------------------------------------------------------------------------
 
-Point & Point::operator=( const Point & _point )
+void Point::deepCopy( Point::csptr _source )
 {
-	// Copy encoding
-	m_vCoord = _point.m_vCoord;
-
-	return *this;
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_vCoord = _source->m_vCoord;
 }
+
+//------------------------------------------------------------------------------
+
+//Point::sptr Point::clone() const
+//{
+//    SLM_TRACE_FUNC();
+//
+//    Point::NewSptr pNewPoint;
+//
+//    // Copy encoding
+//    pNewPoint->m_vCoord = this->m_vCoord;
+//
+//    return pNewPoint;
+//}
+//
+////------------------------------------------------------------------------------
+//
+//Point & Point::operator=( const Point & _point )
+//{
+//    // Copy encoding
+//    m_vCoord = _point.m_vCoord;
+//
+//    return *this;
+//}
 
 //------------------------------------------------------------------------------
 

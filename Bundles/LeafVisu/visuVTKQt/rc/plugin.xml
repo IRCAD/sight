@@ -1,0 +1,12 @@
+<plugin id="visuVTKQt" class="visuVTKQt::Plugin" >
+    
+    <library name="visuVTKQt" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="visu" />
+
+</plugin>
+
+
+

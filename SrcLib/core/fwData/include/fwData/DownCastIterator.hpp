@@ -22,8 +22,8 @@ namespace fwData
 
 /**
  * @brief the prupose of this function is to provide an UnaryFunction which is template whish is enable to downcast a base class to a subClass via shared_ptr
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 
 // BOOST => The type UnaryFunction must be Assignable, Copy Constructible, and the expression f(*i) must be valid where f is an object of
@@ -40,8 +40,8 @@ struct DownCaster : public std::unary_function< ::fwTools::Object::sptr,  typena
 
 /**
  * @brief the prupose of this function is to provide an UnaryFunction which is template whish is enable to downcast a base class to a subClass via shared_ptr in a const way !
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 template < class SubClass>
 struct DownConstCaster : public std::unary_function< ::fwTools::Object::sptr,  boost::shared_ptr< const SubClass>  >
@@ -68,29 +68,29 @@ struct DownConstCaster : public std::unary_function< ::fwTools::Object::sptr,  b
  *
  * std::pair< Patient::StudyIterator, Patient::StudyIterator > Patient::getStudies()
  * {
- *	 StudyIterator begin(  getField( Patient::ID_STUDIES )->children().begin() );
- *	 StudyIterator   end(  getField( Patient::ID_STUDIES )->children().end()   );
- *	 return std::make_pair( begin, end );
+ *   StudyIterator begin(  getField( Patient::ID_STUDIES )->children().begin() );
+ *   StudyIterator   end(  getField( Patient::ID_STUDIES )->children().end()   );
+ *   return std::make_pair( begin, end );
  *  }
  *
  * //------------------------------------------------------------------------------
  *
  * std::pair< Patient::StudyConstIterator, Patient::StudyConstIterator > Patient::getStudies() const
  * {
- *	  StudyConstIterator begin(  getField( Patient::ID_STUDIES )->children().end()   );
- *	  StudyConstIterator   end(  getField( Patient::ID_STUDIES )->children().end()   );
- *	  return std::make_pair( begin, begin );
+ *    StudyConstIterator begin(  getField( Patient::ID_STUDIES )->children().end()   );
+ *    StudyConstIterator   end(  getField( Patient::ID_STUDIES )->children().end()   );
+ *    return std::make_pair( begin, begin );
  * }
  *
  * };
  * @endcode
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 template< class SubClass >
 struct ContainerCaster
 {
-        typedef typename boost::transform_iterator< DownCaster<SubClass> , 		::fwTools::Object::ChildContainer::iterator > iterator;
+        typedef typename boost::transform_iterator< DownCaster<SubClass> ,      ::fwTools::Object::ChildContainer::iterator > iterator;
         typedef typename boost::transform_iterator< DownConstCaster<SubClass> , ::fwTools::Object::ChildContainer::const_iterator > const_iterator;
 
 };

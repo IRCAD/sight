@@ -11,19 +11,17 @@ namespace fwData
 namespace location
 {
 
+//------------------------------------------------------------------------------
+
 ILocation::ILocation()
-{
-	// TODO Auto-generated constructor stub
+{}
 
-}
-
+//------------------------------------------------------------------------------
 
 ILocation::~ILocation()
-{
-	// TODO Auto-generated constructor stub
+{}
 
-}
-
+//------------------------------------------------------------------------------
 
 }
 }

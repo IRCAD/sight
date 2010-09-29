@@ -4,34 +4,51 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwData/location/SingleFile.hpp"
 
-namespace fwData {
-namespace location {
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::location::SingleFile, ::fwData::location::SingleFile);
+
+namespace fwData
+{
+namespace location
+{
+
+//------------------------------------------------------------------------------
 
 SingleFile::SingleFile()
-{
-	// TODO Auto-generated constructor stub
+{}
 
-}
+//------------------------------------------------------------------------------
 
 SingleFile::~SingleFile()
+{}
+
+//------------------------------------------------------------------------------
+
+SingleFile::sptr SingleFile::SingleFileFactory(::boost::filesystem::path _path)
 {
-	// TODO Auto-generated destructor stub
+    SingleFile::sptr singlefile = SingleFile::New();
+    singlefile->setPath(_path);
+    return singlefile;
 }
+
+//------------------------------------------------------------------------------
 
 void SingleFile::setPath( ::boost::filesystem::path path)
 {
-	m_path = path;
+    m_path = path;
 }
 
+//------------------------------------------------------------------------------
 
-::boost::filesystem::path SingleFile::getPath()
+::boost::filesystem::path SingleFile::getPath() const
 {
-	return m_path;
+    return m_path;
 }
 
-
+//------------------------------------------------------------------------------
 
 }
 }

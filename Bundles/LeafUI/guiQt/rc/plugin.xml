@@ -1,0 +1,9 @@
+<plugin id="guiQt" class="::guiQt::Plugin">
+    <library name="guiQt"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    
+    
+</plugin>

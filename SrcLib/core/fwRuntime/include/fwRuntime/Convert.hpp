@@ -18,38 +18,38 @@ namespace fwRuntime
 {
 
 /**
- * @brief	Defines the convert class.
- * @class 	Convert
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief   Defines the convert class.
+ * @class   Convert
+ * @date    2004-2009
+ * @author  IRCAD (Research and Development Team).
  */
 class FWRUNTIME_CLASS_API Convert // Singleton
 {
 public:
 
-	/**
-	 * @brief	Destructor : does nothing.
-	 */
-	FWRUNTIME_API virtual  ~Convert();
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    FWRUNTIME_API virtual  ~Convert();
 
-	/**
-	 * @brief	Build an xmlNodePtr from a ConfigurationElement
-	 */
-	FWRUNTIME_API static xmlNodePtr toXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement) ;
+    /**
+     * @brief   Build an xmlNodePtr from a ConfigurationElement
+     */
+    FWRUNTIME_API static xmlNodePtr toXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement) ;
 
-	/**
-	 * @brief	Build an xmlNodePtr with all running Bundles
-	 */
-	FWRUNTIME_API static xmlNodePtr runningBundlesToXml( ) ;
+    /**
+     * @brief   Build an xmlNodePtr with all running Bundles
+     */
+    FWRUNTIME_API static xmlNodePtr runningBundlesToXml( ) ;
 
 private :
 
-	FWRUNTIME_API static void fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr _node) ; //_node is modified
+    FWRUNTIME_API static void fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr _node) ; //_node is modified
 
-	/**
-	 * @brief	Constructor : does nothing.
-	 */
-	Convert();
+    /**
+     * @brief   Constructor : does nothing.
+     */
+    Convert();
 
 };
 

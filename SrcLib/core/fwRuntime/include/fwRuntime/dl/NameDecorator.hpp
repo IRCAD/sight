@@ -22,51 +22,51 @@ namespace dl
 
 
 /**
- * @brief	Implements a default name decorator. This class is intended to be overriden
- * 			to do plateform specific decorations.
- * @class	NameDecorator
- * @date	2004-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief   Implements a default name decorator. This class is intended to be overriden
+ *          to do plateform specific decorations.
+ * @class   NameDecorator
+ * @date    2004-2009
+ * @author  IRCAD (Research and Development Team).
  */
 struct NameDecorator : public INameDecorator
 {
 
-	/**
-	 * @name		Overrides
-	 */
-	//@{
-	const std::string getNativeName( const std::string & abstractName ) const throw();
-	//@}
+    /**
+     * @name        Overrides
+     */
+    //@{
+    const std::string getNativeName( const std::string & abstractName ) const throw();
+    //@}
 
 
 protected:
 
-	/**
-	 * @brief	Retrieves the native file prefix.
-	 *
-	 * @remark	The default implements does nothing and should be overridden.
-	 *
-	 * @return	a string containing the native file prefix
-	 */
-	virtual const std::string getNativePrefix() const throw();
+    /**
+     * @brief   Retrieves the native file prefix.
+     *
+     * @remark  The default implements does nothing and should be overridden.
+     *
+     * @return  a string containing the native file prefix
+     */
+    virtual const std::string getNativePrefix() const throw();
 
-	/**
-	 * @brief	Retrieves the native file suffix.
-	 *
-	 * @remark	The default implements adds the release or debug suffix.
-	 *
-	 * @return	a string containing the native file suffix
-	 */
-	virtual const std::string getNativeSuffix() const throw();
+    /**
+     * @brief   Retrieves the native file suffix.
+     *
+     * @remark  The default implements adds the release or debug suffix.
+     *
+     * @return  a string containing the native file suffix
+     */
+    virtual const std::string getNativeSuffix() const throw();
 
-	/**
-	 * @brief	Retrieves the native file extension.
-	 *
-	 * @remark	The default implements does nothing and should be overridden.
-	 *
-	 * @return	a string containing the native file extension
-	 */
-	virtual const std::string getNativeExtension() const throw();
+    /**
+     * @brief   Retrieves the native file extension.
+     *
+     * @remark  The default implements does nothing and should be overridden.
+     *
+     * @return  a string containing the native file extension
+     */
+    virtual const std::string getNativeExtension() const throw();
 
 };
 

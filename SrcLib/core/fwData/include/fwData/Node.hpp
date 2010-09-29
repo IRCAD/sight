@@ -18,68 +18,75 @@
 namespace fwData
 {
 /**
- * @class 	Node
- * @brief 	This class defines a node
+ * @class   Node
+ * @brief   This class defines a node
  *
  * A node is represented by input and output ports.
  *
- * @see 	::fwData::Port
+ * @see     ::fwData::Port
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Node >) ;
 
-	/// %Port container
-	typedef std::vector< ::fwData::Port::sptr > PortContainer;
+    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwTools::Factory::New< Node >) ;
 
-	/// constructor
-	FWDATA_API Node();
+    /// Port container
+    typedef std::vector< ::fwData::Port::sptr > PortContainer;
 
-	/// Destructor
-	FWDATA_API virtual ~Node();
+    /// constructor
+    FWDATA_API Node();
 
-	/// Add an input port
-	FWDATA_API void addInputPort(::fwData::Port::sptr port);
+    /// Destructor
+    FWDATA_API virtual ~Node();
 
-	/// Add an output port
-	FWDATA_API void addOutputPort(::fwData::Port::sptr port);
+    /// Add an input port
+    FWDATA_API void addInputPort(::fwData::Port::sptr port);
 
-	/// Get the container of input ports
-	FWDATA_API PortContainer & getInputPorts();
+    /// Add an output port
+    FWDATA_API void addOutputPort(::fwData::Port::sptr port);
 
-	/// Get the container of output ports
-	FWDATA_API PortContainer & getOutputPorts();
+    /// Get the container of input ports
+    FWDATA_API PortContainer & getInputPorts();
 
-	/// Set object to the node
-	FWDATA_API void setObject( ::fwData::Object::sptr object );
+    /// Get the container of output ports
+    FWDATA_API PortContainer & getOutputPorts();
 
-	/// Get node object
-	FWDATA_API ::fwData::Object::sptr getObject() const;
+    /// Set object to the node
+    FWDATA_API void setObject( ::fwData::Object::sptr object );
 
-	/**
-	 * @brief Get the port with given identifier
-	 *
-	 * @param[in] _identifier port identifier
-	 * @param[in] _modeInput if true find input port, else find output port
-	 *
-	 * @return input or output port with given identifier
-	 */
-	FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput);
+    /// Get node object
+    FWDATA_API ::fwData::Object::sptr getObject() const;
+
+    /**
+     * @brief Get the port with given identifier
+     *
+     * @param[in] _identifier port identifier
+     * @param[in] _modeInput if true find input port, else find output port
+     *
+     * @return input or output port with given identifier
+     */
+    FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput);
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Node::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Node::csptr _source );
 
 protected :
 
-	/// node object
-	::fwData::Object::sptr m_object;
+    /// node object
+    ::fwData::Object::sptr m_object;
 
-	//! Input port container
-	PortContainer m_inputs;
+    //! Input port container
+    PortContainer m_inputs;
 
-	//! Output port container
-	PortContainer m_outputs;
+    //! Output port container
+    PortContainer m_outputs;
 };
 
 } // namespace fwData

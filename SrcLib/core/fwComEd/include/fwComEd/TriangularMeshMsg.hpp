@@ -16,27 +16,27 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object event message specialized for TriangularMesh : store modification information
- * @class 	TriangularMeshMsg
+ * @brief   Object event message specialized for TriangularMesh : store modification information
+ * @class   TriangularMeshMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API TriangularMeshMsg : public ::fwServices::ObjectMsg
 {
 
 public:
 
-	fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshMsg)(::fwServices::ObjectMsg::Baseclass), (( )) , new TriangularMeshMsg );
+    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshMsg)(::fwServices::ObjectMsg), (( )) , new TriangularMeshMsg );
 
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string NEW_MESH;
+    /// Event identifier used to inform for modification
+    FWCOMED_API static std::string NEW_MESH;
 
-	/// Constructor. Do nothing.
-	FWCOMED_API TriangularMeshMsg() throw();
+    /// Constructor. Do nothing.
+    FWCOMED_API TriangularMeshMsg() throw();
 
-	/// Destructor. Do nothing.
-	FWCOMED_API virtual ~TriangularMeshMsg() throw();
+    /// Destructor. Do nothing.
+    FWCOMED_API virtual ~TriangularMeshMsg() throw();
 
 };
 

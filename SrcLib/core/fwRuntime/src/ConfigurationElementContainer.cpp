@@ -17,83 +17,86 @@ namespace fwRuntime
 namespace
 {
 
-	/**
-	 * @brief	Implements a STL compliant predicate that test if a configuration
-	 * 			element has the given name.
-	 *
-	 * @author	IRCAD (Research and Development Team).
-	 */
-	struct HasName
-	{
-		HasName( const std::string & name )
-		:	m_name( name )
-		{}
+    /**
+     * @brief   Implements a STL compliant predicate that test if a configuration
+     *          element has the given name.
+     *
+     * @author  IRCAD (Research and Development Team).
+     */
+    struct HasName
+    {
+        HasName( const std::string & name )
+        :   m_name( name )
+        {}
 
-		const bool operator() ( const ::boost::shared_ptr< ConfigurationElement > element ) const
-		{
-			return element->getName() == m_name;
-		}
+        const bool operator() ( const ::boost::shared_ptr< ConfigurationElement > element ) const
+        {
+            return element->getName() == m_name;
+        }
 
-	private:
+    private:
 
-		std::string	m_name;
-	};
+        std::string m_name;
+    };
 
 }
 
 
 void ConfigurationElementContainer::addConfigurationElement( ::boost::shared_ptr< ConfigurationElement > element )
 {
-	m_elements.push_back( element );
+    m_elements.push_back( element );
 }
 
 
 
 ConfigurationElementContainer::Iterator ConfigurationElementContainer::begin()
 {
-	return m_elements.begin();
+    return m_elements.begin();
 }
 
 
 
 ConfigurationElementContainer::Iterator ConfigurationElementContainer::end()
 {
-	return m_elements.end();
+    return m_elements.end();
 }
 
-
+const ConfigurationElementContainer::Container ConfigurationElementContainer::getElements()
+{
+    return m_elements;
+}
 
 const ::boost::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement( const std::string & name ) const
 {
-	Container::const_iterator	found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
+    Container::const_iterator   found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
 
-	return ( found == m_elements.end() ) ? ::boost::shared_ptr< ConfigurationElement >() : *found;
+    return ( found == m_elements.end() ) ? ::boost::shared_ptr< ConfigurationElement >() : *found;
 }
 
 //-----------------------------------------------------------------------------
 
 ConfigurationElementContainer ConfigurationElementContainer::findAllConfigurationElement( const std::string & _name ) const
 {
-	ConfigurationElementContainer container;
+    ConfigurationElementContainer container;
 
-	for( 	Container::const_iterator itCfgElem = m_elements.begin();
-			itCfgElem != m_elements.begin();
-			++itCfgElem )
-	{
-		if ( (*itCfgElem)->getName() == _name )
-		{
-			container.addConfigurationElement( (*itCfgElem) );
-		}
-	}
+    for(    Container::const_iterator itCfgElem = m_elements.begin();
+            itCfgElem != m_elements.end();
+            ++itCfgElem )
+    {
+        if ( (*itCfgElem)->getName() == _name )
+        {
+            container.addConfigurationElement( (*itCfgElem) );
+        }
+    }
 
-	return container;
+    return container;
 }
 
 //-----------------------------------------------------------------------------
 
 unsigned int ConfigurationElementContainer::size() const
 {
-	return m_elements.size();
+    return m_elements.size();
 }
 
 //-----------------------------------------------------------------------------

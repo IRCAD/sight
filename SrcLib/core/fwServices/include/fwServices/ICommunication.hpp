@@ -14,29 +14,31 @@ namespace fwServices
 {
 
 /**
- * @class	ICommunication.
- * @brief	This interface defines communication service API.
+ * @class   ICommunication.
+ * @brief   This interface defines communication service API.
  *
  * Does nothing except defining a service type dedicated to communications. This is useful to consider communication as a first class entity, in particular to monitor communication and to facilitate their global (un)activation. See ComChannelService for details
  * regarding to the communication mechanism (default implementation).
  *
- * @note	ComChannelService content could moved to this class
+ * @note    ComChannelService content could moved to this class
  * @author IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @date    2007-2009.
  */
 class FWSERVICES_CLASS_API ICommunication : public ::fwServices::IService
 {
 
 public:
 
-	/// Definitions
-	fwCoreServiceClassDefinitionsMacro ( (ICommunication)(::fwServices::IService::Baseclass) ) ;
+    /// Definitions
+    fwCoreServiceClassDefinitionsMacro ( (ICommunication)(::fwServices::IService) ) ;
 
-	///@brief ICommunication constructor. Do nothing.
-	FWSERVICES_API ICommunication();
+protected:
 
-	///@brief ICommunication destructor. Do nothing.
-	FWSERVICES_API virtual ~ICommunication();
+    ///@brief ICommunication constructor. Do nothing.
+    FWSERVICES_API ICommunication();
+
+    ///@brief ICommunication destructor. Do nothing.
+    FWSERVICES_API virtual ~ICommunication();
 
 };
 

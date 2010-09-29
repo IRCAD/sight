@@ -10,15 +10,15 @@
 
 #ifdef _WIN32
 
-	#ifdef FWSERVICES_EXPORTS
-	#define FWSERVICES_API __declspec(dllexport)
-	#else
-	#define FWSERVICES_API __declspec(dllimport)
-	#endif
+    #ifdef FWSERVICES_EXPORTS
+    #define FWSERVICES_API __declspec(dllexport)
+    #else
+    #define FWSERVICES_API __declspec(dllimport)
+    #endif
 
-	#define FWSERVICES_CLASS_API
+    #define FWSERVICES_CLASS_API
 
-	#pragma warning(disable: 4290)
+    #pragma warning(disable: 4290)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 
@@ -33,7 +33,7 @@
 #else
 
     #define FWSERVICES_API
-	#define FWSERVICES_CLASS_API
+    #define FWSERVICES_CLASS_API
 
 #endif
 

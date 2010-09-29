@@ -46,103 +46,115 @@ class FWSERVICES_CLASS_API ObjectMsg : public ::fwTools::Object
 
 public:
 
-	fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object::Baseclass), (()), ::fwTools::Factory::New< ObjectMsg > );
+    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwTools::Factory::New< ObjectMsg > );
 
-	/// Constructor, do nothing.
-	FWSERVICES_API ObjectMsg();
+    /// Constructor, do nothing.
+    FWSERVICES_API ObjectMsg();
 
-	/// Destructor, do nothing.
-	FWSERVICES_API virtual ~ObjectMsg();
+    /// Destructor, do nothing.
+    FWSERVICES_API virtual ~ObjectMsg();
 
+    // generic message
 
-	/**
-	 * @name Event managment
-	 */
-	//@{
+    /// Event identifier used to inform that an object was created
+    FWSERVICES_API static std::string NEW_OBJECT;
 
-	/**
-	 * @brief This method add an event to the message before message notification.
-	 * @param[in] _eventId the event added in the message
-	 * @param[in] _pDataInfo additional information concerning message ( it is an optional parameter )
-	 * @note a message can contain many events.
-	 */
-	FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+    /// Event identifier used to inform that an object was modified
+    FWSERVICES_API static std::string UPDATED_OBJECT;
 
-	/**
-	 * @brief This method is used to know if a specific event declared in the message
-	 * @param[in] _eventId id of the event researched
-	 * @return true if message contain the event id
-	 */
-	FWSERVICES_API bool hasEvent( std::string _eventId ) const;
-
-	/**
-	 * @brief This method returns all id event contained in the message
-	 * @return the list of event
-	 */
-	FWSERVICES_API std::vector< std::string > getEventIds() const ;
-
-	/**
-	 * @brief This method returns the data info associated to event, this data can be an null ptr when the event not needs some additional informations.
-	 * @param[in] _eventId event id used to find his associated data
-	 * @return associated data information
-	 */
-	FWSERVICES_API ::fwData::Object::csptr getDataInfo( std::string _eventId ) const;
-
-	//@}
+    /// Event identifier used to inform that an object has to be removed
+    FWSERVICES_API static std::string DELETE_OBJECT;
 
 
-	/**
-	 * @name Management of source/subject message
-	 */
-	//@{
 
-	/// Set message source (service which notifies subject obsevers)
-	FWSERVICES_API void setSource( WPTR(::fwServices::IService) _source );
+    /**
+     * @name Event management
+     */
+    //@{
 
-	/// Get message source (service which notifies subject obsevers)
-	FWSERVICES_API WPTR(::fwServices::IService) getSource() const;
+    /**
+     * @brief This method add an event to the message before message notification.
+     * @param[in] _eventId the event added in the message
+     * @param[in] _pDataInfo additional information concerning message ( it is an optional parameter )
+     * @note a message can contain many events.
+     */
+    FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
 
-	/// Set message subject (object observed)
-	FWSERVICES_API void setSubject( ::fwTools::Object::wptr _subject );
+    /**
+     * @brief This method is used to know if a specific event declared in the message
+     * @param[in] _eventId id of the event researched
+     * @return true if message contain the event id
+     */
+    FWSERVICES_API bool hasEvent( std::string _eventId ) const;
 
-	/// Get message subject (object observed)
-	FWSERVICES_API ::fwTools::Object::wptr getSubject() const;
+    /**
+     * @brief This method returns all id event contained in the message
+     * @return the list of event
+     */
+    FWSERVICES_API std::vector< std::string > getEventIds() const ;
 
-	//@}
+    /**
+     * @brief This method returns the data info associated to event, this data can be an null ptr when the event not needs some additional informations.
+     * @param[in] _eventId event id used to find his associated data
+     * @return associated data information
+     */
+    FWSERVICES_API ::fwData::Object::csptr getDataInfo( std::string _eventId ) const;
+
+    //@}
 
 
-	/// Give some message informations in a string.
-	FWSERVICES_API std::string getGeneralInfo() const;
+    /**
+     * @name Management of source/subject message
+     */
+    //@{
 
-	/**
-	 * @brief Streaming a service
-	 * @see ObjectMsg::operator<<(std::ostream & _ostream, ObjectMsg& _service)
-	 * @note Invoke ObjectMsg::info( std::ostream )
-	 */
-	FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, const ObjectMsg& _message) ;
+    /// Set message source (service which notifies subject obsevers)
+    FWSERVICES_API void setSource( WPTR(::fwServices::IService) _source );
+
+    /// Get message source (service which notifies subject obsevers)
+    FWSERVICES_API WPTR(::fwServices::IService) getSource() const;
+
+    /// Set message subject (object observed)
+    FWSERVICES_API void setSubject( ::fwTools::Object::wptr _subject );
+
+    /// Get message subject (object observed)
+    FWSERVICES_API ::fwTools::Object::wptr getSubject() const;
+
+    //@}
+
+
+    /// Give some message informations in a string.
+    FWSERVICES_API std::string getGeneralInfo() const;
+
+    /**
+     * @brief Streaming a service
+     * @see ObjectMsg::operator<<(std::ostream & _ostream, ObjectMsg& _service)
+     * @note Invoke ObjectMsg::info( std::ostream )
+     */
+    FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, const ObjectMsg& _message) ;
 
 protected :
 
-	/**
-	 * @brief Intern map which associates an Event Id (string) to a dataInfo ( ::fwData::Object ).
-	 *
-	 * Some event has not data info, in this cases, the event is in map  but the ::fwData::Object::sptr is null.
-	 */
-	std::map< std::string , ::fwData::Object::sptr > m_eventId2DataInfo;
+    /**
+     * @brief Intern map which associates an Event Id (string) to a dataInfo ( ::fwData::Object ).
+     *
+     * Some event has not data info, in this cases, the event is in map  but the ::fwData::Object::sptr is null.
+     */
+    std::map< std::string , ::fwData::Object::sptr > m_eventId2DataInfo;
 
-	/// Give some message informations, this method uses getGeneralInfo.
-	FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
+    /// Give some message informations, this method uses getGeneralInfo.
+    FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
 
 private :
 
-	/// Message source. It is the service which creates msg and sends it at all subject observers
-	WPTR(::fwServices::IService) m_source;
+    /// Message source. It is the service which creates msg and sends it at all subject observers
+    WPTR(::fwServices::IService) m_source;
 
-	/// Message subject. All subject observers will be notified.
-	::fwTools::Object::wptr m_subject;
+    /// Message subject. All subject observers will be notified.
+    ::fwTools::Object::wptr m_subject;
 
-	/// Helper to convert string UUID/Classname in pretty string
-	static std::string convertToLightString( std::string _initialString );
+    /// Helper to convert string UUID/Classname in pretty string
+    static std::string convertToLightString( std::string _initialString );
 
 };
 

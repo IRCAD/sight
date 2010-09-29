@@ -18,45 +18,45 @@ namespace fwTools {
 template<>
 bool isMapping<unsigned char>(const DynamicType &key)
 {
-	return key.isType<unsigned char>();
+    return key.isType<unsigned char>();
 }
 template<>
 bool isMapping<unsigned short>(const DynamicType &key)
 {
-	return key.isType<unsigned short>();
+    return key.isType<unsigned short>();
 }
 template<>
 bool isMapping<unsigned int>(const DynamicType &key)
 {
-	return key.isType<unsigned int>();
+    return key.isType<unsigned int>();
 }
 template<>
 bool isMapping<unsigned long>(const DynamicType &key)
 {
-	return key.isType<unsigned long>();
+    return key.isType<unsigned long>();
 }
 
 // FIXED PRECISION SIGNED
 template<>
 bool isMapping<signed char>(const DynamicType &key)
 {
-	return key.isType<signed char>();
+    return key.isType<signed char>();
 }
 template<>
 bool isMapping<signed short>(const DynamicType &key)
 {
-	return key.isType<signed short>();
+    return key.isType<signed short>();
 }
 template<>
 bool isMapping<signed int>(const DynamicType &key)
 {
-	return key.isType<signed int>();
+    return key.isType<signed int>();
 }
 
 template<>
 bool isMapping<signed long>(const DynamicType &key)
 {
-	return key.isType<signed long>();
+    return key.isType<signed long>();
 }
 
 
@@ -64,19 +64,19 @@ bool isMapping<signed long>(const DynamicType &key)
 template<>
 bool isMapping<float>(const DynamicType &key)
 {
-	return key.isType<float>();
+    return key.isType<float>();
 }
 template<>
 bool isMapping<double>(const DynamicType &key)
 {
-	return key.isType<double>();
+    return key.isType<double>();
 }
 
 // MISC
 template<>
 bool isMapping<std::string>(const DynamicType &key)
 {
-	return key.isType<std::string>();
+    return key.isType<std::string>();
 }
 
 

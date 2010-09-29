@@ -1,0 +1,12 @@
+<plugin id="visuVTKWx" class="visuVTKWx::Plugin" >
+    
+    <library name="visuVTKWx" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="visu" />
+
+</plugin>
+
+
+

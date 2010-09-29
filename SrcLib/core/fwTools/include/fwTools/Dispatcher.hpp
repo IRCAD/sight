@@ -8,11 +8,10 @@
 #define DISPATCHER_HPP_
 
 #include <stdexcept>
-#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/pop_front.hpp>
-#include <boost/mpl/identity.hpp>
 
 #include "fwTools/TypeMapping.hpp"
 
@@ -21,39 +20,39 @@ namespace fwTools {
 
 
 /**
- * @brief	Limit cases for empty typelist
- * @class	EnTypeListAction
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @brief   Limit cases for empty typelist
+ * @class   EndTypeListAction
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  * @see ::fwTools::Dispatcher
  */
- struct EnTypeListAction
+ struct EndTypeListAction
  {
 
- 	/// Perform nothing see Dispatcher<...>::invoke
- 	static void invoke() {};
+    /// Perform nothing see Dispatcher<...>::invoke
+    static void invoke() {};
 
- 	/// Throw an exception to inform end-user that KeyType value have no correspondance in type list
- 	template< class KeyType>
- 	static void  invoke(const KeyType &keytype)
- 	{
- 		throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
- 	}
+    /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
+    template< class KeyType>
+    static void  invoke(const KeyType &keytype)
+    {
+        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+    }
 
- 	/// Throw an exception to inform end-user that KeyType value have no correspondance in type list
- 	template< class KeyType,class Parameter>
- 	static void  invoke( const KeyType &keytype,const Parameter &param )
- 	{
- 		throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
- 	}
+    /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
+    template< class KeyType,class Parameter>
+    static void  invoke( const KeyType &keytype,const Parameter &param )
+    {
+        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+    }
 
- 	/// Throw an exception to inform end-user that KeyType value have no correspondance in type list
- 	template< class BaseClass, class KeyType>
- 	static BaseClass  *instanciate(const KeyType &keytype)
- 	{
- 		throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
- 		return NULL;
- 	}
+    /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
+    template< class BaseClass, class KeyType>
+    static BaseClass  *instanciate(const KeyType &keytype)
+    {
+        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+        return NULL;
+    }
 
  };
 
@@ -61,10 +60,10 @@ namespace fwTools {
 
 
 /**
- * @brief 	Create an automatic template instancier exple Dispatcher< TYPESEQUENCE , FUNCTOR>::invoke("int");
- * @class 	Dispatcher
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @brief   Create an automatic template instancier exple Dispatcher< TYPESEQUENCE , FUNCTOR>::invoke("int");
+ * @class   Dispatcher
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  *
  * Will instanciante class FUNCTOR then for a type T in TYPESEQUENCE (here int) call the corresponding operator() method
  * according to parameter of invoke static method. ie FUNCTOR().operator<int>();
@@ -73,7 +72,7 @@ template< class TSEQ, class FUNCTOR >
 struct Dispatcher
 {
 
-	 private:
+     private:
         typedef BOOST_DEDUCED_TYPENAME boost::mpl::pop_front<TSEQ>::type Tail;
         typedef BOOST_DEDUCED_TYPENAME boost::mpl::front<TSEQ>::type Head;
 
@@ -86,9 +85,9 @@ struct Dispatcher
       */
      static void invoke()
      {
-     	namespace mpl = boost::mpl;
+         namespace mpl = boost::mpl;
 
-    	// create the functor then excute it
+         // create the functor then excute it
          FUNCTOR f;
 #ifdef _WIN32
          f.operator()<Head>();
@@ -97,13 +96,13 @@ struct Dispatcher
 #endif
 
 
-     	// recursively call other element in the list
-     	typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
-                mpl::empty<Tail>,
-                mpl::identity< EnTypeListAction  >,
-                mpl::identity< Dispatcher<Tail,FUNCTOR > >
-            >::type typex;
-            typex::invoke();
+         // recursively call other element in the list
+         typedef BOOST_DEDUCED_TYPENAME mpl::if_<
+             mpl::empty<Tail>,
+             EndTypeListAction,
+             Dispatcher<Tail,FUNCTOR >
+                 >::type typex;
+         typex::invoke();
      }
 
 
@@ -114,29 +113,29 @@ struct Dispatcher
      template< class KeyType >
      static void invoke( const KeyType &keytype )
      {
-     	namespace mpl = boost::mpl;
+         namespace mpl = boost::mpl;
 
-     	if   ( isMapping< Head>(keytype) )
-     	{
-     		    // create the functor then excute it
-     	     	FUNCTOR f;
+         if   ( isMapping< Head>(keytype) )
+         {
+             // create the functor then excute it
+             FUNCTOR f;
 #ifdef _WIN32
-     	     	f.operator()<Head>();
+             f.operator()<Head>();
 #else
-     	     	f.template operator()<Head>();
+             f.template operator()<Head>();
 #endif
-     	}
-     	else
-     	{
-     		 // recursively call other element in the list
-     			typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
-                mpl::empty<Tail>,
-                mpl::identity< EnTypeListAction  >,
-                mpl::identity< Dispatcher<Tail,FUNCTOR > >
-            >::type typex;
-            typex::invoke(keytype);
+         }
+         else
+         {
+             // recursively call other element in the list
+             typedef BOOST_DEDUCED_TYPENAME mpl::if_<
+                 mpl::empty<Tail>,
+                 EndTypeListAction,
+                 Dispatcher< Tail,FUNCTOR >
+                     >::type typex;
+             typex::invoke(keytype);
 
-     	}
+         }
      }
      // NOTE gcc seems unable to explicit call of static template fonction member :/
      // all arguments needs to be present specicied template seems ignored
@@ -149,30 +148,30 @@ struct Dispatcher
      template< class KeyType,class Parameter >
      static void invoke( const KeyType &keytype,  Parameter &param )
      {
-     	namespace mpl = boost::mpl;
+         namespace mpl = boost::mpl;
 
-     	if   ( isMapping< Head>(keytype) )
-     	{
-     		// create the functor then excute it
-     	     	FUNCTOR f;
+         if   ( isMapping< Head>(keytype) )
+         {
+             // create the functor then excute it
+             FUNCTOR f;
 #ifdef _WIN32
-     	     	f.operator()<Head>(param);
+             f.operator()<Head>(param);
 #else
-     	     	f.template operator()<Head>(param);
+             f.template operator()<Head>(param);
 #endif
 
-     	}
-     	else
-     	{
-     		 // recursively call other element in the list
-     			typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
-                mpl::empty<Tail>,
-                mpl::identity< EnTypeListAction  >,
-                mpl::identity< Dispatcher<Tail,FUNCTOR > >
-            >::type typex;
-            typex::invoke(keytype,param);
+         }
+         else
+         {
+             // recursively call other element in the list
+             typedef BOOST_DEDUCED_TYPENAME mpl::if_<
+                 mpl::empty<Tail>,
+                 EndTypeListAction,
+                 Dispatcher<Tail,FUNCTOR >
+                     >::type typex;
+             typex::invoke(keytype,param);
 
-     	}
+         }
      }
 
 

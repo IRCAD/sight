@@ -30,32 +30,42 @@ Region::~Region()
 {
 }
 
+
+//------------------------------------------------------------------------------
+Region::sptr Region::RegionFactory(boost::uint8_t _dim)
+{
+    sptr region = ::fwData::Region::New();
+    region->m_vOrigin = OriginType(_dim,0);
+    region->m_vSize = SizeType(_dim,0);
+    return region;
+}
+
 //------------------------------------------------------------------------------
 //
 //std::vector<double> & Region::origin()
 //{
-//	return m_vOrigin;
+//  return m_vOrigin;
 //}
 //
 ////------------------------------------------------------------------------------
 //
 //const std::vector<double> & Region::origin() const
 //{
-//	return m_vOrigin;
+//  return m_vOrigin;
 //}
 //
 ////------------------------------------------------------------------------------
 //
 //std::vector<boost::int32_t>  & Region::size()
 //{
-//	return m_vSize;
+//  return m_vSize;
 //}
 //
 ////------------------------------------------------------------------------------
 //
 //const std::vector<boost::int32_t>  & Region::size() const
 //{
-//	return m_vSize;
+//  return m_vSize;
 //}
 
 //------------------------------------------------------------------------------

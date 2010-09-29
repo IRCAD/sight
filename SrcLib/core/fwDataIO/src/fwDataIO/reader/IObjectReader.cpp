@@ -5,11 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/location/ILocation.hpp>
+
 #include "fwDataIO/reader/IObjectReader.hpp"
-
-
-
-
 
 namespace fwDataIO
 {
@@ -27,34 +24,34 @@ IObjectReader::IObjectReader()
 IObjectReader::~IObjectReader()
 {}
 
+//------------------------------------------------------------------------------
 
-void IObjectReader::setObject( ::boost::shared_ptr< ::fwTools::Object > _pObject )
+void IObjectReader::setObject( ::fwTools::Object::sptr _pObject )
 {
-	m_object = _pObject;
+    m_object = _pObject;
 }
 
+//------------------------------------------------------------------------------
 
-
-::boost::shared_ptr< ::fwTools::Object >  IObjectReader::getObject()
+::fwTools::Object::sptr IObjectReader::getObject()
 {
-	assert( !m_object.expired() );
-	return m_object.lock();
+    assert( !m_object.expired() );
+    return m_object.lock();
 }
 
+//------------------------------------------------------------------------------
 
-
-
-void IObjectReader::setLocation( const ::boost::shared_ptr< ::fwData::location::ILocation > _location )
+void IObjectReader::setLocation( const ::fwData::location::ILocation::sptr _location )
 {
-	m_location = _location;
+    m_location = _location;
 }
 
+//------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwData::location::ILocation > IObjectReader::getLocation()
+::fwData::location::ILocation::sptr IObjectReader::getLocation()
 {
-	return m_location;
+    return m_location;
 }
-
 
 //------------------------------------------------------------------------------
 

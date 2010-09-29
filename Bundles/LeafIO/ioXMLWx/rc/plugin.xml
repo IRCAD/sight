@@ -1,0 +1,10 @@
+<plugin id="ioXMLWx" class="ioXMLWx::Plugin">
+
+    <library name="ioXMLWx"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="io" />
+    <requirement id="ioXML" />
+    
+</plugin>

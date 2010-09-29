@@ -1,0 +1,17 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+LIB     = [
+          'fwData_0-1',
+          'fwXML_0-1',
+          'fwDataIO_0-2',
+          'fwServices_0-1',
+          'fwComEd_0-1',
+          'fwRuntime_0-3',
+          'fwCore_0-1',
+          'fwTools_0-1',
+          'fwGui_0-1',
+          'fwZip_0-1'
+          ]
+USE     = ['boost', 'boostFilesystem','libxml2']
+BUNDLES = ['io_0-1']
+

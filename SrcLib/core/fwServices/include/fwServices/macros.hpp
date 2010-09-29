@@ -8,6 +8,7 @@
 #define _FWSERVICES_MACRO_HPP_
 
 #include <fwCore/Demangler.hpp>
+#include <fwCore/concept_checks.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/ClassRegistrar.hpp>
@@ -26,12 +27,37 @@ namespace fwServices
 /**
  * @brief Service object type association including all string-based registration
  * Associations concern Service-ObjectType are ObjectType-Service. Keys are typeid.
- * @author	IRCAD (Research and Development Team).
+ * @author  IRCAD (Research and Development Team).
  */
-#define REGISTER_SERVICE( ServiceType , Service1, Object1 )\
-REGISTER_BINDING_ID_CPY( ::fwServices::IService , Service1 , ::fwServices::ObjectServiceKeyType , \
-						 ::fwServices::ObjectServiceKeyType( ::fwCore::getClassname<ServiceType>(),  ::fwCore::getClassname<Object1>() ) , BOOST_PP_CAT( __LINE__ , A )) ; \
-REGISTER_BINDING_ID_CPY( ::fwServices::IService , Service1 , std::string , ::fwCore::TypeDemangler<Service1>().getClassname() , BOOST_PP_CAT( __LINE__ , B ) ) ;
+#define REGISTER_SERVICE( ServiceType , ServiceImpl, ServiceObject )                                                               \
+    class BOOST_PP_CAT(  ServiceTypeConceptCheck , __LINE__ )                                                                      \
+    {                                                                                                                              \
+    public:                                                                                                                        \
+        BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceType >));                                               \
+    };                                                                                                                             \
+    class BOOST_PP_CAT(  ServiceImplConceptCheck , __LINE__ )                                                                      \
+    {                                                                                                                              \
+    public:                                                                                                                        \
+        BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceImpl >));                                               \
+    };                                                                                                                             \
+    class BOOST_PP_CAT(  ServiceObjectConceptCheck , __LINE__ )                                                                    \
+    {                                                                                                                              \
+    public:                                                                                                                        \
+        BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceObject >));                                             \
+    };                                                                                                                             \
+    REGISTER_BINDING_ID_CPY(                                                                                                       \
+            ::fwServices::IService ,                                                                                               \
+            ServiceImpl ,                                                                                                          \
+            ::fwServices::ObjectServiceKeyType ,                                                                                   \
+            ::fwServices::ObjectServiceKeyType( ::fwCore::getClassname<ServiceType>(), ::fwCore::getClassname<ServiceObject>() ) , \
+            BOOST_PP_CAT( __LINE__ , A )                                                                                           \
+            ) ;                                                                                                                    \
+    REGISTER_BINDING_ID_CPY(                                                                                                       \
+            ::fwServices::IService ,                                                                                               \
+            ServiceImpl ,                                                                                                          \
+            std::string ,                                                                                                          \
+            ::fwCore::TypeDemangler<ServiceImpl>().getClassname() ,                                                                \
+            BOOST_PP_CAT( __LINE__ , B ) ) ;
 
 //@}
 

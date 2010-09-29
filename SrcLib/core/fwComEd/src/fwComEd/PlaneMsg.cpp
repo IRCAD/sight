@@ -4,8 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include "fwComEd/PlaneMsg.hpp"
 
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::PlaneMsg, ::fwComEd::PlaneMsg );
 
 namespace fwComEd
 {

@@ -13,7 +13,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TransformationMatrix3DTest );
 
 void TransformationMatrix3DTest::setUp()
 {
-	// Set up context before running a test.
+    // Set up context before running a test.
 
 }
 
@@ -21,7 +21,7 @@ void TransformationMatrix3DTest::setUp()
 
 void TransformationMatrix3DTest::tearDown()
 {
-	// Clean up after the test run.
+    // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
@@ -29,15 +29,15 @@ void TransformationMatrix3DTest::tearDown()
 void TransformationMatrix3DTest::methode1()
 {
 
-	double COEFFICIENTS = 1 ;
+    double COEFFICIENTS = 1 ;
 
-	// process
-	::fwData::TransformationMatrix3D::NewSptr p1;
+    // process
+    ::fwData::TransformationMatrix3D::NewSptr p1;
 
-	// check
-	CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),	COEFFICIENTS);
-	CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),	COEFFICIENTS);
-	CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),	COEFFICIENTS);
+    // check
+    CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),  COEFFICIENTS);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),  COEFFICIENTS);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),   COEFFICIENTS);
 
 }
 
@@ -45,16 +45,16 @@ void TransformationMatrix3DTest::methode1()
 
 void TransformationMatrix3DTest::methode2()
 {
-	double COEFFICIENTS = 4 ;
-	std::vector<double> VECTORCOEFFICIENTS ;
-	VECTORCOEFFICIENTS.push_back( COEFFICIENTS ) ;
+    double COEFFICIENTS = 4 ;
+    std::vector<double> VECTORCOEFFICIENTS ;
+    VECTORCOEFFICIENTS.push_back( COEFFICIENTS ) ;
 
-	// process
-	::fwData::TransformationMatrix3D::NewSptr p1;
-	p1->setCRefCoefficients(VECTORCOEFFICIENTS) ;
+    // process
+    ::fwData::TransformationMatrix3D::NewSptr p1;
+    p1->setCRefCoefficients(VECTORCOEFFICIENTS) ;
 
-	// check
-	CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),	COEFFICIENTS) ;
-	CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),	COEFFICIENTS) ;
-	CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),	COEFFICIENTS) ;
+    // check
+    CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),  COEFFICIENTS) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),  COEFFICIENTS) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),   COEFFICIENTS) ;
 }

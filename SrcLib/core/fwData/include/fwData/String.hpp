@@ -14,28 +14,36 @@
 namespace fwData
 {
 /**
- * @class 	String
- * @brief 	This class contains an std::string value
+ * @class   String
+ * @brief   This class contains an std::string value
  *
  * String object is essentially used as a field in other objects.
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object::Baseclass), ( ((const std::string)("")) ), new String) ;
-	/**
-	 * @brief Constructor.
-	 * @param[in] value The initial value.
-	 */
-	FWDATA_API String(const std::string _value="" ) throw();
+    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
+    /**
+     * @brief Constructor.
+     * @param[in] value The initial value.
+     */
+    FWDATA_API String(const std::string _value="" ) throw();
 
-	/**
-	 * @brief Destructor.
-	 */
-	FWDATA_API virtual ~String() throw();
+    /**
+     * @brief Destructor.
+     */
+    FWDATA_API virtual ~String() throw();
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( String::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( String::csptr _source );
 
 };
 

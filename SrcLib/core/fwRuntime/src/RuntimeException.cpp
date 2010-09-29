@@ -16,14 +16,14 @@ namespace fwRuntime
 RuntimeException::RuntimeException(const RuntimeException& exception) throw()
 : m_message(exception.m_message)
 {
-	SLM_WARN( m_message );
+    SLM_WARN( m_message );
 }
 
 
 RuntimeException::RuntimeException(const std::string& message) throw()
 : m_message(message)
 {
-	SLM_WARN( m_message );
+    SLM_WARN( m_message );
 }
 
 
@@ -33,7 +33,7 @@ RuntimeException::~RuntimeException() throw()
 
 const char* RuntimeException::what() const throw()
 {
-	return m_message.c_str();
+    return m_message.c_str();
 }
 
 

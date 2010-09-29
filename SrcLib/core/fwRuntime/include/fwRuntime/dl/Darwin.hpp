@@ -24,79 +24,79 @@ namespace dl
 
 
 /**
- * @brief	Implements a posix native module.
- * @struct	Darwin
- * @date 	2004-2009
+ * @brief   Implements a posix native module.
+ * @struct  Darwin
+ * @date    2004-2009
  *
- * @author 	IRCAD (Research and Development Team).
+ * @author  IRCAD (Research and Development Team).
  */
 struct Darwin : public Native
 {
 
-	/**
-	 * @brief	Constructor.
-	 *
-	 * @param	modulePath	a path to the module to path
-	 *
-	 * @param	partialName		a boolean telling if the module filename is just
-	 * 							a part of the real filename
-	 */
-	//Darwin(const boost::filesystem::path& modulePath, const bool partialName) throw();
-	Darwin( const boost::filesystem::path & modulePath ) throw();
+    /**
+     * @brief   Constructor.
+     *
+     * @param   modulePath  a path to the module to path
+     *
+     * @param   partialName     a boolean telling if the module filename is just
+     *                          a part of the real filename
+     */
+    //Darwin(const boost::filesystem::path& modulePath, const bool partialName) throw();
+    Darwin( const boost::filesystem::path & modulePath ) throw();
 
-	/**
-	 * @brief	Destructor.
-	 */
-	~Darwin() throw();
+    /**
+     * @brief   Destructor.
+     */
+    ~Darwin() throw();
 
 
-	/**
-	 * @see	::fwRuntime::dl::Native#isLoaded
-	 */
-	const bool isLoaded() const throw();
+    /**
+     * @see ::fwRuntime::dl::Native#isLoaded
+     */
+    const bool isLoaded() const throw();
 
-	/**
-	 * @brief	Retrieves the address of a symbol specified by its name.
-	 *
-	 * @param	name	a string containing the symbol name.
-	 *
-	 * @return	a pointer to the found symbol or null if none has been found
-	 */
-	void* getSymbol(const std::string& name) const throw(RuntimeException);
+    /**
+     * @brief   Retrieves the address of a symbol specified by its name.
+     *
+     * @param   name    a string containing the symbol name.
+     *
+     * @return  a pointer to the found symbol or null if none has been found
+     */
+    void* getSymbol(const std::string& name) const throw(RuntimeException);
 
-	/**
-	 * @see	::fwRuntime::dl::Native#load
-	 */
-	void load() throw(RuntimeException);
+    /**
+     * @see ::fwRuntime::dl::Native#load
+     */
+    void load() throw(RuntimeException);
 
-	/**
-	 * @see	::fwRuntime::dl::Native#unload
-	 */
-	void unload() throw(RuntimeException);
+    /**
+     * @see ::fwRuntime::dl::Native#unload
+     */
+    void unload() throw(RuntimeException);
 
 
 protected:
 
-	/**
-	 * @brief	Retrieves the native module file prefix.
-	 *
-	 * @return	a string containing the native module file prefix
-	 */
-	const std::string getNativeFilePrefix() const throw();
+    /**
+     * @brief   Retrieves the native module file prefix.
+     *
+     * @return  a string containing the native module file prefix
+     */
+    const std::string getNativeFilePrefix() const throw();
 
-	/**
-	 * @brief	Retrieves the native module file suffix.
-	 *
-	 * @return	a string containing the native module file suffix
-	 */
-	const std::string getNativeFileSuffix() const throw();
+    /**
+     * @brief   Retrieves the native module file suffix.
+     *
+     * @return  a string containing the native module file suffix
+     */
+    const std::string getNativeFileSuffix() const throw();
 
 private:
 
-	/**
-	 * @brief	The handle of the loaded module.
-	 */
-	void *m_handle;
+    /**
+     * @brief   The handle of the loaded module.
+     */
+    void *m_handle;
 
 };
 

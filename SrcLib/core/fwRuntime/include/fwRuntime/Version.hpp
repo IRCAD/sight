@@ -17,60 +17,60 @@ namespace fwRuntime
 
 
 /**
- * @brief 	Managment of lib and bundle version.
- * @struct	Version
- * @date	2007-2009
- * @author 	IRCAD (Research and Development Team).
+ * @brief   Managment of lib and bundle version.
+ * @struct  Version
+ * @date    2007-2009
+ * @author  IRCAD (Research and Development Team).
  */
 struct Version
 {
 
-	/**
-	 * @brief	Constructor.
-	 *
-	 * Builds an undefined version.
-	 */
-	FWRUNTIME_API Version();
+    /**
+     * @brief   Constructor.
+     *
+     * Builds an undefined version.
+     */
+    FWRUNTIME_API Version();
 
-	/**
-	 * @brief		Constructor.
-	 *
-	 * @param[in]	version 	an string representation of the version
-	 */
-	FWRUNTIME_API Version(const std::string & version);
+    /**
+     * @brief       Constructor.
+     *
+     * @param[in]   version     an string representation of the version
+     */
+    FWRUNTIME_API Version(const std::string & version);
 
-	/**
-	 * @brief		Constructor.
-	 *
-	 * @param[in]	major 	the version major number
-	 * @param[in]	minor 	the version minor number (0 by default)
-	 * @param[in]	build 	the version build number (0 by default)
-	 */
-	FWRUNTIME_API Version(const int major, const int minor = 0, const int build = 0);
-
-
-	/**
-	 * @brief	Equality test.
-	 */
-	FWRUNTIME_API const bool operator==(const Version & version) const;
+    /**
+     * @brief       Constructor.
+     *
+     * @param[in]   major   the version major number
+     * @param[in]   minor   the version minor number (0 by default)
+     * @param[in]   build   the version build number (0 by default)
+     */
+    FWRUNTIME_API Version(const int major, const int minor = 0, const int build = 0);
 
 
-	/**
-	 * @brief	String converter.
-	 */
+    /**
+     * @brief   Equality test.
+     */
+    FWRUNTIME_API const bool operator==(const Version & version) const;
+
+
+    /**
+     * @brief   String converter.
+     */
     FWRUNTIME_API const std::string string() const;
 
-	/**
- 	 * @brief	Return an ostream representation of a version.
- 	 */
-	FWRUNTIME_API friend std::ostream & operator<<(std::ostream & os, const Version & version);
+    /**
+     * @brief   Return an ostream representation of a version.
+     */
+    FWRUNTIME_API friend std::ostream & operator<<(std::ostream & os, const Version & version);
 
 private :
 
-	int m_major;	///< defines the major number of the version
-	int m_minor;	///< defines the minor number of the version
-	int m_build;	///< defines the svn build number of the version
-	bool m_defined;	///< to know if the version is defined
+    int m_major;    ///< defines the major number of the version
+    int m_minor;    ///< defines the minor number of the version
+    int m_build;    ///< defines the svn build number of the version
+    bool m_defined; ///< to know if the version is defined
 };
 
 

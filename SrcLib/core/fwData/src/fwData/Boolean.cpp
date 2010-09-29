@@ -18,7 +18,7 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Boolean::Boolean( const bool value ) throw()
-:	GenericField< bool >( value )
+:   GenericField< bool >( value )
 {}
 
 //------------------------------------------------------------------------------
@@ -27,5 +27,18 @@ Boolean::~Boolean() throw()
 {}
 
 //------------------------------------------------------------------------------
+void Boolean::shallowCopy( Boolean::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_value = _source->m_value;
+}
+
+//------------------------------------------------------------------------------
+
+void Boolean::deepCopy( Boolean::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_value = _source->m_value;
+}
 
 } // namespace fwData

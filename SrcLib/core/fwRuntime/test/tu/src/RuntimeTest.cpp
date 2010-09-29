@@ -21,45 +21,45 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RuntimeTest );
 
 void RuntimeTest::setUp()
 {
-	// Set up context before running a test.
+    // Set up context before running a test.
 }
 
 void RuntimeTest::tearDown()
 {
-	// Clean up after the test run.
+    // Clean up after the test run.
 }
 
 void RuntimeTest::testRuntime()
 {
-	// Bundles location
-	boost::filesystem::path location = boost::filesystem::current_path() / "Bundles/";
+    // Bundles location
+    boost::filesystem::path location = boost::filesystem::current_path() / "Bundles/";
 
-	if (boost::filesystem::exists(location))
-	{
-		::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
+    if (boost::filesystem::exists(location))
+    {
+        ::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
 
-		// Read bundles
-		runtime->addBundles(location);
-		CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
+        // Read bundles
+        runtime->addBundles(location);
+        CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
 
-		// Test bundle dataReg
-		CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
-		::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
-		CPPUNIT_ASSERT(bundle->hasExtension("::fwData::Composite"));
-		CPPUNIT_ASSERT(bundle->hasExtensionPoint("::fwTools::Object"));
-		bundle->setEnable(true);
-		bundle->start();
-		CPPUNIT_ASSERT(bundle->isEnable());
+        // Test bundle dataReg
+        CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
+        ::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
+        CPPUNIT_ASSERT(bundle->hasExtension("::fwData::Composite"));
+        CPPUNIT_ASSERT(bundle->hasExtensionPoint("::fwTools::Object"));
+        bundle->setEnable(true);
+        bundle->start();
+        CPPUNIT_ASSERT(bundle->isEnable());
 
-		// Test bundle servicesReg
-		::boost::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
-		bundle2->setEnable(true);
-		bundle2->start();
+        // Test bundle servicesReg
+        ::boost::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
+        bundle2->setEnable(true);
+        bundle2->start();
 
-		// Test runtime extensions
-		CPPUNIT_ASSERT(runtime->findExtension("::fwServices::IEditionService"));
-		CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::DefaultEditor"));
+        // Test runtime extensions
+        CPPUNIT_ASSERT(runtime->findExtension("::fwServices::IEditionService"));
+        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::DefaultEditor"));
 
-	}
+    }
 
 }

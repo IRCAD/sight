@@ -21,46 +21,52 @@ namespace fwData
 
 
 /**
- * @class 	Model
- * @brief 	This model class focusses on 3D model such as meshes
+ * @class   Model
+ * @brief   This model class focusses on 3D model such as meshes
  *
  * A model is represented by a triangular mesh and a material
  *
- * @see 	::fwData::TriangularMesh, ::fwData::Material
+ * @see     ::fwData::TriangularMesh, ::fwData::Material
  *
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API Model : public Object
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Model >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object), (()), ::fwTools::Factory::New< Model >) ;
 
-	/// mesh and material container
-	typedef std::map< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr  > Container ;
+    /// mesh and material container
+    typedef std::map< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr  > Container ;
 
-	/**
-	 * @brief constructor
-	 */
-	FWDATA_API Model();
+    /**
+     * @brief constructor
+     */
+    FWDATA_API Model();
 
-	/**
-	 * @brief destructor
-	 */
-	FWDATA_API virtual ~Model() throw();
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Model() throw();
 
-	/**
-	 * @brief returns editable mesh container
-	 */
-	FWDATA_API Container &getRefMap() ;
+    /**
+     * @brief returns editable mesh container
+     */
+    FWDATA_API Container &getRefMap() ;
 
-	/**
-	 * @brief returns read-only mesh container
-	 */
-	FWDATA_API const Container &getCRefMap() const ;
+    /**
+     * @brief returns read-only mesh container
+     */
+    FWDATA_API const Container &getCRefMap() const ;
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Model::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Model::csptr _source );
 
 protected:
-	Container m_map;
+    Container m_map;
 };
 
 } // namespace fwData

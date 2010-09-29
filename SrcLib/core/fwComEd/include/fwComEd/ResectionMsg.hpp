@@ -16,37 +16,37 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object event message specialized for resection : store modification information
- * @class 	ResectionMsg
+ * @brief   Object event message specialized for resection : store modification information
+ * @class   ResectionMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2009
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API ResectionMsg : public ::fwServices::ObjectMsg
 {
 public:
-	fwCoreClassDefinitionsWithFactoryMacro((ResectionMsg)(::fwServices::ObjectMsg::Baseclass), ( () ), new ResectionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ResectionMsg)(::fwServices::ObjectMsg), ( () ), new ResectionMsg );
 
-	/**
-	 * @name Event identifier
-	 */
-	/// @{
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string ADD_RECONSTRUCTION;
-	FWCOMED_API static std::string VISIBILITY;
-	FWCOMED_API static std::string NEW_RECONSTRUCTION_SELECTED;
-	FWCOMED_API static std::string MODIFIED;
-	/// @}
+    /**
+     * @name Event identifier
+     */
+    /// @{
+    /// @brief Event identifier used to inform for modification
+    FWCOMED_API static std::string ADD_RECONSTRUCTION;
+    FWCOMED_API static std::string VISIBILITY;
+    FWCOMED_API static std::string NEW_RECONSTRUCTION_SELECTED;
+    FWCOMED_API static std::string MODIFIED;
+    /// @}
 
-	/**
-	 * @brief 	Constructor : do nothing.
-	 */
-	FWCOMED_API ResectionMsg() throw();
+    /**
+     * @brief   Constructor : do nothing.
+     */
+    FWCOMED_API ResectionMsg() throw();
 
-	/**
-	 * @brief	Destuctor : do nothing.
-	 */
-	FWCOMED_API virtual ~ResectionMsg() throw();
+    /**
+     * @brief   Destuctor : do nothing.
+     */
+    FWCOMED_API virtual ~ResectionMsg() throw();
 
 };
 

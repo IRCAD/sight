@@ -16,31 +16,31 @@ namespace fwComEd
 {
 
 /**
- * @brief	Object message specialized for model : store modification information
- * @class 	ModelMsg
+ * @brief   Object message specialized for model : store modification information
+ * @class   ModelMsg
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009
- * @see 	::fwServices::ObjectMsg
+ * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API ModelMsg : public fwServices::ObjectMsg
 {
 
 public:
 
-	fwCoreClassDefinitionsWithFactoryMacro((ModelMsg)(::fwServices::ObjectMsg::Baseclass), ( ( ) ), new ModelMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ModelMsg)(::fwServices::ObjectMsg), ( ( ) ), new ModelMsg );
 
-	/// Event identifier used to inform for modification
-	FWCOMED_API static std::string NEW_MODEL;
+    /// Event identifier used to inform for modification
+    FWCOMED_API static std::string NEW_MODEL;
 
-	/**
-	 * @brief	Constructor : does nothing.
-	 */
-	FWCOMED_API ModelMsg() throw();
+    /**
+     * @brief   Constructor : does nothing.
+     */
+    FWCOMED_API ModelMsg() throw();
 
-	/**
-	 * @brief	Destuctor : does nothing.
-	 */
-	FWCOMED_API virtual ~ModelMsg() throw();
+    /**
+     * @brief   Destuctor : does nothing.
+     */
+    FWCOMED_API virtual ~ModelMsg() throw();
 
 };
 

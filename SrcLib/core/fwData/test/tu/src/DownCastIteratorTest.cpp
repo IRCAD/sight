@@ -13,10 +13,10 @@ void DownCastIteratorTest::constructeur()
 {
 
 
-	// process
-	::fwData::DownCastIterator * p1 = new ::fwData::DownCastIterator();
+    // process
+    ::fwData::DownCastIterator::NewSptr p1;
 
-	// check
-	CPPUNIT_ASSERT_EQUAL(,	);
+    // check
+    CPPUNIT_ASSERT_EQUAL(,  );
 
 }

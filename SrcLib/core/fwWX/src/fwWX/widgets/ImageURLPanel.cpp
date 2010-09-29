@@ -20,36 +20,36 @@ namespace widgets
 
 ImageURLPanel::ImageURLPanel(wxWindow *parent, const wxBitmap& bitmap) : wxPanel(parent, wxID_ANY), m_bitmap(bitmap)
 {
-	SetClientSize(bitmap.GetWidth(), bitmap.GetHeight());
-	//this->SetBackgroundColour(*wxRED);
+    SetClientSize(bitmap.GetWidth(), bitmap.GetHeight());
+    //this->SetBackgroundColour(*wxRED);
 }
 
 void ImageURLPanel::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
-	wxPaintDC dc( this );
-	dc.DrawBitmap( m_bitmap, 0, 0, true /* use mask */ );
+    wxPaintDC dc( this );
+    dc.DrawBitmap( m_bitmap, 0, 0, true /* use mask */ );
 }
 
 void ImageURLPanel::OnWeb(wxMouseEvent& WXUNUSED(event))
 {
-	wxLaunchDefaultBrowser(_T("http://www.ircad.fr/"));
+    wxLaunchDefaultBrowser(_T("http://www.ircad.fr/"));
 }
 
 void ImageURLPanel::OnFocus(wxMouseEvent& WXUNUSED(event))
 {
-	wxLaunchDefaultBrowser(_T("http://www.ircad.fr/"));
+    wxLaunchDefaultBrowser(_T("http://www.ircad.fr/"));
 }
 
 void ImageURLPanel::OnEnter(wxMouseEvent& WXUNUSED(event))
 {
-	SLM_TRACE("ImageURLPanel::OnEnter");
-	SetCursor(wxCURSOR_HAND);
+    SLM_TRACE("ImageURLPanel::OnEnter");
+    SetCursor(wxCURSOR_HAND);
 }
 
 void ImageURLPanel::OnLeave(wxMouseEvent& WXUNUSED(event))
 {
-	SLM_TRACE("ImageURLPanel::OnLeave");
-	SetCursor(wxCURSOR_ARROW);
+    SLM_TRACE("ImageURLPanel::OnLeave");
+    SetCursor(wxCURSOR_ARROW);
 }
 
 //------------------------------------------------------------------------------
@@ -57,8 +57,8 @@ void ImageURLPanel::OnLeave(wxMouseEvent& WXUNUSED(event))
 BEGIN_EVENT_TABLE(ImageURLPanel, wxPanel)
     EVT_PAINT(ImageURLPanel::OnPaint)
     EVT_LEFT_DCLICK(ImageURLPanel::OnWeb)
-	EVT_ENTER_WINDOW(ImageURLPanel::OnEnter)
-	EVT_LEAVE_WINDOW(ImageURLPanel::OnLeave)
+    EVT_ENTER_WINDOW(ImageURLPanel::OnEnter)
+    EVT_LEAVE_WINDOW(ImageURLPanel::OnLeave)
 END_EVENT_TABLE()
 
 //------------------------------------------------------------------------------

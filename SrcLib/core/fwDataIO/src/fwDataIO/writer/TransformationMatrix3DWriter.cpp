@@ -44,35 +44,35 @@ TransformationMatrix3DWriter::~TransformationMatrix3DWriter()
 
 void TransformationMatrix3DWriter::write()
 {
-	std::fstream file;
-	file.open(getFile().native_file_string().c_str(), std::fstream::out);
-	if (!file.is_open())
-	{
-		OSLM_ERROR( "Trf file writing error for " << getFile());
-		return;
-	}
-	::std::vector< double > mat = this->getConcreteObject()->getRefCoefficients();
-	::std::vector< double >::iterator iter;
-	int i=0;
-	for (iter = mat.begin() ; iter!= mat.end() ; ++iter)
-	{
-		OSLM_TRACE("MATRIX : " << (*iter));
-		file << (*iter);
-		i++;
-		if (i%4 == 0 && i!=16)
-			file << std::endl;
-		else
-			file << " ";
-	}
+    std::fstream file;
+    file.open(getFile().native_file_string().c_str(), std::fstream::out);
+    if (!file.is_open())
+    {
+        OSLM_ERROR( "Trf file writing error for " << getFile());
+        return;
+    }
+    ::std::vector< double > mat = this->getConcreteObject()->getRefCoefficients();
+    ::std::vector< double >::iterator iter;
+    int i=0;
+    for (iter = mat.begin() ; iter!= mat.end() ; ++iter)
+    {
+        OSLM_TRACE("MATRIX : " << (*iter));
+        file << (*iter);
+        i++;
+        if (i%4 == 0 && i!=16)
+            file << std::endl;
+        else
+            file << " ";
+    }
 
-	file.close();
+    file.close();
 }
 
 
 std::string  TransformationMatrix3DWriter::extension()
 {
-	static std::string ext(".trf");
-	return ext;
+    static std::string ext(".trf");
+    return ext;
 }
 
 //------------------------------------------------------------------------------

@@ -17,60 +17,74 @@
 namespace fwData
 {
 /**
- * @class 	Spline
- * @brief 	This class defines a spline object.
- * @author	IRCAD (Research and Development Team).
- * @date	2007-2009.
+ * @class   Spline
+ * @brief   This class defines a spline object.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2007-2009.
  */
 class FWDATA_CLASS_API Spline : public Object
 {
 public :
-	fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object::Baseclass), (()), ::fwTools::Factory::New< Spline >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwTools::Factory::New< Spline >) ;
 
-	/**
-	 * @struct point
-	 * @brief Defines a 3D %point for a spline.
-	 */
-	typedef struct{
-		int id;            /**< @brief Identifier */
-		double p[3];       /**< @brief Point coordinates */
-		double normal[3];  /**< @brief Normal coordinates*/
-		Color c;           /**< @brief Point color*/
-		bool isVisible;    /**< @brief Flag if %point is visible */
-	}point;
+    /**
+     * @struct point
+     * @brief Defines a 3D %point for a spline.
+     */
+    struct point {
+        int id;            /**< @brief Identifier */
+        double p[3];       /**< @brief Point coordinates */
+        double normal[3];  /**< @brief Normal coordinates*/
+        Color c;           /**< @brief Point color*/
+        bool isVisible;    /**< @brief Flag if %point is visible */
 
-	/// 3D %point container
-	typedef std::vector< point > Points ;
+        point &operator=( const point & _point )
+        {
+            this->id = _point.id;
+            this->p[0] = _point.p[0];
+            this->p[1] = _point.p[1];
+            this->p[2] = _point.p[2];
+            this->normal[0] = _point.normal[0];
+            this->normal[1] = _point.normal[1];
+            this->normal[2] = _point.normal[2];
+            this->isVisible = _point.isVisible;
+            c.deepCopy( _point.c.getConstSptr() );
+            return(*this);
+        };
+    };
+
+    /// 3D %point container
+    typedef std::vector< point > Points ;
 
 
-	/**
-	 * @brief constructor
-	 */
-	FWDATA_API Spline();
+    /**
+     * @brief constructor
+     */
+    FWDATA_API Spline();
 
-	/**
-	 * @brief destructor
-	 */
-	FWDATA_API virtual ~Spline() ;
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Spline() ;
 
-	/**
-	 * @brief returns editable point container
-	 */
-	FWDATA_API Points &points() ;
+    /**
+     * @brief returns editable point container
+     */
+    FWDATA_API Points &points() ;
 
-	fwGettersSettersDocMacro(Radius, radius, double, radius value);
+    fwGettersSettersDocMacro(Radius, radius, double, radius value);
 
-	fwGettersSettersDocMacro(NbSides, nbSides, int, number of slices);
+    fwGettersSettersDocMacro(NbSides, nbSides, int, number of slices);
 
-	fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
+    fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
 
 protected :
 
-	/// Points container
-	Points		m_points ;
-	double 		m_radius;
-	int			m_nbSides;
-	int 		m_idSpline;
+    /// Points container
+    Points      m_points ;
+    double      m_radius;
+    int         m_nbSides;
+    int         m_idSpline;
 
 } ;
 
