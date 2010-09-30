@@ -54,6 +54,10 @@ private:
     static const std::map< ::fwGui::layoutManager::IFrameLayoutManager::Style, long> FWSTYLE_TO_WXSTYLE;
 
     void onCloseFrame(wxCloseEvent& event);
+
+    void setState(FrameState state);
+    FrameState getState();
+
     wxFrame* m_wxFrame;
 };
 
