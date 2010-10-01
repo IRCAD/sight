@@ -35,8 +35,8 @@ SerializeXML::~SerializeXML()
 void SerializeXML::visit( ::fwTools::Object::sptr obj)
 {
     assert(obj);
-    std::string uuid = ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
-    std::string srcUuid = m_source?::fwTools::UUID::get(m_source,::fwTools::UUID::EXTENDED):"NoSOURCENOUUID";
+    std::string uuid = ::fwTools::UUID::get(obj);
+    std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     OSLM_DEBUG( "SerializeXML Visitor Visiting : Class " << obj->className() <<
                 "(" <<  uuid    <<
                 ") Support<FileFormatService>" <<  (fwServices::support< ::fwXML::IFileFormatService >(obj)?"yes":"no") <<
@@ -59,12 +59,12 @@ void SerializeXML::visit( ::fwTools::Object::sptr obj)
          ::boost::shared_ptr< ::fwXML::IFileFormatService >  saver =fwServices::get< ::fwXML::IFileFormatService >(obj,0);
         if (saver)
         {
-            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
+            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
             saver->extension() = saver->getWriter()->extension();
         }
         else
         {
-            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
+            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
             saver->extension() = ".dummy";
         }
     }

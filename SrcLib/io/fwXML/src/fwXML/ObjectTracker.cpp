@@ -108,17 +108,17 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
         OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " first instantiation");
         if ( ::fwTools::UUID::supervise(newObject) == false )
         {
-            std::string newID = ::fwTools::UUID::get(newObject, ::fwTools::UUID::EXTENDED); // generate a new one
+            std::string newID = ::fwTools::UUID::get(newObject); // generate a new one
             m_oldNewUUIDTranslation[uniqueIDXML] = newID;
             OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " new UUID : "
-                        << ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED) );
+                        << ::fwTools::UUID::get(newObject) );
         }
         else
         {
-            std::string currentID = ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED);
+            std::string currentID = ::fwTools::UUID::get(newObject);
             m_oldNewUUIDTranslation[uniqueIDXML] = currentID;
             OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " use previous UUID : "
-                                    << ::fwTools::UUID::get(newObject,::fwTools::UUID::EXTENDED) );
+                                    << ::fwTools::UUID::get(newObject) );
         }
         return newObject;
     }
