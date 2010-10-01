@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -24,7 +22,7 @@ namespace dialog
 
 ProgressDialog::ProgressDialog( const std::string title, const std::string message)
 {
-    m_pdialog = new QProgressDialog( 0 );
+    m_pdialog = new QProgressDialog( qApp->activeWindow() );
 
     // FIXME modal dialog has conflict with MessageHandler
     m_pdialog->setWindowModality(Qt::NonModal);

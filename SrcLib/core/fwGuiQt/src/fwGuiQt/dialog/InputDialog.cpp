@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <QApplication>
 #include <QInputDialog>
 #include <QObject>
 
@@ -64,7 +65,7 @@ std::string InputDialog::getInput()
     QWidget *parent = 0;
 
     bool IsOkClicked;
-    QString outputText = QInputDialog::getText(parent, title, text, QLineEdit::Normal,QString::fromStdString(m_input),&IsOkClicked);
+    QString outputText = QInputDialog::getText(qApp->activeWindow(), title, text, QLineEdit::Normal,QString::fromStdString(m_input),&IsOkClicked);
 
     if ( IsOkClicked)
     {

@@ -16,6 +16,7 @@
 #define QT_NO_KEYWORDS_FWDEF
 #endif
 
+#include <QApplication>
 #include <QProgressDialog>
 #include <QPointer>
 

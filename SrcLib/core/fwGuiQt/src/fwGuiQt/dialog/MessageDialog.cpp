@@ -7,6 +7,7 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/foreach.hpp>
 
+#include <QApplication>
 #include <QMessageBox>
 
 #include <fwTools/ClassRegistrar.hpp>
@@ -81,13 +82,12 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 ::fwGui::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     MessageDialogQtIconsType::const_iterator iterIcon = messageDialogQtIcons.find(m_icon);
-    SLM_ASSERT("Unknwown Icon", iterIcon != messageDialogQtIcons.end())
+    SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQtIcons.end())
 
     QMessageBox::Icon icon = iterIcon->second;
     QString title = QString::fromStdString(m_title);
     QString text = QString::fromStdString(m_message);
     QMessageBox::StandardButtons buttons = QMessageBox::NoButton;
-    QWidget *parent = 0;
 
     BOOST_FOREACH(MessageDialogQtButtonType::value_type button, messageDialogQtButton)
     {
@@ -97,7 +97,7 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
         }
     }
 
-    QMessageBox box(icon, title, text, buttons, parent);
+    QMessageBox box(icon, title, text, buttons, qApp->activeWindow());
     ::fwGui::dialog::IMessageDialog::Buttons result;
 
     box.exec();
