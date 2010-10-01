@@ -37,7 +37,7 @@ MenuBarLayoutManager::~MenuBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void MenuBarLayoutManager::createLayout( ::fwGui::fwMenuBar::sptr parent )
+void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -61,7 +61,7 @@ void MenuBarLayoutManager::createLayout( ::fwGui::fwMenuBar::sptr parent )
 void MenuBarLayoutManager::destroyLayout()
 {
     wxMenuBar* menuBar = m_parent->getWxMenuBar();
-    BOOST_FOREACH(::fwGui::fwMenu::sptr menu, m_menus)
+    BOOST_FOREACH(::fwGui::container::fwMenu::sptr menu, m_menus)
     {
         std::string name = m_menuNames[this->getMenuPosition(menu)];
         int index = menuBar->FindMenu(::fwWX::std2wx(name));
@@ -74,14 +74,14 @@ void MenuBarLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void MenuBarLayoutManager::menuIsVisible(::fwGui::fwMenu::sptr fwMenu, bool isVisible)
+void MenuBarLayoutManager::menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu, bool isVisible)
 {
     SLM_FATAL("TODO : MenuBarLayoutManager::menuIsVisible not yet implemented.")
 }
 
 //-----------------------------------------------------------------------------
 
-void MenuBarLayoutManager::menuIsEnabled(::fwGui::fwMenu::sptr fwMenu, bool isEnabled)
+void MenuBarLayoutManager::menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu, bool isEnabled)
 {
     wxMenuBar* menuBar = m_parent->getWxMenuBar();
     std::string name = m_menuNames[this->getMenuPosition(fwMenu)];
@@ -92,10 +92,10 @@ void MenuBarLayoutManager::menuIsEnabled(::fwGui::fwMenu::sptr fwMenu, bool isEn
 
 //-----------------------------------------------------------------------------
 
-int MenuBarLayoutManager::getMenuPosition(::fwGui::fwMenu::sptr fwMenu)
+int MenuBarLayoutManager::getMenuPosition(::fwGui::container::fwMenu::sptr fwMenu)
 {
     int index = 0;
-    BOOST_FOREACH(::fwGui::fwMenu::sptr menu, m_menus)
+    BOOST_FOREACH(::fwGui::container::fwMenu::sptr menu, m_menus)
     {
         if (menu == fwMenu)
         {

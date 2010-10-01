@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 
-#include <fwGui/fwContainer.hpp>
+#include <fwGui/container/fwContainer.hpp>
 
 #include "fwGuiWx/config.hpp"
 
@@ -28,12 +28,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUIWX_CLASS_API WxContainer : public ::fwGui::fwContainer
+class FWGUIWX_CLASS_API WxContainer : public ::fwGui::container::fwContainer
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (WxContainer)(::fwGui::fwContainer), (()), new WxContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (WxContainer)(::fwGui::container::fwContainer), (()), new WxContainer );
 
     /**
      * @brief   Constructor.

@@ -44,7 +44,7 @@ ToolBarLayoutManager::~ToolBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
+void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -113,7 +113,7 @@ void ToolBarLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void ToolBarLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -122,7 +122,7 @@ void ToolBarLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuIt
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -131,7 +131,7 @@ void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuIt
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void ToolBarLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();

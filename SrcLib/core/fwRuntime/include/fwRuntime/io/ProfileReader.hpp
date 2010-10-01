@@ -24,9 +24,9 @@ namespace fwRuntime
 {
     namespace profile
     {
-        struct Activater;
-        struct Profile;
-        struct Starter;
+        class Activater;
+        class Profile;
+        class Starter;
     }
 }
 

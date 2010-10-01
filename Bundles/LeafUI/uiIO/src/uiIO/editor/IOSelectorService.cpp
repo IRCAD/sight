@@ -19,7 +19,7 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwGui/ISelector.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -190,8 +190,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         bool extensionIdFound = false;
         if ( availableExtensionsSelector.size() > 1 )
         {
-            ::fwGui::ISelector::sptr selector = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ISelector >( ::fwGui::ISelector::REGISTRY_KEY );
-            OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::ISelector::REGISTRY_KEY, selector);
+            ::fwGui::dialog::SelectorDialog::NewSptr selector;
 
             if ( m_mode != READER_MODE )
             {

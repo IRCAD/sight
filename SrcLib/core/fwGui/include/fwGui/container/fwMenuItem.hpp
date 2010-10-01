@@ -13,7 +13,8 @@
 
 namespace fwGui
 {
-
+namespace container
+{
 /**
  * @brief   Defines the menu item for IHM.
  * @class   fwMenuItemBar.
@@ -32,7 +33,7 @@ public:
     FWGUI_API virtual void destroyContainer() = 0;
 
 };
-
+} // namespace container
 } // namespace fwGui
 
 #endif /*_FWGUI_FWMENUITEM_HPP_*/

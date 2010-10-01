@@ -5,21 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwGui/ISelector.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
 
 namespace fwGui
 {
+namespace container
+{
 
-const ISelector::FactoryRegistryKeyType ISelector::REGISTRY_KEY =  "::fwGui::Selector";
-
-ISelector::ISelector()
-{}
-
-
-ISelector::~ISelector()
-{}
-
-
-} // namespace fwGui
-
-
+}
+}

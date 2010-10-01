@@ -10,8 +10,8 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwGui/fwMenuBar.hpp>
-#include <fwGui/fwMenu.hpp>
+#include <fwGui/container/fwMenuBar.hpp>
+#include <fwGui/container/fwMenu.hpp>
 #include <fwGui/layoutManager/IMenuBarLayoutManager.hpp>
 
 #include "fwGuiQt/container/QtMenuBarContainer.hpp"
@@ -45,7 +45,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    FWGUIQT_API virtual void createLayout( ::fwGui::fwMenuBar::sptr parent );
+    FWGUIQT_API virtual void createLayout( ::fwGui::container::fwMenuBar::sptr parent );
 
     /**
      * @brief Destroy local menus.
@@ -57,12 +57,12 @@ public:
     /**
      * @brief Set the menu visibility.
      */
-    FWGUIQT_API virtual void menuIsVisible(::fwGui::fwMenu::sptr fwMenu, bool isVisible);
+    FWGUIQT_API virtual void menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu, bool isVisible);
 
     /**
      * @brief Set the menu enable or not.
      */
-    FWGUIQT_API virtual void menuIsEnabled(::fwGui::fwMenu::sptr fwMenu, bool isEnabled);
+    FWGUIQT_API virtual void menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu, bool isEnabled);
 
 protected:
     ::fwGuiQt::container::QtMenuBarContainer::sptr m_parent;

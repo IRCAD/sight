@@ -31,17 +31,17 @@ MenuRegistrar::~MenuRegistrar()
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenu::sptr MenuRegistrar::getParent()
+::fwGui::container::fwMenu::sptr MenuRegistrar::getParent()
 {
     return ::fwGui::GuiRegistry::getSIDMenu(m_sid);
 }
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenuItem::sptr MenuRegistrar::getFwMenuItem(std::string actionSid, std::vector< ::fwGui::fwMenuItem::sptr > menuItems)
+::fwGui::container::fwMenuItem::sptr MenuRegistrar::getFwMenuItem(std::string actionSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems)
 {
     SLM_ASSERT("menuItem not found", m_actionSids.find(actionSid) != m_actionSids.end());
-    ::fwGui::fwMenuItem::sptr menuItem = menuItems.at( m_actionSids[actionSid].first );
+    ::fwGui::container::fwMenuItem::sptr menuItem = menuItems.at( m_actionSids[actionSid].first );
     return menuItem;
 }
 
@@ -88,9 +88,9 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
 
 //-----------------------------------------------------------------------------
 
-void MenuRegistrar::manage(std::vector< ::fwGui::fwMenuItem::sptr > menuItems )
+void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems )
 {
-    ::fwGui::fwMenuItem::sptr menuItem;
+    ::fwGui::container::fwMenuItem::sptr menuItem;
     BOOST_FOREACH( SIDMenuMapType::value_type sid, m_actionSids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < menuItems.size());

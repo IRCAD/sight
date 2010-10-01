@@ -11,46 +11,49 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QLabel>
 
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include "fwGuiQt/Selector.hpp"
+#include "fwGuiQt/dialog/MultiSelectorDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::ISelector, ::fwGuiQt::Selector, ::fwGui::ISelector::FactoryRegistryKeyType , ::fwGui::ISelector::REGISTRY_KEY );
+REGISTER_BINDING( ::fwGui::dialog::IMultiSelectorDialog, ::fwGuiQt::dialog::MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog::FactoryRegistryKeyType , ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiQt
+{
+namespace dialog
 {
 
 //------------------------------------------------------------------------------
 
-Selector::Selector() : m_title("")
+MultiSelectorDialog::MultiSelectorDialog() : m_title(""), m_message("")
 {}
 
 //------------------------------------------------------------------------------
 
-Selector::~Selector()
+MultiSelectorDialog::~MultiSelectorDialog()
 {}
 
 //------------------------------------------------------------------------------
 
-void Selector::setSelections(std::vector< std::string > _selections)
+void MultiSelectorDialog::setSelections(Selections _selections)
 {
     this->m_selections = _selections;
 }
 
 //------------------------------------------------------------------------------
 
-void Selector::setTitle(std::string _title)
+void MultiSelectorDialog::setTitle(std::string _title)
 {
     this->m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-std::string Selector::show()
+::fwGui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     QWidget *parent = qApp->activeWindow();
 
@@ -58,9 +61,11 @@ std::string Selector::show()
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
     QListWidget *selectionList = new QListWidget(dialog);
-    BOOST_FOREACH( std::string selection, m_selections)
+    BOOST_FOREACH( Selections::value_type selection, m_selections)
     {
-        selectionList->addItem(QString::fromStdString ( selection ));
+        QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
+        item->setCheckState( (selection.second ? Qt::Checked : Qt::Unchecked) );
+        selectionList->addItem(item);
     }
 
     QListWidgetItem* firstItem = selectionList->item(0);
@@ -74,6 +79,11 @@ std::string Selector::show()
     hLayout->addWidget(cancelButton);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    if(!m_message.empty())
+    {
+        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
+        vLayout->addWidget( msgText);
+    }
     vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
@@ -82,17 +92,29 @@ std::string Selector::show()
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     QObject::connect(selectionList, SIGNAL(itemDoubleClicked( QListWidgetItem * )), dialog, SLOT(accept()));
 
-    std::string selection = "";
+    Selections selections;
     if(dialog->exec())
     {
-        selection = selectionList->currentItem()->text().toStdString();
+        int indexItem=0;
+        BOOST_FOREACH( Selections::value_type selection, m_selections)
+        {
+            selections[selection.first] = (selectionList->item(indexItem)->checkState() == Qt::Checked);
+            indexItem++;
+         }
     }
-
-    return selection;
+    return selections;
 }
 
 //------------------------------------------------------------------------------
 
+void MultiSelectorDialog::setMessage(const std::string &msg)
+{
+    m_message = msg;
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace dialog
 } // namespace fwGuiQt
 
 

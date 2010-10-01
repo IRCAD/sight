@@ -31,9 +31,9 @@ ViewRegistrar::~ViewRegistrar()
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwContainer::sptr ViewRegistrar::getParent()
+::fwGui::container::fwContainer::sptr ViewRegistrar::getParent()
 {
-    ::fwGui::fwContainer::sptr parentContainer;
+    ::fwGui::container::fwContainer::sptr parentContainer;
     if(!m_parentWid.empty())
     {
         parentContainer = ::fwGui::GuiRegistry::getWIDContainer(m_parentWid);
@@ -134,9 +134,9 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
 
 //-----------------------------------------------------------------------------
 
-void ViewRegistrar::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
+void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > subViews )
 {
-    ::fwGui::fwContainer::sptr container;
+    ::fwGui::container::fwContainer::sptr container;
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < subViews.size());
@@ -160,7 +160,7 @@ void ViewRegistrar::manage(std::vector< ::fwGui::fwContainer::sptr > subViews )
 
 //-----------------------------------------------------------------------------
 
-void ViewRegistrar::manageMenuBar(::fwGui::fwMenuBar::sptr menuBar )
+void ViewRegistrar::manageMenuBar(::fwGui::container::fwMenuBar::sptr menuBar )
 {
     ::fwGui::GuiRegistry::registerSIDMenuBar(m_menuBarSid.first, menuBar);
     if(m_menuBarSid.second) //service is auto started?
@@ -173,7 +173,7 @@ void ViewRegistrar::manageMenuBar(::fwGui::fwMenuBar::sptr menuBar )
 
 //-----------------------------------------------------------------------------
 
-void ViewRegistrar::manageToolBar(::fwGui::fwToolBar::sptr toolBar )
+void ViewRegistrar::manageToolBar(::fwGui::container::fwToolBar::sptr toolBar )
 {
     ::fwGui::GuiRegistry::registerSIDToolBar(m_toolBarSid.first, toolBar);
     if(m_toolBarSid.second) //service is auto started?

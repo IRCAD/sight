@@ -193,7 +193,7 @@ void PulseProgressDialog::show()
 void PulseProgressDialog::onComplete( wxThreadEvent &event )
 {
     // TODO faire un arret plus propre
-    OSLM_TRACE("UUUvoid PulseProgressTowx::onComplete( wxThreadEvent &event )" );
+    SLM_TRACE_FUNC();
 
 }
 

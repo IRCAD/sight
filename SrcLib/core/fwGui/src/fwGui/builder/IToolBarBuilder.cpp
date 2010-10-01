@@ -55,7 +55,7 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwToolBar::sptr IToolBarBuilder::getToolBar()
+::fwGui::container::fwToolBar::sptr IToolBarBuilder::getToolBar()
 {
     return this->m_toolBar;
 }

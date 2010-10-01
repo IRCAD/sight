@@ -36,7 +36,7 @@ TabLayoutManager::~TabLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void TabLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
+void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_FWCONTAINER_HPP_
-#define _FWGUI_FWCONTAINER_HPP_
+#ifndef _FWGUI_FWMENU_HPP_
+#define _FWGUI_FWMENU_HPP_
 
 #include <fwCore/base.hpp>
 
@@ -13,29 +13,29 @@
 
 namespace fwGui
 {
-
+namespace container
+{
 /**
- * @brief   Defines the generic container for IHM.
- * @class   fwContainer.
+ * @brief   Defines the menu for IHM.
+ * @class   fwMenuBar.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API fwContainer : public ::fwCore::BaseObject
+class FWGUI_CLASS_API fwMenu : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (fwContainer)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (fwMenu)(::fwCore::BaseObject) ) ;
 
     FWGUI_API virtual void clean() = 0;
     FWGUI_API virtual void destroyContainer() = 0;
-    FWGUI_API virtual bool isShownOnScreen() = 0;
 
 };
-
+} // namespace container
 } // namespace fwGui
 
-#endif /*_FWGUI_FWCONTAINER_HPP_*/
+#endif /*_FWGUI_FWMENU_HPP_*/
 
 

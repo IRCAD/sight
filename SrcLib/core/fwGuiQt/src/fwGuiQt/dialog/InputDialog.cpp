@@ -21,32 +21,44 @@ namespace fwGuiQt
 {
 namespace dialog
 {
-InputDialog::InputDialog():m_input("")
+
+//------------------------------------------------------------------------------
+
+InputDialog::InputDialog() : m_input("")
 {}
 
+//------------------------------------------------------------------------------
 
 InputDialog::~InputDialog()
 {}
+
+//------------------------------------------------------------------------------
 
 void InputDialog::setTitle( const std::string &title )
 {
     m_title = title;
 }
 
+//------------------------------------------------------------------------------
+
 void InputDialog::setMessage( const std::string &msg )
 {
     m_message = msg;
 }
+
+//------------------------------------------------------------------------------
+
 /// Set the input text in the input field
 void InputDialog::setInput(const std::string &text)
 {
     m_input = text;
 }
 
+//------------------------------------------------------------------------------
+
 /// Get the input text in the input field
 std::string InputDialog::getInput()
 {
-
     QString title = QObject::tr(m_title.c_str());
     QString text = QObject::tr(m_message.c_str());
     QWidget *parent = 0;
@@ -58,9 +70,11 @@ std::string InputDialog::getInput()
     {
         m_input = outputText.toStdString();
     }
-
     return m_input;
 }
+
+//------------------------------------------------------------------------------
+
 } // namespace dialog
 } // namespace fwGuiQt
 

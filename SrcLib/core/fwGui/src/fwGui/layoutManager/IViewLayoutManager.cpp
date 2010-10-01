@@ -27,7 +27,7 @@ IViewLayoutManager::~IViewLayoutManager()
 
 void IViewLayoutManager::destroySubViews()
 {
-    BOOST_FOREACH( ::fwGui::fwContainer::sptr container, m_subViews)
+    BOOST_FOREACH( ::fwGui::container::fwContainer::sptr container, m_subViews)
     {
         container->destroyContainer();
     }
@@ -36,7 +36,7 @@ void IViewLayoutManager::destroySubViews()
 
 //-----------------------------------------------------------------------------
 
-std::vector< ::fwGui::fwContainer::sptr > IViewLayoutManager::getSubViews()
+std::vector< ::fwGui::container::fwContainer::sptr > IViewLayoutManager::getSubViews()
 {
     return this->m_subViews;
 }

@@ -13,7 +13,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 
-#include <fwGui/fwMenuBar.hpp>
+#include <fwGui/container/fwMenuBar.hpp>
 
 #include "fwGuiQt/config.hpp"
 
@@ -34,12 +34,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUIQT_CLASS_API QtMenuBarContainer : public ::fwGui::fwMenuBar
+class FWGUIQT_CLASS_API QtMenuBarContainer : public ::fwGui::container::fwMenuBar
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuBarContainer)(::fwGui::fwMenuBar), (()), new QtMenuBarContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuBarContainer)(::fwGui::container::fwMenuBar), (()), new QtMenuBarContainer );
 
     /**
      * @brief   Constructor.

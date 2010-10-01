@@ -38,7 +38,7 @@ CardinalLayoutManager::~CardinalLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
+void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
@@ -123,7 +123,6 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
         ::fwGuiQt::container::QtContainer::NewSptr subContainer;
         subContainer->setQtContainer(insideWidget);
         m_subViews.push_back(subContainer);
-
     }
 
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);

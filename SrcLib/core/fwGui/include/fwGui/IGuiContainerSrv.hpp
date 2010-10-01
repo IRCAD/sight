@@ -10,7 +10,7 @@
 #include <fwServices/IService.hpp>
 
 #include "fwGui/config.hpp"
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 
 #include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
@@ -99,7 +99,7 @@ protected :
 
     FWGUI_API void destroy();
 
-    FWGUI_API ::fwGui::fwContainer::sptr getContainer();
+    FWGUI_API ::fwGui::container::fwContainer::sptr getContainer();
 
 private:
 

@@ -5,10 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwGui/fwMenuItem.hpp"
+#include "fwGui/container/fwContainer.hpp"
 
 namespace fwGui
 {
+namespace container
+{
 
-
+}
 }

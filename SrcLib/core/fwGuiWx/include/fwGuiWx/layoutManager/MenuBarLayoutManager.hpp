@@ -10,8 +10,8 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwGui/fwMenuBar.hpp>
-#include <fwGui/fwMenu.hpp>
+#include <fwGui/container/fwMenuBar.hpp>
+#include <fwGui/container/fwMenu.hpp>
 #include <fwGui/layoutManager/IMenuBarLayoutManager.hpp>
 
 #include "fwGuiWx/container/WxMenuBarContainer.hpp"
@@ -45,7 +45,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    FWGUIWX_API virtual void createLayout( ::fwGui::fwMenuBar::sptr parent );
+    FWGUIWX_API virtual void createLayout( ::fwGui::container::fwMenuBar::sptr parent );
 
     /**
      * @brief Destroy local menus.
@@ -57,17 +57,17 @@ public:
     /**
      * @brief Set the menu visibility.
      */
-    FWGUIWX_API virtual void menuIsVisible(::fwGui::fwMenu::sptr fwMenu, bool isVisible);
+    FWGUIWX_API virtual void menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu, bool isVisible);
 
     /**
      * @brief Set the menu enable or not.
      */
-    FWGUIWX_API virtual void menuIsEnabled(::fwGui::fwMenu::sptr fwMenu, bool isEnabled);
+    FWGUIWX_API virtual void menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu, bool isEnabled);
 
 protected:
 
     /// Return the position of the menu in the menuBar
-    int getMenuPosition(::fwGui::fwMenu::sptr fwMenu);
+    int getMenuPosition(::fwGui::container::fwMenu::sptr fwMenu);
 
     ::fwGuiWx::container::WxMenuBarContainer::sptr m_parent;
 };

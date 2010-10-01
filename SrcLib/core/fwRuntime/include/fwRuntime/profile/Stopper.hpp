@@ -25,12 +25,13 @@ namespace profile
 
 /**
  * @brief   Stops a given bundle.
- * @struct  Stopper
+ * @class  Stopper
  * @date    2007-2009
  * @author  IRCAD (Research and Development Team).
  */
-struct Stopper : public ::fwRuntime::profile::Starter
+class Stopper : public ::fwRuntime::profile::Starter
 {
+public:
 
     /**
      * @brief       Constructor
@@ -45,8 +46,6 @@ struct Stopper : public ::fwRuntime::profile::Starter
      * @remark  This method should be called directly.
      */
     void apply();
-
-
 };
 
 

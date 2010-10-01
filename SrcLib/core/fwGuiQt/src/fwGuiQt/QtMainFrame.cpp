@@ -5,10 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <QMainWindow>
-#include <QStringList>
-#include <QSlider>
-#include <QLineEdit>
-#include <QHBoxLayout>
 
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>

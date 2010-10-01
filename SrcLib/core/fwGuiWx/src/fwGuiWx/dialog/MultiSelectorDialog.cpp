@@ -9,6 +9,7 @@
 #include <wx/choice.h>
 #include <wx/arrstr.h>
 #include <wx/sizer.h>
+#include <wx/stattext.h>
 
 #include <boost/foreach.hpp>
 
@@ -16,54 +17,62 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwWX/convert.hpp>
 
-#include "fwGuiWx/Selector.hpp"
+#include "fwGuiWx/dialog/MultiSelectorDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::ISelector, ::fwGuiWx::Selector, ::fwGui::ISelector::FactoryRegistryKeyType , ::fwGui::ISelector::REGISTRY_KEY );
+REGISTER_BINDING( ::fwGui::dialog::IMultiSelectorDialog, ::fwGuiWx::dialog::MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog::FactoryRegistryKeyType , ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiWx
+{
+namespace dialog
 {
 
 //------------------------------------------------------------------------------
 
-Selector::Selector() : m_title("")
+MultiSelectorDialog::MultiSelectorDialog() : m_title(""), m_message("")
 {}
 
 //------------------------------------------------------------------------------
 
-Selector::~Selector()
+MultiSelectorDialog::~MultiSelectorDialog()
 {}
 
 //------------------------------------------------------------------------------
 
-void Selector::setSelections(std::vector< std::string > _selections)
+void MultiSelectorDialog::setSelections(Selections _selections)
 {
     this->m_selections = _selections;
 }
 
 //------------------------------------------------------------------------------
 
-void Selector::setTitle(std::string _title)
+void MultiSelectorDialog::setTitle(std::string _title)
 {
     this->m_title = _title;
 }
 
 //------------------------------------------------------------------------------
 
-std::string Selector::show()
+::fwGui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwWX::std2wx(this->m_title),
             wxDefaultPosition, wxDefaultSize,
             wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX );
 
     wxArrayString items;
-    BOOST_FOREACH( std::string selection, m_selections)
+    BOOST_FOREACH( Selections::value_type selection, m_selections)
     {
-        items.Add( ::fwWX::std2wx(selection) );
+        items.Add( ::fwWX::std2wx(selection.first) );
     }
 
-    // Creates the static fields.
-    wxChoice* typeCtrl = new wxChoice(dialog, wxNewId(), wxDefaultPosition, wxDefaultSize, items) ;
+    wxCheckListBox* typeCtrl = new wxCheckListBox(dialog, wxNewId(), wxDefaultPosition, wxDefaultSize, items) ;
     typeCtrl->SetSelection(0);
+
+    int item=0;
+    BOOST_FOREACH( Selections::value_type selection, m_selections)
+    {
+        typeCtrl->Check( item, selection.second  );
+        item++;
+    }
 
     // Creates the default buttons.
     wxSizer  * defaultButtonSizer = new wxBoxSizer( wxHORIZONTAL );
@@ -77,23 +86,41 @@ std::string Selector::show()
 
     // Creates the root sizer.
     wxSizer * rootSizer = new wxBoxSizer( wxVERTICAL );
-    rootSizer->Add( typeCtrl, 0, wxGROW|wxALL, 10 );
+    if(!m_message.empty())
+    {
+        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwWX::std2wx(m_message));
+        rootSizer->Add( msgText, 0, wxGROW|wxALL, 10 );
+    }
+    rootSizer->Add( typeCtrl, 1, wxALL|wxEXPAND, 10 );
     rootSizer->Add( defaultButtonSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10 );
     dialog->SetSizerAndFit( rootSizer );
 
 
     int choice = dialog->ShowModal();
-    std::string selection = "";
+    Selections selections;
     if( choice == wxID_OK )
     {
-        selection = typeCtrl->GetStringSelection();
+        int item=0;
+        BOOST_FOREACH( Selections::value_type selection, m_selections)
+        {
+            selections[selection.first] = typeCtrl->IsChecked(item);
+            item++;
+         }
     }
     dialog->Destroy();
-    return selection;
+    return selections;
 }
 
 //------------------------------------------------------------------------------
 
+void MultiSelectorDialog::setMessage(const std::string &msg)
+{
+    m_message = msg;
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace dialog
 } // namespace fwGuiWx
 
 

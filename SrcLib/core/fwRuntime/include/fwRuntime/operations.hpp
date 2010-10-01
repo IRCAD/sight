@@ -30,7 +30,7 @@ namespace fwRuntime
 
     namespace profile
     {
-        struct Profile;
+    class Profile;
     }
 }
 

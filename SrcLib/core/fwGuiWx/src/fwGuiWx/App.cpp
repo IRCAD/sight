@@ -30,6 +30,7 @@
 #include <fwTools/Os.hpp>
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
+#include <fwRuntime/RuntimeException.hpp>
 #include <fwServices/bundle/runtime.hpp>
 
 #include <fwWX/convert.hpp>
@@ -58,7 +59,6 @@ App::App()
 
 void App::usage( const std::string & mes ) const
 {
-    ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Exception Caught");
     messageBox.setMessage( mes );
@@ -209,6 +209,36 @@ void App::OnInitCmdLine(wxCmdLineParser & parser)
 {
     wxApp::OnInitCmdLine(parser);
     parser.SetDesc(cmdLineDesc);
+}
+
+//-----------------------------------------------------------------------------
+
+void App::OnUnhandledException()
+{
+    // we're called from an exception handler so we can re-throw the exception
+    // to recover its type
+    std::string what;
+    try
+    {
+        throw;
+    }
+    catch ( std::exception& e )
+    {
+        what = e.what();
+    }
+    catch ( ... )
+    {
+        what = "unknown exception";
+    }
+
+    ::fwGui::dialog::MessageDialog messageBox;
+    messageBox.setTitle("Exception Caught");
+    messageBox.setMessage( what );
+    messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.show();
+
+    throw ::fwRuntime::RuntimeException( what );
 }
 
 //-----------------------------------------------------------------------------
