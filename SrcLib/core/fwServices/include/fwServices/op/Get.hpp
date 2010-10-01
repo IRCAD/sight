@@ -65,9 +65,7 @@ template<class SERVICE>
 SPTR(SERVICE) get( fwTools::Object * obj, unsigned int _index = 0 ) throw(fwTools::Failed );
 
 /**
- * @brief Return a registered IService having uid as unique universal identifier
- * @note indirectly invoke the ::fwTools::UUID::get method, hide the access to this API in order to provide a single unique API mixing both uuid and service/object concepts
- * @todo add the get method for object to be homogeneous
+ * @brief Return a registered IService having uid as unique universal identifier , its an alias on fwTools::Object::getID(...) method
  * @author IRCAD (Research and Development Team).
 
  */

@@ -15,7 +15,7 @@
 #include <fwCore/LogicStamp.hpp>
 
 #include "fwTools/config.hpp"
-
+#include "fwTools/fwID.hpp"
 
 namespace fwTools {
 
@@ -55,7 +55,7 @@ struct FWTOOLS_CLASS_API IDeleter : public ::fwCore::BaseObject
  * @date    2007-2009.
  */
 //class FWTOOLS_CLASS_API Object  : public ::boost::enable_shared_from_this<Object>
-class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject
+class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject , protected ::fwTools::fwID
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro((Object), (()), new Object );
@@ -72,18 +72,17 @@ public:
     typedef boost::shared_ptr< const ::fwTools::Field > FieldCSptr; // required du to a Field is declared afterward
 
 
+    // expose API for ID management
+    FWTOOLS_API using  ::fwTools::fwID::hasID;
+    FWTOOLS_API using  ::fwTools::fwID::getID;
+    FWTOOLS_API using  ::fwTools::fwID::setID;
+    FWTOOLS_API using  ::fwTools::fwID::resetID;
+    FWTOOLS_API using  ::fwTools::fwID::swapID;
+
+
 
     /// return the sub class classname : an alias of this->getClassname
     FWTOOLS_API std::string className() const;
-
-    /// return the simple version of UUID. If not set generate a new one (from UUID Class)
-    FWTOOLS_API std::string getUUID() const;
-
-    /// return true iff object have a UUID registred
-    FWTOOLS_API bool hasUUID() const;
-
-    /// set a new ID for object : assertion if object already have an ID or ID is already assigned
-    FWTOOLS_API void setUUID(const std::string &newID);
 
     /// Usefull to externally define the way to delete an object
     FWTOOLS_API void setDeleter( ::fwTools::IDeleter::sptr _deleter ) ;
@@ -304,9 +303,6 @@ private :
 
     /// Standard copy operator, forbiden.
     Object &operator=(const Object &_obj);
-
-    /// cache for storing uid
-    mutable std::string m_cachedSimpleUuid;
 
     /// Abstract deleter for an object
     ::fwTools::IDeleter::sptr m_deleter ;

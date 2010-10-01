@@ -6,7 +6,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/Object.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwData/Acquisition.hpp>
 #include <fwData/Boolean.hpp>
@@ -197,7 +197,7 @@ void OrganListEditor::notifyOrganChoiceSelection()
         ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
 
         ::fwComEd::AcquisitionMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( ::fwTools::UUID::get(rec)) );
+        msg->addEvent( ::fwComEd::AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) );
         ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
     }
 }

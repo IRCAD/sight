@@ -6,7 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include "fwData/visitor/IVisitor.hpp"
 

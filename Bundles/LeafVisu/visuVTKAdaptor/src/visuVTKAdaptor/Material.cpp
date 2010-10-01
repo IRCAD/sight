@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwData/Material.hpp>
 
 #include <fwServices/macros.hpp>

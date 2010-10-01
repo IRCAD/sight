@@ -8,7 +8,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
@@ -98,7 +98,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::fwMenuItem::sptr > menuItems )
         ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
             service->start();
@@ -114,7 +114,7 @@ void MenuRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             service->stop();
         }

@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
@@ -223,9 +223,9 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
             BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
             {
                 OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
-                OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
+                OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
 
-                OSLM_TRACE("Swapping subService " << ::fwTools::UUID::get(subSrv->getService()) << " on "<< objectId );
+                OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< objectId );
                 if(subSrv->getService()->getObject() != object)
                 {
                     subSrv->getService()->swap(object);
@@ -233,9 +233,9 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
                 }
                 else
                 {
-                    OSLM_WARN( ::fwTools::UUID::get(subSrv->getService())
+                    OSLM_WARN( subSrv->getService()->getID()
                             << "'s object already is '"
-                            << subSrv->getService()->getObject()->getUUID()
+                            << subSrv->getService()->getObject()->getID()
                             << "', no need to swap");
                 }
             }
@@ -271,7 +271,7 @@ void SwapperSrv::removeObject( const std::string objectId )
         BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
-            OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
+            OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
             if(m_dummyStopMode)
             {
                 subSrv->getService()->swap(dummyObj);

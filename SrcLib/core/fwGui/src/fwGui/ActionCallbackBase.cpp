@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/Base.hpp>
 
@@ -39,7 +39,7 @@ void ActionCallbackBase::setSID(std::string sid)
 
 void ActionCallbackBase::execute()
 {
-    OSLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::UUID::exist(m_sid, ::fwTools::UUID::SIMPLE ));
+    OSLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
     ::fwServices::IService::sptr service = ::fwServices::get( m_sid ) ;
     OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     service->update();
@@ -49,7 +49,7 @@ void ActionCallbackBase::execute()
 
 void ActionCallbackBase::check(bool checked)
 {
-    OSLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::UUID::exist(m_sid, ::fwTools::UUID::SIMPLE ));
+    OSLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
     ::fwServices::IService::sptr service = ::fwServices::get( m_sid ) ;
     OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     ::fwGui::IActionSrv::sptr action = ::fwGui::IActionSrv::dynamicCast(service);

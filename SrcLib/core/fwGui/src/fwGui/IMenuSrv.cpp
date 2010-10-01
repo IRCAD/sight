@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IMenuItemCallback.hpp"
@@ -29,7 +29,7 @@ IMenuSrv::~IMenuSrv()
 
 void IMenuSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::MenuRegistrar::NewSptr(this->getUUID());
+    m_registrar = ::fwGui::registrar::MenuRegistrar::NewSptr(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );

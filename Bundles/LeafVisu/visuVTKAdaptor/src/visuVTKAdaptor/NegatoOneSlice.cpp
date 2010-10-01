@@ -62,7 +62,7 @@ vtkObject* NegatoOneSlice::getImageSource()
 {
     if ( !m_imageSource )
     {
-        OSLM_TRACE(this->getUUID() << ": Create ImageSource");
+        OSLM_TRACE(this->getID() << ": Create ImageSource");
         if (!m_imageSourceId.empty())
         {
             m_imageSource = this->getVtkObject(m_imageSourceId);
@@ -96,7 +96,7 @@ void NegatoOneSlice::cleanImageSource()
 
     if (m_imageSliceAdaptor.expired())
     {
-        OSLM_TRACE(this->getUUID() << ": Create ImageSlice Adaptor Service");
+        OSLM_TRACE(this->getID() << ": Create ImageSlice Adaptor Service");
         ::fwData::Image::sptr image;
         ::fwData::Composite::sptr sceneComposite;
 
@@ -137,7 +137,7 @@ void NegatoOneSlice::cleanImageSource()
 
     if (m_imageAdaptor.expired())
     {
-        OSLM_TRACE(this->getUUID() << ": Create Image Adaptor Service");
+        OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image;
         image = this->getObject< ::fwData::Image >();
         imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(

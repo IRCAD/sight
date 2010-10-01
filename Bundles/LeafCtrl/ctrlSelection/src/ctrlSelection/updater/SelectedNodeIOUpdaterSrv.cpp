@@ -11,7 +11,7 @@
 #include <fwData/Edge.hpp>
 #include <fwData/Graph.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 

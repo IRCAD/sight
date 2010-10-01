@@ -12,7 +12,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
@@ -381,14 +381,14 @@ void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _s
         SContainer::iterator positionToDelete = pos->second.end() ;
         for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
         {
-            OSLM_TRACE( "OBJ=" <<::fwTools::UUID::get(_service->getObject()) <<
-                        " SContainer::iterator lIter" << ::fwTools::UUID::get( ( *lIter) )
+            OSLM_TRACE( "OBJ=" <<_service->getObject()->getID() <<
+                        " SContainer::iterator lIter" <<  ( *lIter) ->getID()
                       );
             if( ( *lIter) == _service )
             {
                 SLM_ASSERT( "service registered twice for the same object :"
-                            << " OBJ=" <<::fwTools::UUID::get(_service->getObject())
-                            << " SRV=" << ::fwTools::UUID::get( ( *lIter) ),
+                            << " OBJ=" << _service->getObject()->getID()
+                            << " SRV=" <<  ( *lIter)->getID() ,
                             positionToDelete == pos->second.end()
                           );
                 positionToDelete = lIter ;
@@ -498,11 +498,11 @@ std::string ObjectServiceRegistry::getRegistryInformation()
         SContainer services = objSrvMap.second;
 
         info << "New object found in OSR" << std::endl;
-        info << "Object ( uid = "<< obj->getUUID() <<" , classname = "<< obj->getClassname() <<" ) has "<< services.size() <<" services." << std::endl;
+        info << "Object ( uid = "<< obj->getID() <<" , classname = "<< obj->getClassname() <<" ) has "<< services.size() <<" services." << std::endl;
 
         BOOST_FOREACH( IService::sptr service, services )
         {
-            info << "    srv : uid = "<< service->getUUID() <<" , classname = "<< service->getClassname() <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
+            info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname() <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
         }
     }
 

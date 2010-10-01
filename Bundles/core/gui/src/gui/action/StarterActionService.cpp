@@ -9,7 +9,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Extension.hpp>
@@ -54,7 +54,7 @@ void StarterActionService::stopping() throw( ::fwTools::Failed )
     typedef std::pair< std::string, ActionType > ServiceUidPair;
     BOOST_FOREACH( ServiceUidPair serviceUid, m_uuidServices)
     {
-        bool srv_exists = ::fwTools::UUID::exist(serviceUid.first, ::fwTools::UUID::SIMPLE );
+        bool srv_exists = ::fwTools::fwID::exist(serviceUid.first );
         if (srv_exists)
         {
             ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first ) ;
@@ -82,7 +82,7 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
     {
         ActionType action =  m_uuidServices.at(i).second;
         std::string uid =  m_uuidServices.at(i).first;
-        bool srv_exists = ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE );
+        bool srv_exists = ::fwTools::fwID::exist(uid  );
 
         // Manage special action
         if ( action == START_IF_EXISTS )
@@ -135,7 +135,7 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
                 }
                 else
                 {
-                    OSLM_WARN("Service " << service->getUUID() << " is not stopped");
+                    OSLM_WARN("Service " << service->getID() << " is not stopped");
                 }
                 service->update();
                 break;

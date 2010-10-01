@@ -12,7 +12,7 @@
 //#include <wx/config.h>
 //#include <wx/evtloop.h>
 //
-//#include <fwTools/UUID.hpp>
+//#include <fwTools/fwID.hpp>
 //
 //#include <fwServices/helper.hpp>
 //#include <fwServices/macros.hpp>
@@ -172,7 +172,7 @@
 //        ::fwWX::IGuiContainer::registerGlobalWxContainer(m_uid, m_container);
 //        if(m_autostart)
 //        {
-//            OSLM_ASSERT("Service "<<m_uid<<" doesn't exist.", ::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ));
+//            OSLM_ASSERT("Service "<<m_uid<<" doesn't exist.", ::fwTools::fwID::exist(m_uid ));
 //            ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
 //            service->start();
 //        }
@@ -183,7 +183,7 @@
 //
 //    BOOST_FOREACH(std::string serviceUID, m_managedServices)
 //    {
-//        OSLM_FATAL_IF("Service " << serviceUID << " doesn't exist.", ! ::fwTools::UUID::exist(serviceUID, ::fwTools::UUID::SIMPLE ));
+//        OSLM_FATAL_IF("Service " << serviceUID << " doesn't exist.", ! ::fwTools::fwID::exist(serviceUID ));
 //        ::fwServices::IService::sptr service = ::fwServices::get( serviceUID ) ;
 //        service->start();
 //    }
@@ -200,7 +200,7 @@
 //
 //    BOOST_REVERSE_FOREACH(std::string serviceUID, m_managedServices)
 //    {
-//        OSLM_FATAL_IF("Service " << serviceUID << " doesn't exist.", ! ::fwTools::UUID::exist(serviceUID, ::fwTools::UUID::SIMPLE ));
+//        OSLM_FATAL_IF("Service " << serviceUID << " doesn't exist.", ! ::fwTools::fwID::exist(serviceUID ));
 //        ::fwServices::IService::sptr service = ::fwServices::get( serviceUID ) ;
 //        service->stop();
 //    }
@@ -208,8 +208,8 @@
 //    if(!m_uid.empty())
 //    {
 //        ::fwWX::IGuiContainer::unregisterGlobalWxContainer(m_uid);
-//        OSLM_INFO_IF("Service "<<m_uid<<" doesn't exist.", !::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ));
-//        if (::fwTools::UUID::exist(m_uid, ::fwTools::UUID::SIMPLE ))
+//        OSLM_INFO_IF("Service "<<m_uid<<" doesn't exist.", !::fwTools::fwID::exist(m_uid ));
+//        if (::fwTools::fwID::exist(m_uid ))
 //        {
 //            ::fwServices::IService::sptr service = ::fwServices::get( m_uid ) ;
 //            service->stop();

@@ -21,7 +21,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwWX/convert.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwGuiWx/container/WxContainer.hpp>
 
@@ -57,7 +57,7 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 
     wxBoxSizer* bSizer;
     bSizer = new wxBoxSizer( wxVERTICAL );
-    std::string text = m_text.empty() ? this->getUUID() : m_text;
+    std::string text = m_text.empty() ? this->getID() : m_text;
     wxStaticText*  staticText = new wxStaticText( container, wxID_ANY, ::fwWX::std2wx(text), wxDefaultPosition, wxDefaultSize, 0 );
     bSizer->Add( staticText, 1, wxALL|wxEXPAND, 5 );
     container->SetSizer( bSizer );

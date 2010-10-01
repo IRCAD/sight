@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IGuiContainerSrv.hpp"
@@ -32,12 +32,12 @@ void IGuiContainerSrv::initialize()
     SLM_ASSERT("Service hasn't configuration", m_configuration);
 
     // Create view registrar
-    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getUUID() );
+    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getID() );
     // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
     if ( ! vectViewMng.empty() )
     {
-        m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getUUID() );
+        m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getID() );
         m_viewRegistrarConfig = vectViewMng.at(0);
         m_viewRegistrar->initialize(m_viewRegistrarConfig);
     }

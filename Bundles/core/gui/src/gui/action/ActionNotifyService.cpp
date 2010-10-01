@@ -7,7 +7,7 @@
 //#include <fwCore/base.hpp>
 //
 //#include <fwTools/ClassFactoryRegistry.hpp>
-//#include <fwTools/UUID.hpp>
+//#include <fwTools/fwID.hpp>
 //
 //#include <fwData/PatientDB.hpp>
 //
@@ -71,11 +71,11 @@
 //    {
 //        MessageType message =  m_uuidServices.at(i).second;
 //        std::string uid =  m_uuidServices.at(i).first;
-//        bool obj_exists = ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE );
+//        bool obj_exists = ::fwTools::fwID::exist(uid );
 //
-//        ::fwData::Object::sptr object = ::fwTools::UUID::get< ::fwData::Object >( uid ) ;
+//        ::fwData::Object::sptr object = ::fwData::Object::dynamicCast( ::fwTools::fwID::getObject(uid) ) ;
 //
-//        ::fwData::PatientDB::sptr patientDB = ::fwTools::UUID::get< ::fwData::PatientDB >( uid ) ;
+//        ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::dynamicCast( ::fwTools::fwID::getObject(uid) ) ;
 //
 //        if(patientDB)
 //        {
@@ -174,7 +174,7 @@
 //            OSLM_FATAL("Sorry this type of \"messageType\":" << messageType <<" is not managed by ActionNotifyService");
 //        }
 //
-//        std::string uuid = (this->getObject< ::fwData::Object >())->getUUID();
+//        std::string uuid = (this->getObject< ::fwData::Object >())->getID();
 //
 //        m_onevent =  (*iter)->getExistingAttributeValue("checkonEvent") ;
 //

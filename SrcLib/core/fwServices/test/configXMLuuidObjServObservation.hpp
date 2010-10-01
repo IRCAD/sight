@@ -10,7 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <boost/shared_ptr.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -71,10 +71,10 @@ int testConfigUUIDFromXMLObservation1()
     toFile(toXml(_compoCfgElement),"buildCompositeTestObjUUID.xml") ;
     ::boost::shared_ptr< ::fwTools::Object > obj = ::fwServices::New(_compoCfgElement );
     // Test uid
-    OSLM_INFO("Object UUID " << obj->getUUID()) ;
+    OSLM_INFO("Object UUID " << obj->getID()) ;
     ::boost::shared_ptr< ::fwData::Composite > compo = ::boost::dynamic_pointer_cast< ::fwData::Composite >( obj ) ;
     assert( compo ) ;
-    OSLM_INFO("Composite object has OBJ0A whose UUID is " << compo->getRefMap()["OBJ0A"]->getUUID() ) ;
+    OSLM_INFO("Composite object has OBJ0A whose UUID is " << compo->getRefMap()["OBJ0A"]->getID() ) ;
     // Test observation
     
 //  fwServices::start( obj , _compoCfgElement2 ) ;

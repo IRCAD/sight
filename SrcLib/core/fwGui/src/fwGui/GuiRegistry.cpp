@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IMenuSrv.hpp"
@@ -42,7 +42,7 @@ void GuiRegistry::registerSIDContainer(std::string sid , ::fwGui::fwContainer::s
 
 void GuiRegistry::unregisterSIDContainer(std::string sid)
 {
-    bool service_exists = ::fwTools::UUID::exist(sid, ::fwTools::UUID::SIMPLE );
+    bool service_exists = ::fwTools::fwID::exist(sid );
     OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
     if(service_exists)
     {
@@ -110,7 +110,7 @@ void GuiRegistry::registerSIDMenuBar(std::string sid , ::fwGui::fwMenuBar::sptr 
 
 void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 {
-    bool service_exists = ::fwTools::UUID::exist(sid, ::fwTools::UUID::SIMPLE );
+    bool service_exists = ::fwTools::fwID::exist(sid );
     OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
     if(service_exists)
     {
@@ -148,7 +148,7 @@ void GuiRegistry::registerSIDToolBar(std::string sid , ::fwGui::fwToolBar::sptr 
 
 void GuiRegistry::unregisterSIDToolBar(std::string sid)
 {
-    bool service_exists = ::fwTools::UUID::exist(sid, ::fwTools::UUID::SIMPLE );
+    bool service_exists = ::fwTools::fwID::exist(sid );
     OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
     if(service_exists)
     {
@@ -187,7 +187,7 @@ void GuiRegistry::registerSIDMenu(std::string sid , ::fwGui::fwMenu::sptr menu)
 
 void GuiRegistry::unregisterSIDMenu(std::string sid)
 {
-    bool service_exists = ::fwTools::UUID::exist(sid, ::fwTools::UUID::SIMPLE );
+    bool service_exists = ::fwTools::fwID::exist(sid );
     OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
     if(service_exists)
     {
@@ -236,7 +236,7 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
     if (m_actionSIDToParentSID[actionSid].size() == 1)
     {
         // Action has one parent
-        bool service_exists = ::fwTools::UUID::exist(actionSid, ::fwTools::UUID::SIMPLE );
+        bool service_exists = ::fwTools::fwID::exist(actionSid );
         OSLM_INFO_IF("Service "<<actionSid <<" not exists.",!service_exists );
         if(service_exists)
         {
@@ -266,7 +266,7 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
 
     BOOST_FOREACH(std::string parentSid, parentSids)
     {
-        bool service_exists = ::fwTools::UUID::exist(parentSid, ::fwTools::UUID::SIMPLE );
+        bool service_exists = ::fwTools::fwID::exist(parentSid );
         OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
         if(service_exists)
         {
@@ -301,7 +301,7 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
 
     BOOST_FOREACH(std::string parentSid, parentSids)
     {
-        bool service_exists = ::fwTools::UUID::exist(parentSid, ::fwTools::UUID::SIMPLE );
+        bool service_exists = ::fwTools::fwID::exist(parentSid );
         OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
         if(service_exists)
         {
@@ -336,7 +336,7 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 
     BOOST_FOREACH(std::string parentSid, parentSids)
     {
-        bool service_exists = ::fwTools::UUID::exist(parentSid, ::fwTools::UUID::SIMPLE );
+        bool service_exists = ::fwTools::fwID::exist(parentSid );
         OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
         if(service_exists)
         {
@@ -371,7 +371,7 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
 
     BOOST_FOREACH(std::string parentSid, parentSids)
     {
-        bool service_exists = ::fwTools::UUID::exist(parentSid, ::fwTools::UUID::SIMPLE );
+        bool service_exists = ::fwTools::fwID::exist(parentSid );
         OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
         if(service_exists)
         {
