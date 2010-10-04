@@ -98,7 +98,7 @@ void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
             ::boost::shared_ptr< XMLAggregator > aggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[obj];
             saver->rootFolder()  = aggregator->rootFolder();
             saver->localFolder() = aggregator->localFolder();
-            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
+            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
             saver->extension() = saver->getWriter()->extension();
             OSLM_DEBUG("update path")
         }

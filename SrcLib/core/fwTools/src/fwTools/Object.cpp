@@ -163,33 +163,6 @@ std::string Object::className() const
     return this->getClassname();
 }
 
-//------------------------------------------------------------------------------
-
-std::string Object::getUUID() const
-{
-    if ( m_cachedSimpleUuid.empty() )
-    {
-        m_cachedSimpleUuid = UUID::get( Object::constCast(this->getConstSptr()),UUID::SIMPLE );
-    }
-    return m_cachedSimpleUuid;
-}
-
-//------------------------------------------------------------------------------
-
-bool Object::hasUUID() const
-{
-    return !m_cachedSimpleUuid.empty() || UUID::supervise( shared_from_this() );
-}
-
-//------------------------------------------------------------------------------
-
-void Object::setUUID(const std::string &newID)
-{
-    assert( hasUUID()== false );
-    assert( UUID::exist( newID , UUID::SIMPLE) == false );
-    UUID::impose( shared_from_this(), newID, UUID::SIMPLE );
-}
-
 
 //------------------------------------------------------------------------------
 

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwData/Image.hpp>
 
@@ -112,10 +112,10 @@ void ImageFilter::updating() throw ( ::fwTools::Failed )
     const double Threshold = 50.0;
 
     ThresholdFilter::Parameter param;
-    OSLM_ASSERT("Image 1 not found. UID : " << m_image1UID, ::fwTools::UUID::exist(m_image1UID, ::fwTools::UUID::SIMPLE )) ;
-    param.imageIn = ::fwTools::UUID::get< ::fwData::Image >( m_image1UID ) ;
-    OSLM_ASSERT("Image 2 not found. UID : " << m_image2UID, ::fwTools::UUID::exist(m_image2UID, ::fwTools::UUID::SIMPLE )) ;
-    param.imageOut = ::fwTools::UUID::get< ::fwData::Image >( m_image2UID ) ;
+    OSLM_ASSERT("Image 1 not found. UID : " << m_image1UID, ::fwTools::fwID::exist(m_image1UID)) ;
+    param.imageIn = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_image1UID) ) ;
+    OSLM_ASSERT("Image 2 not found. UID : " << m_image2UID, ::fwTools::fwID::exist(m_image2UID)) ;
+    param.imageOut = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_image2UID) ) ;
     param.thresholdValue = Threshold;
 
     ::fwTools::DynamicType type = param.imageIn->getPixelType();

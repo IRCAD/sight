@@ -8,7 +8,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
@@ -144,7 +144,7 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
         ::fwGui::GuiRegistry::registerSIDContainer(sid.first, container);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             service->start();
         }
@@ -165,7 +165,7 @@ void ViewRegistrar::manageMenuBar(::fwGui::container::fwMenuBar::sptr menuBar )
     ::fwGui::GuiRegistry::registerSIDMenuBar(m_menuBarSid.first, menuBar);
     if(m_menuBarSid.second) //service is auto started?
     {
-        OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_menuBarSid.first, ::fwTools::UUID::SIMPLE ) );
+        OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_menuBarSid.first ) );
         ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first ) ;
         service->start();
     }
@@ -178,7 +178,7 @@ void ViewRegistrar::manageToolBar(::fwGui::container::fwToolBar::sptr toolBar )
     ::fwGui::GuiRegistry::registerSIDToolBar(m_toolBarSid.first, toolBar);
     if(m_toolBarSid.second) //service is auto started?
     {
-        OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_toolBarSid.first, ::fwTools::UUID::SIMPLE ) );
+        OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_toolBarSid.first ) );
         ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
         service->start();
     }
@@ -192,7 +192,7 @@ void ViewRegistrar::unmanage()
     {
         if(m_toolBarSid.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_toolBarSid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_toolBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
             service->stop();
         }
@@ -203,7 +203,7 @@ void ViewRegistrar::unmanage()
     {
         if(m_menuBarSid.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::UUID::exist(m_menuBarSid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_menuBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first ) ;
             service->stop();
         }
@@ -215,7 +215,7 @@ void ViewRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             service->stop();
         }

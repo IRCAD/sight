@@ -110,7 +110,7 @@ void ConfigActionSrv::startConfig()
 {
 
     // Generate generic UID
-    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getUUID() );
+    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID() );
 
     // Init manager
     std::map< std::string, std::string > fieldAdaptors;

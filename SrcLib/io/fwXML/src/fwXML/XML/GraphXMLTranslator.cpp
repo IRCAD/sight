@@ -53,8 +53,8 @@ xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> 
     {
         xmlNodePtr anEdge = XMLTH::toXMLRecursive( (*i).first );
         // hack by adding port ptr
-        XMLTH::addProp( anEdge , "fromNode", ::fwTools::UUID::get( (*i).second.first  , ::fwTools::UUID::EXTENDED) );
-        XMLTH::addProp( anEdge , "toNode",   ::fwTools::UUID::get( (*i).second.second , ::fwTools::UUID::EXTENDED) );
+        XMLTH::addProp( anEdge , "fromNode", ::fwTools::UUID::get( (*i).second.first  ) );
+        XMLTH::addProp( anEdge , "toNode",   ::fwTools::UUID::get( (*i).second.second ) );
         xmlAddChild(edgesList,anEdge);
     }
 
@@ -103,8 +103,8 @@ void GraphXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object>
             std::string uuidSrc = ObjectTracker::xmlID2RuntimeID( uuidSrcXML );
             std::string uuidDst = ObjectTracker::xmlID2RuntimeID(uuidDstXML );
 
-            ::boost::shared_ptr< ::fwData::Node > srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc , ::fwTools::UUID::EXTENDED);
-            ::boost::shared_ptr< ::fwData::Node > dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst , ::fwTools::UUID::EXTENDED);
+            ::boost::shared_ptr< ::fwData::Node > srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc );
+            ::boost::shared_ptr< ::fwData::Node > dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst );
             assert( srcNode );
             assert( dstNode );
 

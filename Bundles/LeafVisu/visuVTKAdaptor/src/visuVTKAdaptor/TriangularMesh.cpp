@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwData/Material.hpp>
 #include <fwData/TriangularMesh.hpp>

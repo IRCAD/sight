@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <fwTools/TypeInfo.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 #include <fwCore/spyLog.hpp>
 
@@ -78,9 +78,9 @@ bool verifyObjectXmlElement( ::fwRuntime::ConfigurationElement::sptr _cfgElement
     // Test and Set UID
     if( _hasAttributeUid )
     {
-        OSLM_ASSERT( "Object has already an UID.\n"<< "Can't assign UID: " <<_uid, !obj->hasUUID() ) ;
-        OSLM_FATAL_IF("UID " << _uid << " already exists", ::fwTools::UUID::exist( _uid , ::fwTools::UUID::SIMPLE ) );
-        obj->setUUID( _uid ) ;
+        OSLM_ASSERT( "Object has already an UID.\n"<< "Can't assign UID: " <<_uid, !obj->hasID() ) ;
+        OSLM_FATAL_IF("UID " << _uid << " already exists", ::fwTools::fwID::exist( _uid   ) );
+        obj->setID( _uid ) ;
     }
 
     // Test and Set UID
@@ -103,8 +103,8 @@ bool verifyObjectXmlElement( ::fwRuntime::ConfigurationElement::sptr _cfgElement
 {
     ::fwTools::Object::sptr obj;
 
-    OSLM_ASSERT( "Sorry, not found the object uid : \""<< _uid <<"\" in created object list.", ::fwTools::UUID::exist( _uid , ::fwTools::UUID::SIMPLE ) );
-    obj = ::fwTools::UUID::get< ::fwTools::Object >( _uid , ::fwTools::UUID::SIMPLE );
+    OSLM_ASSERT( "Sorry, not found the object uid : \""<< _uid <<"\" in created object list.", ::fwTools::fwID::exist( _uid ) );
+    obj = ::fwTools::fwID::getObject( _uid  );
 
     // Test type
     OSLM_ASSERT( "Sorry, type of object is defined ( "<< _type <<" ), but not correspond to the object associated ( "<< obj->getClassname() <<" ) to this uid ( "<< _uid <<" ).",  !_hasAttributeType || _type == obj->getClassname() );
@@ -197,7 +197,7 @@ bool verifyObjectXmlElement( ::fwRuntime::ConfigurationElement::sptr _cfgElement
         // If get or build mode, test uid and adapt mode
         if ( buildMode == GET_OR_BUILD_OBJECT )
         {
-            if ( ::fwTools::UUID::exist( uid , ::fwTools::UUID::SIMPLE ) )
+            if ( ::fwTools::fwID::exist( uid ) )
             {
                 buildMode = GET_OBJECT;
             }

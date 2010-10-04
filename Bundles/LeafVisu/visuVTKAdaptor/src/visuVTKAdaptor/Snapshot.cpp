@@ -103,7 +103,7 @@ void Snapshot::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
         ::fwData::String::sptr filename = dataInfo->getFieldSingleElement< ::fwData::String >("filename");
         SLM_ASSERT("filename empty!", !filename->value().empty());
 
-        if( this->getRenderService()->getUUID() == sceneID->value())
+        if( this->getRenderService()->getID() == sceneID->value())
         {
             this->snap(filename->value());
         }

@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/macros.hpp>
@@ -87,7 +87,7 @@ void NegatoMPR::doSwap() throw(fwTools::Failed)
         {
             BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
             {
-                OSLM_ASSERT("sub services expired in service : " << ::fwTools::UUID::get(this->getSptr() ), !service.expired());
+                OSLM_ASSERT("sub services expired in service : " << this->getSptr()->getID(), !service.expired());
                 service.lock()->swap(image);
                 service.lock()->update();
             }
@@ -150,7 +150,7 @@ void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fa
         SLM_ASSERT("dataInfo is missing", dataInfo);
         SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getFieldSize( ::fwComEd::Dictionary::m_relatedServiceId ) );
         std::string servId = dataInfo->getFieldSingleElement< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
-        if( servId ==  ::fwTools::UUID::get( this->getSptr() ) )
+        if( servId ==   this->getSptr()->getID() )
         {
             ::fwData::Integer::csptr integer = ::fwData::Integer::dynamicConstCast(dataInfo);
             SLM_ASSERT("dataInfo is missing", integer);
@@ -184,7 +184,7 @@ void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fa
         SLM_ASSERT("dataInfo is missing", dataInfo);
         SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getFieldSize( ::fwComEd::Dictionary::m_relatedServiceId ) );
         std::string servId = dataInfo->getFieldSingleElement< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
-        if( servId ==  ::fwTools::UUID::get( this->getSptr() ) )
+        if( servId ==   this->getSptr()->getID() )
         {
             ::fwData::Boolean::csptr integer = ::fwData::Boolean::dynamicConstCast(dataInfo);
             if(integer->value())

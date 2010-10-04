@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <fwTools/TypeInfo.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
 #include <fwRuntime/Runtime.hpp>
@@ -61,9 +61,9 @@ namespace fwServices
     std::vector< ::fwServices::IService::sptr >  services = ::fwServices::getServices( obj , serviceId );
     for( std::vector< ::fwServices::IService::sptr >::iterator iter = services.begin() ; iter != services.end() ; ++iter )
     {
-        if( ::fwTools::UUID::supervise< ::fwServices::IService >( *iter ) )
+        if( ( *iter )->hasID() )
         {
-            if( ::fwTools::UUID::get< ::fwServices::IService >( *iter ) == uid )
+            if( ( *iter )->getID() == uid )
             {
                 service = *iter ;
             }
@@ -76,8 +76,8 @@ namespace fwServices
 
 ::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed )
 {
-    OSLM_ASSERT("service not exist with uid "<<uid, ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE )) ;
-    return ::fwTools::UUID::get< ::fwServices::IService >( uid ) ;
+    OSLM_ASSERT("service not exist with uid "<<uid, ::fwTools::fwID::exist(uid )) ;
+    return ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( uid ) );
 }
 
 //------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TriangularMesh.hpp>
@@ -101,10 +101,10 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 
     /// Retreive object
-    OSLM_ASSERT("Not found the image defined by uid : " << m_imageUID, ::fwTools::UUID::exist(m_imageUID, ::fwTools::UUID::SIMPLE )) ;
-    ::fwData::Image::sptr pImage = ::fwTools::UUID::get< ::fwData::Image >( m_imageUID ) ;
-    OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::UUID::exist(m_meshUID, ::fwTools::UUID::SIMPLE )) ;
-    ::fwData::TriangularMesh::sptr pMesh = ::fwTools::UUID::get< ::fwData::TriangularMesh >( m_meshUID ) ;
+    OSLM_ASSERT("Not found the image defined by uid : " << m_imageUID, ::fwTools::fwID::exist(m_imageUID)) ;
+    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageUID) ) ;
+    OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID)) ;
+    ::fwData::TriangularMesh::sptr pMesh = ::fwData::TriangularMesh::dynamicCast( ::fwTools::fwID::getObject(m_meshUID) ) ;
 
     ///VTK Mesher
 

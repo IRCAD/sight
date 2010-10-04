@@ -258,7 +258,7 @@ void Image::buildPipeline( )
         {
             m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
             imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
-            OSLM_TRACE(this->getUUID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
+            OSLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
         }
     }
     else if (algorithm)

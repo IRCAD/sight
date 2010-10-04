@@ -63,12 +63,12 @@ UUID::UUIDContainer::iterator UUID::begin(UUIDContainer &uuidContainer)
 
 
 
-bool UUID::exist( const std::string & uuid,const int &version)
+bool UUID::exist( const std::string & uuid )
 {
     UUIDContainer::iterator i= begin(m_uuids) ;
     while ( i!= m_uuids.end() )
     {
-        if ( translateUUID(i->second,version) == uuid)
+        if ( i->second == uuid)
         {
             return true;
         }
@@ -80,7 +80,7 @@ bool UUID::exist( const std::string & uuid,const int &version)
 
 
 
-std::string UUID::generateExtendedUUID()
+std::string UUID::generateUUID()
 {
     std::string extUUID;
 
@@ -101,39 +101,6 @@ std::string UUID::generateExtendedUUID()
         return extUUID;
 }
 
-
-
-UUID::MultiUUID UUID::generate(const std::type_info &ti)
-{
-    //typedef BaseType
-    MultiUUID newUUID;
-    std::string prefix = ::fwCore::Demangler(ti).getRootedClassname();
-    do
-    {
-        newUUID.first = prefix  + "-" + boost::lexical_cast<std::string>( m_CategorizedCounter[ti]++ );
-    }
-    while ( exist(newUUID.first,UUID::SIMPLE) ); // necessary due to manual set
-
-    newUUID.second = generateExtendedUUID();
-
-    return newUUID;
-}
-
-
-std::string UUID::translateUUID(const MultiUUID &muuid, const int &version)
-{
-    // OSLM_DEBUG("UUID::translateUUID Vsimple=" << muuid.first << " vExtended=" << muuid.second );
-    assert( version == UUID::SIMPLE || version == UUID::RFC4122 );
-    if ( version ==  UUID::SIMPLE )
-    {
-        return muuid.first;
-    }
-    else if ( version == UUID::RFC4122 )
-    {
-        return muuid.second;
-    }
-    return "UUID::version not recognized";
-}
 
 
 // helper to find a weak_ptr in the m_uuids

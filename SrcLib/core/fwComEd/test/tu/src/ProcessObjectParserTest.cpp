@@ -54,13 +54,13 @@ void ProcessObjectParserTest::testBuildProcessObject()
     CPPUNIT_ASSERT(po->getOutput(IMAGE2ID));
 
     ::fwData::Image::sptr image1 = po->getInput< ::fwData::Image >(IMAGE1ID);
-    CPPUNIT_ASSERT_EQUAL(IMAGE1ID, image1->getUUID());
+    CPPUNIT_ASSERT_EQUAL(IMAGE1ID, image1->getID());
 
     ::fwData::Video::sptr video = po->getInput< ::fwData::Video >(VIDEOID);
-    CPPUNIT_ASSERT_EQUAL(VIDEOID, video->getUUID());
+    CPPUNIT_ASSERT_EQUAL(VIDEOID, video->getID());
 
     ::fwData::Image::sptr image2 = po->getOutput< ::fwData::Image >(IMAGE2ID);
-    CPPUNIT_ASSERT_EQUAL(IMAGE2ID, image2->getUUID());
+    CPPUNIT_ASSERT_EQUAL(IMAGE2ID, image2->getID());
 
     CPPUNIT_ASSERT(::fwServices::has(po, "::TestService"));
     CPPUNIT_ASSERT(::fwServices::has(po, "::fwServices::IEditionService"));

@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
@@ -105,7 +105,7 @@ void IService::configure()
 
 void IService::reconfiguring() throw ( ::fwTools::Failed )
 {
-    OSLM_FATAL("If this method (reconfiguring) is called, it must be overrided in the implementation ("<<this->getClassname()<<", "<< this->getUUID() <<")" );
+    OSLM_FATAL("If this method (reconfiguring) is called, it must be overrided in the implementation ("<<this->getClassname()<<", "<< this->getID() <<")" );
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +212,7 @@ void IService::update() throw( ::fwTools::Failed)
 
 void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
 {
-    OSLM_ASSERT("Swapping on "<< this->getUUID() << " with same Object " << _obj->getUUID(), m_associatedObject.lock() != _obj );
+    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
 
     if( m_globalState == STARTED ) // FIXME ???
     {
@@ -241,7 +241,7 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
         m_globalState = STARTED ;
     }
 
-    OSLM_WARN_IF( "Service "<< this->getUUID() << " is not STARTED, no swapping with Object " << _obj->getUUID(), m_globalState != STARTED);
+    OSLM_WARN_IF( "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(), m_globalState != STARTED);
 }
 
 //-----------------------------------------------------------------------------

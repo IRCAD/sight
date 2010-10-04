@@ -17,7 +17,7 @@
 #include <boost/filesystem/convenience.hpp>
 
 #include <fwTools/Object.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Boolean.hpp>
@@ -144,7 +144,7 @@ void ShowScanEditor::info( std::ostream &_sstream )
 
 void ShowScanEditor::onChangeScanMode(  wxCommandEvent& event )
 {
-    if(::fwTools::UUID::exist(m_adaptorUID, ::fwTools::UUID::SIMPLE ))
+    if(::fwTools::fwID::exist(m_adaptorUID ))
     {
         m_scanAreShown = !m_scanAreShown;
 

@@ -396,7 +396,7 @@ void AcquisitionSelectorPanelDataView::updatePropGrid()
 //              m_vObjectEditor.clear();
 //              while ( reconstruction != reconstructionEnd )
 //              {
-//                  wxString uid = wxConvertMB2WX((*reconstruction)->getUUID().c_str());
+//                  wxString uid = wxConvertMB2WX((*reconstruction)->getID().c_str());
 //                  wxString name = wxConvertMB2WX((*reconstruction)->getOrganName().c_str());
 //                  wxPGProperty* pid = m_pg->Append( new wxStringProperty(name, uid ));
 //                  m_pg->DisableProperty(pid);
@@ -653,9 +653,9 @@ void AcquisitionSelectorPanelDataView::UpdateProperty(wxPropertyGridEvent& event
                         ::fwServices::IEditionService::notify(m_serviceParent.lock(), rec, msg);
                     }
 
-                    OSLM_DEBUG("UpdateProperty UUID : " << iter->first->getUUID());
+                    OSLM_DEBUG("UpdateProperty UUID : " << iter->first->getID());
                 }
-                OSLM_DEBUG("Obj : " << iter->first->getUUID() << " editor : " << (void *)*vIter );
+                OSLM_DEBUG("Obj : " << iter->first->getID() << " editor : " << (void *)*vIter );
                 vIter++;
             }
             iter++;
