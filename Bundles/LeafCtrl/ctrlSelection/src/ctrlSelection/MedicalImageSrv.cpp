@@ -5,27 +5,18 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-//
-//#include <fwTools/fwID.hpp>
-//
-//#include <fwServices/helper.hpp>
-#include <fwServices/macros.hpp>
-//#include <fwServices/op/Add.hpp>
-//
 
-#include <fwData/Composite.hpp>
+#include <fwServices/macros.hpp>
+
 #include <fwData/Image.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
+#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-//#include <fwData/Acquisition.hpp>
 
 #include "ctrlSelection/MedicalImageSrv.hpp"
 
 namespace ctrlSelection
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -34,7 +25,9 @@ REGISTER_SERVICE( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, :
 //-----------------------------------------------------------------------------
 
 MedicalImageSrv::MedicalImageSrv() throw()
-{}
+{
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+}
 
 //-----------------------------------------------------------------------------
 
@@ -46,6 +39,7 @@ MedicalImageSrv::~MedicalImageSrv() throw()
 void MedicalImageSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    this->convertImage();
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +50,6 @@ void MedicalImageSrv::convertImage()
     std::pair<bool, bool> MinMaxTFAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( pImg );
     bool landMarksAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks( pImg );
     bool sliceIndexAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( pImg );
-
 }
 
 //-----------------------------------------------------------------------------
