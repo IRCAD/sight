@@ -42,6 +42,8 @@ NegatoOneSlice::NegatoOneSlice() throw()
 
     m_imageSource = NULL;
 
+    m_useImageTF = true;
+
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
@@ -112,6 +114,7 @@ void NegatoOneSlice::cleanImageSource()
         imageSliceAdaptor->setPickerId( this->getPickerId() );
         imageSliceAdaptor->setTransformId( this->getTransformId() );
 
+
         ::visuVTKAdaptor::ImageSlice::sptr ISA;
         ISA = ::visuVTKAdaptor::ImageSlice::dynamicCast(imageSliceAdaptor);
         ISA->setVtkImageSource(this->getImageSource());
@@ -149,6 +152,7 @@ void NegatoOneSlice::cleanImageSource()
         imageAdaptor->setPickerId( this->getPickerId() );
         imageAdaptor->setTransformId( this->getTransformId() );
 
+        ::visuVTKAdaptor::Image::dynamicCast( imageAdaptor )->setUseImageTF( m_useImageTF );
 
         ::visuVTKAdaptor::Image::sptr IA;
         IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);

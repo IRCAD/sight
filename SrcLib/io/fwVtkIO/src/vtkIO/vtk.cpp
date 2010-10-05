@@ -674,6 +674,37 @@ void convertTF2vtkTF(
 
 }
 
+//-----------------------------------------------------------------------------
+
+void convertTF2vtkTFBW(
+        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
+        vtkLookupTable * lookupTableDst )
+{
+    SLM_TRACE_FUNC();
+
+    // Compute center and width
+    std::pair< double, ::boost::int32_t > centerAndWidth = _pTransfertFunctionSrc->getCenterWidth();
+    double width = centerAndWidth.second;
+
+    // Compute min and max
+    typedef ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPCIterator;
+    std::pair< TFPCIterator, TFPCIterator > range = _pTransfertFunctionSrc->getTransfertFunctionPoints();
+    int min = (*range.first)->getValue();
+
+
+    double alpha = 1.0;
+    float value;
+    for( int k = 0; k < 256; k++ )
+    {
+        value = ((float) k)/255.0;
+        lookupTableDst->SetTableValue( k, value, value, value, alpha );
+    }
+
+    lookupTableDst->SetTableRange( min, min + width );
+
+    lookupTableDst->Build();
+
+}
 
 
 

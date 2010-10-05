@@ -141,6 +141,18 @@ VTKIO_API void convertTF2vtkTF(
         bool allow_transparency = false
         );
 
+/*!
+ * @brief Convert the range of ::fwData::TransfertFunction to a black and white vtkLookupTable.
+ *
+ * @param[in] _pTransfertFunctionSrc ::fwData::TransfertFunction
+ * @param[out] lookupTableDst vtkLookupTable
+ *
+ */
+VTKIO_API void convertTF2vtkTFBW(
+        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
+        vtkLookupTable * lookupTableDst
+        );
+
 }
 
 #endif // _VTKIO_VTK_HPP_

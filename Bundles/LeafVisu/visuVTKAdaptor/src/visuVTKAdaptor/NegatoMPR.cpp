@@ -43,6 +43,7 @@ NegatoMPR::NegatoMPR() throw() :
 
     m_allowAlphaInTF = false;
     m_interpolation  = false;
+    m_useImageTF = true;
 
     addNewHandledEvent("SLICE_MODE");
     addNewHandledEvent("SCAN_SHOW");
@@ -288,6 +289,10 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
     }
+    if ( m_configuration->hasAttribute("useColorTF") )
+    {
+        m_useImageTF = ( m_configuration->getAttributeValue("useColorTF") == "yes" );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -351,6 +356,7 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     {
         negatoAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
         negatoAdaptor->setInterpolation(m_interpolation);
+        negatoAdaptor->setUseImageTF(m_useImageTF);
         if (!m_imageSourceId.empty())
         {
             negatoAdaptor->setVtkImageSourceId(m_imageSourceId);

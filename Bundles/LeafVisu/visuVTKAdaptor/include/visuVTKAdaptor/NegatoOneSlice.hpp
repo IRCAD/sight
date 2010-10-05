@@ -35,7 +35,7 @@ public:
     VISUVTKADAPTOR_API void setInterpolation(bool interpolation){m_interpolation = interpolation;};
     VISUVTKADAPTOR_API void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
     VISUVTKADAPTOR_API void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
-
+    VISUVTKADAPTOR_API void setUseImageTF(bool use)               {m_useImageTF = use;};
 protected :
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -52,6 +52,7 @@ protected :
 
     bool m_allowAlphaInTF;
     bool m_interpolation;
+    bool m_useImageTF;
 
     vtkObject* getImageSource();
     void cleanImageSource();

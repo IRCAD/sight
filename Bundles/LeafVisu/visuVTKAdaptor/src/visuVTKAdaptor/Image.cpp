@@ -47,6 +47,7 @@ Image::Image() throw()
 
     m_imagePortId = -1;
     m_allowAlphaInTF = false;
+    m_useImageTF = true;
 
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
@@ -215,7 +216,14 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
     ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
     std::string tfName = m_transfertFunctionId->value();
     ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
-    ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
+    if ( m_useImageTF )
+    {
+        ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
+    }
+    else
+    {
+        ::vtkIO::convertTF2vtkTFBW( pTransfertFunction, m_lut);
+    }
     setVtkPipelineModified();
 }
 

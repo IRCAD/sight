@@ -18,7 +18,7 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API NegatoMPR: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API NegatoMPR: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
@@ -63,6 +63,8 @@ private:
 
     bool m_allowAlphaInTF;
     bool m_interpolation;
+
+    bool m_useImageTF;
 
     std::string m_imageSourceId;
 

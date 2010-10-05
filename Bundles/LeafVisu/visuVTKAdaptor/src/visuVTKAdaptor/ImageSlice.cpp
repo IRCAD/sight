@@ -56,6 +56,8 @@ ImageSlice::ImageSlice() throw()
 
     m_interpolation = true;
 
+    m_useImageTF = false;
+
     // Manage events
     this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
@@ -297,7 +299,7 @@ void ImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
 
     OSLM_TRACE("DisplayExtent : " << " X min: " << extent[0] << " X max: " << extent[1] <<
                 " Y min: " << extent[2] << " Y max: " << extent[3] <<
-                " Z min: " << extent[4] << " Z max: " << extent[5] 
+                " Z min: " << extent[4] << " Z max: " << extent[5]
                 );
 
     m_imageActor->SetDisplayExtent( extent );

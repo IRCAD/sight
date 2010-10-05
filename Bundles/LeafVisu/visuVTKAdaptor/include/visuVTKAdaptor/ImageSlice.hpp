@@ -26,7 +26,7 @@ class vtkActor;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API ImageSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API ImageSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
@@ -42,6 +42,8 @@ public:
     void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
     void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
     void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+
+    VISUVTKADAPTOR_API void setUseImageTF(bool use)               {m_useImageTF = use;};
 
 protected :
 
@@ -69,6 +71,7 @@ protected :
     ::fwData::Image::wptr m_ctrlImage;
 
     bool m_interpolation;
+    bool m_useImageTF;
 
     std::string m_imageSourceId;
     vtkObject  *m_imageSource;
