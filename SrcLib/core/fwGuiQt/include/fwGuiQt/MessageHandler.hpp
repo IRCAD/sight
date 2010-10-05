@@ -8,6 +8,8 @@
 #define FWGUIQT_MESSAGEHANDLER_HPP_
 
 #include <QObject>
+#include <QAbstractEventDispatcher>
+#include <QPointer>
 
 #include <fwCore/base.hpp>
 #include <fwServices/IDeliveryDelegate.hpp>
@@ -58,13 +60,18 @@ protected:
     FWGUIQT_API virtual void info( std::ostream &_sstream ) ;
 
     void addNewMessageToQtQueue();
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
+
+    int m_filteredMessagesCount;
 
     SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
     ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;
 
     static int s_qtMessageHandlerEventType;
+
+    QPointer<QAbstractEventDispatcher> m_qtDispatcher;
 };
 
 }

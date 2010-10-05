@@ -31,7 +31,9 @@ MessageHandler::MessageHandler() throw()
 {
     SLM_TRACE_FUNC();
 
+    m_filteredMessagesCount = 0;
     m_msgHandler = ::fwServices::GlobalEventManager::getDefault();
+    m_qtDispatcher = QAbstractEventDispatcher::instance();
 }
 
 //------------------------------------------------------------------------------
@@ -98,11 +100,19 @@ bool MessageHandler::event ( QEvent * e )
     bool bRes = false;
     if (e->type() == s_qtMessageHandlerEventType)
     {
+        e->accept();
         if (m_msgHandler->pending())
         {
+            m_qtDispatcher->installEventFilter(this);
             m_msgHandler->dispatch();
+            m_qtDispatcher->removeEventFilter(this);
+
+            do
+            {
+                this->addNewMessageToQtQueue();
+            }
+            while (--m_filteredMessagesCount > 0);
         }
-        e->accept();
         bRes = true;
     }
     return bRes;
@@ -110,6 +120,20 @@ bool MessageHandler::event ( QEvent * e )
 
 //------------------------------------------------------------------------------
 
+bool MessageHandler::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == s_qtMessageHandlerEventType)
+    {
+        m_filteredMessagesCount++;
+        return true;
+    }
+    else
+    {
+        return QObject::eventFilter(obj, event);
+    }
 }
+
+
+} //namespace fwGui
 
 
