@@ -164,14 +164,17 @@ public:
     /**
      * @brief Unregister all services attached to the object (obj)
      * It invokes service stop method first as well as related observations removal.
-     * It also clear objects decovered as expired when parsing the m_container
      */
-    FWSERVICES_API static void unregisterServices( fwTools::Object::sptr  obj );
+    FWSERVICES_API static void unregisterServices( ::fwTools::Object::sptr  obj );
+
+    /**
+     * @brief Clear expired objects in the Object-Service container (m_container)
+     */
+    FWSERVICES_API static void cleanExpiredObject();
 
     /**
      * @brief Remove the service (_service) from the m_container
      * It invokes service stop method first as well as related observations removal.
-     * It also clear objects decovered as expired when parsing the m_container
      * @todo Code should be shared with the one written in unregisterServices( fwTools::Object::sptr )
      */
     FWSERVICES_API static void unregisterService(  ::fwServices::IService::sptr _service );

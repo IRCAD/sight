@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include <iterator>
 #include <algorithm>
 #include <functional>
@@ -29,13 +28,12 @@
 
 #include "visuVTKAdaptor/PointList.hpp"
 
-
-
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {
 
+//------------------------------------------------------------------------------
 
 PointList::PointList() throw()
 {
@@ -44,11 +42,12 @@ PointList::PointList() throw()
     addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
+//------------------------------------------------------------------------------
+
 PointList::~PointList() throw()
-{
+{}
 
-}
-
+//------------------------------------------------------------------------------
 
 void PointList::configuring() throw(fwTools::Failed)
 {
@@ -60,6 +59,8 @@ void PointList::configuring() throw(fwTools::Failed)
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
+//------------------------------------------------------------------------------
+
 void PointList::doStart() throw(fwTools::Failed)
 {
     m_oldWeakPointList.clear();
@@ -69,11 +70,15 @@ void PointList::doStart() throw(fwTools::Failed)
     this->doUpdate();
 }
 
+//------------------------------------------------------------------------------
+
 void PointList::doUpdate() throw(fwTools::Failed)
 {
     WeakPointListType points = this->getNewPoints();
     this->createServices( points );
 }
+
+//------------------------------------------------------------------------------
 
 void PointList::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
@@ -95,11 +100,15 @@ void PointList::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fai
     }
 }
 
+//------------------------------------------------------------------------------
+
 void PointList::doSwap() throw(fwTools::Failed)
 {
     this->doStop();
     this->doUpdate();
 }
+
+//------------------------------------------------------------------------------
 
 void PointList::doStop() throw(fwTools::Failed)
 {
@@ -107,6 +116,8 @@ void PointList::doStop() throw(fwTools::Failed)
     m_weakPointList.clear();
     this->unregisterServices();
 }
+
+//------------------------------------------------------------------------------
 
 void PointList::createServices(WeakPointListType &wPtList)
 {
@@ -130,6 +141,8 @@ void PointList::createServices(WeakPointListType &wPtList)
     }
 }
 
+//------------------------------------------------------------------------------
+
 PointList::WeakPointListType PointList::getWeakPointList()
 {
     ::fwData::PointList::sptr ptList = this->getObject< ::fwData::PointList >();
@@ -139,6 +152,8 @@ PointList::WeakPointListType PointList::getWeakPointList()
 
     return weakList;
 }
+
+//------------------------------------------------------------------------------
 
 PointList::WeakPointListType PointList::getNewPoints()
 {
@@ -150,8 +165,8 @@ PointList::WeakPointListType PointList::getNewPoints()
             std::back_inserter(newPoints)
             );
     return newPoints;
-
 }
 
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

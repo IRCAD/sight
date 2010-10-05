@@ -24,19 +24,10 @@
 
 #include "visuVTKAdaptor/PlaneInteractor.hpp"
 
-
-
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwTools::Object ) ;
-
-
-
 
 namespace visuVTKAdaptor
 {
-
-
-
-
 
 class PlaneInteractorCallback : public vtkCommand
 {
@@ -45,14 +36,10 @@ public:
     { return new PlaneInteractorCallback(); }
 
     PlaneInteractorCallback()
-    {
-    }
+    {}
 
     ~PlaneInteractorCallback()
-    {
-
-    }
-
+    {}
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
@@ -83,7 +70,6 @@ public:
             SetAbortFlag(1);
             m_adaptor->pushPlane(-1);
         }
-
     }
 
     void setAdaptor( PlaneInteractor::sptr adaptor)
@@ -107,8 +93,7 @@ PlaneInteractor::PlaneInteractor() throw()
 //------------------------------------------------------------------------------
 
 PlaneInteractor::~PlaneInteractor() throw()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 

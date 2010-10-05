@@ -27,6 +27,7 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabe
 namespace visuVTKAdaptor
 {
 
+//------------------------------------------------------------------------------
 
 PointLabel::PointLabel() : Text()
 {
@@ -35,17 +36,22 @@ PointLabel::PointLabel() : Text()
     addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
+//------------------------------------------------------------------------------
+
 void PointLabel::starting() throw(::fwTools::Failed)
 {
     Text::starting();
     doUpdate();
 }
 
+//------------------------------------------------------------------------------
+
 void PointLabel::stopping() throw(::fwTools::Failed)
 {
     Text::stopping();
 }
 
+//------------------------------------------------------------------------------
 
 void PointLabel::doUpdate() throw(::fwTools::Failed)
 {
@@ -67,6 +73,8 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
 void PointLabel::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_ASSERT("ACH : recieve a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
@@ -78,16 +86,13 @@ void PointLabel::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools
     }
 }
 
+//------------------------------------------------------------------------------
 
 void PointLabel::doSwap() throw(fwTools::Failed)
 {
     this->doUpdate();
 }
 
-
-
-
-
-
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
