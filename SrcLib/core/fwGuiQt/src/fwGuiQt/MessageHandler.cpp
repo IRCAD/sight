@@ -107,11 +107,11 @@ bool MessageHandler::event ( QEvent * e )
             m_msgHandler->dispatch();
             m_qtDispatcher->removeEventFilter(this);
 
-            do
+            while (m_filteredMessagesCount > 0)
             {
                 this->addNewMessageToQtQueue();
+                --m_filteredMessagesCount;
             }
-            while (--m_filteredMessagesCount > 0);
         }
         bRes = true;
     }
