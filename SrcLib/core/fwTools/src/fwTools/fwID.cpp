@@ -19,28 +19,28 @@ namespace fwTools
 fwID::CategorizedCounter fwID::m_CategorizedCounter;
 fwID::Dictionary fwID::m_dictionary;
 
-
-
+//-----------------------------------------------------------------------------
 
 fwID::~fwID()
 {
     resetID();
 }
 
+//-----------------------------------------------------------------------------
 
 bool fwID::exist( IDType _id)
 {
     return m_dictionary.find( _id ) != m_dictionary.end();
 }
 
-
+//-----------------------------------------------------------------------------
 
 bool fwID::hasID( ) const
 {
     return !m_id.empty();
 }
 
-
+//-----------------------------------------------------------------------------
 
 void fwID::setID( IDType newID )
 {
@@ -51,6 +51,7 @@ void fwID::setID( IDType newID )
     m_id = newID;
 }
 
+//-----------------------------------------------------------------------------
 
 fwID::IDType fwID::getID( Policy policy) const
 {
@@ -71,7 +72,7 @@ fwID::IDType fwID::getID( Policy policy) const
     return m_id;
 }
 
-
+//-----------------------------------------------------------------------------
 
 fwID::IDType fwID::generate() const
 {
@@ -85,7 +86,7 @@ fwID::IDType fwID::generate() const
     return newID;
 }
 
-
+//-----------------------------------------------------------------------------
 
 ::fwTools::Object::sptr fwID::getObject( fwID::IDType requestID )
 {
@@ -101,7 +102,7 @@ fwID::IDType fwID::generate() const
     }
 }
 
-
+//-----------------------------------------------------------------------------
 
 void fwID::resetID()
 {
@@ -112,7 +113,7 @@ void fwID::resetID()
     m_id.clear();
 }
 
-
+//-----------------------------------------------------------------------------
 
 void fwID::swapID( ::fwTools::Object::sptr   obj2 )
 {
@@ -124,8 +125,6 @@ void fwID::swapID( ::fwTools::Object::sptr   obj2 )
     obj2->setID(id1);
 }
 
-
-
-
+//-----------------------------------------------------------------------------
 
 }

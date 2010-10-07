@@ -31,7 +31,6 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR
 namespace visuVTKAdaptor
 {
 
-
 //------------------------------------------------------------------------------
 
 NegatoMPR::NegatoMPR() throw() :
@@ -42,7 +41,7 @@ NegatoMPR::NegatoMPR() throw() :
     SLM_TRACE_FUNC();
 
     m_allowAlphaInTF = false;
-    m_interpolation  = false;
+    m_interpolation  = true;
     m_useImageTF = true;
 
     addNewHandledEvent("SLICE_MODE");
@@ -374,7 +373,5 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
 }
 
 //------------------------------------------------------------------------------
-
-
 
 } //namespace visuVTKAdaptor

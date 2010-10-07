@@ -424,15 +424,15 @@ void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(:
 
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::NEW_DISTANCE ) )
     {
-		::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::NEW_DISTANCE));
-		OSLM_FATAL_IF(" ImageMultiDistances::doUpdate with RenderService "<<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
-		if ( dataInfo->value() == sceneId )
-		{
-			this->createNewDistance( sceneId );
-		    ::fwComEd::ImageMsg::NewSptr msg;
-		    msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
-		    ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
-		}
+        ::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::NEW_DISTANCE));
+        OSLM_FATAL_IF(" ImageMultiDistances::doUpdate with RenderService "<<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
+        if ( dataInfo->value() == sceneId )
+        {
+            this->createNewDistance( sceneId );
+            ::fwComEd::ImageMsg::NewSptr msg;
+            msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
+            ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
+        }
     }
 
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
@@ -441,7 +441,7 @@ void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(:
         // update only if the distance is added in this scene
         // or if the service is not filtered
         if ( !dataInfo || dataInfo->value() ==  getRenderService()->getID()
-			|| m_configuration->getAttributeValue("filter") == "false")
+                || m_configuration->getAttributeValue("filter") == "false")
         {
             doUpdate();
         }

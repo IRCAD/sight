@@ -39,8 +39,8 @@ public:
 
 
     typedef enum {
-    	EMPTY    = 1, // return a empty id if no one set
-    	GENERATE    , // generate a new id if necessary
+        EMPTY    = 1, // return a empty id if no one set
+        GENERATE    , // generate a new id if necessary
         MUST_EXIST    // throw an exception if object not have an id
     } Policy;
 
@@ -100,8 +100,8 @@ protected :
    IDType m_id;
    //::fwTools::Object  *m_fwIDRelatedobject;
 
-   typedef ::boost::unordered_map< IDType, WPTR(::fwTools::Object ) > 	Dictionary;
-   typedef ::boost::unordered_map< std::string , ::boost::uint32_t > 	CategorizedCounter;
+   typedef ::boost::unordered_map< IDType, WPTR(::fwTools::Object ) > Dictionary;
+   typedef ::boost::unordered_map< std::string , ::boost::uint32_t >  CategorizedCounter;
 
    static  Dictionary m_dictionary;
    static  CategorizedCounter m_CategorizedCounter;

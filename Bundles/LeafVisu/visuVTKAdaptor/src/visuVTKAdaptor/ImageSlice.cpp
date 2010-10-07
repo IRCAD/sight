@@ -116,6 +116,7 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
+
 ::fwData::Image::sptr ImageSlice::getCtrlImage()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
@@ -134,6 +135,8 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
     SLM_ASSERT("Null control image", !m_ctrlImage.expired());
     return m_ctrlImage.lock();
 }
+
+//------------------------------------------------------------------------------
 
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
@@ -171,7 +174,6 @@ void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
         SLM_TRACE("Has event MODIFIED_FIELDS");
         doUpdate();
     }
-
 
     if (imageIsValid)
     {

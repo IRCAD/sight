@@ -136,7 +136,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             ::fwComEd::ImageMsg::NewSptr msg;
             msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
             ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
-            }
+        }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
         {
