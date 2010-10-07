@@ -46,7 +46,12 @@ public:
     FWCOMED_API static std::string UNSELECTED_NODE;
     FWCOMED_API static std::string SELECTED_OPERATOR;
     FWCOMED_API static std::string EXECUTE_GRAPH;
+    FWCOMED_API static std::string CANCEL_EXECUTE_GRAPH;
     FWCOMED_API static std::string CHANGED_NODE_STATE;
+    FWCOMED_API static std::string NODE_PROCESS_ERROR; // datainfo = node to process
+    FWCOMED_API static std::string NODE_PROCESS_WARN;  // datainfo = node to process
+    FWCOMED_API static std::string NODE_PROCESS_DONE;  // datainfo = node to process
+    FWCOMED_API static std::string NODE_PROCESS;       // datainfo = node to process
     /// @}
 
     /**

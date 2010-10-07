@@ -24,7 +24,12 @@ std::string GraphMsg::SELECTED_NODE        = "SELECTED_NODE";
 std::string GraphMsg::UNSELECTED_NODE      = "UNSELECTED_NODE";
 std::string GraphMsg::SELECTED_OPERATOR    = "SELECTED_OPERATOR";
 std::string GraphMsg::EXECUTE_GRAPH        = "EXECUTE_GRAPH";
+std::string GraphMsg::CANCEL_EXECUTE_GRAPH = "CANCEL_EXECUTE_GRAPH";
 std::string GraphMsg::CHANGED_NODE_STATE   = "CHANGED_NODE_STATE";
+std::string GraphMsg::NODE_PROCESS_ERROR   = "NODE_PROCESS_ERROR";
+std::string GraphMsg::NODE_PROCESS_WARN    = "NODE_PROCESS_WARN";
+std::string GraphMsg::NODE_PROCESS_DONE    = "NODE_PROCESS_DONE";
+std::string GraphMsg::NODE_PROCESS         = "NODE_PROCESS";
 
 //-----------------------------------------------------------------------------
 
