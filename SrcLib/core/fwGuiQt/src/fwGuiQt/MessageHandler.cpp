@@ -31,6 +31,7 @@ MessageHandler::MessageHandler() throw()
 {
     SLM_TRACE_FUNC();
 
+    m_processingEvent = false;
     m_filteredMessagesCount = 0;
     m_msgHandler = ::fwServices::GlobalEventManager::getDefault();
     m_qtDispatcher = QAbstractEventDispatcher::instance();
@@ -97,40 +98,31 @@ void MessageHandler::addNewMessageToQtQueue()
 
 bool MessageHandler::event ( QEvent * e )
 {
-    bool bRes = false;
-    if (e->type() == s_qtMessageHandlerEventType)
+    bool bRes = e->type() == s_qtMessageHandlerEventType;
+    if (bRes)
     {
-        e->accept();
-        if (m_msgHandler->pending())
+        if (! m_processingEvent)
         {
-            m_qtDispatcher->installEventFilter(this);
-            m_msgHandler->dispatch();
-            m_qtDispatcher->removeEventFilter(this);
-
-            while (m_filteredMessagesCount > 0)
+            m_processingEvent = true;
+            e->accept();
+            if (m_msgHandler->pending())
             {
-                this->addNewMessageToQtQueue();
-                --m_filteredMessagesCount;
+                m_msgHandler->dispatch();
+
+                while (m_filteredMessagesCount > 0)
+                {
+                    this->addNewMessageToQtQueue();
+                    --m_filteredMessagesCount;
+                }
             }
+            m_processingEvent = false;
         }
-        bRes = true;
+        else
+        {
+            ++m_filteredMessagesCount;
+        }
     }
     return bRes;
-}
-
-//------------------------------------------------------------------------------
-
-bool MessageHandler::eventFilter(QObject *obj, QEvent *event)
-{
-    if (event->type() == s_qtMessageHandlerEventType)
-    {
-        m_filteredMessagesCount++;
-        return true;
-    }
-    else
-    {
-        return QObject::eventFilter(obj, event);
-    }
 }
 
 

@@ -60,18 +60,18 @@ protected:
     FWGUIQT_API virtual void info( std::ostream &_sstream ) ;
 
     void addNewMessageToQtQueue();
-    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
 
-    int m_filteredMessagesCount;
+    bool m_processingEvent;
+    unsigned int m_filteredMessagesCount;
 
     SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
     ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;
 
-    static int s_qtMessageHandlerEventType;
-
     QPointer<QAbstractEventDispatcher> m_qtDispatcher;
+
+    static int s_qtMessageHandlerEventType;
 };
 
 }
