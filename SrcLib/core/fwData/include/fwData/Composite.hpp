@@ -37,7 +37,7 @@ public:
     typedef ObjectMapType ContainerType;
 
     using ObjectMapType::key_type;
-    using ObjectMapType::mapped_type;
+    using ObjectMapType::mapped_type; // Note before gcc 4.1 element_type
     using ObjectMapType::value_type;
     using ObjectMapType::key_compare;
     using ObjectMapType::value_compare;

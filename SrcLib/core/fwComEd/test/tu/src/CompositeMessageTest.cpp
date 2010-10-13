@@ -226,13 +226,16 @@ void CompositeMessageTest::methodeMessageNotification()
     // Composite
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
     cfg->setAttributeValue( "uid" , "compositeUUID") ;
-    cfg->setAttributeValue( "id" , "compositeUUID") ;
     cfg->setAttributeValue( "type" , "::fwData::Composite") ;
 
+
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemA = cfg->addConfigurationElement("item");
+     itemA->setAttributeValue( "key" , "imageUUID") ;
+
+
     // composite object : image
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objA = cfg->addConfigurationElement("object");
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objA = itemA->addConfigurationElement("object");
     objA->setAttributeValue( "uid" , "imageUUID") ;
-    objA->setAttributeValue( "id" , "imageUUID") ;
     objA->setAttributeValue( "type" , "::fwData::Image") ;
 
     // image's services
@@ -248,10 +251,14 @@ void CompositeMessageTest::methodeMessageNotification()
     imageService2->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
     imageService2->setAttributeValue( "autoComChannel" , "no" ) ;
 
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
+     itemB->setAttributeValue( "key" , "videoUUID") ;
+
+
     // composite object : video
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objB = cfg->addConfigurationElement("object");
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objB = itemB->addConfigurationElement("object");
     objB->setAttributeValue( "uid" , "videoUUID") ;
-    objB->setAttributeValue( "id" , "videoUUID") ;
+    //objB->setAttributeValue( "id" , "videoUUID") ;
     objB->setAttributeValue( "type" , "::fwData::Video") ;
 
     // composite's service 1

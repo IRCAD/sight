@@ -115,7 +115,7 @@ void ServiceTest::testServiceCreationWithUUID()
     service = ::fwServices::get< ::TestService >(obj, myUUID2);
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
-    CPPUNIT_ASSERT_EQUAL(myUUID2, ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject(service) ));
+    CPPUNIT_ASSERT_EQUAL(myUUID2, service ->getID());
     CPPUNIT_ASSERT( ::fwServices::get(obj, "::TestService", myUUID3) == NULL );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::getServices(obj, "::TestService").size() );
 
@@ -287,7 +287,6 @@ void ServiceTest::testObjectCreationWithConfig()
     // Configuration on fwTools::Object which uid is objectUUID
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
     cfg->setAttributeValue( "uid" , "objectUUID") ;
-    cfg->setAttributeValue( "id" , "objectUUID") ;
     cfg->setAttributeValue( "type" , "::fwTools::Object") ;
 
     // Object's service A

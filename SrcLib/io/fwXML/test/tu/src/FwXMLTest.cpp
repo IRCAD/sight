@@ -50,7 +50,8 @@ void FwXMLTest::testFwXML()
     serializer.setPathPolicy( pPathPolicy );
 
     serializer.rootFolder() = PATH.branch_path().string();
-    serializer.serialize(pPatientDB);
+    bool doSaveSchema = false;
+    serializer.serialize(pPatientDB, doSaveSchema);
 
 
     // load patientDB
