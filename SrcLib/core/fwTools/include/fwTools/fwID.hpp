@@ -54,7 +54,7 @@ public:
     FWTOOLS_API static bool exist( IDType _id);
 
     /**
-     * @brief retrieve the object attached to the given id. Return a null sptr if no correspondance exist
+     * @brief retrieve the object attached to the given id. Return a null sptr if no correspondence exist
      */
     FWTOOLS_API static SPTR(::fwTools::Object ) getObject( IDType requestID );
 
