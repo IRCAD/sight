@@ -99,6 +99,7 @@ void TransformationMatrix3DReaderService::configureWithIHM()
     dialogFile.setTitle("Choose a file to load a transformation matrix");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TRF files","*.trf");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -108,7 +109,6 @@ void TransformationMatrix3DReaderService::configureWithIHM()
         m_bServiceIsConfigured = true;
         _sDefaultPath = m_filename.branch_path();
     }
-
 }
 
 //-----------------------------------------------------------------------------

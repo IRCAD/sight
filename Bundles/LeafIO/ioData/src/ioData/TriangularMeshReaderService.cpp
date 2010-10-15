@@ -87,6 +87,7 @@ void TriangularMeshReaderService::configureWithIHM()
     dialogFile.setTitle("Choose an triangular mesh file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TrianMesh","*.trian");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
