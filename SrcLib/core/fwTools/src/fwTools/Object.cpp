@@ -285,7 +285,7 @@ void Object::removeField( const FieldID &fieldId )
 
 }
 
-
+//------------------------------------------------------------------------------
 
 ::fwTools::Field::sptr Object::addFieldElement( const FieldID &fieldId, ::fwTools::Object::sptr newSubObject )
 {
@@ -309,20 +309,19 @@ void Object::removeField( const FieldID &fieldId )
 
 //------------------------------------------------------------------------------
 
-
 void Object::removeFieldElement( const FieldID &fieldId, ::fwTools::Object::sptr subObjectToRemove )
 {
     ::fwTools::Field::sptr field = getField(fieldId);
 
-        if ( field)
+    if ( field)
+    {
+        ChildContainer::iterator i;
+        i = std::find( field->children().begin(),  field->children().end(), subObjectToRemove );
+        if ( i != field->children().end() )
         {
-            ChildContainer::iterator i;
-            i = std::find( field->children().begin(),  field->children().end(), subObjectToRemove );
-            if ( i != field->children().end() )
-            {
-                field->children().erase(i);
-            }
+            field->children().erase(i);
         }
+    }
 }
 
 //------------------------------------------------------------------------------

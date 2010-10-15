@@ -78,6 +78,8 @@ void ImageReaderService::configureWithIHM()
     dialogFile.setTitle("Choose an vtk file to load an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );

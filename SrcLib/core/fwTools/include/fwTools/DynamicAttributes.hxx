@@ -12,8 +12,9 @@
 #include <boost/ref.hpp>
 #include <boost/foreach.hpp>
 
-#include "fwCore/base.hpp"
-#include "fwCore/Demangler.hpp"
+#include <fwCore/base.hpp>
+#include <fwCore/Demangler.hpp>
+
 #include "fwTools/macros.hpp"
 
 namespace fwTools {
@@ -36,7 +37,7 @@ public:
 
     virtual ConstAttrType getConstAttribute( AttrNameType attrName ) const;
     virtual AttrRefType getAttribute( AttrNameType attrName );
-            bool        hasAttribute( AttrNameType attrName );
+    bool        hasAttribute( AttrNameType attrName );
 
     virtual fwToolsSetAttributeSignatureMacro() {};
 

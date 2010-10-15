@@ -142,6 +142,7 @@ void FwXMLPatientDBReaderService::configureWithIHM()
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("fwXML archive","*.fxz");
     dialogFile.addFilter("fwXML archive","*.xml");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;

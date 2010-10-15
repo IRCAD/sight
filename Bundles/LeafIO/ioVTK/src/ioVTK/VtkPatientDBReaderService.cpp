@@ -76,6 +76,7 @@ void VtkPatientDBReaderService::configureWithIHM()
     dialogFile.setTitle("Choose a VtkImage file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("VtkImage","*.vtk");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
