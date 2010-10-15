@@ -8,8 +8,12 @@
 #include "fwData/GenericFieldBase.hpp"
 
 
-std::ostream& fwData::operator<<( std::ostream &_os, const ::fwData::GenericFieldBase &lf )
+namespace fwData 
+{
+
+std::ostream& operator<<( std::ostream &_os, const ::fwData::GenericFieldBase &lf )
 {
     return lf.toOStream(_os);
 }
 
+} //namespace fwData
