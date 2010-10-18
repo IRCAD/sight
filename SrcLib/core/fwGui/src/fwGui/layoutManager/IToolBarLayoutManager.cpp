@@ -13,7 +13,7 @@ namespace fwGui
 namespace layoutManager
 {
 
-const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY = "::fwGui::ToolBarBarLayoutManager";
+const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY = "::fwGui::ToolBarLayoutManager";
 
 //-----------------------------------------------------------------------------
 

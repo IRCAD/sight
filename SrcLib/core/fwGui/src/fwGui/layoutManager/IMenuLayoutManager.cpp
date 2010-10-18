@@ -13,7 +13,7 @@ namespace fwGui
 namespace layoutManager
 {
 
-const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "::fwGui::MenuBarLayoutManager";
+const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "::fwGui::MenuLayoutManager";
 
 //-----------------------------------------------------------------------------
 
