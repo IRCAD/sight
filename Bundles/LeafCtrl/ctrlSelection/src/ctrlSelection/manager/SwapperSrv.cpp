@@ -116,8 +116,9 @@ void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
         ConfigurationType modeConfiguration = vectMode.at(0);
         SLM_ASSERT("Missing attribute type", modeConfiguration->hasAttribute("type"));
         std::string mode = modeConfiguration->getAttributeValue("type");
-        SLM_ASSERT("Wrong type mode", (mode == "dummy" ) || (mode == "stop" ));
+        SLM_ASSERT("Wrong type mode", (mode == "dummy" ) || (mode == "stop" ) || mode=="startAndUpdate");
         m_dummyStopMode = (mode == "dummy" );
+        m_mode = mode;
     }
 
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
@@ -193,6 +194,10 @@ void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr 
             subSrv->m_service = srv;
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
+            if (m_mode =="startAndUpdate")
+            {
+            	 subSrv->getService()->update();
+            }
         }
         m_objectsSubServices[objectId] = subVecSrv;
     }
