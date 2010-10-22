@@ -34,7 +34,7 @@ SerializeXML::~SerializeXML()
 
 void SerializeXML::visit( ::fwTools::Object::sptr obj)
 {
-    assert(obj);
+    SLM_ASSERT("Object is null", obj);
     std::string uuid = ::fwTools::UUID::get(obj);
     std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     OSLM_DEBUG( "SerializeXML Visitor Visiting : Class " << obj->className() <<

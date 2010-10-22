@@ -43,7 +43,7 @@ void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> ob
                 );
 
 
-    assert(obj);
+    SLM_ASSERT("Objets is null",obj);
     if ( fwServices::has< ::fwXML::IFileFormatService >( obj ) )
     {
         m_objWithFileFormatService[obj] = fwServices::get< ::fwXML::IFileFormatService >( obj );
@@ -112,7 +112,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
 
 
     ::fwData::Node::sptr node = ::fwData::Node::dynamicCast( src );
-    if ( node )
+    if ( node && node->getObject() )
     {
         ::fwData::visitor::accept( node->getObject() , this);
     }
