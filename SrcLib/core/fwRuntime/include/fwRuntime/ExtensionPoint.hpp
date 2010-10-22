@@ -77,7 +77,7 @@ struct ExtensionPoint : public BundleElement
     void getAllConfigurationElements( OutputIterator & output ) const
     {
         // Retrieves all connected extensions.
-        typedef std::vector< ::boost::shared_ptr< Extension > >             ExtensionContainer;
+        typedef std::vector< ::boost::shared_ptr< Extension > > ExtensionContainer;
         typedef std::back_insert_iterator< ExtensionContainer > Inserter;
 
         ExtensionContainer  extensions;
