@@ -34,8 +34,14 @@ public:
     /**
     * @brief    Constructor
     */
+    FWWX_API wxXmlTree(wxWindow* parent);
+
+    /**
+    * @brief    Constructor
+    */
     FWWX_API wxXmlTree(wxWindow* parent, xmlNodePtr node);
 
+    FWWX_API void updateNode(xmlNodePtr pXmlNode);
 private :
     /**
      * @brief   construct the wxTree with xmlNodePtr
@@ -53,6 +59,10 @@ private :
      * @brief   return Element Value of a node in wxString(or empty wxString)
      */
     wxString getElementValue(xmlNodePtr pXmlNode) ;
+
+    void createLayout();
+
+    wxTreeCtrl *m_tree;
 };
 
 } //namespace fwWX

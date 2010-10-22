@@ -15,19 +15,41 @@ namespace fwWX
 
 //------------------------------------------------------------------------------
 
-wxXmlTree::wxXmlTree(wxWindow* parent, xmlNodePtr node)
+wxXmlTree::wxXmlTree(wxWindow* parent)
  : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX)
+{
+    this->createLayout();
+}
+
+//------------------------------------------------------------------------------
+
+wxXmlTree::wxXmlTree(wxWindow* parent, xmlNodePtr node)
+: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX)
+{
+    this->createLayout();
+    this->updateNode(node);
+}
+
+//------------------------------------------------------------------------------
+
+void wxXmlTree::createLayout()
 {
     wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     wxSizerFlags flagsExpand(1);
     flagsExpand.Expand();
-    wxTreeCtrl * tree = new wxTreeCtrl(this, wxID_ANY);
+    m_tree = new wxTreeCtrl(this, wxID_ANY);
 
-    sizer->Add(tree, flagsExpand);
+    sizer->Add(m_tree, flagsExpand);
     SetSizer(sizer);
+}
 
+//------------------------------------------------------------------------------
+
+void wxXmlTree::updateNode(xmlNodePtr pXmlNode)
+{
+    m_tree->DeleteAllItems();
     wxTreeItemId root;
-    this->addNodeToWidget(tree, root, node);
+    this->addNodeToWidget(m_tree, root, pXmlNode);
 }
 
 //------------------------------------------------------------------------------
