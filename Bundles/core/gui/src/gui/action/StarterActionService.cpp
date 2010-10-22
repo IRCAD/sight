@@ -209,3 +209,4 @@ void StarterActionService::configuring() throw( ::fwTools::Failed )
 
 } // namespace action
 } // namespace gui
+
