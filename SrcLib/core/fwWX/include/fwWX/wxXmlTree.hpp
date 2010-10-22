@@ -8,17 +8,11 @@
 #ifndef FWWX_WXXMLTREE_HPP_
 #define FWWX_WXXMLTREE_HPP_
 
+#include <wx/wx.h>
 #include <wx/treectrl.h>
 #include <wx/string.h>
 #include <libxml/tree.h>
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
 
 #include "fwWX/config.hpp"
 

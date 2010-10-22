@@ -4,13 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwWX/wxXmlTree.hpp"
-
 #include <iostream>
 #include <sstream>
 
+#include "fwWX/wxXmlTree.hpp"
+#include "fwWX/convert.hpp"
+
 namespace fwWX
 {
+
+//------------------------------------------------------------------------------
 
 wxXmlTree::wxXmlTree(wxWindow* parent, xmlNodePtr node)
  : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX)
@@ -18,18 +21,16 @@ wxXmlTree::wxXmlTree(wxWindow* parent, xmlNodePtr node)
     wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     wxSizerFlags flagsExpand(1);
     flagsExpand.Expand();
-    wxTreeCtrl * tree = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(500, 500), wxTR_DEFAULT_STYLE); //, wxPoint(0,0), wxSize(400, 500) ) ; //remplacer les point et size par AUTO
+    wxTreeCtrl * tree = new wxTreeCtrl(this, wxID_ANY);
 
     sizer->Add(tree, flagsExpand);
     SetSizer(sizer);
 
     wxTreeItemId root;
-    addNodeToWidget(tree, root, node) ;
-    //tree->SetQuickBestSize(false) ;
-    //pour les tests
-    //tree->ExpandAll() ;
+    this->addNodeToWidget(tree, root, node);
 }
 
+//------------------------------------------------------------------------------
 
 void wxXmlTree::addNodeToWidget(wxTreeCtrl *tree, wxTreeItemId pItem , xmlNodePtr pXmlNode)
 {
@@ -44,7 +45,9 @@ void wxXmlTree::addNodeToWidget(wxTreeCtrl *tree, wxTreeItemId pItem , xmlNodePt
 
     wxTreeItemId item ;
     if (tree->GetRootItem())
-    {item = tree->AppendItem(pItem, itemTreeLabel ) ;}
+    {
+        item = tree->AppendItem(pItem, itemTreeLabel ) ;
+    }
     else
     {
         item = tree->AddRoot( itemTreeLabel ) ;
@@ -63,14 +66,17 @@ void wxXmlTree::addNodeToWidget(wxTreeCtrl *tree, wxTreeItemId pItem , xmlNodePt
     //------END---children Elements of the curent node--------
 }
 
+//------------------------------------------------------------------------------
+
 wxString  wxXmlTree::xmlCharTowxString(const xmlChar * ch)
 {
     std::stringstream ss ;
     ss.str("") ;
     ss<< ch ;
-    wxString  wxstring_tmp = wxString::FromAscii(ss.str().data()) ;
-    return wxstring_tmp ;
+    return ::fwWX::std2wx(ss.str()) ;
 }
+
+//------------------------------------------------------------------------------
 
 wxString  wxXmlTree::getNodePropertiesInWxString(xmlNodePtr pXmlNode)
 {
@@ -82,12 +88,14 @@ wxString  wxXmlTree::getNodePropertiesInWxString(xmlNodePtr pXmlNode)
     {
         if (attr_curent->children->type == XML_TEXT_NODE)
         {
-            tmp << wxString::FromAscii(", ") << xmlCharTowxString(attr_curent->name) << wxString::FromAscii(" = ") << xmlCharTowxString( attr_curent->children->content ) ;
+            tmp << ::fwWX::std2wx(", ") << xmlCharTowxString(attr_curent->name) << ::fwWX::std2wx(" = ") << xmlCharTowxString( attr_curent->children->content ) ;
         }
         attr_curent = attr_curent->next ;
     }
     return tmp ;
 }
+
+//------------------------------------------------------------------------------
 
 wxString wxXmlTree::getElementValue(xmlNodePtr pXmlNode)
 {
@@ -96,10 +104,12 @@ wxString wxXmlTree::getElementValue(xmlNodePtr pXmlNode)
     if ( ( pXmlNode->type == XML_ELEMENT_NODE) && (pXmlNode->children)
             && (pXmlNode->children->type == XML_TEXT_NODE) )
     {
-        tmp << wxString::FromAscii(" = ") << xmlCharTowxString(pXmlNode->children->content) ;
+        tmp << ::fwWX::std2wx(" = ") << this->xmlCharTowxString(pXmlNode->children->content) ;
     }
     return tmp ;
 }
+
+//------------------------------------------------------------------------------
 
 } //namespace fwWX
 
