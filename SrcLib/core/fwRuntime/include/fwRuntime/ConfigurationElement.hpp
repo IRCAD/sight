@@ -60,7 +60,10 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
     /**
      * @brief   Defines the a class for attributes exceptions.
      */
-    struct NoSuchAttribute{};
+    struct NoSuchAttribute : public ::fwCore::Exception
+    {
+        NoSuchAttribute(const std::string &attr) : ::fwCore::Exception(std::string("No such attribute: ") + attr) {}
+    };
 
 
     /**

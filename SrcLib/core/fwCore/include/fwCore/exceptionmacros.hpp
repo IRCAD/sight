@@ -28,18 +28,6 @@
 
 
 
-//TODO
-#ifdef DEBUG
-//#include <boost/exception/diagnostic_information.hpp>
-#define __FWCORE__EXCEPTION_DEBUG_INFO ""
-
-#else
-#define __FWCORE__EXCEPTION_DEBUG_INFO ""
-
-#endif
-
-
-
 #define __FWCORE_EXCEPTION_INFO( excep )              \
             "Exception: <"                            \
             << __FWCORE_EXCEPTION_GETCLASSNAME(excep) \

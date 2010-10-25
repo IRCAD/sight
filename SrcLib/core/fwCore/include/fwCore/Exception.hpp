@@ -18,7 +18,7 @@ class FWCORE_CLASS_API Exception : public std::runtime_error
 {
 
 public:
-    FWCORE_API Exception ( const std::string err );
+    FWCORE_API Exception ( const std::string &err );
 
 };
 

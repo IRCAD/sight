@@ -10,6 +10,7 @@
 #include <exception>
 #include <string>
 
+#include "fwCore/Exception.hpp"
 #include "fwTools/config.hpp"
 
 namespace fwTools
@@ -21,7 +22,7 @@ namespace fwTools
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-struct FWTOOLS_CLASS_API Failed : public std::exception
+struct FWTOOLS_CLASS_API Failed : public ::fwCore::Exception
 {
 
     /**
@@ -29,26 +30,13 @@ struct FWTOOLS_CLASS_API Failed : public std::exception
      *
      * @param[in]   message a string containing the failure message
      */
-    FWTOOLS_API Failed(const std::string & message) throw();
+    FWTOOLS_API Failed(const std::string &message) throw();
 
     /**
      * @brief   Destructor : do nothing.
      */
     FWTOOLS_API ~Failed() throw();
 
-
-    /**
-     * @brief   Retrieves the failuer message
-     *
-     * @return  a pointer to the string containing the failure message
-     */
-    FWTOOLS_API const char* what() const throw();
-
-
-private:
-
-    /// A string containing the failure message
-    std::string m_message;
 
 };
 
