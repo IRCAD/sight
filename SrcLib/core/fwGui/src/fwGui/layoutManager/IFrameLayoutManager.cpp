@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IFrameLayoutManager.cpp
+ * @brief This file defines the implementation of the base class for managing a frame.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>

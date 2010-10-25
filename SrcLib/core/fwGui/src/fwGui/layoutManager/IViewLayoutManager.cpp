@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IViewLayoutManagerBase.cpp
+ * @brief This file defines the implementation of the base class for managing a layout geometry.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/foreach.hpp>
 
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"

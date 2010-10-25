@@ -4,6 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IMenuBarBuilder.hpp
+ * @brief This file defines the interface class  for the menubar builder.
+ *
+ * @author IRCAD (Research and Development Team).
+ */
+
 #ifndef _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 #define _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 
@@ -16,6 +23,13 @@
 
 namespace fwGui
 {
+/**
+ * @brief       The namespace fwGui::builder contains the base interface for GUI elements builder.
+ * @namespace   fwGui::builder
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace builder
 {
 

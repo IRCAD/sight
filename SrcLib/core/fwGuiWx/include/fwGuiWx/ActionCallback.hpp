@@ -13,7 +13,13 @@
 
 #include "fwGuiWx/config.hpp"
 
-
+/**
+ * @brief       The namespace fwGuiWx contains classes which provide the implementation of the Gui using WxWidgets library.
+ * @namespace   fwGuiWx
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace fwGuiWx
 {
 

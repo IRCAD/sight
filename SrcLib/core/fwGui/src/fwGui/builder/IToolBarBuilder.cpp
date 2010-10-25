@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IToolBarBuilder.cpp
+ * @brief This file defines the implementation of the interface class  for the toolbar builder.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 

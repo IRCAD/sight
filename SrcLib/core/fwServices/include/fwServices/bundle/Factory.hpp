@@ -26,6 +26,8 @@ namespace fwServices
  * \li Helpers have been developped for internal use (should not be used from outside) to analyze the XML based graph provided by component descriptions
  * @note It focuses on find the appropriate component to start (and dynamic libraries to load) before invoking class registry
  * @author IRCAD (Research and Development Team).
+ * @date    2009-2010.
+ *
  */
 namespace bundle
 {

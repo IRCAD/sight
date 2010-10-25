@@ -32,7 +32,13 @@ class TransformationMatrix3D;
 
 }
 
-
+/**
+ * @brief       The namespace fwRenderVTK:: contains classes for rendering with VTK.
+ * @namespace   fwRenderVTK
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace fwRenderVTK
 {
 

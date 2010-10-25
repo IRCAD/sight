@@ -18,6 +18,13 @@
 
 namespace fwGui
 {
+/**
+ * @brief       The namespace fwGui::builder contains the classes for GUI elements builder implementation with the Qt library.
+ * @namespace   fwGui::builder
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace builder
 {
 

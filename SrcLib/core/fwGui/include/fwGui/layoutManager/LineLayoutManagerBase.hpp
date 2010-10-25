@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/LineLayoutManagerBase.hpp
+ * @brief This file defines the interface of the class for managing a line layout geometry.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_LAYOUTMANAGER_LINELAYOUTMANAGERBASE_HPP_
 #define _FWGUI_LAYOUTMANAGER_LINELAYOUTMANAGERBASE_HPP_
 
@@ -16,7 +24,13 @@
 
 namespace fwGui
 {
-
+/**
+ * @brief       The namespace fwGui::layoutManager contains the base interface for GUI elements managing layout.
+ * @namespace   fwGui::layoutManager
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace layoutManager
 {
 

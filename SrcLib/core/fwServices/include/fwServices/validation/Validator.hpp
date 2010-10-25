@@ -18,7 +18,8 @@ namespace fwServices
 {
 
 /**
- * @brief Concerns validation
+ * @brief This namespace provides method to verify validity of configuration element.
+ * @namespace   fwServices::validation
  *
  * Validation is based on :
  * \li Checking that involved objects and services type are reported either the Class Registry or in the component distribution

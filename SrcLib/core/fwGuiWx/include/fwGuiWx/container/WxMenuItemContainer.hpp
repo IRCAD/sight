@@ -19,6 +19,13 @@
 
 namespace fwGuiWx
 {
+/**
+ * @brief       The namespace fwGuiWx::container contains the classes used for container implementation with WxWidgets Library.
+ * @namespace   fwGuiWx::container
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace container
 {
 

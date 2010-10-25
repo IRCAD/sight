@@ -14,7 +14,13 @@
 
 namespace fwWX
 {
-
+/**
+ * @brief This namespace provides a list of widgets based on WxWidgets.
+ * @namespace   fwWX::widgets
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date    2009-2010.
+ */
 namespace widgets
 {
 

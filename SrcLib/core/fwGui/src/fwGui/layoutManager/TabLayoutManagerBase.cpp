@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/TabLayoutManagerBase.cpp
+ * @brief This file defines the interface of the class for managing a tab layout geometry.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/assign/list_of.hpp>

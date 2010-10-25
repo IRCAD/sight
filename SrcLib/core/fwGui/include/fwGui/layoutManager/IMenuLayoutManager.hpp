@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IMenuLayoutManager.hpp
+ * @brief This file defines the interface of the base class for managing a menu.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
 #define _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
 
@@ -17,6 +25,13 @@
 
 namespace fwGui
 {
+/**
+ * @brief       The namespace fwGui::layoutManager contains the base interface for GUI elements managing layout.
+ * @namespace   fwGui::layoutManager
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace layoutManager
 {
 

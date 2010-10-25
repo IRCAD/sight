@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IToolBarBuilder.hpp
+ * @brief This file defines the interface class  for the toolbar builder.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 #define _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 
@@ -16,6 +24,13 @@
 
 namespace fwGui
 {
+/**
+ * @brief       The namespace fwGui::builder contains the base interface for GUI elements builder.
+ * @namespace   fwGui::builder
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
 namespace builder
 {
 
