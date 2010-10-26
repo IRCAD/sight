@@ -9,14 +9,6 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-/**
- * @brief   Namespace ioVTK.
- * @namespace   ioVTK.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
- *
- *  The namespace ioVTK contains reader, writer and helper using the vtkIO lib for output and input actions between data and the frameWork
- */
 namespace ioVTK
 {
 
@@ -40,7 +32,7 @@ public:
     * This method is used by runtime in order to close the bundle.
     */
     void stop() throw();
-    
+
 };
 
 } // namespace ioVTK

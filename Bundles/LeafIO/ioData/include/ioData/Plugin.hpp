@@ -9,13 +9,6 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-/**
- * @brief   The namespace ioData contains reader and writer services for basic ::fwData::Object which doesn't need external library.
- * @namespace   ioData.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
- *
- */
 namespace ioData
 {
 

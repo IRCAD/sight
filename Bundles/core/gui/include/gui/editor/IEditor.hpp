@@ -14,10 +14,8 @@
 
 #include "gui/export.hpp"
 
-
 namespace gui
 {
-
 namespace editor
 {
 

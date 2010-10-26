@@ -9,13 +9,6 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-/**
- * @brief   The namespace io contains the base interface for reader and writer services.
- * @namespace   io
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
- *
- */
 namespace io
 {
 /**

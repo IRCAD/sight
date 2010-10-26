@@ -13,7 +13,6 @@
 
 namespace gui
 {
-
 namespace aspect
 {
 

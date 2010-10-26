@@ -14,11 +14,6 @@
 
 namespace ctrlSelection
 {
-
-/**
- * @namespace ctrlSelection::manager
- * @brief     Namespace contained the manager services
- */
 namespace manager
 {
 
