@@ -5,11 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/lexical_cast.hpp>
+
 #include <fwTools/ClassFactoryRegistry.hpp>
-#include "fwXML/XML/PortXMLTranslator.hpp"
+
 #include <fwData/Port.hpp>
 
-
+#include "fwXML/XML/PortXMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 
@@ -18,16 +19,15 @@ namespace fwXML
 
 PortXMLTranslator::PortXMLTranslator() {};
 
+//------------------------------------------------------------------------------
+
 PortXMLTranslator::~PortXMLTranslator() {};
 
+//------------------------------------------------------------------------------
 
-
-
-
-
-xmlNodePtr PortXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr PortXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
-    ::boost::shared_ptr< ::fwData::Port> port = boost::dynamic_pointer_cast< ::fwData::Port>(obj);
+    ::fwData::Port::sptr port = ::fwData::Port::dynamicCast(obj);
     assert(port);
 
     // create master node with className+id
@@ -37,20 +37,20 @@ xmlNodePtr PortXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> o
     XMLTH::addProp(node, "type" , port->getType() );
 
     return node;
-
 }
 
+//------------------------------------------------------------------------------
 
-void PortXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+void PortXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
     assert( XMLTH::check< ::fwData::Port >(toUpdate,source) );
 
-    ::boost::shared_ptr< ::fwData::Port> port = boost::dynamic_pointer_cast< ::fwData::Port>(toUpdate);
+    ::fwData::Port::sptr port = ::fwData::Port::dynamicCast(toUpdate);
 
     port->setIdentifier( XMLTH::getProp<std::string>(source,"identifier") );
     port->setType( XMLTH::getProp<std::string >(source,"type") );
-
 }
 
+//------------------------------------------------------------------------------
 
 }

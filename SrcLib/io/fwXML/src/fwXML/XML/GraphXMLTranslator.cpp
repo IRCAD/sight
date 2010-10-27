@@ -9,13 +9,13 @@
 #include <boost/lexical_cast.hpp>
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
-#include "fwXML/XML/GraphXMLTranslator.hpp"
-#include "fwXML/XML/EdgeXMLTranslator.hpp"
-#include "fwXML/XML/XMLTranslatorHelper.hpp"
 
 #include <fwData/Graph.hpp>
 #include <fwData/Node.hpp>
 
+#include "fwXML/XML/GraphXMLTranslator.hpp"
+#include "fwXML/XML/EdgeXMLTranslator.hpp"
+#include "fwXML/XML/XMLTranslatorHelper.hpp"
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 
@@ -24,13 +24,11 @@ namespace fwXML
 
 GraphXMLTranslator::GraphXMLTranslator() {};
 
+//------------------------------------------------------------------------------
+
 GraphXMLTranslator::~GraphXMLTranslator() {};
 
-
-
-
-
-
+//------------------------------------------------------------------------------
 
 xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
 {
@@ -58,23 +56,17 @@ xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> 
         xmlAddChild(edgesList,anEdge);
     }
 
-
-
     // save edges
 
-
-
-
-
     return node;
-
 }
 
+//------------------------------------------------------------------------------
 
-void GraphXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+void GraphXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( XMLTH::check< ::fwData::Graph >(toUpdate,source) );
-    ::boost::shared_ptr< ::fwData::Graph> graph = boost::dynamic_pointer_cast< ::fwData::Graph>(toUpdate);
+    assert( XMLTH::check< ::fwData::Graph >(toUpdate, source) );
+    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(toUpdate);
 
     // get NODES
     xmlNodePtr NodeXMLList = XMLParser::findChildNamed( source, "Nodes");
@@ -93,21 +85,19 @@ void GraphXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object>
         {
             assert( strcmp((const char *)connectionNode->name,"Edge") == 0 );
 
-            ::boost::shared_ptr< ::fwTools::Object > obj = XMLTH::fromXML(connectionNode);
-            ::boost::shared_ptr< ::fwData::Edge >  edge = ::boost::dynamic_pointer_cast< ::fwData::Edge >( obj );
+            ::fwTools::Object::sptr obj = XMLTH::fromXML(connectionNode);
+            ::fwData::Edge::sptr  edge = ::fwData::Edge::dynamicCast( obj );
             assert ( edge );
-
 
             std::string uuidSrcXML = XMLTH::getProp<std::string>(connectionNode,"fromNode");
             std::string uuidDstXML = XMLTH::getProp<std::string>(connectionNode,"toNode");
             std::string uuidSrc = ObjectTracker::xmlID2RuntimeID( uuidSrcXML );
             std::string uuidDst = ObjectTracker::xmlID2RuntimeID(uuidDstXML );
 
-            ::boost::shared_ptr< ::fwData::Node > srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc );
-            ::boost::shared_ptr< ::fwData::Node > dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst );
+            ::fwData::Node::sptr srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc );
+            ::fwData::Node::sptr dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst );
             assert( srcNode );
             assert( dstNode );
-
 
             // insert edge
             bool success = graph->addEdge(edge,srcNode, dstNode);
@@ -118,5 +108,7 @@ void GraphXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object>
         }
     }
 }
+
+//------------------------------------------------------------------------------
 
 }

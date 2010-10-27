@@ -19,6 +19,7 @@
 #include "fwXML/boostSerializer/Boolean.hpp"
 
 #include "fwXML/boostSerializer/Study.hpp"
+#include "fwXML/boostSerializer/String.hpp"
 #include "fwXML/boostSerializer/Patient.hpp"
 #include "fwXML/boostSerializer/ProcessObject.hpp"
 #include "fwXML/boostSerializer/Region.hpp"
@@ -65,12 +66,14 @@ namespace fwXML
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator<fwTools::Object>                   ,  fwTools::Object                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
+//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Integer>                 ,  ::fwData::Integer                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , FieldXMLTranslator                                      ,  ::fwTools::Field                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ProcessObject>          ,  ::fwData::ProcessObject          );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Region>                 ,  ::fwData::Region                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );
+//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::String>                 ,  ::fwData::String                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::PatientDB>              ,  ::fwData::PatientDB              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Patient>                ,  ::fwData::Patient                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Study>                  ,  ::fwData::Study                  );
