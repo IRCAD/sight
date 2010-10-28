@@ -5,3 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwXML/policy/ISplitPolicy.hpp"
+
+namespace fwXML
+{
+
+ISplitPolicy::~ISplitPolicy() {}
+
+}

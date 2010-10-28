@@ -174,6 +174,11 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
             int depth = 1
             );
 
+    /**
+     * @brief       Used only because this class inherit from enable_shared_from_this
+     */
+    FWRUNTIME_API virtual ~ConfigurationElement();
+
 protected:
 
     /**

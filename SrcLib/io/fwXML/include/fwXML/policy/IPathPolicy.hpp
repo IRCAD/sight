@@ -42,6 +42,10 @@ public :
      **/
      FWXML_API virtual boost::filesystem::path getPath( ::boost::shared_ptr < ::fwTools::Object > obj ) = 0 ;
 
+    /**
+     * @brief       Virtual destructor
+     */
+    FWXML_API virtual ~IPathPolicy();
 
 }; //class IPathPolicy
 

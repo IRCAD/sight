@@ -162,4 +162,10 @@ std::vector < ConfigurationElement::sptr > ConfigurationElement::find(
     return result;
 }
 
+//-----------------------------------------------------------------------------
+
+ConfigurationElement::~ConfigurationElement() {}
+
+//-----------------------------------------------------------------------------
+
 } // namespace fwRuntime

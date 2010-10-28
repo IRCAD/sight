@@ -14,4 +14,8 @@ bool NeverSplitPolicy::split(::boost::shared_ptr< ::fwTools::Object > obj)
     return false;
 }
 
+//-----------------------------------------------------------------------------
+
+NeverSplitPolicy::~NeverSplitPolicy() {}
+
 }// namespace fwXML
