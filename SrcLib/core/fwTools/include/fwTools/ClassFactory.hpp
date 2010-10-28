@@ -19,14 +19,6 @@
 
 #include "fwTools/TBKClassFactory.hpp"
 
-
-/**
- * @brief       The namespace fwTools
- * @namespace   fwTools.
- * @author      IRCAD (Research and Development Team).
- * @date        2007-2009.
- * @todo        Comment namespace
- */
 namespace fwTools {
 
 

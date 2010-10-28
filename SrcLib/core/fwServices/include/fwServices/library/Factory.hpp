@@ -19,14 +19,6 @@
 namespace fwServices
 {
 
-/**
- * @brief Concerns class factory based object service basic manipulations
- *
- * Mainly consists in the support and add methods
- * @note The term library means that the program has loaded a dynamic library involving the registration of the class types in the class registry
- * @author IRCAD (Research and Development Team).
- *
- */
 namespace library
 {
 

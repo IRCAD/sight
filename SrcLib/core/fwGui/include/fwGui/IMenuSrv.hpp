@@ -14,13 +14,6 @@
 #include "fwGui/registrar/MenuRegistrar.hpp"
 #include "fwGui/layoutManager/IMenuLayoutManager.hpp"
 
-/**
- * @brief   The namespace fwGui contains the base interface for IHM services.
- * @namespace   fwGui
- * @author  IRCAD (Research and Development Team).
- * @date    2009-2010.
- *
- */
 namespace fwGui
 {
 

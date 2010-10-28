@@ -8,8 +8,8 @@
  * UUID.hxx
  *
  *  Created on: Aug 19, 2008
- *      Author: vagnus
- */
+ * @author  IRCAD (Research and Development Team).
+  */
 
 namespace fwTools
 {

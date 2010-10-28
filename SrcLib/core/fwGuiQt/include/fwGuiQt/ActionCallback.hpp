@@ -15,14 +15,6 @@
 #include "fwGuiQt/config.hpp"
 
 
-/**
- * @brief       The namespace fwGuiQt contains classes which provide the implementation of the Gui using Qt library.
- * @namespace   fwGuiQt
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2010.
- *
- */
-
 namespace fwGuiQt
 {
 

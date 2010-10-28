@@ -18,14 +18,6 @@
 namespace fwServices
 {
 
-/**
- * @brief       The namespace fwServices::monitor contains classes for monitoring purposes.
- * @namespace   fwServices::monitor
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2010.
- *
- */
-
 namespace monitor
 {
 

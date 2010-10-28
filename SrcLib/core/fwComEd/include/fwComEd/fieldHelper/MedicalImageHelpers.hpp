@@ -27,13 +27,6 @@
 
 namespace fwComEd
 {
-
-/**
- * @namespace   ::fwComEd::fieldHelper
- * @brief       This namespace contains helpers for fields.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- */
 namespace fieldHelper
 {
 

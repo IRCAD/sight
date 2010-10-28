@@ -13,14 +13,6 @@
 
 namespace fwWX
 {
-/**
- * @brief This namespace provides a list of validator based on WxWidgets for several datas.
- * @namespace   fwWX::validator
- *
- * @author IRCAD (Research and Development Team).
- * @date    2009-2010.
- */
-
 namespace validator
 {
 

@@ -24,13 +24,7 @@ QT_END_NAMESPACE
 
 namespace fwGuiQt
 {
-/**
- * @brief       The namespace fwGuiQt::container contains the classes used for container implementation with Qt Library.
- * @namespace   fwGui::container
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2010.
- *
- */
+
 namespace container
 {
 

@@ -22,13 +22,6 @@ QT_BEGIN_NAMESPACE
 class QEvent;
 QT_END_NAMESPACE
 
-/**
- * @brief       The namespace fwGui contains classes which provide the implementation of the Gui using Qt library.
- * @namespace   fwGui
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2010.
- *
- */
 namespace fwGui
 {
 

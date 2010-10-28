@@ -22,13 +22,6 @@ namespace fwData
     class PatientDB;
 }
 
-/**
- * @brief This namespace provides a list of classes based on WxWidgets .
- * @namespace   fwWX
- *
- * @author IRCAD (Research and Development Team).
- * @date    2009-2010.
- */
 namespace fwWX
 {
 

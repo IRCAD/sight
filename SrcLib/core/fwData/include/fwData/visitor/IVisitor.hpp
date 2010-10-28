@@ -12,12 +12,6 @@
 
 namespace fwData
 {
-/**
- * @namespace ::fwData::visitor
- * @brief representation of Design Pattern Vistor
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
- */
 namespace visitor
 {
 

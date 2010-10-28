@@ -14,13 +14,6 @@
 
 namespace fwWX
 {
-/**
- * @brief This namespace provides a list of editor based on WxWidgets for several operators.
- * @namespace   fwWX::operators
- *
- * @author IRCAD (Research and Development Team).
- * @date    2009-2010.
- */
 namespace operators
 {
 

@@ -23,13 +23,6 @@
 
 namespace fwGui
 {
-/**
- * @brief       The namespace fwGui::layoutManager contains the base interface for GUI elements managing layout.
- * @namespace   fwGui::layoutManager
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2010.
- *
- */
 namespace layoutManager
 {
 
