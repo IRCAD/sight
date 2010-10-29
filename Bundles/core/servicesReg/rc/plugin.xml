@@ -50,6 +50,11 @@
         <implements>::fwData::Composite</implements>
     </point>
 
+    <point id="::fwComEd::TransformationMatrix3DParser">
+        <implements>::fwServices::IXMLParser</implements>
+        <implements>::fwData::TransformationMatrix3D</implements>
+    </point>
+    
     <point id="::fwServices::ObjectXMLParser">
         <implements>::fwServices::IXMLParser</implements>
         <implements>::fwTools::Object</implements>
