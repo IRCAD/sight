@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISU_TRANSFORMATIONMATRIXEDITOR_HPP_
-#define _UIVISU_TRANSFORMATIONMATRIXEDITOR_HPP_
+#ifndef _UIVISUWX_TRANSFORMATIONMATRIXEDITOR_HPP_
+#define _UIVISUWX_TRANSFORMATIONMATRIXEDITOR_HPP_
 
 #include <wx/slider.h>
 
@@ -13,7 +13,7 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiVisu/config.hpp"
+#include "uiVisuWx/config.hpp"
 
 namespace uiVisu
 {
@@ -24,7 +24,7 @@ namespace uiVisu
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIVISU_CLASS_API TransformationMatrixEditor : public ::gui::editor::IEditor
+class UIVISUWX_CLASS_API TransformationMatrixEditor : public ::gui::editor::IEditor
 {
 
 public :
@@ -32,10 +32,10 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (TransformationMatrixEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIVISU_API TransformationMatrixEditor() throw() ;
+    UIVISUWX_API TransformationMatrixEditor() throw() ;
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~TransformationMatrixEditor() throw() ;
+    UIVISUWX_API virtual ~TransformationMatrixEditor() throw() ;
 
 protected:
 
@@ -74,6 +74,6 @@ private:
 
 } // uiVisu
 
-#endif /*_UIVISU_TRANSFORMATIONMATRIXEDITOR_HPP_*/
+#endif /*_UIVISUWX_TRANSFORMATIONMATRIXEDITOR_HPP_*/
 
 

@@ -11,7 +11,7 @@
         <implements>::fwTools::Object</implements>
     </point>
     
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::TransformationMatrixEditor, ::fwTools::Object ) ;-->
+    <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;-->
     <point id="::uiVisu::TransformationMatrixEditor" >
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwData::TransformationMatrix3D</implements>

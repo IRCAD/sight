@@ -19,10 +19,10 @@
 
 #include <fwServices/Base.hpp>
 
-
+#include <fwGuiWx/container/WxContainer.hpp>
 #include <fwWX/convert.hpp>
 
-#include "uiVisu/TransformationMatrixEditor.hpp"
+#include "uiVisuWx/TransformationMatrixEditor.hpp"
 
 namespace uiVisu
 {
@@ -46,17 +46,20 @@ void TransformationMatrixEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::gui::editor::IEditor::starting();
+    this->create();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* container = wxContainer->getWxContainer();
+    assert( container ) ;
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
-    m_angleSlider = new wxSlider(m_container, wxNewId(), 0, 0, 360, wxDefaultPosition, wxDefaultSize , wxSL_BOTH|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP ) ;
+    m_angleSlider = new wxSlider(container, wxNewId(), 0, 0, 360, wxDefaultPosition, wxDefaultSize , wxSL_BOTH|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP ) ;
 
     sizer->Add(m_angleSlider, 0, wxALL|wxEXPAND);
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    container->SetSizer( sizer );
+    container->Layout();
 
-    m_container->Bind(wxEVT_COMMAND_SLIDER_UPDATED, &TransformationMatrixEditor::onSliderChange, this,  m_angleSlider->GetId());
+    container->Bind(wxEVT_COMMAND_SLIDER_UPDATED, &TransformationMatrixEditor::onSliderChange, this,  m_angleSlider->GetId());
 }
 
 //------------------------------------------------------------------------------
@@ -64,10 +67,14 @@ void TransformationMatrixEditor::starting() throw(::fwTools::Failed)
 void TransformationMatrixEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
+    wxWindow* const container = wxContainer->getWxContainer();
+    assert( container ) ;
 
-    m_container->Unbind(wxEVT_COMMAND_SLIDER_UPDATED, &TransformationMatrixEditor::onSliderChange, this,  m_angleSlider->GetId());
+    container->Unbind(wxEVT_COMMAND_SLIDER_UPDATED, &TransformationMatrixEditor::onSliderChange, this,  m_angleSlider->GetId());
 
-    ::gui::editor::IEditor::stopping();
+    wxContainer->clean();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -75,21 +82,19 @@ void TransformationMatrixEditor::stopping() throw(::fwTools::Failed)
 void TransformationMatrixEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::configuring();
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void TransformationMatrixEditor::updating() throw(::fwTools::Failed)
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void TransformationMatrixEditor::swapping() throw(::fwTools::Failed)
-{
+{}
 
-}
 //------------------------------------------------------------------------------
 
 void TransformationMatrixEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
