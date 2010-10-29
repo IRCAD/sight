@@ -12,7 +12,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog( const std::string &title, ::fwGui::IPulseProgressDialog::Stuff &stuff, const std::string &msg, ::fwGui::IPulseProgressDialog::MilliSecond frequenceRefresh )
+PulseProgressDialog::PulseProgressDialog( const std::string &title, ::fwGui::IPulseProgressDialog::Stuff stuff, const std::string &msg, ::fwGui::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
     m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::IPulseProgressDialog>( ::fwGui::IPulseProgressDialog::REGISTRY_KEY);
     m_implementation->setTitle(title);
