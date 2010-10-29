@@ -29,12 +29,12 @@ class FWGUI_CLASS_API PulseProgressDialog : public IPulseProgressDialog
 public:
 
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::IPulseProgressDialog), (()), new PulseProgressDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::IPulseProgressDialog), (((const std::string))((::fwGui::IPulseProgressDialog::Stuff))), new PulseProgressDialog );
 
     /// will instanciate the concrete implementation
     FWGUI_API PulseProgressDialog(
-            const std::string &title = std::string(),
-            Stuff &stuff = ::boost::function0<void>(),
+            const std::string &title,
+            Stuff stuff,
             const std::string &msg = std::string(),
             ::fwGui::IPulseProgressDialog::MilliSecond frequenceRefresh = 100 );
 
