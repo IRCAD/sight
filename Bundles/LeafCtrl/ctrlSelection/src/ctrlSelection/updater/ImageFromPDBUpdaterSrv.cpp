@@ -8,7 +8,7 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -50,7 +50,7 @@ void ImageFromPDBUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) thr
             SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
 
             // Test if we manage this event from this object message uid ( it->get<1>() )
-            if( obj->getUUID() == it->get<1>() )
+            if( obj->getID() == it->get<1>() )
             {
                 ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::dynamicCast(obj);
                 SLM_ASSERT("Sorry, the subject of message is not a ::fwData::PatientDB", patientDB);

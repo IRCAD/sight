@@ -28,7 +28,6 @@ VectorXMLTranslator::~VectorXMLTranslator() {};
 
 xmlNodePtr VectorXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
 {
-
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(obj);
 
     // create master node with className+id
@@ -39,20 +38,17 @@ xmlNodePtr VectorXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object>
     xmlAddChild( masterNode , containerNode);
 
     return masterNode;
-
 }
 
 //-----------------------------------------------------------------------------
 
-void VectorXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+void VectorXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-
     assert( toUpdate ); // object should exist
 
     //get its label
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(toUpdate);
     myVector->getRefContainer().clear();
-
 
     // If the point list is not empty
     if ( source->children != NULL )
@@ -83,7 +79,6 @@ void VectorXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object
             elementNode = XMLParser::nextXMLElement( elementNode->next );
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------

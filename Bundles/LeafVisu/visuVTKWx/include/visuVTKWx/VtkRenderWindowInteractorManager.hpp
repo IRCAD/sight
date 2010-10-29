@@ -19,7 +19,7 @@
 
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
-#include <fwGui/fwContainer.hpp>
+#include <fwGui/container/fwContainer.hpp>
 
 #include "visuVTKWx/config.hpp"
 
@@ -47,7 +47,7 @@ public:
     VISUVTKWX_API virtual ~VtkRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.
-    VISUVTKWX_API virtual void installInteractor( ::fwGui::fwContainer::sptr _parent );
+    VISUVTKWX_API virtual void installInteractor( ::fwGui::container::fwContainer::sptr _parent );
 
     /// Deletes interactor and manage correctly the window (removing layout).
     VISUVTKWX_API virtual void uninstallInteractor();

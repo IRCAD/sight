@@ -63,7 +63,7 @@ const std::string ConfigurationElement::getExistingAttributeValue(const std::str
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     if(foundPos == m_attributes.end())
     {
-        throw NoSuchAttribute();
+         FW_RAISE_EXCEPTION(NoSuchAttribute(name));
     }
     return foundPos->second;
 }
@@ -161,5 +161,11 @@ std::vector < ConfigurationElement::sptr > ConfigurationElement::find(
 
     return result;
 }
+
+//-----------------------------------------------------------------------------
+
+ConfigurationElement::~ConfigurationElement() {}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwRuntime

@@ -15,9 +15,9 @@
 namespace fwTools {
 
 /**
- * @brief   Namespace for os tools
+ * @brief   Namespace fwTools::os contains tools methods which depend on os like get user application data directory.
  * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
+ * @date    2009-2010.
  */
 namespace os {
 
@@ -42,6 +42,6 @@ FWTOOLS_API std::string  getUserDataDir(
 
 } // namespace os
 
-} // namespace fwTools 
+} // namespace fwTools
 
 #endif

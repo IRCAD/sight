@@ -38,7 +38,7 @@ LineLayoutManager::~LineLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
+void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiWx::container::WxContainer::dynamicCast(parent);

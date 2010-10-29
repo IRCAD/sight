@@ -77,8 +77,6 @@ void QuitAction::updating() throw( ::fwTools::Failed )
     cursor.setCursor(::fwGui::ICursor::BUSY);
     ::fwServices::OSR::uninitializeRootObject();
     cursor.setDefaultCursor();
-
-//    wxTheApp->GetTopWindow()->Close();
 }
 
 //-----------------------------------------------------------------------------

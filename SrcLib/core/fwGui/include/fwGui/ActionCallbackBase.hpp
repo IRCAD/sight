@@ -12,7 +12,6 @@
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/config.hpp"
 
-
 namespace fwGui
 {
 

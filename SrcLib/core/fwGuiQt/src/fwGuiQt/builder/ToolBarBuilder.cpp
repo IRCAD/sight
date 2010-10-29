@@ -41,7 +41,7 @@ ToolBarBuilder::~ToolBarBuilder()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarBuilder::createToolBar( ::fwGui::fwContainer::sptr parent )
+void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent )
 {
     m_parent = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
@@ -59,7 +59,11 @@ void ToolBarBuilder::createToolBar( ::fwGui::fwContainer::sptr parent )
     ::fwGuiQt::container::QtToolBarContainer::NewSptr toolBarContainer;
     if (window)
     {
+        bool visible = window->isVisible();
         window->addToolBar( toolBar );
+
+        //on Os X, the window is hidden (???)
+        window->setVisible(visible);
     }
     else // parent is not a QMainWindow
     {

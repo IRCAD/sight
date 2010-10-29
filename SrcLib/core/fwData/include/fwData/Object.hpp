@@ -23,12 +23,6 @@
 
 fwCorePredeclare( (data)(visitor)(IVisitor) );
 
-/**
- * @namespace   fwData
- * @brief       This namespace contains the representation of the data objects used in the framework.
- * @author      IRCAD (Research and Development Team).
- * @date        2007-2009.
- */
 namespace fwData
 {
 

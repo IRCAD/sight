@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IMenuBarSrv.hpp"
@@ -28,9 +28,11 @@ IMenuBarSrv::~IMenuBarSrv()
 void IMenuBarSrv::initialize()
 {
 
-        m_registrar = ::fwGui::registrar::MenuBarRegistrar::NewSptr(this->getUUID());
+        m_registrar = ::fwGui::registrar::MenuBarRegistrar::NewSptr(this->getID());
         // find ViewRegistryManager configuration
         std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
+        SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );
+
         if(!vectRegistrar.empty())
         {
             m_registrarConfig = vectRegistrar.at(0);
@@ -39,10 +41,13 @@ void IMenuBarSrv::initialize()
 
         // find gui configuration
         std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+        SLM_ASSERT("Gui section is mandatory.", !vectGui.empty() );
+
         if(!vectGui.empty())
         {
             // find LayoutManager configuration
             std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
+            SLM_ASSERT("layout section is mandatory.", !vectLayoutMng.empty() );
             if(!vectLayoutMng.empty())
             {
                 m_layoutConfig = vectLayoutMng.at(0);
@@ -55,7 +60,7 @@ void IMenuBarSrv::initialize()
 
 void IMenuBarSrv::create()
 {
-    ::fwGui::fwMenuBar::sptr menuBar = m_registrar->getParent();
+    ::fwGui::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
     m_layoutManager->createLayout(menuBar);
 
@@ -74,7 +79,7 @@ void IMenuBarSrv::destroy()
 
 void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ::fwGui::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
     if (m_hideMenus)
     {
@@ -90,7 +95,7 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 
 void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 {
-    ::fwGui::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ::fwGui::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
     if (m_hideMenus)
     {

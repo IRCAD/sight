@@ -93,9 +93,10 @@ std::string ObjectMsg::convertToLightString( std::string _initialString )
 std::string ObjectMsg::getGeneralInfo() const
 {
     ::fwServices::IService::sptr source = m_source.lock();
-    std::string msgUUID    = convertToLightString( this->getUUID() );
-    std::string sourceUUID = convertToLightString( source? source->getUUID():"[source died]" );
-    std::string destUUID   = convertToLightString( m_subject.lock()->getUUID() );
+    std::string msgUUID    = convertToLightString( const_cast< ObjectMsg * >(this)->getID() );
+
+    std::string sourceUUID = convertToLightString( source? source->getID():"[source died]" );
+    std::string destUUID   = convertToLightString( m_subject.lock()->getID() );
 
     std::stringstream eventstream;
     for(    std::map< std::string, ::fwData::Object::sptr >::const_iterator itEvent2Data = m_eventId2DataInfo.begin();

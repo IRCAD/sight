@@ -15,7 +15,7 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
@@ -92,11 +92,11 @@ void TransformationMatrix3DWriterService::configureWithIHM()
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath("");
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to save a transformation matrix");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TRF files","*.trf");
-    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );

@@ -16,16 +16,6 @@
 #include "fwServices/config.hpp"
 #include "fwServices/ObjectMsg.hpp"
 
-
-/**
- * @brief Namespace dedicated to (mimic) the dynamic affectation of methods to (pure data) objects (::fwTools::Object), and component orientation transparently. This is assimilable to the
- * notion of role (corresponding to the IService class).
- * \li IService : API to normalize manipulation, using a limited set of well defined methods
- * \li IService : contract for service implementation
- * \li macros.hpp : declaration of service to object bindings
- * \li A set of high level methods to facilitate the use of implemented concepts (Add.hpp, New.hpp, Com.hpp, Info.hpp, Erase.hpp, Get.hpp and Run.hpp)
- * \li ICommunication, ObjectMsg and IEditionService : communication management (implementation of an adaptation of the observer design pattern), high-level methods being available in Com.hpp
- */
 namespace fwServices
 {
 

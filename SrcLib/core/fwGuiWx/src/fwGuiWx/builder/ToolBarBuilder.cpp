@@ -38,7 +38,7 @@ ToolBarBuilder::~ToolBarBuilder()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarBuilder::createToolBar( ::fwGui::fwContainer::sptr parent )
+void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent )
 {
     m_parent = ::fwGuiWx::container::WxContainer::dynamicCast(parent);
     SLM_ASSERT("Sorry, the parent container is not a WxContainer", m_parent);

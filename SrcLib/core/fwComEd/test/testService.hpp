@@ -9,7 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <boost/shared_ptr.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -40,11 +40,11 @@ public :
     
     ImplementationATestService() throw() {};
     virtual ~ImplementationATestService() throw() {};
-    virtual void configure() throw( ::fwTools::Failed ) {OSLM_INFO("CONFIGURE : implementation = " << this->className() << ( this->hasUUID() ? " - uuid = " + this->getUUID() : " - no uuid" ) ); };    
-    virtual void start() throw(::fwTools::Failed) {OSLM_INFO("START : implementation = " << this->className() << ( this->hasUUID() ? " - uuid = " + this->getUUID() : " - no uuid" ) ); };
-    virtual void stop() throw(::fwTools::Failed) {OSLM_INFO("STOP : implementation = " << this->className() << ( this->hasUUID() ? " - uuid = " + this->getUUID() : " - no uuid" ) ); };
-    virtual void update() throw(::fwTools::Failed) {OSLM_INFO("UPDATE : implementation = " << this->className() << ( this->hasUUID() ? " - uuid = " + this->getUUID() : " - no uuid" ) ); };
-    virtual void manageModification( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) {OSLM_INFO("MANAGE MODIFICATION : implementation = " << this->className() << ( this->hasUUID() ? " - uuid = " + this->getUUID() : " - no uuid" ) ); };
+    virtual void configure() throw( ::fwTools::Failed ) {OSLM_INFO("CONFIGURE : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };    
+    virtual void start() throw(::fwTools::Failed) {OSLM_INFO("START : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
+    virtual void stop() throw(::fwTools::Failed) {OSLM_INFO("STOP : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
+    virtual void update() throw(::fwTools::Failed) {OSLM_INFO("UPDATE : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
+    virtual void manageModification( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) {OSLM_INFO("MANAGE MODIFICATION : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
     virtual void info(std::ostream &_sstream ) {_sstream << "ImplementationATestService" ;};
 };
 

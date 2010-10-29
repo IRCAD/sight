@@ -41,6 +41,14 @@ public:
     /// Destructor
     FWDATA_API virtual ~SingleFile();
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( SingleFile::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( SingleFile::csptr _source );
+
     /// Set file system path
     FWDATA_API void setPath( ::boost::filesystem::path path);
 

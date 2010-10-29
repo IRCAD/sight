@@ -18,10 +18,10 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
-#include <fwGui/LocationDialog.hpp>
-#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLImageReaderService.hpp"
@@ -65,12 +65,13 @@ void FwXMLImageReaderService::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle( "Choose a fxz or a xml file" );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("fwXML archive","*.fxz");
     dialogFile.addFilter("fwXML archive","*.xml");
-    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -113,7 +114,7 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Loading Image ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }
@@ -121,24 +122,24 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 
@@ -180,11 +181,11 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
             xmlFile << "Sorry, the xml file \""
             << m_fsImagePath.string()
             << "\" does not content a Image. This xml file has not been loaded.";
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("FwXML Image Reader");
             messageBox.setMessage( xmlFile.str() );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }

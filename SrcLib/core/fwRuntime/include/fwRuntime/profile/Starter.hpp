@@ -23,12 +23,13 @@ namespace profile
 
 /**
  * @brief   Starts a given bundle.
- * @struct  Starter
+ * @class  Starter
  * @date    2007-2009
  * @author  IRCAD (Research and Development Team).
  */
-struct Starter : public boost::noncopyable
+class Starter : public boost::noncopyable
 {
+public:
 
     friend class Stopper;
     /**

@@ -59,6 +59,9 @@ private slots:
 
 private:
 
+    void setState(FrameState state);
+    FrameState getState();
+
     QPointer<QMainWindow> m_qtWindow;
 };
 

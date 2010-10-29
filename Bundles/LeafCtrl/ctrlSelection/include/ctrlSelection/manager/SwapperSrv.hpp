@@ -14,11 +14,6 @@
 
 namespace ctrlSelection
 {
-
-/**
- * @namespace ctrlSelection::manager
- * @brief     Namespace contained the manager services
- */
 namespace manager
 {
 
@@ -123,6 +118,8 @@ protected:
     void removeObject( const std::string objectId );
 
 private:
+
+    std::string m_mode;
     bool m_dummyStopMode;
     ConfigurationType m_managerConfiguration;
     SubServicesMapType m_objectsSubServices;

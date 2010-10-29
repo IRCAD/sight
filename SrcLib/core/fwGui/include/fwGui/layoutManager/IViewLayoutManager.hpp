@@ -4,13 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IViewLayoutManagerBase.hpp
+ * @brief This file defines the interface of the base class for managing a layout geometry.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_
 #define _FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -49,7 +57,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::fwContainer::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::container::fwContainer::sptr parent ) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -60,7 +68,7 @@ public:
     /**
      * @brief Returns all sub containers managed by this layout.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwContainer::sptr > getSubViews();
+    FWGUI_API virtual std::vector< ::fwGui::container::fwContainer::sptr > getSubViews();
 
 protected:
 
@@ -70,7 +78,7 @@ protected:
     FWGUI_API virtual void destroySubViews();
 
     /// All sub containers managed by this layout.
-    std::vector< ::fwGui::fwContainer::sptr > m_subViews;
+    std::vector< ::fwGui::container::fwContainer::sptr > m_subViews;
 
 };
 

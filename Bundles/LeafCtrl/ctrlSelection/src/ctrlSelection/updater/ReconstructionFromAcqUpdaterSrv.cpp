@@ -9,7 +9,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -51,7 +51,7 @@ void ReconstructionFromAcqUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _
             SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
 
             // Test if we manage this event from this object message uid ( it->get<1>() )
-            if( it->get<1>() == "*" || obj->getUUID() == it->get<1>() )
+            if( it->get<1>() == "*" || obj->getID() == it->get<1>() )
             {
                 ::fwData::Reconstruction::sptr reconst;
                 ActionType action = it->get<3>();
@@ -79,7 +79,7 @@ void ReconstructionFromAcqUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _
     SLM_ASSERT("Sorry, there is no dataInfo", dataInfo);
     ::fwData::String::csptr reconstructionSelectedUID = ::fwData::String::dynamicConstCast( dataInfo ) ;
     SLM_ASSERT("Sorry,  there is no reconstruction selected", reconstructionSelectedUID);
-    reconst =  ::fwTools::UUID::get< ::fwData::Reconstruction >(reconstructionSelectedUID->value());
+    reconst =  ::fwData::Reconstruction::dynamicCast( ::fwTools::fwID::getObject(reconstructionSelectedUID->value() ));
 
     return reconst;
 }

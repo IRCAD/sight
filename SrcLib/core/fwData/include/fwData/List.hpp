@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
+ /* ***** BEGIN LICENSE BLOCK *****
  * FW4SPL - Copyright (C) IRCAD, 2009-2010.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
@@ -20,9 +20,9 @@ typedef std::list< Object::sptr > ObjectListType;
 
 /**
  * @class   List
- * @brief   This class defines a vector of objects.
+ * @brief   This class defines a list of objects.
  *
- * List contains a map of ::fwData::Object.
+ * List contains a list of ::fwData::Object.
  *
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.

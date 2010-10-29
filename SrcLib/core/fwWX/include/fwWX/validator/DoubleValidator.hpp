@@ -13,7 +13,6 @@
 
 namespace fwWX
 {
-
 namespace validator
 {
 

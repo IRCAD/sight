@@ -9,20 +9,18 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
-
-#include "fwXML/XML/XMLParser.hpp"
-
-#include "fwXML/XML/GenericXMLTranslator.hpp" // WIN32 SUX header include dependant
-
-#include <fwXML/boostSerializer/IFSBoostSerialize.hpp>
-#include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
-#include "fwXML/XML/XMLTranslatorHelper.hpp"
-
 #include <fwServices/helper.hpp>
-#include "fwXML/IFileFormatService.hpp"
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
+
+#include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
+#include "fwXML/XML/XMLParser.hpp"
+#include "fwXML/XML/GenericXMLTranslator.hpp"
+#include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
+#include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
+#include "fwXML/XML/XMLTranslatorHelper.hpp"
+#include "fwXML/IFileFormatService.hpp"
+
 
 namespace fwXML
 {

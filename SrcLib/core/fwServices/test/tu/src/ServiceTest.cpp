@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/Object.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
 #include <fwData/Composite.hpp>
@@ -115,7 +115,7 @@ void ServiceTest::testServiceCreationWithUUID()
     service = ::fwServices::get< ::TestService >(obj, myUUID2);
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
-    CPPUNIT_ASSERT_EQUAL(myUUID2, ::fwTools::UUID::get< ::fwServices::IService >( service , ::fwTools::UUID::SIMPLE ));
+    CPPUNIT_ASSERT_EQUAL(myUUID2, service ->getID());
     CPPUNIT_ASSERT( ::fwServices::get(obj, "::TestService", myUUID3) == NULL );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::getServices(obj, "::TestService").size() );
 
@@ -245,7 +245,7 @@ void ServiceTest::testObjectCreationWithConfig()
     ::fwTools::Object::sptr obj = ::fwServices::New< ::fwTools::Object >(config );
 
     // Test object uid
-    CPPUNIT_ASSERT_EQUAL(objectUUID, obj->getUUID());
+    CPPUNIT_ASSERT_EQUAL(objectUUID, obj->getID());
     ::fwServices::validation::checkObject( config , "::fwTools::Object");
 
     // Test if object's service is created
@@ -287,7 +287,6 @@ void ServiceTest::testObjectCreationWithConfig()
     // Configuration on fwTools::Object which uid is objectUUID
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
     cfg->setAttributeValue( "uid" , "objectUUID") ;
-    cfg->setAttributeValue( "id" , "objectUUID") ;
     cfg->setAttributeValue( "type" , "::fwTools::Object") ;
 
     // Object's service A

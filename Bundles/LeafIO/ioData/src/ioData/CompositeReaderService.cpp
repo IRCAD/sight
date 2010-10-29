@@ -105,7 +105,7 @@ void CompositeReaderService::configuring( ) throw(::fwTools::Failed)
             if(implementation->hasAttribute("uid"))
             {
                 std::string uid = implementation->getExistingAttributeValue("uid") ;
-                srv->setUUID(uid);
+                srv->setID(uid);
             }
 
             srv->configure() ;

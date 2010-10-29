@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <fwTools/TypeInfo.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
 #include <fwRuntime/Runtime.hpp>

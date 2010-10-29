@@ -56,6 +56,8 @@ ImageSlice::ImageSlice() throw()
 
     m_interpolation = true;
 
+    m_useImageTF = false;
+
     // Manage events
     this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
@@ -114,6 +116,7 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
+
 ::fwData::Image::sptr ImageSlice::getCtrlImage()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
@@ -132,6 +135,8 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
     SLM_ASSERT("Null control image", !m_ctrlImage.expired());
     return m_ctrlImage.lock();
 }
+
+//------------------------------------------------------------------------------
 
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
@@ -169,7 +174,6 @@ void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
         SLM_TRACE("Has event MODIFIED_FIELDS");
         doUpdate();
     }
-
 
     if (imageIsValid)
     {
@@ -297,7 +301,7 @@ void ImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
 
     OSLM_TRACE("DisplayExtent : " << " X min: " << extent[0] << " X max: " << extent[1] <<
                 " Y min: " << extent[2] << " Y max: " << extent[3] <<
-                " Z min: " << extent[4] << " Z max: " << extent[5] 
+                " Z min: " << extent[4] << " Z max: " << extent[5]
                 );
 
     m_imageActor->SetDisplayExtent( extent );

@@ -8,7 +8,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <fwTools/TypeInfo.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
 #include <fwRuntime/Runtime.hpp>
@@ -148,8 +148,8 @@ namespace fwServices
     if( ::fwServices::bundle::support(obj, serviceId) )
     {
         service = ::fwServices::bundle::add(obj, serviceId , _implementationId ) ;
-        assert( !service->hasUUID() );
-        service->setUUID( uid ) ;
+        assert( !service->hasID() );
+        service->setID( uid ) ;
         return service ;
     }
 
@@ -157,8 +157,8 @@ namespace fwServices
     if( ::fwServices::library::support(obj, serviceId) )
     {
         service = ::fwServices::library::add(obj, serviceId , _implementationId ) ;
-        assert( !service->hasUUID() );
-        service->setUUID( uid ) ;
+        assert( !service->hasID() );
+        service->setID( uid ) ;
         return service ;
     }
 

@@ -5,3 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwXML/policy/IPathPolicy.hpp"
+
+namespace fwXML
+{
+
+IPathPolicy::~IPathPolicy() {}
+
+}

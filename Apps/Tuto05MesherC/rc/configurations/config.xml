@@ -15,7 +15,7 @@
                 <gui>
                     <frame>
                         <name>Mesher</name>
-                        <icon>Bundles/Tuto05Mesher_0-1/tuto.ico</icon>
+                        <icon>Bundles/Tuto05MesherC_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

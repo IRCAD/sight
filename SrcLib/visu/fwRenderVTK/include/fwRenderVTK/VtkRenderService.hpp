@@ -32,7 +32,6 @@ class TransformationMatrix3D;
 
 }
 
-
 namespace fwRenderVTK
 {
 

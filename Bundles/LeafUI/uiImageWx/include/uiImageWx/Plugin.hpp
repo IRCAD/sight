@@ -10,12 +10,6 @@
 #include <fwRuntime/Plugin.hpp>
 
 
-/**
- * @namespace uiImage
- * @brief   Contains editors attached to image.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
- */
 namespace uiImage
 {
 /**

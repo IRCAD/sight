@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IToolBarLayoutManager.cpp
+ * @brief This file defines the implementation of the base class for managing a toolbar.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/foreach.hpp>
 
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
@@ -13,7 +21,7 @@ namespace fwGui
 namespace layoutManager
 {
 
-const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY = "::fwGui::ToolBarBarLayoutManager";
+const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY = "::fwGui::ToolBarLayoutManager";
 
 //-----------------------------------------------------------------------------
 
@@ -77,7 +85,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IToolBarLayoutManager::destroyActions()
 {
-    BOOST_FOREACH( ::fwGui::fwMenuItem::sptr menuItem, m_menuItems)
+    BOOST_FOREACH( ::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
     {
         menuItem->destroyContainer();
     }
@@ -86,7 +94,7 @@ void IToolBarLayoutManager::destroyActions()
 
 //-----------------------------------------------------------------------------
 
-std::vector< ::fwGui::fwMenuItem::sptr > IToolBarLayoutManager::getMenuItems()
+std::vector< ::fwGui::container::fwMenuItem::sptr > IToolBarLayoutManager::getMenuItems()
 {
     return this->m_menuItems;
 }

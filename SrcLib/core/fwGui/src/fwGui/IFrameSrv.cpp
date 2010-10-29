@@ -9,7 +9,7 @@
 #include <boost/lambda/lambda.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectMsg.hpp>
@@ -81,7 +81,7 @@ void IFrameSrv::initialize()
         SLM_ASSERT("Invalid onclose value : " << m_closePolicy << ". Should be 'exit' or 'notify'", m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT);
     }
 
-    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getUUID());
+    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     if(!vectRegistrar.empty())
@@ -97,8 +97,8 @@ void IFrameSrv::create()
 {
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
     m_frameLayoutManager->createFrame();
-    ::fwGui::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
-    std::vector< ::fwGui::fwContainer::sptr > subViews;
+    ::fwGui::container::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
+    std::vector< ::fwGui::container::fwContainer::sptr > subViews;
     subViews.push_back(frame);
     m_viewRegistrar->manage(subViews);
 

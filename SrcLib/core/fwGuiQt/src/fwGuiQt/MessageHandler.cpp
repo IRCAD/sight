@@ -18,9 +18,9 @@
 #include "fwGuiQt/MessageHandler.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGuiQt::MessageHandler , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGui::MessageHandler , ::fwTools::Object ) ;
 
-namespace fwGuiQt
+namespace fwGui
 {
 
 int MessageHandler::s_qtMessageHandlerEventType = QEvent::registerEventType();
@@ -31,7 +31,10 @@ MessageHandler::MessageHandler() throw()
 {
     SLM_TRACE_FUNC();
 
+    m_processingEvent = false;
+    m_filteredMessagesCount = 0;
     m_msgHandler = ::fwServices::GlobalEventManager::getDefault();
+    m_qtDispatcher = QAbstractEventDispatcher::instance();
 }
 
 //------------------------------------------------------------------------------
@@ -95,21 +98,34 @@ void MessageHandler::addNewMessageToQtQueue()
 
 bool MessageHandler::event ( QEvent * e )
 {
-    bool bRes = false;
-    if (e->type() == s_qtMessageHandlerEventType)
+    bool bRes = e->type() == s_qtMessageHandlerEventType;
+    if (bRes)
     {
-        if (m_msgHandler->pending())
+        if (! m_processingEvent)
         {
-            m_msgHandler->dispatch();
+            m_processingEvent = true;
+            e->accept();
+            if (m_msgHandler->pending())
+            {
+                m_msgHandler->dispatch();
+
+                while (m_filteredMessagesCount > 0)
+                {
+                    this->addNewMessageToQtQueue();
+                    --m_filteredMessagesCount;
+                }
+            }
+            m_processingEvent = false;
         }
-        e->accept();
-        bRes = true;
+        else
+        {
+            ++m_filteredMessagesCount;
+        }
     }
     return bRes;
 }
 
-//------------------------------------------------------------------------------
 
-}
+} //namespace fwGui
 
 

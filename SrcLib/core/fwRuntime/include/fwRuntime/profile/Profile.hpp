@@ -27,22 +27,21 @@ namespace fwRuntime
 namespace profile
 {
 
-
-
-struct Activater;
-struct Starter;
-struct Stopper;
-
+class Activater;
+class Starter;
+class Stopper;
 
 
 /**
  * @brief   Implements a bundle set profile.
- * @struct  Profile
+ * @class  Profile
  * @date    2007-2009
  * @author  IRCAD (Research and Development Team).
  */
-struct Profile : public ::fwCore::BaseObject
+class Profile : public ::fwCore::BaseObject
 {
+public:
+
     typedef std::vector< std::string >  ParamsContainer;
 
     fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), new Profile) ;

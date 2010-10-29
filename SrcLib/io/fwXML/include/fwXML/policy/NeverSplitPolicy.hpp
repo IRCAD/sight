@@ -23,6 +23,12 @@ public:
      * @brief   true if the object should be spliten, false otherwise
      */
     FWXML_API virtual bool split(::boost::shared_ptr< ::fwTools::Object > obj);
+
+    /**
+     * @brief       Virtual destructor
+     */
+    FWXML_API virtual ~NeverSplitPolicy();
+
 };
 
 } // namespace fwXML

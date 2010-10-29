@@ -119,7 +119,6 @@ protected:
     std::string demangle();
 };
 
- 
 
 
  /** 
@@ -169,6 +168,6 @@ template <class T>
 inline std::string getRootedNamespace() { return TypeDemangler<T>().getRootedNamespace(); } ;
 /**  @} */
 
-}
+} // namespace fwCore
 
 #endif // _FWCORE_DEMANGLER_HPP_

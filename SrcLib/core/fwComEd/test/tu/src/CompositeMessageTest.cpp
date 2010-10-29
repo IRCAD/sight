@@ -54,7 +54,7 @@ void CompositeMessageTest::methodeBuildComposite()
     ::fwData::Composite::sptr compo = ::fwServices::New< ::fwData::Composite >(config );
 
     // test composite
-    CPPUNIT_ASSERT_EQUAL(compositeUUID, compo->getUUID());
+    CPPUNIT_ASSERT_EQUAL(compositeUUID, compo->getID());
 
     // test composite objects
     CPPUNIT_ASSERT(compo->getRefMap().size() > 0);
@@ -64,11 +64,11 @@ void CompositeMessageTest::methodeBuildComposite()
     CPPUNIT_ASSERT_EQUAL(objAType, compo->getRefMap()[objAUUID]->className());
 
     ::fwData::Video::sptr video = ::fwData::Video::dynamicCast(compo->getRefMap()[objBUUID]);
-    CPPUNIT_ASSERT_EQUAL(objBUUID, video->getUUID());
+    CPPUNIT_ASSERT_EQUAL(objBUUID, video->getID());
 
     // test composite services
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
-    CPPUNIT_ASSERT_EQUAL(objAUUID, image->getUUID());
+    CPPUNIT_ASSERT_EQUAL(objAUUID, image->getID());
     CPPUNIT_ASSERT( ::fwServices::has(image, "::TestService"));
 
     CPPUNIT_ASSERT( ::fwServices::has(compo, "::TestService"));
@@ -180,7 +180,7 @@ void CompositeMessageTest::methodeMessageNotification()
 
     // start communication channel
     ::fwComEd::CompositeEditor::sptr editionService = ::fwComEd::CompositeEditor::dynamicCast(::fwServices::get< ::fwServices::IEditionService >( compo ));
-    CPPUNIT_ASSERT_EQUAL(editionServiceUUID, editionService->getUUID());
+    CPPUNIT_ASSERT_EQUAL(editionServiceUUID, editionService->getID());
 
     ::fwData::Composite::Container::iterator iter;
     for( iter = compo->getRefMap().begin() ; iter != compo->getRefMap().end(); ++iter )
@@ -226,13 +226,16 @@ void CompositeMessageTest::methodeMessageNotification()
     // Composite
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
     cfg->setAttributeValue( "uid" , "compositeUUID") ;
-    cfg->setAttributeValue( "id" , "compositeUUID") ;
     cfg->setAttributeValue( "type" , "::fwData::Composite") ;
 
+
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemA = cfg->addConfigurationElement("item");
+     itemA->setAttributeValue( "key" , "imageUUID") ;
+
+
     // composite object : image
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objA = cfg->addConfigurationElement("object");
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objA = itemA->addConfigurationElement("object");
     objA->setAttributeValue( "uid" , "imageUUID") ;
-    objA->setAttributeValue( "id" , "imageUUID") ;
     objA->setAttributeValue( "type" , "::fwData::Image") ;
 
     // image's services
@@ -248,10 +251,14 @@ void CompositeMessageTest::methodeMessageNotification()
     imageService2->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
     imageService2->setAttributeValue( "autoComChannel" , "no" ) ;
 
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
+     itemB->setAttributeValue( "key" , "videoUUID") ;
+
+
     // composite object : video
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objB = cfg->addConfigurationElement("object");
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objB = itemB->addConfigurationElement("object");
     objB->setAttributeValue( "uid" , "videoUUID") ;
-    objB->setAttributeValue( "id" , "videoUUID") ;
+    //objB->setAttributeValue( "id" , "videoUUID") ;
     objB->setAttributeValue( "type" , "::fwData::Video") ;
 
     // composite's service 1

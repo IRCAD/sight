@@ -17,13 +17,6 @@
 
 namespace fwRuntime
 {
-
-/**
- * @namespace   ::fwRuntime::utils
- * @brief       Namespace ::fwRuntime::utils
- * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
- */
 namespace utils
 {
 

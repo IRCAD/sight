@@ -27,13 +27,6 @@ namespace fwRuntime
     struct IPlugin;
 }
 
-
-/**
- * @namespace   runtime
- * @brief       Namespace runtime
- * @date        2004-2009
- * @author      IRCAD (Research and Development Team).
- */
 namespace fwRuntime
 {
 

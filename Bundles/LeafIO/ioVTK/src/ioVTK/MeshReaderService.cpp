@@ -24,11 +24,11 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
-#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <vtkIO/MeshReader.hpp>
 
 #include "ioVTK/MeshReaderService.hpp"
@@ -72,10 +72,12 @@ void MeshReaderService::configureWithIHM()
 
     static ::boost::filesystem::path _sDefaultPath("");
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a vtk file to load Mesh");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -120,7 +122,7 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Loading Meshs ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Meshs ");
         myReader.addHandler( progressMeterGUI );
         myReader.read();
 
@@ -130,11 +132,11 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
 
     }
@@ -142,11 +144,11 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
 
     }

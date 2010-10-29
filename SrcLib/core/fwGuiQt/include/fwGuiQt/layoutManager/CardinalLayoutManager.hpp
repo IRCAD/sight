@@ -25,7 +25,7 @@ namespace fwGui
 {
 
 /**
- * @brief   Defines the line layout manager.
+ * @brief   Defines the cardinal layout manager.
  * @class   CardinalLayoutManager.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
@@ -49,7 +49,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    FWGUIQT_API virtual void createLayout( ::fwGui::fwContainer::sptr parent );
+    FWGUIQT_API virtual void createLayout( ::fwGui::container::fwContainer::sptr parent );
 
     /**
      * @brief Destroy local layout with sub containers.

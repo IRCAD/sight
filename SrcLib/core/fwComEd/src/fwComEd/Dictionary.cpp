@@ -9,6 +9,8 @@
 namespace fwComEd
 {
 
+const std::string Dictionary::DATA_IS_LOCKED        ( "DATA_IS_LOCKED" );
+
 const std::string Dictionary::position( "position" );
 
 

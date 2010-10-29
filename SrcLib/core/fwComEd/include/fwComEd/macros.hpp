@@ -16,15 +16,6 @@
 
 #include "fwComEd/ICallBack.hpp"
 
-
-/**
- * @namespace   fwComEd
- * @brief       This namespace contains the classes used in communication edition.
- * @author      IRCAD (Research and Development Team).
- * @date        2009.
- *
- * All specific message for ::fwData::Objects derived from ::fwServices::ObjectMsg are in this namespace.
- */
 namespace fwComEd
 {
 

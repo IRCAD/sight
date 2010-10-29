@@ -56,7 +56,7 @@
                 <service uid="ActionSaveExternalData" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                     <start uid="saveExternalData" />
                 </service>
-                  <service uid="ActionLoadExternalDataNative" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <service uid="ActionLoadExternalDataNative" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                     <start uid="loadExternalDataNative" />
                 </service>
             </object>

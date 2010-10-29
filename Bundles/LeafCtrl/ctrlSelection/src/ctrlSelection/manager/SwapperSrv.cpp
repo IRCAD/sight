@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
@@ -116,8 +116,9 @@ void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
         ConfigurationType modeConfiguration = vectMode.at(0);
         SLM_ASSERT("Missing attribute type", modeConfiguration->hasAttribute("type"));
         std::string mode = modeConfiguration->getAttributeValue("type");
-        SLM_ASSERT("Wrong type mode", (mode == "dummy" ) || (mode == "stop" ));
+        SLM_ASSERT("Wrong type mode", (mode == "dummy" ) || (mode == "stop" ) || mode=="startAndUpdate");
         m_dummyStopMode = (mode == "dummy" );
+        m_mode = mode;
     }
 
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
@@ -193,6 +194,10 @@ void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr 
             subSrv->m_service = srv;
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
+            if (m_mode =="startAndUpdate")
+            {
+            	 subSrv->getService()->update();
+            }
         }
         m_objectsSubServices[objectId] = subVecSrv;
     }
@@ -223,9 +228,9 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
             BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
             {
                 OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
-                OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
+                OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
 
-                OSLM_TRACE("Swapping subService " << ::fwTools::UUID::get(subSrv->getService()) << " on "<< objectId );
+                OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< objectId );
                 if(subSrv->getService()->getObject() != object)
                 {
                     subSrv->getService()->swap(object);
@@ -233,9 +238,9 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
                 }
                 else
                 {
-                    OSLM_WARN( ::fwTools::UUID::get(subSrv->getService())
+                    OSLM_WARN( subSrv->getService()->getID()
                             << "'s object already is '"
-                            << subSrv->getService()->getObject()->getUUID()
+                            << subSrv->getService()->getObject()->getID()
                             << "', no need to swap");
                 }
             }
@@ -271,7 +276,7 @@ void SwapperSrv::removeObject( const std::string objectId )
         BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
-            OSLM_ASSERT( ::fwTools::UUID::get(subSrv->getService()) <<  " is not started ", subSrv->getService()->isStarted());
+            OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
             if(m_dummyStopMode)
             {
                 subSrv->getService()->swap(dummyObj);

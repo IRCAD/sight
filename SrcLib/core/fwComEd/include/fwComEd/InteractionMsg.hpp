@@ -53,6 +53,7 @@ public:
 
     typedef enum
     {
+        NONE      = 0,
         CTRL      = (1 << 0),
         SHIFT     = (1 << 1),
         //ALT     = (1 << 2),
@@ -97,12 +98,12 @@ public:
     /// Set the state of the modifier k.
     FWCOMED_API void setModifiersStatus(Modifiers k, bool state = true);
     /// Get the state of the modifier k.
-    FWCOMED_API bool getModifiersStatus(Modifiers k);
+    FWCOMED_API bool getModifiersStatus(Modifiers k) const;
 
     /// Get the control status.
-    FWCOMED_API bool getControlStatus(){return getModifiersStatus(CTRL);}
+    FWCOMED_API bool getControlStatus() const {return getModifiersStatus(CTRL);}
     /// Get the shift status.
-    FWCOMED_API bool getShiftStatus(){return getModifiersStatus(SHIFT);}
+    FWCOMED_API bool getShiftStatus() const {return getModifiersStatus(SHIFT);}
 
     /**
      * @brief Set the message event
@@ -124,7 +125,7 @@ protected:
     ::fwData::Point::sptr m_eventPoint;
 
     /// Modifiers status
-    Modifiers m_modifiersStatus;
+    unsigned char m_modifiersStatus;
 
 
 };

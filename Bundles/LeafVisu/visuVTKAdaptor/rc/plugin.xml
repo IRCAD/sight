@@ -87,6 +87,12 @@
         <implements>::fwData::Composite</implements>
     </point>
 
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image ); -->
+    <point id="::visuVTKAdaptor::ImagePickerInteractor" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::Image</implements>
+    </point>
+    
     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList ); -->
     <point id="::visuVTKAdaptor::Distance" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>

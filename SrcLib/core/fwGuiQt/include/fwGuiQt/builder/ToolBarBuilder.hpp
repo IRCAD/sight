@@ -11,8 +11,8 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwGui/builder/IToolBarBuilder.hpp>
-#include <fwGui/fwToolBar.hpp>
-#include <fwGui/fwContainer.hpp>
+#include <fwGui/container/fwToolBar.hpp>
+#include <fwGui/container/fwContainer.hpp>
 
 #include "fwGuiQt/config.hpp"
 
@@ -44,7 +44,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    FWGUIQT_API virtual void createToolBar( ::fwGui::fwContainer::sptr parent );
+    FWGUIQT_API virtual void createToolBar( ::fwGui::container::fwContainer::sptr parent );
 
     /**
      * @brief Destroy local layout with sub containers.

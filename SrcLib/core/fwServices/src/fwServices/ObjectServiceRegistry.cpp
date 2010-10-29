@@ -12,7 +12,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
@@ -308,7 +308,32 @@ void ObjectServiceRegistry::swapService(  ::fwTools::Object::sptr  _objSrc, ::fw
 
 void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
 {
-    std::vector< ::fwTools::Object::wptr >   lobjects;
+    SLM_ASSERT("Object not found in OSContainer",
+            getDefault()->m_container.find(obj) != getDefault()->m_container.end());
+
+    // Clean service vector clearing
+    SContainer services = getDefault()->m_container[obj];
+    BOOST_FOREACH(::fwServices::IService::sptr srv, services)
+    {
+        if (srv != NULL)
+        {
+            srv->stop();
+            ::fwServices::unregisterComChannels( srv ) ;
+        }
+    }
+    services.clear() ;
+
+    getDefault()->m_container.erase( obj ) ;
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectServiceRegistry::cleanExpiredObject()
+{
+    static std::set < ::fwTools::Object::wptr > lobjects;
+    static int depth = 0;
+
+    depth++;
     BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
     {
         ::fwTools::Object::wptr lobject = objSrvMap.first;
@@ -322,10 +347,9 @@ void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
         if( lobject.expired() )
         {
             SLM_WARN( "Expired object discovered : stopping and unregistering all associated fwServices" ) ;
-            lobjects.push_back( lobject ) ;
+            lobjects.insert( lobject ) ;
             // Clean service vector clearing
             SContainer services = objSrvMap.second;
-            size_t tmpsize = services.size() ;
             BOOST_FOREACH(::fwServices::IService::sptr srv, services)
             {
                 assert( srv.use_count() != 0 );
@@ -337,28 +361,21 @@ void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
             }
             services.clear() ;
         }
-        // Normal case : obj is not expired
-        else if( lobject.lock() == obj )
-        {
-            lobjects.push_back( lobject ) ;
-            // Clean service vector clearing
-            SContainer services = objSrvMap.second;
-            BOOST_FOREACH(::fwServices::IService::sptr srv, services)
-            {
-                if (srv != NULL)
-                {
-                    srv->stop();
-                    ::fwServices::unregisterComChannels( srv ) ;
-                }
-            }
-            services.clear() ;
-        }
     }
-    // Erase all associated object with the refKey
-    BOOST_FOREACH(::fwTools::Object::wptr lobject, lobjects)
+
+    if(depth == 1)
     {
-        getDefault()->m_container.erase( lobject ) ;
+        // Erase all associated object with the refKey
+        BOOST_FOREACH(::fwTools::Object::wptr lobject, lobjects)
+        {
+            if(getDefault()->m_container.find(lobject) != getDefault()->m_container.end())
+            {
+                getDefault()->m_container.erase( lobject ) ;
+            }
+        }
+        lobjects.clear();
     }
+    depth--;
 }
 
 //------------------------------------------------------------------------------
@@ -381,14 +398,14 @@ void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _s
         SContainer::iterator positionToDelete = pos->second.end() ;
         for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
         {
-            OSLM_TRACE( "OBJ=" <<::fwTools::UUID::get(_service->getObject()) <<
-                        " SContainer::iterator lIter" << ::fwTools::UUID::get( ( *lIter) )
+            OSLM_TRACE( "OBJ=" <<_service->getObject()->getID() <<
+                        " SContainer::iterator lIter" <<  ( *lIter) ->getID()
                       );
             if( ( *lIter) == _service )
             {
                 SLM_ASSERT( "service registered twice for the same object :"
-                            << " OBJ=" <<::fwTools::UUID::get(_service->getObject())
-                            << " SRV=" << ::fwTools::UUID::get( ( *lIter) ),
+                            << " OBJ=" << _service->getObject()->getID()
+                            << " SRV=" <<  ( *lIter)->getID() ,
                             positionToDelete == pos->second.end()
                           );
                 positionToDelete = lIter ;
@@ -498,11 +515,11 @@ std::string ObjectServiceRegistry::getRegistryInformation()
         SContainer services = objSrvMap.second;
 
         info << "New object found in OSR" << std::endl;
-        info << "Object ( uid = "<< obj->getUUID() <<" , classname = "<< obj->getClassname() <<" ) has "<< services.size() <<" services." << std::endl;
+        info << "Object ( uid = "<< obj->getID() <<" , classname = "<< obj->getClassname() <<" ) has "<< services.size() <<" services." << std::endl;
 
         BOOST_FOREACH( IService::sptr service, services )
         {
-            info << "    srv : uid = "<< service->getUUID() <<" , classname = "<< service->getClassname() <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
+            info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname() <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
         }
     }
 

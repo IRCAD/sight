@@ -8,7 +8,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
@@ -31,17 +31,17 @@ MenuBarRegistrar::~MenuBarRegistrar()
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenuBar::sptr MenuBarRegistrar::getParent()
+::fwGui::container::fwMenuBar::sptr MenuBarRegistrar::getParent()
 {
     return ::fwGui::GuiRegistry::getSIDMenuBar(m_sid);
 }
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenu::sptr MenuBarRegistrar::getFwMenu(std::string menuSid, std::vector< ::fwGui::fwMenu::sptr > menus)
+::fwGui::container::fwMenu::sptr MenuBarRegistrar::getFwMenu(std::string menuSid, std::vector< ::fwGui::container::fwMenu::sptr > menus)
 {
     SLM_ASSERT("menu not found", m_menuSids.find(menuSid) != m_menuSids.end());
-    ::fwGui::fwMenu::sptr menu = menus.at( m_menuSids[menuSid].first );
+    ::fwGui::container::fwMenu::sptr menu = menus.at( m_menuSids[menuSid].first );
     return menu;
 }
 
@@ -80,9 +80,9 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
 
 //-----------------------------------------------------------------------------
 
-void MenuBarRegistrar::manage(std::vector< ::fwGui::fwMenu::sptr > menus )
+void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus )
 {
-    ::fwGui::fwMenu::sptr menu;
+    ::fwGui::container::fwMenu::sptr menu;
     BOOST_FOREACH( SIDMenuMapType::value_type sid, m_menuSids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < menus.size());
@@ -90,13 +90,13 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::fwMenu::sptr > menus )
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             service->start();
         }
         else
         {
-            bool service_exists = ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE );
+            bool service_exists = ::fwTools::fwID::exist(sid.first );
             if (!service_exists || ::fwServices::get( sid.first )->isStopped())
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
@@ -113,7 +113,7 @@ void MenuBarRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::UUID::exist(sid.first, ::fwTools::UUID::SIMPLE ) );
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             service->stop();
         }

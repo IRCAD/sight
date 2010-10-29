@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
@@ -84,7 +84,7 @@ void SimpleSwapperSrv::addedObjects( ::fwData::Composite::sptr _composite )
         BOOST_FOREACH( SubServicesVecType::value_type subSrv, subServices )
         {
             OSLM_FATAL_IF("Service " << subSrv->m_serviceUID << " doesn't exist.",
-                    ! ::fwTools::UUID::exist(subSrv->m_serviceUID, ::fwTools::UUID::SIMPLE ));
+                    ! ::fwTools::fwID::exist(subSrv->m_serviceUID ));
             ::fwServices::IService::sptr service = ::fwServices::get( subSrv->m_serviceUID ) ;
             service->swap(swappedObjectId.second);
         }
@@ -104,7 +104,7 @@ void SimpleSwapperSrv::swappedObjects( ::fwData::Composite::sptr _composite )
         BOOST_FOREACH( SubServicesVecType::value_type subSrv, subServices )
         {
             OSLM_FATAL_IF("Service " << subSrv->m_serviceUID << " doesn't exist.",
-                    ! ::fwTools::UUID::exist(subSrv->m_serviceUID, ::fwTools::UUID::SIMPLE ));
+                    ! ::fwTools::fwID::exist(subSrv->m_serviceUID ));
             ::fwServices::IService::sptr service = ::fwServices::get( subSrv->m_serviceUID ) ;
             service->swap(swappedObjectId.second);
         }
@@ -124,11 +124,11 @@ void SimpleSwapperSrv::removedObjects( ::fwData::Composite::sptr _composite )
         BOOST_FOREACH( SubServicesVecType::value_type subSrv, subServices )
         {
             OSLM_ASSERT("Object "<<subSrv->m_dummyObjectUID<<" doesn't exist.",
-                    ::fwTools::UUID::exist(subSrv->m_dummyObjectUID, ::fwTools::UUID::SIMPLE ));
-            ::fwData::Object::sptr dummyObj = ::fwTools::UUID::get< ::fwData::Object >(subSrv->m_dummyObjectUID, ::fwTools::UUID::SIMPLE );
+                    ::fwTools::fwID::exist(subSrv->m_dummyObjectUID  ));
+            ::fwData::Object::sptr dummyObj =  ::fwData::Object::dynamicCast( ::fwTools::fwID::getObject(subSrv->m_dummyObjectUID ));
 
             OSLM_FATAL_IF("Service " << subSrv->m_serviceUID << " doesn't exist.",
-                    ! ::fwTools::UUID::exist(subSrv->m_serviceUID, ::fwTools::UUID::SIMPLE ));
+                    ! ::fwTools::fwID::exist(subSrv->m_serviceUID ));
             ::fwServices::IService::sptr service = ::fwServices::get( subSrv->m_serviceUID ) ;
             service->swap(dummyObj);
         }
@@ -165,7 +165,7 @@ void SimpleSwapperSrv::configuring()  throw ( ::fwTools::Failed )
         const std::string dummyObjectUID = conf->getExistingAttributeValue("dummyObjectUID");
 
         OSLM_ASSERT("Object "<<dummyObjectUID<<" doesn't exist.",
-                ::fwTools::UUID::exist(dummyObjectUID, ::fwTools::UUID::SIMPLE ));
+                ::fwTools::fwID::exist(dummyObjectUID ));
 
         SubServicesVecType subVecSrv;
         BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
@@ -176,7 +176,7 @@ void SimpleSwapperSrv::configuring()  throw ( ::fwTools::Failed )
             SLM_ASSERT("'uid' attribute required", cfg->hasAttribute("uid"));
             subSrv->m_serviceUID = cfg->getExistingAttributeValue("uid");
             OSLM_ASSERT("Service "<<subSrv->m_serviceUID<<" doesn't exist.",
-                    ::fwTools::UUID::exist(subSrv->m_serviceUID, ::fwTools::UUID::SIMPLE ));
+                    ::fwTools::fwID::exist(subSrv->m_serviceUID ));
 
             subVecSrv.push_back(subSrv);
         }

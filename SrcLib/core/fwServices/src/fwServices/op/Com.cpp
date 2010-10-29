@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <fwTools/TypeInfo.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
 #include <fwRuntime/Runtime.hpp>
@@ -47,7 +47,7 @@ namespace fwServices
     ::fwServices::ComChannelService::sptr comChannel = getCommunicationChannel(_src, _dest);
     if(comChannel)
     {
-        OSLM_FATAL("comChannel already exist src= " << _src->getUUID() << " dest= "<< _dest->getUUID());
+        OSLM_FATAL("comChannel already exist src= " << _src->getID() << " dest= "<< _dest->getID());
         return comChannel;
     }
 

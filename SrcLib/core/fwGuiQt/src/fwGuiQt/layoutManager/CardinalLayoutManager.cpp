@@ -38,7 +38,7 @@ CardinalLayoutManager::~CardinalLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
+void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
@@ -123,7 +123,6 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
         ::fwGuiQt::container::QtContainer::NewSptr subContainer;
         subContainer->setQtContainer(insideWidget);
         m_subViews.push_back(subContainer);
-
     }
 
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
@@ -140,6 +139,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
         }
         qtContainer->setLayout(layout);
     }
+    layout->setContentsMargins(0,0,0,0);
     qtContainer->setLayout(layout);
     m_qtWindow->setParent(qtContainer);
     m_qtWindow->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
@@ -156,7 +156,6 @@ void CardinalLayoutManager::destroyLayout()
     m_qtWindow->hide();
     m_qtWindow->setParent(0);
     m_qtWindow->deleteLater();
-    m_parentContainer->clean();
     this->destroySubViews();
     QWidget *qtContainer = m_parentContainer->getQtContainer();
     qtContainer->layout()->deleteLater();

@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IGuiContainerSrv.hpp"
@@ -32,12 +32,12 @@ void IGuiContainerSrv::initialize()
     SLM_ASSERT("Service hasn't configuration", m_configuration);
 
     // Create view registrar
-    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getUUID() );
+    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getID() );
     // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
     if ( ! vectViewMng.empty() )
     {
-        m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getUUID() );
+        m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getID() );
         m_viewRegistrarConfig = vectViewMng.at(0);
         m_viewRegistrar->initialize(m_viewRegistrarConfig);
     }
@@ -75,7 +75,7 @@ void IGuiContainerSrv::create()
     if ( m_viewLayoutManagerIsCreated )
     {
         SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
-        ::fwGui::fwContainer::sptr container = m_viewRegistrar->getParent();
+        ::fwGui::container::fwContainer::sptr container = m_viewRegistrar->getParent();
         SLM_ASSERT("Parent container is unknown.", container);
 
         if (m_hasToolBar)
@@ -141,7 +141,7 @@ void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwContainer::sptr IGuiContainerSrv::getContainer()
+::fwGui::container::fwContainer::sptr IGuiContainerSrv::getContainer()
 {
     return m_viewRegistrar->getParent();
 }

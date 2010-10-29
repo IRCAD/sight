@@ -13,13 +13,6 @@
 
 namespace fwRuntime
 {
-
-/**
- * @namespace ::fwRuntime::dl
- * @brief   Namespace ::fwRuntime::dl
- * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
- */
 namespace dl
 {
 

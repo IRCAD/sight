@@ -34,6 +34,6 @@ void UUIDTest::methode1()
 
     CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID, ::fwTools::UUID::Version::SIMPLE) );
     CPPUNIT_ASSERT( ::fwTools::UUID::supervise(obj) );
-    CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get(obj), UUID );
+    CPPUNIT_ASSERT_EQUAL( obj->getID(), UUID );
     CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get< ::fwTools::Object >(UUID), obj );
 }

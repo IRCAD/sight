@@ -56,14 +56,14 @@ public:
 
     // TODO move to XMLTranslatorHelper
     /**
-         * @brief helper (factory which create a fwTools::Object form
-         * \li xmlNodePtr->name for classe
-         * \li xmlNodePtr child for fwTools::Object information
-         * @param loadExtraXML : if true extra XML information (exple image buffer are also loaded)
-         */
-        ::boost::shared_ptr< fwTools::Object > ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML );
+     * @brief helper (factory which create a fwTools::Object form
+     * \li xmlNodePtr->name for classe
+     * \li xmlNodePtr child for fwTools::Object information
+     * @param loadExtraXML : if true extra XML information (exple image buffer are also loaded)
+     */
+    ::boost::shared_ptr< fwTools::Object > ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML );
 
-    protected :
+protected :
 
     FWXML_API static std::string getIDFormXML( xmlNodePtr xmlNode );
 

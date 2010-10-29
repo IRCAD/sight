@@ -9,7 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <boost/shared_ptr.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>

@@ -42,6 +42,8 @@ NegatoOneSlice::NegatoOneSlice() throw()
 
     m_imageSource = NULL;
 
+    m_useImageTF = true;
+
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
@@ -62,7 +64,7 @@ vtkObject* NegatoOneSlice::getImageSource()
 {
     if ( !m_imageSource )
     {
-        OSLM_TRACE(this->getUUID() << ": Create ImageSource");
+        OSLM_TRACE(this->getID() << ": Create ImageSource");
         if (!m_imageSourceId.empty())
         {
             m_imageSource = this->getVtkObject(m_imageSourceId);
@@ -96,7 +98,7 @@ void NegatoOneSlice::cleanImageSource()
 
     if (m_imageSliceAdaptor.expired())
     {
-        OSLM_TRACE(this->getUUID() << ": Create ImageSlice Adaptor Service");
+        OSLM_TRACE(this->getID() << ": Create ImageSlice Adaptor Service");
         ::fwData::Image::sptr image;
         ::fwData::Composite::sptr sceneComposite;
 
@@ -111,6 +113,7 @@ void NegatoOneSlice::cleanImageSource()
         imageSliceAdaptor->setRenderId( this->getRenderId() );
         imageSliceAdaptor->setPickerId( this->getPickerId() );
         imageSliceAdaptor->setTransformId( this->getTransformId() );
+
 
         ::visuVTKAdaptor::ImageSlice::sptr ISA;
         ISA = ::visuVTKAdaptor::ImageSlice::dynamicCast(imageSliceAdaptor);
@@ -137,7 +140,7 @@ void NegatoOneSlice::cleanImageSource()
 
     if (m_imageAdaptor.expired())
     {
-        OSLM_TRACE(this->getUUID() << ": Create Image Adaptor Service");
+        OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image;
         image = this->getObject< ::fwData::Image >();
         imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
@@ -149,6 +152,7 @@ void NegatoOneSlice::cleanImageSource()
         imageAdaptor->setPickerId( this->getPickerId() );
         imageAdaptor->setTransformId( this->getTransformId() );
 
+        ::visuVTKAdaptor::Image::dynamicCast( imageAdaptor )->setUseImageTF( m_useImageTF );
 
         ::visuVTKAdaptor::Image::sptr IA;
         IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);

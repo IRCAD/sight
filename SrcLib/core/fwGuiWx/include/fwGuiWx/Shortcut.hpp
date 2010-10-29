@@ -13,8 +13,6 @@
 
 #include "fwGuiWx/config.hpp"
 
-
-
 namespace fwGuiWx
 {
 

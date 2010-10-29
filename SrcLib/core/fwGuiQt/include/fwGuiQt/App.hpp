@@ -19,7 +19,7 @@ namespace fwGuiQt
 {
 
 /**
- * @brief   Defines the wx application.
+ * @brief   Defines the Qt application.
  * @class   App.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.

@@ -34,8 +34,8 @@ CollectFileFormatService::~CollectFileFormatService()
 
 void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
 {
-    std::string uuid = ::fwTools::UUID::get(obj,::fwTools::UUID::EXTENDED);
-    std::string srcUuid = m_source?::fwTools::UUID::get(m_source,::fwTools::UUID::EXTENDED):"NoSOURCENOUUID";
+    std::string uuid = ::fwTools::UUID::get(obj);
+    std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     OSLM_TRACE( "CollectFileFormatService Visitor Visiting : Class " << obj->className() <<
                 "(" <<  uuid    <<
                 ") HASt<FileFormatService>" <<  (fwServices::has< ::fwXML::IFileFormatService >(obj)?"yes":"no") <<
@@ -43,7 +43,7 @@ void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> ob
                 );
 
 
-    assert(obj);
+    SLM_ASSERT("Objets is null",obj);
     if ( fwServices::has< ::fwXML::IFileFormatService >( obj ) )
     {
         m_objWithFileFormatService[obj] = fwServices::get< ::fwXML::IFileFormatService >( obj );
@@ -112,7 +112,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
 
 
     ::fwData::Node::sptr node = ::fwData::Node::dynamicCast( src );
-    if ( node )
+    if ( node && node->getObject() )
     {
         ::fwData::visitor::accept( node->getObject() , this);
     }

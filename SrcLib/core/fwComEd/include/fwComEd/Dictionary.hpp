@@ -65,6 +65,11 @@ struct FWCOMED_CLASS_API Dictionary
     FWCOMED_API static const std::string m_roi;
     /// @}
 
+
+    /// processing oriented data
+    /// @{
+    FWCOMED_API static const std::string DATA_IS_LOCKED;
+    /// @}
 };
 
 }

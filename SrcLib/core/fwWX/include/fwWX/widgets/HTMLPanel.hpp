@@ -14,7 +14,6 @@
 
 namespace fwWX
 {
-
 namespace widgets
 {
 

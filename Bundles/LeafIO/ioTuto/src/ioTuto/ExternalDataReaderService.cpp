@@ -18,8 +18,8 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include "ioTuto/ExternalDataReaderService.hpp"
 
@@ -75,7 +75,7 @@ void ExternalDataReaderService::configureWithIHM()
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose an external data file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("us", "*.us");
