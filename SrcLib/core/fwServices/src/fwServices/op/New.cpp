@@ -41,6 +41,7 @@ bool verifyObjectXmlElement( ::fwRuntime::ConfigurationElement::sptr _cfgElement
                 (*configEltIter)->getName() == "start" ||
                 (*configEltIter)->getName() == "stop" ||
                 (*configEltIter)->getName() == "update" ||
+                (*configEltIter)->getName() == "matrix" ||
                 (*configEltIter)->getName() == "item" ) )
         {
             OSLM_ERROR( "Sorry, the xml element : "<< (*configEltIter)->getName() <<" is not supported.");
