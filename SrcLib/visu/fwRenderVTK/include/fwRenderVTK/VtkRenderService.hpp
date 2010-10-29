@@ -24,6 +24,7 @@ class vtkRenderWindow;
 class vtkRenderer;
 class vtkAbstractPropPicker;
 class vtkObject;
+class vtkTransform;
 
 namespace fwData
 {
@@ -134,6 +135,7 @@ private :
     void configureRenderer ( ConfigurationType conf );
     void configureObject   ( ConfigurationType conf );
     void configureVtkObject( ConfigurationType conf );
+    vtkTransform * createVtkTransform( ConfigurationType conf );
 };
 
 }

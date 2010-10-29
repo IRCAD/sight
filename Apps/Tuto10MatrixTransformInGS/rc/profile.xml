@@ -1,0 +1,29 @@
+﻿<profile name="tutoDataService" version="0.1">
+
+    <!-- List of basic bundles. -->
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    <activate id="io" version="0-1" />
+    <activate id="visu" version="0-1" />
+
+    <activate id="gui" version="0-1" >
+        <param id="startingMode" value="windows" />
+        <param id="rootObject" value="::fwData::Composite" />
+        <param id="config" value="tuto" />
+        <param id="configFile" value="./Bundles/Tuto10MatrixTransformInGS_0-1/configurations/config.xml" />
+    </activate>
+
+    <!-- List of specific bundles. -->
+    <activate id="ioVTK" version="0-1" />
+    <activate id="ioData" version="0-1" />
+    <activate id="uiIO" version="0-1" />
+    <activate id="uiVisu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKAdaptor" version="0-1" />
+    
+    <start id="dataReg" />
+    <start id="visuVTK" />
+    <start id="visuVTKAdaptor" />
+    <start id="gui" />
+    
+</profile>
