@@ -6,11 +6,7 @@
 
 #include <string>
 
-#include <wx/wx.h>
-#include <wx/window.h>
-#include <wx/colour.h>
-
-#include <wx/sizer.h>
+#include <QVBoxLayout>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
@@ -20,12 +16,11 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
-#include <fwWX/convert.hpp>
 #include <fwTools/fwID.hpp>
 
-#include <fwGuiWx/container/WxContainer.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
-#include "guiWx/editor/DummyEditor.hpp"
+#include "guiQt/editor/DummyEditor.hpp"
 
 namespace gui
 {
@@ -51,20 +46,20 @@ void DummyEditor::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->create();
 
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* const container = qtContainer->getQtContainer();
     assert( container ) ;
 
-    wxBoxSizer* bSizer;
-    bSizer = new wxBoxSizer( wxVERTICAL );
+    QVBoxLayout* layout = new QVBoxLayout();
     std::string text = m_text.empty() ? this->getID() : m_text;
-    m_staticText = new wxStaticText( container, wxID_ANY, ::fwWX::std2wx(text), wxDefaultPosition, wxDefaultSize, 0 );
-    m_staticText->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
-    bSizer->Add( m_staticText, 1, wxALL|wxEXPAND, 5 );
-
-    container->SetSizer( bSizer );
-    container->Refresh();
-    container->Layout();
+    m_staticText = new QLabel( QString::fromStdString(text), container);
+    layout->addWidget( m_staticText );
+    container->setLayout( layout );
+    QPalette palette;
+    QColor color(rand()%256, rand()%256, rand()%256);
+    palette.setBrush(QPalette::Window, QBrush(color));
+    m_staticText->setPalette(palette);
+    m_staticText->setAutoFillBackground(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,8 +67,12 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 void DummyEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxContainer->clean();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* const container = qtContainer->getQtContainer();
+    assert( container );
+
+    m_staticText->deleteLater();
+    qtContainer->clean();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +94,11 @@ void DummyEditor::configuring()  throw ( ::fwTools::Failed )
 void DummyEditor::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    m_staticText->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
+    QPalette palette;
+    QColor color(rand()%256, rand()%256, rand()%256);
+    palette.setBrush(QPalette::Window, QBrush(color));
+    m_staticText->setPalette(palette);
+    m_staticText->setAutoFillBackground(true);
 }
 
 //-----------------------------------------------------------------------------

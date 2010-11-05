@@ -4,16 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUIWX_EDITOR_DUMMYIEDITOR_HPP_
-#define _GUIWX_EDITOR_DUMMYIEDITOR_HPP_
+#ifndef _GUIQT_EDITOR_DUMMYIEDITOR_HPP_
+#define _GUIQT_EDITOR_DUMMYIEDITOR_HPP_
 
-#include <wx/stattext.h>
+#include <QPointer>
+#include <QLabel>
 
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "guiWx/config.hpp"
+#include "guiQt/config.hpp"
 
 namespace gui
 {
@@ -31,7 +32,7 @@ namespace editor
  *
  * @todo ACH: This class has been created in order to build test application. Do we remove it now ??
  */
-class GUIWX_CLASS_API DummyEditor : public ::gui::editor::IEditor
+class GUIQT_CLASS_API DummyEditor : public ::gui::editor::IEditor
 {
 
 public :
@@ -40,10 +41,10 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    GUIWX_API DummyEditor() throw() ;
+    GUIQT_API DummyEditor() throw() ;
 
     /// Destructor. Do nothing.
-    GUIWX_API virtual ~DummyEditor() throw() ;
+    GUIQT_API virtual ~DummyEditor() throw() ;
 
 protected:
 
@@ -53,32 +54,32 @@ protected:
     /**
      * @brief This method launches the IEditor::starting method.
      */
-    GUIWX_API virtual void starting() throw( ::fwTools::Failed ) ;
+    GUIQT_API virtual void starting() throw( ::fwTools::Failed ) ;
 
     /**
      * @brief This method launches the IEditor::stopping method.
      */
-    GUIWX_API virtual void stopping() throw( ::fwTools::Failed );
+    GUIQT_API virtual void stopping() throw( ::fwTools::Failed );
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUIWX_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUIQT_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUIWX_API virtual void updating() throw(::fwTools::Failed);
+    GUIQT_API virtual void updating() throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to configure the class parameters. Do nothing.
     */
-    GUIWX_API virtual void configuring() throw( ::fwTools::Failed );
+    GUIQT_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    GUIWX_API virtual void info(std::ostream &_sstream );
+    GUIQT_API virtual void info(std::ostream &_sstream );
 
     ///@}
 
@@ -87,12 +88,13 @@ private:
      * @brief optional text
      */
     std::string m_text;
-    wxStaticText*  m_staticText;
+
+    QPointer< QLabel > m_staticText;
 };
 
 }
 }
 
-#endif /*_GUIWX_EDITOR_DUMMYIEDITOR_HPP_*/
+#endif /*_GUIQT_EDITOR_DUMMYIEDITOR_HPP_*/
 
 
