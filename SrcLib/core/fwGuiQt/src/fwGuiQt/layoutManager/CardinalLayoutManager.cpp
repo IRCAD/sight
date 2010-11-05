@@ -73,6 +73,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                     !hasCentral);
 
             m_qtWindow->setCentralWidget(widget);
+            insideWidget->setVisible(viewInfo.m_visible);
             hasCentral = true;
         }
         else
@@ -105,6 +106,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             }
 
             dockWidget->setWidget(insideWidget);
+            dockWidget->setVisible(viewInfo.m_visible);
         }
 
         if(!viewInfo.m_isResizable)
@@ -113,7 +115,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         }
 
         insideWidget->setMinimumSize(viewInfo.m_minSize.first, viewInfo.m_minSize.second);
-        insideWidget->setVisible(viewInfo.m_visible);
+
         //TODO
         // - viewInfo.m_position
         // - viewInfo.m_layer
