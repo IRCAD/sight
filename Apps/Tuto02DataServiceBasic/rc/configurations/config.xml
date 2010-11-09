@@ -1,5 +1,6 @@
 <plugin id="TutoConfigurations">
-<extension id="tutoDataServiceBasicConfig" implements="::fwData::Image">
+
+<extension id="tutoDataServiceBasicConfig" implements="::fwServices::ServiceObjectConfig">
 
     <!-- In tutoDataServiceBasic, the central data  object is a ::fwData::Image type.-->
     <object type="::fwData::Image">

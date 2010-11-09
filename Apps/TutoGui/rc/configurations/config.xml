@@ -1,6 +1,6 @@
 <plugin id="tutoGuiConfig">
 
-    <extension id="tutoGuiConfig" implements="::fwTools::Object">
+    <extension id="tutoGuiConfig" implements="::fwServices::ServiceObjectConfig">
         <object type="::fwTools::Object">
 
             <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >

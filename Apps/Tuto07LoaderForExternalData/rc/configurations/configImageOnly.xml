@@ -1,5 +1,5 @@
 <plugin id="tutoLoaderExternalDataConfig">
-<extension id="tutoLoaderExternalDataConfig" implements="::fwData::Composite">
+<extension id="tutoLoaderExternalDataConfig" implements="::fwServices::ServiceObjectConfig">
 
     <!-- The root data object in TutoConfigurations is a ::fwData::Composite. because it has to manage several objects -->
     <object type="::fwData::Composite">

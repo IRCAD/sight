@@ -1,5 +1,5 @@
 <plugin id="FilterConfiguration">
-    <extension id="FilterConfig" implements="::fwData::Composite">
+    <extension id="FilterConfig" implements="::fwServices::ServiceObjectConfig">
     <!-- Root object -->
     <object type="::fwData::Composite">
         <!-- Windows & Main Menu -->

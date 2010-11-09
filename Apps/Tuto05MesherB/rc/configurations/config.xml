@@ -1,6 +1,6 @@
 <plugin id="MesherV2Config">
 
-    <extension id="MesherV2Config" implements="::fwData::Composite">
+    <extension id="MesherV2Config" implements="::fwServices::ServiceObjectConfig">
 
         <!--  Composite data creation. -->
         <object type="::fwData::Composite">
