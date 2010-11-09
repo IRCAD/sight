@@ -72,8 +72,8 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 void DummyEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxContainer->clean();
+    this->getContainer()->clean();
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------

@@ -6,6 +6,7 @@
 
 #include <boost/foreach.hpp>
 
+#include <QDockWidget>
 #include <QWidget>
 #include <QList>
 #include <QLayout>
@@ -90,9 +91,28 @@ QWidget* QtContainer::getQtContainer()
 
 bool QtContainer::isShownOnScreen()
 {
-    SLM_ASSERT("Sorry, wxWindows not yet initialized, cleaning impossible", m_container);
+    SLM_ASSERT("Sorry, QtContainer not yet initialized, cleaning impossible", m_container);
     return m_container->isVisible();
 }
+
+//-----------------------------------------------------------------------------
+
+void QtContainer::setVisible(bool isVisible)
+{
+    SLM_ASSERT("Sorry, QtContainer not yet initialized, cleaning impossible", m_container);
+    QWidget* parent = m_container->parentWidget();
+    QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
+    if(parent)
+    {
+        if(dock)
+        {
+            dock->setVisible(isVisible);
+        }
+    }
+    m_container->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace container
 } // namespace fwGuiQt

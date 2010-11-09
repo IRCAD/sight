@@ -4,8 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_STARTERACTIONSERVICE_HPP_
-#define _GUI_ACTION_STARTERACTIONSERVICE_HPP_
+#ifndef _GUI_ACTION_MOVELAYOUTACTIONSERVICE_HPP_
+#define _GUI_ACTION_MOVELAYOUTACTIONSERVICE_HPP_
+
+#include <boost/logic/tribool.hpp>
 
 #include <vector>
 #include <fwServices/IService.hpp>
@@ -20,36 +22,37 @@ namespace action
 {
 
 /**
- * @class   StarterActionService.
+ * @class   ModifyLayoutActionSrv.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  */
-class GUI_CLASS_API StarterActionService : public ::fwGui::IActionSrv
+class GUI_CLASS_API ModifyLayoutActionSrv : public ::fwGui::IActionSrv
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ModifyLayoutActionSrv)(::fwGui::IActionSrv) ) ;
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
     * @brief Constructor. Do nothing.
     */
-    GUI_API StarterActionService() throw();
+    GUI_API ModifyLayoutActionSrv() throw();
 
     /**
     * @brief Destructor. Do nothing.
     */
-    GUI_API virtual ~StarterActionService() throw();
+    GUI_API virtual ~ModifyLayoutActionSrv() throw();
 
 protected:
 
     enum ActionType {
-        START,
-        STOP,
-        START_OR_STOP,
-        START_IF_EXISTS,
-        STOP_IF_EXISTS,
+        MOVE,
+        SHOW,
+        HIDE,
+        SHOW_OR_HIDE,
+        ENABLE,
+        DISABLE,
         DO_NOTHING
     };
 
@@ -78,8 +81,21 @@ protected:
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
 private:
-    // vector representing uuid's services that must be started (true) or stopped (false)
-    std::vector< std::pair< std::string, ActionType > > m_uuidServices;
+
+    // < fwID, WIDContainer>
+    typedef std::vector< std::pair< std::string, std::string > > MoveSrvVectType;
+    // map representing fwID's services and new associated wid parent container
+    MoveSrvVectType m_moveSrv;
+
+    // < wid, showState>
+    typedef std::vector< std::pair< std::string, ::boost::logic::tribool > > ShowSrvVectType;
+    // map representing wid container and show state
+    ShowSrvVectType m_showSrv;
+
+    // < fwID, enableState>
+    typedef std::vector< std::pair< std::string, bool > > EnableSrvVectType;
+    // map representing fwID's services and enable state
+    EnableSrvVectType m_enableSrv;
 };
 
 
@@ -87,4 +103,4 @@ private:
 } // namespace gui
 
 
-#endif /*_GUI_ACTION_STARTERACTIONSERVICE_HPP_*/
+#endif /*_GUI_ACTION_MOVELAYOUTACTIONSERVICE_HPP_*/

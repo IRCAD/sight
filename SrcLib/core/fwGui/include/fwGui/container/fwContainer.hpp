@@ -33,6 +33,8 @@ public:
     FWGUI_API virtual void destroyContainer() = 0;
     FWGUI_API virtual bool isShownOnScreen() = 0;
 
+    FWGUI_API virtual void setVisible(bool isVisible) = 0;
+
 };
 
 } // namespace container

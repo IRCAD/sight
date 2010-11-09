@@ -47,6 +47,14 @@ ViewRegistrar::~ViewRegistrar()
 
 //-----------------------------------------------------------------------------
 
+void ViewRegistrar::setParent(std::string wid)
+{
+    OSLM_ASSERT("This method is available only if this container has a WID parent container", !m_parentWid.empty());
+    m_parentWid = wid;
+}
+
+//-----------------------------------------------------------------------------
+
 void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewRegistrar",

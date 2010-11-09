@@ -9,5 +9,5 @@
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwTools::Object</implements>
     </point>
-    
+        
 </plugin>

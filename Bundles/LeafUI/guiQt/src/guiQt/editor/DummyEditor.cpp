@@ -73,6 +73,7 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
 
     m_staticText->deleteLater();
     qtContainer->clean();
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------

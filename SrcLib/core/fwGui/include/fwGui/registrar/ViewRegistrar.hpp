@@ -43,6 +43,8 @@ public:
 
     FWGUI_API virtual ::fwGui::container::fwContainer::sptr getParent();
 
+    FWGUI_API virtual void setParent(std::string wid);
+
     /**
      * @brief Initialize managers.
      *

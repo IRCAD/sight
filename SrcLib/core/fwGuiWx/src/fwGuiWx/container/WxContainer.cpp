@@ -4,6 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+#include <wx/sizer.h>
+#include <wx/aui/aui.h>
+
 #include "fwGuiWx/container/WxContainer.hpp"
 
 namespace fwGuiWx
@@ -64,6 +68,42 @@ bool WxContainer::isShownOnScreen()
     SLM_ASSERT("Sorry, wxWindow not yet initialized, cleaning impossible", m_container);
     return m_container->IsShownOnScreen();
 }
+
+//-----------------------------------------------------------------------------
+
+void WxContainer::setVisible(bool isVisible)
+{
+    SLM_ASSERT("Sorry, WxContainer not yet initialized, cleaning impossible", m_container);
+    wxWindow* parent   = m_container->GetParent();
+
+    if (parent && parent->GetSizer() )
+    {
+        wxAuiManager* aui = wxAuiManager::GetManager(parent);
+        if(aui && aui->GetManagedWindow() == parent )
+        {
+            wxAuiPaneInfo& pane = aui->GetPane(m_container);
+            SLM_ASSERT("Sorry, wxAuiPaneInfo not found", pane.IsOk());
+            pane.Show(isVisible);
+            aui->Update();
+        }
+        else
+        {
+            wxSizer* sizer1 = parent->GetSizer();
+            bool isFound = sizer1->Show(m_container, isVisible, true);
+            if(m_container->GetContainingSizer() && m_container->GetContainingSizer() != sizer1)
+            {
+                wxSizer* sizer2 = m_container->GetContainingSizer();
+                sizer1->Show(sizer2, isVisible, true);
+            }
+        }
+        parent->Layout();
+    }
+
+    m_container->Show(isVisible);
+    m_container->Layout();
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace container
 } // namespace fwGuiWx

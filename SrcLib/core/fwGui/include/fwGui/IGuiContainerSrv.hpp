@@ -15,6 +15,7 @@
 #include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
 #include "fwGui/builder/IToolBarBuilder.hpp"
+#include "fwGui/builder/IContainerBuilder.hpp"
 
 namespace fwGui
 {
@@ -32,6 +33,10 @@ class FWGUI_CLASS_API IGuiContainerSrv : public ::fwServices::IService
 public :
 
     fwCoreServiceClassDefinitionsMacro ( (IGuiContainerSrv)(::fwServices::IService) ) ;
+
+    FWGUI_API ::fwGui::container::fwContainer::sptr getContainer();
+
+    FWGUI_API void setParent(std::string wid);
 
 protected :
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -91,8 +96,6 @@ protected :
 
     FWGUI_API void destroy();
 
-    FWGUI_API ::fwGui::container::fwContainer::sptr getContainer();
-
 private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
@@ -101,8 +104,9 @@ private:
     bool m_viewLayoutManagerIsCreated;
     ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
 
-    ::fwGui::registrar::ViewRegistrar::sptr          m_viewRegistrar;
-    ::fwGui::builder::IToolBarBuilder::sptr           m_toolBarBuilder;
+    ::fwGui::registrar::ViewRegistrar::sptr    m_viewRegistrar;
+    ::fwGui::builder::IToolBarBuilder::sptr    m_toolBarBuilder;
+    ::fwGui::builder::IContainerBuilder::sptr  m_containerBuilder;
 
     ConfigurationType m_viewRegistrarConfig;
     ConfigurationType m_viewLayoutConfig;

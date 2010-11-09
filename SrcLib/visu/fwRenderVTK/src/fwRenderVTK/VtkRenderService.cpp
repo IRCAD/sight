@@ -352,6 +352,8 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
     this->stopContext();
 
     this->getContainer()->clean();
+    this->destroy();
+
     m_sceneAdaptors.clear();
 }
 

@@ -112,7 +112,7 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
 void IOSelectorService::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->create();
+    //this->create();
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void IOSelectorService::starting() throw( ::fwTools::Failed )
 void IOSelectorService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->destroy();
+    //this->destroy();
 }
 
 //------------------------------------------------------------------------------
