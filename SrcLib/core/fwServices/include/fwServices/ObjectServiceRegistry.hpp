@@ -78,11 +78,6 @@ public:
     //@{
 
     /**
-     * @brief Define the root object class name
-     */
-    FWSERVICES_API static void setRootObjectClassName(std::string name) ;
-
-    /**
      * @brief Set the root object
      * @note Care must be taken as external affectation may lead to conflict with internal one, through initializeRootObject() method invocation.
      */
@@ -304,11 +299,9 @@ private :
      */
     static ObjectServiceRegistry::sptr m_instance;
 
-    /**
-     * @brief Class name of the root object.
-     * @note The boolean is false if name undefined as at m_instance initialization.
-     */
-    std::pair< bool , std::string > m_rootObjectClassName ;
+    /// Defines the string used to defined in bundles extensions that describes configurations
+    static const std::string CONFIG_EXTENSION_POINT;
+
     /**
      * @brief Name of the configuration for the root object
      * @note The boolean is false if name undefined as at m_instance initialization.

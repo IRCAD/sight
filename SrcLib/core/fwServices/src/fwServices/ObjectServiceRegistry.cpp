@@ -33,13 +33,18 @@
 namespace fwServices
 {
 
+//------------------------------------------------------------------------------
+
 ObjectServiceRegistry::sptr ObjectServiceRegistry::m_instance;
+
+//------------------------------------------------------------------------------
+
+const std::string ObjectServiceRegistry::CONFIG_EXTENSION_POINT = "::fwServices::ServiceObjectConfig";
 
 //------------------------------------------------------------------------------
 
 ObjectServiceRegistry::ObjectServiceRegistry()
 {
-    m_rootObjectClassName.first = false  ;
     m_rootObjectConfigurationName.first = false ;
     m_isRootInitialized = false ;
 }
@@ -53,13 +58,6 @@ ObjectServiceRegistry::~ObjectServiceRegistry()
 
 //------------------------------------------------------------------------------
 
-void ObjectServiceRegistry::setRootObjectClassName(std::string name)
-{
-    getDefault()->m_rootObjectClassName = std::pair< bool , std::string >( true , name ) ;
-}
-
-//------------------------------------------------------------------------------
-
 void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
 {
     getDefault()->m_rootObject = obj;
@@ -69,6 +67,7 @@ void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
 
 void ObjectServiceRegistry::setRootObjectConfigurationName(std::string name)
 {
+    SLM_ASSERT("Sorry, configuration name is an empty string.", ! name.empty() );
     getDefault()->m_rootObjectConfigurationName = std::pair< bool , std::string >( true , name ) ;
 }
 
@@ -76,6 +75,7 @@ void ObjectServiceRegistry::setRootObjectConfigurationName(std::string name)
 
 void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObjectConfigurationFile)
 {
+    SLM_ASSERT("Sorry, configuration file is an empty string.", ! _rootObjectConfigurationFile.empty() );
     getDefault()->m_rootObjectConfigurationFile = std::pair< bool , std::string >( true , _rootObjectConfigurationFile ) ;
 }
 
@@ -90,57 +90,48 @@ void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObje
 
 bool ObjectServiceRegistry::isRootObjectConfigurationValid()
 {
-    if( getDefault()->m_rootObjectClassName.first && getDefault()->m_rootObjectConfigurationName.first )
-    {
-        assert( getDefault()->m_rootObjectClassName.first ) ;
-        assert( getDefault()->m_rootObjectConfigurationName.first ) ;
-        std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-        for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
-        {
-            if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
-            {
-                return ::fwServices::validation::checkObject( *((*iter)->begin()) ) ;
-            }
-        }
-    }
-    return true ;
+    return ::fwServices::validation::checkObject( getDefault()->m_rootObjectConfiguration ) ;
 }
 
 //------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::initializeRootObject()
 {
-    if( !getDefault()->m_isRootInitialized && getDefault()->m_rootObjectClassName.first && getDefault()->m_rootObjectConfigurationName.first )
+
+    SLM_ASSERT("Sorry, the OSR is already initialized.", ! getDefault()->m_isRootInitialized );
+    SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
+    SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
+
+    // ToDo Correct this hack
+    // Load another "pseudo" bundle
+    ::boost::filesystem::path filePath ( getDefault()->m_rootObjectConfigurationFile.second );
+    SPTR(::fwRuntime::Bundle) configBundle = ::fwRuntime::io::BundleDescriptorReader::createBundleFromXmlPlugin( filePath );
+    ::fwRuntime::Runtime::getDefault()->addBundle( configBundle );
+    configBundle->setEnable( true );
+
+
+    // Research the config extension
+    bool extensionIsFound = false;
+    std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( CONFIG_EXTENSION_POINT ) ;
+    for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
+            iter != extensions.end() ;
+            ++iter )
     {
-        // Load another bundle
-        if ( getDefault()->m_rootObjectConfigurationFile.first )
+        if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
         {
-            ::boost::filesystem::path filePath ( getDefault()->m_rootObjectConfigurationFile.second );
-            SPTR(::fwRuntime::Bundle) configBundle = ::fwRuntime::io::BundleDescriptorReader::createBundleFromXmlPlugin( filePath );
-            ::fwRuntime::Runtime::getDefault()->addBundle( configBundle );
-            configBundle->setEnable( true );
+            getDefault()->m_rootObjectConfiguration = *((*iter)->begin()) ;
+            extensionIsFound = true;
         }
-
-        assert( getDefault()->isRootObjectConfigurationValid() );
-        assert( getDefault()->m_rootObjectClassName.first ) ;
-        assert( getDefault()->m_rootObjectConfigurationName.first ) ;
-
-        std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-        for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
-                iter != extensions.end() ;
-                ++iter )
-        {
-            if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
-            {
-                getDefault()->m_rootObjectConfiguration = *((*iter)->begin()) ;
-            }
-        }
-
-        getDefault()->m_rootObject = ::fwServices::New(getDefault()->m_rootObjectConfiguration);
-        ::fwServices::start(getDefault()->m_rootObjectConfiguration) ;
-        ::fwServices::update(getDefault()->m_rootObjectConfiguration) ;
-        getDefault()->m_isRootInitialized = true ;
     }
+
+    OSLM_ASSERT("Sorry, extension "<< getDefault()->m_rootObjectConfigurationName.second <<" (that contains the configuration of the App) is not found. This extension must exist and must implements extension-point " << CONFIG_EXTENSION_POINT, extensionIsFound );
+
+    SLM_ASSERT("Sorry, the xml that describes extension "<< getDefault()->m_rootObjectConfigurationName.second <<" is not valid.", getDefault()->isRootObjectConfigurationValid() );
+
+    getDefault()->m_rootObject = ::fwServices::New(getDefault()->m_rootObjectConfiguration);
+    ::fwServices::start(getDefault()->m_rootObjectConfiguration) ;
+    ::fwServices::update(getDefault()->m_rootObjectConfiguration) ;
+    getDefault()->m_isRootInitialized = true ;
 }
 
 //------------------------------------------------------------------------------
@@ -148,16 +139,15 @@ void ObjectServiceRegistry::initializeRootObject()
 void ObjectServiceRegistry::uninitializeRootObject()
 {
     SLM_TRACE_FUNC();
-
-    if( getDefault()->m_isRootInitialized )
+    SLM_WARN_IF("(Hack) Sorry, the OSR must be initialized to uninitialize it. ToDo => transform in assert", ! getDefault()->m_isRootInitialized );
+    if ( getDefault()->m_isRootInitialized )
     {
-        assert( getDefault()->m_rootObjectClassName.first ) ;
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
         // Stop services reported in m_rootObjectConfiguration before stopping everything
         ::fwServices::stopAndUnregister(getDefault()->m_rootObjectConfiguration) ;
 
         OSLM_WARN_IF("Sorry, few services still exist before erasing root object ( cf debug following message )" << std::endl << ::fwServices::OSR::getRegistryInformation(),
-                        getDefault()->m_container.size() != 1 || getDefault()->m_container.begin()->second.size() != 0 );
+                getDefault()->m_container.size() != 1 || getDefault()->m_container.begin()->second.size() != 0 );
 
         // Unregister root object services
         ::fwServices::OSR::unregisterServices(getDefault()->m_rootObject);
