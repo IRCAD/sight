@@ -35,6 +35,7 @@ void QtToolBarContainer::clean()
 void QtToolBarContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, Qt toolBar not yet initialized, cleaning impossible", m_toolBar);
+    OSLM_ASSERT("Container must be empty ( " << m_toolBar->children().count() << " children).", m_toolBar->children().empty());
     m_toolBar->deleteLater();
 }
 

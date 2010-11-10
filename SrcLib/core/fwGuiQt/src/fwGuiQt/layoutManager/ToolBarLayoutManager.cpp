@@ -104,10 +104,8 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
 
 void ToolBarLayoutManager::destroyLayout()
 {
-    QToolBar* menu = m_parent->getQtToolBar();
-
+    m_parent->clean();
     m_menuItems.clear();
-    menu->clear();
 }
 
 //-----------------------------------------------------------------------------

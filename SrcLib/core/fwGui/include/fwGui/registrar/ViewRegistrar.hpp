@@ -117,6 +117,20 @@ public:
      */
     FWGUI_API virtual void unmanage();
 
+    /**
+     * @brief Stopping view manager.
+     * ToolBar service will be stopped.
+     */
+    FWGUI_API virtual void unmanageToolBar();
+
+    /**
+     * @brief Stopping view manager.
+     * MenuBar service will be stopped.
+     */
+    FWGUI_API virtual void unmanageMenuBar();
+
+
+
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;

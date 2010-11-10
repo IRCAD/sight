@@ -85,7 +85,7 @@ void IGuiContainerSrv::create()
     {
         if (m_hasToolBar)
         {
-            m_toolBarBuilder->createToolBar(container);
+            m_toolBarBuilder->createToolBar(parent);
             m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
         }
 
@@ -102,17 +102,18 @@ void IGuiContainerSrv::destroy()
 
     if ( m_viewLayoutManagerIsCreated )
     {
-        m_viewRegistrar->unmanage();
-
         if (m_hasToolBar)
         {
+            m_viewRegistrar->unmanageToolBar();
             SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
             m_toolBarBuilder->destroyToolBar();
         }
 
+        m_viewRegistrar->unmanage();
         SLM_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
         m_viewLayoutManager->destroyLayout();
     }
+
     m_containerBuilder->destroyContainer();
 }
 

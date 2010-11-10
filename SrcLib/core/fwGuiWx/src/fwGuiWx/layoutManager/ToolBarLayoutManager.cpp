@@ -108,8 +108,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
 
 void ToolBarLayoutManager::destroyLayout()
 {
-    wxToolBar* toolBar = m_parent->getWxToolBar();
-    toolBar->ClearTools();
+    m_parent->clean();
     m_menuItems.clear();
 }
 
