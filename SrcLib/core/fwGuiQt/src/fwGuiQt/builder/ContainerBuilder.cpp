@@ -97,13 +97,6 @@ void ContainerBuilder::setParent(::fwGui::container::fwContainer::sptr parent)
         qtParent->layout()->addWidget(qtContainer);
         qtContainer->update();
 
-        //QWidget *oldQtParent = m_parent->getQtContainer() ;
-        //QLayout* layout = oldQtParent->layout();
-        //oldQtParent->setLayout( 0 );
-        //layout->deleteLater();
-        // FIXME destroy layout properly before to set another
-        //delete layout;
-
         m_parent = parentContainer;
     }
 }

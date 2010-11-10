@@ -58,13 +58,15 @@ public:
              m_proportion (1),
              m_border(0),
              m_minSize (std::make_pair(-1,-1)),
-             m_caption (std::make_pair(false,""))
+             m_caption (std::make_pair(false,"")),
+             m_visible (true)
          {}
 
          int                            m_proportion;
          int                            m_border;
          std::pair< int, int >          m_minSize;
          std::pair< bool, std::string > m_caption;
+         bool                           m_visible;
      };
 
     /// Constructor. Do nothing.

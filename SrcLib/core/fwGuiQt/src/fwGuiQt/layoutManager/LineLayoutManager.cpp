@@ -94,6 +94,8 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 
         layout->addWidget( panel );
         layout->setStretchFactor(panel, viewInfo.m_proportion);
+
+        subContainer->setVisible( viewInfo.m_visible );
     }
 }
 

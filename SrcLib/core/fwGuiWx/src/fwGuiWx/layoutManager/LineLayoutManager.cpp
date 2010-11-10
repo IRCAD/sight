@@ -78,6 +78,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 #else
         boxSizer->Add( viewPanel, viewInfo.m_proportion, wxALL|wxEXPAND, viewInfo.m_border);
 #endif
+        subContainer->setVisible( viewInfo.m_visible );
     }
 
     wxContainer->Layout();

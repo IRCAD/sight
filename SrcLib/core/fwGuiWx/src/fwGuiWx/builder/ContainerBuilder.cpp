@@ -103,8 +103,6 @@ void ContainerBuilder::setParent(::fwGui::container::fwContainer::sptr parent)
         wxParent->Layout();
         wxContainer->Layout();
 
-        //oldWxParent->SetSizer(NULL);
-
         m_parent = parentContainer;
     }
 }
