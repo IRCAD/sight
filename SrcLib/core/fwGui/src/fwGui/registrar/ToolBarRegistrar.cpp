@@ -12,6 +12,7 @@
 #include <fwServices/helper.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
+#include "fwGui/IActionSrv.hpp"
 #include "fwGui/registrar/ToolBarRegistrar.hpp"
 
 namespace fwGui
@@ -98,14 +99,40 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr 
         ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
-            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
-            service->start();
+            bool isActionServiceExecutable = false;
+            std::vector< ::fwGui::IActionSrv::sptr > allActions = ::fwServices::OSR::getServices< ::fwGui::IActionSrv >() ;
+            bool actionIsFound = false;
+            for(    std::vector< ::fwGui::IActionSrv::sptr >::iterator iterAction = allActions.begin();
+                    iterAction != allActions.end() && ! actionIsFound ;
+                    ++iterAction )
+            {
+                if( (*iterAction)->getID() == sid.first )
+                {
+                    isActionServiceExecutable = (*iterAction)->getIsExecutable();
+                    actionIsFound = true;
+                }
+            }
+            OSLM_ASSERT("Action "<<sid.first <<" not found.", actionIsFound );
+            if(!isActionServiceExecutable)
+            {
+                ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
+            }
+            else
+            {
+                OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+                ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+                if(!service->isStarted())
+                {
+                    OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
+                    service->start();
+                }
+            }
         }
         else
         {
             bool service_exists = ::fwTools::fwID::exist(sid.first );
-            if (!service_exists || ::fwServices::get( sid.first )->isStopped())
+//            if (!service_exists )// || ::fwServices::get( sid.first )->isStopped())
+            if (service_exists )// || ::fwServices::get( sid.first )->isStopped())
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
             }
