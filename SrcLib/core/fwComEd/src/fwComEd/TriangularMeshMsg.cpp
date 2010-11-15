@@ -16,6 +16,7 @@ namespace fwComEd
 //-----------------------------------------------------------------------------
 
 std::string TriangularMeshMsg::NEW_MESH = "NEW_MESH";
+std::string TriangularMeshMsg::VERTEX_MODIFIED = "VERTEX_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
