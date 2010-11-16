@@ -29,6 +29,9 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
 
+#ifdef USE_SRVFAC
+#include "fwServices/ServiceFactoryRegistry.hpp"
+#endif
 
 namespace fwServices
 {
@@ -101,6 +104,10 @@ void ObjectServiceRegistry::initializeRootObject()
     SLM_ASSERT("Sorry, the OSR is already initialized.", ! getDefault()->m_isRootInitialized );
     SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
     SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
+
+#ifdef USE_SRVFAC
+    ::fwServices::ServiceFactoryRegistry::getDefault()->parseBundleInformation();
+#endif
 
     // ToDo Correct this hack
     // Load another "pseudo" bundle
