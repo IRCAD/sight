@@ -48,14 +48,8 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     Orientation orientation = this->getOrientation();
     int wxOrientation = ( (orientation==VERTICAL) ? wxVERTICAL : wxHORIZONTAL);
     wxBoxSizer* boxSizer = new wxBoxSizer( wxOrientation );
-    if (wxContainer->GetSizer())
-    {
-        wxContainer->GetSizer()->Add(boxSizer, 1, wxEXPAND|wxALL);
-    }
-    else
-    {
-        wxContainer->SetSizer( boxSizer );
-    }
+
+    wxContainer->SetSizer( boxSizer );
 
     std::list< ViewInfo> views = this->getViewsInfo();
     BOOST_FOREACH ( ViewInfo viewInfo, views)

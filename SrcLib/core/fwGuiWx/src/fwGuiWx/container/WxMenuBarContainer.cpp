@@ -26,8 +26,12 @@ WxMenuBarContainer::~WxMenuBarContainer() throw()
 void WxMenuBarContainer::clean()
 {
     SLM_ASSERT("Sorry, wxMenuBar not yet initialized, cleaning impossible", m_menuBar);
-
-    m_menuBar->DestroyChildren();
+    while( m_menuBar->GetMenuCount() )
+    {
+        wxMenu* menu = m_menuBar->Remove(0);
+        SLM_ASSERT("Menu must be empty", menu->GetMenuItemCount() == 0);
+        delete menu;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -35,7 +39,7 @@ void WxMenuBarContainer::clean()
 void WxMenuBarContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, wxMenuBar not yet initialized", m_menuBar);
-    OSLM_ASSERT("ToolBar container must be empty ( " << m_menuBar->GetMenuCount() << " children).", m_menuBar->GetMenuCount() == 0);
+    OSLM_ASSERT("MenuBar container must be empty ( " << m_menuBar->GetMenuCount() << " menu(s)).", m_menuBar->GetMenuCount() == 0);
     m_menuBar->Destroy();
     m_menuBar = 0;
 }

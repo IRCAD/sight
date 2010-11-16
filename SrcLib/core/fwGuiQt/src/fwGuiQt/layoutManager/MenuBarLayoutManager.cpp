@@ -60,9 +60,9 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 
 void MenuBarLayoutManager::destroyLayout()
 {
-    QMenuBar* menuBar = m_parent->getQtMenuBar();
-    menuBar->clear();
+    this->destroyMenus();
     m_menus.clear();
+    m_parent->clean();
 }
 
 //-----------------------------------------------------------------------------

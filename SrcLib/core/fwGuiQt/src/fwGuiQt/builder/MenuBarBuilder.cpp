@@ -76,7 +76,7 @@ void MenuBarBuilder::destroyMenuBar()
     {
         window->setMenuBar( NULL );
     }
-    m_menuBar->clean();
+    m_menuBar->destroyContainer();
 }
 
 //-----------------------------------------------------------------------------

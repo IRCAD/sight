@@ -127,6 +127,8 @@ public:
 
     FWGUI_API virtual ::fwGui::container::fwContainer::sptr getFrame(){ return m_frame;};
 
+    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getContainer(){ return m_container;};
+
 
     typedef ::boost::function0< void > CloseCallback;
     FWGUI_API virtual void setCloseCallback(CloseCallback fct);
@@ -136,6 +138,7 @@ protected:
     fwGettersSettersDocMacro(FrameInfo, frameInfo, FrameInfo, configuration definition.);
 
     ::fwGui::container::fwContainer::sptr m_frame;
+    ::fwGui::container::fwContainer::sptr m_container;
     CloseCallback m_closeCallback;
 
     FWGUI_API void readConfig();

@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <QToolBar>
+#include <QAction>
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
 
 namespace fwGuiQt
@@ -28,6 +29,14 @@ void QtToolBarContainer::clean()
 {
     SLM_ASSERT("Sorry, Qt toolBar not yet initialized, cleaning impossible", m_toolBar);
     m_toolBar->clear();
+
+    QList<QAction *> list = m_toolBar->findChildren<QAction *>();
+
+    foreach (QAction *a, list)
+    {
+        a->setParent(0);
+        a->deleteLater();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -35,7 +44,9 @@ void QtToolBarContainer::clean()
 void QtToolBarContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, Qt toolBar not yet initialized, cleaning impossible", m_toolBar);
-    OSLM_ASSERT("Container must be empty ( " << m_toolBar->children().count() << " children).", m_toolBar->children().empty());
+
+    QList<QAction *> allActions = m_toolBar->findChildren<QAction *>();
+    OSLM_ASSERT("ToolBar container must be empty ( " << allActions.count() << " actions).", allActions.empty());
     m_toolBar->deleteLater();
 }
 

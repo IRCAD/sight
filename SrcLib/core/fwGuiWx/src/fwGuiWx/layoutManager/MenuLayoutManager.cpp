@@ -141,6 +141,7 @@ void MenuLayoutManager::destroyLayout()
         wxMenuItem *item = menuItemContainer->getWxMenuItem();
         menu->Destroy(item);
     }
+    this->destroyActions();
     m_menuItems.clear();
     m_separators.clear();
 }

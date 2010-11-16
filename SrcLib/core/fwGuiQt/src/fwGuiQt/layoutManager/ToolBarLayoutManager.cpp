@@ -104,6 +104,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
 
 void ToolBarLayoutManager::destroyLayout()
 {
+    this->destroyActions();
     m_parent->clean();
     m_menuItems.clear();
 }
