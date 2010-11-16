@@ -21,6 +21,18 @@
         <implements>::fwServices::IService</implements>
     </point>
     
+    <point id="::fwGui::IMenuSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
+    <point id="::gui::aspect::IToolBar">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
+    <point id="::fwGui::IMenuBarSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
     <point id="::gui::frame::DefaultFrame">
         <implements>::fwGui::IFrameSrv</implements>
         <implements>::fwTools::Object</implements>
@@ -62,7 +74,7 @@
     </point>    
     
     <point id="::gui::aspect::DefaultToolBarSrv">
-        <implements>::gui::aspect::IToolBar</implements>
+        <implements>::fwGui::IToolBarSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
     
