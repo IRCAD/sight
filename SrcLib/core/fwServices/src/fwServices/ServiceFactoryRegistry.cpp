@@ -151,7 +151,7 @@ void ServiceFactoryRegistry::parseBundleInformation()
 
     //Print information
     //printInfoMap( bundleInfoMap );
-    //printInfoMap( m_srvImplTosrvInfo );
+    //printInfoMap( m_srvImplTosrvInfo )
 
     // Merge data info
     for ( SrvRegContainer::iterator iterBundle = bundleInfoMap.begin();
@@ -199,7 +199,7 @@ IService::sptr ServiceFactoryRegistry::create( const std::string & _srvType, con
     {
         SLM_ASSERT( "Sorry bundle must exist if a factory missing.", info->bundle );
         info->bundle->start();
-        SLM_ASSERT( "Sorry after bundle loading, factory must exist.", info->factory );
+        SLM_ASSERT( "Sorry after bundle loading ( " << info->bundle->getIdentifier() << " ) , factory must exist.", info->factory );
         return info->factory->create();
     }
 }
@@ -224,9 +224,9 @@ void ServiceFactoryRegistry::addFactory
     {
         OSLM_DEBUG("Have already information about this service ( " << simpl << " )." );
         ServiceFactoryInfo::sptr info = iter->second;
-        SLM_ASSERT("Try to add factory, but factory alerady exists.", ! info->factory );
-        SLM_ASSERT("Try to add factory, but this srv is already register and has not the same srv type.", stype == info->serviceType );
-        SLM_ASSERT("Try to add factory, but this srv is already register and has not the same oimpl.", oimpl == info->objectImpl );
+        OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) has already a registered factory.", ! info->factory );
+        OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) is already register and has not the same srv type. ( " << stype << " != " << info->serviceType <<" )", stype == info->serviceType );
+        OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) is already register and has not the same oimpl. ( " << oimpl << " != " << info->objectImpl <<" )", oimpl == info->objectImpl );
         info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > >( _factory );
     }
     else
