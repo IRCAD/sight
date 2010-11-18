@@ -84,6 +84,19 @@ VTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwDa
 VTKIO_API vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr _mesh );
 
 /*!
+ * @brief Update a vtkPolyData* with ::fwData::TriangularMesh::sptr points
+ *
+ * @param[out] polyData vtkPolyData*
+ * @param[in]  mesh ::fwData::TriangularMesh::sptr
+ * @return vtkPolyData*
+ *
+ * Warning : be carefull with updatePoints : this may change the number of
+ * vertex of the polydata, cells will not be updated.
+ * Returns the updated vtkPolyPata
+ */
+VTKIO_API vtkPolyData*  updatePolyDataPoints(vtkPolyData* polyDataDst, ::fwData::TriangularMesh::sptr meshSrc );
+
+/*!
  * @brief Convert a vtkPolyData* to a ::fwData::TriangularMesh::sptr.
  *
  * @param[in] _polyData vtkPolyData*.

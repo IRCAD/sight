@@ -345,36 +345,57 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::boost::shared_
 
 //-----------------------------------------------------------------------------
 
+// This method is written to be as fast as possible, take care when modifying it.
+vtkPolyData*  updatePolyDataPoints(vtkPolyData* polyDataDst, ::fwData::TriangularMesh::sptr meshSrc )
+{
+    OSLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+
+    vtkPoints *polyDataPoints = polyDataDst->GetPoints();
+    ::fwData::TriangularMesh::PointContainer &points = meshSrc->points();
+
+    ::fwData::TriangularMesh::PointContainer::iterator pointsIter = points.begin();
+    ::fwData::TriangularMesh::PointContainer::iterator pointsEnd  = points.end();
+
+    float *xyz = 0;
+    vtkIdType id = 0;
+    if (points.size() != polyDataPoints->GetNumberOfPoints())
+    {
+        polyDataPoints->SetNumberOfPoints(points.size());
+    }
+    for( ; pointsIter != pointsEnd ; ++pointsIter )
+    {
+        xyz = &(pointsIter->front());
+        polyDataPoints->SetPoint(id++, xyz);
+    }
+    polyDataPoints->Modified();
+    return polyDataDst;
+}
+
+//-----------------------------------------------------------------------------
+
 vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr mesh )
 {
     vtkPolyData *polygonGrid = vtkPolyData::New();
 
     if ( mesh && !mesh->points().empty() )
     {
-        unsigned int nbPts = mesh->points().size() ;
-        assert( nbPts ) ;
         vtkPoints *trianPts = vtkPoints::New();
-        for( unsigned int i=0 ; i<nbPts ; ++i )
-        {
-            float xyz[3] ;
-            xyz[0] = mesh->points()[i][0] ;
-            xyz[1] = mesh->points()[i][1] ;
-            xyz[2] = mesh->points()[i][2] ;
-            trianPts->InsertNextPoint(xyz);
-        }
-        unsigned int nbCells = mesh->cells().size() ;
-        assert( nbCells ) ;
-
         polygonGrid->SetPoints(trianPts);
+        updatePolyDataPoints(polygonGrid, mesh);
 
+
+        ::fwData::TriangularMesh::CellContainer &cells = mesh->cells();
+        unsigned int nbCells = cells.size() ;
+        assert( nbCells ) ;
         vtkIdType typeCell = VTK_TRIANGLE;
         polygonGrid->Allocate(typeCell,nbCells);
         for(unsigned int i=0 ; i<nbCells ; ++i )
         {
             vtkIdType cell[3];
-            cell[0] = mesh->cells()[i][0] ;
-            cell[1] = mesh->cells()[i][1] ;
-            cell[2] = mesh->cells()[i][2] ;
+            const std::vector<int> &meshCell = (cells[i]);
+            cell[0] = meshCell[0] ;
+            cell[1] = meshCell[1] ;
+            cell[2] = meshCell[2] ;
             polygonGrid->InsertNextCell( typeCell, 3, cell );
         }
     }
