@@ -53,61 +53,6 @@ public:
 
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-class vtkDepthSortCallBack : public vtkCommand
-{
-
-public :
-    //--------------------------------------------------------------------------
-    static vtkDepthSortCallBack *New( TriangularMesh *service)
-    { return new vtkDepthSortCallBack(service); }
-
-    //--------------------------------------------------------------------------
-    vtkDepthSortCallBack( TriangularMesh *service )
-    : m_service(service), m_needUpdate(true)
-    {
-        m_oldDirection[0] = m_oldDirection[1] = 0.;
-        m_oldDirection[2] = 1.;
-    }
-
-    //--------------------------------------------------------------------------
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
-    {
-
-        double direction[3];
-        m_service->getRenderer()->GetActiveCamera()->GetDirectionOfProjection(direction);
-
-        vtkMath::Normalize(direction);
-        double dot = vtkMath::Dot(direction, m_oldDirection);
-
-        m_needUpdate = ( dot < 0.5 );
-
-        if (m_needUpdate)
-        {
-            m_service->getRenderer()->GetActiveCamera()->GetDirectionOfProjection(m_oldDirection);
-            vtkMath::Normalize(m_oldDirection);
-
-//          if ( m_needUpdate && eventId == vtkCommand::EndInteractionEvent)
-//          {
-            m_service->getDepthSort()->SetDirectionToSpecifiedVector ();
-            m_service->getDepthSort()->SetVector(m_service->getRenderer()->GetActiveCamera()->GetDirectionOfProjection());
-            m_needUpdate = false;
-//            }
-        }
-    }
-
-protected :
-    TriangularMesh *m_service;
-    double m_oldDirection[3];
-    bool m_needUpdate;
-
-
-};
-#endif //ifdef USE_DEPTH_SORT
-#endif //ifndef USE_DEPTH_PEELING
-
 
 class PlaneShifterCallback : public TriangularMeshVtkCommand
 {
@@ -404,30 +349,29 @@ TriangularMesh::TriangularMesh() throw()
     m_unclippedPartMaterial  = ::fwData::Material::New();
     m_unclippedPartMaterial->ambient()->setRGBA("#aaaaff44");
 
-    m_clippingPlanesId       = "";
-    m_sharpEdgeAngle         = 180;
+    m_clippingPlanesId  = "";
+    m_sharpEdgeAngle    = 180;
 
-    m_showClippedPart        = false;
-    m_clippingPlanes         = 0;
-    m_actor                  = 0;
-    m_normals                = vtkPolyDataNormals::New();
+    m_showClippedPart   = false;
+    m_clippingPlanes    = 0;
+    m_actor             = 0;
+    m_normals           = vtkPolyDataNormals::New();
 
-    m_manageMapperInput     = true;
-    m_mapperInput            = 0;
+    m_manageMapperInput = true;
+    m_mapperInput       = 0;
+    m_polyData          = 0;
+    m_mapper            = vtkPolyDataMapper::New();
+    m_pipelineInput     = m_mapper;
+
+    m_computeNormals     = false;
+    m_computeNormalsAtUpdate = true;
 
     m_planeCollectionShifterCallback = 0;
     m_servicesStarterCallback        = 0;
 
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-    m_depthSortCommand = 0;
-    m_depthSort        = vtkDepthSortPolyData::New();
-    m_hasAlpha         = false;
-#endif
-#endif
-
     addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
     addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
+    addNewHandledEvent (::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -435,12 +379,9 @@ TriangularMesh::TriangularMesh() throw()
 TriangularMesh::~TriangularMesh() throw()
 {
     m_clippingPlanes = 0;
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-    m_depthSort->Delete();
-    m_depthSort = 0;
-#endif
-#endif
+
+    m_mapper->Delete();
+    m_mapper = 0;
 
     m_normals->Delete();
     m_normals = 0;
@@ -449,6 +390,12 @@ TriangularMesh::~TriangularMesh() throw()
     {
         m_actor->Delete();
         m_actor = 0;
+    }
+
+    if (m_polyData)
+    {
+        m_polyData->Delete();
+        m_polyData = 0;
     }
 }
 
@@ -498,6 +445,16 @@ void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
             = this->getObject < ::fwData::TriangularMesh >();
         this->updateTriangularMesh( triangularMesh );
     }
+
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED) )
+    {
+       ::fwData::TriangularMesh::sptr mesh = this->getObject < ::fwData::TriangularMesh >();
+       assert(m_polyData);
+
+       ::vtkIO::updatePolyDataPoints(m_polyData, mesh);
+
+       this->setVtkPipelineModified();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -512,6 +469,7 @@ void TriangularMesh::doStart() throw(fwTools::Failed)
 
 void TriangularMesh::doStop() throw(fwTools::Failed)
 {
+
     this->removeAllPropFromRenderer();
     if (this->getPicker())
     {
@@ -521,12 +479,6 @@ void TriangularMesh::doStop() throw(fwTools::Failed)
     removeNormalsService();
     removePlaneCollectionShifterCommand();
     removeServicesStarterCommand();
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-    removeDepthSortCommand();
-#endif
-#endif
 
     this->unregisterServices();
 }
@@ -714,25 +666,23 @@ void TriangularMesh::removeNormalsService()
 void TriangularMesh::buildPipeline()
 {
 
+    m_pipelineInput = m_mapper;
+
     if ( m_manageMapperInput )
     {
         m_normals->ComputePointNormalsOn();
         m_normals->ComputeCellNormalsOff();
         m_normals->ConsistencyOn();
-        m_normals->SplittingOn();
+        m_normals->SplittingOff();
         m_normals->SetFeatureAngle( m_sharpEdgeAngle );
 
-        m_mapperInput = m_normals->GetOutputPort();
+        if (m_computeNormals)
+        {
+           m_mapperInput   = m_normals->GetOutputPort();
+           m_pipelineInput = m_normals;
+        }
 
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-        m_depthSort->SetInputConnection( m_normals->GetOutputPort() );
-        m_depthSort->SetDirectionToBackToFront();
-        m_mapperInput = m_depthSort->GetOutputPort();
-#endif
-#endif
     }
-
 
     ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
 
@@ -756,14 +706,9 @@ void TriangularMesh::buildPipeline()
     {
         this->updateMaterial( m_material );
         this->updateTriangularMesh( triangularMesh );
+        this->updateMapper();
 
         this->updateOptionsMode();
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-        this->updateDepthSort();
-#endif
-#endif
     }
 
     if (!m_actor)
@@ -795,11 +740,22 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 {
         m_triangularMesh = mesh;
 
-        vtkPolyData * polyData = ::vtkIO::toVTKMesh(mesh);
+        if (m_polyData)
+        {
+            m_polyData->Delete();
+            m_polyData = 0;
+        }
 
-        m_normals->SetInput( polyData );
+        m_polyData = ::vtkIO::toVTKMesh(mesh);
 
-        polyData->Delete();
+        if (m_computeNormalsAtUpdate)
+        {
+           m_normals->SetInput( m_polyData );
+           m_normals->Update();
+           m_polyData->DeepCopy(m_normals->GetOutput());
+        }
+
+        this->updateMapper();
 
         if (m_autoResetCamera)
         {
@@ -811,18 +767,49 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 
 //------------------------------------------------------------------------------
 
+void TriangularMesh::updateMapper()
+{
+
+    vtkPolyDataMapper *mapper  = 0;
+    vtkPolyDataAlgorithm *algo = 0;
+    vtkDepthSortPolyData *sort = 0;
+
+    SLM_ASSERT("Bad vtkPolyData", m_polyData);
+
+    if( algo = vtkPolyDataAlgorithm::SafeDownCast(m_pipelineInput) )
+    {
+        algo->SetInput( m_polyData );
+        SLM_ASSERT ("missing mapper input", m_mapperInput);
+        m_mapper->SetInputConnection(m_mapperInput);
+    }
+    else if (mapper = vtkPolyDataMapper::SafeDownCast(m_pipelineInput) )
+    {
+        SLM_ASSERT ("mapper input should be 0", m_mapperInput == 0 );
+        mapper->SetInput( m_polyData );
+    }
+
+    SLM_ASSERT( "Bad pipeline input", algo || mapper);
+}
+
+//------------------------------------------------------------------------------
+
 vtkActor *TriangularMesh::newActor()
 {
 
-    vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
-    vtkActor          *actor  = vtkActor::New();
 
+    vtkActor *actor = vtkActor::New();
 
-    mapper->SetInputConnection(m_mapperInput);
+    //m_pipelineInput->SetInput( m_polyData );
 
+    //::fwData::TriangularMesh::sptr triangularMesh
+    //    = this->getObject < ::fwData::TriangularMesh >();
+    //this->updateTriangularMesh( triangularMesh );
+
+    m_mapper->SetInputConnection(m_mapperInput);
+
+    //m_mapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)
     {
-        mapper->RemoveAllClippingPlanes();
         vtkPlaneCollection *newClippingPlanes = vtkPlaneCollection::New();
 
         removePlaneCollectionShifterCommand();
@@ -830,12 +817,11 @@ vtkActor *TriangularMesh::newActor()
         m_planeCollectionShifterCallback =
             PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
 
-        mapper->SetClippingPlanes(newClippingPlanes);
+        m_mapper->SetClippingPlanes(newClippingPlanes);
         newClippingPlanes->Delete();
     }
 
-    actor->SetMapper(mapper);
-    mapper->Delete();
+    actor->SetMapper(m_mapper);
 
     if(!this->getTransformId().empty())
     {
@@ -849,24 +835,7 @@ vtkActor *TriangularMesh::newActor()
 
 void TriangularMesh::updateMaterial( ::fwData::Material::sptr material )
 {
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-
-    ::fwData::Color::sptr color = m_material->ambient();
-
-    if (color->alpha() < 1.)
-    {
-        m_mapperInput = m_depthSort->GetOutputPort();
-        m_hasAlpha = true;
-    }
-    else
-    {
-        m_mapperInput = m_normals->GetOutputPort();
-        m_hasAlpha = false;
-    }
-#endif
-#endif
-
+    return ;
 }
 
 //------------------------------------------------------------------------------
@@ -932,58 +901,6 @@ void TriangularMesh::removeServicesStarterCommand()
         m_servicesStarterCallback = 0;
     }
 }
-
-
-//------------------------------------------------------------------------------
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-bool TriangularMesh::hasAlpha()
-{
-    return m_hasAlpha;
-};
-
-
-void TriangularMesh::updateDepthSort()
-{
-        if (hasAlpha())
-        {
-            if(m_depthSortCommand == 0)
-            {
-                m_depthSortCommand = vtkDepthSortCallBack::New(this);
-                this->getInteractor()->AddObserver( "EndInteractionEvent" , m_depthSortCommand );
-                getRenderer()->GetActiveCamera()->AddObserver("AnyEvent"  , m_depthSortCommand );
-
-                m_depthSort->SetDirectionToSpecifiedVector ();
-                m_depthSort->SetVector(getRenderer()->GetActiveCamera()->GetDirectionOfProjection());
-            }
-        }
-        else
-        {
-            removeDepthSortCommand();
-        }
-        this->setVtkPipelineModified();
-}
-
-
-void TriangularMesh::removeDepthSortCommand()
-{
-    if(m_depthSortCommand)
-    {
-        this->getInteractor()->RemoveObserver(m_depthSortCommand);
-        getRenderer()->GetActiveCamera()->RemoveObserver(m_depthSortCommand);
-        m_depthSortCommand->Delete();
-        m_depthSortCommand = 0;
-    }
-}
-
-vtkDepthSortPolyData * TriangularMesh::getDepthSort()
-{
-    return m_depthSort;
-}
-#endif
-#endif
-
 
 
 } //namespace visuVTKAdaptor
