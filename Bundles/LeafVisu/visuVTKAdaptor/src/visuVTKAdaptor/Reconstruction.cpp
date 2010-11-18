@@ -109,7 +109,8 @@ void Reconstruction::createMeshService()
         meshAdaptor->setShowClippedPart ( true );
         meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
         meshService->start();
-        meshAdaptor ->updateVisibility  ( reconstruction->getIsVisible() );
+        meshAdaptor->updateVisibility  ( reconstruction->getIsVisible() );
+        meshAdaptor->update();
 
         m_meshService = meshService;
         this->registerService(meshService);

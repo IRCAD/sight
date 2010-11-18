@@ -425,6 +425,10 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
 void TriangularMesh::doUpdate() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    ::fwData::TriangularMesh::sptr triangularMesh
+        = this->getObject < ::fwData::TriangularMesh >();
+    this->updateTriangularMesh( triangularMesh );
 }
 
 //------------------------------------------------------------------------------
