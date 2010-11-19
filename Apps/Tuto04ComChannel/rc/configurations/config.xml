@@ -70,7 +70,7 @@
 
 
 
-        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" >
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" >
             <type mode="reader"/>
         </service>
 

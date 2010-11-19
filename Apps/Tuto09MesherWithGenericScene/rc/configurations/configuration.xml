@@ -120,12 +120,12 @@
     <item key="myPatientDB">
         <object uid="myPatientDB" type="::fwData::PatientDB">
             
-            <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" >
+            <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" >
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
             </service>
-            <service uid="myWriterPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" >
+            <service uid="myWriterPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" >
                <type mode="writer"/>
                <selection mode="exclude" />
                <addSelection service="::ioXML::FwXMLPatientDBWriterService" />

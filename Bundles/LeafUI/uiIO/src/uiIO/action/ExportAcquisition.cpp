@@ -7,7 +7,7 @@
 #include <fwData/PatientDB.hpp>
 #include <fwData/Image.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <gui/editor/IDialogEditor.hpp>
 
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
 
@@ -109,8 +109,8 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
             SLM_ASSERT("Sorry, there is not service configuration of type ::uiIO::editor::IOSelectorServiceConfig found", ioCfg ) ;
 
             // Init and execute the service
-            ::gui::editor::IEditor::sptr pIOSelectorSrv =
-                    ::fwServices::add< ::gui::editor::IEditor >( pAcquisition, "::uiIO::editor::IOSelectorService" );
+            ::gui::editor::IDialogEditor::sptr pIOSelectorSrv =
+                    ::fwServices::add< ::gui::editor::IDialogEditor >( pAcquisition, "::uiIO::editor::IOSelectorService" );
             pIOSelectorSrv->setConfiguration( ioCfg ) ;
             pIOSelectorSrv->configure() ;
             pIOSelectorSrv->start();

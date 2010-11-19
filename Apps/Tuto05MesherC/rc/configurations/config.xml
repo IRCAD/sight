@@ -137,11 +137,11 @@
                     -->
                     <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
 
-                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no">
+                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoComChannel="no">
                         <type mode="reader" />
                     </service>
 
-                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="writerImageFile" autoComChannel="no">
+                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="writerImageFile" autoComChannel="no">
                         <type mode="writer" />
                     </service>
 

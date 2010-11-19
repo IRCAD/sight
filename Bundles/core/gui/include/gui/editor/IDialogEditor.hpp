@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_EDITOR_IEDITOR_HPP_
-#define _GUI_EDITOR_IEDITOR_HPP_
+#ifndef _GUI_EDITOR_IDIALOGEDITOR_HPP_
+#define _GUI_EDITOR_IDIALOGEDITOR_HPP_
 
 #include <fwTools/Failed.hpp>
 #include <fwServices/IService.hpp>
@@ -20,43 +20,43 @@ namespace editor
 {
 
 /**
- * @brief   Defines the service interface managing the editor service for object.
- * @class   IEditor.
+ * @brief   Defines the service interface managing the editor service which create their own container.
+ * @class   IDialogEditor.
  * @author  IRCAD (Research and Development Team).
 
- * @date    2009.
+ * @date    2010.
  */
 
-class GUI_CLASS_API IEditor : public ::fwGui::IGuiContainerSrv
+class GUI_CLASS_API IDialogEditor : public ::fwServices::IService
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (IEditor)(::fwGui::IGuiContainerSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IDialogEditor)(::fwServices::IService) ) ;
 
 protected :
 
     /**
-     * @brief   Constructor. Do nothing (Just initialize parameters).
+     * @brief   Constructor. Do nothing.
      */
-    GUI_API IEditor() throw() ;
+    GUI_API IDialogEditor() throw() ;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~IEditor() throw() ;
+    GUI_API virtual ~IDialogEditor() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
      */
 
-    /// This method is used to initialize the container.
+    /// This method is used to configure the service.
     GUI_API virtual void configuring() throw( ::fwTools::Failed )  = 0 ;
 
     /**
-     * @brief This method retrieves the container. It must be defined in GuiRegistry.
+     * Starts the service.
      */
     GUI_API virtual void starting() throw(::fwTools::Failed) = 0 ;
 
-    /// Stops the service and clean the container.
+    /// Stops the service.
     GUI_API virtual void stopping() throw(::fwTools::Failed) = 0 ;
 
     /**
@@ -82,6 +82,6 @@ protected :
 }
 }
 
-#endif /*_GUI_EDITOR_IEDITOR_HPP_*/
+#endif /*_GUI_EDITOR_IDIALOGEDITOR_HPP_*/
 
 

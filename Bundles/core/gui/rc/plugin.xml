@@ -8,6 +8,10 @@
     <point id="::gui::editor::IEditor">
         <implements>::fwServices::IService</implements>
     </point>
+    
+    <point id="::gui::editor::IDialogEditor">
+        <implements>::fwServices::IService</implements>
+    </point>
         
     <point id="::gui::view::IView">
         <implements>::fwServices::IService</implements>

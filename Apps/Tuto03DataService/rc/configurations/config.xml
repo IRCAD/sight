@@ -70,15 +70,15 @@
         <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
 
 
-        <!-- The service ::gui::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::StarterActionService. 
-        Indeed, the uid of the service ::gui::editor::IOSelectorService is the same as the uid 
+        <!-- The service ::uiIO::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::StarterActionService. 
+        Indeed, the uid of the service ::uiIO::editor::IOSelectorService is the same as the uid 
         defined in the service configuration ::gui::action::StarterActionService ( "myReaderPathFile").
         This service lists all services available to read a data image and
         it displays a dialog box to select the appropriate service.
         (Note: 
               if there is only one reading service, it's directly selected without dialog box.)
         When the service was chosen, it is started by the ::uiIO::editor::IOSelectorService service. -->
-        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" />
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" />
 
         <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images. -->
         <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />

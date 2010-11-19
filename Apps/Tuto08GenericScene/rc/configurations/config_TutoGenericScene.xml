@@ -87,7 +87,7 @@
         <item key="myPatientDB">
             <object uid="myPatientDB" type="::fwData::PatientDB">
     
-                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no">
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
                     <type mode="reader" />
                     <selection mode="exclude" />
                     <addSelection service="::ioXML::FwXMLPatientDBReaderService" />

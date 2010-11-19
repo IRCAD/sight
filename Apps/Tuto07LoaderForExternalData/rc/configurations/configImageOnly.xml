@@ -12,7 +12,7 @@
                 <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
                     <start uid="myReaderPathFile"/>
                 </service>
-                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myReaderPathFile" autoComChannel="no">
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoComChannel="no">
                     <type mode="reader" />
                     <selection mode="exclude" />
                     <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
@@ -25,7 +25,7 @@
                 <service uid="action_SaveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
                     <start uid="myWriterPathFile"/>
                 </service>
-                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="myWriterPathFile" autoComChannel="no">
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoComChannel="no">
                     <type mode="writer" />
                 </service>
         
