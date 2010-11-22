@@ -38,6 +38,7 @@ public :
 
 protected:
 
+
     ///This method launches the IAction::starting method.
     virtual void starting() throw(::fwTools::Failed);
 
@@ -84,6 +85,12 @@ protected:
      * @brief Close the parameters view.
      */
     virtual void stopConfig();
+
+    /**
+     * @brief Add GENERIC_UID to field to adapt.
+     */
+    void AddGenericUidToFieldApadtor();
+
 
     /// Id of plugin extension where the configuration is defined.
     std::string m_viewConfigId;

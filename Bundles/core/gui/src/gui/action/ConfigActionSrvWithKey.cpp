@@ -2,6 +2,7 @@
 #include <fwServices/bundle/runtime.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
+#include <fwComEd/CompositeMsg.hpp>
 
 #include "gui/action/ConfigActionSrvWithKey.hpp"
 
@@ -12,13 +13,14 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKey, ::fwTools::Object );
+REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKey, ::fwData::Composite );
 
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKey::ConfigActionSrvWithKey() throw()
 {
-
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
 }
 
 //------------------------------------------------------------------------------
@@ -33,7 +35,14 @@ void ConfigActionSrvWithKey::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     this->::gui::action::ConfigActionSrv::starting();
-
+    bool executable = true;
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    std::map< std::string, std::string >::const_iterator itr;
+    for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+    {
+       executable &= (composite->find(itr->second)!= composite->end());
+    }
+    this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +82,6 @@ void ConfigActionSrvWithKey::configuring() throw(fwTools::Failed)
 void ConfigActionSrvWithKey::updating() throw(::fwTools::Failed)
 {
     this->::gui::action::ConfigActionSrv::updating();
-
 }
 
 //------------------------------------------------------------------------------
@@ -81,6 +89,25 @@ void ConfigActionSrvWithKey::updating() throw(::fwTools::Failed)
 void ConfigActionSrvWithKey::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     this->::gui::action::ConfigActionSrv::updating(_msg);
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    bool executable = true;
+    std::map< std::string, std::string >::const_iterator itr;
+    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast (_msg);
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+    {
+        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        {
+            executable &= (composite->find(itr->second)!= composite->end());
+        }
+    }
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+    {
+        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        {
+            executable &= (composite->find(itr->second)!= composite->end());
+        }
+    }
+    this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------
@@ -93,6 +120,7 @@ void ConfigActionSrvWithKey::info( std::ostream &_sstream )
 
 void ConfigActionSrvWithKey::startConfig()
 {
+    AddGenericUidToFieldApadtor();
     std::map< std::string, std::string > finalMap;
     finalMap = m_fieldAdaptors;
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
@@ -104,12 +132,6 @@ void ConfigActionSrvWithKey::startConfig()
         std::string fwID = (*composite)[key]->getID() ;
         finalMap[itr->first] = fwID;
     }
-
-    // Generate generic UID
-    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID() );
-
-    // Init manager
-    finalMap["GENERIC_UID"] = genericUidAdaptor;
 
     // Init manager
     m_configTemplateManager = ::fwServices::ConfigTemplateManager::New();
@@ -140,7 +162,6 @@ void ConfigActionSrvWithKey::stopConfig()
         m_configTemplateManager.reset();
     }
     m_configIsRunning = false;
-
 }
 
 //------------------------------------------------------------------------------

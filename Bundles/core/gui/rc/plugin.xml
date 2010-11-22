@@ -89,7 +89,7 @@
     
     <point id="::gui::action::ConfigActionSrvWithKey">
         <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
+        <implements>::fwData::Composite</implements>
     </point>
 
     <point id="::gui::action::ModifyLayoutActionSrv">

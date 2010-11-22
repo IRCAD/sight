@@ -118,14 +118,21 @@ void ConfigActionSrv::info( std::ostream &_sstream )
 {}
 
 //------------------------------------------------------------------------------
-
-void ConfigActionSrv::startConfig()
+void ConfigActionSrv::AddGenericUidToFieldApadtor( )
 {
     // Generate generic UID
     std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID() );
 
     // Init manager
     m_fieldAdaptors["GENERIC_UID"] = genericUidAdaptor;
+
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigActionSrv::startConfig()
+{
+    AddGenericUidToFieldApadtor();
     m_configTemplateManager = ::fwServices::ConfigTemplateManager::New();
     m_configTemplateManager->setConfig( m_viewConfigId, "::fwServices::ServiceObjectConfig" );
     m_configTemplateManager->setFieldAdaptors( m_fieldAdaptors );
