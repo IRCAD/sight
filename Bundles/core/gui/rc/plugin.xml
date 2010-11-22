@@ -87,6 +87,11 @@
         <implements>::fwTools::Object</implements>
     </point>
     
+    <point id="::gui::action::ConfigActionSrvWithKey">
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+
     <point id="::gui::action::ModifyLayoutActionSrv">
         <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>

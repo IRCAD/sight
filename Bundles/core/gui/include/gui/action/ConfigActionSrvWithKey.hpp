@@ -1,14 +1,14 @@
-#ifndef _GUI_ACTION_CONFIGACTIONSRV_HPP_
-#define _GUI_ACTION_CONFIGACTIONSRV_HPP_
+#ifndef _GUI_ACTION_CONFIGACTIONSRVWITHKEY_HPP_
+#define _GUI_ACTION_CONFIGACTIONSRVWITHKEY_HPP_
 
 #include <fwTools/Failed.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwServices/ConfigTemplateManager.hpp>
+//#include <fwServices/ConfigTemplateManager.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/action/ConfigActionSrv.hpp>
 
 #include "gui/export.hpp"
 
@@ -18,23 +18,23 @@ namespace action
 {
 
 /**
- * @class   ConfigActionSrv
+ * @class   ConfigActionSrvWithKey
  * @brief   To manage configuration file defines in xml extension.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class GUI_CLASS_API ConfigActionSrv : public ::fwGui::IActionSrv
+class GUI_CLASS_API ConfigActionSrvWithKey : public ::gui::action::ConfigActionSrv
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (ConfigActionSrv)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ConfigActionSrvWithKey)(::gui::action::ConfigActionSrv) ) ;
 
     /// Constructor. Do nothing.
-    GUI_API ConfigActionSrv() throw() ;
+    GUI_API ConfigActionSrvWithKey() throw() ;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~ConfigActionSrv() throw() ;
+    GUI_API virtual ~ConfigActionSrvWithKey() throw() ;
 
 protected:
 
@@ -64,39 +64,35 @@ protected:
      *
      *Example of this service configuration
      * @verbatim
-       <service implementation="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
+       <service implementation="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
            <config id="IdOfExtension" />
            <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
+           <key id= "KEY" pattern = "PATIENT_TO_REPLACE_BY_KEY" />
        </service>
         @endverbatim
-      * It MUST have at least one replace node.
+      * It MUST have at least one key node and at least one replace node.
       */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
+
+private:
+
     /**
      * @brief Read the configuration and show the parameters view.
      */
-    virtual void startConfig();
+    void startConfig();
 
     /**
      * @brief Close the parameters view.
      */
-    virtual void stopConfig();
+    void stopConfig();
 
-    /// Id of plugin extension where the configuration is defined.
-    std::string m_viewConfigId;
-
-    /// to know if config is running
-    bool m_configIsRunning;
-
-    // config manager
-    ::fwServices::ConfigTemplateManager::sptr m_configTemplateManager;
     /**
-     * @brief keep the association between the PATTERN and the associated key  as fieldAdaptors[PATTERN] = AssociatedKey.
+     * @brief keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
      */
-    std::map< std::string, std::string > m_fieldAdaptors;
+    std::map< std::string, std::string > m_keyAdaptors;
 
 };
 
@@ -104,6 +100,6 @@ protected:
 } // GUI
 
 
-#endif // _GUI_ACTION_CONFIGACTIONSRV_HPP_
+#endif // _GUI_ACTION_CONFIGACTIONSRVWITHKEY_HPP_
 
 
