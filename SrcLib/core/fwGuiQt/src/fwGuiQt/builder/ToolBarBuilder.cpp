@@ -47,7 +47,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
     QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() ) ;
 
-    QToolBar *toolBar = new QToolBar(QObject::tr("ToolBar"), m_parent->getQtContainer());
+    QToolBar *toolBar = new QToolBar(QObject::tr("ToolBar"));
     toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
     toolBar->setFloatable(false);
 
@@ -58,6 +58,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
         window->addToolBar( toolBar );
 
         //on Os X, the window is hidden (???)
+        OSLM_ERROR("WINDOW:" << visible);
         window->setVisible(visible);
     }
     else // parent is not a QMainWindow
@@ -71,6 +72,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
 
     toolBarContainer->setQtToolBar(toolBar);
     m_toolBar = toolBarContainer;
+
 }
 
 //-----------------------------------------------------------------------------
