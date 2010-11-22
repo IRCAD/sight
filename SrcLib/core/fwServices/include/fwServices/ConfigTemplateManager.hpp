@@ -27,12 +27,12 @@ namespace fwServices
  * @author IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-class FWSERVICES_CLASS_API ConfigTemplateManager
+class FWSERVICES_CLASS_API ConfigTemplateManager : public fwTools::Object
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ConfigTemplateManager), (()), new ConfigTemplateManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (ConfigTemplateManager)(::fwTools::Object), (()), new ConfigTemplateManager );
 
     /// Constructor. Do nothing.
     FWSERVICES_API ConfigTemplateManager();
