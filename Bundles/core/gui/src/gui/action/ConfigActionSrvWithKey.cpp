@@ -100,16 +100,17 @@ void ConfigActionSrvWithKey::startConfig()
     std::map< std::string, std::string >::const_iterator itr;
     for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
     {
-        for(    ::fwData::Composite::Container::iterator  objectId = composite->getRefMap().begin();
-                objectId != composite->getRefMap().end();
-                ++objectId )
-        {
-            if(itr->first == objectId->first)
-            {
-                finalMap[itr->second] = itr->second;
-            }
-        }
+        std::string key = itr->second;
+        std::string fwID = (*composite)[key]->getID() ;
+        finalMap[itr->first] = fwID;
     }
+
+    // Generate generic UID
+    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID() );
+
+    // Init manager
+    finalMap["GENERIC_UID"] = genericUidAdaptor;
+
     // Init manager
     m_configTemplateManager = ::fwServices::ConfigTemplateManager::New();
     m_configTemplateManager->setConfig( m_viewConfigId, "::fwServices::ServiceObjectConfig" );

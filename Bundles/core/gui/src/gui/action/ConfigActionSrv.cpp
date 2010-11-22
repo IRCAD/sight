@@ -72,7 +72,7 @@ void ConfigActionSrv::configuring() throw(fwTools::Failed)
     SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
 
     std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
-    SLM_ASSERT("::gui::action::ConfigActionSrv must have at least  one tag <replace>", !replaceTagsConfig.empty());
+//    SLM_ASSERT("::gui::action::ConfigActionSrv must have at least  one tag <replace>", !replaceTagsConfig.empty());
     std::string adaptor("");
     std::string pattern("");
     BOOST_FOREACH( ConfigurationType replaceItem, replaceTagsConfig)
@@ -121,11 +121,11 @@ void ConfigActionSrv::info( std::ostream &_sstream )
 
 void ConfigActionSrv::startConfig()
 {
-
     // Generate generic UID
     std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID() );
 
     // Init manager
+    m_fieldAdaptors["GENERIC_UID"] = genericUidAdaptor;
     m_configTemplateManager = ::fwServices::ConfigTemplateManager::New();
     m_configTemplateManager->setConfig( m_viewConfigId, "::fwServices::ServiceObjectConfig" );
     m_configTemplateManager->setFieldAdaptors( m_fieldAdaptors );
