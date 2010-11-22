@@ -43,13 +43,6 @@ protected:
 
     void setVtkClippingPlanes(vtkPlaneCollection *planes);
 
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-    bool hasAlpha();
-
-    vtkDepthSortPolyData *m_depthSort;
-    bool m_hasAlpha;
-#endif
-
     void setNormalsFeatureAngle(double angle){ m_normalsFeatureAngle = angle; }
 
 protected:

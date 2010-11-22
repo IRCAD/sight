@@ -86,9 +86,22 @@ public:
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**
-     * @brief Starting menu registrar.
-     * All services managed in local menu items
-     * and with start="yes" in configuration will be started.
+     * @brief manages action service associated with menuItem of menu.
+     *
+     *If a menuItem has attribut start="no", the associated action won't be started and the menuItem will be disabled.
+     *If a menuItem has attribut start="yes", two possibilities: \n
+     *  - the associated action has attribut executable="false" then the menuItem will be disabled and the action isn't started.\n
+     *  - the associated action has attribut executable="true" then the menuItem will be enabled and the action is started.\n
+     *
+     * If an action manages by menuItems in a toolbar and/or in the menuBar has its attribut executable="false",
+     * the associated menuItems will be disabled in toolbar and in menuBar.
+     *
+     * If an action is managed by several menuItems in different menus and the software hasn't Toolbar, only the start
+     * value of the last menuItem of the last menu declared will be take into account.
+     *
+     * If an action is managed by a menuItem in menu and in Toolbar, only start value of the Toolbar item will be take into account.
+     * It is due to the fact that the Toolbar is initialized after the menu bar.
+     *
      * @pre MenuRegistrar must be initialized before.
      * @pre sub menu items must be instanced before.
      */
@@ -116,8 +129,8 @@ protected:
     typedef std::map< std::string, std::pair<int, bool> > SIDMenuMapType;
 
     /**
-     * @brief All menu services ID managed and associated with pair containing:
-     * action's index vector and boolean describing if is started by the manager.
+     * @brief All menu services ID (sid) managed is associated with pair containing:
+     * an action's position in the menu and boolean describing if is started by the manager.
      */
     SIDMenuMapType m_actionSids;
 

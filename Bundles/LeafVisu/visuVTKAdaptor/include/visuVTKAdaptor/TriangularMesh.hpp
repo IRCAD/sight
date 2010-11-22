@@ -11,16 +11,17 @@
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
 
 class vtkCommand;
 class vtkDepthSortPolyData;
+class vtkAlgorithm;
 class vtkAlgorithmOutput;
 class vtkPolyDataNormals;
 class vtkPlaneCollection;
 class vtkActorCollection;
 class vtkActor;
 class vtkPolyData;
+class vtkPolyDataMapper;
 
 namespace visuVTKAdaptor
 {
@@ -60,12 +61,6 @@ public:
 
     VISUVTKADAPTOR_API void updateOptionsMode();
 
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-    VISUVTKADAPTOR_API vtkDepthSortPolyData * getDepthSort();
-    VISUVTKADAPTOR_API void updateDepthSort               ();
-    VISUVTKADAPTOR_API void removeDepthSortCommand        ();
-#endif
-
 protected:
 
    VISUVTKADAPTOR_API void doStart    () throw(fwTools::Failed);
@@ -80,6 +75,7 @@ protected:
     void buildPipeline();
 
 
+    void updateMapper();
     void updateTriangularMesh ( ::fwData::TriangularMesh::sptr mesh );
     void updateMaterial       ( ::fwData::Material::sptr material   );
 
@@ -103,7 +99,13 @@ protected:
     bool   m_manageMapperInput;
     bool   m_autoResetCamera;
 
+    bool m_computeNormals;
+    bool m_computeNormalsAtUpdate;
+
+    vtkAlgorithm       *m_pipelineInput;
     vtkAlgorithmOutput *m_mapperInput;
+    vtkPolyData        *m_polyData;
+    vtkPolyDataMapper  *m_mapper;
     vtkPolyDataNormals *m_normals;
     vtkActor           *m_actor;
     vtkCommand         *m_depthSortCommand;
@@ -124,13 +126,6 @@ protected:
     ::fwRenderVTK::IVtkAdaptorService::wptr m_unclippedPartMaterialService;
     ::fwRenderVTK::IVtkAdaptorService::wptr m_normalsService;
 
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-    bool hasAlpha();
-
-    vtkDepthSortPolyData *m_depthSort;
-    bool m_hasAlpha;
-#endif
 
 public :
 

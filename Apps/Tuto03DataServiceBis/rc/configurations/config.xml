@@ -5,7 +5,7 @@
     <object type="::fwData::TriangularMesh">
 
 
-        <!-- Graphical user interface manager. The identifier (id) of the container is 900, it's a wxWidgets id.
+        <!-- Graphical user interface manager.
         In the tag <menus> we specify the identifiers of different services for the different menus.
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
@@ -81,7 +81,7 @@
 
         <!-- This service (::vtkSimpleMesh::RendererService) is a 3D visualization service of medical meshes. -->
         <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" >
-            <win guiContainerId="900"/>
+            <!--<win guiContainerId="900"/>-->
         </service>
 
         <start type="::fwGui::IFrameSrv" />

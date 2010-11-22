@@ -84,9 +84,16 @@ public:
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**
-     * @brief Starting toolBar registrar.
-     * All services managed in local toolBar items
-     * and with start="yes" in configuration will be started.
+     * @brief manages action service associated with menuItem of toolbar.
+     *
+     * If the action manages by the menuItems has its attribut executable="false", the associated menuItems will be disabled.
+     * In ohter words, the start value is take into account only when executable attribut is setted to true in managed action
+     *
+     * If an action is managed by a menuItem in menu and in Toolbar, only start value of the Toolbar item will be take into account.
+     * It is due to the fact that the Toolbar is initialized after the menu bar.
+     *
+     * @see ::fwGui::registrar::MenuRegistrar for more information on interaction between menubar and toolbar.
+     *
      * @pre ToolBarRegistrar must be initialized before.
      * @pre sub toolBar items must be instanced before.
      */

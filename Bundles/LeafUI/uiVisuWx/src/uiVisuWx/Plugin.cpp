@@ -18,8 +18,7 @@ Plugin::~Plugin() throw()
 {}
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
-{
-}
+{}
 
 void Plugin::stop() throw()
 {}
