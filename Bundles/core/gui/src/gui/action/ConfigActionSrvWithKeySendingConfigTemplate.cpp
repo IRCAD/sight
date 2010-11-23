@@ -148,7 +148,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 {
     //AddGenericUidToFieldApadtor();
     // Generate generic UID
-    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID() );
+    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID(), true);
     // Init manager
     m_fieldAdaptors["GENERIC_UID"] = genericUidAdaptor;
 
@@ -172,16 +172,14 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     configTemplateManager->setFieldAdaptors( finalMap );
 
 
-    ::fwData::String::sptr fwstr = ::fwData::String::New();
-    fwstr->value() = "see in my field for a ::fwServices::ServiceObjectConfig (objectMsg only manage fwData :/)";
     std::string fieldID = "::fwServices::ServiceObjectConfig";
-    fwstr->setFieldSingleElement( fieldID ,configTemplateManager);
 
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
-    msg->addEvent("NEW_SERVICEOBJECTCONFIG",fwstr);
+    msg->addEvent("NEW_CONFIGURATION_HELPER");
+    msg->setFieldSingleElement( fieldID ,configTemplateManager);
 
 
-
+    ::fwServices::IEditionService::notify(this->getSptr(), composite, msg);
 }
 
 
