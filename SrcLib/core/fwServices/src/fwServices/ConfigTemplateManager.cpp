@@ -56,6 +56,14 @@ void ConfigTemplateManager::setFieldAdaptors( const std::map< std::string, std::
 
 //-----------------------------------------------------------------------------
 
+void ConfigTemplateManager::addField( std::string _pattern, std::string _value )
+{
+    m_fieldAdaptors[_pattern] = _value;
+}
+
+
+//-----------------------------------------------------------------------------
+
 ::fwTools::Object::sptr ConfigTemplateManager::getConfigRoot() const{
 
     return m_configRoot;

@@ -47,6 +47,9 @@ public:
     FWSERVICES_API void setConfig( const std::string & _configName, const std::string & _configType );
 
     /// Set field adaptors
+    FWSERVICES_API void addField( std::string _pattern, std::string _value );
+
+    /// Set field adaptors
     FWSERVICES_API void setFieldAdaptors( const std::map< std::string, std::string > & _fieldAdaptors );
 
     /// Get config root
