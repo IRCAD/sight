@@ -178,7 +178,8 @@ void ServiceFactoryRegistry::parseBundleInformation()
     }
 
     //Print information
-    //printInfoMap( m_srvImplTosrvInfo );
+    printInfoMap( m_srvImplTosrvInfo );
+    checkServicesNotDeclaredInPluginXml();
 }
 
 //-----------------------------------------------------------------------------
@@ -202,6 +203,8 @@ IService::sptr ServiceFactoryRegistry::create( const std::string & _srvType, con
         SLM_ASSERT( "Sorry after bundle loading ( " << info->bundle->getIdentifier() << " ) , factory must exist.", info->factory );
         return info->factory->create();
     }
+
+    checkServicesNotDeclaredInPluginXml();
 }
 
 //-----------------------------------------------------------------------------
@@ -265,6 +268,22 @@ void ServiceFactoryRegistry::printInfoMap( const SrvRegContainer & src )
 
         OSLM_DEBUG_IF("  - name after creation = " <<  iter->second->factory->create()->getClassname(), iter->second->factory );
         OSLM_DEBUG_IF("  - name after creation = ( no factory registered )", ! iter->second->factory );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ServiceFactoryRegistry::checkServicesNotDeclaredInPluginXml()
+{
+    //Print information
+    for (   SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.begin();
+            iter != m_srvImplTosrvInfo.end();
+            ++iter )
+    {
+        if ( ! iter->second->bundle )
+        {
+            OSLM_WARN("Service " << iter->first << " is not declared/found in a plugin.xml." );
+        }
     }
 }
 

@@ -17,6 +17,8 @@
 
 #include "fwServices/config.hpp"
 
+#include "fwServices/IService.hpp"
+
 namespace fwServices
 {
 
@@ -78,6 +80,28 @@ public:
     FWSERVICES_API static std::string getUniqueIdentifier( std::string _serviceUid = "", bool _useCpt = false );
 
 private:
+
+    ::fwTools::Object::sptr newObject( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+    void addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _obj, ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+    std::vector< ::fwServices::IService::wptr > m_createdServices;
+
+    ::fwTools::Object::sptr createNewObject( bool _hasAttributeType,
+                                             const std::string & _type,
+                                             bool _hasAttributeUid,
+                                             const std::string & _uid,
+                                             bool _hasAttributeId,
+                                             const std::string & _id );
+
+    ::fwTools::Object::sptr getAlreadyDefinedObject(
+            const std::string & _uid,
+            bool _hasAttributeType,
+            const std::string & _type,
+            bool _hasAttributeId,
+            const std::string & _id );
+
+    ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+    ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string uid="");
+
 
     typedef enum { CONFIG_IS_CREATED,
                    CONFIG_IS_STARTED,
