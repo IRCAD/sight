@@ -159,11 +159,26 @@ PointList::WeakPointListType PointList::getNewPoints()
 {
     WeakPointListType newPoints;
 
-    std::set_difference (
-            m_weakPointList.begin(), m_weakPointList.end(),
-            m_oldWeakPointList.begin(), m_oldWeakPointList.end(),
-            std::back_inserter(newPoints)
-            );
+//    std::set_difference (
+//            m_weakPointList.begin(), m_weakPointList.end(),
+//            m_oldWeakPointList.begin(), m_oldWeakPointList.end(),
+//            std::back_inserter(newPoints)
+//            );
+    bool isFound;
+    BOOST_FOREACH(::fwData::Point::wptr point, m_weakPointList)
+    {
+        isFound = false;
+        BOOST_FOREACH(::fwData::Point::wptr oldPoint, m_oldWeakPointList)
+        {
+            isFound = (point.lock() == oldPoint.lock());
+            if(isFound)
+                break;
+        }
+        if(!isFound)
+        {
+            newPoints.push_back(point);
+        }
+    }
     return newPoints;
 }
 
