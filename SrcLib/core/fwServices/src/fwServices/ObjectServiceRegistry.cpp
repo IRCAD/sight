@@ -61,10 +61,10 @@ ObjectServiceRegistry::~ObjectServiceRegistry()
 
 //------------------------------------------------------------------------------
 
-void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
-{
-    getDefault()->m_rootObject = obj;
-}
+//void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
+//{
+//    getDefault()->m_rootObject = obj;
+//}
 
 //------------------------------------------------------------------------------
 
@@ -86,15 +86,16 @@ void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObje
 
 ::fwTools::Object::sptr ObjectServiceRegistry::getRootObject()
 {
-    return getDefault()->m_rootObject ;
+    //return getDefault()->m_rootObject ;
+    return getDefault()->m_ctm->getConfigRoot();
 }
 
-//------------------------------------------------------------------------------
-
-bool ObjectServiceRegistry::isRootObjectConfigurationValid()
-{
-    return ::fwServices::validation::checkObject( getDefault()->m_rootObjectConfiguration ) ;
-}
+////------------------------------------------------------------------------------
+//
+//bool ObjectServiceRegistry::isRootObjectConfigurationValid()
+//{
+//    return ::fwServices::validation::checkObject( getDefault()->m_rootObjectConfiguration ) ;
+//}
 
 //------------------------------------------------------------------------------
 
@@ -117,28 +118,37 @@ void ObjectServiceRegistry::initializeRootObject()
     configBundle->setEnable( true );
 
 
-    // Research the config extension
-    bool extensionIsFound = false;
-    std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( CONFIG_EXTENSION_POINT ) ;
-    for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
-            iter != extensions.end() ;
-            ++iter )
-    {
-        if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
-        {
-            getDefault()->m_rootObjectConfiguration = *((*iter)->begin()) ;
-            extensionIsFound = true;
-        }
-    }
+//    // Research the config extension
+//    bool extensionIsFound = false;
+//    std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( CONFIG_EXTENSION_POINT ) ;
+//    for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
+//            iter != extensions.end() ;
+//            ++iter )
+//    {
+//        if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
+//        {
+//            getDefault()->m_rootObjectConfiguration = *((*iter)->begin()) ;
+//            extensionIsFound = true;
+//        }
+//    }
 
-    OSLM_ASSERT("Sorry, extension "<< getDefault()->m_rootObjectConfigurationName.second <<" (that contains the configuration of the App) is not found. This extension must exist and must implements extension-point " << CONFIG_EXTENSION_POINT, extensionIsFound );
 
-    SLM_ASSERT("Sorry, the xml that describes extension "<< getDefault()->m_rootObjectConfigurationName.second <<" is not valid.", getDefault()->isRootObjectConfigurationValid() );
 
-    getDefault()->m_rootObject = ::fwServices::New(getDefault()->m_rootObjectConfiguration);
-    ::fwServices::start(getDefault()->m_rootObjectConfiguration) ;
-    ::fwServices::update(getDefault()->m_rootObjectConfiguration) ;
-    getDefault()->m_isRootInitialized = true ;
+    //OSLM_ASSERT("Sorry, extension "<< getDefault()->m_rootObjectConfigurationName.second <<" (that contains the configuration of the App) is not found. This extension must exist and must implements extension-point " << CONFIG_EXTENSION_POINT, extensionIsFound );
+
+    //SLM_ASSERT("Sorry, the xml that describes extension "<< getDefault()->m_rootObjectConfigurationName.second <<" is not valid.", getDefault()->isRootObjectConfigurationValid() );
+
+    getDefault()->m_ctm = ConfigTemplateManager::New();
+    getDefault()->m_ctm->setConfig( getDefault()->m_rootObjectConfigurationName.second, CONFIG_EXTENSION_POINT );
+    getDefault()->m_ctm->launch();
+    getDefault()->m_isRootInitialized = true;
+
+
+
+//    getDefault()->m_rootObject = ::fwServices::New(getDefault()->m_rootObjectConfiguration);
+//    ::fwServices::start(getDefault()->m_rootObjectConfiguration) ;
+//    ::fwServices::update(getDefault()->m_rootObjectConfiguration) ;
+//    getDefault()->m_isRootInitialized = true ;
 }
 
 //------------------------------------------------------------------------------
@@ -151,21 +161,25 @@ void ObjectServiceRegistry::uninitializeRootObject()
     {
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
         // Stop services reported in m_rootObjectConfiguration before stopping everything
-        ::fwServices::stopAndUnregister(getDefault()->m_rootObjectConfiguration) ;
+
+        //::fwServices::stopAndUnregister(getDefault()->m_rootObjectConfiguration) ;
+        getDefault()->m_ctm->stopAndDestroy();
 
         OSLM_WARN_IF("Sorry, few services still exist before erasing root object ( cf debug following message )" << std::endl << ::fwServices::OSR::getRegistryInformation(),
                 getDefault()->m_container.size() != 1 || getDefault()->m_container.begin()->second.size() != 0 );
 
         // Unregister root object services
-        ::fwServices::OSR::unregisterServices(getDefault()->m_rootObject);
+        //::fwServices::OSR::unregisterServices( getDefault()->m_ctm->getConfigRoot() );
 
 
         ::fwServices::GlobalEventManager::getDefault()->clearMessages();
 
         SLM_TRACE("uninitializeRootObject : Reset the last shared_ptr on root object.");
+
         // Reset the root object: involve complete m_container clearing
-        getDefault()->m_rootObject.reset();
-        assert( getDefault()->m_rootObject.use_count() == 0 );
+        //getDefault()->m_rootObject.reset();
+        //assert( getDefault()->m_rootObject.use_count() == 0 );
+
         // Setting initialization to false
         getDefault()->m_isRootInitialized = false ;
 
