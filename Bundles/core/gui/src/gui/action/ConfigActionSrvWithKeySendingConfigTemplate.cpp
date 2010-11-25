@@ -70,6 +70,9 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
     SLM_ASSERT( "Sorry, missing attribute id in <config> xml element.", configElement->hasAttribute("id") );
     m_viewConfigId = configElement->getExistingAttributeValue("id");
 
+    SLM_ASSERT( "Sorry, missing attribute title in <config> xml element.", configElement->hasAttribute("title") );
+    m_viewConfigTitle = configElement->getExistingAttributeValue("title");
+
     SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
 
     std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
@@ -175,7 +178,11 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     std::string fieldID = "::fwServices::ServiceObjectConfig";
 
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
-    msg->addEvent("NEW_CONFIGURATION_HELPER");
+
+    ::fwData::String::NewSptr title;
+    title->value() = m_viewConfigTitle;
+
+    msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
     msg->setFieldSingleElement( fieldID ,configTemplateManager);
 
 
