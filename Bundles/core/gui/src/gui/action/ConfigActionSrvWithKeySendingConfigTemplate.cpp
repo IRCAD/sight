@@ -19,20 +19,20 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySend
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfigTemplate() throw()
-{
+        {
     addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
     addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
-}
+        }
 
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKeySendingConfigTemplate::~ConfigActionSrvWithKeySendingConfigTemplate() throw()
-{}
+        {}
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::starting() throw(::fwTools::Failed)
-{
+        {
     SLM_TRACE_FUNC();
 
     actionServiceStarting();
@@ -41,23 +41,23 @@ void ConfigActionSrvWithKeySendingConfigTemplate::starting() throw(::fwTools::Fa
     std::map< std::string, std::string >::const_iterator itr;
     for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
     {
-       executable &= (composite->find(itr->second)!= composite->end());
+        executable &= (composite->find(itr->second)!= composite->end());
     }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
-}
+        }
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::stopping() throw(::fwTools::Failed)
-{
+        {
     SLM_TRACE_FUNC();
     actionServiceStopping();
-}
+        }
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::Failed)
-{
+        {
     SLM_TRACE_FUNC();
 
     this->::fwGui::IActionSrv::initialize();
@@ -76,7 +76,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
     SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
 
     std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
-//    SLM_ASSERT("::gui::action::ConfigActionSrv must have at least  one tag <replace>", !replaceTagsConfig.empty());
+    //    SLM_ASSERT("::gui::action::ConfigActionSrv must have at least  one tag <replace>", !replaceTagsConfig.empty());
     std::string adaptor("");
     std::string pattern("");
     BOOST_FOREACH( ConfigurationType replaceItem, replaceTagsConfig)
@@ -103,20 +103,20 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
             m_keyAdaptors[pattern] = adaptor;
         }
     }
-}
+        }
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::updating() throw(::fwTools::Failed)
-{
+        {
     //this->::gui::action::ConfigActionSrv::updating();
     sendConfig();
-}
+        }
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
+        {
     //this->::gui::action::ConfigActionSrv::updating(_msg);
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     bool executable = true;
@@ -137,7 +137,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::Object
         }
     }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
-}
+        }
 
 //------------------------------------------------------------------------------
 
@@ -164,8 +164,16 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
     {
         std::string key = itr->second;
-        std::string fwID = (*composite)[key]->getID() ;
-        finalMap[itr->first] = fwID;
+        if ( key == "self" )
+        {
+            std::string fwID = composite->getID();
+            finalMap[itr->first] = fwID;
+        }
+        else
+        {
+            std::string fwID = (*composite)[key]->getID() ;
+            finalMap[itr->first] = fwID;
+        }
     }
 
     // Init manager
