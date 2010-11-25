@@ -96,13 +96,14 @@ void FrameLayoutManager::createFrame()
 
 void FrameLayoutManager::destroyFrame()
 {
+
     this->getRefFrameInfo().m_state = this->getState();
     this->getRefFrameInfo().m_size.first = m_qtWindow->size().width();
     this->getRefFrameInfo().m_size.second = m_qtWindow->size().height();
     this->getRefFrameInfo().m_position.first = m_qtWindow->pos().x();
     this->getRefFrameInfo().m_position.second = m_qtWindow->pos().y();
     this->writeConfig();
-
+    m_qtWindow->close();
     QObject::disconnect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
 
     if (m_qtWindow->layout())
