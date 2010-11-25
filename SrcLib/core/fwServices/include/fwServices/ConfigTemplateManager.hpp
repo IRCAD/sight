@@ -88,6 +88,12 @@ public:
     /// Create an unique identifier
     FWSERVICES_API static std::string getUniqueIdentifier( std::string _serviceUid = "", bool _useCpt = false );
 
+    /// Return state
+    FWSERVICES_API bool isCreated()  { return m_state == CONFIG_IS_CREATED;}
+    FWSERVICES_API bool isStarted()  { return m_state == CONFIG_IS_STARTED;}
+    FWSERVICES_API bool isStopped()  { return m_state == CONFIG_IS_STOPPED;}
+    FWSERVICES_API bool isDestroyed(){ return m_state == CONFIG_IS_DESTROYED;}
+
 private:
 
     ::fwTools::Object::sptr newObject( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
