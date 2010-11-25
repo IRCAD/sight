@@ -85,6 +85,30 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
         }
         index++;
     }
+
+    index = 0;
+    // initialize m_actionSids map with configuration
+    std::vector < ConfigurationType > vectMenus = configuration->find("menu");
+    BOOST_FOREACH( ConfigurationType menu, vectMenus)
+    {
+        SLM_ASSERT("<menu> tag must have sid attribute", menu->hasAttribute("sid"));
+        if(menu->hasAttribute("sid"))
+        {
+            bool start = false;
+            if(menu->hasAttribute("start"))
+            {
+                std::string startValue = menu->getAttributeValue("start");
+                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
+                        startValue == "yes" || startValue == "no");
+                start = (startValue=="yes");
+            }
+            std::string sid = menu->getAttributeValue("sid");
+            std::pair<int, bool> indexStart =  std::make_pair( index, start);
+            OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_actionSids.find(sid) == m_actionSids.end());
+            m_menuSids[sid] = indexStart;
+        }
+        index++;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -111,6 +135,26 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > m
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
             }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus )
+{
+    ::fwGui::container::fwMenu::sptr menu;
+    BOOST_FOREACH( SIDMenuMapType::value_type sid, m_menuSids)
+    {
+        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < menus.size());
+        menu = menus.at( sid.second.first );
+        ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
+        if(sid.second.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
+            service->start();
         }
     }
 }

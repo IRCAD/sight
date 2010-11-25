@@ -20,6 +20,7 @@
 
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
+#include "fwGui/container/fwMenu.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/config.hpp"
 
@@ -53,7 +54,9 @@ public:
                 m_icon(""),
                 m_isSeparator(false),
                 m_isCheckable (false),
-                m_isRadio(false)
+                m_isRadio(false),
+                m_isMenu(false),
+                m_size(0)
             {}
 
             std::string m_name;
@@ -61,6 +64,8 @@ public:
             bool        m_isCheckable;
             bool        m_isRadio;
             bool        m_isSeparator;
+            bool        m_isMenu;
+            int         m_size;
          };
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
@@ -75,6 +80,11 @@ public:
      * @brief Returns the vector of fwMenuItem managed by this layout.
      */
     FWGUI_API virtual std::vector< ::fwGui::container::fwMenuItem::sptr > getMenuItems();
+
+    /**
+     * @brief Returns the vector of fwMenu managed by this layout.
+     */
+    FWGUI_API virtual std::vector< ::fwGui::container::fwMenu::sptr > getMenus();
 
     /**
      * @brief Initialize layout managers.
@@ -151,6 +161,9 @@ protected:
 
     /// All actions managed by this layout.
     std::vector< ::fwGui::container::fwMenuItem::sptr > m_menuItems;
+
+    /// All actions managed by this layout.
+    std::vector< ::fwGui::container::fwMenu::sptr > m_menus;
 
     /// Save action informations from configuration.
     std::vector< ActionInfo > m_actionInfo;

@@ -11,6 +11,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
 #include "fwGui/config.hpp"
@@ -99,6 +100,8 @@ public:
      */
     FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenuItem::sptr > toolBarItems );
 
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenu::sptr > toolBarItems );
+
     /**
      * @brief Stopping toolBar items manager.
      * All services managed in local toolBar items will be stopped.
@@ -125,6 +128,12 @@ protected:
      * action's index vector and boolean describing if is started by the manager.
      */
     SIDToolBarMapType m_actionSids;
+
+    /**
+     * @brief All toolBar services ID managed and associated with pair containing:
+     * action's index vector and boolean describing if is started by the manager.
+     */
+    SIDToolBarMapType m_menuSids;
 
     /// Main service ID associate with this ToolBarRegistrar
     std::string m_sid;

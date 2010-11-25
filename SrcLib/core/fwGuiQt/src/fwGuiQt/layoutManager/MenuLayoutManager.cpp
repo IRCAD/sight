@@ -94,9 +94,18 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
             action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
         }
 
+        if (actionInfo.m_isMenu)
+        {
+            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            QMenu* qtMenu = new QMenu();
+            menu->setQtMenu(qtMenu);
+            action->setMenu(qtMenu);
+            m_menus.push_back(menu);
+        }
+
         menuItem->setQtMenuItem(action);
 
-        if(!actionInfo.m_isSeparator)
+        if(!actionInfo.m_isSeparator && !actionInfo.m_isMenu )
         {
             m_menuItems.push_back(menuItem);
             OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
