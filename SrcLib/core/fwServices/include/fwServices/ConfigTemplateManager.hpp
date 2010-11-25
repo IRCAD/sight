@@ -48,6 +48,9 @@ public:
     /// Set config param
     FWSERVICES_API void setConfig( const std::string & _configName, const std::string & _configType );
 
+    /// Set config param
+    FWSERVICES_API void setConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem );
+
     /// Set field adaptors
     FWSERVICES_API void addField( std::string _pattern, std::string _value );
 
@@ -72,6 +75,12 @@ public:
 
     /// Calls methods : create, start then update.
     FWSERVICES_API void launch();
+
+    /// Stops services specified in config
+    FWSERVICES_API void stop();
+
+    /// Destroys services specified in config
+    FWSERVICES_API void destroy();
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
     FWSERVICES_API void stopAndDestroy();
@@ -106,6 +115,7 @@ private:
     typedef enum { CONFIG_IS_CREATED,
                    CONFIG_IS_STARTED,
                    CONFIG_IS_STOPPED,
+                   CONFIG_IS_DESTROYED,
     } ConfigManagementState;
 
     /// Adapts the configuration : replace field thanks to field adaptors
@@ -130,6 +140,9 @@ private:
     ::fwRuntime::ConfigurationElement::sptr m_adaptedConfig;
 
     ConfigManagementState m_state;
+
+
+    void start( ::fwRuntime::ConfigurationElement::sptr _elt );
 };
 
 }

@@ -167,7 +167,7 @@ void ServiceFactoryRegistry::parseBundleInformation()
             ServiceFactoryInfo::sptr infoBundle = iterBundle->second;
             SLM_ASSERT("Try to add bundle, but bundle exists.", ! info->bundle );
             SLM_ASSERT("Try to add bundle, but this srv is already register and has not the same srv type.", infoBundle->serviceType == info->serviceType );
-            SLM_ASSERT("Try to add bundle, but this srv is already register and has not the same oimpl.", infoBundle->objectImpl == info->objectImpl );
+            SLM_ASSERT("Try to add bundle, but this srv (" << iterBundle->first << ")is already register and has not the same oimpl. ( "<< infoBundle->objectImpl <<" != "<< info->objectImpl <<" )", infoBundle->objectImpl == info->objectImpl );
             info->bundle =  infoBundle->bundle;
         }
         else
