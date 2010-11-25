@@ -8,6 +8,7 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QLayout>
+#include <QDesktopWidget>
 
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -73,8 +74,25 @@ void FrameLayoutManager::createFrame()
         m_qtWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
     }
 
-    m_qtWindow->move( frameInfo.m_position.first, frameInfo.m_position.second );
-    m_qtWindow->resize( frameInfo.m_size.first, frameInfo.m_size.second );
+    int sizeX = frameInfo.m_size.first;
+    int sizeY = frameInfo.m_size.second;
+    if (sizeX > 0 && sizeY > 0)
+    {
+        m_qtWindow->resize( sizeX, sizeY );
+    }
+
+    int posX = frameInfo.m_position.first;
+    int posY = frameInfo.m_position.second;
+
+    if (posX < 0 && posY < 0)
+    {
+        QRect frect = m_qtWindow->frameGeometry();
+        frect.moveCenter(QDesktopWidget().availableGeometry().center());
+        posX = frect.x();
+        posY = frect.y();
+    }
+    m_qtWindow->move( posX, posY );
+
     this->setState(frameInfo.m_state);
 
     m_qtWindow->show();
