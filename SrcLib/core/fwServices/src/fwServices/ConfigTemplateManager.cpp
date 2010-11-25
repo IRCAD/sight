@@ -26,7 +26,7 @@ namespace fwServices
 ConfigTemplateManager::ConfigTemplateManager() :
                                             m_configName(""),
                                             m_configType(""),
-                                            m_state ( CONFIG_IS_STOPPED )
+                                            m_state ( CONFIG_IS_DESTROYED )
 {}
 
 //-----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ ConfigTemplateManager::ConfigTemplateManager( const std::string & _configName, c
 
 ConfigTemplateManager::~ConfigTemplateManager()
 {
-    SLM_ASSERT("Sorry, you must stop the manager first before destroying it.", m_state == CONFIG_IS_STOPPED );
+    SLM_ASSERT("Sorry, you must stop the manager first before destroying it.", m_state == CONFIG_IS_DESTROYED );
 }
 
 //-----------------------------------------------------------------------------
@@ -50,6 +50,16 @@ void ConfigTemplateManager::setConfig( const std::string & _configName, const st
 {
     m_configName = _configName;
     m_configType = _configType;
+
+    // Load config
+    loadConfig();
+}
+
+//-----------------------------------------------------------------------------
+
+void ConfigTemplateManager::setConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem )
+{
+    m_configTemplate = _cfgElem;
 }
 
 //-----------------------------------------------------------------------------
@@ -78,10 +88,7 @@ void ConfigTemplateManager::addField( std::string _pattern, std::string _value )
 
 void ConfigTemplateManager::create()
 {
-    SLM_ASSERT("Sorry, manager is already running and you try creating config.", m_state == CONFIG_IS_STOPPED );
-
-    // Load config
-    loadConfig();
+    SLM_ASSERT("Sorry, manager is already running and you try creating config.", m_state == CONFIG_IS_DESTROYED );
 
     // Adapt config
     m_adaptedConfig = adaptConfig( m_configTemplate );
@@ -105,7 +112,7 @@ void ConfigTemplateManager::start()
 {
     SLM_ASSERT("Sorry, manager is not created and you try starting it.", m_state == CONFIG_IS_CREATED );
 
-    ::fwServices::start( m_adaptedConfig ) ;
+    this->start( m_adaptedConfig ) ;
 
     m_state = CONFIG_IS_STARTED;
 }
@@ -128,14 +135,19 @@ void ConfigTemplateManager::launch()
 
 //-----------------------------------------------------------------------------
 
-void ConfigTemplateManager::stopAndDestroy()
+void ConfigTemplateManager::stop()
 {
     SLM_ASSERT("Sorry, manager is not started and you try stopping it.", m_state == CONFIG_IS_STARTED );
-
     ::fwServices::stop( m_adaptedConfig ) ;
+    m_state = CONFIG_IS_STOPPED;
+    SLM_INFO( ::fwServices::OSR::getRegistryInformation() );
+}
 
-    SLM_WARN( ::fwServices::OSR::getRegistryInformation() );
+//-----------------------------------------------------------------------------
 
+void ConfigTemplateManager::destroy()
+{
+    SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED );
 #ifdef USE_SRVFAC
 
     ::fwServices::stopAndUnregister( m_adaptedConfig ) ;
@@ -154,14 +166,21 @@ void ConfigTemplateManager::stopAndDestroy()
     ::fwServices::stopAndUnregister( m_adaptedConfig ) ;
 #endif
 
-
-    SLM_WARN( ::fwServices::OSR::getRegistryInformation() );
+    SLM_INFO( ::fwServices::OSR::getRegistryInformation() );
 
     m_adaptedConfig.reset();
     m_configTemplate.reset();
     m_configRoot.reset();
 
-    m_state = CONFIG_IS_STOPPED;
+    m_state = CONFIG_IS_DESTROYED;
+}
+
+//-----------------------------------------------------------------------------
+
+void ConfigTemplateManager::stopAndDestroy()
+{
+    stop();
+    destroy();
 }
 
 //-----------------------------------------------------------------------------
@@ -547,6 +566,37 @@ void ConfigTemplateManager::addServicesToObjectFromCfgElem( ::fwTools::Object::s
     }
 
     return srv;
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigTemplateManager::start( ::fwRuntime::ConfigurationElement::sptr _elt )
+{
+    for( ::fwRuntime::ConfigurationElementContainer::Iterator iter = _elt->begin() ; iter != _elt->end() ; ++iter )
+    {
+        if( (*iter)->getName() == "start" )
+        {
+            SLM_ERROR_IF("Sorry the attribute \"type\" for element start is deprecated. You must specify the service uid that you want start.", (*iter)->hasAttribute("type") );
+            if ( (*iter)->hasAttribute("type") )
+            {
+                std::string serviceTypeToStart = (*iter)->getExistingAttributeValue("type") ;
+                std::vector< ::fwServices::IService::sptr > servicesToStart = getServices( serviceTypeToStart );
+                OSLM_FATAL_IF("Configuration : element " << serviceTypeToStart << " not found", servicesToStart.empty() );
+                std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStart.begin() ;
+                for( ; iter != servicesToStart.end() ; ++iter )
+                {
+                    (*iter)->start();
+                }
+            }
+            else
+            {
+                SLM_ASSERT("Sorry, the attribute start is required for element start.", (*iter)->hasAttribute("uid") );
+                std::string uid = (*iter)->getExistingAttributeValue("uid") ;
+                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
+                ::fwServices::get(uid)->start() ;
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
