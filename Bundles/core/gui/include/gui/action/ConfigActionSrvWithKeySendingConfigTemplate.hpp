@@ -84,6 +84,10 @@ private:
 
     /// Id of plugin extension where the configuration is defined.
     std::string m_viewConfigId;
+
+    /// Title of the future tab created by this action
+    std::string m_viewConfigTitle;
+
     /**
      * @brief keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
      */
