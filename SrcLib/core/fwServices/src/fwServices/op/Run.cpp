@@ -89,7 +89,7 @@ void stop( ::fwRuntime::ConfigurationElement::sptr _elt)
             {
                 std::string serviceTypeToStop = (*iter)->getExistingAttributeValue("type") ;
                 std::vector< ::fwServices::IService::sptr > servicesToStop = getServices( serviceTypeToStop ) ;
-                OSLM_FATAL_IF("Configuration : element " << serviceTypeToStop << " not found", servicesToStop.empty() );
+                OSLM_FATAL_IF("No found service of type " << serviceTypeToStop << " to stop it.", servicesToStop.empty() );
                 std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStop.begin() ;
                 for( ; iter != servicesToStop.end() ; ++iter )
                 {
@@ -117,7 +117,7 @@ void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _elt)
             {
                 std::string serviceTypeToStop = (*iter)->getExistingAttributeValue("type") ;
                 std::vector< ::fwServices::IService::sptr > servicesToStop = getServices( serviceTypeToStop ) ;
-                OSLM_FATAL_IF("Configuration : element " << serviceTypeToStop << " not found", servicesToStop.empty() );
+                OSLM_FATAL_IF("No found service of type " << serviceTypeToStop << " to stop it.", servicesToStop.empty() );
                 std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStop.begin() ;
                 for( ; iter != servicesToStop.end() ; ++iter )
                 {

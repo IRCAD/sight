@@ -159,6 +159,9 @@ void ObjectServiceRegistry::uninitializeRootObject()
     SLM_WARN_IF("(Hack) Sorry, the OSR must be initialized to uninitialize it. ToDo => transform in assert", ! getDefault()->m_isRootInitialized );
     if ( getDefault()->m_isRootInitialized )
     {
+        // Setting initialization to false
+        getDefault()->m_isRootInitialized = false ;
+
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
         // Stop services reported in m_rootObjectConfiguration before stopping everything
 
@@ -179,9 +182,6 @@ void ObjectServiceRegistry::uninitializeRootObject()
         // Reset the root object: involve complete m_container clearing
         //getDefault()->m_rootObject.reset();
         //assert( getDefault()->m_rootObject.use_count() == 0 );
-
-        // Setting initialization to false
-        getDefault()->m_isRootInitialized = false ;
 
         // Clear all factories before stop application.
         ::fwTools::ClassFactoryRegistry::getFactories().clear();

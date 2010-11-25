@@ -36,6 +36,7 @@ void Stopper::apply()
     OSLM_FATAL_IF("Unable to stop bundle " << m_identifier << ". Not found.", bundle == 0);
     try
     {
+        OSLM_INFO("Stopping bundle : " << m_identifier);
         bundle->stop();
     }
     catch( const std::exception & e )

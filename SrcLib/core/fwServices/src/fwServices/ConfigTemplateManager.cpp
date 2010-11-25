@@ -110,7 +110,7 @@ void ConfigTemplateManager::create()
 
 void ConfigTemplateManager::start()
 {
-    SLM_ASSERT("Sorry, manager is not created and you try starting it.", m_state == CONFIG_IS_CREATED );
+    SLM_ASSERT("Sorry, manager is not created and you try starting it.", m_state == CONFIG_IS_CREATED || m_state == CONFIG_IS_STOPPED );
 
     this->start( m_adaptedConfig ) ;
 
