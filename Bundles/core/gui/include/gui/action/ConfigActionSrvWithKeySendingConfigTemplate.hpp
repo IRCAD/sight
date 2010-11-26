@@ -88,6 +88,9 @@ private:
     /// Title of the future tab created by this action
     std::string m_viewConfigTitle;
 
+    /// Specify if the config view may be closed
+    bool m_closableConfig;
+
     /**
      * @brief keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
      */

@@ -3,6 +3,7 @@
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
+#include <fwData/Boolean.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 
 #include "gui/action/ConfigActionSrvWithKeySendingConfigTemplate.hpp"
@@ -19,10 +20,11 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySend
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfigTemplate() throw()
-        {
+{
+    m_closableConfig = true;
     addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
     addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
-        }
+}
 
 //------------------------------------------------------------------------------
 
@@ -72,6 +74,8 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
 
     SLM_ASSERT( "Sorry, missing attribute title in <config> xml element.", configElement->hasAttribute("title") );
     m_viewConfigTitle = configElement->getExistingAttributeValue("title");
+
+    m_closableConfig = configElement->getAttributeValue("closable") != "no";
 
     SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
 
@@ -184,6 +188,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 
 
     std::string fieldID = "::fwServices::ServiceObjectConfig";
+    std::string closableFieldID = "closable";
 
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
 
@@ -192,6 +197,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 
     msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
     msg->setFieldSingleElement( fieldID ,configTemplateManager);
+    msg->setFieldSingleElement( closableFieldID , ::fwData::Boolean::New(m_closableConfig));
 
 
     ::fwServices::IEditionService::notify(this->getSptr(), composite, msg);
