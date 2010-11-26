@@ -92,11 +92,6 @@ void App::onExit()
     ::fwServices::OSR::uninitializeRootObject();
     QApplication::restoreOverrideCursor();
 
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
-    SLM_TRACE("Stopping Profile");
-    profile->stop();
-    SLM_TRACE("Profile Stopped");
-
     qApp->flush();
     qApp->exit(0);
 }

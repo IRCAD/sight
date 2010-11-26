@@ -17,7 +17,7 @@
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
 #include <fwRuntime/Extension.hpp>
-
+#include <fwRuntime/profile/Profile.hpp>
 
 #include "fwServices/Deleter.hpp"
 #include "fwServices/ObjectServiceRegistry.hpp"
@@ -182,6 +182,11 @@ void ObjectServiceRegistry::uninitializeRootObject()
         // Reset the root object: involve complete m_container clearing
         //getDefault()->m_rootObject.reset();
         //assert( getDefault()->m_rootObject.use_count() == 0 );
+
+        ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+        SLM_TRACE("Stopping Profile");
+        profile->stop();
+        SLM_TRACE("Profile Stopped");
 
         // Clear all factories before stop application.
         ::fwTools::ClassFactoryRegistry::getFactories().clear();
