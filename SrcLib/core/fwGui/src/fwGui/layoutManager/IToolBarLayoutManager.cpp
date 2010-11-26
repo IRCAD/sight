@@ -86,6 +86,12 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             m_actionInfo.push_back( info ) ;
         }
+        if( (*iter)->getName() == "spacer" )
+        {
+            ActionInfo info;
+            info.m_isSpacer = true;
+            m_actionInfo.push_back( info ) ;
+        }
         if( (*iter)->getName() == "menu" )
         {
             ActionInfo info;

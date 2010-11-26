@@ -53,6 +53,7 @@ public:
                 m_name(""),
                 m_icon(""),
                 m_isSeparator(false),
+                m_isSpacer(false),
                 m_isCheckable (false),
                 m_isRadio(false),
                 m_isMenu(false),
@@ -64,6 +65,7 @@ public:
             bool        m_isCheckable;
             bool        m_isRadio;
             bool        m_isSeparator;
+            bool        m_isSpacer;
             bool        m_isMenu;
             int         m_size;
          };

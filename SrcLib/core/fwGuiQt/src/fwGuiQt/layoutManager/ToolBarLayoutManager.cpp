@@ -74,6 +74,13 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             }
             actionGroup = 0;
         }
+        else if (actionInfo.m_isSpacer)
+        {
+            QWidget* spacer = new QWidget();
+            spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            toolBar->addWidget(spacer);
+            actionGroup = 0;
+        }
         else if (actionInfo.m_isMenu)
         {
             ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
