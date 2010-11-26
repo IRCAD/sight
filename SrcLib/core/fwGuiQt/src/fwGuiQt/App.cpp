@@ -71,7 +71,6 @@ App::App(int & argc, char ** argv)
     //}
 
     QObject::connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
-    QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(onExit()));
 
 //#ifdef __MACOSX__
     //ProcessSerialNumber PSN;

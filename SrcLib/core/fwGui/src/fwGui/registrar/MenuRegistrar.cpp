@@ -173,6 +173,16 @@ void MenuRegistrar::unmanage()
         }
         ::fwGui::GuiRegistry::unregisterActionSIDToParentSID(sid.first, m_sid);
     }
+    BOOST_FOREACH( SIDMenuMapType::value_type sid, m_menuSids)
+    {
+        if(sid.second.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);
+    }
 }
 
 //-----------------------------------------------------------------------------

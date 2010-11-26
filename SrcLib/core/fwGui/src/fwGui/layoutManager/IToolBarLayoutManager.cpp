@@ -121,6 +121,11 @@ void IToolBarLayoutManager::destroyActions()
         menuItem->destroyContainer();
     }
     m_menuItems.clear();
+    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    {
+        menu->destroyContainer();
+    }
+    m_menus.clear();
 }
 
 //-----------------------------------------------------------------------------
