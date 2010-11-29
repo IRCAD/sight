@@ -98,7 +98,10 @@ private:
 
     ::fwTools::Object::sptr newObject( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
     void addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _obj, ::fwRuntime::ConfigurationElement::sptr _cfgElement );
-    std::vector< ::fwServices::IService::wptr > m_createdServices;
+
+    typedef std::vector< ::fwServices::IService::wptr > ServiceContainer;
+    ServiceContainer m_createdServices;
+    ServiceContainer m_startedServices;
 
     ::fwTools::Object::sptr createNewObject( bool _hasAttributeType,
                                              const std::string & _type,

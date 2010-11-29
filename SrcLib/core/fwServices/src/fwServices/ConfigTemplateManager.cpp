@@ -138,7 +138,20 @@ void ConfigTemplateManager::launch()
 void ConfigTemplateManager::stop()
 {
     SLM_ASSERT("Sorry, manager is not started and you try stopping it.", m_state == CONFIG_IS_STARTED );
+
+#ifdef USE_SRVFAC
+    BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_startedServices )
+    {
+        SLM_ASSERT( "Sorry, CTM must stop a service, but it is expired", ! wsrv.expired());
+        ::fwServices::IService::sptr srv = wsrv.lock();
+        OSLM_ASSERT( "Sorry, CTM must stop a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already stopped", ! srv->isStopped() );
+        srv->stop();
+    }
+    m_startedServices.clear();
+#else
     ::fwServices::stop( m_adaptedConfig ) ;
+#endif
+
     m_state = CONFIG_IS_STOPPED;
     SLM_INFO( ::fwServices::OSR::getRegistryInformation() );
 }
@@ -147,7 +160,7 @@ void ConfigTemplateManager::stop()
 
 void ConfigTemplateManager::destroy()
 {
-    SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED );
+    SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
 #ifdef USE_SRVFAC
 
     ::fwServices::stopAndUnregister( m_adaptedConfig ) ;
@@ -540,6 +553,7 @@ void ConfigTemplateManager::addServicesToObjectFromCfgElem( ::fwTools::Object::s
             comChannel->setPriority(priority);
         }
         comChannel->start();
+        m_startedServices.push_back( comChannel );
     }
 
     // Recursive attachment of possibly present subservices
@@ -586,6 +600,7 @@ void ConfigTemplateManager::start( ::fwRuntime::ConfigurationElement::sptr _elt 
                 for( ; iter != servicesToStart.end() ; ++iter )
                 {
                     (*iter)->start();
+                    m_startedServices.push_back( *iter );
                 }
             }
             else
@@ -593,7 +608,9 @@ void ConfigTemplateManager::start( ::fwRuntime::ConfigurationElement::sptr _elt 
                 SLM_ASSERT("Sorry, the attribute start is required for element start.", (*iter)->hasAttribute("uid") );
                 std::string uid = (*iter)->getExistingAttributeValue("uid") ;
                 OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
-                ::fwServices::get(uid)->start() ;
+                ::fwServices::IService::sptr srv = ::fwServices::get(uid);
+                srv->start();
+                m_startedServices.push_back( srv );
             }
         }
     }
