@@ -145,6 +145,7 @@ void ConfigTemplateManager::stop()
         SLM_ASSERT( "Sorry, CTM must stop a service, but it is expired", ! wsrv.expired());
         ::fwServices::IService::sptr srv = wsrv.lock();
         OSLM_ASSERT( "Sorry, CTM must stop a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already stopped", ! srv->isStopped() );
+        OSLM_INFO("Stop service ( " << srv->getID() << " ) managed by the ConfigTemplateManager.");
         srv->stop();
     }
     m_startedServices.clear();
@@ -161,17 +162,16 @@ void ConfigTemplateManager::stop()
 void ConfigTemplateManager::destroy()
 {
     SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
+
 #ifdef USE_SRVFAC
 
-    ::fwServices::stopAndUnregister( m_adaptedConfig ) ;
-
-    BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr srv, m_createdServices )
+    BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_createdServices )
     {
-        if ( ! srv.expired() )
-        {
-            OSLM_WARN("Unregister service ( " << srv.lock()->getID() << " ) managed by the ConfigTemplateManager.");
-            OSR::unregisterService( srv.lock() );
-        }
+        SLM_ASSERT( "Sorry, CTM must destroy a service, but it is already expired.", ! wsrv.expired());
+        ::fwServices::IService::sptr srv = wsrv.lock();
+        OSLM_ASSERT( "Sorry, CTM must destroy a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it must be stopped before.", srv->isStopped() );
+        OSLM_INFO("Unregister service ( " << srv->getID() << " ) managed by the ConfigTemplateManager.");
+        OSR::unregisterService( srv );
     }
     m_createdServices.clear();
 
