@@ -35,6 +35,22 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (IXMLParser)(::fwServices::IService) ) ;
 
+public :
+
+    FWSERVICES_API void setObjectConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem );
+
+    FWSERVICES_API virtual void create( ::fwTools::Object::sptr _obj );
+
+    FWSERVICES_API virtual void start();
+
+    FWSERVICES_API virtual void update();
+
+    FWSERVICES_API virtual void stop();
+
+    FWSERVICES_API virtual void destroy();
+
+    ::fwRuntime::ConfigurationElement::sptr m_cfg;
+
 protected:
 
     /**

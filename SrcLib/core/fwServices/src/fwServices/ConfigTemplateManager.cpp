@@ -113,7 +113,9 @@ void ConfigTemplateManager::start()
     SLM_ASSERT("Sorry, manager is not created and you try starting it.", m_state == CONFIG_IS_CREATED || m_state == CONFIG_IS_STOPPED );
 
     this->start( m_adaptedConfig ) ;
-
+#ifdef USE_SRVFAC
+    m_objectParser->start();
+#endif
     m_state = CONFIG_IS_STARTED;
 }
 
@@ -122,6 +124,9 @@ void ConfigTemplateManager::start()
 void ConfigTemplateManager::update()
 {
     ::fwServices::update( m_adaptedConfig ) ;
+#ifdef USE_SRVFAC
+    m_objectParser->update();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -140,6 +145,10 @@ void ConfigTemplateManager::stop()
     SLM_ASSERT("Sorry, manager is not started and you try stopping it.", m_state == CONFIG_IS_STARTED );
 
 #ifdef USE_SRVFAC
+    m_objectParser->stop();
+#endif
+
+#ifdef USE_SRVFAC
     BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_startedServices )
     {
         SLM_ASSERT( "Sorry, CTM must stop a service, but it is expired", ! wsrv.expired());
@@ -154,7 +163,7 @@ void ConfigTemplateManager::stop()
 #endif
 
     m_state = CONFIG_IS_STOPPED;
-    SLM_INFO( ::fwServices::OSR::getRegistryInformation() );
+    OSLM_INFO( "Parsing OSR after stopping the config : \n" << ::fwServices::OSR::getRegistryInformation() );
 }
 
 //-----------------------------------------------------------------------------
@@ -162,6 +171,10 @@ void ConfigTemplateManager::stop()
 void ConfigTemplateManager::destroy()
 {
     SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
+
+#ifdef USE_SRVFAC
+    m_objectParser->destroy();
+#endif
 
 #ifdef USE_SRVFAC
 
@@ -179,8 +192,11 @@ void ConfigTemplateManager::destroy()
     ::fwServices::stopAndUnregister( m_adaptedConfig ) ;
 #endif
 
-    SLM_INFO( ::fwServices::OSR::getRegistryInformation() );
+    OSLM_INFO( "Parsing OSR after destroying the config : \n" << ::fwServices::OSR::getRegistryInformation() );
 
+#ifdef USE_SRVFAC
+    m_objectParser.reset();
+#endif
     m_adaptedConfig.reset();
     m_configTemplate.reset();
     m_configRoot.reset();
@@ -386,6 +402,15 @@ void ConfigTemplateManager::loadConfig()
         obj = this->createNewObject( hasAttributeType, type, hasAttributeUid, uid, hasAttributeId, id );
     }
 
+#ifdef USE_SRVFAC
+
+    std::string srvImpl = ::fwServices::getDefaultImplementationIds( obj , "::fwServices::IXMLParser" );
+    IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( "::fwServices::IXMLParser", srvImpl );
+    m_objectParser = ::fwServices::IXMLParser::dynamicCast( srv );
+    m_objectParser->setObjectConfig( _cfgElement );
+    m_objectParser->create( obj );
+
+#else
 
     // Init object ( and perharps build subObject )
     SLM_ASSERT( "Sorry, this object not support IXMLParser", ::fwServices::support< ::fwServices::IXMLParser >( obj ) );
@@ -399,6 +424,8 @@ void ConfigTemplateManager::loadConfig()
 
     // unregister call stop before
     ::fwServices::OSR::unregisterService( objParserSrv );
+
+#endif
 
     // Attaching a configuring services
     this->addServicesToObjectFromCfgElem( obj, _cfgElement );
@@ -595,7 +622,7 @@ void ConfigTemplateManager::start( ::fwRuntime::ConfigurationElement::sptr _elt 
             {
                 std::string serviceTypeToStart = (*iter)->getExistingAttributeValue("type") ;
                 std::vector< ::fwServices::IService::sptr > servicesToStart = getServices( serviceTypeToStart );
-                OSLM_FATAL_IF("Configuration : element " << serviceTypeToStart << " not found", servicesToStart.empty() );
+                OSLM_FATAL_IF("Sorry, try to start services of type " << serviceTypeToStart << ", but this type of service is not found", servicesToStart.empty() );
                 std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStart.begin() ;
                 for( ; iter != servicesToStart.end() ; ++iter )
                 {
@@ -607,7 +634,7 @@ void ConfigTemplateManager::start( ::fwRuntime::ConfigurationElement::sptr _elt 
             {
                 SLM_ASSERT("Sorry, the attribute start is required for element start.", (*iter)->hasAttribute("uid") );
                 std::string uid = (*iter)->getExistingAttributeValue("uid") ;
-                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
+                OSLM_FATAL_IF("Sorry, try to start this service (" << uid << "), but this fwId is not found.", ! ::fwServices::has(uid));
                 ::fwServices::IService::sptr srv = ::fwServices::get(uid);
                 srv->start();
                 m_startedServices.push_back( srv );

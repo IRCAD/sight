@@ -399,8 +399,31 @@ void ObjectServiceRegistry::cleanExpiredObject()
 void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _service )
 {
     SLM_TRACE_FUNC();
+
+#ifdef USE_SRVFAC
+    OSLM_ASSERT( "Sorry, the service ( "<< _service->getID() <<" ) must be stop before unregister it.", _service->isStopped() );
+
+//    typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
+//    OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
+//    for( OContainerType::iterator iter = obs.begin() ; iter != obs.end() ; ++iter )
+//    {
+//
+//        if( (*iter)->isValid() )
+//        {
+//            // Check whether _service is the subject (IEditionService) or the destination service
+//            if( (*iter)->getDest() == _service || (*iter)->getSrc() == _service )
+//            {
+//                OSLM_FATAL("Com channel still exist ( "<< (*iter)->getID() <<" ), but object (Src or Dest) is under destruction. ( Src = " << (*iter)->getSrc()->getID() <<" , Dest = "<< (*iter)->getDest()->getID()<<" )");
+//            }
+//        }
+//    }
+
+#else
     _service->stop();
     ::fwServices::unregisterComChannels( _service ) ;
+#endif
+
+
     removeFromContainer( _service );
 }
 

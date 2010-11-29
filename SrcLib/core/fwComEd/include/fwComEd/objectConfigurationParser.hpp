@@ -14,6 +14,8 @@
 
 #include <fwServices/IXMLParser.hpp>
 
+#include <fwServices/ConfigTemplateManager.hpp>
+
 #include "fwComEd/export.hpp"
 
 namespace fwComEd
@@ -91,11 +93,24 @@ public :
      */
     FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
 
+
+
+    FWCOMED_API void create( ::fwTools::Object::sptr _obj );
+
+    FWCOMED_API void start();
+
+    FWCOMED_API void update();
+
+    FWCOMED_API void stop();
+
+    FWCOMED_API void destroy();
+
 private :
 
     /// To verify some conditions in xml file
     bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
 
+    std::vector< ::fwServices::ConfigTemplateManager::sptr > m_ctmContainer;
 };
 
 

@@ -34,17 +34,53 @@ void IXMLParser::updating() throw(::fwTools::Failed)
 {
     for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = this->m_configuration->begin() ; !(configEltIter == this->m_configuration->end()) ; ++configEltIter)
     {
-        if( (*configEltIter)->getName() == "object" )
-        {
-            fwTools::Object::sptr localObj = fwServices::New( (*configEltIter) ) ;
-            assert( localObj ) ;
-            assert( (*configEltIter)->hasAttribute("id") ) ;
-            std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
-            assert( !this->getObject()->getField(_id) );
-            this->getObject()->setFieldSingleElement(_id,localObj);
-        }
+        SLM_ASSERT("ACH => still used ?", (*configEltIter)->getName() != "object" );
+//        if( (*configEltIter)->getName() == "object" )
+//        {
+//            fwTools::Object::sptr localObj = fwServices::New( (*configEltIter) ) ;
+//            assert( localObj ) ;
+//            assert( (*configEltIter)->hasAttribute("id") ) ;
+//            std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
+//            assert( !this->getObject()->getField(_id) );
+//            this->getObject()->setFieldSingleElement(_id,localObj);
+//        }
     }
 }
+
+
+//-----------------------------------------------------------------------------
+
+void IXMLParser::setObjectConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem )
+{
+    m_cfg = _cfgElem;
+}
+
+//-----------------------------------------------------------------------------
+
+void IXMLParser::create( ::fwTools::Object::sptr _obj )
+{}
+
+//-----------------------------------------------------------------------------
+
+void IXMLParser::start()
+{}
+
+//-----------------------------------------------------------------------------
+
+void IXMLParser::update()
+{}
+
+//-----------------------------------------------------------------------------
+
+void IXMLParser::stop()
+{}
+
+//-----------------------------------------------------------------------------
+
+void IXMLParser::destroy()
+{}
+
+//-----------------------------------------------------------------------------
 
 }
 

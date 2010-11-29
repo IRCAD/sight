@@ -18,6 +18,7 @@
 #include "fwServices/config.hpp"
 
 #include "fwServices/IService.hpp"
+#include "fwServices/IXMLParser.hpp"
 
 namespace fwServices
 {
@@ -143,6 +144,8 @@ private:
     std::map< std::string, std::string > m_fieldAdaptors;
 
     ::fwTools::Object::sptr m_configRoot;
+
+    ::fwServices::IXMLParser::sptr m_objectParser;
 
     ::fwRuntime::ConfigurationElement::sptr m_configTemplate;
 
