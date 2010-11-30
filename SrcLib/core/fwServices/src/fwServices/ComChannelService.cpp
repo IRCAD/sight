@@ -127,6 +127,9 @@ void ComChannelService::swapping() throw(fwTools::Failed)
 
 void ComChannelService::stopping() throw(fwTools::Failed)
 {
+    OSLM_DEBUG( "Stopping ComChannelService : " << getInfo() );
+    SLM_ASSERT( "Sorry, before stopping, source and dest must still exist in system.", ! m_destination.expired() && ! m_source.expired() );
+
     // Pre condition
     if( !m_source.expired() )
     {
@@ -138,6 +141,19 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             m_source.lock()->detach( this->getSptr() );
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+std::string ComChannelService::getInfo()
+{
+    std::stringstream sstr;
+
+    std::string fwIdSrc = ( ! m_source.expired() ? m_source.lock()->getID() : "fwIdExpired" );
+    std::string fwIdDest = ( ! m_destination.expired() ? m_destination.lock()->getID() : "fwIdExpired" );
+    sstr << "Com Channel ( "<< this->getID() << " ) Src  fwId = " << fwIdSrc << ", Dest fwId = " << fwIdDest;
+
+    return sstr.str();
 }
 
 //------------------------------------------------------------------------------

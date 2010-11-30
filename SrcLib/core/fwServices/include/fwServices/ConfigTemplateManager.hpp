@@ -103,6 +103,11 @@ private:
     typedef std::vector< ::fwServices::IService::wptr > ServiceContainer;
     ServiceContainer m_createdServices;
     ServiceContainer m_startedServices;
+    ServiceContainer m_startedComChannelServices;
+
+    void startComChannel();
+    void stopComChannel();
+
 
     ::fwTools::Object::sptr createNewObject( bool _hasAttributeType,
                                              const std::string & _type,

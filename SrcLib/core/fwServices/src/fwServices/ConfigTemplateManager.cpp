@@ -108,13 +108,47 @@ void ConfigTemplateManager::create()
 
 //-----------------------------------------------------------------------------
 
+void ConfigTemplateManager::startComChannel()
+{
+    BOOST_FOREACH( ::fwServices::IService::wptr wsrv, m_startedComChannelServices )
+{
+        SLM_ASSERT( "Sorry, CTM must start a service, but it is expired", ! wsrv.expired());
+        ::fwServices::IService::sptr srv = wsrv.lock();
+        OSLM_ASSERT( "Sorry, CTM must start a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already started", ! srv->isStarted() );
+        OSLM_INFO("Start service ( " << srv->getID() << " ) managed by the ConfigTemplateManager.");
+        srv->start();
+}
+}
+
+//-----------------------------------------------------------------------------
+
+void ConfigTemplateManager::stopComChannel()
+{
+    BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_startedComChannelServices )
+    {
+        SLM_ASSERT( "Sorry, CTM must stop a service, but it is expired", ! wsrv.expired());
+        ::fwServices::IService::sptr srv = wsrv.lock();
+        OSLM_ASSERT( "Sorry, CTM must stop a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already stopped", ! srv->isStopped() );
+        OSLM_INFO("Stop service ( " << srv->getID() << " ) managed by the ConfigTemplateManager.");
+        srv->stop();
+    }
+    m_startedComChannelServices.clear();
+}
+
+//-----------------------------------------------------------------------------
+
 void ConfigTemplateManager::start()
 {
     SLM_ASSERT("Sorry, manager is not created and you try starting it.", m_state == CONFIG_IS_CREATED || m_state == CONFIG_IS_STOPPED );
 
-    this->start( m_adaptedConfig ) ;
 #ifdef USE_SRVFAC
+
+    this->start( m_adaptedConfig ) ;
     m_objectParser->startConfig();
+    this->startComChannel();
+
+#else
+    this->start( m_adaptedConfig ) ;
 #endif
     m_state = CONFIG_IS_STARTED;
 }
@@ -145,10 +179,11 @@ void ConfigTemplateManager::stop()
     SLM_ASSERT("Sorry, manager is not started and you try stopping it.", m_state == CONFIG_IS_STARTED );
 
 #ifdef USE_SRVFAC
-    m_objectParser->stopConfig();
-#endif
 
-#ifdef USE_SRVFAC
+    this->stopComChannel();
+
+    m_objectParser->stopConfig();
+
     BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_startedServices )
     {
         SLM_ASSERT( "Sorry, CTM must stop a service, but it is expired", ! wsrv.expired());
@@ -579,8 +614,9 @@ void ConfigTemplateManager::addServicesToObjectFromCfgElem( ::fwTools::Object::s
             if(priority > 1.0) priority = 1.0;
             comChannel->setPriority(priority);
         }
-        comChannel->start();
-        m_startedServices.push_back( comChannel );
+        //comChannel->start();
+        //m_startedServices.push_back( comChannel );
+        m_startedComChannelServices.push_back( comChannel );
     }
 
     // Recursive attachment of possibly present subservices
