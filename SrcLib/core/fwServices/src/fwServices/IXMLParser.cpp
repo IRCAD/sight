@@ -57,27 +57,27 @@ void IXMLParser::setObjectConfig( ::fwRuntime::ConfigurationElement::sptr _cfgEl
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::create( ::fwTools::Object::sptr _obj )
+void IXMLParser::createConfig( ::fwTools::Object::sptr _obj )
 {}
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::start()
+void IXMLParser::startConfig()
 {}
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::update()
+void IXMLParser::updateConfig()
 {}
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::stop()
+void IXMLParser::stopConfig()
 {}
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::destroy()
+void IXMLParser::destroyConfig()
 {}
 
 //-----------------------------------------------------------------------------

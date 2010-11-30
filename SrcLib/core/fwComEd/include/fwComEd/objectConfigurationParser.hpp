@@ -95,15 +95,15 @@ public :
 
 
 
-    FWCOMED_API void create( ::fwTools::Object::sptr _obj );
+    FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 
-    FWCOMED_API void start();
+    FWCOMED_API void startConfig();
 
-    FWCOMED_API void update();
+    FWCOMED_API void updateConfig();
 
-    FWCOMED_API void stop();
+    FWCOMED_API void stopConfig();
 
-    FWCOMED_API void destroy();
+    FWCOMED_API void destroyConfig();
 
 private :
 

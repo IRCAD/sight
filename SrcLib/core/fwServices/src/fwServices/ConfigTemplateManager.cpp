@@ -114,7 +114,7 @@ void ConfigTemplateManager::start()
 
     this->start( m_adaptedConfig ) ;
 #ifdef USE_SRVFAC
-    m_objectParser->start();
+    m_objectParser->startConfig();
 #endif
     m_state = CONFIG_IS_STARTED;
 }
@@ -125,7 +125,7 @@ void ConfigTemplateManager::update()
 {
     ::fwServices::update( m_adaptedConfig ) ;
 #ifdef USE_SRVFAC
-    m_objectParser->update();
+    m_objectParser->updateConfig();
 #endif
 }
 
@@ -145,7 +145,7 @@ void ConfigTemplateManager::stop()
     SLM_ASSERT("Sorry, manager is not started and you try stopping it.", m_state == CONFIG_IS_STARTED );
 
 #ifdef USE_SRVFAC
-    m_objectParser->stop();
+    m_objectParser->stopConfig();
 #endif
 
 #ifdef USE_SRVFAC
@@ -173,7 +173,7 @@ void ConfigTemplateManager::destroy()
     SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
 
 #ifdef USE_SRVFAC
-    m_objectParser->destroy();
+    m_objectParser->destroyConfig();
 #endif
 
 #ifdef USE_SRVFAC
@@ -408,7 +408,7 @@ void ConfigTemplateManager::loadConfig()
     IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( "::fwServices::IXMLParser", srvImpl );
     m_objectParser = ::fwServices::IXMLParser::dynamicCast( srv );
     m_objectParser->setObjectConfig( _cfgElement );
-    m_objectParser->create( obj );
+    m_objectParser->createConfig( obj );
 
 #else
 

@@ -126,7 +126,7 @@ void ICompositeParser::updating( ) throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::create( ::fwTools::Object::sptr _obj )
+void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
 {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
@@ -196,7 +196,7 @@ void ICompositeParser::create( ::fwTools::Object::sptr _obj )
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::start()
+void ICompositeParser::startConfig()
 {
     BOOST_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
     {
@@ -206,7 +206,7 @@ void ICompositeParser::start()
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::update()
+void ICompositeParser::updateConfig()
 {
     BOOST_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
     {
@@ -216,7 +216,7 @@ void ICompositeParser::update()
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::stop()
+void ICompositeParser::stopConfig()
 {
     BOOST_REVERSE_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
     {
@@ -226,7 +226,7 @@ void ICompositeParser::stop()
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::destroy()
+void ICompositeParser::destroyConfig()
 {
     BOOST_REVERSE_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
     {

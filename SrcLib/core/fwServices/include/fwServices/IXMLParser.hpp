@@ -39,15 +39,15 @@ public :
 
     FWSERVICES_API void setObjectConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem );
 
-    FWSERVICES_API virtual void create( ::fwTools::Object::sptr _obj );
+    FWSERVICES_API virtual void createConfig( ::fwTools::Object::sptr _obj );
 
-    FWSERVICES_API virtual void start();
+    FWSERVICES_API virtual void startConfig();
 
-    FWSERVICES_API virtual void update();
+    FWSERVICES_API virtual void updateConfig();
 
-    FWSERVICES_API virtual void stop();
+    FWSERVICES_API virtual void stopConfig();
 
-    FWSERVICES_API virtual void destroy();
+    FWSERVICES_API virtual void destroyConfig();
 
     ::fwRuntime::ConfigurationElement::sptr m_cfg;
 
