@@ -1,0 +1,25 @@
+<Node 	name="root"
+	gravity="0 -10 0"
+	dt="0.01"
+	time="0"
+	showVisualModels="1"
+	showBehaviorModels="0"
+	showCollisionModels="0"
+	showBoundingCollisionModels="0"
+	showMappings="0"
+	showMechanicalMappings="0"
+	showForceFields="0"
+	showInteractionForceFields="0"
+	showWireFrame="0"
+	showNormals="0"
+	 >
+  <CGImplicitSolver name="default0" printLog="0"/>
+  <MechanicalObject template="Vec3d" name="DOF" translation="0 0 0" rotation="0 0 0" scale="1" restScale="1" position="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66" velocity="0 0 0 0 0 0 0 0 0 0 0 0" force="0 0 0 0 0 0 0 0 0 0 0 0" externalForce="0 0 0 0 0 0 0 0 0 0 0 0" derivX="0 0 0 0 0 0 0 0 0 0 0 0" free_position="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66" free_velocity="0 0 0 0 0 0 0 0 0 0 0 0" rest_position="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66"/>
+  <UniformMass template="Vec3d" name="mass" mass="2" totalmass="8"/>
+  <MeshTopology name="mesh topology" edges="0 1  0 2  0 3  1 2  1 3  2 3 " triangles="1 3 2  0 2 3  0 3 1  0 1 2 " tetras="0 1 2 3 "/>
+  <FixedConstraint template="Vec3d" name="constraints" indices="0 0"/>
+  <TetrahedronFEMForceField template="Vec3d" name="FEM" initialPoints="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66" method="polar" poissonRatio="0.45" youngModulus="6" updateStiffnessMatrix="1" assembling="0"/>
+
+  AREMPLACER
+
+</Node>
