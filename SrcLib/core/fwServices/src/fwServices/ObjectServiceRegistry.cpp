@@ -188,6 +188,9 @@ void ObjectServiceRegistry::uninitializeRootObject()
         profile->stop();
         SLM_TRACE("Profile Stopped");
 
+#ifdef USE_SRVFAC
+        ServiceFactoryRegistry::getDefault()->clearFactory();
+#endif
         // Clear all factories before stop application.
         ::fwTools::ClassFactoryRegistry::getFactories().clear();
     }

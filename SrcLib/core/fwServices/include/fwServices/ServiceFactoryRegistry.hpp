@@ -67,6 +67,8 @@ public:
 
     FWSERVICES_API IService::sptr create( const std::string & _srvType, const std::string & _srvImpl );
 
+    FWSERVICES_API void clearFactory();
+
 protected :
 
     typedef std::map< std::string, ServiceFactoryInfo::sptr > SrvRegContainer;

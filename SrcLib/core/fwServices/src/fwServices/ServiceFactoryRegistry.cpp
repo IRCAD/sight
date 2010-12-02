@@ -289,5 +289,12 @@ void ServiceFactoryRegistry::checkServicesNotDeclaredInPluginXml()
 
 //-----------------------------------------------------------------------------
 
+void ServiceFactoryRegistry::clearFactory()
+{
+    m_srvImplTosrvInfo.clear();
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace fwServices
 
