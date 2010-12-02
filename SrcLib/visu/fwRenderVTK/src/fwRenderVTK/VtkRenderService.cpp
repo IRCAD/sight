@@ -222,6 +222,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         }
         else
         {
+            adaptee.getService()->stop();
             ::fwServices::erase(adaptee.getService());
             adaptee.m_service.reset();
             m_sceneAdaptors.erase(id);
