@@ -48,6 +48,7 @@ NegatoOneSlice::NegatoOneSlice() throw()
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
     addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -213,9 +214,33 @@ void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->doStop();
-    this->doStart();
-    this->doUpdate();
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
+    {
+        ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+
+        int fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] )->value();
+        int toSliceType =   ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] )->value();
+
+        if( toSliceType == static_cast<int>(m_orientation) )
+        {
+            setOrientation( static_cast< Orientation >( fromSliceType ));
+            this->doUpdate();
+        }
+        else if(fromSliceType == static_cast<int>(m_orientation))
+        {
+            setOrientation( static_cast< Orientation >( toSliceType ));
+            this->doUpdate();
+        }
+    }
+    else
+    {
+        this->doStop();
+        this->doStart();
+        this->doUpdate();
+    }
 }
 
 //------------------------------------------------------------------------------
