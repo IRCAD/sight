@@ -6,7 +6,7 @@
     <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
         <gui>
             <frame>
-                <name>tuto EST - Medic@ : Demo integration SOFA-FW4SPL</name>
+                <name>Altran-Est - Medic@ : PoC2 Demo integration SOFA-FW4SPL</name>
                 <icon>Bundles/PoC2SofaMultiOrgans_0-1/tuto.ico</icon>
             </frame>
             <menuBar />
@@ -153,7 +153,7 @@
                          <service uid="mySofaWriter"
                                     implementation="::opSofa::SofaSceneWriterSrv"
                                   type="::io::IWriter" autoComChannel="no" >
-                            <path value="C:\Temp\f4s" />
+                           <writeTrian>no</writeTrian>
                          </service>
 
                          <service   uid="mySofaWriterAction"

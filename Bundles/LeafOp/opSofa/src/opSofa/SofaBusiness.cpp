@@ -38,10 +38,9 @@ SofaBusiness::SofaBusiness()
 SofaBusiness::~SofaBusiness()
 {
     thread->stop();
-    thread->wait(3000);
-    delete thread;
-    delete groot;
     clearTranslationPointer();
+    delete thread;
+    delete groot;    
     delete meshs;
 }
 
@@ -86,11 +85,18 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
                 // Add mesh to vector refrech by vtk
                 meshs->push_back(meshsF4s[j]);
 
+                // Fill OglModel with TriangularMesh
+                OglModelF4S *visual = (OglModelF4S*) visuals[i];
+                visual->loadTriangularMesh(meshsF4s[j]);
+
                 // Translate pointer between sofa and fw4spl
                 translationPointer(visuals[i], meshsF4s[j]);
             }
         }
     }
+
+    // Initialize the new scene
+    getSimulation()->init(groot);
 
     // Create Thread
     thread = new SofaThread(this, meshs, service);
@@ -105,7 +111,6 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
  */
 void SofaBusiness::loadMesh(::fwData::TriangularMesh::sptr pMesh,  ::fwServices::IService::sptr service)
 {
-
     // Default value : 100 millisecond
 	timeStepAnimation = 100;
 	
@@ -337,26 +342,52 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
  */
  void SofaBusiness::clearTranslationPointer()
  {
+     // Reset organs position
+     getSimulation()->reset(groot);
+     thread->refreshVtk();
+
      // Travel each TriangularMesh
      for (int i=0; i<meshs->size(); ++i) {
         ::fwData::TriangularMesh::sptr pMesh = meshs->at(i);
 
-        // clear pointer vertices
+        // Travel each vertex to reset these ones
         std::vector<std::vector<float > > *vertices = &(pMesh->points());
 	    int const nbVertices = pMesh->getNumPoints();
         for (int j=0; j<nbVertices; ++j) {
             std::vector<float> *vertex = &((*vertices)[j]);
+
+            // Create new vector with older values
+            std::vector<float> newVertex;
+            newVertex.push_back(vertex->at(0));
+            newVertex.push_back(vertex->at(1));
+            newVertex.push_back(vertex->at(2));
+            
+            // Clear older vector
             MVector<float> *vector = (MVector<float>*) vertex;
             vector->clear();
+
+            // Add new vector
+            ((*vertices)[j]) = newVertex;
         }
 
-        // Clear pointer Triangles
+        // Travel each triangle to reset these ones
         std::vector<std::vector<int > > *triangles = &(pMesh->cells());
 	    int const nbTriangles = pMesh->getNumCells();
         for (int j=0; j<nbTriangles; ++j) {
             std::vector<int> *triangle = &((*triangles)[j]);
+
+            // Create new vector with older values
+            std::vector<int> newTriangle;
+            newTriangle.push_back(triangle->at(0));
+            newTriangle.push_back(triangle->at(1));
+            newTriangle.push_back(triangle->at(2));
+
+            // Clear older value
             MVector<int> *vector = (MVector<int>*) triangle;
             vector->clear();
+
+            // Add new vector
+            ((*triangles)[j]) = newTriangle;
         }
      }
  }

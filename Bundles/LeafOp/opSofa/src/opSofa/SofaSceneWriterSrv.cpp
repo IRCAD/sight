@@ -30,6 +30,7 @@ REGISTER_SERVICE( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwData::Acquisi
  */
 SofaSceneWriterSrv::SofaSceneWriterSrv() throw()
 {
+    writeTrian = false;
 }
 
 /**
@@ -44,6 +45,13 @@ SofaSceneWriterSrv::~SofaSceneWriterSrv() throw()
  */
 void SofaSceneWriterSrv::configuring() throw ( ::fwTools::Failed )
 {
+    if(m_configuration->findConfigurationElement("writeTrian"))
+    {
+        std::string write = m_configuration->findConfigurationElement("writeTrian")->getValue();
+        if (write == "yes") {
+            writeTrian = true;
+        }
+    } 
 }
 
 /**
@@ -66,7 +74,12 @@ void SofaSceneWriterSrv::stopping() throw ( ::fwTools::Failed )
 void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
 {
     // Ask folder destination
-    QString folder = QFileDialog::getExistingDirectory(0, "Choose a folder to write file scene");
+    QString folder;
+    if (writeTrian) {
+        folder = QFileDialog::getExistingDirectory(0, "Choose a folder to write file scene");
+    } else {
+        folder = QFileDialog::getSaveFileName(0, "Write file scn", QString(), "Scene (*.scn)");
+    }
     if (folder == "") return;
 
     // Get acquisition
@@ -94,17 +107,20 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
         QString organName = QString(rec->getOrganName().c_str());
         bool organVisible = rec->getIsVisible();
         QString organUid = QString(rec->getID().c_str());
+        ::boost::filesystem::path filename = "";
 
         if (organVisible) {
             // Save mesh in filesystem
-            ::fwData::TriangularMesh::sptr mesh = rec->getTriangularMesh();
-            std::stringstream meshPath;
-            meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
-            ::boost::filesystem::path filename = ::boost::filesystem::path(meshPath.str()) ;        
-            ::fwDataIO::writer::TriangularMeshWriter writer;
-            writer.setObject(mesh);
-            writer.setFile(filename);
-            writer.write();
+            if (writeTrian) {
+                ::fwData::TriangularMesh::sptr mesh = rec->getTriangularMesh();
+                std::stringstream meshPath;
+                meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
+                filename = ::boost::filesystem::path(meshPath.str()) ;        
+                ::fwDataIO::writer::TriangularMeshWriter writer;
+                writer.setObject(mesh);
+                writer.setFile(filename);
+                writer.write();
+            }
 
             // Parse nodeTemplate
             QString nodeFile = nodeTemplateFile;
@@ -121,7 +137,12 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     templateFile.replace("AREMPLACER", nodesData);
 
     // Save file scn
-    std::string scnFile =  folder.toStdString() + QDir::separator().toAscii()  + "sofa.scn";
+    std::string scnFile;
+    if (writeTrian) {
+        scnFile =  folder.toStdString() + QDir::separator().toAscii()  + "sofa.scn";
+    } else {
+        scnFile =  folder.toStdString();
+    }
     std::ofstream fileout (scnFile.c_str(), std::ios::out);
     fileout << templateFile.toStdString();
     fileout.close();

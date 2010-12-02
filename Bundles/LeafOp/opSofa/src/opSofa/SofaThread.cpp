@@ -85,4 +85,5 @@ void SofaThread::refreshVtk()
 void SofaThread::stop()
 {
     stopRun = true;
+    this->wait(3000);
 }

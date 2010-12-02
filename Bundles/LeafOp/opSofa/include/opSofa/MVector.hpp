@@ -35,6 +35,7 @@ public :
     void clear() {
         /*this->_Myfirst = NULL;
         this->_Mylast = NULL;
+        this->_Myend = NULL;
         */
         // Use this if your compiler make error
         this->_M_impl._M_start = NULL;

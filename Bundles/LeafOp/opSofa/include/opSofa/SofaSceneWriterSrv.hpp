@@ -28,6 +28,9 @@ class SofaSceneWriterSrv : public ::io::IWriter
         void info( std::ostream & ostr );
         void configureWithIHM();
 
+    private :
+        bool writeTrian;
+
 };
 
 }

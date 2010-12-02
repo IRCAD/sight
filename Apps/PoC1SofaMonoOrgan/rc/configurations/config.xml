@@ -12,7 +12,7 @@
             <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
                 <gui>
                     <frame>
-                        <name>Medic@ : Demo integration SOFA-FW4SPL</name>
+                        <name>Altran-Est - Medic@ : PoC1 Demo integration SOFA-FW4SPL</name>
                         <icon>Bundles/PoC1SofaMonoOrgan_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
