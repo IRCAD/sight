@@ -227,12 +227,10 @@ void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
         if( toSliceType == static_cast<int>(m_orientation) )
         {
             setOrientation( static_cast< Orientation >( fromSliceType ));
-            this->doUpdate();
         }
         else if(fromSliceType == static_cast<int>(m_orientation))
         {
             setOrientation( static_cast< Orientation >( toSliceType ));
-            this->doUpdate();
         }
     }
     else
