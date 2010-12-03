@@ -71,7 +71,9 @@ void SliceSelector::setSliceRange( int min, int max )
 
 void SliceSelector::setSliceValue( int index )
 {
+    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
     this->m_sliceIndex->setValue(index);
+    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
 
     std::stringstream ss;
     ss << index << " / " << this->m_sliceIndex->maximum();
