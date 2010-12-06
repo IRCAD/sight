@@ -164,6 +164,10 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::SLICE_INDEX ) )
         {
             imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+            ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+            image->setFieldSingleElement( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
+            image->setFieldSingleElement( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
+            image->setFieldSingleElement( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
