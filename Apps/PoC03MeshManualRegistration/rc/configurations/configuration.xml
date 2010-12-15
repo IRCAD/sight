@@ -1,0 +1,139 @@
+<plugin id="PoC03MeshManualRegistration">
+
+
+<xi:include href="organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
+
+<extension id="PoC03MeshManualRegistration" implements="::fwServices::ServiceObjectConfig">
+
+<object type="::fwData::Composite">
+
+	<xi:include href="frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/> 
+    
+        <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+            <snap>
+                <scene uid="genericScene" />
+            </snap>
+        </service>
+
+        <!-- myPatientDB description -->
+        <item key="myPatientDB">
+            <object uid="myPatientDB" type="::fwData::PatientDB">
+    
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                    <type mode="reader" />
+                    <selection mode="exclude" />
+                    <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
+                </service>
+				
+                <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+                
+                <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                    <target>myUpdaterAcq</target>
+                </service>
+    
+                <service uid="myUpdaterComCannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                    <target>myUpdaterImg</target>
+                </service>
+    
+            </object>
+        </item>
+
+        <!-- CompositeVisu description -->
+        <item key="myCompositeVisu">
+            <object uid="myCompositeVisu" type="::fwData::Composite">
+    
+                <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                    <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
+                    <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                </service>
+    
+                <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                    <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
+                    <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
+                    <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                </service>
+    
+                <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6"  >
+                    <mode type="stop" />
+                    <config>
+                        <object id="myImage" type="::fwData::Image">
+                            <!-- This service convert a simple fwData::Image to medical Image -->
+                            <service uid="medicalImageConverter" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoComChannel="no" />
+                            <service uid="sliceListEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
+                                <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                            </service>
+                            <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+                                <negatoAdaptor uid="MPRNegatoScene3D" />
+                            </service>
+                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />
+                        </object>
+                    </config>
+                </service>
+    
+                <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <scene>
+                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+    
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+    
+                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+    
+                        <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                        </adaptor>
+                        <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
+                            <config renderer="default" />
+                        </adaptor>
+                    </scene>
+                </service>
+				
+				<service uid="genericScene2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <scene>
+                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+    
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+    
+                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+    
+                        <adaptor uid="MPRNegatoScene3D2" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                        </adaptor>
+                        <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
+                            <config renderer="default" />
+                        </adaptor>
+                    </scene>
+                </service>
+    
+            </object>
+        </item>
+
+        <start uid="MyIHM" />
+        <start uid="myUpdaterAcq" />
+        <start uid="myUpdaterImg" />
+        <start uid="myManager" />
+        <start uid="myUpdaterComCannelAcq" />
+        <start uid="myUpdaterComCannelImg" />
+        <start uid="newOBject2newPatientDB"/>
+
+        <stop uid="newOBject2newPatientDB"/>
+        <stop uid="myUpdaterComCannelImg" />
+        <stop uid="myUpdaterComCannelAcq" />
+        <stop uid="myManager" />
+        <stop uid="myUpdaterImg" />
+        <stop uid="myUpdaterAcq" />
+        <stop uid="MyIHM" />
+
+</object>
+</extension>
+
+</plugin>
