@@ -19,10 +19,12 @@
             <gui>
                 <layout>
                     <menu name="File" />
+					<menu name="Tools" />
                 </layout>
             </gui>
             <registry>
                 <menu sid="menu_File" start="yes" />
+				<menu sid="menu_Tools" start="yes" />
             </registry>
         </service>
 
@@ -31,22 +33,36 @@
                 <layout>
                     <menuItem name="Open file" shortcut="Ctrl+O" />
 					<separator />
-					<menuItem name="Manage organs colors" shortcut="F9" style="check" />
-                    <separator />
-                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+					<menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                 </layout>
             </gui>
             <registry>
                 <menuItem sid="action_openFile" start="yes" />
-				<menuItem sid="action_manageOrgansColors" start="yes" />
                 <menuItem sid="action_quit" start="yes" />
             </registry>
         </service>
 
+		<service uid="menu_Tools" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+					<menuItem name="Manage organs colors" shortcut="F9" style="check" />
+					<menuItem name="Manual registration" shortcut="F10" style="check" />
+                </layout>
+            </gui>
+            <registry>
+				<menuItem sid="action_manageOrgansColors" start="yes" />
+				<menuItem sid="action_manageRegistration" start="yes" />
+            </registry>
+        </service>
+		
 		<service uid="action_manageOrgansColors" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
 			<config id="organManagerConfig" />
 		</service>
-	
+		
+		<service uid="action_manageRegistration" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
+			<config id="manualRegistrationEditorConfig" />
+		</service>
+		
         <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
             <start uid="myReaderPathFile" />
         </service>

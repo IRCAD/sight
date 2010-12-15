@@ -9,7 +9,7 @@
                 <frame>
                     <name>Organs Manager</name>
                     <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
-                    <minSize width="400" height="750" />
+                    <minSize width="400" height="600" />
                     <style mode="STAY_ON_TOP" />
                 </frame>
             </gui>

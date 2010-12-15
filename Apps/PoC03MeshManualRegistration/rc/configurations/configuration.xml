@@ -1,7 +1,7 @@
 <plugin id="PoC03MeshManualRegistration">
 
-
 <xi:include href="organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
+<xi:include href="manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
 
 <extension id="PoC03MeshManualRegistration" implements="::fwServices::ServiceObjectConfig">
 
