@@ -2,6 +2,8 @@
 
 <xi:include href="organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
 <xi:include href="manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
+<xi:include href="camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
+
 
 <extension id="PoC03MeshManualRegistration" implements="::fwServices::ServiceObjectConfig">
 
@@ -96,7 +98,10 @@
                     <scene>
                         <picker id="myPicker" vtkclass="fwVtkCellPicker" />
     
+						<vtkObject id="camPosMatrix" class="vtkTransform" />
+	
                         <renderer id="default" background="0.0" />
+						
                         <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
                         </adaptor>
@@ -111,9 +116,30 @@
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                             <config renderer="default" />
                         </adaptor>
+						
+						<adaptor id="myCamPosMatrixAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix">
+							<config renderer="default" picker="" transform="camPosMatrix" />
+						</adaptor>
+						
+						<adaptor id="myCamMeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCamMesh">
+							<config renderer="default" picker="" transform="camPosMatrix" />
+						</adaptor>
+					
                     </scene>
                 </service>
-    
+			
+	        <item key="myCamPosMatrix">
+                <object uid="myCamPosMatrix" type="::fwData::TransformationMatrix3D">
+                    <service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                </object>
+            </item>
+
+            <item key="myCamMesh">
+                <object uid="myCamMesh" type="::fwData::TriangularMesh">
+                    <service uid="myCamReaderFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
+                </object>
+            </item>
+			
             </object>
         </item>
 
