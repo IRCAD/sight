@@ -36,6 +36,8 @@
 
 #include "visuVTKAdaptor/Material.hpp"
 #include "visuVTKAdaptor/Normals.hpp"
+
+#include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/TriangularMesh.hpp"
 
 
@@ -369,6 +371,8 @@ TriangularMesh::TriangularMesh() throw()
     m_planeCollectionShifterCallback = 0;
     m_servicesStarterCallback        = 0;
 
+    m_transform = vtkTransform::New();
+
     addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
     addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
     addNewHandledEvent (::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED );
@@ -385,6 +389,9 @@ TriangularMesh::~TriangularMesh() throw()
 
     m_normals->Delete();
     m_normals = 0;
+
+    m_transform->Delete();
+    m_transform = 0;
 
     if(m_actor)
     {
@@ -466,13 +473,14 @@ void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
 void TriangularMesh::doStart() throw(fwTools::Failed)
 {
     this->buildPipeline();
-
+    m_transformService.lock()->start();
 }
 
 //------------------------------------------------------------------------------
 
 void TriangularMesh::doStop() throw(fwTools::Failed)
 {
+    ::fwServices::OSR::unregisterService(m_transformService.lock());
 
     this->removeAllPropFromRenderer();
     if (this->getPicker())
@@ -829,8 +837,37 @@ vtkActor *TriangularMesh::newActor()
 
     if(!this->getTransformId().empty())
     {
-        actor->SetUserTransform(this->getTransform());
+        m_transform->Concatenate(this->getTransform());
     }
+
+    ::fwData::TriangularMesh::sptr triangularMesh
+        = this->getObject < ::fwData::TriangularMesh >();
+
+    ::fwData::TransformationMatrix3D::sptr fieldTransform;
+    if (triangularMesh->getFieldSize("TranformMatrix"))
+    {
+        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TranformMatrix");
+    }
+    else
+    {
+        fieldTransform = ::fwData::TransformationMatrix3D::New();
+        triangularMesh->setFieldSingleElement("TranformMatrix", fieldTransform);
+    }
+    
+    vtkTransform *vtkFieldTransform = vtkTransform::New();
+    vtkFieldTransform->Identity();
+    m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
+        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+                fieldTransform,
+                "::visuVTKAdaptor::Transform" ));
+    assert(m_transformService.lock());
+    m_transformService.lock()->setTransform(vtkFieldTransform);
+    vtkFieldTransform->Delete();
+    m_transform->Concatenate(vtkFieldTransform);
+
+
+    actor->SetUserTransform(m_transform);
+
     this->setVtkPipelineModified();
     return actor;
 }
