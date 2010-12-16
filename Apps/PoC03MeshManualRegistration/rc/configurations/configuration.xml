@@ -105,7 +105,19 @@
                         <picker id="myPicker" vtkclass="fwVtkCellPicker" />
     
 						<vtkObject id="camPosMatrix" class="vtkTransform" />
+						<vtkObject id="camTranslation" class="vtkTransform" />
 	
+	
+	                    <vtkObject id="matcompose" class="vtkTransform" >
+							<vtkTransform>
+							
+								<concatenate>camPosMatrix</concatenate>
+								<concatenate>camTranslation</concatenate>
+							</vtkTransform>
+						</vtkObject>
+					
+					
+					
                         <renderer id="default" background="0.0" />
 						
                         <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
@@ -126,9 +138,13 @@
 						<adaptor id="myCamPosMatrixAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix">
 							<config renderer="default" picker="" transform="camPosMatrix" />
 						</adaptor>
+												
+						<adaptor id="myCamTranslation" class="::visuVTKAdaptor::Transform" objectId="matrixB">
+							<config renderer="default" picker="" transform="camTranslation" />
+						</adaptor>
 						
 						<adaptor id="myCamMeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCamMesh">
-							<config renderer="default" picker="" transform="camPosMatrix" />
+							<config renderer="default" picker=""  transform="matcompose"  />
 						</adaptor>
 					
                     </scene>
@@ -136,12 +152,31 @@
 			
 	        <item key="myCamPosMatrix">
                 <object uid="myCamPosMatrix" type="::fwData::TransformationMatrix3D">
-                    <service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                   <service uid="matrixEditor2" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" /> 
                 </object>
             </item>
 
+			            
+            <item key="matrixB">
+                <object uid="matrixB" type="::fwData::TransformationMatrix3D">
+                    <matrix>
+                        1 0 0 -4
+                        0 1 0 0
+                        0 0 1 0
+                        0 0 0 1 
+                    </matrix>
+                </object>
+            </item>
+			
             <item key="myCamMesh">
                 <object uid="myCamMesh" type="::fwData::TriangularMesh">
+				
+				<item key="TransformMatrix">
+					<object uid="toto" type="::fwData::TransformationMatrix3D">
+						<service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+					</object>
+				</item>
+			
                     <service uid="myCamReaderFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
                 </object>
             </item>

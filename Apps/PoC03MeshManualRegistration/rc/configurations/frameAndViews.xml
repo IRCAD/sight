@@ -137,11 +137,13 @@
 					<orientation value="vertical" />
 					<view proportion="1"/>
 					<view proportion="0" minHeight="40"/>
+					<view proportion="0" minHeight="40"/>
 				</layout>
             </gui>
             <registry>
                 <view sid="genericScene2" start="yes" />
 				<view sid="matrixEditor" start="yes" />
+				<view sid="matrixEditor2" start="yes" />
             </registry>
         </service>
 
