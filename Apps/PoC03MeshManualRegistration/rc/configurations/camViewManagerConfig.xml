@@ -38,6 +38,10 @@
                         <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
                             <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
                         </adaptor>
+			
+			 <adaptor id="CamPosMatrix"  class="::visuVTKAdaptor::Camera2" objectId="myCamPosMatrix">
+                            <config renderer="default" picker="" /> 
+			 </adaptor>  
 						
                     </scene>
                 </service>

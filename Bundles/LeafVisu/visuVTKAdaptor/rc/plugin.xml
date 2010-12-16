@@ -147,6 +147,12 @@
         <implements>::fwData::Video</implements>
     </point>
     
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2, ::fwData::TransformationMatrix3D ); -->
+    <point id="::visuVTKAdaptor::Camera2" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::TransformationMatrix3D</implements>
+    </point>
+    
     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image ); -->
     <point id="::visuVTKAdaptor::NegatoOneSlice" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
