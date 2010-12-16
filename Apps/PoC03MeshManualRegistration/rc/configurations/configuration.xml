@@ -147,6 +147,14 @@
 							<config renderer="default" picker=""  transform="matcompose"  />
 						</adaptor>
 					
+						<adaptor id="myCamAxes" class="::visuVTKAdaptor::Axes" objectId="self">
+							<config renderer="default" transform="camPosMatrix" length="5" label="no" />
+						</adaptor>
+						
+						<adaptor id="myWolrdAxes" class="::visuVTKAdaptor::Axes" objectId="self">
+							<config renderer="default" length="5" label="no" />
+						</adaptor>
+						
                     </scene>
                 </service>
 			

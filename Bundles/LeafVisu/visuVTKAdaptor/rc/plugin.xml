@@ -21,6 +21,12 @@
         <implements>::fwTools::Object</implements>
     </point>
 
+	<!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwTools::Object ); -->
+    <point id="::visuVTKAdaptor::Axes" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+	
     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ); -->
     <point id="::visuVTKAdaptor::Material" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
