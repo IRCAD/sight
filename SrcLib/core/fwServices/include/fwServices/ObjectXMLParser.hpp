@@ -28,6 +28,10 @@ class FWSERVICES_CLASS_API ObjectXMLParser : public ::fwServices::IXMLParser
         FWSERVICES_API ObjectXMLParser( ) ;
         FWSERVICES_API virtual ~ObjectXMLParser() ;
 
+	protected :
+	
+		bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+		void updating() throw( fwTools::Failed );
 };
 
 
