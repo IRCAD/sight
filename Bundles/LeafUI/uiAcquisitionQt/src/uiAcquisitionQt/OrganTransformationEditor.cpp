@@ -39,7 +39,7 @@ OrganTransformationEditor::OrganTransformationEditor()
 	addNewHandledEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION );
 }
 
-OrganTransformationEditor::~OrganTransformationEditor()
+OrganTransformationEditor::~OrganTransformationEditor() throw()
 {
 }
 

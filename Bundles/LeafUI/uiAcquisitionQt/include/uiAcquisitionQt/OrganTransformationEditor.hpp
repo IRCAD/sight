@@ -8,7 +8,7 @@
 #include <string>
 #include <fwData/Reconstruction.hpp>
 #include <gui/editor/IEditor.hpp>
-#include <uiAcquisitionQt/Config.hpp>
+#include <uiAcquisitionQt/config.hpp>
 
 
 class QListWidget;
@@ -26,7 +26,7 @@ public:
 
 	fwCoreServiceClassDefinitionsMacro( (OrganTransformationEditor)(::gui::editor::IEditor) );
 
-	UIACQUISITIONQT_API              OrganTransformationEditor() throw();
+	UIACQUISITIONQT_API              OrganTransformationEditor() ;
 	UIACQUISITIONQT_API virtual     ~OrganTransformationEditor() throw();
 
 protected:
