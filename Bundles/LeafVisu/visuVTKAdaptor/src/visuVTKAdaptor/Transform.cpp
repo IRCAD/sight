@@ -94,6 +94,20 @@ void Transform::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void Transform::setTransform(vtkTransform *t){
+    if ( (m_transform && m_transform != t) )
+    {
+        m_transform->Delete();
+        if(t)
+        {
+            t->Register(NULL);
+        }
+    }
+    
+    m_transform = t;
+};
+
+//------------------------------------------------------------------------------
 void Transform::doSwap() throw(fwTools::Failed)
 {
     this->doUpdate();

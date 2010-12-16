@@ -30,7 +30,7 @@ public:
     VISUVTKADAPTOR_API Transform() throw();
 
     VISUVTKADAPTOR_API virtual ~Transform() throw();
-    VISUVTKADAPTOR_API void setTransform(vtkTransform *t){ m_transform = t;};
+    VISUVTKADAPTOR_API void setTransform(vtkTransform *t);
     VISUVTKADAPTOR_API vtkTransform *getTransform(){return m_transform;};
 
 
