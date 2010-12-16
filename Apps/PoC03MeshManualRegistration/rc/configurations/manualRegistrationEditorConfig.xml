@@ -28,7 +28,7 @@
                 </layout>
             </gui>
             <registry>
-                <view wid="toto" />
+                <view sid="listOrganTransformationEditor" />
                 <view wid="titi" />
                 <view wid="tutu" />
             </registry>
@@ -36,14 +36,30 @@
 
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" src="ref">
-              
+
+              <service uid="myManagerForManualRegistEditor" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="no">
+                <mode type="dummy" />
+                <config>
+                  <object id="myAcquisition" type="::fwData::Acquisition">
+                    
+                    <service uid="listOrganTransformationEditor" implementation="::uiAcquisition::OrganTransformationEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                        <TMSUid>MyMeshDB</TMSUid>
+                    </service>
+
+                  </object>
+                  
+                </config>
+              </service>  
             </object>
         </item>
 
         <!-- START AND STOP SERVICES -->
         <start uid="registrationEditorFrame" />
-		
+        <start uid="myManagerForManualRegistEditor" />
+
+        <stop uid="myManagerForManualRegistEditor" />
         <stop uid="registrationEditorFrame" />
+                    
 
     </object>
 

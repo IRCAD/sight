@@ -43,7 +43,13 @@
         <!-- CompositeVisu description -->
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" type="::fwData::Composite">
-    
+                <!-- MyMeshDB description -->
+                <item key="MyMeshDB">
+                    <object uid="MyMeshDB" type="::fwData::Vector">
+
+
+                    </object>
+                </item>
                 <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
                     <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                     <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
@@ -140,8 +146,6 @@
                 </object>
             </item>
 			
-            </object>
-        </item>
 
         <start uid="MyIHM" />
         <start uid="myUpdaterAcq" />
