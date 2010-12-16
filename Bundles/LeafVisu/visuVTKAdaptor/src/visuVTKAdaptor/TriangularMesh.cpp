@@ -861,9 +861,16 @@ vtkActor *TriangularMesh::newActor()
                 fieldTransform,
                 "::visuVTKAdaptor::Transform" ));
     assert(m_transformService.lock());
-    m_transformService.lock()->setTransform(vtkFieldTransform);
-    vtkFieldTransform->Delete();
+    ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
+
+
+    transformService->setRenderService ( this->getRenderService()  );
+    transformService->setRenderId      ( this->getRenderId()       );
+
+
+    transformService->setTransform(vtkFieldTransform);
     m_transform->Concatenate(vtkFieldTransform);
+    vtkFieldTransform->Delete();
 
 
     actor->SetUserTransform(m_transform);
