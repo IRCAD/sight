@@ -22,7 +22,9 @@
 #include <vtkRenderer.h>
 #include <vtkMatrix4x4.h>
 #include <vtkTransform.h>
+#include <vtkIdentityTransform.h>
 #include <vtkCamera.h>
+
 
 #include "visuVTKAdaptor/Camera2.hpp"
 
@@ -57,9 +59,9 @@ void Camera2::doStart() throw(fwTools::Failed)
     camera->SetPosition (0, 0, 0);
     camera->SetFocalPoint(0, 0, 10);
     camera->SetViewUp(0, -1, 0);
-    vtkTransform* trans = vtkTransform::New();
+    vtkIdentityTransform* trans = vtkIdentityTransform::New();
     trans->Identity();
-    camera->ApplyTransform(trans);
+    camera->SetUserViewTransform( trans );
     camera->SetClippingRange(0.1, 10000);
 }
 
@@ -86,39 +88,20 @@ void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
         ::fwData::TransformationMatrix3D::sptr transMat =
             this->getObject< ::fwData::TransformationMatrix3D >();
 
-        vtkMatrix4x4* mat = vtkMatrix4x4::New();
+        //vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
             {
-                mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
+                //mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
+		camera->GetUserViewTransform()->GetMatrix()->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
             }
         }
-
-        double pos[3];
-        pos[0] = mat->Element[0][3];
-        pos[1] = mat->Element[1][3];
-        pos[2] = mat->Element[2][3];
-
-        double p1[]={0.0, 0.0, 100.0, 1.0};
-        double p2[4];
-        mat->MultiplyPoint( p1, p2);
-
-        mat->SetElement(0,3,0);
-        mat->SetElement(1,3,0);
-        mat->SetElement(2,3,0);
-
-        double p3[]={0.0, -1.0, 0.0, 1.0};
-        double p4[4];
-        mat->MultiplyPoint( p3, p4);
-
-        double p5[]={p4[0],p4[1],p4[2]};
-        camera->SetPosition(pos);
-        camera->SetFocalPoint(p2);
-        camera->SetViewUp(p5);
-
-        mat->Delete();
+	//camera->GetUserViewTransform()->GetMatrix()->Modified();
+	//camera->GetUserViewTransform()->Update();
+	//camera->Modified();
+	camera->GetUserViewTransform()->Modified();
         this->setVtkPipelineModified();
     }
 }
