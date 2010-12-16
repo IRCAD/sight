@@ -82,22 +82,21 @@ void Transform::doUpdate() throw(fwTools::Failed)
             mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
         }
     }
-    vtkTransform* vtkTrf = m_transform;
-    if (vtkTrf == 0)
-    {
-        vtkTrf = this->getTransform();
-    }
+    vtkTransform* vtkTrf = this->getTransform();
     vtkTrf->SetMatrix(mat);
-    this->getTransform()->Modified();
+    vtkTrf->Modified();
     this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
 
 void Transform::setTransform(vtkTransform *t){
-    if ( (m_transform && m_transform != t) )
+    if ( m_transform != t )
     {
-        m_transform->Delete();
+        if (m_transform)
+        {
+            m_transform->Delete();
+        }
         if(t)
         {
             t->Register(NULL);
@@ -106,6 +105,17 @@ void Transform::setTransform(vtkTransform *t){
     
     m_transform = t;
 };
+
+//------------------------------------------------------------------------------
+
+vtkTransform * Transform::getTransform(){
+    vtkTransform *t = m_transform;
+    if (t == 0)
+    {
+        t = this->IVtkAdaptorService::getTransform();
+    }
+    return t;
+}
 
 //------------------------------------------------------------------------------
 void Transform::doSwap() throw(fwTools::Failed)
