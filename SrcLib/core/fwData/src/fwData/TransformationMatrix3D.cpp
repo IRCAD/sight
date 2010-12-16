@@ -33,6 +33,23 @@ m_vCoefficients(16)
 TransformationMatrix3D::~TransformationMatrix3D()
 {}
 
+//-----------------------------------------------------------------------------
+
+void TransformationMatrix3D::shallowCopy( TransformationMatrix3D::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    m_vCoefficients = _source->m_vCoefficients;
+}
+
+//-----------------------------------------------------------------------------
+
+void TransformationMatrix3D::deepCopy( TransformationMatrix3D::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    m_vCoefficients = _source->m_vCoefficients;
+}
+
+
 //------------------------------------------------------------------------------
 
 double TransformationMatrix3D::getCoefficient(int l, int c)
