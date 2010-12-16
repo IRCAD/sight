@@ -844,14 +844,14 @@ vtkActor *TriangularMesh::newActor()
         = this->getObject < ::fwData::TriangularMesh >();
 
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
-    if (triangularMesh->getFieldSize("TranformMatrix"))
+    if (triangularMesh->getFieldSize("TransformMatrix"))
     {
-        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TranformMatrix");
+        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
     }
     else
     {
         fieldTransform = ::fwData::TransformationMatrix3D::New();
-        triangularMesh->setFieldSingleElement("TranformMatrix", fieldTransform);
+        triangularMesh->setFieldSingleElement("TransformMatrix", fieldTransform);
     }
     
     vtkTransform *vtkFieldTransform = vtkTransform::New();
