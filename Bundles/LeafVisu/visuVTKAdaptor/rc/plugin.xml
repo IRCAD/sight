@@ -141,6 +141,12 @@
         <implements>::fwData::TransformationMatrix3D</implements>
     </point>
     
+	<!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ); -->
+    <point id="::visuVTKAdaptor::BoxWidget" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::TransformationMatrix3D</implements>
+    </point>
+    
     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Video, ::fwData::Video ); -->
     <point id="::visuVTKAdaptor::Video" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
