@@ -26,6 +26,12 @@
                         <picker id="myPicker" vtkclass="fwVtkCellPicker" />
     
                         <renderer id="default" background="0.0" />
+			
+			<vtkObject id="myCamPosMatrixTransform" class="vtkTransform" />
+			
+			 <adaptor id="myCamPosMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix" >
+                        	<config renderer="default" picker="" transform="myCamPosMatrixTransform" />
+			</adaptor>
 						
                         <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
@@ -40,7 +46,7 @@
                         </adaptor>
 			
 			 <adaptor id="CamPosMatrix"  class="::visuVTKAdaptor::Camera2" objectId="myCamPosMatrix">
-                            <config renderer="default" picker="" /> 
+                            <config renderer="default" picker="" transform="myCamPosMatrixTransform"/> 
 			 </adaptor>  
 						
                     </scene>

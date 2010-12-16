@@ -51,6 +51,12 @@ void Camera2::configuring() throw(fwTools::Failed)
 
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    if ( m_configuration->hasAttribute( "transform" ) )
+    {
+    	this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
+    }
+    
+    
 }
 
 void Camera2::doStart() throw(fwTools::Failed)
@@ -63,6 +69,8 @@ void Camera2::doStart() throw(fwTools::Failed)
     trans->Identity();
     camera->SetUserViewTransform( trans );
     camera->SetClippingRange(0.1, 10000);
+    
+    camera->SetUserViewTransform( this->getTransform() );
 }
 
 void Camera2::doUpdate() throw(fwTools::Failed)
@@ -82,9 +90,12 @@ void Camera2::doStop() throw(fwTools::Failed)
 
 void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
+
+/*  
     if( msg->hasEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) )
     {
         vtkCamera* camera = this->getRenderer()->GetActiveCamera();
+	
         ::fwData::TransformationMatrix3D::sptr transMat =
             this->getObject< ::fwData::TransformationMatrix3D >();
 
@@ -98,12 +109,9 @@ void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
 		camera->GetUserViewTransform()->GetMatrix()->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
             }
         }
-	//camera->GetUserViewTransform()->GetMatrix()->Modified();
-	//camera->GetUserViewTransform()->Update();
-	//camera->Modified();
 	camera->GetUserViewTransform()->Modified();
         this->setVtkPipelineModified();
-    }
+    }*/
 }
 
 
