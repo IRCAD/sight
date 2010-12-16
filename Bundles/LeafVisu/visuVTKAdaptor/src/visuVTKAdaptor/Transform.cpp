@@ -40,6 +40,7 @@ namespace visuVTKAdaptor
 
 Transform::Transform() throw()
 {
+	m_transform = 0;
     addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
@@ -81,7 +82,11 @@ void Transform::doUpdate() throw(fwTools::Failed)
             mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
         }
     }
-    vtkTransform* vtkTrf = this->getTransform();
+    vtkTransform* vtkTrf = m_transform;
+    if (vtkTrf == 0)
+    {
+        vtkTrf = this->getTransform();
+    }
     vtkTrf->SetMatrix(mat);
     this->getTransform()->Modified();
     this->setVtkPipelineModified();

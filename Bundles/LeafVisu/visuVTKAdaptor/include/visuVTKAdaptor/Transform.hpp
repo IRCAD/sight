@@ -14,6 +14,8 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
+class vtkTransform;
+
 namespace visuVTKAdaptor
 {
 
@@ -28,6 +30,9 @@ public:
     VISUVTKADAPTOR_API Transform() throw();
 
     VISUVTKADAPTOR_API virtual ~Transform() throw();
+    VISUVTKADAPTOR_API void setTransform(vtkTransform *t){ m_transform = t;};
+    VISUVTKADAPTOR_API vtkTransform *getTransform(){return m_transform;};
+
 
 protected:
 
@@ -41,6 +46,7 @@ protected:
     // manage only "ShowReconstructions" Field
     VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
+    vtkTransform* m_transform;
 };
 
 
