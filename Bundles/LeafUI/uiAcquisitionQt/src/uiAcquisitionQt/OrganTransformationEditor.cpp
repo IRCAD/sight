@@ -1,13 +1,13 @@
 #include <fwTools/UUID.hpp>
 #include <fwData/Vector.hpp>
 #include <fwData/Acquisition.hpp>
-#include <fwData/TriangularMesh.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwComEd/AcquisitionMsg.hpp>
 #include <uiAcquisitionQt/OrganTransformationEditor.hpp>
+
+
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QStringList>
@@ -15,10 +15,11 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QPushButton>
-
+#include <QComboBox>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <map>
 
 namespace uiAcquisition
 {
@@ -34,9 +35,12 @@ OrganTransformationEditor::OrganTransformationEditor()
   mReconstructionMap(),
   mTMSUid(),
   mpReconstructionListBox( 0 ),
-  mpResetButton( 0 )
+  mpResetButton( 0 ),
+  mpSaveButton( 0 ),
+  mpLoadButton( 0 )
 {
-	addNewHandledEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION );
+    addNewHandledEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION );
+    this->mSaveCount = 0;
 }
 
 OrganTransformationEditor::~OrganTransformationEditor() throw()
@@ -45,76 +49,87 @@ OrganTransformationEditor::~OrganTransformationEditor() throw()
 
 void OrganTransformationEditor::configuring() throw( ::fwTools::Failed )
 {
-	this->initialize();
-	if( m_configuration->findConfigurationElement( "TMSUid" ) )
-	{
-		mTMSUid = m_configuration->findConfigurationElement( "TMSUid" )->getValue();
-	}
+    this->initialize();
+    if( m_configuration->findConfigurationElement( "TMSUid" ) )
+    {
+        mTMSUid = m_configuration->findConfigurationElement( "TMSUid" )->getValue();
+    }
 }
 
 void OrganTransformationEditor::starting() throw( ::fwTools::Failed )
 {
-	this->create();
-	::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-	QWidget* const container = qtContainer->getQtContainer();
-	assert( container ) ;
-	
-	QVBoxLayout* layout = new QVBoxLayout(container);
+    this->create();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* const container = qtContainer->getQtContainer();
+    assert( container ) ;
+    
+    QVBoxLayout* layout = new QVBoxLayout(container);
 
-	QGroupBox* groupBox = new QGroupBox(tr("Organs"), container );
-	layout->addWidget( groupBox);
+    QGroupBox* groupBox = new QGroupBox(tr("Organs"), container );
+    layout->addWidget( groupBox);
 
-	QVBoxLayout* layoutGroupBox = new QVBoxLayout(container);
-	groupBox->setLayout(layoutGroupBox);
+    QVBoxLayout* layoutGroupBox = new QVBoxLayout(container);
+    groupBox->setLayout(layoutGroupBox);
 
-	mpReconstructionListBox = new QListWidget( groupBox);
-	mpResetButton           = new QPushButton(tr("Reset"), container );
-	
-	QObject::connect(mpReconstructionListBox, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(OnReconstructionCheck(QListWidgetItem *)));
-	QObject::connect(mpResetButton, SIGNAL(clicked( )), this, SLOT(OnResetClick()));
-	
-	layoutGroupBox->addWidget( mpReconstructionListBox, 1);
-	layoutGroupBox->addWidget( mpResetButton, 0);
-	
-	container->setLayout( layout );
-	
-	updating();
+    mpReconstructionListBox = new QListWidget( groupBox);
+    mpResetButton           = new QPushButton(tr("Reset"), container );
+    mpSaveButton            = new QPushButton(tr("Save"), container );
+    mpLoadButton            = new QPushButton(tr("Load"), container );
+    mpSaveSelectionComboBox = new QComboBox(container);
+
+    QObject::connect(mpReconstructionListBox, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(OnReconstructionCheck(QListWidgetItem *)));
+    QObject::connect(mpResetButton, SIGNAL(clicked( )), this, SLOT(OnResetClick()));
+    QObject::connect(mpSaveButton, SIGNAL(clicked( )), this, SLOT(OnSaveClick()));
+    QObject::connect(mpLoadButton, SIGNAL(clicked( )), this, SLOT(OnLoadClick()));
+
+    layoutGroupBox->addWidget( mpReconstructionListBox, 1);
+    layoutGroupBox->addWidget( mpResetButton, 0);
+    layoutGroupBox->addWidget( mpSaveButton, 0);
+    layoutGroupBox->addWidget( mpSaveSelectionComboBox,0);
+    layoutGroupBox->addWidget( mpLoadButton, 0);
+    
+    
+    container->setLayout( layout );
+    
+    updating();
 }
 
 void OrganTransformationEditor::stopping() throw( ::fwTools::Failed )
 {
-	
-	QObject::disconnect(mpReconstructionListBox, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(OnReconstructionCheck(QListWidgetItem *)));
-	QObject::disconnect(mpResetButton, SIGNAL(clicked( )), this, SLOT(OnResetClick()));
+    
+    QObject::disconnect(mpReconstructionListBox, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(OnReconstructionCheck(QListWidgetItem *)));
+    QObject::disconnect(mpResetButton, SIGNAL(clicked( )), this, SLOT(OnResetClick()));
+    QObject::disconnect(mpSaveButton, SIGNAL(clicked( )), this, SLOT(OnSaveClick()));
+    QObject::disconnect(mpLoadButton, SIGNAL(clicked( )), this, SLOT(OnLoadClick()));
 
-	
-	this->getContainer()->clean();
-	this->destroy();
-	
+    
+    this->getContainer()->clean();
+    this->destroy();
+    
 }
 
 void OrganTransformationEditor::swapping() throw( ::fwTools::Failed )
 {
-	updating();
+    updating();
 }
 
 void OrganTransformationEditor::updating() throw( ::fwTools::Failed )
 {
-	Refresh();
+    Refresh();
 }
 
 void OrganTransformationEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
-	::fwComEd::AcquisitionMsg::csptr pMessage = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg );
+    ::fwComEd::AcquisitionMsg::csptr pMessage = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg );
 
-	if( pMessage )
-	{
-		if( pMessage->hasEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION ) )
-		{
-			updating();
-			Notify();
-		}
-	}
+    if( pMessage )
+    {
+        if( pMessage->hasEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION ) )
+        {
+            updating();
+            Notify();
+        }
+    }
 }
 
 void OrganTransformationEditor::info( ::std::ostream& sstream )
@@ -123,101 +138,171 @@ void OrganTransformationEditor::info( ::std::ostream& sstream )
 
 void OrganTransformationEditor::Refresh()
 {
-	mReconstructionMap.clear();
-	mpReconstructionListBox->clear();
+    mReconstructionMap.clear();
+    mpReconstructionListBox->clear();
 
-	::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
+    ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
 
-	::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-	QWidget* const container = qtContainer->getQtContainer();
-	assert( container ) ;
-	container->setEnabled( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* const container = qtContainer->getQtContainer();
+    assert( container ) ;
+    container->setEnabled( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second );
 
-	if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
-	{
-		::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
+    if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+    {
+        ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
 
-		for( ; it!= pAcquisition->getReconstructions().second; ++it )
-		{
-			mReconstructionMap[ (*it)->getOrganName() ] = (*it);
-		}
+        for( ; it!= pAcquisition->getReconstructions().second; ++it )
+        {
+            mReconstructionMap[ (*it)->getOrganName() ] = (*it);
+        }
 
-		for( tReconstructionMap::iterator it = mReconstructionMap.begin(); it != mReconstructionMap.end(); ++it )
-		{
-			QListWidgetItem* item = new QListWidgetItem(QString::fromStdString((*it).first), mpReconstructionListBox);
-			item->setCheckState(Qt::Unchecked);
-			mpReconstructionListBox->addItem (item);
-			
-		}
+        for( tReconstructionMap::iterator it = mReconstructionMap.begin(); it != mReconstructionMap.end(); ++it )
+        {
+            QListWidgetItem* item = new QListWidgetItem(QString::fromStdString((*it).first), mpReconstructionListBox);
+            item->setCheckState(Qt::Unchecked);
+            mpReconstructionListBox->addItem (item);
+            
+        }
 
-		
-	}
+        
+    }
 }
 
 void OrganTransformationEditor::Notify()
 {
-	::boost::shared_ptr< ::fwData::Vector> pVector = ::fwTools::UUID::get< ::fwData::Vector>( mTMSUid );
+    ::boost::shared_ptr< ::fwData::Vector> pVector = ::fwTools::UUID::get< ::fwData::Vector>( mTMSUid );
 
-	if( pVector )
-	{
-		::fwComEd::AcquisitionMsg::NewSptr message;
-		message->addEvent( "Widget" );
-		::fwServices::IEditionService::notify( getSptr(), pVector, message );
-	}
+    if( pVector )
+    {
+        ::fwComEd::AcquisitionMsg::NewSptr message;
+        message->addEvent( "Widget" );
+        ::fwServices::IEditionService::notify( getSptr(), pVector, message );
+    }
 }
 
 void OrganTransformationEditor::OnReconstructionCheck(QListWidgetItem *currentItem)
 {
-	::boost::shared_ptr< ::fwData::Vector> pVector = ::fwData::Vector::dynamicCast(::fwTools::fwID::getObject(mTMSUid));
+    ::boost::shared_ptr< ::fwData::Vector> pVector = ::fwData::Vector::dynamicCast(::fwTools::fwID::getObject(mTMSUid));
 
-	if( pVector )
-	{
-		pVector->getRefContainer().clear();
+    if( pVector )
+    {
+        pVector->getRefContainer().clear();
 
-		int count = mpReconstructionListBox->count();
-		for( int i=0; i<count; ++i )
-		{
-			if( (mpReconstructionListBox->item( i )->checkState()) == Qt::Checked )
-			{
-				::std::string item_name = mpReconstructionListBox->item(i)->text().toStdString();
-				::fwData::Reconstruction::sptr pReconstruction = mReconstructionMap[item_name];
-				::fwData::TriangularMesh::sptr pMesh = pReconstruction->getTriangularMesh();
-				if( pMesh )
-				{
-					pVector->getRefContainer().push_back( pMesh );
-				}
-			}
-		}
-	}
+        int count = mpReconstructionListBox->count();
+        for( int i=0; i<count; ++i )
+        {
+            if( (mpReconstructionListBox->item( i )->checkState()) == Qt::Checked )
+            {
+                ::std::string item_name = mpReconstructionListBox->item(i)->text().toStdString();
+                ::fwData::Reconstruction::sptr pReconstruction = mReconstructionMap[item_name];
+                ::fwData::TriangularMesh::sptr pMesh = pReconstruction->getTriangularMesh();
+                if( pMesh )
+                {
+                    pVector->getRefContainer().push_back( pMesh );
+                }
+            }
+        }
+    }
 
-	Notify();
+    Notify();
 }
 
 
 
 void OrganTransformationEditor::OnResetClick()
 {
-	int count = mpReconstructionListBox->count();
-	for( int i=0; i<count; ++i )
-	{
-		if( (mpReconstructionListBox->item( i )->checkState()) == Qt::Checked )
-		{
-			
-			::std::string item_name = mpReconstructionListBox->item(i)->text().toStdString();
+    int count = mpReconstructionListBox->count();
+    for( int i=0; i<count; ++i )
+    {
+        if( (mpReconstructionListBox->item( i )->checkState()) == Qt::Checked )
+        {
+            
+            ::std::string item_name = mpReconstructionListBox->item(i)->text().toStdString();
 
-			::fwData::Reconstruction::sptr         pReconstruction = mReconstructionMap[item_name];
-			::fwData::TriangularMesh::sptr         pMesh           = pReconstruction->getTriangularMesh();
-			
+            ::fwData::Reconstruction::sptr         pReconstruction = mReconstructionMap[item_name];
+            ::fwData::TriangularMesh::sptr         pMesh           = pReconstruction->getTriangularMesh();
+            
 
-			::fwData::TransformationMatrix3D::sptr pTransformation = pMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
-			::fwData::TransformationMatrix3D::NewSptr pIdentMat;
-			pTransformation->deepCopy(pIdentMat);
+            ::fwData::TransformationMatrix3D::sptr pTransformation = pMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
 
-			
-		}
-	}
+            if (pTransformation)
+            {
+                ::fwData::TransformationMatrix3D::NewSptr pIdentMat;
+                pTransformation->deepCopy(pIdentMat);
+            }
 
-	Notify();
+            
+        }
+    }
+
+    Notify();
 }
+
+void OrganTransformationEditor::OnSaveClick()
+{
+    tInnerMatMapping matMap;
+    
+    ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
+    
+    if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+    {
+        ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
+
+        for( ; it!= pAcquisition->getReconstructions().second; ++it )
+        {
+            
+            ::fwData::TriangularMesh::sptr pTmpTrMesh = (*it)->getTriangularMesh();
+            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            if (pTmpMat)
+            {
+                ::fwData::TransformationMatrix3D::NewSptr pCpyTmpMat;
+                pCpyTmpMat->deepCopy(pTmpMat);
+                matMap[pTmpTrMesh->getID()] = pCpyTmpMat;
+            }
+        }
+        
+        ::std::stringstream tmpSaveName;
+        tmpSaveName << "save_" << this->mSaveCount;
+        mSaveListing[tmpSaveName.str()] = matMap;
+        this->mpSaveSelectionComboBox->addItem(QString::fromStdString(tmpSaveName.str()));
+        this->mSaveCount++;
+    }
+
+}
+
+
+void OrganTransformationEditor::OnLoadClick()
+{
+    if (this->mpSaveSelectionComboBox->count() != 0)
+    {
+
+        tInnerMatMapping matMap = mSaveListing[this->mpSaveSelectionComboBox->currentText().toStdString()];
+        
+        ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
+        
+        //search the corresponding triangular mesh
+        if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+        {
+            ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
+
+            for( ; it!= pAcquisition->getReconstructions().second; ++it )
+            {
+
+                ::fwData::TriangularMesh::sptr pTmpTrMesh = (*it)->getTriangularMesh();
+                if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
+                {
+                    ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+                    if (pTmpMat)
+                        pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
+                }
+                
+
+            }
+
+        }
+    }
+}
+
 
 }
