@@ -11,9 +11,11 @@
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/macros.hpp>
+#include <fwServices/Base.hpp>
+
 #include <fwServices/ObjectServiceRegistry.hpp>
 
+#include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/BoxWidget.hpp"
 
 namespace visuVTKAdaptor
@@ -21,43 +23,27 @@ namespace visuVTKAdaptor
 
 #define DELETE_VTKOBJECT( o ) { if( o ) { o->Delete(); o = 0; } }
 
-// MyCallback
-//class MyCallback : public ::vtkCommand
-//{
-//public:
-//
-//    static MyCallback* New() { return new MyCallback; }
-//
-//     MyCallback() : mpTransform( ::vtkTransform::New() ) { }
-//    ~MyCallback()                                        { DELETE_VTKOBJECT( mpTransform ); }
-//
-//    virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
-//    {
-//        ::vtkBoxWidget* pWidget = reinterpret_cast< ::vtkBoxWidget*>( pCaller );
-//        pWidget->GetTransform( mpTransform );
-//
-//        ::vtkProp3D* pProp3D = pWidget->GetProp3D();
-//        if( pProp3D )
-//        {
-//            ::vtkAssembly* pAssembly = ::vtkAssembly::SafeDownCast( pProp3D );
-//            if( pAssembly )
-//            {
-//                ::vtkProp3DCollection* pParts = pAssembly->GetParts();
-//                pParts->InitTraversal();
-//
-//                while( pProp3D = pParts->GetNextProp3D() )
-//                {
-//                    pProp3D->SetUserTransform( mpTransform );
-//                }
-//            }
-//        }
-//    }
-//
-//protected:
-//
-//    ::vtkTransform* mpTransform;
-//
-//};
+    
+class BoxClallback : public ::vtkCommand
+{
+public:
+
+    static BoxClallback* New(::visuVTKAdaptor::BoxWidget* adaptor) { 
+        BoxClallback *cb = new BoxClallback; 
+        cb->m_adaptor = adaptor;
+        return cb;
+    }
+
+     BoxClallback() {}
+    ~BoxClallback() {}
+
+    virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
+    {
+        m_adaptor->updateFromVtk();
+    }
+
+    ::visuVTKAdaptor::BoxWidget *m_adaptor;
+};
 
 // BoxWidget
 
@@ -67,11 +53,17 @@ BoxWidget::BoxWidget() throw()
 : ::fwRenderVTK::IVtkAdaptorService(),
   m_vtkBoxWidget( 0 )
 {
+    m_transform = vtkTransform::New();
+    m_boxWidgetCommand = BoxClallback::New(this);
+
     addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 BoxWidget::~BoxWidget() throw()
 {
+    m_transform->Delete();
+    m_transform = 0;
+
 }
 
 void BoxWidget::configuring() throw( ::fwTools::Failed )
@@ -87,8 +79,28 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
     m_vtkBoxWidget->SetRepresentation(boxRep);
     m_vtkBoxWidget->SetInteractor( this->getInteractor() );
     m_vtkBoxWidget->On();
-    boxRep->SetTransform(getTransform());
 
+    m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
+        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+                this->getObject(),
+                "::visuVTKAdaptor::Transform" ));
+    assert(m_transformService.lock());
+    ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
+
+
+    transformService->setRenderService ( this->getRenderService()  );
+    transformService->setRenderId      ( this->getRenderId()       );
+
+
+    transformService->setTransform(m_transform);
+
+    boxRep->SetTransform(m_transform);
+
+    this->registerService(transformService);
+    transformService->start();
+
+
+    m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
     //MyCallback* pMyCallback = MyCallback::New();
     //m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, pMyCallback );
     //pMyCallback->Delete();
@@ -96,9 +108,6 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
 
 void BoxWidget::doStop() throw( ::fwTools::Failed )
 {
-    //DELETE_VTKOBJECT( m_vtkBoxWidget );
-    //if
-
     unregisterServices();
 }
 
@@ -107,19 +116,34 @@ void BoxWidget::doSwap() throw( ::fwTools::Failed )
     doUpdate();
 }
 
-void BoxWidget::doUpdate() throw( ::fwTools::Failed )
+
+void BoxWidget::updateFromVtk() throw( ::fwTools::Failed )
 {
+    m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
     vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
     if( repr )
     {
-        repr->SetTransform(getTransform());
+        repr->GetTransform(m_transform);
+        m_transform->Modified();
     }
+    m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
+}
+
+void BoxWidget::doUpdate() throw( ::fwTools::Failed )
+{
+    m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
+    vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
+    if( repr )
+    {
+        repr->SetTransform(m_transform);
+    }
+    m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
 
 void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
     ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
-    if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
+    if (transfoMsg &&transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED) &&  m_vtkBoxWidget->HasObserver(::vtkCommand::InteractionEvent, m_boxWidgetCommand))
     {
         OSLM_ERROR("GOT A MESSAGE " << getTransformId() );
         doUpdate();
