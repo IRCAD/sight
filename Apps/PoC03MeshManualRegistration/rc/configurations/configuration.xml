@@ -146,7 +146,7 @@
 						</adaptor>
 										
 						<adaptor id="myCamWidget" class="::visuVTKAdaptor::BoxWidget" objectId="myCamPosMatrix">
-							<config renderer="default" picker=""  />
+							<config renderer="default" picker="" transform="camPosMatrix" />
 						</adaptor>
 																				
 						<adaptor id="myCamTranslation" class="::visuVTKAdaptor::Transform" objectId="matrixB">
