@@ -95,7 +95,7 @@ void Transform::doStart() throw(fwTools::Failed)
 
 
 
-void Transform::updateFromVtk() throw(fwTools::Failed)
+void Transform::updateFromVtk()
 {
     getTransform()->RemoveObserver( m_transformCommand );
     OSLM_ERROR("UPDATE FROM VTK");

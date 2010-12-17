@@ -32,7 +32,7 @@ namespace uiAcquisition
 
 REGISTER_SERVICE( ::gui::editor::IEditor, OrganTransformationEditor, ::fwData::Acquisition );
 
-OrganTransformationEditor::OrganTransformationEditor()
+OrganTransformationEditor::OrganTransformationEditor() throw()
 : ::gui::editor::IEditor(),
   mReconstructionMap(),
   mTMSUid(),
