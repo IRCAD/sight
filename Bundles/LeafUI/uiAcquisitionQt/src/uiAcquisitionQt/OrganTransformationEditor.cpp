@@ -1,5 +1,5 @@
 #include <fwTools/UUID.hpp>
-#include <fwData/Vector.hpp>
+#include <fwData/Composite.hpp>
 #include <fwData/Acquisition.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -8,6 +8,7 @@
 #include <uiAcquisitionQt/OrganTransformationEditor.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
+#include <fwComEd/helper/Composite.hpp>
 
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -138,7 +139,7 @@ void OrganTransformationEditor::updating( ::fwServices::ObjectMsg::csptr msg ) t
         if( pMessage->hasEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION ) )
         {
             updating();
-            Notify();
+            //Notify();
         }
     }
 }
@@ -180,6 +181,7 @@ void OrganTransformationEditor::Refresh()
     }
 }
 
+/*
 void OrganTransformationEditor::Notify()
 {
     ::boost::shared_ptr< ::fwData::Vector> pVector = ::fwTools::UUID::get< ::fwData::Vector>( mTMSUid );
@@ -192,6 +194,7 @@ void OrganTransformationEditor::Notify()
     }
     
 }
+*/
 
 void OrganTransformationEditor::NotitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat)
 {
@@ -202,15 +205,29 @@ void OrganTransformationEditor::NotitfyTransformationMatrix(::fwData::Transforma
 
 void OrganTransformationEditor::OnReconstructionCheck(QListWidgetItem *currentItem)
 {
-    ::boost::shared_ptr< ::fwData::Vector> pVector = ::fwData::Vector::dynamicCast(::fwTools::fwID::getObject(mTMSUid));
+    ::boost::shared_ptr< ::fwData::Composite> pComposite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(mTMSUid));
 
-    if( pVector )
+    if( pComposite )
     {
-        pVector->getRefContainer().clear();
+        //pVector->getRefContainer().clear();
+        ::std::string item_name = currentItem->text().toStdString();
+        ::fwData::Reconstruction::sptr pReconstruction = mReconstructionMap[item_name];
+        ::fwData::TriangularMesh::sptr pMesh = pReconstruction->getTriangularMesh();
 
+        ::fwComEd::helper::Composite aCompositeHelper(pComposite);
+        if ((currentItem->checkState()) == Qt::Checked)
+            aCompositeHelper.add(item_name, pMesh);
+        else
+            aCompositeHelper.remove(item_name);
+        
+        aCompositeHelper.notify(this->getSptr());
+
+        /*
         int count = mpReconstructionListBox->count();
         for( int i=0; i<count; ++i )
         {
+            
+            
             if( (mpReconstructionListBox->item( i )->checkState()) == Qt::Checked )
             {
                 ::std::string item_name = mpReconstructionListBox->item(i)->text().toStdString();
@@ -222,9 +239,10 @@ void OrganTransformationEditor::OnReconstructionCheck(QListWidgetItem *currentIt
                 }
             }
         }
+        */
     }
 
-    Notify();
+    //Notify();
 }
 
 
@@ -258,7 +276,7 @@ void OrganTransformationEditor::OnResetClick()
     }
 
     
-    Notify();
+    //Notify();
 }
 
 void OrganTransformationEditor::OnSaveClick()
@@ -338,9 +356,17 @@ void OrganTransformationEditor::OnTestClick()
     
     ::fwData::TransformationMatrix3D::NewSptr pRandTmpMat;
     srand(time(NULL));
-    for (unsigned int i = 0; i < 4; i++)
+    
+    //randomize the translation parts
+    //pRandTmpMat->setCoefficient(0, 3, (double)(-rand()%50) + 25);
+    //pRandTmpMat->setCoefficient(1, 3, (double)(-rand()%50) + 25);
+    //pRandTmpMat->setCoefficient(2, 3, (double)(-rand()%50) + 25);
+    
+    //randomize the 12 parameters of affine transformation matrix
+    for (unsigned int i = 0; i < 3; i++)
         for(unsigned int j = 0; j < 4; j++)
-            pRandTmpMat->setCoefficient(i, j, (double)(rand()%10));
+            pRandTmpMat->setCoefficient(i, j, (double)(-rand()%4 + 2));
+    
     tInnerMatMapping matMap = mSaveListing[this->mpSaveSelectionComboBox->currentText().toStdString()];
 
     ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();

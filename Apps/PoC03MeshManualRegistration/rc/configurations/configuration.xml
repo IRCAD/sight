@@ -45,7 +45,7 @@
             <object uid="myCompositeVisu" type="::fwData::Composite">
                 <!-- MyMeshDB description -->
                 <item key="MyMeshDB">
-                    <object uid="MyMeshDB" type="::fwData::Vector">
+                    <object uid="MyMeshDB" type="::fwData::Composite">
 
 
                     </object>

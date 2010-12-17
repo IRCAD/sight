@@ -56,7 +56,7 @@ private slots:
 private:
 
     void Refresh();
-    void Notify();
+    //void Notify();
     void NotitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat);
 
     // tReconstructionMap
