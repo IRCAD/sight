@@ -98,7 +98,6 @@ void Transform::doStart() throw(fwTools::Failed)
 void Transform::updateFromVtk()
 {
     getTransform()->RemoveObserver( m_transformCommand );
-    OSLM_ERROR("UPDATE FROM VTK");
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     vtkMatrix4x4* mat = getTransform()->GetMatrix();
 
@@ -136,6 +135,7 @@ void Transform::doUpdate() throw(fwTools::Failed)
     vtkTrf->SetMatrix(mat);
     vtkTrf->Modified();
     getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+    mat->Delete();
     this->setVtkPipelineModified();
 }
 
@@ -185,30 +185,11 @@ void Transform::doStop() throw(fwTools::Failed)
 
 void Transform::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-//  if ( msg->isAllModified() )
     ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
     if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
     {
 
         doUpdate();
-//        ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
-//        vtkMatrix4x4* mat = vtkMatrix4x4::New();
-//
-//        for(int lt=0; lt<4; lt++)
-//        {
-//            for(int ct=0; ct<4; ct++)
-//            {
-//                mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
-//            }
-//        }
-//        vtkTransform* vtkTrf = this->getTransform();
-//        vtkTrf->SetMatrix(mat);
-//        this->getTransform()->Modified();
-//        // @TODO : Hack to force render !! (pb with tracking)
-//        if( bForceRender )
-//        {
-//            this->getRenderService()->render();
-//        }
     }
 }
 
