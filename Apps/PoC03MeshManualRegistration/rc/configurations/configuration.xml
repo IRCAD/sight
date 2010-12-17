@@ -97,6 +97,12 @@
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                             <config renderer="default" />
                         </adaptor>
+						
+						<adaptor id="myCamMeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCamMesh">
+							<!-- <config renderer="default" picker=""  transform="matcompose"  /> -->
+							<config renderer="default" picker="" />
+						</adaptor>
+						
                     </scene>
                 </service>
 				
@@ -128,9 +134,9 @@
                             <config renderer="default" picker="" />
                         </adaptor>
     
-                        <adaptor uid="MPRNegatoScene3D2" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
-                        </adaptor>
+                        <!-- <adaptor uid="MPRNegatoScene3D2" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                            <config renderer="default" picker="" mode="3D" slices="3" sliceIndex="axial" />
+                        </adaptor> -->
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                             <config renderer="default" />
                         </adaptor>
@@ -147,9 +153,7 @@
 							<config renderer="default" picker="" transform="camTranslation" />
 						</adaptor>
 						
-						<adaptor id="myCamMeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCamMesh">
-							<config renderer="default" picker=""  transform="matcompose"  />
-						</adaptor>
+
 					
 						<adaptor id="myCamAxes" class="::visuVTKAdaptor::Axes" objectId="self">
 							<config renderer="default" transform="camPosMatrix" length="5" label="no" />
@@ -164,7 +168,7 @@
 			
 	        <item key="myCamPosMatrix">
                 <object uid="myCamPosMatrix" type="::fwData::TransformationMatrix3D">
-                   <service uid="matrixEditor2" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" /> 
+                   <!-- <service uid="matrixEditor2" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" /> -->
                 </object>
             </item>
 
@@ -183,11 +187,12 @@
             <item key="myCamMesh">
                 <object uid="myCamMesh" type="::fwData::TriangularMesh">
 				
-				<item key="TransformMatrix">
-					<object uid="toto" type="::fwData::TransformationMatrix3D">
-						<service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
-					</object>
-				</item>
+					<item key="TransformMatrix">
+						<object uid="myCamPosMatrix" src="ref" />
+						<!-- <object uid="toto" type="::fwData::TransformationMatrix3D">
+							<service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+						</object> -->
+					</item>
 			
                     <service uid="myCamReaderFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
                 </object>

@@ -142,8 +142,10 @@
             </gui>
             <registry>
                 <view sid="genericScene2" start="yes" />
-				<view sid="matrixEditor" start="yes" />
-				<view sid="matrixEditor2" start="yes" />
+				<!-- <view sid="matrixEditor" start="yes" /> -->
+				<view wid="matrixEditor" start="yes" />
+				<!-- <view sid="matrixEditor2" start="yes" /> -->
+				<view wid="matrixEditor2" start="yes" />
             </registry>
         </service>
 
