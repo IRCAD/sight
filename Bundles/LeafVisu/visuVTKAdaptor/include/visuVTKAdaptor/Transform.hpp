@@ -33,6 +33,7 @@ public:
     VISUVTKADAPTOR_API void setTransform(vtkTransform *t);
     VISUVTKADAPTOR_API vtkTransform *getTransform();
 
+    VISUVTKADAPTOR_API void updateFromVtk();
 
 protected:
 
@@ -47,6 +48,7 @@ protected:
     VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     vtkTransform* m_transform;
+    vtkCommand* m_transformCommand;
 };
 
 

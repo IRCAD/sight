@@ -19,7 +19,7 @@
 #include <fwServices/ObjectServiceRegistry.hpp>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
-
+#include <vtkCommand.h>
 #include <vtkCubeSource.h>
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
@@ -29,6 +29,26 @@
 
 #include "visuVTKAdaptor/Transform.hpp"
 
+class TransformClallback : public ::vtkCommand
+{
+public:
+
+    static TransformClallback* New(::visuVTKAdaptor::Transform* adaptor) { 
+        TransformClallback *cb = new TransformClallback; 
+        cb->m_adaptor = adaptor;
+        return cb;
+    }
+
+     TransformClallback() {}
+    ~TransformClallback() {}
+
+    virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
+    {
+        m_adaptor->updateFromVtk();
+    }
+
+    ::visuVTKAdaptor::Transform *m_adaptor;
+};
 
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ) ;
@@ -41,19 +61,22 @@ namespace visuVTKAdaptor
 Transform::Transform() throw()
 {
 	m_transform = 0;
+    m_transformCommand = TransformClallback::New(this);
     addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
 
 Transform::~Transform() throw()
-{}
+{
+    if( m_transformCommand ) m_transformCommand->Delete();
+    m_transformCommand = 0;
+}
 
 //------------------------------------------------------------------------------
 
 void Transform::configuring() throw(fwTools::Failed)
 {
-
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
@@ -64,14 +87,41 @@ void Transform::configuring() throw(fwTools::Failed)
 
 void Transform::doStart() throw(fwTools::Failed)
 {
+
     this->doUpdate();
+    getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+
 }
+
+
+
+void Transform::updateFromVtk() throw(fwTools::Failed)
+{
+    getTransform()->RemoveObserver( m_transformCommand );
+    OSLM_ERROR("UPDATE FROM VTK");
+    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    vtkMatrix4x4* mat = getTransform()->GetMatrix();
+
+    for(int lt=0; lt<4; lt++)
+    {
+        for(int ct=0; ct<4; ct++)
+        {
+            trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
+        }
+    }
+    ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
+    ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
+
+    getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+}
+
 
 //------------------------------------------------------------------------------
 
 void Transform::doUpdate() throw(fwTools::Failed)
 {
-    //doStop();
+    getTransform()->RemoveObserver( m_transformCommand );
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
@@ -85,6 +135,7 @@ void Transform::doUpdate() throw(fwTools::Failed)
     vtkTransform* vtkTrf = this->getTransform();
     vtkTrf->SetMatrix(mat);
     vtkTrf->Modified();
+    getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
     this->setVtkPipelineModified();
 }
 
