@@ -51,12 +51,14 @@
 					<menuItem name="Manage organs colors" shortcut="F9" style="check" />
 					<menuItem name="Manual registration" shortcut="F10" style="check" />
 					<menuItem name="View manager" shortcut="F11" style="check" />
+					<menuItem name="View world" shortcut="F12" style="check" />
                 </layout>
             </gui>
             <registry>
 				<menuItem sid="action_manageOrgansColors" start="yes" />
 				<menuItem sid="action_manageRegistration" start="yes" />
 				<menuItem sid="action_manageView" start="yes" />
+				<menuItem sid="action_worldView" start="yes" />
             </registry>
         </service>
 		
@@ -70,6 +72,10 @@
 		
 		<service uid="action_manageRegistration" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
 			<config id="manualRegistrationEditorConfig" />
+		</service>
+		
+		<service uid="action_worldView" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
+			<config id="worldViewConfig" />
 		</service>
 		
         <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
