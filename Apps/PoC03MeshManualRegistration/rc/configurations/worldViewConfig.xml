@@ -1,0 +1,84 @@
+<extension id="worldViewConfig" implements="::fwServices::ServiceObjectConfig">
+
+    <object type="::fwData::Composite">
+
+        <!-- MAIN FRAME -->
+        <service uid="worldViewConfigFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>world View</name>
+                    <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
+                    <minSize width="400" height="600" />
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="genericWorld" start="yes" />
+            </registry>
+        </service>
+
+        <item key="myCompositeVisu">
+            <object uid="myCompositeVisu" src="ref">
+              
+			<service uid="genericWorld" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <scene>
+                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+    
+                        <renderer id="default" background="0.0" />
+			
+<!--			<vtkObject id="myCamPosMatrixTransform" class="vtkTransform" />
+			
+			 <adaptor id="myCamPosMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix" >
+                        	<config renderer="default" picker="" transform="myCamPosMatrixTransform" />
+			</adaptor>-->
+			
+			<vtkObject id="myCam1PosMatrixTransform" class="vtkTransform" />
+			<vtkObject id="myCam2PosMatrixTransform" class="vtkTransform" />
+						
+			<adaptor id="myCamPos1MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCam1PosMatrix" >
+                        	<config renderer="default" picker="" transform="myCam1PosMatrixTransform" />
+			</adaptor>
+			<adaptor id="myCamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCam2PosMatrix" >
+                        	<config renderer="default" picker="" transform="myCam2PosMatrixTransform" />
+			</adaptor>
+			
+                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+    
+                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+    
+                        <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                        </adaptor>
+			
+                        <adaptor id="myCam1MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam1Mesh">
+                            <config renderer="default" picker="myPicker" transform="myCam1PosMatrixTransform" />
+                        </adaptor>
+
+                        <adaptor id="myCam2MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCamMesh">
+                            <config renderer="default" picker="myPicker" transform="myCam2PosMatrixTransform" />
+                        </adaptor>
+
+
+<!--			 <adaptor id="CamPosMatrix"  class="::visuVTKAdaptor::Camera2" objectId="myCamPosMatrix">
+                            <config renderer="default" picker="" transform="myCamPosMatrixTransform"/> 
+			 </adaptor> --> 
+						
+                    </scene>
+                </service>
+				
+            </object>
+        </item>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="worldViewConfigFrame" />
+		
+        <stop uid="worldViewConfigFrame" />
+
+    </object>
+
+</extension>
