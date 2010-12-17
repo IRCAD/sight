@@ -216,10 +216,17 @@ void OrganTransformationEditor::OnReconstructionCheck(QListWidgetItem *currentIt
 
         ::fwComEd::helper::Composite aCompositeHelper(pComposite);
         if ((currentItem->checkState()) == Qt::Checked)
-            aCompositeHelper.add(item_name, pMesh);
+        {        
+            if (pComposite->find(item_name) == pComposite->end())
+                aCompositeHelper.add(item_name, pMesh);
+            else
+                aCompositeHelper.swap(item_name, pMesh);
+        }
         else
-            aCompositeHelper.remove(item_name);
-        
+        {
+            if (pComposite->find(item_name) != pComposite->end())
+                aCompositeHelper.remove(item_name);
+        }
         aCompositeHelper.notify(this->getSptr());
 
         /*
