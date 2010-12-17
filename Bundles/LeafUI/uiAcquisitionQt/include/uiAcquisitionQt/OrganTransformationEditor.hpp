@@ -50,10 +50,15 @@ private slots:
     void OnSaveClick();
     void OnLoadClick();
 
+    //test
+    void OnTestClick();
+
 private:
 
     void Refresh();
     void Notify();
+    void NotitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat);
+
     // tReconstructionMap
     typedef ::std::map< ::std::string, ::fwData::Reconstruction::sptr > tReconstructionMap;
     typedef ::std::map< ::std::string, ::fwData::TransformationMatrix3D::sptr> tInnerMatMapping;
@@ -67,9 +72,13 @@ private:
     QPointer< QListWidget > mpReconstructionListBox;
     QPointer< QComboBox > mpSaveSelectionComboBox;
     
+    //for testing
+    QPointer< QPushButton > mpTestButton;
+
     //variables for the functionalities of saving & loading
     tSaveMapping mSaveListing;
     unsigned int mSaveCount;
+    
 
        
 };
