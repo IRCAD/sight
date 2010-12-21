@@ -9,8 +9,8 @@
 
 <object type="::fwData::Composite">
 
-    <xi:include href="frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/> 
-    
+    <xi:include href="frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
+
         <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
             <snap>
                 <scene uid="genericScene" />
@@ -20,23 +20,19 @@
         <!-- myPatientDB description -->
         <item key="myPatientDB">
             <object uid="myPatientDB" type="::fwData::PatientDB">
-    
+
                 <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
                     <type mode="reader" />
                     <selection mode="exclude" />
                     <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                 </service>
-                
                 <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
-                
                 <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
                     <target>myUpdaterAcq</target>
                 </service>
-    
                 <service uid="myUpdaterComCannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
                     <target>myUpdaterImg</target>
                 </service>
-    
             </object>
         </item>
 
@@ -54,13 +50,11 @@
                     <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                     <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
                 </service>
-    
                 <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
                     <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                     <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                     <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
                 </service>
-    
                 <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6"  >
                     <mode type="stop" />
                     <config>
@@ -77,43 +71,42 @@
                         </object>
                     </config>
                 </service>
-    
                 <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
                     <scene>
                         <picker id="myPicker" vtkclass="fwVtkCellPicker" />
-    
                         <renderer id="default" background="0.0" />
                         <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
                         </adaptor>
-    
                         <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
                             <config renderer="default" picker="" />
                         </adaptor>
-    
                         <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
                             <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
                         </adaptor>
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                             <config renderer="default" />
                         </adaptor>
-						
-						<adaptor id="myCamMeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCamMesh">
-							<!-- <config renderer="default" picker=""  transform="matcompose"  /> -->
-							<config renderer="default" picker="" />
-						</adaptor>
-						
+                        <!--
+                        <adaptor id="myCamMeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCamMesh">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+                        -->
+                            <!-- <config renderer="default" picker=""  transform="matcompose"  /> -->
+                        <adaptor id="CamPosMatrix"  class="::visuVTKAdaptor::Camera2" objectId="view1">
+                            <config renderer="default" picker="" />
+                        </adaptor>
                     </scene>
                 </service>
-                
                 <service uid="genericScene2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
                     <scene>
                         <picker id="myPicker" vtkclass="fwVtkCellPicker" />
     
+                        <!--
                         <vtkObject id="camPosMatrix" class="vtkTransform" />
                         <vtkObject id="camTranslation" class="vtkTransform" />
     
-    
+
                         <vtkObject id="matcompose" class="vtkTransform" >
                             <vtkTransform>
                             
@@ -121,6 +114,7 @@
                                 <concatenate>camTranslation</concatenate>
                             </vtkTransform>
                         </vtkObject>
+                        -->
                     
                     
                     
@@ -140,37 +134,48 @@
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                             <config renderer="default" />
                         </adaptor>
-						<adaptor id="myCamPosMatrixAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix">
-							<config renderer="default" picker="" transform="camPosMatrix" />
-						</adaptor>
-										
-						<adaptor id="myCamWidget" class="::visuVTKAdaptor::BoxWidget" objectId="myCamPosMatrix">
-							<config renderer="default" picker="" transform="camPosMatrix" />
-						</adaptor>
-																				
-						<adaptor id="myCamTranslation" class="::visuVTKAdaptor::Transform" objectId="matrixB">
-							<config renderer="default" picker="" transform="camTranslation" />
-						</adaptor>
-						
+                        <!--
+                        <adaptor id="myCamPosMatrixAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix">
+                            <config renderer="default" picker="" transform="camPosMatrix" />
+                        </adaptor>
+                                        
+                        <adaptor id="myCamWidget" class="::visuVTKAdaptor::BoxWidget" objectId="myCamPosMatrix">
+                            <config renderer="default" picker="" transform="camPosMatrix" />
+                        </adaptor>
+                                                                                
+                        <adaptor id="myCamTranslation" class="::visuVTKAdaptor::Transform" objectId="matrixB">
+                            <config renderer="default" picker="" transform="camTranslation" />
+                        </adaptor>
+                        
 
-					
-						<adaptor id="myCamAxes" class="::visuVTKAdaptor::Axes" objectId="self">
-							<config renderer="default" transform="camPosMatrix" length="5" label="no" />
-						</adaptor>
-						
-						<adaptor id="myWolrdAxes" class="::visuVTKAdaptor::Axes" objectId="self">
-							<config renderer="default" length="5" label="no" />
-						</adaptor>
+                    
+                        <adaptor id="myCamAxes" class="::visuVTKAdaptor::Axes" objectId="self">
+                            <config renderer="default" transform="camPosMatrix" length="5" label="no" />
+                        </adaptor>
+                        
+                        <adaptor id="myWolrdAxes" class="::visuVTKAdaptor::Axes" objectId="self">
+                            <config renderer="default" length="5" label="no" />
+                        </adaptor>
+                        -->
+                        <adaptor id="CamPosMatrix"  class="::visuVTKAdaptor::Camera2" objectId="view2">
+                            <config renderer="default" picker="" /> 
+                        </adaptor>
                     </scene>
                 </service>
-            
-            <item key="myCamPosMatrix">
-                <object uid="myCamPosMatrix" type="::fwData::TransformationMatrix3D">
+
+            <item key="view1">
+                <object uid="view1" type="::fwData::TransformationMatrix3D">
+                   <!-- <service uid="matrixEditor2" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" /> -->
+                </object>
+            </item>
+            <item key="view2">
+                <object uid="view2" type="::fwData::TransformationMatrix3D">
                    <!-- <service uid="matrixEditor2" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" /> -->
                 </object>
             </item>
 
-                        
+
+            <!--
             <item key="matrixB">
                 <object uid="matrixB" type="::fwData::TransformationMatrix3D">
                     <matrix>
@@ -181,14 +186,16 @@
                     </matrix>
                 </object>
             </item>
+            -->
 
+            <!--
             <item key="myCam1PosMatrix">
                 <object uid="myCam1PosMatrix" type="::fwData::TransformationMatrix3D">
                     <matrix>
                         1 0 0 -4
                         0 1 0  20
                         0 0 1 30
-                        0 0 0 1 
+                        0 0 0 1
                     </matrix>
                 </object>
             </item>
@@ -199,36 +206,38 @@
                         1 0 0 -4
                         0 1 0  0
                         0 0 1  0
-                        0 0 0 1 
+                        0 0 0 1
                     </matrix>
                 </object>
             </item>
-        
-            <item key="myCamMesh">
-                <object uid="myCamMesh" type="::fwData::TriangularMesh">
-				
-					<item key="TransformMatrix">
-						<object uid="myCamPosMatrix" src="ref" />
-						<!-- <object uid="toto" type="::fwData::TransformationMatrix3D">
-							<service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
-						</object> -->
-					</item>
-			
+            -->
+
+            <item key="myCam2Mesh">
+                <object uid="myCam2Mesh" type="::fwData::TriangularMesh">
+                        <!--
+                    <item key="TransformMatrix">
+                        <object uid="myCamPosMatrix" src="ref" />
+                        <object uid="toto" type="::fwData::TransformationMatrix3D">
+                            <service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                        </object>
+                    </item>
+                        -->
                     <service uid="myCamReaderFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
+                    <service uid="myCam2ReaderFile" implementation="::ioData::TriangularMeshReaderService" type="::io::IReader" autoComChannel="no" >
+                        <filename>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</filename>
+                    </service>
                 </object>
             </item>
 
             <item key="myCam1Mesh">
-                <object uid="myCam1Mesh" type="::fwData::TriangularMesh">            
+                <object uid="myCam1Mesh" type="::fwData::TriangularMesh">
                     <service uid="myCam1ReaderFile" implementation="::ioData::TriangularMeshReaderService" type="::io::IReader" autoComChannel="no" >
-              <filename>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</filename>
-            </service>
+                        <filename>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</filename>
+                    </service>
                 </object>
             </item>
-              
-              
-                  </object>
-        </item>  
+          </object>
+        </item>
 
         <start uid="MyIHM" />
         <start uid="myUpdaterAcq" />
@@ -237,10 +246,14 @@
         <start uid="myUpdaterComCannelAcq" />
         <start uid="myUpdaterComCannelImg" />
         <start uid="newOBject2newPatientDB"/>
-    <start uid="myCam1ReaderFile"/>
+        <start uid="myCam1ReaderFile"/>
+        <start uid="myCam2ReaderFile"/>
 
-    <update uid="myCam1ReaderFile"/>
+        <update uid="myCam1ReaderFile"/>
+        <update uid="myCam2ReaderFile"/>
 
+        <stop uid="myCam2ReaderFile"/>
+        <stop uid="myCam1ReaderFile"/>
         <stop uid="newOBject2newPatientDB"/>
         <stop uid="myUpdaterComCannelImg" />
         <stop uid="myUpdaterComCannelAcq" />
