@@ -30,12 +30,6 @@ MeshFactory::MeshFactory()
     m_clippingPlanes = 0;
     m_actor = vtkActor::New();
     m_normals = vtkPolyDataNormals::New();
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-    m_depthSort = vtkDepthSortPolyData::New();
-    m_hasAlpha = false;
-#endif
-#endif
     m_normalsFeatureAngle = 180;
 }
 
@@ -44,12 +38,6 @@ MeshFactory::MeshFactory()
 MeshFactory::~MeshFactory()
 {
     m_clippingPlanes = 0;
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-    m_depthSort->Delete();
-    m_depthSort = 0;
-#endif
-#endif
 
     m_normals->Delete();
     m_normals = 0;
@@ -81,14 +69,6 @@ void MeshFactory::updateTriangulaMesh( ::fwData::TriangularMesh::sptr mesh)
 
 
     mapper->SetInputConnection(m_normals->GetOutputPort());
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-    m_depthSort->SetInputConnection(m_normals->GetOutputPort());
-    m_depthSort->SetDirectionToBackToFront();
-    mapper->SetInputConnection(m_depthSort->GetOutputPort());
-#endif
-#endif
 
     m_actor->SetMapper(mapper);
 
@@ -161,21 +141,6 @@ void MeshFactory::updateMaterial( ::fwData::Material::sptr material )
             m_actor->GetProperty()->SetInterpolationToFlat();
         }
 
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-        if (color->alpha() < 1.)
-        {
-            m_actor->GetMapper()->SetInputConnection(m_depthSort->GetOutputPort());
-            m_hasAlpha = true;
-        }
-        else
-        {
-            m_actor->GetMapper()->SetInputConnection(m_normals->GetOutputPort());
-            m_hasAlpha = false;
-        }
-#endif
-#endif
-
     }
 }
 
@@ -190,16 +155,6 @@ void MeshFactory::updateVisibility( bool isVisible)
 }
 
 //------------------------------------------------------------------------------
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-#ifdef USE_DEPTH_SORT
-bool MeshFactory::hasAlpha()
-{
-    return m_hasAlpha;
-};
-
-#endif
-#endif
 
 
 void MeshFactory::setVtkClippingPlanes(vtkPlaneCollection *planes)

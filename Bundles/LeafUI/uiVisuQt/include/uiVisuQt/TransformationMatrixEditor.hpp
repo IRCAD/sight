@@ -4,16 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISU_TRANSFORMATIONMATRIXEDITOR_HPP_
-#define _UIVISU_TRANSFORMATIONMATRIXEDITOR_HPP_
+#ifndef _UIVISUQT_TRANSFORMATIONMATRIXEDITOR_HPP_
+#define _UIVISUQT_TRANSFORMATIONMATRIXEDITOR_HPP_
 
-#include <wx/slider.h>
+#include <QObject>
+#include <QPointer>
+#include <QSlider>
 
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiVisu/config.hpp"
+#include "uiVisuQt/config.hpp"
 
 namespace uiVisu
 {
@@ -24,18 +26,19 @@ namespace uiVisu
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
-class UIVISU_CLASS_API TransformationMatrixEditor : public ::gui::editor::IEditor
+class UIVISUQT_CLASS_API TransformationMatrixEditor : public QObject, public ::gui::editor::IEditor
 {
 
+    Q_OBJECT
 public :
 
     fwCoreServiceClassDefinitionsMacro ( (TransformationMatrixEditor)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIVISU_API TransformationMatrixEditor() throw() ;
+    UIVISUQT_API TransformationMatrixEditor() throw() ;
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~TransformationMatrixEditor() throw() ;
+    UIVISUQT_API virtual ~TransformationMatrixEditor() throw() ;
 
 protected:
 
@@ -62,18 +65,18 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-
+protected slots:
     /// Called when the slider value change.
-    void onSliderChange( wxCommandEvent& event );
+    void onSliderChange(int value);
 
 private:
+    QPointer< QSlider > m_angleSlider;
 
-    wxSlider * m_angleSlider;
 
 };
 
 } // uiVisu
 
-#endif /*_UIVISU_TRANSFORMATIONMATRIXEDITOR_HPP_*/
+#endif /*_UIVISUQT_TRANSFORMATIONMATRIXEDITOR_HPP_*/
 
 

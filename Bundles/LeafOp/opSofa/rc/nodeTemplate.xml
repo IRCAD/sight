@@ -1,0 +1,21 @@
+
+<Node 	name="ORGAN_NAME"
+		gravity="0 -10 0"
+		dt="0.01"
+		time="0"
+		animate="0"
+		showVisualModels="1"
+		showBehaviorModels="0"
+		showCollisionModels="0"
+		showBoundingCollisionModels="0"
+		showMappings="0"
+		showMechanicalMappings="0"
+		showForceFields="0"
+		showInteractionForceFields="0"
+		showWireFrame="0"
+		showNormals="0"
+		multiThreadSimulation="0"
+		 >
+  <OglModel template="ExtVec3f" name="ORGAN_NAME" fileMesh="TRIAN_LOCATION" material="Default Diffuse 1 1 1 1 1 Ambient 1 1 1 1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45"/>
+  <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="mapping" object2="ORGAN_NAME" hexamap="0 "/>
+</Node>

@@ -4,11 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/window.h>
-#include <wx/event.h>
-#include <wx/sizer.h>
+#include <QHBoxLayout>
 
 #include <cmath>
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
 
 #include <fwCore/base.hpp>
 
@@ -19,10 +20,9 @@
 
 #include <fwServices/Base.hpp>
 
+#include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwWX/convert.hpp>
-
-#include "uiVisu/TransformationMatrixEditor.hpp"
+#include "uiVisuQt/TransformationMatrixEditor.hpp"
 
 namespace uiVisu
 {
@@ -46,17 +46,23 @@ void TransformationMatrixEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::gui::editor::IEditor::starting();
+    this->::fwGui::IGuiContainerSrv::create();
 
-    wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* const container = qtContainer->getQtContainer();
+    assert( container );
 
-    m_angleSlider = new wxSlider(m_container, wxNewId(), 0, 0, 360, wxDefaultPosition, wxDefaultSize , wxSL_BOTH|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP ) ;
+    QHBoxLayout* layout = new QHBoxLayout();
 
-    sizer->Add(m_angleSlider, 0, wxALL|wxEXPAND);
-    m_container->SetSizer( sizer );
-    m_container->Layout();
+    m_angleSlider = new QSlider( Qt::Horizontal, container );
+    m_angleSlider->setRange(0, 360);
 
-    m_container->Bind(wxEVT_COMMAND_SLIDER_UPDATED, &TransformationMatrixEditor::onSliderChange, this,  m_angleSlider->GetId());
+    layout->addWidget( m_angleSlider, 1);
+
+    QObject::connect(m_angleSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChange(int)));
+
+    container->setLayout( layout );
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -64,10 +70,10 @@ void TransformationMatrixEditor::starting() throw(::fwTools::Failed)
 void TransformationMatrixEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    QObject::disconnect(m_angleSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChange(int)));
 
-    m_container->Unbind(wxEVT_COMMAND_SLIDER_UPDATED, &TransformationMatrixEditor::onSliderChange, this,  m_angleSlider->GetId());
-
-    ::gui::editor::IEditor::stopping();
+    this->getContainer()->clean();
+    this->::fwGui::IGuiContainerSrv::destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -75,29 +81,29 @@ void TransformationMatrixEditor::stopping() throw(::fwTools::Failed)
 void TransformationMatrixEditor::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::gui::editor::IEditor::configuring();
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void TransformationMatrixEditor::updating() throw(::fwTools::Failed)
 {
+    ::fwData::TransformationMatrix3D::sptr tm3D = this->getObject< ::fwData::TransformationMatrix3D >();
+
+    int angle = acos (tm3D->getCoefficient(0,0)) * 180.0 / M_PI;
+    m_angleSlider->setValue(angle);
 }
 
 //------------------------------------------------------------------------------
 
 void TransformationMatrixEditor::swapping() throw(::fwTools::Failed)
-{
+{}
 
-}
 //------------------------------------------------------------------------------
 
 void TransformationMatrixEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    ::fwData::TransformationMatrix3D::sptr tm3D = this->getObject< ::fwData::TransformationMatrix3D >();
-
-    int angle = acos (tm3D->getCoefficient(0,0)) * 180.0 / M_PI;
-    m_angleSlider->SetValue(angle);
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -108,11 +114,10 @@ void TransformationMatrixEditor::info( std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::onSliderChange( wxCommandEvent& event )
+void TransformationMatrixEditor::onSliderChange( int angle  )
 {
     ::fwData::TransformationMatrix3D::sptr tm3D = this->getObject< ::fwData::TransformationMatrix3D >();
 
-    int angle = m_angleSlider->GetValue();
     double angleRad = angle*M_PI/180.0;
 
     double cosAngle = cos(angleRad);
