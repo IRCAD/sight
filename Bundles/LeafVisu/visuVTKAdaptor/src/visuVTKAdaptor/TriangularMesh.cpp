@@ -231,6 +231,7 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
         {
             if (!adaptor.expired())
             {
+                adaptor.lock()->stop();
                 ::fwServices::OSR::unregisterService(adaptor.lock());
             }
         }
@@ -663,6 +664,7 @@ void TriangularMesh::removeNormalsService()
 {
     if ( !m_normalsService.expired() )
     {
+        m_normalsService.lock()->stop();
         ::fwServices::OSR::unregisterService(m_normalsService.lock());
     }
 }
