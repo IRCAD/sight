@@ -47,6 +47,14 @@ ViewRegistrar::~ViewRegistrar()
 
 //-----------------------------------------------------------------------------
 
+void ViewRegistrar::setParent(std::string wid)
+{
+    OSLM_ASSERT("This method is available only if this container has a WID parent container", !m_parentWid.empty());
+    m_parentWid = wid;
+}
+
+//-----------------------------------------------------------------------------
+
 void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be viewRegistrar",
@@ -188,29 +196,6 @@ void ViewRegistrar::manageToolBar(::fwGui::container::fwToolBar::sptr toolBar )
 
 void ViewRegistrar::unmanage()
 {
-    if ( !m_toolBarSid.first.empty() )
-    {
-        if(m_toolBarSid.second) //service is auto started?
-        {
-            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_toolBarSid.first ) );
-            ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
-            service->stop();
-        }
-        ::fwGui::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
-    }
-
-    if ( !m_menuBarSid.first.empty() )
-    {
-        if(m_menuBarSid.second) //service is auto started?
-        {
-            OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_menuBarSid.first ) );
-            ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first ) ;
-            service->stop();
-        }
-        ::fwGui::GuiRegistry::unregisterSIDMenuBar(m_menuBarSid.first);
-    }
-
-
     BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
     {
         if(sid.second.second) //service is auto started?
@@ -226,8 +211,38 @@ void ViewRegistrar::unmanage()
     {
         ::fwGui::GuiRegistry::unregisterWIDContainer(wid.first);
     }
+}
 
+//-----------------------------------------------------------------------------
 
+void ViewRegistrar::unmanageToolBar()
+{
+    if ( !m_toolBarSid.first.empty() )
+    {
+        if(m_toolBarSid.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_toolBarSid.first ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ViewRegistrar::unmanageMenuBar()
+{
+    if ( !m_menuBarSid.first.empty() )
+    {
+        if(m_menuBarSid.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_menuBarSid.first ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDMenuBar(m_menuBarSid.first);
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -62,9 +62,9 @@ void MenuBarBuilder::destroyMenuBar()
     SLM_ASSERT("Sorry, the parent container must be a wxFrame", frame ) ;
     if (frame)
     {
-        OSLM_ASSERT("ToolBar container must be empty ( " << frame->GetMenuBar()->GetMenuCount() << " children).", frame->GetMenuBar()->GetMenuCount() == 0);
         frame->SetMenuBar( NULL );
     }
+    this->m_menuBar->destroyContainer();
 }
 
 //-----------------------------------------------------------------------------

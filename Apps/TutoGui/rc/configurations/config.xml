@@ -1,18 +1,18 @@
 <plugin id="tutoGuiConfig">
 
-    <extension id="tutoGuiConfig" implements="::fwTools::Object">
+    <extension id="tutoGuiConfig" implements="::fwServices::ServiceObjectConfig">
         <object type="::fwTools::Object">
 
             <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
                 <gui>
                     <frame>
-                        <name>tutoGui</name>
+                        <name>TutoGui</name>
                         <icon>Bundles/TutoGui_0-1/tuto.ico</icon>
                         <minSize width="800" height="600"/>
                     </frame>
                     <menuBar />
                     <toolBar >
-                        <toolBitmapSize height= "50" width="50" />
+                        <toolBitmapSize height= "32" width="32" />
                     </toolBar>
                 </gui>
                 <registry>
@@ -46,7 +46,6 @@
                         <separator />
                         <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                         <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
-                        <separator />
                         <separator />
                         <menuItem name="start 2-3 / stop A-B" style="radio" icon="Bundles/TutoGui_0-1/icons/important.png" />
                         <menuItem name="start A-B / stop 2-3" style="radio" icon="Bundles/TutoGui_0-1/icons/important.png" />
@@ -113,10 +112,10 @@
             </service>
             <service uid="item3" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" />
             <service uid="item4" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" >
-                <state active="false" executable="false" />
+                <state active="false" />
             </service>
             <service uid="item5" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" >
-                <state active="true" executable="false" />
+                <state active="true" />
             </service>
             
             <service uid="item16" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
@@ -161,7 +160,7 @@
                 </gui>
                 <registry>
                     <parent wid="myView" />
-                    <view sid="subView3" start="yes" />                    
+                    <view sid="subView3" start="yes" />               
                 </registry>
             </service>
             

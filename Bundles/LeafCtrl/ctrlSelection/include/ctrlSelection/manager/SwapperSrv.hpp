@@ -93,16 +93,26 @@ protected:
     class SubService
     {
     public:
+
         SubService()
-        { }
+        {
+            m_hasComChannel = false;
+        }
+
         ~SubService()
         { }
+
         SPTR (::fwServices::IService) getService()
                     { return m_service.lock(); }
+
+        SPTR (::fwServices::IService) getComChannel()
+                            { return m_comChannel.lock(); }
 
         ::fwTools::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
+        WPTR(::fwServices::ComChannelService) m_comChannel;
+        bool m_hasComChannel;
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;

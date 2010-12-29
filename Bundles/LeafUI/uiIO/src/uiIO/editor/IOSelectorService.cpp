@@ -36,7 +36,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiIO::editor::IOSelectorService , ::fwTools::Object );
+REGISTER_SERVICE( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwTools::Object );
 
 //------------------------------------------------------------------------------
 
@@ -60,7 +60,6 @@ IOSelectorService::~IOSelectorService()  throw()
 void IOSelectorService::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->initialize();
 
     bool vectorIsAlreadyCleared = false;
 
@@ -112,7 +111,6 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
 void IOSelectorService::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->create();
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +118,6 @@ void IOSelectorService::starting() throw( ::fwTools::Failed )
 void IOSelectorService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->destroy();
 }
 
 //------------------------------------------------------------------------------

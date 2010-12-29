@@ -89,6 +89,17 @@ void FrameLayoutManager::createFrame()
     ::fwGuiWx::container::WxContainer::NewSptr frameContainer;
     frameContainer->setWxContainer(m_wxFrame);
     m_frame = frameContainer;
+
+
+    wxPanel *panel = new wxPanel(m_wxFrame, wxNewId());
+    wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
+    m_wxFrame->SetSizer(boxSizer);
+    boxSizer->Add(panel, 1, wxALL|wxEXPAND);
+    m_wxFrame->Layout();
+
+    ::fwGuiWx::container::WxContainer::NewSptr container;
+    container->setWxContainer(panel);
+    m_container = container;
 }
 
 //-----------------------------------------------------------------------------
@@ -110,6 +121,8 @@ void FrameLayoutManager::destroyFrame()
         m_wxFrame->Reparent(NULL);
     }
 
+    m_container->destroyContainer();
+    m_frame->clean();
     m_frame->destroyContainer();
 
     m_frame.reset();

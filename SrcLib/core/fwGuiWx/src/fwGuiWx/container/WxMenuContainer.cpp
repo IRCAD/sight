@@ -26,6 +26,10 @@ WxMenuContainer::~WxMenuContainer() throw()
 void WxMenuContainer::clean()
 {
     SLM_ASSERT("Sorry, wxMenu not yet initialized, cleaning impossible", m_menu);
+    while( m_menu->GetMenuItemCount() )
+    {
+        m_menu->Remove(0);
+    }
 }
 
 //-----------------------------------------------------------------------------

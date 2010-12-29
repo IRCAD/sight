@@ -108,6 +108,17 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
             info.m_type = SEPARATOR;
             m_actionInfo.push_back( info ) ;
         }
+
+        if( (*iter)->getName() == "menu" )
+        {
+            ActionInfo info;
+            info.m_isMenu = true;
+            if( (*iter)->hasAttribute("name") )
+            {
+                info.m_name = (*iter)->getExistingAttributeValue("name") ;
+            }
+            m_actionInfo.push_back( info ) ;
+        }
     }
 }
 
@@ -120,6 +131,11 @@ void IMenuLayoutManager::destroyActions()
         menuItem->destroyContainer();
     }
     m_menuItems.clear();
+    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    {
+        menu->destroyContainer();
+    }
+    m_menus.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -127,6 +143,13 @@ void IMenuLayoutManager::destroyActions()
 std::vector< ::fwGui::container::fwMenuItem::sptr > IMenuLayoutManager::getMenuItems()
 {
     return this->m_menuItems;
+}
+
+//-----------------------------------------------------------------------------
+
+std::vector< ::fwGui::container::fwMenu::sptr > IMenuLayoutManager::getMenus()
+{
+    return this->m_menus;
 }
 
 //-----------------------------------------------------------------------------

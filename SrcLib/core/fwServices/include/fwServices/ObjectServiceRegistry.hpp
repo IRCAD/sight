@@ -24,6 +24,7 @@
 
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
+#include "fwServices/ConfigTemplateManager.hpp"
 
 namespace fwServices
 {
@@ -77,16 +78,11 @@ public:
 
     //@{
 
-    /**
-     * @brief Define the root object class name
-     */
-    FWSERVICES_API static void setRootObjectClassName(std::string name) ;
-
-    /**
-     * @brief Set the root object
-     * @note Care must be taken as external affectation may lead to conflict with internal one, through initializeRootObject() method invocation.
-     */
-    FWSERVICES_API static void setRootObject(::fwTools::Object::sptr obj) ;
+//    /**
+//     * @brief Set the root object
+//     * @note Care must be taken as external affectation may lead to conflict with internal one, through initializeRootObject() method invocation.
+//     */
+//    FWSERVICES_API static void setRootObject(::fwTools::Object::sptr obj) ;
 
     /**
      * @brief Define the root object XML like configuration name, to be later retrieved from component graph analysis
@@ -95,12 +91,12 @@ public:
 
     FWSERVICES_API static void setRootObjectConfigurationFile(std::string _rootObjectConfigurationFile) ;
 
-    /**
-     * @brief Return true if the proposed XML like configuration is valid.
-     *
-     * Validity is checked through component graph analysis, class registry requests and XSD based schema analysis
-     */
-    FWSERVICES_API static bool isRootObjectConfigurationValid() ;
+//    /**
+//     * @brief Return true if the proposed XML like configuration is valid.
+//     *
+//     * Validity is checked through component graph analysis, class registry requests and XSD based schema analysis
+//     */
+//    FWSERVICES_API static bool isRootObjectConfigurationValid() ;
 
     /**
      * @brief Return true if the root object is initialized (i.e. instanciated with attached services, appropriately configured and started and updated)
@@ -304,11 +300,9 @@ private :
      */
     static ObjectServiceRegistry::sptr m_instance;
 
-    /**
-     * @brief Class name of the root object.
-     * @note The boolean is false if name undefined as at m_instance initialization.
-     */
-    std::pair< bool , std::string > m_rootObjectClassName ;
+    /// Defines the string used to defined in bundles extensions that describes configurations
+    static const std::string CONFIG_EXTENSION_POINT;
+
     /**
      * @brief Name of the configuration for the root object
      * @note The boolean is false if name undefined as at m_instance initialization.
@@ -326,12 +320,13 @@ private :
     /**
      * @brief Strong reference of the root object
      */
-    ::fwTools::Object::sptr m_rootObject ;
+    //::fwTools::Object::sptr m_rootObject ;
+    ::fwServices::ConfigTemplateManager::sptr m_ctm;
 
     /**
      * @brief Strong reference of the root object configuration
      */
-    ::fwRuntime::ConfigurationElement::sptr m_rootObjectConfiguration ;
+    //::fwRuntime::ConfigurationElement::sptr m_rootObjectConfiguration ;
 
 
 };

@@ -7,13 +7,15 @@
 #ifndef _GUIWX_EDITOR_DUMMYIEDITOR_HPP_
 #define _GUIWX_EDITOR_DUMMYIEDITOR_HPP_
 
+#include <wx/stattext.h>
+
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
 #include "guiWx/config.hpp"
 
-namespace guiWx
+namespace gui
 {
 
 namespace editor
@@ -82,9 +84,10 @@ protected:
 
 private:
     /**
-     * @brief optionnal text
+     * @brief optional text
      */
     std::string m_text;
+    wxStaticText*  m_staticText;
 };
 
 }

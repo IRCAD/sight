@@ -8,6 +8,7 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QLayout>
+#include <QDesktopWidget>
 
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -73,8 +74,25 @@ void FrameLayoutManager::createFrame()
         m_qtWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
     }
 
-    m_qtWindow->move( frameInfo.m_position.first, frameInfo.m_position.second );
-    m_qtWindow->resize( frameInfo.m_size.first, frameInfo.m_size.second );
+    int sizeX = frameInfo.m_size.first;
+    int sizeY = frameInfo.m_size.second;
+    if (sizeX > 0 && sizeY > 0)
+    {
+        m_qtWindow->resize( sizeX, sizeY );
+    }
+
+    int posX = frameInfo.m_position.first;
+    int posY = frameInfo.m_position.second;
+
+    if (posX < 0 && posY < 0)
+    {
+        QRect frect = m_qtWindow->frameGeometry();
+        frect.moveCenter(QDesktopWidget().availableGeometry().center());
+        posX = frect.x();
+        posY = frect.y();
+    }
+    m_qtWindow->move( posX, posY );
+
     this->setState(frameInfo.m_state);
 
     m_qtWindow->show();
@@ -83,9 +101,12 @@ void FrameLayoutManager::createFrame()
 
     QObject::connect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
 
+    ::fwGuiQt::container::QtContainer::NewSptr container;
+    container->setQtContainer(m_qtWindow->centralWidget());
+    m_container = container;
+
     ::fwGuiQt::container::QtContainer::NewSptr frameContainer;
-    //frameContainer->setQtContainer(m_qtWindow);
-    frameContainer->setQtContainer(m_qtWindow->centralWidget());
+    frameContainer->setQtContainer(m_qtWindow);
     m_frame = frameContainer;
 }
 
@@ -93,13 +114,14 @@ void FrameLayoutManager::createFrame()
 
 void FrameLayoutManager::destroyFrame()
 {
+
     this->getRefFrameInfo().m_state = this->getState();
     this->getRefFrameInfo().m_size.first = m_qtWindow->size().width();
     this->getRefFrameInfo().m_size.second = m_qtWindow->size().height();
     this->getRefFrameInfo().m_position.first = m_qtWindow->pos().x();
     this->getRefFrameInfo().m_position.second = m_qtWindow->pos().y();
     this->writeConfig();
-
+    m_qtWindow->close();
     QObject::disconnect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
 
     if (m_qtWindow->layout())
@@ -107,7 +129,8 @@ void FrameLayoutManager::destroyFrame()
         m_qtWindow->layout()->deleteLater();
         m_qtWindow->setLayout(0);
     }
-
+    m_container->destroyContainer();
+    m_frame->clean();
     m_qtWindow->setParent(0);
     m_qtWindow->deleteLater();
     m_frame->destroyContainer();

@@ -46,20 +46,11 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     m_tabWidget = new QTabWidget(qtContainer);
 
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom);
-    if(qtContainer->layout() && qobject_cast<QVBoxLayout*> ( qtContainer->layout() ) )
+    if (qtContainer->layout())
     {
-        QVBoxLayout * vLayout = qobject_cast<QVBoxLayout*> ( qtContainer->layout() );
-        vLayout->addLayout(layout);
+        qtContainer->layout()->deleteLater();
     }
-    else
-    {
-        if (qtContainer->layout())
-        {
-            qtContainer->layout()->deleteLater();
-        }
-        qtContainer->setLayout(layout);
-    }
-
+    qtContainer->setLayout(layout);
 
     layout->addWidget( m_tabWidget );
 

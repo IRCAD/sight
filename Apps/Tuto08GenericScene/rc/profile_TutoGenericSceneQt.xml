@@ -9,7 +9,6 @@
     <activate id="gui" version="0-1" />
     <activate id="guiQt" version="0-1" >
         <param id="startingMode" value="windows" />
-        <param id="rootObject" value="::fwData::Composite" />
         <param id="config" value="Tuto08GenericScene" />
         <param id="configFile" value="./Bundles/Tuto08GenericScene_0-1/configurations/config_TutoGenericScene.xml" />
     </activate>

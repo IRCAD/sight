@@ -27,6 +27,7 @@ QtMenuContainer::~QtMenuContainer() throw()
 void QtMenuContainer::clean()
 {
     SLM_ASSERT("Sorry, Qt menu not yet initialized, cleaning impossible", m_menu);
+    m_menu->clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -34,6 +35,7 @@ void QtMenuContainer::clean()
 void QtMenuContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, Qt menu not yet initialized, cleaning impossible", m_menu);
+    m_menu->deleteLater();
 }
 
 //-----------------------------------------------------------------------------

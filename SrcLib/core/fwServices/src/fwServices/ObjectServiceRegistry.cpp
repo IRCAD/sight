@@ -17,7 +17,7 @@
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
 #include <fwRuntime/Extension.hpp>
-
+#include <fwRuntime/profile/Profile.hpp>
 
 #include "fwServices/Deleter.hpp"
 #include "fwServices/ObjectServiceRegistry.hpp"
@@ -29,17 +29,25 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
 
+#ifdef USE_SRVFAC
+#include "fwServices/ServiceFactoryRegistry.hpp"
+#endif
 
 namespace fwServices
 {
+
+//------------------------------------------------------------------------------
 
 ObjectServiceRegistry::sptr ObjectServiceRegistry::m_instance;
 
 //------------------------------------------------------------------------------
 
+const std::string ObjectServiceRegistry::CONFIG_EXTENSION_POINT = "::fwServices::ServiceObjectConfig";
+
+//------------------------------------------------------------------------------
+
 ObjectServiceRegistry::ObjectServiceRegistry()
 {
-    m_rootObjectClassName.first = false  ;
     m_rootObjectConfigurationName.first = false ;
     m_isRootInitialized = false ;
 }
@@ -53,22 +61,16 @@ ObjectServiceRegistry::~ObjectServiceRegistry()
 
 //------------------------------------------------------------------------------
 
-void ObjectServiceRegistry::setRootObjectClassName(std::string name)
-{
-    getDefault()->m_rootObjectClassName = std::pair< bool , std::string >( true , name ) ;
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
-{
-    getDefault()->m_rootObject = obj;
-}
+//void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
+//{
+//    getDefault()->m_rootObject = obj;
+//}
 
 //------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::setRootObjectConfigurationName(std::string name)
 {
+    SLM_ASSERT("Sorry, configuration name is an empty string.", ! name.empty() );
     getDefault()->m_rootObjectConfigurationName = std::pair< bool , std::string >( true , name ) ;
 }
 
@@ -76,6 +78,7 @@ void ObjectServiceRegistry::setRootObjectConfigurationName(std::string name)
 
 void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObjectConfigurationFile)
 {
+    SLM_ASSERT("Sorry, configuration file is an empty string.", ! _rootObjectConfigurationFile.empty() );
     getDefault()->m_rootObjectConfigurationFile = std::pair< bool , std::string >( true , _rootObjectConfigurationFile ) ;
 }
 
@@ -83,64 +86,69 @@ void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObje
 
 ::fwTools::Object::sptr ObjectServiceRegistry::getRootObject()
 {
-    return getDefault()->m_rootObject ;
+    //return getDefault()->m_rootObject ;
+    return getDefault()->m_ctm->getConfigRoot();
 }
 
-//------------------------------------------------------------------------------
-
-bool ObjectServiceRegistry::isRootObjectConfigurationValid()
-{
-    if( getDefault()->m_rootObjectClassName.first && getDefault()->m_rootObjectConfigurationName.first )
-    {
-        assert( getDefault()->m_rootObjectClassName.first ) ;
-        assert( getDefault()->m_rootObjectConfigurationName.first ) ;
-        std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-        for( std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ; iter != extensions.end() ; ++iter )
-        {
-            if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
-            {
-                return ::fwServices::validation::checkObject( *((*iter)->begin()) ) ;
-            }
-        }
-    }
-    return true ;
-}
+////------------------------------------------------------------------------------
+//
+//bool ObjectServiceRegistry::isRootObjectConfigurationValid()
+//{
+//    return ::fwServices::validation::checkObject( getDefault()->m_rootObjectConfiguration ) ;
+//}
 
 //------------------------------------------------------------------------------
 
 void ObjectServiceRegistry::initializeRootObject()
 {
-    if( !getDefault()->m_isRootInitialized && getDefault()->m_rootObjectClassName.first && getDefault()->m_rootObjectConfigurationName.first )
-    {
-        // Load another bundle
-        if ( getDefault()->m_rootObjectConfigurationFile.first )
-        {
-            ::boost::filesystem::path filePath ( getDefault()->m_rootObjectConfigurationFile.second );
-            SPTR(::fwRuntime::Bundle) configBundle = ::fwRuntime::io::BundleDescriptorReader::createBundleFromXmlPlugin( filePath );
-            ::fwRuntime::Runtime::getDefault()->addBundle( configBundle );
-            configBundle->setEnable( true );
-        }
 
-        assert( getDefault()->isRootObjectConfigurationValid() );
-        assert( getDefault()->m_rootObjectClassName.first ) ;
-        assert( getDefault()->m_rootObjectConfigurationName.first ) ;
+    SLM_ASSERT("Sorry, the OSR is already initialized.", ! getDefault()->m_isRootInitialized );
+    SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
+    SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
 
-        std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( getDefault()->m_rootObjectClassName.second ) ;
-        for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
-                iter != extensions.end() ;
-                ++iter )
-        {
-            if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
-            {
-                getDefault()->m_rootObjectConfiguration = *((*iter)->begin()) ;
-            }
-        }
+#ifdef USE_SRVFAC
+    ::fwServices::ServiceFactoryRegistry::getDefault()->parseBundleInformation();
+#endif
 
-        getDefault()->m_rootObject = ::fwServices::New(getDefault()->m_rootObjectConfiguration);
-        ::fwServices::start(getDefault()->m_rootObjectConfiguration) ;
-        ::fwServices::update(getDefault()->m_rootObjectConfiguration) ;
-        getDefault()->m_isRootInitialized = true ;
-    }
+    // ToDo Correct this hack
+    // Load another "pseudo" bundle
+    ::boost::filesystem::path filePath ( getDefault()->m_rootObjectConfigurationFile.second );
+    SPTR(::fwRuntime::Bundle) configBundle = ::fwRuntime::io::BundleDescriptorReader::createBundleFromXmlPlugin( filePath );
+    ::fwRuntime::Runtime::getDefault()->addBundle( configBundle );
+    configBundle->setEnable( true );
+
+
+//    // Research the config extension
+//    bool extensionIsFound = false;
+//    std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( CONFIG_EXTENSION_POINT ) ;
+//    for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
+//            iter != extensions.end() ;
+//            ++iter )
+//    {
+//        if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
+//        {
+//            getDefault()->m_rootObjectConfiguration = *((*iter)->begin()) ;
+//            extensionIsFound = true;
+//        }
+//    }
+
+
+
+    //OSLM_ASSERT("Sorry, extension "<< getDefault()->m_rootObjectConfigurationName.second <<" (that contains the configuration of the App) is not found. This extension must exist and must implements extension-point " << CONFIG_EXTENSION_POINT, extensionIsFound );
+
+    //SLM_ASSERT("Sorry, the xml that describes extension "<< getDefault()->m_rootObjectConfigurationName.second <<" is not valid.", getDefault()->isRootObjectConfigurationValid() );
+
+    getDefault()->m_ctm = ConfigTemplateManager::New();
+    getDefault()->m_ctm->setConfig( getDefault()->m_rootObjectConfigurationName.second, CONFIG_EXTENSION_POINT );
+    getDefault()->m_ctm->launch();
+    getDefault()->m_isRootInitialized = true;
+
+
+
+//    getDefault()->m_rootObject = ::fwServices::New(getDefault()->m_rootObjectConfiguration);
+//    ::fwServices::start(getDefault()->m_rootObjectConfiguration) ;
+//    ::fwServices::update(getDefault()->m_rootObjectConfiguration) ;
+//    getDefault()->m_isRootInitialized = true ;
 }
 
 //------------------------------------------------------------------------------
@@ -148,30 +156,41 @@ void ObjectServiceRegistry::initializeRootObject()
 void ObjectServiceRegistry::uninitializeRootObject()
 {
     SLM_TRACE_FUNC();
-
-    if( getDefault()->m_isRootInitialized )
+    SLM_WARN_IF("(Hack) Sorry, the OSR must be initialized to uninitialize it. ToDo => transform in assert", ! getDefault()->m_isRootInitialized );
+    if ( getDefault()->m_isRootInitialized )
     {
-        assert( getDefault()->m_rootObjectClassName.first ) ;
+        // Setting initialization to false
+        getDefault()->m_isRootInitialized = false ;
+
         assert( getDefault()->m_rootObjectConfigurationName.first ) ;
         // Stop services reported in m_rootObjectConfiguration before stopping everything
-        ::fwServices::stopAndUnregister(getDefault()->m_rootObjectConfiguration) ;
+
+        //::fwServices::stopAndUnregister(getDefault()->m_rootObjectConfiguration) ;
+        getDefault()->m_ctm->stopAndDestroy();
 
         OSLM_WARN_IF("Sorry, few services still exist before erasing root object ( cf debug following message )" << std::endl << ::fwServices::OSR::getRegistryInformation(),
-                        getDefault()->m_container.size() != 1 || getDefault()->m_container.begin()->second.size() != 0 );
+                getDefault()->m_container.size() != 1 || getDefault()->m_container.begin()->second.size() != 0 );
 
         // Unregister root object services
-        ::fwServices::OSR::unregisterServices(getDefault()->m_rootObject);
+        //::fwServices::OSR::unregisterServices( getDefault()->m_ctm->getConfigRoot() );
 
 
         ::fwServices::GlobalEventManager::getDefault()->clearMessages();
 
         SLM_TRACE("uninitializeRootObject : Reset the last shared_ptr on root object.");
-        // Reset the root object: involve complete m_container clearing
-        getDefault()->m_rootObject.reset();
-        assert( getDefault()->m_rootObject.use_count() == 0 );
-        // Setting initialization to false
-        getDefault()->m_isRootInitialized = false ;
 
+        // Reset the root object: involve complete m_container clearing
+        //getDefault()->m_rootObject.reset();
+        //assert( getDefault()->m_rootObject.use_count() == 0 );
+
+        ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+        SLM_TRACE("Stopping Profile");
+        profile->stop();
+        SLM_TRACE("Profile Stopped");
+
+#ifdef USE_SRVFAC
+        ServiceFactoryRegistry::getDefault()->clearFactory();
+#endif
         // Clear all factories before stop application.
         ::fwTools::ClassFactoryRegistry::getFactories().clear();
     }
@@ -356,7 +375,9 @@ void ObjectServiceRegistry::cleanExpiredObject()
                 if (srv != NULL )
                 {
                     srv->stop();
+#ifndef USE_SRVFAC
                     ::fwServices::unregisterComChannels( srv ) ;
+#endif
                 }
             }
             services.clear() ;
@@ -383,8 +404,31 @@ void ObjectServiceRegistry::cleanExpiredObject()
 void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _service )
 {
     SLM_TRACE_FUNC();
+
+#ifdef USE_SRVFAC
+    OSLM_ASSERT( "Sorry, the service ( "<< _service->getID() <<" ) must be stop before unregister it.", _service->isStopped() );
+
+//    typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
+//    OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
+//    for( OContainerType::iterator iter = obs.begin() ; iter != obs.end() ; ++iter )
+//    {
+//
+//        if( (*iter)->isValid() )
+//        {
+//            // Check whether _service is the subject (IEditionService) or the destination service
+//            if( (*iter)->getDest() == _service || (*iter)->getSrc() == _service )
+//            {
+//                OSLM_FATAL("Com channel still exist ( "<< (*iter)->getID() <<" ), but object (Src or Dest) is under destruction. ( Src = " << (*iter)->getSrc()->getID() <<" , Dest = "<< (*iter)->getDest()->getID()<<" )");
+//            }
+//        }
+//    }
+
+#else
     _service->stop();
     ::fwServices::unregisterComChannels( _service ) ;
+#endif
+
+
     removeFromContainer( _service );
 }
 

@@ -13,7 +13,8 @@
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwServices/IService.hpp>
+#include "fwServices/IService.hpp"
+#include "fwServices/ServiceFactoryRegistrar.hpp"
 
 namespace fwServices
 {
@@ -45,7 +46,7 @@ namespace fwServices
     public:                                                                                                                        \
         BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceObject >));                                             \
     };                                                                                                                             \
-    REGISTER_BINDING_ID_CPY(                                                                                                       \
+    REGISTER_BINDING_ID_CPY_V2(                                                                                                       \
             ::fwServices::IService ,                                                                                               \
             ServiceImpl ,                                                                                                          \
             ::fwServices::ObjectServiceKeyType ,                                                                                   \

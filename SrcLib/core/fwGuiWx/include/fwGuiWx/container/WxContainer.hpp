@@ -53,6 +53,7 @@ public:
     FWGUIWX_API virtual wxWindow* getWxContainer();
     FWGUIWX_API virtual bool isShownOnScreen();
 
+    FWGUIWX_API virtual void setVisible(bool isVisible);
 
 private :
 

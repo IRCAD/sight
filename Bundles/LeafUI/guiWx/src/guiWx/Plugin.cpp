@@ -40,15 +40,14 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     SLM_TRACE_FUNC();
 
-    if ( this->getBundle()->hasParameter("rootObject")
-            && this->getBundle()->hasParameter("config")
-            && this->getBundle()->hasParameter("configFile"))
+    SLM_ASSERT("Sorry, the rootObject attribute is deprecated, you must remove this field in the profile.xml. You must also change in the configuration the field implements=\"rootObject\" by implements= \"::fwServices::ServiceObjectConfig\"", ! this->getBundle()->hasParameter("rootObject") );
+
+    if ( this->getBundle()->hasParameter("config")
+         && this->getBundle()->hasParameter("configFile"))
     {
-        std::string objectClassName(  this->getBundle()->getParameterValue("rootObject") ) ;
         std::string objectConfigurationName( this->getBundle()->getParameterValue("config") ) ;
         std::string objectConfigurationFile( this->getBundle()->getParameterValue("configFile") ) ;
 
-        ::fwServices::OSR::setRootObjectClassName( objectClassName ) ;
         ::fwServices::OSR::setRootObjectConfigurationName(objectConfigurationName) ;
         ::fwServices::OSR::setRootObjectConfigurationFile(objectConfigurationFile) ;
     }

@@ -127,6 +127,9 @@ void ComChannelService::swapping() throw(fwTools::Failed)
 
 void ComChannelService::stopping() throw(fwTools::Failed)
 {
+    OSLM_DEBUG( "Stopping ComChannelService : " << getInfo() );
+    SLM_ASSERT( "Sorry, before stopping, source and dest must still exist in system.", ! m_destination.expired() && ! m_source.expired() );
+
     // Pre condition
     if( !m_source.expired() )
     {
@@ -136,45 +139,93 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             this->info( msg ) ;
             SLM_TRACE( "Stopping ComChannelService " + msg.str() ); // crash from spylog???
             m_source.lock()->detach( this->getSptr() );
+#ifdef USE_SRVFAC
+            int nbObservers = m_source.lock()->getNbObservers();
+            if(nbObservers == 0)
+            {
+                m_source.lock()->stop();
+                ::fwServices::erase(m_source.lock());
+            }
+#endif
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
+std::string ComChannelService::getInfo()
+{
+    std::stringstream sstr;
+
+    std::string fwIdSrc = ( ! m_source.expired() ? m_source.lock()->getID() : "fwIdExpired" );
+    std::string fwIdDest = ( ! m_destination.expired() ? m_destination.lock()->getID() : "fwIdExpired" );
+    sstr << "Com Channel ( "<< this->getID() << " ) Src  fwId = " << fwIdSrc << ", Dest fwId = " << fwIdDest;
+
+    return sstr.str();
+}
+
+//------------------------------------------------------------------------------
+
 void ComChannelService::info(std::ostream &_sstream )
 {
-    // Status
-    std::string status ;
-    if( !m_source.expired() )
+    if( ! this->isStopped() )
     {
-        if( m_source.lock()->isAttached( this->getSptr() ) )
+        // Status
+        std::string status ;
+        if( !m_source.expired() )
         {
-            status = "ON" ;
+            if( m_source.lock()->isAttached( this->getSptr() ) )
+            {
+                status = "ON" ;
+            }
+            else
+            {
+                status = "OFF" ;
+            }
         }
-        else
+
+        // Update _sstream
+        if(!m_source.expired() )
         {
-            status = "OFF" ;
+            if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
+            {
+                ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
+                _sstream << "ComChannelService (" << status << ") "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
+            }
+            else
+            {
+                _sstream << "ComChannelService (" << status << ") "<< " SRC not specified" ;
+            }
+        }
+
+        if( !m_destination.expired() )
+        {
+            _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
+        }
+
+    }
+    else
+    {
+        // Update _sstream
+        if(!m_source.expired() )
+        {
+            if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
+            {
+                ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
+                _sstream << "ComChannelService ( com is stopped ) "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
+            }
+            else
+            {
+                _sstream << "ComChannelService ( com is stopped ) "<< " SRC not specified" ;
+            }
+        }
+
+        if( !m_destination.expired() )
+        {
+            _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
         }
     }
 
-    // Update _sstream
-    if(!m_source.expired() )
-    {
-        if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
-        {
-            ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
-            _sstream << "ComChannelService (" << status << ") "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
-        }
-        else
-        {
-            _sstream << "ComChannelService (" << status << ") "<< " SRC not specified" ;
-        }
-    }
-    if( !m_destination.expired() )
-    {
-        _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
-    }
 }
 
 //------------------------------------------------------------------------------

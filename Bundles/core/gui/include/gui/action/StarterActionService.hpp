@@ -20,8 +20,7 @@ namespace action
 {
 
 /**
- * @brief   This action reset root object. All services are eliminated as well as objects composing the root object.
- * @class   CloseAction.
+ * @class   StarterActionService.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  */

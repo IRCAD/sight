@@ -44,6 +44,7 @@ namespace fwServices
     }
     else
     {
+        SLM_FATAL("ACH => not tolerated  today ?");
         implementationType = ::fwServices::getDefaultImplementationIds( obj , serviceType );
     }
     // Add service with possible id
@@ -121,6 +122,12 @@ namespace fwServices
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {
+
+#ifdef USE_SRVFAC
+    IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( serviceId, _implementationId );
+    ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
+    return srv;
+#else
     OSLM_ASSERT("Unable to add service " << _implementationId<< " on a null object", obj);
     // Looking for services provided by components (n implementations)
     if( ::fwServices::bundle::support(obj, serviceId) )
@@ -136,12 +143,19 @@ namespace fwServices
 
     OSLM_WARN( "No service matching the identifier " << serviceId );
     return ::fwServices::IService::sptr() ;
+#endif
 }
 
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string uid)
 {
+#ifdef USE_SRVFAC
+    IService::sptr srv = ::fwServices::add( obj , serviceId , _implementationId ) ;
+    assert( !srv->hasID() );
+    srv->setID( uid ) ;
+    return srv ;
+#else
     OSLM_ASSERT("Unable to add service " << _implementationId<< " on a null object", obj);
     ::fwServices::IService::sptr service ;
     // Looking for services provided by components (n implementations)
@@ -164,6 +178,7 @@ namespace fwServices
 
     OSLM_WARN( "No service matching the identifier " << serviceId );
     return service ;
+#endif
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
-﻿<plugin id="tuto">
+<plugin id="tuto">
 
-    <extension id="tuto" implements="::fwData::Composite">
+    <extension id="tuto" implements="::fwServices::ServiceObjectConfig">
 
         <object type="::fwData::Composite" >
         
@@ -209,7 +209,7 @@
 
             <item key="mesh">
                 <object uid="mesh" type="::fwData::TriangularMesh">
-                    <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />
+                    <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
                 </object>
             </item>
             

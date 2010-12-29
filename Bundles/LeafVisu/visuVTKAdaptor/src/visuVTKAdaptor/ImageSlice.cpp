@@ -101,6 +101,7 @@ void ImageSlice::doStop() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
     if (!m_imageComChannel.expired())
     {
+        m_imageComChannel.lock()->stop();
         ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
     }
     this->removeFromPicker(m_imageActor);
@@ -147,6 +148,7 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
 
     if (!m_imageComChannel.expired())
     {
+        m_imageComChannel.lock()->stop();
         ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
     }
     m_imageComChannel = ::fwServices::registerCommunicationChannel(image, this->getSptr());

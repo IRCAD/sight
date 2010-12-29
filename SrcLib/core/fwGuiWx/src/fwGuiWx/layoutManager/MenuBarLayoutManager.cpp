@@ -61,13 +61,9 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 void MenuBarLayoutManager::destroyLayout()
 {
     wxMenuBar* menuBar = m_parent->getWxMenuBar();
-    BOOST_FOREACH(::fwGui::container::fwMenu::sptr menu, m_menus)
-    {
-        std::string name = m_menuNames[this->getMenuPosition(menu)];
-        int index = menuBar->FindMenu(::fwWX::std2wx(name));
-        SLM_ASSERT("Menu " << name << " not found", index != wxNOT_FOUND);
-        menuBar->Remove(index);
-    }
+
+    this->destroyMenus();
+    m_parent->clean();
     m_menus.clear();
 }
 

@@ -89,6 +89,15 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             std::string height = view->getExistingAttributeValue("minHeight") ;
             vi.m_minSize.second = ::boost::lexical_cast< int >(height) ;
         }
+
+        if( view->hasAttribute("visible") )
+        {
+            std::string visible = view->getExistingAttributeValue("visible") ;
+            OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                    (visible == "true") || (visible == "false") ||
+                    (visible == "yes") || (visible == "no"));
+            vi.m_visible = ((visible == "true") || (visible == "yes"));
+        }
         m_views.push_back(vi);
     }
 }

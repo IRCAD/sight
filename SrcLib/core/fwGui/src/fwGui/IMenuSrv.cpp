@@ -68,6 +68,7 @@ void IMenuSrv::create()
     m_layoutManager->createLayout(menu);
 
     m_registrar->manage(m_layoutManager->getMenuItems());
+    m_registrar->manage(m_layoutManager->getMenus());
 }
 
 //-----------------------------------------------------------------------------

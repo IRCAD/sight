@@ -70,6 +70,7 @@ void IToolBarSrv::create()
     m_layoutManager->createLayout(toolBar);
 
     m_registrar->manage(m_layoutManager->getMenuItems());
+    m_registrar->manage(m_layoutManager->getMenus());
 }
 
 //-----------------------------------------------------------------------------

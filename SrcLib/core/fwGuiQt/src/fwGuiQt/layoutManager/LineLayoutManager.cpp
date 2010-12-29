@@ -55,19 +55,11 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
         layout->setDirection(QBoxLayout::TopToBottom);
     }
 
-    if(qtContainer->layout() && qobject_cast<QVBoxLayout*> ( qtContainer->layout() ) )
+    if (qtContainer->layout())
     {
-        QVBoxLayout * vLayout = qobject_cast<QVBoxLayout*> ( qtContainer->layout() );
-        vLayout->addLayout(layout);
+        qtContainer->layout()->deleteLater();
     }
-    else
-    {
-        if (qtContainer->layout())
-        {
-            qtContainer->layout()->deleteLater();
-        }
-        qtContainer->setLayout(layout);
-    }
+    qtContainer->setLayout(layout);
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
     BOOST_FOREACH ( ViewInfo viewInfo, views)
@@ -94,6 +86,8 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 
         layout->addWidget( panel );
         layout->setStretchFactor(panel, viewInfo.m_proportion);
+
+        subContainer->setVisible( viewInfo.m_visible );
     }
 }
 

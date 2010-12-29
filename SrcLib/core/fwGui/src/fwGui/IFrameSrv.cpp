@@ -98,8 +98,9 @@ void IFrameSrv::create()
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
     m_frameLayoutManager->createFrame();
     ::fwGui::container::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
+    ::fwGui::container::fwContainer::sptr container = m_frameLayoutManager->getContainer();
     std::vector< ::fwGui::container::fwContainer::sptr > subViews;
-    subViews.push_back(frame);
+    subViews.push_back(container);
     m_viewRegistrar->manage(subViews);
 
     ::fwGui::layoutManager::IFrameLayoutManager::CloseCallback fct;
@@ -133,20 +134,22 @@ void IFrameSrv::create()
 void IFrameSrv::destroy()
 {
     SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
-    m_viewRegistrar->unmanage();
-
-    if (m_hasMenuBar)
-    {
-        SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
-        m_menuBarBuilder->destroyMenuBar();
-    }
 
     if (m_hasToolBar)
     {
+        m_viewRegistrar->unmanageToolBar();
         SLM_ASSERT("ToolBarBuilder must be initialized.",m_toolBarBuilder);
         m_toolBarBuilder->destroyToolBar();
     }
 
+    if (m_hasMenuBar)
+    {
+        m_viewRegistrar->unmanageMenuBar();
+        SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
+        m_menuBarBuilder->destroyMenuBar();
+    }
+
+    m_viewRegistrar->unmanage();
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
     m_frameLayoutManager->destroyFrame();
 }

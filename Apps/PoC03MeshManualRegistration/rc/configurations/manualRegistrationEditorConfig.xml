@@ -1,0 +1,50 @@
+<extension id="manualRegistrationEditorConfig" implements="::fwServices::ServiceObjectConfig">
+
+    <object type="::fwData::Composite">
+
+        <!-- MAIN FRAME -->
+        <service uid="registrationEditorFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Manual Rgistration Editor</name>
+                    <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
+                    <minSize width="400" height="600" />
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="multiViewManualRegistration" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiViewManualRegistration" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view minHeight="80" proportion="0" />
+                    <view minHeight="220" proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="toto" />
+                <view wid="titi" />
+                <view wid="tutu" />
+            </registry>
+        </service>
+
+        <item key="myCompositeVisu">
+            <object uid="myCompositeVisu" src="ref">
+              
+            </object>
+        </item>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="registrationEditorFrame" />
+		
+        <stop uid="registrationEditorFrame" />
+
+    </object>
+
+</extension>

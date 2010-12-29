@@ -1,5 +1,5 @@
 <plugin id="FilterConfiguration">
-    <extension id="FilterConfig" implements="::fwData::Composite">
+    <extension id="FilterConfig" implements="::fwServices::ServiceObjectConfig">
     <!-- Root object -->
     <object type="::fwData::Composite">
         <!-- Windows & Main Menu -->
@@ -83,7 +83,7 @@
         <item key="myImage1">
             <object uid="myImage1" type="::fwData::Image">
                 <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoComChannel="yes" />
-                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathImageFile" autoComChannel="no" >
+                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoComChannel="no" >
                     <type mode="reader"/>
                 </service>
             </object>

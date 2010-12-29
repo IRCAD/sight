@@ -43,6 +43,8 @@ public:
 
     FWGUI_API virtual ::fwGui::container::fwContainer::sptr getParent();
 
+    FWGUI_API virtual void setParent(std::string wid);
+
     /**
      * @brief Initialize managers.
      *
@@ -114,6 +116,20 @@ public:
      * All services managed in local subViews will be stopped.
      */
     FWGUI_API virtual void unmanage();
+
+    /**
+     * @brief Stopping view manager.
+     * ToolBar service will be stopped.
+     */
+    FWGUI_API virtual void unmanageToolBar();
+
+    /**
+     * @brief Stopping view manager.
+     * MenuBar service will be stopped.
+     */
+    FWGUI_API virtual void unmanageMenuBar();
+
+
 
 protected:
 
