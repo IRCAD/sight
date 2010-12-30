@@ -714,15 +714,6 @@ void TriangularMesh::buildPipeline()
     m_materialService              = materialService;
     m_unclippedPartMaterialService = unclippedPartMaterialService;
 
-    if ( m_manageMapperInput )
-    {
-        this->updateMaterial( m_material );
-        this->updateTriangularMesh( triangularMesh );
-        this->updateMapper();
-
-        this->updateOptionsMode();
-    }
-
     if (!m_actor)
     {
         m_actor = this->newActor();
@@ -731,6 +722,15 @@ void TriangularMesh::buildPipeline()
         {
             this->addToPicker(m_actor);
         }
+    }
+
+    if ( m_manageMapperInput )
+    {
+        this->updateMaterial( m_material );
+        this->updateTriangularMesh( triangularMesh );
+        this->updateMapper();
+
+        this->updateOptionsMode();
     }
 
     setActorPropertyToUnclippedMaterial(false);
@@ -853,7 +853,7 @@ vtkActor *TriangularMesh::newActor()
         fieldTransform = ::fwData::TransformationMatrix3D::New();
         triangularMesh->setFieldSingleElement("TransformMatrix", fieldTransform);
     }
-    
+
     vtkTransform *vtkFieldTransform = vtkTransform::New();
     vtkFieldTransform->Identity();
     m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
