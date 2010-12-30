@@ -1,3 +1,4 @@
+#include <boost/lexical_cast.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderWindow.h>
@@ -25,8 +26,8 @@ class BoxClallback : public ::vtkCommand
 {
 public:
 
-    static BoxClallback* New(::visuVTKAdaptor::BoxWidget* adaptor) { 
-        BoxClallback *cb = new BoxClallback; 
+    static BoxClallback* New(::visuVTKAdaptor::BoxWidget* adaptor) {
+        BoxClallback *cb = new BoxClallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
@@ -48,7 +49,7 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, BoxWidget, ::fwData::Transf
 
 BoxWidget::BoxWidget() throw()
 : ::fwRenderVTK::IVtkAdaptorService(),
-  m_vtkBoxWidget( 0 )
+  m_vtkBoxWidget( 0 ), m_scale(1.0)
 {
     //m_transform = vtkTransform::New();
     m_boxWidgetCommand = BoxClallback::New(this);
@@ -60,13 +61,17 @@ BoxWidget::~BoxWidget() throw()
 {
     //m_transform->Delete();
     //m_transform = 0;
-
 }
 
 void BoxWidget::configuring() throw( ::fwTools::Failed )
 {
     setRenderId( m_configuration->getAttributeValue( "renderer" ) );
     this->setTransformId( m_configuration->getAttributeValue("transform") );
+
+    if (m_configuration->hasAttribute("scale"))
+    {
+        m_scale = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("scale"));
+    }
 }
 
 void BoxWidget::doStart() throw( ::fwTools::Failed )
@@ -74,8 +79,11 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
     m_transform = getTransform();
     SLM_ASSERT("BoxWidget need a vtkTransform", m_transform);
     vtkBoxRepresentation *boxRep = vtkBoxRepresentation::New();
-    boxRep->SetPlaceFactor(20.);
-    
+    boxRep->SetPlaceFactor(m_scale);
+
+    double bounds[] = {-1,1,-1,1,-1,1};
+    boxRep->PlaceWidget(bounds);
+
     m_vtkBoxWidget = ::vtkBoxWidget2::New();
     m_vtkBoxWidget->SetRepresentation(boxRep);
     m_vtkBoxWidget->SetInteractor( this->getInteractor() );
@@ -106,6 +114,13 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
 void BoxWidget::doStop() throw( ::fwTools::Failed )
 {
     unregisterServices();
+
+    m_transform->Delete();
+    m_transform = 0;
+    m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
+    m_vtkBoxWidget->Delete();
+    m_vtkBoxWidget = 0;
+
 }
 
 void BoxWidget::doSwap() throw( ::fwTools::Failed )
