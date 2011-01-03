@@ -21,12 +21,12 @@
         <implements>::fwTools::Object</implements>
     </point>
 
-	<!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwTools::Object ); -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwTools::Object ); -->
     <point id="::visuVTKAdaptor::Axes" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwTools::Object</implements>
     </point>
-	
+
     <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ); -->
     <point id="::visuVTKAdaptor::Material" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
@@ -141,7 +141,7 @@
         <implements>::fwData::TransformationMatrix3D</implements>
     </point>
     
-	<!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ); -->
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ); -->
     <point id="::visuVTKAdaptor::BoxWidget" >
         <implements>::fwRenderVTK::IVtkAdaptorService</implements>
         <implements>::fwData::TransformationMatrix3D</implements>
@@ -273,7 +273,11 @@
         <implements>::fwData::Composite</implements>
     </point>
 
-
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite ); -->
+    <point id="::visuVTKAdaptor::MeshesBoxWidget" >
+        <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
 
 </plugin>
 
