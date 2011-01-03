@@ -35,21 +35,21 @@
         </service>
 
         <item key="myCompositeVisu">
-            <object uid="myCompositeVisu" src="ref">
+            <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
 
-              <service uid="myManagerForManualRegistEditor" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="no">
-                <mode type="dummy" />
-                <config>
-                  <object id="myAcquisition" type="::fwData::Acquisition">
-                    
-                    <service uid="listOrganTransformationEditor" implementation="::uiAcquisition::OrganTransformationEditor" type="::gui::editor::IEditor" autoComChannel="yes">
-                        <TMSUid>MyMeshDB</TMSUid>
-                    </service>
+                <service uid="myManagerForManualRegistEditor" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="no">
+                    <mode type="dummy" />
+                    <config>
+                        <object id="myAcquisition" type="::fwData::Acquisition">
 
-                  </object>
-                  
-                </config>
-              </service>  
+                            <service uid="listOrganTransformationEditor" implementation="::uiAcquisition::OrganTransformationEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                                <TMSUid>MyMeshDB</TMSUid>
+                            </service>
+
+                        </object>
+
+                    </config>
+                </service>
             </object>
         </item>
 
@@ -59,7 +59,7 @@
 
         <stop uid="myManagerForManualRegistEditor" />
         <stop uid="registrationEditorFrame" />
-                    
+
 
     </object>
 

@@ -14,7 +14,7 @@ REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwServices::ObjectXMLParser , ::f
 
 namespace fwServices
 {
-			
+
 ObjectXMLParser::ObjectXMLParser( )
 {}
 
@@ -46,7 +46,7 @@ bool ObjectXMLParser::refObjectValidator( ::fwRuntime::ConfigurationElement::spt
 //------------------------------------------------------------------------------
 
 void ObjectXMLParser::updating( ) throw(fwTools::Failed)
-{
+        {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
     const std::string BUILD_OBJECT = "new";
@@ -105,7 +105,109 @@ void ObjectXMLParser::updating( ) throw(fwTools::Failed)
             }
         }
     }
+        }
+
+
+//------------------------------------------------------------------------------
+
+void ObjectXMLParser::createConfig( ::fwTools::Object::sptr _obj )
+{
+    // Declaration of attributes values
+    const std::string OBJECT_BUILD_MODE = "src";
+    const std::string BUILD_OBJECT = "new";
+    const std::string GET_OBJECT = "ref";
+
+    ::fwTools::Object::sptr associatedObject = _obj;
+    assert( associatedObject ) ;
+
+    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = m_cfg->begin() ; !(configEltIter == m_cfg->end()) ; ++configEltIter)
+    {
+
+        if( (*configEltIter)->getName() == "item" )
+        {
+            ::fwRuntime::ConfigurationElement::sptr itemConfigElem = (*configEltIter);
+
+            // Test build mode
+            std::string buildMode = BUILD_OBJECT;
+
+            if ( (*configEltIter)->hasAttribute( OBJECT_BUILD_MODE ) )
+            {
+                buildMode = itemConfigElem->getExistingAttributeValue( OBJECT_BUILD_MODE );
+                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+            }
+
+
+            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", itemConfigElem->hasAttribute("key") );
+            std::string key = itemConfigElem->getExistingAttributeValue("key");
+            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.", ! key.empty() );
+            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", itemConfigElem->size() == 1 && (*itemConfigElem->begin())->getName() == "object" );
+
+            if( buildMode == BUILD_OBJECT )
+            {
+                // Test if key already exist in object
+                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", associatedObject->getFieldSize( key ) == 0 );
+
+                // Create and manage object config
+                ::fwServices::ConfigTemplateManager::NewSptr ctm;
+                ctm->setConfig( * ( itemConfigElem->begin() ) );
+                m_ctmContainer.push_back( ctm );
+                ctm->create();
+                ::fwTools::Object::sptr localObj = ctm->getConfigRoot();
+
+                // Add object
+                associatedObject->setFieldSingleElement( key, localObj);
+            }
+            else // if( buildMode == GET_OBJECT )
+            {
+                SLM_FATAL("ACH => Todo");
+                // ToDo
+            }
+        }
+    }
 }
+
+//------------------------------------------------------------------------------
+
+void ObjectXMLParser::startConfig()
+{
+    BOOST_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+            {
+        ctm->start();
+            }
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectXMLParser::updateConfig()
+{
+    BOOST_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+            {
+        ctm->update();
+            }
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectXMLParser::stopConfig()
+{
+    BOOST_REVERSE_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+            {
+        ctm->stop();
+            }
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectXMLParser::destroyConfig()
+{
+    BOOST_REVERSE_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+            {
+        ctm->destroy();
+            }
+    m_ctmContainer.clear();
+}
+
+//------------------------------------------------------------------------------
 
 }
 

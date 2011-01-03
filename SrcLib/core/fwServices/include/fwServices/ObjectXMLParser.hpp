@@ -22,16 +22,24 @@ namespace fwServices
  */
 class FWSERVICES_CLASS_API ObjectXMLParser : public ::fwServices::IXMLParser
 {
-    public :
-        fwCoreServiceClassDefinitionsMacro ( (ObjectXMLParser)(::fwServices::IXMLParser) ) ;
+public :
+    fwCoreServiceClassDefinitionsMacro ( (ObjectXMLParser)(::fwServices::IXMLParser) ) ;
 
-        FWSERVICES_API ObjectXMLParser( ) ;
-        FWSERVICES_API virtual ~ObjectXMLParser() ;
+    FWSERVICES_API ObjectXMLParser( ) ;
+    FWSERVICES_API virtual ~ObjectXMLParser() ;
 
-	protected :
-	
-		bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
-		void updating() throw( fwTools::Failed );
+    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj );
+    FWSERVICES_API void startConfig();
+    FWSERVICES_API void updateConfig();
+    FWSERVICES_API void stopConfig();
+    FWSERVICES_API void destroyConfig();
+
+protected :
+
+    bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+    void updating() throw( fwTools::Failed );
+
+    std::vector< ::fwServices::ConfigTemplateManager::sptr > m_ctmContainer;
 };
 
 
