@@ -22,7 +22,7 @@
 
 #include <vtkPolyData.h>
 #include <vtkBoxRepresentation.h>
-#include <vtkBoxWidget.h>
+#include <vtkBoxWidget2.h>
 #include <vtkTransform.h>
 #include <vtkCommand.h>
 #include <vtkPolyDataMapper.h>
@@ -99,9 +99,12 @@ void MeshesBoxWidget::doStart() throw(fwTools::Failed)
 
     m_assembly = vtkAssembly::New();
 
-    m_vtkBoxWidget = vtkBoxWidget::New();
+    vtkBoxRepresentation *boxRep = vtkBoxRepresentation::New();
+    boxRep->SetPlaceFactor(1.0);
+
+    m_vtkBoxWidget = vtkBoxWidget2::New();
     m_vtkBoxWidget->SetInteractor( this->getInteractor() );
-    m_vtkBoxWidget->SetPlaceFactor( 1.0 );
+    m_vtkBoxWidget->SetRepresentation( boxRep );
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 
@@ -120,8 +123,8 @@ void MeshesBoxWidget::doUpdate() throw(fwTools::Failed)
         {
             m_assembly->AddPart( elt.second );
         }
-        m_vtkBoxWidget->SetProp3D( m_assembly );
-        m_vtkBoxWidget->PlaceWidget();
+        vtkBoxRepresentation *boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
+        boxRep->PlaceWidget(m_assembly->GetBounds());
         m_vtkBoxWidget->On();
     }
     else
@@ -207,8 +210,9 @@ void MeshesBoxWidget::updateFromVtk()
 
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
+    vtkBoxRepresentation *boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
     vtkTransform * boxTransform = vtkTransform::New();
-    m_vtkBoxWidget->GetTransform(boxTransform);
+    boxRep->GetTransform(boxTransform);
 
     BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
     {

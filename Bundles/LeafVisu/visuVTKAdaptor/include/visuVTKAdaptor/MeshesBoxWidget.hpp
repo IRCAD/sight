@@ -63,7 +63,7 @@ private:
 
     vtkAssembly * m_assembly;
     vtkCommand* m_boxWidgetCommand;
-    vtkBoxWidget* m_vtkBoxWidget;
+    vtkBoxWidget2* m_vtkBoxWidget;
 };
 
 
