@@ -1,16 +1,24 @@
 #ifndef _UIACQUISITIONQT_ORGANTRANSFORMATIONEDITOR_HPP_
 #define _UIACQUISITIONQT_ORGANTRANSFORMATIONEDITOR_HPP_
 
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <QPointer>
 #include <QObject>
 
 #include <map>
 #include <string>
+
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <gui/editor/IEditor.hpp>
-#include <uiAcquisitionQt/config.hpp>
+
+#include "uiAcquisitionQt/config.hpp"
 
 
 class QListWidget;
@@ -29,7 +37,7 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (OrganTransformationEditor)(::gui::editor::IEditor) );
 
-	UIACQUISITIONQT_API              OrganTransformationEditor() throw();
+    UIACQUISITIONQT_API              OrganTransformationEditor() throw();
     UIACQUISITIONQT_API virtual     ~OrganTransformationEditor() throw();
 
 protected:
@@ -41,9 +49,9 @@ protected:
     UIACQUISITIONQT_API virtual void updating()    throw( ::fwTools::Failed );
     UIACQUISITIONQT_API virtual void updating( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
     UIACQUISITIONQT_API virtual void info    ( ::std::ostream& stream );
-    
 
-    
+
+
 private slots:
     void OnReconstructionCheck(QListWidgetItem *currentItem);
     void OnResetClick         ( );
@@ -56,7 +64,6 @@ private slots:
 private:
 
     void Refresh();
-    //void Notify();
     void NotitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat);
 
     // tReconstructionMap
@@ -71,16 +78,13 @@ private:
     QPointer< QPushButton > mpResetButton;
     QPointer< QListWidget > mpReconstructionListBox;
     QPointer< QComboBox > mpSaveSelectionComboBox;
-    
+
     //for testing
     QPointer< QPushButton > mpTestButton;
 
     //variables for the functionalities of saving & loading
     tSaveMapping mSaveListing;
     unsigned int mSaveCount;
-    
-
-       
 };
 
 }
