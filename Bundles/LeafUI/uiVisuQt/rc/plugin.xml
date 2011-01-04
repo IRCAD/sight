@@ -16,5 +16,11 @@
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwData::TransformationMatrix3D</implements>
     </point>
+
+    <!-- REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::PointEditor, ::fwData::Composite ); -->
+    <point id="::uiVisu::PointEditor">
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
     
 </plugin>
