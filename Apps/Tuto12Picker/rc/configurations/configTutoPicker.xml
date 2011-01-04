@@ -49,7 +49,7 @@
         <service uid="mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
-s                    <orientation value="vertical" />
+                    <orientation value="vertical" />
                     <view caption="Picker world coordinate." />
                     <view caption="Generic scene" border="11" />
                 </layout>
