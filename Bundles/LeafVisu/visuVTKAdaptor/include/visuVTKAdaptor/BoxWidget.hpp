@@ -41,7 +41,9 @@ private:
 
     ::vtkBoxWidget2* m_vtkBoxWidget;
     vtkCommand* m_boxWidgetCommand;
-    double m_scale;
+
+    double m_scaleFactor;
+    bool m_enableScaling;
 };
 
 } // namespace visuVTKAdaptor

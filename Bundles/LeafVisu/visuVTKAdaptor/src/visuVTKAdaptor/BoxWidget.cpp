@@ -16,6 +16,8 @@
 
 #include <fwServices/ObjectServiceRegistry.hpp>
 
+#include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
+
 #include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/BoxWidget.hpp"
 
@@ -35,7 +37,7 @@ public:
      BoxClallback() {}
     ~BoxClallback() {}
 
-    virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
+    virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
     {
         m_adaptor->updateFromVtk();
     }
@@ -49,9 +51,8 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, BoxWidget, ::fwData::Transf
 
 BoxWidget::BoxWidget() throw()
 : ::fwRenderVTK::IVtkAdaptorService(),
-  m_vtkBoxWidget( 0 ), m_scale(1.0)
+  m_vtkBoxWidget( 0 ), m_scaleFactor(1.0), m_enableScaling(true)
 {
-    //m_transform = vtkTransform::New();
     m_boxWidgetCommand = BoxClallback::New(this);
 
     addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
@@ -59,8 +60,6 @@ BoxWidget::BoxWidget() throw()
 
 BoxWidget::~BoxWidget() throw()
 {
-    //m_transform->Delete();
-    //m_transform = 0;
 }
 
 void BoxWidget::configuring() throw( ::fwTools::Failed )
@@ -68,9 +67,17 @@ void BoxWidget::configuring() throw( ::fwTools::Failed )
     setRenderId( m_configuration->getAttributeValue( "renderer" ) );
     this->setTransformId( m_configuration->getAttributeValue("transform") );
 
-    if (m_configuration->hasAttribute("scale"))
+    if (m_configuration->hasAttribute("scaleFactor"))
     {
-        m_scale = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("scale"));
+        m_scaleFactor = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("scaleFactor"));
+    }
+
+    if (m_configuration->hasAttribute("enableScaling"))
+    {
+        SLM_ASSERT("Wrong value for 'enableScaling', must be 'true' or 'false'",
+                m_configuration->getAttributeValue("enableScaling") == "yes" ||
+                m_configuration->getAttributeValue("enableScaling") == "no");
+        m_enableScaling = (m_configuration->getAttributeValue("enableScaling") == "yes");
     }
 }
 
@@ -78,8 +85,8 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
 {
     m_transform = getTransform();
     SLM_ASSERT("BoxWidget need a vtkTransform", m_transform);
-    vtkBoxRepresentation *boxRep = vtkBoxRepresentation::New();
-    boxRep->SetPlaceFactor(m_scale);
+    fwVtkBoxRepresentation *boxRep = fwVtkBoxRepresentation::New();
+    boxRep->SetPlaceFactor(m_scaleFactor);
 
     double bounds[] = {-1,1,-1,1,-1,1};
     boxRep->PlaceWidget(bounds);
@@ -87,26 +94,14 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
     m_vtkBoxWidget = ::vtkBoxWidget2::New();
     m_vtkBoxWidget->SetRepresentation(boxRep);
     m_vtkBoxWidget->SetInteractor( this->getInteractor() );
+    if (!m_enableScaling)
+    {
+        boxRep->ScalingEnabledOff();
+//        boxRep->HandlesOff();
+    }
     m_vtkBoxWidget->On();
 
-    //m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
-        //::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
-                //this->getObject(),
-                //"::visuVTKAdaptor::Transform" ));
-    //assert(m_transformService.lock());
-    //::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
-
-
-    //transformService->setRenderService ( this->getRenderService()  );
-    //transformService->setRenderId      ( this->getRenderId()       );
-
-    //transformService->setTransform(m_transform);
-
     boxRep->SetTransform(m_transform);
-
-    //this->registerService(transformService);
-    //transformService->start();
-
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }

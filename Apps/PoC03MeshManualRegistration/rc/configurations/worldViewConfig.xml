@@ -27,18 +27,8 @@
 
                         <renderer id="default" background="0.0" />
 
-                        <!--
-                            <vtkObject id="myCamPosMatrixTransform" class="vtkTransform" /> <adaptor id="myCamPosMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix" >
-                            <config renderer="default" picker="" transform="myCamPosMatrixTransform" /> </adaptor>
-                        -->
-
                         <vtkObject id="myCam1PosMatrixTransform" class="vtkTransform" />
                         <vtkObject id="myCam2PosMatrixTransform" class="vtkTransform" />
-                        <!--
-                            <adaptor id="myCamPos1MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCam1PosMatrix" > <config renderer="default" picker=""
-                            transform="myCam1PosMatrixTransform" /> </adaptor> <adaptor id="myCamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCam2PosMatrix" > <config
-                            renderer="default" picker="" transform="myCam2PosMatrixTransform" /> </adaptor>
-                        -->
 
                         <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
@@ -47,10 +37,7 @@
                         <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
                             <config renderer="default" picker="" />
                         </adaptor>
-                        <!--
-                            <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage"> <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
-                            </adaptor>
-                        -->
+
                         <adaptor id="myCam1MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam1Mesh">
                             <config renderer="default" picker="myPicker" transform="myCam1PosMatrixTransform" />
                         </adaptor>
@@ -59,10 +46,10 @@
                             <config renderer="default" picker="myPicker" transform="myCam2PosMatrixTransform" />
                         </adaptor>
                         <adaptor id="myCamWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
-                            <config renderer="default" picker="" transform="myCam1PosMatrixTransform" />
+                            <config renderer="default" transform="myCam1PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
                         </adaptor>
                         <adaptor id="myCamWidget2" class="::visuVTKAdaptor::BoxWidget" objectId="view2">
-                            <config renderer="default" picker="" transform="myCam2PosMatrixTransform" />
+                            <config renderer="default" transform="myCam2PosMatrixTransform" scaleFactor="2.0" enableScaling="no"/>
                         </adaptor>
                         <adaptor id="myCam1Axes" class="::visuVTKAdaptor::Axes" objectId="self">
                             <config renderer="default" transform="myCam1PosMatrixTransform" length="5" label="no" />
@@ -70,13 +57,6 @@
                         <adaptor id="myCam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
                             <config renderer="default" transform="myCam2PosMatrixTransform" length="5" label="no" />
                         </adaptor>
-
-                        <!--
-                            <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="myCamPosMatrix"> <config renderer="default" picker="" transform="myCamPosMatrixTransform"/>
-                            </adaptor>
-                        -->
-
-
 
                     </scene>
                 </service>
