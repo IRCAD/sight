@@ -21,8 +21,6 @@
     <activate id="uiIO" version="0-1" />
 
     <activate id="opVTK" version="0-1" />
-    <activate id="uiData" version="0-1" />
-    <activate id="uiDataQt" version="0-1" />
 
     <activate id="uiVisuQt" version="0-1" />
     <activate id="uiImageQt" version="0-1" />
