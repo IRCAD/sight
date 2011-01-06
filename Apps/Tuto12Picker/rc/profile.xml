@@ -21,8 +21,6 @@
     <activate id="uiIO" version="0-1" />
 
     <activate id="opVTK" version="0-1" />
-    <activate id="uiData" version="0-1" />
-    <activate id="uiDataWx" version="0-1" />
 
     <activate id="uiVisuWx" version="0-1" />
     <activate id="uiImageWx" version="0-1" />
