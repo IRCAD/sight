@@ -485,7 +485,8 @@ void TriangularMesh::doStart() throw(fwTools::Failed)
 
 void TriangularMesh::doStop() throw(fwTools::Failed)
 {
-    ::fwServices::OSR::unregisterService(m_transformService.lock());
+    m_transformService.lock()->stop();
+    ::fwServices::erase(m_transformService.lock());
 
     this->removeAllPropFromRenderer();
     if (this->getPicker())
@@ -499,7 +500,6 @@ void TriangularMesh::doStop() throw(fwTools::Failed)
 
     this->unregisterServices();
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -674,6 +674,8 @@ void TriangularMesh::createNormalsService()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::removeNormalsService()
 {
     if ( !m_normalsService.expired() )
@@ -682,9 +684,10 @@ void TriangularMesh::removeNormalsService()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::buildPipeline()
 {
-
     m_pipelineInput = m_mapper;
 
     if ( m_manageMapperInput )
@@ -700,7 +703,6 @@ void TriangularMesh::buildPipeline()
            m_mapperInput   = m_normals->GetOutputPort();
            m_pipelineInput = m_normals;
         }
-
     }
 
     ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
@@ -751,37 +753,35 @@ void TriangularMesh::buildPipeline()
     this->setVtkPipelineModified();
 }
 
-
-
 //------------------------------------------------------------------------------
 
 void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 {
-        m_triangularMesh = mesh;
+    m_triangularMesh = mesh;
 
-        if (m_polyData)
-        {
-            m_polyData->Delete();
-            m_polyData = 0;
-        }
+    if (m_polyData)
+    {
+        m_polyData->Delete();
+        m_polyData = 0;
+    }
 
-        m_polyData = ::vtkIO::toVTKMesh(mesh);
+    m_polyData = ::vtkIO::toVTKMesh(mesh);
 
-        if (m_computeNormalsAtUpdate)
-        {
-           m_normals->SetInput( m_polyData );
-           m_normals->Update();
-           m_polyData->DeepCopy(m_normals->GetOutput());
-        }
+    if (m_computeNormalsAtUpdate)
+    {
+        m_normals->SetInput( m_polyData );
+        m_normals->Update();
+        m_polyData->DeepCopy(m_normals->GetOutput());
+    }
 
-        this->updateMapper();
+    this->updateMapper();
 
-        if (m_autoResetCamera)
-        {
-            this->getRenderer()->ResetCamera();
-        }
+    if (m_autoResetCamera)
+    {
+        this->getRenderer()->ResetCamera();
+    }
 
-        this->setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -814,8 +814,6 @@ void TriangularMesh::updateMapper()
 
 vtkActor *TriangularMesh::newActor()
 {
-
-
     vtkActor *actor = vtkActor::New();
 
     //m_pipelineInput->SetInput( m_polyData );
