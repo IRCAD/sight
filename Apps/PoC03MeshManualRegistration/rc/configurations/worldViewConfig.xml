@@ -35,15 +35,15 @@
                         </adaptor>
 
                         <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
-                            <config renderer="default" picker="" />
+                            <config renderer="default" picker="" autoresetcamera="no" />
                         </adaptor>
 
                         <adaptor id="myCam1MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam1Mesh">
-                            <config renderer="default" picker="myPicker" transform="myCam1PosMatrixTransform" />
+                            <config renderer="default" picker="myPicker" transform="myCam1PosMatrixTransform" autoresetcamera="no" />
                         </adaptor>
 
                         <adaptor id="myCam2MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam2Mesh">
-                            <config renderer="default" picker="myPicker" transform="myCam2PosMatrixTransform" />
+                            <config renderer="default" picker="myPicker" transform="myCam2PosMatrixTransform" autoresetcamera="no" />
                         </adaptor>
                         <adaptor id="myCamWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
                             <config renderer="default" transform="myCam1PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />

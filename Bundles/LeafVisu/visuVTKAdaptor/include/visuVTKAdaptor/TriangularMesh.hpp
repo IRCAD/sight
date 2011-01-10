@@ -58,6 +58,9 @@ public:
     VISUVTKADAPTOR_API vtkAlgorithmOutput *getMapperInput      ( );
     VISUVTKADAPTOR_API void setActorPropertyToUnclippedMaterial( bool opt );
 
+    /// Active/Inactive automatic reset on camera. By default =true.
+    VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
+
     VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
     VISUVTKADAPTOR_API bool getVisibility();
 

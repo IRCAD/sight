@@ -47,6 +47,7 @@ Reconstruction::Reconstruction() throw()
 {
     m_clippingPlanesId = "";
     m_sharpEdgeAngle = 180;
+    m_autoResetCamera = true;
     addNewHandledEvent( ::fwComEd::ReconstructionMsg::MESH );
     addNewHandledEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
 }
@@ -54,20 +55,24 @@ Reconstruction::Reconstruction() throw()
 //------------------------------------------------------------------------------
 
 Reconstruction::~Reconstruction() throw()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void Reconstruction::configuring() throw(fwTools::Failed)
 {
-
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
     this->setPickerId   ( m_configuration->getAttributeValue( "picker"    ) ) ;
     this->setRenderId   ( m_configuration->getAttributeValue( "renderer"  ) ) ;
     this->setTransformId( m_configuration->getAttributeValue( "transform" ) ) ;
+
+    if (m_configuration->hasAttribute("autoresetcamera") )
+    {
+        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
+        m_autoResetCamera = (autoresetcamera == "yes");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -78,11 +83,11 @@ void Reconstruction::doStart() throw(fwTools::Failed)
     createMeshService();
 }
 
+//------------------------------------------------------------------------------
+
 void Reconstruction::createMeshService()
 {
     SLM_TRACE_FUNC();
-
-
     ::fwData::Reconstruction::sptr reconstruction
         = this->getObject < ::fwData::Reconstruction >();
 
@@ -108,6 +113,7 @@ void Reconstruction::createMeshService()
         meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
         meshAdaptor->setShowClippedPart ( true );
         meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
+        meshAdaptor->setAutoResetCamera ( m_autoResetCamera );
         meshService->start();
         meshAdaptor->updateVisibility  ( reconstruction->getIsVisible() );
         meshAdaptor->update();
@@ -244,6 +250,14 @@ void Reconstruction::setForceHide(bool hide)
         this->setVtkPipelineModified();
     }
 }
+
+//------------------------------------------------------------------------------
+
+void Reconstruction::setAutoResetCamera(bool autoResetCamera)
+{
+    m_autoResetCamera = autoResetCamera;
+}
+
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

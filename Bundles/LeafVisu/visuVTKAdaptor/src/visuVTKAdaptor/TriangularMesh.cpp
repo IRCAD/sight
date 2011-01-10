@@ -368,6 +368,8 @@ TriangularMesh::TriangularMesh() throw()
     m_computeNormals     = false;
     m_computeNormalsAtUpdate = true;
 
+    m_autoResetCamera   = true;
+
     m_planeCollectionShifterCallback = 0;
     m_servicesStarterCallback        = 0;
 
@@ -412,7 +414,6 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
-    std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
     std::string color = m_configuration->getAttributeValue("color");
     std::string unclippedColor = m_configuration->getAttributeValue("unclippedcolor");
 
@@ -420,7 +421,11 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
 
     m_unclippedPartMaterial->ambient()->setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
 
-    m_autoResetCamera = (autoresetcamera == "yes");
+    if (m_configuration->hasAttribute("autoresetcamera") )
+    {
+        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
+        m_autoResetCamera = (autoresetcamera == "yes");
+    }
 
     this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
     this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
@@ -640,6 +645,8 @@ void TriangularMesh::updateOptionsMode()
         removeNormalsService();
     }
 }
+
+//------------------------------------------------------------------------------
 
 void TriangularMesh::createNormalsService()
 {
@@ -902,6 +909,7 @@ void TriangularMesh::updateVisibility( bool isVisible)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
 
 bool TriangularMesh::getVisibility()
 {
@@ -912,11 +920,15 @@ bool TriangularMesh::getVisibility()
     }
     return visible;
 }
+
+//------------------------------------------------------------------------------
+
 void TriangularMesh::setVtkClippingPlanes(vtkPlaneCollection *planes)
 {
     m_clippingPlanes = planes;
 }
 
+//------------------------------------------------------------------------------
 
 void TriangularMesh::removePlaneCollectionShifterCommand()
 {
@@ -927,6 +939,8 @@ void TriangularMesh::removePlaneCollectionShifterCommand()
         m_planeCollectionShifterCallback = 0;
     }
 }
+
+//------------------------------------------------------------------------------
 
 void TriangularMesh::createServicesStarterCommand()
 {
@@ -940,6 +954,8 @@ void TriangularMesh::createServicesStarterCommand()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::removeServicesStarterCommand()
 {
     if(m_servicesStarterCallback)
@@ -950,6 +966,14 @@ void TriangularMesh::removeServicesStarterCommand()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void TriangularMesh::setAutoResetCamera(bool autoResetCamera)
+{
+    m_autoResetCamera = autoResetCamera;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
 

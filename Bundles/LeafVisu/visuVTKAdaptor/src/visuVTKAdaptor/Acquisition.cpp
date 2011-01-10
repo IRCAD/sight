@@ -37,19 +37,20 @@ namespace visuVTKAdaptor
 Acquisition::Acquisition() throw()
 {
     m_clippingPlanes = "";
+    m_autoResetCamera = true;
     addNewHandledEvent("ShowReconstructions");
     addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
 }
 
+//------------------------------------------------------------------------------
+
 Acquisition::~Acquisition() throw()
-{
+{}
 
-}
-
+//------------------------------------------------------------------------------
 
 void Acquisition::configuring() throw(fwTools::Failed)
 {
-
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
@@ -63,13 +64,22 @@ void Acquisition::configuring() throw(fwTools::Failed)
         this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
 
+    if (m_configuration->hasAttribute("autoresetcamera") )
+    {
+        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
+        m_autoResetCamera = (autoresetcamera == "yes");
+    }
 }
+
+//------------------------------------------------------------------------------
 
 void Acquisition::doStart() throw(fwTools::Failed)
 {
     this->doUpdate();
     addNewHandledEvent("ShowReconstructions");
 }
+
+//------------------------------------------------------------------------------
 
 void Acquisition::doUpdate() throw(fwTools::Failed)
 {
@@ -97,6 +107,7 @@ void Acquisition::doUpdate() throw(fwTools::Failed)
         ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor =
                 ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
         renconstructionAdaptor->setClippingPlanes( m_clippingPlanes );
+        renconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
         service->start();
         renconstructionAdaptor->setForceHide( !showRec );
 
@@ -104,20 +115,24 @@ void Acquisition::doUpdate() throw(fwTools::Failed)
     }
 }
 
+//------------------------------------------------------------------------------
+
 void Acquisition::doSwap() throw(fwTools::Failed)
 {
     this->doUpdate();
 }
+
+//------------------------------------------------------------------------------
 
 void Acquisition::doStop() throw(fwTools::Failed)
 {
     this->unregisterServices();
 }
 
+//------------------------------------------------------------------------------
 
 void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-
     ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )
     {
@@ -153,7 +168,6 @@ void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
     }
 }
 
-
-
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

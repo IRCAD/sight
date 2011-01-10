@@ -47,6 +47,7 @@ protected:
 private:
     ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanes;
     double m_sharpEdgeAngle;
+    bool   m_autoResetCamera;
 };
 
 
