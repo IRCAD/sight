@@ -49,6 +49,8 @@ public:
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, BoxWidget, ::fwData::TransformationMatrix3D );
 
+//------------------------------------------------------------------------------
+
 BoxWidget::BoxWidget() throw()
 : ::fwRenderVTK::IVtkAdaptorService(),
   m_vtkBoxWidget( 0 ), m_scaleFactor(1.0), m_enableScaling(true)
@@ -58,9 +60,13 @@ BoxWidget::BoxWidget() throw()
     addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
+//------------------------------------------------------------------------------
+
 BoxWidget::~BoxWidget() throw()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void BoxWidget::configuring() throw( ::fwTools::Failed )
 {
@@ -81,6 +87,8 @@ void BoxWidget::configuring() throw( ::fwTools::Failed )
     }
 }
 
+//------------------------------------------------------------------------------
+
 void BoxWidget::doStart() throw( ::fwTools::Failed )
 {
     m_transform = getTransform();
@@ -97,7 +105,6 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
     if (!m_enableScaling)
     {
         boxRep->ScalingEnabledOff();
-//        boxRep->HandlesOff();
     }
     m_vtkBoxWidget->On();
 
@@ -105,6 +112,8 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
+
+//------------------------------------------------------------------------------
 
 void BoxWidget::doStop() throw( ::fwTools::Failed )
 {
@@ -118,11 +127,14 @@ void BoxWidget::doStop() throw( ::fwTools::Failed )
 
 }
 
+//------------------------------------------------------------------------------
+
 void BoxWidget::doSwap() throw( ::fwTools::Failed )
 {
     doUpdate();
 }
 
+//------------------------------------------------------------------------------
 
 void BoxWidget::updateFromVtk()
 {
@@ -154,16 +166,32 @@ void BoxWidget::updateFromVtk()
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
 
+//------------------------------------------------------------------------------
+
 void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 {
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
     vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
     if( repr )
     {
+        vtkMatrix4x4* mat = m_transform->GetMatrix();
+        ::fwData::TransformationMatrix3D::sptr transMat =
+                    this->getObject< ::fwData::TransformationMatrix3D >();
+        for(int lt=0; lt<4; lt++)
+        {
+            for(int ct=0; ct<4; ct++)
+            {
+                mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
+            }
+        }
+
         repr->SetTransform(m_transform);
+        this->setVtkPipelineModified();
     }
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
+
+//------------------------------------------------------------------------------
 
 void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
@@ -173,5 +201,7 @@ void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools:
         doUpdate();
     }
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace visuVTKAdaptor

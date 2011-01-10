@@ -29,6 +29,8 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Camera2() throw();
 
+    VISUVTKADAPTOR_API void updateFromVtk();
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -40,6 +42,9 @@ protected:
 
     VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
+private:
+    vtkCommand* m_cameraCommand;
+    vtkPerspectiveTransform* m_transOrig;
 
 };
 
