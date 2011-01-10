@@ -26,7 +26,7 @@ namespace visuVTKAdaptor
 
 Axes::Axes() throw()
 {
-    m_axesActor	= vtkAxesActor::New();
+    m_axesActor = vtkAxesActor::New();
     m_length = 1;
     m_labelOn = true;
 }
@@ -35,16 +35,16 @@ Axes::Axes() throw()
 
 Axes::~Axes() throw()
 {
-	m_axesActor->Delete();
-	m_axesActor = 0;
+    m_axesActor->Delete();
+    m_axesActor = 0;
 }
 
 //------------------------------------------------------------------------------
 
 void Axes::doStart() throw(fwTools::Failed)
 {
-	this->buildPipeline();
-	this->addToRenderer( m_axesActor );
+    this->buildPipeline();
+    this->addToRenderer( m_axesActor );
 }
 
 //------------------------------------------------------------------------------
@@ -52,6 +52,7 @@ void Axes::doStart() throw(fwTools::Failed)
 void Axes::doStop() throw(fwTools::Failed)
 {
     this->removeAllPropFromRenderer();
+    this->getRenderer()->RemoveActor(m_axesActor);
 }
 
 //------------------------------------------------------------------------------
@@ -78,21 +79,21 @@ void Axes::configuring() throw(fwTools::Failed)
 {
     assert( m_configuration->getName() == "config" );
     
-	this->setRenderId( m_configuration->getAttributeValue("renderer") );
-	
+    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+
     if ( m_configuration->hasAttribute( "transform" ) )
     {
-    	this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
+        this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
     }
     if ( m_configuration->hasAttribute( "length" ) )
     {
-    	m_length = boost::lexical_cast<double>( m_configuration->getAttributeValue( "length" ) );
+        m_length = boost::lexical_cast<double>( m_configuration->getAttributeValue( "length" ) );
     }
     if ( m_configuration->hasAttribute( "label" ) )
     {
-    	std::string value = m_configuration->getAttributeValue( "label" );
-    	std::transform( value.begin(), value.end(), value.begin(), tolower );
-    	m_labelOn = ( value == "yes" );
+        std::string value = m_configuration->getAttributeValue( "label" );
+        std::transform( value.begin(), value.end(), value.begin(), tolower );
+        m_labelOn = ( value == "yes" );
     }
 }
 
@@ -100,18 +101,18 @@ void Axes::configuring() throw(fwTools::Failed)
 
 void Axes::buildPipeline()
 {
-	m_axesActor->SetTotalLength( m_length, m_length, m_length );
-	m_axesActor->SetShaftTypeToCylinder();
-	m_axesActor->SetTipTypeToCone();
+    m_axesActor->SetTotalLength( m_length, m_length, m_length );
+    m_axesActor->SetShaftTypeToCylinder();
+    m_axesActor->SetTipTypeToCone();
 
-	if (!m_labelOn)
-	{
-		m_axesActor->SetXAxisLabelText( "x" );
-		m_axesActor->SetYAxisLabelText( "y" );
-		m_axesActor->SetZAxisLabelText( "z" );
-		m_axesActor->AxisLabelsOff();
-	}
-	m_axesActor->SetUserTransform( this->getTransform() );
+    if (!m_labelOn)
+    {
+        m_axesActor->SetXAxisLabelText( "x" );
+        m_axesActor->SetYAxisLabelText( "y" );
+        m_axesActor->SetZAxisLabelText( "z" );
+        m_axesActor->AxisLabelsOff();
+    }
+    m_axesActor->SetUserTransform( this->getTransform() );
 }
 
 //------------------------------------------------------------------------------
