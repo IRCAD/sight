@@ -111,6 +111,8 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
     boxRep->SetTransform(m_transform);
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
+
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
