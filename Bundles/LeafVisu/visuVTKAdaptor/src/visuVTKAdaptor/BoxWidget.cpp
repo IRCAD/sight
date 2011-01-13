@@ -164,7 +164,6 @@ void BoxWidget::updateFromVtk()
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 
-
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
 
@@ -177,8 +176,7 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
     if( repr )
     {
         vtkMatrix4x4* mat = m_transform->GetMatrix();
-        ::fwData::TransformationMatrix3D::sptr transMat =
-                    this->getObject< ::fwData::TransformationMatrix3D >();
+        ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
@@ -198,7 +196,8 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
     ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
-    if (transfoMsg &&transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED) &&  m_vtkBoxWidget->HasObserver(::vtkCommand::InteractionEvent, m_boxWidgetCommand))
+    if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED)
+            &&  m_vtkBoxWidget->HasObserver(::vtkCommand::InteractionEvent, m_boxWidgetCommand))
     {
         doUpdate();
     }

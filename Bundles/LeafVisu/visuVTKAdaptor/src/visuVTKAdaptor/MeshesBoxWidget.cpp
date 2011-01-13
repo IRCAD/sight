@@ -177,6 +177,7 @@ void MeshesBoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTool
             BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedFields())
             {
                 ::fwData::TriangularMesh::sptr mesh = ::fwData::TriangularMesh::dynamicCast(elt.second);
+                m_meshMap[elt.first]->Delete();
                 m_meshMap.erase(elt.first);
 
                 ::fwData::TransformationMatrix3D::sptr fieldTransform;
@@ -227,7 +228,6 @@ void MeshesBoxWidget::updateFromVtk()
         transform->Concatenate(meshTransform);
 
         vtkMatrix4x4* mat = transform->GetMatrix();
-
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
@@ -239,9 +239,10 @@ void MeshesBoxWidget::updateFromVtk()
         ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
         msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), fieldTransform, msg);
+        transform->Delete();
     }
-
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
+    boxTransform->Delete();
 }
 
 //-----------------------------------------------------------------------------
@@ -287,6 +288,9 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
         }
 
         m_meshMap[elt.first] = meshActor;
+        vtkMesh->Delete();
+        transform->Delete();
+        meshMapper->Delete();
     }
 }
 
@@ -295,7 +299,6 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 void MeshesBoxWidget::updateMeshTransform()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
     BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
     {
         ::fwData::TriangularMesh::sptr mesh = ::fwData::TriangularMesh::dynamicCast(elt.second);
@@ -316,6 +319,7 @@ void MeshesBoxWidget::updateMeshTransform()
 
         vtkActor *meshActor = m_meshMap[elt.first];
         meshActor->SetUserTransform(transform);
+        transform->Delete();
     }
 }
 

@@ -117,6 +117,7 @@ void Camera2::doStop() throw(fwTools::Failed)
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver( m_cameraCommand );
     this->unregisterServices();
+    m_transOrig->Delete();
 }
 
 //------------------------------------------------------------------------------
@@ -128,8 +129,7 @@ void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
         vtkCamera* camera = this->getRenderer()->GetActiveCamera();
         camera->RemoveObserver( m_cameraCommand );
 
-        ::fwData::TransformationMatrix3D::sptr transMat =
-            this->getObject< ::fwData::TransformationMatrix3D >();
+        ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
 
         vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
@@ -159,6 +159,10 @@ void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
         this->setVtkPipelineModified();
 
         camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
+
+        mat->Delete();
+        oldTrans->Delete();
+        trans->Delete();
     }
 }
 
@@ -192,6 +196,8 @@ void Camera2::updateFromVtk()
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
+
+    trans->Delete();
 }
 
 //------------------------------------------------------------------------------
