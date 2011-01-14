@@ -111,13 +111,13 @@ void ConfigTemplateManager::create()
 void ConfigTemplateManager::startComChannel()
 {
     BOOST_FOREACH( ::fwServices::IService::wptr wsrv, m_startedComChannelServices )
-{
+    {
         SLM_ASSERT( "Sorry, CTM must start a service, but it is expired", ! wsrv.expired());
         ::fwServices::IService::sptr srv = wsrv.lock();
         OSLM_ASSERT( "Sorry, CTM must start a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already started", ! srv->isStarted() );
         OSLM_INFO("Start service ( " << srv->getID() << " ) managed by the ConfigTemplateManager.");
         srv->start();
-}
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -205,7 +205,7 @@ void ConfigTemplateManager::stop()
 
 void ConfigTemplateManager::destroy()
 {
-    SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
+    SLM_ASSERT("Sorry, manager is not stopped and you try destroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
 
 #ifndef NOT_USE_SRVFAC
     m_objectParser->destroyConfig();
@@ -413,8 +413,6 @@ void ConfigTemplateManager::loadConfig()
         SLM_ASSERT( "Sorry id attribute is an empty string", ! id.empty() );
         hasAttributeId = true;
     }
-
-
 
     // Creation of a new object
     ::fwTools::Object::sptr obj;
