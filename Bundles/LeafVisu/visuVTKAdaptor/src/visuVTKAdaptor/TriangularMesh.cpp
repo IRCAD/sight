@@ -36,6 +36,8 @@
 
 #include "visuVTKAdaptor/Material.hpp"
 #include "visuVTKAdaptor/Normals.hpp"
+
+#include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/TriangularMesh.hpp"
 
 
@@ -367,8 +369,12 @@ TriangularMesh::TriangularMesh() throw()
     m_computeNormals     = false;
     m_computeNormalsAtUpdate = true;
 
+    m_autoResetCamera   = true;
+
     m_planeCollectionShifterCallback = 0;
     m_servicesStarterCallback        = 0;
+
+    m_transform = vtkTransform::New();
 
     addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
     addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
@@ -386,6 +392,9 @@ TriangularMesh::~TriangularMesh() throw()
 
     m_normals->Delete();
     m_normals = 0;
+
+    m_transform->Delete();
+    m_transform = 0;
 
     if(m_actor)
     {
@@ -406,7 +415,6 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
-    std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
     std::string color = m_configuration->getAttributeValue("color");
     std::string unclippedColor = m_configuration->getAttributeValue("unclippedcolor");
 
@@ -414,7 +422,11 @@ void TriangularMesh::configuring() throw(fwTools::Failed)
 
     m_unclippedPartMaterial->ambient()->setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
 
-    m_autoResetCamera = (autoresetcamera == "yes");
+    if (m_configuration->hasAttribute("autoresetcamera") )
+    {
+        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
+        m_autoResetCamera = (autoresetcamera == "yes");
+    }
 
     this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
     this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
@@ -467,13 +479,15 @@ void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
 void TriangularMesh::doStart() throw(fwTools::Failed)
 {
     this->buildPipeline();
-
+    m_transformService.lock()->start();
 }
 
 //------------------------------------------------------------------------------
 
 void TriangularMesh::doStop() throw(fwTools::Failed)
 {
+    m_transformService.lock()->stop();
+    ::fwServices::erase(m_transformService.lock());
 
     this->removeAllPropFromRenderer();
     if (this->getPicker())
@@ -487,7 +501,6 @@ void TriangularMesh::doStop() throw(fwTools::Failed)
 
     this->unregisterServices();
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -634,6 +647,8 @@ void TriangularMesh::updateOptionsMode()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::createNormalsService()
 {
     ::fwData::TriangularMesh::sptr TriangularMesh
@@ -660,6 +675,8 @@ void TriangularMesh::createNormalsService()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::removeNormalsService()
 {
     if ( !m_normalsService.expired() )
@@ -669,9 +686,10 @@ void TriangularMesh::removeNormalsService()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::buildPipeline()
 {
-
     m_pipelineInput = m_mapper;
 
     if ( m_manageMapperInput )
@@ -687,7 +705,6 @@ void TriangularMesh::buildPipeline()
            m_mapperInput   = m_normals->GetOutputPort();
            m_pipelineInput = m_normals;
         }
-
     }
 
     ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
@@ -708,15 +725,6 @@ void TriangularMesh::buildPipeline()
     m_materialService              = materialService;
     m_unclippedPartMaterialService = unclippedPartMaterialService;
 
-    if ( m_manageMapperInput )
-    {
-        this->updateMaterial( m_material );
-        this->updateTriangularMesh( triangularMesh );
-        this->updateMapper();
-
-        this->updateOptionsMode();
-    }
-
     if (!m_actor)
     {
         m_actor = this->newActor();
@@ -725,6 +733,15 @@ void TriangularMesh::buildPipeline()
         {
             this->addToPicker(m_actor);
         }
+    }
+
+    if ( m_manageMapperInput )
+    {
+        this->updateMaterial( m_material );
+        this->updateTriangularMesh( triangularMesh );
+        this->updateMapper();
+
+        this->updateOptionsMode();
     }
 
     setActorPropertyToUnclippedMaterial(false);
@@ -738,37 +755,35 @@ void TriangularMesh::buildPipeline()
     this->setVtkPipelineModified();
 }
 
-
-
 //------------------------------------------------------------------------------
 
 void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 {
-        m_triangularMesh = mesh;
+    m_triangularMesh = mesh;
 
-        if (m_polyData)
-        {
-            m_polyData->Delete();
-            m_polyData = 0;
-        }
+    if (m_polyData)
+    {
+        m_polyData->Delete();
+        m_polyData = 0;
+    }
 
-        m_polyData = ::vtkIO::toVTKMesh(mesh);
+    m_polyData = ::vtkIO::toVTKMesh(mesh);
 
-        if (m_computeNormalsAtUpdate)
-        {
-           m_normals->SetInput( m_polyData );
-           m_normals->Update();
-           m_polyData->DeepCopy(m_normals->GetOutput());
-        }
+    if (m_computeNormalsAtUpdate)
+    {
+        m_normals->SetInput( m_polyData );
+        m_normals->Update();
+        m_polyData->DeepCopy(m_normals->GetOutput());
+    }
 
-        this->updateMapper();
+    this->updateMapper();
 
-        if (m_autoResetCamera)
-        {
-            this->getRenderer()->ResetCamera();
-        }
+    if (m_autoResetCamera)
+    {
+        this->getRenderer()->ResetCamera();
+    }
 
-        this->setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -801,8 +816,6 @@ void TriangularMesh::updateMapper()
 
 vtkActor *TriangularMesh::newActor()
 {
-
-
     vtkActor *actor = vtkActor::New();
 
     //m_pipelineInput->SetInput( m_polyData );
@@ -831,8 +844,44 @@ vtkActor *TriangularMesh::newActor()
 
     if(!this->getTransformId().empty())
     {
-        actor->SetUserTransform(this->getTransform());
+        m_transform->Concatenate(this->getTransform());
     }
+
+    ::fwData::TriangularMesh::sptr triangularMesh
+        = this->getObject < ::fwData::TriangularMesh >();
+
+    ::fwData::TransformationMatrix3D::sptr fieldTransform;
+    if (triangularMesh->getFieldSize("TransformMatrix"))
+    {
+        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+    }
+    else
+    {
+        fieldTransform = ::fwData::TransformationMatrix3D::New();
+        triangularMesh->setFieldSingleElement("TransformMatrix", fieldTransform);
+    }
+
+    vtkTransform *vtkFieldTransform = vtkTransform::New();
+    vtkFieldTransform->Identity();
+    m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
+        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+                fieldTransform,
+                "::visuVTKAdaptor::Transform" ));
+    assert(m_transformService.lock());
+    ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
+
+
+    transformService->setRenderService ( this->getRenderService()  );
+    transformService->setRenderId      ( this->getRenderId()       );
+
+
+    transformService->setTransform(vtkFieldTransform);
+    m_transform->Concatenate(vtkFieldTransform);
+    vtkFieldTransform->Delete();
+
+
+    actor->SetUserTransform(m_transform);
+
     this->setVtkPipelineModified();
     return actor;
 }
@@ -860,6 +909,7 @@ void TriangularMesh::updateVisibility( bool isVisible)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
 
 bool TriangularMesh::getVisibility()
 {
@@ -870,11 +920,15 @@ bool TriangularMesh::getVisibility()
     }
     return visible;
 }
+
+//------------------------------------------------------------------------------
+
 void TriangularMesh::setVtkClippingPlanes(vtkPlaneCollection *planes)
 {
     m_clippingPlanes = planes;
 }
 
+//------------------------------------------------------------------------------
 
 void TriangularMesh::removePlaneCollectionShifterCommand()
 {
@@ -885,6 +939,8 @@ void TriangularMesh::removePlaneCollectionShifterCommand()
         m_planeCollectionShifterCallback = 0;
     }
 }
+
+//------------------------------------------------------------------------------
 
 void TriangularMesh::createServicesStarterCommand()
 {
@@ -898,6 +954,8 @@ void TriangularMesh::createServicesStarterCommand()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::removeServicesStarterCommand()
 {
     if(m_servicesStarterCallback)
@@ -908,6 +966,14 @@ void TriangularMesh::removeServicesStarterCommand()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void TriangularMesh::setAutoResetCamera(bool autoResetCamera)
+{
+    m_autoResetCamera = autoResetCamera;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
 

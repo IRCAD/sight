@@ -27,6 +27,7 @@ Resection::Resection() throw()
 {
     m_clippingPlanes = "";
     m_sharpEdgeAngle = 50;
+    m_autoResetCamera = true;
     addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
     addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
 }
@@ -60,6 +61,12 @@ void Resection::configuring() throw(fwTools::Failed)
     if(m_configuration->hasAttribute("transform") )
     {
         this->setTransformId( m_configuration->getAttributeValue("transform") );
+    }
+
+    if (m_configuration->hasAttribute("autoresetcamera") )
+    {
+        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
+        m_autoResetCamera = (autoresetcamera == "yes");
     }
 }
 
@@ -103,11 +110,13 @@ void Resection::doUpdate() throw(fwTools::Failed)
             service->setRenderId( this->getRenderId() );
             service->setPickerId( this->getPickerId() );
             service->setRenderService(this->getRenderService());
+            ::visuVTKAdaptor::Reconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
             if(!resectionIsValid)
             {
-                ::visuVTKAdaptor::Reconstruction::dynamicCast(service)->setClippingPlanes( m_clippingPlanes );
+                reconstAdaptor->setClippingPlanes( m_clippingPlanes );
             }
-            ::visuVTKAdaptor::Reconstruction::dynamicCast(service)->setSharpEdgeAngle( m_sharpEdgeAngle );
+            reconstAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
+            reconstAdaptor->setAutoResetCamera(m_autoResetCamera);
             service->start();
 
             this->registerService(service);
