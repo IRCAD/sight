@@ -123,7 +123,7 @@ namespace fwServices
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( serviceId, _implementationId );
     ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
     return srv;
@@ -150,7 +150,7 @@ namespace fwServices
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string uid)
 {
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     IService::sptr srv = ::fwServices::add( obj , serviceId , _implementationId ) ;
     assert( !srv->hasID() );
     srv->setID( uid ) ;

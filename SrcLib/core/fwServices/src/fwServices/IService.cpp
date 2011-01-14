@@ -129,7 +129,7 @@ void IService::stop() throw( ::fwTools::Failed)
     if( m_globalState == STARTED )
     {
         m_globalState = STOPPING ;
-#ifndef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
         ::fwServices::stopComChannels( this->getSptr() ) ;
 #endif
         this->stopping() ;
