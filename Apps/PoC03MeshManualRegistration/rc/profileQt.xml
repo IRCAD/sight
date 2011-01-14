@@ -16,7 +16,8 @@
     
     <activate id="ioVTK" version="0-1" />
     <activate id="ioXML" version="0-1" />
-    
+    <activate id="ioData" version="0-1" />
+	
     <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
     <activate id="visuVTKAdaptor" version="0-1" />

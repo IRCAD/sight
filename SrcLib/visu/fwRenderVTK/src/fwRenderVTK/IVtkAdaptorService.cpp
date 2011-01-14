@@ -368,7 +368,6 @@ void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
 //------------------------------------------------------------------------------
 
 void IVtkAdaptorService::removeFromPicker(vtkProp *prop, std::string pickerId)
-
 {
     OSLM_ASSERT("Picker '"<< pickerId << "' undefined." , this->getPicker(pickerId));
     this->getPicker(pickerId)->DeletePickList(prop);

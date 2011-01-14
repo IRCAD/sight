@@ -44,6 +44,9 @@ protected:
    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanes;
+
+private:
+    bool   m_autoResetCamera;
 };
 
 

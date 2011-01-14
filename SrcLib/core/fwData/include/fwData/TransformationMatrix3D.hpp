@@ -39,6 +39,17 @@ public :
     FWDATA_API virtual ~TransformationMatrix3D();
 
 
+    //duplication methods
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( TransformationMatrix3D::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( TransformationMatrix3D::csptr _source );
+
+
+
     // Generator result---------------------------------------------------------
 
     fwGettersSettersDocMacro(Coefficients, vCoefficients, TMCoefArray, the elements of the matrix)

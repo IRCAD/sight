@@ -22,10 +22,12 @@ class vtkActorCollection;
 class vtkActor;
 class vtkPolyData;
 class vtkPolyDataMapper;
+class vtkTransform;
 
 namespace visuVTKAdaptor
 {
 
+class Transform;
 
 class VISUVTKADAPTOR_CLASS_API TriangularMeshVtkCommand ;
 
@@ -55,6 +57,9 @@ public:
     VISUVTKADAPTOR_API void setMapperInput                     ( vtkAlgorithmOutput *input  );
     VISUVTKADAPTOR_API vtkAlgorithmOutput *getMapperInput      ( );
     VISUVTKADAPTOR_API void setActorPropertyToUnclippedMaterial( bool opt );
+
+    /// Active/Inactive automatic reset on camera. By default =true.
+    VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
 
     VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
     VISUVTKADAPTOR_API bool getVisibility();
@@ -126,6 +131,8 @@ protected:
     ::fwRenderVTK::IVtkAdaptorService::wptr m_unclippedPartMaterialService;
     ::fwRenderVTK::IVtkAdaptorService::wptr m_normalsService;
 
+    vtkTransform* m_transform;
+    WPTR(::visuVTKAdaptor::Transform) m_transformService;
 
 public :
 
