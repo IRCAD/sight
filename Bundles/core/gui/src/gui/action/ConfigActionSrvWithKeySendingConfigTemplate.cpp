@@ -34,7 +34,7 @@ ConfigActionSrvWithKeySendingConfigTemplate::~ConfigActionSrvWithKeySendingConfi
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::starting() throw(::fwTools::Failed)
-        {
+{
     SLM_TRACE_FUNC();
 
     actionServiceStarting();
@@ -46,20 +46,20 @@ void ConfigActionSrvWithKeySendingConfigTemplate::starting() throw(::fwTools::Fa
         executable &= (composite->find(itr->second)!= composite->end());
     }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
-        }
+}
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::stopping() throw(::fwTools::Failed)
-        {
+{
     SLM_TRACE_FUNC();
     actionServiceStopping();
-        }
+}
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::Failed)
-        {
+{
     SLM_TRACE_FUNC();
 
     this->::fwGui::IActionSrv::initialize();
@@ -107,20 +107,20 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
             m_keyAdaptors[pattern] = adaptor;
         }
     }
-        }
+}
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::updating() throw(::fwTools::Failed)
-        {
+{
     //this->::gui::action::ConfigActionSrv::updating();
     sendConfig();
-        }
+}
 
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-        {
+{
     //this->::gui::action::ConfigActionSrv::updating(_msg);
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     bool executable = true;
@@ -141,7 +141,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::Object
         }
     }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
-        }
+}
 
 //------------------------------------------------------------------------------
 
@@ -202,7 +202,6 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 
     ::fwServices::IEditionService::notify(this->getSptr(), composite, msg);
 }
-
 
 //------------------------------------------------------------------------------
 
