@@ -375,7 +375,7 @@ void ObjectServiceRegistry::cleanExpiredObject()
                 if (srv != NULL )
                 {
                     srv->stop();
-#ifndef NOT_USE_SRVFAC
+#ifdef NOT_USE_SRVFAC
                     ::fwServices::unregisterComChannels( srv ) ;
 #endif
                 }
