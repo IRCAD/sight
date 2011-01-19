@@ -133,4 +133,13 @@ getTime
     return dateAndTimeStr.substr(9,6);
 }
 
+//------------------------------------------------------------------------------
+
+std::string getCurrentTime()
+{
+    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    std::string nowStr = ::boost::posix_time::to_simple_string(now);
+    return nowStr.substr(0,21);
+}
+
 }
