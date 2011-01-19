@@ -171,6 +171,7 @@ void IService::handlingEventOff()
 {
     SLM_ASSERT( "Handling event vector must be empty", m_handledEvents.size() == 0 );
     m_isHandlingAllEvents = false;
+    m_handledEvents.push_back( "TOTO" ); //HACK FIXME
 }
 
 //-----------------------------------------------------------------------------
