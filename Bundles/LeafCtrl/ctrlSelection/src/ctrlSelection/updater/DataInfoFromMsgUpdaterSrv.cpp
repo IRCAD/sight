@@ -55,7 +55,7 @@ void DataInfoFromMsgUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) 
             SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
 
             // Test if we manage this event from this object message uid
-            if( obj->getID() == uuid )
+            if( obj->getID() == uuid || uuid == "*")
             {
                 ::fwData::Object::sptr dataInfo = ::boost::const_pointer_cast< ::fwData::Object >(_msg->getDataInfo(  event ));
                 SLM_ASSERT("no dataInfo set!!!" ,  dataInfo
