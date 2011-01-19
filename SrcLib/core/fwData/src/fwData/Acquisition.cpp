@@ -50,7 +50,8 @@ Acquisition::Acquisition() :
     m_dRadiations(0),
     m_sMedicalPrinter(""),
     m_sMedicalPrinterCorp(""),
-    m_sPatientPosition("")
+    m_sPatientPosition(""),
+    m_pathToFiles("")
 {
     SLM_WARN("::fwData::Acquisition() : (ToDo) field default value");
     setField( Acquisition::ID_RECONSTRUCTIONS );
@@ -93,6 +94,8 @@ void Acquisition::shallowCopy( Acquisition::csptr _source )
     this->m_sMedicalPrinter = _source->m_sMedicalPrinter;
     this->m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
     this->m_sPatientPosition = _source->m_sPatientPosition;
+    this->m_dicomFileList = _source->m_dicomFileList;
+
 }
 
 //------------------------------------------------------------------------------
@@ -123,6 +126,10 @@ void Acquisition::deepCopy( Acquisition::csptr _source )
     this->m_sMedicalPrinter = _source->m_sMedicalPrinter;
     this->m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
     this->m_sPatientPosition = _source->m_sPatientPosition;
+    BOOST_FOREACH( std::string dicomFile , _source->m_dicomFileList)
+    {
+        this->m_dicomFileList.push_back(dicomFile);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -378,6 +385,13 @@ std::pair< Acquisition::ReconstructionConstIterator, Acquisition::Reconstruction
     ReconstructionConstIterator begin(  getField( Acquisition::ID_RECONSTRUCTIONS )->children().begin()   );
     ReconstructionConstIterator   end(  getField( Acquisition::ID_RECONSTRUCTIONS )->children().end()   );
     return std::make_pair( begin, end );
+}
+
+//------------------------------------------------------------------------------
+
+void Acquisition::addDicomFileUrl(std::string dicomfileUrl)
+{
+    m_dicomFileList.push_back(dicomfileUrl);
 }
 
 //------------------------------------------------------------------------------
