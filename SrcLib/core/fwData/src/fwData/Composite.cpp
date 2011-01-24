@@ -46,7 +46,15 @@ Composite const &Composite::getRefMap() const
 void Composite::shallowCopy( Composite::csptr _source )
 {
     ::fwTools::Object::shallowCopyOfChildren( _source );
-    (ObjectMapType)(*this) = (ObjectMapType)(*(_source.get()));
+    //(ObjectMapType)(*this) = (ObjectMapType)(*(_source.get()));
+    this->clear();
+
+     for(    Composite::Container::const_iterator iter = _source->begin();
+             iter != _source->end();
+             ++iter )
+     {
+         (*this)[ iter->first ] = iter->second;
+     }
 }
 
 //------------------------------------------------------------------------------
