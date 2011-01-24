@@ -17,6 +17,7 @@
 #include <fwTools/Object.hpp>
 
 #include <fwServices/helper.hpp>
+#include <fwServices/bundle/runtime.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -101,6 +102,15 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
             assert( mode == "writer" || mode == "reader" );
             m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
             OSLM_DEBUG( "mode => " << mode );
+        }
+
+        if( (*iter)->getName() == "config" )
+        {
+            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'id'.", (*iter)->hasAttribute("id")) ;
+            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'service'.", (*iter)->hasAttribute("service")) ;
+            std::string configId = (*iter)->getExistingAttributeValue("id") ;
+            std::string configSrv = (*iter)->getExistingAttributeValue("service") ;
+            m_serviceToConfig[ configSrv ] = configId;
         }
     }
 
@@ -221,10 +231,26 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 
         if ( ! extensionSelectionIsCanceled )
         {
+
+            // Get Config
+            bool hasConfigForService = false;
+            ::fwRuntime::ConfigurationElement::sptr srvCfg;
+            if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
+            {
+                hasConfigForService = true;
+                srvCfg = ::fwServices::bundle::findConfigurationForPoint(  m_serviceToConfig[extensionId] , "::fwServices::ServiceConfig" ) ;
+                SLM_ASSERT("Sorry, there is not service configuration of type ::fwServices::ServiceConfig found", srvCfg ) ;
+            }
+
             // Configure and start service
             if ( m_mode == READER_MODE )
             {
                 ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( this->getObject() , extensionId ) ;
+                if ( hasConfigForService )
+                {
+                    reader->setConfiguration( srvCfg );
+                    reader->configure();
+                }
                 reader->start();
                 reader->configureWithIHM();
 
@@ -238,6 +264,11 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             else
             {
                 ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject() , extensionId ) ;
+                if ( hasConfigForService )
+                {
+                    writer->setConfiguration( srvCfg );
+                    writer->configure();
+                }
                 writer->start();
                 writer->configureWithIHM();
 
