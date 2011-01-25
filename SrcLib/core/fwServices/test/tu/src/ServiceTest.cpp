@@ -239,10 +239,13 @@ void ServiceTest::testObjectCreationWithConfig()
     const std::string serviceUUID2 = "myTestService2";
 
     // Create object configuration
-    ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildObjectConfig() ;
+    ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwTools::Object::sptr obj = ::fwServices::New< ::fwTools::Object >(config );
+    ::fwServices::ConfigTemplateManager::NewSptr configManager;
+    configManager->setConfig( config );
+    configManager->create();
+    ::fwTools::Object::sptr obj = configManager->getConfigRoot();
 
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(objectUUID, obj->getID());
@@ -252,19 +255,21 @@ void ServiceTest::testObjectCreationWithConfig()
     CPPUNIT_ASSERT( ::fwServices::has(obj, "::TestService"));
 
     // Test start services
-    fwServices::start( config ) ;
+    configManager->start();
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID1)->isStarted() );
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID2)->isStarted() );
 
     // Test update services
-    fwServices::update( config ) ;
+    configManager->update();
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID1)->getIsUpdated() );
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID2)->getIsUpdated() == false );
 
     // Test stop services
-    fwServices::stop( config ) ;
+    configManager->stop();
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID1)->isStopped() );
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID2)->isStopped() );
+
+    configManager->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -293,6 +298,7 @@ void ServiceTest::testObjectCreationWithConfig()
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
     serviceA->setAttributeValue( "type" , "::TestService" ) ;
+    serviceA->setAttributeValue( "implementation" , "::TestServiceImplementation" ) ;
     serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // Object's service B
