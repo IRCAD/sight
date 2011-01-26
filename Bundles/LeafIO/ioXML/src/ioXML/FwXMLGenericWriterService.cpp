@@ -87,6 +87,11 @@ void FwXMLGenericWriterService::configureWithIHM()
         _sDefaultPath = result->getPath();
         m_writer.setFile( result->getPath() );
     }
+    else
+    {
+        ::boost::filesystem::path emptyPath;
+        m_writer.setFile(emptyPath);
+    }
 }
 
 //------------------------------------------------------------------------------
