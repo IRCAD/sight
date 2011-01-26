@@ -442,7 +442,7 @@ void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _s
         SContainer::iterator positionToDelete = pos->second.end() ;
         for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
         {
-            OSLM_TRACE( "OBJ=" <<_service->getObject()->getID() <<
+            OSLM_TRACE( "OBJ=" << ( ( ! pos->first.expired() ) ? _service->getObject()->getID() : "expiredIdObject" ) <<
                         " SContainer::iterator lIter" <<  ( *lIter) ->getID()
                       );
             if( ( *lIter) == _service )
