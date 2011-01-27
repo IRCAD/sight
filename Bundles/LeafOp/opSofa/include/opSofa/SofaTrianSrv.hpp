@@ -39,7 +39,7 @@ private :
     /**
      * @brief SofaBusiness pointer
      */
-	SofaBusiness *sofa;
+    SofaBusiness *sofa;
 
 };
 

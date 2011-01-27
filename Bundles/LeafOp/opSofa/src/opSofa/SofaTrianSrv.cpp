@@ -74,31 +74,31 @@ void SofaTrianSrv::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTo
  */
 void SofaTrianSrv::updating() throw ( ::fwTools::Failed )
 {
-	int static etat = 1;
+    int static etat = 1;
 
-	if (etat == 1) {
-		etat++;
-		SLM_TRACE_FUNC();
+    if (etat == 1) {
+        etat++;
+        SLM_TRACE_FUNC();
 
-		// Retreive object
+        // Retreive object
         OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID)) ;
-		::fwData::TriangularMesh::sptr pMesh = ::fwData::TriangularMesh::dynamicCast(::fwTools::fwID::getObject( m_meshUID )) ;
+        ::fwData::TriangularMesh::sptr pMesh = ::fwData::TriangularMesh::dynamicCast(::fwTools::fwID::getObject( m_meshUID )) ;
 
-		int ips = QInputDialog::getDouble(0, "Nombre d'image par seconde", "FPS :", 10, 1, 1000, 0);
+        int ips = QInputDialog::getDouble(0, "Nombre d'image par seconde", "FPS :", 10, 1, 1000, 0);
 
         sofa = new SofaBusiness();
         sofa->loadMesh(pMesh, this->getSptr());
 
-		if (ips!=0)
-		{	sofa->setTimeStepAnimation(1000/ips); }
-		else
-		{	sofa->setTimeStepAnimation(1000/10); }
+        if (ips!=0)
+        {    sofa->setTimeStepAnimation(1000/ips); }
+        else
+        {    sofa->setTimeStepAnimation(1000/10); }
 
         sofa->startThread();
 
-	} else if (etat == 2) {
-		sofa->reset();
-	}
+    } else if (etat == 2) {
+        sofa->reset();
+    }
 }
 
 }

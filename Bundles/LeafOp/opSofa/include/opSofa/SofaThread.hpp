@@ -53,7 +53,7 @@ private:
     /**
      * @brief Pointer to the service Fw4spl
      */
-	fwServices::IService::sptr service;
+    fwServices::IService::sptr service;
 
     /**
      * @brief list of mesh

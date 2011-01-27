@@ -26,11 +26,11 @@ public:
     virtual ~SofaBusiness();
     void loadScn(std::string, ::fwData::Acquisition::sptr, ::fwServices::IService::sptr);
     void loadMesh(::fwData::TriangularMesh::sptr, ::fwServices::IService::sptr);
-	unsigned int getTimeStepAnimation();
-	void setTimeStepAnimation(unsigned int timeStepAnimation);
-	void animate();
-	void startThread();
-	void stopThread();
+    unsigned int getTimeStepAnimation();
+    void setTimeStepAnimation(unsigned int timeStepAnimation);
+    void animate();
+    void startThread();
+    void stopThread();
     bool isAnimate();
     void reset();
     void shakeMesh(std::string, int);
@@ -46,7 +46,7 @@ private:
     /**
      * @brief Pointer to the GNode object containing the physical parameters
      */
-	GNode *groot;
+    GNode *groot;
 
     /**
      * @brief Data containing the step of deformation
