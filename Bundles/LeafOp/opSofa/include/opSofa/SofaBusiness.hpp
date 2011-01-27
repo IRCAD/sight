@@ -6,10 +6,12 @@
 #include <fwData/PatientDB.hpp>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/component/forcefield/StiffSpringForceField.h>
 #include "opSofa/SofaThread.hpp"
 
 using namespace sofa::simulation::tree;
 using sofa::component::visualmodel::OglModel;
+using namespace sofa::defaulttype;
 
 class SofaThread;
 
@@ -29,10 +31,14 @@ public:
 	void animate();
 	void startThread();
 	void stopThread();
+    bool isAnimate();
     void reset();
+    void shakeMesh(std::string, int);
+    void moveMesh(std::string, int, int, int, float, float, float);
 
 private:
     void fillOglModelVector(GNode*, std::vector<OglModel*>*);
+    void fillSpringForceField(GNode*, std::map<std::string, StiffSpringForceField3*>*);
     void fillTriangularMeshVector(::fwData::Acquisition::sptr, std::vector<fwData::TriangularMesh::sptr>*);
     void translationPointer(OglModel*, ::fwData::TriangularMesh::sptr);
     void clearTranslationPointer();
@@ -56,6 +62,11 @@ private:
      * @brief Vector to mesh object
      */
     std::vector<fwData::TriangularMesh::sptr> *meshs;
+
+    /**
+     * @brief map to StiffSpringForceField3 object
+     */
+    std::map<std::string, StiffSpringForceField3*> *springs;
 
 };
 

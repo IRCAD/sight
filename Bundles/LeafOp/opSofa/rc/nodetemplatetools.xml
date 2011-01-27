@@ -1,0 +1,18 @@
+
+    <Node 	name="ORGAN_NAME" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+		<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+		<SparseGridTopology name="Embedded Sparse Grid"  fileTopology="TRIAN_LOCATION"  n="7 6 5" />
+		<MechanicalObject template="Vec3d" name="Particles"  position="1000 0 0"  velocity="0 0 0"  force="0 0 0"  internalForce="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  debugViewIndicesScale="0.0001" />
+		<UniformMass template="Vec3d" name="Mass" />
+		<PlaneForceField template="Vec3d" name="Plane"  normal="0 0 1"  d="-10" />
+		<HexahedronFEMForceField template="Vec3d" name="FEM"  youngModulus="200" />
+		<EulerImplicitSolver name="Implicit Euler Solver" />
+		<LineModel name="default0"  contactStiffness="300" />
+		<PointModel name="default1"  contactStiffness="300" />
+		<FixedConstraint template="Vec3d" name="default4"  indices="0 10 20 30 40 50 60" />
+		<Node 	name="Visual" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
+			<OglModel template="ExtVec3f" name="ORGAN_NAME"  fileMesh="TRIAN_LOCATION"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
+			<BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default28"  object1="../../Particles"  object2="ORGAN_NAME" />
+		</Node>
+	</Node>
+    

@@ -1,34 +1,33 @@
-#ifndef _opSofa_SOFASCENEREADERSRV_HPP_
-#define _opSofa_SOFASCENEREADERSRV_HPP_
+#ifndef _opSofa_SOFASSTARTSRV_HPP_
+#define _opSofa_SOFASSTARTSRV_HPP_
 
 #include <iostream>
 #include <fwTools/Failed.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <io/IReader.hpp>
+#include <fwGui/IActionSrv.hpp> 
 
 namespace opSofa
 {
 
 /**
- * @brief Service allow to read file scn
+ * @brief Service allow to start or stop Sofa
  */
-class SofaSceneReaderSrv : public ::io::IReader
+class SofaStartSrv : public ::fwGui::IActionSrv 
 {
     public :
-        fwCoreServiceClassDefinitionsMacro ( (SofaSceneReaderSrv)(::io::IReader) ) ;
+        fwCoreServiceClassDefinitionsMacro ( (SofaStartSrv)(::fwGui::IActionSrv ) ) ;
 
-        SofaSceneReaderSrv() throw();
-        virtual ~SofaSceneReaderSrv() throw();
+        SofaStartSrv() throw();
+        virtual ~SofaStartSrv() throw();
         void configuring() throw ( ::fwTools::Failed );
         void starting() throw ( ::fwTools::Failed );
         void stopping() throw ( ::fwTools::Failed );
         void updating() throw ( ::fwTools::Failed );
         void updating( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
         void info( std::ostream & ostr );
-        void configureWithIHM();
 
 };
 
 }
 
-#endif // _opSofa_SOFASCENEREADERSRV_HPP_
+#endif // _opSofa_SOFASSTARTSRV_HPP_

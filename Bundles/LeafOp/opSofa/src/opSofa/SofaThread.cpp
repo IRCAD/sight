@@ -69,6 +69,8 @@ void SofaThread::run()
  */
 void SofaThread::refreshVtk()
 {
+    mutex.lock();
+
     // Send message of each mesh at vtk to refresh screen
     int size = meshs->size();
     for (int i=0; i<size; ++i) {
@@ -77,6 +79,8 @@ void SofaThread::refreshVtk()
 
     // wake thread sofa
     condition.wakeOne();
+
+    mutex.unlock();
 }
 
 /**
@@ -85,5 +89,15 @@ void SofaThread::refreshVtk()
 void SofaThread::stop()
 {
     stopRun = true;
-    this->wait(3000);
+    this->wait(100);
+}
+
+/**
+ * @brief Get stage of the thread
+ *
+ * @return true if the thread is running
+ */
+bool SofaThread::isRunning()
+{
+    return !stopRun;
 }

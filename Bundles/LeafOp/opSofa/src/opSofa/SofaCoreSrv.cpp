@@ -4,6 +4,10 @@
 #include "opSofa/SofaCoreSrv.hpp"
 #include <fwData/Acquisition.hpp>
 #include <fwData/String.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Vector.hpp>
+#include <QMessageBox>
 
 
 namespace opSofa
@@ -74,9 +78,44 @@ void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools
 
         // Apply at sofa the number of image by second
         sofa->setTimeStepAnimation(1000/50);
+    }
 
-        // Start thread sofa
-        sofa->startThread();
+    else if (msg->hasEvent("START_STOP_SOFA")) {
+        if (sofa) {
+            // if animation is running
+            if (sofa->isAnimate()) {
+                // Stop animation
+                sofa->stopThread();
+            } else {
+                // Start animation
+                sofa->startThread();
+            }
+        } else {
+            QMessageBox::warning(0, "Warning", "For launch animation you must first load scene file !");
+        }
+    }
+
+    else if (msg->hasEvent("EDITOR_MESH_SOFA")) {
+        if (sofa) {
+            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("EDITOR_MESH_SOFA"));
+            ::fwData::String::csptr idMesh = ::fwData::String::dynamicConstCast(data->at(0));
+            ::fwData::Integer::csptr strength = ::fwData::Integer::dynamicConstCast(data->at(1));
+            sofa->shakeMesh(idMesh->value(), strength->value());
+        }
+    }
+
+    else if (msg->hasEvent("MOVE_MESH_SOFA")) {
+        if (sofa) {
+            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("MOVE_MESH_SOFA"));
+            ::fwData::String::csptr idMesh = ::fwData::String::dynamicConstCast(data->at(0));
+            ::fwData::Integer::csptr x = ::fwData::Integer::dynamicConstCast(data->at(1));
+            ::fwData::Integer::csptr y = ::fwData::Integer::dynamicConstCast(data->at(2));
+            ::fwData::Integer::csptr z = ::fwData::Integer::dynamicConstCast(data->at(3));
+            ::fwData::Float::csptr rx = ::fwData::Float::dynamicConstCast(data->at(4));
+            ::fwData::Float::csptr ry = ::fwData::Float::dynamicConstCast(data->at(5));
+            ::fwData::Float::csptr rz = ::fwData::Float::dynamicConstCast(data->at(6));
+            sofa->moveMesh(idMesh->value(), x->value(), y->value(), z->value(), rx->value(), ry->value(), rz->value());
+        }
     }
 }
 

@@ -39,9 +39,10 @@ SofaBusiness::~SofaBusiness()
 {
     thread->stop();
     clearTranslationPointer();
-    delete thread;
-    delete groot;    
+    delete thread;    
     delete meshs;
+    delete springs;
+    delete groot;
 }
 
 
@@ -57,6 +58,7 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
     // init attributs
     this->timeStepAnimation = 100;
     meshs = new std::vector<fwData::TriangularMesh::sptr>();
+    springs = new std::map<std::string, StiffSpringForceField3*>();
 	
     // initialize Sofa
     sofa::component::init();
@@ -75,6 +77,9 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
     // Fill OglModel vector
     std::vector<OglModel*> visuals;
     fillOglModelVector(groot, &visuals);
+
+    // Fill StiffSpringForceField3 map
+    fillSpringForceField(groot, springs);
 
     // Add correspond between mesh sofa anf fw4spl
     for (int i=0; i<visuals.size(); ++i) {
@@ -216,6 +221,16 @@ void SofaBusiness::stopThread()
     thread->stop();
 }
 
+/**
+ * @brief Get stage of the animation
+ *
+ * @return true if animation is running
+ */
+bool SofaBusiness::isAnimate()
+{
+    return thread->isRunning();
+}
+
 
 /**
  * @brief Resets the SOFA scene
@@ -251,6 +266,47 @@ void SofaBusiness::setTimeStepAnimation(unsigned int timeStepAnimation)
 }
 
 
+ /**
+ * @brief Shake organ
+ *
+ * @param idMesh : id organ
+ * @param value : value of force
+ */
+void SofaBusiness::shakeMesh(std::string idMesh, int value)
+{
+    if (springs->count(idMesh)) {
+        StiffSpringForceField3 *spring = (*springs)[idMesh];
+
+        spring->clear();
+        spring->addSpring(1, 153, value, 5, 0);
+    }
+}
+
+void SofaBusiness::moveMesh(std::string idMesh, int x, int y, int z, float rx, float ry, float rz)
+{
+    //GNode *souris = groot->getChild("souris");
+    GNode *souris = groot;
+    MechanicalObjectRigid3f *mechanical = (MechanicalObjectRigid3f*) (souris->getObject(sofa::core::objectmodel::TClassInfo<MechanicalObjectRigid3f>::get(), idMesh));
+    std::string name = mechanical->getName();
+    VecCoordRigid3f& coord = *mechanical->getX();
+    coord[0][0] = x;
+    coord[0][1] = y;
+    coord[0][2] = z;
+
+    static float srx = 0;
+    static float sry = 0;
+    static float srz = 0;
+    //OSLM_ERROR("position2 = " << rx << " " << ry << " " << rz);
+
+    // Orientation
+    mechanical->applyRotation(rx - srx, ry - sry, rz - srz);
+
+    srx = rx;
+    sry = ry;
+    srz = rz;
+}
+
+
 /**
  * @brief Bring OglModel of Sofa
  *
@@ -267,6 +323,27 @@ void SofaBusiness::fillOglModelVector(GNode *node, std::vector<OglModel*> *model
             model->push_back(visu);
         }
         fillOglModelVector(children, model);
+    }
+}
+
+
+/**
+ * @brief Bring SpringForceField of Sofa
+ *
+ * @param node : scene root of Sofa
+ * @param model : SpringForceField map at fill
+ */
+void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, StiffSpringForceField3*> *springs)
+{
+   sofa::helper::vector<sofa::core::objectmodel::BaseNode*> gchild = node->getChildren();
+   for (unsigned int i=0; i<gchild.size(); i++) {
+        GNode *children = node->getChild(gchild[i]->getName());
+        StiffSpringForceField3 *spring = (StiffSpringForceField3*) (children->getObject(sofa::core::objectmodel::TClassInfo<StiffSpringForceField3>::get(), ""));
+        if (spring != NULL) {
+            std::string name = spring->getName();
+            (*springs)[name] = spring;
+        }
+        fillSpringForceField(children, springs);
     }
 }
 

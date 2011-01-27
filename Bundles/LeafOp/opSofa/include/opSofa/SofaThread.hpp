@@ -21,6 +21,7 @@ class SofaThread : public QThread
 public:
     SofaThread(SofaBusiness*, std::vector<fwData::TriangularMesh::sptr>*, ::fwServices::IService::sptr service);
     void stop();
+    bool isRunning();
 
 signals:
     /**
