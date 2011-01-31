@@ -146,7 +146,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
         QString organUid = QString(rec->getID().c_str());
         ::boost::filesystem::path filename = "";
 
-        if (organVisible) {
+        if (organVisible && organName != "mors2" && organName != "cam") {
             // Save mesh in filesystem
             if (writeTrian) {
                 ::fwData::TriangularMesh::sptr mesh = rec->getTriangularMesh();
