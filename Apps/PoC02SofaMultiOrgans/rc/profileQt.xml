@@ -8,7 +8,7 @@
         <param id="startingMode" value="windows" />
         <param id="rootObject" value="::fwData::Composite" />
         <param id="config" value="DemoComSofa" />
-        <param id="configFile" value="./Bundles/PoC2SofaMultiOrgans_0-1/configurations/config.xml" />
+        <param id="configFile" value="./Bundles/PoC02SofaMultiOrgans_0-1/configurations/config.xml" />
     </activate>
     <activate id="io" version="0-1" />
     <activate id="visu" version="0-1" />
