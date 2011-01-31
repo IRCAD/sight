@@ -36,7 +36,6 @@
 namespace uiAcquisition
 {
 
-
 // OrganTransformationEditor
 
 REGISTER_SERVICE( ::gui::editor::IEditor, OrganTransformationEditor, ::fwData::Acquisition );
@@ -55,9 +54,12 @@ OrganTransformationEditor::OrganTransformationEditor() throw()
     this->mSaveCount = 0;
 }
 
+//------------------------------------------------------------------------------
+
 OrganTransformationEditor::~OrganTransformationEditor() throw()
-{
-}
+{}
+
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::configuring() throw( ::fwTools::Failed )
 {
@@ -67,6 +69,8 @@ void OrganTransformationEditor::configuring() throw( ::fwTools::Failed )
         mTMSUid = m_configuration->findConfigurationElement( "TMSUid" )->getValue();
     }
 }
+
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::starting() throw( ::fwTools::Failed )
 {
@@ -113,9 +117,10 @@ void OrganTransformationEditor::starting() throw( ::fwTools::Failed )
     updating();
 }
 
+//------------------------------------------------------------------------------
+
 void OrganTransformationEditor::stopping() throw( ::fwTools::Failed )
 {
-
     QObject::disconnect(mpReconstructionListBox, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(OnReconstructionCheck(QListWidgetItem *)));
     QObject::disconnect(mpResetButton, SIGNAL(clicked( )), this, SLOT(OnResetClick()));
     QObject::disconnect(mpSaveButton, SIGNAL(clicked( )), this, SLOT(OnSaveClick()));
@@ -126,18 +131,23 @@ void OrganTransformationEditor::stopping() throw( ::fwTools::Failed )
 
     this->getContainer()->clean();
     this->destroy();
-
 }
+
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::swapping() throw( ::fwTools::Failed )
 {
     updating();
 }
 
+//------------------------------------------------------------------------------
+
 void OrganTransformationEditor::updating() throw( ::fwTools::Failed )
 {
     Refresh();
 }
+
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
@@ -152,9 +162,12 @@ void OrganTransformationEditor::updating( ::fwServices::ObjectMsg::csptr msg ) t
     }
 }
 
+//------------------------------------------------------------------------------
+
 void OrganTransformationEditor::info( ::std::ostream& sstream )
-{
-}
+{}
+
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::Refresh()
 {
@@ -201,12 +214,16 @@ void OrganTransformationEditor::Refresh()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void OrganTransformationEditor::NotitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat)
 {
     ::fwComEd::TransformationMatrix3DMsg::NewSptr message;
     message->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
     ::fwServices::IEditionService::notify( getSptr(), aTransMat, message );
 }
+
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::OnReconstructionCheck(QListWidgetItem *currentItem)
 {
@@ -237,7 +254,7 @@ void OrganTransformationEditor::OnReconstructionCheck(QListWidgetItem *currentIt
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::OnResetClick()
 {
@@ -263,6 +280,8 @@ void OrganTransformationEditor::OnResetClick()
         }
     }
 }
+
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::OnSaveClick()
 {
@@ -296,6 +315,7 @@ void OrganTransformationEditor::OnSaveClick()
 
 }
 
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::OnLoadClick()
 {
@@ -329,7 +349,7 @@ void OrganTransformationEditor::OnLoadClick()
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 void OrganTransformationEditor::OnTestClick()
 {
@@ -372,6 +392,6 @@ void OrganTransformationEditor::OnTestClick()
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 }

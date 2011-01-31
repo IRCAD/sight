@@ -10,7 +10,14 @@
 #include <fwData/String.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/StandardBuffer.hpp>
+#include <fwData/ResectionDB.hpp>
 
+#include <fwMath/MeshFunctions.hpp>
+
+#include <fwServices/helper.hpp>
+#include <fwServices/IEditionService.hpp>
+
+#include "fwComEd/PatientDBMsg.hpp"
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
 
@@ -19,7 +26,6 @@ namespace fwComEd
 
 namespace fieldHelper
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -146,8 +152,6 @@ void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwD
 {
     tF->setMinMax( min->value(), max->value() );
 }
-
-
 
 //------------------------------------------------------------------------------
 
@@ -332,8 +336,6 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
     return point;
 }
 
-
-
 //------------------------------------------------------------------------------
 
 bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
@@ -447,6 +449,170 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     imgToInitialize->setBuffer( dest );
 
     return imgToInitialize;
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patientDBFrom, ::fwData::PatientDB::sptr _patientDBTo, ::fwServices::IService::sptr _msgSender )
+{
+    ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTFAndSetBWTF(_patientDBFrom);
+
+    // Add new patient DB to patient DB container
+
+    // Test if the patient db contain patient
+    bool hasOldPatients = ( _patientDBTo->getPatients().first   != _patientDBTo->getPatients().second );
+    bool hasNewPatients = ( _patientDBFrom->getPatients().first != _patientDBFrom->getPatients().second );
+
+    // Add patient
+    ::fwData::PatientDB::PatientIterator patientBegin = _patientDBFrom->getPatients().first;
+    ::fwData::PatientDB::PatientIterator patientEnd     = _patientDBFrom->getPatients().second;
+    ::fwData::PatientDB::PatientIterator patient        = patientBegin;
+    while ( patient != patientEnd )
+    {
+        // remove reconstructions images
+        ::fwData::PatientDB::PatientIterator patientIter;
+        for (   patientIter = _patientDBFrom->getPatients().first ;
+                patientIter != _patientDBFrom->getPatients().second ;
+                ++patientIter)
+        {
+            // Study selection
+            ::fwData::Patient::StudyIterator studyIter;
+            for (   studyIter = (*patientIter)->getStudies().first ;
+                    studyIter != (*patientIter)->getStudies().second ;
+                    ++studyIter)
+            {
+                // Acquisition selection
+                ::fwData::Study::AcquisitionIterator acquisitionIter;
+                for (   acquisitionIter = (*studyIter)->getAcquisitions().first ;
+                        acquisitionIter != (*studyIter)->getAcquisitions().second ;
+                        ++acquisitionIter)
+                {
+                    ::fwData::Acquisition::ReconstructionIterator reconstructionIter;
+                    for (   reconstructionIter = (*acquisitionIter)->getReconstructions().first ;
+                            reconstructionIter != (*acquisitionIter)->getReconstructions().second ;
+                            ++reconstructionIter)
+                    {
+                        ::fwData::Image::sptr image;
+                        (*reconstructionIter)->setImage( image );
+
+                        // Test if reconstruction mesh is closed
+                        (*reconstructionIter)->setIsClosed( ::fwMath::isBorderlessSurface((*reconstructionIter)->getTriangularMesh()->cells()));
+                    }
+                }
+            }
+        }
+
+        // if patient exist, merge patient
+        bool patientExist = false;
+        ::fwData::PatientDB::PatientIterator oldPatient = _patientDBTo->getPatients().first;
+        ::fwData::PatientDB::PatientIterator oldPatientEnd  = _patientDBTo->getPatients().second;
+        for ( ; oldPatient != oldPatientEnd ; ++oldPatient)
+        {
+            if (    (*patient)->getName() == (*oldPatient)->getName() &&
+                    (*patient)->getFirstname() == (*oldPatient)->getFirstname() &&
+                    (*patient)->getIsMale() == (*oldPatient)->getIsMale() )
+            {
+                patientExist = true;
+                mergeInformation((*oldPatient),(*patient));
+            }
+        }
+        if ( !patientExist )
+        {
+            _patientDBTo->addPatient( *patient );
+        }
+        patient++;
+    }
+
+    if( hasNewPatients )
+    {
+        // Notify modifications
+        ::fwComEd::PatientDBMsg::NewSptr msg;
+        if( hasOldPatients )
+        {
+            msg->addEvent(::fwComEd::PatientDBMsg::ADD_PATIENT);
+            msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
+        }
+        else
+        {
+            msg->addEvent(::fwComEd::PatientDBMsg::NEW_PATIENT);
+            msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
+        }
+        ::fwServices::IEditionService::notify( _msgSender, _patientDBTo, msg);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpers::mergeInformation(::fwData::Patient::sptr currentPatient, ::fwData::Patient::sptr importedPatient)
+{
+    ::fwData::Patient::StudyIterator studyIter;
+    for (   studyIter = importedPatient->getStudies().first ;
+            studyIter != importedPatient->getStudies().second ;
+            ++studyIter )
+    {
+        currentPatient->addStudy(*studyIter);
+    }
+
+    ::fwData::Composite::sptr itool = ::fwData::Composite::dynamicCast( importedPatient->getTool(::fwComEd::Dictionary::m_resectionId));
+    ::fwData::Composite::sptr ctool = ::fwData::Composite::dynamicCast(currentPatient->getTool(::fwComEd::Dictionary::m_resectionId));
+
+    //merge toolbox
+
+    // dictionary to maintain OperationName in case of duplicate name.
+    // these names are used in IDToolsBox::composite[m_resectionId] and in ID_SCENARIO::composite["ResectionAcquisitionPair"]
+    std::map< std::string , std::string > ResctionOpNameTranslate;
+
+    if ( itool )
+    {
+        if (!ctool )
+        {
+            currentPatient->addTool(::fwComEd::Dictionary::m_resectionId, itool );
+        }
+        else
+        {
+            // copy data of itool inside ctool map
+            ::fwData::Composite::Container::iterator itoolIter;
+            for (  itoolIter = itool->getRefMap().begin() ;  itoolIter != itool->getRefMap().end();  ++itoolIter )
+            {
+                std::string opName = itoolIter->first;
+                ::fwData::ResectionDB::sptr resectionDB = ::fwData::ResectionDB::dynamicCast( itoolIter->second );
+                SLM_ASSERT(" in Composite of Resection DB invalid Data Type", resectionDB );
+
+                std::string newOpName = opName;
+                while (  ctool->getRefMap().find( newOpName ) !=  ctool->getRefMap().end()  )
+                {
+                    newOpName += "BIS";
+                }
+                ctool->getRefMap()[newOpName] = resectionDB;
+                ResctionOpNameTranslate[ opName ] = newOpName;
+            }
+        }
+    }
+    // merge scenario
+    ::fwData::Composite::sptr iscenario = ::fwData::Composite::dynamicCast( importedPatient->getScenario("ResectionAcquisitionPair"));
+    ::fwData::Composite::sptr cscenario = ::fwData::Composite::dynamicCast( currentPatient->getScenario("ResectionAcquisitionPair"));
+
+    if ( iscenario )
+    {
+        if ( !cscenario )
+        {
+            currentPatient->addScenario("ResectionAcquisitionPair", iscenario );
+        }
+        else
+        {
+            // copy data of iscenario inside cscenario map
+            ::fwData::Composite::Container::iterator iscenarioIter;
+            for (  iscenarioIter = iscenario->getRefMap().begin() ;  iscenarioIter != iscenario->getRefMap().end();  ++iscenarioIter )
+            {
+                std::string opName = iscenarioIter->first;
+                ::fwData::Acquisition::sptr acquisition = ::fwData::Acquisition::dynamicCast( iscenarioIter->second );
+                SLM_ASSERT(" in Composite of Acquisition invalid Data Type", acquisition );
+
+                std::string newOpName = ResctionOpNameTranslate[ opName ];
+                cscenario->getRefMap()[newOpName] = acquisition;
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

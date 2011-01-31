@@ -187,7 +187,7 @@ void ServiceFactoryRegistry::parseBundleInformation()
 IService::sptr ServiceFactoryRegistry::create( const std::string & _srvType, const std::string & _srvImpl )
 {
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
-    OSLM_ASSERT("Sorry don't find in ServiceFactoryRegistry the service called " << _srvImpl , iter != m_srvImplTosrvInfo.end() )
+    OSLM_ASSERT("Sorry don't find in ServiceFactoryRegistry the service called " << _srvImpl , iter != m_srvImplTosrvInfo.end() );
     ServiceFactoryInfo::sptr info = iter->second;
 
     OSLM_DEBUG("SR create a new service ( classname = " << _srvImpl << " )");
