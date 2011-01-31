@@ -59,7 +59,7 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
     this->timeStepAnimation = 100;
     meshs = new std::vector<fwData::TriangularMesh::sptr>();
     springs = new std::map<std::string, StiffSpringForceField3*>();
-	
+    
     // initialize Sofa
     sofa::component::init();
     sofa::simulation::tree::xml::initXml();
@@ -117,12 +117,12 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
 void SofaBusiness::loadMesh(::fwData::TriangularMesh::sptr pMesh,  ::fwServices::IService::sptr service)
 {
     // Default value : 100 millisecond
-	timeStepAnimation = 100;
-	
-	// Création du noeud principal (correspond à la scène)
+    timeStepAnimation = 100;
+    
+    // Création du noeud principal (correspond à la scène)
     groot = new GNode;
     groot->setName( "root" );
-    groot->setGravityInWorld( Coord3(0,-10,0) );	// on définit la gravité
+    groot->setGravityInWorld( Coord3(0,-10,0) );    // on définit la gravité
 
     // Création d'un solveur (permet de calculer les nouvelles positions des particules)
     CGImplicitSolver* solver = new CGImplicitSolver;
@@ -177,7 +177,7 @@ void SofaBusiness::loadMesh(::fwData::TriangularMesh::sptr pMesh,  ::fwServices:
     skin->addObject(visual);
 
     // Création du mapping entre les deux objets (effectue une liaison entre deux objets
-	// pour que le rendu suive le mouvement de la partie simulation)
+    // pour que le rendu suive le mouvement de la partie simulation)
     BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(DOF, visual);
     mapping->setName( "mapping" );
     skin->addObject(mapping);
@@ -200,7 +200,7 @@ void SofaBusiness::loadMesh(::fwData::TriangularMesh::sptr pMesh,  ::fwServices:
  */
 void SofaBusiness::animate()
 {
-	getSimulation()->animate(groot);
+    getSimulation()->animate(groot);
 }
 
 
@@ -390,9 +390,9 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
  void SofaBusiness::translationPointer(OglModel *visual, ::fwData::TriangularMesh::sptr pMesh)
  {
     // Change pointer vertices
-	float *verticesSofa = (float*) visual->getVertices()->getData()->data();
+    float *verticesSofa = (float*) visual->getVertices()->getData()->data();
     std::vector<std::vector<float > > *verticesF4S = &(pMesh->points());
-	int const nbVertices = pMesh->getNumPoints();
+    int const nbVertices = pMesh->getNumPoints();
     for (int i=0; i<nbVertices; ++i) {
         std::vector<float> *vertex = &((*verticesF4S)[i]);
         MVector<float> *vector = (MVector<float>*) vertex;
@@ -401,9 +401,9 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
     }
 
     // Change pointer Triangles
-	int *trianglesSofa = (int*) visual->getTriangles()->getData()->data();
+    int *trianglesSofa = (int*) visual->getTriangles()->getData()->data();
     std::vector<std::vector<int > > *trianglesF4S = &(pMesh->cells());
-	int const nbTriangles = pMesh->getNumCells();
+    int const nbTriangles = pMesh->getNumCells();
     for (int i=0; i<nbTriangles; ++i) {
         std::vector<int> *triangleF4S = &((*trianglesF4S)[i]);
         MVector<int> *vector = (MVector<int>*) triangleF4S;
@@ -429,7 +429,7 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
 
         // Travel each vertex to reset these ones
         std::vector<std::vector<float > > *vertices = &(pMesh->points());
-	    int const nbVertices = pMesh->getNumPoints();
+        int const nbVertices = pMesh->getNumPoints();
         for (int j=0; j<nbVertices; ++j) {
             std::vector<float> *vertex = &((*vertices)[j]);
 
@@ -449,7 +449,7 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
 
         // Travel each triangle to reset these ones
         std::vector<std::vector<int > > *triangles = &(pMesh->cells());
-	    int const nbTriangles = pMesh->getNumCells();
+        int const nbTriangles = pMesh->getNumCells();
         for (int j=0; j<nbTriangles; ++j) {
             std::vector<int> *triangle = &((*triangles)[j]);
 

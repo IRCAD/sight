@@ -20,22 +20,22 @@ fwServices::IService::sptr g_service;
 // Callback for when the focus is in progress
 void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& ptFocusPoint, XnFloat fProgress, void* UserCxt)
 {
-	//printf("Session progress (%6.2f,%6.2f,%6.2f) - %6.2f [%s]\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z, fProgress,  strFocus);
+    //printf("Session progress (%6.2f,%6.2f,%6.2f) - %6.2f [%s]\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z, fProgress,  strFocus);
 }
 // callback for session start
 void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt)
 {
-	//printf("Session started. Please wave (%6.2f,%6.2f,%6.2f)...\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z);
+    //printf("Session started. Please wave (%6.2f,%6.2f,%6.2f)...\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z);
 }
 // Callback for session end
 void XN_CALLBACK_TYPE SessionEnd(void* UserCxt)
 {
-	//printf("Session ended. Please perform focus gesture to start session\n");
+    //printf("Session ended. Please perform focus gesture to start session\n");
 }
 // Callback for wave detection
 void XN_CALLBACK_TYPE OnWaveCB(void* cxt)
 {
-	//printf("Wave!\n");
+    //printf("Wave!\n");
 }
 // callback for a new position of any hand
 void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext, void* cxt)
@@ -85,37 +85,37 @@ void Kinect::run()
 {
     stopRun = false;
 
-	// Create context
+    // Create context
     xn::Context context;
-	XnStatus rc = context.InitFromXmlFile("./Bundles/opKinect_0-1/Sample-Tracking.xml");
-	if (rc != XN_STATUS_OK)
-	{
-		QMessageBox::critical(0, "Critical error", "Couldn't initialize: " + QString(xnGetStatusString(rc)));
-	}
+    XnStatus rc = context.InitFromXmlFile("./Bundles/opKinect_0-1/Sample-Tracking.xml");
+    if (rc != XN_STATUS_OK)
+    {
+        QMessageBox::critical(0, "Critical error", "Couldn't initialize: " + QString(xnGetStatusString(rc)));
+    }
 
-	// Create the Session Manager
+    // Create the Session Manager
     XnVSessionGenerator* pSessionGenerator;
-	pSessionGenerator = new XnVSessionManager();
-	rc = ((XnVSessionManager*)pSessionGenerator)->Initialize(&context, "Click", "RaiseHand");
-	if (rc != XN_STATUS_OK)
-	{
-		QMessageBox::critical(0, "Critical error", "Session Manager couldn't initialize: " + QString(xnGetStatusString(rc)));
-		delete pSessionGenerator;
-	}
+    pSessionGenerator = new XnVSessionManager();
+    rc = ((XnVSessionManager*)pSessionGenerator)->Initialize(&context, "Click", "RaiseHand");
+    if (rc != XN_STATUS_OK)
+    {
+        QMessageBox::critical(0, "Critical error", "Session Manager couldn't initialize: " + QString(xnGetStatusString(rc)));
+        delete pSessionGenerator;
+    }
 
-	// Initialization done. Start generating
-	context.StartGeneratingAll();
+    // Initialization done. Start generating
+    context.StartGeneratingAll();
 
     // Register session callbacks
-	pSessionGenerator->RegisterSession(NULL, &SessionStart, &SessionEnd, &SessionProgress);
+    pSessionGenerator->RegisterSession(NULL, &SessionStart, &SessionEnd, &SessionProgress);
 
-	// init & register wave control
-	XnVWaveDetector wc;
-	wc.RegisterWave(NULL, OnWaveCB);
+    // init & register wave control
+    XnVWaveDetector wc;
+    wc.RegisterWave(NULL, OnWaveCB);
     wc.RegisterPointUpdate(NULL, Kinect::OnPointUpdate);
-	pSessionGenerator->AddListener(&wc);
+    pSessionGenerator->AddListener(&wc);
 
-	// init & register push control
+    // init & register push control
     XnVPushDetector g_pushDetector;
     g_pushDetector.RegisterPush(NULL, Kinect::onPush);
     pSessionGenerator->AddListener(&g_pushDetector);
@@ -123,8 +123,8 @@ void Kinect::run()
 
     // start loop
     while(!stopRun) {
-		context.WaitAndUpdateAll();
-		((XnVSessionManager*)pSessionGenerator)->Update(&context);
+        context.WaitAndUpdateAll();
+        ((XnVSessionManager*)pSessionGenerator)->Update(&context);
 
         // sleep the thread 1ms
         this->msleep(1);
@@ -132,7 +132,7 @@ void Kinect::run()
 
     // Shutdown Kinect
     delete pSessionGenerator;
-	context.Shutdown();
+    context.Shutdown();
 }
 
 /**
