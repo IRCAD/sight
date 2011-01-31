@@ -1,0 +1,14 @@
+<plugin id="opKinect" class="::opKinect::Plugin">
+    
+    <library name="opKinect" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="io" />
+    
+    <point id="::opKinect::KinectSrv" >
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+    
+</plugin>
