@@ -21,6 +21,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/NumericRoundCast.hxx>
+#include <fwServices/IService.hpp>
 
 #include "fwComEd/export.hpp"
 
