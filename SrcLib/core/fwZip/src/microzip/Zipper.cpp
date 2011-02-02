@@ -294,19 +294,22 @@ bool Zipper::AddFolderToZip(::boost::filesystem::path folderPath, bool bIgnoreFi
         folderName = this->relative_path(folderPath, m_rootFolder);
     }
 
-    // open the file in the zip
-    int nRet = zipOpenNewFileInZip(m_uzFile,
-            (folderName.string()+"/").c_str(),
-            &zfi,
-            NULL,
-            0,
-            NULL,
-            0,
-            NULL,
-            Z_DEFLATED,
-            level);
+    if ( ! folderName.string().empty())
+    {
+        // open the file in the zip
+        int nRet = zipOpenNewFileInZip(m_uzFile,
+                                       (folderName.string()+"/").c_str(),
+                                       &zfi,
+                                       NULL,
+                                       0,
+                                       NULL,
+                                       0,
+                                       NULL,
+                                       Z_DEFLATED,
+                                       level);
 
-    zipCloseFileInZip(m_uzFile);
+        zipCloseFileInZip(m_uzFile);
+    }
 
     ::boost::filesystem::directory_iterator iter(folderPath);
     ::boost::filesystem::directory_iterator end;
