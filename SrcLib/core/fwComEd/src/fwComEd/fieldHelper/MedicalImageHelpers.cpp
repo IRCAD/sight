@@ -77,7 +77,7 @@ std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _
     if ( ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) )
     {
         // ACH => Normaly, if min max does not exist, TF must does not exist.
-        assert( fieldsAreModified.first );
+        SLM_ASSERT("Min is not modified", fieldsAreModified.first );
 
         ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(_pImg);
         tf->setMinMax(windowMin, windowMax);
@@ -97,7 +97,7 @@ std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _
     else
     {
         // ACH => Normaly, if min max does not exist, TF must does not exist.
-        assert( ! fieldsAreModified.first );
+        SLM_ASSERT("Min is modified", ! fieldsAreModified.first );
 
         ::fwData::Composite::sptr cTransfertFunction = _pImg->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
         ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
@@ -106,7 +106,8 @@ std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _
         std::pair< ::boost::int32_t, ::boost::int32_t > currentMinMax = pTF->getMinMax();
 
         // ACH => Normaly this case does not exit in the current framework
-        assert( windowMin == currentMinMax.first && windowMax == currentMinMax.second );
+        OSLM_ASSERT("Current TransfertFunction Min Max are out of bounds ["<<windowMin<<", "<<windowMax<<"]",
+                windowMin == currentMinMax.first && windowMax == currentMinMax.second );
         if ( windowMin != currentMinMax.first || windowMax != currentMinMax.second )
         {
             pTF->setMinMax(windowMin, windowMax);
