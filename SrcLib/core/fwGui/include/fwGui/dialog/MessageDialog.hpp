@@ -31,8 +31,29 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog );
 
+    /**
+     * Opens a default message box with the specified title, text and icon.
+     *
+     * @param title Title of the message box
+     * @param message Message of the message box
+     * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
+     * @return Returns the button enum value corresponding to the pressed button
+     */
+    FWGUI_API static IMessageDialog::Buttons showMessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
+
     /// Constructor. Create the implementation of the specific message box
     FWGUI_API MessageDialog();
+
+    /**
+     * Constructor
+     * Creates a message box with the specified title text and icon.
+     *
+     * @param title Title of the message box
+     * @param message Message of the message box
+     * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
+     */
+    FWGUI_API MessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
+
     /// Destructor. Do nothing
     FWGUI_API virtual ~MessageDialog();
 
