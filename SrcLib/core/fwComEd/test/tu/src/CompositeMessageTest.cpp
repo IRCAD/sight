@@ -51,7 +51,12 @@ void CompositeMessageTest::methodeBuildComposite()
 
     // build composite from ConfigurationElement
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildConfig() ;
-    ::fwData::Composite::sptr compo = ::fwServices::New< ::fwData::Composite >(config );
+
+    // Create the object and its services from the configuration
+    ::fwServices::ConfigTemplateManager::NewSptr configManager;
+    configManager->setConfig( config );
+    configManager->create();
+    ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 
     // test composite
     CPPUNIT_ASSERT_EQUAL(compositeUUID, compo->getID());
@@ -74,14 +79,16 @@ void CompositeMessageTest::methodeBuildComposite()
     CPPUNIT_ASSERT( ::fwServices::has(compo, "::TestService"));
 
     /// test start/update/stop service
-    fwServices::start( config ) ;
+    configManager->start();
     CPPUNIT_ASSERT(::fwServices::get< ::TestService >(compo, serviceUUID1)->isStarted());
 
-    fwServices::update( config ) ;
+    configManager->update();
     CPPUNIT_ASSERT(::fwServices::get< ::TestService >(compo, serviceUUID1)->getIsUpdated());
 
-    fwServices::stop( config ) ;
+    configManager->stop();
     CPPUNIT_ASSERT(::fwServices::get< ::TestService >(compo, serviceUUID1)->isStopped());
+
+    configManager->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -94,7 +101,12 @@ void CompositeMessageTest::methodeCompositeMessage()
 
     // build composite
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildConfig() ;
-    ::fwData::Composite::sptr compo = ::fwServices::New< ::fwData::Composite >(config );
+
+    // Create the object and its services from the configuration
+    ::fwServices::ConfigTemplateManager::NewSptr configManager;
+    configManager->setConfig( config );
+    configManager->create();
+    ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
 
@@ -109,7 +121,7 @@ void CompositeMessageTest::methodeCompositeMessage()
     CPPUNIT_ASSERT(serviceCompo2);
 
     // start services
-    fwServices::start( config ) ;
+    configManager->start();
     CPPUNIT_ASSERT(serviceCompo->isStarted());
     CPPUNIT_ASSERT(serviceCompo2->isStarted());
 
@@ -138,11 +150,11 @@ void CompositeMessageTest::methodeCompositeMessage()
     CPPUNIT_ASSERT(std::find(vModifiedFields.begin(), vModifiedFields.end(),objAUUID) != vModifiedFields.end());
 
     // unregister communication channel
-    fwServices::unregisterCommunicationChannel( compo , serviceCompo );
+    ::fwServices::unregisterCommunicationChannel( compo , serviceCompo );
     ::fwServices::unregisterCommunicationChannel(compo, serviceCompo2);
 
     // stop services
-    fwServices::stop( config ) ;
+    configManager->stopAndDestroy();
 }
 
 //------------------------------------------------------------------------------
@@ -292,11 +304,11 @@ void CompositeMessageTest::methodeMessageNotification()
     stop2->setAttributeValue( "uid" , "myTestService2" ) ;
 
     // composite's edition service
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > editionService = cfg->addConfigurationElement("service");
-    editionService->setAttributeValue( "uid" , "myEditionService" ) ;
-    editionService->setAttributeValue( "type" , "::fwServices::IEditionService" ) ;
-    editionService->setAttributeValue( "implementation" , "::fwComEd::CompositeEditor" ) ;
-    editionService->setAttributeValue( "autoComChannel" , "no" ) ;
+//    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > editionService = cfg->addConfigurationElement("service");
+//    editionService->setAttributeValue( "uid" , "myEditionService" ) ;
+//    editionService->setAttributeValue( "type" , "::fwServices::IEditionService" ) ;
+//    editionService->setAttributeValue( "implementation" , "::fwComEd::CompositeEditor" ) ;
+//    editionService->setAttributeValue( "autoComChannel" , "no" ) ;
 
     return cfg ;
 }

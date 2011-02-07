@@ -32,6 +32,17 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog );
 
+    /**
+     * Opens a default input box with the specified title and message.
+     *
+     * @param title Title of the input box
+     * @param message Message of the input box
+     * @param text the input text in the input field
+     * @return Returns text in the input field
+     */
+    FWGUI_API static std::string showInputDialog(const std::string& title, const std::string& message, const std::string &text = "");
+
+
     /** @brief Constructor. Create the implementation of the specific input dialog box \n
      * Example of use: \n
      * @verbatinm
@@ -42,8 +53,17 @@ public:
           std::string inputText = inputDlg.getInput();\n
      @endverbatim
      */
-
     FWGUI_API InputDialog();
+
+    /**
+     * Constructor. Creates a input box with the specified title and message.
+     *
+     * @param title Title of the input box
+     * @param message Message of the input box
+     * @param text the input text in the input field
+     */
+    FWGUI_API InputDialog(const std::string& title, const std::string& message, const std::string &text = "");
+
     /// Destructor. Do nothing
     FWGUI_API virtual ~InputDialog();
 

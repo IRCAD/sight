@@ -29,7 +29,7 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
 #include "fwServices/ServiceFactoryRegistry.hpp"
 #endif
 
@@ -106,7 +106,7 @@ void ObjectServiceRegistry::initializeRootObject()
     SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
     SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     ::fwServices::ServiceFactoryRegistry::getDefault()->parseBundleInformation();
 #endif
 
@@ -188,7 +188,7 @@ void ObjectServiceRegistry::uninitializeRootObject()
         profile->stop();
         SLM_TRACE("Profile Stopped");
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
         ServiceFactoryRegistry::getDefault()->clearFactory();
 #endif
         // Clear all factories before stop application.
@@ -375,7 +375,7 @@ void ObjectServiceRegistry::cleanExpiredObject()
                 if (srv != NULL )
                 {
                     srv->stop();
-#ifndef USE_SRVFAC
+#ifdef NOT_USE_SRVFAC
                     ::fwServices::unregisterComChannels( srv ) ;
 #endif
                 }
@@ -405,7 +405,7 @@ void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _ser
 {
     SLM_TRACE_FUNC();
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     OSLM_ASSERT( "Sorry, the service ( "<< _service->getID() <<" ) must be stop before unregister it.", _service->isStopped() );
 
 //    typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
@@ -442,7 +442,7 @@ void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _s
         SContainer::iterator positionToDelete = pos->second.end() ;
         for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
         {
-            OSLM_TRACE( "OBJ=" <<_service->getObject()->getID() <<
+            OSLM_TRACE( "OBJ=" << ( ( ! pos->first.expired() ) ? _service->getObject()->getID() : "expiredIdObject" ) <<
                         " SContainer::iterator lIter" <<  ( *lIter) ->getID()
                       );
             if( ( *lIter) == _service )

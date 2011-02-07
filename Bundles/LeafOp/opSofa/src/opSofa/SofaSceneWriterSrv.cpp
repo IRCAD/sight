@@ -31,6 +31,8 @@ REGISTER_SERVICE( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwData::Acquisi
 SofaSceneWriterSrv::SofaSceneWriterSrv() throw()
 {
     writeTrian = false;
+    m_sceneTemplate = "";
+    m_useTempPath = false;
 }
 
 /**
@@ -51,7 +53,19 @@ void SofaSceneWriterSrv::configuring() throw ( ::fwTools::Failed )
         if (write == "yes") {
             writeTrian = true;
         }
-    } 
+    }
+
+    if(m_configuration->findConfigurationElement("sceneTemplate"))
+    {
+        m_sceneTemplate = m_configuration->findConfigurationElement("sceneTemplate")->getValue();
+    }
+
+    if(m_configuration->findConfigurationElement("useTempPath"))
+    {
+        if (m_configuration->findConfigurationElement("useTempPath")->getValue() == "yes") {
+            m_useTempPath = true;
+        }
+    }
 }
 
 /**
@@ -75,7 +89,11 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
 {
     // Ask folder destination
     QString folder;
-    if (writeTrian) {
+    if (m_useTempPath) {
+        folder = QDir::tempPath() + QDir::separator().toAscii() + "opsofascene";
+        QDir dir;
+        dir.mkdir(folder);
+    } else if (writeTrian) {
         folder = QFileDialog::getExistingDirectory(0, "Choose a folder to write file scene");
     } else {
         folder = QFileDialog::getSaveFileName(0, "Write file scn", QString(), "Scene (*.scn)");
@@ -87,12 +105,31 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     SLM_ASSERT("Associated object is not an acquisition", acq);
 
     // Get templates
-    QFile file("./Bundles/opSofa_0-1/template.xml");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString templateFile = file.readAll();
-    QFile file2("./Bundles/opSofa_0-1/nodeTemplate.xml");
-    file2.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString nodeTemplateFile = file2.readAll();
+    QString templateFile;
+    QString nodeTemplateFile;
+    if (m_sceneTemplate != "") {
+        QFile file("./Bundles/opSofa_0-1/" + QString(m_sceneTemplate.c_str()));
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        templateFile = file.readAll();
+        QFile file2("./Bundles/opSofa_0-1/node" + QString(m_sceneTemplate.c_str()));
+        file2.open(QIODevice::ReadOnly | QIODevice::Text);
+        nodeTemplateFile = file2.readAll();
+    } else {
+        QFile file("./Bundles/opSofa_0-1/template.xml");
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        templateFile = file.readAll();
+        QFile file2("./Bundles/opSofa_0-1/nodeTemplate.xml");
+        file2.open(QIODevice::ReadOnly | QIODevice::Text);
+        nodeTemplateFile = file2.readAll();
+    }
+
+    // copy tools
+    if (writeTrian && m_sceneTemplate != "") {
+        QFile file("./Bundles/opSofa_0-1/cam.trian");
+        file.copy(folder + "/cam.trian");
+        QFile file2("./Bundles/opSofa_0-1/mors2.trian");
+        file2.copy(folder + "/mors2.trian");
+    }
 
     // Create nodes
     QString nodesData;
@@ -109,13 +146,13 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
         QString organUid = QString(rec->getID().c_str());
         ::boost::filesystem::path filename = "";
 
-        if (organVisible) {
+        if (organVisible && organName != "mors2" && organName != "cam") {
             // Save mesh in filesystem
             if (writeTrian) {
                 ::fwData::TriangularMesh::sptr mesh = rec->getTriangularMesh();
                 std::stringstream meshPath;
                 meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
-                filename = ::boost::filesystem::path(meshPath.str()) ;        
+                filename = ::boost::filesystem::path(meshPath.str());
                 ::fwDataIO::writer::TriangularMeshWriter writer;
                 writer.setObject(mesh);
                 writer.setFile(filename);
@@ -148,7 +185,12 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     fileout.close();
 
     // Ask launch animation
-    int answer = QMessageBox::question(0, "Write successful !", "Do you want to launch animation ?", QMessageBox::Yes | QMessageBox::No);
+    int answer;
+    if (m_useTempPath) {
+        answer = QMessageBox::Yes;
+    } else {
+        answer = QMessageBox::question(0, "Write successful !", "Do you want to launch animation ?", QMessageBox::Yes | QMessageBox::No);
+    }
 
     // If answer is yes
     if (answer == QMessageBox::Yes) {

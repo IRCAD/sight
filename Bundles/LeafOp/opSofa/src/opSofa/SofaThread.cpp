@@ -13,15 +13,15 @@
 SofaThread::SofaThread(SofaBusiness* sofa, std::vector<fwData::TriangularMesh::sptr> *meshs, ::fwServices::IService::sptr service)
 {
     // Update attributs
-	this->sofa = sofa;
+    this->sofa = sofa;
     this->meshs = meshs;
-	this->service = service;
+    this->service = service;
 
     // Create message
     msg->addEvent(::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED);
 
     //To trigger refreshVtk from the separated thread in the run() method
-	connect(this, SIGNAL(refreshVtkRequestSignal()), this, SLOT(refreshVtk()));
+    connect(this, SIGNAL(refreshVtkRequestSignal()), this, SLOT(refreshVtk()));
 }
 
 /**
@@ -61,7 +61,7 @@ void SofaThread::run()
         } else {
             this->msleep(1);
         }
-    }	
+    }    
 }
 
 /**
@@ -69,6 +69,8 @@ void SofaThread::run()
  */
 void SofaThread::refreshVtk()
 {
+    mutex.lock();
+
     // Send message of each mesh at vtk to refresh screen
     int size = meshs->size();
     for (int i=0; i<size; ++i) {
@@ -77,6 +79,8 @@ void SofaThread::refreshVtk()
 
     // wake thread sofa
     condition.wakeOne();
+
+    mutex.unlock();
 }
 
 /**
@@ -85,5 +89,15 @@ void SofaThread::refreshVtk()
 void SofaThread::stop()
 {
     stopRun = true;
-    this->wait(3000);
+    this->wait(100);
+}
+
+/**
+ * @brief Get stage of the thread
+ *
+ * @return true if the thread is running
+ */
+bool SofaThread::isRunning()
+{
+    return !stopRun;
 }

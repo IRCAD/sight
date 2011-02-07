@@ -81,7 +81,7 @@ void MeshFileFormatService::save()
     ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >() ;
     assert( mesh ) ;
 
-    assert(mesh->points().size());
+//    assert(mesh->points().size()); mesh points can be empty
 
     m_writer->setObject(mesh);
     this->extension() = m_writer->extension();

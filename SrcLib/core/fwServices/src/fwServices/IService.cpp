@@ -129,7 +129,7 @@ void IService::stop() throw( ::fwTools::Failed)
     if( m_globalState == STARTED )
     {
         m_globalState = STOPPING ;
-#ifndef USE_SRVFAC
+#ifdef NOT_USE_SRVFAC
         ::fwServices::stopComChannels( this->getSptr() ) ;
 #endif
         this->stopping() ;
@@ -171,6 +171,7 @@ void IService::handlingEventOff()
 {
     SLM_ASSERT( "Handling event vector must be empty", m_handledEvents.size() == 0 );
     m_isHandlingAllEvents = false;
+    m_handledEvents.push_back( "TOTO" ); //HACK FIXME
 }
 
 //-----------------------------------------------------------------------------

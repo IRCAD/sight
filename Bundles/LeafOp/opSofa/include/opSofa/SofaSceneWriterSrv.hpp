@@ -30,6 +30,8 @@ class SofaSceneWriterSrv : public ::io::IWriter
 
     private :
         bool writeTrian;
+        std::string m_sceneTemplate;
+        bool m_useTempPath;
 
 };
 

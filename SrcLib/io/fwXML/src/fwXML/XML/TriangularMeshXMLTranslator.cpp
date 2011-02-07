@@ -39,16 +39,9 @@ void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer 
     ::boost::shared_ptr< IFileFormatService > binSaver = fwServices::get<  IFileFormatService >(mesh,0);
     std::string path;
     path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
-    if ( mesh->points().size()!=0  )
-    {
-        XMLTH::addProp( boostXMLBuffer, "filename",  path );
-        XMLTH::addProp( boostXMLBuffer, "protocol",  binSaver->getWriter()->getClassname() );
-        // to Implement in session information ?
-    }
-    else
-    {
-        XMLTH::addProp( boostXMLBuffer, "filename",  "" );
-    }
+
+    XMLTH::addProp( boostXMLBuffer, "filename",  path );
+    XMLTH::addProp( boostXMLBuffer, "protocol",  binSaver->getWriter()->getClassname() );
 }
 
 //------------------------------------------------------------------------------

@@ -91,6 +91,9 @@ private :
     * @see IOSelectorService::m_servicesAreExcluded.
     */
     std::vector< std::string > m_selectedServices;
+
+    /// Map that specifies a configuration extension for a service
+    std::map< std::string, std::string > m_serviceToConfig;
 };
 
 } // namespace editor

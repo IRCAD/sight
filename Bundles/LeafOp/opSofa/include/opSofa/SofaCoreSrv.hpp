@@ -28,6 +28,7 @@ protected:
     void updating() throw ( ::fwTools::Failed );
     void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
     void info ( std::ostream &_sstream ) ;
+    void addMesh(std::string, std::string);
 
 private :
 

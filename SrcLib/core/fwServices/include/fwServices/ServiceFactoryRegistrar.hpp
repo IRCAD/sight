@@ -49,7 +49,7 @@ public:
 
         // register it
         ::fwTools::ClassFactoryRegistry::addFactory( af );
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
         ::fwServices::ServiceFactoryRegistry::getDefault()->addFactory( af, ::fwCore::TypeDemangler<SUBCLASS>().getClassname(), key.first, key.second);
 #endif
     }

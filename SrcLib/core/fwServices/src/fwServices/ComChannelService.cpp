@@ -139,7 +139,7 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             this->info( msg ) ;
             SLM_TRACE( "Stopping ComChannelService " + msg.str() ); // crash from spylog???
             m_source.lock()->detach( this->getSptr() );
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
             int nbObservers = m_source.lock()->getNbObservers();
             if(nbObservers == 0)
             {

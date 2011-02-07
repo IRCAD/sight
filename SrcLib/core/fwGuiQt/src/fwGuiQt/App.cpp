@@ -41,7 +41,7 @@ App::App(int & argc, char ** argv)
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
 
-    //setlocale(LC_ALL,"C");
+    setlocale(LC_ALL,"C"); // needed for mfo save process
 
     std::string appName = profile->getName();
 

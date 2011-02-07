@@ -21,8 +21,8 @@ public :
     void setFront(T *ptr, int nbElements) {
         /*this->_Myfirst = ptr;
         this->_Mylast = ptr+nbElements;
-        this->_Myend = ptr+nbElements;
-        */
+        this->_Myend = ptr+nbElements;*/
+        
         // Use this if your compiler make error
         this->_M_impl._M_start = ptr;
         this->_M_impl._M_finish = ptr+nbElements;
@@ -35,8 +35,8 @@ public :
     void clear() {
         /*this->_Myfirst = NULL;
         this->_Mylast = NULL;
-        this->_Myend = NULL;
-        */
+        this->_Myend = NULL;*/
+        
         // Use this if your compiler make error
         this->_M_impl._M_start = NULL;
         this->_M_impl._M_finish = NULL;

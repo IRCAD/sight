@@ -3,7 +3,7 @@ VERSION = '0-1'
 USE     = [
           'boost',
           'boostFilesystem',
-          'qtCore', 
+          'qtCore',
           'sofasimulation',
           'sofacomponentodesolver',
           'sofacomponentvisualmodel',
@@ -22,8 +22,10 @@ LIB     = [
           'fwServices_0-1',
           'fwVtkIO_0-1',
           'fwGui_0-1',
+          'fwGuiQt_0-1',
+          'fwRenderVTK_0-1',
           ]
-BUNDLES = ['io_0-1']
+BUNDLES = ['io_0-1', 'gui_0-1', 'visuVTKAdaptor_0-1']
 
 
 

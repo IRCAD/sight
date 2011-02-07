@@ -39,8 +39,25 @@
 #ifndef _FWCORE_SPYLOG_HPP_
 #define _FWCORE_SPYLOG_HPP_
 
+
+#define SPYLOG_ABORT() std::abort()
+
 #ifdef _DEBUG
 //#define SPYLOG_TIMER
+
+#ifdef WIN32
+#include <windows.h>
+#define DEBUG_BREAK() DebugBreak()
+#else
+#include <csignal>
+#define DEBUG_BREAK() std::raise(SIGTRAP)
+#endif
+
+#ifdef SPYLOG_ABORT
+#undef SPYLOG_ABORT
+#endif
+#define SPYLOG_ABORT() DEBUG_BREAK()
+
 #endif
 
 
@@ -140,7 +157,7 @@
 #endif
 
 #if ( SPYLOG_LEVEL >= 1 )
-    #define  SL_FATAL(log, message) { log.fatal(message, __FILE__, __LINE__); std::abort(); }
+    #define  SL_FATAL(log, message) { log.fatal(message, __FILE__, __LINE__); SPYLOG_ABORT(); }
     #define OSL_FATAL(log, message) OSL_LOG(log, FATAL, message)
     #define  SL_FATAL_IF(log, message, cond) SL_IF(cond, SL_FATAL(log, message))
     #define OSL_FATAL_IF(log, message, cond) SL_IF(cond, OSL_FATAL(log, message))
@@ -159,7 +176,7 @@
             std::stringstream oslStr1;                                      \
             oslStr1 << "Assertion '" << #cond << "' failed: " << message ;  \
             log.fatal(oslStr1.str(), __FILE__, __LINE__);                   \
-            std::abort();                                                   \
+            SPYLOG_ABORT();                                                   \
         }                                                                   \
     }
 

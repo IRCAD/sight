@@ -39,9 +39,10 @@ SofaBusiness::~SofaBusiness()
 {
     thread->stop();
     clearTranslationPointer();
-    delete thread;
-    delete groot;    
+    delete thread;    
     delete meshs;
+    delete springs;
+    delete groot;
 }
 
 
@@ -57,7 +58,8 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
     // init attributs
     this->timeStepAnimation = 100;
     meshs = new std::vector<fwData::TriangularMesh::sptr>();
-	
+    springs = new std::map<std::string, StiffSpringForceField3*>();
+    
     // initialize Sofa
     sofa::component::init();
     sofa::simulation::tree::xml::initXml();
@@ -75,6 +77,9 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
     // Fill OglModel vector
     std::vector<OglModel*> visuals;
     fillOglModelVector(groot, &visuals);
+
+    // Fill StiffSpringForceField3 map
+    fillSpringForceField(groot, springs);
 
     // Add correspond between mesh sofa anf fw4spl
     for (int i=0; i<visuals.size(); ++i) {
@@ -112,12 +117,12 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
 void SofaBusiness::loadMesh(::fwData::TriangularMesh::sptr pMesh,  ::fwServices::IService::sptr service)
 {
     // Default value : 100 millisecond
-	timeStepAnimation = 100;
-	
-	// Création du noeud principal (correspond à la scène)
+    timeStepAnimation = 100;
+    
+    // Création du noeud principal (correspond à la scène)
     groot = new GNode;
     groot->setName( "root" );
-    groot->setGravityInWorld( Coord3(0,-10,0) );	// on définit la gravité
+    groot->setGravityInWorld( Coord3(0,-10,0) );    // on définit la gravité
 
     // Création d'un solveur (permet de calculer les nouvelles positions des particules)
     CGImplicitSolver* solver = new CGImplicitSolver;
@@ -172,7 +177,7 @@ void SofaBusiness::loadMesh(::fwData::TriangularMesh::sptr pMesh,  ::fwServices:
     skin->addObject(visual);
 
     // Création du mapping entre les deux objets (effectue une liaison entre deux objets
-	// pour que le rendu suive le mouvement de la partie simulation)
+    // pour que le rendu suive le mouvement de la partie simulation)
     BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(DOF, visual);
     mapping->setName( "mapping" );
     skin->addObject(mapping);
@@ -195,7 +200,7 @@ void SofaBusiness::loadMesh(::fwData::TriangularMesh::sptr pMesh,  ::fwServices:
  */
 void SofaBusiness::animate()
 {
-	getSimulation()->animate(groot);
+    getSimulation()->animate(groot);
 }
 
 
@@ -214,6 +219,16 @@ void SofaBusiness::startThread()
 void SofaBusiness::stopThread()
 {
     thread->stop();
+}
+
+/**
+ * @brief Get stage of the animation
+ *
+ * @return true if animation is running
+ */
+bool SofaBusiness::isAnimate()
+{
+    return thread->isRunning();
 }
 
 
@@ -251,6 +266,47 @@ void SofaBusiness::setTimeStepAnimation(unsigned int timeStepAnimation)
 }
 
 
+ /**
+ * @brief Shake organ
+ *
+ * @param idMesh : id organ
+ * @param value : value of force
+ */
+void SofaBusiness::shakeMesh(std::string idMesh, int value)
+{
+    if (springs->count(idMesh)) {
+        StiffSpringForceField3 *spring = (*springs)[idMesh];
+
+        spring->clear();
+        spring->addSpring(1, 153, value, 5, 0);
+    }
+}
+
+void SofaBusiness::moveMesh(std::string idMesh, int x, int y, int z, float rx, float ry, float rz)
+{
+    //GNode *souris = groot->getChild("souris");
+    GNode *souris = groot;
+    MechanicalObjectRigid3f *mechanical = (MechanicalObjectRigid3f*) (souris->getObject(sofa::core::objectmodel::TClassInfo<MechanicalObjectRigid3f>::get(), idMesh));
+    std::string name = mechanical->getName();
+    VecCoordRigid3f& coord = *mechanical->getX();
+    coord[0][0] = x;
+    coord[0][1] = y;
+    coord[0][2] = z;
+
+    //static float srx = 0;
+    //static float sry = 0;
+    //static float srz = 0;
+    //OSLM_ERROR("position2 = " << rx << " " << ry << " " << rz);
+
+    // Orientation
+    //mechanical->applyRotation(rx - srx, ry - sry, rz - srz);
+
+    //srx = rx;
+    //sry = ry;
+    //srz = rz;
+}
+
+
 /**
  * @brief Bring OglModel of Sofa
  *
@@ -267,6 +323,27 @@ void SofaBusiness::fillOglModelVector(GNode *node, std::vector<OglModel*> *model
             model->push_back(visu);
         }
         fillOglModelVector(children, model);
+    }
+}
+
+
+/**
+ * @brief Bring SpringForceField of Sofa
+ *
+ * @param node : scene root of Sofa
+ * @param model : SpringForceField map at fill
+ */
+void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, StiffSpringForceField3*> *springs)
+{
+   sofa::helper::vector<sofa::core::objectmodel::BaseNode*> gchild = node->getChildren();
+   for (unsigned int i=0; i<gchild.size(); i++) {
+        GNode *children = node->getChild(gchild[i]->getName());
+        StiffSpringForceField3 *spring = (StiffSpringForceField3*) (children->getObject(sofa::core::objectmodel::TClassInfo<StiffSpringForceField3>::get(), ""));
+        if (spring != NULL) {
+            std::string name = spring->getName();
+            (*springs)[name] = spring;
+        }
+        fillSpringForceField(children, springs);
     }
 }
 
@@ -313,9 +390,9 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
  void SofaBusiness::translationPointer(OglModel *visual, ::fwData::TriangularMesh::sptr pMesh)
  {
     // Change pointer vertices
-	float *verticesSofa = (float*) visual->getVertices()->getData()->data();
+    float *verticesSofa = (float*) visual->getVertices()->getData()->data();
     std::vector<std::vector<float > > *verticesF4S = &(pMesh->points());
-	int const nbVertices = pMesh->getNumPoints();
+    int const nbVertices = pMesh->getNumPoints();
     for (int i=0; i<nbVertices; ++i) {
         std::vector<float> *vertex = &((*verticesF4S)[i]);
         MVector<float> *vector = (MVector<float>*) vertex;
@@ -324,9 +401,9 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
     }
 
     // Change pointer Triangles
-	int *trianglesSofa = (int*) visual->getTriangles()->getData()->data();
+    int *trianglesSofa = (int*) visual->getTriangles()->getData()->data();
     std::vector<std::vector<int > > *trianglesF4S = &(pMesh->cells());
-	int const nbTriangles = pMesh->getNumCells();
+    int const nbTriangles = pMesh->getNumCells();
     for (int i=0; i<nbTriangles; ++i) {
         std::vector<int> *triangleF4S = &((*trianglesF4S)[i]);
         MVector<int> *vector = (MVector<int>*) triangleF4S;
@@ -352,7 +429,7 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
 
         // Travel each vertex to reset these ones
         std::vector<std::vector<float > > *vertices = &(pMesh->points());
-	    int const nbVertices = pMesh->getNumPoints();
+        int const nbVertices = pMesh->getNumPoints();
         for (int j=0; j<nbVertices; ++j) {
             std::vector<float> *vertex = &((*vertices)[j]);
 
@@ -372,7 +449,7 @@ void SofaBusiness::fillTriangularMeshVector(::fwData::Acquisition::sptr acquisit
 
         // Travel each triangle to reset these ones
         std::vector<std::vector<int > > *triangles = &(pMesh->cells());
-	    int const nbTriangles = pMesh->getNumCells();
+        int const nbTriangles = pMesh->getNumCells();
         for (int j=0; j<nbTriangles; ++j) {
             std::vector<int> *triangle = &((*triangles)[j]);
 

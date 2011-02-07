@@ -32,8 +32,27 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog), (()), new SelectorDialog );
 
+    /**
+     * Opens a default selector with the specified title, message and choices.
+     *
+     * @param title Title of the selector
+     * @param message Message of the selector
+     * @param std::vector< std::string > _selections list of choices in the selector
+     * @return Returns selected choice
+     */
+    FWGUI_API static std::string showSelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections);
+
     /// will instanciate the concrete implementation
     FWGUI_API SelectorDialog();
+
+    /**
+     * Constructor. Create a selector with the specified title, message and choices.
+     *
+     * @param title Title of the selector
+     * @param message Message of the selector
+     * @param std::vector< std::string > _selections list of choices in the selector
+     */
+    FWGUI_API SelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections);
 
     /// override
     FWGUI_API void setTitle(std::string title);

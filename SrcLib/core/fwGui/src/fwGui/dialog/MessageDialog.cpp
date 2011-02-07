@@ -12,11 +12,31 @@ namespace fwGui
 {
 namespace dialog
 {
+
+//-----------------------------------------------------------------------------
+
+IMessageDialog::Buttons MessageDialog::showMessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
+{
+    ::fwGui::dialog::MessageDialog  messageBox(title, message, icon);
+    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    return messageBox.show();
+}
+
 //-----------------------------------------------------------------------------
 
 MessageDialog::MessageDialog()
 {
     m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
+}
+
+//-----------------------------------------------------------------------------
+
+MessageDialog::MessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
+{
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
+    m_implementation->setTitle(title);
+    m_implementation->setMessage(message);
+    m_implementation->setIcon(icon);
 }
 
 //-----------------------------------------------------------------------------

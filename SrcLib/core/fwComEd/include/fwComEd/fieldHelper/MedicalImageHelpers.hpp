@@ -21,6 +21,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/NumericRoundCast.hxx>
+#include <fwServices/IService.hpp>
 
 #include "fwComEd/export.hpp"
 
@@ -191,6 +192,16 @@ public :
     FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize = ::fwData::Image::sptr());
 
     /**
+     * @brief  Merge PatientDB:
+     *         Check if firstname, name, sex, ... are the same
+     *
+     * @param[in]    _patientDBFrom    PatientDB source.
+     * @param[inout] _patientDBTo      PatientDB destination (data are merged in this PatientDB).
+     * @param[in]    _msgSender        Service source to notify modifications
+     */
+    FWCOMED_API static void mergePatientDBInfo( ::fwData::PatientDB::sptr _patientDBFrom, ::fwData::PatientDB::sptr _patientDBTo, ::fwServices::IService::sptr _msgSender );
+
+    /**
      * @brief       Return true if the pixel value is null.
      * @param[in] image : image containing the pixel
      * @param[in] point : the coordinate of the pixel in the image.
@@ -215,6 +226,13 @@ public :
      */
     template < typename T >
     static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T &value);
+
+protected:
+
+    /**
+     * @brief Merge data from two identical patients.
+     */
+    FWCOMED_API static void mergeInformation(::fwData::Patient::sptr currentPatient, ::fwData::Patient::sptr importedPatient);
 
 };
 

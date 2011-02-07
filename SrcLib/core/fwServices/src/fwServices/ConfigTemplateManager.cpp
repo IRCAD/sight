@@ -97,7 +97,7 @@ void ConfigTemplateManager::create()
 
     // Create object and services
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     m_configRoot = this->newObject( m_adaptedConfig );
 #else
     m_configRoot = ::fwServices::New( m_adaptedConfig );
@@ -111,13 +111,13 @@ void ConfigTemplateManager::create()
 void ConfigTemplateManager::startComChannel()
 {
     BOOST_FOREACH( ::fwServices::IService::wptr wsrv, m_startedComChannelServices )
-{
+    {
         SLM_ASSERT( "Sorry, CTM must start a service, but it is expired", ! wsrv.expired());
         ::fwServices::IService::sptr srv = wsrv.lock();
         OSLM_ASSERT( "Sorry, CTM must start a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already started", ! srv->isStarted() );
         OSLM_INFO("Start service ( " << srv->getID() << " ) managed by the ConfigTemplateManager.");
         srv->start();
-}
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -141,7 +141,7 @@ void ConfigTemplateManager::start()
 {
     SLM_ASSERT("Sorry, manager is not created and you try starting it.", m_state == CONFIG_IS_CREATED || m_state == CONFIG_IS_STOPPED );
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
 
     this->start( m_adaptedConfig ) ;
     m_objectParser->startConfig();
@@ -158,7 +158,7 @@ void ConfigTemplateManager::start()
 void ConfigTemplateManager::update()
 {
     ::fwServices::update( m_adaptedConfig ) ;
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     m_objectParser->updateConfig();
 #endif
 }
@@ -178,7 +178,7 @@ void ConfigTemplateManager::stop()
 {
     SLM_ASSERT("Sorry, manager is not started and you try stopping it.", m_state == CONFIG_IS_STARTED );
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
 
     this->stopComChannel();
 
@@ -205,13 +205,13 @@ void ConfigTemplateManager::stop()
 
 void ConfigTemplateManager::destroy()
 {
-    SLM_ASSERT("Sorry, manager is not stopped and you try detroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
+    SLM_ASSERT("Sorry, manager is not stopped and you try destroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     m_objectParser->destroyConfig();
 #endif
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
 
     BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_createdServices )
     {
@@ -229,7 +229,7 @@ void ConfigTemplateManager::destroy()
 
     OSLM_INFO( "Parsing OSR after destroying the config : \n" << ::fwServices::OSR::getRegistryInformation() );
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
     m_objectParser.reset();
 #endif
     m_adaptedConfig.reset();
@@ -414,8 +414,6 @@ void ConfigTemplateManager::loadConfig()
         hasAttributeId = true;
     }
 
-
-
     // Creation of a new object
     ::fwTools::Object::sptr obj;
 
@@ -437,7 +435,7 @@ void ConfigTemplateManager::loadConfig()
         obj = this->createNewObject( hasAttributeType, type, hasAttributeUid, uid, hasAttributeId, id );
     }
 
-#ifdef USE_SRVFAC
+#ifndef NOT_USE_SRVFAC
 
     std::string srvImpl = ::fwServices::getDefaultImplementationIds( obj , "::fwServices::IXMLParser" );
     IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( "::fwServices::IXMLParser", srvImpl );

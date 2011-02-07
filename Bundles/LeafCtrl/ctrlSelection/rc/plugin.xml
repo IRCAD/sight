@@ -32,6 +32,11 @@
         <implements>::fwData::Composite</implements>
     </point>
  
+    <point id="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv">
+        <implements>::ctrlSelection::IUpdaterSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
     <point id="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv">
         <implements>::ctrlSelection::IUpdaterSrv</implements>
         <implements>::fwData::Composite</implements>

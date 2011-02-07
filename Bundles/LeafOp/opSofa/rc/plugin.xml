@@ -10,6 +10,11 @@
         <implements>::fwGui::IActionSrv</implements>
         <implements>::fwData::Acquisition</implements>
     </point>
+  
+    <point id="::opSofa::SofaStartSrv" >
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
     
     <point id="::opSofa::SofaSceneWriterSrv" >
         <implements>::io::IWriter</implements>
@@ -25,5 +30,15 @@
         <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
+
+    <point id="::opSofa::SofaMeshEditorSrv" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+
+  <point id="::opSofa::BoxWidget" >
+    <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+    <implements>::fwData::TransformationMatrix3D</implements>
+  </point>
     
 </plugin>

@@ -44,6 +44,7 @@ bool fwID::hasID( ) const
 
 void fwID::setID( IDType newID )
 {
+    OSLM_FATAL_IF("Try to set an existing fwID = " << newID, exist(newID));
     resetID();
     // note we use a static cast for a down cast because we do not use the classical polyvi morphic approach
     // m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();

@@ -39,6 +39,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwTools
 //------------------------------------------------------------------------------
 
 FwXMLGenericWriterService::FwXMLGenericWriterService() throw()
+                : m_archiveExtenstion (".fxz")
 {}
 
 //------------------------------------------------------------------------------
@@ -51,6 +52,14 @@ FwXMLGenericWriterService::~FwXMLGenericWriterService() throw()
 void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
     m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
+
+    if( this->m_configuration->size() > 0 )
+    {
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
+        SLM_ASSERT("Sorry, only one xml element \"archiveExtension\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "archiveExtension" );
+        SLM_ASSERT("Sorry, only xml element \"archiveExtension\" is empty.", ! (*iter)->getValue().empty() );
+        m_archiveExtenstion =  (*iter)->getValue();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -61,9 +70,13 @@ void FwXMLGenericWriterService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    std::stringstream sstrTitle;
+    sstrTitle << "Choose a " << m_archiveExtenstion.substr(1,m_archiveExtenstion.size()-1) << " or a xml file";
+    dialogFile.setTitle( sstrTitle.str() );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("fwXML archive","*.fxz");
+    std::stringstream archExt;
+    archExt << "*" << m_archiveExtenstion;
+    dialogFile.addFilter("fwXML compressed archive", archExt.str() );
     dialogFile.addFilter("fwXML archive","*.xml");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
@@ -74,6 +87,18 @@ void FwXMLGenericWriterService::configureWithIHM()
         _sDefaultPath = result->getPath();
         m_writer.setFile( result->getPath() );
     }
+    else
+    {
+        ::boost::filesystem::path emptyPath;
+        m_writer.setFile(emptyPath);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void FwXMLGenericWriterService::setArchiveExtension( const std::string & _archiveExtenstion )
+{
+    m_archiveExtenstion = _archiveExtenstion;
 }
 
 //------------------------------------------------------------------------------
@@ -186,9 +211,9 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
 ::boost::filesystem::path FwXMLGenericWriterService::correctFileFormat( const ::boost::filesystem::path _filePath ) const
 {
     ::boost::filesystem::path newPath = _filePath;
-    if ( ::boost::filesystem::extension(_filePath) != ".fxz" && ::boost::filesystem::extension(_filePath) != ".xml" )
+    if ( ::boost::filesystem::extension(_filePath) != m_archiveExtenstion && ::boost::filesystem::extension(_filePath) != ".xml" )
     {
-        newPath = _filePath.string() + ".fxz";
+        newPath = _filePath.string() + m_archiveExtenstion;
     }
 
     return newPath;
@@ -198,7 +223,7 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
 
 bool FwXMLGenericWriterService::isAnFwxmlArchive( const ::boost::filesystem::path filePath )
 {
-    return ( ::boost::filesystem::extension(filePath) == ".fxz" );
+    return ( ::boost::filesystem::extension(filePath) == m_archiveExtenstion );
 }
 
 //------------------------------------------------------------------------------

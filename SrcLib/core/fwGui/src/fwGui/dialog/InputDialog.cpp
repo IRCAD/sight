@@ -14,9 +14,27 @@ namespace dialog
 {
 //-----------------------------------------------------------------------------
 
+std::string InputDialog::showInputDialog(const std::string& title, const std::string& message, const std::string &text)
+{
+    ::fwGui::dialog::InputDialog  inputBox(title, message, text);
+    return inputBox.getInput();
+}
+
+//-----------------------------------------------------------------------------
+
 InputDialog::InputDialog()
 {
     m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IInputDialog>( IInputDialog::REGISTRY_KEY);
+}
+
+//-----------------------------------------------------------------------------
+
+InputDialog::InputDialog(const std::string& title, const std::string& message, const std::string &text)
+{
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IInputDialog>( IInputDialog::REGISTRY_KEY);
+    m_implementation->setTitle(title);
+    m_implementation->setMessage(message);
+    m_implementation->setInput(text);
 }
 
 //-----------------------------------------------------------------------------

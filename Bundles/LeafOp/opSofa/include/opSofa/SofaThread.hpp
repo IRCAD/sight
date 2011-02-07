@@ -21,6 +21,7 @@ class SofaThread : public QThread
 public:
     SofaThread(SofaBusiness*, std::vector<fwData::TriangularMesh::sptr>*, ::fwServices::IService::sptr service);
     void stop();
+    bool isRunning();
 
 signals:
     /**
@@ -52,7 +53,7 @@ private:
     /**
      * @brief Pointer to the service Fw4spl
      */
-	fwServices::IService::sptr service;
+    fwServices::IService::sptr service;
 
     /**
      * @brief list of mesh

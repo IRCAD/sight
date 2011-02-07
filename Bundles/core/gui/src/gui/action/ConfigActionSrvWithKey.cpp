@@ -93,21 +93,24 @@ void ConfigActionSrvWithKey::updating( ::fwServices::ObjectMsg::csptr _msg ) thr
     bool executable = true;
     std::map< std::string, std::string >::const_iterator itr;
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast (_msg);
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+    if(compositeMsg)
     {
-        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
         {
-            executable &= (composite->find(itr->second)!= composite->end());
+            for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+            {
+                executable &= (composite->find(itr->second)!= composite->end());
+            }
         }
-    }
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
-    {
-        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
         {
-            executable &= (composite->find(itr->second)!= composite->end());
+            for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+            {
+                executable &= (composite->find(itr->second)!= composite->end());
+            }
         }
+        this->::fwGui::IActionSrv::setIsExecutable( executable );
     }
-    this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------

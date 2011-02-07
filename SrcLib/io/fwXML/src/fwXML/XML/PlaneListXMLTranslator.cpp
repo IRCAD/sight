@@ -34,9 +34,12 @@ xmlNodePtr PlaneListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
     // create master node with className+id
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
 
-    xmlNodePtr planesNode =
-        XMLTH::homogeneousContainerToXml("planes", pPlaneList->getCRefPlanes().begin(),  pPlaneList->getCRefPlanes().end() );
-    xmlAddChild( masterNode , planesNode);
+    if( ! pPlaneList->getCRefPlanes().empty() )
+    {
+        xmlNodePtr planesNode =
+                XMLTH::homogeneousContainerToXml("planes", pPlaneList->getCRefPlanes().begin(),  pPlaneList->getCRefPlanes().end() );
+        xmlAddChild( masterNode , planesNode);
+    }
 
     return masterNode;
 

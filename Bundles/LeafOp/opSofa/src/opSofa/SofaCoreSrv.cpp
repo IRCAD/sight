@@ -4,6 +4,11 @@
 #include "opSofa/SofaCoreSrv.hpp"
 #include <fwData/Acquisition.hpp>
 #include <fwData/String.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Vector.hpp>
+#include <fwDataIO/reader/TriangularMeshReader.hpp>
+#include <QMessageBox>
 
 
 namespace opSofa
@@ -32,7 +37,13 @@ SofaCoreSrv::~SofaCoreSrv() throw()
  */
 void SofaCoreSrv::configuring() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();    
+    if(m_configuration->findConfigurationElement("addTools"))
+    {
+        if (m_configuration->findConfigurationElement("addTools")->getValue() == "yes") {
+            this->addMesh("./Bundles/opSofa_0-1/mors2.trian", "mors2");
+            this->addMesh("./Bundles/opSofa_0-1/cam.trian", "cam");
+        }
+    } 
 }
 
 /**
@@ -74,9 +85,75 @@ void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools
 
         // Apply at sofa the number of image by second
         sofa->setTimeStepAnimation(1000/50);
+    }
 
-        // Start thread sofa
-        sofa->startThread();
+    else if (msg->hasEvent("START_STOP_SOFA")) {
+        if (sofa) {
+            // if animation is running
+            if (sofa->isAnimate()) {
+                // Stop animation
+                sofa->stopThread();
+            } else {
+                // Start animation
+                sofa->startThread();
+            }
+        } else {
+            QMessageBox::warning(0, "Warning", "For launch animation you must first load scene file !");
+        }
+    }
+
+    else if (msg->hasEvent("EDITOR_MESH_SOFA")) {
+        if (sofa) {
+            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("EDITOR_MESH_SOFA"));
+            ::fwData::String::csptr idMesh = ::fwData::String::dynamicConstCast(data->at(0));
+            ::fwData::Integer::csptr strength = ::fwData::Integer::dynamicConstCast(data->at(1));
+            sofa->shakeMesh(idMesh->value(), strength->value());
+        }
+    }
+
+    else if (msg->hasEvent("MOVE_MESH_SOFA")) {
+        if (sofa) {
+            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("MOVE_MESH_SOFA"));
+            ::fwData::String::csptr idMesh = ::fwData::String::dynamicConstCast(data->at(0));
+            ::fwData::Integer::csptr x = ::fwData::Integer::dynamicConstCast(data->at(1));
+            ::fwData::Integer::csptr y = ::fwData::Integer::dynamicConstCast(data->at(2));
+            ::fwData::Integer::csptr z = ::fwData::Integer::dynamicConstCast(data->at(3));
+            ::fwData::Float::csptr rx = ::fwData::Float::dynamicConstCast(data->at(4));
+            ::fwData::Float::csptr ry = ::fwData::Float::dynamicConstCast(data->at(5));
+            ::fwData::Float::csptr rz = ::fwData::Float::dynamicConstCast(data->at(6));
+            sofa->moveMesh(idMesh->value(), x->value(), y->value(), z->value(), rx->value(), ry->value(), rz->value());
+        }
+    }
+
+    else if (msg->hasEvent("KINECT_NEW_POSITION_HAND")) {
+        if (sofa) {
+            // Get the position x y z of the main and his id
+            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("KINECT_NEW_POSITION_HAND"));
+            ::fwData::Integer::csptr x = ::fwData::Integer::dynamicConstCast(data->at(0));
+            ::fwData::Integer::csptr y = ::fwData::Integer::dynamicConstCast(data->at(1));
+            ::fwData::Integer::csptr z = ::fwData::Integer::dynamicConstCast(data->at(2));
+            ::fwData::Integer::csptr id = ::fwData::Integer::dynamicConstCast(data->at(3));
+
+            static int idTool1 = 0;
+            static int idTool2 = 0;
+            static int stage = 0;
+
+            // Allow to switch tool
+            if (id->value() == idTool1) {
+                // move tool 1
+                sofa->moveMesh("souris_mors2", x->value()/2 + 190, y->value()/2 + 152, z->value()/2 - 200, 0, 0, 0);
+            } else if (id->value() == idTool2) {
+                // move tool 2
+                sofa->moveMesh("souris_cam", x->value()/2 + 190, y->value()/2 + 152, z->value()/2 - 200, 0, 0, 0);
+            } else {
+                if (stage%2) {
+                    idTool1 = id->value();
+                } else {
+                    idTool2 = id->value();
+                }
+                stage++;
+            }  
+        }
     }
 }
 
@@ -92,6 +169,39 @@ void SofaCoreSrv::updating() throw ( ::fwTools::Failed )
  */
 void SofaCoreSrv::info ( std::ostream &_sstream )
 {
+}
+
+
+/**
+ * @brief Add a triangularMesh to the acquisition data
+ *
+ * @param meshPath : path to the mesh
+ * @param meshName : name of the mesh
+ */
+void SofaCoreSrv::addMesh(std::string meshPath, std::string meshName)
+{
+    // Create mesh
+    ::fwData::TriangularMesh::sptr mesh = ::boost::dynamic_pointer_cast< fwData::TriangularMesh >( ::fwTools::Factory::buildData("::fwData::TriangularMesh") );
+    mesh->setName(meshName);
+    ::fwDataIO::reader::TriangularMeshReader reader1;
+    reader1.setObject(mesh);
+    reader1.setFile(meshPath);
+    reader1.read();
+
+    // Create reconstruction
+    ::fwData::Reconstruction::sptr reconstruction = ::boost::dynamic_pointer_cast< fwData::Reconstruction >( ::fwTools::Factory::buildData("::fwData::Reconstruction") );
+    reconstruction->setCRefStructureType("OrganType");
+    reconstruction->setIsVisible(true);
+    reconstruction->setGenerated3D(true);
+    reconstruction->setMaskGenerated(true);
+    reconstruction->setIsAutomatic(true);
+    reconstruction->setAvgVolume(-1);
+    reconstruction->setTriangularMesh(mesh);
+    reconstruction->setOrganName(meshName);
+
+    // add reconstruction to acquisition
+    ::fwData::Acquisition::sptr acquisition = this->getObject< ::fwData::Acquisition >();
+    acquisition->addReconstruction(reconstruction);
 }
 
 }

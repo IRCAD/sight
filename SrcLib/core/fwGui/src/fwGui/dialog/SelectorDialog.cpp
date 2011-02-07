@@ -14,6 +14,24 @@ namespace dialog
 {
 //-----------------------------------------------------------------------------
 
+std::string SelectorDialog::showSelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections)
+{
+    ::fwGui::dialog::SelectorDialog  selector(title, message, _selections);
+    return selector.show();
+}
+
+//-----------------------------------------------------------------------------
+
+SelectorDialog::SelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections)
+{
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::ISelectorDialog>( ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY);
+    m_implementation->setTitle(title);
+    m_implementation->setMessage( message );
+    m_implementation->setSelections( _selections );
+}
+
+//-----------------------------------------------------------------------------
+
 SelectorDialog::SelectorDialog()
 {
     m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::ISelectorDialog>( ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY);
