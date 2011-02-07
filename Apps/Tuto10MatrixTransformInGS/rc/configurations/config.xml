@@ -1,40 +1,68 @@
-﻿<plugin id="tuto">
+<plugin id="tuto">
 
-    <extension id="tuto" implements="::fwData::Composite">
+    <extension id="tuto" implements="::fwServices::ServiceObjectConfig">
 
-        <object id="myCompositeVisu" type="::fwData::Composite">
-
-            <service type="::gui::frame::IFrame" implementation="::gui::frame::MainFrame" autoComChannel="no">
-                <name>tutoDataService bis</name>
-                <icon>Bundles/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
-                <view uid="multiView" autoStart="yes" />
+        <object type="::fwData::Composite" >
+        
+            <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+                <gui>
+                    <frame>
+                        <name>Tuto10MatrixTransformInGS</name>
+                        <icon>Bundles/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600"/>
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="myMenuBar" start="yes" />
+                    <view sid="multiView" start="yes" />
+                </registry>
             </service>
 
-            <service uid="myMenuBar" type="::gui::aspect::IMenuBar" implementation="::gui::aspect::DefaultMenuBar" autoComChannel="no">
-                <menus>
-                    <menu uid="menu_File" />
-                </menus>
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+                <gui>
+                    <layout>
+                        <menu name="File"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                </registry>
             </service>
 
-            <service name="File" uid="menu_File" type="::gui::aspect::IMenu" implementation="::gui::aspect::DefaultMenu" autoComChannel="no">
-                <action uid="action_openFile" />
-                <separator />
-                <action uid="action_quit" />
+            <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+                <gui>
+                    <layout>
+                        <menuItem name="OpenFile" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openFile" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
             </service>
 
-            <service uid="action_openFile" name="OpenFile" type="::gui::action::IAction" implementation="::gui::action::StarterActionService" shortcut="Ctrl+O" autoComChannel="no">
+            <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                 <start uid="myReaderPathFile" />
             </service>
 
-            <service uid="action_quit" specialAction="QUIT" name="Quit" type="::gui::action::IAction" implementation="::gui::action::QuitAction" shortcut="Ctrl+Q" autoComChannel="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
 
-            <service uid="multiView" type="::gui::view::IView" implementation="::gui::view::MultiView" autoComChannel="no">
-                <views>
-                    <view uid="genericScene" align="center" autoStart="yes" />
-                    <view uid="matrixEEditor" align="bottom" minHeight="40" position="0" autoStart="yes" />
-                </views>
+
+            <service uid="multiView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager" >
+                        <view align="center" />
+                        <view align="bottom" minHeight="40" position="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <view sid="matrixEditor" start="yes" />
+                </registry>
             </service>
-
 
             <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
                 <scene>
@@ -106,7 +134,7 @@
                     
                     
                     
-                    <adaptor id="Renderer" class="::visuVTKAdaptor::Render" objectId="myCompositeVisu">
+                    <adaptor id="Renderer" class="::visuVTKAdaptor::Render" objectId="self">
                         <config renderer="default" picker="" />
                     </adaptor>
 
@@ -128,57 +156,66 @@
 
                 </scene>
             </service>
-
-            <object id="matrixA" type="::fwData::TransformationMatrix3D">
-                <matrix>
-                    1 0 0 2
-                    0 1 0 0
-                    0 0 1 0
-                    0 0 0 1 
-                </matrix>
-            </object>
-
-            <object id="matrixB" type="::fwData::TransformationMatrix3D">
-                <matrix>
-                    1 0 0 4
-                    0 1 0 0
-                    0 0 1 0
-                    0 0 0 1 
-                </matrix>
-            </object>
             
-            <object id="matrixC" type="::fwData::TransformationMatrix3D">
-                <matrix>
-                    1 0 0 0
-                    0 1 0 0
-                    0 0 1 2
-                    0 0 0 1 
-                </matrix>
-            </object>
+            <item key="matrixA">
+                <object uid="matrixA" type="::fwData::TransformationMatrix3D">
+                    <matrix>
+                        1 0 0 2
+                        0 1 0 0
+                        0 0 1 0
+                        0 0 0 1 
+                    </matrix>
+                </object>
+            </item>
             
-            <object id="matrixD" type="::fwData::TransformationMatrix3D">
-                <matrix>
-                    0.75 0 0 0
-                    0 0.75 0 0
-                    0 0 0.75 0
-                    0 0 0 1 
-                </matrix>
-            </object>
+            <item key="matrixB">
+                <object uid="matrixB" type="::fwData::TransformationMatrix3D">
+                    <matrix>
+                        1 0 0 4
+                        0 1 0 0
+                        0 0 1 0
+                        0 0 0 1 
+                    </matrix>
+                </object>
+            </item>
             
-            <object id="matrixE" type="::fwData::TransformationMatrix3D">
-                <service uid="matrixEEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
-            </object>
-                        
+            <item key="matrixC">
+                <object uid="matrixC" type="::fwData::TransformationMatrix3D">
+                    <matrix>
+                        1 0 0 0
+                        0 1 0 0
+                        0 0 1 2
+                        0 0 0 1 
+                    </matrix>
+                </object>
+            </item>
+            
+            <item key="matrixD">
+                <object uid="matrixD" type="::fwData::TransformationMatrix3D">
+                    <matrix>
+                        0.75 0 0 0
+                        0 0.75 0 0
+                        0 0 0.75 0
+                        0 0 0 1 
+                    </matrix>
+                </object>
+            </item>
+            
+            <item key="matrixE">
+                <object uid="matrixE" type="::fwData::TransformationMatrix3D">
+                    <service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                </object>
+            </item>
 
-            <object id="mesh" type="::fwData::TriangularMesh">
-                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" />
-            </object>
-
-            <start type="::gui::frame::IFrame" />
-            <start type="::gui::aspect::IMenuBar" />
+            <item key="mesh">
+                <object uid="mesh" type="::fwData::TriangularMesh">
+                    <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
+                </object>
+            </item>
             
-            <stop type="::gui::aspect::IMenuBar" />
-            <stop type="::gui::frame::IFrame" />
+            <start type="::fwGui::IFrameSrv" />
+            
+            <stop type="::fwGui::IFrameSrv" />
 
         </object>
 

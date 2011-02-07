@@ -215,7 +215,7 @@ std::vector< Edge::sptr > Graph::getOutputEdges( Node::sptr node )
 
 std::vector< Edge::sptr > Graph::getEdges( Node::sptr node, bool upStream, std::string nature , std::string portID)
 {
-    OSLM_ASSERT("Node "<<node->getUUID() <<" not found in graph", m_nodes.find(node) != m_nodes.end() );
+    OSLM_ASSERT("Node "<<node->getID() <<" not found in graph", m_nodes.find(node) != m_nodes.end() );
     OSLM_ASSERT("Port "<< portID <<" not found in graph", portID.empty() || node->findPort(portID,upStream) ); // portID if specified must be on node
 
     std::vector< Edge::sptr > result;
@@ -285,6 +285,13 @@ unsigned int Graph::getNbEdges() const
 //------------------------------------------------------------------------------
 
 const Graph::ConnectionContainer &Graph::getCRefConnections() const
+{
+    return m_connections;
+}
+
+//------------------------------------------------------------------------------
+
+Graph::ConnectionContainer &Graph::getRefConnections()
 {
     return m_connections;
 }

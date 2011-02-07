@@ -17,7 +17,7 @@
 #include <boost/filesystem/convenience.hpp>
 
 #include <fwTools/Object.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -180,7 +180,7 @@ void SliceListEditor::info( std::ostream &_sstream )
 void SliceListEditor::onDropDownButton( wxCommandEvent& event )
 {
     SLM_TRACE_FUNC();
-    if(::fwTools::UUID::exist(m_adaptorUID, ::fwTools::UUID::SIMPLE ))
+    if(::fwTools::fwID::exist(m_adaptorUID ))
     {
         m_dropDownButton->PopupMenu(m_pDropDownMenu, m_dropDownButton->GetSize().GetWidth(), 0);
     }
@@ -194,7 +194,7 @@ void SliceListEditor::onDropDownButton( wxCommandEvent& event )
 
 void SliceListEditor::onChangeSliceMode(  wxCommandEvent& event )
 {
-    if(::fwTools::UUID::exist(m_adaptorUID, ::fwTools::UUID::SIMPLE ))
+    if(::fwTools::fwID::exist(m_adaptorUID ))
     {
         ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
         ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();

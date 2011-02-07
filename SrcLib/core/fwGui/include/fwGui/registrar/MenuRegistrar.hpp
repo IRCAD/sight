@@ -10,15 +10,14 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwMenu.hpp"
-#include "fwGui/fwMenuItem.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
 #include "fwGui/config.hpp"
 
 
 namespace fwGui
 {
-
 namespace registrar
 {
 
@@ -44,28 +43,71 @@ public:
     FWGUI_API virtual ~MenuRegistrar();
 
     /// Return the parent container
-    FWGUI_API virtual ::fwGui::fwMenu::sptr getParent();
+    FWGUI_API virtual ::fwGui::container::fwMenu::sptr getParent();
 
     /**
      * @brief Return the fwMenuItem associated with the menuSid.
      * @param actionSid sid of the action service
      * @param menuItems  vector containing the fwMenuItem manages by this registrar.
      */
-    FWGUI_API virtual ::fwGui::fwMenuItem::sptr getFwMenuItem(std::string menuSid, std::vector< ::fwGui::fwMenuItem::sptr > menuItems);
+    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string menuSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
 
     /**
-     * @brief Configure views managed.
+     * @brief Initialize registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="My item 1" shortcut="1" style="check" />
+                    <separator />
+                    <menuItem name="My item 2" shortcut="2" style="radio" />
+                    <menuItem name="My item 3" shortcut="3" style="radio" />
+                    <separator />
+                    <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="item1" start="no" />
+                <menuItem sid="item2" start="no" />
+                <menuItem sid="item3" start="no" />
+                <menuItem sid="actionQuit" start="no" />
+            </registry>
+        </service>
+       @endverbatim
+     * This method analyzes the registry section of the configuration.
+     *
+     *  - <menuItem sid="item1" start="no" /> : define the service of the menuItem to add in the menu.
+     *
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu service.
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**
-     * @brief Starting menu registrar.
-     * All services managed in local menu items
-     * and with start="yes" in configuration will be started.
+     * @brief manages action service associated with menuItem of menu.
+     *
+     *If a menuItem has attribut start="no", the associated action won't be started and the menuItem will be disabled.
+     *If a menuItem has attribut start="yes", two possibilities: \n
+     *  - the associated action has attribut executable="false" then the menuItem will be disabled.\n
+     *  - the associated action has attribut executable="true" then the menuItem will be enabled.\n
+     *
+     * If an action manages by menuItems in a toolbar and/or in the menuBar has its attribut executable="false",
+     * the associated menuItems will be disabled in toolbar and in menuBar.
+     *
+     * If an action is managed by several menuItems in different menus and the software hasn't Toolbar, only the start
+     * value of the last menuItem of the last menu declared will be take into account.
+     *
+     * If an action is managed by a menuItem in menu and in Toolbar, only start value of the Toolbar item will be take into account.
+     * It is due to the fact that the Toolbar is initialized after the menu bar.
+     *
      * @pre MenuRegistrar must be initialized before.
      * @pre sub menu items must be instanced before.
      */
-    FWGUI_API virtual void manage(std::vector< ::fwGui::fwMenuItem::sptr > menuItems );
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems );
+
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenu::sptr > menus );
 
     /**
      * @brief Stopping menu items manager.
@@ -89,10 +131,16 @@ protected:
     typedef std::map< std::string, std::pair<int, bool> > SIDMenuMapType;
 
     /**
-     * @brief All menu services ID managed and associated with pair containing:
-     * action's index vector and boolean describing if is started by the manager.
+     * @brief All menu services ID (sid) managed is associated with pair containing:
+     * an action's position in the menu and boolean describing if is started by the manager.
      */
     SIDMenuMapType m_actionSids;
+
+    /**
+     * @brief All toolBar services ID managed and associated with pair containing:
+     * action's index vector and boolean describing if is started by the manager.
+     */
+    SIDMenuMapType m_menuSids;
 
     /// Main service ID associate with this MenuRegistrar
     std::string m_sid;

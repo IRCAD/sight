@@ -10,19 +10,12 @@
 #include <fwCore/base.hpp>
 
 #include "fwGui/config.hpp"
-#include "fwGui/fwContainer.hpp"
-#include "fwGui/fwMenuBar.hpp"
-#include "fwGui/fwToolBar.hpp"
-#include "fwGui/fwMenu.hpp"
-#include "fwGui/fwMenuItem.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
 
-/**
- * @brief   The namespace fwGui contains the base interface for IHM services.
- * @namespace   fwGui
- * @author  IRCAD (Research and Development Team).
- * @date    2009-2010.
- *
- */
 namespace fwGui
 {
 
@@ -38,10 +31,10 @@ class FWGUI_CLASS_API GuiRegistry : public ::fwCore::BaseObject
 
 public :
 
-    typedef std::map< std::string , ::fwGui::fwContainer::sptr > ContainerMapType;
-    typedef std::map< std::string , ::fwGui::fwMenuBar::sptr >   MenuBarMapType;
-    typedef std::map< std::string , ::fwGui::fwToolBar::sptr >   ToolBarMapType;
-    typedef std::map< std::string , ::fwGui::fwMenu::sptr >      MenuMapType;
+    typedef std::map< std::string , ::fwGui::container::fwContainer::sptr > ContainerMapType;
+    typedef std::map< std::string , ::fwGui::container::fwMenuBar::sptr >   MenuBarMapType;
+    typedef std::map< std::string , ::fwGui::container::fwToolBar::sptr >   ToolBarMapType;
+    typedef std::map< std::string , ::fwGui::container::fwMenu::sptr >      MenuMapType;
     typedef std::vector< std::string >                           ParentSidsType;
     typedef std::map< std::string , ParentSidsType > ActionToParentMapType;
 
@@ -67,7 +60,7 @@ public :
     /**
      * @brief Registers container associate with service ID.
      */
-    FWGUI_API static void registerSIDContainer(std::string sid, ::fwGui::fwContainer::sptr container);
+    FWGUI_API static void registerSIDContainer(std::string sid, ::fwGui::container::fwContainer::sptr container);
 
     /**
      * @brief Unregisters container associate with service ID.
@@ -77,7 +70,7 @@ public :
     /**
      * @brief Returns fwContainer associate with service ID.
      */
-    FWGUI_API static ::fwGui::fwContainer::sptr getSIDContainer(std::string sid);
+    FWGUI_API static ::fwGui::container::fwContainer::sptr getSIDContainer(std::string sid);
 
     ///@}
 
@@ -91,7 +84,7 @@ public :
     /**
      * @brief Registers container associate with window ID.
      */
-    FWGUI_API static void registerWIDContainer(std::string wid, ::fwGui::fwContainer::sptr container);
+    FWGUI_API static void registerWIDContainer(std::string wid, ::fwGui::container::fwContainer::sptr container);
 
     /**
      * @brief Unregisters container associate with window ID.
@@ -101,7 +94,7 @@ public :
     /**
      * @brief Returns fwContainer associate with window ID.
      */
-    FWGUI_API static ::fwGui::fwContainer::sptr getWIDContainer(std::string wid);
+    FWGUI_API static ::fwGui::container::fwContainer::sptr getWIDContainer(std::string wid);
 
     ///@}
 
@@ -115,7 +108,7 @@ public :
     /**
      * @brief Registers fwMenuBar associate with service ID.
      */
-    FWGUI_API static void registerSIDMenuBar(std::string sid, ::fwGui::fwMenuBar::sptr menuBar);
+    FWGUI_API static void registerSIDMenuBar(std::string sid, ::fwGui::container::fwMenuBar::sptr menuBar);
 
     /**
      * @brief Unregisters fwMenuBar associate with service ID.
@@ -124,7 +117,7 @@ public :
     /**
      * @brief Returns fwMenuBar associate with service ID.
      */
-    FWGUI_API static ::fwGui::fwMenuBar::sptr getSIDMenuBar(std::string sid);
+    FWGUI_API static ::fwGui::container::fwMenuBar::sptr getSIDMenuBar(std::string sid);
     ///@}
 
 
@@ -138,7 +131,7 @@ public :
     /**
      * @brief Registers fwToolBar associate with service ID.
      */
-    FWGUI_API static void registerSIDToolBar(std::string sid, ::fwGui::fwToolBar::sptr toolBar);
+    FWGUI_API static void registerSIDToolBar(std::string sid, ::fwGui::container::fwToolBar::sptr toolBar);
 
     /**
      * @brief Unregisters fwToolBar associate with service ID.
@@ -147,7 +140,7 @@ public :
     /**
      * @brief Returns fwToolBar associate with service ID.
      */
-    FWGUI_API static ::fwGui::fwToolBar::sptr getSIDToolBar(std::string sid);
+    FWGUI_API static ::fwGui::container::fwToolBar::sptr getSIDToolBar(std::string sid);
     ///@}
 
     //-----------------------------------------------------------------------------
@@ -160,7 +153,7 @@ public :
     /**
      * @brief Registers fwMenu associate with service ID.
      */
-    FWGUI_API static void registerSIDMenu(std::string sid, ::fwGui::fwMenu::sptr menu);
+    FWGUI_API static void registerSIDMenu(std::string sid, ::fwGui::container::fwMenu::sptr menu);
 
     /**
      * @brief Unregisters fwMenu associate with service ID.
@@ -169,7 +162,7 @@ public :
     /**
      * @brief Returns fwMenu associate with service ID.
      */
-    FWGUI_API static ::fwGui::fwMenu::sptr getSIDMenu(std::string sid);
+    FWGUI_API static ::fwGui::container::fwMenu::sptr getSIDMenu(std::string sid);
     ///@}
 
     //-----------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 
-#include <fwGui/fwMenuItem.hpp>
+#include <fwGui/container/fwMenuItem.hpp>
 
 #include "fwGuiWx/config.hpp"
 
@@ -29,12 +29,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUIWX_CLASS_API WxMenuItemContainer : public ::fwGui::fwMenuItem
+class FWGUIWX_CLASS_API WxMenuItemContainer : public ::fwGui::container::fwMenuItem
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (WxMenuItemContainer)(::fwGui::fwMenuItem), (()), new WxMenuItemContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (WxMenuItemContainer)(::fwGui::container::fwMenuItem), (()), new WxMenuItemContainer );
 
     /**
      * @brief   Constructor.

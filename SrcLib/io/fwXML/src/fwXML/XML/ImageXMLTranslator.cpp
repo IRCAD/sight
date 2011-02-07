@@ -9,38 +9,38 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "fwXML/XML/ImageXMLTranslator.hpp"
-
-#include "fwXML/XML/XMLParser.hpp"
-
-#include "fwXML/XML/GenericXMLTranslator.hpp" // WIN32 SUX header include dependant
-
-#include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
-#include "fwXML/boostSerializer/Image.hpp"
-#include "fwXML/XML/XMLTranslatorHelper.hpp"
-
 #include <fwServices/helper.hpp>
-#include "fwXML/IFileFormatService.hpp"
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
 
+#include "fwXML/XML/ImageXMLTranslator.hpp"
+#include "fwXML/XML/XMLParser.hpp"
+#include "fwXML/XML/GenericXMLTranslator.hpp"
+#include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
+#include "fwXML/boostSerializer/Image.hpp"
+#include "fwXML/XML/XMLTranslatorHelper.hpp"
+#include "fwXML/IFileFormatService.hpp"
+
 namespace fwXML
 {
-
 
 std::string ImageXMLTranslator::s_noFileProtocol = "NoFile";
 
 ImageXMLTranslator::ImageXMLTranslator() {};
 
+//------------------------------------------------------------------------------
+
 ImageXMLTranslator::~ImageXMLTranslator() {};
 
-void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::Image> img )
+//------------------------------------------------------------------------------
+
+void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::fwData::Image::sptr img )
 {
     // get XML node related to Buffer //FIXMEXPATH
 
     if ( img->getSize().size()!=0 && img->getSize().front()!=0  )
     {
-        ::boost::shared_ptr< IFileFormatService > binSaver = fwServices::get<  IFileFormatService >(img,0);
+        IFileFormatService::sptr binSaver = ::fwServices::get<  IFileFormatService >(img,0);
         std::string path;
         path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
         XMLTH::addProp( boostXMLBuffer, "filename",  path );
@@ -52,12 +52,11 @@ void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEX
         XMLTH::addProp( boostXMLBuffer, "filename",  "" );
         XMLTH::addProp( boostXMLBuffer, "protocol",  ImageXMLTranslator::s_noFileProtocol );
     }
-
-
-
 }
 
-void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::Image> img )
+//------------------------------------------------------------------------------
+
+void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::fwData::Image::sptr img )
 {
     // find and update IO Protocol
     std::string protocol = XMLTH::getProp<std::string>(boostXMLBuffer,"protocol");
@@ -65,7 +64,7 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
     if ( protocol != ImageXMLTranslator::s_noFileProtocol )
     {
         // get XML node related to Buffer //FIXMEXPATH
-        ::boost::shared_ptr< IFileFormatService > binLoader = fwServices::get<  IFileFormatService >(img,0);
+        IFileFormatService::sptr binLoader = ::fwServices::get< IFileFormatService >(img,0);
         OSLM_DEBUG( "ImageXMLTranslator::manageLoadingBuffer :: READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename") );
         boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
         binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
@@ -75,7 +74,7 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
         std::string pseudoReader = protocol;
         if (  protocol.find("Writer") != std::string::npos )
         {
-        pseudoReader.replace(  protocol.find("Writer"), strlen("Writer") ,"Reader");
+            pseudoReader.replace(  protocol.find("Writer"), strlen("Writer") ,"Reader");
         }
         if (  protocol.find("writer") != std::string::npos )
         {
@@ -83,29 +82,22 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
         }
         assert( protocol != pseudoReader );
 
-
         // get new reader
-         ::boost::shared_ptr< ::fwDataIO::reader::IObjectReader > reader;
+        ::fwDataIO::reader::IObjectReader::sptr reader;
         OSLM_DEBUG("ImageXMLTranslator::manageLoadingBuffer initial protocol="<< protocol << " final loading protocol=" << pseudoReader)
         reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
         assert(reader);
 
         // assign to FileFormatService
-         ::boost::shared_ptr< IFileFormatService > binReader = fwServices::get<  IFileFormatService >(img,0);
+        IFileFormatService::sptr binReader = ::fwServices::get<  IFileFormatService >(img,0);
         binReader->setReader( reader );
     }
 }
 
+//------------------------------------------------------------------------------
 
-
-
-
-
-
-
-xmlNodePtr ImageXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
-
     // call default xmtl representation
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
     xmlNodePtr node = img2xmlbase.getXMLFrom(obj);
@@ -116,12 +108,13 @@ xmlNodePtr ImageXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> 
     assert( bufferNode ); // bufferNode must be found !!!
 
     // delegate process
-    manageSavingBuffer( bufferNode ,boost::dynamic_pointer_cast< ::fwData::Image >(obj) );
+    manageSavingBuffer( bufferNode, ::fwData::Image::dynamicCast(obj) );
     return node;
 }
 
+//------------------------------------------------------------------------------
 
-void ImageXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+void ImageXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
     // TODO assertion xmlNode.name() == RealData.className();
     //return new ::fwData::Image();
@@ -133,12 +126,9 @@ void ImageXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object>
     // search empty "<Buffer/>" node
     xmlNodePtr bufferNode = XMLParser::findChildNamed( source, std::string("Buffer") );
     assert( bufferNode ); // bufferNode must be found !!!
-    manageLoadingBuffer( bufferNode , ::boost::dynamic_pointer_cast< ::fwData::Image >(toUpdate) );
-
-
-
-
+    manageLoadingBuffer( bufferNode , ::fwData::Image::dynamicCast(toUpdate) );
 }
 
+//------------------------------------------------------------------------------
 
 }

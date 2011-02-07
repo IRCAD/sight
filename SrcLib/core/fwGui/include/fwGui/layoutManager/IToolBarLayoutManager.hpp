@@ -4,14 +4,23 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IToolBarLayoutManager.hpp
+ * @brief This file defines the interface of the base class for managing a toolbar.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
 #define _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwToolBar.hpp"
-#include "fwGui/fwMenuItem.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
+#include "fwGui/container/fwMenu.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/config.hpp"
 
@@ -44,8 +53,11 @@ public:
                 m_name(""),
                 m_icon(""),
                 m_isSeparator(false),
+                m_isSpacer(false),
                 m_isCheckable (false),
-                m_isRadio(false)
+                m_isRadio(false),
+                m_isMenu(false),
+                m_size(0)
             {}
 
             std::string m_name;
@@ -53,6 +65,9 @@ public:
             bool        m_isCheckable;
             bool        m_isRadio;
             bool        m_isSeparator;
+            bool        m_isSpacer;
+            bool        m_isMenu;
+            int         m_size;
          };
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
@@ -66,37 +81,51 @@ public:
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
      */
-    FWGUI_API virtual std::vector< ::fwGui::fwMenuItem::sptr > getMenuItems();
+    FWGUI_API virtual std::vector< ::fwGui::container::fwMenuItem::sptr > getMenuItems();
 
     /**
-     * @brief Configuring method allows to create a toolBar with several actions. The created toolbar is a horizontal one without border.
-     * Each icon has a size of 32x32 by default.
-     * Here a sample of the DefaultToolBar service declaration with two actions:
+     * @brief Returns the vector of fwMenu managed by this layout.
+     */
+    FWGUI_API virtual std::vector< ::fwGui::container::fwMenu::sptr > getMenus();
+
+    /**
+     * @brief Initialize layout managers.
+     *
+     * Example of configuration
      * @verbatim
-        <service uid="toolBar" type="::gui::aspect::IToolBar" implementation="::gui::aspect::DefaultToolBar" autoComChannel="no">
-            <toolBitmapSize height="40" width="40" />
-            <action uid="action_new" name="New file" icon="Bundles/MyApplication/icons/newFile.png"/>
-            <separator/>
-            <action uid="action_3Dview" style="radio" name="3D view" icon="Bundles/MyApplication/icons//icon-3D.png" />
-            <action uid="action_2Dview" style="radio" name="2D view" icon="Bundles/MyApplication/icons/icon-2D.png" />
-            <separator/>
-            <action uid="action_hideInformation"  style="check" name="Show information window" icon="Bundles/MyApplication/icons/View-INFO.png" />
-        </service>
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+           <gui>
+               <layout>
+                   <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <separator />
+                   <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+               </layout>
+           </gui>
+           <registry>
+               <menuItem sid="item2" />
+               <menuItem sid="item3" />
+               <menuItem sid="item4" />
+               <menuItem sid="item5" />
+           </registry>
+       </service>
        @endverbatim
-     * - <toolBitmapSize height="40" width="40" /> : has to change the size of the icon used in the toolbar.
-     * - <separator /> : allows to put a separation in the tool bar.
-     * - Action Attributes:
-     *       - icon is the icon file to use.
-     *       - name is the text that will be put inside the tool tip.
-     *       - state can be {check}. This attribute is available only with the style radio and check.
-     *       - style is the style of the button. The available choice is {radio|check}. If style isn't specified normal state(without 'state')is used.
+     * This method analyzes the gui section of the configuration.
+     *
+     *  - <layout> (mandatory) : give the list of the menu item that will appear in the toolbar.
+     *  - <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/> :
+     *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
+     *   - \b style {check|radio} : give the style of the menu item.
+     *   - \b icon : give the path of the icon file
+     *  - <separator/> : allow to divide the toolbar by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
     /**
      * @brief Instantiate actions with parent toolBar.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::fwToolBar::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent ) = 0;
 
     /**
      * @brief Destroy local actions.
@@ -108,17 +137,17 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    FWGUI_API virtual void menuItemSetVisible(::fwGui::fwMenuItem::sptr, bool isVisible) = 0;
+    FWGUI_API virtual void menuItemSetVisible(::fwGui::container::fwMenuItem::sptr, bool isVisible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    FWGUI_API virtual void menuItemSetEnabled(::fwGui::fwMenuItem::sptr, bool isEnabled) = 0;
+    FWGUI_API virtual void menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr, bool isEnabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    FWGUI_API virtual void menuItemSetChecked(::fwGui::fwMenuItem::sptr, bool isChecked) = 0;
+    FWGUI_API virtual void menuItemSetChecked(::fwGui::container::fwMenuItem::sptr, bool isChecked) = 0;
 
     /**
      * @brief Sets callbacks associate with toolBar items.
@@ -133,7 +162,10 @@ protected:
     FWGUI_API virtual void destroyActions();
 
     /// All actions managed by this layout.
-    std::vector< ::fwGui::fwMenuItem::sptr > m_menuItems;
+    std::vector< ::fwGui::container::fwMenuItem::sptr > m_menuItems;
+
+    /// All actions managed by this layout.
+    std::vector< ::fwGui::container::fwMenu::sptr > m_menus;
 
     /// Save action informations from configuration.
     std::vector< ActionInfo > m_actionInfo;

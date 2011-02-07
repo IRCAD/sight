@@ -13,7 +13,7 @@
 #include <vtkTransform.h>
 
 #include <fwData/String.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwServices/ComChannelService.hpp>
 #include <fwServices/helper.hpp>
@@ -75,6 +75,7 @@ void IVtkAdaptorService::stopping() throw(fwTools::Failed)
     if(!m_communicationChannelService.expired())
     {
         m_communicationChannelService.lock()->stop();
+        ::fwServices::erase( m_communicationChannelService.lock() );
     }
     doStop();
     //requestRender();
@@ -140,7 +141,7 @@ void IVtkAdaptorService::requestRender()
             {
                 m_message = ::fwServices::ObjectMsg::NewSptr();
                 ::fwData::String::NewSptr sceneID;
-                sceneID->value() = ::fwTools::UUID::get( this->getRenderService() );
+                sceneID->value() = this->getRenderService()->getID() ;
                 m_message->addEvent( "SCENE_RENDER_REQUEST" , sceneID);
             }
             this->getRenderService()->setPendingRenderRequest(true);
@@ -285,6 +286,7 @@ void IVtkAdaptorService::unregisterServices()
     {
         if(!service.expired())
         {
+            service.lock()->stop();
             ::fwServices::OSR::unregisterService(service.lock());
         }
     }
@@ -366,7 +368,6 @@ void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
 //------------------------------------------------------------------------------
 
 void IVtkAdaptorService::removeFromPicker(vtkProp *prop, std::string pickerId)
-
 {
     OSLM_ASSERT("Picker '"<< pickerId << "' undefined." , this->getPicker(pickerId));
     this->getPicker(pickerId)->DeletePickList(prop);

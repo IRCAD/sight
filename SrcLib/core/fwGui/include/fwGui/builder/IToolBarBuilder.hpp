@@ -4,18 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IToolBarBuilder.hpp
+ * @brief This file defines the interface class  for the toolbar builder.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 #define _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwToolBar.hpp"
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
 {
+
 namespace builder
 {
 
@@ -44,11 +53,20 @@ public:
     /**
      * @brief Returns the builded tool bar.
      */
-    FWGUI_API virtual ::fwGui::fwToolBar::sptr getToolBar();
+    FWGUI_API virtual ::fwGui::container::fwToolBar::sptr getToolBar();
 
     /**
-     * @brief Configure the layout before creation.
+     * @brief Initialize the tool bar.
+     *
+     * Example of configuration
+     * @verbatim
+        <toolBar >
+            <toolBitmapSize height= "50" width="50" />
+        </toolBar>
+       @endverbatim
+     *  - <toolBitmapSize height= "50" width="50"/> : give the size of the icon.
      */
+
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**
@@ -56,7 +74,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    FWGUI_API virtual void createToolBar( ::fwGui::fwContainer::sptr parent ) = 0;
+    FWGUI_API virtual void createToolBar( ::fwGui::container::fwContainer::sptr parent ) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -67,7 +85,7 @@ public:
 protected:
 
     /// ToolBar.
-    ::fwGui::fwToolBar::sptr m_toolBar;
+    ::fwGui::container::fwToolBar::sptr m_toolBar;
 
     std::pair< int, int > m_toolBitmapSize;
 

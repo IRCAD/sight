@@ -7,7 +7,7 @@
 #ifndef _UIIO_EDITOR_IOSELECTORSERVICE_HPP_
 #define _UIIO_EDITOR_IOSELECTORSERVICE_HPP_
 
-#include <gui/editor/IEditor.hpp>
+#include <gui/editor/IDialogEditor.hpp>
 
 #include "uiIO/config.hpp"
 
@@ -21,11 +21,8 @@ namespace editor
  * @class   IOSelectorService.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
- *
- * @todo ACH : Some services of IEditor type do not need a container (example: IOSelectorService that open a dialogue box).
- *  The problem is that the IEditor::starting method creates another useless container in this case.
  */
-class UIIO_CLASS_API IOSelectorService : public ::gui::editor::IEditor
+class UIIO_CLASS_API IOSelectorService : public ::gui::editor::IDialogEditor
 {
 
 public :
@@ -36,7 +33,7 @@ public :
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IDialogEditor) ) ;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -94,6 +91,9 @@ private :
     * @see IOSelectorService::m_servicesAreExcluded.
     */
     std::vector< std::string > m_selectedServices;
+
+    /// Map that specifies a configuration extension for a service
+    std::map< std::string, std::string > m_serviceToConfig;
 };
 
 } // namespace editor

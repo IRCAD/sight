@@ -1,0 +1,141 @@
+<serviceList>
+
+    <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+        <gui>
+            <frame>
+                <name>PoC Mesh Manual Registration</name>
+                <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
+                <minSize width="800" height="600"/>    
+            </frame>
+            <menuBar />
+        </gui>
+        <registry>
+            <menuBar sid="myMenuBar" start="yes" />
+            <view sid="viewSplitter" start="yes" />
+        </registry>
+    </service>
+    
+    <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Tools" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menu_File" start="yes" />
+                <menu sid="menu_Tools" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Load patient" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Load camera representation" shortcut="Ctrl+P" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_openFile" start="yes" />
+                <menuItem sid="action_openCamFile" start="yes" />
+                <menuItem sid="action_quit" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menu_Tools" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Manage organs colors" shortcut="F9" style="check" />
+                    <menuItem name="Manual registration" shortcut="F10" style="check" />
+                    <menuItem name="View manager" shortcut="F11" style="check" />
+                    <menuItem name="View world" shortcut="F12" style="check" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_manageOrgansColors" start="yes" />
+                <menuItem sid="action_manageRegistration" start="yes" />
+                <menuItem sid="action_manageView" start="yes" />
+                <menuItem sid="action_worldView" start="yes" />
+            </registry>
+        </service>
+        
+        <service uid="action_manageOrgansColors" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
+            <config id="organManagerConfig" />
+        </service>
+        
+        <service uid="action_manageView" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
+            <config id="camViewManagerConfig" />
+        </service>
+        
+        <service uid="action_manageRegistration" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
+            <config id="manualRegistrationEditorConfig" />
+        </service>
+        
+        <service uid="action_worldView" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no" >
+            <config id="worldViewConfig" />
+        </service>
+        
+        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <start uid="myReaderPathFile" />
+        </service>
+        
+        <service uid="action_openCamFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <start uid="myCamReaderFile" />
+        </service>
+            
+        <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+        <service uid="viewSplitter" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                <orientation value="horizontal" />
+                <view proportion="1"/>
+                <view proportion="1" />
+            </layout>
+            </gui>
+            <registry>
+                <view sid="multiView_scene1" start="yes" />
+                <view sid="genericScene2" start="yes" />
+            </registry>
+        </service>
+        
+        
+        
+        <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1"/>
+                    <view proportion="0" minHeight="30"/>
+                </layout>
+            </gui>
+            <registry>
+                <view sid="genericScene" start="yes" />
+                <view sid="multiView_scene1_bottom" start="yes" />
+            </registry>
+        </service>
+        
+
+        <service uid="multiView_scene1_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="30" />
+                    <view proportion="0" minWidth="50" />
+                    <view proportion="1" />
+                    <view proportion="0" minWidth="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sliceListEditor" start="no" />
+                <view sid="showScanEditor" start="no" />
+                <view sid="sliderIndexEditor" start="no" />
+                <view sid="snapshotScene1Editor" start="yes" />
+            </registry>
+        </service>
+
+
+</serviceList>

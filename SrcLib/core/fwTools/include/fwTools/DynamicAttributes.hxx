@@ -12,8 +12,9 @@
 #include <boost/ref.hpp>
 #include <boost/foreach.hpp>
 
-#include "fwCore/base.hpp"
-#include "fwCore/Demangler.hpp"
+#include <fwCore/base.hpp>
+#include <fwCore/Demangler.hpp>
+
 #include "fwTools/macros.hpp"
 
 namespace fwTools {
@@ -23,17 +24,20 @@ class DynamicAttributes
 {
 
 public:
-    typedef std::string AttrNameType;
-    typedef SPTR(CLASS) AttrType;
+    typedef std::string  AttrNameType;
+    typedef SPTR(CLASS)  AttrType;
     typedef std::vector< AttrNameType > AttrNameVectorType;
     typedef ::boost::reference_wrapper< AttrType > AttrRefType;
     typedef std::map< AttrNameType, AttrRefType > AttrMapType;
 
+    typedef CSPTR(CLASS) ConstAttrType;
+
     DynamicAttributes();
     virtual ~DynamicAttributes();
 
+    virtual ConstAttrType getConstAttribute( AttrNameType attrName ) const;
     virtual AttrRefType getAttribute( AttrNameType attrName );
-            bool        hasAttribute( AttrNameType attrName );
+    bool        hasAttribute( AttrNameType attrName );
 
     virtual fwToolsSetAttributeSignatureMacro() {};
 
@@ -72,6 +76,19 @@ typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::get
             iter == this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end()
             );
     return (*iter).second;
+}
+
+//------------------------------------------------------------------------------
+
+template< class CLASS >
+typename DynamicAttributes< CLASS >::ConstAttrType DynamicAttributes< CLASS >::getConstAttribute( AttrNameType attrName ) const
+{
+    typename DynamicAttributes::AttrMapType::const_iterator iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.find(attrName);
+    OSLM_FATAL_IF(
+            "Object "<< ::fwCore::getFullClassname< CLASS >() << "has no attribute named '"<< attrName << "'",
+            iter == this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end()
+            );
+    return (*iter).second.get();
 }
 
 //------------------------------------------------------------------------------

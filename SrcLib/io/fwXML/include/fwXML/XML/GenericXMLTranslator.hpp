@@ -14,18 +14,13 @@
 
 #include <libxml/tree.h>
 
-
 #include <fwCore/base.hpp>
 
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
 
-
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/XMLTranslator.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
-
-
-
 
 
 namespace fwXML
@@ -43,9 +38,9 @@ public:
     xmlNodePtr getBoostRootNode( xmlNodePtr xmlFileNodeObject )
     {
         // find all children of xmlFileNodeObject which are inserted during boost::serialization.
-        // The purpose of this function is to retreive boost node from dynamic node
+        // The purpose of this function is to retrieve boost node from dynamic node
         // this node will be used with fw_xmliarchive which update object information
-        // by default all node wich are not a labeledObject are considered as boostnode
+        // by default all node which are not a labeledObject are considered as boostnode
         // we create a DummyRoot node and copy all boost node as children of DummyRoot then return this node
         // useFreeNode to release
 
@@ -79,9 +74,9 @@ public:
 
         // create data information using boost tweaked archive
 
-        boost::archive::fw_xml_oarchive ao_xml(0);
+        ::boost::archive::fw_xml_oarchive ao_xml(0);
         {
-            ao_xml.operator&( boost::serialization::make_nvp("BoostManagedObject", *robj ) ); // serialisation with pointer generate an NVP (.first with NULL name !!!)
+            ao_xml.operator&( ::boost::serialization::make_nvp("BoostManagedObject", *robj ) ); // Serialization with pointer generate an NVP (.first with NULL name !!!)
         }
 
         xmlNodePtr boostXML =  ao_xml.getXMLNode();
@@ -108,16 +103,15 @@ public:
 
         xmlNodePtr boostRoot = getBoostRootNode(source);
 
-        OSLM_DEBUG( XMLParser::toString(boostRoot) );
+        SLM_DEBUG( XMLParser::toString(boostRoot) );
         assert( dynamic_cast<RealData *>(toUpdate.get()) );
         RealData *robj=dynamic_cast<RealData *>(toUpdate.get());
 
         // get data information using boost tweaked archive
-        boost::archive::fw_xml_iarchive ai_xml(0);
+        ::boost::archive::fw_xml_iarchive ai_xml(0);
         ai_xml.setXMLNode(boostRoot);
-        ai_xml.operator&( boost::serialization::make_nvp("DummyRootFORBoostNode", *robj ) );
-        OSLM_DEBUG("GenericXMLTranslator::updateDataFromXML DONE***************");
-
+        ai_xml.operator&( ::boost::serialization::make_nvp("DummyRootFORBoostNode", *robj ) );
+        SLM_DEBUG("GenericXMLTranslator::updateDataFromXML DONE");
     }
 };
 

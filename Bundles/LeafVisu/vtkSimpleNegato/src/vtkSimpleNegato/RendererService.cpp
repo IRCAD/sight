@@ -15,6 +15,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/Base.hpp>
 
@@ -100,7 +101,9 @@ void RendererService::stopping() throw(fwTools::Failed)
 
 void RendererService::updating() throw(fwTools::Failed)
 {
-    m_interactorManager->getInteractor()->Render();
+
+//    m_interactorManager->getInteractor()->Render();
+    refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -113,28 +116,39 @@ void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTo
     {
         if( pImageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) || pImageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
         {
-            if(!m_bPipelineIsInit)
-            {
-                initVTKPipeline();
-                m_bPipelineIsInit = true;
-            }
-            else
-            {
-                updateVTKPipeline();
-            }
-
-            ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-
-            //
-            unsigned int axialIndex = img->getSize()[2]/2;
-            unsigned int frontalIndex = img->getSize()[1]/2;
-            unsigned int sagittalIndex = img->getSize()[0]/2;
-
-            m_negatoAxial->SetSliceIndex( axialIndex );
-            m_negatoFrontal->SetSliceIndex( frontalIndex );
-            m_negatoSagittal->SetSliceIndex( sagittalIndex );
-            m_interactorManager->getInteractor()->Render();
+            refresh();
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RendererService::refresh()
+{
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+    if(imageIsValid )
+    {
+        if(!m_bPipelineIsInit)
+        {
+            initVTKPipeline();
+            m_bPipelineIsInit = true;
+        }
+        else
+        {
+            updateVTKPipeline();
+        }
+
+
+        //
+        unsigned int axialIndex = img->getSize()[2]/2;
+        unsigned int frontalIndex = img->getSize()[1]/2;
+        unsigned int sagittalIndex = img->getSize()[0]/2;
+
+        m_negatoAxial->SetSliceIndex( axialIndex );
+        m_negatoFrontal->SetSliceIndex( frontalIndex );
+        m_negatoSagittal->SetSliceIndex( sagittalIndex );
+        m_interactorManager->getInteractor()->Render();
     }
 }
 

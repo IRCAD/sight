@@ -32,8 +32,8 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Get.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -176,11 +176,11 @@ void SnapshotEditor::onSnapButton()
     else
     {
         std::string msgInfo("Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.");
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Negato view snapshot");
         messageBox.setMessage( msgInfo );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -191,7 +191,7 @@ std::string SnapshotEditor::requestFileName()
 {
     std::string fileName = "";
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
     dialogFile.addFilter("Image file","*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.addFilter("jpeg","*.jpg *.jpeg");
@@ -199,7 +199,7 @@ std::string SnapshotEditor::requestFileName()
     dialogFile.addFilter("png","*.png");
     dialogFile.addFilter("tiff","*.tiff");
     dialogFile.addFilter("all","*.*");
-    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );

@@ -40,7 +40,7 @@ MenuBarBuilder::~MenuBarBuilder()
 
 //-----------------------------------------------------------------------------
 
-void MenuBarBuilder::createMenuBar( ::fwGui::fwContainer::sptr parent )
+void MenuBarBuilder::createMenuBar( ::fwGui::container::fwContainer::sptr parent )
 {
     m_parent = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
@@ -76,7 +76,7 @@ void MenuBarBuilder::destroyMenuBar()
     {
         window->setMenuBar( NULL );
     }
-    m_menuBar->clean();
+    m_menuBar->destroyContainer();
 }
 
 //-----------------------------------------------------------------------------

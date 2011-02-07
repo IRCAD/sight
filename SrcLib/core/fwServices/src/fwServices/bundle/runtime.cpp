@@ -65,16 +65,19 @@ std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > findConfigurationEx
 ::fwRuntime::ConfigurationElement::sptr findConfigurationForPoint(std::string _cfgId , std::string _pointId )
 {
     std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > cfgLikeExtension = ::fwServices::bundle::findConfigurationExtensionsForPoint(_pointId) ;
-    assert( !cfgLikeExtension.empty() );
+    OSLM_ASSERT("Configuration for "<< _pointId << " not found.", !cfgLikeExtension.empty() );
     std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >::iterator iter ;
-    for( iter = cfgLikeExtension.begin() ; iter != cfgLikeExtension.end() ; ++iter )
+
+    BOOST_FOREACH(::boost::shared_ptr< ::fwRuntime::Extension > extension, cfgLikeExtension)
     {
-        if( (*iter)->getIdentifier() == _cfgId)
+        if( extension->getIdentifier() == _cfgId)
         {
-            assert( (++(*iter)->begin()) == (*iter)->end()) ;// assert only one configuration element
-            return *( (*iter)->begin() ) ;
+            OSLM_ASSERT("ConfigurationElement "<< _cfgId << " for "<<_pointId<<" must have 1 element (size = " <<  extension->getElements().size() << " )",
+                    extension->getElements().size() == 1 );
+            return *( extension->begin() ) ;
         }
     }
+
     return ::fwRuntime::ConfigurationElement::sptr() ;
 }
 
@@ -136,7 +139,7 @@ std::vector< std::string > getValidExtensionIdsForObjectAndService( ::fwTools::O
 
                 default:
                 {
-                    assert(false);
+                    OSLM_FATAL("Unknown mode "<<mode);
                     break;
                 }
             }

@@ -29,9 +29,14 @@ void QtMenuBarContainer::clean()
 {
     SLM_ASSERT("Sorry, Qt MenuBar not yet initialized, cleaning impossible", m_menuBar);
 
-    m_menuBar->hide();
-    m_menuBar->setParent(0);
-    m_menuBar->deleteLater();
+    m_menuBar->clear();
+
+    QList<QMenu *> list = m_menuBar->findChildren<QMenu *>();
+    foreach (QMenu *m, list)
+    {
+        m->setParent(0);
+        m->deleteLater();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -39,6 +44,9 @@ void QtMenuBarContainer::clean()
 void QtMenuBarContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, Qt MenuBar not yet initialized", m_menuBar);
+
+    QList<QMenu *> allMenu = m_menuBar->findChildren<QMenu *>();
+    OSLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
 
     m_menuBar->hide();
     m_menuBar->setParent(0);

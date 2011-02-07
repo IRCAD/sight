@@ -24,13 +24,13 @@ struct VISU_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
     VISU_API ~Plugin() throw();
-    
+
     /// Overrides start method. Do nothing
     VISU_API void start() throw(::fwRuntime::RuntimeException);
 
     /// Overrides stop method. Do nothing
     VISU_API void stop() throw();
-    
+
 };
 
 } // namespace visu

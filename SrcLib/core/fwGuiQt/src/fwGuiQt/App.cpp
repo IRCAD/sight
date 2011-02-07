@@ -24,7 +24,7 @@
 
 #include <fwServices/bundle/runtime.hpp>
 
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include "fwGuiQt/App.hpp"
 
@@ -41,7 +41,7 @@ App::App(int & argc, char ** argv)
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
 
-    //setlocale(LC_ALL,"C");
+    setlocale(LC_ALL,"C"); // needed for mfo save process
 
     std::string appName = profile->getName();
 
@@ -71,7 +71,6 @@ App::App(int & argc, char ** argv)
     //}
 
     QObject::connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
-    QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(onExit()));
 
 //#ifdef __MACOSX__
     //ProcessSerialNumber PSN;
@@ -93,11 +92,6 @@ void App::onExit()
     ::fwServices::OSR::uninitializeRootObject();
     QApplication::restoreOverrideCursor();
 
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
-    SLM_TRACE("Stopping Profile");
-    profile->stop();
-    SLM_TRACE("Profile Stopped");
-
     qApp->flush();
     qApp->exit(0);
 }
@@ -106,12 +100,12 @@ void App::onExit()
 
 //void App::usage( const std::string & mes ) const
 //{
-    //::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-    //::fwGui::MessageDialog messageBox;
+    //::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+    //::fwGui::dialog::MessageDialog messageBox;
     //messageBox.setTitle("Exception Caught");
     //messageBox.setMessage( mes );
-    //messageBox.setIcon(::fwGui::IMessageDialog::CRITICAL);
-    //messageBox.addButton(::fwGui::IMessageDialog::OK);
+    //messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
+    //messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     //messageBox.show();
 //}
 

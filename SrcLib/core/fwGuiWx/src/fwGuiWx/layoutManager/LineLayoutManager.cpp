@@ -38,7 +38,7 @@ LineLayoutManager::~LineLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
+void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiWx::container::WxContainer::dynamicCast(parent);
@@ -48,14 +48,8 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     Orientation orientation = this->getOrientation();
     int wxOrientation = ( (orientation==VERTICAL) ? wxVERTICAL : wxHORIZONTAL);
     wxBoxSizer* boxSizer = new wxBoxSizer( wxOrientation );
-    if (wxContainer->GetSizer())
-    {
-        wxContainer->GetSizer()->Add(boxSizer, 1, wxEXPAND|wxALL);
-    }
-    else
-    {
-        wxContainer->SetSizer( boxSizer );
-    }
+
+    wxContainer->SetSizer( boxSizer );
 
     std::list< ViewInfo> views = this->getViewsInfo();
     BOOST_FOREACH ( ViewInfo viewInfo, views)
@@ -78,6 +72,7 @@ void LineLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
 #else
         boxSizer->Add( viewPanel, viewInfo.m_proportion, wxALL|wxEXPAND, viewInfo.m_border);
 #endif
+        subContainer->setVisible( viewInfo.m_visible );
     }
 
     wxContainer->Layout();

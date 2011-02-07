@@ -42,7 +42,7 @@ template<class Archive>
 void save(Archive & ar, const ::fwData::Patient & _patient, const unsigned int version)
 {
     std::string newStr;
-    
+
     ar &  boost::serialization::make_nvp( "Name" , _patient.getCRefName() );
 
     ar &  boost::serialization::make_nvp( "Firstname" , _patient.getCRefFirstname() );
@@ -68,7 +68,7 @@ void serialize(Archive & ar, ::fwData::Patient & _patient, const unsigned int ve
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::Patient, fwTools::Object>(NULL,NULL);
+    ::boost::serialization::void_cast_register<  ::fwData::Patient, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_patient,version); // call load or save depending of archive type
 }

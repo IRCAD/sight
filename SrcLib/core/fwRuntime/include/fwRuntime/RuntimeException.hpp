@@ -10,6 +10,8 @@
 #include <exception>
 #include <string>
 
+#include <fwCore/Exception.hpp>
+
 #include "fwRuntime/config.hpp"
 
 
@@ -23,7 +25,7 @@ namespace fwRuntime
  * @date    2004-2009
  * @author  IRCAD (Research and Development Team).
  */
-struct FWRUNTIME_CLASS_API RuntimeException : public std::exception
+struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
 {
 
     /**
@@ -45,20 +47,6 @@ struct FWRUNTIME_CLASS_API RuntimeException : public std::exception
      */
     FWRUNTIME_API virtual ~RuntimeException() throw();
 
-    /**
-     * @brief   Retrieves the exception message.
-     *
-     * @return  a pointer to a string containing the exception message.
-     */
-    FWRUNTIME_API virtual const char* what() const throw();
-
-
-private:
-
-    /**
-     * A string containing the exception message.
-     */
-    std::string m_message;
 };
 
 

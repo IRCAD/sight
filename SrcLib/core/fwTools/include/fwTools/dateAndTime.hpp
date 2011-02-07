@@ -66,6 +66,14 @@ FWTOOLS_API std::string getDate( const boost::posix_time::ptime & dateAndTime );
  */
 FWTOOLS_API std::string getTime ( const boost::posix_time::ptime & dateAndTime );
 
+//------------------------------------------------------------------------------
+
+/**
+ * @brief       Return the current clock
+ * @return      Time in the string format YYYY-mmm-DD HH:MM:SS
+ */
+FWTOOLS_API std::string getCurrentTime();
+
 ///@}
 }
 

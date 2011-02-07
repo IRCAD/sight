@@ -90,6 +90,9 @@ public :
 
     //@}
 
+    /// Returns number of observers (specific event and global observers)
+    FWSERVICES_API int getNbObservers() const;
+
 protected:
 
     /// Constructor. Do nothing.

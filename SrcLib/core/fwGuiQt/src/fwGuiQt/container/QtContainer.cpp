@@ -6,9 +6,11 @@
 
 #include <boost/foreach.hpp>
 
+#include <QDockWidget>
 #include <QWidget>
 #include <QList>
 #include <QLayout>
+#include <QMetaObject>
 
 #include "fwGuiQt/container/QtContainer.hpp"
 
@@ -48,8 +50,14 @@ void QtContainer::clean()
             w->deleteLater();
         }
     }
-    m_container->layout()->deleteLater();
-    m_container->setLayout(0);
+    if (m_container->layout())
+    {
+        QLayout* layout = m_container->layout();
+        layout->deleteLater();
+        m_container->setLayout(0);
+        // FIXME destroy layout properly before to set another
+        delete layout;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -58,15 +66,8 @@ void QtContainer::destroyContainer()
 {
     SLM_ASSERT("Sorry, QWidget not yet initialized", m_container);
 
-    if (! m_container->children().empty())
-    {
-        QList<QObject *> list = m_container->children();
-        QLayout* layout = qobject_cast <QLayout*> (list.at(0));
-        OSLM_ASSERT("Container must only contain one layout.", list.count() == 1 && layout);
-        OSLM_ASSERT("layout must be empty ( " << layout->count() << " children).", layout->isEmpty ());
-    }
-
-//    OSLM_ASSERT("Container must be empty ( " << m_container->children().count() << " children).", m_container->children().empty());
+    QList<QWidget *> allWidgets = m_container->findChildren<QWidget *>();
+    OSLM_ASSERT("Container must be empty ( " << allWidgets.count() << " children).", allWidgets.empty());
 
     m_container->deleteLater();
     m_container = NULL;
@@ -90,9 +91,28 @@ QWidget* QtContainer::getQtContainer()
 
 bool QtContainer::isShownOnScreen()
 {
-    SLM_ASSERT("Sorry, wxWindows not yet initialized, cleaning impossible", m_container);
+    SLM_ASSERT("Sorry, QtContainer not yet initialized, cleaning impossible", m_container);
     return m_container->isVisible();
 }
+
+//-----------------------------------------------------------------------------
+
+void QtContainer::setVisible(bool isVisible)
+{
+    SLM_ASSERT("Sorry, QtContainer not yet initialized, cleaning impossible", m_container);
+    QWidget* parent = m_container->parentWidget();
+    QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
+    if(parent)
+    {
+        if(dock)
+        {
+            dock->setVisible(isVisible);
+        }
+    }
+    m_container->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace container
 } // namespace fwGuiQt

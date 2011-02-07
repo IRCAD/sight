@@ -5,5 +5,9 @@
     <requirement id="servicesReg"/>
     <requirement id="gui"/>
     
-    
+    <point id="::gui::editor::DummyEditor">
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+        
 </plugin>

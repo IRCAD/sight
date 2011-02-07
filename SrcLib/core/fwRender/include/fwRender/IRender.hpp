@@ -16,13 +16,6 @@
 
 class wxWindow;
 
-/**
- * @brief   The namespace fwRender contains the base interface for rendering services.
- * @namespace   fwRender
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
- *
- */
 namespace fwRender
 {
 

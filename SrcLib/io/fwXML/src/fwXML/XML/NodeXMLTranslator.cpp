@@ -5,41 +5,50 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/lexical_cast.hpp>
+
 #include <fwTools/ClassFactoryRegistry.hpp>
-#include "fwXML/XML/NodeXMLTranslator.hpp"
+
+#include <fwData/visitor/accept.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Port.hpp>
 
+#include "fwXML/XML/NodeXMLTranslator.hpp"
 #include "fwXML/visitor/SerializeXML.hpp"
-#include "fwData/visitor/accept.hpp"
-
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
-
 #include "fwXML/XML/XMLParser.hpp"
 
 namespace fwXML
 {
 
-NodeXMLTranslator::NodeXMLTranslator() {};
+NodeXMLTranslator::NodeXMLTranslator()
+{};
 
-NodeXMLTranslator::~NodeXMLTranslator() {};
+//------------------------------------------------------------------------------
 
+NodeXMLTranslator::~NodeXMLTranslator()
+{};
 
+//------------------------------------------------------------------------------
 
-
-
-
-xmlNodePtr NodeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr NodeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
-    ::boost::shared_ptr< ::fwData::Node> graphNode = boost::dynamic_pointer_cast< ::fwData::Node>(obj);
+    ::fwData::Node::sptr graphNode = ::fwData::Node::dynamicCast(obj);
     assert(graphNode);
 
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
 
-    ::visitor::SerializeXML visitor;
-    ::fwData::visitor::accept( graphNode->getObject(), &visitor );
-    xmlNodePtr objectXMLNode = visitor.m_correspondance[graphNode->getObject()];
+    xmlNodePtr objectXMLNode;
+    if (graphNode->getObject())
+    {
+        ::visitor::SerializeXML visitor;
+        ::fwData::visitor::accept( graphNode->getObject(), &visitor );
+        objectXMLNode = visitor.m_correspondance[graphNode->getObject()];
+    }
+    else
+    {
+        objectXMLNode = xmlNewNode(NULL,  BAD_CAST "nullObject");
+    }
     xmlAddChild(node,objectXMLNode);
 
     // append input ports
@@ -54,34 +63,34 @@ xmlNodePtr NodeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> o
                                                                             graphNode->getOutputPorts().end()   );
     xmlAddChild(node,outputsList);
 
-
-
-
     return node;
-
 }
 
+//------------------------------------------------------------------------------
 
-void NodeXMLTranslator::updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+void NodeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr source)
 {
     xmlNodePtr nodeObject = XMLParser::nextXMLElement(source->children);
     OSLM_DEBUG("NodeXMLTranslator::updateDataFromXML first XML child" << (const char *) nodeObject->name );
 
-    ::boost::shared_ptr< ::fwData::Node> graphNode = boost::dynamic_pointer_cast< ::fwData::Node>(toUpdate);
+    ::fwData::Node::sptr graphNode = ::fwData::Node::dynamicCast(toUpdate);
     assert(graphNode);
 
-    ::boost::shared_ptr< ::fwData::Object> subObject = boost::dynamic_pointer_cast< ::fwData::Object >( XMLTH::fromXML(nodeObject) );
-    assert(subObject);
-    graphNode->setObject( subObject );
+    xmlNodePtr nullObj = XMLParser::findChildNamed(source,"nullObject");
+    if ( ! nullObj)
+    {
+        ::fwData::Object::sptr subObject = ::fwData::Object::dynamicCast( XMLTH::fromXML(nodeObject) );
+        assert(subObject);
+        graphNode->setObject( subObject );
+    }
 
     xmlNodePtr inputs = XMLParser::findChildNamed(source,"inputs");
     XMLTH::containerFromXml(inputs, back_inserter( graphNode->getInputPorts() ) );
 
     xmlNodePtr outputs = XMLParser::findChildNamed(source,"outputs");
     XMLTH::containerFromXml(outputs, back_inserter( graphNode->getOutputPorts() ) );
-
-
 }
 
+//------------------------------------------------------------------------------
 
 }

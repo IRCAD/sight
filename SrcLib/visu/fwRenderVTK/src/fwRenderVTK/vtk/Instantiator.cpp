@@ -10,7 +10,7 @@
 
 #include "fwRenderVTK/vtk/Instantiator.hpp"
 
-
+extern vtkObject* vtkInstantiatorfwVtkBoxRepresentationNew();
 extern vtkObject* vtkInstantiatorfwVtkPickerNew();
 extern vtkObject* vtkInstantiatorfwVtkCellPickerNew();
 extern vtkObject* vtkInstantiatorInteractorStyle2DForNegatoNew();
@@ -22,13 +22,18 @@ namespace vtk {
 
 void Instantiator::ClassInitialize()
 {
+    vtkInstantiator::RegisterInstantiator("fwVtkBoxRepresentation", vtkInstantiatorfwVtkBoxRepresentationNew);
     vtkInstantiator::RegisterInstantiator("fwVtkPicker", vtkInstantiatorfwVtkPickerNew);
     vtkInstantiator::RegisterInstantiator("fwVtkCellPicker", vtkInstantiatorfwVtkCellPickerNew);
     vtkInstantiator::RegisterInstantiator("InteractorStyle2DForNegato", vtkInstantiatorInteractorStyle2DForNegatoNew);
     vtkInstantiator::RegisterInstantiator("InteractorStyle3DForNegato", vtkInstantiatorInteractorStyle3DForNegatoNew);
 
 #ifdef DEBUG
-    vtkObject *o = vtkInstantiator::CreateInstance("fwVtkPicker");
+    vtkObject *o = vtkInstantiator::CreateInstance("fwVtkBoxRepresentation");
+    SLM_ASSERT("Unable to instantiate a fwVtkBoxRepresentation",o);
+    o->Delete();
+
+    o = vtkInstantiator::CreateInstance("fwVtkPicker");
     SLM_ASSERT("Unable to instantiate a fwVtkPicker",o);
     o->Delete();
 
@@ -48,10 +53,11 @@ void Instantiator::ClassInitialize()
 
 void Instantiator::ClassFinalize()
 {
+    vtkInstantiator::UnRegisterInstantiator("fwVtkBoxRepresentation", vtkInstantiatorfwVtkBoxRepresentationNew);
     vtkInstantiator::UnRegisterInstantiator("fwVtkPicker", vtkInstantiatorfwVtkPickerNew);
     vtkInstantiator::UnRegisterInstantiator("fwVtkCellPicker", vtkInstantiatorfwVtkCellPickerNew);
     vtkInstantiator::UnRegisterInstantiator("InteractorStyle2DForNegato", vtkInstantiatorInteractorStyle2DForNegatoNew);
-    vtkInstantiator::UnRegisterInstantiator("InteractorStyle3DForNegato", vtkInstantiatorInteractorStyle2DForNegatoNew);
+    vtkInstantiator::UnRegisterInstantiator("InteractorStyle3DForNegato", vtkInstantiatorInteractorStyle3DForNegatoNew);
 }
 } //vtk
 

@@ -28,7 +28,7 @@
 #include <fwServices/macros.hpp>
 #include <fwComEd/CompositeEditor.hpp>
 #include <fwComEd/CompositeMsg.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwData/Color.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
@@ -205,7 +205,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     {
         SceneAdaptor &adaptee = m_sceneAdaptors[id];
         SLM_ASSERT("Adaptor service expired !", adaptee.getService() );
-        OSLM_ASSERT( ::fwTools::UUID::get(adaptee.getService()) <<  " is not started " ,adaptee.getService()->isStarted());
+        OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started " ,adaptee.getService()->isStarted());
         if (object)
         {
             OSLM_TRACE ("Swapping IVtkAdaptorService " << adaptor << " on "<< objectId );
@@ -216,12 +216,13 @@ void VtkRenderService::configureObject( ConfigurationType conf )
             else
             {
                 OSLM_WARN(adaptor << "'s object already is '"
-                        << adaptee.getService()->getObject()->getUUID()
+                        << adaptee.getService()->getObject()->getID()
                         << "', no need to swap");
             }
         }
         else
         {
+            adaptee.getService()->stop();
             ::fwServices::erase(adaptee.getService());
             adaptee.m_service.reset();
             m_sceneAdaptors.erase(id);
@@ -395,6 +396,8 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
     this->stopContext();
 
     this->getContainer()->clean();
+    this->destroy();
+
     m_sceneAdaptors.clear();
 }
 

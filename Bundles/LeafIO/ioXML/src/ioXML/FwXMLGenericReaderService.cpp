@@ -28,11 +28,11 @@
 
 #include <ioXML/FwXMLGenericReaderService.hpp>
 
-#include <fwGui/ProgressDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwZip/ZipFolder.hpp>
 
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLGenericReaderService.hpp"
@@ -48,6 +48,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwTools
 //------------------------------------------------------------------------------
 
 FwXMLGenericReaderService::FwXMLGenericReaderService() throw()
+        : m_archiveExtenstion (".fxz")
 {}
 
 //------------------------------------------------------------------------------
@@ -60,6 +61,14 @@ FwXMLGenericReaderService::~FwXMLGenericReaderService() throw()
 void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    if( this->m_configuration->size() > 0 )
+    {
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
+        SLM_ASSERT("Sorry, only one xml element \"archiveExtension\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "archiveExtension" );
+        SLM_ASSERT("Sorry, only xml element \"archiveExtension\" is empty.", ! (*iter)->getValue().empty() );
+        m_archiveExtenstion =  (*iter)->getValue();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -68,12 +77,17 @@ void FwXMLGenericReaderService::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
-    dialogFile.setTitle( this->getSelectorDialogTitle() );
+    ::fwGui::dialog::LocationDialog dialogFile;
+    std::stringstream sstrTitle;
+    sstrTitle << "Choose a " << m_archiveExtenstion.substr(1,m_archiveExtenstion.size()-1) << " or a xml file";
+    dialogFile.setTitle( sstrTitle.str() );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("fwXML archive","*.fxz");
+    std::stringstream archExt;
+    archExt << "*" << m_archiveExtenstion;
+    dialogFile.addFilter("fwXML compressed archive", archExt.str() );
     dialogFile.addFilter("fwXML archive","*.xml");
-    dialogFile.setOption(::fwGui::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -85,6 +99,11 @@ void FwXMLGenericReaderService::configureWithIHM()
 }
 
 //------------------------------------------------------------------------------
+
+void FwXMLGenericReaderService::setArchiveExtension( const std::string & _archiveExtenstion )
+{
+    m_archiveExtenstion = _archiveExtenstion;
+}
 
 //------------------------------------------------------------------------------
 
@@ -130,7 +149,7 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Loading data ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading data ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
     }
@@ -138,11 +157,11 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
         return pObject;
     }
@@ -150,11 +169,11 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
         return pObject;
     }
@@ -188,6 +207,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         {
             obj = loadData(m_reader.getFile() );
         }
+
         if (obj)
         {
             // Retrieve dataStruct associated with this service
@@ -219,7 +239,7 @@ void FwXMLGenericReaderService::notificationOfUpdate()
 
 bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::path filePath )
 {
-    return ( ::boost::filesystem::extension(filePath) == ".fxz" );
+    return ( ::boost::filesystem::extension(filePath) == m_archiveExtenstion );
 }
 
 //------------------------------------------------------------------------------
@@ -250,9 +270,9 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 ::boost::filesystem::path FwXMLGenericReaderService::correctFileFormat( const ::boost::filesystem::path _filePath ) const
 {
     ::boost::filesystem::path newPath = _filePath;
-    if ( ::boost::filesystem::extension(_filePath) != ".fxz" && ::boost::filesystem::extension(_filePath) != ".xml" )
+    if ( ::boost::filesystem::extension(_filePath) != m_archiveExtenstion && ::boost::filesystem::extension(_filePath) != ".xml" )
     {
-        newPath = _filePath.string() + ".fxz";
+        newPath = _filePath.string() + m_archiveExtenstion;
     }
 
     return newPath;

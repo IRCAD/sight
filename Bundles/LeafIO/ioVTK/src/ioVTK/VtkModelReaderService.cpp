@@ -6,23 +6,27 @@
 
 #include <iostream>
 #include <fstream>
-#include <wx/string.h>
-#include <wx/filedlg.h>
-#include <wx/app.h>
+
 #include <boost/filesystem/operations.hpp>
+
+#include <fwCore/base.hpp>
 
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
+
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Model.hpp>
-#include <fwCore/base.hpp>
+#include <fwData/location/Folder.hpp>
+
 #include <fwComEd/ModelMsg.hpp>
-#include <fwWX/convert.hpp>
+
+#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <vtkIO/MeshReader.hpp>
-#include <fwWX/ProgressTowx.hpp>
 
 #include "ioVTK/VtkModelReaderService.hpp"
 
@@ -38,8 +42,8 @@ namespace ioVTK
 VtkModelReaderService::VtkModelReaderService() throw():
     m_bServiceIsConfigured(false)
 {
-    SLM_INFO( "[VtkModelReaderService::VtkModelReaderService]");
-    m_color                    = ::fwData::Color::NewSptr();
+    SLM_TRACE_FUNC();
+    m_color = ::fwData::Color::NewSptr();
     m_color->setRGBA( 0.5, 0.5, 0.5, 1.0 );
 }
 
@@ -71,26 +75,23 @@ VtkModelReaderService::~VtkModelReaderService() throw()
 
 void VtkModelReaderService::configureWithIHM()
 {
-    static wxString _sDefaultPath = _("");
-    wxString title = _("Choose a vtk file");
-    wxString folder = wxFileSelector(
-            title,
-            _sDefaultPath,
-            wxT(""),
-            wxT(""),
-            wxT("Vtk files (*.vtk) |*.vtk"),
-#if wxCHECK_VERSION(2, 8, 0)
-            wxFD_FILE_MUST_EXIST,
-#else
-            wxFILE_MUST_EXIST,
-#endif
-            wxTheApp->GetTopWindow() );
+    SLM_TRACE_FUNC();
+    static ::boost::filesystem::path _sDefaultPath;
 
-    if( folder.IsEmpty() == false)
+    ::fwGui::dialog::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose an vtk file to load a model");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
+
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsMeshPath = ::boost::filesystem::path( ::fwWX::wx2std(folder), ::boost::filesystem::native );
+        _sDefaultPath = result->getPath();
+        m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = ::fwWX::std2wx( m_fsMeshPath.branch_path().string() );
     }
 }
 
@@ -117,7 +118,6 @@ void VtkModelReaderService::configuring( ) throw(::fwTools::Failed)
 
 void VtkModelReaderService::updating() throw(::fwTools::Failed)
 {
-
     if( ! m_bServiceIsConfigured )
     {
         configureWithIHM();
@@ -133,11 +133,11 @@ void VtkModelReaderService::updating() throw(::fwTools::Failed)
 
     /// Create a empty triangularMesh
     ::fwData::TriangularMesh::NewSptr mesh;
-    loadMesh( m_fsMeshPath, mesh );
+    this->loadMesh( m_fsMeshPath, mesh );
 
     ::fwData::Material::NewSptr dataMat;
     dataMat->ambient()->setCRefRGBA(m_color->getCRefRGBA());
-    model->getRefMap().insert (    std::pair< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr >(mesh, dataMat));
+    model->getRefMap()[ mesh ] = dataMat ;
 
     ::fwComEd::ModelMsg::NewSptr msg;;
     msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL, backupModel ) ;
@@ -149,31 +149,40 @@ void VtkModelReaderService::updating() throw(::fwTools::Failed)
 void VtkModelReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pTriangularMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshReader myReader;
 
+    ::vtkIO::MeshReader myReader;
     myReader.setObject(_pTriangularMesh);
     myReader.setFile(vtkFile);
 
     try
     {
-        ::fwWX::ProgressTowx progressMeterGUI("Loading Meshs ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
         myReader.addHandler( progressMeterGUI );
         myReader.read();
-
     }
     catch (const std::exception & e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
-        ss << "Warning during loading : ";
-        wxString wxStmp( ss.str().c_str(), wxConvLocal );
-        wxMessageBox( wxStmp, _("Warning"), wxOK|wxICON_WARNING );
+        ss << "Warning during loading.";
+
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage( ss.str() );
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 

@@ -33,6 +33,8 @@
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
     <extension-point id="::fwServices::ServiceObjectConfig"/>
 
+    <!-- EXTENSION POINT FOR A SERVICE CONFIGURATION -->
+    <extension-point id="::fwServices::ServiceConfig"/>
 
     <!-- SPECIFIC SERVICES -->
     <point id="::fwServices::DefaultEditor">

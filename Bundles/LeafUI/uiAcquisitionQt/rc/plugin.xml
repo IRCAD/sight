@@ -10,5 +10,10 @@
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwData::Acquisition</implements>
     </point>
+
+    <point id="::uiAcquisition::OrganTransformationEditor" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
     
 </plugin>

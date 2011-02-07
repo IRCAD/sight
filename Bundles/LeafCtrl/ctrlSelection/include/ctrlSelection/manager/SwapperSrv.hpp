@@ -14,11 +14,6 @@
 
 namespace ctrlSelection
 {
-
-/**
- * @namespace ctrlSelection::manager
- * @brief     Namespace contained the manager services
- */
 namespace manager
 {
 
@@ -98,16 +93,26 @@ protected:
     class SubService
     {
     public:
+
         SubService()
-        { }
+        {
+            m_hasComChannel = false;
+        }
+
         ~SubService()
         { }
+
         SPTR (::fwServices::IService) getService()
                     { return m_service.lock(); }
+
+        SPTR (::fwServices::IService) getComChannel()
+                            { return m_comChannel.lock(); }
 
         ::fwTools::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
+        WPTR(::fwServices::ComChannelService) m_comChannel;
+        bool m_hasComChannel;
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
@@ -123,6 +128,8 @@ protected:
     void removeObject( const std::string objectId );
 
 private:
+
+    std::string m_mode;
     bool m_dummyStopMode;
     ConfigurationType m_managerConfiguration;
     SubServicesMapType m_objectsSubServices;

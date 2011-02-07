@@ -23,7 +23,7 @@ namespace fwRuntime
  * @date    2004-2009
  * @author  IRCAD (Research and Development Team).
  */
-class FWRUNTIME_CLASS_API Convert // Singleton
+class FWRUNTIME_CLASS_API Convert
 {
 public:
 

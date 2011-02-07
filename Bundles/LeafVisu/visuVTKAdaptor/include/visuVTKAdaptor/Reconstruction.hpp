@@ -34,6 +34,9 @@ public:
 
     VISUVTKADAPTOR_API void setForceHide(bool hide);
 
+    /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
+    VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -52,6 +55,9 @@ protected:
     ::fwRenderVTK::IVtkAdaptorService::wptr m_meshService;
 
     double      m_sharpEdgeAngle;
+
+private:
+    bool   m_autoResetCamera;
 };
 
 

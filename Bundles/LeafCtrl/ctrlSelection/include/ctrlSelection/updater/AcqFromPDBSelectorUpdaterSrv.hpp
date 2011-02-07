@@ -15,11 +15,6 @@
 
 namespace ctrlSelection
 {
-
-/**
- * @namespace ctrlSelection::updater
- * @brief     Namespace contained the updater services
- */
 namespace updater
 {
 

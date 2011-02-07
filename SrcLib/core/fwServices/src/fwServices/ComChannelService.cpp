@@ -11,7 +11,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include "fwServices/ComChannelService.hpp"
 #include "fwServices/ObjectServiceRegistry.hpp"
@@ -83,22 +83,22 @@ void ComChannelService::configuring() throw( ::fwTools::Failed )
 void ComChannelService::starting() throw(fwTools::Failed)
 {
     SLM_ASSERT("No UID target", m_destUUID.first );
-    OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second , ::fwTools::UUID::exist( m_destUUID.second , ::fwTools::UUID::SIMPLE) );
-    m_destination = ::fwTools::UUID::get< ::fwServices::IService >( m_destUUID.second ) ;
+    OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second , ::fwTools::fwID::exist( m_destUUID.second ) );
+    m_destination = ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( m_destUUID.second ) ) ;
     OSLM_DEBUG("Destination = " << m_destUUID.second << " found") ;
 
-    SLM_ASSERT("intern data mismatch", m_destination.lock()->getUUID() == m_destUUID.second);
+    SLM_ASSERT("intern data mismatch", m_destination.lock()->getID() == m_destUUID.second);
 
     m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
-    OSLM_DEBUG("Source (IEditionService) = " << m_source.lock()->getUUID() << " found") ;
+    OSLM_DEBUG("Source (IEditionService) = " << m_source.lock()->getID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
-            m_destination.lock()->getUUID() ,
+            m_destination.lock()->getID() ,
             !this->hasSimilarObservation());
 
     // Assertion
-    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getUUID(), !m_destination.expired() ) ;
-    OSLM_ASSERT("Source is expired for ComChannel "<<this->getUUID(), !m_source.expired() ) ;
+    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getID(), !m_destination.expired() ) ;
+    OSLM_ASSERT("Source is expired for ComChannel "<<this->getID(), !m_source.expired() ) ;
 
 
     if( !m_source.lock()->isAttached( this->getSptr() ) )
@@ -111,8 +111,8 @@ void ComChannelService::starting() throw(fwTools::Failed)
     }
 
     // Post condition
-    OSLM_ASSERT("Source is expired for ComChannel "<<this->getUUID(), !m_source.expired() ) ;
-    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getUUID(), !m_destination.expired() );
+    OSLM_ASSERT("Source is expired for ComChannel "<<this->getID(), !m_source.expired() ) ;
+    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getID(), !m_destination.expired() );
 }
 
 //------------------------------------------------------------------------------
@@ -127,6 +127,9 @@ void ComChannelService::swapping() throw(fwTools::Failed)
 
 void ComChannelService::stopping() throw(fwTools::Failed)
 {
+    OSLM_DEBUG( "Stopping ComChannelService : " << getInfo() );
+    SLM_ASSERT( "Sorry, before stopping, source and dest must still exist in system.", ! m_destination.expired() && ! m_source.expired() );
+
     // Pre condition
     if( !m_source.expired() )
     {
@@ -136,45 +139,93 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             this->info( msg ) ;
             SLM_TRACE( "Stopping ComChannelService " + msg.str() ); // crash from spylog???
             m_source.lock()->detach( this->getSptr() );
+#ifndef NOT_USE_SRVFAC
+            int nbObservers = m_source.lock()->getNbObservers();
+            if(nbObservers == 0)
+            {
+                m_source.lock()->stop();
+                ::fwServices::erase(m_source.lock());
+            }
+#endif
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
+std::string ComChannelService::getInfo()
+{
+    std::stringstream sstr;
+
+    std::string fwIdSrc = ( ! m_source.expired() ? m_source.lock()->getID() : "fwIdExpired" );
+    std::string fwIdDest = ( ! m_destination.expired() ? m_destination.lock()->getID() : "fwIdExpired" );
+    sstr << "Com Channel ( "<< this->getID() << " ) Src  fwId = " << fwIdSrc << ", Dest fwId = " << fwIdDest;
+
+    return sstr.str();
+}
+
+//------------------------------------------------------------------------------
+
 void ComChannelService::info(std::ostream &_sstream )
 {
-    // Status
-    std::string status ;
-    if( !m_source.expired() )
+    if( ! this->isStopped() )
     {
-        if( m_source.lock()->isAttached( this->getSptr() ) )
+        // Status
+        std::string status ;
+        if( !m_source.expired() )
         {
-            status = "ON" ;
+            if( m_source.lock()->isAttached( this->getSptr() ) )
+            {
+                status = "ON" ;
+            }
+            else
+            {
+                status = "OFF" ;
+            }
         }
-        else
+
+        // Update _sstream
+        if(!m_source.expired() )
         {
-            status = "OFF" ;
+            if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
+            {
+                ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
+                _sstream << "ComChannelService (" << status << ") "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
+            }
+            else
+            {
+                _sstream << "ComChannelService (" << status << ") "<< " SRC not specified" ;
+            }
+        }
+
+        if( !m_destination.expired() )
+        {
+            _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
+        }
+
+    }
+    else
+    {
+        // Update _sstream
+        if(!m_source.expired() )
+        {
+            if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
+            {
+                ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
+                _sstream << "ComChannelService ( com is stopped ) "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
+            }
+            else
+            {
+                _sstream << "ComChannelService ( com is stopped ) "<< " SRC not specified" ;
+            }
+        }
+
+        if( !m_destination.expired() )
+        {
+            _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
         }
     }
 
-    // Update _sstream
-    if(!m_source.expired() )
-    {
-        if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
-        {
-            ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
-            _sstream << "ComChannelService (" << status << ") "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
-        }
-        else
-        {
-            _sstream << "ComChannelService (" << status << ") "<< " SRC not specified" ;
-        }
-    }
-    if( !m_destination.expired() )
-    {
-        _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -183,14 +234,14 @@ void ComChannelService::setDest(IService::sptr _client)
 {
     m_destination = _client ;
     m_destUUID.first = true ;
-    m_destUUID.second = _client->getUUID() ;
+    m_destUUID.second = _client->getID() ;
 }
 
 //------------------------------------------------------------------------------
 
 IService::sptr  ComChannelService::getDest()
 {
-    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getUUID(), !m_destination.expired() ) ;
+    OSLM_ASSERT("Destination is expired for ComChannel "<<this->getID(), !m_destination.expired() ) ;
     return m_destination.lock();
 }
 
@@ -198,7 +249,7 @@ IService::sptr  ComChannelService::getDest()
 
 IEditionService::sptr ComChannelService::getSrc()
 {
-    OSLM_ASSERT("Source is expired for ComChannel "<<this->getUUID(), !m_source.expired() ) ;
+    OSLM_ASSERT("Source is expired for ComChannel "<<this->getID(), !m_source.expired() ) ;
     return m_source.lock();
 }
 
@@ -253,9 +304,9 @@ std::string ComChannelService::convertToLightString( std::string _initialString 
 
 std::string ComChannelService::getNotificationInformation( ::fwServices::ObjectMsg::csptr _msg )
 {
-    std::string sourceUUID = convertToLightString(_msg->getSubject().lock()->getUUID() );
-    std::string destUUID = convertToLightString( m_destination.lock()->getUUID() );
-    std::string objectUUID = convertToLightString( _msg->getUUID() );
+    std::string sourceUUID = convertToLightString(_msg->getSubject().lock()->getID() );
+    std::string destUUID = convertToLightString( m_destination.lock()->getID() );
+    std::string objectUUID = convertToLightString( _msg->getID() );
 
     std::stringstream sstr;
     sstr << "MSG ( " << objectUUID << " ) : " << sourceUUID << " ===> " << destUUID << " Priority: " << m_priority;

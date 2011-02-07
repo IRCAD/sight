@@ -32,11 +32,11 @@ void ObjectTest::methode1()
     ::fwTools::Field::sptr field2;
     field2 = obj->setFieldSingleElement(FIELDID,  obj2);
 
-    obj->setUUID(UUID);
+    obj->setID(UUID);
 
     // check
-    CPPUNIT_ASSERT(obj->hasUUID());
-    CPPUNIT_ASSERT_EQUAL(obj->getUUID(),    UUID);
+    CPPUNIT_ASSERT(obj->hasID());
+    CPPUNIT_ASSERT_EQUAL(obj->getID(),    UUID);
     CPPUNIT_ASSERT(obj->getFieldSize(FIELDID));
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELDID), field2);
 

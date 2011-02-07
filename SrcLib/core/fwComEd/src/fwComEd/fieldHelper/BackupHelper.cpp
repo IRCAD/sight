@@ -83,6 +83,42 @@ namespace fieldHelper
 
 //-----------------------------------------------------------------------------
 
+::fwData::Study::sptr BackupHelper::getSelectedStudy(::fwData::PatientDB::sptr pPatientDB)
+{
+    ::fwData::Study::sptr pStudy;
+
+    if(pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
+    {
+        // Get Selection
+
+        ::fwTools::Field::sptr pDataInfo = pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
+
+        /*::fwData::Object::csptr const vSelection = mySpecificMsg->m_modifiedObject;*/
+        ::fwData::Integer::sptr myIntPat = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(0) );
+        ::fwData::Integer::sptr myIntStu = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(1) );
+        ::fwData::Integer::sptr myIntAcq = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(2) );
+
+        // Print the selection (debug)
+        OSLM_DEBUG( "myIntPat->value : " << myIntPat->value() );
+        OSLM_DEBUG( "myIntStu->value : " << myIntStu->value() );
+        OSLM_DEBUG( "myIntAcq->value : " << myIntAcq->value() );
+
+        // Patient selection
+        ::fwData::PatientDB::PatientIterator patientIter = pPatientDB->getPatients().first;
+        patientIter += myIntPat->value();
+
+        // Study selection
+        ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
+        studyIter += myIntStu->value();
+
+        pStudy = (*studyIter);
+    }
+
+    return pStudy;
+}
+
+//-----------------------------------------------------------------------------
+
 ::fwData::Patient::sptr BackupHelper::getSelectedPatient(::fwData::PatientDB::sptr pPatientDB)
 {
     ::fwData::Patient::sptr pPatient;

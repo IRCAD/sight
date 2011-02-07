@@ -7,7 +7,7 @@
 //#include <fwCore/base.hpp>
 //
 //#include <fwTools/ClassFactoryRegistry.hpp>
-//#include <fwTools/UUID.hpp>
+//#include <fwTools/fwID.hpp>
 //
 //#include <fwData/PatientDB.hpp>
 //
@@ -18,7 +18,7 @@
 //#include <fwServices/macros.hpp>
 //#include <fwServices/helper.hpp>
 //
-//#include <fwGui/MessageDialog.hpp>
+//#include <fwGui/dialog/MessageDialog.hpp>
 //
 //#include "gui/action/ActionNotifyService.hpp"
 //
@@ -71,11 +71,11 @@
 //    {
 //        MessageType message =  m_uuidServices.at(i).second;
 //        std::string uid =  m_uuidServices.at(i).first;
-//        bool obj_exists = ::fwTools::UUID::exist(uid, ::fwTools::UUID::SIMPLE );
+//        bool obj_exists = ::fwTools::fwID::exist(uid );
 //
-//        ::fwData::Object::sptr object = ::fwTools::UUID::get< ::fwData::Object >( uid ) ;
+//        ::fwData::Object::sptr object = ::fwData::Object::dynamicCast( ::fwTools::fwID::getObject(uid) ) ;
 //
-//        ::fwData::PatientDB::sptr patientDB = ::fwTools::UUID::get< ::fwData::PatientDB >( uid ) ;
+//        ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::dynamicCast( ::fwTools::fwID::getObject(uid) ) ;
 //
 //        if(patientDB)
 //        {
@@ -138,12 +138,12 @@
 //        else
 //        {
 //            std::string msgInfo = "Sorry, the service is unavailable.";
-//            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-//            ::fwGui::MessageDialog messageBox;
+//            ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+//            ::fwGui::dialog::MessageDialog messageBox;
 //            messageBox.setTitle("Warning");
 //            messageBox.setMessage( msgInfo );
-//            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-//            messageBox.addButton(::fwGui::IMessageDialog::OK);
+//            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+//            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
 //            messageBox.show();
 //            OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
 //        }
@@ -174,7 +174,7 @@
 //            OSLM_FATAL("Sorry this type of \"messageType\":" << messageType <<" is not managed by ActionNotifyService");
 //        }
 //
-//        std::string uuid = (this->getObject< ::fwData::Object >())->getUUID();
+//        std::string uuid = (this->getObject< ::fwData::Object >())->getID();
 //
 //        m_onevent =  (*iter)->getExistingAttributeValue("checkonEvent") ;
 //

@@ -7,7 +7,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwData/String.hpp>
 
 #include <fwServices/ObjectServiceRegistry.hpp>
@@ -93,7 +93,7 @@ void Render::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed
         SLM_ASSERT("dataInfo is missing", dataInfo);
         SLM_ASSERT("dataInfo must contain a string", ::fwData::String::dynamicConstCast( dataInfo ));
         std::string requestSceneID = ::fwData::String::dynamicConstCast( dataInfo )->value();
-        if( requestSceneID == ::fwTools::UUID::get( this->getRenderService() ) )
+        if( requestSceneID ==  this->getRenderService()->getID() )
         {
             this->getInteractor()->Render() ;
             this->getRenderService()->setPendingRenderRequest(false);

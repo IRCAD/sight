@@ -10,15 +10,15 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwToolBar.hpp"
-#include "fwGui/fwMenuItem.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
 #include "fwGui/config.hpp"
 
 
 namespace fwGui
 {
-
 namespace registrar
 {
 
@@ -44,28 +44,63 @@ public:
     FWGUI_API virtual ~ToolBarRegistrar();
 
     /// Return the parent container
-    FWGUI_API virtual ::fwGui::fwToolBar::sptr getParent();
+    FWGUI_API virtual ::fwGui::container::fwToolBar::sptr getParent();
 
     /**
      * @brief Return the fwMenuItem associated with the toolBarSid.
      * @param actionSid sid of the action service
      * @param toolBarItems  vector containing the fwMenuItem manages by this registrar.
      */
-    FWGUI_API virtual ::fwGui::fwMenuItem::sptr getFwMenuItem(std::string toolBarSid, std::vector< ::fwGui::fwMenuItem::sptr > menuItems);
+    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string toolBarSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
 
     /**
-     * @brief Configure views managed.
+     * @brief Initialize registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+           <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+               <gui>
+                   <layout>
+                       <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                       <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                       <separator />
+                       <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                       <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   </layout>
+               </gui>
+               <registry>
+                   <menuItem sid="item2" start="no" />
+                   <menuItem sid="item3" />
+                   <menuItem sid="item4" />
+                   <menuItem sid="item5" />
+               </registry>
+           </service>
+       @endverbatim
+     * This method analyzes the registry section of the configuration.
+     *
+     *  - <menuItem sid="item2" start="no" /> : define the service of the menuItem to add in the toolbar.
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the toolbar service.
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
     /**
-     * @brief Starting toolBar registrar.
-     * All services managed in local toolBar items
-     * and with start="yes" in configuration will be started.
+     * @brief manages action service associated with menuItem of toolbar.
+     *
+     * If the action manages by the menuItems has its attribut executable="false", the associated menuItems will be disabled.
+     * In ohter words, the start value is take into account only when executable attribut is setted to true in managed action
+     *
+     * If an action is managed by a menuItem in menu and in Toolbar, only start value of the Toolbar item will be take into account.
+     * It is due to the fact that the Toolbar is initialized after the menu bar.
+     *
+     * @see ::fwGui::registrar::MenuRegistrar for more information on interaction between menubar and toolbar.
+     *
      * @pre ToolBarRegistrar must be initialized before.
      * @pre sub toolBar items must be instanced before.
      */
-    FWGUI_API virtual void manage(std::vector< ::fwGui::fwMenuItem::sptr > toolBarItems );
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenuItem::sptr > toolBarItems );
+
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenu::sptr > toolBarItems );
 
     /**
      * @brief Stopping toolBar items manager.
@@ -93,6 +128,12 @@ protected:
      * action's index vector and boolean describing if is started by the manager.
      */
     SIDToolBarMapType m_actionSids;
+
+    /**
+     * @brief All toolBar services ID managed and associated with pair containing:
+     * action's index vector and boolean describing if is started by the manager.
+     */
+    SIDToolBarMapType m_menuSids;
 
     /// Main service ID associate with this ToolBarRegistrar
     std::string m_sid;

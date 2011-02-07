@@ -8,9 +8,11 @@
 #define _IOVTK_VTKMODELREADERSERVICE_HPP_
 
 #include <string>
-#include <io/IReader.hpp>
 #include <boost/filesystem/path.hpp>
+
 #include <fwData/Color.hpp>
+#include <io/IReader.hpp>
+
 #include "ioVTK/export.hpp"
 
 

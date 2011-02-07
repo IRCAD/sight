@@ -9,19 +9,14 @@
 namespace fwTools
 {
 
-Failed::Failed(const std::string & message) throw()
-: m_message(message)
+Failed::Failed(const std::string &message) throw()
+: ::fwCore::Exception(message)
 {}
 
 
 Failed::~Failed() throw()
 {}
 
-
-const char * Failed::what() const throw()
-{
-    return m_message.c_str();
-}
 
     
 } // namespace fwTools

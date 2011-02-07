@@ -1,0 +1,44 @@
+<plugin id="opSofa" class="::opSofa::Plugin">
+    
+    <library name="opSofa" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="io" />
+    
+    <point id="::opSofa::SofaCoreSrv" >
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+  
+    <point id="::opSofa::SofaStartSrv" >
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+    
+    <point id="::opSofa::SofaSceneWriterSrv" >
+        <implements>::io::IWriter</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+
+    <point id="::opSofa::SofaSceneReaderSrv" >
+        <implements>::io::IReader</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+
+    <point id="::opSofa::SofaTrianSrv" >
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+
+    <point id="::opSofa::SofaMeshEditorSrv" >
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::Acquisition</implements>
+    </point>
+
+  <point id="::opSofa::BoxWidget" >
+    <implements>::fwRenderVTK::IVtkAdaptorService</implements>
+    <implements>::fwData::TransformationMatrix3D</implements>
+  </point>
+    
+</plugin>

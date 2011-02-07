@@ -9,7 +9,7 @@
 #include <wx/wx.h>
 #include <wx/window.h>
 #include <wx/colour.h>
-#include <wx/stattext.h>
+
 #include <wx/sizer.h>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -21,18 +21,18 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwWX/convert.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwGuiWx/container/WxContainer.hpp>
 
 #include "guiWx/editor/DummyEditor.hpp"
 
-namespace guiWx
+namespace gui
 {
 namespace editor
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::guiWx::editor::DummyEditor , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::gui::editor::IEditor , ::gui::editor::DummyEditor , ::fwTools::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -57,12 +57,14 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 
     wxBoxSizer* bSizer;
     bSizer = new wxBoxSizer( wxVERTICAL );
-    std::string text = m_text.empty() ? this->getUUID() : m_text;
-    wxStaticText*  staticText = new wxStaticText( container, wxID_ANY, ::fwWX::std2wx(text), wxDefaultPosition, wxDefaultSize, 0 );
-    bSizer->Add( staticText, 1, wxALL|wxEXPAND, 5 );
+    std::string text = m_text.empty() ? this->getID() : m_text;
+    m_staticText = new wxStaticText( container, wxID_ANY, ::fwWX::std2wx(text), wxDefaultPosition, wxDefaultSize, 0 );
+    m_staticText->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
+    bSizer->Add( m_staticText, 1, wxALL|wxEXPAND, 5 );
+
     container->SetSizer( bSizer );
-    container->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
     container->Refresh();
+    container->Layout();
 }
 
 //-----------------------------------------------------------------------------
@@ -70,11 +72,8 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 void DummyEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
-    assert( container );
-    container->SetBackgroundColour(wxNullColour);
-    wxContainer->clean();
+    this->getContainer()->clean();
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
@@ -96,6 +95,7 @@ void DummyEditor::configuring()  throw ( ::fwTools::Failed )
 void DummyEditor::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    m_staticText->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
 }
 
 //-----------------------------------------------------------------------------
@@ -115,5 +115,5 @@ void DummyEditor::info( std::ostream &_sstream )
 //-----------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace guiWx
+} // namespace gui
 

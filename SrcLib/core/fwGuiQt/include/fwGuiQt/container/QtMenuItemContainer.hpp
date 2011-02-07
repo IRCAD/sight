@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 
-#include <fwGui/fwMenuItem.hpp>
+#include <fwGui/container/fwMenuItem.hpp>
 
 #include "fwGuiQt/config.hpp"
 
@@ -32,12 +32,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUIQT_CLASS_API QtMenuItemContainer : public ::fwGui::fwMenuItem
+class FWGUIQT_CLASS_API QtMenuItemContainer : public ::fwGui::container::fwMenuItem
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuItemContainer)(::fwGui::fwMenuItem), (()), new QtMenuItemContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuItemContainer)(::fwGui::container::fwMenuItem), (()), new QtMenuItemContainer );
 
     /**
      * @brief   Constructor.

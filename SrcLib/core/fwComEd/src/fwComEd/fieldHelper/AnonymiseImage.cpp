@@ -26,6 +26,8 @@ namespace fwComEd
 namespace fieldHelper
 {
 
+//------------------------------------------------------------------------------
+
 void AnonymiseImage::anonymisePatient( ::fwData::Patient::sptr _pPatient)
 {
     _pPatient->setCRefName("anonymous");
@@ -40,6 +42,8 @@ void AnonymiseImage::anonymisePatient( ::fwData::Patient::sptr _pPatient)
     }
 }
 
+//------------------------------------------------------------------------------
+
 void AnonymiseImage::anonymisePatientDB( ::fwData::PatientDB::sptr _pPatientDB)
 {
     ::fwData::PatientDB::PatientIterator patientIter = _pPatientDB->getPatients().first;
@@ -49,10 +53,12 @@ void AnonymiseImage::anonymisePatientDB( ::fwData::PatientDB::sptr _pPatientDB)
     }
 }
 
-void AnonymiseImage::anonymiseImage( ::fwData::Image::sptr _pImage)
-{
+//------------------------------------------------------------------------------
 
-}
+void AnonymiseImage::anonymiseImage( ::fwData::Image::sptr _pImage)
+{}
+
+//------------------------------------------------------------------------------
 
 void AnonymiseImage::anonymiseStudy( ::fwData::Study::sptr _pStudy)
 {
@@ -67,11 +73,15 @@ void AnonymiseImage::anonymiseStudy( ::fwData::Study::sptr _pStudy)
     }
 }
 
+//------------------------------------------------------------------------------
+
 void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisition)
 {
     _pAcquisition->setCRefCreationDate( ::boost::date_time::min_date_time );
     _pAcquisition->setCRefUID("");
 }
+
+//------------------------------------------------------------------------------
 
 ::fwData::Patient::sptr AnonymiseImage::createAnonymisedPatient( ::fwData::Patient::sptr _pPatient)
 {
@@ -131,6 +141,8 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
 
     return pNewPatient;
 }
+
+//------------------------------------------------------------------------------
 
 ::fwData::PatientDB::sptr AnonymiseImage::createAnonymisedPatientDB( ::fwData::PatientDB::sptr _pPatientDB)
 {

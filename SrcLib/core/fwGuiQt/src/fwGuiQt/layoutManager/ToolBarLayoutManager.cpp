@@ -7,6 +7,8 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QToolBar>
+#include <QMenu>
+#include <QToolButton>
 
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -18,6 +20,7 @@
 
 #include "fwGuiQt/ActionCallback.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
+#include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/container/QtMenuItemContainer.hpp"
 #include "fwGuiQt/layoutManager/ToolBarLayoutManager.hpp"
 
@@ -44,7 +47,7 @@ ToolBarLayoutManager::~ToolBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
+void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -59,16 +62,59 @@ void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
     {
         if (actionInfo.m_isSeparator)
         {
-            toolBar->addSeparator();
+            QWidget * widget = new QWidget();
+            if (actionInfo.m_size > 0)
+            {
+                widget->setMinimumWidth(actionInfo.m_size);
+                toolBar->addWidget(widget);
+            }
+            else
+            {
+                toolBar->addSeparator();
+            }
             actionGroup = 0;
+        }
+        else if (actionInfo.m_isSpacer)
+        {
+            QWidget* spacer = new QWidget();
+            spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            toolBar->addWidget(spacer);
+            actionGroup = 0;
+        }
+        else if (actionInfo.m_isMenu)
+        {
+            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            QMenu* qtMenu = new QMenu(toolBar);
+            menu->setQtMenu(qtMenu);
+
+            QToolButton * toolButton = new QToolButton();
+            toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+            toolButton->setMenu(qtMenu);
+            toolButton->setPopupMode(QToolButton::InstantPopup);
+            toolButton->setText(QString::fromStdString(actionInfo.m_name));
+            if (!actionInfo.m_icon.empty())
+            {
+                QIcon icon(QString::fromStdString(actionInfo.m_icon));
+                toolButton->setIcon(icon);
+                toolButton->setToolTip(QString::fromStdString(actionInfo.m_name));
+                toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+            }
+            toolBar->addWidget(toolButton);
+            m_menus.push_back(menu);
         }
         else
         {
             ::fwGuiQt::container::QtMenuItemContainer::NewSptr menuItem;
-
-            QIcon icon(QString::fromStdString(actionInfo.m_icon));
-
-            QAction *action = toolBar->addAction( icon, QString::fromStdString(actionInfo.m_name) );
+            QAction *action;
+            if (!actionInfo.m_icon.empty())
+            {
+                QIcon icon(QString::fromStdString(actionInfo.m_icon));
+                action = toolBar->addAction( icon, QString::fromStdString(actionInfo.m_name) );
+            }
+            else
+            {
+                action = toolBar->addAction( QString::fromStdString(actionInfo.m_name) );
+            }
 
             action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
 
@@ -83,19 +129,16 @@ void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
 
             menuItem->setQtMenuItem(action);
 
-            if(!actionInfo.m_isSeparator)
-            {
-                m_menuItems.push_back(menuItem);
-                OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
-                ::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
+            m_menuItems.push_back(menuItem);
+            OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            ::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
 
-                ::fwGuiQt::ActionCallback::sptr qtCallback = ::fwGuiQt::ActionCallback::dynamicCast(callback);
-                SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
+            ::fwGuiQt::ActionCallback::sptr qtCallback = ::fwGuiQt::ActionCallback::dynamicCast(callback);
+            SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
 
-                QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
-                QObject::connect( action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));
-                menuItemIndex++;
-            }
+            QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
+            QObject::connect( action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));
+            menuItemIndex++;
         }
     }
 }
@@ -104,16 +147,15 @@ void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
 
 void ToolBarLayoutManager::destroyLayout()
 {
-    QToolBar* menu = m_parent->getQtToolBar();
-
+    this->destroyActions();
+    m_parent->clean();
     m_menuItems.clear();
-    menu->clear();
 }
 
 //-----------------------------------------------------------------------------
 
 
-void ToolBarLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -122,7 +164,7 @@ void ToolBarLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuIt
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -131,7 +173,7 @@ void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuIt
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void ToolBarLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();

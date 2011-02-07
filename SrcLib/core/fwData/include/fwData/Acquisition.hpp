@@ -8,6 +8,7 @@
 #define _FWDATA_ACQUISITION_HPP_
 
 #include <vector>
+#include <list>
 
 #include <boost/cstdint.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -121,6 +122,7 @@ public:
     FWDATA_API std::pair< ReconstructionConstIterator, ReconstructionConstIterator > getReconstructions() const;
     //@}
 
+    FWDATA_API void addDicomFileUrl(std::string dicomfileUrl);
 
     // Generator result---------------------------------------------------------
 
@@ -171,6 +173,12 @@ public:
     fwGettersSettersDocMacro(MedicalPrinterCorp, sMedicalPrinterCorp, std::string, the corporation of the MedicalPrinter used to make the acquisition);
 
     fwGettersSettersDocMacro(PatientPosition, sPatientPosition, std::string, the position of the patient when the acquisition has been done);
+
+    fwGettersSettersDocMacro(DicomFileList, dicomFileList, std::list<std::string>, The list of Dicom file belonging to the acquisitoin);
+
+    fwGettersSettersDocMacro(Description, description, std::string, The description of the acquisition );
+
+    fwGettersSettersDocMacro(PathToFiles, pathToFiles, std::string, path to find Dicom files );
 
 protected :
 
@@ -249,6 +257,15 @@ protected :
 
     //! Patient's position when the acquisition has been done
     std::string m_sPatientPosition;
+
+    //! Description of the acquisition.
+    std::string m_description;
+
+    //! List of file associated with Acquisition.
+    std::list<std::string> m_dicomFileList;
+
+    //! path to find Dicom files
+    std::string m_pathToFiles;
 };
 
 } // namespace fwData

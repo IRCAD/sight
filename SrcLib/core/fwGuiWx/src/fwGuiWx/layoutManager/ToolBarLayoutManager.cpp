@@ -45,7 +45,7 @@ ToolBarLayoutManager::~ToolBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
+void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -108,22 +108,22 @@ void ToolBarLayoutManager::createLayout( ::fwGui::fwToolBar::sptr parent )
 
 void ToolBarLayoutManager::destroyLayout()
 {
-    wxToolBar* toolBar = m_parent->getWxToolBar();
-    toolBar->ClearTools();
+    this->destroyActions();
+    m_parent->clean();
     m_menuItems.clear();
 }
 
 //-----------------------------------------------------------------------------
 
 
-void ToolBarLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.")
 }
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     wxToolBar* toolBar = m_parent->getWxToolBar();
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
@@ -133,7 +133,7 @@ void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuIt
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void ToolBarLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     wxToolBar* toolBar = m_parent->getWxToolBar();
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);

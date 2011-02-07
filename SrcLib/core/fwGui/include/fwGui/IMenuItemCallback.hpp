@@ -11,7 +11,6 @@
 
 #include "fwGui/config.hpp"
 
-
 namespace fwGui
 {
 

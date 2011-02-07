@@ -8,6 +8,10 @@
     <point id="::gui::editor::IEditor">
         <implements>::fwServices::IService</implements>
     </point>
+    
+    <point id="::gui::editor::IDialogEditor">
+        <implements>::fwServices::IService</implements>
+    </point>
         
     <point id="::gui::view::IView">
         <implements>::fwServices::IService</implements>
@@ -18,6 +22,18 @@
     </point>
     
     <point id="::fwGui::IActionSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
+    <point id="::fwGui::IMenuSrv">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
+    <point id="::gui::aspect::IToolBar">
+        <implements>::fwServices::IService</implements>
+    </point>
+    
+    <point id="::fwGui::IMenuBarSrv">
         <implements>::fwServices::IService</implements>
     </point>
     
@@ -62,11 +78,26 @@
     </point>    
     
     <point id="::gui::aspect::DefaultToolBarSrv">
-        <implements>::gui::aspect::IToolBar</implements>
+        <implements>::fwGui::IToolBarSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>
     
     <point id="::gui::action::ConfigActionSrv">
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
+    <point id="::gui::action::ConfigActionSrvWithKey">
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+    
+    <point id="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate">
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwData::Composite</implements>
+    </point>
+
+    <point id="::gui::action::ModifyLayoutActionSrv">
         <implements>::fwGui::IActionSrv</implements>
         <implements>::fwTools::Object</implements>
     </point>

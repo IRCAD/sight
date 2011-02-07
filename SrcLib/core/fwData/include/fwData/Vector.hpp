@@ -22,7 +22,7 @@ typedef std::vector< Object::sptr > ObjectVectorType;
  * @class   Vector
  * @brief   This class defines a vector of objects.
  *
- * Vector contains a map of ::fwData::Object.
+ * Vector contains a vector of ::fwData::Object.
  *
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.

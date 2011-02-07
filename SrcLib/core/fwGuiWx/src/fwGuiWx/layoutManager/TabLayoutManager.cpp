@@ -38,7 +38,7 @@ TabLayoutManager::~TabLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void TabLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
+void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiWx::container::WxContainer::dynamicCast(parent);
@@ -47,14 +47,7 @@ void TabLayoutManager::createLayout( ::fwGui::fwContainer::sptr parent )
     wxWindow* wxContainer = m_parentContainer->getWxContainer();
     wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
 
-    if (wxContainer->GetSizer())
-    {
-        wxContainer->GetSizer()->Add(boxSizer, 1, wxEXPAND|wxALL);
-    }
-    else
-    {
-        wxContainer->SetSizer( boxSizer );
-    }
+    wxContainer->SetSizer( boxSizer );
 
     m_notebook = new wxNotebook( wxContainer, wxNewId() );
     boxSizer->Add( m_notebook, 1, wxALL|wxEXPAND, 0);

@@ -30,12 +30,13 @@
 #include <fwTools/Os.hpp>
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
+#include <fwRuntime/RuntimeException.hpp>
 #include <fwServices/bundle/runtime.hpp>
 
 #include <fwWX/convert.hpp>
 #include <fwWX/LoggerInitializer.hpp>
 
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include "fwGuiWx/App.hpp"
 
@@ -58,12 +59,11 @@ App::App()
 
 void App::usage( const std::string & mes ) const
 {
-    ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-    ::fwGui::MessageDialog messageBox;
+    ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Exception Caught");
     messageBox.setMessage( mes );
-    messageBox.setIcon(::fwGui::IMessageDialog::CRITICAL);
-    messageBox.addButton(::fwGui::IMessageDialog::OK);
+    messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 
@@ -138,10 +138,6 @@ int App::OnExit()
     ::fwServices::OSR::uninitializeRootObject();
     wxEndBusyCursor();
 
-    SLM_TRACE("Stopping Profile");
-    m_profile->stop();
-    SLM_TRACE("Profile Stopped");
-
     delete m_checker;
     return 0;
 }
@@ -209,6 +205,36 @@ void App::OnInitCmdLine(wxCmdLineParser & parser)
 {
     wxApp::OnInitCmdLine(parser);
     parser.SetDesc(cmdLineDesc);
+}
+
+//-----------------------------------------------------------------------------
+
+void App::OnUnhandledException()
+{
+    // we're called from an exception handler so we can re-throw the exception
+    // to recover its type
+    std::string what;
+    try
+    {
+        throw;
+    }
+    catch ( std::exception& e )
+    {
+        what = e.what();
+    }
+    catch ( ... )
+    {
+        what = "unknown exception";
+    }
+
+    ::fwGui::dialog::MessageDialog messageBox;
+    messageBox.setTitle("Exception Caught");
+    messageBox.setMessage( what );
+    messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.show();
+
+    throw ::fwRuntime::RuntimeException( what );
 }
 
 //-----------------------------------------------------------------------------

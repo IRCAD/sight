@@ -1,0 +1,25 @@
+<extension id="BasicFrameConfig" implements="::fwServices::ServiceObjectConfig">
+    <object uid="SELECTED_UID_myImage" src="ref" type="::fwData::Image">
+        <service uid="GENERIC_UID_BasicViewerFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Basic frame config</name>
+                    <minSize width="900" height="600" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="GENERIC_UID_SecondView" start="no" />
+            </registry>
+        </service>
+
+        <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="GENERIC_UID_SecondView" autoComChannel="yes" >
+        </service>
+        
+        <start uid="GENERIC_UID_BasicViewerFrame" />
+        <start uid="GENERIC_UID_SecondView" />
+        <update uid="GENERIC_UID_SecondView"/>
+        <stop uid="GENERIC_UID_SecondView" />
+        <stop uid="GENERIC_UID_BasicViewerFrame" />
+    </object>
+</extension>

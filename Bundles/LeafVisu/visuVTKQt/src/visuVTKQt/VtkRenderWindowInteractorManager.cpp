@@ -43,7 +43,7 @@ VtkRenderWindowInteractorManager::~VtkRenderWindowInteractorManager()
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::fwContainer::sptr _parent )
+void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fwContainer::sptr _parent )
 {
     SLM_ASSERT("Invalid parent.", _parent ) ;
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( _parent );

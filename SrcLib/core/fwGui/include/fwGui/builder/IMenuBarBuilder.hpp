@@ -4,14 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IMenuBarBuilder.hpp
+ * @brief This file defines the interface class  for the menubar builder.
+ *
+ * @author IRCAD (Research and Development Team).
+ */
+
 #ifndef _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 #define _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwMenuBar.hpp"
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -44,7 +51,7 @@ public:
     /**
      * @brief Returns the builded menu bar.
      */
-    FWGUI_API virtual ::fwGui::fwMenuBar::sptr getMenuBar();
+    FWGUI_API virtual ::fwGui::container::fwMenuBar::sptr getMenuBar();
 
     /**
      * @brief Configure the layout before creation.
@@ -56,7 +63,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    FWGUI_API virtual void createMenuBar( ::fwGui::fwContainer::sptr parent ) = 0;
+    FWGUI_API virtual void createMenuBar( ::fwGui::container::fwContainer::sptr parent ) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -67,7 +74,7 @@ public:
 protected:
 
     /// MenuBar.
-    ::fwGui::fwMenuBar::sptr m_menuBar;
+    ::fwGui::container::fwMenuBar::sptr m_menuBar;
 
 };
 

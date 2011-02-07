@@ -21,7 +21,7 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 
 
 #include <fwCore/base.hpp>
@@ -90,10 +90,12 @@ void MaxMeshReaderService::configureWithIHM()
 
     static ::boost::filesystem::path _sDefaultPath("");
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose an 3ds file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("3DS","*.3ds");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );

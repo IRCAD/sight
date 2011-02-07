@@ -18,15 +18,6 @@
 
 namespace fwServices
 {
-
-/**
- * @brief Concerns component based object service basic manipulations
- *
- * \li Mainly consists in the support and add methods (support( ::fwTools::Object::sptr , std::string ) and add( ::fwTools::Object::sptr , std::string , std::string )).
- * \li Helpers have been developped for internal use (should not be used from outside) to analyze the XML based graph provided by component descriptions
- * @note It focuses on find the appropriate component to start (and dynamic libraries to load) before invoking class registry
- * @author IRCAD (Research and Development Team).
- */
 namespace bundle
 {
 

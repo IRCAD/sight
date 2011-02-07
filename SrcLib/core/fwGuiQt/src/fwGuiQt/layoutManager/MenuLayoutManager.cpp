@@ -44,7 +44,7 @@ MenuLayoutManager::~MenuLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
+void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -94,9 +94,18 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
             action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
         }
 
+        if (actionInfo.m_isMenu)
+        {
+            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            QMenu* qtMenu = new QMenu();
+            menu->setQtMenu(qtMenu);
+            action->setMenu(qtMenu);
+            m_menus.push_back(menu);
+        }
+
         menuItem->setQtMenuItem(action);
 
-        if(!actionInfo.m_isSeparator)
+        if(!actionInfo.m_isSeparator && !actionInfo.m_isMenu )
         {
             m_menuItems.push_back(menuItem);
             OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
@@ -121,15 +130,15 @@ void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
 void MenuLayoutManager::destroyLayout()
 {
     QMenu* menu = m_parent->getQtMenu();
-
+    this->destroyActions();
     m_menuItems.clear();
-    menu->clear();
+    m_parent->clean();
 }
 
 //-----------------------------------------------------------------------------
 
 
-void MenuLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void MenuLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -138,7 +147,7 @@ void MenuLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void MenuLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
@@ -147,7 +156,7 @@ void MenuLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();

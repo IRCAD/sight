@@ -91,6 +91,10 @@ public:
 
     fwGettersSettersDocMacro(DbID, i32DbID, boost::int32_t, the database indentifier );
 
+    fwGettersSettersDocMacro(Date, date, std::string, the study date );
+    fwGettersSettersDocMacro(Time, time, std::string, the study time );
+    fwGettersSettersDocMacro(Description, description, std::string, the study description );
+
 protected :
 
 
@@ -111,6 +115,10 @@ protected :
 
     /// Database indentifier
     boost::int32_t  m_i32DbID;
+
+    std::string m_date;
+    std::string m_time;
+    std::string m_description;
 
     // Vector of acquisition (which represents an exam)
     //std::vector< ::fwData::Acquisition::sptr > m_vAcquisitions;

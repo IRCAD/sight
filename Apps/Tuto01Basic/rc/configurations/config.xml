@@ -1,6 +1,7 @@
 <plugin id="tutoBasicConfig">
 
-    <extension id="tutoBasicConfig" implements="::fwTools::Object">
+    <extension id="tutoBasicConfig" implements="::fwServices::ServiceObjectConfig">
+
         <object type="::fwTools::Object">
 
             <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
@@ -18,6 +19,7 @@
             <stop type="::fwGui::IFrameSrv" />
 
         </object>
+        
     </extension>
 
 </plugin>

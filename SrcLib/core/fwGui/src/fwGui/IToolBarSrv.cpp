@@ -7,11 +7,12 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwServices/helper.hpp>
 
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/IToolBarSrv.hpp"
+#include "fwGui/IActionSrv.hpp"
 
 namespace fwGui
 {
@@ -28,9 +29,11 @@ IToolBarSrv::~IToolBarSrv()
 
 void IToolBarSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::ToolBarRegistrar::NewSptr(this->getUUID());
+    m_registrar = ::fwGui::registrar::ToolBarRegistrar::NewSptr(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
+    SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );
+
     if(!vectRegistrar.empty())
     {
         m_registrarConfig = vectRegistrar.at(0);
@@ -39,10 +42,14 @@ void IToolBarSrv::initialize()
 
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+    SLM_ASSERT("Gui section is mandatory.", !vectGui.empty() );
+
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
+        SLM_ASSERT("layout section is mandatory.", !vectLayoutMng.empty() );
+
         if(!vectLayoutMng.empty())
         {
             m_layoutConfig = vectLayoutMng.at(0);
@@ -55,7 +62,7 @@ void IToolBarSrv::initialize()
 
 void IToolBarSrv::create()
 {
-    ::fwGui::fwToolBar::sptr toolBar = m_registrar->getParent();
+    ::fwGui::container::fwToolBar::sptr toolBar = m_registrar->getParent();
     std::vector< ::fwGui::IMenuItemCallback::sptr > callbacks = m_registrar->getCallbacks();
 
     SLM_ASSERT("Parent toolBar is unknown.", toolBar);
@@ -63,6 +70,7 @@ void IToolBarSrv::create()
     m_layoutManager->createLayout(toolBar);
 
     m_registrar->manage(m_layoutManager->getMenuItems());
+    m_registrar->manage(m_layoutManager->getMenus());
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +85,7 @@ void IToolBarSrv::destroy()
 
 void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
@@ -93,7 +101,7 @@ void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 
 void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
@@ -101,7 +109,10 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
     }
     else
     {
-        m_layoutManager->menuItemSetEnabled(menuItem, true);
+        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID ) ;
+        ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
+        m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+//        m_layoutManager->menuItemSetEnabled(menuItem, true);
     }
 }
 
@@ -110,7 +121,7 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
 
 void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     m_layoutManager->menuItemSetChecked(menuItem, isActive);
 
@@ -120,7 +131,7 @@ void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive
 
 void IToolBarSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
 {
-    ::fwGui::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
 
     m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
 

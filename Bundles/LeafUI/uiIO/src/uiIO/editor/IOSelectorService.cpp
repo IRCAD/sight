@@ -17,11 +17,12 @@
 #include <fwTools/Object.hpp>
 
 #include <fwServices/helper.hpp>
+#include <fwServices/bundle/runtime.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwGui/ISelector.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
 #include <fwGui/Cursor.hpp>
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
@@ -36,7 +37,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiIO::editor::IOSelectorService , ::fwTools::Object );
+REGISTER_SERVICE( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwTools::Object );
 
 //------------------------------------------------------------------------------
 
@@ -60,7 +61,6 @@ IOSelectorService::~IOSelectorService()  throw()
 void IOSelectorService::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->initialize();
 
     bool vectorIsAlreadyCleared = false;
 
@@ -103,6 +103,15 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
             m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
             OSLM_DEBUG( "mode => " << mode );
         }
+
+        if( (*iter)->getName() == "config" )
+        {
+            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'id'.", (*iter)->hasAttribute("id")) ;
+            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'service'.", (*iter)->hasAttribute("service")) ;
+            std::string configId = (*iter)->getExistingAttributeValue("id") ;
+            std::string configSrv = (*iter)->getExistingAttributeValue("service") ;
+            m_serviceToConfig[ configSrv ] = configId;
+        }
     }
 
 }
@@ -112,7 +121,6 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
 void IOSelectorService::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->create();
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +128,6 @@ void IOSelectorService::starting() throw( ::fwTools::Failed )
 void IOSelectorService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -190,8 +197,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         bool extensionIdFound = false;
         if ( availableExtensionsSelector.size() > 1 )
         {
-            ::fwGui::ISelector::sptr selector = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ISelector >( ::fwGui::ISelector::REGISTRY_KEY );
-            OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::ISelector::REGISTRY_KEY, selector);
+            ::fwGui::dialog::SelectorDialog::NewSptr selector;
 
             if ( m_mode != READER_MODE )
             {
@@ -225,10 +231,26 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 
         if ( ! extensionSelectionIsCanceled )
         {
+
+            // Get Config
+            bool hasConfigForService = false;
+            ::fwRuntime::ConfigurationElement::sptr srvCfg;
+            if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
+            {
+                hasConfigForService = true;
+                srvCfg = ::fwServices::bundle::findConfigurationForPoint(  m_serviceToConfig[extensionId] , "::fwServices::ServiceConfig" ) ;
+                SLM_ASSERT("Sorry, there is not service configuration of type ::fwServices::ServiceConfig found", srvCfg ) ;
+            }
+
             // Configure and start service
             if ( m_mode == READER_MODE )
             {
                 ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( this->getObject() , extensionId ) ;
+                if ( hasConfigForService )
+                {
+                    reader->setConfiguration( srvCfg );
+                    reader->configure();
+                }
                 reader->start();
                 reader->configureWithIHM();
 
@@ -242,6 +264,11 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             else
             {
                 ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject() , extensionId ) ;
+                if ( hasConfigForService )
+                {
+                    writer->setConfiguration( srvCfg );
+                    writer->configure();
+                }
                 writer->start();
                 writer->configureWithIHM();
 
@@ -259,20 +286,20 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         SLM_WARN("IOSelectorService::load : availableExtensions is empty.");
         if ( m_mode == READER_MODE )
         {
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Reader not found");
             messageBox.setMessage( "Sorry, there are not available readers for this data type." );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
         else // m_mode == WRITER_MODE
         {
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Writer not found");
             messageBox.setMessage( "Sorry, there are not available writers for this data type." );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }

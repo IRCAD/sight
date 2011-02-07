@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IMenuLayoutManager.cpp
+ * @brief This file defines the implementation of the base class for managing a menu.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/foreach.hpp>
 
 #include "fwGui/layoutManager/IMenuLayoutManager.hpp"
@@ -13,7 +21,7 @@ namespace fwGui
 namespace layoutManager
 {
 
-const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "::fwGui::MenuBarLayoutManager";
+const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "::fwGui::MenuLayoutManager";
 
 //-----------------------------------------------------------------------------
 
@@ -100,6 +108,17 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
             info.m_type = SEPARATOR;
             m_actionInfo.push_back( info ) ;
         }
+
+        if( (*iter)->getName() == "menu" )
+        {
+            ActionInfo info;
+            info.m_isMenu = true;
+            if( (*iter)->hasAttribute("name") )
+            {
+                info.m_name = (*iter)->getExistingAttributeValue("name") ;
+            }
+            m_actionInfo.push_back( info ) ;
+        }
     }
 }
 
@@ -107,18 +126,30 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuLayoutManager::destroyActions()
 {
-    BOOST_FOREACH( ::fwGui::fwMenuItem::sptr menuItem, m_menuItems)
+    BOOST_FOREACH( ::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
     {
         menuItem->destroyContainer();
     }
     m_menuItems.clear();
+    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    {
+        menu->destroyContainer();
+    }
+    m_menus.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ::fwGui::fwMenuItem::sptr > IMenuLayoutManager::getMenuItems()
+std::vector< ::fwGui::container::fwMenuItem::sptr > IMenuLayoutManager::getMenuItems()
 {
     return this->m_menuItems;
+}
+
+//-----------------------------------------------------------------------------
+
+std::vector< ::fwGui::container::fwMenu::sptr > IMenuLayoutManager::getMenus()
+{
+    return this->m_menus;
 }
 
 //-----------------------------------------------------------------------------

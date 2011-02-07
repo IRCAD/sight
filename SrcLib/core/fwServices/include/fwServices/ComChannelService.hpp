@@ -167,6 +167,9 @@ private :
     /// Priority of the com channel. By default it is 0.5
     double m_priority;
 
+    // Print some information used in debug mode
+    std::string getInfo();
+
 };
 
 }

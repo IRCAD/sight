@@ -7,7 +7,7 @@
     <requirement id="io" />
 
     <point id="::uiIO::editor::IOSelectorService">
-        <implements>::gui::editor::IEditor</implements>
+        <implements>::gui::editor::IDialogEditor</implements>
         <implements>::fwTools::Object</implements>
     </point>
  

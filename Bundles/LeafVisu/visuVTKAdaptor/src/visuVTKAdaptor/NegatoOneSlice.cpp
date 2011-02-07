@@ -42,10 +42,13 @@ NegatoOneSlice::NegatoOneSlice() throw()
 
     m_imageSource = NULL;
 
+    m_useImageTF = true;
+
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
     addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -62,7 +65,7 @@ vtkObject* NegatoOneSlice::getImageSource()
 {
     if ( !m_imageSource )
     {
-        OSLM_TRACE(this->getUUID() << ": Create ImageSource");
+        OSLM_TRACE(this->getID() << ": Create ImageSource");
         if (!m_imageSourceId.empty())
         {
             m_imageSource = this->getVtkObject(m_imageSourceId);
@@ -96,7 +99,7 @@ void NegatoOneSlice::cleanImageSource()
 
     if (m_imageSliceAdaptor.expired())
     {
-        OSLM_TRACE(this->getUUID() << ": Create ImageSlice Adaptor Service");
+        OSLM_TRACE(this->getID() << ": Create ImageSlice Adaptor Service");
         ::fwData::Image::sptr image;
         ::fwData::Composite::sptr sceneComposite;
 
@@ -111,6 +114,7 @@ void NegatoOneSlice::cleanImageSource()
         imageSliceAdaptor->setRenderId( this->getRenderId() );
         imageSliceAdaptor->setPickerId( this->getPickerId() );
         imageSliceAdaptor->setTransformId( this->getTransformId() );
+
 
         ::visuVTKAdaptor::ImageSlice::sptr ISA;
         ISA = ::visuVTKAdaptor::ImageSlice::dynamicCast(imageSliceAdaptor);
@@ -137,7 +141,7 @@ void NegatoOneSlice::cleanImageSource()
 
     if (m_imageAdaptor.expired())
     {
-        OSLM_TRACE(this->getUUID() << ": Create Image Adaptor Service");
+        OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image;
         image = this->getObject< ::fwData::Image >();
         imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
@@ -149,6 +153,7 @@ void NegatoOneSlice::cleanImageSource()
         imageAdaptor->setPickerId( this->getPickerId() );
         imageAdaptor->setTransformId( this->getTransformId() );
 
+        ::visuVTKAdaptor::Image::dynamicCast( imageAdaptor )->setUseImageTF( m_useImageTF );
 
         ::visuVTKAdaptor::Image::sptr IA;
         IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
@@ -209,9 +214,31 @@ void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->doStop();
-    this->doStart();
-    this->doUpdate();
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
+    {
+        ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+
+        int fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] )->value();
+        int toSliceType =   ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] )->value();
+
+        if( toSliceType == static_cast<int>(m_orientation) )
+        {
+            setOrientation( static_cast< Orientation >( fromSliceType ));
+        }
+        else if(fromSliceType == static_cast<int>(m_orientation))
+        {
+            setOrientation( static_cast< Orientation >( toSliceType ));
+        }
+    }
+    else
+    {
+        this->doStop();
+        this->doStart();
+        this->doUpdate();
+    }
 }
 
 //------------------------------------------------------------------------------

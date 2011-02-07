@@ -6,16 +6,14 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwData/Composite.hpp>
+#include <fwServices/ConfigTemplateManager.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
 #include "gui/export.hpp"
 
-
 namespace gui
 {
-
 namespace action
 {
 
@@ -39,6 +37,7 @@ public :
     GUI_API virtual ~ConfigActionSrv() throw() ;
 
 protected:
+
 
     ///This method launches the IAction::starting method.
     virtual void starting() throw(::fwTools::Failed);
@@ -68,53 +67,44 @@ protected:
      * @verbatim
        <service implementation="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
            <config id="IdOfExtension" />
+           <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
        </service>
         @endverbatim
+      * It MUST have at least one replace node.
       */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
-
-private:
-
-    /// adapt the configuration : replace "GENERIC_UID" with a good uid.
-    ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem );
-
-    std::string completeValue( std::string _str );
-
-    /// Get the object service configuration given by the service config
-    ::fwRuntime::ConfigurationElement::sptr getServiceObjectConfig();
-
     /**
      * @brief Read the configuration and show the parameters view.
      */
-    void startConfig();
+    virtual void startConfig();
 
     /**
      * @brief Close the parameters view.
      */
-    void stopConfig();
+    virtual void stopConfig();
 
     /**
-     * @brief Initialize the operator service and ProcessObject. Fill the parameters composite used in the view.
+     * @brief Add GENERIC_UID to field to adapt.
      */
-    //void initOperator( std::string implementation );
+    void AddGenericUidToFieldApadtor();
 
-    /**
-     * @brief Execute the operator
-     */
-    //void processOperator();
-
-    ::fwRuntime::ConfigurationElement::sptr m_createdConfiguration;
-
-    //::fwData::ProcessObject::sptr m_po;
-    ::fwTools::Object::sptr m_object;
-
-    //std::string m_operatorImplementation;
 
     /// Id of plugin extension where the configuration is defined.
     std::string m_viewConfigId;
+
+    /// to know if config is running
+    bool m_configIsRunning;
+
+    // config manager
+    ::fwServices::ConfigTemplateManager::sptr m_configTemplateManager;
+    /**
+     * @brief keep the association between the PATTERN and the associated key  as fieldAdaptors[PATTERN] = AssociatedKey.
+     */
+    std::map< std::string, std::string > m_fieldAdaptors;
+
 };
 
 } //action

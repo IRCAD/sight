@@ -12,7 +12,6 @@
 #include "fwGui/ICursor.hpp"
 #include "fwGui/config.hpp"
 
-
 namespace fwGui
 {
 

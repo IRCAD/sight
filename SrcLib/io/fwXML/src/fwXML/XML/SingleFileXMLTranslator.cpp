@@ -47,7 +47,7 @@ void SingleFileXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdat
     //get its label
     ::fwData::location::SingleFile *path=dynamic_cast< ::fwData::location::SingleFile *>(toUpdate.get());
     assert( path );
-    std::string spath = (const char*)xmlNodeGetContent(source) ;
+    std::string spath = XMLParser::getTextValue(source);
     path->setPath( ::boost::filesystem::path( spath) );
 }
 

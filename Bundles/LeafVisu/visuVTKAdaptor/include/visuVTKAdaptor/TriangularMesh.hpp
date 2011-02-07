@@ -11,20 +11,23 @@
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
 
 class vtkCommand;
 class vtkDepthSortPolyData;
+class vtkAlgorithm;
 class vtkAlgorithmOutput;
 class vtkPolyDataNormals;
 class vtkPlaneCollection;
 class vtkActorCollection;
 class vtkActor;
 class vtkPolyData;
+class vtkPolyDataMapper;
+class vtkTransform;
 
 namespace visuVTKAdaptor
 {
 
+class Transform;
 
 class VISUVTKADAPTOR_CLASS_API TriangularMeshVtkCommand ;
 
@@ -55,16 +58,13 @@ public:
     VISUVTKADAPTOR_API vtkAlgorithmOutput *getMapperInput      ( );
     VISUVTKADAPTOR_API void setActorPropertyToUnclippedMaterial( bool opt );
 
+    /// Active/Inactive automatic reset on camera. By default =true.
+    VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
+
     VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
     VISUVTKADAPTOR_API bool getVisibility();
 
     VISUVTKADAPTOR_API void updateOptionsMode();
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-    VISUVTKADAPTOR_API vtkDepthSortPolyData * getDepthSort();
-    VISUVTKADAPTOR_API void updateDepthSort               ();
-    VISUVTKADAPTOR_API void removeDepthSortCommand        ();
-#endif
 
 protected:
 
@@ -80,6 +80,7 @@ protected:
     void buildPipeline();
 
 
+    void updateMapper();
     void updateTriangularMesh ( ::fwData::TriangularMesh::sptr mesh );
     void updateMaterial       ( ::fwData::Material::sptr material   );
 
@@ -103,7 +104,13 @@ protected:
     bool   m_manageMapperInput;
     bool   m_autoResetCamera;
 
+    bool m_computeNormals;
+    bool m_computeNormalsAtUpdate;
+
+    vtkAlgorithm       *m_pipelineInput;
     vtkAlgorithmOutput *m_mapperInput;
+    vtkPolyData        *m_polyData;
+    vtkPolyDataMapper  *m_mapper;
     vtkPolyDataNormals *m_normals;
     vtkActor           *m_actor;
     vtkCommand         *m_depthSortCommand;
@@ -124,13 +131,8 @@ protected:
     ::fwRenderVTK::IVtkAdaptorService::wptr m_unclippedPartMaterialService;
     ::fwRenderVTK::IVtkAdaptorService::wptr m_normalsService;
 
-
-#ifndef USE_DEPTH_PEELING // replacement for depth peeling
-    bool hasAlpha();
-
-    vtkDepthSortPolyData *m_depthSort;
-    bool m_hasAlpha;
-#endif
+    vtkTransform* m_transform;
+    WPTR(::visuVTKAdaptor::Transform) m_transformService;
 
 public :
 

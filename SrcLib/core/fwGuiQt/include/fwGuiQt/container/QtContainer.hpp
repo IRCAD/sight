@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 
-#include <fwGui/fwContainer.hpp>
+#include <fwGui/container/fwContainer.hpp>
 
 #include "fwGuiQt/config.hpp"
 
@@ -34,12 +34,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUIQT_CLASS_API QtContainer : public ::fwGui::fwContainer
+class FWGUIQT_CLASS_API QtContainer : public ::fwGui::container::fwContainer
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtContainer)(::fwGui::fwContainer), (()), new QtContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtContainer)(::fwGui::container::fwContainer), (()), new QtContainer );
 
     /**
      * @brief   Constructor.
@@ -59,6 +59,7 @@ public:
     FWGUIQT_API virtual QWidget* getQtContainer();
     FWGUIQT_API virtual bool isShownOnScreen();
 
+    FWGUIQT_API virtual void setVisible(bool isVisible);
 
 private :
 

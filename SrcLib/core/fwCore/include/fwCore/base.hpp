@@ -16,5 +16,6 @@
 #include <fwCore/BaseObject.hpp>
 #include <fwCore/macros.hpp>
 #include <fwCore/spyLog.hpp>
+#include <fwCore/exceptionmacros.hpp>
 
 //#endif //__FWCORE_BASE_HPP

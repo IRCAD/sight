@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/LineLayoutManagerBase.cpp
+ * @brief This file defines the implementation of the class for managing a line layout geometry.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -80,6 +88,15 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
         {
             std::string height = view->getExistingAttributeValue("minHeight") ;
             vi.m_minSize.second = ::boost::lexical_cast< int >(height) ;
+        }
+
+        if( view->hasAttribute("visible") )
+        {
+            std::string visible = view->getExistingAttributeValue("visible") ;
+            OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                    (visible == "true") || (visible == "false") ||
+                    (visible == "yes") || (visible == "no"));
+            vi.m_visible = ((visible == "true") || (visible == "yes"));
         }
         m_views.push_back(vi);
     }

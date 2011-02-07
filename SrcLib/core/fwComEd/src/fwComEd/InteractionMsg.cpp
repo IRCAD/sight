@@ -34,6 +34,7 @@ std::string InteractionMsg::MOUSE_MOVE               = "MOUSE_MOVE";
 InteractionMsg::InteractionMsg() throw()
 {
     m_eventPoint = ::fwData::Point::New();
+    m_modifiersStatus = NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -56,17 +57,17 @@ void InteractionMsg::setModifiersStatus(Modifiers k, bool state)
 {
     if (state)
     {
-        m_modifiersStatus = static_cast<Modifiers>(m_modifiersStatus | k);
+        m_modifiersStatus = static_cast<unsigned char>(m_modifiersStatus | k);
     }
     else
     {
-        m_modifiersStatus = static_cast<Modifiers>( m_modifiersStatus & (std::numeric_limits<Modifiers>::max() - k));
+        m_modifiersStatus = static_cast<unsigned char>( m_modifiersStatus & (std::numeric_limits<unsigned char>::max() - k));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool InteractionMsg::getModifiersStatus(Modifiers k)
+bool InteractionMsg::getModifiersStatus(Modifiers k) const
 {
     return m_modifiersStatus & k;
 }

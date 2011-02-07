@@ -19,11 +19,11 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/MessageDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
-#include <fwGui/ProgressDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <vtkIO/ReconstructionWriter.hpp>
 
 #include "ioVTK/ReconstructionWriterService.hpp"
@@ -66,11 +66,11 @@ void ReconstructionWriterService::configureWithIHM()
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath("");
 
-    ::fwGui::LocationDialog dialogFile;
+    ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose an obj file to save an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Obj","*.obj");
-    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -115,7 +115,7 @@ void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem:
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Saving Reconstructions ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Reconstructions ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
 
@@ -125,11 +125,11 @@ void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem:
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     catch( ... )
@@ -137,11 +137,11 @@ void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem:
         std::stringstream ss;
         ss << "Warning during loading. ";
 
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }

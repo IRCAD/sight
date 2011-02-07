@@ -1,11 +1,11 @@
 ﻿<plugin id="TutoConfigurations">
-<extension id="tutoDataServiceConfig" implements="::fwData::TriangularMesh">
+<extension id="tutoDataServiceConfig" implements="::fwServices::ServiceObjectConfig">
 
     <!-- The root data object in tutoDataService is a ::fwData::TriangularMesh. -->
     <object type="::fwData::TriangularMesh">
 
 
-        <!-- Graphical user interface manager. The identifier (id) of the container is 900, it's a wxWidgets id.
+        <!-- Graphical user interface manager.
         In the tag <menus> we specify the identifiers of different services for the different menus.
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
@@ -69,19 +69,19 @@
         <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
 
 
-        <!-- The service ::gui::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::StarterActionService. 
-        Indeed, the uid of the service ::gui::editor::IOSelectorService is the same as the uid 
+        <!-- The service ::uiIO::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::StarterActionService. 
+        Indeed, the uid of the service ::uiIO::editor::IOSelectorService is the same as the uid 
         defined in the service configuration ::gui::action::StarterActionService ( "myReaderPathFile").
         This service lists all services available to read a data TriangularMesh and
         it displays a dialog box to select the appropriate service.
         (Note: 
               if there is only one reading service, it's directly selected without dialog box.)
         When the service was chosen, it is started by the ::uiIO::editor::IOSelectorService service. -->
-        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor"  autoComChannel="no" />
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" />
 
         <!-- This service (::vtkSimpleMesh::RendererService) is a 3D visualization service of medical meshes. -->
         <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" >
-            <win guiContainerId="900"/>
+            <!--<win guiContainerId="900"/>-->
         </service>
 
         <start type="::fwGui::IFrameSrv" />

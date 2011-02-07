@@ -12,6 +12,9 @@
 
 namespace fwRuntime
 {
+
+//------------------------------------------------------------------------------
+
 std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_ptr< ::fwRuntime::io::Validator > _validator , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _element )
 {
     assert( _validator ) ;
@@ -39,6 +42,8 @@ std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_pt
     xmlFreeDoc( xmlDoc );
     return validationResult ;
 }
+
+//------------------------------------------------------------------------------
 
 void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr pNode)
 {
@@ -68,6 +73,7 @@ void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationEle
 
 }
 
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ConfigurationElement > getCfgAsAnExtension( ::boost::shared_ptr< ConfigurationElement > _config , std::string _extension_pt )
 {
@@ -77,9 +83,7 @@ void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationEle
         std::vector< ::boost::shared_ptr< ConfigurationElement > > cfgs = ::fwRuntime::getAllCfgForPoint( _extension_pt  ) ;
         if( cfgs.empty() )
         {
-            std::stringstream msg;
-            msg << "No configuration contribution found for extension point " << _extension_pt ;
-            OSLM_FATAL( msg.str() );
+            OSLM_FATAL( "No configuration contribution found for extension point " <<  _extension_pt);
             return ::boost::shared_ptr< ConfigurationElement >() ;
         }
 
@@ -109,22 +113,19 @@ void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationEle
             return  *matchingCfg.begin() ;
         }
         // If no contribution found
-        std::stringstream msg;
-        msg << "No contribution matching the requested requirement (" << cfgContribution << " for extension point " << _extension_pt << " )" ;
-        OSLM_FATAL( msg.str() );
-        assert(false) ;
+        OSLM_FATAL( "No contribution matching the requested requirement (" << cfgContribution << " for extension point " << _extension_pt << " )" );
         return ::boost::shared_ptr< ConfigurationElement >() ;
     }
     else
     {
-        std::stringstream msg;
-        msg << "Configuration has no config attribute";
-        OSLM_WARN( msg.str() );
+        OSLM_WARN("Configuration has no config attribute" );
         return ::boost::shared_ptr< ConfigurationElement >() ;
     }
     assert(false) ;
     return ::boost::shared_ptr< ConfigurationElement >() ;
 }
+
+//------------------------------------------------------------------------------
 
 std::vector< ::boost::shared_ptr< ConfigurationElement > > getAllCfgForPoint( std::string _extension_pt )
 {
@@ -141,6 +142,8 @@ std::vector< ::boost::shared_ptr< ConfigurationElement > > getAllCfgForPoint( st
     ::fwRuntime::getAllConfigurationElementsForPoint(_extension_pt, renderInserter);
     return renderElements ;
 }
+
+//------------------------------------------------------------------------------
 
 std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
 {
@@ -166,6 +169,7 @@ std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
     return ids ;
 }
 
+//------------------------------------------------------------------------------
 
 std::string getInfoForPoint( std::string _extension_pt  )
 {
@@ -197,6 +201,8 @@ std::string getInfoForPoint( std::string _extension_pt  )
     return "" ;
 }
 
+//------------------------------------------------------------------------------
+
 std::map< std::string , ::boost::shared_ptr< ConfigurationElement > > getAllIdAndConfigurationElementsForPoint( std::string _extension_pt )
 {
     std::map<std::string, ::boost::shared_ptr< ConfigurationElement > > cfgElementMap ;
@@ -219,5 +225,7 @@ std::map< std::string , ::boost::shared_ptr< ConfigurationElement > > getAllIdAn
     }
     return cfgElementMap ;
 }
+
+//------------------------------------------------------------------------------
 
 }

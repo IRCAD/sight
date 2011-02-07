@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IMenuBarBuilder.cpp
+ * @brief This file defines the implementation of the interface class  for the menubar builder.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #include <boost/foreach.hpp>
 
 #include "fwGui/builder/IMenuBarBuilder.hpp"
@@ -34,7 +42,7 @@ void IMenuBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 
 //-----------------------------------------------------------------------------
 
-::fwGui::fwMenuBar::sptr IMenuBarBuilder::getMenuBar()
+::fwGui::container::fwMenuBar::sptr IMenuBarBuilder::getMenuBar()
 {
     return this->m_menuBar;
 }

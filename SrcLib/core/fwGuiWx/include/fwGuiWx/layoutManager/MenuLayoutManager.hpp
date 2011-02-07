@@ -10,7 +10,7 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwGui/fwMenu.hpp>
+#include <fwGui/container/fwMenu.hpp>
 #include <fwGui/layoutManager/IMenuLayoutManager.hpp>
 
 #include "fwGuiWx/container/WxMenuContainer.hpp"
@@ -44,7 +44,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menu must be instanced.
      */
-    FWGUIWX_API virtual void createLayout( ::fwGui::fwMenu::sptr parent );
+    FWGUIWX_API virtual void createLayout( ::fwGui::container::fwMenu::sptr parent );
 
     /**
      * @brief Destroy local menus.
@@ -56,24 +56,24 @@ public:
     /**
      * @brief Set the action visibility.
      */
-    FWGUIWX_API virtual void menuItemSetVisible(::fwGui::fwMenuItem::sptr menuItem, bool isVisible);
+    FWGUIWX_API virtual void menuItemSetVisible(::fwGui::container::fwMenuItem::sptr menuItem, bool isVisible);
 
     /**
      * @brief Set the action enable or not.
      */
-    FWGUIWX_API virtual void menuItemSetEnabled(::fwGui::fwMenuItem::sptr menuItem, bool isEnabled);
+    FWGUIWX_API virtual void menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr menuItem, bool isEnabled);
 
     /**
      * @brief Set the action checked or not.
      */
-    FWGUIWX_API virtual void menuItemSetChecked(::fwGui::fwMenuItem::sptr, bool isChecked);
+    FWGUIWX_API virtual void menuItemSetChecked(::fwGui::container::fwMenuItem::sptr, bool isChecked);
 
 protected:
 
     ::fwGuiWx::container::WxMenuContainer::sptr m_parent;
 
     /// Vector of separators
-    std::vector< ::fwGui::fwMenuItem::sptr > m_separators;
+    std::vector< ::fwGui::container::fwMenuItem::sptr > m_separators;
 
     static const std::map< ::fwGui::layoutManager::IMenuLayoutManager::ActionType, int> SPECIAL_ACTION_TO_WXID;
 };

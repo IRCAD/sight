@@ -10,15 +10,14 @@
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwToolBar.hpp"
-#include "fwGui/fwMenuBar.hpp"
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 
 namespace fwGui
 {
-
 namespace registrar
 {
 
@@ -42,10 +41,52 @@ public:
     /// Destructor. Do nothing
     FWGUI_API virtual ~ViewRegistrar();
 
-    FWGUI_API virtual ::fwGui::fwContainer::sptr getParent();
+    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getParent();
+
+    FWGUI_API virtual void setParent(std::string wid);
 
     /**
-     * @brief Configure views managed.
+     * @brief Initialize managers.
+     *
+     * Example of configuration
+     * @verbatim
+        <service uid="subView1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view caption="view3" />
+                    <view caption="view4" />
+                    <view caption="view5" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="myView" />
+                <toolBar sid="toolbar1" start="yes" />
+                <view sid="subView3" start="yes" />
+                <view wid="subView4" />
+            </registry>
+        </service>
+      @endverbatim
+     * - <parent wid="myView" /> : This section isn't mandatory. When the parent section is present, the wid attribute is used to find its parent container.
+     * Otherwise, the service uid is used to find its parent container.
+     * - <toolBar sid="toolbar1" start="yes" /> : This section isn't mandatory.
+     *   - \b sid  (mandatory): the tool bar identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the tool bar service must be started by the service.
+     * - <menuBar sid="menubar1" start="yes" /> : This section isn't mandatory.
+     *   - \b sid  (mandatory): the menu bar identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the menu bar service must be started by the service.
+     * - <view sid="subView3" start="yes" /> : define the service of the view to add in the container.
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the view service must be started by the service.
+     * - <view wid="subView4" /> : reserve a sub container for the view in the parent container with the name "subView4". The service which want to use this sub container
+     *   will have define a parent with <parent wid="subView4" />.
+     *   - \b wid  (mandatory): the window identifier.
+     *   @warning
+     *   - The number of view item in the gui section must be equal or greater than in the registry section.
+     *   - The order of the menu in each section (gui and registry) must be the same.\n
+     *  For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It could also be a wid).
+     *
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
@@ -56,25 +97,39 @@ public:
      * @pre ViewRegistrar must be initialized before.
      * @pre sub containers must be instanced before.
      */
-    FWGUI_API virtual void manage(std::vector< ::fwGui::fwContainer::sptr > subViews );
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwContainer::sptr > subViews );
 
     /**
      * @brief Register menu bar.
      * If start="yes" in configuration the menu bar services will be started.
      */
-    FWGUI_API virtual void manageMenuBar(::fwGui::fwMenuBar::sptr menuBar );
+    FWGUI_API virtual void manageMenuBar(::fwGui::container::fwMenuBar::sptr menuBar );
 
     /**
      * @brief Register tool bar.
      * If start="yes" in configuration the tool bar services will be started.
      */
-    FWGUI_API virtual void manageToolBar(::fwGui::fwToolBar::sptr toolBar );
+    FWGUI_API virtual void manageToolBar(::fwGui::container::fwToolBar::sptr toolBar );
 
     /**
      * @brief Stopping view manager.
      * All services managed in local subViews will be stopped.
      */
     FWGUI_API virtual void unmanage();
+
+    /**
+     * @brief Stopping view manager.
+     * ToolBar service will be stopped.
+     */
+    FWGUI_API virtual void unmanageToolBar();
+
+    /**
+     * @brief Stopping view manager.
+     * MenuBar service will be stopped.
+     */
+    FWGUI_API virtual void unmanageMenuBar();
+
+
 
 protected:
 
@@ -100,7 +155,7 @@ protected:
     SIDToolBarPairType m_toolBarSid;
 
     std::string m_parentWid;
-    ::fwGui::fwContainer::sptr m_parentContainer;
+    ::fwGui::container::fwContainer::sptr m_parentContainer;
 
     /// Main service ID associate with this ViewRegistrar
     std::string m_sid;

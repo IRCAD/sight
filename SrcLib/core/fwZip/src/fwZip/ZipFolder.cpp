@@ -4,6 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
+
 #include <fwCore/base.hpp>
 
 #include "microzip/Unzipper.hpp"
@@ -20,10 +24,27 @@ bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, co
     // folder '_srcFolderName' must not be present in the archive,
     // so this folder is the root of the archive
     bool bRes = false;
+    int compressLevel = Z_DEFAULT_COMPRESSION;
     ::microzip::Zipper zip;
     if (zip.OpenZip(_destZipFileName, _srcFolderName))
     {
-        bRes = zip.AddFolderToZip(_srcFolderName);
+        for( ::boost::filesystem::recursive_directory_iterator it(_srcFolderName);
+                it != ::boost::filesystem::recursive_directory_iterator(); ++it)
+        {
+            if(! ::boost::filesystem::is_directory(*it))
+            {
+                if( ::boost::ends_with(it->string(), ".inr.gz") ||
+                        ::boost::ends_with(it->string(), ".vtk") )
+                {
+                    compressLevel = Z_NO_COMPRESSION;
+                }
+                else
+                {
+                    compressLevel = Z_DEFAULT_COMPRESSION;
+                }
+                bRes &= zip.AddFileToZip(*it, false, compressLevel);
+            }
+        }
     }
     return bRes;
 }

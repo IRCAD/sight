@@ -21,7 +21,7 @@ namespace fwXML
 {
 
 /**
- * @brief the Pupose of this class is to manage the sml spliiting in several parts
+ * @brief the Purpose of this class is to manage the xml splitting in several parts
  * @author IRCAD (Research and Development Team).
  */
 class FWXML_CLASS_API XMLPartitioner : public ::fwCore::BaseObject
@@ -30,7 +30,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (XMLPartitioner)(::fwCore::BaseObject), (()), new XMLPartitioner );
 
-    // WINSUX
     FWXML_API static ::boost::shared_ptr< XMLPartitioner > getDefault()
     {
         if ( m_ClassInstance.get() == NULL )

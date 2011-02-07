@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/TabLayoutManagerBase.hpp
+ * @brief This file defines the interface of the class for managing a tab layout geometry.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP_
 #define _FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP_
 
@@ -17,7 +25,6 @@
 
 namespace fwGui
 {
-
 namespace layoutManager
 {
 
@@ -57,8 +64,33 @@ public:
     FWGUI_API virtual ~TabLayoutManagerBase();
 
     /**
-     * @brief Configure the layout before creation.
-     */
+     * @brief Initialize tab layout manager before the creation of layout.
+     *
+     * Example of configuration with Tab layout.
+     * @verbatim
+       <service uid="subView3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+           <gui>
+               <layout type="::fwGui::TabLayoutManager" >
+                   <view caption="TabView1" />
+                   <view caption="TabView2" selected="yes" />
+                   <view caption="TabView3"  />
+               </layout>
+           </gui>
+           <registry>
+               <view sid="view1" start="yes" />
+               <view sid="view2" start="yes" />
+               <view sid="view3" start="yes" />
+           </registry>
+       </service>
+      @endverbatim
+    *  - <layout type="::fwGui::TabLayoutManager" > : define a tab layout.
+    *  - <view caption="TabView1" selected="center" /> : define a new view which can have the following attributes
+    *   - \b caption : name of the view (display on the screen).
+    *   - \b selected  {yes | no}: define if the tab is the current one.
+    * \note
+    *   - The registry section can be empty. In this case none service use this zone
+    */
+
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;

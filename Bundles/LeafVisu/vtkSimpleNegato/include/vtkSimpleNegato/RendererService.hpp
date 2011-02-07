@@ -103,6 +103,7 @@ private :
     */
     void initVTKPipeline();
 
+    void refresh();
     /**
     * @brief VTK pipeline updating method.
     *

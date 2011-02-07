@@ -1,5 +1,5 @@
 ﻿<plugin id="TutoConfigurations">
-<extension id="tutoComChannelConfig" implements="::fwData::TriangularMesh">
+<extension id="tutoComChannelConfig" implements="::fwServices::ServiceObjectConfig">
 
     <!-- In tutoComChannel, the main data object type is ::fwData::TriangularMesh.-->
     <object type="::fwData::TriangularMesh">
@@ -70,7 +70,7 @@
 
 
 
-        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" autoComChannel="no" >
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" >
             <type mode="reader"/>
         </service>
 

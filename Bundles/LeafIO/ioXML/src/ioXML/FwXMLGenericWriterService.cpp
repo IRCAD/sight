@@ -22,11 +22,11 @@
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
 
-#include <fwGui/ProgressDialog.hpp>
-#include <fwGui/LocationDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwZip/ZipFolder.hpp>
 
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include "ioXML/FwXMLGenericWriterService.hpp"
@@ -39,6 +39,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwTools
 //------------------------------------------------------------------------------
 
 FwXMLGenericWriterService::FwXMLGenericWriterService() throw()
+                : m_archiveExtenstion (".fxz")
 {}
 
 //------------------------------------------------------------------------------
@@ -51,6 +52,14 @@ FwXMLGenericWriterService::~FwXMLGenericWriterService() throw()
 void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
     m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
+
+    if( this->m_configuration->size() > 0 )
+    {
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
+        SLM_ASSERT("Sorry, only one xml element \"archiveExtension\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "archiveExtension" );
+        SLM_ASSERT("Sorry, only xml element \"archiveExtension\" is empty.", ! (*iter)->getValue().empty() );
+        m_archiveExtenstion =  (*iter)->getValue();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -60,12 +69,16 @@ void FwXMLGenericWriterService::configureWithIHM()
 
     static ::boost::filesystem::path _sDefaultPath;
 
-    ::fwGui::LocationDialog dialogFile;
-    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    ::fwGui::dialog::LocationDialog dialogFile;
+    std::stringstream sstrTitle;
+    sstrTitle << "Choose a " << m_archiveExtenstion.substr(1,m_archiveExtenstion.size()-1) << " or a xml file";
+    dialogFile.setTitle( sstrTitle.str() );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("fwXML archive","*.fxz");
+    std::stringstream archExt;
+    archExt << "*" << m_archiveExtenstion;
+    dialogFile.addFilter("fwXML compressed archive", archExt.str() );
     dialogFile.addFilter("fwXML archive","*.xml");
-    dialogFile.setOption(::fwGui::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -74,6 +87,18 @@ void FwXMLGenericWriterService::configureWithIHM()
         _sDefaultPath = result->getPath();
         m_writer.setFile( result->getPath() );
     }
+    else
+    {
+        ::boost::filesystem::path emptyPath;
+        m_writer.setFile(emptyPath);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void FwXMLGenericWriterService::setArchiveExtension( const std::string & _archiveExtenstion )
+{
+    m_archiveExtenstion = _archiveExtenstion;
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +148,7 @@ void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, 
 
     try
     {
-        ::fwGui::ProgressDialog progressMeterGUI("Saving data ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving data ");
         myWriter.addHandler( progressMeterGUI );
         myWriter.write();
     }
@@ -131,24 +156,24 @@ void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, 
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading : ";
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -186,9 +211,9 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
 ::boost::filesystem::path FwXMLGenericWriterService::correctFileFormat( const ::boost::filesystem::path _filePath ) const
 {
     ::boost::filesystem::path newPath = _filePath;
-    if ( ::boost::filesystem::extension(_filePath) != ".fxz" && ::boost::filesystem::extension(_filePath) != ".xml" )
+    if ( ::boost::filesystem::extension(_filePath) != m_archiveExtenstion && ::boost::filesystem::extension(_filePath) != ".xml" )
     {
-        newPath = _filePath.string() + ".fxz";
+        newPath = _filePath.string() + m_archiveExtenstion;
     }
 
     return newPath;
@@ -198,7 +223,7 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
 
 bool FwXMLGenericWriterService::isAnFwxmlArchive( const ::boost::filesystem::path filePath )
 {
-    return ( ::boost::filesystem::extension(filePath) == ".fxz" );
+    return ( ::boost::filesystem::extension(filePath) == m_archiveExtenstion );
 }
 
 //------------------------------------------------------------------------------

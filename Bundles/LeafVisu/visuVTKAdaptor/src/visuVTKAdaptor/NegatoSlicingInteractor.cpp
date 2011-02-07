@@ -204,7 +204,6 @@ public:
                 m_adaptor->pushSlice(-1, m_adaptor->getOrientation());
             }
         }
-
     }
 
     void setAdaptor( NegatoSlicingInteractor::sptr adaptor)
@@ -332,20 +331,20 @@ void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
     int index[3];
     this->worldToImageSliceIndex(pickedPoint, index);
 
-    //if (index[m_orientation] != sliceIndex[m_orientation]->value())
-    //{
-        int i;
-        for (i=0; i<3; i++)
+    int i;
+    for (i=0; i<3; i++)
+    {
+        if (index[i] == sliceIndex[i]->value())
         {
-            if (index[i] == sliceIndex[i]->value())
-            {
-                this->setOrientation((Orientation)i);
-                break;
-            }
+            this->setOrientation((Orientation)i);
+            break;
         }
-        SLM_ASSERT( "unknown orientation", i != 3 );
-    //}
-   this->updateSlicing(pickedPoint);
+    }
+    SLM_INFO_IF( "unknown orientation", i == 3 );
+    if(i != 3)
+    {
+        this->updateSlicing(pickedPoint);
+    }
 }
 
 //-----------------------------------------------------------------------------

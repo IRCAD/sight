@@ -11,7 +11,6 @@
     <activate id="gui" version="0-1"/>
     <activate id="guiWx" version="0-1">
         <param id="startingMode" value="windows" />
-        <param id="rootObject" value="::fwData::Composite" />
         <param id="configFile" value="./Bundles/Tuto05Mesher_0-1/configurations/config.xml" />
         <param id="config" value="MesherConfig" />
     </activate>

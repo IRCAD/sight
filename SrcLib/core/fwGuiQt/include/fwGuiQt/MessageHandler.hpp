@@ -8,6 +8,8 @@
 #define FWGUIQT_MESSAGEHANDLER_HPP_
 
 #include <QObject>
+#include <QAbstractEventDispatcher>
+#include <QPointer>
 
 #include <fwCore/base.hpp>
 #include <fwServices/IDeliveryDelegate.hpp>
@@ -20,9 +22,7 @@ QT_BEGIN_NAMESPACE
 class QEvent;
 QT_END_NAMESPACE
 
-
-
-namespace fwGuiQt
+namespace fwGui
 {
 
 /**
@@ -61,8 +61,13 @@ protected:
 
 private:
 
+    bool m_processingEvent;
+    unsigned int m_filteredMessagesCount;
+
     SPTR(::fwServices::GlobalEventManager)         m_msgHandler;
     ::fwServices::GlobalEventManager::DeliveryType m_oldDeliveryType;
+
+    QPointer<QAbstractEventDispatcher> m_qtDispatcher;
 
     static int s_qtMessageHandlerEventType;
 };

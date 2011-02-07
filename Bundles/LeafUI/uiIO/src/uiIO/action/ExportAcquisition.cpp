@@ -7,7 +7,7 @@
 #include <fwData/PatientDB.hpp>
 #include <fwData/Image.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <gui/editor/IDialogEditor.hpp>
 
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
 
@@ -17,7 +17,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/bundle/runtime.hpp>
 
-#include <fwGui/MessageDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include "uiIO/action/ExportAcquisition.hpp"
 
@@ -94,12 +94,12 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
         if(!pAcquisition)
         {
             std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not selected patients in the software.";
-            ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-            ::fwGui::MessageDialog messageBox;
+            ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+            ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Acquisition export");
             messageBox.setMessage( msgInfo );
-            messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::IMessageDialog::OK);
+            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
         else
@@ -109,8 +109,8 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
             SLM_ASSERT("Sorry, there is not service configuration of type ::uiIO::editor::IOSelectorServiceConfig found", ioCfg ) ;
 
             // Init and execute the service
-            ::gui::editor::IEditor::sptr pIOSelectorSrv =
-                    ::fwServices::add< ::gui::editor::IEditor >( pAcquisition, "::uiIO::editor::IOSelectorService" );
+            ::gui::editor::IDialogEditor::sptr pIOSelectorSrv =
+                    ::fwServices::add< ::gui::editor::IDialogEditor >( pAcquisition, "::uiIO::editor::IOSelectorService" );
             pIOSelectorSrv->setConfiguration( ioCfg ) ;
             pIOSelectorSrv->configure() ;
             pIOSelectorSrv->start();
@@ -123,12 +123,12 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
     {
 
         std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not loaded patients in the software.";
-        ::fwGui::IMessageDialog::Icons icon = ::fwGui::IMessageDialog::WARNING;
-        ::fwGui::MessageDialog messageBox;
+        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
+        ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Image export");
         messageBox.setMessage( msgInfo );
-        messageBox.setIcon(::fwGui::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::IMessageDialog::OK);
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }

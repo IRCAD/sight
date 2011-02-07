@@ -31,12 +31,6 @@ struct ConfigurationElement;
 struct Extension;
 struct ExtensionPoint;
 
-/**
- * @namespace   ::fwRuntime::io
- * @brief       Namespace ::fwRuntime::io
- * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
- */
 namespace io
 {
 

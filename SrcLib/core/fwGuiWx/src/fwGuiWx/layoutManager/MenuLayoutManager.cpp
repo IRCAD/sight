@@ -52,7 +52,7 @@ MenuLayoutManager::~MenuLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::createLayout( ::fwGui::fwMenu::sptr parent )
+void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 {
     SLM_TRACE_FUNC();
 
@@ -128,19 +128,20 @@ void MenuLayoutManager::destroyLayout()
 {
     wxMenu* menu = m_parent->getWxMenu();
 
-    BOOST_FOREACH(::fwGui::fwMenuItem::sptr menuItem, m_menuItems)
+    BOOST_FOREACH(::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
     {
         ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(menuItem);
         wxMenuItem *item = menuItemContainer->getWxMenuItem();
         menu->Destroy(item);
     }
 
-    BOOST_FOREACH(::fwGui::fwMenuItem::sptr menuItem, m_separators)
+    BOOST_FOREACH(::fwGui::container::fwMenuItem::sptr menuItem, m_separators)
     {
         ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(menuItem);
         wxMenuItem *item = menuItemContainer->getWxMenuItem();
         menu->Destroy(item);
     }
+    this->destroyActions();
     m_menuItems.clear();
     m_separators.clear();
 }
@@ -148,14 +149,14 @@ void MenuLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 
-void MenuLayoutManager::menuItemSetVisible(::fwGui::fwMenuItem::sptr fwMenuItem, bool isVisible)
+void MenuLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     SLM_FATAL("TODO : MenuLayoutManager::actionIsVisible not yet implemented.")
 }
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+void MenuLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
     wxMenuItem *menuItem = menuItemContainer->getWxMenuItem();
@@ -164,7 +165,7 @@ void MenuLayoutManager::menuItemSetEnabled(::fwGui::fwMenuItem::sptr fwMenuItem,
 
 //-----------------------------------------------------------------------------
 
-void MenuLayoutManager::menuItemSetChecked(::fwGui::fwMenuItem::sptr fwMenuItem, bool isChecked)
+void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
     ::fwGuiWx::container::WxMenuItemContainer::sptr menuItemContainer = ::fwGuiWx::container::WxMenuItemContainer::dynamicCast(fwMenuItem);
     wxMenuItem *menuItem = menuItemContainer->getWxMenuItem();

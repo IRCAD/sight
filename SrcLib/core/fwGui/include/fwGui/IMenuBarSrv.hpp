@@ -10,11 +10,10 @@
 #include <fwServices/IService.hpp>
 
 #include "fwGui/config.hpp"
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 
 #include "fwGui/registrar/MenuBarRegistrar.hpp"
 #include "fwGui/layoutManager/IMenuBarLayoutManager.hpp"
-
 
 namespace fwGui
 {
@@ -52,7 +51,34 @@ protected :
      */
     FWGUI_API virtual ~IMenuBarSrv() ;
 
-    /// Initialize the layout and registry managers.
+    /**
+     * @brief Initialize the layout and registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+          <gui>
+              <layout>
+                  <menu name="My Menu"/>
+                  <menu name="My Menu 2"/>
+              </layout>
+          </gui>
+          <registry>
+              <menu sid="myMenu" start="yes" />
+              <menu sid="myMenu2" start="yes" />
+          </registry>
+      </service>
+       @endverbatim
+     *  <gui> </gui> : (mandatory) describe the interface of the service.
+     *
+     *  <registry> </registry> : (mandatory) describe the service management.
+     *   @warning
+     *   - The number of item in the gui section must be equal or greater than in the registry section.
+     *   - The order of the menu in each section (gui and registry) must be the same.\n
+     *  For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
+     *   - A menu bar can't have the same service connected on two different menu.
+     *  @see ::fwGui::registrar::MenuBarRegistrar::initialize(), ::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
+     */
     FWGUI_API void initialize();
 
     /// Create the layout and start the managed services.

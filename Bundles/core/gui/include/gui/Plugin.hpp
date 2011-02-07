@@ -11,16 +11,6 @@
 
 #include "gui/export.hpp"
 
-/**
- * @brief   Namespace gui.
- * @namespace   gui.
- * @author  IRCAD (Research and Development Team).
-
- *
- * @date    2009.
- *
- *  The namespace gui contains the basic services to build the application IHM (ie: wxContainer, wxMenu, wxLayer...).
- */
 namespace gui
 {
 
@@ -28,7 +18,6 @@ namespace gui
  * @brief   This class is called when the gui bundle is loaded.
  * @class   Plugin.
  * @author  IRCAD (Research and Development Team).
-
  * @date    2009.
  */
 

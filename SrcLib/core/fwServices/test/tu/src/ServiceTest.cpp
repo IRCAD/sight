@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/Object.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
 #include <fwData/Composite.hpp>
@@ -115,7 +115,7 @@ void ServiceTest::testServiceCreationWithUUID()
     service = ::fwServices::get< ::TestService >(obj, myUUID2);
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
-    CPPUNIT_ASSERT_EQUAL(myUUID2, ::fwTools::UUID::get< ::fwServices::IService >( service , ::fwTools::UUID::SIMPLE ));
+    CPPUNIT_ASSERT_EQUAL(myUUID2, service ->getID());
     CPPUNIT_ASSERT( ::fwServices::get(obj, "::TestService", myUUID3) == NULL );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::getServices(obj, "::TestService").size() );
 
@@ -239,32 +239,37 @@ void ServiceTest::testObjectCreationWithConfig()
     const std::string serviceUUID2 = "myTestService2";
 
     // Create object configuration
-    ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildObjectConfig() ;
+    ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwTools::Object::sptr obj = ::fwServices::New< ::fwTools::Object >(config );
+    ::fwServices::ConfigTemplateManager::NewSptr configManager;
+    configManager->setConfig( config );
+    configManager->create();
+    ::fwTools::Object::sptr obj = configManager->getConfigRoot();
 
     // Test object uid
-    CPPUNIT_ASSERT_EQUAL(objectUUID, obj->getUUID());
+    CPPUNIT_ASSERT_EQUAL(objectUUID, obj->getID());
     ::fwServices::validation::checkObject( config , "::fwTools::Object");
 
     // Test if object's service is created
     CPPUNIT_ASSERT( ::fwServices::has(obj, "::TestService"));
 
     // Test start services
-    fwServices::start( config ) ;
+    configManager->start();
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID1)->isStarted() );
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID2)->isStarted() );
 
     // Test update services
-    fwServices::update( config ) ;
+    configManager->update();
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID1)->getIsUpdated() );
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID2)->getIsUpdated() == false );
 
     // Test stop services
-    fwServices::stop( config ) ;
+    configManager->stop();
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID1)->isStopped() );
     CPPUNIT_ASSERT( ::fwServices::get< ::TestService >(obj, serviceUUID2)->isStopped() );
+
+    configManager->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -287,13 +292,13 @@ void ServiceTest::testObjectCreationWithConfig()
     // Configuration on fwTools::Object which uid is objectUUID
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
     cfg->setAttributeValue( "uid" , "objectUUID") ;
-    cfg->setAttributeValue( "id" , "objectUUID") ;
     cfg->setAttributeValue( "type" , "::fwTools::Object") ;
 
     // Object's service A
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
     serviceA->setAttributeValue( "type" , "::TestService" ) ;
+    serviceA->setAttributeValue( "implementation" , "::TestServiceImplementation" ) ;
     serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // Object's service B

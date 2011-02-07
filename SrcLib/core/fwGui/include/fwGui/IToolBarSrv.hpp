@@ -14,7 +14,6 @@
 #include "fwGui/registrar/ToolBarRegistrar.hpp"
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
 
-
 namespace fwGui
 {
 
@@ -57,7 +56,39 @@ protected :
      */
     FWGUI_API virtual ~IToolBarSrv() ;
 
-    /// Initialize the layout manager and registrar.
+    /**
+     * @brief Initialize the layout and registry managers.
+     *
+     * Example of configuration
+     * @verbatim
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+           <gui>
+               <layout>
+                   <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <separator />
+                   <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+               </layout>
+           </gui>
+           <registry>
+               <menuItem sid="item2" />
+               <menuItem sid="item3" />
+               <menuItem sid="item4" />
+               <menuItem sid="item5" />
+           </registry>
+       </service>
+       @endverbatim
+     *  <gui> </gui> : (mandatory) describe the interface of the service.
+     *
+     *  <registry> </registry> : (mandatory) describe the service management.
+     *   @warning
+     *   - The number of item in the gui section must be EQUAL to the registry section.
+     *   - The order of the menu item in each section (gui and registry) must be the same.\n
+     *  For example: the menu item named "My item 2" will be connected with the service which have the sid = "item2".
+     *   - A toolbar can't have the same service connected on two different buttons.
+     *  @see ::fwGui::registrar::ToolBarRegistrar::initialize(), ::fwGui::layoutManager::IToolBarLayoutManager::initialize()
+     */
     FWGUI_API void initialize();
 
     /// Create the layout and start the managed services.

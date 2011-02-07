@@ -17,14 +17,16 @@ namespace fwXML
 XMLTranslatorHelper::XMLTranslatorHelper()
 {
     // TODO Auto-generated constructor stub
-
 }
+
+//------------------------------------------------------------------------------
 
 XMLTranslatorHelper::~XMLTranslatorHelper()
 {
     // TODO Auto-generated destructor stub
 }
 
+//------------------------------------------------------------------------------
 
 xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwTools::Object::sptr obj )
 {
@@ -34,7 +36,7 @@ xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwTools::Object::sptr obj )
     // append an unique id to its objects
 
     // OLD STYLE std::string id = boost::lexical_cast<std::string>(obj);
-    std::string id = ::fwTools::UUID::get(obj , ::fwTools::UUID::EXTENDED );
+    std::string id = ::fwTools::UUID::get(obj  );
 
     xmlNewProp( node, BAD_CAST "id", xmlStrdup( BAD_CAST  id.c_str() ));
     xmlNewProp( node, BAD_CAST "class", xmlStrdup( BAD_CAST  obj->getRootedClassname().c_str() ));
@@ -42,13 +44,12 @@ xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwTools::Object::sptr obj )
     return node;
 }
 
-
-
+//------------------------------------------------------------------------------
 
 xmlNodePtr XMLTranslatorHelper::toXML( ::fwTools::Object::sptr obj )
 {
-    ::boost::shared_ptr< ::fwXML::XMLTranslator > translator;
-    translator = fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  obj->getRootedClassname() );
+    ::fwXML::XMLTranslator::sptr translator;
+    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  obj->getRootedClassname() );
 
     if (translator)
     {
@@ -60,7 +61,7 @@ xmlNodePtr XMLTranslatorHelper::toXML( ::fwTools::Object::sptr obj )
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 xmlNodePtr XMLTranslatorHelper::toXMLRecursive( ::fwTools::Object::sptr obj )
 {
@@ -69,15 +70,15 @@ xmlNodePtr XMLTranslatorHelper::toXMLRecursive( ::fwTools::Object::sptr obj )
     return visitor.m_correspondance[ obj ];
 }
 
-
+//------------------------------------------------------------------------------
 
 void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr source )
 {
     const std::string nameInXML = (const char*)source->name;
     assert( toUpdate->getLeafClassname() ==  nameInXML );
 
-    ::boost::shared_ptr< ::fwXML::XMLTranslator > translator;
-    translator = fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  toUpdate->getRootedClassname() );
+    ::fwXML::XMLTranslator::sptr translator;
+    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  toUpdate->getRootedClassname() );
 
     if (translator.get() )
     {
@@ -110,7 +111,7 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 ::fwTools::Object::sptr XMLTranslatorHelper::fromXML( xmlNodePtr source )
 {
@@ -122,7 +123,7 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
     // !!! NOTE HERE WE DO NOT PERFORME TRANSLATION ID OLD -> NEW !!!
 
     // dot not create duplicate object
-    ::boost::shared_ptr< ::fwTools::Object > obj;
+    ::fwTools::Object::sptr obj;
     if ( ObjectTracker::isAlreadyInstanciated( id ) )
     {
         obj = ObjectTracker::buildObject( className, id ); // use previous one
@@ -135,6 +136,7 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
     return obj;
 }
 
+//------------------------------------------------------------------------------
 
 xmlNodePtr XMLTranslatorHelper::newElement( const  std::string &name, bool value )
 {
@@ -142,5 +144,7 @@ xmlNodePtr XMLTranslatorHelper::newElement( const  std::string &name, bool value
     xmlNodeAddContent( result,   BAD_CAST (value?"1":"0")  );
     return result;
 }
+
+//------------------------------------------------------------------------------
 
 } // end namespace

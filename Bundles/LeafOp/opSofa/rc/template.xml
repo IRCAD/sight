@@ -1,0 +1,6 @@
+<Node name="root" gravity="0 -10 0" dt="0.01" time="0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0">
+    <CGImplicitSolver name="solver" printLog="0"/>
+
+AREMPLACER
+
+</Node>

@@ -8,7 +8,7 @@
 #include <boost/tr1/unordered_map.hpp>
 
 #include <fwTools/TypeInfo.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
 #include <fwRuntime/Runtime.hpp>
@@ -67,7 +67,7 @@ bool has( ::fwTools::Object::sptr obj , std::string serviceId) throw()
 
 bool has( ::std::string uuid ) throw()
 {
-    return ::fwTools::UUID::exist(uuid, ::fwTools::UUID::SIMPLE ) ;
+    return ::fwTools::fwID::exist(uuid ) ;
 }
 
 bool __support( ::fwTools::Object::sptr obj, std::string serviceId) throw()

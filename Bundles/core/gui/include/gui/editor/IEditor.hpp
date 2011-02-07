@@ -14,10 +14,8 @@
 
 #include "gui/export.hpp"
 
-
 namespace gui
 {
-
 namespace editor
 {
 
@@ -27,9 +25,6 @@ namespace editor
  * @author  IRCAD (Research and Development Team).
 
  * @date    2009.
- *
- * @todo ACH : Some services of IEditor type do not need a container (example: IOSelectorService that open a dialogue box).
- *  The problem is that the IEditor::starting method create another useless container in this case.
  */
 
 class GUI_CLASS_API IEditor : public ::fwGui::IGuiContainerSrv
@@ -43,8 +38,6 @@ protected :
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
-     *
-     * By default, the container ID is not defined and the container is not locally created.
      */
     GUI_API IEditor() throw() ;
 
@@ -55,18 +48,15 @@ protected :
      * @{
      */
 
-    /// This method is used to find the container ID if it is defined in the configuration element.
+    /// This method is used to initialize the container.
     GUI_API virtual void configuring() throw( ::fwTools::Failed )  = 0 ;
 
     /**
-     * @brief This method retrieves or builds the container.
-     *
-     * If the container Id does not exist, the container is created (m_isContainerLocallyCreated = true).
-     * Else, the method retrieves and sets the container thanks to wxWidgets API (FindWindowById).
+     * @brief This method retrieves the container. It must be defined in GuiRegistry.
      */
     GUI_API virtual void starting() throw(::fwTools::Failed) = 0 ;
 
-    /// Stops the service and destroys the m_container if it has been locally created.
+    /// Stops the service and clean the container.
     GUI_API virtual void stopping() throw(::fwTools::Failed) = 0 ;
 
     /**
@@ -77,13 +67,11 @@ protected :
 
     /**
      * @brief Update/refresh/execute the service on an observation/notification. Do nothing.
-     * @todo Must be not implemented and class child declaration should be imposed.
      */
     GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)  = 0 ;
 
     /**
      * @brief Update/refresh/execute the service. Do nothing.
-     * @todo Must be not implemented and class child declaration should be imposed.
      */
     GUI_API virtual void updating() throw(::fwTools::Failed)  = 0 ;
 
@@ -94,6 +82,6 @@ protected :
 }
 }
 
-#endif /*_FWRENDER_RENDERINGSERVICE_HPP_*/
+#endif /*_GUI_EDITOR_IEDITOR_HPP_*/
 
 

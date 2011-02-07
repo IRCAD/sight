@@ -1,0 +1,12 @@
+    <Node name="ORGAN_NAME">
+        <MechanicalObject template="Vec3d" name="DOF" translation="0 0 0" rotation="0 0 0" scale="1" restScale="1" position="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66" velocity="0 0 0 0 0 0 0 0 0 0 0 0" force="0 0 0 0 0 0 0 0 0 0 0 0" externalForce="0 0 0 0 0 0 0 0 0 0 0 0" derivX="0 0 0 0 0 0 0 0 0 0 0 0" free_position="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66" free_velocity="0 0 0 0 0 0 0 0 0 0 0 0" rest_position="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66"/>
+        <UniformMass template="Vec3d" name="mass" mass="2" totalmass="8"/>
+        <MeshTopology name="mesh topology" edges="0 1  0 2  0 3  1 2  1 3  2 3 " triangles="1 3 2  0 2 3  0 3 1  0 1 2 " tetras="0 1 2 3 "/>
+        <FixedConstraint template="Vec3d" name="constraints" indices="0 0"/>
+        <TetrahedronFEMForceField template="Vec3d" name="FEM" initialPoints="0 10 0 10 0 0 -5 0 8.66 -5 0 -8.66" method="polar" poissonRatio="0.45" youngModulus="6" updateStiffnessMatrix="1" assembling="0"/>
+        <Node name="visual">
+            <OglModel template="ExtVec3f" name="ORGAN_NAME" fileMesh="TRIAN_LOCATION" material="Default Diffuse 1 1 1 1 1 Ambient 1 1 1 1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45"/>
+            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="mapping" object2="ORGAN_NAME" hexamap="0 "/>
+        </Node>
+    </Node>
+    

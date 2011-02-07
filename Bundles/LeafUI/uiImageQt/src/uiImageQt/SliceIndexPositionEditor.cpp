@@ -164,6 +164,10 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::SLICE_INDEX ) )
         {
             imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+            ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+            image->setFieldSingleElement( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
+            image->setFieldSingleElement( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
+            image->setFieldSingleElement( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
@@ -202,6 +206,7 @@ void SliceIndexPositionEditor::updateSliceIndex()
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Get Index
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
 
     // Update wxSlider
@@ -219,7 +224,8 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Get Index
-     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
     int max = image->getSize()[m_orientation]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
@@ -238,6 +244,7 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 
     SliceIndexPositionEditor::SLICE_INDEX_FIELDID[m_orientation];
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
     image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value() = index;
 
     ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);

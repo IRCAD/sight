@@ -13,8 +13,7 @@
 
 #include  <boost/type_traits/is_arithmetic.hpp>
 #include  <boost/lexical_cast.hpp>
-#include  <boost/mpl/identity.hpp>
-#include  <boost/mpl/eval_if.hpp>
+#include  <boost/mpl/if.hpp>
 
 #include <fwCore/Demangler.hpp>
 
@@ -62,9 +61,9 @@ namespace
 template<class T>
 inline std::string getString(const T &t)
 {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::eval_if_c<  boost::is_arithmetic<T>::value,
-                                                               boost::mpl::identity<NumericCast>,
-                                                               boost::mpl::identity<Default>
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<  boost::is_arithmetic<T>::value,
+                                                               NumericCast,
+                                                               Default
                                                             >::type Choice;
 
         return Choice::eval(t);
@@ -86,7 +85,6 @@ inline std::string getString(const std::pair<T1,T2> &t)
     res += getString(t.first) + "," + getString(t.second) + "]";
     return res;
 }
-
 
 
 

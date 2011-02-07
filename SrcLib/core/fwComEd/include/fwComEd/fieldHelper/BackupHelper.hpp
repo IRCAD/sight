@@ -58,6 +58,12 @@ class FWCOMED_CLASS_API BackupHelper
         FWCOMED_API static ::fwData::Acquisition::sptr getSelectedAcquisition(::fwData::PatientDB::sptr _pPatientDB);
 
         /**
+         * @brief   Return the selected study in the patientDB.
+         * @note    If pPatientDB haven't fwComEd::Dictionary::m_imageSelectedId field, this method return a null pointer.
+         */
+        FWCOMED_API static ::fwData::Study::sptr getSelectedStudy(::fwData::PatientDB::sptr _pPatientDB);
+
+        /**
          * @brief   Return the selected patient in the patientDB.
          * @note    If pPatientDB haven't fwComEd::Dictionary::m_imageSelectedId field, this method return a null pointer.
          */

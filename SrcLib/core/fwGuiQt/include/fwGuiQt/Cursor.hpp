@@ -17,7 +17,7 @@ namespace fwGuiQt
 {
 
 /**
- * @brief   Defines the generic message box for IHM.
+ * @brief   Defines the generic cursor for IHM.
  * @class   Cursor.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.

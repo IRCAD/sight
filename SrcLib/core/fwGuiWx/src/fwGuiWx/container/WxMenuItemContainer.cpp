@@ -25,14 +25,14 @@ WxMenuItemContainer::~WxMenuItemContainer() throw()
 
 void WxMenuItemContainer::clean()
 {
-    SLM_ASSERT("Sorry, wxMenuItem not yet initialized, cleaning impossible", m_menuItem);
+    SLM_ASSERT("Sorry, wxMenuItem not yet initialized, cleaning impossible", m_menuItem || m_toolBarToolBase);
 }
 
 //-----------------------------------------------------------------------------
 
 void WxMenuItemContainer::destroyContainer()
 {
-    SLM_ASSERT("Sorry, wxMenuItem not yet initialized, cleaning impossible", m_menuItem);
+    SLM_ASSERT("Sorry, wxMenuItem not yet initialized, cleaning impossible", m_menuItem || m_toolBarToolBase);
 }
 
 //-----------------------------------------------------------------------------

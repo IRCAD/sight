@@ -78,6 +78,7 @@ public:
      * @return map<Edge, pair<source node, destination node> >
      */
     FWDATA_API const ConnectionContainer &getCRefConnections() const;
+    FWDATA_API ConnectionContainer &getRefConnections();
 
     /**
      * @brief Add and edge

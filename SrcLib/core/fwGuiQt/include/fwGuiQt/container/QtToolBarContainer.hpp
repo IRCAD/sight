@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 
-#include <fwGui/fwToolBar.hpp>
+#include <fwGui/container/fwToolBar.hpp>
 
 #include "fwGuiQt/config.hpp"
 
@@ -34,12 +34,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUIQT_CLASS_API QtToolBarContainer : public ::fwGui::fwToolBar
+class FWGUIQT_CLASS_API QtToolBarContainer : public ::fwGui::container::fwToolBar
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtToolBarContainer)(::fwGui::fwToolBar), (()), new QtToolBarContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtToolBarContainer)(::fwGui::container::fwToolBar), (()), new QtToolBarContainer );
 
     /**
      * @brief   Constructor.

@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/**
+ * @file fwGui/IFrameLayoutManager.hpp
+ * @brief This file defines the interface of the base class for managing a frame.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date 2009-2010
+ */
+
 #ifndef _FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGERB_HPP_
 #define _FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGERB_HPP_
 
@@ -13,15 +21,15 @@
 #include <boost/filesystem/path.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwData/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/fwContainer.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
 {
-
 namespace layoutManager
 {
 
@@ -50,6 +58,21 @@ public:
 
      typedef std::string RegistryKeyType;
 
+     static const std::string SOFTWARE_UI;
+     static const std::string FRAME_STATE_UI;
+     static const std::string FRAME_SIZE_W_UI;
+     static const std::string FRAME_SIZE_H_UI;
+     static const std::string FRAME_POSITION_X_UI;
+     static const std::string FRAME_POSITION_Y_UI;
+
+     typedef enum
+     {
+         UNKNOWN,    ///< the unknown state
+         ICONIZED,   ///< the minimized state
+         MAXIMIZED,  ///< the maximied state
+         FULL_SCREEN ///< the full screen state
+     } FrameState;
+
      class FrameInfo
      {
      public :
@@ -57,17 +80,26 @@ public:
          FrameInfo() :
              m_name (""),
              m_minSize (std::make_pair(-1,-1)),
-             m_style (DEFAULT)
+             m_style (DEFAULT),
+             m_size (std::make_pair(-1,-1)),
+             m_position (std::make_pair(-1,-1)),
+             m_state(UNKNOWN)
          {}
 
-         /// Application name.
+         /// Frame name.
          std::string                      m_name ;
-         /// Application icon.
+         /// Frame icon.
          ::boost::filesystem::path        m_iconPath;
-         /// Application minimum size (min width and min height)
+         /// Frame minimum size (min width and min height)
          std::pair< int, int >            m_minSize;
-         /// Style
+         /// Frame style
          Style                            m_style;
+         /// Frame size
+         std::pair< int, int >            m_size;
+         /// Frame position
+         std::pair< int, int >            m_position;
+         /// Frame state (maximize, minized, full screen)
+         FrameState                       m_state;
      };
 
     /// Constructor. Do nothing.
@@ -93,7 +125,9 @@ public:
      */
     FWGUI_API virtual void destroyFrame() = 0;
 
-    FWGUI_API virtual ::fwGui::fwContainer::sptr getFrame(){ return m_frame;};
+    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getFrame(){ return m_frame;};
+
+    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getContainer(){ return m_container;};
 
 
     typedef ::boost::function0< void > CloseCallback;
@@ -101,12 +135,20 @@ public:
 
 protected:
 
-    FWGUI_API FrameInfo getFrameInfo(){ return m_frameInfo;};
+    fwGettersSettersDocMacro(FrameInfo, frameInfo, FrameInfo, configuration definition.);
 
-    ::fwGui::fwContainer::sptr m_frame;
+    ::fwGui::container::fwContainer::sptr m_frame;
+    ::fwGui::container::fwContainer::sptr m_container;
     CloseCallback m_closeCallback;
 
+    FWGUI_API void readConfig();
+
+    FWGUI_API void writeConfig();
+
+    FWGUI_API ::fwData::Composite::sptr getPreferenceUI();
+
 private:
+
 
     void defaultCloseCallback();
 

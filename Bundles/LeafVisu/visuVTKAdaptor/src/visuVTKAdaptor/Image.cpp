@@ -47,6 +47,7 @@ Image::Image() throw()
 
     m_imagePortId = -1;
     m_allowAlphaInTF = false;
+    m_useImageTF = true;
 
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
@@ -135,7 +136,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             ::fwComEd::ImageMsg::NewSptr msg;
             msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
             ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
-            }
+        }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
         {
@@ -155,7 +156,10 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             imsg->getWindowMinMax( m_windowMin, m_windowMax);
             updateWindowing(image);
         }
-
+    }
+    else
+    {
+        this->destroyPipeline();
     }
 }
 
@@ -215,7 +219,14 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
     ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
     std::string tfName = m_transfertFunctionId->value();
     ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
-    ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
+    if ( m_useImageTF )
+    {
+        ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
+    }
+    else
+    {
+        ::vtkIO::convertTF2vtkTFBW( pTransfertFunction, m_lut);
+    }
     setVtkPipelineModified();
 }
 
@@ -258,7 +269,7 @@ void Image::buildPipeline( )
         {
             m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
             imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
-            OSLM_TRACE(this->getUUID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
+            OSLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
         }
     }
     else if (algorithm)

@@ -44,7 +44,13 @@ public :
 
 protected:
 
-    /// Override
+    /** Search if archive extension is changed
+     * @verbatim
+       <service ... >
+         <archiveExtension>.fxz</archiveExtension>
+       </service>
+       @endverbatim
+     */
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
 
     /// Override
@@ -72,6 +78,9 @@ protected:
     /// Override
     IOXML_API virtual void configureWithIHM();
 
+    /// Change the extension of the compressed archive
+    IOXML_API void setArchiveExtension( const std::string & _archiveExtenstion );
+
 private :
 
     void saveData( const ::boost::filesystem::path path, ::fwTools::Object::sptr _obj );
@@ -82,6 +91,8 @@ private :
 
     ::fwXML::writer::FwXMLObjectWriter m_writer;
 
+
+    std::string m_archiveExtenstion;
 };
 
 } // namespace ioXML

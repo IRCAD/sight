@@ -45,5 +45,53 @@
     <point id="::fwData::None">
         <implements>::fwTools::Object</implements>
     </point>
-
+    <point id="::fwData::Reconstruction">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Acquisition">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Boolean">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Color">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Integer">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Material">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::String">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Plane">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::PlaneList">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Point">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::PointList">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Resection">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::ResectionDB">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::location::SingleFile">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::Node">
+        <implements>::fwTools::Object</implements>
+    </point>
+    <point id="::fwData::TransformationMatrix3D">
+        <implements>::fwTools::Object</implements>
+    </point>
+    
 </plugin>
