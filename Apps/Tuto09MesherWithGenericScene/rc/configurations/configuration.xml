@@ -79,6 +79,7 @@
             <layout>
                 <menuItem name="Open file" shortcut="Ctrl+O" />
                 <menuItem name="Save File" shortcut="Ctrl+S" />
+                <menuItem name="test" shortcut="Ctrl+D" />
                 <separator />
                 <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
             </layout>
@@ -86,6 +87,7 @@
         <registry>
             <menuItem sid="action_openFile" start="yes" />
             <menuItem sid="action_saveFile" start="yes" />
+            <menuItem sid="action_test" start="no" />
             <menuItem sid="action_quit" start="yes" />
         </registry>
     </service>
@@ -172,6 +174,18 @@
                 <mode type="stop" />
                 <config>
                     <object id="myAcquisition" type="::fwData::Acquisition" >
+                    
+                    
+                    <service uid="action_test" implementation="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoComChannel="no" >
+						<start uid="myTest"/>
+					</service>
+					
+					<service uid="myTest"
+                           implementation="::uiAcquisition::RepresentationSrv"
+                         type="::fwGui::IActionSrv" autoComChannel="no" >
+                </service>
+                    
+                    
                          <service uid="myUpdaterComCannelReconst2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
                              <target>myUpdaterReconst</target>
                          </service>

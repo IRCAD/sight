@@ -16,4 +16,9 @@
         <implements>::fwData::Acquisition</implements>
     </point>
     
+    <point id="::uiAcquisition::RepresentationSrv" >
+    <implements>::fwGui::IActionSrv</implements>
+    <implements>::fwData::Acquisition</implements>
+  </point>
+  
 </plugin>
