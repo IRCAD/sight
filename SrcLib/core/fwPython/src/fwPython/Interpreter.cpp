@@ -1,5 +1,5 @@
+#include <boost/python.hpp>
 #include "fwPython/Interpreter.hpp"
-#include <Python.h>
 
 
 namespace fwPython
@@ -15,9 +15,13 @@ Interpreter::~Interpreter()
     Py_Finalize();
 }
     
-void Interpreter::execute()
+int Interpreter::execute(std::string code)
 {
-   PyRun_SimpleString("print \"hello world\"");
+   namespace bp = ::boost::python;
+   int succes=0;
+   bp::object ignored = bp::exec( code.c_str() );
+   return succes;
 }
+
 
 }

@@ -12,7 +12,7 @@
 
 class InterpreterTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE( InterpreterTest );
-    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( printHelloWorld );
     CPPUNIT_TEST_SUITE_END();
 protected:
 
@@ -21,7 +21,7 @@ public:
     void setUp();
     void tearDown();
     // fonctions de tests
-    void methode1();
+    void printHelloWorld();
 };
 
 

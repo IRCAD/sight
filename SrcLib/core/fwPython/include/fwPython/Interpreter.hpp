@@ -1,6 +1,8 @@
 #ifndef _FWPYTHON_INTERPRETER_HPP_
 #define _FWPYTHON_INTERPRETER_HPP_
 
+#include <string>
+
 namespace fwPython
 {
 
@@ -15,8 +17,8 @@ public :
    // a destroy the  python interpretor
    ~Interpreter();
 
-   //execute the script
-   void execute();
+   //execute the python code sequence
+   int execute(std::string code);
 };
 
 

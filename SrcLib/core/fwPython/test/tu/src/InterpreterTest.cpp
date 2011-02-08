@@ -28,15 +28,12 @@ void InterpreterTest::tearDown()
     // Clean up after the test run.
 }
 
-void InterpreterTest::methode1()
+void InterpreterTest::printHelloWorld()
 {
     fwPython::Interpreter interpreter;
 
-    interpreter.execute();
-
-    //-----------test values
-    const std::string STR1 = "toto";
-    CPPUNIT_ASSERT_EQUAL( STR1, STR1 );
+    int succes = interpreter.execute("print \"hello world\"");
+    CPPUNIT_ASSERT_EQUAL( succes , 0 );
 }
 
 
