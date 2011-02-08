@@ -139,14 +139,14 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             this->info( msg ) ;
             SLM_TRACE( "Stopping ComChannelService " + msg.str() ); // crash from spylog???
             m_source.lock()->detach( this->getSptr() );
-#ifndef NOT_USE_SRVFAC
+
+            /// Remove IEditionService if it is the last comChannel
             int nbObservers = m_source.lock()->getNbObservers();
             if(nbObservers == 0)
             {
                 m_source.lock()->stop();
                 ::fwServices::erase(m_source.lock());
             }
-#endif
         }
     }
 }

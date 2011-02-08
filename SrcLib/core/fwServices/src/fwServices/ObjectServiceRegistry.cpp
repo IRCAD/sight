@@ -29,9 +29,8 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
 
-#ifndef NOT_USE_SRVFAC
 #include "fwServices/ServiceFactoryRegistry.hpp"
-#endif
+
 
 namespace fwServices
 {
@@ -106,9 +105,8 @@ void ObjectServiceRegistry::initializeRootObject()
     SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
     SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
 
-#ifndef NOT_USE_SRVFAC
     ::fwServices::ServiceFactoryRegistry::getDefault()->parseBundleInformation();
-#endif
+
 
     // ToDo Correct this hack
     // Load another "pseudo" bundle
@@ -188,9 +186,9 @@ void ObjectServiceRegistry::uninitializeRootObject()
         profile->stop();
         SLM_TRACE("Profile Stopped");
 
-#ifndef NOT_USE_SRVFAC
+        // Clear all service factories
         ServiceFactoryRegistry::getDefault()->clearFactory();
-#endif
+
         // Clear all factories before stop application.
         ::fwTools::ClassFactoryRegistry::getFactories().clear();
     }
@@ -375,9 +373,6 @@ void ObjectServiceRegistry::cleanExpiredObject()
                 if (srv != NULL )
                 {
                     srv->stop();
-#ifdef NOT_USE_SRVFAC
-                    ::fwServices::unregisterComChannels( srv ) ;
-#endif
                 }
             }
             services.clear() ;
@@ -405,29 +400,9 @@ void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _ser
 {
     SLM_TRACE_FUNC();
 
-#ifndef NOT_USE_SRVFAC
     OSLM_ASSERT( "Sorry, the service ( "<< _service->getID() <<" ) must be stop before unregister it.", _service->isStopped() );
 
-//    typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
-//    OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
-//    for( OContainerType::iterator iter = obs.begin() ; iter != obs.end() ; ++iter )
-//    {
-//
-//        if( (*iter)->isValid() )
-//        {
-//            // Check whether _service is the subject (IEditionService) or the destination service
-//            if( (*iter)->getDest() == _service || (*iter)->getSrc() == _service )
-//            {
-//                OSLM_FATAL("Com channel still exist ( "<< (*iter)->getID() <<" ), but object (Src or Dest) is under destruction. ( Src = " << (*iter)->getSrc()->getID() <<" , Dest = "<< (*iter)->getDest()->getID()<<" )");
-//            }
-//        }
-//    }
-
-#else
-    _service->stop();
-    ::fwServices::unregisterComChannels( _service ) ;
-#endif
-
+    // TODO verify that there are no com channel on this service.
 
     removeFromContainer( _service );
 }

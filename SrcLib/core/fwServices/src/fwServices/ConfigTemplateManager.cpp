@@ -96,12 +96,8 @@ void ConfigTemplateManager::create()
     SLM_ASSERT("Sorry, the xml that describes extension "<< m_configName <<" is not valid.", ::fwServices::validation::checkObject( m_adaptedConfig ) );
 
     // Create object and services
-
-#ifndef NOT_USE_SRVFAC
     m_configRoot = this->newObject( m_adaptedConfig );
-#else
-    m_configRoot = ::fwServices::New( m_adaptedConfig );
-#endif
+
 
     m_state = CONFIG_IS_CREATED;
 }
@@ -141,15 +137,10 @@ void ConfigTemplateManager::start()
 {
     SLM_ASSERT("Sorry, manager is not created and you try starting it.", m_state == CONFIG_IS_CREATED || m_state == CONFIG_IS_STOPPED );
 
-#ifndef NOT_USE_SRVFAC
-
     this->start( m_adaptedConfig ) ;
     m_objectParser->startConfig();
     this->startComChannel();
 
-#else
-    this->start( m_adaptedConfig ) ;
-#endif
     m_state = CONFIG_IS_STARTED;
 }
 
@@ -158,9 +149,7 @@ void ConfigTemplateManager::start()
 void ConfigTemplateManager::update()
 {
     ::fwServices::update( m_adaptedConfig ) ;
-#ifndef NOT_USE_SRVFAC
     m_objectParser->updateConfig();
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -178,8 +167,6 @@ void ConfigTemplateManager::stop()
 {
     SLM_ASSERT("Sorry, manager is not started and you try stopping it.", m_state == CONFIG_IS_STARTED );
 
-#ifndef NOT_USE_SRVFAC
-
     this->stopComChannel();
 
     m_objectParser->stopConfig();
@@ -193,9 +180,7 @@ void ConfigTemplateManager::stop()
         srv->stop();
     }
     m_startedServices.clear();
-#else
-    ::fwServices::stop( m_adaptedConfig ) ;
-#endif
+
 
     m_state = CONFIG_IS_STOPPED;
     OSLM_INFO( "Parsing OSR after stopping the config : \n" << ::fwServices::OSR::getRegistryInformation() );
@@ -207,11 +192,7 @@ void ConfigTemplateManager::destroy()
 {
     SLM_ASSERT("Sorry, manager is not stopped and you try destroying it.", m_state == CONFIG_IS_STOPPED || m_state == CONFIG_IS_CREATED );
 
-#ifndef NOT_USE_SRVFAC
     m_objectParser->destroyConfig();
-#endif
-
-#ifndef NOT_USE_SRVFAC
 
     BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_createdServices )
     {
@@ -223,15 +204,10 @@ void ConfigTemplateManager::destroy()
     }
     m_createdServices.clear();
 
-#else
-    ::fwServices::stopAndUnregister( m_adaptedConfig ) ;
-#endif
-
     OSLM_INFO( "Parsing OSR after destroying the config : \n" << ::fwServices::OSR::getRegistryInformation() );
 
-#ifndef NOT_USE_SRVFAC
+
     m_objectParser.reset();
-#endif
     m_adaptedConfig.reset();
     m_configTemplate.reset();
     m_configRoot.reset();
@@ -435,30 +411,11 @@ void ConfigTemplateManager::loadConfig()
         obj = this->createNewObject( hasAttributeType, type, hasAttributeUid, uid, hasAttributeId, id );
     }
 
-#ifndef NOT_USE_SRVFAC
-
     std::string srvImpl = ::fwServices::getDefaultImplementationIds( obj , "::fwServices::IXMLParser" );
     IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( "::fwServices::IXMLParser", srvImpl );
     m_objectParser = ::fwServices::IXMLParser::dynamicCast( srv );
     m_objectParser->setObjectConfig( _cfgElement );
     m_objectParser->createConfig( obj );
-
-#else
-
-    // Init object ( and perharps build subObject )
-    SLM_ASSERT( "Sorry, this object not support IXMLParser", ::fwServices::support< ::fwServices::IXMLParser >( obj ) );
-
-    ::fwServices::IXMLParser::sptr objParserSrv = ::fwServices::get< ::fwServices::IXMLParser >( obj );
-    objParserSrv->setConfiguration( _cfgElement ) ;
-    objParserSrv->configure() ;
-    objParserSrv->start() ;
-    objParserSrv->update() ;
-    objParserSrv->stop() ;
-
-    // unregister call stop before
-    ::fwServices::OSR::unregisterService( objParserSrv );
-
-#endif
 
     // Attaching a configuring services
     this->addServicesToObjectFromCfgElem( obj, _cfgElement );

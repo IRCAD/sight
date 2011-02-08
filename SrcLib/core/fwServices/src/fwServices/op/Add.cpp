@@ -122,63 +122,19 @@ namespace fwServices
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {
-
-#ifndef NOT_USE_SRVFAC
     IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( serviceId, _implementationId );
     ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
     return srv;
-#else
-    OSLM_ASSERT("Unable to add service " << _implementationId<< " on a null object", obj);
-    // Looking for services provided by components (n implementations)
-    if( ::fwServices::bundle::support(obj, serviceId) )
-    {
-        return ::fwServices::bundle::add(obj, serviceId , _implementationId ) ;
-    }
-
-    // Looking for services provided by simple libraries (one implementation)
-    if( ::fwServices::library::support(obj, serviceId) )
-    {
-        return ::fwServices::library::add(obj, serviceId , _implementationId ) ;
-    }
-
-    OSLM_WARN( "No service matching the identifier " << serviceId );
-    return ::fwServices::IService::sptr() ;
-#endif
 }
 
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string uid)
 {
-#ifndef NOT_USE_SRVFAC
     IService::sptr srv = ::fwServices::add( obj , serviceId , _implementationId ) ;
     assert( !srv->hasID() );
     srv->setID( uid ) ;
     return srv ;
-#else
-    OSLM_ASSERT("Unable to add service " << _implementationId<< " on a null object", obj);
-    ::fwServices::IService::sptr service ;
-    // Looking for services provided by components (n implementations)
-    if( ::fwServices::bundle::support(obj, serviceId) )
-    {
-        service = ::fwServices::bundle::add(obj, serviceId , _implementationId ) ;
-        assert( !service->hasID() );
-        service->setID( uid ) ;
-        return service ;
-    }
-
-    // Looking for services provided by simple libraries (one implementation)
-    if( ::fwServices::library::support(obj, serviceId) )
-    {
-        service = ::fwServices::library::add(obj, serviceId , _implementationId ) ;
-        assert( !service->hasID() );
-        service->setID( uid ) ;
-        return service ;
-    }
-
-    OSLM_WARN( "No service matching the identifier " << serviceId );
-    return service ;
-#endif
 }
 
 //------------------------------------------------------------------------------

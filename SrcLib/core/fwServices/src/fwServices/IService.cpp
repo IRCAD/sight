@@ -129,9 +129,6 @@ void IService::stop() throw( ::fwTools::Failed)
     if( m_globalState == STARTED )
     {
         m_globalState = STOPPING ;
-#ifdef NOT_USE_SRVFAC
-        ::fwServices::stopComChannels( this->getSptr() ) ;
-#endif
         this->stopping() ;
         m_globalState = STOPPED ;
     }
