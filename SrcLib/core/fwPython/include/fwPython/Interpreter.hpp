@@ -2,23 +2,25 @@
 #define _FWPYTHON_INTERPRETER_HPP_
 
 #include <string>
+#include "fwPython/config.hpp"
+
 
 namespace fwPython
 {
 
-class Interpreter {
+class FWPYTHON_CLASS_API Interpreter {
 
 public :
 
    // create a python interpretor
-   Interpreter();
+   FWPYTHON_API Interpreter();
 
     
    // a destroy the  python interpretor
-   ~Interpreter();
+   FWPYTHON_API ~Interpreter();
 
    //execute the python code sequence
-   int execute(std::string code);
+   FWPYTHON_API int execute(std::string code);
 };
 
 
