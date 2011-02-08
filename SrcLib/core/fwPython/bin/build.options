@@ -1,0 +1,5 @@
+TYPE    = "shared"
+USE     = [ 'boost', "python" ]
+LIB     = [ 'fwData_0-1']
+VERSION = '0-1'
+
