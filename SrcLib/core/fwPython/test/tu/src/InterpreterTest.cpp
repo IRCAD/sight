@@ -36,5 +36,14 @@ void InterpreterTest::printHelloWorld()
     CPPUNIT_ASSERT_EQUAL( succes , 0 );
 }
 
+void InterpreterTest::syntaxError()
+{
+    fwPython::Interpreter interpreter;
+
+    int succes = interpreter.execute("b=[1,2]\n"
+                                     "a = [1,2,3;]");
+    CPPUNIT_ASSERT_EQUAL( succes , -1 );
+}
+
 
 
