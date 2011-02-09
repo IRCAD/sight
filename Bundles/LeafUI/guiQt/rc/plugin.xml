@@ -9,5 +9,10 @@
         <implements>::gui::editor::IEditor</implements>
         <implements>::fwTools::Object</implements>
     </point>
-        
+           
+    <point id="::guiQt::editor::Code">
+        <implements>::gui::editor::IEditor</implements>
+        <implements>::fwData::String</implements>
+    </point>
+     
 </plugin>
