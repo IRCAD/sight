@@ -33,7 +33,7 @@ FWSERVICES_API void start( ::fwRuntime::ConfigurationElement::sptr _elt) ;
  * @brief update services specified in the XML like structure (_elt) and already attached to objects
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API void update( ::fwRuntime::ConfigurationElement::sptr _elt) ;
+FWSERVICES_API void update( ::fwRuntime::ConfigurationElement::csptr _elt) ;
 
 /**
  * @brief stop services specified in the XML like structure (_elt) and already attached to objects

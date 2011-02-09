@@ -51,15 +51,15 @@ void start( ::fwRuntime::ConfigurationElement::sptr _elt)
     }
 }
 
-void update(::fwRuntime::ConfigurationElement::sptr _elt)
+void update(::fwRuntime::ConfigurationElement::csptr _elt)
 {
-    for( ::fwRuntime::ConfigurationElementContainer::Iterator iter = _elt->begin() ; iter != _elt->end() ; ++iter )
+    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, _elt->getElements() )
     {
-        if( (*iter)->getName() == "update" )
+        if( elem->getName() == "update" )
         {
-            if( (*iter)->hasAttribute("type") )
+            if( elem->hasAttribute("type") )
             {
-                std::string serviceTypeToUpdate = (*iter)->getExistingAttributeValue("type") ;
+                std::string serviceTypeToUpdate = elem->getExistingAttributeValue("type") ;
                 std::vector< ::fwServices::IService::sptr > servicesToUpdate = getServices( serviceTypeToUpdate ) ;
                 OSLM_FATAL_IF("Configuration : element " << serviceTypeToUpdate << " not found", servicesToUpdate.empty() );
                 std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToUpdate.begin() ;
@@ -68,9 +68,9 @@ void update(::fwRuntime::ConfigurationElement::sptr _elt)
                     (*iter)->update();
                 }
             }
-            if( (*iter)->hasAttribute("uid") )
+            if( elem->hasAttribute("uid") )
             {
-                std::string uid = (*iter)->getExistingAttributeValue("uid") ;
+                std::string uid = elem->getExistingAttributeValue("uid") ;
                 OSLM_INFO("Updating service with UUID " << uid ) ;
                 OSLM_FATAL_IF("Configuration : element  "<< uid << " not found", ! ::fwServices::has(uid) );
                 ::fwServices::get(uid)->update() ;

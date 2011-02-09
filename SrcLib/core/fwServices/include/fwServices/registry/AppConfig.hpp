@@ -13,7 +13,11 @@
 #include <fwTools/macros.hpp>
 #include <fwTools/Factory.hpp>
 
+#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
+
 #include "fwServices/config.hpp"
+
 
 namespace fwServices
 {
@@ -58,6 +62,8 @@ class FWSERVICES_CLASS_API AppConfig : public ::fwCore::BaseObject
 
 public:
 
+    typedef std::map< std::string, std::string > FieldAdaptorType;
+
     fwCoreClassDefinitionsWithFactoryMacro( (AppConfig)(::fwCore::BaseObject), (()), new AppConfig) ;
 
     /// Return the unique Instance, create it if required at first access
@@ -77,9 +83,12 @@ public:
 
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getStandardConfig( const std::string & configId ) const;
 
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, const std::map< std::string, std::string > & replaceFields ) const;
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & replaceFields ) const;
 
     FWSERVICES_API void clearRegistry();
+
+    /// Create an unique identifier
+    FWSERVICES_API static std::string getUniqueIdentifier( std::string _serviceUid = "", bool _useCpt = false );
 
 protected :
 
@@ -91,6 +100,13 @@ protected :
     /// Constructor, protected to ensure unique instance (singleton pattern)
     FWSERVICES_API AppConfig();
 
+private :
+
+    /// Adapts the configuration : replace field thanks to field adaptors
+    ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem, const FieldAdaptorType & fieldAdaptors ) const;
+
+    /// Adapts field thanks to field adaptors
+    std::string adaptField( const std::string & _str, const FieldAdaptorType & fieldAdaptors ) const;
 };
 
 } // namespace registry

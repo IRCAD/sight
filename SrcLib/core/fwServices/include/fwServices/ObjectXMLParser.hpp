@@ -36,10 +36,10 @@ public :
 
 protected :
 
-    bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+    bool refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgElement );
     void updating() throw( fwTools::Failed );
 
-    std::vector< ::fwServices::ConfigTemplateManager::sptr > m_ctmContainer;
+    std::vector< ::fwServices::AppConfigManager::sptr > m_ctmContainer;
 };
 
 

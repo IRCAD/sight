@@ -24,7 +24,7 @@
 
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/ConfigTemplateManager.hpp"
+#include "fwServices/AppConfigManager.hpp"
 
 namespace fwServices
 {
@@ -321,7 +321,7 @@ private :
      * @brief Strong reference of the root object
      */
     //::fwTools::Object::sptr m_rootObject ;
-    ::fwServices::ConfigTemplateManager::sptr m_ctm;
+    ::fwServices::AppConfigManager::sptr m_ctm;
 
     /**
      * @brief Strong reference of the root object configuration

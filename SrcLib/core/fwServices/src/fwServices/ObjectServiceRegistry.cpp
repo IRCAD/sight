@@ -30,7 +30,7 @@
 #include "fwServices/GlobalEventManager.hpp"
 
 #include "fwServices/registry/ServiceFactory.hpp"
-
+#include "fwServices/registry/AppConfig.hpp"
 
 namespace fwServices
 {
@@ -41,7 +41,7 @@ ObjectServiceRegistry::sptr ObjectServiceRegistry::m_instance;
 
 //------------------------------------------------------------------------------
 
-const std::string ObjectServiceRegistry::CONFIG_EXTENSION_POINT = "::fwServices::ServiceObjectConfig";
+const std::string ObjectServiceRegistry::CONFIG_EXTENSION_POINT = "::fwServices::registry::AppConfig";
 
 //------------------------------------------------------------------------------
 
@@ -116,6 +116,8 @@ void ObjectServiceRegistry::initializeRootObject()
     configBundle->setEnable( true );
 
 
+    ::fwServices::registry::AppConfig::getDefault()->parseBundleInformation();
+
 //    // Research the config extension
 //    bool extensionIsFound = false;
 //    std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( CONFIG_EXTENSION_POINT ) ;
@@ -136,10 +138,18 @@ void ObjectServiceRegistry::initializeRootObject()
 
     //SLM_ASSERT("Sorry, the xml that describes extension "<< getDefault()->m_rootObjectConfigurationName.second <<" is not valid.", getDefault()->isRootObjectConfigurationValid() );
 
-    getDefault()->m_ctm = ConfigTemplateManager::New();
-    getDefault()->m_ctm->setConfig( getDefault()->m_rootObjectConfigurationName.second, CONFIG_EXTENSION_POINT );
+   // getDefault()->m_ctm = AppConfigManager::New();
+    getDefault()->m_ctm = AppConfigManager::New();
+    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( getDefault()->m_rootObjectConfigurationName.second );
+    getDefault()->m_ctm->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
     getDefault()->m_ctm->launch();
     getDefault()->m_isRootInitialized = true;
+
+
+//    getDefault()->m_ctm = AppConfigManager::New();
+//    getDefault()->m_ctm->setConfig( getDefault()->m_rootObjectConfigurationName.second, CONFIG_EXTENSION_POINT );
+//    getDefault()->m_ctm->launch();
+//    getDefault()->m_isRootInitialized = true;
 
 
 
@@ -185,6 +195,9 @@ void ObjectServiceRegistry::uninitializeRootObject()
         SLM_TRACE("Stopping Profile");
         profile->stop();
         SLM_TRACE("Profile Stopped");
+
+        // Clear all app configuration
+        ::fwServices::registry::AppConfig::getDefault()->clearRegistry();
 
         // Clear all service factories
         ::fwServices::registry::ServiceFactory::getDefault()->clearFactory();

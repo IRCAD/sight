@@ -242,7 +242,7 @@ void ServiceTest::testObjectCreationWithConfig()
     ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::ConfigTemplateManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::NewSptr configManager;
     configManager->setConfig( config );
     configManager->create();
     ::fwTools::Object::sptr obj = configManager->getConfigRoot();
