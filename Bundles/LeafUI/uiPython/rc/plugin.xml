@@ -1,0 +1,14 @@
+<plugin class="::uiPython::Plugin" id="uiPython">
+
+    <library name="uiPython"/>
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+    
+    <point id="::uiPython::action::Test">
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwTools::Object</implements>
+    </point>
+    
+</plugin>
