@@ -11,4 +11,10 @@
         <implements>::fwTools::Object</implements>
     </point>
     
+    
+    <point id="::uiPython::action::StringRun">
+        <implements>::fwGui::IActionSrv</implements>
+        <implements>::fwData::String</implements>
+    </point>
+    
 </plugin>
