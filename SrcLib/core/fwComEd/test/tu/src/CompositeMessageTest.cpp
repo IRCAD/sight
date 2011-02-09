@@ -53,7 +53,7 @@ void CompositeMessageTest::methodeBuildComposite()
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::ConfigTemplateManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::NewSptr configManager;
     configManager->setConfig( config );
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
@@ -103,7 +103,7 @@ void CompositeMessageTest::methodeCompositeMessage()
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::ConfigTemplateManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::NewSptr configManager;
     configManager->setConfig( config );
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();

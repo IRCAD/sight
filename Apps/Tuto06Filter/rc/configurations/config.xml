@@ -1,5 +1,9 @@
 <plugin id="FilterConfiguration">
-    <extension id="FilterConfig" implements="::fwServices::ServiceObjectConfig">
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>FilterConfig</id>
+        <type>standard</type>
+        <config>
+        
     <!-- Root object -->
     <object type="::fwData::Composite">
         <!-- Windows & Main Menu -->
@@ -100,5 +104,7 @@
 
     <stop type="::fwGui::IFrameSrv" />
   </object>
-  </extension>
+  
+        </config>
+    </extension>
 </plugin>    

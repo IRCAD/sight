@@ -1,4 +1,8 @@
-<extension id="organManagerConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>organManagerConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
 
@@ -91,4 +95,6 @@
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>

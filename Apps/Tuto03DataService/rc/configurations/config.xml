@@ -1,5 +1,9 @@
 <plugin id="TutoConfigurations">
-<extension id="tutoDataServiceConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>tutoDataServiceConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <!-- The root data object in tutoDataService is a ::fwData::Image. -->
     <object type="::fwData::Image">
@@ -89,5 +93,7 @@
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>
 </plugin>

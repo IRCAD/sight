@@ -1,4 +1,8 @@
-<extension id="worldViewConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>worldViewConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
 
@@ -69,4 +73,6 @@
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>

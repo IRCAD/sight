@@ -1,5 +1,7 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/bundle/runtime.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -155,7 +157,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 {
     //AddGenericUidToFieldApadtor();
     // Generate generic UID
-    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID(), true);
+    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( this->getID(), true);
     // Init manager
     m_fieldAdaptors["GENERIC_UID"] = genericUidAdaptor;
 
@@ -181,13 +183,13 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     }
 
     // Init manager
-    ::fwServices::ConfigTemplateManager::sptr configTemplateManager;
-    configTemplateManager = ::fwServices::ConfigTemplateManager::New();
-    configTemplateManager->setConfig( m_viewConfigId, "::fwServices::ServiceObjectConfig" );
-    configTemplateManager->setFieldAdaptors( finalMap );
+    ::fwRuntime::ConfigurationElement::csptr config =
+            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_viewConfigId, finalMap );
+    ::fwServices::AppConfigManager::sptr configTemplateManager = ::fwServices::AppConfigManager::New();
+    configTemplateManager->setConfig( config );
 
 
-    std::string fieldID = "::fwServices::ServiceObjectConfig";
+    std::string fieldID = "::fwServices::registry::AppConfig";
     std::string closableFieldID = "closable";
 
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();

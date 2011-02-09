@@ -1,6 +1,10 @@
 <plugin id="TutoConfigurations">
 
-<extension id="tutoDataServiceBasicConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>tutoDataServiceBasicConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <!-- In tutoDataServiceBasic, the central data  object is a ::fwData::Image type.-->
     <object type="::fwData::Image">
@@ -56,6 +60,8 @@
         <stop type="::fwGui::IFrameSrv" />
 
     </object>
-</extension>
+
+        </config>
+    </extension>
 
 </plugin>

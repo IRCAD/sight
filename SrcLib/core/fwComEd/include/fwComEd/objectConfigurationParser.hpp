@@ -14,7 +14,7 @@
 
 #include <fwServices/IXMLParser.hpp>
 
-#include <fwServices/ConfigTemplateManager.hpp>
+#include <fwServices/AppConfigManager.hpp>
 
 #include "fwComEd/export.hpp"
 
@@ -110,7 +110,7 @@ private :
     /// To verify some conditions in xml file
     bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
 
-    std::vector< ::fwServices::ConfigTemplateManager::sptr > m_ctmContainer;
+    std::vector< ::fwServices::AppConfigManager::sptr > m_ctmContainer;
 };
 
 

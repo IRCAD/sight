@@ -1,6 +1,10 @@
 <plugin id="tuto">
 
-    <extension id="tuto" implements="::fwServices::ServiceObjectConfig">
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>tuto</id>
+        <type>standard</type>
+        <config>
+        
 
         <object type="::fwData::Composite" >
         
@@ -219,5 +223,7 @@
 
         </object>
 
+    
+        </config>
     </extension>
 </plugin>

@@ -46,82 +46,82 @@ bool ICompositeParser::refObjectValidator( ::fwRuntime::ConfigurationElement::sp
 //------------------------------------------------------------------------------
 
 void ICompositeParser::updating( ) throw(fwTools::Failed)
-                {
-    // Declaration of attributes values
-    const std::string OBJECT_BUILD_MODE = "src";
-    const std::string BUILD_OBJECT = "new";
-    const std::string GET_OBJECT = "ref";
+{
+    SLM_FATAL("Sorry, this method is depreciated.");
 
-    ::fwRuntime::ConfigurationElement::sptr _cfgElement = this->m_configuration;
-    ::fwData::Composite::sptr dataComposite = this->getObject< ::fwData::Composite >() ;
-    assert( dataComposite ) ;
-
-    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ; !(configEltIter == _cfgElement->end()) ; ++configEltIter)
-    {
-
-        if( (*configEltIter)->getName() == "item" )
-        {
-            ::fwRuntime::ConfigurationElement::sptr itemConfigElem = (*configEltIter);
-
-            // Test build mode
-            std::string buildMode = BUILD_OBJECT;
-
-            if ( (*configEltIter)->hasAttribute( OBJECT_BUILD_MODE ) )
-            {
-                buildMode = itemConfigElem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
-            }
-
-
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", itemConfigElem->hasAttribute("key") );
-            std::string key = itemConfigElem->getExistingAttributeValue("key");
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.", ! key.empty() );
-            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", itemConfigElem->size() == 1 && (*itemConfigElem->begin())->getName() == "object" );
-
-            if( buildMode == BUILD_OBJECT )
-            {
-                // Test if key already exist in composite
-                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the composite.", dataComposite->find( key ) == dataComposite->end() );
-
-                // Create and manage object config
-                ::fwTools::Object::sptr localObj = ::fwServices::New( * ( itemConfigElem->begin() ) ) ;
-
-                // Add object
-                SLM_ASSERT("Sorry an ::fwData::Composite can contain only ::fwData::Object", ::fwData::Object::dynamicCast( localObj ) );
-                (*dataComposite)[ key ] = ::fwData::Object::dynamicCast( localObj );
-
-            }
-            else // if( buildMode == GET_OBJECT )
-            {
-                // Test if key already exist in composite
-                OSLM_ASSERT("Sorry the key "<< key <<" not exists in the composite.", dataComposite->find( key ) != dataComposite->end() );
-
-                ::fwData::Object::sptr objRef = (*dataComposite)[ key ];
-
-                ::fwRuntime::ConfigurationElement::sptr objectConfigElem = ( * ( itemConfigElem->begin() ) );
-
-                OSLM_ASSERT("Sorry, for an item reference, the xml subelement \"object\" does not have attributes.", objectConfigElem->getAttributes().size() == 0 );
-                OSLM_ASSERT("Sorry, some subelement of element \"object\" are not supported.", refObjectValidator( objectConfigElem ) );
-                ::fwServices::addServicesToObjectFromCfgElem( objRef, objectConfigElem );
-            }
-        }
-    }
-
-    //    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ; !(configEltIter == _cfgElement->end()) ; ++configEltIter)
-    //    {
-    //        if( (*configEltIter)->getName() == "object" )
-    //        {
-    //            // Configuring the input/output
-    //            ::fwTools::Object::sptr localObj = ::fwServices::New( (*configEltIter) ) ;
-    //            assert( localObj ) ;
-    //            // Inserting initialized object in processObject
-    //            SLM_ASSERT("Sorry, attribute id is missing", (*configEltIter)->hasAttribute("id") ) ;
-    //            std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
-    //            assert( ::fwData::Object::dynamicCast(localObj ) );
-    //            assert( dataComposite->getRefMap().find(_id) == dataComposite->getRefMap().end() ) ;
-    //            dataComposite->getRefMap()[_id] = ::fwData::Object::dynamicCast(localObj ) ;
-    //        }
-    //    }
+//    // Declaration of attributes values
+//    const std::string OBJECT_BUILD_MODE = "src";
+//    const std::string BUILD_OBJECT = "new";
+//    const std::string GET_OBJECT = "ref";
+//
+//    ::fwRuntime::ConfigurationElement::sptr _cfgElement = this->m_configuration;
+//    ::fwData::Composite::sptr dataComposite = this->getObject< ::fwData::Composite >() ;
+//    assert( dataComposite ) ;
+//
+//    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ; !(configEltIter == _cfgElement->end()) ; ++configEltIter)
+//    {
+//
+//        if( (*configEltIter)->getName() == "item" )
+//        {
+//            // Test build mode
+//            std::string buildMode = BUILD_OBJECT;
+//
+//            if ( (*configEltIter)->hasAttribute( OBJECT_BUILD_MODE ) )
+//            {
+//                buildMode = itemConfigElem->getExistingAttributeValue( OBJECT_BUILD_MODE );
+//                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+//            }
+//
+//
+//            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", itemConfigElem->hasAttribute("key") );
+//            std::string key = itemConfigElem->getExistingAttributeValue("key");
+//            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.", ! key.empty() );
+//            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", itemConfigElem->size() == 1 && (*itemConfigElem->begin())->getName() == "object" );
+//
+//            if( buildMode == BUILD_OBJECT )
+//            {
+//                // Test if key already exist in composite
+//                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the composite.", dataComposite->find( key ) == dataComposite->end() );
+//
+//                // Create and manage object config
+//                ::fwTools::Object::sptr localObj = ::fwServices::New( * ( itemConfigElem->begin() ) ) ;
+//
+//                // Add object
+//                SLM_ASSERT("Sorry an ::fwData::Composite can contain only ::fwData::Object", ::fwData::Object::dynamicCast( localObj ) );
+//                (*dataComposite)[ key ] = ::fwData::Object::dynamicCast( localObj );
+//
+//            }
+//            else // if( buildMode == GET_OBJECT )
+//            {
+//                // Test if key already exist in composite
+//                OSLM_ASSERT("Sorry the key "<< key <<" not exists in the composite.", dataComposite->find( key ) != dataComposite->end() );
+//
+//                ::fwData::Object::sptr objRef = (*dataComposite)[ key ];
+//
+//                ::fwRuntime::ConfigurationElement::sptr objectConfigElem = ( * ( itemConfigElem->begin() ) );
+//
+//                OSLM_ASSERT("Sorry, for an item reference, the xml subelement \"object\" does not have attributes.", objectConfigElem->getAttributes().size() == 0 );
+//                OSLM_ASSERT("Sorry, some subelement of element \"object\" are not supported.", refObjectValidator( objectConfigElem ) );
+//                ::fwServices::addServicesToObjectFromCfgElem( objRef, objectConfigElem );
+//            }
+//        }
+//    }
+//
+//    //    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ; !(configEltIter == _cfgElement->end()) ; ++configEltIter)
+//    //    {
+//    //        if( (*configEltIter)->getName() == "object" )
+//    //        {
+//    //            // Configuring the input/output
+//    //            ::fwTools::Object::sptr localObj = ::fwServices::New( (*configEltIter) ) ;
+//    //            assert( localObj ) ;
+//    //            // Inserting initialized object in processObject
+//    //            SLM_ASSERT("Sorry, attribute id is missing", (*configEltIter)->hasAttribute("id") ) ;
+//    //            std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
+//    //            assert( ::fwData::Object::dynamicCast(localObj ) );
+//    //            assert( dataComposite->getRefMap().find(_id) == dataComposite->getRefMap().end() ) ;
+//    //            dataComposite->getRefMap()[_id] = ::fwData::Object::dynamicCast(localObj ) ;
+//    //        }
+//    //    }
                 }
 
 //------------------------------------------------------------------------------
@@ -136,27 +136,25 @@ void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
     ::fwData::Composite::sptr dataComposite = ::fwData::Composite::dynamicCast(_obj);
     SLM_ASSERT("Sorry, object given in parameter is not a fwData::Composite",dataComposite);
 
-    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = m_cfg->begin() ; !(configEltIter == m_cfg->end()) ; ++configEltIter)
+    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
     {
-
-        if( (*configEltIter)->getName() == "item" )
+        if( elem->getName() == "item" )
         {
-            ::fwRuntime::ConfigurationElement::sptr itemConfigElem = (*configEltIter);
 
             // Test build mode
             std::string buildMode = BUILD_OBJECT;
 
-            if ( (*configEltIter)->hasAttribute( OBJECT_BUILD_MODE ) )
+            if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
-                buildMode = itemConfigElem->getExistingAttributeValue( OBJECT_BUILD_MODE );
+                buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
                 OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
 
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", itemConfigElem->hasAttribute("key") );
-            std::string key = itemConfigElem->getExistingAttributeValue("key");
+            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", elem->hasAttribute("key") );
+            std::string key = elem->getExistingAttributeValue("key");
             SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.", ! key.empty() );
-            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", itemConfigElem->size() == 1 && (*itemConfigElem->begin())->getName() == "object" );
+            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", elem->size() == 1 && (*elem->getElements().begin())->getName() == "object" );
 
             if( buildMode == BUILD_OBJECT )
             {
@@ -164,8 +162,8 @@ void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
                 OSLM_ASSERT("Sorry the key "<< key <<" already exists in the composite.", dataComposite->find( key ) == dataComposite->end() );
 
                 // Create and manage object config
-                ::fwServices::ConfigTemplateManager::NewSptr ctm;
-                ctm->setConfig( * ( itemConfigElem->begin() ) );
+                ::fwServices::AppConfigManager::NewSptr ctm;
+                ctm->setConfig( * ( elem->getElements().begin() ) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
                 ::fwTools::Object::sptr localObj = ctm->getConfigRoot();
@@ -184,7 +182,7 @@ void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
 
                 ::fwData::Object::sptr objRef = (*dataComposite)[ key ];
 
-                ::fwRuntime::ConfigurationElement::sptr objectConfigElem = ( * ( itemConfigElem->begin() ) );
+                ::fwRuntime::ConfigurationElement::sptr objectConfigElem = ( * ( elem->getElements().begin() ) );
 
                 OSLM_ASSERT("Sorry, for an item reference, the xml subelement \"object\" does not have attributes.", objectConfigElem->getAttributes().size() == 0 );
                 OSLM_ASSERT("Sorry, some subelement of element \"object\" are not supported.", refObjectValidator( objectConfigElem ) );
@@ -198,7 +196,7 @@ void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
 
 void ICompositeParser::startConfig()
 {
-    BOOST_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
         ctm->start();
     }
@@ -208,7 +206,7 @@ void ICompositeParser::startConfig()
 
 void ICompositeParser::updateConfig()
 {
-    BOOST_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
         ctm->update();
     }
@@ -218,7 +216,7 @@ void ICompositeParser::updateConfig()
 
 void ICompositeParser::stopConfig()
 {
-    BOOST_REVERSE_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+    BOOST_REVERSE_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
         ctm->stop();
     }
@@ -228,7 +226,7 @@ void ICompositeParser::stopConfig()
 
 void ICompositeParser::destroyConfig()
 {
-    BOOST_REVERSE_FOREACH( ::fwServices::ConfigTemplateManager::sptr ctm, m_ctmContainer )
+    BOOST_REVERSE_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
         ctm->destroy();
     }
@@ -239,47 +237,49 @@ void ICompositeParser::destroyConfig()
 
 void IProcessObjectParser::updating( ) throw(fwTools::Failed)
                 {
-    ::fwRuntime::ConfigurationElement::sptr _cfgElement = this->m_configuration ;
-    ::fwData::ProcessObject::sptr dataProcessObject = this->getObject< ::fwData::ProcessObject >() ;
-    assert( dataProcessObject ) ;
-
-    ///// INPUTS
-    ::fwRuntime::ConfigurationElement::sptr inputParameterList = _cfgElement->findConfigurationElement("inputs");
-    if( inputParameterList )
-    {
-        assert( inputParameterList ) ;
-        this->configureIO(dataProcessObject->getInputs(), inputParameterList ) ;
-    }
-    ///// OUTPUTS
-    ::fwRuntime::ConfigurationElement::sptr outputParameterList = _cfgElement->findConfigurationElement("outputs");
-    if( outputParameterList )
-    {
-        assert( outputParameterList ) ;
-        this->configureIO(dataProcessObject->getOutputs(), outputParameterList ) ;
-    }
+    SLM_FATAL("Sorry, this method is depreciated.");
+//    ::fwRuntime::ConfigurationElement::sptr _cfgElement = this->m_configuration ;
+//    ::fwData::ProcessObject::sptr dataProcessObject = this->getObject< ::fwData::ProcessObject >() ;
+//    assert( dataProcessObject ) ;
+//
+//    ///// INPUTS
+//    ::fwRuntime::ConfigurationElement::sptr inputParameterList = _cfgElement->findConfigurationElement("inputs");
+//    if( inputParameterList )
+//    {
+//        assert( inputParameterList ) ;
+//        this->configureIO(dataProcessObject->getInputs(), inputParameterList ) ;
+//    }
+//    ///// OUTPUTS
+//    ::fwRuntime::ConfigurationElement::sptr outputParameterList = _cfgElement->findConfigurationElement("outputs");
+//    if( outputParameterList )
+//    {
+//        assert( outputParameterList ) ;
+//        this->configureIO(dataProcessObject->getOutputs(), outputParameterList ) ;
+//    }
                 }
 
 //------------------------------------------------------------------------------
 
 void IProcessObjectParser::configureIO( ::fwTools::Object::sptr io, const ::fwRuntime::ConfigurationElement::sptr list)
 {
-    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = list->begin() ; !(configEltIter == list->end()) ; ++configEltIter)
-    {
-        OSLM_TRACE("ENTERING NAME " << (*configEltIter)->getName());
-        /// Configuring the input/output
-        ::fwTools::Object::sptr localObj = ::fwServices::New( (*configEltIter) ) ;
-        assert( localObj ) ;
-        // Inserting initialized object in processObject
-        SLM_ASSERT("Sorry, attribute id is missing", (*configEltIter)->hasAttribute("id") ) ;
-        std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
-
-        ::fwTools::Field::sptr ioField = ::fwTools::Field::dynamicCast(io);
-        assert( ioField);
-        if ( ioField->getField( _id ).get() == NULL )
-        {
-            ioField->addFieldElement( _id, localObj ) ;
-        }
-    }
+    SLM_FATAL("Sorry, this method is depreciated.");
+//    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = list->begin() ; !(configEltIter == list->end()) ; ++configEltIter)
+//    {
+//        OSLM_TRACE("ENTERING NAME " << (*configEltIter)->getName());
+//        /// Configuring the input/output
+//        ::fwTools::Object::sptr localObj = ::fwServices::New( (*configEltIter) ) ;
+//        assert( localObj ) ;
+//        // Inserting initialized object in processObject
+//        SLM_ASSERT("Sorry, attribute id is missing", (*configEltIter)->hasAttribute("id") ) ;
+//        std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
+//
+//        ::fwTools::Field::sptr ioField = ::fwTools::Field::dynamicCast(io);
+//        assert( ioField);
+//        if ( ioField->getField( _id ).get() == NULL )
+//        {
+//            ioField->addFieldElement( _id, localObj ) ;
+//        }
+//    }
 }
 
 //------------------------------------------------------------------------------

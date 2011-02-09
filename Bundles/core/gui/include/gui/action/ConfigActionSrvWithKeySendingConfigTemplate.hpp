@@ -6,7 +6,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-//#include <fwServices/ConfigTemplateManager.hpp>
+//#include <fwServices/AppConfigManager.hpp>
 
 #include <gui/action/ConfigActionSrv.hpp>
 

@@ -1,5 +1,9 @@
 ﻿<plugin id="TutoConfigurations">
-<extension id="tutoDataServiceConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>tutoDataServiceConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <!-- The root data object in tutoDataService is a ::fwData::TriangularMesh. -->
     <object type="::fwData::TriangularMesh">
@@ -90,5 +94,7 @@
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>
 </plugin>

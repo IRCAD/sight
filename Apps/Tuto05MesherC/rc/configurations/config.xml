@@ -1,6 +1,10 @@
 <plugin id="MesherV3Config">
 
-    <extension id="MesherV3Config" implements="::fwServices::ServiceObjectConfig">
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>MesherV3Config</id>
+        <type>standard</type>
+        <config>
+        
 
         <!--  Composite data creation. -->
         <object type="::fwData::Composite">
@@ -210,5 +214,7 @@
             <stop type="::fwGui::IFrameSrv" />
 
         </object>
+    
+        </config>
     </extension>
 </plugin>    

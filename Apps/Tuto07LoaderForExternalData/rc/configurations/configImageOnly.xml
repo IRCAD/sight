@@ -1,5 +1,9 @@
 <plugin id="tutoLoaderExternalDataConfig">
-<extension id="tutoLoaderExternalDataConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>tutoLoaderExternalDataConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <!-- The root data object in TutoConfigurations is a ::fwData::Composite. because it has to manage several objects -->
     <object type="::fwData::Composite">
@@ -99,5 +103,7 @@
         <stop uid="newOBject2newImage"/>
         <stop type="::fwGui::IFrameSrv" />
     </object>
-</extension>
+
+        </config>
+    </extension>
 </plugin>

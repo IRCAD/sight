@@ -5,7 +5,11 @@
 <xi:include href="camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
 <xi:include href="worldViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
 
-<extension id="PoC03MeshManualRegistration" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>PoC03MeshManualRegistration</id>
+        <type>standard</type>
+        <config>
+        
 
 <object type="::fwData::Composite">
 
@@ -199,6 +203,8 @@
         <stop uid="MyIHM" />
 
 </object>
-</extension>
+
+        </config>
+    </extension>
 
 </plugin>

@@ -1,5 +1,9 @@
 <plugin id="TutoGenericSceneConfiguration">
-<extension id="Tuto08GenericScene" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>Tuto08GenericScene</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
         <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
@@ -180,6 +184,8 @@
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>
 
 </plugin>

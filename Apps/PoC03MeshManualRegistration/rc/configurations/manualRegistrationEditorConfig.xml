@@ -1,4 +1,8 @@
-<extension id="manualRegistrationEditorConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>manualRegistrationEditorConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
 
@@ -67,4 +71,6 @@
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>

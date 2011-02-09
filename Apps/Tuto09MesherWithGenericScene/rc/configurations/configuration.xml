@@ -1,6 +1,10 @@
 <plugin id="Tuto09MesherWithGenericScene">
 
-<extension id="Tuto09MesherWithGenericScene" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>Tuto09MesherWithGenericScene</id>
+        <type>standard</type>
+        <config>
+        
 <object type="::fwData::Composite">
 
     <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
@@ -250,6 +254,8 @@
     <stop uid="MyIHM"/>
 
 </object>
-</extension>
+
+        </config>
+    </extension>
 
 </plugin>

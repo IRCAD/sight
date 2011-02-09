@@ -1,5 +1,9 @@
 ﻿<plugin id="TutoConfigurations">
-<extension id="tutoComChannelConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>tutoComChannelConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <!-- In tutoComChannel, the main data object type is ::fwData::TriangularMesh.-->
     <object type="::fwData::TriangularMesh">
@@ -102,5 +106,7 @@
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>
 </plugin>
