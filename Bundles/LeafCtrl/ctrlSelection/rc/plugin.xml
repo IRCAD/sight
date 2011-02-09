@@ -1,122 +1,130 @@
 <plugin id="ctrlSelection" class="::ctrlSelection::Plugin" >
-    
+
     <library name="ctrlSelection" />
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    
-    <point id="::ctrlSelection::IManagerSrv">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::ctrlSelection::IUpdaterSrv">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::ctrlSelection::IWrapperSrv">
-        <implements>::fwServices::IService</implements>
-    </point>
 
-    <point id="::ctrlSelection::updater::AcqFromPDBUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
- 
-    <point id="::ctrlSelection::updater::ImageFromPDBUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::updater::AcqFromPDBSelectorUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
- 
-    <point id="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::updater::ResecFromPDBUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::updater::ResecDBFromPDBUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
- 
-    <point id="::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::updater::PlaneListFromPDBUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::updater::ObjFromMsgUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-   <point id="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-   </point>
-    
-   <point id="::ctrlSelection::updater::SelectedNodeIOUpdaterSrv">
-        <implements>::ctrlSelection::IUpdaterSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::manager::SwapperSrv">
-        <implements>::ctrlSelection::IManagerSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::manager::SimpleSwapperSrv">
-        <implements>::ctrlSelection::IManagerSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::manager::MedicalImageManagerSrv">
-        <implements>::ctrlSelection::IManagerSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::ctrlSelection::MedicalImageSrv">
-        <implements>::fwServices::IController</implements>
-        <implements>::fwData::Image</implements>
-    </point>
-    
-    
-    <point id="::ctrlSelection::wrapper::GraphWrapperSrv">
-        <implements>::ctrlSelection::IWrapperSrv</implements>
-        <implements>::fwData::Graph</implements>
-    </point>
-    
-    <point id="::ctrlSelection::wrapper::ImageWrapperSrv">
-        <implements>::ctrlSelection::IWrapperSrv</implements>
-        <implements>::fwData::Image</implements>
-    </point>
-    
-    <point id="::ctrlSelection::wrapper::PatientDBWrapperSrv">
-        <implements>::ctrlSelection::IWrapperSrv</implements>
-        <implements>::fwData::PatientDB</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::AcqFromPDBUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::ImageFromPDBUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::AcqFromPDBSelectorUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::ResecFromPDBUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::ResecDBFromPDBUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::PlaneListFromPDBUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::ObjFromMsgUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+   <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+   <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::SelectedNodeIOUpdaterSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IManagerSrv</type>
+        <service>::ctrlSelection::manager::SwapperSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IManagerSrv</type>
+        <service>::ctrlSelection::manager::SimpleSwapperSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IManagerSrv</type>
+        <service>::ctrlSelection::manager::MedicalImageManagerSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ctrlSelection::MedicalImageSrv</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IWrapperSrv</type>
+        <service>::ctrlSelection::wrapper::GraphWrapperSrv</service>
+        <object>::fwData::Graph</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IWrapperSrv</type>
+        <service>::ctrlSelection::wrapper::ImageWrapperSrv</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IWrapperSrv</type>
+        <service>::ctrlSelection::wrapper::PatientDBWrapperSrv</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
 
 
 </plugin>

@@ -5,9 +5,10 @@
     <requirement id="dataReg" />
     <requirement id="gui" />
 
-    <point id="::opImageFilter::action::ImageFilter" >
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::opImageFilter::action::ImageFilter</service>
+        <object>::fwTools::Object</object>
+    </extension>
     
 </plugin>

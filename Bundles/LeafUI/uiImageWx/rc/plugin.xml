@@ -6,21 +6,24 @@
     <requirement id="gui"/>
     
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::SliceIndexPositionEditor , ::fwData::Image ) ;-->
-    <point id="::uiImage::SliceIndexPositionEditor" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::Image</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiImage::SliceIndexPositionEditor</service>
+        <object>::fwData::Image</object>
+    </extension>
     
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiImage::SliceListEditor, ::fwData::Image ) ;-->
-    <point id="::uiImage::SliceListEditor" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::Image</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiImage::SliceListEditor</service>
+        <object>::fwData::Image</object>
+    </extension>
     
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiImage::ShowScanEditor, ::fwData::Image ) ;-->
-    <point id="::uiImage::ShowScanEditor" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::Image</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiImage::ShowScanEditor</service>
+        <object>::fwData::Image</object>
+    </extension>
     
 </plugin>
