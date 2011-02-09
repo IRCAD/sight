@@ -54,17 +54,25 @@ ConfigurationElementContainer::Iterator ConfigurationElementContainer::begin()
     return m_elements.begin();
 }
 
-
-
 ConfigurationElementContainer::Iterator ConfigurationElementContainer::end()
 {
     return m_elements.end();
 }
 
-const ConfigurationElementContainer::Container ConfigurationElementContainer::getElements()
+const ConfigurationElementContainer::Container ConfigurationElementContainer::getElements() const
 {
     return m_elements;
 }
+
+//-----------------------------------------------------------------------------
+
+bool ConfigurationElementContainer::hasConfigurationElement( const std::string & name ) const
+{
+    Container::const_iterator found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
+    return found != m_elements.end();
+}
+
+//-----------------------------------------------------------------------------
 
 const ::boost::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement( const std::string & name ) const
 {
