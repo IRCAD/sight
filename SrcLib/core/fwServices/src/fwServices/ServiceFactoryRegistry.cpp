@@ -73,7 +73,7 @@ void ServiceFactoryRegistry::parseBundleInformationForObject( SrvRegContainer & 
             else
             {
 
-                OSLM_WARN( "Object classname =  " << id );
+                OSLM_TRACE( "Object classname =  " << id );
 
                 ExtensionContainer  extElements2;
                 Inserter            extInserter2(extElements2);
