@@ -1,7 +1,7 @@
 <plugin id="tutoPythonConfig">
 
     <extension id="tutoPythonConfig" implements="::fwServices::ServiceObjectConfig">
-        <object type="::fwTools::Object">
+        <object type="::fwData::String">
 
             <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
                 <gui>
@@ -16,7 +16,7 @@
                 </gui>
                 <registry>
                     <toolBar sid="toolBar" start="yes" />
-                    <view sid="view" start="no" />
+                    <view sid="codeEditor" start="yes" />
                 </registry>
             </service>
 
@@ -34,11 +34,13 @@
             </service>
 
 
-            <service uid="PyTest" type="::fwGui::IActionSrv" implementation="::uiPython::action::Test" autoComChannel="no">
+            <service uid="PyTest" type="::fwGui::IActionSrv" implementation="::uiPython::action::StringRun" autoComChannel="no">
                 <state active="true" />
             </service>
 
             <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+            <service uid="codeEditor" type="::gui::editor::IEditor" implementation="::guiQt::editor::Code" autoComChannel="yes" />
 
 
 
