@@ -29,7 +29,7 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
 
-#include "fwServices/ServiceFactoryRegistry.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
 
 
 namespace fwServices
@@ -105,7 +105,7 @@ void ObjectServiceRegistry::initializeRootObject()
     SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
     SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
 
-    ::fwServices::ServiceFactoryRegistry::getDefault()->parseBundleInformation();
+    ::fwServices::registry::ServiceFactory::getDefault()->parseBundleInformation();
 
 
     // ToDo Correct this hack
@@ -187,7 +187,7 @@ void ObjectServiceRegistry::uninitializeRootObject()
         SLM_TRACE("Profile Stopped");
 
         // Clear all service factories
-        ServiceFactoryRegistry::getDefault()->clearFactory();
+        ::fwServices::registry::ServiceFactory::getDefault()->clearFactory();
 
         // Clear all factories before stop application.
         ::fwTools::ClassFactoryRegistry::getFactories().clear();

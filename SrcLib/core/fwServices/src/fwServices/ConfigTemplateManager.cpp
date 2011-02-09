@@ -412,7 +412,7 @@ void ConfigTemplateManager::loadConfig()
     }
 
     std::string srvImpl = ::fwServices::getDefaultImplementationIds( obj , "::fwServices::IXMLParser" );
-    IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( "::fwServices::IXMLParser", srvImpl );
+    IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwServices::IXMLParser", srvImpl );
     m_objectParser = ::fwServices::IXMLParser::dynamicCast( srv );
     m_objectParser->setObjectConfig( _cfgElement );
     m_objectParser->createConfig( obj );
@@ -588,7 +588,7 @@ void ConfigTemplateManager::addServicesToObjectFromCfgElem( ::fwTools::Object::s
 
 ::fwServices::IService::sptr ConfigTemplateManager::add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId,  std::string uid )
 {
-    IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( serviceId, _implementationId );
+    IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceId, _implementationId );
     ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
 
     if ( ! uid.empty() )

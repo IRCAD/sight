@@ -16,7 +16,7 @@
 #include <fwTools/ClassFactory.hpp>
 #include <fwTools/ClassFactoryRegistry.hpp>
 
-#include "fwServices/ServiceFactoryRegistry.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
 
 #define REGISTER_BINDING_ID_CPY_V2( BaseClassType , SubClassType , KeyType, keyvalue, id )                                                            \
     static const KeyType  BOOST_PP_CAT(registredKeyValue, id ) = keyvalue;                                                                         \
@@ -49,7 +49,7 @@ public:
 
         // register it
         ::fwTools::ClassFactoryRegistry::addFactory( af );
-        ::fwServices::ServiceFactoryRegistry::getDefault()->addFactory( af, ::fwCore::TypeDemangler<SUBCLASS>().getClassname(), key.first, key.second);
+        ::fwServices::registry::ServiceFactory::getDefault()->addFactory( af, ::fwCore::TypeDemangler<SUBCLASS>().getClassname(), key.first, key.second);
     }
 
 };

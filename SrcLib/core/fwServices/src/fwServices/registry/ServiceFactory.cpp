@@ -13,23 +13,26 @@
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
 
-#include "fwServices/ServiceFactoryRegistry.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
+
 
 namespace fwServices
+{
+namespace registry
 {
 
 //-----------------------------------------------------------------------------
 
-ServiceFactoryRegistry::sptr ServiceFactoryRegistry::getDefault()
+ServiceFactory::sptr ServiceFactory::getDefault()
 {
     SLM_TRACE_FUNC();
-    static ServiceFactoryRegistry::sptr m_instance = ServiceFactoryRegistry::New();
+    static ServiceFactory::sptr m_instance = ServiceFactory::New();
     return m_instance;
 }
 
 //-----------------------------------------------------------------------------
 
-ServiceFactoryRegistry::~ServiceFactoryRegistry()
+ServiceFactory::~ServiceFactory()
 {
     SLM_TRACE_FUNC();
 }
@@ -48,7 +51,7 @@ void printXml( std::vector< ::boost::shared_ptr< ::fwRuntime::ConfigurationEleme
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactoryRegistry::parseBundleInformationForObject( SrvRegContainer & _bundleInfoMap )
+void ServiceFactory::parseBundleInformationForObject( SrvRegContainer & _bundleInfoMap )
 {
     typedef std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > ExtensionContainer;
     typedef std::back_insert_iterator< ExtensionContainer > Inserter;
@@ -103,40 +106,63 @@ void ServiceFactoryRegistry::parseBundleInformationForObject( SrvRegContainer & 
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactoryRegistry::parseBundleInformation()
+void ServiceFactory::parseBundleInformation()
 {
 
     SrvRegContainer bundleInfoMap;
 
-    typedef std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > ExtensionContainer;
-    typedef std::back_insert_iterator< ExtensionContainer > Inserter;
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef ::boost::shared_ptr< ::fwRuntime::Extension > ExtensionType;
 
-    ExtensionContainer  extElements;
-    Inserter            extInserter(extElements);
-
-
-    // Retrieve appropriate extensions
-    ::fwRuntime::getAllExtensionsForPoint ( "::fwServices::IService" , extInserter );
-    for( ExtensionContainer::iterator iter = extElements.begin() ; iter != extElements.end() ; ++iter )
+    std::vector< ExtensionType >  extElements;
+    extElements = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::ServiceFactory");
+    BOOST_FOREACH(ExtensionType extElt , extElements)
     {
-        ExtensionContainer  extElements2;
-        Inserter            extInserter2(extElements2);
+        std::vector< ConfigurationType > cfgEltVec = extElt->getElements();
+        SLM_ASSERT("extension element MUST have 3 or 4 elements", cfgEltVec.size() == 3 || cfgEltVec.size() == 4);
+        std::string type = "";
+        std::string service ="";
+        std::string object= "";
+        std::string desc= "";
 
-        ::fwRuntime::getAllExtensionsForPoint ( (*iter)->getIdentifier() , extInserter2 );
-        for(    ExtensionContainer::iterator iter2 = extElements2.begin() ;
-                iter2 != extElements2.end() ;
-                ++iter2 )
+        BOOST_FOREACH(ConfigurationType cfgElt, cfgEltVec)
         {
-            ServiceFactoryInfo::NewSptr info;
-            info->serviceType = (*iter)->getIdentifier();
-            info->bundle = (*iter2)->getBundle();
-            bundleInfoMap[ (*iter2)->getIdentifier() ] = info;
+            std::string elt = cfgElt->getName();
+            if(elt == "type")
+            {
+                type = cfgElt->getValue();
+            }
+            else if(elt == "service")
+            {
+                service = cfgElt->getValue();
+            }
+            else if(elt == "object")
+            {
+                object = cfgElt->getValue();
+            }
+            else if(elt == "desc")
+            {
+                desc = cfgElt->getValue();
+            }
+            else
+            {
+                SLM_FATAL("Unknown element !");
+            }
         }
+        SLM_ASSERT("Missing type element.", !type.empty());
+        SLM_ASSERT("Missing service element.", !service.empty());
+        SLM_ASSERT("Missing object element.", !object.empty());
+
+        ServiceFactoryInfo::NewSptr info;
+        info->serviceType = type;
+        info->objectImpl = object;
+        info->desc = desc;
+
+        info->bundle = cfgEltVec[0]->getBundle();
+        SLM_ASSERT("Bundle not find.", info->bundle );
+
+        bundleInfoMap[ service] = info;
     }
-
-
-    parseBundleInformationForObject( bundleInfoMap );
-
     // Verify object
     for ( SrvRegContainer::iterator iter = bundleInfoMap.begin();
             iter != bundleInfoMap.end();
@@ -150,8 +176,8 @@ void ServiceFactoryRegistry::parseBundleInformation()
     }
 
     //Print information
-    //printInfoMap( bundleInfoMap );
-    //printInfoMap( m_srvImplTosrvInfo )
+    printInfoMap( bundleInfoMap );
+//    printInfoMap( m_srvImplTosrvInfo );
 
     // Merge data info
     for ( SrvRegContainer::iterator iterBundle = bundleInfoMap.begin();
@@ -184,10 +210,10 @@ void ServiceFactoryRegistry::parseBundleInformation()
 
 //-----------------------------------------------------------------------------
 
-IService::sptr ServiceFactoryRegistry::create( const std::string & _srvType, const std::string & _srvImpl )
+IService::sptr ServiceFactory::create( const std::string & _srvType, const std::string & _srvImpl )
 {
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
-    OSLM_ASSERT("Sorry don't find in ServiceFactoryRegistry the service called " << _srvImpl , iter != m_srvImplTosrvInfo.end() );
+    OSLM_ASSERT("Sorry don't find in ServiceFactory the service called " << _srvImpl , iter != m_srvImplTosrvInfo.end() );
     ServiceFactoryInfo::sptr info = iter->second;
 
     OSLM_DEBUG("SR create a new service ( classname = " << _srvImpl << " )");
@@ -207,9 +233,9 @@ IService::sptr ServiceFactoryRegistry::create( const std::string & _srvType, con
     checkServicesNotDeclaredInPluginXml();
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------0----------------------------------
 
-void ServiceFactoryRegistry::addFactory
+void ServiceFactory::addFactory
 ( ::boost::shared_ptr< ::fwTools::IClassFactory > _factory,
         const std::string & simpl,
         const std::string & stype,
@@ -245,14 +271,14 @@ void ServiceFactoryRegistry::addFactory
 
 //-----------------------------------------------------------------------------
 
-ServiceFactoryRegistry::ServiceFactoryRegistry()
+ServiceFactory::ServiceFactory()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactoryRegistry::printInfoMap( const SrvRegContainer & src )
+void ServiceFactory::printInfoMap( const SrvRegContainer & src )
 {
     //Print information
     for (   SrvRegContainer::const_iterator iter = src.begin();
@@ -273,7 +299,7 @@ void ServiceFactoryRegistry::printInfoMap( const SrvRegContainer & src )
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactoryRegistry::checkServicesNotDeclaredInPluginXml()
+void ServiceFactory::checkServicesNotDeclaredInPluginXml()
 {
     //Print information
     for (   SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.begin();
@@ -289,12 +315,39 @@ void ServiceFactoryRegistry::checkServicesNotDeclaredInPluginXml()
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactoryRegistry::clearFactory()
+void ServiceFactory::clearFactory()
 {
     m_srvImplTosrvInfo.clear();
 }
 
 //-----------------------------------------------------------------------------
 
+std::vector< std::string > ServiceFactory::getImplementationIdFromTypeAndObject(std::string type, std::string object)
+{
+    std::vector< std::string > serviceImpl;
+
+    BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
+    {
+        ServiceFactoryInfo::sptr srvInfo = srv.second;
+        if(srvInfo->serviceType == type && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwTools::Object") )
+        {
+            serviceImpl.push_back(srv.first);
+        }
+    }
+    return serviceImpl;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string ServiceFactory::getServiceDescription(std::string srvImpl)
+{
+    std::string srvDescription;
+    SLM_ASSERT("The service " << srvImpl << " is not found.", m_srvImplTosrvInfo.find(srvImpl)!= m_srvImplTosrvInfo.end());
+    srvDescription = m_srvImplTosrvInfo[srvImpl]->desc;
+    return srvDescription;
+}
+
+//-----------------------------------------------------------------------------
+} // namespace registry
 } // namespace fwServices
 

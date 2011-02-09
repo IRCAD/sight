@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_SERVICEFACTORYREGISTRY_HPP_
-#define _FWSERVICES_SERVICEFACTORYREGISTRY_HPP_
+#ifndef _FWSERVICES_REGISTRY_SERVICEFACTORY_HPP_
+#define _FWSERVICES_REGISTRY_SERVICEFACTORY_HPP_
 
 #include <map>
 
@@ -13,6 +13,9 @@
 #include "fwServices/IService.hpp"
 
 namespace fwServices
+{
+
+namespace registry
 {
 
 /**
@@ -33,6 +36,8 @@ class FWSERVICES_CLASS_API ServiceFactoryInfo : public ::fwTools::Object
 
         std::string serviceType;
         std::string objectImpl;
+        /// service description.
+        std::string desc;
 
         ::boost::shared_ptr< ::fwRuntime::Bundle> bundle;
         ::boost::shared_ptr< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > > factory;
@@ -40,21 +45,21 @@ class FWSERVICES_CLASS_API ServiceFactoryInfo : public ::fwTools::Object
 
 
 /**
- * @class ServiceFactoryRegistry
+ * @class ServiceFactory
  * @author  IRCAD (Research and Development Team).
  */
-class FWSERVICES_CLASS_API ServiceFactoryRegistry : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactoryRegistry)(::fwCore::BaseObject), (()), new ServiceFactoryRegistry) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory) ;
 
     /// Return the unique Instance, create it if required at first access
-    FWSERVICES_API static ServiceFactoryRegistry::sptr getDefault();
+    FWSERVICES_API static ServiceFactory::sptr getDefault();
 
     /// Destructor
-    FWSERVICES_API virtual ~ServiceFactoryRegistry();
+    FWSERVICES_API virtual ~ServiceFactory();
 
     /// Parse bundle information to retreive service declaration
     FWSERVICES_API void parseBundleInformation( );
@@ -69,6 +74,12 @@ public:
 
     FWSERVICES_API void clearFactory();
 
+    /// return a vector of service implementation
+    FWSERVICES_API  std::vector< std::string > getImplementationIdFromTypeAndObject(std::string type, std::string object);
+
+    /// return the service description.
+    FWSERVICES_API  std::string getServiceDescription(std::string srvImpl);
+
 protected :
 
     typedef std::map< std::string, ServiceFactoryInfo::sptr > SrvRegContainer;
@@ -78,7 +89,7 @@ protected :
     SrvRegContainer m_srvImplTosrvInfo;
 
     /// Constructor, protected to ensure unique instance (singleton pattern)
-    FWSERVICES_API ServiceFactoryRegistry();
+    FWSERVICES_API ServiceFactory();
 
 private :
 
@@ -92,9 +103,9 @@ private :
     void checkServicesNotDeclaredInPluginXml();
 };
 
-
+} // namespace registry
 } // namespace fwServices
 
-#endif // _FWSERVICES_SERVICEFACTORYREGISTRY_HPP_
+#endif // _FWSERVICES_REGISTRY_SERVICEFACTORY_HPP_
 
 

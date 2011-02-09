@@ -17,6 +17,7 @@
 #include <fwTools/Object.hpp>
 
 #include <fwServices/helper.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/bundle/runtime.hpp>
 #include <fwServices/macros.hpp>
 
@@ -143,12 +144,12 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         // Erase all services of type ::io::IReader on the object
         // TODO : comment this line, because must be useless
         ::fwServices::eraseServices< ::io::IReader >( this->getObject() ) ;
-        availableExtensionsId = ::fwServices::getImplementationIds< ::io::IReader >( this->getObject() ) ;
+        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromTypeAndObject("::io::IReader", this->getObject()->getClassname()) ;
     }
     else // m_mode == WRITER_MODE
     {
         ::fwServices::eraseServices< ::io::IWriter >( this->getObject() ) ;
-        availableExtensionsId = ::fwServices::getImplementationIds< ::io::IWriter >( this->getObject() ) ;
+        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromTypeAndObject("::io::IWriter", this->getObject()->getClassname()) ;
     }
 
     // Filter available extensions and replace id by service description
@@ -170,7 +171,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             ! m_servicesAreExcluded && serviceIsSelectedByUser )
         {
             // Add this service
-            const std::string infoUser = ::fwRuntime::getInfoForPoint( serviceId );
+            const std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
             if (infoUser != "")
             {
                 availableExtensionsMap.push_back( std::pair < std::string, std::string > (serviceId, infoUser) );

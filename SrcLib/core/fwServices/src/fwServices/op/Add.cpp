@@ -122,7 +122,7 @@ namespace fwServices
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {
-    IService::sptr srv = ::fwServices::ServiceFactoryRegistry::getDefault()->create( serviceId, _implementationId );
+    IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceId, _implementationId );
     ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
     return srv;
 }
