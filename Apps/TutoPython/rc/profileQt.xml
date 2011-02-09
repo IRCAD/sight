@@ -1,0 +1,15 @@
+<profile name="tutoPython" version="0.1">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    <activate id="gui" version="0-1" />
+    <activate id="uiPython" version="0-1" />
+    
+    <activate id="guiQt" version="0-1" >
+        <param id="startingMode" value="windows" />
+        <param id="config" value="tutoPythonConfig" />
+        <param id="configFile" value="./Bundles/TutoPython_0-1/configurations/config.xml" />
+    </activate>
+
+    <start id="guiQt" />  
+</profile>

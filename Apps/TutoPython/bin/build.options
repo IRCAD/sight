@@ -1,0 +1,8 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+BUNDLES = [
+    'uiPython',
+    'launcher_0-1',
+ ]
+
+
