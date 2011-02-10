@@ -11,7 +11,7 @@
     <extension-point id="::fwServices::registry::ServiceFactory"/>
 
     <!-- EXTENSION POINT FOR A SERVICE CONFIGURATION -->
-    <extension-point id="::fwServices::ServiceConfig"/>
+    <extension-point id="::fwServices::registry::ServiceConfig"/>
 
     <!-- SPECIFIC SERVICES -->
     <extension implements="::fwServices::registry::ServiceFactory">

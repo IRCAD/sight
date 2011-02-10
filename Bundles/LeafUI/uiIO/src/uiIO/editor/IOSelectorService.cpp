@@ -18,7 +18,7 @@
 
 #include <fwServices/helper.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
-#include <fwServices/bundle/runtime.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -235,12 +235,12 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 
             // Get Config
             bool hasConfigForService = false;
-            ::fwRuntime::ConfigurationElement::sptr srvCfg;
+            ::fwRuntime::ConfigurationElement::csptr srvCfg;
             if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
             {
                 hasConfigForService = true;
-                srvCfg = ::fwServices::bundle::findConfigurationForPoint(  m_serviceToConfig[extensionId] , "::fwServices::ServiceConfig" ) ;
-                SLM_ASSERT("Sorry, there is not service configuration of type ::fwServices::ServiceConfig found", srvCfg ) ;
+                srvCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(  m_serviceToConfig[extensionId] , extensionId ) ;
+                SLM_ASSERT("Sorry, there is not service configuration of type ::fwServices::registry::ServiceConfig found", srvCfg ) ;
             }
 
             // Configure and start service
@@ -249,7 +249,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( this->getObject() , extensionId ) ;
                 if ( hasConfigForService )
                 {
-                    reader->setConfiguration( srvCfg );
+                    reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
                     reader->configure();
                 }
                 reader->start();
@@ -267,7 +267,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject() , extensionId ) ;
                 if ( hasConfigForService )
                 {
-                    writer->setConfiguration( srvCfg );
+                    writer->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
                     writer->configure();
                 }
                 writer->start();

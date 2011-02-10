@@ -19,8 +19,6 @@
         <desc>Export acquisition</desc>
     </extension>
 
-    <extension-point id="::uiIO::editor::IOSelectorServiceConfig"/>
-
 </plugin>
 
 

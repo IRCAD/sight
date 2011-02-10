@@ -29,6 +29,7 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
 
+#include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 
@@ -115,8 +116,11 @@ void ObjectServiceRegistry::initializeRootObject()
     ::fwRuntime::Runtime::getDefault()->addBundle( configBundle );
     configBundle->setEnable( true );
 
+    // register service config
+    ::fwServices::registry::ServiceConfig::getDefault()->parseBundleInformation();
 
     ::fwServices::registry::AppConfig::getDefault()->parseBundleInformation();
+
 
 //    // Research the config extension
 //    bool extensionIsFound = false;
@@ -195,6 +199,9 @@ void ObjectServiceRegistry::uninitializeRootObject()
         SLM_TRACE("Stopping Profile");
         profile->stop();
         SLM_TRACE("Profile Stopped");
+
+         // Clear all service configs
+        ::fwServices::registry::ServiceConfig::getDefault()->clearRegistry();
 
         // Clear all app configuration
         ::fwServices::registry::AppConfig::getDefault()->clearRegistry();
