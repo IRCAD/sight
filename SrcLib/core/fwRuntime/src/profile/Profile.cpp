@@ -86,7 +86,7 @@ void Profile::start()
         {
             if( extension->validate() == Extension::Invalid )
             {
-                OSLM_ERROR( "Validation not ok for bundle = '" << extension->getBundle()->getIdentifier() << "'  (extension id = '" << extension->getIdentifier() << "' )" );
+                OSLM_FATAL( "Validation not ok for bundle = '" << extension->getBundle()->getIdentifier() << "'  (extension id = '" << extension->getIdentifier() << "' )" );
             }
         }
     }

@@ -175,6 +175,10 @@ const bool Validator::validate( xmlNodePtr node )
     {
         OSLM_WARN("Validator::validation NOK, error log = " << getErrorLog() ) ;
         OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() ) ;
+        xmlBufferPtr buffer = xmlBufferCreate();
+        xmlNodeDump( buffer, node->doc, node, 1, 1 );
+        OSLM_WARN("Validator::validation NOK, node :\n " << buffer->content) ;
+        xmlBufferFree( buffer );
     }
 
     xmlSchemaFreeValidCtxt(schemaValidContext);

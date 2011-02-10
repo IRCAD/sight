@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
     <xs:element name="extension" type="ExtensionType" />
+    <xs:element name="id" type="xs:string" />
+    <xs:element name="type" type="xs:string" />
+    <xs:element name="desc" type="xs:string" />
+    <xs:element name="config" type="ConfigType" />
 
     <xs:complexType name="ExtensionType">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
