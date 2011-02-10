@@ -11,6 +11,8 @@
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
 
+#include <fwData/String.hpp>
+
 #include "fwServices/registry/AppConfig.hpp"
 
 namespace fwServices
@@ -123,6 +125,27 @@ void AppConfig::clearRegistry()
     // Adapt config
     ::fwRuntime::ConfigurationElement::csptr newConfig = adaptConfig(  iter->second->config, fieldAdaptors );
     return newConfig;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, ::fwData::Composite::csptr replaceFields ) const
+{
+    FieldAdaptorType fieldAdaptors = compositeToFieldAdaptor( replaceFields );
+    return getAdaptedTemplateConfig( configId, fieldAdaptors );
+}
+
+//-----------------------------------------------------------------------------
+
+AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
+{
+    FieldAdaptorType fields;
+    BOOST_FOREACH( ::fwData::Composite::value_type elem, fieldAdaptors->getRefMap() )
+    {
+        fields[elem.first] = ::fwData::String::dynamicCast( elem.second )->value();
+    }
+
+    return fields;
 }
 
 //-----------------------------------------------------------------------------

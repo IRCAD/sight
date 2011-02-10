@@ -13,6 +13,8 @@
 #include <fwTools/macros.hpp>
 #include <fwTools/Factory.hpp>
 
+#include <fwData/Composite.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -85,6 +87,8 @@ public:
 
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & replaceFields ) const;
 
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, ::fwData::Composite::csptr replaceFields ) const;
+
     FWSERVICES_API void clearRegistry();
 
     /// Create an unique identifier
@@ -101,6 +105,8 @@ protected :
     FWSERVICES_API AppConfig();
 
 private :
+
+    FieldAdaptorType compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const;
 
     /// Adapts the configuration : replace field thanks to field adaptors
     ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem, const FieldAdaptorType & fieldAdaptors ) const;

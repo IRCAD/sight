@@ -1,5 +1,4 @@
 <plugin id="tutoBasicConfig">
-
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoBasicConfig</id>
         <type>standard</type>
@@ -23,5 +22,4 @@
             </object>
         </config>
     </extension>
-
 </plugin>
