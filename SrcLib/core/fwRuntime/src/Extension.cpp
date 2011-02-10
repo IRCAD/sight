@@ -91,7 +91,7 @@ const Extension::Validity Extension::validate()
     // Checks that the point exists.
     if( !point )
     {
-        throw RuntimeException(m_point + ": invalid point reference.");
+        throw RuntimeException(m_point + " : invalid point reference.");
     }
 
 

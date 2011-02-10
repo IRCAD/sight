@@ -496,14 +496,15 @@ std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_pt
         // Point declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) POINT.c_str()) == 0)
         {
-            std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_ptr<Extension> > > point = processPoint(curChild,bundle);
-
-            for( std::vector< ::boost::shared_ptr<Extension> >::iterator iter = point.second.begin() ; iter != point.second.end() ; ++iter )
-            {
-                bundle->addExtension( *iter );
-            }
-
-            bundle->addExtensionPoint(point.first );
+            SLM_FATAL("Sorry, this xml element  ( <point ... > </point> ) is depreciated");
+//            std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_ptr<Extension> > > point = processPoint(curChild,bundle);
+//
+//            for( std::vector< ::boost::shared_ptr<Extension> >::iterator iter = point.second.begin() ; iter != point.second.end() ; ++iter )
+//            {
+//                bundle->addExtension( *iter );
+//            }
+//
+//            bundle->addExtensionPoint(point.first );
         }
     }
 
