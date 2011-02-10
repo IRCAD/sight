@@ -66,3 +66,22 @@ void InterpreterTest::printClassName()
 
     CPPUNIT_ASSERT_EQUAL( succes , 0 );
 }
+
+void InterpreterTest::changeValue()
+{
+    fwPython::Interpreter interpreter;
+    int succes;
+    
+    ::fwPython::initBindings();
+    succes = interpreter.execute("import fwData");
+
+    ::fwData::String::sptr str =  ::fwData::String::New(" a string in fwData");
+    interpreter.addObject("myStr", str );
+
+    succes = interpreter.execute("print \"print myStr.value ==>\" , myStr.value ");
+    succes = interpreter.execute("myStr.value =\"changed value in python\"" );
+
+    CPPUNIT_ASSERT_EQUAL( succes , 0 );
+    CPPUNIT_ASSERT_EQUAL( str->value() , std::string("changed value in python") );
+
+}

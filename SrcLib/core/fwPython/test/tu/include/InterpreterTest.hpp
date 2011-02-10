@@ -15,6 +15,7 @@ class InterpreterTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST( printHelloWorld );
     CPPUNIT_TEST( syntaxError );
     CPPUNIT_TEST( printClassName );
+    CPPUNIT_TEST( changeValue );
     CPPUNIT_TEST_SUITE_END();
 protected:
 
@@ -26,6 +27,7 @@ public:
     void printHelloWorld();
     void syntaxError();
     void printClassName();
+    void changeValue();
 };
 
 
