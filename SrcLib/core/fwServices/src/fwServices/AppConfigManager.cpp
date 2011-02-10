@@ -460,6 +460,8 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
 
 ::fwServices::IService::sptr AppConfigManager::add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId,  std::string uid )
 {
+    OSLM_ASSERT("Sorry, this service is not valid for obj=" << obj->getClassname() << " type="<< serviceId << " impl=" << _implementationId,
+                ::fwServices::registry::ServiceFactory::getDefault()->checkServiceValidity(obj->getClassname(), serviceId, _implementationId));
     IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceId, _implementationId );
     ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
 

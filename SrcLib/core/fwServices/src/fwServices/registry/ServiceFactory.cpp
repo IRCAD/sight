@@ -349,6 +349,18 @@ std::string ServiceFactory::getServiceDescription(std::string srvImpl)
 }
 
 //-----------------------------------------------------------------------------
+
+bool ServiceFactory::checkServiceValidity(const std::string & object, const std::string & type, const std::string & srvImpl)
+{
+    bool isValid = true;
+    isValid &= (m_srvImplTosrvInfo.find(srvImpl)!= m_srvImplTosrvInfo.end());
+    ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
+    isValid &= (srvInfo->serviceType == type);
+    isValid &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
+    return isValid;
+}
+
+//-----------------------------------------------------------------------------
 } // namespace registry
 } // namespace fwServices
 
