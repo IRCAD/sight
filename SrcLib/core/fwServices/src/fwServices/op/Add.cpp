@@ -122,8 +122,6 @@ namespace fwServices
 
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {
-    OSLM_ASSERT("Sorry, this service is not valid for obj=" << obj->getClassname() << " type="<< serviceId << " impl=" << _implementationId,
-                ::fwServices::registry::ServiceFactory::getDefault()->checkServiceValidity(obj->getClassname(), serviceId, _implementationId));
     IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceId, _implementationId );
     ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
     return srv;

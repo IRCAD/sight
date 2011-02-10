@@ -273,6 +273,9 @@ ObjectServiceRegistry::sptr ObjectServiceRegistry::getDefault()
 
 void  ObjectServiceRegistry::registerService( ::fwTools::Object::sptr object , ::fwServices::IService::sptr service)
 {
+    OSLM_ASSERT("Sorry, this service "<< service->getClassname() << " is not valid for object " << object->getClassname(),
+                ::fwServices::registry::ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname()));
+
     ::fwTools::Object::wptr refKey ;
     for ( OSContainer::iterator iter = getDefault()->m_container.begin(); iter!= getDefault()->m_container.end() ; ++iter )
     {

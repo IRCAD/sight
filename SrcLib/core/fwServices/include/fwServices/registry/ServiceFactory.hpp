@@ -80,8 +80,8 @@ public:
     /// return the service description.
     FWSERVICES_API  std::string getServiceDescription(std::string srvImpl);
 
-    /// Check if the service with given object, type and implementation is valid
-    FWSERVICES_API  bool checkServiceValidity(const std::string & object, const std::string & type, const std::string & srvImpl);
+    /// Check if the service with given object and implementation is valid
+    FWSERVICES_API  bool checkServiceValidity(const std::string & object, const std::string & srvImpl);
 
 protected :
 
