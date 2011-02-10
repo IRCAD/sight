@@ -11,7 +11,10 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <fwData/String.hpp>
+
 #include "fwPython/Interpreter.hpp"
+#include "fwPython/bindings.hpp"
 #include "InterpreterTest.hpp"
 
 
@@ -47,3 +50,19 @@ void InterpreterTest::syntaxError()
 
 
 
+void InterpreterTest::printClassName()
+{
+    fwPython::Interpreter interpreter;
+    int succes;
+    
+    ::fwPython::initBindings();
+    succes = interpreter.execute("import fwData");
+
+    ::fwData::String::sptr str =  ::fwData::String::New(" a string in fwData");
+    interpreter.addObject("myObject", str );
+
+    succes = interpreter.execute("print \"print myObject ==>\" , myObject");
+    succes = interpreter.execute("print \"myObject.getClassname() => \" , myObject.getClassname()");
+
+    CPPUNIT_ASSERT_EQUAL( succes , 0 );
+}
