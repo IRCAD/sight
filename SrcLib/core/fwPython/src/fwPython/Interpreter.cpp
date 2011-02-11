@@ -1,6 +1,7 @@
 #include <boost/python.hpp>
 #include <fwCore/base.hpp>
 #include "fwPython/Interpreter.hpp"
+#include "fwPython/python.hpp"
 #include "fwPython/bindings.hpp"
 
 namespace fwPython
@@ -8,10 +9,9 @@ namespace fwPython
 
 Interpreter::Interpreter() 
 {
-   namespace bp = ::boost::python;
+   ::fwPython::initialize();
 
-   Py_Initialize();
-   SLM_ASSERT( "python initialization failed ",Py_IsInitialized() );
+   namespace bp = ::boost::python;
 
    try 
    { 
@@ -30,7 +30,7 @@ Interpreter::Interpreter()
 
 Interpreter::~Interpreter()
 {
-    Py_Finalize();
+   ::fwPython::finalize();
 }
 
 

@@ -8,7 +8,9 @@
 
 namespace fwPython
 {
-void initBindings();
+
+FWPYTHON_API void initBindings();
+
 } //namespace fwPython
 
 #endif //_FWPYTHON_BINDINGS_HPP_

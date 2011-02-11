@@ -12,9 +12,11 @@
 
 class InterpreterTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE( InterpreterTest );
-    CPPUNIT_TEST( printHelloWorld );
-    CPPUNIT_TEST( syntaxError );
-    CPPUNIT_TEST( printClassName );
+    CPPUNIT_TEST( helloWorld );
+    CPPUNIT_TEST( fail );
+    CPPUNIT_TEST( import );
+    CPPUNIT_TEST( importFwDataBindings );
+    CPPUNIT_TEST( testFwDataBindings );
     CPPUNIT_TEST( changeValue );
     CPPUNIT_TEST_SUITE_END();
 protected:
@@ -24,9 +26,11 @@ public:
     void setUp();
     void tearDown();
     // fonctions de tests
-    void printHelloWorld();
-    void syntaxError();
-    void printClassName();
+    void helloWorld();
+    void fail();
+    void import();
+    void importFwDataBindings();
+    void testFwDataBindings();
     void changeValue();
 };
 
