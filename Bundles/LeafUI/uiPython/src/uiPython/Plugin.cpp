@@ -6,6 +6,9 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
+#include <fwPython/python.hpp>
+#include <fwPython/bindings.hpp>
+
 #include "uiPython/Plugin.hpp"
 
 namespace uiPython
@@ -19,7 +22,10 @@ Plugin::~Plugin() throw()
 //-----------------------------------------------------------------------------
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
-{}
+{
+    ::fwPython::initialize();
+    ::fwPython::initializeBindings();
+}
 
 //-----------------------------------------------------------------------------
 
