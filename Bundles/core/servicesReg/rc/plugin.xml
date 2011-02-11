@@ -8,10 +8,10 @@
     <extension-point id="::fwServices::registry::AppConfig" schema="appConfig.xsd"/>
     
     <!-- EXTENSION POINT FOR A SERVICE FACTORY -->
-    <extension-point id="::fwServices::registry::ServiceFactory"/>
+    <extension-point id="::fwServices::registry::ServiceFactory" schema="serviceFactory.xsd"/>
 
     <!-- EXTENSION POINT FOR A SERVICE CONFIGURATION -->
-    <extension-point id="::fwServices::registry::ServiceConfig"/>
+    <extension-point id="::fwServices::registry::ServiceConfig"  schema="serviceConfig.xsd"/>
 
     <!-- SPECIFIC SERVICES -->
     <extension implements="::fwServices::registry::ServiceFactory">

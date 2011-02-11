@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="extension" type="ExtensionType" />
+    <xs:element name="id" type="xs:string" />
+    <xs:element name="service" type="xs:string" />
+    <xs:element name="desc" type="xs:string" />
+    <xs:element name="config" type="ConfigType" />
+
+    <xs:complexType name="ExtensionType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="service" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="desc" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="config" type="ConfigType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:anyAttribute processContents="skip" />
+    </xs:complexType>
+
+    <xs:complexType name="ConfigType">
+        <xs:sequence>
+            <xs:any minOccurs="1" maxOccurs="unbounded" processContents="skip" />
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
+   
