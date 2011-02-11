@@ -11,6 +11,7 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwData/Composite.hpp>
@@ -40,12 +41,12 @@ SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 //-----------------------------------------------------------------------------
 
 SwapperSrv::~SwapperSrv() throw()
-{}
+                {}
 
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{
+                {
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
@@ -68,17 +69,17 @@ void SwapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fw
         ::fwData::Composite::sptr fields = compositeMsg->getSwappedNewFields();
         this->swapObjects( fields );
     }
-}
+                }
 
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+                {}
 
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::updating() throw ( ::fwTools::Failed )
-{}
+                {}
 
 //-----------------------------------------------------------------------------
 
@@ -88,7 +89,7 @@ void SwapperSrv::info( std::ostream &_sstream )
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
-{
+                {
     SLM_TRACE_FUNC();
 
     for( SubServicesMapType::iterator iterMap = m_objectsSubServices.begin(); iterMap != m_objectsSubServices.end(); ++iterMap )
@@ -110,12 +111,12 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
         }
     }
     m_objectsSubServices.clear();
-}
+                }
 
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
-{
+                {
     SLM_TRACE_FUNC();
     std::vector < ConfigurationType > vectMode = m_configuration->find("mode");
     if(!vectMode.empty())
@@ -131,12 +132,12 @@ void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
     SLM_ASSERT("Missing <config> tag!", !vectConfig.empty());
     m_managerConfiguration = vectConfig.at(0);
-}
+                }
 
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::starting()  throw ( ::fwTools::Failed )
-{
+                {
     SLM_TRACE_FUNC();
 
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
@@ -159,14 +160,14 @@ void SwapperSrv::starting()  throw ( ::fwTools::Failed )
             }
         }
     }
-}
+                }
 
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 {
     BOOST_FOREACH( ::fwData::Composite::Container::value_type  addedObjectId, _composite->getRefMap())
-    {
+                    {
         if(m_objectsSubServices.find(addedObjectId.first) != m_objectsSubServices.end())
         {
             // Services are on dummyObject
@@ -176,7 +177,67 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
         {
             this->addObject(addedObjectId.first, addedObjectId.second);
         }
-     }
+                    }
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::sptr SwapperSrv::add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt )
+{
+    OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
+    SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
+    SLM_ASSERT("Attribute \"implementation\" is missing", _elt->hasAttribute("implementation") ) ;
+
+    ::fwServices::IService::sptr service ;
+
+    std::string serviceType = _elt->getExistingAttributeValue("type") ;
+    std::string implementationType = _elt->getExistingAttributeValue("implementation");
+
+    // Add service with possible id
+    if( _elt->hasAttribute("uid")  )
+    {
+        service = ::fwServices::add( obj , serviceType , implementationType , _elt->getExistingAttributeValue("uid") );
+    }
+    else
+    {
+        service =  ::fwServices::add( obj , serviceType , implementationType )  ;
+    }
+
+    // Search for configuration : inline or offline
+    ::fwRuntime::ConfigurationElement::sptr cfg = _elt;
+    if( _elt->hasAttribute("config"))
+    {
+        cfg = ::fwRuntime::ConfigurationElement::constCast( ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( _elt->getExistingAttributeValue("config") , implementationType ) );
+    }
+
+    // Set configuration
+    service->setConfiguration( cfg ) ;
+
+    // Configure
+    service->configure();
+
+    // Standard communication management
+    SLM_ASSERT("autoComChannel attribute missing in service "<< service->getClassname(), _elt->hasAttribute("autoComChannel"));
+
+    std::string autoComChannel = _elt->getExistingAttributeValue("autoComChannel");
+    SLM_ASSERT("wrong autoComChannel definition", autoComChannel=="yes" || autoComChannel=="no");
+    if(autoComChannel=="yes")
+    {
+        ::fwServices::ComChannelService::sptr comChannel = ::fwServices::registerCommunicationChannel( obj , service);
+        // Add priority for the new comChannel if defined, otherwise the default value is 0.5
+        if( _elt->hasAttribute("priority"))
+        {
+            std::string priorityStr = _elt->getExistingAttributeValue("priority");
+            double priority = ::boost::lexical_cast< double >( priorityStr );
+            if(priority < 0.0) priority = 0.0;
+            if(priority > 1.0) priority = 1.0;
+            comChannel->setPriority(priority);
+        }
+        comChannel->start();
+    }
+
+    // Return
+    return service ;
 }
 
 //-----------------------------------------------------------------------------
@@ -193,7 +254,7 @@ void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr 
         SubServicesVecType subVecSrv;
         BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
         {
-            ::fwServices::IService::sptr srv = ::fwServices::add( object, cfg );
+            ::fwServices::IService::sptr srv = this->add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
             srv->configure();
             SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
@@ -225,9 +286,9 @@ void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr 
 void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 {
     BOOST_FOREACH( ::fwData::Composite::Container::value_type  swappedObjectId, _composite->getRefMap())
-    {
+                    {
         this->swapObject(swappedObjectId.first, swappedObjectId.second);
-    }
+                    }
 }
 
 //-----------------------------------------------------------------------------
@@ -237,7 +298,7 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
     if(m_objectsSubServices.find(objectId) != m_objectsSubServices.end())
     {
         BOOST_FOREACH( ConfigurationType cfg, m_managerConfiguration->find("object", "id", objectId))
-        {
+                        {
             SubServicesVecType subServices = m_objectsSubServices[objectId];
             BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
             {
@@ -258,7 +319,7 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
                             << "', no need to swap");
                 }
             }
-        }
+                        }
     }
     else
     {
@@ -271,9 +332,9 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
 void SwapperSrv::removeObjects( ::fwData::Composite::sptr _composite )
 {
     BOOST_FOREACH( ::fwData::Composite::Container::value_type  swappedObjectId, _composite->getRefMap())
-    {
+                    {
         this->removeObject(swappedObjectId.first);
-    }
+                    }
 }
 
 //-----------------------------------------------------------------------------
@@ -343,7 +404,7 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
         SubServicesVecType subVecSrv;
         BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
         {
-            ::fwServices::IService::sptr srv = ::fwServices::add( dummyObj, cfg );
+            ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
             srv->configure();
             SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());

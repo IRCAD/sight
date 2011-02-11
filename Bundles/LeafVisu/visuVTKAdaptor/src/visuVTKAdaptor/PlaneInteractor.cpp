@@ -23,6 +23,7 @@
 #include <vtkCommand.h>
 
 #include "visuVTKAdaptor/PlaneInteractor.hpp"
+#include <fwServices/IEditionService.hpp>
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwTools::Object ) ;
 

@@ -28,13 +28,14 @@
 #include <vtkRenderWindowInteractor.h>
 
 #include "visuVTKAdaptor/Transform.hpp"
+#include <fwServices/IEditionService.hpp>
 
 class TransformClallback : public ::vtkCommand
 {
 public:
 
-    static TransformClallback* New(::visuVTKAdaptor::Transform* adaptor) { 
-        TransformClallback *cb = new TransformClallback; 
+    static TransformClallback* New(::visuVTKAdaptor::Transform* adaptor) {
+        TransformClallback *cb = new TransformClallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
@@ -60,7 +61,7 @@ namespace visuVTKAdaptor
 
 Transform::Transform() throw()
 {
-	m_transform = 0;
+    m_transform = 0;
     m_transformCommand = TransformClallback::New(this);
     addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
@@ -153,7 +154,7 @@ void Transform::setTransform(vtkTransform *t){
             t->Register(NULL);
         }
     }
-    
+
     m_transform = t;
 };
 

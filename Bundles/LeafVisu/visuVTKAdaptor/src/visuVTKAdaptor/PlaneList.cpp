@@ -29,6 +29,7 @@
 
 #include "visuVTKAdaptor/Plane.hpp"
 #include "visuVTKAdaptor/PlaneList.hpp"
+#include <fwServices/IEditionService.hpp>
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ;
 

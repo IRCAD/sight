@@ -120,7 +120,7 @@ const Extension::Validity Extension::validate()
         // Check each extension XML children element node
         // Additional validation procedure : check all XML child nodes of <extension id="xxx" implements="yyy" >...</extension>
         std::vector< std::pair< bool , std::string > > invalidExtensionChildren;
-        for(ConfigurationElementContainer::Iterator iter = this->begin() ; iter != this->end() ; ++iter )
+        /*for(ConfigurationElementContainer::Iterator iter = this->begin() ; iter != this->end() ; ++iter )
         {
             const std::string   identifier = m_id.empty() ? "anonymous" : m_id;
             std::pair< bool , std::string > extensionChildValidity = ::fwRuntime::validateConfigurationElement( validator , *iter ) ;
@@ -133,7 +133,7 @@ const Extension::Validity Extension::validate()
             {
 //              OSLM_TRACE("In bundle " << getBundle()->getIdentifier() << ". " << identifier << ": checking configuration element " << (*iter)->getName() << " : OK");
             }
-        }
+        }*/
 
 //      xmlNodePtr curChild;
 //      for(curChild = m_xmlNode->children; curChild != 0; curChild = curChild->next)

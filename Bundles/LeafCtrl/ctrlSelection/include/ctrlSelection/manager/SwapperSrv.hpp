@@ -127,6 +127,8 @@ protected:
     void removeObjects( ::fwData::Composite::sptr _composite );
     void removeObject( const std::string objectId );
 
+    ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+
 private:
 
     std::string m_mode;

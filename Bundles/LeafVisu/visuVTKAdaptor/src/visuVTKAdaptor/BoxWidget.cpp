@@ -20,6 +20,7 @@
 
 #include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/BoxWidget.hpp"
+#include <fwServices/IEditionService.hpp>
 
 namespace visuVTKAdaptor
 {

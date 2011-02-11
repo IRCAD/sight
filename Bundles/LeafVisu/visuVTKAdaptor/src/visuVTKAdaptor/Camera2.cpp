@@ -27,6 +27,7 @@
 #include <vtkPerspectiveTransform.h>
 
 #include "visuVTKAdaptor/Camera2.hpp"
+#include <fwServices/IEditionService.hpp>
 
 class Camera2Clallback : public ::vtkCommand
 {

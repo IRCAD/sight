@@ -70,7 +70,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
     *
     * @return  an configuration element container
     */
-    FWRUNTIME_API const Container getElements() const;
+    FWRUNTIME_API const Container & getElements() const;
 
     /**
      * @brief       Retrieves the first configuration corresponding to the specified name.

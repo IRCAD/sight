@@ -34,6 +34,7 @@
 #include "visuVTKAdaptor/ImageLandmarks.hpp"
 #include "visuVTKAdaptor/PointList.hpp"
 #include "visuVTKAdaptor/PointLabel.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 

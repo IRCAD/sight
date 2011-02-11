@@ -18,6 +18,7 @@
 #include <fwData/None.hpp>
 
 #include "visuVTKAdaptor/PlaneSelector.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 

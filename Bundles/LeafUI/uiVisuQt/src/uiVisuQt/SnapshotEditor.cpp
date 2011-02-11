@@ -31,6 +31,7 @@
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Get.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>

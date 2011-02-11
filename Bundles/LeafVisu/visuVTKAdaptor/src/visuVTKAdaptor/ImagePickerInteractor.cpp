@@ -30,6 +30,7 @@
 
 
 #include "visuVTKAdaptor/ImagePickerInteractor.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent

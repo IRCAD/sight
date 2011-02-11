@@ -28,6 +28,7 @@
 #include <fwServices/macros.hpp>
 
 #include "visuVTKAdaptor/PickerInteractor.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent

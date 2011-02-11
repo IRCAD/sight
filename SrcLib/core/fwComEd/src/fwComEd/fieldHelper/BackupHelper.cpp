@@ -14,6 +14,7 @@
 
 #include <fwServices/helper.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/PatientDBMsg.hpp"

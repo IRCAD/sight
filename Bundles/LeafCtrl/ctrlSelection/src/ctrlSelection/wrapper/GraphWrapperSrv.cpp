@@ -15,6 +15,7 @@
 
 
 #include "ctrlSelection/wrapper/GraphWrapperSrv.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::GraphWrapperSrv, ::fwData::Graph ) ;

@@ -59,7 +59,7 @@ ConfigurationElementContainer::Iterator ConfigurationElementContainer::end()
     return m_elements.end();
 }
 
-const ConfigurationElementContainer::Container ConfigurationElementContainer::getElements() const
+const ConfigurationElementContainer::Container & ConfigurationElementContainer::getElements() const
 {
     return m_elements;
 }

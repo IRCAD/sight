@@ -144,12 +144,12 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         // Erase all services of type ::io::IReader on the object
         // TODO : comment this line, because must be useless
         ::fwServices::eraseServices< ::io::IReader >( this->getObject() ) ;
-        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromTypeAndObject("::io::IReader", this->getObject()->getClassname()) ;
+        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(this->getObject()->getClassname(),"::io::IReader") ;
     }
     else // m_mode == WRITER_MODE
     {
         ::fwServices::eraseServices< ::io::IWriter >( this->getObject() ) ;
-        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromTypeAndObject("::io::IWriter", this->getObject()->getClassname()) ;
+        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(this->getObject()->getClassname(),"::io::IWriter") ;
     }
 
     // Filter available extensions and replace id by service description

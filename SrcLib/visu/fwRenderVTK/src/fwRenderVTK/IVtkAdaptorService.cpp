@@ -17,8 +17,10 @@
 
 #include <fwServices/ComChannelService.hpp>
 #include <fwServices/helper.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
+
 
 
 namespace fwRenderVTK

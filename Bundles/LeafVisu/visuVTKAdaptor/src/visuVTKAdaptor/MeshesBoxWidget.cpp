@@ -31,6 +31,7 @@
 #include <vtkProp3DCollection.h>
 
 #include "visuVTKAdaptor/MeshesBoxWidget.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 class MeshesBoxClallback : public ::vtkCommand

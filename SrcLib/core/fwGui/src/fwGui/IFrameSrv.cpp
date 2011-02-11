@@ -13,6 +13,7 @@
 
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectMsg.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include "fwGui/IFrameSrv.hpp"
 

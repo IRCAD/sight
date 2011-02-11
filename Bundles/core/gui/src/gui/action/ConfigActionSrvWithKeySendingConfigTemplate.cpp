@@ -1,12 +1,14 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/bundle/runtime.hpp>
 #include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwComEd/CompositeMsg.hpp>
+
 
 #include "gui/action/ConfigActionSrvWithKeySendingConfigTemplate.hpp"
 

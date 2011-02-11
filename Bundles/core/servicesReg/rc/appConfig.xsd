@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    
+
     <xs:element name="extension" type="ExtensionType" />
-    <xs:element name="id" type="xs:string" />
+    <!--  <xs:element name="id" type="xs:string" />
     <xs:element name="type" type="xs:string" />
     <xs:element name="desc" type="xs:string" />
-    <xs:element name="config" type="ConfigType" />
+    <xs:element name="config" type="ConfigType" /> -->
 
     <xs:complexType name="ExtensionType">
-        <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:sequence>
             <xs:element name="id" type="xs:string" />
-            <xs:element name="type" type="xs:string" />
-            <xs:element name="desc" type="xs:string" />
+            <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="config" type="ConfigType" />
-        </xs:choice>
+        </xs:sequence>
         <xs:anyAttribute processContents="skip" />
     </xs:complexType>
 
@@ -23,11 +23,65 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:simpleType name="TypeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="standard" />
+            <xs:enumeration value="template" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Object Type -->
     <xs:complexType name="ObjectType">
         <xs:sequence>
-            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip" />
+            <!-- <xs:element ref="objectContribution" minOccurs="0" maxOccurs="unbounded"/> 
+            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="stop" minOccurs="0" maxOccurs="0" />
+            <xs:element name="item" minOccurs="0" maxOccurs="unbounded" /> -->
+            <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:anyAttribute processContents="skip" />
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='src' type='xs:string' />
+    </xs:complexType>
+
+    <!-- Service Type -->
+    <xs:complexType name="ServiceType">
+        <xs:sequence>
+            <xs:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='implementation' type='xs:string' use="required" />
+        <xs:attribute name='autoComChannel' type='ComChannelType' />
+        <xs:attribute name='priority' type='xs:string' />
+    </xs:complexType>
+
+    <!-- Start/Update/stop Type -->
+    <xs:complexType name="StartType">
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' />
+    </xs:complexType>
+    
+    <xs:complexType name="UpdateType">
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' />
+    </xs:complexType>
+        
+    <xs:simpleType name="ComChannelType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="yes" />
+            <xs:enumeration value="no" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- ServiceList Type -->
+    <xs:complexType name="ServiceListType">
+        <xs:sequence>
+            <xs:element name="service" type="ServiceType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
 
 </xs:schema>        

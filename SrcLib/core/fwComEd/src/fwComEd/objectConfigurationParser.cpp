@@ -176,17 +176,6 @@ void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
             else // if( buildMode == GET_OBJECT )
             {
                 SLM_FATAL("ACH => Todo");
-
-                // Test if key already exist in composite
-                OSLM_ASSERT("Sorry the key "<< key <<" not exists in the composite.", dataComposite->find( key ) != dataComposite->end() );
-
-                ::fwData::Object::sptr objRef = (*dataComposite)[ key ];
-
-                ::fwRuntime::ConfigurationElement::sptr objectConfigElem = ( * ( elem->getElements().begin() ) );
-
-                OSLM_ASSERT("Sorry, for an item reference, the xml subelement \"object\" does not have attributes.", objectConfigElem->getAttributes().size() == 0 );
-                OSLM_ASSERT("Sorry, some subelement of element \"object\" are not supported.", refObjectValidator( objectConfigElem ) );
-                ::fwServices::addServicesToObjectFromCfgElem( objRef, objectConfigElem );
             }
         }
     }

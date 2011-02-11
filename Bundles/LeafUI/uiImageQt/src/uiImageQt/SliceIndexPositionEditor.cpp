@@ -23,10 +23,12 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+
 
 #include <fwGuiQt/container/QtContainer.hpp>
 

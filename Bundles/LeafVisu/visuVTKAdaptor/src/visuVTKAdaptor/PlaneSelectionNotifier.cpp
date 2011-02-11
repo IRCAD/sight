@@ -22,6 +22,7 @@
 #include <fwTools/Object.hpp>
 
 #include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 

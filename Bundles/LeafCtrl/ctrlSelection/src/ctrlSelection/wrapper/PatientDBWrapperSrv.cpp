@@ -15,6 +15,7 @@
 
 
 #include "ctrlSelection/wrapper/PatientDBWrapperSrv.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::PatientDBWrapperSrv, ::fwData::PatientDB ) ;
