@@ -112,28 +112,28 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 void IService::start() throw( ::fwTools::Failed)
 {
+    OSLM_FATAL_IF( "INVOKING START WHILE ALREADY STARTED (on this = " << this->className() << ")", m_globalState != STOPPED);
+
     if( m_globalState == STOPPED )
     {
         m_globalState = STARTING ;
         this->starting() ;
         m_globalState = STARTED ;
     }
-
-    OSLM_WARN_IF( "INVOKING START WHILE ALREADY STARTED (on this = " << this->className() << ")", m_globalState != STOPPED);
 }
 
 //-----------------------------------------------------------------------------
 
 void IService::stop() throw( ::fwTools::Failed)
 {
+    OSLM_FATAL_IF( "INVOKING STOP WHILE ALREADY STOPPED (on this = " << this->className() << ")", m_globalState != STARTED);
+
     if( m_globalState == STARTED )
     {
         m_globalState = STOPPING ;
         this->stopping() ;
         m_globalState = STOPPED ;
     }
-
-    OSLM_WARN_IF( "INVOKING STOP WHILE ALREADY STOPPED (on this = " << this->className() << ")", m_globalState != STARTED);
 }
 
 //-----------------------------------------------------------------------------

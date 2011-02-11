@@ -58,7 +58,10 @@ void StarterActionService::stopping() throw( ::fwTools::Failed )
         if (srv_exists)
         {
             ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first ) ;
-            service->stop();
+            if (service->isStarted())
+            {
+                service->stop();
+            }
         }
     }
 

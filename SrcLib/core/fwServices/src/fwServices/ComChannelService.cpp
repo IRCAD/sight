@@ -107,7 +107,10 @@ void ComChannelService::starting() throw(fwTools::Failed)
         this->info( msg ) ;
         OSLM_TRACE( "Starting ComChannelService : " << msg.str() << " with priority: " << m_priority);
         m_source.lock()->attach( this->getSptr() );
-        m_source.lock()->start() ;
+        if (! m_source.lock()->isStarted())
+        {
+            m_source.lock()->start() ;
+        }
     }
 
     // Post condition
@@ -144,7 +147,10 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             int nbObservers = m_source.lock()->getNbObservers();
             if(nbObservers == 0)
             {
-                m_source.lock()->stop();
+                if (m_source.lock()->isStarted())
+                {
+                    m_source.lock()->stop();
+                }
                 ::fwServices::erase(m_source.lock());
             }
         }

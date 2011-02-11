@@ -154,6 +154,7 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
         {
             OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
             service->start();
         }
     }

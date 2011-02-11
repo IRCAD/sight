@@ -357,7 +357,7 @@ void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
     {
         if (srv != NULL)
         {
-            srv->stop();
+            OSLM_ASSERT( "Sorry, the service ( "<< srv->getID() <<" ) must be stop before unregister it.", srv->isStopped() );
             ::fwServices::unregisterComChannels( srv ) ;
         }
     }
@@ -393,7 +393,7 @@ void ObjectServiceRegistry::cleanExpiredObject()
             BOOST_FOREACH(::fwServices::IService::sptr srv, services)
             {
                 assert( srv.use_count() != 0 );
-                if (srv != NULL )
+                if (srv != NULL && srv->isStarted() )
                 {
                     srv->stop();
                 }
