@@ -31,7 +31,9 @@
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/RuntimeException.hpp>
+
 #include <fwServices/bundle/runtime.hpp>
+#include <fwServices/ObjectServiceRegistry.hpp>
 
 #include <fwWX/convert.hpp>
 #include <fwWX/LoggerInitializer.hpp>

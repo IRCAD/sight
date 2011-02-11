@@ -18,6 +18,7 @@
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Get.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwWX/convert.hpp>
 

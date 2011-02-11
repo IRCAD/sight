@@ -14,7 +14,7 @@
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
         it's an FW4SPL identifier. -->
-        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
             <gui>
                 <frame>
                     <name>tutoDataService</name>
@@ -87,9 +87,7 @@
         <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images. -->
         <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" />
 
-        <start type="::fwGui::IFrameSrv" />
-
-        <stop type="::fwGui::IFrameSrv" />
+        <start uid="myFrame" />
 
     </object>
 

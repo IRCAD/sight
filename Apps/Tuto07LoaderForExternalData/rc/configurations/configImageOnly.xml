@@ -45,7 +45,7 @@
          This application have 2 menu one to open/save image and one to load/save extra data.
          There are FW4SPL identifiers. -->
     
-         <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+         <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
             <gui>
                 <frame>
                     <name>Tuto07LoaderForExternalData</name>
@@ -97,11 +97,11 @@
          <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
     
         <!-- Definition of the starting and closing order of the different services. -->
-        <start type="::fwGui::IFrameSrv" />
+        <start uid="myFrame" />
         <start uid="newOBject2newImage"/>
     
         <stop uid="newOBject2newImage"/>
-        <stop type="::fwGui::IFrameSrv" />
+        
     </object>
 
         </config>

@@ -25,6 +25,7 @@
 
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <vtkIO/vtk.hpp>
 

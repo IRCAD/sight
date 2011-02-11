@@ -25,6 +25,7 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
@@ -169,7 +170,7 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
             image->setFieldSingleElement( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
             image->setFieldSingleElement( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
-            image->setFieldSingleElement( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);            
+            image->setFieldSingleElement( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )

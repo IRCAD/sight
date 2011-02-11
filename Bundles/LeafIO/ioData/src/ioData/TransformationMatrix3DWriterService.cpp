@@ -21,6 +21,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/bundle/runtime.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 

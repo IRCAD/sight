@@ -73,7 +73,7 @@
          There are FW4SPL identifiers.
         -->
     
-        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
             <gui>
                 <frame>
                     <name>Tuto07LoaderForExternalData</name>
@@ -152,9 +152,9 @@
         <service implementation="::ioTuto::CompositeWriterService" type="::io::IWriter" uid="saveAllData" autoComChannel="no" />
     
         <!-- Definition of the starting and closing order of the different services.-->
-        <start type="::fwGui::IFrameSrv" />
+        <start uid="myFrame" />
     
-        <stop type="::fwGui::IFrameSrv" />
+        
     </object>
 
         </config>

@@ -3,9 +3,9 @@
         <id>tutoBasicConfig</id>
         <type>standard</type>
         <config>
-            <object type="::fwTools::Object">
+            <object type="::fwData::Image">
 
-                <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
                     <gui>
                         <frame>
                             <name>tutoBasicApplicationName</name>
@@ -15,9 +15,7 @@
                     </gui>
                 </service>
 
-                <start type="::fwGui::IFrameSrv" />
-
-                <stop type="::fwGui::IFrameSrv" />
+                <start uid="myFrame" />
 
             </object>
         </config>

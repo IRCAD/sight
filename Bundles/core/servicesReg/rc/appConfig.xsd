@@ -33,14 +33,13 @@
     <!-- Object Type -->
     <xs:complexType name="ObjectType">
         <xs:sequence>
-            <!-- <xs:element ref="objectContribution" minOccurs="0" maxOccurs="unbounded"/> 
             <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="item" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="StartType" minOccurs="1" maxOccurs="unbounded" />
             <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="stop" minOccurs="0" maxOccurs="0" />
-            <xs:element name="item" minOccurs="0" maxOccurs="unbounded" /> -->
-            <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+            <!-- <xs:element name="stop" minOccurs="0" maxOccurs="0" /> -->
+            <!-- <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> -->
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='type' type='xs:string' use="required" />

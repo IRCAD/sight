@@ -8,7 +8,7 @@
     <!-- In tutoComChannel, the main data object type is ::fwData::TriangularMesh.-->
     <object type="::fwData::TriangularMesh">
 
-        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
             <gui>
                 <frame>
                     <name>tutoComChannel</name>
@@ -100,9 +100,9 @@
             <masterSlaveRelation>master</masterSlaveRelation>
         </service>
 
-        <start type="::fwGui::IFrameSrv" />
+        <start uid="myFrame" />
 
-        <stop type="::fwGui::IFrameSrv" />
+        
 
     </object>
 

@@ -7,7 +7,7 @@
         
         <object type="::fwTools::Object">
 
-            <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+            <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
                 <gui>
                     <frame>
                         <name>TutoGui</name>
@@ -223,12 +223,12 @@
                 </registry>
             </service>
             
-            <start type="::fwGui::IFrameSrv" />
+            <start uid="myFrame" />
             
             <start uid="subView1" />
             <stop uid="subView1" />
 
-            <stop type="::fwGui::IFrameSrv" />
+            
 
         </object>
     

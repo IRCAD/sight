@@ -14,7 +14,7 @@
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
         it's an FW4SPL identifier. -->
-        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
             <gui>
                 <frame>
                     <name>tutoDataService bis</name>
@@ -88,9 +88,9 @@
             <!--<win guiContainerId="900"/>-->
         </service>
 
-        <start type="::fwGui::IFrameSrv" />
+        <start uid="myFrame" />
 
-        <stop type="::fwGui::IFrameSrv" />
+        
 
     </object>
 

@@ -13,7 +13,8 @@
         In this tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.
         We are going to see in detail the use of communications in the tutoComChannel tutorial.
         Furthermore, in the filename tag, an attribut (id) allows also to clarify the location of the 3D medical image file. 
-        In our case, the image must be stored in the MyInstallDir directory, in a sub-directory named TutoData. --> 
+        In our case, the image must be stored in the MyInstallDir directory, in a sub-directory named TutoData.
+--> 
         <service implementation="::ioVTK::ImageReaderService" type="::io::IReader" uid="myReaderPathFile" autoComChannel="no" >
             <filename id="./TutoData/patient1.vtk"/>
         </service>
@@ -30,7 +31,7 @@
         The ::gui::frame::MainFrame service automaticly positions the different containers in the application main window.
         In our tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.
         Remember we will see in details the use of communications in the tutoComChannel tutorial.-->
-        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
             <gui>
                 <frame>
                     <name>tutoDataServiceBasic</name>
@@ -49,15 +50,13 @@
         Indeed, as the image location is known (contained in the configuration file),
         the image can be loaded since the application starting. It corresponds to the update flag for myReaderPathFile.
         The HMI service must be started first, then the rendering service, and finaly the reading service.
-        The stopping of the services is done in the reverse order compared to the starting one. -->
+        The stopping of the services is done in the reverse order compared to the starting one.
+-->
         
-        <start type="::fwGui::IFrameSrv" />
+        <start uid="myFrame" />
         <start uid="myReaderPathFile"/>
 
         <update uid="myReaderPathFile"/>
-
-        <stop uid="myReaderPathFile"/>
-        <stop type="::fwGui::IFrameSrv" />
 
     </object>
 
