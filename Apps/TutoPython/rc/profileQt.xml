@@ -2,6 +2,7 @@
 
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
+    <activate id="io" version="0-1" />
     <activate id="gui" version="0-1" />
     <activate id="uiPython" version="0-1" />
     
@@ -10,6 +11,9 @@
         <param id="config" value="tutoPythonConfig" />
         <param id="configFile" value="./Bundles/TutoPython_0-1/configurations/config.xml" />
     </activate>
+
+    <activate id="ioVTK" version="0-1" />
+    <activate id="uiIO" version="0-1" />
 
     <start id="guiQt" />  
 </profile>

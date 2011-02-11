@@ -1,6 +1,8 @@
 <plugin id="tutoPythonConfig">
 
     <extension id="tutoPythonConfig" implements="::fwServices::ServiceObjectConfig">
+        <object type="::fwData::Composite">
+        <item key="PythonString">
         <object type="::fwData::String">
 
             <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
@@ -24,11 +26,13 @@
                 <gui>
                     <layout>
                         <menuItem name="Test" icon="Bundles/TutoPython_0-1/icons/python.png" />
+                        <menuItem name="Open" />
                         <menuItem name="Quit" icon="Bundles/TutoPython_0-1/icons/cross.png" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="PyTest" start="yes" />
+                    <menuItem sid="action_openFile" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -36,6 +40,9 @@
 
             <service uid="PyTest" type="::fwGui::IActionSrv" implementation="::uiPython::action::StringRun" autoComChannel="no">
                 <state active="true" />
+                <!--<pyobjects>-->
+                    <!--<item name="" id="" />-->
+                <!--</pyobjects>-->
             </service>
 
             <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
@@ -49,6 +56,24 @@
 
 
             <stop type="::fwGui::IFrameSrv" />
+
+        </object>
+        </item>
+
+        <item key="Image">
+            <object uid="anImage" type="::fwData::Image">
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" />
+                <service uid="anImageWriter" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no">
+                    <type mode="writer" />
+                </service>
+
+                <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+                    <start uid="myReaderPathFile"/>
+                </service>
+
+
+            </object>
+        </item>
 
         </object>
     </extension>

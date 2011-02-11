@@ -1,9 +1,12 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
 BUNDLES = [
-    'guiQt',
-    'uiPython',
-    'launcher_0-1',
+        'io',
+        'ioVTK',
+        'uiIO',
+        'guiQt',
+        'uiPython',
+        'launcher_0-1',
  ]
 
 
