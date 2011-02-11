@@ -87,7 +87,7 @@ void InterpreterTest::import()
 void InterpreterTest::importFwDataBindings()
 {
     fwPython::Interpreter interpreter;
-    ::fwPython::initBindings();
+    ::fwPython::initializeBindings();
 
     int succes;
     succes = interpreter.execute(
@@ -102,7 +102,7 @@ void InterpreterTest::importFwDataBindings()
 void InterpreterTest::testFwDataBindings()
 {
     fwPython::Interpreter interpreter;
-    ::fwPython::initBindings();
+    ::fwPython::initializeBindings();
     int succes;
 
 
@@ -138,7 +138,7 @@ void InterpreterTest::testFwDataBindings()
 void InterpreterTest::changeValue()
 {
     fwPython::Interpreter interpreter;
-    ::fwPython::initBindings();
+    ::fwPython::initializeBindings();
 
     int succes;
 

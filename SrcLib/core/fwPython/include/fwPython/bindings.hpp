@@ -9,7 +9,7 @@
 namespace fwPython
 {
 
-FWPYTHON_API void initBindings();
+FWPYTHON_API void initializeBindings();
 
 } //namespace fwPython
 
