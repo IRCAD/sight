@@ -19,7 +19,7 @@ void initialize()
 {
     if(!Py_IsInitialized())
     {
-        Py_Initialize();
+        Py_InitializeEx(0); // 0 -> do not handle signals
         SLM_ASSERT( "python initialization failed ", isInitialized() );
     }
 }
