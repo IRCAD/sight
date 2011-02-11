@@ -14,7 +14,7 @@
             <xs:element name="desc" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="config" type="ConfigType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:anyAttribute processContents="skip" />
+        <xs:attribute name="implements" type="xs:string" use="required" />
     </xs:complexType>
 
     <xs:complexType name="ConfigType">
