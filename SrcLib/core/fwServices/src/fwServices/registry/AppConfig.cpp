@@ -137,6 +137,18 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
+std::vector< std::string > AppConfig::getAllConfigs() const
+{
+    std::vector< std::string > ids;
+    BOOST_FOREACH( Registry::value_type elem, m_reg )
+    {
+        ids.push_back( elem.first );
+    }
+    return ids;
+}
+
+//-----------------------------------------------------------------------------
+
 AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;

@@ -75,7 +75,10 @@ public:
     FWSERVICES_API void clearFactory();
 
     /// return a vector of service implementation
-    FWSERVICES_API  std::vector< std::string > getImplementationIdFromTypeAndObject(std::string type, std::string object);
+    FWSERVICES_API  std::vector< std::string > getImplementationIdFromObjectAndType(std::string object, std::string type);
+
+    /// return the default service implementation for an object
+    FWSERVICES_API std::string getDefaultImplementationIdFromObjectAndType( std::string object, std::string type );
 
     /// return the service description.
     FWSERVICES_API  std::string getServiceDescription(std::string srvImpl);

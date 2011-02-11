@@ -14,6 +14,7 @@
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IXMLParser.hpp"
 #include "fwServices/validation/Validator.hpp"
+#include "fwServices/registry/ServiceConfig.hpp"
 
 namespace fwServices
 {
@@ -285,7 +286,8 @@ void AppConfigManager::stopAndDestroy()
         obj = this->createNewObject( hasAttributeType, type, hasAttributeUid, uid, hasAttributeId, id );
     }
 
-    std::string srvImpl = ::fwServices::getDefaultImplementationIds( obj , "::fwServices::IXMLParser" );
+    //std::string srvImpl = ::fwServices::getDefaultImplementationIds( obj , "::fwServices::IXMLParser" );
+    std::string srvImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType( obj->getClassname() , "::fwServices::IXMLParser" );
     IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwServices::IXMLParser", srvImpl );
     m_objectParser = ::fwServices::IXMLParser::dynamicCast( srv );
     m_objectParser->setObjectConfig( _cfgElement );
@@ -396,7 +398,7 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
     else
     {
         SLM_FATAL("ACH => not tolerated  today ?");
-        implementationType = ::fwServices::getDefaultImplementationIds( obj , serviceType );
+        // implementationType = ::fwServices::getDefaultImplementationIds( obj , serviceType );
     }
 
     // Add service with possible id
@@ -413,12 +415,16 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
     m_createdServices.push_back( service );
 
     // Search for configuration : inline or offline
-    ::fwRuntime::ConfigurationElement::sptr cfg;
-    SLM_ASSERT( "Param config not supported today.", ! _elt->hasAttribute("config") );
-    cfg =  ::fwRuntime::ConfigurationElement::constCast(_elt); // ToDo replace by a copy method
+    ::fwRuntime::ConfigurationElement::csptr cfg = _elt;
+    if( _elt->hasAttribute("config") )
+    {
+        //cfg = ::fwServices::bundle::findConfigurationForPoint( _elt->getExistingAttributeValue("config") , implementationType );
+        cfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( _elt->getExistingAttributeValue("config") , implementationType );
+    }
+    SLM_ASSERT("Sorry, constCast failed", ::fwRuntime::ConfigurationElement::constCast( cfg ) );
 
     // Set configuration
-    service->setConfiguration( cfg ) ;
+    service->setConfiguration( ::fwRuntime::ConfigurationElement::constCast( cfg ) ) ; // ToDo replace by a copy method
     // Configure
     service->configure();
 
@@ -447,7 +453,9 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
     }
 
     // Recursive attachment of possibly present subservices
-    for( ::fwRuntime::ConfigurationElementContainer::Iterator iter = cfg->begin() ; iter != cfg->end() ; ++iter )
+    for(    ::fwRuntime::ConfigurationElementContainer::Container::const_iterator iter = cfg->getElements().begin();
+            iter != cfg->getElements().end();
+            ++iter )
     {
         SLM_ASSERT( "Service of service is not supported.", (*iter)->getName() != "service" );
     }

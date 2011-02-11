@@ -21,6 +21,7 @@
 #include "fwServices/macros.hpp"
 #include "fwServices/monitor/Monitor.hpp"
 #include "fwServices/ObjectMsg.hpp"
+#include "fwServices/IEditionService.hpp"
 
 REGISTER_SERVICE( ::fwServices::ICommunication , ::fwServices::ComChannelService , ::fwTools::Object ) ;
 

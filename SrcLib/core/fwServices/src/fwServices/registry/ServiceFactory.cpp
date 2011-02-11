@@ -323,7 +323,7 @@ void ServiceFactory::clearFactory()
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > ServiceFactory::getImplementationIdFromTypeAndObject(std::string type, std::string object)
+std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType( std::string object, std::string type )
 {
     std::vector< std::string > serviceImpl;
 
@@ -335,6 +335,44 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromTypeAndObject(
             serviceImpl.push_back(srv.first);
         }
     }
+    return serviceImpl;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( std::string object, std::string type )
+{
+    SLM_ASSERT("Sorry, this case is not managed ", object != "::fwTools::Object" );
+
+    std::string serviceImpl = "";
+    bool genericImplIsFound = false;
+    bool specificImplIsFound = false;
+
+    BOOST_FOREACH( SrvRegContainer::value_type srv, m_srvImplTosrvInfo )
+    {
+        ServiceFactoryInfo::sptr srvInfo = srv.second;
+        if ( srvInfo->serviceType == type )
+        {
+            if ( srvInfo->objectImpl == object )
+            {
+                OSLM_ASSERT("Sorry, method has already found a specific ("<< serviceImpl <<" != " << srv.first << ") service for the object (" << srvInfo->objectImpl << ").", ! specificImplIsFound );
+                specificImplIsFound = true;
+                serviceImpl = srv.first;
+            }
+            else if ( srvInfo->objectImpl == "::fwTools::Object" )
+            {
+                OSLM_ASSERT("Sorry, method has already found a generic service for the object (" << srvInfo->objectImpl << ").", ! genericImplIsFound );
+                genericImplIsFound = true;
+                if ( ! specificImplIsFound )
+                {
+                    serviceImpl = srv.first;
+                }
+            }
+        }
+    }
+
+    SLM_ASSERT("Sorry, default implementation is not found for this type of service", ! serviceImpl.empty() );
+
     return serviceImpl;
 }
 

@@ -21,6 +21,7 @@
 #include "fwServices/bundle/runtime.hpp"
 #include "fwServices/library/Factory.hpp"
 #include "fwServices/IEditionService.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
 
 namespace fwServices
 {
@@ -84,7 +85,9 @@ namespace fwServices
 
 std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceId )
 {
-    std::vector< std::string > availableImplementations = ::fwServices::getImplementationIds( obj , serviceId ) ;
+    std::vector< std::string > availableImplementations =
+            ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType( obj->getClassname(), serviceId );
+
     std::vector< ::fwServices::IService::sptr > allServices = ::fwServices::getRegisteredServices(obj);
     std::vector< ::fwServices::IService::sptr > services ;
 

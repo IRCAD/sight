@@ -256,12 +256,12 @@ public :
      */
     FWSERVICES_API virtual ::fwRuntime::ConfigurationElement::sptr getConfiguration() ;
 
-    /**
-     * @brief Check the configuration using XSD if possible
-     * @return true if the configuration is validate or if
-     * there is not XSD available to validate the configuration.
-     */
-    FWSERVICES_API bool checkConfiguration() ;
+//    /**
+//     * @brief Check the configuration using XSD if possible
+//     * @return true if the configuration is validate or if
+//     * there is not XSD available to validate the configuration.
+//     */
+//    FWSERVICES_API bool checkConfiguration() ;
 
 
     //@}

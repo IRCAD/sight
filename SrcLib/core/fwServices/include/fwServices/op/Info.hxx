@@ -35,7 +35,7 @@ template<class SERVICE>
 std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj )
 {
     std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    return ::fwServices::getImplementationIds( obj , serviceId ) ;
+    return ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType( obj->getClassname() , serviceId ) ;
 }
 
 

@@ -31,14 +31,14 @@ namespace library
  */
 FWSERVICES_API bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw() ;
 
-/**
- * @brief Class factory add method
- *
- * @note Invoked by fwServices facade methods (e.g. see add( ::fwTools::Object::sptr , std::string , std::string ) )
- * @author IRCAD (Research and Development Team).
- *
- */
-FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId ) ;
+///**
+// * @brief Class factory add method
+// *
+// * @note Invoked by fwServices facade methods (e.g. see add( ::fwTools::Object::sptr , std::string , std::string ) )
+// * @author IRCAD (Research and Development Team).
+// *
+// */
+//FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId ) ;
 
 } // namespace library
 

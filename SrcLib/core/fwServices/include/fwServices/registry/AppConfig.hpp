@@ -89,6 +89,9 @@ public:
 
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, ::fwData::Composite::csptr replaceFields ) const;
 
+    /// Return all configurations ( standard and template ) register in the registry
+    FWSERVICES_API std::vector< std::string > getAllConfigs() const;
+
     FWSERVICES_API void clearRegistry();
 
     /// Create an unique identifier

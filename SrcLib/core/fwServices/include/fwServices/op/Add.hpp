@@ -56,13 +56,13 @@ FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , s
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId , std::string _id ) ;
 
-/**
- * @brief Create and attach to the object obj a service described in the XML like structure _elt
- * @note configuration element specifies service type and implementation (inline or offline)
- * @return the service
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt ) ;
+///**
+// * @brief Create and attach to the object obj a service described in the XML like structure _elt
+// * @note configuration element specifies service type and implementation (inline or offline)
+// * @return the service
+// * @author IRCAD (Research and Development Team).
+// */
+//FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt ) ;
 
 
 //@}

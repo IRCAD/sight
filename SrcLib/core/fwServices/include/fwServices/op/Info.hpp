@@ -87,32 +87,32 @@ FWSERVICES_API bool support( ::fwTools::Object::sptr obj, std::string serviceId,
 template<class SERVICE>
 bool support( ::fwTools::Object::sptr obj) throw();
 
-/**
- * @brief Gives the identifiers of implementation of service type serviceId which could be created and attached to the given object obj according to its type
- * @return A vector of appropriate identifiers
- *
- * The returned container is organized as following: the elements concern specific implementation (i.e. the one being only compliant with the real instanciated type of obj) and then generic
- * ones (compliant with any type of object). Note that for both specific and generic implementations, the search concerns services already available in the class registry first and the one
- * (virtually) available in unstarted components
- * @author IRCAD (Research and Development Team).
-
- */
-FWSERVICES_API std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) ;
-
-/**
- * @brief Invoke the getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) method where the template parameter SERVICE is related to serviceId
- * @author IRCAD (Research and Development Team).
-
- */
-template<class SERVICE>
-std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj ) ;
-
-/**
- * @brief Returns the default implementation identifier for a given service type (serviceId) and object (obj)
- * At this time, the default implementation identifier is the first one returned by invoking the getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) method
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API std::string getDefaultImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) ;
+///**
+// * @brief Gives the identifiers of implementation of service type serviceId which could be created and attached to the given object obj according to its type
+// * @return A vector of appropriate identifiers
+// *
+// * The returned container is organized as following: the elements concern specific implementation (i.e. the one being only compliant with the real instanciated type of obj) and then generic
+// * ones (compliant with any type of object). Note that for both specific and generic implementations, the search concerns services already available in the class registry first and the one
+// * (virtually) available in unstarted components
+// * @author IRCAD (Research and Development Team).
+//
+// */
+//FWSERVICES_API std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) ;
+//
+///**
+// * @brief Invoke the getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) method where the template parameter SERVICE is related to serviceId
+// * @author IRCAD (Research and Development Team).
+//
+// */
+//template<class SERVICE>
+//std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj ) ;
+//
+///**
+// * @brief Returns the default implementation identifier for a given service type (serviceId) and object (obj)
+// * At this time, the default implementation identifier is the first one returned by invoking the getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) method
+// * @author IRCAD (Research and Development Team).
+// */
+//FWSERVICES_API std::string getDefaultImplementationIds( ::fwTools::Object::sptr obj , std::string serviceId) ;
 
 //@}
 

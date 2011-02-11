@@ -71,21 +71,21 @@ void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _c
     return m_configuration ;
 }
 
-//-----------------------------------------------------------------------------
-
-bool IService::checkConfiguration()
-{
-    ::std::stringstream stream ;
-    bool checkingResult = ::fwServices::validation::checkService( this->className() , this->m_configuration , stream ) ;
-    OSLM_TRACE("Configuration checking result for" << this->className() << " : " << stream.str() ) ;
-    return checkingResult ;
-}
+////-----------------------------------------------------------------------------
+//
+//bool IService::checkConfiguration()
+//{
+//    ::std::stringstream stream ;
+//    bool checkingResult = ::fwServices::validation::checkService( this->className() , this->m_configuration , stream ) ;
+//    OSLM_TRACE("Configuration checking result for" << this->className() << " : " << stream.str() ) ;
+//    return checkingResult ;
+//}
 
 //-----------------------------------------------------------------------------
 
 void IService::configure()
 {
-    SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
+    //SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
     if( m_configurationState == UNCONFIGURED )
     {
         m_configurationState = CONFIGURING ;
