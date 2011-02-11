@@ -116,6 +116,15 @@ void ObjectServiceRegistry::initializeRootObject()
     ::fwRuntime::Runtime::getDefault()->addBundle( configBundle );
     configBundle->setEnable( true );
 
+    // Validate bundle
+    ::fwRuntime::Bundle::ExtensionConstIterator iter = configBundle->extensionsBegin();
+    while( iter != configBundle->extensionsEnd() )
+    {
+        ::fwRuntime::Extension::Validity isValid = (*iter)->validate();
+        SLM_FATAL_IF("Sorry, extension is not valid.", isValid == ::fwRuntime::Extension::Invalid );
+        iter++;
+    }
+
     // register service config
     ::fwServices::registry::ServiceConfig::getDefault()->parseBundleInformation();
 

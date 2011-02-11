@@ -96,7 +96,31 @@ const Extension::Validity Extension::validate()
 
 
     // Validates the extension.
-     ::boost::shared_ptr< io::Validator >   validator( point->getExtensionValidator() );
+    ::boost::shared_ptr< io::Validator >   validator( point->getExtensionValidator() );
+    SLM_ASSERT("Sorry, validator creation failed", validator );
+
+    // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>
+    validator->clearErrorLog();
+    if( validator->validate( m_xmlNode ) == true )
+    {
+        m_validity = Valid;
+    }
+    else
+    {
+        m_validity = Invalid;
+        const std::string   identifier = m_id.empty() ? "anonymous" : m_id;
+        OSLM_ERROR("In bundle " << getBundle()->getIdentifier() << ". " << identifier
+                << ": invalid extension because both root and children XML element node does not respect schema. Verification error log is : "
+                << std::endl << validator->getErrorLog() );
+    }
+
+    return m_validity;
+
+
+
+
+     /*
+
 
     // The validator is defined by a xsd schema specified by the extension point to which this extension contributes
     // The xsd schema can have been build to check the whole extension or each of its children xml element nodes
@@ -120,7 +144,7 @@ const Extension::Validity Extension::validate()
         // Check each extension XML children element node
         // Additional validation procedure : check all XML child nodes of <extension id="xxx" implements="yyy" >...</extension>
         std::vector< std::pair< bool , std::string > > invalidExtensionChildren;
-        /*for(ConfigurationElementContainer::Iterator iter = this->begin() ; iter != this->end() ; ++iter )
+        for(ConfigurationElementContainer::Iterator iter = this->begin() ; iter != this->end() ; ++iter )
         {
             const std::string   identifier = m_id.empty() ? "anonymous" : m_id;
             std::pair< bool , std::string > extensionChildValidity = ::fwRuntime::validateConfigurationElement( validator , *iter ) ;
@@ -133,7 +157,7 @@ const Extension::Validity Extension::validate()
             {
 //              OSLM_TRACE("In bundle " << getBundle()->getIdentifier() << ". " << identifier << ": checking configuration element " << (*iter)->getName() << " : OK");
             }
-        }*/
+        }
 
 //      xmlNodePtr curChild;
 //      for(curChild = m_xmlNode->children; curChild != 0; curChild = curChild->next)
@@ -197,6 +221,7 @@ const Extension::Validity Extension::validate()
     }
 
     return m_validity ;
+    */
 }
 
 void Extension::operator=(const Extension&) throw()
