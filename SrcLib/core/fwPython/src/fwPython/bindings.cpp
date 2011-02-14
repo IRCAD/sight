@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <fwTools/Object.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
@@ -12,6 +13,7 @@
 
 #include "fwPython/python.hpp"
 #include "fwPython/bindings.hpp"
+#include "fwPython/bindings/Image.hpp"
 
 
 // HACK -- CRIME SCENE -- DOT NOT CROSS {
@@ -35,12 +37,7 @@ struct IServiceProxy
 };
 // }
 
-
-::boost::python::object getImageBuffer (::fwData::Image::sptr image) {
-    using namespace boost::python;
-    handle<> bufHandle (PyBuffer_FromReadWriteMemory ((void*)(image->getBuffer()), ::fwData::imageSizeInBytes(*image) ));
-    return object( bufHandle );
-}
+ 
 
 IServiceProxy getSrv(std::string o)
 {
@@ -89,9 +86,14 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
     class_< ::fwData::String, bases<  ::fwData::Object  >, ::fwData::String::sptr >("String")
               .add_property("value",  &::fwData::String::getValue  ,  &::fwData::String::setValue );
     
-    class_< ::fwData::Image, bases<  ::fwData::Object  >, ::fwData::Image::sptr >("Image")
-              .def("getBuffer",  &getImageBuffer );
-}
+    ::fwPython::bindings::export_image();
+
+}  
+
+
+ 
+
+
 
 namespace fwPython
 {
