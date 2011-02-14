@@ -50,6 +50,7 @@ public :
     FWSERVICES_API virtual ~AppInfo(){}
 
     ConfigType type;
+    std::string group;
     std::string desc;
     ::fwRuntime::ConfigurationElement::csptr config;
 };
@@ -80,6 +81,7 @@ public:
     FWSERVICES_API void addAppInfo
     (   const std::string & configId,
             AppInfo::ConfigType type,
+            const std::string & group,
             const std::string & desc,
             ::fwRuntime::ConfigurationElement::csptr config);
 
@@ -91,6 +93,9 @@ public:
 
     /// Return all configurations ( standard and template ) register in the registry
     FWSERVICES_API std::vector< std::string > getAllConfigs() const;
+
+    /// Return all configurations with specified group
+    FWSERVICES_API std::vector< std::string > getConfigsFromGroup(const std::string & group) const;
 
     FWSERVICES_API void clearRegistry();
 

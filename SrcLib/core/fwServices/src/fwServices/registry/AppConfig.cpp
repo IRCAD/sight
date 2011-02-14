@@ -46,6 +46,12 @@ void AppConfig::parseBundleInformation()
         // Get id
         std::string configId = ext->findConfigurationElement("id")->getValue();
 
+        // Get group
+        std::string group = "";
+        if ( ext->hasConfigurationElement("group") )
+        {
+            group = ext->findConfigurationElement("group")->getValue();
+        }
         // Get desc
         std::string desc = "No description available";
         if ( ext->hasConfigurationElement("desc") )
@@ -62,7 +68,7 @@ void AppConfig::parseBundleInformation()
         ::fwRuntime::ConfigurationElement::csptr config = *(ext->findConfigurationElement("config")->begin());
 
         // Add app info
-        addAppInfo( configId, type, desc, config );
+        addAppInfo( configId, type, group, desc, config );
     }
 }
 
@@ -71,6 +77,7 @@ void AppConfig::parseBundleInformation()
 void AppConfig::addAppInfo
 (   const std::string & configId,
     AppInfo::ConfigType type,
+    const std::string & group,
     const std::string & desc,
     ::fwRuntime::ConfigurationElement::csptr config)
 {
@@ -84,6 +91,7 @@ void AppConfig::addAppInfo
 
     AppInfo::NewSptr info;
     info->type = type;
+    info->group = group;
     info->desc = desc;
     info->config =  config;
     m_reg[configId] = info;
@@ -143,6 +151,22 @@ std::vector< std::string > AppConfig::getAllConfigs() const
     BOOST_FOREACH( Registry::value_type elem, m_reg )
     {
         ids.push_back( elem.first );
+    }
+    return ids;
+}
+
+//-----------------------------------------------------------------------------
+
+std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & group) const
+{
+    std::vector< std::string > ids;
+    BOOST_FOREACH( Registry::value_type elem, m_reg )
+    {
+        AppInfo::sptr info = elem.second;
+        if(info->group == group)
+        {
+            ids.push_back( elem.first );
+        }
     }
     return ids;
 }

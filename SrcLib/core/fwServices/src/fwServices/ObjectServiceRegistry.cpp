@@ -121,7 +121,7 @@ void ObjectServiceRegistry::initializeRootObject()
     while( iter != configBundle->extensionsEnd() )
     {
         ::fwRuntime::Extension::Validity isValid = (*iter)->validate();
-        SLM_FATAL_IF("Sorry, extension is not valid.", isValid == ::fwRuntime::Extension::Invalid );
+        OSLM_FATAL_IF("Sorry, extension " << (*iter)->getIdentifier() << " is not valid.", isValid == ::fwRuntime::Extension::Invalid );
         iter++;
     }
 
@@ -130,46 +130,11 @@ void ObjectServiceRegistry::initializeRootObject()
 
     ::fwServices::registry::AppConfig::getDefault()->parseBundleInformation();
 
-
-//    // Research the config extension
-//    bool extensionIsFound = false;
-//    std::vector< SPTR(::fwRuntime::Extension) > extensions = ::fwServices::bundle::findExtensionsForPoint( CONFIG_EXTENSION_POINT ) ;
-//    for(    std::vector< SPTR(::fwRuntime::Extension) >::iterator iter = extensions.begin() ;
-//            iter != extensions.end() ;
-//            ++iter )
-//    {
-//        if( (*iter)->getIdentifier() == getDefault()->m_rootObjectConfigurationName.second )
-//        {
-//            getDefault()->m_rootObjectConfiguration = *((*iter)->begin()) ;
-//            extensionIsFound = true;
-//        }
-//    }
-
-
-
-    //OSLM_ASSERT("Sorry, extension "<< getDefault()->m_rootObjectConfigurationName.second <<" (that contains the configuration of the App) is not found. This extension must exist and must implements extension-point " << CONFIG_EXTENSION_POINT, extensionIsFound );
-
-    //SLM_ASSERT("Sorry, the xml that describes extension "<< getDefault()->m_rootObjectConfigurationName.second <<" is not valid.", getDefault()->isRootObjectConfigurationValid() );
-
-   // getDefault()->m_ctm = AppConfigManager::New();
     getDefault()->m_ctm = AppConfigManager::New();
     ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( getDefault()->m_rootObjectConfigurationName.second );
     getDefault()->m_ctm->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
     getDefault()->m_ctm->launch();
     getDefault()->m_isRootInitialized = true;
-
-
-//    getDefault()->m_ctm = AppConfigManager::New();
-//    getDefault()->m_ctm->setConfig( getDefault()->m_rootObjectConfigurationName.second, CONFIG_EXTENSION_POINT );
-//    getDefault()->m_ctm->launch();
-//    getDefault()->m_isRootInitialized = true;
-
-
-
-//    getDefault()->m_rootObject = ::fwServices::New(getDefault()->m_rootObjectConfiguration);
-//    ::fwServices::start(getDefault()->m_rootObjectConfiguration) ;
-//    ::fwServices::update(getDefault()->m_rootObjectConfiguration) ;
-//    getDefault()->m_isRootInitialized = true ;
 }
 
 //------------------------------------------------------------------------------
