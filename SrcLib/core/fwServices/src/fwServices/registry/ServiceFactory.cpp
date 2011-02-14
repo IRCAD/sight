@@ -59,7 +59,6 @@ void ServiceFactory::parseBundleInformationForObject( SrvRegContainer & _bundleI
     ExtensionContainer  extElements;
     Inserter            extInserter(extElements);
 
-
     // Retrieve appropriate extensions
     ::fwRuntime::getAllExtensionsForPoint ( "::fwTools::Object" , extInserter );
     for( ExtensionContainer::iterator iter = extElements.begin() ; iter != extElements.end() ; ++iter )
@@ -98,10 +97,7 @@ void ServiceFactory::parseBundleInformationForObject( SrvRegContainer & _bundleI
                 }
             }
         }
-
-
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -234,7 +230,7 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     checkServicesNotDeclaredInPluginXml();
 }
 
-//-------------------------------------------0----------------------------------
+//------------------------------------------------------------------------------
 
 void ServiceFactory::addFactory
 ( ::boost::shared_ptr< ::fwTools::IClassFactory > _factory,
@@ -398,6 +394,37 @@ bool ServiceFactory::checkServiceValidity(const std::string & object, const std:
 }
 
 //-----------------------------------------------------------------------------
+
+bool ServiceFactory::support(const std::string & object, const std::string & srvType, const std::string & srvImpl)
+{
+    bool isSupported = true;
+    isSupported &= (m_srvImplTosrvInfo.find(srvImpl)!= m_srvImplTosrvInfo.end());
+    ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
+    isSupported &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
+    isSupported &= (srvInfo->serviceType == srvType);
+    return isSupported;
+}
+
+//-----------------------------------------------------------------------------
+
+bool ServiceFactory::support(const std::string & object, const std::string & srvType)
+{
+    bool isSupported = false;
+    BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
+    {
+        ServiceFactoryInfo::sptr srvInfo = srv.second;
+        if(srvInfo->serviceType == srvType && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwTools::Object") )
+        {
+            isSupported = true;
+            break;
+        }
+    }
+    return isSupported;
+}
+
+//-----------------------------------------------------------------------------
+
+
 } // namespace registry
 } // namespace fwServices
 

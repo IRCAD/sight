@@ -21,24 +21,6 @@ namespace fwServices
 namespace library
 {
 
-
-bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw()
-{
-    /// Direct implementation
-    ::fwServices::ObjectServiceKeyType myKey(serviceId,obj->getClassname());
-    OSLM_DEBUG("**support**" <<serviceId<<"**"<< obj->getClassname() << "**");
-    std::list< ::fwServices::IService::sptr > serviceList = ::fwTools::ClassFactoryRegistry::subClasses< fwServices::IService >(myKey) ;
-    bool supportSpecificObject = !serviceList.empty() ;
-    /// ::fwTools::Object implementation
-    ::fwServices::ObjectServiceKeyType objectKey(serviceId, ::fwCore::getClassname< ::fwTools::Object >() );
-    std::list< ::fwServices::IService::sptr > serviceObjectList = ::fwTools::ClassFactoryRegistry::subClasses< fwServices::IService >(objectKey) ;
-    bool supportGenericObject = !serviceObjectList.empty() ;
-
-    //return !serviceList.empty() ;
-    return supportGenericObject || supportSpecificObject ;
-}
-
-
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
 {
     /// Return all compliant services as generic object

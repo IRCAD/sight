@@ -14,6 +14,8 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 #include <fwData/Object.hpp>
@@ -25,10 +27,10 @@ class ITestService : public ::fwServices::IService
 {
 
 public :
-    
+
     ITestService() throw() {};
     virtual ~ITestService() throw() {};
-    virtual void configuring() throw( ::fwTools::Failed ) {};   
+    virtual void configuring() throw( ::fwTools::Failed ) {};
     virtual void starting() throw(::fwTools::Failed) {};
     virtual void stopping() throw(::fwTools::Failed) {};
     virtual void updating() throw(::fwTools::Failed) {};
@@ -39,10 +41,10 @@ class ImplementationATestService : public ITestService
 {
 
 public :
-    
+
     ImplementationATestService() throw() {};
     virtual ~ImplementationATestService() throw() {};
-    virtual void configuring() throw( ::fwTools::Failed ) {OSLM_INFO("CONFIGURE : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };  
+    virtual void configuring() throw( ::fwTools::Failed ) {OSLM_INFO("CONFIGURE : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
     virtual void starting() throw(::fwTools::Failed) {OSLM_INFO("START : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
     virtual void stopping() throw(::fwTools::Failed) {OSLM_INFO("STOP : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
     virtual void updating() throw(::fwTools::Failed) {OSLM_INFO("UPDATE : implementation = " << this->className() << ( this->hasID() ? " - uuid = " + this->getID() : " - no uuid" ) ); };
@@ -55,12 +57,12 @@ REGISTER_SERVICE( ::ITestService , ::ImplementationATestService , ::fwTools::Obj
 
 int testServiceAdd()
 {
-    ::boost::shared_ptr< ::fwTools::Object > obj = ::fwData::Factory::New< ::fwTools::Object >();   
+    ::boost::shared_ptr< ::fwTools::Object > obj = ::fwData::Factory::New< ::fwTools::Object >();
      ::boost::shared_ptr< ::fwServices::IService > service ;
-    
+
     /// Without id
-    assert( ::fwServices::support( obj , "::ITestService" ) );
-    service = ::fwServices::add( obj , "::ITestService" , "::ImplementationATestService" ) ; 
+    SLM_ASSERT( "ITestService not supported", ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::ITestService");)
+    service = ::fwServices::add( obj , "::ITestService" , "::ImplementationATestService" ) ;
     OSLM_INFO( "First added service : " << *service );
     service = ::fwServices::add( obj , "::ITestService" , "::ImplementationATestService" ) ;
     OSLM_INFO( "Second added service : " << *service );
@@ -68,21 +70,21 @@ int testServiceAdd()
     ::fwServices::eraseServices( obj , "::ITestService" ) ;
     OSLM_INFO( "Number of service of type ITestService : " << ::fwServices::getServices( obj , "::ITestService" ).size() );
 
-    
-    /// With id 
-    service = ::fwServices::add( obj , "::ITestService" , "::ImplementationATestService" , "myFirstOne") ;  
+
+    /// With id
+    service = ::fwServices::add( obj , "::ITestService" , "::ImplementationATestService" , "myFirstOne") ;
     OSLM_INFO( "First added service : " << *service << " - with ID : " << ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject(service) ) );
-    service = ::fwServices::add< ::ITestService >( obj , "::ImplementationATestService" , "mySecondOne") ;  
+    service = ::fwServices::add< ::ITestService >( obj , "::ImplementationATestService" , "mySecondOne") ;
     OSLM_INFO( "Second added service : " << *service << " - with ID : " << ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject(service) ) );
-    
+
     service = ::fwServices::get( obj , "::ITestService" , "mySecondOne") ;
     OSLM_INFO( "Get service ::ITestService mySecondOne exists : " << (service != ::boost::shared_ptr< ::fwServices::IService >() ? "OK" : "NOK") );
     service = ::fwServices::get< ::ITestService >( obj , "mySecondOne") ;
     OSLM_INFO( "Get service ::ITestService mySecondOne exists : " << (service != ::boost::shared_ptr< ::fwServices::IService >() ? "OK" : "NOK") );
     service = ::fwServices::get( obj , "::ITestService" , "myPipo") ;
     OSLM_INFO( "Get service ::ITestService myPipo does not exists : " << (service == ::boost::shared_ptr< ::fwServices::IService >() ? "OK" : "NOK" ) );
-        
-    
+
+
     return 1 ;
 }
 

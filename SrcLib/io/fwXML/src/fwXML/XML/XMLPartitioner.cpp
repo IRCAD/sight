@@ -11,6 +11,7 @@
 #include <fwTools/UUID.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwDataIO/writer/IObjectWriter.hpp>
 
@@ -28,7 +29,7 @@
 #include "fwXML/policy/DefaultPathPolicy.hpp"
 
 
-boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = boost::shared_ptr< fwXML::XMLPartitioner >();
+::boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = boost::shared_ptr< fwXML::XMLPartitioner >();
 
 
 namespace fwXML
@@ -89,7 +90,7 @@ void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSpli
 
 void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
 {
-    if ( ::fwServices::support< IFileFormatService >(obj) )
+    if ( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService") )
     {
         ::fwXML::IFileFormatService::sptr  saver = ::fwServices::get< ::fwXML::IFileFormatService >(obj,0);
 
@@ -107,7 +108,7 @@ void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father, ::boost::shared_ptr< fwTools::Object >  son )
+xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Object::sptr  son )
 {
     XMLHierarchy::getDefault()->mapChildFather()[son]=father;
     XMLHierarchy::getDefault()->mapFatherChildren()[father].insert(son);

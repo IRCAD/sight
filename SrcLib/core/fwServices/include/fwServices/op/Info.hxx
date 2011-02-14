@@ -24,12 +24,6 @@ bool has( ::fwTools::Object::sptr obj) throw()
     return services.size() > 0;
 }
 
-template<class SERVICE>
-bool support( ::fwTools::Object::sptr object) throw()
-{
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    return ::fwServices::support( object , serviceId ) ;
-}
 
 template<class SERVICE>
 std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj )

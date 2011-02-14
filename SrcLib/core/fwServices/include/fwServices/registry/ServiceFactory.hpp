@@ -86,6 +86,18 @@ public:
     /// Check if the service with given object and implementation is valid
     FWSERVICES_API  bool checkServiceValidity(const std::string & object, const std::string & srvImpl);
 
+    /**
+     * @brief Check whether an object (object) supports service of type srvType
+     * @return true if service type supported
+     */
+    FWSERVICES_API bool support(const std::string & object, const std::string & srvType);
+
+    /**
+     * @brief Check whether an object (object) supports service of type srvType and implementation srvImpl
+     * @return true if service type supported
+     */
+    FWSERVICES_API bool support(const std::string & object, const std::string & srvType, const std::string & srvImpl);
+
 protected :
 
     typedef std::map< std::string, ServiceFactoryInfo::sptr > SrvRegContainer;

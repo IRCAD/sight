@@ -22,15 +22,6 @@ namespace bundle
 {
 
 /**
- * @brief Component based support method
- *
- * @note Invoked by fwServices facade methods (e.g. see support( ::fwTools::Object::sptr , std::string ))
- * @note Mainly invoke the getValidExtensionIdsForObjectAndService( ::fwTools::Object::sptr , std::string , unsigned int ) method
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API bool support( ::fwTools::Object::sptr obj , std::string serviceId ) throw() ;
-
-/**
  * @brief Component based add method
  *
  * @note Invoked by fwServices facade methods (e.g. see add( ::fwTools::Object::sptr , std::string , std::string ) )

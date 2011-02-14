@@ -17,6 +17,7 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/validation/Validator.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
@@ -48,7 +49,7 @@ void ServiceTest::testServiceCreation()
     ::fwServices::IService::sptr service;
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::support(obj, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::TestService") );
 
     // Test adding service
     ::fwServices::add(obj, "::TestService", "::TestServiceImplementation");
@@ -72,7 +73,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     ::TestService::sptr service;
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::support< ::TestService >(obj));
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::TestService") );
 
     // Test adding service
     ::fwServices::add< ::TestService >(obj, "::TestServiceImplementation");
@@ -101,7 +102,7 @@ void ServiceTest::testServiceCreationWithUUID()
     ::fwServices::IService::sptr service;
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::support(obj, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::TestService") );
 
     // Test adding service
     ::fwServices::add(obj, "::TestService", "::TestServiceImplementation", myUUID);
@@ -135,7 +136,7 @@ void ServiceTest::testStartStopUpdate()
     ::TestService::sptr service;
 
     // Add service
-    CPPUNIT_ASSERT( ::fwServices::support(obj, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::TestService") );
     ::fwServices::add(obj, "::TestService", "::TestServiceImplementation", myUUID);
     CPPUNIT_ASSERT(::fwServices::has(obj, "::TestService") );
 
@@ -176,7 +177,7 @@ void ServiceTest::testCommunication()
     ::TestService::sptr service2;
 
     // Add services
-    CPPUNIT_ASSERT( ::fwServices::support(obj, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::TestService") );
     ::fwServices::add(obj, "::TestService", "::TestServiceImplementation", service1UUID);
     CPPUNIT_ASSERT(::fwServices::has(obj, "::TestService") );
     service1 = ::fwServices::get< ::TestService >(obj, service1UUID);
