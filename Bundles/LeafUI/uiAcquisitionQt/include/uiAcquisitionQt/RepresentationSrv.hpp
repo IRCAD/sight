@@ -28,10 +28,10 @@ protected:
     void updating() throw ( ::fwTools::Failed );
     void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
     void info ( std::ostream &_sstream ) ;
-	void fillReconstructionVector(::fwData::Acquisition::sptr);
+    void fillReconstructionVector(::fwData::Acquisition::sptr);
 
 private:
-	std::vector<fwData::Reconstruction::sptr> m_reconstructions;
+    std::vector<fwData::Reconstruction::sptr> m_reconstructions;
 };
 
 } // namespace opKinect

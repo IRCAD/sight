@@ -177,10 +177,10 @@
                     
                     
                     <service uid="action_test" implementation="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoComChannel="no" >
-						<start uid="myTest"/>
-					</service>
-					
-					<service uid="myTest"
+                        <start uid="myTest"/>
+                    </service>
+                    
+                    <service uid="myTest"
                            implementation="::uiAcquisition::RepresentationSrv"
                          type="::fwGui::IActionSrv" autoComChannel="no" >
                 </service>

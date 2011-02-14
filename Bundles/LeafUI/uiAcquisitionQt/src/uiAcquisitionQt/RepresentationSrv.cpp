@@ -45,7 +45,7 @@ void RepresentationSrv::starting() throw ( ::fwTools::Failed )
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     SLM_ASSERT("Associated object is not an acquisition", acq);
 
-	// Fill Reconstruction vector
+    // Fill Reconstruction vector
     fillReconstructionVector(acq);
 }
 
@@ -62,9 +62,9 @@ void RepresentationSrv::stopping() throw ( ::fwTools::Failed )
  * @param msg : Incoming message
  */
 void RepresentationSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
-{		
+{        
     if (msg->hasEvent("KINECT_SWIPE_RIGHT_EVENT") || msg->hasEvent("KINECT_SWIPE_LEFT_EVENT")) {
-	    updating();
+        updating();
     }
 }
 
@@ -73,21 +73,21 @@ void RepresentationSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::f
  */
 void RepresentationSrv::updating() throw ( ::fwTools::Failed )
 {
-	int static etat = 0;
+    int static etat = 0;
 
-	etat++;
-	if (etat >= m_reconstructions.size()) {
-		etat = 0;
-	}
+    etat++;
+    if (etat >= m_reconstructions.size()) {
+        etat = 0;
+    }
 
     // change alpha
-	::fwData::Material::sptr material = m_reconstructions[etat]->getMaterial();
-	material->ambient()->alpha() = 0.5 ;
+    ::fwData::Material::sptr material = m_reconstructions[etat]->getMaterial();
+    material->ambient()->alpha() = 0.5 ;
 
     // notify
-	::fwComEd::MaterialMsg::NewSptr msg23;
-	msg23->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-	::fwServices::IEditionService::notify(this->getSptr(), material, msg23);
+    ::fwComEd::MaterialMsg::NewSptr msg23;
+    msg23->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    ::fwServices::IEditionService::notify(this->getSptr(), material, msg23);
 }
 
 /**
@@ -107,9 +107,9 @@ void RepresentationSrv::fillReconstructionVector(::fwData::Acquisition::sptr acq
     ::fwData::Acquisition::ReconstructionIterator reconstruction = reconstructionIters.first;
     while( reconstruction != reconstructionIters.second )
     {
-		// Get reconstruction
+        // Get reconstruction
         ::fwData::Reconstruction::sptr rec = (*reconstruction);
-		m_reconstructions.push_back(rec);
+        m_reconstructions.push_back(rec);
   
         reconstruction++;
     }    
