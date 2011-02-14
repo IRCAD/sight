@@ -14,6 +14,7 @@
 #include "fwPython/python.hpp"
 #include "fwPython/bindings.hpp"
 #include "fwPython/bindings/Image.hpp"
+#include "fwPython/bindings/STLContainers.hpp"
 
 
 // HACK -- CRIME SCENE -- DOT NOT CROSS {
@@ -86,6 +87,7 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
     class_< ::fwData::String, bases<  ::fwData::Object  >, ::fwData::String::sptr >("String")
               .add_property("value",  &::fwData::String::getValue  ,  &::fwData::String::setValue );
     
+    ::fwPython::bindings::export_STLContainers();
     ::fwPython::bindings::export_image();
 
 }  
