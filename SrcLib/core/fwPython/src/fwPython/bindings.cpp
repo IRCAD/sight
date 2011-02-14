@@ -14,24 +14,39 @@
 #include "fwPython/bindings.hpp"
 
 
-//struct IServiceWrap : public ::fwServices::IService
-//{
-    //typedef SPTR(IServiceWrap) sptr ;
-    //void starting() throw ( ::fwTools::Failed ) {} ;
-    //void stopping() throw ( ::fwTools::Failed ) {} ;
-    //void configuring() throw ( ::fwTools::Failed ) {} ;
-    //void updating() throw ( ::fwTools::Failed ) {} ;
-    //void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed ) {} ;
-//};
+// HACK -- CRIME SCENE -- DOT NOT CROSS {
+struct IServiceProxy
+{
+    typedef SPTR(IServiceProxy) sptr ;
+    IServiceProxy(const ::fwTools::Object::sptr obj)
+    {
+        ::fwServices::IService::sptr service;
+        service = ::fwServices::IService::dynamicCast(obj);
+        SLM_ASSERT("Cast to service failed", service);
+        this->m_service = service;
+    };
 
-//void (IServiceWrap::*updating1) () throw (::fwTools::Failed) = &IServiceWrap::updating;
-//void (IServiceWrap::*updating2) (fwServices::ObjectMsg::csptr) throw (::fwTools::Failed) = &IServiceWrap::updating;
+    void start() { m_service->start();  };
+    void update(){ m_service->update();   };
+    void stop()  { m_service->stop(); };
+
+    ::fwServices::IService::sptr m_service;
+
+};
+// }
 
 
 ::boost::python::object getImageBuffer (::fwData::Image::sptr image) {
     using namespace boost::python;
     handle<> bufHandle (PyBuffer_FromReadWriteMemory ((void*)(image->getBuffer()), ::fwData::imageSizeInBytes(*image) ));
     return object( bufHandle );
+}
+
+IServiceProxy getSrv(std::string o)
+{
+    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject( o );
+    IServiceProxy proxy(obj);
+    return proxy;
 }
 
 
@@ -48,17 +63,18 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
                 .def("getClassname", &::fwTools::Object::className );
 
     def( "getObject", &::fwTools::fwID::getObject );
+    def( "getSrv", &getSrv );
 
     // fwData::Object binding
     class_< ::fwData::Object, bases<  ::fwTools::Object  > , ::fwData::Object::sptr >("Object",no_init);
 
-    // fwService::IService binding
+    // fwServices::IService binding
 
-    //class_< IServiceWrap, bases<  ::fwTools::Object  > , IServiceWrap::sptr >("IService",no_init)
-        //.def("update", updating1)
-        ////.def("start", &IServiceWrap::start)
-        ////.def("stop", &IServiceWrap::stop)
-        //;
+    class_< IServiceProxy >("IService",no_init)
+        .def("update", &IServiceProxy::update)
+        .def("start", &IServiceProxy::start)
+        .def("stop", &IServiceProxy::stop)
+        ;
 
     // fwData:: generic fields bindings
     class_< ::fwData::Boolean, bases<  ::fwData::Object  >, ::fwData::Boolean::sptr >("Boolean")
