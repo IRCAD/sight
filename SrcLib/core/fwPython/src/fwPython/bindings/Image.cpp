@@ -41,7 +41,7 @@ void export_image()
     class_< ::fwData::Image, bases<  ::fwData::Object  >, ::fwData::Image::sptr >("Image")
        .def("getBuffer",  &getImageBuffer )
        .add_property("pixelType",  &getPixelTypeAsString, & setPixelTypeFromString )
-       .def("spacing", &::fwData::Image::getCRefSpacing, return_value_policy<copy_const_reference>() );
+       .add_property("spacing", &::fwData::Image::getSpacing,  &::fwData::Image::setSpacing );
        
 
 }
