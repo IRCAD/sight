@@ -24,15 +24,6 @@ bool has( ::fwTools::Object::sptr obj) throw()
     return services.size() > 0;
 }
 
-
-template<class SERVICE>
-std::vector< std::string > getImplementationIds( ::fwTools::Object::sptr obj )
-{
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    return ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType( obj->getClassname() , serviceId ) ;
-}
-
-
 }
 
 #endif /*_FWSERVICES_INFO_HXX_*/
