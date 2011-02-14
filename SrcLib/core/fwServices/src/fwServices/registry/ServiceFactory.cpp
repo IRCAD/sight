@@ -388,8 +388,11 @@ bool ServiceFactory::checkServiceValidity(const std::string & object, const std:
 {
     bool isValid = true;
     isValid &= (m_srvImplTosrvInfo.find(srvImpl)!= m_srvImplTosrvInfo.end());
-    ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
-    isValid &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
+    if (isValid)
+    {
+        ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
+        isValid &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
+    }
     return isValid;
 }
 
@@ -399,9 +402,12 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
 {
     bool isSupported = true;
     isSupported &= (m_srvImplTosrvInfo.find(srvImpl)!= m_srvImplTosrvInfo.end());
-    ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
-    isSupported &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
-    isSupported &= (srvInfo->serviceType == srvType);
+    if (isSupported)
+    {
+        ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
+        isSupported &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
+        isSupported &= (srvInfo->serviceType == srvType);
+    }
     return isSupported;
 }
 
