@@ -1,4 +1,8 @@
-<extension id="BasicFrameConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>BasicFrameConfig</id>
+        <type>standard</type>
+        <config>
+
     <object uid="SELECTED_UID_myImage" src="ref" type="::fwData::Image">
         <service uid="GENERIC_UID_BasicViewerFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
             <window onclose="notify" />
@@ -15,11 +19,10 @@
 
         <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="GENERIC_UID_SecondView" autoComChannel="yes" >
         </service>
-        
+
         <start uid="GENERIC_UID_BasicViewerFrame" />
         <start uid="GENERIC_UID_SecondView" />
         <update uid="GENERIC_UID_SecondView"/>
-        <stop uid="GENERIC_UID_SecondView" />
-        <stop uid="GENERIC_UID_BasicViewerFrame" />
     </object>
+    </config>
 </extension>

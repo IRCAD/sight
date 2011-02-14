@@ -4,10 +4,9 @@
         <id>tutoGuiConfig</id>
         <type>standard</type>
         <config>
-        
-        <object type="::fwTools::Object">
 
-            <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+        <object type="::fwData::Image">
+           <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
                 <gui>
                     <frame>
                         <name>TutoGui</name>
@@ -25,7 +24,7 @@
                     <view sid="view" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
                 <gui>
                     <layout>
@@ -39,7 +38,7 @@
                     <menu sid="myMenu2" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
                 <gui>
                     <layout>
@@ -67,7 +66,7 @@
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
                 <gui>
                     <layout>
@@ -91,7 +90,7 @@
                     <menuItem sid="actionQuit" start="no" />
                 </registry>
             </service>
-            
+
             <service uid="myMenu2" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
                 <gui>
                     <layout>
@@ -107,7 +106,7 @@
                     <menuItem sid="item17" start="no" />
                 </registry>
             </service>
-            
+
             <service uid="item1" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no">
                 <state active="true" />
             </service>
@@ -121,24 +120,20 @@
             <service uid="item5" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" >
                 <state active="true" />
             </service>
-            
+
             <service uid="item16" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                 <state active="true" />
                 <start uid="item2" />
                 <start uid="item3" />
-                <stop uid="item4" />
-                <stop uid="item5" />
             </service>
             <service uid="item17" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <stop uid="item2" />
-                <stop uid="item3" />
                 <start uid="item4" />
                 <start uid="item5" />
             </service>
-            
+
             <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
-            
-            
+
+
             <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
@@ -152,7 +147,7 @@
                     <view sid="subView2" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="subView1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
@@ -164,11 +159,11 @@
                 </gui>
                 <registry>
                     <parent wid="myView" />
-                    <view sid="subView3" start="yes" />               
+                    <view sid="subView3" start="yes" />
                 </registry>
             </service>
-            
-            
+
+
             <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager" >
@@ -181,7 +176,7 @@
                     <view sid="view12" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="subView3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
                 <gui>
                     <layout type="::fwGui::TabLayoutManager" >
@@ -192,7 +187,7 @@
                 </gui>
                 <registry/>
             </service>
-            
+
             <service uid="view12" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
@@ -204,7 +199,7 @@
                     <toolBar sid="toolbar2" start="yes" />
                 </registry>
             </service>
-                       
+
             <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
                 <gui>
                     <layout>
@@ -222,16 +217,12 @@
                     <menuItem sid="item5" />
                 </registry>
             </service>
-            
-            <start uid="myFrame" />
-            
-            <start uid="subView1" />
-            <stop uid="subView1" />
 
-            
+            <start uid="myFrame" />
+            <start uid="subView1" />
 
         </object>
-    
+
         </config>
     </extension>
 

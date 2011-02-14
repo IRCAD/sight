@@ -4,7 +4,7 @@
         <id>MesherV3Config</id>
         <type>standard</type>
         <config>
-        
+
 
         <!--  Composite data creation. -->
         <object type="::fwData::Composite">
@@ -208,13 +208,8 @@
             <start uid="MyComChannelSrv1" />
             <start uid="MyComChannelSrv2" />
 
-            <stop uid="MyComChannelSrv2" />
-            <stop uid="MyComChannelSrv1" />
-
-            
-
         </object>
-    
+
         </config>
     </extension>
-</plugin>    
+</plugin>

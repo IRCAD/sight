@@ -4,7 +4,7 @@
         <id>MesherV2Config</id>
         <type>standard</type>
         <config>
-        
+
 
         <!--  Composite data creation. -->
         <object type="::fwData::Composite">
@@ -189,10 +189,8 @@
             -->
             <start uid="myFrame" />
 
-            
-
         </object>
-    
+
         </config>
     </extension>
-</plugin>    
+</plugin>
