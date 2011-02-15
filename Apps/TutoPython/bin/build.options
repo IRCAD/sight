@@ -6,6 +6,8 @@ BUNDLES = [
         'uiIO',
         'guiQt',
         'uiPython',
+        'dataReg',
+        'servicesReg',
         'launcher_0-1',
  ]
 
