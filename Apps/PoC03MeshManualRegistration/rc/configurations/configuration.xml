@@ -192,16 +192,6 @@
         <update uid="myCam1ReaderFile"/>
         <update uid="myCam2ReaderFile"/>
 
-        <stop uid="myCam2ReaderFile"/>
-        <stop uid="myCam1ReaderFile"/>
-        <stop uid="newOBject2newPatientDB"/>
-        <stop uid="myUpdaterComCannelImg" />
-        <stop uid="myUpdaterComCannelAcq" />
-        <stop uid="myManager" />
-        <stop uid="myUpdaterImg" />
-        <stop uid="myUpdaterAcq" />
-        <stop uid="MyIHM" />
-
 </object>
 
         </config>

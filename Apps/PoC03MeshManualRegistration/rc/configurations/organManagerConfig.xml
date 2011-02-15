@@ -87,12 +87,6 @@
         <start uid="myManagerForOrgansFrameComChannel" />
         <start uid="myUpdaterComChannelReconst" />
 
-        <stop uid="myUpdaterComChannelReconst" />
-        <stop uid="myManagerForOrgansFrameComChannel" />
-        <stop uid="myManagerForOrgansFrame" />
-        <stop uid="myUpdaterReconst" />
-        <stop uid="organManagerFrame" />
-
     </object>
 
 

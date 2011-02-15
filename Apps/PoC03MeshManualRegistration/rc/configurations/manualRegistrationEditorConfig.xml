@@ -64,11 +64,6 @@
         <start uid="myManagerForManualRegistEditor" />
         <start uid="myManagerForManualRegistEditorComChannel" />
 
-        <stop uid="myManagerForManualRegistEditorComChannel" />
-        <stop uid="myManagerForManualRegistEditor" />
-        <stop uid="registrationEditorFrame" />
-
-
     </object>
 
 

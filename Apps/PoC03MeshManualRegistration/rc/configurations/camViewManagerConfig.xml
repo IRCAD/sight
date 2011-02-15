@@ -62,8 +62,6 @@
         <!-- START AND STOP SERVICES -->
         <start uid="camViewManagerConfigFrame" />
 
-        <stop uid="camViewManagerConfigFrame" />
-
     </object>
 
 
