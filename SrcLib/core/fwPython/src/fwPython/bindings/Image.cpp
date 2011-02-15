@@ -1,5 +1,8 @@
 #include <boost/python.hpp>
 
+#include <boost/assign/list_of.hpp>
+
+#include <map>
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/StringKeyTypeMapping.hpp> // for makedynamicType
 
@@ -7,15 +10,47 @@
 
 #include "fwPython/bindings/Image.hpp"
 
+
+// transform CPP type description in pyhthon buffer-info.format 
+// format described : http://docs.python.org/library/struct.html#module-struct section 7.3.2.2. Format Characters TODO to complete
+static std::map< ::fwTools::DynamicType, const char * > typeCPP2Python =
+    boost::assign::map_list_of( ::fwTools:: makeDynamicType<short>(), "h" )
+                              (  ::fwTools::makeDynamicType<unsigned short>(), "H" )
+                              (  ::fwTools::makeDynamicType<int>(), "i" ) 
+                              (  ::fwTools::makeDynamicType<unsigned int>(), "I" ); 
+
+    
+
+
+
 namespace fwPython 
 {
 namespace bindings
 {
 
 
-::boost::python::object getImageBuffer (::fwData::Image::sptr image) {
+::boost::python::object getImageBuffer (::fwData::Image::sptr image)
+ {
     using namespace boost::python;
-    handle<> bufHandle (PyBuffer_FromReadWriteMemory ((void*)(image->getBuffer()), ::fwData::imageSizeInBytes(*image) ));
+    Py_buffer *pybuf = new Py_buffer;
+    pybuf->obj = NULL;
+    pybuf->buf = image->getBuffer();
+    pybuf->readonly= 0;
+    pybuf->len = ::fwData::imageSizeInBytes(*image);
+    pybuf->format =  (char *)typeCPP2Python[ image->getPixelType() ];
+    pybuf->itemsize =  image->getPixelType().sizeOf() ;
+    pybuf->ndim = image->getDimension();
+    pybuf->shape =  new Py_ssize_t[image->getDimension()];
+    pybuf->strides =  new Py_ssize_t[image->getDimension()];
+    pybuf->suboffsets =  new Py_ssize_t[image->getDimension()];
+    
+    std::copy(  image->getCRefSize().begin(), image->getCRefSize().end(), pybuf->shape);
+    bzero(  pybuf->suboffsets , image->getDimension()*sizeof( Py_ssize_t ) );
+
+    PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'C');
+
+    handle<> bufHandle( PyMemoryView_FromBuffer( pybuf ) );
+    
     return object( bufHandle );
 }
 

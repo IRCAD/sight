@@ -45,6 +45,10 @@ public:
     FWTOOLS_API bool operator!=(const DynamicType &) const;
 
 
+    /**
+     * @brief  define an order (lexicographic) for dynamicType
+     */
+    bool operator<( const DynamicType& ) const;
 
     /**
      * @brief   Set DynamicType value according given template
@@ -105,6 +109,9 @@ protected :
 
 
 };
+
+
+
 
 /// Helper to create object DynamicType from a given type TYPE \in { (un)signed char, ... , double }
 template<class TYPE>
