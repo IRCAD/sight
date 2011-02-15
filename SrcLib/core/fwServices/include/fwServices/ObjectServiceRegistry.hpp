@@ -19,12 +19,10 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/Failed.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwTools/Object.hpp>
 
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/AppConfigManager.hpp"
 
 namespace fwServices
 {
@@ -73,44 +71,8 @@ public:
     /// Destructor
     FWSERVICES_API virtual ~ObjectServiceRegistry();
 
-    /**
-     * @name Management of the software top root object
-     */
-
-    //@{
-
-    /**
-     * @brief Define the root object XML like configuration name, to be later retrieved from component graph analysis
-     */
-    FWSERVICES_API static void setRootObjectConfigurationName(std::string name) ;
-
-    FWSERVICES_API static void setRootObjectConfigurationFile(std::string _rootObjectConfigurationFile) ;
-
-    /**
-     * @brief Return true if the root object is initialized (i.e. instanciated with attached services, appropriately configured and started and updated)
-     */
-    FWSERVICES_API static bool isRootObjectInitialized() ;
-    /**
-     * @brief Trigger root object instanciation, configuration, service attachment, starting and updating
-     */
-    FWSERVICES_API static void initializeRootObject() ;
-
-    /**
-     * @brief Reset root object
-     * This involves the stopping of services reported in the configuration and then the stopping of the other. Finally,
-     * all services are eliminated as well as objects composing the root object. The object service registry should become empty.
-     */
-    FWSERVICES_API static void uninitializeRootObject() ;
-
-    /**
-     * @brief Return the root object
-     */
-    FWSERVICES_API static ::fwTools::Object::sptr getRootObject() ;
-
     /// Return some informations contain in the registry
     FWSERVICES_API static std::string getRegistryInformation();
-
-    //@}
 
     /**
      * @name Management of registrations
@@ -303,25 +265,6 @@ private :
 
     /// Defines the string used to defined in bundles extensions that describes configurations
     static const std::string CONFIG_EXTENSION_POINT;
-
-    /**
-     * @brief Name of the configuration for the root object
-     * @note The boolean is false if name undefined as at m_instance initialization.
-     */
-    std::pair< bool , std::string > m_rootObjectConfigurationName ;
-
-    std::pair< bool , std::string > m_rootObjectConfigurationFile ;
-
-    /**
-     * @brief True if root object initialized
-     * @note Should be useless as m_rootObject can provide this information
-     */
-    bool m_isRootInitialized ;
-
-    /**
-     * @brief Strong reference of the main application configuration
-     */
-    ::fwServices::AppConfigManager::sptr m_ctm;
 
 };
 

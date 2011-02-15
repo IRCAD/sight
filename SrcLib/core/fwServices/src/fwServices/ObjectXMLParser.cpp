@@ -9,6 +9,7 @@
 #include "fwServices/ObjectXMLParser.hpp"
 
 
+
 REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwServices::ObjectXMLParser , ::fwTools::Object ) ;
 
 

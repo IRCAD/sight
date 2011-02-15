@@ -21,7 +21,7 @@
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/profile/Profile.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/RootManager.hpp>
 
 
 
@@ -80,7 +80,7 @@ App::App(int & argc, char ** argv)
 //#endif
 
     // Initialize root object : root object, views, ...
-    ::fwServices::OSR::initializeRootObject();
+    ::fwServices::RootManager::initializeRootObject();
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +90,7 @@ void App::onExit()
     SLM_TRACE_FUNC();
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    ::fwServices::OSR::uninitializeRootObject();
+    ::fwServices::RootManager::uninitializeRootObject();
     QApplication::restoreOverrideCursor();
 
     qApp->flush();

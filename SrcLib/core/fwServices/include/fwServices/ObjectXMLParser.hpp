@@ -9,6 +9,7 @@
 
 #include <fwTools/Object.hpp>
 #include "fwServices/IXMLParser.hpp"
+#include "fwServices/AppConfigManager.hpp"
 
 namespace fwServices
 {

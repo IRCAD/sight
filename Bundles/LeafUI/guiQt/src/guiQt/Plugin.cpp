@@ -11,7 +11,7 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/RootManager.hpp>
 
 #include <fwGuiQt/App.hpp>
 
@@ -43,8 +43,8 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
         std::string objectConfigurationName( this->getBundle()->getParameterValue("config") ) ;
         std::string objectConfigurationFile( this->getBundle()->getParameterValue("configFile") ) ;
 
-        ::fwServices::OSR::setRootObjectConfigurationName(objectConfigurationName) ;
-        ::fwServices::OSR::setRootObjectConfigurationFile(objectConfigurationFile) ;
+        ::fwServices::RootManager::setRootObjectConfigurationName(objectConfigurationName) ;
+        ::fwServices::RootManager::setRootObjectConfigurationFile(objectConfigurationFile) ;
     }
     else
     {
