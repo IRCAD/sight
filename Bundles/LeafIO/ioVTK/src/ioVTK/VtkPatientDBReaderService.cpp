@@ -191,13 +191,8 @@ void VtkPatientDBReaderService::notificationOfDBUpdate()
 
     ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >();
 
-    //::boost::shared_ptr< ::fwComEd::PatientDBMsg > msg ( new ::fwComEd::PatientDBMsg( pDPDB ) ) ;
-    //msg->addMessageInformation( ::fwComEd::PatientDBMsg::NEW_PATIENT );
     ::fwComEd::PatientDBMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT );
-
-//  ::boost::shared_ptr< ::fwServices::IEditionService > basicEditor = ::fwServices::get< ::fwServices::IEditionService >( pDPDB ) ;
-//  basicEditor->notify( msg );
     ::fwServices::IEditionService::notify(this->getSptr(), pDPDB, msg);
 }
 

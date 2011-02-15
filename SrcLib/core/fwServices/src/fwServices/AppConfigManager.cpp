@@ -503,7 +503,7 @@ void AppConfigManager::start( ::fwRuntime::ConfigurationElement::csptr _elt )
             {
                 SLM_ASSERT("Sorry, the attribute start is required for element start.", elem->hasAttribute("uid") );
                 std::string uid = elem->getExistingAttributeValue("uid") ;
-                OSLM_FATAL_IF("Sorry, try to start this service (" << uid << "), but this fwId is not found.", ! ::fwServices::has(uid));
+                OSLM_FATAL_IF("Sorry, try to start this service (" << uid << "), but this fwId is not found.", ! ::fwTools::fwID::exist(uid));
                 ::fwServices::IService::sptr srv = ::fwServices::get(uid);
                 srv->start();
                 m_startedServices.push_back( srv );

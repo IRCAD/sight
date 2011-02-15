@@ -69,6 +69,7 @@ public:
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ObjectServiceRegistry::sptr getDefault();
+
     /// Destructor
     FWSERVICES_API virtual ~ObjectServiceRegistry();
 
@@ -78,25 +79,12 @@ public:
 
     //@{
 
-//    /**
-//     * @brief Set the root object
-//     * @note Care must be taken as external affectation may lead to conflict with internal one, through initializeRootObject() method invocation.
-//     */
-//    FWSERVICES_API static void setRootObject(::fwTools::Object::sptr obj) ;
-
     /**
      * @brief Define the root object XML like configuration name, to be later retrieved from component graph analysis
      */
     FWSERVICES_API static void setRootObjectConfigurationName(std::string name) ;
 
     FWSERVICES_API static void setRootObjectConfigurationFile(std::string _rootObjectConfigurationFile) ;
-
-//    /**
-//     * @brief Return true if the proposed XML like configuration is valid.
-//     *
-//     * Validity is checked through component graph analysis, class registry requests and XSD based schema analysis
-//     */
-//    FWSERVICES_API static bool isRootObjectConfigurationValid() ;
 
     /**
      * @brief Return true if the root object is initialized (i.e. instanciated with attached services, appropriately configured and started and updated)
@@ -229,6 +217,19 @@ public:
 
     //@}
 
+     /**
+      * @name Some useful getters
+      */
+
+     //@{
+     /**
+      * @brief return true is obj has at least one service of type srvType
+      * @author IRCAD (Research and Development Team).
+      */
+     FWSERVICES_API static bool has( ::fwTools::Object::sptr obj , const std::string & srvType);
+     //@}
+
+
     /**
      * @name Misc.
      */
@@ -318,16 +319,9 @@ private :
     bool m_isRootInitialized ;
 
     /**
-     * @brief Strong reference of the root object
+     * @brief Strong reference of the main application configuration
      */
-    //::fwTools::Object::sptr m_rootObject ;
     ::fwServices::AppConfigManager::sptr m_ctm;
-
-    /**
-     * @brief Strong reference of the root object configuration
-     */
-    //::fwRuntime::ConfigurationElement::sptr m_rootObjectConfiguration ;
-
 
 };
 

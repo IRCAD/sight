@@ -26,20 +26,6 @@
         <desc>TriangularMesh Reader</desc>
     </extension>
 
-    <!-- REGISTER_SERVICE( ::io::IReader , ::ioData::DefaultCompositeObjectReaderService , ::fwData::ProcessObject ) ; -->
-    <!--<extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioData::DefaultCompositeObjectReaderService</service>
-        <object>::fwData::ProcessObject</object>
-    </extension>-->
-
-    <!-- REGISTER_SERVICE( ::io::IReader , ::ioData::CompositeReaderService , ::fwData::Composite ) ; -->
-    <!--<extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioData::CompositeReaderService</service>
-        <object>::fwData::Composite</object>
-    </extension>-->
-
     <!-- REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D ) ; -->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>

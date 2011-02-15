@@ -242,7 +242,7 @@ int nbObjectHavingFileFormatService()
     while( aggIter != ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator().end() )
     {
         ::fwTools::Object::sptr obj =  aggIter->first.lock();
-        if ( obj && fwServices::has< ::fwXML::IFileFormatService >( obj ) )
+        if ( obj && ::fwServices::ObjectServiceRegistry::has(obj, "::fwXML::IFileFormatService") )
         {
             nbObjects++;
         }

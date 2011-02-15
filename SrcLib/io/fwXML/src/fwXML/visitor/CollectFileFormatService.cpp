@@ -35,18 +35,18 @@ CollectFileFormatService::~CollectFileFormatService()
 void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
 {
     std::string uuid = ::fwTools::UUID::get(obj);
-    std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
+    std::string srcUuid = m_source ? ::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     OSLM_TRACE( "CollectFileFormatService Visitor Visiting : Class " << obj->className() <<
                 "(" <<  uuid    <<
-                ") HASt<FileFormatService>" <<  (fwServices::has< ::fwXML::IFileFormatService >(obj)?"yes":"no") <<
+                ") HASt<FileFormatService>" <<  (::fwServices::ObjectServiceRegistry::has(obj, "::fwXML::IFileFormatService")?"yes":"no") <<
                 "ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
                 );
 
 
     SLM_ASSERT("Objets is null",obj);
-    if ( fwServices::has< ::fwXML::IFileFormatService >( obj ) )
+    if ( ::fwServices::ObjectServiceRegistry::has(obj, "::fwXML::IFileFormatService") )
     {
-        m_objWithFileFormatService[obj] = fwServices::get< ::fwXML::IFileFormatService >( obj );
+        m_objWithFileFormatService[obj] = ::fwServices::get< ::fwXML::IFileFormatService >( obj );
     }
 }
 

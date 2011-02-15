@@ -58,13 +58,6 @@ ObjectServiceRegistry::~ObjectServiceRegistry()
 
 //------------------------------------------------------------------------------
 
-//void ObjectServiceRegistry::setRootObject(::fwTools::Object::sptr obj)
-//{
-//    getDefault()->m_rootObject = obj;
-//}
-
-//------------------------------------------------------------------------------
-
 void ObjectServiceRegistry::setRootObjectConfigurationName(std::string name)
 {
     SLM_ASSERT("Sorry, configuration name is an empty string.", ! name.empty() );
@@ -83,16 +76,8 @@ void ObjectServiceRegistry::setRootObjectConfigurationFile(std::string _rootObje
 
 ::fwTools::Object::sptr ObjectServiceRegistry::getRootObject()
 {
-    //return getDefault()->m_rootObject ;
     return getDefault()->m_ctm->getConfigRoot();
 }
-
-////------------------------------------------------------------------------------
-//
-//bool ObjectServiceRegistry::isRootObjectConfigurationValid()
-//{
-//    return ::fwServices::validation::checkObject( getDefault()->m_rootObjectConfiguration ) ;
-//}
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +89,6 @@ void ObjectServiceRegistry::initializeRootObject()
     SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
 
     ::fwServices::registry::ServiceFactory::getDefault()->parseBundleInformation();
-
 
     // ToDo Correct this hack
     // Load another "pseudo" bundle
@@ -538,6 +522,26 @@ std::string ObjectServiceRegistry::getRegistryInformation()
 
     return info.str();
 
+}
+
+//------------------------------------------------------------------------------
+
+bool ObjectServiceRegistry::has( ::fwTools::Object::sptr obj , const std::string & srvType)
+{
+    bool hasServices = false;
+    if( ObjectServiceRegistry::getDefault()->m_container.find(obj) != ObjectServiceRegistry::getDefault()->m_container.end())
+    {
+        SContainer services = ObjectServiceRegistry::getDefault()->m_container[obj];
+        BOOST_FOREACH( ::fwServices::IService::sptr srv, services)
+        {
+            if(srv->isA(srvType))
+            {
+                hasServices = true;
+                break;
+            }
+        }
+    }
+    return hasServices ;
 }
 
 //------------------------------------------------------------------------------

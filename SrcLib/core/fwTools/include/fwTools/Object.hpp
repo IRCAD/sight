@@ -54,7 +54,6 @@ struct FWTOOLS_CLASS_API IDeleter : public ::fwCore::BaseObject
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-//class FWTOOLS_CLASS_API Object  : public ::boost::enable_shared_from_this<Object>
 class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject , protected ::fwTools::fwID
 {
 public:

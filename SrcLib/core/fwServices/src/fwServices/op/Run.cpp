@@ -41,7 +41,7 @@ void start( ::fwRuntime::ConfigurationElement::sptr _elt)
             if( (*iter)->hasAttribute("uid") )
             {
                 std::string uid = (*iter)->getExistingAttributeValue("uid") ;
-                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
+                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwTools::fwID::exist(uid));
                 ::fwServices::get(uid)->start() ;
             }
         }
@@ -69,7 +69,7 @@ void update(::fwRuntime::ConfigurationElement::csptr _elt)
             {
                 std::string uid = elem->getExistingAttributeValue("uid") ;
                 OSLM_INFO("Updating service with UUID " << uid ) ;
-                OSLM_FATAL_IF("Configuration : element  "<< uid << " not found", ! ::fwServices::has(uid) );
+                OSLM_FATAL_IF("Configuration : element  "<< uid << " not found", ! ::fwTools::fwID::exist(uid) );
                 ::fwServices::get(uid)->update() ;
             }
         }
@@ -97,7 +97,7 @@ void stop( ::fwRuntime::ConfigurationElement::sptr _elt)
             {
                 std::string uid = (*iter)->getExistingAttributeValue("uid") ;
                 OSLM_INFO("Stopping service with UUID " << uid ) ;
-                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
+                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwTools::fwID::exist(uid));
                 ::fwServices::get(uid)->stop() ;
             }
         }
@@ -124,7 +124,7 @@ void stopAndUnregister( ::fwRuntime::ConfigurationElement::sptr _elt)
             if( (*iter)->hasAttribute("uid") )
             {
                 std::string uid = (*iter)->getExistingAttributeValue("uid") ;
-                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwServices::has(uid));
+                OSLM_FATAL_IF("Configuration : element " << uid << " not found", ! ::fwTools::fwID::exist(uid));
                 OSLM_INFO("Stopping service with UUID " << uid ) ;
                 erase(::fwServices::get(uid)) ;
             }

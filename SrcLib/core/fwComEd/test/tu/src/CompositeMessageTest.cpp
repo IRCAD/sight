@@ -74,9 +74,9 @@ void CompositeMessageTest::methodeBuildComposite()
     // test composite services
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
     CPPUNIT_ASSERT_EQUAL(objAUUID, image->getID());
-    CPPUNIT_ASSERT( ::fwServices::has(image, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::ObjectServiceRegistry::has(image, "::TestService"));
 
-    CPPUNIT_ASSERT( ::fwServices::has(compo, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::ObjectServiceRegistry::has(compo, "::TestService"));
 
     /// test start/update/stop service
     configManager->start();
@@ -168,9 +168,13 @@ void CompositeMessageTest::methodeMessageNotification()
     const std::string ImageServiceUUID = "myImageService";
     const std::string ImageService2UUID = "myImageService2";
 
-    // build composite
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildConfig() ;
-    ::fwData::Composite::sptr compo = ::fwServices::New< ::fwData::Composite >(config );
+    // Create the object and its services from the configuration
+    ::fwServices::AppConfigManager::NewSptr configManager;
+    configManager->setConfig( config );
+    configManager->create();
+    ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
+
     ::TestService::sptr serviceCompo;
     serviceCompo = ::fwServices::get< ::TestService >(compo);
     CPPUNIT_ASSERT(serviceCompo);

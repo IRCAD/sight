@@ -41,7 +41,7 @@ void ProcessObjectParserTest::tearDown()
 
 void ProcessObjectParserTest::testBuildProcessObject()
 {
-	/* FIXME : update the config/parsing for a po
+    /* FIXME : update the config/parsing for a po
     const std::string IMAGE1ID = "OBJ0A";
     const std::string VIDEOID = "OBJ0B";
     const std::string IMAGE2ID = "OBJ0C";
@@ -63,9 +63,9 @@ void ProcessObjectParserTest::testBuildProcessObject()
     ::fwData::Image::sptr image2 = po->getOutput< ::fwData::Image >(IMAGE2ID);
     CPPUNIT_ASSERT_EQUAL(IMAGE2ID, image2->getID());
 
-    CPPUNIT_ASSERT(::fwServices::has(po, "::TestService"));
-    CPPUNIT_ASSERT(::fwServices::has(po, "::fwServices::IEditionService"));
-    CPPUNIT_ASSERT(::fwServices::has(image1, "::TestService"));
+    CPPUNIT_ASSERT(::fwServices::ObjectServiceRegistry::has(po, "::TestService"));
+    CPPUNIT_ASSERT(::fwServices::ObjectServiceRegistry::has(po, "::fwServices::IEditionService"));
+    CPPUNIT_ASSERT(::fwServices::ObjectServiceRegistry::has(image1, "::TestService"));
 
     ::TestService::sptr servicePo;
 

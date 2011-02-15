@@ -26,8 +26,6 @@
 #include "fwServices/op/Add.hpp"
 #include "fwServices/op/Get.hpp"
 #include "fwServices/op/Erase.hpp"
-#include "fwServices/op/Info.hpp"
-
 
 
 #endif /*_FWSERVICES_BASE_HPP_*/

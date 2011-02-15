@@ -22,7 +22,6 @@ class ServiceTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testServiceCreationWithUUID );
     CPPUNIT_TEST( testStartStopUpdate );
     CPPUNIT_TEST( testCommunication );
-    CPPUNIT_TEST( testServiceCreationWithConfig );
     CPPUNIT_TEST( testObjectCreationWithConfig );
     CPPUNIT_TEST_SUITE_END();
 
@@ -49,9 +48,6 @@ public:
 
     /// test sending/receiving message
     void testCommunication();
-
-    /// test service creation from a configuration
-    void testServiceCreationWithConfig();
 
     /// test object with services creation from a configuration
     void testObjectCreationWithConfig();

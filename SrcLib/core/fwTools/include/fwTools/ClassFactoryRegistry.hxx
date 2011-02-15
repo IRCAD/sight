@@ -28,14 +28,6 @@ ClassFactoryRegistry::create(const KEY &key)  throw(std::invalid_argument)
      f = getDefault()->m_registry.begin();
      while ( f != getDefault()->m_registry.end() )
      {
-
-//       OSLM_INFO( "ClassFactoryRegistry::create() Base=" << (*f)->baseClassId().name() );
-//       OSLM_INFO( "ClassFactoryRegistry::create() SubClass=" << (*f)->subClassId().name() << "KeyId=" <<  (*f)->keyId().name());
-//       OSLM_INFO( "ClassFactoryRegistry::create() idOK=" <<  keyComparatorEquality(  (*f)->baseClassId() ,  typeid(BASECLASS) )
-//                                                             && keyComparatorEquality(  (*f)->keyId() ,  typeid(KEY))         );
-//       OSLM_INFO( "ClassFactoryRegistry::create() cast=" << ::boost::dynamic_pointer_cast< TFactory >( (*f) ) );
-
-
         if (    keyComparatorEquality(  (*f)->baseClassId() ,  typeid(BASECLASS) )
              && keyComparatorEquality(  (*f)->keyId() ,  typeid(KEY))
              && ::boost::dynamic_pointer_cast< TFactory >( (*f) )                             // for diamond inheritance of BASECLASS if any
@@ -43,7 +35,6 @@ ClassFactoryRegistry::create(const KEY &key)  throw(std::invalid_argument)
         {
             ::boost::shared_ptr<TFactory>  tfactory = ::boost::dynamic_pointer_cast< TFactory >( (*f) );
             assert( tfactory );
-            //OSLM_INFO( "ClassFactoryRegistry::create() test canHandle");
             if ( tfactory->canHandle(key) )
             {
                 return tfactory->create();
@@ -54,7 +45,6 @@ ClassFactoryRegistry::create(const KEY &key)  throw(std::invalid_argument)
      }
 
      return ::boost::shared_ptr< BASECLASS >(); // return an empty BASECLASS // not found
-
 }
 
 
@@ -116,40 +106,6 @@ ClassFactoryRegistry::subClasses()  throw(std::invalid_argument)
 }
 
 
-// doesn't work with reference !!
-//template<class BASECLASS, class KEY>
-//std::map< const KEY &, ::boost::shared_ptr<BASECLASS> >
-//ClassFactoryRegistry::mapKeySubClasses()  throw(std::invalid_argument)
-//{
-//  std::map< const KEY &, ::boost::shared_ptr<BASECLASS> > result;
-//
-//  /// search factories which produce sub of type BASECLASS and can deal with KEY
-//  /// when found try if the key match
-//  std::list< ::boost::shared_ptr<IClassFactory> >::iterator f;
-//  typedef TBKClassFactory<BASECLASS,KEY> TFactory;
-//
-//  f = getDefault()->m_registry.begin();
-//  while (f != getDefault()->m_registry.end() )
-//  {
-//
-//      if ( ((*f)->baseClassId() == typeid(BASECLASS) ) && ((*f)->keyId() == typeid(KEY) ))
-//      {
-//           ::boost::shared_ptr<TFactory> tfactory = ::boost::dynamic_pointer_cast<TFactory>( (*f) );
-//          assert(tfactory);
-//
-//          result.push_back( std::make_pair( tfactory->keyValue(), tfactory->create() ) );
-//
-//      }
-//      ++f;
-//  }
-//
-//  return result;
-//
-//}
-
-
-
-
-} //end namespace fwTools {
+} //end namespace fwTools
 
 
