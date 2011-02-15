@@ -18,13 +18,6 @@ namespace fwServices
 {
 
 template<class SERVICE>
-SPTR(SERVICE) get( fwTools::Object * obj, unsigned int _index) throw(fwTools::Failed )
-{
-    assert(  OSR::shared_from( obj ).get() ); // check if object registred first !!!
-    return::fwServices::get< SERVICE > ( OSR::shared_from( obj ) , _index ) ;
-}
-
-template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj, unsigned int _index ) throw(fwTools::Failed )
 {
 

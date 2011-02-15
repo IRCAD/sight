@@ -57,14 +57,6 @@ template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj, unsigned int _index = 0 ) throw(fwTools::Failed );
 
 /**
- * @brief Indirectly invoke the get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index = 0 ), where SERVICE relates serviceId
- * @deprecated Traditional pointers should not be used
- * @author IRCAD (Research and Development Team).
- */
-template<class SERVICE>
-SPTR(SERVICE) get( fwTools::Object * obj, unsigned int _index = 0 ) throw(fwTools::Failed );
-
-/**
  * @brief Return a registered IService having uid as unique universal identifier , its an alias on fwTools::Object::getID(...) method
  * @author IRCAD (Research and Development Team).
 
@@ -101,13 +93,6 @@ FWSERVICES_API unsigned int getServicePosition( IService::sptr  _service ) ;
  * @author IRCAD (Research and Development Team).
  */
 FWSERVICES_API std::vector< ::fwServices::IService::sptr > getRegisteredServices( ::fwTools::Object::sptr _obj );
-
-/**
- * @brief Same as getServicePosition( IService::sptr ) but with a traditional pointer
- * @deprecated Traditional pointers should not be used
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API unsigned int getServicePosition( IService * _service ) ;
 
 //@}
 

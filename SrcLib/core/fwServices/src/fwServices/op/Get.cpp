@@ -115,57 +115,7 @@ std::vector< ::fwServices::IService::sptr > getServices( std::string serviceId )
         std::copy( servicesForCurrentObject.begin() , servicesForCurrentObject.end() , backInserter ) ;
     }
 
-//  std::vector< std::string > availableImplementations = ::fwServices::getImplementationIds( obj , serviceId ) ;
-//  std::vector< ::fwServices::IService::sptr > allServices = ::fwServices::getRegisteredServices(obj);
-//  std::vector< ::fwServices::IService::sptr > services ;
-//
-//  // Search should be optimized
-//  for( std::vector< ::fwServices::IService::sptr >::iterator iter = allServices.begin() ; iter != allServices.end()  ; ++iter )
-//  {
-//      std::string className = (*iter)->getClassname() ;
-//      if( std::find( availableImplementations.begin() , availableImplementations.end() , className ) != availableImplementations.end()  )
-//      {
-//          services.push_back( *iter ) ;
-//      }
-//  }
     return services ;
-}
-
-//------------------------------------------------------------------------------
-
-unsigned int getServicePosition( IService * _service )
-{
-    typedef std::vector< ::fwServices::IService::sptr > VectType ;
-
-    // Retrieve object associated with _service
-     ::fwTools::Object::sptr refObject = _service->getObject();
-    assert( refObject ) ;
-
-    // Retrieve associated fwServices
-    VectType   refServices = OSR::getServices< IService >(refObject) ;
-
-    // Retrieve similar associated fwServices
-    VectType   simServices;
-    for( VectType::iterator iter = refServices.begin() ; iter != refServices.end() ; ++iter )
-    {
-        if( typeid(*iter) == typeid(*_service) )
-        {
-            simServices.push_back( *(iter) );
-        }
-    }
-
-    // Find out the position of _fwServices
-    unsigned int counter    = 0 ;
-    unsigned int pos        = 0 ;
-    for( VectType::iterator iter = simServices.begin() ; iter != simServices.end() ; ++iter )
-    {
-        if((*iter).get() == _service )
-        {
-            pos = counter;
-        }
-        ++counter ;
-    }
-    return pos ;
 }
 
 //------------------------------------------------------------------------------

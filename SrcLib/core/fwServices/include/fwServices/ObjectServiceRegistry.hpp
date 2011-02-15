@@ -93,11 +93,6 @@ public:
      * removal at obj destruction.
      */
     FWSERVICES_API static void registerService(  ::fwTools::Object::sptr obj, fwServices::IService::sptr service);
-    /**
-     * @brief Similar to registerService(  ::fwTools::Object::sptr , fwServices::IService::sptr )
-     * @deprecated Traditional pointers should not be used
-     */
-    FWSERVICES_API static void registerService(  fwTools::Object * obj, ::fwServices::IService::sptr);
 
     //@}
 
@@ -203,35 +198,6 @@ public:
      * @author  IRCAD (Research and Development Team).
      */
     FWSERVICES_API static void swapService( fwTools::Object::sptr  objSrc, fwTools::Object::sptr  objDst, ::fwServices::IService::sptr _service );
-
-    //@}
-
-    /**
-     * @name DEPRECATED
-     */
-
-    //@{
-
-    /**
-     * @brief Return a strong reference on a object passed as traditional pointer
-     * @deprecated Traditional pointers should not be used
-     * @return empty smart pointer if not found
-     */
-     FWSERVICES_API static ::fwTools::Object::sptr shared_from( fwTools::Object * );
-
-     /**
-     * @brief Return a strong reference on a servce passed as traditional pointer
-     * @deprecated Traditional pointers should not be used
-     * @return empty smart pointer if not found
-     */
-     FWSERVICES_API static ::fwServices::IService::sptr shared_from( fwServices::IService *_service );
-
-     /**
-     * @brief Return true if the service (_service) is attached to an object
-     * @deprecated Traditional pointers should not be used
-     * @deprecated IService already provides this information
-     */
-     FWSERVICES_API static bool hasObject(IService * _service);
 
     //@}
 

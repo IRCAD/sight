@@ -79,13 +79,6 @@ void ObjectServiceRegistry::registerObject( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void ObjectServiceRegistry::registerService(  fwTools::Object * obj, ::fwServices::IService::sptr service)
-{
-    OSR::registerService( OSR::shared_from( obj ) , service ) ;
-}
-
-//------------------------------------------------------------------------------
-
 ObjectServiceRegistry::sptr ObjectServiceRegistry::getDefault()
 {
     if ( m_instance==0 )
@@ -292,57 +285,6 @@ void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _s
             pos->second.erase( positionToDelete ) ;
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-bool ObjectServiceRegistry::hasObject(::fwServices::IService * _service)
-{
-    return _service->m_associatedObject.use_count();
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::Object::sptr ObjectServiceRegistry::shared_from( ::fwTools::Object *obj )
-{
-    BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
-    {
-        ::fwTools::Object::wptr lobject = objSrvMap.first;
-        assert( !lobject.expired() ) ;
-        if ( (lobject.lock()).get() == obj )
-        {
-            return  lobject.lock() ;
-        }
-    }
-
-    OSLM_WARN( "Requested ObjectServiceRegistry::shared_from( fwTools::Object *obj [("
-            << obj << "]) for object not registered in  ObjectServiceRegistry" ); ;
-
-    // avoid compilation warning
-    return ::fwTools::Object::sptr();
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::sptr ObjectServiceRegistry::shared_from( fwServices::IService *_service )
-{
-    BOOST_FOREACH( OSContainer::value_type objSrvMap, getDefault()->m_container)
-    {
-        SLM_ASSERT("Object has expired", !objSrvMap.first.expired() ) ;
-        SContainer services = objSrvMap.second;
-        BOOST_FOREACH(::fwServices::IService::sptr srv, services)
-        {
-            if (srv.get() == _service )
-            {
-                return srv ;
-            }
-        }
-    }
-    OSLM_WARN( "Requested ObjectServiceRegistry::shared_from( fwServices::IService *_service [("
-            << _service << "]) for object not registered in  ObjectServiceRegistry" ); ;
-
-    // avoid compilation warning
-    return ::fwServices::IService::sptr();
 }
 
 //------------------------------------------------------------------------------
