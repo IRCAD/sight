@@ -76,13 +76,13 @@ void AppConfigManager::startComChannel()
 void AppConfigManager::stopComChannel()
 {
     BOOST_REVERSE_FOREACH( ::fwServices::IService::wptr wsrv, m_startedComChannelServices )
-            {
+    {
         SLM_ASSERT( "Sorry, CTM must stop a service, but it is expired", ! wsrv.expired());
         ::fwServices::IService::sptr srv = wsrv.lock();
         OSLM_ASSERT( "Sorry, CTM must stop a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already stopped", ! srv->isStopped() );
         OSLM_INFO("Stop service ( " << srv->getID() << " ) managed by the AppConfigManager.");
         srv->stop();
-            }
+    }
     m_startedComChannelServices.clear();
 }
 
@@ -103,7 +103,7 @@ void AppConfigManager::start()
 
 void AppConfigManager::update()
 {
-    ::fwServices::update( m_adaptedConfig ) ;
+    this->update(m_adaptedConfig);
     m_objectParser->updateConfig();
 }
 
@@ -176,29 +176,6 @@ void AppConfigManager::stopAndDestroy()
     stop();
     destroy();
 }
-
-//-----------------------------------------------------------------------------
-
-//void AppConfigManager::read( ::fwRuntime::ConfigurationElement::csptr _cfgElem )
-//{
-//    SLM_TRACE_FUNC();
-//
-//    ::fwRuntime::ConfigurationElement::csptr result;
-//
-//    OSLM_INFO( " Name : " << _cfgElem->getName() );
-//    OSLM_INFO( " Value : " << _cfgElem->getValue() );
-//
-//    typedef std::map<std::string, std::string> MapAttributesType;
-//    BOOST_FOREACH( MapAttributesType::value_type attribute, _cfgElem->getAttributes() )
-//    {
-//        OSLM_INFO( " Attribute Name : " << attribute.first  << "  -  Attribute Value : " << attribute.second );
-//    }
-//
-//    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr subElem, _cfgElem->getElements())
-//    {
-//        this->read( subElem );
-//    }
-//}
 
 //-----------------------------------------------------------------------------
 
@@ -501,7 +478,7 @@ void AppConfigManager::start( ::fwRuntime::ConfigurationElement::csptr _elt )
             }
             else
             {
-                SLM_ASSERT("Sorry, the attribute start is required for element start.", elem->hasAttribute("uid") );
+                SLM_ASSERT("Sorry, the attribute uid is required for element start.", elem->hasAttribute("uid") );
                 std::string uid = elem->getExistingAttributeValue("uid") ;
                 OSLM_FATAL_IF("Sorry, try to start this service (" << uid << "), but this fwId is not found.", ! ::fwTools::fwID::exist(uid));
                 ::fwServices::IService::sptr srv = ::fwServices::get(uid);
@@ -510,6 +487,37 @@ void AppConfigManager::start( ::fwRuntime::ConfigurationElement::csptr _elt )
             }
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void AppConfigManager::update( ::fwRuntime::ConfigurationElement::csptr _elt )
+{
+    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, _elt->getElements() )
+        {
+        if( elem->getName() == "update" )
+        {
+            if( elem->hasAttribute("type") )
+            {
+                std::string serviceTypeToUpdate = elem->getExistingAttributeValue("type") ;
+                std::vector< ::fwServices::IService::sptr > servicesToUpdate = getServices( serviceTypeToUpdate ) ;
+                OSLM_FATAL_IF("Configuration : element " << serviceTypeToUpdate << " not found", servicesToUpdate.empty() );
+                std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToUpdate.begin() ;
+                for( ; iter != servicesToUpdate.end() ; ++iter )
+                {
+                    (*iter)->update();
+                }
+            }
+            else
+            {
+                SLM_ASSERT("Sorry, the attribute uid is required for element update.", elem->hasAttribute("uid") );
+                std::string uid = elem->getExistingAttributeValue("uid") ;
+                OSLM_INFO("Updating service with UUID " << uid ) ;
+                OSLM_FATAL_IF("Sorry, try to update this service (" << uid << "), but this fwId is not found.", ! ::fwTools::fwID::exist(uid));
+                ::fwServices::get(uid)->update() ;
+            }
+        }
+        }
 }
 
 //------------------------------------------------------------------------------

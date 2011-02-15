@@ -190,7 +190,7 @@ void CompositeMessageTest::methodeMessageNotification()
 
 
     // start services
-    fwServices::start( config ) ;
+    configManager->start();
     serviceImage->start();
     serviceImage2->start();
 
@@ -232,7 +232,7 @@ void CompositeMessageTest::methodeMessageNotification()
     }
 
     serviceImage->stop();
-    fwServices::stop( config ) ;
+    configManager->stopAndDestroy();
 }
 
 //------------------------------------------------------------------------------

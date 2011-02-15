@@ -134,32 +134,16 @@ private:
                    CONFIG_IS_DESTROYED,
     } ConfigManagementState;
 
-//    /// Adapts the configuration : replace field thanks to field adaptors
-//    ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem );
-//
-//    /// Adapts field thanks to field adaptors
-//    std::string adaptField( const std::string & _str ) const;
-
-    /// Get the object service configuration given by the service config
-    // void loadConfig();
-
-    // std::string m_configName;
-
-    // std::string m_configType;
-
-    // std::map< std::string, std::string > m_fieldAdaptors;
-
     ::fwTools::Object::sptr m_configRoot;
 
     ::fwServices::IXMLParser::sptr m_objectParser;
-
-    //::fwRuntime::ConfigurationElement::csptr m_configTemplate;
 
     ::fwRuntime::ConfigurationElement::csptr m_adaptedConfig;
 
     ConfigManagementState m_state;
 
     void start( ::fwRuntime::ConfigurationElement::csptr _elt );
+    void update(::fwRuntime::ConfigurationElement::csptr _elt );
 };
 
 }

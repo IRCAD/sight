@@ -2,7 +2,6 @@ CLASSTEST=[
     'CompositeMessageTest',
 #   'CallbackTest',
     'MessagesTest',
-    'ProcessObjectParserTest'
     ]
 
 USE = ['boost']

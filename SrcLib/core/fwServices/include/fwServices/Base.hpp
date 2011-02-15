@@ -17,10 +17,6 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/ObjectMsg.hpp"
 
-// For creating an object with associated services
-
-// For running service methods
-#include "fwServices/op/Run.hpp"
 
 // For adding/get/erasing/info (has/support/implementationIds)
 #include "fwServices/op/Add.hpp"

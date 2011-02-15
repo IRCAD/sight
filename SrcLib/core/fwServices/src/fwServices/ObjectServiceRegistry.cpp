@@ -17,7 +17,6 @@
 #include "fwServices/Deleter.hpp"
 #include "fwServices/ObjectServiceRegistry.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/op/Run.hpp"
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
 
