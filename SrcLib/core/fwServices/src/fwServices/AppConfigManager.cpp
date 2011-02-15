@@ -12,7 +12,6 @@
 #include "fwServices/Base.hpp"
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IXMLParser.hpp"
-#include "fwServices/validation/Validator.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 
 namespace fwServices

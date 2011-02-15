@@ -16,7 +16,6 @@
 #include "fwServices/ObjectServiceRegistry.hpp"
 #include "fwServices/helper.hpp"
 #include "fwServices/Factory.hpp"
-#include "fwServices/validation/Validator.hpp"
 
 
 namespace fwServices

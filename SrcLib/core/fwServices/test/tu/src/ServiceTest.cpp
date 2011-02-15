@@ -16,7 +16,6 @@
 #include <fwServices/Factory.hpp>
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/validation/Validator.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>

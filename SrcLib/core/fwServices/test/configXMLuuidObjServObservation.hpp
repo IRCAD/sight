@@ -16,7 +16,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 #include <fwServices/ComChannelService.hpp>
-#include <fwServices/validation/Validator.hpp>
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 #include <fwData/ProcessObject.hpp>
