@@ -13,7 +13,6 @@
 #include <wx/wx.h>
 #include <wx/treectrl.h>
 
-#include <fwServices/monitor/Monitor.hpp>
 
 #include <fwData/Object.hpp>
 
@@ -56,9 +55,12 @@ class FWWX_CLASS_API wxMonitor : public ::wxPanel
 {
 public:
 
-    FWWX_API wxMonitor(wxWindow* parent, ::fwServices::monitor::map_object_servicesNames & map_string) ;
+    typedef std::map<std::string, std::list<std::string> > string_map ;
+    typedef std::map< ::fwTools::Object::sptr , std::list<std::string> > MapObjectServicesNamesType ;
 
-    FWWX_API wxMonitor(wxWindow* parent, ::fwServices::monitor::string_map & map_string) ;
+    FWWX_API wxMonitor(wxWindow* parent, MapObjectServicesNamesType & map_string) ;
+
+    FWWX_API wxMonitor(wxWindow* parent, string_map & map_string) ;
 
     void FWWX_API setOnSelectionCallback( wxMonitorCallback::ptr callback);
 

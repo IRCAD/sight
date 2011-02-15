@@ -19,7 +19,6 @@
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/macros.hpp"
-#include "fwServices/monitor/Monitor.hpp"
 #include "fwServices/ObjectMsg.hpp"
 #include "fwServices/IEditionService.hpp"
 
