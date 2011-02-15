@@ -23,7 +23,6 @@
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 
-//#include <fwServices/bundle/runtime.hpp>
 
 
 #include <fwGui/dialog/MessageDialog.hpp>

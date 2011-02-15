@@ -19,7 +19,6 @@
 //#include "fwServices/Base.hpp"
 //#include "fwServices/op/New.hpp"
 //#include "fwServices/bundle/Factory.hpp"
-//#include "fwServices/bundle/runtime.hpp"
 //#include "fwServices/library/Factory.hpp"
 //#include "fwServices/IEditionService.hpp"
 //

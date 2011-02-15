@@ -22,7 +22,6 @@
 #include "fwServices/Deleter.hpp"
 #include "fwServices/ObjectServiceRegistry.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/bundle/runtime.hpp"
 #include "fwServices/validation/Validator.hpp"
 #include "fwServices/op/New.hpp"
 #include "fwServices/op/Run.hpp"

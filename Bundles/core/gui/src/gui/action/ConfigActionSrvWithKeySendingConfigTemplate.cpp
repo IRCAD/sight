@@ -1,5 +1,4 @@
 #include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/IEditionService.hpp>
 

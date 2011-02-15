@@ -9,7 +9,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include "fwServices/AppConfigManager.hpp"
-#include "fwServices/bundle/runtime.hpp"
 #include "fwServices/Base.hpp"
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IXMLParser.hpp"

@@ -1,7 +1,6 @@
 #include <boost/regex.hpp>
 
 #include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
 #include "gui/action/ConfigActionSrv.hpp"

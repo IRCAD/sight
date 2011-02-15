@@ -12,7 +12,6 @@
 //#include <fwServices/helper.hpp>
 //#include <fwServices/macros.hpp>
 //#include <fwServices/ObjectMsg.hpp>
-//#include <fwServices/bundle/runtime.hpp>
 //#include <fwData/Composite.hpp>
 //#include <fwCore/base.hpp>
 //
