@@ -114,9 +114,6 @@ private :
     /// Helper to print some informations
     void printInfoMap( const SrvRegContainer & src );
 
-    /// Helper to parse bundle information to retreive service declaration
-    void parseBundleInformationForObject( SrvRegContainer & _bundleInfoMap );
-
     /// Helper to trace services not declared in plugin.xml
     void checkServicesNotDeclaredInPluginXml();
 };

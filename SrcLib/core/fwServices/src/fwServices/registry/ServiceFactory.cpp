@@ -51,57 +51,6 @@ void printXml( std::vector< ::boost::shared_ptr< ::fwRuntime::ConfigurationEleme
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactory::parseBundleInformationForObject( SrvRegContainer & _bundleInfoMap )
-{
-    typedef std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > ExtensionContainer;
-    typedef std::back_insert_iterator< ExtensionContainer > Inserter;
-
-    ExtensionContainer  extElements;
-    Inserter            extInserter(extElements);
-
-    // Retrieve appropriate extensions
-    ::fwRuntime::getAllExtensionsForPoint ( "::fwTools::Object" , extInserter );
-    for( ExtensionContainer::iterator iter = extElements.begin() ; iter != extElements.end() ; ++iter )
-    {
-        std::string id = (*iter)->getIdentifier();
-        if ( id != "::fwServices::IService" )
-        {
-            SrvRegContainer::iterator impl = _bundleInfoMap.find( id );
-
-            if ( impl != _bundleInfoMap.end() )
-            {
-                impl->second->objectImpl = "::fwTools::Object";
-            }
-            else
-            {
-
-                OSLM_WARN( "Object classname =  " << id );
-
-                ExtensionContainer  extElements2;
-                Inserter            extInserter2(extElements2);
-
-                ::fwRuntime::getAllExtensionsForPoint ( id , extInserter2 );
-                for(    ExtensionContainer::iterator iter2 = extElements2.begin() ;
-                        iter2 != extElements2.end() ;
-                        ++iter2 )
-                {
-                    std::string id2 = (*iter2)->getIdentifier();
-
-                    impl = _bundleInfoMap.find( id2 );
-
-                    if( impl != _bundleInfoMap.end())
-                    {
-                        SLM_ASSERT( "Pas normal => " << id2, impl != _bundleInfoMap.end() );
-                        impl->second->objectImpl = (*iter)->getIdentifier();
-                    }
-                }
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void ServiceFactory::parseBundleInformation()
 {
 
@@ -173,7 +122,6 @@ void ServiceFactory::parseBundleInformation()
 
     //Print information
     printInfoMap( bundleInfoMap );
-//    printInfoMap( m_srvImplTosrvInfo );
 
     // Merge data info
     for ( SrvRegContainer::iterator iterBundle = bundleInfoMap.begin();
