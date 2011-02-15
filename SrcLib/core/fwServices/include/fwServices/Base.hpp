@@ -18,7 +18,6 @@
 #include "fwServices/ObjectMsg.hpp"
 
 // For creating an object with associated services
-#include "fwServices/op/New.hpp"
 
 // For running service methods
 #include "fwServices/op/Run.hpp"

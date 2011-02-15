@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/IXMLParser.hpp"
-#include "fwServices/op/New.hpp"
 
 
 
