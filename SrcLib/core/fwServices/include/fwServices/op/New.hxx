@@ -10,7 +10,6 @@
 //#include <fwTools/ClassFactoryRegistry.hpp>
 //#include <fwCore/Demangler.hpp>
 //#include <fwTools/TypeInfo.hpp>
-//#include "fwServices/bundle/Factory.hpp"
 //#include "fwServices/IEditionService.hpp"
 //
 //namespace fwServices

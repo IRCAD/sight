@@ -18,8 +18,6 @@
 #include "fwServices/IXMLParser.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/op/Add.hpp"
-#include "fwServices/bundle/Factory.hpp"
-#include "fwServices/library/Factory.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"

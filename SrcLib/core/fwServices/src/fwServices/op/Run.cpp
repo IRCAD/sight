@@ -17,8 +17,6 @@
 #include "fwServices/IXMLParser.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/op/Run.hpp"
-#include "fwServices/bundle/Factory.hpp"
-#include "fwServices/library/Factory.hpp"
 #include "fwServices/IEditionService.hpp"
 
 namespace fwServices

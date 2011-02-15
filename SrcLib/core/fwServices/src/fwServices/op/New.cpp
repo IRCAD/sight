@@ -18,8 +18,6 @@
 //#include "fwServices/IService.hpp"
 //#include "fwServices/Base.hpp"
 //#include "fwServices/op/New.hpp"
-//#include "fwServices/bundle/Factory.hpp"
-//#include "fwServices/library/Factory.hpp"
 //#include "fwServices/IEditionService.hpp"
 //
 //namespace fwServices
