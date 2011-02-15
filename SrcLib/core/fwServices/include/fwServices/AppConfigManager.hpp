@@ -40,23 +40,11 @@ public:
     /// Constructor. Do nothing.
     FWSERVICES_API AppConfigManager();
 
-    /// Constructor. Do nothing.
-    //FWSERVICES_API AppConfigManager( const std::string & _configName, const std::string & _configType, const std::map< std::string, std::string > & _fieldAdaptors );
-
     /// Destructor. Do nothing.
     FWSERVICES_API virtual ~AppConfigManager();
 
     /// Set config param
-    //FWSERVICES_API void setConfig( const std::string & _configName, const std::string & _configType );
-
-    /// Set config param
     FWSERVICES_API void setConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem );
-
-    /// Set field adaptors
-    //FWSERVICES_API void addField( std::string _pattern, std::string _value );
-
-    /// Set field adaptors
-    //FWSERVICES_API void setFieldAdaptors( const std::map< std::string, std::string > & _fieldAdaptors );
 
     /// Get config root
     FWSERVICES_API ::fwTools::Object::sptr getConfigRoot() const;
@@ -85,9 +73,6 @@ public:
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
     FWSERVICES_API void stopAndDestroy();
-
-    /// Create an unique identifier
-    // FWSERVICES_API static std::string getUniqueIdentifier( std::string _serviceUid = "", bool _useCpt = false );
 
     /// Return state
     FWSERVICES_API bool isCreated()  { return m_state == CONFIG_IS_CREATED;}
