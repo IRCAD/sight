@@ -17,6 +17,7 @@
 #include <fwServices/helper.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
+#include <fwServices/AppConfigManager.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
