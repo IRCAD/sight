@@ -13,11 +13,9 @@ namespace fwServices
 template< class DATATYPE >
  SPTR(DATATYPE) IService::getObject()
 {
-    assert( m_associatedObject.use_count() );
-    assert( m_associatedObject.expired() == false );
-
+    OSLM_ASSERT("Expired object in service " << this->getID(), !m_associatedObject.expired() );
     SPTR(DATATYPE) casteDdata = ::boost::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
-    assert(casteDdata);
+    OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", casteDdata);
 
     return casteDdata;
 }

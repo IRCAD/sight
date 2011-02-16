@@ -49,8 +49,7 @@ void IService::info( std::ostream &_sstream )
 
 ::fwTools::Object::sptr IService::getObject()
 {
-    SLM_ASSERT("Empty shared_ptr for Associated Object", m_associatedObject.use_count() ); // initialized
-    SLM_ASSERT("Associated Object is expired", m_associatedObject.expired() == false ); // not expired
+    SLM_ASSERT("Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired", !m_associatedObject.expired() );
     return m_associatedObject.lock();
 }
 
