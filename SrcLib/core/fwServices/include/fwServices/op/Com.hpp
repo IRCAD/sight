@@ -41,21 +41,6 @@ FWSERVICES_API ::fwServices::ComChannelService::sptr registerCommunicationChanne
  */
 FWSERVICES_API void unregisterCommunicationChannel( ::fwTools::Object::sptr _src , ::fwServices::IService::sptr  _dest) ;
 
-/**
- * @brief All communication channels having _service for source or destination are stopped
- */
-FWSERVICES_API void stopComChannels( ::fwServices::IService::sptr _service) ;
-
-/**
- * @brief All communication channels having _service for source or destination are started
- */
-FWSERVICES_API void startComChannels( ::fwServices::IService::sptr _service) ;
-
-/**
- * @brief Unregister all communication services (ICommunication) involving _service (which can be either subject or observer)
- */
-FWSERVICES_API void unregisterComChannels( ::fwServices::IService::sptr _service) ;
-
 //@}
 
 

@@ -165,28 +165,6 @@ void ObjectServiceRegistry::swapService(  ::fwTools::Object::sptr  _objSrc, ::fw
 
 //------------------------------------------------------------------------------
 
-void ObjectServiceRegistry::unregisterServices(  ::fwTools::Object::sptr  obj )
-{
-    SLM_ASSERT("Object not found in OSContainer",
-            getDefault()->m_container.find(obj) != getDefault()->m_container.end());
-
-    // Clean service vector clearing
-    SContainer services = getDefault()->m_container[obj];
-    BOOST_FOREACH(::fwServices::IService::sptr srv, services)
-    {
-        if (srv != NULL)
-        {
-            OSLM_ASSERT( "Sorry, the service ( "<< srv->getID() <<" ) must be stop before unregister it.", srv->isStopped() );
-            ::fwServices::unregisterComChannels( srv ) ;
-        }
-    }
-    services.clear() ;
-
-    getDefault()->m_container.erase( obj ) ;
-}
-
-//------------------------------------------------------------------------------
-
 void ObjectServiceRegistry::cleanExpiredObject()
 {
     static std::set < ::fwTools::Object::wptr > lobjects;

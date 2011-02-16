@@ -23,13 +23,6 @@ namespace fwServices
 //@{
 
 /**
- * @brief Erase all services attached to obj
- * @note Erase implicitely involves service stopping first
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API void clear( ::fwTools::Object::sptr obj ) ;
-
-/**
  * @brief Erase service instance from the system
  * @author IRCAD (Research and Development Team).
  */

@@ -129,10 +129,6 @@ void RootManager::uninitializeRootObject()
         OSLM_WARN_IF("Sorry, few services still exist before erasing root object ( cf debug following message )" << std::endl << ::fwServices::OSR::getRegistryInformation(),
                         ::fwServices::OSR::getDefault()->getOSContainer().size() != 1 || ::fwServices::OSR::getDefault()->getOSContainer().begin()->second.size() != 0 );
 
-        // Unregister root object services
-        //::fwServices::OSR::unregisterServices( getDefault()->m_ctm->getConfigRoot() );
-
-
         ::fwServices::GlobalEventManager::getDefault()->clearMessages();
 
         SLM_TRACE("uninitializeRootObject : Reset the last shared_ptr on root object.");

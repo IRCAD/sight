@@ -41,11 +41,5 @@ void eraseServices( ::fwTools::Object::sptr obj , std::string serviceId )
     }
 }
 
-void clear( ::fwTools::Object::sptr obj )
-{
-    OSR::unregisterServices( obj ) ;
-}
-
-
 }
 
