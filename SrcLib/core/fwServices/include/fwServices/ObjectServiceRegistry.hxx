@@ -8,6 +8,8 @@
 #include <sstream>
 #include <iterator>
 
+#include <boost/foreach.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwTools/ClassFactoryRegistry.hpp>
 
@@ -16,123 +18,97 @@
 namespace fwServices
 {
 
+//------------------------------------------------------------------------------
+
 template<class SERVICE>
 std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices()
 {
     std::vector< SPTR(SERVICE) >  lfwServices;
-
-    for( OSContainer::iterator iter = getDefault()->m_container.begin() ; iter != getDefault()->m_container.end() ; ++iter )
+    BOOST_FOREACH( ObjectServiceRegistry::OSContainer::value_type elt, getDefault()->m_container)
     {
-        if( !iter->first.expired()) // To avoid loops with getObject( shared on service) when object has expired
+        SLM_ASSERT("Object expired", !elt.first.expired());
+        BOOST_FOREACH(::fwServices::IService::sptr srv, elt.second)
         {
-            for( SContainer::iterator lIter = iter->second.begin() ; lIter != iter->second.end() ; ++lIter )
+            SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( srv );
+            if ( service )
             {
-                if( (*lIter).use_count() != 0 )
-                {
-                    SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( (*lIter) );
-                    if ( service.get() )
-                    {
-                        lfwServices.push_back( service ) ;
-                    }
-                }
+                lfwServices.push_back( service ) ;
             }
         }
     }
-#ifdef _DEBUG
-    // Error/Warning management
-    if( lfwServices.empty() )
-    {
-        SLM_DEBUG("No service registered");
-    }
-#endif
+    SLM_DEBUG_IF("No service registered", lfwServices.empty());
     return lfwServices;
 }
+
+//------------------------------------------------------------------------------
 
 template<class SERVICE>
 std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices( fwTools::Object::sptr obj)
 {
     std::vector< SPTR(SERVICE) >  lfwServices;
-
-    for( OSContainer::iterator iter = getDefault()->m_container.begin() ; iter != getDefault()->m_container.end() ; ++iter )
+    if(getDefault()->m_container.find(obj) != getDefault()->m_container.end())
     {
-        if( iter->first.lock().get() == obj.get() )
+        std::vector< ::fwServices::IService::sptr > services = getDefault()->m_container[obj];
+        BOOST_FOREACH(::fwServices::IService::sptr srv, services)
         {
-            for( SContainer::iterator lIter = iter->second.begin() ; lIter != iter->second.end() ; ++lIter )
+            SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( srv );
+            if ( service)
             {
-                 SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( (*lIter) );
-                if ( service.get() )
-                {
-                    lfwServices.push_back( service ) ;
-                }
+                lfwServices.push_back( service ) ;
             }
         }
     }
     return lfwServices;
 }
 
+//------------------------------------------------------------------------------
+
 template<class SERVICE>
 std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
 {
     std::vector< ::fwTools::Object::sptr >   lobjects;
-    for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
+    BOOST_FOREACH( ObjectServiceRegistry::OSContainer::value_type elt, getDefault()->m_container)
     {
-        for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
+        SLM_ASSERT("Object expired", !elt.first.expired());
+        BOOST_FOREACH(::fwServices::IService::sptr srv, elt.second)
         {
-            if ( dynamic_cast< SERVICE *>( (*lIter).get() ) )// attached service is castable in SERVICE
+            if(::boost::dynamic_pointer_cast< SERVICE >( srv ))
             {
-                assert( !pos->first.expired() ) ;
-                bool alreadyPushed = false ;
-                for( std::vector< ::fwTools::Object::sptr >::iterator iter = lobjects.begin() ; iter != lobjects.end() ; ++iter )
-                {
-                    if( (*iter).get() == pos->first.lock().get() )
-                    {
-                        alreadyPushed = true ;
-                    }
-                }
-                if( !alreadyPushed )
-                {
-                    lobjects.push_back( pos->first.lock() );
-                }
+                lobjects.push_back(elt.first.lock());
+                break;
             }
         }
     }
-
-    // Error/Warning management
-    if( lobjects.empty() )
-    {
-        std::stringstream mssg;
-        mssg << "No object registered for the requested type of service" << std::endl;
-        OSLM_WARN( mssg.str() );
-    }
-
+    SLM_WARN_IF( "No object registered for the requested type of service", lobjects.empty() );
     return lobjects;
 }
 
+//------------------------------------------------------------------------------
 
 template<class OBJECT,class SERVICE>
 std::vector< SPTR(OBJECT) > ObjectServiceRegistry::getObjects()
 {
-    std::vector< ::fwTools::Object::sptr >   lobjects = getObjects< SERVICE >();
-    std::vector< SPTR(OBJECT) >   castedObjects ;
-
-    for( std::vector< ::fwTools::Object::sptr >::iterator iter = lobjects.begin() ; iter != lobjects.end() ; ++iter )
+    std::vector< SPTR(OBJECT) >   lobjects;
+    BOOST_FOREACH( ObjectServiceRegistry::OSContainer::value_type elt, getDefault()->m_container)
     {
-        if( ::boost::dynamic_pointer_cast< OBJECT >( *iter ) )
+        SLM_ASSERT("Object expired", !elt.first.expired());
+        SPTR(OBJECT) castObj = ::boost::dynamic_pointer_cast< OBJECT >(elt.first.lock());
+        if( castObj )
         {
-            castedObjects.push_back( ::boost::dynamic_pointer_cast< OBJECT >( *iter ) ) ;
+            BOOST_FOREACH(::fwServices::IService::sptr srv, elt.second)
+            {
+                if(::boost::dynamic_pointer_cast< SERVICE >( srv ))
+                {
+                    lobjects.push_back(castObj);
+                    break;
+                }
+            }
         }
     }
-
-    // Error/Warning management
-    if( lobjects.empty() )
-    {
-        std::stringstream mssg;
-        mssg << "No object registered for the requested type of service" << std::endl;
-        OSLM_WARN( mssg.str() );
-    }
-
-    return castedObjects ;
-
+    SLM_WARN_IF( "No object registered for the requested type of service", lobjects.empty() );
+    return lobjects ;
 }
+
+//------------------------------------------------------------------------------
 
 } // end namespace

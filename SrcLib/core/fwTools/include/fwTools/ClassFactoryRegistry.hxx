@@ -24,7 +24,7 @@ ClassFactoryRegistry::create(const KEY &key)  throw(std::invalid_argument)
     typename ClassFactoryRegistry::FactoryContainer::iterator f;
     typedef  TBKClassFactory<BASECLASS,KEY>   TFactory;
 
-     OSLM_INFO( "ClassFactoryRegistry::create" )
+     SLM_INFO( "ClassFactoryRegistry::create" );
      f = getDefault()->m_registry.begin();
      while ( f != getDefault()->m_registry.end() )
      {

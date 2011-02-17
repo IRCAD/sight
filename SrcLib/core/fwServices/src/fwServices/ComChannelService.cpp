@@ -193,7 +193,7 @@ void ComChannelService::info(std::ostream &_sstream )
         // Update _sstream
         if(!m_source.expired() )
         {
-            if( m_source.lock()->getObject().use_count() )
+            if( !this->m_associatedObject.expired() ) // FIXME expired object not authorized
             {
                 ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
                 _sstream << "ComChannelService (" << status << ") "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
@@ -215,7 +215,7 @@ void ComChannelService::info(std::ostream &_sstream )
         // Update _sstream
         if(!m_source.expired() )
         {
-            if( m_source.lock()->getObject().use_count() )
+            if( !this->m_associatedObject.expired() ) // FIXME expired object not authorized
             {
                 ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
                 _sstream << "ComChannelService ( com is stopped ) "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";

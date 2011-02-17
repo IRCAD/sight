@@ -232,37 +232,12 @@ void ObjectServiceRegistry::unregisterService( ::fwServices::IService::sptr _ser
 void ObjectServiceRegistry::removeFromContainer( ::fwServices::IService::sptr _service )
 {
     SLM_TRACE_FUNC();
-    for ( OSContainer::iterator pos = getDefault()->m_container.begin(); pos!= getDefault()->m_container.end() ; ++pos )
-    {
-        SContainer::iterator positionToDelete = pos->second.end() ;
-        for( SContainer::iterator lIter = pos->second.begin() ; lIter != pos->second.end() ; ++lIter )
-        {
-            OSLM_TRACE( "OBJ=" << ( ( ! pos->first.expired() ) ? _service->getObject()->getID() : "expiredIdObject" ) <<
-                        " SContainer::iterator lIter" <<  ( *lIter) ->getID()
-                      );
-            if( ( *lIter) == _service )
-            {
-                SLM_ASSERT( "service registered twice for the same object :"
-                            << " OBJ=" << _service->getObject()->getID()
-                            << " SRV=" <<  ( *lIter)->getID() ,
-                            positionToDelete == pos->second.end()
-                          );
-                positionToDelete = lIter ;
-            }
-        }
-        if ( positionToDelete != pos->second.end() )
-        {
-            /// Logger Information
-            std::stringstream msg;
-            msg << "remove from container service  : " << (*_service) << " (" << _service << ") " ;
-            if( !pos->first.expired() ) // If service being unregistered is associated with an object having expired
-            {
-                msg << "Initially attached to object " << pos->first.lock()->className() << " (" << pos->first.lock() << ")";
-            }
-            SLM_INFO( msg.str() );
-            pos->second.erase( positionToDelete ) ;
-        }
-    }
+    ::fwTools::Object::sptr obj = _service->getObject();
+    OSLM_ASSERT("Unknown Object "<<obj->getID()<<" in OSR", getDefault()->m_container.find(obj) != getDefault()->m_container.end());
+    SContainer& services =  getDefault()->m_container[obj];
+    SContainer::iterator iter = std::find( services.begin() , services.end() , _service );
+    OSLM_ASSERT("Unknown Service "<<_service->getID()<<" in OSR", iter != services.end());
+    services.erase(iter);
 }
 
 //------------------------------------------------------------------------------
@@ -274,10 +249,7 @@ std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
     {
         ::fwTools::Object::wptr obj = objSrvMap.first;
         SLM_ASSERT("Object has expired", !obj.expired() ) ;
-        if( std::find( allObjects.begin() , allObjects.end() , obj.lock() ) == allObjects.end() )
-        {
-            allObjects.push_back( obj.lock( ) ) ;
-        }
+        allObjects.push_back( obj.lock( ) ) ;
     }
     return allObjects ;
 }
@@ -310,9 +282,7 @@ std::string ObjectServiceRegistry::getRegistryInformation()
             info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname() <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
         }
     }
-
     return info.str();
-
 }
 
 //------------------------------------------------------------------------------
