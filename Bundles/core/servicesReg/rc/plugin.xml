@@ -56,4 +56,9 @@
         <object>::fwData::Composite</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::ICommunication</type>
+        <service>::fwServices::ComChannelService</service>
+        <object>::fwTools::Object</object>
+    </extension>
 </plugin>

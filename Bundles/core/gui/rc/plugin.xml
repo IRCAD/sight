@@ -82,6 +82,12 @@
         <service>::gui::action::ModifyLayoutActionSrv</service>
         <object>::fwTools::Object</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IDeliveryDelegate</type>
+        <service>::fwGui::MessageHandler</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
     <!--
     <extension implements="::fwServices::registry::ServiceFactory">
