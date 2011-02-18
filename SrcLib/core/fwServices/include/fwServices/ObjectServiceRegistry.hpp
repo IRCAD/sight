@@ -14,8 +14,12 @@
 #include <boost/type_traits.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
+#include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+#include <boost/bimap/multiset_of.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCore/LogicStamp.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/Failed.hpp>
@@ -54,15 +58,12 @@ public:
     //@{
 
     /**
-     * @brief Container type for fwServices
+     * @brief Container type for key-fwServices association : for each LogicStampType there are an associated set of fwServices
      */
-    typedef std::vector< ::fwServices::IService::sptr > SContainer ;
-    /**
-     * @brief Container type for object-fwServices association : to each weak_ptr on object is associated a vector of fwServices
-     * @note Enables to registration of an object without fwServices, this being convenient for monitoring for instance
-     */
-    typedef std::map< ::fwTools::Object::wptr , SContainer > OSContainer ;
-
+    typedef ::boost::bimaps::bimap<
+            ::boost::bimaps::multiset_of< ::fwCore::LogicStamp::LogicStampType >,
+            ::boost::bimaps::unordered_set_of< ::fwServices::IService::sptr >
+            > KSContainer;
     //@}
 
     /// Return the unique Instance, create it if required at first access
@@ -81,15 +82,8 @@ public:
     //@{
 
     /**
-     * @brief Register an object with no services
-     * @author IRCAD (Research and Development Team).
-     */
-    FWSERVICES_API static void registerObject(  ::fwTools::Object::sptr obj );
-
-    /**
      * @brief Register the service (service) for the object (obj)
      * It also updates IService::m_associatedObject of service to point to obj
-     * It also affects to obj an instance of DefaultObjectDeleter (invoking updateObjectDeleter(  ::fwTools::Object::sptr ) ), to further enables obj's services automatic
      * removal at obj destruction.
      */
     FWSERVICES_API static void registerService(  ::fwTools::Object::sptr obj, fwServices::IService::sptr service);
@@ -101,11 +95,6 @@ public:
      */
 
     //@{
-
-    /**
-     * @brief Clear expired objects in the Object-Service container (m_container)
-     */
-    FWSERVICES_API static void cleanExpiredObject();
 
     /**
      * @brief Remove the service (_service) from the m_container
@@ -148,12 +137,6 @@ public:
      template<class SERVICE>
      static std::vector<  ::fwTools::Object::sptr > getObjects();
 
-    /**
-     * @brief Return a container with all objects of type OBJECT associated with a service of type SERVICE in m_container
-     */
-     template< class OBJECT, class SERVICE >
-     static std::vector< SPTR(OBJECT) > getObjects();
-
 
     /**
      * @brief Return a container with all objects registered in m_container
@@ -163,7 +146,7 @@ public:
      /**
      * @brief Return a reference on m_container
      */
-     FWSERVICES_API static const OSContainer & getOSContainer();
+     FWSERVICES_API static const KSContainer & getKSContainer();
 
     //@}
 
@@ -177,6 +160,12 @@ public:
       * @author IRCAD (Research and Development Team).
       */
      FWSERVICES_API static bool has( ::fwTools::Object::sptr obj , const std::string & srvType);
+
+     /**
+      * @brief return true if key is still present in OSR
+      */
+     FWSERVICES_API static bool hasKey( ::fwCore::LogicStamp::csptr key );
+
      //@}
 
 
@@ -197,17 +186,11 @@ public:
 protected :
 
     /**
-     * @brief Affect, if not already done, a ::fwService::DefaultDeleter to object
-     */
-    FWSERVICES_API void  updateObjectDeleter(  ::fwTools::Object::sptr object);
-
-
-    /**
      * @brief Object to service associations container
      * @note An object can be registered without services
      * @warning Do not use smart pointers for fwTools::Object, otherwise they will never destroy
      */
-    OSContainer m_container ;
+    KSContainer m_container ;
 
     /**
      * @brief Constructor, protected to ensure unique instance (singleton pattern)

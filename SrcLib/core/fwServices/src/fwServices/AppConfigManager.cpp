@@ -62,13 +62,13 @@ void AppConfigManager::create()
 void AppConfigManager::startComChannel()
 {
     BOOST_FOREACH( ::fwServices::IService::wptr wsrv, m_startedComChannelServices )
-            {
+    {
         SLM_ASSERT( "Sorry, CTM must start a service, but it is expired", ! wsrv.expired());
         ::fwServices::IService::sptr srv = wsrv.lock();
         OSLM_ASSERT( "Sorry, CTM must start a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it is already started", ! srv->isStarted() );
         OSLM_INFO("Start service ( " << srv->getID() << " ) managed by the AppConfigManager.");
         srv->start();
-            }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -243,7 +243,6 @@ void AppConfigManager::stopAndDestroy()
     // Creation of a new object
     ::fwTools::Object::sptr obj;
 
-
     // Test if we must create an object or use it.
     if( hasAttributeBuildMode )
     {
@@ -261,7 +260,6 @@ void AppConfigManager::stopAndDestroy()
         obj = this->createNewObject( hasAttributeType, type, hasAttributeUid, uid, hasAttributeId, id );
     }
 
-    //std::string srvImpl = ::fwServices::getDefaultImplementationIds( obj , "::fwServices::IXMLParser" );
     std::string srvImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType( obj->getClassname() , "::fwServices::IXMLParser" );
     IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwServices::IXMLParser", srvImpl );
     m_objectParser = ::fwServices::IXMLParser::dynamicCast( srv );
@@ -393,7 +391,6 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
     ::fwRuntime::ConfigurationElement::csptr cfg = _elt;
     if( _elt->hasAttribute("config") )
     {
-        //cfg = ::fwServices::bundle::findConfigurationForPoint( _elt->getExistingAttributeValue("config") , implementationType );
         cfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( _elt->getExistingAttributeValue("config") , implementationType );
     }
     SLM_ASSERT("Sorry, constCast failed", ::fwRuntime::ConfigurationElement::constCast( cfg ) );
@@ -422,8 +419,6 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
             if(priority > 1.0) priority = 1.0;
             comChannel->setPriority(priority);
         }
-        //comChannel->start();
-        //m_startedServices.push_back( comChannel );
         m_startedComChannelServices.push_back( comChannel );
     }
 
@@ -448,7 +443,7 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
 
     if ( ! uid.empty() )
     {
-        SLM_ASSERT( "Sorry, service has already an fwId.", !srv->hasID() );
+        OSLM_ASSERT( "Try to set ID: "<<uid<<" but already has an ID: "<<srv->getID(), !srv->hasID() );
         srv->setID( uid ) ;
     }
 
@@ -494,7 +489,7 @@ void AppConfigManager::start( ::fwRuntime::ConfigurationElement::csptr _elt )
 void AppConfigManager::update( ::fwRuntime::ConfigurationElement::csptr _elt )
 {
     BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, _elt->getElements() )
-        {
+    {
         if( elem->getName() == "update" )
         {
             if( elem->hasAttribute("type") )
@@ -517,7 +512,7 @@ void AppConfigManager::update( ::fwRuntime::ConfigurationElement::csptr _elt )
                 ::fwServices::get(uid)->update() ;
             }
         }
-        }
+    }
 }
 
 //------------------------------------------------------------------------------

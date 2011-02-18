@@ -18,7 +18,7 @@
 
 #include "fwXML/ImageFileFormatService.hpp"
 
-REGISTER_SERVICE( ::fwXML::IFileFormatService , fwXML::ImageFileFormatService , ::fwData::Image);
+REGISTER_SERVICE( ::fwXML::IFileFormatService , ::fwXML::ImageFileFormatService , ::fwData::Image);
 
 namespace fwXML
 {

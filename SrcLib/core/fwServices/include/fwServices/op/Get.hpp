@@ -44,17 +44,16 @@ template<class SERVICE>
 std::vector< SPTR(SERVICE) > getServices( ::fwTools::Object::sptr obj ) ;
 
 /**
- * @brief Get the service number _index of type serviceId which is attached to obj
- * @note If the service number _index is not attached to obj, it adds services of type serviceId using the add( ::fwTools::Object::sptr obj, std::string serviceId) until there are _index+1 services of this type attached to the object.
+ * @brief Get the first service of type serviceId which is attached to obj
  * @note The template method is also available, where the template parameter SERVICE relates the service type serviceId
  * @todo Do not automatically add service, raise an error instead
  * @return the requested service, null if not
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index = 0 ) throw(fwTools::Failed );
+FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId ) throw(fwTools::Failed );
 
 template<class SERVICE>
-SPTR(SERVICE) get( ::fwTools::Object::sptr obj, unsigned int _index = 0 ) throw(fwTools::Failed );
+SPTR(SERVICE) get( ::fwTools::Object::sptr obj) throw(fwTools::Failed );
 
 /**
  * @brief Return a registered IService having uid as unique universal identifier , its an alias on fwTools::Object::getID(...) method
@@ -83,7 +82,7 @@ template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed );
 
 /**
- * @brief return the _service index (or position) in the vector of services which are attached to the same object and have the same service type
+ * @brief return the _service which are attached to the same object and have the same service type
  * @author IRCAD (Research and Development Team).
  */
 FWSERVICES_API unsigned int getServicePosition( IService::sptr  _service ) ;

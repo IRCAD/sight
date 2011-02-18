@@ -18,13 +18,6 @@ namespace fwServices
 {
 
 template<class SERVICE>
-void erase( ::fwTools::Object::sptr obj , unsigned int _index )
-{
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    ::fwServices::erase( obj , serviceId , _index ) ;
-}
-
-template<class SERVICE>
 void eraseServices( ::fwTools::Object::sptr obj )
 {
     std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;

@@ -22,15 +22,11 @@
 namespace fwServices
 {
 
-void erase( ::fwTools::Object::sptr obj , std::string serviceId , unsigned int _index )
-{
-    ::fwServices::IService::sptr service = ::fwServices::get( obj , serviceId , _index ) ;
-    OSR::unregisterService( service ) ;
-}
 void erase( ::fwServices::IService::sptr service )
 {
     OSR::unregisterService( service ) ;
 }
+
 void eraseServices( ::fwTools::Object::sptr obj , std::string serviceId )
 {
     std::vector< ::fwServices::IService::sptr > services = ::fwServices::getServices( obj , serviceId ) ;

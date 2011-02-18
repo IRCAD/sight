@@ -116,44 +116,28 @@ void Field::deepCopy( ::fwTools::Object::csptr _source )
 
 Object::Object() :
     m_timeStamp ( ::fwCore::TimeStamp::New()  ),
-    m_logicStamp( ::fwCore::LogicStamp::New() ),
-    m_deleter( IDeleter::New() )
+    m_logicStamp( ::fwCore::LogicStamp::New() )
 {
-    // TODO Auto-generated constructor stub
-    assert( m_deleter.get() );
+    m_OSRKey = ::fwCore::LogicStamp::New();
+    m_OSRKey->modified();
 }
 
 //------------------------------------------------------------------------------
 
 Object::~Object()
 {
-    // TODO Auto-generated destructor stub
-    m_deleter->Delete( this ) ;
+    ::fwTools::Factory::uninitData(m_OSRKey);
 }
 
 //------------------------------------------------------------------------------
 
 Object &Object::operator=(const Object &_obj)
 {
-    SLM_FATAL("This operator is forbiden, use shallowCopy or deepCopy instead.");
+    SLM_FATAL("This operator is forbidden, use shallowCopy or deepCopy instead.");
     m_children =_obj.m_children;
     m_timeStamp =_obj.m_timeStamp;
     m_logicStamp =_obj.m_logicStamp;
     return (*this);
-}
-
-//------------------------------------------------------------------------------
-
-void Object::setDeleter( ::fwTools::IDeleter::sptr _deleter )
-{
-    m_deleter = _deleter ;
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::IDeleter::sptr Object::getDeleter()
-{
-    return m_deleter ;
 }
 
 //------------------------------------------------------------------------------
@@ -299,7 +283,7 @@ void Object::removeField( const FieldID &fieldId )
     }
     else
     {
-        // field doesn no exist create it then append new element
+        // field does not exist, create it then append new element
         fwTools::Field::NewSptr newfield(fieldId);
         newfield->children().push_back(newSubObject);
         m_children.push_back( newfield);

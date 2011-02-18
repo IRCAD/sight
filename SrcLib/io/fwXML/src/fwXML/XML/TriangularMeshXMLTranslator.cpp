@@ -36,7 +36,7 @@ TriangularMeshXMLTranslator::~TriangularMeshXMLTranslator() {};
 void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> mesh )
 {
     // get XML node related to Buffer //FIXMEXPATH
-    ::boost::shared_ptr< IFileFormatService > binSaver = fwServices::get<  IFileFormatService >(mesh,0);
+    ::boost::shared_ptr< IFileFormatService > binSaver = fwServices::get<  IFileFormatService >(mesh);
     std::string path;
     path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
 
@@ -49,7 +49,7 @@ void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer 
 void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> mesh )
 {
     // get XML node related to Buffer //FIXMEXPATH
-    ::boost::shared_ptr< IFileFormatService > binLoader = fwServices::get<  IFileFormatService >(mesh,0);
+    ::boost::shared_ptr< IFileFormatService > binLoader = fwServices::get<  IFileFormatService >(mesh);
     OSLM_TRACE("READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename"));
     ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
     binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
@@ -76,7 +76,7 @@ void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer
     assert(reader);
 
     // assign to FileFormatService
-     ::boost::shared_ptr< IFileFormatService > binReader = ::fwServices::get<  IFileFormatService >(mesh,0);
+     ::boost::shared_ptr< IFileFormatService > binReader = ::fwServices::get<  IFileFormatService >(mesh);
     binReader->setReader( reader );
 }
 

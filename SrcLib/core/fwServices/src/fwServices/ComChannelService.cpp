@@ -93,7 +93,7 @@ void ComChannelService::starting() throw(fwTools::Failed)
     OSLM_DEBUG("Source (IEditionService) = " << m_source.lock()->getID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
-            m_destination.lock()->getID() ,
+            m_destination.lock()->getID() << "\n" << ::fwServices::OSR::getRegistryInformation(),
             !this->hasSimilarObservation());
 
     // Assertion

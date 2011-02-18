@@ -92,7 +92,7 @@ void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
 {
     if ( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService") )
     {
-        ::fwXML::IFileFormatService::sptr  saver = ::fwServices::get< ::fwXML::IFileFormatService >(obj,0);
+        ::fwXML::IFileFormatService::sptr  saver = ::fwServices::get< ::fwXML::IFileFormatService >(obj);
 
         if (saver)
         {

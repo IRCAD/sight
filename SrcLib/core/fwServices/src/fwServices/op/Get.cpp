@@ -25,29 +25,21 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, unsigned int _index ) throw(fwTools::Failed )
+::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId ) throw(fwTools::Failed )
 {
+    ::fwServices::IService::sptr service;
     std::vector< ::fwServices::IService::sptr >  proxyServices = ::fwServices::getServices( obj , serviceId );
-    if( _index >= proxyServices.size() )
+    if( proxyServices.empty() )
     {
-        std::stringstream msg;
-        msg << "Requested service not attached to object " << obj->className() << " (adr: " << obj << ")" << std::endl;
-        OSLM_TRACE( "Factory : bundle Add service " << serviceId );
-        ::fwServices::IService::sptr newService = ::fwServices::add( obj , serviceId ) ;
-        if( newService )
-        {
-            return ::fwServices::get( obj , serviceId , _index ) ;
-        }
-        SLM_FATAL( msg.str() );
-        throw( fwTools::Failed(msg.str()) ) ;
+        OSLM_WARN("TODO : service "<< serviceId<< " not exist, use add to create it");
+        service = ::fwServices::add( obj , serviceId ) ;
     }
-    if( _index < proxyServices.size() )
+    else
     {
-        assert( proxyServices[_index] ) ;
-        return proxyServices[_index];
+        service = *proxyServices.begin();
     }
 
-    return ::fwServices::IService::sptr ();
+    return service ;
 }
 
 //------------------------------------------------------------------------------
@@ -80,21 +72,17 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceId )
+std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceType )
 {
-    std::vector< std::string > availableImplementations =
-            ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType( obj->getClassname(), serviceId );
-
     std::vector< ::fwServices::IService::sptr > allServices = ::fwServices::getRegisteredServices(obj);
     std::vector< ::fwServices::IService::sptr > services ;
 
     // Search should be optimized
-    for( std::vector< ::fwServices::IService::sptr >::iterator iter = allServices.begin() ; iter != allServices.end()  ; ++iter )
+    BOOST_FOREACH(::fwServices::IService::sptr srv, allServices)
     {
-        std::string className = (*iter)->getClassname() ;
-        if( std::find( availableImplementations.begin() , availableImplementations.end() , className ) != availableImplementations.end()  )
+        if( srv->isA(serviceType) )
         {
-            services.push_back( *iter ) ;
+            services.push_back( srv ) ;
         }
     }
     return services ;
@@ -102,20 +90,20 @@ std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwServices::IService::sptr > getServices( std::string serviceId )
+std::vector< ::fwServices::IService::sptr > getServices( std::string serviceType )
 {
-    std::vector< ::fwServices::IService::sptr > services ;
-    std::back_insert_iterator< std::vector< ::fwServices::IService::sptr > > backInserter( services ) ;
-    std::vector<  ::fwTools::Object::sptr > registeredObjects = ::fwServices::OSR::getObjects();
-    std::vector<  ::fwTools::Object::sptr >::iterator objIter = registeredObjects.begin() ;
-    for( ; objIter != registeredObjects.end() ; ++objIter )
+    std::vector< ::fwServices::IService::sptr >  lfwServices;
+    ::fwServices::OSR::KSContainer::right_map right = ::fwServices::OSR::getDefault()->getKSContainer().right;
+    BOOST_FOREACH( ::fwServices::OSR::KSContainer::right_map::value_type elt, right)
     {
-        ::fwTools::Object::sptr currentObj = *objIter ;
-        std::vector< ::fwServices::IService::sptr > servicesForCurrentObject = getServices( currentObj , serviceId ) ;
-        std::copy( servicesForCurrentObject.begin() , servicesForCurrentObject.end() , backInserter ) ;
+        ::fwServices::IService::sptr service = elt.first;
+        if ( service->isA(serviceType) )
+        {
+            lfwServices.push_back( service ) ;
+        }
     }
-
-    return services ;
+    SLM_DEBUG_IF("No service registered", lfwServices.empty());
+    return lfwServices;
 }
 
 //------------------------------------------------------------------------------

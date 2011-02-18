@@ -13,29 +13,32 @@
 #include "fwServices/ObjectServiceRegistry.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/ComChannelService.hpp"
+#include "fwServices/op/Add.hpp"
 
 namespace fwServices
 {
 
 template<class SERVICE>
-SPTR(SERVICE) get( ::fwTools::Object::sptr obj, unsigned int _index ) throw(fwTools::Failed )
+SPTR(SERVICE) get( ::fwTools::Object::sptr obj ) throw(fwTools::Failed )
 {
 
     SPTR(SERVICE) service;
     std::vector< typename SPTR(SERVICE) > services = ::fwServices::OSR::getServices< SERVICE >( obj );
 
     unsigned int servicesNb = services.size();
-    if ( servicesNb >= (_index + 1) )
-    {
-        service = services[_index];
-    }
-    else
+    if(services.empty())
     {
         std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-        ::boost::shared_ptr< fwServices::IService > iservice = ::fwServices::get( obj , serviceId , _index ) ;
+        OSLM_WARN("TODO : service "<< serviceId<< " not exist, use add to create it");
+
+        ::boost::shared_ptr< fwServices::IService > iservice = ::fwServices::add( obj , serviceId ) ;
         assert( iservice );
         service = boost::dynamic_pointer_cast< SERVICE >( iservice ) ;
         assert( service );
+    }
+    else
+    {
+        service = *services.begin();
     }
 
     return service ;
