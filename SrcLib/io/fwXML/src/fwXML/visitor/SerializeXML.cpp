@@ -56,7 +56,7 @@ void SerializeXML::visit( ::fwTools::Object::sptr obj)
 
     if ( supportFileFormatSrv )
     {
-         ::boost::shared_ptr< ::fwXML::IFileFormatService >  saver =fwServices::get< ::fwXML::IFileFormatService >(obj,0);
+         ::boost::shared_ptr< ::fwXML::IFileFormatService >  saver =fwServices::get< ::fwXML::IFileFormatService >(obj);
         if (saver)
         {
             saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);

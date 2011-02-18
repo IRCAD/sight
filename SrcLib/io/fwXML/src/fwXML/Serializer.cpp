@@ -200,6 +200,8 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
 
         filedata->addHandler( handlerHelper );
         savingMode ? filedata->save() : filedata->load() ;
+        // remove IFileFormatService in OSR
+        ::fwServices::erase(filedata);
         handlerHelper.m_currentStep++;
     }
 
