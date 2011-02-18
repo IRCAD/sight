@@ -11,6 +11,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 
+#include <fwCore/LogicStamp.hpp>
+
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/fwID.hpp>
 
@@ -139,10 +141,13 @@ std::string ObjectServiceRegistry::getRegistryInformation()
     std::stringstream info;
     BOOST_FOREACH( KSContainer::left_map::value_type objSrvMap, getDefault()->m_container.left)
     {
-        ::fwTools::Object::sptr obj = objSrvMap.second->getObject();
+        // TODO FIXME getObject() failed if there are expired object in OSR
+        //::fwTools::Object::sptr obj = objSrvMap.second->getObject();
+        ::fwCore::LogicStamp::LogicStampType key = objSrvMap.first;
         info << "New object found in OSR" << std::endl;
-        info << "Object ( uid = "<< obj->getID() <<" , classname = "<< obj->getClassname() <<" ) has "
-                << getDefault()->m_container.left.count(obj->getOSRKey()->getLogicStamp()) <<" services." << std::endl;
+        //info << "Object ( uid = "<< obj->getID() <<" , classname = "<< obj->getClassname() <<" ) has "
+        info << "Object ( key = "<<key<<" ) has "
+                << getDefault()->m_container.left.count(key) <<" services." << std::endl;
 
         ::fwServices::IService::sptr service = objSrvMap.second;
         info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname()
