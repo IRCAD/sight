@@ -65,7 +65,7 @@ m_serviceParent(_serviceParent)
 
 void AcquisitionSelectorPanel::itemSelectionNotification( long itemIndex )
 {
-    SLM_TRACE("itemSelectionNotification")
+    SLM_TRACE_FUNC();
 
     ::boost::shared_ptr< ::fwData::Object > acqSelected ( new ::fwData::Object() );
     acqSelected->children().clear();
@@ -73,14 +73,8 @@ void AcquisitionSelectorPanel::itemSelectionNotification( long itemIndex )
     acqSelected->children().push_back( ::boost::shared_ptr< ::fwData::Integer > ( new ::fwData::Integer(m_lineToAcq[itemIndex][1]) ) );
     acqSelected->children().push_back( ::boost::shared_ptr< ::fwData::Integer > ( new ::fwData::Integer(m_lineToAcq[itemIndex][2]) ) );
 
-
-    //::boost::shared_ptr< ::fwComEd::PatientDBMsg > msg ( new ::fwComEd::PatientDBMsg( m_associatedPatientDB ) ) ;
-    //msg->addMessageInformation( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );
     ::fwComEd::PatientDBMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );
-
-//  ::boost::shared_ptr< ::fwServices::IEditionService > basicEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedPatientDB ) ;
-//  basicEditor->notify( msg );
     ::fwServices::IEditionService::notify( m_serviceParent.lock(), m_associatedPatientDB, msg);
 }
 
@@ -88,7 +82,7 @@ void AcquisitionSelectorPanel::itemSelectionNotification( long itemIndex )
 
 void AcquisitionSelectorPanel::onItemSelected( wxListEvent & event )
 {
-    SLM_TRACE("onItemSelected");
+    SLM_TRACE_FUNC();
 
     if ( m_iSelectedItemIndex != event.GetIndex() )
     {
@@ -103,7 +97,7 @@ void AcquisitionSelectorPanel::onItemSelected( wxListEvent & event )
 
 void AcquisitionSelectorPanel::onKeyDown( wxListEvent & event )
 {
-    SLM_TRACE("AcquisitionSelectorPanel::onKeyDown");
+    SLM_TRACE_FUNC();
     if( WXK_BACK    == event.GetKeyCode()   ||
         WXK_DELETE  == event.GetKeyCode()   )
     {
@@ -147,7 +141,7 @@ void AcquisitionSelectorPanel::onKeyDown( wxListEvent & event )
 
 void AcquisitionSelectorPanel::onItemActivated( wxListEvent & event )
 {
-    SLM_TRACE("AcquisitionSelectorPanel::onItemActivated");
+    SLM_TRACE_FUNC();
 
     if ( m_iSelectedItemIndex != event.GetIndex() )
     {
@@ -181,8 +175,8 @@ void AcquisitionSelectorPanel::onItemActivated( wxListEvent & event )
 
 void AcquisitionSelectorPanel::updateData( ::boost::shared_ptr< ::fwData::PatientDB > _associatedPatientDB, bool _bResetSelection )
 {
-    SLM_TRACE("updateData()")
-    if (        _associatedPatientDB)
+    SLM_TRACE_FUNC();
+    if (_associatedPatientDB)
     {
         if (m_wxList != NULL)
         {
@@ -322,7 +316,7 @@ void AcquisitionSelectorPanel::updateData( ::boost::shared_ptr< ::fwData::Patien
 
 void AcquisitionSelectorPanel::eraseItemSelected( const std::vector<int> & _vItemSelected )
 {
-    SLM_TRACE("AcquisitionSelectorPanel::eraseItemSelected");
+    SLM_TRACE_FUNC();
 
     // Patient selection
     ::fwData::PatientDB::PatientIterator patientIter = m_associatedPatientDB->getPatients().first;

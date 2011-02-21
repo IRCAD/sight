@@ -223,7 +223,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         else
         {
             adaptee.getService()->stop();
-            ::fwServices::erase(adaptee.getService());
+            ::fwServices::ObjectServiceRegistry::unregisterService(adaptee.getService());
             adaptee.m_service.reset();
             m_sceneAdaptors.erase(id);
         }
@@ -389,7 +389,7 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
           ++adaptorIter)
     {
         adaptorIter->second.getService()->stop();
-        ::fwServices::erase(adaptorIter->second.getService());
+        ::fwServices::ObjectServiceRegistry::unregisterService(adaptorIter->second.getService());
         adaptorIter->second.getService().reset();
     }
 

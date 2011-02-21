@@ -61,7 +61,7 @@ void ServiceTest::testServiceCreation()
     CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
 
     // Test erasing service
-    ::fwServices::erase(service);
+    ::fwServices::ObjectServiceRegistry::unregisterService(service);
     CPPUNIT_ASSERT( ::fwServices::ObjectServiceRegistry::has(obj, "::TestService") == false );
 }
 
@@ -85,7 +85,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
 
     // Test erasing service
-    ::fwServices::erase(service);
+    ::fwServices::ObjectServiceRegistry::unregisterService(service);
     CPPUNIT_ASSERT( ::fwServices::ObjectServiceRegistry::has(obj, "::TestService") == false );
 }
 
@@ -121,7 +121,7 @@ void ServiceTest::testServiceCreationWithUUID()
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::getServices(obj, "::TestService").size() );
 
     // Test erasing service
-    ::fwServices::erase(service);
+    ::fwServices::ObjectServiceRegistry::unregisterService(service);
     nbServices--;
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::getServices(obj, "::TestService").size() );
 }
@@ -160,7 +160,7 @@ void ServiceTest::testStartStopUpdate()
     CPPUNIT_ASSERT(service->isStopped());
 
     // Erase Service
-    ::fwServices::erase(service);
+    ::fwServices::ObjectServiceRegistry::unregisterService(service);
     CPPUNIT_ASSERT(::fwServices::ObjectServiceRegistry::has(obj, "::TestService") == false );
 }
 

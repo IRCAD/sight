@@ -177,7 +177,7 @@ AcquisitionSelectorPanelDataView::~AcquisitionSelectorPanelDataView()
 
 void AcquisitionSelectorPanelDataView::itemSelectionNotification()
 {
-    SLM_TRACE("itemSelectionNotification");
+    SLM_TRACE_FUNC();
     fwDataNode *node = static_cast< fwDataNode* >(m_wxDataViewCtrl->GetSelection ().GetID());
     if(node)
     {
@@ -207,24 +207,20 @@ void AcquisitionSelectorPanelDataView::itemSelectionNotification()
                 ::fwData::Integer::NewSptr(getIndexOfSelectedItem()[2]) );
 
         // notification
-        //::boost::shared_ptr< ::fwComEd::PatientDBMsg > msg ( new ::fwComEd::PatientDBMsg( m_associatedPatientDB.lock() ) ) ;
-        //msg->addMessageInformation( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );
         ::fwComEd::PatientDBMsg::NewSptr msg;
         msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );
 
-//      ::boost::shared_ptr< ::fwServices::IEditionService > basicEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedPatientDB.lock() ) ;
-//      basicEditor->notify( msg );
         ::fwServices::IEditionService::notify(m_serviceParent.lock(), m_associatedPatientDB.lock(), msg);
     }
     else
     {
-        SLM_TRACE("Item already selected");
+        SLM_TRACE_FUNC();
     }
 }
 //------------------------------------------------------------------------------
 void AcquisitionSelectorPanelDataView::SelectLastItem()
 {
-    SLM_TRACE("AcquisitionSelectorPanelDataView::SelectLastItem()");
+    SLM_TRACE_FUNC();
     bool bfind = false;
     ::boost::shared_ptr<fwDataNode> root = m_patientDbTree_model->getRoot();
     if(root && root->GetChildCount()>0)
@@ -452,7 +448,7 @@ void AcquisitionSelectorPanelDataView::updatePropGrid()
 
 void AcquisitionSelectorPanelDataView::onItemSelected( wxDataViewEvent & event )
 {
-    SLM_TRACE("onItemSelected");
+    SLM_TRACE_FUNC();
 //  fwDataNode *node = (fwDataNode*) event.GetItem().GetID();
     //fwDataNode* node = static_cast< fwDataNode * >( event.GetItem().GetID() );
     fwDataNode *node= static_cast< fwDataNode* >(m_wxDataViewCtrl->GetSelection ().GetID());
@@ -471,7 +467,7 @@ void AcquisitionSelectorPanelDataView::onItemSelected( wxDataViewEvent & event )
 
 void AcquisitionSelectorPanelDataView::updateData( ::fwData::PatientDB::sptr _associatedPatientDB, bool _bResetSelection )
 {
-    SLM_TRACE("AcquisitionSelectorPanelDataView::updateData()");
+    SLM_TRACE_FUNC();
 
     std::vector<int> oldSelection = getIndexOfSelectedItem();
 //  fwDataNode *oldSelectNode = (fwDataNode*) m_wxDataViewCtrl->GetSelection ().GetID();
@@ -512,7 +508,7 @@ void AcquisitionSelectorPanelDataView::updateData( ::fwData::PatientDB::sptr _as
 
 void AcquisitionSelectorPanelDataView::eraseItemSelected( const std::vector<int> & _vItemSelected )
 {
-    SLM_TRACE("AcquisitionSelectorPanelDataView::eraseItemSelected");
+    SLM_TRACE_FUNC();
 
     // Patient selection
     ::fwData::PatientDB::PatientIterator patientIter = m_associatedPatientDB.lock()->getPatients().first;

@@ -151,7 +151,7 @@ void ComChannelService::stopping() throw(fwTools::Failed)
                 {
                     m_source.lock()->stop();
                 }
-                ::fwServices::erase(m_source.lock());
+                ::fwServices::ObjectServiceRegistry::unregisterService(m_source.lock());
             }
         }
     }

@@ -38,60 +38,6 @@
 
 //------------------------------------------------------------------------------
 
-#ifdef __WXMAC__
-/*
-class wxEvtHandlerOpenFile : public wxEvtHandler
-{
-    public:
-    void open(wxCommandEvent& _event)
-    {
-        OSLM_TRACE("wxEvtHandlerOpenFile::open :" << _event.GetString().mb_str() );
-
-        ::fwTools::Object::sptr pRootObject = ::fwServices::OSR::getRootObject();
-        assert( pRootObject );
-
-        ::fwData::Composite::sptr pComposite = ::fwData::Composite::dynamicCast( pRootObject );
-        assert( pComposite );
-        assert( pComposite->getRefMap().find("myPatientDB") != pComposite->getRefMap().end() );
-
-        ::fwData::PatientDB::sptr pPatientDB = ::fwData::PatientDB::dynamicCast( pComposite->getRefMap()["myPatientDB"] );
-        assert( pPatientDB );
-
-        std::vector< std::string > availableExtensionsId;
-        ::fwServices::eraseServices< ::io::IReader >( pPatientDB ) ;
-        availableExtensionsId = ::fwServices::getImplementationIds< ::io::IReader >( pPatientDB ) ;
-        std::string strIOXML ("::ioXML::FwXMLPatientDBReaderService");
-        for(std::vector< std::string >::iterator itExt = availableExtensionsId.begin();
-            itExt < availableExtensionsId.end();
-            itExt++ )
-        {
-            std::string serviceId = *itExt;
-            if (serviceId == strIOXML )
-            {
-                ::io::IReader::sptr service= ::fwServices::add< ::io::IReader >( pPatientDB , serviceId) ;
-                assert(service);
-                ::ioXML::FwXMLPatientDBReaderService::sptr reader = ::ioXML::FwXMLPatientDBReaderService::dynamicCast(service);
-                assert(reader);
-                reader->fixFilename( _event.GetString() );
-                reader->start();
-
-                ::fwGui::Cursor cursor;
-                cursor.setCursor(::fwGui::ICursor::BUSY);
-
-                reader->update();
-                cursor.setDefaultCursor();
-                reader->stop();
-            }
-        }
-    }
-
-    DECLARE_DYNAMIC_CLASS( wxEvtHandlerOpenFile )
-};
-*/
-#endif
-
-//------------------------------------------------------------------------------
-//
 namespace ioXML
 {
 
