@@ -5,6 +5,7 @@ BUNDLES = [
         'ioVTK',
         'uiIO',
         'guiQt',
+        'binding',
         'uiPython',
         'dataReg',
         'servicesReg',
