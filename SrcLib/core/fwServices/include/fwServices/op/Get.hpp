@@ -23,34 +23,34 @@ namespace fwServices
 //@{
 
 /**
- * @brief Return a container of all services of type serviceId registered in the system (i.e. attached to the different objects of the system)
+ * @brief Return a container of all services of type serviceType registered in the system (i.e. attached to the different objects of the system)
  * @note Should be optimized
  * @note Invoke getServices( ::fwTools::Object::sptr , std::string ) for each registered object
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API std::vector< ::fwServices::IService::sptr > getServices( std::string serviceId ) ;
+FWSERVICES_API std::vector< ::fwServices::IService::sptr > getServices( std::string serviceType ) ;
 
 /**
- * @brief Return a container of services of type serviceId which are attached to obj
+ * @brief Return a container of services of type serviceType which are attached to obj
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceId ) ;
+FWSERVICES_API std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceType ) ;
 
 /**
- * @brief Invoke the getServices( ::fwTools::Object::sptr obj , std::string serviceId ) where serviceId is related to the SERVICE template parameter
+ * @brief Invoke the getServices( ::fwTools::Object::sptr obj , std::string serviceType ) where serviceType is related to the SERVICE template parameter
  * @author IRCAD (Research and Development Team).
  */
 template<class SERVICE>
 std::vector< SPTR(SERVICE) > getServices( ::fwTools::Object::sptr obj ) ;
 
 /**
- * @brief Get the first service of type serviceId which is attached to obj
- * @note The template method is also available, where the template parameter SERVICE relates the service type serviceId
+ * @brief Get the first service of type serviceType which is attached to obj
+ * @note The template method is also available, where the template parameter SERVICE relates the service type serviceType
  * @todo Do not automatically add service, raise an error instead
  * @return the requested service, null if not
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId ) throw(fwTools::Failed );
+FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed );
 
 template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj) throw(fwTools::Failed );
@@ -65,16 +65,16 @@ FWSERVICES_API ::fwServices::IService::sptr get( std::string uid ) throw(fwTools
 /**
  * @brief Same as the get method, but with service type specified by a string and an uid
  *
- * Invoke the getServices( ::fwTools::Object::sptr obj , std::string serviceId ) and find out the service having the unique universal identifier uuid
- * @note a method without requiring serviceId should be sufficient and perhaps easier to use
+ * Invoke the getServices( ::fwTools::Object::sptr obj , std::string serviceType ) and find out the service having the unique universal identifier uuid
+ * @note a method without requiring serviceType should be sufficient and perhaps easier to use
  * @todo a get( ::fwTools::Object::sptr obj, std::string uid ) method
  * @return null if not found
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceId, std::string uid ) throw(fwTools::Failed );
+FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceType, std::string uid ) throw(fwTools::Failed );
 
 /**
- * @brief Invoke the get( ::fwTools::Object::sptr obj, std::string serviceId, std::string uid ) where serviceId is associated to the template parameter SERVICE
+ * @brief Invoke the get( ::fwTools::Object::sptr obj, std::string serviceType, std::string uid ) where serviceType is associated to the template parameter SERVICE
  * @author IRCAD (Research and Development Team).
 
  */

@@ -20,8 +20,8 @@ namespace fwServices
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwTools::Object::sptr obj )
 {
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceId ) ;
+    std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+    ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceType ) ;
     assert( service );
     SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
     assert( castedService );
@@ -31,8 +31,8 @@ SPTR(SERVICE) add( ::fwTools::Object::sptr obj )
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId )
 {
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceId , _implementationId ) ;
+    std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+    ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceType , _implementationId ) ;
     assert( service );
     SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
     assert( castedService );
@@ -41,8 +41,8 @@ SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId 
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId , std::string _id)
 {
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceId , _implementationId , _id ) ;
+    std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+    ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceType , _implementationId , _id ) ;
     assert( service );
     SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
     assert( castedService );

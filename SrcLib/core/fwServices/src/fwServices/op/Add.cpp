@@ -27,28 +27,28 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId )
+::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType )
 {
-    OSLM_ASSERT("Unable to add service " <<serviceId<< " on a null object", obj);
+    OSLM_ASSERT("Unable to add service " <<serviceType<< " on a null object", obj);
     std::string defaultImplementation =
-            ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType( obj->getClassname(), serviceId );
-    return ::fwServices::add( obj , serviceId , defaultImplementation ) ;
+            ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType( obj->getClassname(), serviceType );
+    return ::fwServices::add( obj , serviceType , defaultImplementation ) ;
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId )
+::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId )
 {
-    IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceId, _implementationId );
+    IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceType, _implementationId );
     ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
     return srv;
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string uid)
+::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string uid)
 {
-    IService::sptr srv = ::fwServices::add( obj , serviceId , _implementationId ) ;
+    IService::sptr srv = ::fwServices::add( obj , serviceType , _implementationId ) ;
     OSLM_ASSERT( "Try to set ID: "<<uid<<" but already has an ID: "<<srv->getID(), !srv->hasID() );
     srv->setID( uid ) ;
     return srv ;

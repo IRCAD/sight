@@ -28,10 +28,10 @@ SPTR(SERVICE) get( ::fwTools::Object::sptr obj ) throw(fwTools::Failed )
     unsigned int servicesNb = services.size();
     if(services.empty())
     {
-        std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-        OSLM_WARN("TODO : service "<< serviceId<< " not exist, use add to create it");
+        std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+        OSLM_WARN("TODO : service "<< serviceType<< " not exist, use add to create it");
 
-        ::boost::shared_ptr< fwServices::IService > iservice = ::fwServices::add( obj , serviceId ) ;
+        ::boost::shared_ptr< fwServices::IService > iservice = ::fwServices::add( obj , serviceType ) ;
         assert( iservice );
         service = boost::dynamic_pointer_cast< SERVICE >( iservice ) ;
         assert( service );
@@ -48,8 +48,8 @@ SPTR(SERVICE) get( ::fwTools::Object::sptr obj ) throw(fwTools::Failed )
 template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed )
 {
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    ::boost::shared_ptr< fwServices::IService > service = ::fwServices::get( obj , serviceId , uid ) ;
+    std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+    ::boost::shared_ptr< fwServices::IService > service = ::fwServices::get( obj , serviceType , uid ) ;
     assert( service );
     SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
     assert( castedService );
@@ -62,8 +62,8 @@ SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools:
 template<class SERVICE>
 std::vector< SPTR(SERVICE) > getServices( ::fwTools::Object::sptr obj )
 {
-    std::string serviceId = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    std::vector< ::boost::shared_ptr< fwServices::IService > > services = ::fwServices::getServices( obj , serviceId ) ;
+    std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
+    std::vector< ::boost::shared_ptr< fwServices::IService > > services = ::fwServices::getServices( obj , serviceType ) ;
 
     std::vector< SPTR(SERVICE) > castedServices ;
 

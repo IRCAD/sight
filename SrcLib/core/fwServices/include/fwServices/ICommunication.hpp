@@ -12,6 +12,10 @@
 
 namespace fwServices
 {
+class IEditionService ;
+}
+namespace fwServices
+{
 
 /**
  * @class   ICommunication.
@@ -31,6 +35,25 @@ public:
 
     /// Definitions
     fwCoreServiceClassDefinitionsMacro ( (ICommunication)(::fwServices::IService) ) ;
+
+    //@{
+    /**
+     * @brief Defines the object to observe (internally stored with weak reference)
+     */
+    FWSERVICES_API virtual void setSrc( SPTR( ::fwServices::IEditionService ) src) = 0;
+
+    /// Defines the target service
+    FWSERVICES_API virtual void setDest( ::fwServices::IService::sptr _client) = 0;
+
+    /// Returns the target service
+    FWSERVICES_API virtual IService::sptr  getDest() = 0;
+
+    /// Returns the target service
+    FWSERVICES_API virtual SPTR( ::fwServices::IEditionService )  getSrc() = 0;
+
+    /// Return true is both source and destination are valid pointers
+    FWSERVICES_API virtual bool isValid() = 0;
+    //@}
 
 protected:
 
