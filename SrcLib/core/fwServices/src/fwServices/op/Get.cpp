@@ -28,38 +28,9 @@ namespace fwServices
 ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed )
 {
     ::fwServices::IService::sptr service;
-    std::vector< ::fwServices::IService::sptr >  proxyServices = ::fwServices::getServices( obj , serviceType );
-    if( proxyServices.empty() )
-    {
-        OSLM_WARN("TODO : service "<< serviceType<< " not exist, use add to create it");
-        service = ::fwServices::add( obj , serviceType ) ;
-    }
-    else
-    {
-        service = *proxyServices.begin();
-    }
-
-    return service ;
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceType, std::string uid ) throw(fwTools::Failed )
-{
-    ::fwServices::IService::sptr service ;
-
     std::vector< ::fwServices::IService::sptr >  services = ::fwServices::getServices( obj , serviceType );
-    for( std::vector< ::fwServices::IService::sptr >::iterator iter = services.begin() ; iter != services.end() ; ++iter )
-    {
-        if( ( *iter )->hasID() )
-        {
-            if( ( *iter )->getID() == uid )
-            {
-                service = *iter ;
-            }
-        }
-    }
-    return service ;
+    OSLM_ASSERT("Service "<<serviceType<<" not unique, registered "<<services.size()<<" time", services.size() == 1);
+    return services.at(0) ;
 }
 
 //------------------------------------------------------------------------------

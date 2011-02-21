@@ -22,23 +22,29 @@
 namespace fwServices
 {
 
+//------------------------------------------------------------------------------
+
 ::fwServices::ComChannelService::sptr getCommunicationChannel( ::fwTools::Object::sptr _src, ::fwServices::IService::sptr _dest)
 {
     ::fwServices::ComChannelService::sptr comChannel;
-    ::fwServices::IEditionService::sptr srcEditor = ::fwServices::get< ::fwServices::IEditionService >( _src ) ;
-    std::vector< ::fwServices::ICommunication::sptr > comChannels = ::fwServices::OSR::getServices< ::fwServices::ICommunication >( _src ) ;
-    BOOST_FOREACH(::fwServices::ICommunication::sptr comChan, comChannels)
+    std::vector< ::fwServices::IEditionService::sptr > editors = ::fwServices::OSR::getServices< ::fwServices::IEditionService >( _src ) ;
+    if(!editors.empty())
     {
-        // Check whether _service is the subject (IEditionService) or the destination service
-        if( comChan->isValid() && comChan->getDest() == _dest  )
+        SLM_ASSERT("IEditionService is not unique on Object "<<_src->getID(), editors.size() == 1);
+        ::fwServices::IEditionService::sptr  srcEditor = editors.at(0);
+        std::vector< ::fwServices::ICommunication::sptr > comChannels = ::fwServices::OSR::getServices< ::fwServices::ICommunication >( _src ) ;
+        BOOST_FOREACH(::fwServices::ICommunication::sptr comChan, comChannels)
         {
-            OSLM_ASSERT("ComChannel has not a correct  IEditionService [src= " << _src->getID() << " dest= "<< _dest->getID()<<"]",
-                    srcEditor == comChan->getSrc());
-            comChannel = ::fwServices::ComChannelService::dynamicCast(comChan);
-            break;
+            // Check whether _service is the subject (IEditionService) or the destination service
+            if( comChan->isValid() && comChan->getDest() == _dest  )
+            {
+                OSLM_ASSERT("ComChannel has not a correct  IEditionService [src= " << _src->getID() << " dest= "<< _dest->getID()<<"]",
+                        srcEditor == comChan->getSrc());
+                comChannel = ::fwServices::ComChannelService::dynamicCast(comChan);
+                break;
+            }
         }
     }
-
     return comChannel;
 }
 
@@ -51,10 +57,7 @@ namespace fwServices
 
     ::fwServices::IService::sptr srv = ::fwServices::add(_src, "::fwServices::ICommunication", "::fwServices::ComChannelService");
     comChannel = ::fwServices::ComChannelService::dynamicCast(srv);
-    ::fwServices::IEditionService::sptr srcEditor = ::fwServices::get< ::fwServices::IEditionService >( _src ) ;
-    assert( srcEditor ) ;
     // Configuring communication channel
-    comChannel->setSrc( srcEditor ) ;
     comChannel->setDest( _dest ) ;
 
     return comChannel;

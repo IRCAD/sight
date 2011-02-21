@@ -63,31 +63,6 @@ SPTR(SERVICE) get( ::fwTools::Object::sptr obj) throw(fwTools::Failed );
 FWSERVICES_API ::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed );
 
 /**
- * @brief Same as the get method, but with service type specified by a string and an uid
- *
- * Invoke the getServices( ::fwTools::Object::sptr obj , std::string serviceType ) and find out the service having the unique universal identifier uuid
- * @note a method without requiring serviceType should be sufficient and perhaps easier to use
- * @todo a get( ::fwTools::Object::sptr obj, std::string uid ) method
- * @return null if not found
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceType, std::string uid ) throw(fwTools::Failed );
-
-/**
- * @brief Invoke the get( ::fwTools::Object::sptr obj, std::string serviceType, std::string uid ) where serviceType is associated to the template parameter SERVICE
- * @author IRCAD (Research and Development Team).
-
- */
-template<class SERVICE>
-SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed );
-
-/**
- * @brief return the _service which are attached to the same object and have the same service type
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API unsigned int getServicePosition( IService::sptr  _service ) ;
-
-/**
  * @brief return a vector containing all services associated with the object _obj
  * @author IRCAD (Research and Development Team).
  */

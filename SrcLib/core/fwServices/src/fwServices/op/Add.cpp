@@ -27,16 +27,6 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType )
-{
-    OSLM_ASSERT("Unable to add service " <<serviceType<< " on a null object", obj);
-    std::string defaultImplementation =
-            ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType( obj->getClassname(), serviceType );
-    return ::fwServices::add( obj , serviceType , defaultImplementation ) ;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId )
 {
     IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceType, _implementationId );

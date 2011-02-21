@@ -18,66 +18,39 @@
 namespace fwServices
 {
 
+//------------------------------------------------------------------------------
+
 template<class SERVICE>
 SPTR(SERVICE) get( ::fwTools::Object::sptr obj ) throw(fwTools::Failed )
 {
-
-    SPTR(SERVICE) service;
     std::vector< typename SPTR(SERVICE) > services = ::fwServices::OSR::getServices< SERVICE >( obj );
-
-    unsigned int servicesNb = services.size();
-    if(services.empty())
-    {
-        std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-        OSLM_WARN("TODO : service "<< serviceType<< " not exist, use add to create it");
-
-        ::boost::shared_ptr< fwServices::IService > iservice = ::fwServices::add( obj , serviceType ) ;
-        assert( iservice );
-        service = boost::dynamic_pointer_cast< SERVICE >( iservice ) ;
-        assert( service );
-    }
-    else
-    {
-        service = *services.begin();
-    }
-
-    return service ;
-}
-
-
-template<class SERVICE>
-SPTR(SERVICE) get( ::fwTools::Object::sptr obj, std::string uid ) throw(fwTools::Failed )
-{
     std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    ::boost::shared_ptr< fwServices::IService > service = ::fwServices::get( obj , serviceType , uid ) ;
-    assert( service );
-    SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( service ) ;
-    assert( castedService );
-    return castedService ;
+    OSLM_ASSERT("Service "<<serviceType<<" not unique, registered "<<services.size()<<" time", services.size() == 1);
+    return services.at(0) ;
 }
 
-
-
+//------------------------------------------------------------------------------
 
 template<class SERVICE>
 std::vector< SPTR(SERVICE) > getServices( ::fwTools::Object::sptr obj )
 {
     std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    std::vector< ::boost::shared_ptr< fwServices::IService > > services = ::fwServices::getServices( obj , serviceType ) ;
+    std::vector< ::fwServices::IService::sptr > services = ::fwServices::getServices( obj , serviceType ) ;
 
     std::vector< SPTR(SERVICE) > castedServices ;
 
-    std::vector< ::boost::shared_ptr< fwServices::IService > >::iterator iter ;
+    std::vector< ::fwServices::IService::sptr >::iterator iter ;
     for( iter = services.begin() ; iter != services.end() ; ++iter )
     {
-        SPTR(SERVICE) castedService = boost::dynamic_pointer_cast< SERVICE >( *iter ) ;
-        assert( castedService );
+        SPTR(SERVICE) castedService = ::boost::dynamic_pointer_cast< SERVICE >( *iter ) ;
+        SLM_ASSERT("DynamicCast failed", castedService );
         castedServices.push_back( castedService ) ;
     }
 
     return castedServices ;
 }
 
+//------------------------------------------------------------------------------
 
 }
 

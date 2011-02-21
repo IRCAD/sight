@@ -5,10 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-
-#include "fwXML/visitor/CollectFileFormatService.hpp"
-#include <fwServices/helper.hpp>
 #include <fwTools/UUID.hpp>
+
 #include <fwData/visitor/accept.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Resection.hpp>
@@ -17,20 +15,24 @@
 #include <fwData/Node.hpp>
 #include <fwData/Graph.hpp>
 
-//#include <libxml/tree.h>
+#include <fwServices/helper.hpp>
+
+#include "fwXML/visitor/CollectFileFormatService.hpp"
 
 namespace visitor
 {
 
+//------------------------------------------------------------------------------
+
 CollectFileFormatService::CollectFileFormatService()
-{
-}
+{}
+
+//------------------------------------------------------------------------------
 
 CollectFileFormatService::~CollectFileFormatService()
-{
-}
+{}
 
-
+//------------------------------------------------------------------------------
 
 void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
 {
@@ -49,6 +51,8 @@ void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> ob
         m_objWithFileFormatService[obj] = ::fwServices::get< ::fwXML::IFileFormatService >( obj );
     }
 }
+
+//------------------------------------------------------------------------------
 
 void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
@@ -118,7 +122,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 }
 

@@ -190,7 +190,7 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
     for ( iter= collector.m_objWithFileFormatService.begin(); iter != collector.m_objWithFileFormatService.end(); ++iter )
     {
          ::fwXML::IFileFormatService::sptr filedata = iter->second;
-        assert( fwServices::get< ::fwXML::IFileFormatService >( iter->first ));
+        OSLM_ASSERT("No IFileFormatService found for Object "<<iter->first->getID(), ::fwServices::OSR::has(iter->first, "::fwXML::IFileFormatService"));
         filedata->rootFolder() = this->rootFolder();
         boost::filesystem::path filePath =  filedata->getFullPath() ;
         std::string msg = savingMode?"saving":"loading";

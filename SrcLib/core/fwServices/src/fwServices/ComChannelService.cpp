@@ -21,6 +21,8 @@
 #include "fwServices/macros.hpp"
 #include "fwServices/ObjectMsg.hpp"
 #include "fwServices/IEditionService.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
+
 
 REGISTER_SERVICE( ::fwServices::ICommunication , ::fwServices::ComChannelService , ::fwTools::Object ) ;
 
@@ -89,7 +91,18 @@ void ComChannelService::starting() throw(fwTools::Failed)
 
     SLM_ASSERT("intern data mismatch", m_destination.lock()->getID() == m_destUUID.second);
 
-    m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
+    if(m_source.expired())
+    {
+        if(::fwServices::OSR::has(this->getObject(), "::fwServices::IEditionService"))
+        {
+            m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
+        }
+        else
+        {
+            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(this->getObject()->getClassname(), "::fwServices::IEditionService");
+            m_source = ::fwServices::add< ::fwServices::IEditionService >( this->getObject(), defaultImpl ) ;
+        }
+    }
     OSLM_DEBUG("Source (IEditionService) = " << m_source.lock()->getID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
@@ -99,7 +112,6 @@ void ComChannelService::starting() throw(fwTools::Failed)
     // Assertion
     OSLM_ASSERT("Destination is expired for ComChannel "<<this->getID(), !m_destination.expired() ) ;
     OSLM_ASSERT("Source is expired for ComChannel "<<this->getID(), !m_source.expired() ) ;
-
 
     if( !m_source.lock()->isAttached( this->getSptr() ) )
     {

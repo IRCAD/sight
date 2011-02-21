@@ -23,18 +23,6 @@ namespace fwServices
 //@{
 
 /**
- * @brief Create and attach a service of type serviceType to the object obj
- * @return the service
- * @note If several service type implementation are available, the first one is automatically chosen, being the first element return by getImplementationIds( ::fwTools::Object::sptr obj , std::string serviceType)
- * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceType
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType ) ;
-
-template<class SERVICE>
-SPTR(SERVICE) add( ::fwTools::Object::sptr obj ) ;
-
-/**
  * @brief Create and attach a service of type serviceType and implementation _implementationId to the object obj
  * @return the service
  * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceType

@@ -54,7 +54,7 @@ public:
 
 };
 
-} //end namespace fwServices {
+} //end namespace fwServices
 
 
 #endif // _FWSERVICES_SERVICEREGISTRAR_HPP_

@@ -41,32 +41,34 @@ void SerializeXML::visit( ::fwTools::Object::sptr obj)
     std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     bool supportFileFormatSrv =  ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService");
     OSLM_DEBUG( "SerializeXML Visitor Visiting : Class " << obj->className() <<
-                "(" <<  uuid    <<
-                ") Support<FileFormatService>" <<  (supportFileFormatSrv?"yes":"no") <<
-                "ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
-                );
+            "(" <<  uuid    <<
+            ") Support<FileFormatService>" <<  (supportFileFormatSrv?"yes":"no") <<
+            "ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
+    );
 
     // get XMLTranslator
-     ::boost::shared_ptr< fwXML::XMLTranslator > translator;;
-    translator = fwTools::ClassFactoryRegistry::create< fwXML::XMLTranslator  >(  obj->className()  );
-    if (translator.get()==0)
+    ::fwXML::XMLTranslator::sptr translator;
+    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator >( obj->className()  );
+    if (translator)
     {
-        translator = ::boost::shared_ptr< ::fwXML::XMLTranslator>(new  ::fwXML::TrivialXMLTranslator() );
+        translator = ::fwXML::TrivialXMLTranslator::New();
     }
 
     if ( supportFileFormatSrv )
     {
-         ::boost::shared_ptr< ::fwXML::IFileFormatService >  saver =fwServices::get< ::fwXML::IFileFormatService >(obj);
-        if (saver)
+        ::fwXML::IFileFormatService::sptr  saver;
+        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(obj);
+        if( filesSrv.empty() )
         {
-            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
-            saver->extension() = saver->getWriter()->extension();
+            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(obj->getClassname(), "::fwXML::IFileFormatService");
+            saver = ::fwServices::add< ::fwXML::IFileFormatService >(obj, defaultImpl);
         }
         else
         {
-            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
-            saver->extension() = ".dummy";
+            saver = filesSrv.at(0);
         }
+        saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
+        saver->extension() = saver->getWriter()->extension();
     }
 
     // update XML
