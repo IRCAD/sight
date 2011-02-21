@@ -49,7 +49,7 @@ void SerializeXML::visit( ::fwTools::Object::sptr obj)
     // get XMLTranslator
     ::fwXML::XMLTranslator::sptr translator;
     translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator >( obj->className()  );
-    if (translator)
+    if (!translator)
     {
         translator = ::fwXML::TrivialXMLTranslator::New();
     }
