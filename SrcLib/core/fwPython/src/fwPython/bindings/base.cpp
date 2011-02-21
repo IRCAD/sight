@@ -12,7 +12,7 @@
 #include <fwServices/IService.hpp>
 
 #include "fwPython/python.hpp"
-#include "fwPython/bindings.hpp"
+#include "fwPython/bindings/base.hpp"
 #include "fwPython/bindings/Image.hpp"
 #include "fwPython/bindings/STLContainers.hpp"
 
@@ -38,7 +38,7 @@ struct IServiceProxy
 };
 // }
 
- 
+
 
 IServiceProxy getSrv(std::string o)
 {
@@ -52,7 +52,7 @@ IServiceProxy getSrv(std::string o)
 //{
 //}
 
-BOOST_PYTHON_MODULE(fwData) // create a void initimage() function 
+BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
 {                         // install  Py_InitModule with name + methods/class/function
     using namespace boost::python;
 
@@ -86,21 +86,19 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
 
     class_< ::fwData::String, bases<  ::fwData::Object  >, ::fwData::String::sptr >("String")
               .add_property("value",  &::fwData::String::getValue  ,  &::fwData::String::setValue );
-    
+
     ::fwPython::bindings::export_STLContainers();
     ::fwPython::bindings::export_image();
 
-}  
-
-
- 
-
+}
 
 
 namespace fwPython
 {
+namespace bindings
+{
 
-void initializeBindings()
+void initialize()
 {
     static bool initialized = false;
     if (initialized)
@@ -117,4 +115,6 @@ void initializeBindings()
     initialized = true;
 }
 
-} // namespace fwPython
+} //namespace bindings
+} //namespace fwPython
+

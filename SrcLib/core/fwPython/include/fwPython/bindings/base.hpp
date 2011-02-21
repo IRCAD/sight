@@ -5,12 +5,16 @@
 #include <string>
 #include "fwPython/config.hpp"
 
-
 namespace fwPython
 {
+namespace bindings
+{
 
-FWPYTHON_API void initializeBindings();
+FWPYTHON_API void initialize();
 
+
+} //namespace bindings
 } //namespace fwPython
+
 
 #endif //_FWPYTHON_BINDINGS_HPP_

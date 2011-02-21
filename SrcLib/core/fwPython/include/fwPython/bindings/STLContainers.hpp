@@ -6,7 +6,7 @@ namespace bindings {
 
 void export_STLContainers();
 
-}
-}
+} //namespace bindings
+} //namespace fwPython
 
 #endif // _FWPYTHON_BINDINGS_STLCONTAINERS_HPP_

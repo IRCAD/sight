@@ -1,20 +1,36 @@
+#include <boost/foreach.hpp>
 #include <boost/python.hpp>
 #include <fwCore/base.hpp>
-#include "fwPython/Interpreter.hpp"
+
 #include "fwPython/python.hpp"
-#include "fwPython/bindings.hpp"
+#include "fwPython/bindings/base.hpp"
+
+#include "fwPython/Interpreter.hpp"
 
 namespace fwPython
 {
 
-Interpreter::Interpreter() 
+
+boost::python::dict GetNamespace( char const* mod )
+{
+    using namespace boost::python;
+    dict moduleNamespace( import( mod ).attr( "__dict__" ) );
+    return moduleNamespace;
+}
+
+
+
+
+
+Interpreter::Interpreter()
 {
    ::fwPython::initialize();
+   //SLM_ASSERT( "python is not initialized", ::fwPython::isInitialized() );
 
    namespace bp = ::boost::python;
 
-   try 
-   { 
+   try
+   {
        // Retrieve the main module.
        bp::object main = bp::import("__main__");
        // Retrieve the main module's namespace
@@ -49,7 +65,7 @@ void Interpreter::addObject( std::string key, ::fwTools::Object::sptr object)
 }
 
 
-    
+
 int Interpreter::execute(std::string code)
 {
    namespace bp = ::boost::python;

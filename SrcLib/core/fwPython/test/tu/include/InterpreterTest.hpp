@@ -22,6 +22,7 @@ class InterpreterTest : public CPPUNIT_NS::TestFixture {
 protected:
 
 public:
+    InterpreterTest();
     // interface
     void setUp();
     void tearDown();

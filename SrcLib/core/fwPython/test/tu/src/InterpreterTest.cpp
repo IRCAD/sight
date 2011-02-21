@@ -15,21 +15,30 @@
 
 #include <fwData/String.hpp>
 
+#include "fwPython/python.hpp"
+#include "fwPython/bindings/base.hpp"
 #include "fwPython/Interpreter.hpp"
-#include "fwPython/bindings.hpp"
 #include "InterpreterTest.hpp"
 
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( InterpreterTest );
 
+InterpreterTest::InterpreterTest()
+{
+    ::fwPython::setHome("./PythonHome");
+    ::fwPython::initialize();
+    ::fwPython::bindings::initialize();
+}
+
 void InterpreterTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 void InterpreterTest::tearDown()
 {
+    ::fwPython::finalize();
     // Clean up after the test run.
 }
 
@@ -87,7 +96,6 @@ void InterpreterTest::import()
 void InterpreterTest::importFwDataBindings()
 {
     fwPython::Interpreter interpreter;
-    ::fwPython::initializeBindings();
 
     int succes;
     succes = interpreter.execute(
@@ -102,7 +110,6 @@ void InterpreterTest::importFwDataBindings()
 void InterpreterTest::testFwDataBindings()
 {
     fwPython::Interpreter interpreter;
-    ::fwPython::initializeBindings();
     int succes;
 
 
@@ -113,7 +120,7 @@ void InterpreterTest::testFwDataBindings()
 
     using namespace boost::assign;
     std::vector<std::string> classes;
-    classes += "String", "Float", "Integer", "Bool";
+    classes += "String", "Float", "Integer", "Boolean";
 
 
     std::string base = "::fwData::";
@@ -138,7 +145,6 @@ void InterpreterTest::testFwDataBindings()
 void InterpreterTest::changeValue()
 {
     fwPython::Interpreter interpreter;
-    ::fwPython::initializeBindings();
 
     int succes;
 
