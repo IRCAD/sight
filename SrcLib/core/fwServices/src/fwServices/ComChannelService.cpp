@@ -30,14 +30,12 @@ namespace fwServices
 {
 
 ComChannelService::ComChannelService() : m_destUUID( std::pair< bool , std::string >(false , "") ), m_priority(0.5)
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ComChannelService::~ComChannelService()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -103,6 +101,8 @@ void ComChannelService::starting() throw(fwTools::Failed)
             m_source = ::fwServices::add< ::fwServices::IEditionService >( this->getObject(), defaultImpl ) ;
         }
     }
+    OSLM_ASSERT("ComChannelService object "<<this->getObject()->getID()<<"different of IEditionService object "<<m_source.lock()->getObject()->getID(),
+           m_source.lock()->getObject() == this->getObject());
     OSLM_DEBUG("Source (IEditionService) = " << m_source.lock()->getID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
@@ -166,6 +166,7 @@ void ComChannelService::stopping() throw(fwTools::Failed)
                 ::fwServices::ObjectServiceRegistry::unregisterService(m_source.lock());
             }
         }
+        m_source.reset();
     }
 }
 
@@ -220,7 +221,6 @@ void ComChannelService::info(std::ostream &_sstream )
         {
             _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
         }
-
     }
     else
     {
@@ -243,7 +243,6 @@ void ComChannelService::info(std::ostream &_sstream )
             _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
         }
     }
-
 }
 
 //------------------------------------------------------------------------------

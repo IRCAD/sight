@@ -216,22 +216,22 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
     {
         m_globalState = SWAPPING ;
 
-        ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock())  ;
-        ::fwServices::IEditionService::sptr newEditor = ::fwServices::get< ::fwServices::IEditionService >( _obj ) ;
-        typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
-        OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
-        BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
+        if( ::fwServices::OSR::has(m_associatedObject.lock(), "::fwServices::IEditionService") )
         {
-            /// Check if _service is the subject (IEditionService) or the destination service
-            if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
+            ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock());
+            typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
+            OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
+            BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
             {
-                comChannel->stop() ;
-                comChannel->setSrc(newEditor);
-                ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , comChannel );
-                comChannel->start();
+                /// Check if _service is the subject (IEditionService) or the destination service
+                if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
+                {
+                    comChannel->stop() ;
+                    ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , comChannel );
+                    comChannel->start();
+                }
             }
         }
-
         ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , this->getSptr() );
 
         this->swapping();

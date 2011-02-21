@@ -78,7 +78,7 @@ void unregisterCommunicationChannel( ::fwTools::Object::sptr _src , ::fwServices
             if( comChan->getDest() == _dest && comChan->getSrc() == srcEditor  )
             {
                 comChan->stop();
-                ::fwServices::OSR::removeFromContainer( comChan ) ;
+                ::fwServices::OSR::unregisterService( comChan ) ;
                 isFound = true;
                 break;
             }
