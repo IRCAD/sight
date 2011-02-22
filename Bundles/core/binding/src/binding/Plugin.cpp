@@ -38,19 +38,22 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
     SLM_WARN_IF( "pythonhome is not set, you may encounter some problems",
             !this->getBundle()->hasParameter("pythonhome"));
 
+    ::fwPython::initialize();
+
     if ( this->getBundle()->hasParameter("pythonpath") )
     {
         ::fwPython::addPath(this->getBundle()->getParameterValue("pythonpath"));
     }
 
-    ::fwPython::initialize();
     ::fwPython::bindings::initialize();
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() throw()
-{}
+{
+    ::fwPython::finalize();
+}
 
 //-----------------------------------------------------------------------------
 
