@@ -8,9 +8,30 @@
 #define _FWSERVICES_REGISTRY_SERVICEFACTORY_HPP_
 
 #include <map>
+#include <boost/tr1/unordered_map.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
+
+#if defined(_WIN32) && _MSC_VER > 1499 // Visual C++ 2008 only
+#include <boost/functional/hash/hash.hpp>
+namespace std
+{
+namespace tr1
+{
+template<typename a>
+class hash< std::pair<a, a> >
+{
+public:
+   size_t operator()(const std::pair<a, a> &p) const
+   {
+      return ::boost::hash_value(p);
+   }
+};
+} //namespace tr1
+} //namespace std
+#endif
 
 namespace fwServices
 {
@@ -39,7 +60,7 @@ class FWSERVICES_CLASS_API ServiceFactoryInfo : public ::fwTools::Object
         /// service description.
         std::string desc;
 
-        ::boost::shared_ptr< ::fwRuntime::Bundle> bundle;
+        ::boost::shared_ptr< ::fwRuntime::Bundle > bundle;
         ::boost::shared_ptr< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > > factory;
 };
 
@@ -52,6 +73,9 @@ class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
 {
 
 public:
+
+    typedef std::pair<std::string, std::string> StringPair;
+    typedef std::tr1::unordered_map< StringPair, bool > SupportMapType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory) ;
 
@@ -102,9 +126,9 @@ protected :
 
     typedef std::map< std::string, ServiceFactoryInfo::sptr > SrvRegContainer;
 
-
     /// Container of service information
     SrvRegContainer m_srvImplTosrvInfo;
+    SupportMapType  m_supportMap;
 
     /// Constructor, protected to ensure unique instance (singleton pattern)
     FWSERVICES_API ServiceFactory();

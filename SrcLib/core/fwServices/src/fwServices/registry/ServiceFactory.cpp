@@ -39,18 +39,6 @@ ServiceFactory::~ServiceFactory()
 
 //-----------------------------------------------------------------------------
 
-void printXml( std::vector< ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > > elems )
-{
-    for (   std::vector< ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > >::iterator iter = elems.begin();
-            iter != elems.end();
-            ++iter )
-    {
-        OSLM_WARN( "\nxml =  " << (**iter) );
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void ServiceFactory::parseBundleInformation()
 {
 
@@ -149,8 +137,8 @@ void ServiceFactory::parseBundleInformation()
     }
 
     //Print information
-    printInfoMap( m_srvImplTosrvInfo );
-    checkServicesNotDeclaredInPluginXml();
+    this->printInfoMap( m_srvImplTosrvInfo );
+    this->checkServicesNotDeclaredInPluginXml();
 }
 
 //-----------------------------------------------------------------------------
@@ -364,14 +352,24 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
 bool ServiceFactory::support(const std::string & object, const std::string & srvType)
 {
     bool isSupported = false;
-    BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
+    SupportMapType::key_type key(object, srvType);
+    SupportMapType::iterator iter = m_supportMap.find( key );
+    if (iter != m_supportMap.end())
     {
-        ServiceFactoryInfo::sptr srvInfo = srv.second;
-        if(srvInfo->serviceType == srvType && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwTools::Object") )
+        isSupported = iter->second;
+    }
+    else
+    {
+        BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
         {
-            isSupported = true;
-            break;
+            ServiceFactoryInfo::sptr srvInfo = srv.second;
+            if(srvInfo->serviceType == srvType && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwTools::Object") )
+            {
+                isSupported = true;
+                break;
+            }
         }
+        m_supportMap[key] = isSupported;
     }
     return isSupported;
 }
