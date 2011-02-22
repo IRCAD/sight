@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
 #include "servicesReg/Plugin.hpp"

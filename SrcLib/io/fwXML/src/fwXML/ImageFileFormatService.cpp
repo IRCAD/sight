@@ -10,7 +10,7 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwDataIO/writer/GzBufferImageWriter.hpp>

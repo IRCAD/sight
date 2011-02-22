@@ -14,7 +14,7 @@
 #include <fwTools/fwID.hpp>
 
 #include "fwServices/ComChannelService.hpp"
-#include "fwServices/ObjectServiceRegistry.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/macros.hpp"
@@ -162,7 +162,7 @@ void ComChannelService::stopping() throw(fwTools::Failed)
                 {
                     m_source.lock()->stop();
                 }
-                ::fwServices::ObjectServiceRegistry::unregisterService(m_source.lock());
+                ::fwServices::OSR::unregisterService(m_source.lock());
             }
         }
         m_source.reset();

@@ -252,7 +252,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 cursor.setDefaultCursor();
 
                 reader->stop();
-                ::fwServices::ObjectServiceRegistry::unregisterService(reader);
+                ::fwServices::OSR::unregisterService(reader);
             }
             else
             {
@@ -271,7 +271,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 cursor.setDefaultCursor();
 
                 writer->stop();
-                ::fwServices::ObjectServiceRegistry::unregisterService(writer);
+                ::fwServices::OSR::unregisterService(writer);
             }
         }
     }

@@ -14,7 +14,7 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 

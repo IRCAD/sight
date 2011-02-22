@@ -74,9 +74,9 @@ void CompositeMessageTest::methodeBuildComposite()
     // test composite services
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
     CPPUNIT_ASSERT_EQUAL(objAUUID, image->getID());
-    CPPUNIT_ASSERT( ::fwServices::ObjectServiceRegistry::has(image, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::OSR::has(image, "::TestService"));
 
-    CPPUNIT_ASSERT( ::fwServices::ObjectServiceRegistry::has(compo, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::OSR::has(compo, "::TestService"));
 
     /// test start/update/stop service
     configManager->start();

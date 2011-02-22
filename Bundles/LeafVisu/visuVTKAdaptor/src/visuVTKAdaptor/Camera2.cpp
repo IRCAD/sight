@@ -12,7 +12,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>

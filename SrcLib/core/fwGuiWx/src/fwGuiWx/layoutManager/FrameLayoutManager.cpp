@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwWX/convert.hpp>
 

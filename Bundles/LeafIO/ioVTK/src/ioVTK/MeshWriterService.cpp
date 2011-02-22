@@ -6,7 +6,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/BackupHelper.hpp>

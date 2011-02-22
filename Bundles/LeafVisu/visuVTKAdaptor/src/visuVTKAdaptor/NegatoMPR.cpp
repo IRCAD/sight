@@ -11,7 +11,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>

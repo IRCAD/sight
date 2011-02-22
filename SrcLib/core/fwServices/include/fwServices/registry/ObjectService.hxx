@@ -17,15 +17,16 @@
 
 namespace fwServices
 {
-
+namespace registry
+{
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices()
+std::vector< SPTR(SERVICE) > ObjectService::getServices()
 {
     std::vector< SPTR(SERVICE) >  lfwServices;
-    ObjectServiceRegistry::KSContainer::right_map & right = getDefault()->m_container.right;
-    BOOST_FOREACH( ObjectServiceRegistry::KSContainer::right_map::value_type elt, right)
+    ObjectService::KSContainer::right_map & right = getDefault()->m_container.right;
+    BOOST_FOREACH( ObjectService::KSContainer::right_map::value_type elt, right)
     {
         SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( elt.first );
         if ( service )
@@ -40,15 +41,15 @@ std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices()
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices( ::fwTools::Object::sptr obj)
+std::vector< SPTR(SERVICE) > ObjectService::getServices( ::fwTools::Object::sptr obj)
 {
     std::vector< SPTR(SERVICE) >  lfwServices;
     if(getDefault()->m_container.left.find(obj->getOSRKey()->getLogicStamp()) != getDefault()->m_container.left.end())
     {
-        ObjectServiceRegistry::KSContainer::left_map::iterator iter;
+        ObjectService::KSContainer::left_map::iterator iter;
         ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
-        ObjectServiceRegistry::KSContainer::left_map::iterator firstElement = getDefault()->m_container.left.find(key);
-        ObjectServiceRegistry::KSContainer::left_map::iterator lastElement = getDefault()->m_container.left.upper_bound(key);
+        ObjectService::KSContainer::left_map::iterator firstElement = getDefault()->m_container.left.find(key);
+        ObjectService::KSContainer::left_map::iterator lastElement = getDefault()->m_container.left.upper_bound(key);
         for (iter = firstElement ; iter != lastElement ; ++iter)
         {
             SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( iter->second );
@@ -64,11 +65,11 @@ std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices( ::fwTools::Obje
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
+std::vector< ::fwTools::Object::sptr > ObjectService::getObjects()
 {
     std::vector< ::fwTools::Object::sptr >   lobjects;
-    ObjectServiceRegistry::KSContainer::right_map & right = getDefault()->m_container.right;
-    BOOST_FOREACH( ObjectServiceRegistry::KSContainer::right_map::value_type elt, right)
+    ObjectService::KSContainer::right_map & right = getDefault()->m_container.right;
+    BOOST_FOREACH( ObjectService::KSContainer::right_map::value_type elt, right)
     {
         SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( elt.first );
         if ( service && std::find(lobjects.begin(), lobjects.end(), service->getObject()) != lobjects.end() )
@@ -82,4 +83,5 @@ std::vector< ::fwTools::Object::sptr > ObjectServiceRegistry::getObjects()
 
 //------------------------------------------------------------------------------
 
-} // end namespace
+} // end registry
+} // end fwServices

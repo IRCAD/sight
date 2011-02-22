@@ -77,7 +77,7 @@ void IVtkAdaptorService::stopping() throw(fwTools::Failed)
     if(!m_communicationChannelService.expired())
     {
         m_communicationChannelService.lock()->stop();
-        ::fwServices::ObjectServiceRegistry::unregisterService( m_communicationChannelService.lock() );
+        ::fwServices::OSR::unregisterService( m_communicationChannelService.lock() );
     }
     doStop();
     //requestRender();

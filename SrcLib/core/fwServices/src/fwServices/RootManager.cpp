@@ -15,7 +15,7 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/AppConfig.hpp"
-#include "fwServices/ObjectServiceRegistry.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 
 #include "fwServices/RootManager.hpp"
 

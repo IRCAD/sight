@@ -6,7 +6,7 @@
 
 #include "fwServices/GlobalEventManager.hpp"
 #include "fwServices/IEditionService.hpp"
-#include "fwServices/ObjectServiceRegistry.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/op/Get.hpp"
 
 namespace fwServices

@@ -15,7 +15,7 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>

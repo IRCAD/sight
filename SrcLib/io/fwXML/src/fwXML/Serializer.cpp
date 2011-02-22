@@ -17,7 +17,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwTools/Factory.hpp>
@@ -201,7 +201,7 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
         filedata->addHandler( handlerHelper );
         savingMode ? filedata->save() : filedata->load() ;
         // remove IFileFormatService in OSR
-        ::fwServices::ObjectServiceRegistry::unregisterService(filedata);
+        ::fwServices::OSR::unregisterService(filedata);
         handlerHelper.m_currentStep++;
     }
 
@@ -244,7 +244,7 @@ int nbObjectHavingFileFormatService()
     while( aggIter != ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator().end() )
     {
         ::fwTools::Object::sptr obj =  aggIter->first.lock();
-        if ( obj && ::fwServices::ObjectServiceRegistry::has(obj, "::fwXML::IFileFormatService") )
+        if ( obj && ::fwServices::OSR::has(obj, "::fwXML::IFileFormatService") )
         {
             nbObjects++;
         }

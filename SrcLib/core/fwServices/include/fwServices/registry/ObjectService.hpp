@@ -30,9 +30,11 @@
 
 namespace fwServices
 {
+namespace registry
+{
 
 /**
- * @class ObjectServiceRegistry
+ * @class ObjectService
  *
  * Singleton maintaining the correspondence between objects and attached IService.
  *
@@ -43,11 +45,11 @@ namespace fwServices
  * @note Weak references are considered for objects instead of strong ones to facilitate implicit destruction
  * @author  IRCAD (Research and Development Team).
  */
-class FWSERVICES_CLASS_API ObjectServiceRegistry: public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ObjectService: public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ObjectServiceRegistry)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro( (ObjectService)(::fwCore::BaseObject) ) ;
 
     /**
      * @name Definition of service status
@@ -65,10 +67,10 @@ public:
     //@}
 
     /// Return the unique Instance, create it if required at first access
-    FWSERVICES_API static ObjectServiceRegistry::sptr getDefault();
+    FWSERVICES_API static ObjectService::sptr getDefault();
 
     /// Destructor
-    FWSERVICES_API virtual ~ObjectServiceRegistry();
+    FWSERVICES_API virtual ~ObjectService();
 
     /// Return some informations contain in the registry
     FWSERVICES_API static std::string getRegistryInformation();
@@ -102,7 +104,7 @@ public:
 
     /**
      * @brief container manipulator (Helper)
-     * remove service from ObjectServiceRegistry containers, do not perform any "semantic action" like
+     * remove service from ObjectService containers, do not perform any "semantic action" like
      * stop service, remove comm channel
      * @note (internal use) use with care
      */
@@ -213,29 +215,28 @@ protected :
     /**
      * @brief Constructor, protected to ensure unique instance (singleton pattern)
      */
-    ObjectServiceRegistry();
+    ObjectService();
 
 private :
 
 
     /**
-     * @brief Strong reference on the unique ObjectServiceRegistry instance
+     * @brief Strong reference on the unique ObjectService instance
      */
-    static ObjectServiceRegistry::sptr m_instance;
+    static ObjectService::sptr m_instance;
 
     /// Defines the string used to defined in bundles extensions that describes configurations
     static const std::string CONFIG_EXTENSION_POINT;
 
 };
 
+} // namespace registry
 
-typedef ObjectServiceRegistry OSR ;
-
-
+typedef registry::ObjectService OSR ;
 
 } // namespace fwServices
 
-#include "fwServices/ObjectServiceRegistry.hxx"
+#include "fwServices/registry/ObjectService.hxx"
 
 #endif // _FWSERVICES_MANAGER_HPP_
 

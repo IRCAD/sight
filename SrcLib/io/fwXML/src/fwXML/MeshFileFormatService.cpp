@@ -10,7 +10,7 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwCore/base.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwDataIO/reader/TriangularMeshReader.hpp>

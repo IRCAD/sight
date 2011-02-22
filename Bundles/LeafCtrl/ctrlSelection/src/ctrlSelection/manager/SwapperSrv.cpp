@@ -102,11 +102,11 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
             if( subSrv->m_hasComChannel )
             {
                 subSrv->getComChannel()->stop();
-                ::fwServices::ObjectServiceRegistry::unregisterService(subSrv->getComChannel());
+                ::fwServices::OSR::unregisterService(subSrv->getComChannel());
                 subSrv->m_comChannel.reset();
             }
             subSrv->getService()->stop();
-            ::fwServices::ObjectServiceRegistry::unregisterService(subSrv->getService());
+            ::fwServices::OSR::unregisterService(subSrv->getService());
             subSrv->m_service.reset();
         }
     }
@@ -362,12 +362,12 @@ void SwapperSrv::removeObject( const std::string objectId )
                 if( subSrv->m_hasComChannel )
                 {
                     subSrv->getComChannel()->stop();
-                    ::fwServices::ObjectServiceRegistry::unregisterService(subSrv->getComChannel());
+                    ::fwServices::OSR::unregisterService(subSrv->getComChannel());
                     subSrv->m_comChannel.reset();
                 }
 
                 subSrv->getService()->stop();
-                ::fwServices::ObjectServiceRegistry::unregisterService(subSrv->getService());
+                ::fwServices::OSR::unregisterService(subSrv->getService());
                 subSrv->m_service.reset();
             }
         }

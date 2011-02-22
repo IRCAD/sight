@@ -18,9 +18,11 @@
 
 namespace fwServices
 {
-
-class ObjectServiceRegistry;
 class IEditionService;
+namespace registry
+{
+class ObjectService;
+}
 
 typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
 
@@ -40,8 +42,7 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object
 {
 
     // to give to OSR an access on IService.m_associatedObject;
-    friend class ObjectServiceRegistry;
-
+    friend class registry::ObjectService;
     friend class IEditionService;
 
 public :

@@ -22,7 +22,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/AcquisitionMsg.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>

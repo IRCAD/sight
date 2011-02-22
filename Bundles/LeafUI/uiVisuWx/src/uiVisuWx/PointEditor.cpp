@@ -22,7 +22,7 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 
 #include <fwComEd/InteractionMsg.hpp>

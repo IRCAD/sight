@@ -7,8 +7,8 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
 #include "fwComEd/CompositeMsg.hpp"

@@ -12,6 +12,7 @@
 #include "fwServices/Base.hpp"
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IXMLParser.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 
 namespace fwServices
@@ -155,7 +156,7 @@ void AppConfigManager::destroy()
         ::fwServices::IService::sptr srv = wsrv.lock();
         OSLM_ASSERT( "Sorry, CTM must destroy a service ( uid = "<< srv->getID() <<" , classname = "<< srv->getClassname() <<" ), but it must be stopped before.", srv->isStopped() );
         OSLM_INFO("Unregister service ( " << srv->getID() << " ) managed by the AppConfigManager.");
-        OSR::unregisterService( srv );
+        ::fwServices::OSR::unregisterService( srv );
     }
     m_createdServices.clear();
 

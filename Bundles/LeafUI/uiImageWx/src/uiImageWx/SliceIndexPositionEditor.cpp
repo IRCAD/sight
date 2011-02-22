@@ -24,7 +24,7 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>

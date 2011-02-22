@@ -10,7 +10,7 @@
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwDataIO/writer/IObjectWriter.hpp>
