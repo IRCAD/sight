@@ -194,7 +194,10 @@
                          <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
                              <negatoAdaptor uid="MPRNegatoScene3D" />
                          </service>
-                         <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />
+                         <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" >
+                             <sliceIndex>axial</sliceIndex>
+                         </service>
+                         
                      </object>
                      <object id="myReconstruction" type="::fwData::Reconstruction" >
                          <service uid="organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="yes" />

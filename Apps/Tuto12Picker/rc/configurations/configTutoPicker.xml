@@ -151,7 +151,9 @@
                             <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
                                 <negatoAdaptor uid="MPRNegatoScene3D" />
                             </service>
-                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />
+                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" >
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
                         </object>
                     </config>
                 </service>

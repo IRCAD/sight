@@ -10,6 +10,7 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -116,21 +117,31 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     this->initialize();
 
-    if(m_configuration->hasAttribute("sliceIndex"))
+    if( this->m_configuration->size() > 0 )
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
+        SLM_ASSERT("Sorry, only one xml element \"sliceIndex\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
+        SLM_ASSERT("Sorry, xml element \"sliceIndex\" is empty.", ! (*iter)->getValue().empty() );
+        std::string  orientation = (*iter)->getValue();
+        ::boost::algorithm::trim(orientation);
+        ::boost::algorithm::to_lower(orientation);
+
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
+        else
+        {
+            SLM_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
+        }
     }
 }
 
