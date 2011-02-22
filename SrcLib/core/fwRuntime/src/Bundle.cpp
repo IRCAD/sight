@@ -381,10 +381,8 @@ void Bundle::loadRequirements() throw(RuntimeException)
             {
                 throw RuntimeException( requirement + ": required bundle not found or not enable." );
             }
-
-            // Asks the bundle to loads its libraries.
-            bundle->loadRequirements();
-            bundle->loadLibraries();
+            // Starts the bundle (loads its libraries and requirements bundle).
+            bundle->start();
         }
     }
     catch( const std::exception & e )
