@@ -128,7 +128,7 @@ void RootManager::uninitializeRootObject()
 
         OSLM_WARN_IF("Sorry, few services still exist before erasing root object ( cf debug following message )"
                 << std::endl << ::fwServices::OSR::getRegistryInformation(),
-                ! ::fwServices::OSR::getDefault()->getKSContainer().empty());
+                ! ::fwServices::OSR::getKSContainer().empty());
 
         ::fwServices::GlobalEventManager::getDefault()->clearMessages();
 

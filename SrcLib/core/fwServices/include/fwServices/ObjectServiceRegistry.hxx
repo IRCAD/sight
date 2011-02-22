@@ -40,7 +40,7 @@ std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices()
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices( fwTools::Object::sptr obj)
+std::vector< SPTR(SERVICE) > ObjectServiceRegistry::getServices( ::fwTools::Object::sptr obj)
 {
     std::vector< SPTR(SERVICE) >  lfwServices;
     if(getDefault()->m_container.left.find(obj->getOSRKey()->getLogicStamp()) != getDefault()->m_container.left.end())

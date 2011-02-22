@@ -16,7 +16,7 @@
 
 #include <fwTools/Object.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/macros.hpp>

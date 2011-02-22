@@ -9,7 +9,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>

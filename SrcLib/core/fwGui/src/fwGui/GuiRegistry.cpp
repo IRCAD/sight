@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/fwID.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include "fwGui/IMenuSrv.hpp"
 #include "fwGui/IToolBarSrv.hpp"

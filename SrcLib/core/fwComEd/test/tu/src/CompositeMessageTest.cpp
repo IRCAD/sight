@@ -13,7 +13,7 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/Factory.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/CompositeEditor.hpp>

@@ -15,7 +15,6 @@
 
 #include "fwServices/ComChannelService.hpp"
 #include "fwServices/ObjectServiceRegistry.hpp"
-#include "fwServices/helper.hpp"
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/macros.hpp"

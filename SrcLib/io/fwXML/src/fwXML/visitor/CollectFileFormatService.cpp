@@ -15,7 +15,7 @@
 #include <fwData/Node.hpp>
 #include <fwData/Graph.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include "fwXML/visitor/CollectFileFormatService.hpp"
 

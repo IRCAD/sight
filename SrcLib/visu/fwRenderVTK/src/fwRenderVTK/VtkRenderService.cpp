@@ -24,7 +24,7 @@
 #include <vtkCamera.h>
 
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwComEd/CompositeEditor.hpp>
 #include <fwComEd/CompositeMsg.hpp>

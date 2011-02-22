@@ -1,4 +1,4 @@
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwTools/fwID.hpp>

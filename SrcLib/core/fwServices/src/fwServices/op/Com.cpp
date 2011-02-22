@@ -6,17 +6,12 @@
 
 #include <vector>
 
-#include <fwTools/TypeInfo.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/Factory.hpp>
 
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-
-#include "fwServices/Base.hpp"
-#include "fwServices/IXMLParser.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/op/Com.hpp"
+#include "fwServices/op/Get.hpp"
+#include "fwServices/op/Add.hpp"
 #include "fwServices/IEditionService.hpp"
 
 namespace fwServices

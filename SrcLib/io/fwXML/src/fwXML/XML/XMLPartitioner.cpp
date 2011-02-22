@@ -9,7 +9,7 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 

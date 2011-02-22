@@ -31,8 +31,6 @@
 namespace fwServices
 {
 
-
-
 /**
  * @class ObjectServiceRegistry
  *
@@ -102,12 +100,12 @@ public:
      */
     FWSERVICES_API static void unregisterService(  ::fwServices::IService::sptr _service );
 
-     /**
-      * @brief container manipulator (Helper)
-      * remove service from ObjectServiceRegistry containers, do not perform any "semantic action" like
-      * stop service, remove comm channel
-      * @note (internal use) use with care
-      */
+    /**
+     * @brief container manipulator (Helper)
+     * remove service from ObjectServiceRegistry containers, do not perform any "semantic action" like
+     * stop service, remove comm channel
+     * @note (internal use) use with care
+     */
     static void  removeFromContainer( ::fwServices::IService::sptr _service );
 
     //@}
@@ -130,6 +128,26 @@ public:
      */
     template<class SERVICE>
     static std::vector< SPTR(SERVICE) > getServices(::fwTools::Object::sptr obj) ;
+
+    /**
+     * @brief Return a container of all services of type serviceType registered in the system (i.e. attached to the different objects of the system)
+     * @note Should be optimized
+     * @note Invoke getServices( ::fwTools::Object::sptr , std::string ) for each registered object
+     * @author IRCAD (Research and Development Team).
+     */
+    FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( std::string serviceType ) ;
+
+    /**
+     * @brief Return a container of services of type serviceType which are attached to obj
+     * @author IRCAD (Research and Development Team).
+     */
+    FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceType ) ;
+
+    /**
+     * @brief return a vector containing all services associated with the object _obj
+     * @author IRCAD (Research and Development Team).
+     */
+    FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr _obj );
 
     /**
      * @brief Return a container with all objects associated with a service of type SERVICE in m_container

@@ -8,11 +8,9 @@
 #define _FWSERVICES_ADD_HPP_
 
 #include <fwTools/Object.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include "fwServices/ObjectServiceRegistry.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/ComChannelService.hpp"
 
 namespace fwServices
 {
@@ -23,26 +21,15 @@ namespace fwServices
 //@{
 
 /**
- * @brief Create and attach a service of type serviceType and implementation _implementationId to the object obj
- * @return the service
- * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceType
- * @author IRCAD (Research and Development Team).
- */
-FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId ) ;
-
-template<class SERVICE>
-SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId ) ;
-
-/**
  * @brief Create and attach to the object obj a service of type serviceType, implementation _implementationId with the universal unique identifier _id
  * @return the service
  * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceType
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string _id) ;
+FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string _id = "") ;
 
 template<class SERVICE>
-SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId , std::string _id ) ;
+SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId , std::string _id= "") ;
 
 //@}
 

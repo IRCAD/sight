@@ -9,7 +9,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/fwID.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
 #include "fwGui/registrar/MenuBarRegistrar.hpp"

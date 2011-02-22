@@ -8,7 +8,6 @@
 #define _FWSERVICES_COM_HPP_
 
 #include <fwTools/Object.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include "fwServices/ObjectServiceRegistry.hpp"
 #include "fwServices/IService.hpp"

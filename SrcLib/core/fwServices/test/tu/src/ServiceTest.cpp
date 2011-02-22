@@ -14,7 +14,7 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/Factory.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/AppConfigManager.hpp>
@@ -118,12 +118,12 @@ void ServiceTest::testServiceCreationWithUUID()
     CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service ->getID());
     CPPUNIT_ASSERT( ::fwServices::get(obj, "::TestService", myUUID3) == NULL );
-    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::getServices(obj, "::TestService").size() );
+    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::TestService").size() );
 
     // Test erasing service
     ::fwServices::ObjectServiceRegistry::unregisterService(service);
     nbServices--;
-    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::getServices(obj, "::TestService").size() );
+    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::TestService").size() );
 }
 
 //------------------------------------------------------------------------------

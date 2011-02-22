@@ -16,7 +16,7 @@
 #include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 
 #include "fwXML/reader/FwXMLObjectReader.hpp"

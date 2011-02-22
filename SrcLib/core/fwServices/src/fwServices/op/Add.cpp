@@ -7,19 +7,11 @@
 #include <vector>
 #include <boost/lexical_cast.hpp>
 
-#include <fwTools/TypeInfo.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/Factory.hpp>
-
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
 
 #include "fwServices/Base.hpp"
-#include "fwServices/IXMLParser.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/op/Add.hpp"
-#include "fwServices/IEditionService.hpp"
-#include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
 
 namespace fwServices
@@ -27,20 +19,15 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId )
-{
-    IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceType, _implementationId );
-    ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
-    return srv;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string uid)
 {
-    IService::sptr srv = ::fwServices::add( obj , serviceType , _implementationId ) ;
-    OSLM_ASSERT( "Try to set ID: "<<uid<<" but already has an ID: "<<srv->getID(), !srv->hasID() );
-    srv->setID( uid ) ;
+    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceType, _implementationId );
+    ::fwServices::OSR::registerService( obj , srv );
+    if(!uid.empty())
+    {
+        OSLM_ASSERT( "Try to set ID: "<<uid<<" but already has an ID: "<<srv->getID(), !srv->hasID() );
+        srv->setID( uid ) ;
+    }
     return srv ;
 }
 

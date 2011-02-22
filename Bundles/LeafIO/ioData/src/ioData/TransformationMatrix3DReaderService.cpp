@@ -11,7 +11,7 @@
 #include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
 #include <io/IReader.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>

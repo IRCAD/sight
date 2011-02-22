@@ -12,7 +12,7 @@
 #include <fwData/TransfertFunction.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
 

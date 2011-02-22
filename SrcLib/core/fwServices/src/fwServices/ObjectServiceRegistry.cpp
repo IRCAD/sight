@@ -158,6 +158,61 @@ std::string ObjectServiceRegistry::getRegistryInformation()
 
 //------------------------------------------------------------------------------
 
+std::vector< ::fwServices::IService::sptr > ObjectServiceRegistry::getServices( ::fwTools::Object::sptr obj , std::string serviceType )
+{
+    std::vector< ::fwServices::IService::sptr > allServices = ::fwServices::OSR::getServices(obj);
+    std::vector< ::fwServices::IService::sptr > services ;
+
+    // Search should be optimized
+    BOOST_FOREACH(::fwServices::IService::sptr srv, allServices)
+    {
+        if( srv->isA(serviceType) )
+        {
+            services.push_back( srv ) ;
+        }
+    }
+    return services ;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector< ::fwServices::IService::sptr > ObjectServiceRegistry::getServices( std::string serviceType )
+{
+    std::vector< ::fwServices::IService::sptr >  lfwServices;
+    ::fwServices::OSR::KSContainer::right_map right = ::fwServices::OSR::getKSContainer().right;
+    BOOST_FOREACH( ::fwServices::OSR::KSContainer::right_map::value_type elt, right)
+    {
+        ::fwServices::IService::sptr service = elt.first;
+        if ( service->isA(serviceType) )
+        {
+            lfwServices.push_back( service ) ;
+        }
+    }
+    SLM_DEBUG_IF("No service registered", lfwServices.empty());
+    return lfwServices;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector< ::fwServices::IService::sptr > ObjectServiceRegistry::getServices( ::fwTools::Object::sptr obj )
+{
+    std::vector< ::fwServices::IService::sptr >  lfwServices;
+    if(getDefault()->m_container.left.find(obj->getOSRKey()->getLogicStamp()) != getDefault()->m_container.left.end())
+    {
+        ObjectServiceRegistry::KSContainer::left_map::iterator iter;
+        ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
+        ObjectServiceRegistry::KSContainer::left_map::iterator firstElement = getDefault()->m_container.left.find(key);
+        ObjectServiceRegistry::KSContainer::left_map::iterator lastElement = getDefault()->m_container.left.upper_bound(key);
+        for (iter = firstElement ; iter != lastElement ; ++iter)
+        {
+            lfwServices.push_back( iter->second ) ;
+        }
+    }
+    return lfwServices;
+}
+
+//------------------------------------------------------------------------------
+
 bool ObjectServiceRegistry::has( ::fwTools::Object::sptr obj , const std::string & srvType)
 {
     bool hasServices = false;

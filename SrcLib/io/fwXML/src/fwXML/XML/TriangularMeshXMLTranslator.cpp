@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
 

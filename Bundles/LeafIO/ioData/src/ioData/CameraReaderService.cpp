@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwData/TriangularMesh.hpp>

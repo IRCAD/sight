@@ -18,7 +18,7 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 Plugin::~Plugin() throw()
 {
     //Hack: force link with fwServices
-    ::fwServices::ObjectServiceRegistry::getDefault();
+    ::fwServices::OSR::getDefault();
     //Hack: force link with fwcomEd
     ::fwComEd::ImageMsg im;
 }

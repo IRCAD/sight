@@ -8,11 +8,9 @@
 #define _FWSERVICES_GET_HXX_
 
 #include <fwTools/Object.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include "fwServices/ObjectServiceRegistry.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/ComChannelService.hpp"
 #include "fwServices/op/Add.hpp"
 
 namespace fwServices
@@ -27,27 +25,6 @@ SPTR(SERVICE) get( ::fwTools::Object::sptr obj ) throw(fwTools::Failed )
     std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
     OSLM_ASSERT("Service "<<serviceType<<" not unique, registered "<<services.size()<<" time", services.size() == 1);
     return services.at(0) ;
-}
-
-//------------------------------------------------------------------------------
-
-template<class SERVICE>
-std::vector< SPTR(SERVICE) > getServices( ::fwTools::Object::sptr obj )
-{
-    std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
-    std::vector< ::fwServices::IService::sptr > services = ::fwServices::getServices( obj , serviceType ) ;
-
-    std::vector< SPTR(SERVICE) > castedServices ;
-
-    std::vector< ::fwServices::IService::sptr >::iterator iter ;
-    for( iter = services.begin() ; iter != services.end() ; ++iter )
-    {
-        SPTR(SERVICE) castedService = ::boost::dynamic_pointer_cast< SERVICE >( *iter ) ;
-        SLM_ASSERT("DynamicCast failed", castedService );
-        castedServices.push_back( castedService ) ;
-    }
-
-    return castedServices ;
 }
 
 //------------------------------------------------------------------------------

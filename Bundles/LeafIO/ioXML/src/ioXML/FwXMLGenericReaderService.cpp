@@ -16,7 +16,7 @@
 
 #include <fwServices/Factory.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/ObjectServiceRegistry.hpp>
 #include <fwServices/IEditionService.hpp>
 

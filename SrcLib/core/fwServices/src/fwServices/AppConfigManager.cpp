@@ -439,7 +439,7 @@ void AppConfigManager::addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _
 ::fwServices::IService::sptr AppConfigManager::add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId,  std::string uid )
 {
     IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceId, _implementationId );
-    ::fwServices::ObjectServiceRegistry::getDefault()->registerService( obj , srv );
+    ::fwServices::OSR::registerService( obj , srv );
 
     if ( ! uid.empty() )
     {
@@ -462,7 +462,7 @@ void AppConfigManager::start( ::fwRuntime::ConfigurationElement::csptr _elt )
             if ( elem->hasAttribute("type") )
             {
                 std::string serviceTypeToStart = elem->getExistingAttributeValue("type") ;
-                std::vector< ::fwServices::IService::sptr > servicesToStart = getServices( serviceTypeToStart );
+                std::vector< ::fwServices::IService::sptr > servicesToStart = ::fwServices::OSR::getServices( serviceTypeToStart );
                 OSLM_FATAL_IF("Sorry, try to start services of type " << serviceTypeToStart << ", but this type of service is not found", servicesToStart.empty() );
                 std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToStart.begin() ;
                 for( ; iter != servicesToStart.end() ; ++iter )
@@ -495,7 +495,7 @@ void AppConfigManager::update( ::fwRuntime::ConfigurationElement::csptr _elt )
             if( elem->hasAttribute("type") )
             {
                 std::string serviceTypeToUpdate = elem->getExistingAttributeValue("type") ;
-                std::vector< ::fwServices::IService::sptr > servicesToUpdate = getServices( serviceTypeToUpdate ) ;
+                std::vector< ::fwServices::IService::sptr > servicesToUpdate = ::fwServices::OSR::getServices( serviceTypeToUpdate ) ;
                 OSLM_FATAL_IF("Configuration : element " << serviceTypeToUpdate << " not found", servicesToUpdate.empty() );
                 std::vector< ::fwServices::IService::sptr >::iterator iter = servicesToUpdate.begin() ;
                 for( ; iter != servicesToUpdate.end() ; ++iter )
