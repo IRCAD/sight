@@ -4,6 +4,8 @@
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
+    <requirement id="binding" />
+    
 
     
     <point id="::uiPython::action::Test">
