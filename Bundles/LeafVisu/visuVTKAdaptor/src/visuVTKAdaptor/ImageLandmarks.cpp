@@ -20,6 +20,7 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/PointListMsg.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
@@ -43,13 +44,18 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLand
 namespace visuVTKAdaptor
 {
 
-void notifyNewLandMark2( ::fwData::Image::sptr image, ::fwServices::IService* _service )
+void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* _service, ::fwData::Point::sptr point )
 {
-    ::fwComEd::ImageMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
     SLM_ASSERT("NULL Service", _service);
 
-    ::fwServices::IEditionService::notify( _service->getSptr(), image, msg, ::fwServices::ComChannelService::NOTIFY_SOURCE);
+    ::fwComEd::PointListMsg::NewSptr msgPointList;
+    msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
+    ::fwData::PointList::sptr pointList = image->getFieldSingleElement< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
+    ::fwServices::IEditionService::notify( _service->getSptr(), pointList, msgPointList);
+
+    ::fwComEd::ImageMsg::NewSptr msgLandmark;
+    msgLandmark->addEvent( ::fwComEd::ImageMsg::LANDMARK, point );
+    ::fwServices::IEditionService::notify( _service->getSptr(), image, msgLandmark, ::fwServices::ComChannelService::NOTIFY_SOURCE);
 }
 
 //------------------------------------------------------------------------------
@@ -126,11 +132,13 @@ public :
         else if ( (eventId == vtkCommand::RightButtonReleaseEvent ) && !m_pickedPoint.expired() && !m_pickedPointList.expired() && std::equal(pos, pos+1, m_lastPos) )
         {
             ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
-            m_pickedPointList.lock()->getRefPoints().erase
-            (
-                    std::find( m_pickedPointList.lock()->getRefPoints().begin(), m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock() )
-            );
-            notifyNewLandMark2(image, m_service);
+            ::fwData::PointList::PointListContainer::iterator itr = std::find( m_pickedPointList.lock()->getRefPoints().begin(), m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock() );
+            if(itr != m_pickedPointList.lock()->getRefPoints().end())
+            {
+                ::fwData::Point::sptr point = *itr;
+                m_pickedPointList.lock()->getRefPoints().erase(itr);
+                notifyRemoveLandMark(image, m_service, point);
+            }
         }
     }
     bool getSelectedPoint()
@@ -227,7 +235,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
     bool isShown
         = (!image->getFieldSize("ShowLandmarks")) ? true : image->getFieldSingleElement< ::fwData::Boolean > ("ShowLandmarks")->value();
 
-    if (!isShown || !hasLandmarkField  || m_needSubservicesDeletion)
+    if (!isShown || !hasLandmarkField || m_needSubservicesDeletion)
     {
         this->unregisterServices();
         m_needSubservicesDeletion = false;
@@ -237,12 +245,10 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
     {
         ::fwData::PointList::sptr landmarks = image->getFieldSingleElement< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
 
-        if ( landmarks->getPoints().empty() == false )
+        if ( ! landmarks->getPoints().empty() )
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr servicePointList;
-            servicePointList =
-                    ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-            ( landmarks , "::visuVTKAdaptor::PointList");
+            servicePointList = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( landmarks , "::visuVTKAdaptor::PointList");
             assert( servicePointList );
 
             servicePointList->setPickerId( this->getPickerId() );
@@ -255,13 +261,10 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
             BOOST_FOREACH( ::fwData::Point::sptr point, landmarks->getRefPoints() )
             {
                 ::fwRenderVTK::IVtkAdaptorService::sptr serviceLabel;
-                serviceLabel =
-                        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-                ( point , "::visuVTKAdaptor::PointLabel");
+                serviceLabel = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point , "::visuVTKAdaptor::PointLabel");
                 assert( serviceLabel );
                 serviceLabel->setRenderService( this->getRenderService() );
                 serviceLabel->start();
-
                 this->registerService( serviceLabel );
             }
         }
