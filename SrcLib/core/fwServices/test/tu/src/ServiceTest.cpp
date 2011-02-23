@@ -29,6 +29,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ServiceTest );
 
 //------------------------------------------------------------------------------
 
+REGISTER_SERVICE( ::TestService , ::TestServiceImplementation , ::fwTools::Object ) ;
+
+//------------------------------------------------------------------------------
+
 void ServiceTest::setUp()
 {
     // Set up context before running a test.
@@ -215,47 +219,6 @@ void ServiceTest::testCommunication()
 
     ::fwServices::OSR::unregisterService(service1);
     ::fwServices::OSR::unregisterService(service2);
-}
-
-//------------------------------------------------------------------------------
-
-void ServiceTest::testObjectCreationWithConfig()
-{
-    const std::string objectUUID = "objectUUID";
-    const std::string serviceUUID1 = "myTestService1";
-    const std::string serviceUUID2 = "myTestService2";
-
-    // Create object configuration
-    ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig() ;
-
-    // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager::NewSptr configManager;
-    configManager->setConfig( config );
-    configManager->create();
-    ::fwTools::Object::sptr obj = configManager->getConfigRoot();
-
-    // Test object uid
-    CPPUNIT_ASSERT_EQUAL(objectUUID, obj->getID());
-
-    // Test if object's service is created
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(obj, "::TestService"));
-
-    // Test start services
-    configManager->start();
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID1)->isStarted() );
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID2)->isStarted() );
-
-    // Test update services
-    configManager->update();
-    CPPUNIT_ASSERT( ::TestService::dynamicCast( ::fwServices::get(serviceUUID1) )->getIsUpdated() );
-    CPPUNIT_ASSERT( ::TestService::dynamicCast( ::fwServices::get(serviceUUID2) )->getIsUpdated() == false );
-
-    // Test stop services
-    configManager->stop();
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID1)->isStopped() );
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID2)->isStopped() );
-
-    configManager->destroy();
 }
 
 //------------------------------------------------------------------------------

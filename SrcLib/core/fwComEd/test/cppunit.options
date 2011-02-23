@@ -1,4 +1,5 @@
 CLASSTEST=[
+    'ConfigParserTest',
     'CompositeMessageTest',
 #   'CallbackTest',
     'MessagesTest',
