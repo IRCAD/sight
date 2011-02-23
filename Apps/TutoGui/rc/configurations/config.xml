@@ -125,8 +125,12 @@
                 <state active="true" />
                 <start uid="item2" />
                 <start uid="item3" />
+                <stop uid="item4" />
+                <stop uid="item5" />
             </service>
             <service uid="item17" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <stop uid="item2" />
+                <stop uid="item3" />
                 <start uid="item4" />
                 <start uid="item5" />
             </service>
