@@ -48,7 +48,7 @@ public:
     /**
      * @brief  define an order (lexicographic) for dynamicType
      */
-    bool operator<( const DynamicType& ) const;
+    FWTOOLS_API bool operator<( const DynamicType& ) const;
 
     /**
      * @brief   Set DynamicType value according given template
