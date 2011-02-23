@@ -22,25 +22,19 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
-        <service>::fwComEd::IProcessObjectParser</service>
-        <object>::fwData::ProcessObject</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IXMLParser</type>
-        <service>::fwComEd::ICompositeParser</service>
+        <service>::fwComEd::parser::Composite</service>
         <object>::fwData::Composite</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
-        <service>::fwComEd::TransformationMatrix3DParser</service>
+        <service>::fwComEd::parser::TransformationMatrix3D</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
-        <service>::fwServices::ObjectXMLParser</service>
+        <service>::fwComEd::parser::Object</service>
         <object>::fwTools::Object</object>
     </extension>
 

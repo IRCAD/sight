@@ -4,34 +4,36 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
 
-#include <fwData/ProcessObject.hpp>
-#include <fwData/Composite.hpp>
+#include "fwComEd/parser/Object.hpp"
 
-#include "fwComEd/objectConfigurationParser.hpp"
-
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::ICompositeParser, ::fwData::Composite );
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::IProcessObjectParser, ::fwData::ProcessObject );
+REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwTools::Object ) ;
 
 namespace fwComEd
+{
+namespace parser
 {
 
 //------------------------------------------------------------------------------
 
-bool ICompositeParser::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement )
+Object::Object( )
+{}
+
+//------------------------------------------------------------------------------
+
+Object::~Object()
+{}
+
+//------------------------------------------------------------------------------
+
+bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgElement )
 {
     bool isOk = true;
 
-    for(    ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ;
-            configEltIter != _cfgElement->end();
-            ++configEltIter)
+    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, _cfgElement->getElements() )
     {
-        std::string subElementName = (*configEltIter)->getName();
+        std::string subElementName = elem->getName();
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
@@ -45,28 +47,29 @@ bool ICompositeParser::refObjectValidator( ::fwRuntime::ConfigurationElement::sp
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::updating( ) throw(fwTools::Failed)
+void Object::updating( ) throw(fwTools::Failed)
 {
-    SLM_FATAL("Sorry, this method is depreciated.");
+    SLM_FATAL("Sorry, this method is depreciated");
 }
+
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
+void Object::createConfig( ::fwTools::Object::sptr _obj )
 {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
     const std::string BUILD_OBJECT = "new";
     const std::string GET_OBJECT = "ref";
 
-    ::fwData::Composite::sptr dataComposite = ::fwData::Composite::dynamicCast(_obj);
-    SLM_ASSERT("Sorry, object given in parameter is not a fwData::Composite",dataComposite);
+    ::fwTools::Object::sptr associatedObject = _obj;
+    assert( associatedObject ) ;
 
     BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
     {
+
         if( elem->getName() == "item" )
         {
-
             // Test build mode
             std::string buildMode = BUILD_OBJECT;
 
@@ -80,28 +83,27 @@ void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
             SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", elem->hasAttribute("key") );
             std::string key = elem->getExistingAttributeValue("key");
             SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.", ! key.empty() );
-            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", elem->size() == 1 && (*elem->getElements().begin())->getName() == "object" );
+            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", elem->size() == 1 && (*(elem->getElements().begin()))->getName() == "object" );
 
             if( buildMode == BUILD_OBJECT )
             {
-                // Test if key already exist in composite
-                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the composite.", dataComposite->find( key ) == dataComposite->end() );
+                // Test if key already exist in object
+                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", associatedObject->getFieldSize( key ) == 0 );
 
                 // Create and manage object config
                 ::fwServices::AppConfigManager::NewSptr ctm;
-                ctm->setConfig( * ( elem->getElements().begin() ) );
+                ctm->setConfig( *(elem->getElements().begin()) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
                 ::fwTools::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
-                SLM_ASSERT("Sorry an ::fwData::Composite can contain only ::fwData::Object", ::fwData::Object::dynamicCast( localObj ) );
-                (*dataComposite)[ key ] = ::fwData::Object::dynamicCast( localObj );
-
+                associatedObject->setFieldSingleElement( key, localObj);
             }
             else // if( buildMode == GET_OBJECT )
             {
                 SLM_FATAL("ACH => Todo");
+                // ToDo
             }
         }
     }
@@ -109,7 +111,7 @@ void ICompositeParser::createConfig( ::fwTools::Object::sptr _obj )
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::startConfig()
+void Object::startConfig()
 {
     BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
@@ -119,7 +121,7 @@ void ICompositeParser::startConfig()
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::updateConfig()
+void Object::updateConfig()
 {
     BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
@@ -129,7 +131,7 @@ void ICompositeParser::updateConfig()
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::stopConfig()
+void Object::stopConfig()
 {
     BOOST_REVERSE_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
@@ -139,7 +141,7 @@ void ICompositeParser::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void ICompositeParser::destroyConfig()
+void Object::destroyConfig()
 {
     BOOST_REVERSE_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
     {
@@ -150,18 +152,6 @@ void ICompositeParser::destroyConfig()
 
 //------------------------------------------------------------------------------
 
-void IProcessObjectParser::updating( ) throw(fwTools::Failed)
-{
-    SLM_FATAL("Sorry, this method is depreciated.");
-}
+} //namespace parser
+} //namespace fwComEd
 
-//------------------------------------------------------------------------------
-
-void IProcessObjectParser::configureIO( ::fwTools::Object::sptr io, const ::fwRuntime::ConfigurationElement::sptr list)
-{
-    SLM_FATAL("Sorry, this method is depreciated.");
-}
-
-//------------------------------------------------------------------------------
-
-}

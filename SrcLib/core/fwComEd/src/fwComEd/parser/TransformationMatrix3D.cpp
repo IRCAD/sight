@@ -12,16 +12,18 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include "fwComEd/TransformationMatrix3DParser.hpp"
+#include "fwComEd/parser/TransformationMatrix3D.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::TransformationMatrix3DParser, ::fwData::TransformationMatrix3D );
+REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::TransformationMatrix3D, ::fwData::TransformationMatrix3D );
 
 namespace fwComEd
+{
+namespace parser
 {
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DParser::updating( ) throw(fwTools::Failed)
+void TransformationMatrix3D::updating( ) throw(fwTools::Failed)
 {
     ::fwRuntime::ConfigurationElement::sptr _cfgElement = this->m_configuration;
     ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >() ;
@@ -52,4 +54,6 @@ void TransformationMatrix3DParser::updating( ) throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-}
+} //namespace parser
+} //namespace fwComEd
+

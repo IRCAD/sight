@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_TRANSFORMATIONMATRIX3DPARSER_HPP_
-#define _FWCOMED_TRANSFORMATIONMATRIX3DPARSER_HPP_
+#ifndef _FWCOMED_PARSER_TRANSFORMATIONMATRIX3D_HPP_
+#define _FWCOMED_PARSER_TRANSFORMATIONMATRIX3D_HPP_
 
 #include <fwTools/Failed.hpp>
 
@@ -19,27 +19,30 @@
 
 namespace fwComEd
 {
-
+namespace parser
+{
 /**
- * @brief   Specific service for the construction of a TransformationMatrix3DParser and its associated services from an XML-based description.
- * @class   TransformationMatrix3DParser
+ * @brief   Specific service for the construction of a TransformationMatrix3D and its associated services from an XML-based description.
+ * @class   TransformationMatrix3D
  * @author  IRCAD (Research and Development Team).
 
  * @date    2007-2009
  * @see     ::fwServices::IXMLParser
  */
-class FWCOMED_CLASS_API TransformationMatrix3DParser : public ::fwServices::IXMLParser
+class FWCOMED_CLASS_API TransformationMatrix3D : public ::fwServices::IXMLParser
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3DParser)(::fwServices::IXMLParser) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3D)(::fwServices::IXMLParser) ) ;
 
     /// Constructor : does nothing.
-    FWCOMED_API TransformationMatrix3DParser() {};
+    FWCOMED_API TransformationMatrix3D() {};
 
     /// Destructor : does nothing.
-    FWCOMED_API virtual ~TransformationMatrix3DParser() {};
+    FWCOMED_API virtual ~TransformationMatrix3D() {};
+
+protected:
 
     /**
      * @brief Updating method : create the process object.
@@ -51,6 +54,7 @@ public :
 
 };
 
-}
+} //namespace parser
+} //namespace fwComEd
 
-#endif // _FWCOMED_TRANSFORMATIONMATRIX3DPARSER_HPP_
+#endif // _FWCOMED_PARSER_TRANSFORMATIONMATRIX3D_HPP_

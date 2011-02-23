@@ -17,7 +17,6 @@
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/objectConfigurationParser.hpp>
 
 #include "CompositeMessageTest.hpp"
 
