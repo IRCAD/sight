@@ -13,7 +13,6 @@
 #include <fwData/String.hpp>
 
 #include "fwComEd/CompositeMsg.hpp"
-#include "fwComEd/CompositeEditor.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::CompositeMsg, ::fwComEd::CompositeMsg );
 

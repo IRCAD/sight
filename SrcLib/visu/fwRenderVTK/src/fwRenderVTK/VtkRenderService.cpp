@@ -26,7 +26,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwComEd/CompositeEditor.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwData/Color.hpp>

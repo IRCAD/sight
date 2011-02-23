@@ -51,14 +51,13 @@ private:
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > buildConfig();
 };
 
+
 /**
- * @brief   Service interface for test.
+ * @brief   Service type for test.
  */
 class TestService : public ::fwServices::IService
 {
-
 public :
-
     fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) ) ;
     TestService() throw()
     :   m_isUpdated(false),
@@ -66,12 +65,6 @@ public :
         {};
 
     virtual ~TestService() throw() {};
-
-    virtual void configuring() throw( ::fwTools::Failed ) {};
-    virtual void starting() throw(::fwTools::Failed) {};
-    virtual void stopping() throw(::fwTools::Failed) {};
-    virtual void updating() throw(::fwTools::Failed) {};
-    virtual void info(std::ostream &_sstream ) {_sstream << "TestService" ;};
 
     /// return true if the service is updated with updating() method
     bool getIsUpdated() { return m_isUpdated; };
@@ -83,6 +76,12 @@ public :
     ::fwServices::ObjectMsg::sptr getMessage() { return m_compoMsg; };
 
 protected:
+    virtual void configuring() throw( ::fwTools::Failed ) {};
+    virtual void starting() throw(::fwTools::Failed) {};
+    virtual void stopping() throw(::fwTools::Failed) {};
+    virtual void updating() throw(::fwTools::Failed) {};
+    virtual void info(std::ostream &_sstream ) {_sstream << "TestService" ;};
+
     bool m_isUpdated;
     bool m_isUpdatedMessage;
     ::fwServices::ObjectMsg::sptr m_compoMsg;
@@ -143,8 +142,5 @@ public :
         }
     };
 };
-
-REGISTER_SERVICE( TestService , ::TestServiceImplementationComposite , ::fwData::Composite ) ;
-REGISTER_SERVICE( TestService , ::TestServiceImplementationImage , ::fwData::Image ) ;
 
 #endif // _FWCOMED_TEST_TU_COMPOSITEMESSAGETEST_HPP_

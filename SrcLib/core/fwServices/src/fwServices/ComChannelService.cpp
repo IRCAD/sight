@@ -82,7 +82,7 @@ void ComChannelService::configuring() throw( ::fwTools::Failed )
 void ComChannelService::starting() throw(fwTools::Failed)
 {
     SLM_ASSERT("No UID target", m_destUUID.first );
-    OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second , ::fwTools::fwID::exist( m_destUUID.second ) );
+    OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second, ::fwTools::fwID::exist( m_destUUID.second ) );
     m_destination = ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( m_destUUID.second ) ) ;
     OSLM_DEBUG("Destination = " << m_destUUID.second << " found") ;
 
@@ -96,8 +96,7 @@ void ComChannelService::starting() throw(fwTools::Failed)
         }
         else
         {
-            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(this->getObject()->getClassname(), "::fwServices::IEditionService");
-            m_source = ::fwServices::add< ::fwServices::IEditionService >( this->getObject(), defaultImpl ) ;
+            m_source = ::fwServices::add< ::fwServices::IEditionService >( this->getObject(), "::fwServices::DefaultEditor" ) ;
         }
     }
     OSLM_ASSERT("ComChannelService object "<<this->getObject()->getID()<<"different of IEditionService object "<<m_source.lock()->getObject()->getID(),

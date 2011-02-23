@@ -45,18 +45,6 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IEditionService</type>
-        <service>::fwComEd::ProcessObjectEditor</service>
-        <object>::fwData::ProcessObject</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IEditionService</type>
-        <service>::fwComEd::CompositeEditor</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::ICommunication</type>
         <service>::fwServices::ComChannelService</service>
         <object>::fwTools::Object</object>
