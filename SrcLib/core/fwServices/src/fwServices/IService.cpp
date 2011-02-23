@@ -108,8 +108,7 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 void IService::start() throw( ::fwTools::Failed)
 {
-    OSLM_FATAL_IF( "INVOKING START WHILE ALREADY STARTED (on this = " << this->className() << ")", m_globalState != STOPPED);
-
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STOPPED);
     if( m_globalState == STOPPED )
     {
         m_globalState = STARTING ;
@@ -122,8 +121,7 @@ void IService::start() throw( ::fwTools::Failed)
 
 void IService::stop() throw( ::fwTools::Failed)
 {
-    OSLM_FATAL_IF( "INVOKING STOP WHILE ALREADY STOPPED (on this = " << this->className() << ")", m_globalState != STARTED);
-
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
     if( m_globalState == STARTED )
     {
         m_globalState = STOPPING ;
@@ -136,7 +134,7 @@ void IService::stop() throw( ::fwTools::Failed)
 
 void IService::update( ::fwServices::ObjectMsg::csptr _msg )
 {
-    OSLM_ASSERT("INVOKING update(msg) WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
     if(m_notificationState == SENDING_MSG /* state during the service notifies to listeners a message */
             || m_notificationState == RECEIVING_WITH_SENDING_MSG /*  state during the service notifies to listeners a message when it is already receiving a message */

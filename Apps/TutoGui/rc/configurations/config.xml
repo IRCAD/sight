@@ -57,8 +57,8 @@
                 </gui>
                 <registry>
                     <menuItem sid="item1" start="yes" />
-                    <menuItem sid="item2" start="yes" />
-                    <menuItem sid="item3" start="yes" />
+                    <menuItem sid="item2" start="no" />
+                    <menuItem sid="item3" start="no" />
                     <menuItem sid="item4" start="no" />
                     <menuItem sid="item5" start="no" />
                     <menuItem sid="item16" start="yes" />
