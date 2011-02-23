@@ -12,8 +12,8 @@
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
-#include <fwServices/Factory.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/AppConfigManager.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
