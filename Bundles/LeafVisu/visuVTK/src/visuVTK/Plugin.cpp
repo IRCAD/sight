@@ -29,7 +29,6 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     SLM_TRACE_FUNC();
-    //REGISTER_SERVICE( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite) ;
 
     ::fwRenderVTK::vtk::Instantiator::ClassInitialize();
 }
