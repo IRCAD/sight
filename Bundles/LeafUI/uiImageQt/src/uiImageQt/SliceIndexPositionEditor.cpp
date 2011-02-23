@@ -222,7 +222,7 @@ void SliceIndexPositionEditor::updateSliceIndex()
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
 
-    // Update wxSlider
+    // Update QSlider
     int max = image->getSize()[m_orientation]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
     m_sliceSelectorPanel->setSliceValue( index );
@@ -236,13 +236,6 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
     m_sliceSelectorPanel->setTypeSelection( static_cast< int >( type ) );
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    // Get Index
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
-    unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
-    int max = image->getSize()[m_orientation]-1;
-    m_sliceSelectorPanel->setSliceRange( 0, max );
-    m_sliceSelectorPanel->setSliceValue( index );
     this->updateSliceIndex();
 }
 

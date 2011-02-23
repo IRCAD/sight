@@ -64,7 +64,9 @@ SliceSelector::~SliceSelector() throw()
 
 void SliceSelector::setSliceRange( int min, int max )
 {
+    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
     this->m_sliceIndex->setRange(min, max);
+    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
 }
 
 //------------------------------------------------------------------------------
