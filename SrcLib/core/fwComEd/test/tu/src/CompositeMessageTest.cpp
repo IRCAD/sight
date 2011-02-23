@@ -16,6 +16,7 @@
 #include <fwServices/Base.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
+#include <fwComEd/CompositeEditor.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
 #include "CompositeMessageTest.hpp"
@@ -24,9 +25,6 @@
 CPPUNIT_TEST_SUITE_REGISTRATION( CompositeMessageTest );
 
 //------------------------------------------------------------------------------
-
-REGISTER_SERVICE( TestService , ::TestServiceImplementationComposite , ::fwData::Composite ) ;
-REGISTER_SERVICE( TestService , ::TestServiceImplementationImage , ::fwData::Image ) ;
 
 void CompositeMessageTest::setUp()
 {
@@ -84,7 +82,7 @@ void CompositeMessageTest::methodeBuildComposite()
     CPPUNIT_ASSERT(::fwServices::get(serviceUUID1)->isStarted());
 
     configManager->update();
-    CPPUNIT_ASSERT(::TestService::dynamicCast(::fwServices::get(serviceUUID1))->getIsUpdated());
+    CPPUNIT_ASSERT(::TestService::dynamicCast( ::fwServices::get(serviceUUID1) )->getIsUpdated());
 
     configManager->stop();
     CPPUNIT_ASSERT(::fwServices::get(serviceUUID1)->isStopped());
@@ -163,6 +161,9 @@ void CompositeMessageTest::methodeCompositeMessage()
 void CompositeMessageTest::methodeMessageNotification()
 {
     const std::string objAUUID = "imageUUID";
+    const std::string service1UUID = "myTestService1";
+    const std::string service2UUID = "myTestService2";
+    const std::string editionServiceUUID = "myEditionService";
     const std::string ImageServiceUUID = "myImageService";
     const std::string ImageService2UUID = "myImageService2";
 
@@ -174,16 +175,16 @@ void CompositeMessageTest::methodeMessageNotification()
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 
     ::TestService::sptr serviceCompo;
-    serviceCompo = ::TestService::dynamicCast( ::fwServices::add(compo, "::TestService", "::TestServiceImplementationComposite") );
+    serviceCompo = ::fwServices::get< ::TestService >(compo);
     CPPUNIT_ASSERT(serviceCompo);
 
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
     ::TestService::sptr serviceImage;
-    serviceImage = ::TestService::dynamicCast( ::fwServices::add(image, "::TestService", "::TestServiceImplementationImage", ImageServiceUUID) );
+    serviceImage = ::TestService::dynamicCast( ::fwServices::get(ImageServiceUUID) );
     CPPUNIT_ASSERT(serviceImage);
 
     ::TestService::sptr serviceImage2;
-    serviceImage2 = ::TestService::dynamicCast( ::fwServices::add(image, "::TestService", "::TestServiceImplementationImage", ImageService2UUID) );
+    serviceImage2 = ::TestService::dynamicCast( ::fwServices::get(ImageService2UUID) );
     CPPUNIT_ASSERT(serviceImage2);
 
 
@@ -193,6 +194,15 @@ void CompositeMessageTest::methodeMessageNotification()
     serviceImage2->start();
 
     // start communication channel
+    ::fwComEd::CompositeEditor::sptr editionService = ::fwComEd::CompositeEditor::dynamicCast(::fwServices::get< ::fwServices::IEditionService >( compo ));
+    CPPUNIT_ASSERT_EQUAL(editionServiceUUID, editionService->getID());
+
+    ::fwData::Composite::Container::iterator iter;
+    for( iter = compo->getRefMap().begin() ; iter != compo->getRefMap().end(); ++iter )
+    {
+        fwServices::registerCommunicationChannel( iter->second , editionService )->start();
+    }
+
     ::fwServices::registerCommunicationChannel(image, serviceImage)->start();
     ::fwServices::registerCommunicationChannel(image, serviceImage2)->start();
     ::fwServices::registerCommunicationChannel(compo, serviceCompo)->start();
@@ -215,12 +225,12 @@ void CompositeMessageTest::methodeMessageNotification()
     CPPUNIT_ASSERT_EQUAL(imgMsg, imageMsg);
 
     // stop services
-    ::fwServices::unregisterCommunicationChannel(image, serviceImage);
-    ::fwServices::unregisterCommunicationChannel(image, serviceImage2);
-    ::fwServices::unregisterCommunicationChannel(compo, serviceCompo);
+    for( iter = compo->getRefMap().begin() ; iter != compo->getRefMap().end(); ++iter )
+    {
+        fwServices::unregisterCommunicationChannel( iter->second , editionService );
+    }
 
     serviceImage->stop();
-    serviceImage2->stop();
     configManager->stopAndDestroy();
 }
 
@@ -295,6 +305,13 @@ void CompositeMessageTest::methodeMessageNotification()
     update2->setAttributeValue( "uid" , "myTestService2" ) ;
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > stop2 = cfg->addConfigurationElement("stop");
     stop2->setAttributeValue( "uid" , "myTestService2" ) ;
+
+    // composite's edition service
+//    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > editionService = cfg->addConfigurationElement("service");
+//    editionService->setAttributeValue( "uid" , "myEditionService" ) ;
+//    editionService->setAttributeValue( "type" , "::fwServices::IEditionService" ) ;
+//    editionService->setAttributeValue( "implementation" , "::fwComEd::CompositeEditor" ) ;
+//    editionService->setAttributeValue( "autoComChannel" , "no" ) ;
 
     return cfg ;
 }
