@@ -22,7 +22,6 @@
 #include <fwComEd/ReconstructionMsg.hpp>
 #include <fwComEd/AcquisitionMsg.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
