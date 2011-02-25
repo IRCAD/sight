@@ -6,6 +6,8 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwData/Image.hpp>
+
 #include "fwData/Histogram.hpp"
 
 
@@ -19,7 +21,8 @@ Histogram::Histogram()
 {
     SLM_TRACE_FUNC();
     m_binsWidth = 1;
-    (*this).push_back( 0 ); // init
+    m_minValue  = 0;
+    m_maxValue  = 100;
 }
 
 //------------------------------------------------------------------------------
@@ -31,24 +34,13 @@ Histogram::~Histogram()
 
 //------------------------------------------------------------------------------
 
-Histogram &Histogram::getRefContainer()
-{
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-Histogram const &Histogram::getRefContainer() const
-{
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
 void Histogram::shallowCopy( Histogram::csptr _source )
 {
     ::fwTools::Object::shallowCopyOfChildren( _source );
-    (ObjectHistogramType)(*this) = (ObjectHistogramType)(*(_source.get()));
+    m_values = _source->m_values;
+    m_minValue = _source->m_minValue;
+    m_maxValue = _source->m_maxValue;
+    m_binsWidth = _source->m_binsWidth;
 }
 
 //------------------------------------------------------------------------------
@@ -57,42 +49,15 @@ void Histogram::deepCopy( Histogram::csptr _source )
 {
     ::fwTools::Object::deepCopyOfChildren( _source );
 
-    this->clear();
+    m_minValue = _source->m_minValue;
+    m_maxValue = _source->m_maxValue;
+    m_binsWidth = _source->m_binsWidth;
 
-    for(    Histogram::Container::const_iterator iter = _source->begin();
-            iter != _source->end();
-            ++iter )
+    m_values.clear();
+
+    BOOST_FOREACH( long value, _source->m_values )
     {
-        this->push_back( *iter );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Histogram::addPixel( signed int _pixel )
-{
-    int index = _pixel / m_binsWidth;
-    int size  = (*this).size(); 
- 
-    if( index > size )  // the given pixel is outside the current size of the vector
-    {
-        for(int i = size; i < index; i++)   // the vector is extended 
-        {
-            (*this).push_back( 0 );
-        }
-        
-        (*this).push_back( (isInRange( _pixel ) ? 1 : 0) );
-    }
-    else if ( isInRange( _pixel ) )
-    { 
-        if( index == 0 )
-        {
-            (*this).at( index )++;
-        }
-        else
-        {
-            (*this).at( index )++;
-        }
+        m_values.push_back( value );
     }
 }
 
@@ -100,25 +65,43 @@ void Histogram::addPixel( signed int _pixel )
 
 void Histogram::addPixel( float _pixel )
 {
-    addPixel( static_cast< signed int >( _pixel ) );
+    if ( isInRange( _pixel ) )
+    { 
+        int index = ( _pixel - m_minValue ) / m_binsWidth;
+        m_values[ index ]++;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-long Histogram::getNbPixels( double _min, double _max )
+void Histogram::initialize( float _min, float _max, float _binsWidth )
 {
-    SLM_ASSERT("The minimum value can't be greater or equal than the maximum value", _min < _max);
+    SLM_ASSERT("The minimum value can't be greater than the maximum value", _min < _max);
+    SLM_ASSERT("The bins width must be strictly positive", _binsWidth > 0);
 
-    long min = static_cast< long >( _min ) / m_binsWidth;
-    long max = static_cast< long >( _max ) / m_binsWidth;
+    m_minValue = _min;
+    m_maxValue = _max; 
+    m_binsWidth = _binsWidth;
+    
+    int newSize = ( m_maxValue - m_minValue ) / m_binsWidth;
+
+    m_values.clear();
+    m_values.resize( newSize + 1, 0 );
+}
+
+//------------------------------------------------------------------------------
+
+long Histogram::getNbPixels( float _min, float _max )
+{
+    SLM_ASSERT("The minimum value can't be greater than the maximum value", _min < _max);
+
+    int indexMin = ( _min < m_minValue ) ? 0 : ( _min - m_minValue ) / m_binsWidth;
+    int indexMax = ( _max > m_maxValue ) ? m_values.size() : ( _max - m_minValue ) / m_binsWidth;
     long nbPixels = 0;
     
-    if( max < (*this).size() )
+    while( indexMin < indexMax )
     {
-        for(long i = min; i < max; i++)
-        {
-            nbPixels += (*this).at( i );
-        }
+        nbPixels += m_values.at( indexMin++ );
     }
 
     return nbPixels; 
@@ -126,10 +109,12 @@ long Histogram::getNbPixels( double _min, double _max )
 
 //------------------------------------------------------------------------------
 
-bool Histogram::isInRange( signed int _pixel )
+bool Histogram::isInRange( float _pixel )
 {
     return ( _pixel <= m_maxValue && _pixel >= m_minValue );
 }
 
-}
+//------------------------------------------------------------------------------
+
+} // namespace fwData
 

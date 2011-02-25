@@ -16,7 +16,6 @@
 namespace fwData
 {
 
-typedef std::vector< long > ObjectHistogramType;
 
 /**
  * @class   Histogram
@@ -25,67 +24,20 @@ typedef std::vector< long > ObjectHistogramType;
  * @author  IRCAD (Research and Development Team).
  * @date    2011.
  */
-class FWDATA_CLASS_API Histogram : public Object, private ObjectHistogramType
+class FWDATA_CLASS_API Histogram : public Object
 {
 
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Histogram)(::fwData::Object), (()), ::fwTools::Factory::New< Histogram > );
 
-    typedef Histogram Container;
-    typedef ObjectHistogramType ContainerType;
-
-    using ObjectHistogramType::reference;
-    using ObjectHistogramType::const_reference;
-    using ObjectHistogramType::iterator;
-    using ObjectHistogramType::const_iterator;
-    using ObjectHistogramType::size_type;
-    using ObjectHistogramType::difference_type;
-    using ObjectHistogramType::value_type;
-    using ObjectHistogramType::allocator_type;
-    using ObjectHistogramType::pointer;
-    using ObjectHistogramType::const_pointer;
-    using ObjectHistogramType::reverse_iterator;
-    using ObjectHistogramType::const_reverse_iterator;
-
-    using ObjectHistogramType::begin;
-    using ObjectHistogramType::end;
-    using ObjectHistogramType::rbegin;
-    using ObjectHistogramType::rend;
-
-    using ObjectHistogramType::size;
-    using ObjectHistogramType::max_size;
-    using ObjectHistogramType::resize;
-    using ObjectHistogramType::capacity;
-    using ObjectHistogramType::empty;
-    using ObjectHistogramType::reserve;
-
-    using ObjectHistogramType::operator[];
-    using ObjectHistogramType::at;
-    using ObjectHistogramType::front;
-    using ObjectHistogramType::back;
-
-    using ObjectHistogramType::assign;
-    using ObjectHistogramType::push_back;
-    using ObjectHistogramType::pop_back;
-    using ObjectHistogramType::insert;
-    using ObjectHistogramType::erase;
-    using ObjectHistogramType::swap;
-    using ObjectHistogramType::clear;
-
-    using ObjectHistogramType::get_allocator;
+    typedef std::vector< long > fwHistogramValues;
 
     /// Constructor
     FWDATA_API Histogram();
 
     /// Destructor
     FWDATA_API virtual ~Histogram();
-
-    /// @brief get the container of ::fwData::Object
-    FWDATA_API Histogram &getRefContainer();
-
-    /// @brief get the container of ::fwData::Object
-    FWDATA_API Histogram const &getRefContainer() const;
 
     fwDataObjectMacro();
 
@@ -94,35 +46,41 @@ public:
 
     /// Defines deep copy
     FWDATA_API void deepCopy( Histogram::csptr _source );
- 
-    FWDATA_API void addPixel( signed int _pixel );
-    
-    FWDATA_API void addPixel( float _pixel );
 
-    FWDATA_API long getNbPixels( double min, double max );
-   
-    FWDATA_API bool isInRange( signed int _pixel );
+    FWDATA_API void addPixel( float pixel );
 
-    fwGettersSettersDocMacro(BinsWidth, binsWidth, int, bins width);
-    fwGettersSettersDocMacro(MinValue, minValue, double, minimum value within the histogram);
-    fwGettersSettersDocMacro(MaxValue, maxValue, double, maximum value within the histogram);
+    FWDATA_API long getNbPixels( float min, float max );
+
+    FWDATA_API bool isInRange( float pixel );
+
+    FWDATA_API void initialize( float min, float max, float binsWidth );
+
+    fwGettersSettersDocMacro(BinsWidth, binsWidth, float, bins width);
+    fwGettersSettersDocMacro(Values, values, fwHistogramValues, histogram values);
+    fwGettersSettersDocMacro(MinValue, minValue, float, minimum value within the histogram);
+    fwGettersSettersDocMacro(MaxValue, maxValue, float, maximum value within the histogram);
 
 protected:
 
     /**
+     * @brief Histogram values.
+     */
+    fwHistogramValues m_values;
+
+    /**
      * @brief The pixel width of the bins.
      */
-    int m_binsWidth;
+    float m_binsWidth;
 
     /**
      * @brief The minimum pixel value within the histogram.
      */
-    double m_minValue;
-    
+    float m_minValue;
+
     /**
      * @brief The maximum pixel value within the histogram.
      */
-    double m_maxValue;
+    float m_maxValue;
 };
 
 }

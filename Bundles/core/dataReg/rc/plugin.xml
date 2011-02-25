@@ -15,6 +15,9 @@
     <point id="::fwData::Float">
         <implements>::fwTools::Object</implements>
     </point>
+    <point id="::fwData::Histogram">
+        <implements>::fwTools::Object</implements>
+    </point>
     <point id="::fwData::Image">
         <implements>::fwTools::Object</implements>
     </point>
