@@ -65,11 +65,8 @@ void Histogram::deepCopy( Histogram::csptr _source )
 
 void Histogram::addPixel( float _pixel )
 {
-//    if ( isInRange( _pixel ) )
-//    { 
-        int index = ( _pixel - m_minValue ) / m_binsWidth;
-        m_values[ index ]++;
-//    }
+    int index = ( _pixel - m_minValue ) / m_binsWidth;
+    m_values[ index ]++;
 }
 
 //------------------------------------------------------------------------------
@@ -105,13 +102,6 @@ long Histogram::getNbPixels( float _min, float _max )
     }
 
     return nbPixels; 
-}
-
-//------------------------------------------------------------------------------
-
-bool Histogram::isInRange( float _pixel )
-{
-    return ( _pixel <= m_maxValue && _pixel >= m_minValue );
 }
 
 //------------------------------------------------------------------------------

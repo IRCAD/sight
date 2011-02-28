@@ -47,12 +47,32 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Histogram::csptr _source );
 
+    /**
+     * @brief Add the given pixel value into the histogram. 
+     * 
+     * This void will chose the right bins where the pixel must be added (if the bins width parameter is greater than 1).
+     *
+     * @param pixel the pixel value to be added into the histogram.
+     */
     FWDATA_API void addPixel( float pixel );
 
-    FWDATA_API long getNbPixels( float min, float max );
+    /**
+     * @brief Return the number of pixels of the histogram that are within the range defined by the given parameters min and max.
+     *
+     * @param _min lower value of the range
+     * @param _max upper value of the range
+     *
+     * @return number of pixels that are within [_min, _max]
+     */ 
+    FWDATA_API long getNbPixels( float _min, float _max );
 
-    FWDATA_API bool isInRange( float pixel );
-
+    /**
+     * @brief Initialize the histogram.
+     * 
+     * @param min Defines the lower pixel value of the image that this histogram belongs to.
+     * @param max Defines the upper pixel value of the image that this histogram belongs to.
+     * @param binsWidth Defines the desired bins' width in order to classify pixels.
+     */
     FWDATA_API void initialize( float min, float max, float binsWidth );
 
     fwGettersSettersDocMacro(BinsWidth, binsWidth, float, bins width);
@@ -68,17 +88,17 @@ protected:
     fwHistogramValues m_values;
 
     /**
-     * @brief The pixel width of the bins.
+     * @brief The pixel width of the bins (a default value is set to 1).
      */
     float m_binsWidth;
 
     /**
-     * @brief The minimum pixel value within the histogram.
+     * @brief The minimum pixel value within the histogram (a default value is set to 0).
      */
     float m_minValue;
 
     /**
-     * @brief The maximum pixel value within the histogram.
+     * @brief The maximum pixel value within the histogram (a default value is set to 100).
      */
     float m_maxValue;
 };
