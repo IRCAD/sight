@@ -14,7 +14,7 @@
 
 #include <fwGui/Cursor.hpp>
 
-#include "gui/action/QuitAction.hpp"
+#include "guiQt/action/QuitAction.hpp"
 
 namespace gui
 {

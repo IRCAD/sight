@@ -41,21 +41,31 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
 void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 {
     m_image = ::fwData::Image::New();
+
+    // Reader service
     m_readerSrv = ::fwServices::add(m_image, "::io::IReader", "::ioVTK::ImageReaderService");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "filename" );
-    readerCfg->setAttributeValue("id", "./TutoData/patient1.vtk");
+    ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "service" );
+    ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "filename" );
+    readerFilenameCfg->setAttributeValue("id", "./TutoData/patient1.vtk");
+    readerCfg->addConfigurationElement(readerFilenameCfg);
     m_readerSrv->setConfiguration( readerCfg ) ;
     m_readerSrv->configure();
 
+    // Render service
     m_renderSrv = ::fwServices::add(m_image, "::fwRender::IRender", "::vtkSimpleNegato::RendererService", "myRenderingTuto");
-    m_comChannel = ::fwServices::registerCommunicationChannel( m_image , m_renderSrv);
+    m_renderSrv->configure();
 
+    // ComChannel service
+    m_comChannel = ::fwServices::registerCommunicationChannel( m_image , m_renderSrv);
+    m_comChannel->configure();
+
+    // Frame service
     m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame");
 
-    ::fwRuntime::EConfigurationElement::NewSptr frameCfg("");
+    ::fwRuntime::EConfigurationElement::NewSptr frameCfg("service");
     ::fwRuntime::EConfigurationElement::NewSptr guiCfg("gui");
     ::fwRuntime::EConfigurationElement::NewSptr guiFrameCfg("frame");
-    guiCfg->addConfigurationElement(guiFrameCfg);
+
     ::fwRuntime::EConfigurationElement::NewSptr guiFrameNameCfg("name");
     guiFrameNameCfg->setValue("tutoDataServiceBasic");
     ::fwRuntime::EConfigurationElement::NewSptr guiFrameIconCfg("icon");
@@ -66,16 +76,21 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     guiFrameCfg->addConfigurationElement(guiFrameNameCfg);
     guiFrameCfg->addConfigurationElement(guiFrameIconCfg);
     guiFrameCfg->addConfigurationElement(guiFrameMinSizeCfg);
+    guiCfg->addConfigurationElement(guiFrameCfg);
 
-    ::fwRuntime::EConfigurationElement::NewSptr guiRegistryCfg("registry");
-    ::fwRuntime::EConfigurationElement::NewSptr guiRegistryViewCfg("view");
-    guiRegistryViewCfg->setAttributeValue("sid", "myRenderingTuto");
-    guiRegistryViewCfg->setAttributeValue("start", "yes");
-    guiRegistryCfg->addConfigurationElement(guiRegistryViewCfg);
+    ::fwRuntime::EConfigurationElement::NewSptr registryCfg("registry");
+    ::fwRuntime::EConfigurationElement::NewSptr registryViewCfg("view");
+    registryViewCfg->setAttributeValue("sid", "myRenderingTuto");
+    registryViewCfg->setAttributeValue("start", "yes");
+    registryCfg->addConfigurationElement(registryViewCfg);
+
+    frameCfg->addConfigurationElement(guiCfg);
+    frameCfg->addConfigurationElement(registryCfg);
 
     m_frameSrv->setConfiguration( frameCfg ) ;
     m_frameSrv->configure();
 
+    // Start app
     m_comChannel->start();
     m_readerSrv->start();
     m_frameSrv->start();
@@ -92,12 +107,14 @@ void Plugin::stop() throw()
 
 void Plugin::uninitialize() throw()
 {
-    ::fwServices::unregisterCommunicationChannel(m_image, m_comChannel);
+    m_comChannel->stop();
     m_readerSrv->stop();
     m_frameSrv->stop();
+    ::fwServices::OSR::unregisterService( m_comChannel ) ;
     ::fwServices::OSR::unregisterService( m_readerSrv ) ;
     ::fwServices::OSR::unregisterService( m_frameSrv ) ;
     ::fwServices::OSR::unregisterService( m_renderSrv ) ;
+    m_image.reset();
 }
 
 //------------------------------------------------------------------------------

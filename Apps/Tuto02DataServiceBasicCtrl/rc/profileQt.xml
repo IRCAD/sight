@@ -4,7 +4,7 @@
     <activate id="servicesReg" version="0-1" />
     <activate id="io" version="0-1" />
     
-    <activate id="tuto02DataServiceBasicCtrl" version="0-1" />
+    <activate id="Tuto02DataServiceBasicCtrl" version="0-1" />
     <!-- The visu bundle (visualization) is needed to use the vtkSimpleNegato bundle. -->
     <activate id="visu" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
@@ -20,5 +20,5 @@
 
     <start id="visuVTKQt" />
     <start id="guiQt" />
-    <start id="tuto02DataServiceBasicCtrl" />
+    <start id="Tuto02DataServiceBasicCtrl" />
 </profile>
