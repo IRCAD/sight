@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <QApplication>
+
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassFactoryRegistry.hpp>
@@ -75,7 +77,9 @@ void QuitAction::updating() throw( ::fwTools::Failed )
 {
     ::fwGui::Cursor cursor;
     cursor.setCursor(::fwGui::ICursor::BUSY);
-    //::fwServices::RootManager::uninitializeRootObject();
+
+    QApplication::exit(0);
+
     cursor.setDefaultCursor();
 }
 

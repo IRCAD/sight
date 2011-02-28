@@ -11,4 +11,10 @@
         <object>::fwTools::Object</object>
     </extension>
         
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::QuitAction</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
 </plugin>
