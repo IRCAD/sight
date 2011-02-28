@@ -3,6 +3,7 @@
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
     <activate id="gui" version="0-1" />
+    <activate id="Tuto01Basic" />
     <activate id="guiQt" version="0-1" />
     
     <activate id="appXml" version="0-1" >

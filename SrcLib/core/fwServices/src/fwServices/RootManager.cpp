@@ -78,8 +78,6 @@ void RootManager::initializeRootObject()
     SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
     SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
 
-    ::fwServices::registry::ServiceFactory::getDefault()->parseBundleInformation();
-
     // ToDo Correct this hack
     // Load another "pseudo" bundle
     ::boost::filesystem::path filePath ( getDefault()->m_rootObjectConfigurationFile.second );
@@ -96,11 +94,7 @@ void RootManager::initializeRootObject()
         iter++;
     }
 
-    // register service config
-    ::fwServices::registry::ServiceConfig::getDefault()->parseBundleInformation();
-
-    ::fwServices::registry::AppConfig::getDefault()->parseBundleInformation();
-
+    // Register service config
     getDefault()->m_ctm = AppConfigManager::New();
     ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( getDefault()->m_rootObjectConfigurationName.second );
     getDefault()->m_ctm->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
@@ -129,7 +123,7 @@ void RootManager::uninitializeRootObject()
                 << std::endl << ::fwServices::OSR::getRegistryInformation(),
                 ! ::fwServices::OSR::getKSContainer().empty());
 
-        ::fwServices::GlobalEventManager::getDefault()->clearMessages();
+        //::fwServices::GlobalEventManager::getDefault()->clearMessages();
 
         SLM_TRACE("uninitializeRootObject : Reset the last shared_ptr on root object.");
 
@@ -137,22 +131,10 @@ void RootManager::uninitializeRootObject()
         //getDefault()->m_rootObject.reset();
         //assert( getDefault()->m_rootObject.use_count() == 0 );
 
-        ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
-        SLM_TRACE("Stopping Profile");
-        profile->stop();
-        SLM_TRACE("Profile Stopped");
-
-         // Clear all service configs
-        ::fwServices::registry::ServiceConfig::getDefault()->clearRegistry();
-
-        // Clear all app configuration
-        ::fwServices::registry::AppConfig::getDefault()->clearRegistry();
-
-        // Clear all service factories
-        ::fwServices::registry::ServiceFactory::getDefault()->clearFactory();
-
-        // Clear all factories before stop application.
-        ::fwTools::ClassFactoryRegistry::getFactories().clear();
+//        ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+//        SLM_TRACE("Stopping Profile");
+//        profile->stop();
+//        SLM_TRACE("Profile Stopped");
     }
 }
 

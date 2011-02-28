@@ -6,7 +6,13 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwComEd/ImageMsg.hpp>
+
+#include <fwComEd/parser/Composite.hpp>
+
+#include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/GlobalEventManager.hpp>
 
 #include "servicesReg/Plugin.hpp"
 
@@ -15,18 +21,52 @@ namespace servicesReg
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::servicesReg::Plugin");
 
+//-----------------------------------------------------------------------------
+
 Plugin::~Plugin() throw()
 {
-    //Hack: force link with fwServices
-    ::fwServices::OSR::getDefault();
-    //Hack: force link with fwcomEd
-    ::fwComEd::ImageMsg im;
+    ::fwComEd::parser::Composite::sptr objectCreatedToForceLink;
 }
 
+//-----------------------------------------------------------------------------
+
 void Plugin::start() throw( ::fwRuntime::RuntimeException )
+{
+    ::fwServices::registry::ServiceFactory::getDefault()->parseBundleInformation();
+    ::fwServices::registry::ServiceConfig::getDefault()->parseBundleInformation();
+    ::fwServices::registry::AppConfig::getDefault()->parseBundleInformation();
+}
+
+//-----------------------------------------------------------------------------
+
+void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 {}
 
-void Plugin::stop() throw()
+//-----------------------------------------------------------------------------
+
+void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
 {}
+
+//-----------------------------------------------------------------------------
+
+void Plugin::stop() throw()
+{
+    // Clear all messages
+    ::fwServices::GlobalEventManager::getDefault()->clearMessages();
+
+    // Clear all service configs
+    ::fwServices::registry::ServiceConfig::getDefault()->clearRegistry();
+
+    // Clear all app configuration
+    ::fwServices::registry::AppConfig::getDefault()->clearRegistry();
+
+    // Clear all service factories
+    ::fwServices::registry::ServiceFactory::getDefault()->clearFactory();
+
+    // Clear all factories before stop application.
+    ::fwTools::ClassFactoryRegistry::getFactories().clear();
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace servicesReg
