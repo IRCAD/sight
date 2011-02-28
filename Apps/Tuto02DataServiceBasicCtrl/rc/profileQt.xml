@@ -1,0 +1,25 @@
+﻿<profile name="tutoDataServiceBasic" version="0.1">
+    <!-- List of the basic bundles having to be loaded to launch the application. -->
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    <activate id="io" version="0-1" />
+    
+    <activate id="tuto02DataServiceBasicCtrl" />
+    <!-- The visu bundle (visualization) is needed to use the vtkSimpleNegato bundle. -->
+    <activate id="visu" version="0-1" />
+    <activate id="visuVTKQt" version="0-1" />
+
+    <activate id="gui" version="0-1" />
+    <activate id="guiQt" version="0-1" />
+    
+    <!-- List of the specific bundles that need to be loaded in this application context. -->
+    <!-- The ioVTK bundle (input output VTK) is a set of writing and reading services using the VTK library. -->
+    <activate id="ioVTK" version="0-1" />
+    <!-- The vtkSimpleNegato bundle contains the visualization service of medical images using the VTK library. -->
+    <activate id="vtkSimpleNegato" version="0-1" />
+
+    <start id="dataReg" />
+    <start id="visuVTKQt" />
+    <start id="guiQt" />
+    <start id="tuto02DataServiceBasicCtrl" />
+</profile>

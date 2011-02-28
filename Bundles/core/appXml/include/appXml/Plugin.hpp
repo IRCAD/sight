@@ -45,6 +45,6 @@ private:
     ::fwServices::AppConfigManager::sptr m_appConfigMng;
 };
 
-} // namespace gui
+} // namespace appXml
 
 #endif // _APPXML_PLUGIN_HPP_

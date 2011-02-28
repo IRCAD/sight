@@ -4,18 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef APPXMLNAMESPACE_HPP_
-#define APPXMLNAMESPACE_HPP_
+#ifndef TUTO02DATASERVICEBASICCTRLNAMESPACE_HPP_
+#define TUTO02DATASERVICEBASICCTRLNAMESPACE_HPP_
 
 /**
- * @brief      The namespace appXml.
- * @namespace  appXml
+ * @brief      The namespace tuto02DataServiceBasicCtrl.
+ * @namespace  tuto02DataServiceBasicCtrl
  * @author     IRCAD (Research and Development Team).
  * @date       2009-2010.
  *
  */
-namespace appXml
+namespace tuto02DataServiceBasicCtrl
 {
 
 }
-#endif /* APPXMLNAMESPACE_HPP_ */
+#endif /* TUTO02DATASERVICEBASICCTRLNAMESPACE_HPP_ */

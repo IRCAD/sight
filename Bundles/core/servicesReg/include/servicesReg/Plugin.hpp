@@ -33,6 +33,6 @@ struct SERVICESREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 
 };
 
-} // namespace gui
+} // namespace servicesReg
 
 #endif // _SERVICESREG_PLUGIN_HPP_
