@@ -61,8 +61,9 @@ void Plugin::stop() throw()
 int Plugin::run() throw()
 {
     ::fwRuntime::profile::getCurrentProfile()->setup();
-    m_app->exec();
+    int res = m_app->exec();
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
+    return res;
 }
 
 } // namespace guiQt

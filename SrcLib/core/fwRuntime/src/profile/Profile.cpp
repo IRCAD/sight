@@ -124,6 +124,7 @@ int Profile::defaultRun()
     SLM_TRACE_FUNC();
     this->setup();
     this->cleanup();
+    return 0;
 }
 
 //------------------------------------------------------------------------------
