@@ -1,13 +1,13 @@
-﻿<profile name="tutoTrianConverterCtrl" version="0.1">
+﻿<profile name="TutoTrianConverterCtrl" version="0.1">
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
     <activate id="io" version="0-1" />
     
-    <activate id="tutoTrianConverterCtrl" version="0-1" />
+    <activate id="TutoTrianConverterCtrl" version="0-1" />
     <activate id="gui" version="0-1" />
 
     <activate id="ioVTK" version="0-1" />
     <activate id="ioData" version="0-1" />
 
-    <start id="tutoTrianConverterCtrl" />
+    <start id="TutoTrianConverterCtrl" />
 </profile>

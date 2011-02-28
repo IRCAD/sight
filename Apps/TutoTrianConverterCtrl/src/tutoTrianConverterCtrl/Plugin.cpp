@@ -48,19 +48,23 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     if(params.size() >= 4 )
     {
-        std::string vtkMeshPath = params.at(2);
-        std::string trianMeshPath = params.at(3);
+        std::string trianMeshPath = params.at(2);
+        std::string vtkMeshPath = params.at(3);
 
         m_triangularMesh = ::fwData::TriangularMesh::New();
         m_readerSrv = ::fwServices::add(m_triangularMesh, "::io::IReader", "::ioData::TriangularMeshReaderService");
-        ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "filename" );
-        readerCfg->setAttributeValue("id", trianMeshPath);
+        ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "service" );
+        ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "filename" );
+        readerFilenameCfg->setValue(trianMeshPath);
+        readerCfg->addConfigurationElement(readerFilenameCfg);
         m_readerSrv->setConfiguration( readerCfg ) ;
         m_readerSrv->configure();
 
         m_writerSrv = ::fwServices::add(m_triangularMesh, "::io::IWriter", "::ioVTK::MeshWriterService");
-        ::fwRuntime::EConfigurationElement::NewSptr writerCfg( "filename" );
-        writerCfg->setAttributeValue("id", vtkMeshPath);
+        ::fwRuntime::EConfigurationElement::NewSptr writerCfg( "service" );
+        ::fwRuntime::EConfigurationElement::NewSptr writerFilenameCfg( "filename" );
+        writerFilenameCfg->setAttributeValue("id", vtkMeshPath);
+        writerCfg->addConfigurationElement(writerFilenameCfg);
         m_writerSrv->setConfiguration( writerCfg ) ;
         m_writerSrv->configure();
 
@@ -88,6 +92,7 @@ void Plugin::uninitialize() throw()
     m_readerSrv->stop();
     ::fwServices::OSR::unregisterService( m_readerSrv ) ;
     ::fwServices::OSR::unregisterService( m_writerSrv ) ;
+    m_triangularMesh.reset();
 }
 
 //------------------------------------------------------------------------------

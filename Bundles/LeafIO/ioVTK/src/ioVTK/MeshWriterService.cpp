@@ -54,7 +54,7 @@ void MeshWriterService::configuring() throw(::fwTools::Failed)
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
         m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsMeshPath);
+        m_bServiceIsConfigured = true;
         OSLM_TRACE("Filename found" << filename ) ;
     }
 }
