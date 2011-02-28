@@ -303,7 +303,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( std::st
         }
     }
 
-    SLM_ASSERT("Sorry, default implementation is not found for this type of service", ! serviceImpl.empty() );
+    OSLM_ASSERT("Sorry, default implementation is not found for this type of service "<<type, ! serviceImpl.empty() );
 
     return serviceImpl;
 }

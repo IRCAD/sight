@@ -1,0 +1,7 @@
+<plugin id="appXml" class="::appXml::Plugin" >
+
+    <library name="appXml" />
+    <requirement id="servicesReg" />
+    <requirement id="dataReg" />
+
+</plugin>

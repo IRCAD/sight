@@ -74,7 +74,6 @@ void RootManager::setRootObjectConfigurationFile(std::string _rootObjectConfigur
 
 void RootManager::initializeRootObject()
 {
-
     SLM_ASSERT("Sorry, the OSR is already initialized.", ! getDefault()->m_isRootInitialized );
     SLM_ASSERT("Sorry, configuration name parameter is not initialized.", getDefault()->m_rootObjectConfigurationName.first );
     SLM_ASSERT("Sorry, configuration file parameter is not initialized.", getDefault()->m_rootObjectConfigurationFile.first );
