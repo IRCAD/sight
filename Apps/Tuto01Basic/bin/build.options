@@ -2,6 +2,7 @@ TYPE    = 'bundle'
 VERSION = '0-1'
 BUNDLES = [ 
     'io_0-1'                ,
+    'appXml_0-1'            ,
     'gui_0-1'               ,
     'guiWx_0-1'             ,
     'guiQt_0-1'             ,

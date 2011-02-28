@@ -3,12 +3,13 @@
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
     <activate id="gui" version="0-1" />
+    <activate id="guiQt" version="0-1" />
     
-    <activate id="guiQt" version="0-1" >
-        <param id="startingMode" value="windows" />
+    <activate id="appXml" version="0-1" >
         <param id="config" value="tutoBasicConfig" />
-        <param id="configFile" value="./Bundles/Tuto01Basic_0-1/configurations/config.xml" />
     </activate>
 
-    <start id="guiQt" />  
+    <start id="appXml" />
+    <start id="guiQt" />
+    
 </profile>
