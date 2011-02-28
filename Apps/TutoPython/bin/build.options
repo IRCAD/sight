@@ -1,5 +1,6 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
+USE = ['numpy']
 BUNDLES = [
         'io',
         'ioVTK',
