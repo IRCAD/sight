@@ -1,4 +1,4 @@
-﻿<profile name="tutoDataServiceBasic" version="0.1">
+﻿<profile name="tuto02DataServiceBasicCtrl" version="0.1">
     <!-- List of the basic bundles having to be loaded to launch the application. -->
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
@@ -18,7 +18,6 @@
     <!-- The vtkSimpleNegato bundle contains the visualization service of medical images using the VTK library. -->
     <activate id="vtkSimpleNegato" version="0-1" />
 
-    <start id="dataReg" />
     <start id="visuVTKWx" />
     <start id="guiWx" />
     <start id="tuto02DataServiceBasicCtrl" />
