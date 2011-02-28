@@ -8,7 +8,7 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/RootManager.hpp>
+//#include <fwServices/RootManager.hpp>
 
 #include <fwGui/Cursor.hpp>
 
@@ -75,7 +75,7 @@ void CloseAction::updating() throw( ::fwTools::Failed )
 {
     ::fwGui::Cursor cursor;
     cursor.setCursor(::fwGui::ICursor::BUSY);
-    ::fwServices::RootManager::uninitializeRootObject();
+    //::fwServices::RootManager::uninitializeRootObject();
     cursor.setDefaultCursor();
 }
 

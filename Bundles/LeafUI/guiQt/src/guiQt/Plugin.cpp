@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/bind.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -11,7 +12,6 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/RootManager.hpp>
 
 #include <fwGuiQt/App.hpp>
 
@@ -40,13 +40,29 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     ::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
     int    argc = params.size();
     char** argv = profile->getRawParams();
-    ::fwGuiQt::App app( argc, argv );
-    app.exec();
+
+    ::fwGuiQt::App *app;
+    app = new ::fwGuiQt::App( argc, argv );
+    m_app = app;
+
+
+    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() throw()
-{}
+{
+    delete m_app;
+}
+
+//-----------------------------------------------------------------------------
+
+int Plugin::run() throw()
+{
+    ::fwRuntime::profile::getCurrentProfile()->setup();
+    m_app->exec();
+    ::fwRuntime::profile::getCurrentProfile()->cleanup();
+}
 
 } // namespace guiQt

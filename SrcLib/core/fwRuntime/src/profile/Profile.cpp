@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <cstring>
 
+#include <boost/bind.hpp>
+
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/profile/Activater.hpp"
 #include "fwRuntime/profile/Starter.hpp"
@@ -55,7 +57,9 @@ Profile::sptr getCurrentProfile()
 // =========================================================
 
 Profile::Profile(): m_checkSingleInstance(false)
-{}
+{
+    m_run = ::boost::bind(&Profile::defaultRun, this);
+}
 
 //------------------------------------------------------------------------------
 
@@ -103,14 +107,36 @@ void Profile::start()
 
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
     OSLM_TRACE( "NB INITIALIZERS" <<  m_initializers.size() );
+}
+
+//------------------------------------------------------------------------------
+int Profile::run()
+{
+    SLM_ASSERT("the 'run' callback is missing", m_run);
+    int result;
+    result = m_run();
+    return result;
+}
+
+//------------------------------------------------------------------------------
+int Profile::defaultRun()
+{
+    SLM_TRACE_FUNC();
     this->setup();
+    this->cleanup();
+}
+
+//------------------------------------------------------------------------------
+
+void Profile::setRunCallback(RunCallbackType callback)
+{
+    m_run = callback;
 }
 
 //------------------------------------------------------------------------------
 
 void Profile::stop()
 {
-    this->cleanup();
     std::for_each( m_stoppers.rbegin(), m_stoppers.rend(), Apply< StopperContainer::value_type >() );
 }
 

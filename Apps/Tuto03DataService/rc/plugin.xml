@@ -1,15 +1,18 @@
-<plugin id="TutoConfigurations">
-<extension implements="::fwServices::registry::AppConfig">
+
+<plugin id="Tuto03DataService">
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::AppConfig">
         <id>tutoDataServiceConfig</id>
         <type>standard</type>
         <config>
-        
-
-    <!-- The root data object in tutoDataService is a ::fwData::Image. -->
-    <object type="::fwData::Image">
 
 
-        <!-- Graphical user interface manager.
+        <!-- The root data object in tutoDataService is a ::fwData::Image. -->
+        <object type="::fwData::Image">
+
+
+                <!-- Graphical user interface manager.
         In the tag <menus> we specify the identifiers of different services for the different menus.
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
@@ -39,7 +42,7 @@
                 <menu sid="myMenu" start="yes" />
             </registry>
         </service>
-        
+
         <!-- The ::gui::aspect::DefaultMenuSrv service manage the menu creates the menu "File". This menu contains two menuItems (with a separator).
         The actions associated with these two menuItem are identified with the uid "action_openFile" and "action_quit".
         -->
@@ -56,7 +59,7 @@
                 <menuItem sid="action_quit" start="yes" />
             </registry>
         </service>
-        
+
         <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
         we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "OpenFile".
         In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile". -->
@@ -92,6 +95,6 @@
     </object>
 
 
-        </config>
+</config>
     </extension>
 </plugin>

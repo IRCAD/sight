@@ -12,7 +12,6 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/RootManager.hpp>
 
 #include <fwGuiWx/App.hpp>
 

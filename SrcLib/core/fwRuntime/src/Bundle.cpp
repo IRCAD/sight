@@ -483,7 +483,7 @@ void Bundle::stop() throw(RuntimeException)
 {
     OSLM_ASSERT("Bundle "<< this->getIdentifier() << " not started.", m_started );
     OSLM_ASSERT(this->getIdentifier() << " : m_plugin not an intance.", m_plugin != 0 );
-    OSLM_ASSERT("Bundle "<< this->getIdentifier() << " not uninitialized.", m_initialized );
+    OSLM_ASSERT("Bundle "<< this->getIdentifier() << " not uninitialized.", !m_initialized );
 
     OSLM_TRACE("Stopping " << this->getIdentifier() << "Bundle's plugin.");
     try
@@ -517,8 +517,9 @@ void Bundle::initialize() throw(RuntimeException)
     try
     {
         m_initialized = true;
+        OSLM_TRACE("Initializing " << this->getIdentifier() << " ...");
         m_plugin->initialize();
-        OSLM_TRACE(this->getIdentifier() << " Initialized");
+        OSLM_TRACE("             " <<this->getIdentifier() << " Initialized");
     }
     catch( std::exception & e )
     {
@@ -535,8 +536,9 @@ void Bundle::uninitialize() throw(RuntimeException)
     try
     {
         m_plugin->uninitialize();
+        OSLM_TRACE("Uninitializing " << this->getIdentifier() << " ...");
         m_initialized = false;
-        OSLM_TRACE(this->getIdentifier() << " Uninitialized");
+        OSLM_TRACE("               " << this->getIdentifier() << " Uninitialized");
     }
     catch( std::exception & e )
     {

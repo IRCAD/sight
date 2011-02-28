@@ -163,6 +163,8 @@ int main(int argc, char* argv[])
 
     profile->setParams(m_argc, m_argv);
     profile->start();
+    profile->run();
+    profile->stop();
 
     return 0;
 }

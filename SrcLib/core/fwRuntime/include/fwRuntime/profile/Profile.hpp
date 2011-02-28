@@ -8,6 +8,8 @@
 #define _FWRUNTIME_PROFILE_PROFILE_HPP_
 
 #include <vector>
+
+#include <boost/function.hpp>
 #include <boost/utility.hpp>
 
 #include "fwCore/base.hpp"
@@ -45,6 +47,7 @@ class Profile : public ::fwCore::BaseObject
 public:
 
     typedef std::vector< std::string >  ParamsContainer;
+    typedef ::boost::function< int () > RunCallbackType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), new Profile) ;
 
@@ -86,6 +89,14 @@ public:
      */
     FWRUNTIME_API void start();
     FWRUNTIME_API void stop();
+
+
+    /**
+     * @brief   Run the profile.
+     */
+    FWRUNTIME_API int run();
+    FWRUNTIME_API int defaultRun();
+    FWRUNTIME_API void setRunCallback(RunCallbackType callback);
 
 
     /**
@@ -157,6 +168,8 @@ private:
     std::string         m_sVersion;     ///< profile app version
     bool                m_checkSingleInstance;
     ParamsContainer     m_params;
+
+    RunCallbackType m_run;
 };
 
 
