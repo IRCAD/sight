@@ -75,6 +75,15 @@ public:
      */
     FWDATA_API void initialize( float min, float max, float binsWidth );
 
+    /**
+     * @brief Return true if the given pixel value is set within histogram's boudaries.
+     * 
+     * @param _pixel the pixel value
+     *
+     * @return true if the pixel value is set within histogram's boundaries.
+     */
+    FWDATA_API bool isInRange( float _pixel );
+
     fwGettersSettersDocMacro(BinsWidth, binsWidth, float, bins width);
     fwGettersSettersDocMacro(Values, values, fwHistogramValues, histogram values);
     fwGettersSettersDocMacro(MinValue, minValue, float, minimum value within the histogram);

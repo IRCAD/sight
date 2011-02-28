@@ -65,25 +65,30 @@ void Histogram::deepCopy( Histogram::csptr _source )
 
 void Histogram::addPixel( float _pixel )
 {
-    int index = ( _pixel - m_minValue ) / m_binsWidth;
-    m_values[ index ]++;
+    if( isInRange( _pixel ) )
+    {
+        int index = ( _pixel - m_minValue ) / m_binsWidth;
+        m_values[ index ]++;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Histogram::initialize( float _min, float _max, float _binsWidth )
 {
-    SLM_ASSERT("The minimum value can't be greater than the maximum value", _min < _max);
-    SLM_ASSERT("The bins width must be strictly positive", _binsWidth > 0);
+    SLM_ASSERT("The minimum value can't be greater than the maximum value", _min <= _max);
 
     m_minValue = _min;
     m_maxValue = _max; 
     m_binsWidth = _binsWidth;
     
-    int newSize = ( m_maxValue - m_minValue ) / m_binsWidth;
-
     m_values.clear();
-    m_values.resize( newSize + 1, 0 );
+    
+    if( m_binsWidth != 0 )
+    {
+        int newSize = ( m_maxValue - m_minValue ) / m_binsWidth;
+        m_values.resize( newSize + 1, 0 );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -105,6 +110,11 @@ long Histogram::getNbPixels( float _min, float _max )
 }
 
 //------------------------------------------------------------------------------
+
+bool Histogram::isInRange( float _pixel )
+{
+    return ( _pixel >= m_minValue && _pixel <= m_maxValue );
+}
 
 } // namespace fwData
 
