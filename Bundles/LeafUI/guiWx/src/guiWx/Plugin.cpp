@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/bind.hpp>
 #include <wx/app.h>
 
 #include <fwCore/base.hpp>
@@ -39,17 +40,35 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     SLM_TRACE_FUNC();
 
+    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
+
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     ::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
     int    argc = params.size();
     char** argv = profile->getRawParams();
-    ::wxEntry( argc, argv ) ;
+    ::wxEntryStart( argc, argv ) ;
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() throw()
-{}
+{
+    SLM_TRACE_FUNC();
+    ::wxEntryCleanup();
+}
+
+//-----------------------------------------------------------------------------
+
+int Plugin::run() throw()
+{
+    SLM_TRACE_FUNC();
+    int res;
+
+    ::fwRuntime::profile::getCurrentProfile()->setup();
+    res = wxTheApp->OnRun();
+    ::fwRuntime::profile::getCurrentProfile()->cleanup();
+    return res;
+}
 
 } // namespace guiWx
