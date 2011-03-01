@@ -25,17 +25,21 @@ namespace parser
 
 void TransformationMatrix3D::updating( ) throw(fwTools::Failed)
 {
-    ::fwRuntime::ConfigurationElement::sptr _cfgElement = this->m_configuration;
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >() ;
+    SLM_FATAL("Sorry, this method is depreciated.");
+}
+
+//------------------------------------------------------------------------------
+
+void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
+{
+    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast( _obj );
     assert( matrix ) ;
 
-    for(    ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin();
-            !(configEltIter == _cfgElement->end());
-            ++configEltIter )
+    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
     {
-        if ( (*configEltIter)->getName() == "matrix" )
+        if ( elem->getName() == "matrix" )
         {
-            std::string input = (*configEltIter)->getValue();
+            std::string input = elem->getValue();
             std::istringstream inputString( input );
 
             matrix->getRefCoefficients().clear();

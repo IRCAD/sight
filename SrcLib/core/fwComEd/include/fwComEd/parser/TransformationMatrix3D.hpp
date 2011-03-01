@@ -42,6 +42,7 @@ public :
     /// Destructor : does nothing.
     FWCOMED_API virtual ~TransformationMatrix3D() {};
 
+    FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 protected:
 
     /**
