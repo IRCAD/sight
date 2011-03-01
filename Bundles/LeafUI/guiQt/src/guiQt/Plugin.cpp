@@ -38,13 +38,12 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     ::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
-    int    argc = params.size();
+    m_argc = params.size();
     char** argv = profile->getRawParams();
 
     ::fwGuiQt::App *app;
-    app = new ::fwGuiQt::App( argc, argv );
+    app = new ::fwGuiQt::App( m_argc, argv );
     m_app = app;
-
 
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
 }

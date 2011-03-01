@@ -42,6 +42,7 @@ public:
 
 private:
     QPointer< QApplication > m_app;
+    int m_argc;
 
 };
 
