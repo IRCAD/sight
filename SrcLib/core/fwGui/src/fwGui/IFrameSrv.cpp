@@ -17,6 +17,7 @@
 //#include <fwServices/RootManager.hpp>
 
 
+#include "fwGui/Application.hpp"
 #include "fwGui/IFrameSrv.hpp"
 
 namespace fwGui
@@ -201,7 +202,7 @@ void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 void IFrameSrv::onCloseExit()
 {
     SLM_TRACE_FUNC();
-    //::fwServices::RootManager::uninitializeRootObject();
+    ::fwGui::Application::New()->exit(0);
 }
 
 //-----------------------------------------------------------------------------

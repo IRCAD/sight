@@ -58,14 +58,14 @@ void InputDialog::setMessage( const std::string &msg )
 
 //-----------------------------------------------------------------------------
 
-FWGUI_API void InputDialog::setInput(const std::string &text)
+void InputDialog::setInput(const std::string &text)
 {
     m_implementation->setInput(text);
 }
 
 //-----------------------------------------------------------------------------
 
-FWGUI_API std::string InputDialog::getInput()
+std::string InputDialog::getInput()
 {
     return m_implementation->getInput();
 }

@@ -43,10 +43,7 @@ void QtMainFrame::closeEvent(QCloseEvent *event)
 {
     SLM_TRACE_FUNC();
     event->ignore();
-    //m_fctCloseCallback();
-    qApp->flush();
-    qApp->quit();
-    //QMainWindow::closeEvent(event);
+    m_fctCloseCallback();
 }
 
 
