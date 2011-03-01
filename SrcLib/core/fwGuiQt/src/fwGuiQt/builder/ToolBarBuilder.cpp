@@ -58,7 +58,6 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
         window->addToolBar( toolBar );
 
         //on Os X, the window is hidden (???)
-        OSLM_ERROR("WINDOW:" << visible);
         window->setVisible(visible);
     }
     else // parent is not a QMainWindow

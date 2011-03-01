@@ -1,0 +1,8 @@
+
+CLASSTEST=[
+    'InterpreterTest',
+]
+
+USE = ['boost','python']
+LIB = ['fwData_0-1','fwPython_0-1']
+CONSOLE = 'yes'

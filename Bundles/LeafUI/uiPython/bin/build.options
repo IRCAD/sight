@@ -1,0 +1,7 @@
+TYPE     = 'bundle'
+VERSION  = '0-1'
+USE      = []
+LIB      = [ 'fwGui_0-1', 'fwPython_0-1' ]
+Bundle   = [ 'binding_0-1' ]
+
+
