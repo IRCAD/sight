@@ -138,7 +138,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
         // Get the root node.
         xmlNodePtr rootNode = xmlDocGetRootElement(document);
 
-        if (xmlXIncludeProcessTree (rootNode) == -1)
+        if (xmlXIncludeProcessTreeFlags (rootNode, XML_PARSE_NOBASEFIX) == -1)
         {
             throw RuntimeException("Unable to manage xinclude !");
         }
@@ -212,7 +212,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
         // Get the root node.
         xmlNodePtr rootNode = xmlDocGetRootElement(document);
 
-        if (xmlXIncludeProcessTree (rootNode) == -1)
+        if (xmlXIncludeProcessTreeFlags (rootNode, XML_PARSE_NOBASEFIX) == -1)
         {
             throw RuntimeException("Unable to manage xinclude !");
         }
