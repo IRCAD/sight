@@ -12,6 +12,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
+#include <fwRuntime/profile/Profile.hpp>
 
 #include "fwServices/registry/ServiceFactory.hpp"
 
@@ -159,6 +160,7 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     {
         SLM_ASSERT( "Sorry bundle must exist if a factory missing.", info->bundle );
         info->bundle->start();
+        ::fwRuntime::profile::getCurrentProfile()->setup();
         SLM_ASSERT( "Sorry after bundle loading ( " << info->bundle->getIdentifier() << " ) , factory must exist.", info->factory );
         return info->factory->create();
     }

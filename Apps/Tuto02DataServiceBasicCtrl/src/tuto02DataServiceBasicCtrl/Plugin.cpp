@@ -69,7 +69,7 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     ::fwRuntime::EConfigurationElement::NewSptr guiFrameNameCfg("name");
     guiFrameNameCfg->setValue("tutoDataServiceBasic");
     ::fwRuntime::EConfigurationElement::NewSptr guiFrameIconCfg("icon");
-    guiFrameIconCfg->setValue("Bundles/Tuto02DataServiceBasic_0-1/tuto.ico");
+    guiFrameIconCfg->setValue("Bundles/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
     ::fwRuntime::EConfigurationElement::NewSptr guiFrameMinSizeCfg("minSize");
     guiFrameMinSizeCfg->setAttributeValue("width", "800");
     guiFrameMinSizeCfg->setAttributeValue("height", "600");

@@ -29,9 +29,9 @@ namespace profile
  */
 class Initializer : public boost::noncopyable
 {
+
 public:
 
-    friend class Stopper;
     /**
      * @brief       Constructor
      *

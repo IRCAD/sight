@@ -71,6 +71,13 @@ public:
     FWRUNTIME_API void add( SPTR( Starter ) starter );
 
     /**
+     * @brief       Adds a new stopper.
+     *
+     * @param[in]   stopper a shared pointer to a stopper
+     */
+    FWRUNTIME_API void add( SPTR( Stopper ) stopper );
+
+    /**
      * @brief       Adds a new starter.
      *
      * @param[in]   starter a shared pointer to a starter

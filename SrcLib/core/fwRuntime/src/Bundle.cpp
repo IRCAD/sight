@@ -23,6 +23,7 @@
 #include "fwRuntime/utils/GenericExecutableFactory.hpp"
 #include "fwRuntime/profile/Profile.hpp"
 #include "fwRuntime/profile/Initializer.hpp"
+#include "fwRuntime/profile/Stopper.hpp"
 
 #include "fwRuntime/Bundle.hpp"
 
@@ -332,6 +333,8 @@ void Bundle::loadLibraries() throw(RuntimeException)
     // Pre-condition
     SLM_ASSERT("Bundle is already loaded", m_loadingBundle == 0 );
 
+    OSLM_TRACE( "Loading " << this->getIdentifier() << " library...");
+
     // References the current bundle as the loading bundle.
     m_loadingBundle = shared_from_this();
 
@@ -369,6 +372,8 @@ void Bundle::loadLibraries() throw(RuntimeException)
 
     // Post-condition
     assert( m_loadingBundle == 0 );
+
+    OSLM_TRACE(this->getIdentifier() << " library loaded");
 }
 
 //------------------------------------------------------------------------------
@@ -466,6 +471,8 @@ void Bundle::startPlugin() throw(RuntimeException)
     // Stores and start the plugin.
     try
     {
+        OSLM_TRACE("Register stopper for " << this->getIdentifier() << " Bundle's plugin.");
+        ::fwRuntime::profile::getCurrentProfile()->add( SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier())));
         m_plugin = plugin;
         m_plugin->start();
         ::fwRuntime::profile::getCurrentProfile()->add( SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier())) );
@@ -490,6 +497,7 @@ void Bundle::stop() throw(RuntimeException)
     {
         m_plugin->stop();
         m_started = false;
+        OSLM_TRACE(this->getIdentifier() << " Stopped");
     }
     catch( std::exception & e )
     {
