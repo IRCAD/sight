@@ -1,4 +1,7 @@
-﻿<plugin id="TutoConfigurations">
+﻿<plugin id="Tuto03DataServiceBis">
+
+<requirement id="servicesReg" />
+    
 <extension implements="::fwServices::registry::AppConfig">
         <id>tutoDataServiceConfig</id>
         <type>standard</type>

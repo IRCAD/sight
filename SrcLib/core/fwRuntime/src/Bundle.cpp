@@ -543,8 +543,8 @@ void Bundle::uninitialize() throw(RuntimeException)
     OSLM_ASSERT("Bundle "<< this->getIdentifier() << " not initialized.", m_initialized );
     try
     {
-        m_plugin->uninitialize();
         OSLM_TRACE("Uninitializing " << this->getIdentifier() << " ...");
+        m_plugin->uninitialize();
         m_initialized = false;
         OSLM_TRACE("               " << this->getIdentifier() << " Uninitialized");
     }

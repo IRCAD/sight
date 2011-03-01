@@ -1,4 +1,7 @@
-<plugin id="TutoGenericSceneConfiguration">
+<plugin id="Tuto08GenericScene">
+
+<requirement id="servicesReg" />
+
 <extension implements="::fwServices::registry::AppConfig">
         <id>Tuto08GenericScene</id>
         <type>standard</type>

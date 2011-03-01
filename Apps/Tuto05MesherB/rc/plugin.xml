@@ -1,11 +1,12 @@
+<plugin id="Tuto05MesherB">
 
-<plugin id="MesherConfiguration">
-
+    <requirement id="servicesReg" />
+    
     <extension implements="::fwServices::registry::AppConfig">
-        <id>MesherConfig</id>
+        <id>MesherV2Config</id>
         <type>standard</type>
         <config>
-        
+
 
         <!--  Composite data creation. -->
         <object type="::fwData::Composite">
@@ -20,7 +21,7 @@
                 <gui>
                     <frame>
                         <name>Mesher</name>
-                        <icon>Bundles/Tuto05Mesher_0-1/tuto.ico</icon>
+                        <icon>Bundles/Tuto05MesherB_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />
@@ -33,15 +34,16 @@
 
             <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view caption="Image view" />
-                        <view caption="Mesh view" />
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="Image view" align="center" />
+                        <view caption="Mesh 1 view" align="right" minWidth="500" minHeight="100" />
+                        <view caption="Mesh 2 view" align="right" minWidth="500" minHeight="100" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="RenderingImage" start="yes" />
-                    <view sid="RenderingMesh" start="yes" />
+                    <view sid="RenderingMesh1" start="yes" />
+                    <view sid="RenderingMesh2" start="yes" />
                 </registry>
             </service>
 
@@ -69,17 +71,12 @@
                         <menuItem name="Open image file" shortcut="Ctrl+O" />
                         <menuItem name="Save image" />
                         <separator />
-                        <menuItem name="Open mesh file" shortcut="Ctrl+M" />
-                        <menuItem name="Save mesh" />
-                        <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionOpenImageFile" start="yes" />
                     <menuItem sid="actionSaveImageFile" start="yes" />
-                    <menuItem sid="actionOpenMeshFile" start="yes" />
-                    <menuItem sid="actionSaveMeshFile" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -88,11 +85,13 @@
             <service uid="menuMesher" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
                 <gui>
                     <layout>
-                        <menuItem name="Compute Mesh (VTK)" />
+                        <menuItem name="Compute Mesh 1 (VTK)" />
+                        <menuItem name="Compute Mesh 2 (VTK)" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="actionCreateVTKMesh" start="yes" />
+                    <menuItem sid="actionCreateVTKMesh1" start="yes" />
+                    <menuItem sid="actionCreateVTKMesh2" start="yes" />
                 </registry>
             </service>
 
@@ -113,18 +112,16 @@
                 <start uid="writerImageFile" />
             </service>
 
-            <service uid="actionOpenMeshFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="readerPathMeshFile" />
-            </service>
-
-            <service uid="actionSaveMeshFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="writerMeshFile" />
-            </service>
-
-            <service uid="actionCreateVTKMesh" type="::fwGui::IActionSrv" implementation="::opVTKMesh::action::VTKMeshCreation" autoComChannel="no">
+            <service uid="actionCreateVTKMesh1" type="::fwGui::IActionSrv" implementation="::opVTKMesh::action::VTKMeshCreation" autoComChannel="no">
                 <image uid="myImage" />
-                <mesh uid="myMesh" />
+                <mesh uid="myMesh1" />
                 <percentReduction value="0" />
+            </service>
+
+            <service uid="actionCreateVTKMesh2" type="::fwGui::IActionSrv" implementation="::opVTKMesh::action::VTKMeshCreation" autoComChannel="no">
+                <image uid="myImage" />
+                <mesh uid="myMesh2" />
+                <percentReduction value="30" />
             </service>
 
 
@@ -153,26 +150,36 @@
             </item>
 
             <!--
-                TriangularMesh object creation. Services contained between the tags <object> and </object> are
-                associated to the TriangularMesh data.
+                TriangularMesh objet creation. Services contained between the tags <object> and </object> are
+                associa ted to the TriangularMesh data.
              -->
-            <item key="myMesh">
-                <object uid="myMesh" type="::fwData::TriangularMesh">
+            <item key="myMesh1">
+                <object uid="myMesh1" type="::fwData::TriangularMesh">
 
                     <!--
                         Services associated to the TriangularMesh data :
                         Visualization, reading and writing service creation.
                     -->
-                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes">
+                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes">
                         <masterSlaveRelation>master</masterSlaveRelation>
                     </service>
 
-                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoComChannel="no">
-                        <type mode="reader" />
-                    </service>
+                </object>
+            </item>
 
-                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="writerMeshFile" autoComChannel="no">
-                        <type mode="writer" />
+            <!--
+                TriangularMesh objet creation. Services contained between the tags <object> and </object> are
+                associa ted to the TriangularMesh data.
+             -->
+            <item key="myMesh2">
+                <object uid="myMesh2" type="::fwData::TriangularMesh">
+
+                    <!--
+                        Services associated to the TriangularMesh data :
+                        Visualization, reading and writing service creation.
+                    -->
+                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes">
+                        <masterSlaveRelation>master</masterSlaveRelation>
                     </service>
 
                 </object>
@@ -184,10 +191,8 @@
             -->
             <start uid="myFrame" />
 
-            
-
         </object>
-    
+
         </config>
     </extension>
-</plugin>    
+</plugin>

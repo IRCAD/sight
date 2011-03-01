@@ -9,10 +9,11 @@
     <activate id="visuVTKWx" version="0-1" />
     
     <activate id="gui" version="0-1" />
-    <activate id="guiWx" version="0-1" >
-        <param id="startingMode" value="windows" />
+    <activate id="guiWx" version="0-1" />
+
+    <activate id="Tuto04ComChannel" version="0-1" />
+    <activate id="appXml" version="0-1" >
         <param id="config" value="tutoComChannelConfig" />
-        <param id="configFile" value="./Bundles/Tuto04ComChannel_0-1/configurations/config.xml" />
     </activate>
 
     <!-- Specific bundles list. -->
@@ -23,5 +24,7 @@
 
     <start id="dataReg" />
     <start id="visuVTKWx" />
-    <start id="guiWx" />   
+    <start id="guiWx" />
+    <start id="appXml" />
+           
 </profile>

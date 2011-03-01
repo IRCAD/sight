@@ -1,4 +1,7 @@
-<plugin id="TutoPickerConfiguration">
+<plugin id="Tuto12Picker">
+
+<requirement id="servicesReg" />
+
 <extension implements="::fwServices::registry::AppConfig">
         <id>Tuto12Picker</id>
         <type>standard</type>
