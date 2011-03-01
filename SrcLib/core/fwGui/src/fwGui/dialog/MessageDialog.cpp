@@ -33,10 +33,14 @@ MessageDialog::MessageDialog()
 
 MessageDialog::MessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
-    m_implementation->setTitle(title);
-    m_implementation->setMessage(message);
-    m_implementation->setIcon(icon);
+    if(m_implementation)
+    {
+
+        m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
+        m_implementation->setTitle(title);
+        m_implementation->setMessage(message);
+        m_implementation->setIcon(icon);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -48,35 +52,54 @@ MessageDialog::~MessageDialog()
 
 void MessageDialog::setTitle( const std::string &title )
 {
-    m_implementation->setTitle(title);
+    if(m_implementation)
+    {
+        m_implementation->setTitle(title);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void MessageDialog::setMessage( const std::string &msg )
 {
-    m_implementation->setMessage(msg);
+    if(m_implementation)
+    {
+        m_implementation->setMessage(msg);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void MessageDialog::setIcon( ::fwGui::dialog::IMessageDialog::Icons icon )
 {
-    m_implementation->setIcon(icon);
+    if(m_implementation)
+    {
+        m_implementation->setIcon(icon);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 {
-    m_implementation->addButton(button);
+    if(m_implementation)
+    {
+        m_implementation->addButton(button);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 ::fwGui::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
-    return m_implementation->show();
+    if(m_implementation)
+    {
+        return m_implementation->show();
+    }
+    else
+    {
+        return ::fwGui::dialog::IMessageDialog::NOBUTTON;
+    }
 }
 
 //-----------------------------------------------------------------------------
