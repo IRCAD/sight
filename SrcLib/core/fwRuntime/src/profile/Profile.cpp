@@ -146,7 +146,13 @@ void Profile::stop()
 //------------------------------------------------------------------------------
 void Profile::setup()
 {
-    std::for_each( m_initializers.begin(), m_initializers.end(), Apply< InitializerContainer::value_type >() );
+    InitializerContainer initializers;
+    while (m_initializers.size())
+    {
+        initializers = m_initializers;
+        m_initializers.clear();
+        std::for_each( initializers.begin(), initializers.end(), Apply< InitializerContainer::value_type >() );
+    }
 }
 
 //------------------------------------------------------------------------------
