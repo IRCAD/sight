@@ -14,7 +14,8 @@
 #include "fwRuntime/profile/Starter.hpp"
 #include "fwRuntime/profile/Stopper.hpp"
 
-
+#include "fwRuntime/Extension.hpp"
+#include "fwRuntime/Bundle.hpp"
 
 namespace fwRuntime
 {
@@ -74,6 +75,22 @@ void Profile::add( ::boost::shared_ptr< Starter > starter )
 void Profile::start()
 {
     std::for_each( m_activaters.begin(), m_activaters.end(), Apply< ActivaterContainer::value_type >() );
+
+
+    // Check validity of extension
+    Runtime * rntm( Runtime::getDefault() );
+    for( Runtime::ExtensionIterator i = rntm->extensionsBegin(); i != rntm->extensionsEnd(); ++i )
+    {
+        ::boost::shared_ptr< Extension >   extension( *i );
+        if ( extension->getBundle()->isEnable() )
+        {
+            if( extension->validate() == Extension::Invalid )
+            {
+                OSLM_FATAL( "Validation not ok for bundle = '" << extension->getBundle()->getIdentifier() << "'  (extension id = '" << extension->getIdentifier() << "' )" );
+            }
+        }
+    }
+
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
 }
 

@@ -34,7 +34,7 @@ public:
     /// override the behavior when visiting composite by visit its fields *and* values in its map
     FWXML_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
 
-    typedef  std::map< ::boost::shared_ptr< ::fwTools::Object > , ::boost::shared_ptr<  ::fwXML::IFileFormatService > > MapObjectFileFormatService;
+    typedef  std::map< ::fwTools::Object::sptr , ::fwXML::IFileFormatService::sptr > MapObjectFileFormatService;
     MapObjectFileFormatService m_objWithFileFormatService;
 
 

@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
 
@@ -37,10 +37,18 @@ ImageXMLTranslator::~ImageXMLTranslator() {};
 void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::fwData::Image::sptr img )
 {
     // get XML node related to Buffer //FIXMEXPATH
-
     if ( img->getSize().size()!=0 && img->getSize().front()!=0  )
     {
-        IFileFormatService::sptr binSaver = ::fwServices::get<  IFileFormatService >(img,0);
+        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(img);
+        ::fwXML::IFileFormatService::sptr binSaver;
+        if( filesSrv.empty() )
+        {
+            binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(img, "::fwXML::ImageFileFormatService");
+        }
+        else
+        {
+            binSaver = filesSrv.at(0);
+        }
         std::string path;
         path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
         XMLTH::addProp( boostXMLBuffer, "filename",  path );
@@ -64,9 +72,18 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
     if ( protocol != ImageXMLTranslator::s_noFileProtocol )
     {
         // get XML node related to Buffer //FIXMEXPATH
-        IFileFormatService::sptr binLoader = ::fwServices::get< IFileFormatService >(img,0);
+        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(img);
+        ::fwXML::IFileFormatService::sptr binLoader;
+        if( filesSrv.empty() )
+        {
+            binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(img, "::fwXML::ImageFileFormatService");
+        }
+        else
+        {
+            binLoader = filesSrv.at(0);
+        }
         OSLM_DEBUG( "ImageXMLTranslator::manageLoadingBuffer :: READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename") );
-        boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
+        ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
         binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
         binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
         binLoader->localFolder() = fileLocation.branch_path();
@@ -89,8 +106,7 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
         assert(reader);
 
         // assign to FileFormatService
-        IFileFormatService::sptr binReader = ::fwServices::get<  IFileFormatService >(img,0);
-        binReader->setReader( reader );
+        binLoader->setReader( reader );
     }
 }
 

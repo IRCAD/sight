@@ -1,18 +1,22 @@
 <plugin id="guiQt" class="::guiQt::Plugin">
-    <library name="guiQt"/>
-    
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
-    <requirement id="gui"/>
-    
-    <point id="::gui::editor::DummyEditor">
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-           
-    <point id="::guiQt::editor::Code">
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::String</implements>
-    </point>
-     
+    <library name="guiQt" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="gui" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::gui::editor::DummyEditor</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::guiQt::editor::Code</service>
+        <object>::fwData::String</object>
+        <desc>a multi line editor</desc>
+    </extension>
+
+
 </plugin>

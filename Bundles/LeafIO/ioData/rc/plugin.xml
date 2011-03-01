@@ -5,60 +5,47 @@
 
 
     <!--    REGISTER_SERVICE( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera ) ;-->
-    <point id="::ioData::CameraReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::Camera</implements>
-    </point>
-        
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioData::CameraReaderService</service>
+        <object>::fwData::Camera</object>
+    </extension>
+
     <!--    REGISTER_SERVICE( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline ) ;-->
-    <point id="::ioData::SplineReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::Spline</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioData::SplineReaderService</service>
+        <object>::fwData::Spline</object>
+    </extension>
 
     <!--    REGISTER_SERVICE( ::io::IReader , ::ioData::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;-->
-    <point id="::ioData::TriangularMeshReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::TriangularMesh</implements>
-    </point>
-    
-    <!-- REGISTER_SERVICE( ::io::IReader , ::ioData::DefaultCompositeObjectReaderService , ::fwData::ProcessObject ) ; -->
-    <point id="::ioData::DefaultCompositeObjectReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::ProcessObject</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioData::TriangularMeshReaderService</service>
+        <object>::fwData::TriangularMesh</object>
+        <desc>TriangularMesh Reader</desc>
+    </extension>
 
-    <!-- REGISTER_SERVICE( ::io::IReader , ::ioData::CompositeReaderService , ::fwData::Composite ) ; -->
-    <point id="::ioData::CompositeReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
     <!-- REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D ) ; -->
-    <point id="::ioData::TransformationMatrix3DReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::TransformationMatrix3D</implements>
-    </point>
-    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioData::TransformationMatrix3DReaderService</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
+
     <!-- REGISTER_SERVICE( ::io::IWriter , ::ioData::TransformationMatrix3DWriterService , ::fwData::TransformationMatrix3D ) ;-->
-    <point id="::ioData::TransformationMatrix3DWriterService" >
-        <implements>::io::IWriter</implements>
-        <implements>::fwData::TransformationMatrix3D</implements>
-    </point>
-    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioData::TransformationMatrix3DWriterService</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
+
     <!-- REGISTER_SERVICE( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwData::TriangularMesh ) ;-->
-    <point id="::ioData::TriangularMeshWriterService" >
-        <implements>::io::IWriter</implements>
-        <implements>::fwData::TriangularMesh</implements>
-    </point>
-    
-    
-    <extension implements="::ioData::TriangularMeshReaderService" >
-        <info text="TriangularMesh Reader"/>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioData::TriangularMeshWriterService</service>
+        <object>::fwData::TriangularMesh</object>
+        <desc>TriangularMesh Writer</desc>
     </extension>
-    
-    <extension implements="::ioData::TriangularMeshWriterService" >
-        <info text="TriangularMesh Writer"/>
-    </extension>
-    
+
 </plugin>

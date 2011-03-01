@@ -15,7 +15,7 @@
 #include <fwRuntime/Extension.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -58,7 +58,10 @@ void StarterActionService::stopping() throw( ::fwTools::Failed )
         if (srv_exists)
         {
             ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first ) ;
-            service->stop();
+            if (service->isStarted())
+            {
+                service->stop();
+            }
         }
     }
 
@@ -142,7 +145,14 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
             }
             case STOP :
             {
-                service->stop();
+                if(service->isStarted())
+                {
+                    service->stop();
+                }
+                else
+                {
+                    OSLM_WARN("Service " << service->getID() << " is not started");
+                }
                 break;
             }
             default :

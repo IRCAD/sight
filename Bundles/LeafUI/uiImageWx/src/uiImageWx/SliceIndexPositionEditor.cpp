@@ -12,6 +12,7 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -22,9 +23,10 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
@@ -116,21 +118,31 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     this->initialize();
 
-    if(m_configuration->hasAttribute("sliceIndex"))
+    if( this->m_configuration->size() > 0 )
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
+        SLM_ASSERT("Sorry, only one xml element \"sliceIndex\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
+        SLM_ASSERT("Sorry, xml element \"sliceIndex\" is empty.", ! (*iter)->getValue().empty() );
+        std::string  orientation = (*iter)->getValue();
+        ::boost::algorithm::trim(orientation);
+        ::boost::algorithm::to_lower(orientation);
+
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
+        else
+        {
+            SLM_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
+        }
     }
 }
 
@@ -169,7 +181,7 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
             image->setFieldSingleElement( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
             image->setFieldSingleElement( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
-            image->setFieldSingleElement( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);            
+            image->setFieldSingleElement( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )

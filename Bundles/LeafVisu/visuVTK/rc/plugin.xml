@@ -1,20 +1,17 @@
 <plugin id="visuVTK" class="visuVTK::Plugin" >
-    
+
     <library name="visuVTK" />
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
     <requirement id="visu" />
 
-    <point id="::fwRenderVTK::IVtkAdaptorService">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
     <!--    REGISTER_SERVICE( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite) ;    -->
-    <point id="::fwRenderVTK::VtkRenderService">
-        <implements>::fwRender::IRender</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::fwRenderVTK::VtkRenderService</service>
+        <object>::fwData::Composite</object>
+    </extension>
 
 </plugin>
 

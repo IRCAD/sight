@@ -13,6 +13,9 @@
 #include <boost/type_traits.hpp>
 #include <boost/static_assert.hpp>
 
+#include <fwCore/base.hpp>
+#include <fwCore/LogicStamp.hpp>
+
 #include "fwTools/Failed.hpp"
 #include "fwTools/Object.hpp"
 #include "fwTools/ClassFactoryRegistry.hpp"
@@ -44,9 +47,10 @@ public :
      * @brief define the Interface for Initializer Functors. This functor is to be added to the Factory class using  Factory::addInitializer()
      * end user must must implement ::boost::weak_ptr< fwTools::Object >
      */
-    class FWTOOLS_CLASS_API Initializer
+    class FWTOOLS_CLASS_API Initializer : public ::fwCore::BaseObject
     {
     public :
+        fwCoreNonInstanciableClassDefinitionsMacro((Initializer)(::fwCore::BaseObject));
 
         /// default constructor
         FWTOOLS_API Initializer() {} ;
@@ -59,14 +63,12 @@ public :
          * The Factory will process Initializer::init() on this object for all registered Initializers
          * @param[in] _obj  the object to be initialized (weak ptr)
          */
-        FWTOOLS_API virtual void init( ::boost::weak_ptr< ::fwTools::Object > _obj ) = 0;
-
+        FWTOOLS_API virtual void init( ::fwTools::Object::wptr _obj ) = 0;
 
         /**
-         * @brief an helper ( shared version of init(weak)) : call init( boost::weak_ptr< ::fwTools::Object >
-         * * @param[in] _obj  the object to be initialized (shared ptr)
+         * @brief Uninitializes data with the LogicStamp 'key'
          */
-        FWTOOLS_API void init_from_sp( ::boost::shared_ptr< ::fwTools::Object > _obj );
+        FWTOOLS_API virtual void uninit( ::fwCore::LogicStamp::csptr key ) = 0;
     };
 
 
@@ -75,7 +77,12 @@ public :
      * @param[in] a full rooted className (i.e "::fwData::Image")
      * @return   smart pointer on created Object (Empty smart pointer if not found)
      */
-    FWTOOLS_API static ::boost::shared_ptr< ::fwTools::Object > buildData(const std::string &className);
+    FWTOOLS_API static ::fwTools::Object::sptr buildData(const std::string &className);
+
+    /**
+     * @brief Uninitializes data with the LogicStamp 'key'
+     */
+    FWTOOLS_API static void uninitData(::fwCore::LogicStamp::csptr key );
 
     /**
      * @brief build an object from template CLASSNAME and call each Initializer::init() to this object
@@ -95,14 +102,14 @@ public :
      * the factory cannot produce the required Object
      * @todo  do an explicit specialization of this method for char * to avoid  mistake
      */
-    // reference on KEYTYPE mandatory to also enable non copiable key for exemple typeid
+    // reference on KEYTYPE mandatory to also enable non copiable key for example typeid
     template<class KEYTYPE>
-    static ::boost::shared_ptr< ::fwTools::Object > New(const KEYTYPE &key);
+    static ::fwTools::Object::sptr New(const KEYTYPE &key);
 
     /**
      * @brief add a new Initializer to the Factory. This initializer will be processed on the object created by Factory
      */
-    FWTOOLS_API static void addInitializer( ::boost::shared_ptr< Initializer > _init ) ;
+    FWTOOLS_API static void addInitializer( Initializer::sptr _init ) ;
 
     /// class destructor
     FWTOOLS_API virtual ~Factory();
@@ -111,7 +118,7 @@ protected:
 
     FWTOOLS_API Factory();
 
-    FWTOOLS_API static std::list< ::boost::shared_ptr< Initializer > > m_initializers;
+    FWTOOLS_API static std::list< Initializer::sptr > m_initializers;
 };
 
 
@@ -128,14 +135,9 @@ template< class CLASSNAME >
         throw ::fwTools::Failed(mes);
     }
 
-    BOOST_FOREACH( ::boost::shared_ptr< Initializer > initializer , m_initializers )
+    BOOST_FOREACH( Initializer::sptr initializer , m_initializers )
     {
-        // Fatal error compiler with boost 1.37
-        // Replace these lines
-        // ::boost::weak_ptr< CLASSNAME > weakVersion = newObject;
-        // (*iter)->init (weakVersion);
-        // by
-        initializer->init_from_sp( newObject );
+        initializer->init( newObject );
     }
 
     return newObject;
@@ -144,7 +146,7 @@ template< class CLASSNAME >
 
 
 template<class KEYTYPE>
-::boost::shared_ptr< ::fwTools::Object > Factory::New(const KEYTYPE &key)
+::fwTools::Object::sptr Factory::New(const KEYTYPE &key)
 {
     BOOST_STATIC_ASSERT( ::boost::is_pointer<KEYTYPE>::value == false );
 
@@ -157,7 +159,7 @@ template<class KEYTYPE>
         throw ::fwTools::Failed(mes);
     }
 
-    BOOST_FOREACH( ::boost::shared_ptr< Initializer > initializer , m_initializers )
+    BOOST_FOREACH( Initializer::sptr initializer , m_initializers )
     {
         initializer->init( newObject );
     }

@@ -10,7 +10,7 @@
 #include <boost/filesystem/operations.hpp>
 
 #include <io/IReader.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwData/TriangularMesh.hpp>

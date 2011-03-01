@@ -6,9 +6,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwPython/Interpreter.hpp>
 

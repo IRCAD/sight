@@ -185,8 +185,8 @@ void NegatoOneSlice::doStart() throw(fwTools::Failed)
 void NegatoOneSlice::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->getImageAdaptor()->stop();
-    this->getImageSliceAdaptor()->stop();
+//    this->getImageAdaptor()->stop();
+//    this->getImageSliceAdaptor()->stop();
     this->unregisterServices();
     this->cleanImageSource();
 }

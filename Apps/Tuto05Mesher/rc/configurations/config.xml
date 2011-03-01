@@ -1,7 +1,11 @@
 
 <plugin id="MesherConfiguration">
 
-    <extension id="MesherConfig" implements="::fwServices::ServiceObjectConfig">
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>MesherConfig</id>
+        <type>standard</type>
+        <config>
+        
 
         <!--  Composite data creation. -->
         <object type="::fwData::Composite">
@@ -12,7 +16,7 @@
                 Service associated to the Composite data :
                 main window creation.
             -->
-            <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
                 <gui>
                     <frame>
                         <name>Mesher</name>
@@ -178,10 +182,12 @@
                 In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and TriangularMesh data are not started
                 between the tags corresponding to these two data definitions but, before the end of the Composite data definition.
             -->
-            <start type="::fwGui::IFrameSrv" />
+            <start uid="myFrame" />
 
-            <stop type="::fwGui::IFrameSrv" />
+            
 
         </object>
+    
+        </config>
     </extension>
 </plugin>    

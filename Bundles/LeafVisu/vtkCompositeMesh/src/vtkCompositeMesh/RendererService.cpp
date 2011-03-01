@@ -25,8 +25,9 @@
 #include <fwComEd/CameraMsg.hpp>
 #include <fwComEd/TriangularMeshMsg.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <vtkIO/vtk.hpp>
 

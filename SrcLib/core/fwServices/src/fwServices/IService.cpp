@@ -13,11 +13,8 @@
 #include "fwServices/IService.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/ComChannelService.hpp"
-#include "fwServices/ObjectServiceRegistry.hpp"
-#include "fwServices/helper.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/Factory.hpp"
-#include "fwServices/validation/Validator.hpp"
-
 
 namespace fwServices
 {
@@ -50,8 +47,7 @@ void IService::info( std::ostream &_sstream )
 
 ::fwTools::Object::sptr IService::getObject()
 {
-    SLM_ASSERT("Empty shared_ptr for Associated Object", m_associatedObject.use_count() ); // initialized
-    SLM_ASSERT("Associated Object is expired", m_associatedObject.expired() == false ); // not expired
+    SLM_ASSERT("Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired", !m_associatedObject.expired() );
     return m_associatedObject.lock();
 }
 
@@ -71,21 +67,21 @@ void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _c
     return m_configuration ;
 }
 
-//-----------------------------------------------------------------------------
-
-bool IService::checkConfiguration()
-{
-    ::std::stringstream stream ;
-    bool checkingResult = ::fwServices::validation::checkService( this->className() , this->m_configuration , stream ) ;
-    OSLM_TRACE("Configuration checking result for" << this->className() << " : " << stream.str() ) ;
-    return checkingResult ;
-}
+////-----------------------------------------------------------------------------
+//
+//bool IService::checkConfiguration()
+//{
+//    ::std::stringstream stream ;
+//    bool checkingResult = ::fwServices::validation::checkService( this->className() , this->m_configuration , stream ) ;
+//    OSLM_TRACE("Configuration checking result for" << this->className() << " : " << stream.str() ) ;
+//    return checkingResult ;
+//}
 
 //-----------------------------------------------------------------------------
 
 void IService::configure()
 {
-    SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
+    //SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
     if( m_configurationState == UNCONFIGURED )
     {
         m_configurationState = CONFIGURING ;
@@ -112,38 +108,33 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 void IService::start() throw( ::fwTools::Failed)
 {
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STOPPED);
     if( m_globalState == STOPPED )
     {
         m_globalState = STARTING ;
         this->starting() ;
         m_globalState = STARTED ;
     }
-
-    OSLM_WARN_IF( "INVOKING START WHILE ALREADY STARTED (on this = " << this->className() << ")", m_globalState != STOPPED);
 }
 
 //-----------------------------------------------------------------------------
 
 void IService::stop() throw( ::fwTools::Failed)
 {
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
     if( m_globalState == STARTED )
     {
         m_globalState = STOPPING ;
-#ifdef NOT_USE_SRVFAC
-        ::fwServices::stopComChannels( this->getSptr() ) ;
-#endif
         this->stopping() ;
         m_globalState = STOPPED ;
     }
-
-    OSLM_WARN_IF( "INVOKING STOP WHILE ALREADY STOPPED (on this = " << this->className() << ")", m_globalState != STARTED);
 }
 
 //-----------------------------------------------------------------------------
 
 void IService::update( ::fwServices::ObjectMsg::csptr _msg )
 {
-    OSLM_ASSERT("INVOKING update(msg) WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
     if(m_notificationState == SENDING_MSG /* state during the service notifies to listeners a message */
             || m_notificationState == RECEIVING_WITH_SENDING_MSG /*  state during the service notifies to listeners a message when it is already receiving a message */
@@ -221,22 +212,22 @@ void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
     {
         m_globalState = SWAPPING ;
 
-        ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock())  ;
-        ::fwServices::IEditionService::sptr newEditor = ::fwServices::get< ::fwServices::IEditionService >( _obj ) ;
-        typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
-        OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
-        BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
+        if( ::fwServices::OSR::has(m_associatedObject.lock(), "::fwServices::IEditionService") )
         {
-            /// Check if _service is the subject (IEditionService) or the destination service
-            if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
+            ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock());
+            typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
+            OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
+            BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
             {
-                comChannel->stop() ;
-                comChannel->setSrc(newEditor);
-                ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , comChannel );
-                comChannel->start();
+                /// Check if _service is the subject (IEditionService) or the destination service
+                if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
+                {
+                    comChannel->stop() ;
+                    ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , comChannel );
+                    comChannel->start();
+                }
             }
         }
-
         ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , this->getSptr() );
 
         this->swapping();

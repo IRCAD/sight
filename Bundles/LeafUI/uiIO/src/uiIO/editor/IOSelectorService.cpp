@@ -16,8 +16,9 @@
 
 #include <fwTools/Object.hpp>
 
-#include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -140,27 +141,19 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     std::vector< std::string > availableExtensionsId;
     if ( m_mode == READER_MODE )
     {
-        // Erase all services of type ::io::IReader on the object
-        // TODO : comment this line, because must be useless
-        ::fwServices::eraseServices< ::io::IReader >( this->getObject() ) ;
-        availableExtensionsId = ::fwServices::getImplementationIds< ::io::IReader >( this->getObject() ) ;
+        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(this->getObject()->getClassname(),"::io::IReader") ;
     }
     else // m_mode == WRITER_MODE
     {
-        ::fwServices::eraseServices< ::io::IWriter >( this->getObject() ) ;
-        availableExtensionsId = ::fwServices::getImplementationIds< ::io::IWriter >( this->getObject() ) ;
+        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(this->getObject()->getClassname(),"::io::IWriter") ;
     }
 
     // Filter available extensions and replace id by service description
     std::vector< std::pair < std::string, std::string > > availableExtensionsMap;
     std::vector< std::string > availableExtensionsSelector;
 
-    for(    std::vector< std::string >::iterator itExt = availableExtensionsId.begin();
-            itExt < availableExtensionsId.end();
-            itExt++ )
+    BOOST_FOREACH( std::string  serviceId, availableExtensionsId )
     {
-        std::string serviceId = *itExt;
-
         bool serviceIsSelectedByUser = std::find( m_selectedServices.begin(), m_selectedServices.end(), serviceId ) != m_selectedServices.end();
 
         // Test if the service is considered here as available by users, if yes push in availableExtensionsSelector
@@ -170,7 +163,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             ! m_servicesAreExcluded && serviceIsSelectedByUser )
         {
             // Add this service
-            const std::string infoUser = ::fwRuntime::getInfoForPoint( serviceId );
+            const std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
             if (infoUser != "")
             {
                 availableExtensionsMap.push_back( std::pair < std::string, std::string > (serviceId, infoUser) );
@@ -211,16 +204,15 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             std::string selection = selector->show();
             if( !selection.empty() )
             {
-                for(    std::vector< std::pair < std::string, std::string > >::iterator itExt = availableExtensionsMap.begin();
-                        itExt < availableExtensionsMap.end();
-                        itExt++ )
+                typedef std::pair < std::string, std::string > PairType;
+                BOOST_FOREACH(PairType pair, availableExtensionsMap)
+                {
+                    if (pair.second == selection )
                     {
-                        if (itExt->second == selection )
-                        {
-                            extensionId = itExt->first ;
-                            extensionIdFound = true;
-                        }
+                        extensionId = pair.first ;
+                        extensionIdFound = true;
                     }
+                }
                 OSLM_ASSERT("Problem to find the selected string.", extensionIdFound );
             }
             else
@@ -234,12 +226,12 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 
             // Get Config
             bool hasConfigForService = false;
-            ::fwRuntime::ConfigurationElement::sptr srvCfg;
+            ::fwRuntime::ConfigurationElement::csptr srvCfg;
             if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
             {
                 hasConfigForService = true;
-                srvCfg = ::fwServices::bundle::findConfigurationForPoint(  m_serviceToConfig[extensionId] , "::fwServices::ServiceConfig" ) ;
-                SLM_ASSERT("Sorry, there is not service configuration of type ::fwServices::ServiceConfig found", srvCfg ) ;
+                srvCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(  m_serviceToConfig[extensionId] , extensionId ) ;
+                SLM_ASSERT("Sorry, there is not service configuration of type ::fwServices::registry::ServiceConfig found", srvCfg ) ;
             }
 
             // Configure and start service
@@ -248,7 +240,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( this->getObject() , extensionId ) ;
                 if ( hasConfigForService )
                 {
-                    reader->setConfiguration( srvCfg );
+                    reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
                     reader->configure();
                 }
                 reader->start();
@@ -260,13 +252,14 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 cursor.setDefaultCursor();
 
                 reader->stop();
+                ::fwServices::OSR::unregisterService(reader);
             }
             else
             {
                 ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject() , extensionId ) ;
                 if ( hasConfigForService )
                 {
-                    writer->setConfiguration( srvCfg );
+                    writer->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
                     writer->configure();
                 }
                 writer->start();
@@ -278,6 +271,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 cursor.setDefaultCursor();
 
                 writer->stop();
+                ::fwServices::OSR::unregisterService(writer);
             }
         }
     }
@@ -302,17 +296,6 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
-    }
-
-    // Erase all reader/writer services on this object
-    // Todo : replace this line to erase only the used service
-    if ( m_mode == READER_MODE )
-    {
-        ::fwServices::eraseServices< ::io::IReader >( this->getObject() ) ;
-    }
-    else // m_mode == WRITER_MODE
-    {
-        ::fwServices::eraseServices< ::io::IWriter >( this->getObject() ) ;
     }
 }
 

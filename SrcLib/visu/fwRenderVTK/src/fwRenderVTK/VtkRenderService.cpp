@@ -24,9 +24,8 @@
 #include <vtkCamera.h>
 
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwComEd/CompositeEditor.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwData/Color.hpp>
@@ -223,7 +222,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         else
         {
             adaptee.getService()->stop();
-            ::fwServices::erase(adaptee.getService());
+            ::fwServices::OSR::unregisterService(adaptee.getService());
             adaptee.m_service.reset();
             m_sceneAdaptors.erase(id);
         }
@@ -389,7 +388,7 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
           ++adaptorIter)
     {
         adaptorIter->second.getService()->stop();
-        ::fwServices::erase(adaptorIter->second.getService());
+        ::fwServices::OSR::unregisterService(adaptorIter->second.getService());
         adaptorIter->second.getService().reset();
     }
 

@@ -13,7 +13,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include "visuVTKAdaptor/Model.hpp"
 #include "visuVTKAdaptor/TriangularMesh.hpp"

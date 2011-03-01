@@ -1,5 +1,8 @@
 <plugin id="TutoPickerConfiguration">
-<extension id="Tuto12Picker" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>Tuto12Picker</id>
+        <type>standard</type>
+        <config>
 
     <object type="::fwData::Composite">
         <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
@@ -148,7 +151,9 @@
                             <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
                                 <negatoAdaptor uid="MPRNegatoScene3D" />
                             </service>
-                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />
+                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" >
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
                         </object>
                     </config>
                 </service>
@@ -188,16 +193,9 @@
         <start uid="myUpdaterComCannelAcq" />
         <start uid="myUpdaterComCannelImg" />
         <start uid="newOBject2newPatientDB"/>
-        <stop uid="newOBject2newPatientDB"/>
-        <stop uid="myUpdaterComCannelImg" />
-        <stop uid="myUpdaterComCannelAcq" />
-        <stop uid="myManager" />
-        <stop uid="myUpdaterImg" />
-        <stop uid="myUpdaterAcq" />
-        <stop uid="MyIHM" />
 
     </object>
-
+    </config>
 </extension>
 
 </plugin>

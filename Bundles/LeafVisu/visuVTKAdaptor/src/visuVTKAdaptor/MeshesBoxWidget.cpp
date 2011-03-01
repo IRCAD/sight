@@ -16,7 +16,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkIO/vtk.hpp>
 
@@ -31,6 +31,7 @@
 #include <vtkProp3DCollection.h>
 
 #include "visuVTKAdaptor/MeshesBoxWidget.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 class MeshesBoxClallback : public ::vtkCommand

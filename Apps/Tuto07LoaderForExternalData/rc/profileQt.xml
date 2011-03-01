@@ -20,6 +20,7 @@
     <activate id="uiIO" version="0-1" />
 
     <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
     <activate id="vtkSimpleNegato" version="0-1" />
     

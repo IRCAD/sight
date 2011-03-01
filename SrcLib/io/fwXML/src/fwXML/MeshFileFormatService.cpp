@@ -10,14 +10,14 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwCore/base.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwDataIO/reader/TriangularMeshReader.hpp>
 #include <fwDataIO/writer/TriangularMeshWriter.hpp>
 
 
-REGISTER_SERVICE( ::fwXML::IFileFormatService , fwXML::MeshFileFormatService , ::fwData::TriangularMesh);
+REGISTER_SERVICE( ::fwXML::IFileFormatService , ::fwXML::MeshFileFormatService , ::fwData::TriangularMesh);
 
 namespace fwXML
 {

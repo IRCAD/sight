@@ -6,15 +6,17 @@
     <requirement id="gui"/>
     
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiReconstruction::RepresentationEditor , ::fwData::Reconstruction ) ;-->
-    <point id="::uiReconstruction::RepresentationEditor" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::Reconstruction</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiReconstruction::RepresentationEditor</service>
+        <object>::fwData::Reconstruction</object>
+    </extension>
     
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiReconstruction::OrganMaterialEditor, ::fwData::Reconstruction ) ;-->
-    <point id="::uiReconstruction::OrganMaterialEditor" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::Reconstruction</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiReconstruction::OrganMaterialEditor</service>
+        <object>::fwData::Reconstruction</object>
+    </extension>
         
 </plugin>

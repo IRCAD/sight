@@ -1,4 +1,8 @@
-<extension id="manualRegistrationEditorConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>manualRegistrationEditorConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
 
@@ -60,11 +64,8 @@
         <start uid="myManagerForManualRegistEditor" />
         <start uid="myManagerForManualRegistEditorComChannel" />
 
-        <stop uid="myManagerForManualRegistEditorComChannel" />
-        <stop uid="myManagerForManualRegistEditor" />
-        <stop uid="registrationEditorFrame" />
-
-
     </object>
 
-</extension>
+
+        </config>
+    </extension>

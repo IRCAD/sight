@@ -46,19 +46,13 @@ namespace fwServices
     public:                                                                                                                        \
         BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceObject >));                                             \
     };                                                                                                                             \
-    REGISTER_BINDING_ID_CPY_V2(                                                                                                       \
+    REGISTER_BINDING_ID_CPY_V2(                                                                                                    \
             ::fwServices::IService ,                                                                                               \
             ServiceImpl ,                                                                                                          \
             ::fwServices::ObjectServiceKeyType ,                                                                                   \
             ::fwServices::ObjectServiceKeyType( ::fwCore::getClassname<ServiceType>(), ::fwCore::getClassname<ServiceObject>() ) , \
             BOOST_PP_CAT( __LINE__ , A )                                                                                           \
-            ) ;                                                                                                                    \
-    REGISTER_BINDING_ID_CPY(                                                                                                       \
-            ::fwServices::IService ,                                                                                               \
-            ServiceImpl ,                                                                                                          \
-            std::string ,                                                                                                          \
-            ::fwCore::TypeDemangler<ServiceImpl>().getClassname() ,                                                                \
-            BOOST_PP_CAT( __LINE__ , B ) ) ;
+            ) ;
 
 //@}
 

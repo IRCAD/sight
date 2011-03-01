@@ -1,22 +1,24 @@
 <plugin class="::uiPython::Plugin" id="uiPython">
 
-    <library name="uiPython"/>
+    <library name="uiPython" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
     <requirement id="binding" />
-    
 
-    
-    <point id="::uiPython::action::Test">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    
-    <point id="::uiPython::action::StringRun">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwData::String</implements>
-    </point>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPython::action::Test</service>
+        <object>::fwTools::Object</object>
+        <desc>exec python script print hello</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPython::action::StringRun</service>
+        <object>::fwData::String</object>
+        <desc>exec python script from the string</desc>
+    </extension>
+
 </plugin>

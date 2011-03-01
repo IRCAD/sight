@@ -6,7 +6,7 @@
 
 #include "fwServices/GlobalEventManager.hpp"
 #include "fwServices/IEditionService.hpp"
-#include "fwServices/ObjectServiceRegistry.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/op/Get.hpp"
 
 namespace fwServices
@@ -124,10 +124,13 @@ void GlobalEventManager::dispatch()
         SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
         OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
         ::fwTools::Object::sptr pSubject = pMsg->getSubject().lock();
-
-        ::fwServices::IEditionService::sptr srv;
-        srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
-        srv->notify( pMsg, options ) ;
+        if( ::fwServices::OSR::has(pSubject, "::fwServices::IEditionService") )
+        {
+            ::fwServices::IEditionService::sptr srv;
+            srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
+            srv->notify( pMsg, options ) ;
+            srv->getRootedClassname();
+        }
     }
     m_msgDeque.pop_front();
     m_dispatching = false;

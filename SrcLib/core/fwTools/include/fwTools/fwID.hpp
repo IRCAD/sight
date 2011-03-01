@@ -17,7 +17,8 @@
 #include "fwTools/config.hpp"
 #include "fwTools/macros.hpp"
 
-namespace fwTools {
+namespace fwTools
+{
 
 class Object;
 /**
@@ -32,7 +33,6 @@ class FWTOOLS_CLASS_API fwID
 {
 public:
 
-
     fwCoreClassDefinitionsWithFactoryMacro((fwID), (()), new fwID );
 
     typedef std::string IDType;
@@ -43,8 +43,6 @@ public:
         GENERATE    , // generate a new id if necessary
         MUST_EXIST    // throw an exception if object not have an id
     } Policy;
-
-
 
     /**
      * Test if the given id exist (i.e recorded in fwID dictionary)
@@ -57,12 +55,6 @@ public:
      * @brief retrieve the object attached to the given id. Return a null sptr if no correspondence exist
      */
     FWTOOLS_API static SPTR(::fwTools::Object ) getObject( IDType requestID );
-
-
-//
-//    /** @brief swap the id of the 2 object, if a object do not have a id then getID(...,GENERATE) will be used **/
-//    FWTOOLS_API static void swapID( ::fwTools::Object::sptr  obj1,  obj2 );
-
 
     FWTOOLS_API virtual ~fwID() ;
 
@@ -98,7 +90,6 @@ protected :
 
 
    IDType m_id;
-   //::fwTools::Object  *m_fwIDRelatedobject;
 
    typedef ::boost::unordered_map< IDType, WPTR(::fwTools::Object ) > Dictionary;
    typedef ::boost::unordered_map< std::string , ::boost::uint32_t >  CategorizedCounter;

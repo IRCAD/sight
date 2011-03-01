@@ -6,7 +6,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 

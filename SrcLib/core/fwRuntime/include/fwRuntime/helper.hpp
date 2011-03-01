@@ -50,6 +50,13 @@ FWRUNTIME_API ::boost::shared_ptr< ConfigurationElement > getCfgAsAnExtension( :
 FWRUNTIME_API std::vector< ::boost::shared_ptr< ConfigurationElement > > getAllCfgForPoint( std::string _extension_pt ) ;
 
 /**
+ * @brief   Returns extensions extending the _extension_pt extension point
+ * @author  IRCAD (Research and Development Team).
+
+ */
+FWRUNTIME_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(std::string extension_pt);
+
+/**
  * @brief       Returns contribution ids and configuration elements related to a given extension point
  * @param[in]   _extension_pt : identifier of the extension point to which configuration elements contribute
  * @return      Map associating contribution ids and associated configuration elements contributing to the extension point _extension_pt

@@ -1,6 +1,10 @@
 <plugin id="Tuto09MesherWithGenericScene">
 
-<extension id="Tuto09MesherWithGenericScene" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>Tuto09MesherWithGenericScene</id>
+        <type>standard</type>
+        <config>
+
 <object type="::fwData::Composite">
 
     <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
@@ -16,7 +20,7 @@
             <view sid="multiView_scene1" start="yes" />
         </registry>
     </service>
-    
+
     <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
         <gui>
             <layout>
@@ -29,8 +33,8 @@
             <menu sid="menu_Mesher" start="yes" />
         </registry>
     </service>
-    
-        
+
+
     <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
         <gui>
             <layout type="::fwGui::CardinalLayoutManager" >
@@ -67,13 +71,13 @@
         </registry>
     </service>
 
-    
+
     <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
         <snap>
             <scene uid="genericScene" />
         </snap>
     </service>
-    
+
     <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
         <gui>
             <layout>
@@ -114,12 +118,12 @@
     </service>
     <service uid="action_createMesh80" implementation="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoComChannel="no" >
             <start_if_exists uid="mesher80ServiceUID"/>
-    </service>  
+    </service>
 
     <!-- myPatientDB description -->
     <item key="myPatientDB">
         <object uid="myPatientDB" type="::fwData::PatientDB">
-            
+
             <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" >
                 <type mode="reader" />
                 <selection mode="exclude" />
@@ -131,7 +135,7 @@
                <addSelection service="::ioXML::FwXMLPatientDBWriterService" />
             </service>
             <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
-    
+
             <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
                 <target>myUpdaterAcq</target>
             </service>
@@ -143,11 +147,11 @@
             </service>
         </object>
     </item>
- 
+
     <!-- CompositeVisu description -->
     <item key="myCompositeVisu">
         <object uid="myCompositeVisu" type="::fwData::Composite">
-    
+
             <service uid="myMedicalImageManager" implementation="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6">
                 <update imageCompositeKey="myImage" />
             </service>
@@ -167,7 +171,7 @@
                 <update compositeKey="myReconstruction" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
                 <update compositeKey="myReconstruction" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
             </service>
-            
+
             <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes">
                 <mode type="stop" />
                 <config>
@@ -190,7 +194,10 @@
                          <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
                              <negatoAdaptor uid="MPRNegatoScene3D" />
                          </service>
-                         <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />
+                         <service uid="sliderIndexEditor" type="::gui::editor::IEditor"  implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" >
+                             <sliceIndex>axial</sliceIndex>
+                         </service>
+                         
                      </object>
                      <object id="myReconstruction" type="::fwData::Reconstruction" >
                          <service uid="organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
@@ -198,32 +205,32 @@
                      </object>
                 </config>
             </service>
-            
+
             <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
                 <scene>
-                
+
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
-                    
+
                     <renderer id="default" background="0.0" />
                     <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                         <config renderer="default" picker="" />
                     </adaptor>
-                     
+
                     <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
                         <config renderer="default" picker="" />
                     </adaptor>
-                    
+
                     <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
                         <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
                     </adaptor>
-                    
+
                      <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                         <config renderer="default" />
                     </adaptor>
-                    
+
                 </scene>
             </service>
-                    
+
         </object>
     </item>
 
@@ -237,19 +244,10 @@
     <start uid="myUpdaterComCannelImg"/>
     <start uid="myUpdaterComCannelReconst"/>
     <start uid="newOBject2newPatientDB"/>
-        
-    <stop uid="newOBject2newPatientDB"/>
-    <stop uid="myUpdaterComCannelReconst"/>
-    <stop uid="myUpdaterComCannelImg"/>
-    <stop uid="myUpdaterComCannelAcq"/>
-    <stop uid="myManager"/>
-    <stop uid="myMedicalImageManager"/>
-    <stop uid="myUpdaterReconst"/>
-    <stop uid="myUpdaterImg"/>
-    <stop uid="myUpdaterAcq"/>
-    <stop uid="MyIHM"/>
 
 </object>
-</extension>
+
+        </config>
+    </extension>
 
 </plugin>

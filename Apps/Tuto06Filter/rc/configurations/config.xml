@@ -1,9 +1,13 @@
 <plugin id="FilterConfiguration">
-    <extension id="FilterConfig" implements="::fwServices::ServiceObjectConfig">
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>FilterConfig</id>
+        <type>standard</type>
+        <config>
+        
     <!-- Root object -->
     <object type="::fwData::Composite">
         <!-- Windows & Main Menu -->
-        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
             <gui>
                 <frame>
                     <name>Filter</name>
@@ -96,9 +100,11 @@
         </item>
     
     <!-- Starting order of services -->
-    <start type="::fwGui::IFrameSrv" />
+    <start uid="myFrame" />
 
-    <stop type="::fwGui::IFrameSrv" />
+    
   </object>
-  </extension>
+  
+        </config>
+    </extension>
 </plugin>    

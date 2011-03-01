@@ -1,10 +1,14 @@
 ﻿<plugin id="TutoConfigurations">
-<extension id="tutoComChannelConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>tutoComChannelConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <!-- In tutoComChannel, the main data object type is ::fwData::TriangularMesh.-->
     <object type="::fwData::TriangularMesh">
 
-        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
             <gui>
                 <frame>
                     <name>tutoComChannel</name>
@@ -96,11 +100,13 @@
             <masterSlaveRelation>master</masterSlaveRelation>
         </service>
 
-        <start type="::fwGui::IFrameSrv" />
+        <start uid="myFrame" />
 
-        <stop type="::fwGui::IFrameSrv" />
+        
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>
 </plugin>

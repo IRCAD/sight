@@ -116,44 +116,28 @@ void Field::deepCopy( ::fwTools::Object::csptr _source )
 
 Object::Object() :
     m_timeStamp ( ::fwCore::TimeStamp::New()  ),
-    m_logicStamp( ::fwCore::LogicStamp::New() ),
-    m_deleter( IDeleter::New() )
+    m_logicStamp( ::fwCore::LogicStamp::New() )
 {
-    // TODO Auto-generated constructor stub
-    assert( m_deleter.get() );
+    m_OSRKey = ::fwCore::LogicStamp::New();
+    m_OSRKey->modified();
 }
 
 //------------------------------------------------------------------------------
 
 Object::~Object()
 {
-    // TODO Auto-generated destructor stub
-    m_deleter->Delete( this ) ;
+    ::fwTools::Factory::uninitData(m_OSRKey);
 }
 
 //------------------------------------------------------------------------------
 
 Object &Object::operator=(const Object &_obj)
 {
-    SLM_FATAL("This operator is forbiden, use shallowCopy or deepCopy instead.");
+    SLM_FATAL("This operator is forbidden, use shallowCopy or deepCopy instead.");
     m_children =_obj.m_children;
     m_timeStamp =_obj.m_timeStamp;
     m_logicStamp =_obj.m_logicStamp;
     return (*this);
-}
-
-//------------------------------------------------------------------------------
-
-void Object::setDeleter( ::fwTools::IDeleter::sptr _deleter )
-{
-    m_deleter = _deleter ;
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::IDeleter::sptr Object::getDeleter()
-{
-    return m_deleter ;
 }
 
 //------------------------------------------------------------------------------
@@ -299,7 +283,7 @@ void Object::removeField( const FieldID &fieldId )
     }
     else
     {
-        // field doesn no exist create it then append new element
+        // field does not exist, create it then append new element
         fwTools::Field::NewSptr newfield(fieldId);
         newfield->children().push_back(newSubObject);
         m_children.push_back( newfield);
@@ -387,76 +371,6 @@ void Object::deepCopyOfChildren( Object::csptr _source )
 }
 
 //-----------------------------------------------------------------------------
-
-
-
-
-
-
-//------------------------------------------------------------------------------
-
-
-
-// DEPRECATED
-//------------------------------------------------------------------------------
-//
-//bool Object::getFieldSize( const FieldID& id ) const throw()
-//{
-//  const ::fwTools::Field::sptr labeledObject =
-//      ::fwTools::Field::dynamicCast( getField( id ) );
-//  return labeledObject && !labeledObject->children().empty();
-//}
-////------------------------------------------------------------------------------
-//
-//bool Object::modifyField( const FieldID& id,
-//                          const ::fwTools::Object::sptr data ) throw()
-//{
-//  if ( getFieldSize( id ) )
-//  {
-//      setFieldSingleElement( id,  data );
-//      return true;
-//  }
-//  return false;
-//}
-
-
-
-//::fwTools::Field::sptr Object::setFieldSingleElement( const FieldID &fieldId,  ::fwTools::Object::sptr newSubObject )
-//{
-//  ::fwTools::Field::sptr field = getField(fieldId);
-//
-//  if ( field.get()==NULL )
-//  {
-//      ::fwTools::Field::NewSptr newfield(fieldId);
-//      newfield->children().push_back(newSubObject);
-//      m_children.push_back( newfield);
-//      return newfield;
-//  }
-//  else
-//  {
-//      // labeled object already exist set new subObject
-//      field->children().clear();
-//      field->children().push_back( newSubObject );
-//      return field ;
-//
-//  }
-//}
-
-////------------------------------------------------------------------------------
-//
-//void Object::setFieldElement(std::string _id, ::fwTools::Object::sptr _obj, unsigned int _index )
-//{
-//  ::fwTools::Field::sptr infoOfInterest = this->setField(_id) ;
-//  //infoOfInterest
-//  while( _index >= infoOfInterest->children().size() )
-//  {
-//        fwTools::Object::NewSptr newObject;
-//      infoOfInterest->children().push_back( newObject ) ;
-//  }
-//  infoOfInterest->children()[_index] = _obj ;
-//}
-
-
 
 } //namespace fwTools
 

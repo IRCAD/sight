@@ -31,7 +31,8 @@
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/RuntimeException.hpp>
-#include <fwServices/bundle/runtime.hpp>
+
+#include <fwServices/RootManager.hpp>
 
 #include <fwWX/convert.hpp>
 #include <fwWX/LoggerInitializer.hpp>
@@ -123,7 +124,7 @@ bool App::OnInit()
     }
 
     // Initialize root object : root object, views, ...
-    ::fwServices::OSR::initializeRootObject();
+    ::fwServices::RootManager::initializeRootObject();
 
     return TRUE;
 }
@@ -135,7 +136,7 @@ int App::OnExit()
     SLM_TRACE_FUNC();
 
     wxBeginBusyCursor();
-    ::fwServices::OSR::uninitializeRootObject();
+    ::fwServices::RootManager::uninitializeRootObject();
     wxEndBusyCursor();
 
     delete m_checker;

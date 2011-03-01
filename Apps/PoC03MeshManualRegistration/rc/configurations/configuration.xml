@@ -5,7 +5,11 @@
 <xi:include href="camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
 <xi:include href="worldViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude"/>
 
-<extension id="PoC03MeshManualRegistration" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>PoC03MeshManualRegistration</id>
+        <type>standard</type>
+        <config>
+        
 
 <object type="::fwData::Composite">
 
@@ -67,7 +71,9 @@
                             <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
                                 <negatoAdaptor uid="MPRNegatoScene3D" />
                             </service>
-                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" sliceIndex="axial" />
+                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" >
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
                         </object>
                     </config>
                 </service>
@@ -188,17 +194,9 @@
         <update uid="myCam1ReaderFile"/>
         <update uid="myCam2ReaderFile"/>
 
-        <stop uid="myCam2ReaderFile"/>
-        <stop uid="myCam1ReaderFile"/>
-        <stop uid="newOBject2newPatientDB"/>
-        <stop uid="myUpdaterComCannelImg" />
-        <stop uid="myUpdaterComCannelAcq" />
-        <stop uid="myManager" />
-        <stop uid="myUpdaterImg" />
-        <stop uid="myUpdaterAcq" />
-        <stop uid="MyIHM" />
-
 </object>
-</extension>
+
+        </config>
+    </extension>
 
 </plugin>

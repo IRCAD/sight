@@ -1,10 +1,14 @@
 <plugin id="tuto">
 
-    <extension id="tuto" implements="::fwServices::ServiceObjectConfig">
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>tuto</id>
+        <type>standard</type>
+        <config>
+        
 
         <object type="::fwData::Composite" >
         
-            <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+            <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
                 <gui>
                     <frame>
                         <name>Tuto10MatrixTransformInGS</name>
@@ -213,11 +217,13 @@
                 </object>
             </item>
             
-            <start type="::fwGui::IFrameSrv" />
+            <start uid="myFrame" />
             
-            <stop type="::fwGui::IFrameSrv" />
+            
 
         </object>
 
+    
+        </config>
     </extension>
 </plugin>

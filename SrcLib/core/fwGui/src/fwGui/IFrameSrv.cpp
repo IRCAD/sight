@@ -11,8 +11,11 @@
 #include <fwCore/base.hpp>
 #include <fwTools/fwID.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
+#include <fwServices/IEditionService.hpp>
+#include <fwServices/RootManager.hpp>
+
 
 #include "fwGui/IFrameSrv.hpp"
 
@@ -198,7 +201,7 @@ void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 void IFrameSrv::onCloseExit()
 {
     SLM_TRACE_FUNC();
-    ::fwServices::OSR::uninitializeRootObject();
+    ::fwServices::RootManager::uninitializeRootObject();
 }
 
 //-----------------------------------------------------------------------------

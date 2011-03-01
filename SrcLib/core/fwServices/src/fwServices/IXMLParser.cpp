@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/IXMLParser.hpp"
-#include "fwServices/op/New.hpp"
 
 
 
@@ -50,7 +49,7 @@ void IXMLParser::updating() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::setObjectConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem )
+void IXMLParser::setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem )
 {
     m_cfg = _cfgElem;
 }

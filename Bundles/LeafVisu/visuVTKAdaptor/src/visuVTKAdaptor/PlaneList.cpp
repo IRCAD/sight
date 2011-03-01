@@ -16,7 +16,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkCommand.h>
 #include <vtkCellPicker.h>
@@ -29,6 +29,7 @@
 
 #include "visuVTKAdaptor/Plane.hpp"
 #include "visuVTKAdaptor/PlaneList.hpp"
+#include <fwServices/IEditionService.hpp>
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ;
 

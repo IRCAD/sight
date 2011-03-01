@@ -8,7 +8,7 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/IToolBarSrv.hpp"

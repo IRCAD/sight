@@ -23,38 +23,11 @@ class Object;
 class Field;
 
 /**
- * @brief   Defines the abstract interface for deletion.
- * @class   IDeleter
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
- * @note    To be specialized to extend object destruction procedure.
- * @note    Typical use: for service unregistration while keeping data independant with respect to fwServices library and keeping the benefits of smart pointers use.
- */
-struct FWTOOLS_CLASS_API IDeleter : public ::fwCore::BaseObject
-{
-    fwCoreClassDefinitionsWithFactoryMacro((IDeleter), (()), new IDeleter );
-    /**
-     * @brief   Constructor : does nothing.
-     */
-    FWTOOLS_API IDeleter() {};
-    /**
-     * @brief   Destructor : does nothing.
-     */
-    FWTOOLS_API virtual ~IDeleter() {};
-
-    /// To trigger specific procedure when obj destructor is invoked - does nothing by default
-    FWTOOLS_API virtual void Delete( ::fwTools::Object *obj) {};
-
-};
-
-
-/**
  * @brief   Define Base class for FW4SPL objects and services
  * @class   Object
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-//class FWTOOLS_CLASS_API Object  : public ::boost::enable_shared_from_this<Object>
 class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject , protected ::fwTools::fwID
 {
 public:
@@ -80,15 +53,8 @@ public:
     FWTOOLS_API using  ::fwTools::fwID::swapID;
 
 
-
     /// return the sub class classname : an alias of this->getClassname
     FWTOOLS_API std::string className() const;
-
-    /// Usefull to externally define the way to delete an object
-    FWTOOLS_API void setDeleter( ::fwTools::IDeleter::sptr _deleter ) ;
-
-    /// Retrieve the object deleter
-    FWTOOLS_API ::fwTools::IDeleter::sptr getDeleter() ;
 
     FWTOOLS_API Object();
 
@@ -250,6 +216,8 @@ public:
     FWTOOLS_API ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
     FWTOOLS_API ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
 
+    FWTOOLS_API ::fwCore::LogicStamp::csptr getOSRKey() const { return m_OSRKey; }
+
 
 
     /**
@@ -301,16 +269,14 @@ protected :
 
 private :
 
-    /// Standard copy operator, forbiden.
+    /// Standard copy operator, forbidden.
     Object &operator=(const Object &_obj);
-
-    /// Abstract deleter for an object
-    ::fwTools::IDeleter::sptr m_deleter ;
 
     /// Name identification for an object
     std::string m_strName;
 
-
+    /// key used to register object in OSR
+    ::fwCore::LogicStamp::sptr m_OSRKey;
 };
 
 /**

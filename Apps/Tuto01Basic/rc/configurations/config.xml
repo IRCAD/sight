@@ -1,25 +1,23 @@
 <plugin id="tutoBasicConfig">
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>tutoBasicConfig</id>
+        <type>standard</type>
+        <config>
+            <object type="::fwData::Image">
 
-    <extension id="tutoBasicConfig" implements="::fwServices::ServiceObjectConfig">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                    <gui>
+                        <frame>
+                            <name>tutoBasicApplicationName</name>
+                            <icon>Bundles/Tuto01Basic_0-1/tuto.ico</icon>
+                            <minSize width="800" height="600" />
+                        </frame>
+                    </gui>
+                </service>
 
-        <object type="::fwTools::Object">
+                <start uid="myFrame" />
 
-            <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
-                <gui>
-                    <frame>
-                        <name>tutoBasicApplicationName</name>
-                        <icon>Bundles/Tuto01Basic_0-1/tuto.ico</icon>
-                        <minSize width="800" height="600"/>
-                    </frame>
-                </gui>
-            </service>
-
-            <start type="::fwGui::IFrameSrv" />
-            
-            <stop type="::fwGui::IFrameSrv" />
-
-        </object>
-        
+            </object>
+        </config>
     </extension>
-
 </plugin>

@@ -14,7 +14,6 @@
 #include <wx/window.h>
 #include <wx/minifram.h>
 
-#include <fwServices/monitor/Monitor.hpp>
 
 namespace fwWX
 {
@@ -32,9 +31,9 @@ public:
     /**
     * @brief    Constructor
     */
-    FWWX_API wxDialogMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesNames map_string, wxString title = _("Objects and Services Database")) ;
+    FWWX_API wxDialogMonitor(wxWindow* parent, wxMonitor::MapObjectServicesNamesType map_string, wxString title = _("Objects and Services Database")) ;
 
-    FWWX_API wxDialogMonitor(wxWindow* parent, fwServices::monitor::string_map map_string, wxString title = _("Objects and Services Database")) ;
+    FWWX_API wxDialogMonitor(wxWindow* parent, wxMonitor::string_map map_string, wxString title = _("Objects and Services Database")) ;
 
     FWWX_API void setOnSelectionCallback( wxMonitorCallback::ptr callback);
 

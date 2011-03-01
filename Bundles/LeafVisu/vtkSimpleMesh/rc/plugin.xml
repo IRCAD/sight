@@ -3,10 +3,11 @@
 
 
 <!--    REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::TriangularMesh) ;  -->
-<point id="::vtkSimpleMesh::RendererService" >
-    <implements>::fwRender::IRender</implements>
-    <implements>::fwData::TriangularMesh</implements>
-</point>
+<extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::vtkSimpleMesh::RendererService</service>
+        <object>::fwData::TriangularMesh</object>
+    </extension>
 
     
 </plugin>

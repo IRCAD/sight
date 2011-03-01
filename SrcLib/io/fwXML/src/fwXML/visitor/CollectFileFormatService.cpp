@@ -5,10 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-
-#include "fwXML/visitor/CollectFileFormatService.hpp"
-#include <fwServices/helper.hpp>
 #include <fwTools/UUID.hpp>
+
 #include <fwData/visitor/accept.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Resection.hpp>
@@ -17,38 +15,44 @@
 #include <fwData/Node.hpp>
 #include <fwData/Graph.hpp>
 
-//#include <libxml/tree.h>
+#include <fwServices/Base.hpp>
+
+#include "fwXML/visitor/CollectFileFormatService.hpp"
 
 namespace visitor
 {
 
+//------------------------------------------------------------------------------
+
 CollectFileFormatService::CollectFileFormatService()
-{
-}
+{}
+
+//------------------------------------------------------------------------------
 
 CollectFileFormatService::~CollectFileFormatService()
-{
-}
+{}
 
-
+//------------------------------------------------------------------------------
 
 void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
 {
     std::string uuid = ::fwTools::UUID::get(obj);
-    std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
+    std::string srcUuid = m_source ? ::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     OSLM_TRACE( "CollectFileFormatService Visitor Visiting : Class " << obj->className() <<
                 "(" <<  uuid    <<
-                ") HASt<FileFormatService>" <<  (fwServices::has< ::fwXML::IFileFormatService >(obj)?"yes":"no") <<
+                ") HASt<FileFormatService>" <<  (::fwServices::OSR::has(obj, "::fwXML::IFileFormatService")?"yes":"no") <<
                 "ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
                 );
 
 
     SLM_ASSERT("Objets is null",obj);
-    if ( fwServices::has< ::fwXML::IFileFormatService >( obj ) )
+    if ( ::fwServices::OSR::has(obj, "::fwXML::IFileFormatService") )
     {
-        m_objWithFileFormatService[obj] = fwServices::get< ::fwXML::IFileFormatService >( obj );
+        m_objWithFileFormatService[obj] = ::fwServices::get< ::fwXML::IFileFormatService >( obj );
     }
 }
+
+//------------------------------------------------------------------------------
 
 void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
@@ -118,7 +122,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 }
 

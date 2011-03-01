@@ -7,18 +7,12 @@
 #ifndef XMLTRANSLATOR_H_
 #define XMLTRANSLATOR_H_
 
-#include <boost/shared_ptr.hpp>
-
 #include <libxml/tree.h>
 
 #include <fwCore/base.hpp>
+#include <fwTools/Object.hpp>
 
 #include "fwXML/config.hpp"
-
-namespace fwTools
-{
-class Object;
-}
 
 namespace fwXML
 {
@@ -40,10 +34,10 @@ public:
     FWXML_API virtual ~XMLTranslator();
 
     /// get XML from current object
-    FWXML_API virtual xmlNodePtr getXMLFrom( ::boost::shared_ptr< ::fwTools::Object> obj ) = 0;
+    FWXML_API virtual xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj ) = 0;
 
     /// get Object from an XML node
-    FWXML_API virtual void updateDataFromXML( ::boost::shared_ptr< ::fwTools::Object> toUpdate,  xmlNodePtr source) = 0;
+    FWXML_API virtual void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source) = 0;
 
 };
 

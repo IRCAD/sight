@@ -5,108 +5,96 @@
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
 
-    <point id="::gui::editor::IEditor">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::gui::editor::IDialogEditor">
-        <implements>::fwServices::IService</implements>
-    </point>
-        
-    <point id="::gui::view::IView">
-        <implements>::fwServices::IService</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IFrameSrv</type>
+        <service>::gui::frame::DefaultFrame</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
-    <point id="::fwGui::IFrameSrv">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::fwGui::IActionSrv">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::fwGui::IMenuSrv">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::gui::aspect::IToolBar">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::fwGui::IMenuBarSrv">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <point id="::gui::frame::DefaultFrame">
-        <implements>::fwGui::IFrameSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::gui::aspect::DefaultMenuSrv">
-        <implements>::fwGui::IMenuSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::gui::aspect::DefaultMenuBarSrv">
-        <implements>::fwGui::IMenuBarSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-        
-    <point id="::gui::view::DefaultView">
-        <implements>::gui::view::IView</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-        
-    <point id="::gui::action::NothingActionSrv">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-        
-    <point id="::gui::action::CloseAction">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::gui::action::QuitAction">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-        
-    <point id="::gui::action::StarterActionService">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>    
-    
-    <point id="::gui::aspect::DefaultToolBarSrv">
-        <implements>::fwGui::IToolBarSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::gui::action::ConfigActionSrv">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::gui::action::ConfigActionSrvWithKey">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
-    <point id="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IMenuSrv</type>
+        <service>::gui::aspect::DefaultMenuSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
-    <point id="::gui::action::ModifyLayoutActionSrv">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IMenuBarSrv</type>
+        <service>::gui::aspect::DefaultMenuBarSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::view::IView</type>
+        <service>::gui::view::DefaultView</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::NothingActionSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::CloseAction</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::QuitAction</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::StarterActionService</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IToolBarSrv</type>
+        <service>::gui::aspect::DefaultToolBarSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::ConfigActionSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::ConfigActionSrvWithKey</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::ConfigActionSrvWithKeySendingConfigTemplate</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::ModifyLayoutActionSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
     
-    <!-- 
-    <point id="::gui::action::ActionNotifyService">
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IDeliveryDelegate</type>
+        <service>::fwGui::MessageHandler</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <!--
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::ActionNotifyService</service>
+        <object>::fwTools::Object</object>
+    </extension>
     -->
-    
+
 </plugin>
