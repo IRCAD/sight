@@ -141,16 +141,22 @@ const ObjectService::KSContainer  & ObjectService::getKSContainer()
 std::string ObjectService::getRegistryInformation()
 {
     std::stringstream info;
+    ::fwCore::LogicStamp::LogicStampType previousKey;
+
     BOOST_FOREACH( KSContainer::left_map::value_type objSrvMap, getDefault()->m_container.left)
     {
         // TODO FIXME getObject() failed if there are expired object in OSR
         //::fwTools::Object::sptr obj = objSrvMap.second->getObject();
         ::fwCore::LogicStamp::LogicStampType key = objSrvMap.first;
-        info << "New object found in OSR" << std::endl;
-        //info << "Object ( uid = "<< obj->getID() <<" , classname = "<< obj->getClassname() <<" ) has "
-        info << "Object ( key = "<<key<<" ) has "
-                << getDefault()->m_container.left.count(key) <<" services." << std::endl;
 
+        //info << "Object ( uid = "<< obj->getID() <<" , classname = "<< obj->getClassname() <<" ) has "
+
+        if ( previousKey != key )
+        {
+            info    << "Object ( key = "<<key<<" ) has "
+                    << getDefault()->m_container.left.count(key) <<" services." << std::endl;
+            previousKey = key;
+        }
         ::fwServices::IService::sptr service = objSrvMap.second;
         info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname()
                          <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
