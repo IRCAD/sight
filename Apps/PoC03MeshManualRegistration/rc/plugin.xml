@@ -2,10 +2,10 @@
 
     <requirement id="servicesReg" />
 
-    <xi:include href="organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="worldViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/worldViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC03MeshManualRegistration</id>
@@ -15,7 +15,7 @@
 
             <object type="::fwData::Composite">
 
-                <xi:include href="frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+                <xi:include href="configurations/frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
                 <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
                     <snap>

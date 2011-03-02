@@ -9,11 +9,13 @@
     <activate id="visuVTKQt" version="0-1" />
 
     <activate id="gui" version="0-1" />
-    <activate id="guiQt" version="0-1" >
-        <param id="startingMode" value="windows" />
+    <activate id="guiQt" version="0-1" />
+    
+    <activate id="Tuto02DataServiceBasic" />
+    <activate id="appXml" version="0-1" >
         <param id="config" value="tutoDataServiceBasicConfig" />
-        <param id="configFile" value="./Bundles/Tuto02DataServiceBasic_0-1/configurations/config.xml" />
     </activate>
+
 
     <!-- List of the specific bundles that need to be loaded in this application context. -->
     <!-- The ioVTK bundle (input output VTK) is a set of writing and reading services using the VTK library. -->
@@ -24,5 +26,7 @@
     <start id="dataReg" />
     <start id="visuVTKQt" />
     <start id="guiQt" />  
+    <start id="appXml" />
+    
        
 </profile>
