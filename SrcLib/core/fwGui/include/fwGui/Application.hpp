@@ -37,7 +37,7 @@ protected:
 
 
     /// Application factory, returning the registered intance of Application. Manage a Singleton.
-    static Application::sptr factory();
+    FWGUI_API static Application::sptr factory();
 
     FWGUI_API Application();
     FWGUI_API virtual ~Application();
