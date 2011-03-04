@@ -12,7 +12,6 @@
 
 #include <fwData/Histogram.hpp>
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
-#include "fwXML/boostSerializer/DynamicType.hpp"
 
 
 
