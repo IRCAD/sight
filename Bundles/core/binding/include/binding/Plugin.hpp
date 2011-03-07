@@ -4,13 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
- 
+
 #ifndef _BINDING_PLUGIN_HPP_
 #define _BINDING_PLUGIN_HPP_
 
 
 #include <fwRuntime/Plugin.hpp>
 
+#include "binding/config.hpp"
 
 namespace binding
 {
@@ -21,19 +22,19 @@ namespace binding
 * @date    2010.
 */
 
-struct Plugin : public ::fwRuntime::Plugin
+class BINDING_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
-
+public:
     /**
      * @brief   destructor
      */
-    ~Plugin() throw();
+    BINDING_API ~Plugin() throw();
 
     // Overrides
-    void start() throw(::fwRuntime::RuntimeException);
+    BINDING_API void start() throw(::fwRuntime::RuntimeException);
 
     // Overrides
-    void stop() throw();
+    BINDING_API void stop() throw();
 
 };
 
