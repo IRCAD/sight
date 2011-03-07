@@ -42,7 +42,7 @@ void QtMainFrame::setCloseCallback(CloseCallback fct)
 void QtMainFrame::closeEvent(QCloseEvent *event)
 {
     SLM_TRACE_FUNC();
-    event->ignore();
+//    event->ignore();
     m_fctCloseCallback();
 }
 
