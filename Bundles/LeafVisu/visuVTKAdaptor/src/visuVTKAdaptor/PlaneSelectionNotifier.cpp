@@ -177,6 +177,16 @@ void PlaneSelectionNotifier::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw
                 this->selectPlane(plane);
             }
         }
+        if (planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE))
+        {
+            //Remove comChannel
+            ::fwTools::Object::csptr dataInfo = planeListMsg->getDataInfo(::fwComEd::PlaneListMsg::REMOVE_PLANE);
+
+            SLM_ASSERT("Sorry, Missing data info", dataInfo);
+            ::fwData::Plane::sptr plane = ::fwData::Plane::dynamicCast(::fwTools::Object::constCast(dataInfo));
+
+            ::fwServices::unregisterCommunicationChannel(plane, this->getSptr() );
+        }
         if ( (!showPlanes && planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY ))
                 || planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES ) )
         {
