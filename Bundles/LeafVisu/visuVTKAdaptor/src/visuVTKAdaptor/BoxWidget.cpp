@@ -14,12 +14,13 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 
 #include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/BoxWidget.hpp"
+#include <fwServices/IEditionService.hpp>
 
 namespace visuVTKAdaptor
 {

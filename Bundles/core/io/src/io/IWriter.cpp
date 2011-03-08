@@ -7,7 +7,7 @@
 #include "io/IWriter.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 namespace io
 {

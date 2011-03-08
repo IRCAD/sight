@@ -33,6 +33,7 @@ public:
     // Overrides
     GUIWX_API void stop() throw();
 
+    GUIWX_API int run() throw();
 };
 
 } // namespace guiWx

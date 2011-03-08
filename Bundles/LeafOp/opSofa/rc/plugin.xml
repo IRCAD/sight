@@ -6,39 +6,46 @@
     <requirement id="servicesReg" />
     <requirement id="io" />
     
-    <point id="::opSofa::SofaCoreSrv" >
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwData::Acquisition</implements>
-    </point>
+    <extension implements="ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::opSofa::SofaCoreSrv</service>
+        <object>::fwData::Acquisition</object>
+    </extension>
   
-    <point id="::opSofa::SofaStartSrv" >
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwData::Acquisition</implements>
-    </point>
+    <extension implements="ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::opSofa::SofaStartSrv</service>
+        <object>::fwData::Acquisition</object>
+    </extension>
     
-    <point id="::opSofa::SofaSceneWriterSrv" >
-        <implements>::io::IWriter</implements>
-        <implements>::fwData::Acquisition</implements>
-    </point>
+    <extension implements="ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::opSofa::SofaSceneWriterSrv</service>
+        <object>::fwData::Acquisition</object>
+    </extension>
 
-    <point id="::opSofa::SofaSceneReaderSrv" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::Acquisition</implements>
-    </point>
+    <extension implements="ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::opSofa::SofaSceneReaderSrv</service>
+        <object>::fwData::Acquisition</object>
+    </extension>
 
-    <point id="::opSofa::SofaTrianSrv" >
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
+    <extension implements="ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::opSofa::SofaTrianSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
-    <point id="::opSofa::SofaMeshEditorSrv" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::Acquisition</implements>
-    </point>
+    <extension implements="ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::opSofa::SofaMeshEditorSrv</service>
+        <object>::fwData::Acquisition</object>
+    </extension>
 
-  <point id="::opSofa::BoxWidget" >
-    <implements>::fwRenderVTK::IVtkAdaptorService</implements>
-    <implements>::fwData::TransformationMatrix3D</implements>
-  </point>
+  <extension implements="ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::opSofa::BoxWidget</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
     
 </plugin>

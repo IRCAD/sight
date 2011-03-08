@@ -3,6 +3,7 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
 #include <iostream>
 #include <wx/menu.h>
 
@@ -13,7 +14,9 @@
 namespace fwWX
 {
 
-wxMonitor::wxMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesNames & map_string )
+//------------------------------------------------------------------------------
+
+wxMonitor::wxMonitor(wxWindow* parent, wxMonitor::MapObjectServicesNamesType & map_string )
  : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX)
 {
     wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
@@ -31,13 +34,6 @@ wxMonitor::wxMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesN
     this->SetSizer( sizer ) ;
     sizer->SetSizeHints( parent ) ;
 
-
-
-    ///m_tree = new wxTreeCtrl(this, wxID_ANY, wxPoint(20,150), wxSize(500, 500), wxTR_DEFAULT_STYLE);
-
-    /*sizer->Add(m_tree, flagsExpand);
-    SetSizer(sizer);*/
-
     //------------------------------------------------------------------------------
     //---------------------------construct Tree--------------------------------
     std::string string_tmp ="Services :" ;
@@ -45,7 +41,7 @@ wxMonitor::wxMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesN
     wxTreeItemId itemPere, itemFils ;
     itemPere = m_tree->AddRoot( itemTreeLabel ) ; // Root= "Racine"
 
-    ::fwServices::monitor::map_object_servicesNames::iterator iter_map ;
+    wxMonitor::MapObjectServicesNamesType::iterator iter_map ;
     std::list<std::string>::iterator iter_list ;
 
     wxTreeItemId item_with_services = m_tree->AppendItem(m_tree->GetRootItem(), ::fwWX::std2wx("With Services") ) ;
@@ -89,13 +85,13 @@ wxMonitor::wxMonitor(wxWindow* parent, fwServices::monitor::map_object_servicesN
     //-----------------------------------------------------------------------------------
 
     m_tree->ExpandAll() ;
-    //this->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler(wxMonitor::OpenMenu)) ;
-    //this->Connect(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, wxTreeEventHandler(wxMonitor::OpenMenu)) ;
     this->Connect(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, wxTreeEventHandler(wxMonitor::OnSelection)) ;
     this->Connect(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler(wxMonitor::OnSelection)) ;
 }
 
-wxMonitor::wxMonitor(wxWindow* parent, ::fwServices::monitor::string_map & map_string )
+//------------------------------------------------------------------------------
+
+wxMonitor::wxMonitor(wxWindow* parent, wxMonitor::string_map & map_string )
  : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX)
 {
     wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
@@ -111,19 +107,18 @@ wxMonitor::wxMonitor(wxWindow* parent, ::fwServices::monitor::string_map & map_s
     wxTreeItemId itemPere, itemFils ;
     itemPere = m_tree->AddRoot( itemTreeLabel ) ;
 
-    ::fwServices::monitor::string_map::iterator iter_map ;
+    wxMonitor::string_map::iterator iter_map ;
     std::list<std::string>::iterator iter_list ;
 
     wxTreeItemId item_with_services = m_tree->AppendItem(m_tree->GetRootItem(), ::fwWX::std2wx("With Services") ) ;
     wxTreeItemId item_without_services = m_tree->AppendItem(m_tree->GetRootItem(), ::fwWX::std2wx("Without Services") ) ;
-
 
     for ( iter_map = map_string.begin() ;
         iter_map != map_string.end() ;
         ++iter_map )
     {
         std::stringstream object_name_ss ;
-        object_name_ss << (*iter_map).first ; //<< "( " << (*iter_map).first << " ) ";
+        object_name_ss << (*iter_map).first ;
 
         if ( (*iter_map).second.empty() )
         {
@@ -147,10 +142,14 @@ wxMonitor::wxMonitor(wxWindow* parent, ::fwServices::monitor::string_map & map_s
     m_tree->ExpandAll() ;
 }
 
+//------------------------------------------------------------------------------
+
 void wxMonitor::setOnSelectionCallback( wxMonitorCallback::ptr callback)
 {
     m_onSelectionCallback = callback;
 }
+
+//------------------------------------------------------------------------------
 
 void wxMonitor::OnSelection( wxTreeEvent& event )
 {
@@ -159,27 +158,23 @@ void wxMonitor::OnSelection( wxTreeEvent& event )
     {
         m_tree->SelectItem(event.GetItem()) ;
     }
-
     //check if current item has an itemData
     if ( m_tree->GetItemData( event.GetItem() ) != NULL )
     {
         ObjectPtrItemData* tmp = dynamic_cast<ObjectPtrItemData*> ( m_tree->GetItemData( event.GetItem() ) ) ;
-        //Object_ServicesGraph * graphOnObject = new Object_ServicesGraph(tmp->GetObjectPtr()) ;
-        //Object_CommunicationGraph * graphOnObject = new Object_CommunicationGraph(tmp->GetObjectPtr()) ;
-
         if (m_onSelectionCallback)
         {
             (*m_onSelectionCallback.get())(tmp, m_radioBox->GetSelection());
         }
-
     }
 }
 
+//------------------------------------------------------------------------------
 
 wxMonitor::~wxMonitor()
-{
+{}
 
-}
+//------------------------------------------------------------------------------
 
 }//namespace fwWX
 

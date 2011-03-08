@@ -6,9 +6,10 @@
     <requirement id="servicesReg" />
     <requirement id="io" />
     
-    <point id="::opKinect::KinectSrv" >
-        <implements>::fwGui::IActionSrv</implements>
-        <implements>::fwData::Acquisition</implements>
-    </point>
+    <extension implements="ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::opKinect::KinectSrv</service>
+        <object>::fwData::Acquisition</object>
+    </extension>
     
 </plugin>

@@ -13,6 +13,8 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/path.hpp>
 
+#include "fwCore/base.hpp"
+
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
@@ -56,24 +58,24 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      * @name    Type definitions
      */
     //@{
-    typedef std::set< ::boost::shared_ptr< ExecutableFactory > >    ExecutableFactoryContainer;     ///< Defines the executable factory container type.
-    typedef ExecutableFactoryContainer::const_iterator              ExecutableFactoryConstIterator; ///< Defines the executable factory container constant iterator type.
+    typedef std::set< SPTR( ExecutableFactory ) >      ExecutableFactoryContainer;     ///< Defines the executable factory container type.
+    typedef ExecutableFactoryContainer::const_iterator ExecutableFactoryConstIterator; ///< Defines the executable factory container constant iterator type.
 
-    typedef std::set< ::boost::shared_ptr< Extension > >        ExtensionContainer;             ///< Defines the extension container type.
-    typedef ExtensionContainer::const_iterator                  ExtensionConstIterator;         ///< Defines the extension container constant iterator type.
+    typedef std::set< SPTR( Extension ) >      ExtensionContainer;             ///< Defines the extension container type.
+    typedef ExtensionContainer::const_iterator ExtensionConstIterator;         ///< Defines the extension container constant iterator type.
 
-    typedef std::set< ::boost::shared_ptr< ExtensionPoint > >   ExtensionPointContainer;        ///< Defines the extension point container type.
-    typedef ExtensionPointContainer::const_iterator             ExtensionPointConstIterator;    ///< Defines the extension point container constant iterator type.
+    typedef std::set< SPTR( ExtensionPoint ) >      ExtensionPointContainer;        ///< Defines the extension point container type.
+    typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator;    ///< Defines the extension point container constant iterator type.
 
-    typedef std::set< ::boost::shared_ptr<dl::Library> >        LibraryContainer;               ///< Defines the dynamic library container type.
-    typedef LibraryContainer::const_iterator                    LibraryConstIterator;           ///< Defines the dynamic library container constant iterator type.
+    typedef std::set< SPTR(dl::Library) >     LibraryContainer;               ///< Defines the dynamic library container type.
+    typedef LibraryContainer::const_iterator  LibraryConstIterator;           ///< Defines the dynamic library container constant iterator type.
     //@}
 
 
     /**
      * @brief   Retrieves the pointer to the bundle that is currently loading its dynamic libraries
      */
-    static ::boost::shared_ptr< Bundle > getLoadingBundle();
+    static SPTR( Bundle ) getLoadingBundle();
 
 
     /**
@@ -85,7 +87,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @param[in]   library a shared pointer to the library to add
      */
-    FWRUNTIME_API void addLibrary( ::boost::shared_ptr< dl::Library > library );
+    FWRUNTIME_API void addLibrary( SPTR( dl::Library ) library );
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -114,7 +116,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @param[in]   factory a shared pointer to the executable factory instance to add
      */
-    FWRUNTIME_API void addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory );
+    FWRUNTIME_API void addExecutableFactory( SPTR( ExecutableFactory ) factory );
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -150,7 +152,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @return      a shared pointer to the found executable factory instance or null if none
      */
-    FWRUNTIME_API ::boost::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string & type ) const;
+    FWRUNTIME_API SPTR( ExecutableFactory ) findExecutableFactory( const std::string & type ) const;
     //@}
 
 
@@ -163,7 +165,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @param[in]   extension   a shared pointer to the extension to add
      */
-    void addExtension( ::boost::shared_ptr< Extension > extension );
+    void addExtension( SPTR( Extension ) extension );
 
     /**
      * @brief       Tells if an specific extension exists.
@@ -212,7 +214,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @param[in]   extension   a shared pointer to the extension point to add
      */
-    void addExtensionPoint( ::boost::shared_ptr< ExtensionPoint > extension );
+    void addExtensionPoint( SPTR( ExtensionPoint ) extension );
 
     /**
      * @brief       Retrieves the extension point for the given identifier.
@@ -221,7 +223,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @return      a shared pointer to the found extensoin point, may be empty if none
      */
-    FWRUNTIME_API ::boost::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string & identifier ) const;
+    FWRUNTIME_API SPTR( ExtensionPoint ) findExtensionPoint( const std::string & identifier ) const;
 
     /**
      * @brief       Tells if a specific extension point exists.
@@ -305,7 +307,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @return  a shared pointer to a plugin instance or null if the bundle has not been started.
      */
-    FWRUNTIME_API ::boost::shared_ptr< IPlugin > getPlugin() const;
+    FWRUNTIME_API SPTR( IPlugin ) getPlugin() const;
     //@}
 
 
@@ -334,6 +336,17 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
     FWRUNTIME_API void start() throw(RuntimeException);
 
     FWRUNTIME_API void stop() throw(RuntimeException);
+    //@}
+
+
+    /**
+     * @brief   Initialize the bundle.
+     *
+     * @remark  The bundle and it's own dependencies must be started to be able to be initialized.
+     */
+    FWRUNTIME_API void initialize() throw(RuntimeException);
+
+    FWRUNTIME_API void uninitialize() throw(RuntimeException);
     //@}
 
 
@@ -370,6 +383,9 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
     FWRUNTIME_API const bool hasParameter( const std::string & name ) const;
     //@}
 
+
+    FWRUNTIME_API bool isStarted()     {return m_started;};
+    FWRUNTIME_API bool isInitialized() {return m_initialized;};
 
 protected:
 
@@ -409,7 +425,7 @@ private:
     typedef std::set< std::string >                 RequirementContainer;   ///< Defines the requirement container type.
     typedef std::map< std::string, std::string >    ParameterContainer;     ///< defines the parameter container type
 
-    static ::boost::shared_ptr< Bundle >        m_loadingBundle;        ///< a pointer to the bundle that is currently loading its dynamic libaries
+    static SPTR( Bundle )           m_loadingBundle;        ///< a pointer to the bundle that is currently loading its dynamic libaries
 
     const boost::filesystem::path   m_location;             ///< the path to the bundle location
     const std::string               m_identifier;           ///< a string containing the bundle identifier
@@ -421,9 +437,11 @@ private:
     ExecutableFactoryContainer      m_executableFactories;  ///< all executable factories
     LibraryContainer                m_libraries;            ///< all libaries that are part of the bundle
     RequirementContainer            m_requirements;         ///< all requirements of the bundle
-     ::boost::shared_ptr< IPlugin >         m_plugin;               ///< a shared pointer to the plugin instance
+    SPTR( IPlugin )                 m_plugin;               ///< a shared pointer to the plugin instance
     ParameterContainer              m_parameters;           ///< all parameters
 
+    bool m_started;
+    bool m_initialized;
 
     /**
      * @brief   Assignement operator.

@@ -1,0 +1,17 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+USE = ['numpy']
+BUNDLES = [
+        'io',
+        'ioVTK',
+        'uiIO',
+        'guiQt',
+        'binding',
+        'uiPython',
+        'dataReg',
+        'servicesReg',
+        'appXml_0-1',
+        'launcher_0-1',
+ ]
+
+

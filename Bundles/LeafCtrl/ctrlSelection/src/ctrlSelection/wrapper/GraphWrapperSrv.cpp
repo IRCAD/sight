@@ -7,7 +7,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwData/Graph.hpp>
 
@@ -15,6 +15,7 @@
 
 
 #include "ctrlSelection/wrapper/GraphWrapperSrv.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::GraphWrapperSrv, ::fwData::Graph ) ;

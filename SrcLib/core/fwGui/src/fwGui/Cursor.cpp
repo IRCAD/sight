@@ -27,14 +27,20 @@ Cursor::~Cursor()
 
 void Cursor::setCursor( ::fwGui::ICursor::CursorType cursor)
 {
-    m_implementation->setCursor(cursor);
+    if(m_implementation)
+    {
+        m_implementation->setCursor(cursor);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void Cursor::setDefaultCursor()
 {
-    m_implementation->setDefaultCursor();
+    if(m_implementation)
+    {
+        m_implementation->setDefaultCursor();
+    }
 }
 
 //-----------------------------------------------------------------------------

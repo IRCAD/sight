@@ -18,7 +18,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCellPicker.h>
@@ -33,6 +33,7 @@
 #include "fwRenderVTK/vtk/Helpers.hpp"
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;

@@ -70,7 +70,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
     *
     * @return  an configuration element container
     */
-    FWRUNTIME_API const Container getElements();
+    FWRUNTIME_API const Container & getElements() const;
 
     /**
      * @brief       Retrieves the first configuration corresponding to the specified name.
@@ -80,6 +80,15 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      * @return      a pointer to a configuration element instance or null if none
      */
     FWRUNTIME_API const ::boost::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & name ) const;
+
+    /**
+     * @brief       Test if has an configuration corresponding to the specified name.
+     *
+     * @param[in]   name    a string containing a configuration element name
+     *
+     * @return      true if the method find at least one configuration
+     */
+    FWRUNTIME_API bool hasConfigurationElement( const std::string & name ) const;
 
 
     /**

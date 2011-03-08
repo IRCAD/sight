@@ -13,17 +13,19 @@
 namespace fwXML
 {
 
-TrivialXMLTranslator::TrivialXMLTranslator() {};
+//------------------------------------------------------------------------------
 
-TrivialXMLTranslator::~TrivialXMLTranslator() {};
+TrivialXMLTranslator::TrivialXMLTranslator()
+{}
 
+//------------------------------------------------------------------------------
 
+TrivialXMLTranslator::~TrivialXMLTranslator()
+{}
 
+//------------------------------------------------------------------------------
 
-
-
-
-xmlNodePtr TrivialXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr TrivialXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
@@ -32,8 +34,9 @@ xmlNodePtr TrivialXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object
     return node;
 }
 
+//------------------------------------------------------------------------------
 
-void TrivialXMLTranslator::updateDataFromXML(::boost::shared_ptr<fwTools::Object>, xmlNode*)
+void TrivialXMLTranslator::updateDataFromXML(::fwTools::Object::sptr , xmlNode* )
 {
     return;
 }

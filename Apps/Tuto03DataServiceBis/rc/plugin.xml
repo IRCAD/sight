@@ -1,0 +1,103 @@
+﻿<plugin id="Tuto03DataServiceBis">
+
+<requirement id="servicesReg" />
+    
+<extension implements="::fwServices::registry::AppConfig">
+        <id>tutoDataServiceConfig</id>
+        <type>standard</type>
+        <config>
+        
+
+    <!-- The root data object in tutoDataService is a ::fwData::TriangularMesh. -->
+    <object type="::fwData::TriangularMesh">
+
+
+        <!-- Graphical user interface manager.
+        In the tag <menus> we specify the identifiers of different services for the different menus.
+        In this tutorial, only one service (::gui::aspect::IMenu type) is created,
+        since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
+        it's an FW4SPL identifier. -->
+        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <gui>
+                <frame>
+                    <name>tutoDataService bis</name>
+                    <icon>Bundles/Tuto03DataServiceBis_0-1/tuto.ico</icon>
+                    <minSize width="800" height="600" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="myMenuBar" start="yes" />
+                <view sid="myRenderingTuto" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                     <menu name="File" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menu_File" start="yes" />
+            </registry>
+        </service>
+        
+        <!-- The ::gui::aspect::DefaultMenu service creates the menu "File". This menu contains two menuItems (with a separator).
+        The actions associated with these two menuItem are identified with the uid "action_openFile" and "action_quit". -->
+        <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Open file" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_openFile" start="yes" />
+                <menuItem sid="action_quit" start="yes" />
+            </registry>
+        </service>
+
+        <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
+        we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "OpenFile".
+        In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile". -->
+        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+            <start uid="myReaderPathFile"/>
+        </service>
+        <!-- The second service (::gui::action::QuitAction) is a generic action that will close the application
+        when the user click on the menuItem "Quit".
+        It's possible to associate with this kind of service (::gui::action::IAction) specific attributes to configure their style, shortcut... 
+        (Note:
+               In this tutorial, there is an attribute specialAction with the value "QUIT". On MS Windows, there's no impact.
+               But on Mac OS, this value installs the menuItem in the system menu bar,
+               and on Linux this value installs the default 'Quit' system icon in the menuItem.)    
+               The attribute "shortcut" is set with the value "Ctrl+Q" to close the application with this specific shortcut. -->
+        <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+
+        <!-- The service ::uiIO::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::StarterActionService. 
+        Indeed, the uid of the service ::uiIO::editor::IOSelectorService is the same as the uid 
+        defined in the service configuration ::gui::action::StarterActionService ( "myReaderPathFile").
+        This service lists all services available to read a data TriangularMesh and
+        it displays a dialog box to select the appropriate service.
+        (Note: 
+              if there is only one reading service, it's directly selected without dialog box.)
+        When the service was chosen, it is started by the ::uiIO::editor::IOSelectorService service. -->
+        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" />
+
+        <!-- This service (::vtkSimpleMesh::RendererService) is a 3D visualization service of medical meshes. -->
+        <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" >
+            <!--<win guiContainerId="900"/>-->
+        </service>
+
+        <start uid="myFrame" />
+
+        
+
+    </object>
+
+
+        </config>
+    </extension>
+</plugin>

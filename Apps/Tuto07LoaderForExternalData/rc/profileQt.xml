@@ -6,10 +6,11 @@
     <activate id="io" version="0-1" />
 
     <activate id="gui" version="0-1" />
-    <activate id="guiQt" version="0-1" >
-        <param id="startingMode" value="windows" />
+    <activate id="guiQt" version="0-1" />
+
+    <activate id="Tuto07LoaderForExternalData" version="0-1" />
+    <activate id="appXml" version="0-1">
         <param id="config" value="tutoLoaderExternalDataConfig" />
-        <param id="configFile" value="./Bundles/Tuto07LoaderForExternalData_0-1/configurations/config.xml" />
     </activate>
 
     <!-- List of specific bundles. -->
@@ -20,6 +21,7 @@
     <activate id="uiIO" version="0-1" />
 
     <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
     <activate id="vtkSimpleNegato" version="0-1" />
     
@@ -30,4 +32,6 @@
     <start id="ioTuto"/>
     <start id="visuVTKQt" />
     <start id="guiQt" />
+    <start id="appXml" />
+    
 </profile>

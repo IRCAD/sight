@@ -37,7 +37,7 @@ public :
 
 public :
 
-    FWSERVICES_API void setObjectConfig( ::fwRuntime::ConfigurationElement::sptr _cfgElem );
+    FWSERVICES_API void setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem );
 
     FWSERVICES_API virtual void createConfig( ::fwTools::Object::sptr _obj );
 
@@ -49,7 +49,7 @@ public :
 
     FWSERVICES_API virtual void destroyConfig();
 
-    ::fwRuntime::ConfigurationElement::sptr m_cfg;
+    ::fwRuntime::ConfigurationElement::csptr m_cfg;
 
 protected:
 

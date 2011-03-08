@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/** 
+/**
  * @file spyLog.hpp
  * @brief This file defines SpyLog macros.
  * These macros are used to log messages to a file or to the console during
  * application execution.
  *
- * Six log levels are defined : 
+ * Six log levels are defined :
  * -# Fatal
  * -# Error
  * -# Warning
@@ -18,19 +18,19 @@
  * -# Debug
  * -# Trace
  *
- * Log level is set by defining SPYLOG_LEVEL to N where 0 < N <= 6. If log 
+ * Log level is set by defining SPYLOG_LEVEL to N where 0 < N <= 6. If log
  * level is set to N, every log level lesser than N will be enabled, the other
  * macro will be define but won't have any effect.
  *
  * Each log level macro has two variant : SLM_<level> and OSLM_<level>.
- * - SLM_ variant is a simple log message macros, append a loglevel-tagged 
+ * - SLM_ variant is a simple log message macros, append a loglevel-tagged
  *   log message to the logger.
  *   - Example : SLM_FATAL( "This should not happend" );
- * - OSLM_ variant is a stringstream log message macros, it is the same as 
- *   "Simple log message macros", but accept a stream as arguement. 
+ * - OSLM_ variant is a stringstream log message macros, it is the same as
+ *   "Simple log message macros", but accept a stream as arguement.
  *   - Example : OSLM_INFO( "Count : " << i );
  *
- * FATAL macros have a particular behaviour : the application is aborted after 
+ * FATAL macros have a particular behaviour : the application is aborted after
  * the message was logged.
  *
  * @author IRCAD (Research and Development Team).
@@ -176,15 +176,19 @@
             std::stringstream oslStr1;                                      \
             oslStr1 << "Assertion '" << #cond << "' failed: " << message ;  \
             log.fatal(oslStr1.str(), __FILE__, __LINE__);                   \
-            SPYLOG_ABORT();                                                   \
+            SPYLOG_ABORT();                                                 \
         }                                                                   \
     }
 
-    #define OSL_ASSERT(log, message, cond) {                                    \
-                                            std::stringstream oslStr;           \
-                                            oslStr << message;                  \
-                                            SL_ASSERT(log, oslStr.str(), cond); \
-                                           }
+    #define OSL_ASSERT(log, message, cond)       \
+    {                                            \
+        if( !(cond) )                            \
+        {                                        \
+            std::stringstream oslStr;            \
+            oslStr << message;                   \
+            SL_ASSERT(log, oslStr.str(), cond);  \
+        }                                        \
+    }
 #else
     #define SL_ASSERT(log, message, cond)
     #define OSL_ASSERT(log, message, cond)
@@ -275,7 +279,7 @@
  * @name Special macros
  * @{ */
 
-/** @brief work like 'assert' from 'cassert', with in addition a message logged by 
+/** @brief work like 'assert' from 'cassert', with in addition a message logged by
  * spylog (with FATAL loglevel)  */
 #define SLM_ASSERT(message, cond)  SL_ASSERT (_SPYLOG_SPYLOGGER_, message, cond)
 #define OSLM_ASSERT(message, cond) OSL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)

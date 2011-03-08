@@ -22,9 +22,9 @@
 #include "fwData/Composite.hpp"
 #include "fwData/String.hpp"
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 
 #include <fwComEd/InteractionMsg.hpp>

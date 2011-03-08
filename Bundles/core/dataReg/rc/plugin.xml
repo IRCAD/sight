@@ -3,10 +3,10 @@
     <library name="dataReg" />
 
     <!-- ROOT STRUCTURES -->
-    <extension-point id="::fwTools::Object" />
+    <!-- <extension-point id="::fwTools::Object" />  -->
 
     <!-- SPECIFIC DATA -->
-    <point id="::fwData::Composite">
+    <!-- <point id="::fwData::Composite">
         <implements>::fwTools::Object</implements>
     </point>
     <point id="::fwData::ProcessObject">
@@ -95,6 +95,6 @@
     </point>
     <point id="::fwData::TransformationMatrix3D">
         <implements>::fwTools::Object</implements>
-    </point>
+    </point> -->
     
 </plugin>

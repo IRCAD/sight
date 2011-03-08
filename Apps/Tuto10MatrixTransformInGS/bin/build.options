@@ -1,7 +1,7 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
 
-BUNDLES = [ 
+BUNDLES = [
     'io_0-1'                ,
     'gui_0-1'               ,
     'dataReg_0-1'           ,
@@ -16,7 +16,8 @@ BUNDLES = [
     'visuVTK_0-1'           ,
     'visuVTKWx_0-1'         ,
     'visuVTKQt_0-1'         ,
-    'visuVTKAdaptor_0-1'              
+    'visuVTKAdaptor_0-1'    ,
+    'appXml_0-1'            ,
  ]
 
 

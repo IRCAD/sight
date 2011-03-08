@@ -1,4 +1,8 @@
-<extension id="camViewManagerConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>camViewManagerConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
 
@@ -58,8 +62,8 @@
         <!-- START AND STOP SERVICES -->
         <start uid="camViewManagerConfigFrame" />
 
-        <stop uid="camViewManagerConfigFrame" />
-
     </object>
 
-</extension>
+
+        </config>
+    </extension>

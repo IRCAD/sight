@@ -7,8 +7,8 @@
 #include <boost/filesystem/operations.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/helper.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
@@ -184,13 +184,8 @@ void MeshReaderService::notificationOfUpdate()
     ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
     assert( pTriangularMesh );
 
-//  ::fwServices::IEditionService::sptr editor = ::fwServices::get< ::fwServices::IEditionService >( pTriangularMesh ) ;
-//  ::fwServices::ObjectMsg::sptr msg( new ::fwServices::ObjectMsg(pTriangularMesh) ) ;
-//  msg->setAllModified( ) ;
     ::fwComEd::TriangularMeshMsg::NewSptr msg;;
     msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
-
-//  editor->notify( msg );
     ::fwServices::IEditionService::notify(this->getSptr(), pTriangularMesh, msg);
 }
 

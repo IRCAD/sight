@@ -29,8 +29,9 @@ namespace profile
  * @date    2007-2009
  * @author  IRCAD (Research and Development Team).
  */
-class Stopper : public ::fwRuntime::profile::Starter
+class Stopper :  public boost::noncopyable
 {
+
 public:
 
     /**
@@ -38,7 +39,7 @@ public:
      *
      * @param[in]   identifier  a string containing a bundle identifier
      */
-    FWRUNTIME_API Stopper( ::boost::shared_ptr< Starter > starter );
+    FWRUNTIME_API Stopper( const std::string   & _identifier );
 
     /**
      * @brief   Applies the Stopper on the system.
@@ -46,6 +47,10 @@ public:
      * @remark  This method should be called directly.
      */
     void apply();
+
+private :
+
+    const std::string   m_identifier;   ///< a bundle identifier
 };
 
 

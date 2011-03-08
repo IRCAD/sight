@@ -33,6 +33,7 @@ public:
     FWGUIQT_API App(int & argc, char ** argv);
 
 public slots :
+  void aboutToQuit();
   void onExit();
 
 };

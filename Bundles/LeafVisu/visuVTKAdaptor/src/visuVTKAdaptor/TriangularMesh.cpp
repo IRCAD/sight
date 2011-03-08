@@ -487,7 +487,7 @@ void TriangularMesh::doStart() throw(fwTools::Failed)
 void TriangularMesh::doStop() throw(fwTools::Failed)
 {
     m_transformService.lock()->stop();
-    ::fwServices::erase(m_transformService.lock());
+    ::fwServices::OSR::unregisterService(m_transformService.lock());
 
     this->removeAllPropFromRenderer();
     if (this->getPicker())

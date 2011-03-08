@@ -7,7 +7,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -15,6 +15,7 @@
 
 
 #include "ctrlSelection/wrapper/ImageWrapperSrv.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ImageWrapperSrv, ::fwData::Image ) ;

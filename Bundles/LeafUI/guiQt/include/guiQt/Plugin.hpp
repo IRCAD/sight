@@ -7,9 +7,13 @@
 #ifndef _GUIQT_PLUGIN_HPP_
 #define _GUIQT_PLUGIN_HPP_
 
+#include <QPointer>
+
 #include <fwRuntime/Plugin.hpp>
 
 #include "guiQt/config.hpp"
+
+class QApplication;
 
 namespace guiQt
 {
@@ -32,6 +36,13 @@ public:
 
     // Overrides
     GUIQT_API void stop() throw();
+
+
+    GUIQT_API int run() throw();
+
+private:
+    QPointer< QApplication > m_app;
+    int m_argc;
 
 };
 

@@ -7,12 +7,12 @@
     <activate id="visuVTKQt" version="0-1" />
 
     <activate id="gui" version="0-1" />
-    <activate id="guiQt" version="0-1" >
-        <param id="startingMode" value="windows" />
-        <param id="config" value="Tuto12Picker" />
-        <param id="configFile" value="./Bundles/Tuto12Picker_0-1/configurations/configTutoPicker.xml" />
-    </activate>
+    <activate id="guiQt" version="0-1" />
 
+    <activate id="Tuto12Picker" version="0-1" />
+    <activate id="appXml" version="0-1">
+        <param id="config" value="Tuto12Picker" />
+    </activate>
     <activate id="ctrlSelection" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioXML" version="0-1" />
@@ -27,5 +27,6 @@
     <start id="visuVTKAdaptor" />
     <start id="visuVTKQt" />
     <start id="guiQt" />
+    <start id="appXml" />
 
 </profile>

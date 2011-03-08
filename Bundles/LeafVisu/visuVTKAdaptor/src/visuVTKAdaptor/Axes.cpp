@@ -7,7 +7,7 @@
 /// FW4SPL Includes
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 /// VTK Includes
 #include <vtkProperty.h>

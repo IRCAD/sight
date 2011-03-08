@@ -11,11 +11,10 @@
 #include "fwRuntime/io/Validator.hpp"
 
 
-
 namespace fwRuntime
 {
 
-
+//------------------------------------------------------------------------------
 
 ExtensionPoint::ExtensionPoint( const ::boost::shared_ptr< Bundle > bundle, const std::string & id, const boost::filesystem::path & schema )
 :   BundleElement   ( bundle ),
@@ -23,22 +22,21 @@ ExtensionPoint::ExtensionPoint( const ::boost::shared_ptr< Bundle > bundle, cons
     m_schema        ( schema )
 {}
 
-
+//------------------------------------------------------------------------------
 
 const std::string & ExtensionPoint::getIdentifier() const
 {
     return m_id;
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
 {
-    if( m_schema.empty() == false && !m_validator )
+    if( !m_schema.empty() && !m_validator )
     {
         try
         {
-
             const boost::filesystem::path   schemaPath = getBundle()->getLocation() / m_schema;
             OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
             m_validator = ::boost::shared_ptr< io::Validator >( new io::Validator(schemaPath) );
@@ -48,15 +46,14 @@ const std::string & ExtensionPoint::getIdentifier() const
             throw RuntimeException( "Error while creating a validator. " + std::string(e.what()) );
         }
     }
-
     return m_validator;
 }
 
-
+//------------------------------------------------------------------------------
 
 void ExtensionPoint::operator=( const ExtensionPoint & ) throw()
 {}
 
-
+//------------------------------------------------------------------------------
 
 } // namespace fwRuntime

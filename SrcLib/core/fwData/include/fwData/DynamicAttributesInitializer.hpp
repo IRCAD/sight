@@ -13,8 +13,11 @@ class FWDATA_CLASS_API  DynamicAttributesInitializer: public ::fwTools::Factory:
 {
 
 public :
+    fwCoreClassDefinitionsWithFactoryMacro((DynamicAttributesInitializer), (()), new DynamicAttributesInitializer );
+
     FWDATA_API DynamicAttributesInitializer(){};
-    FWDATA_API virtual void init( WPTR( ::fwTools::Object ) _obj);
+    FWDATA_API virtual void init( ::fwTools::Object::wptr _obj);
+    FWDATA_API virtual void uninit( ::fwCore::LogicStamp::csptr key );
 
 };
 

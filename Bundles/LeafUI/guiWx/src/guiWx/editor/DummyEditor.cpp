@@ -17,9 +17,9 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwWX/convert.hpp>
 #include <fwTools/fwID.hpp>
 

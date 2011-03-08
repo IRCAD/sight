@@ -228,4 +228,15 @@ std::map< std::string , ::boost::shared_ptr< ConfigurationElement > > getAllIdAn
 
 //------------------------------------------------------------------------------
 
+std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(std::string extension_pt)
+{
+    typedef std::vector< ::boost::shared_ptr< Extension > > ExtensionContainer;
+    typedef std::back_insert_iterator< ExtensionContainer > Inserter;
+
+    ExtensionContainer  extElements;
+    Inserter            extInserter(extElements);
+
+    ::fwRuntime::getAllExtensionsForPoint ( extension_pt , extInserter );
+    return extElements;
+}
 }

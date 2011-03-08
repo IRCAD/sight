@@ -75,7 +75,7 @@ void ImageReaderService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose an vtk file to load an image");
+    dialogFile.setTitle("Choose a vtk file to load an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);

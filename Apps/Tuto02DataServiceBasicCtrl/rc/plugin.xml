@@ -1,0 +1,6 @@
+<plugin id="Tuto02DataServiceBasicCtrl" class="::tuto02DataServiceBasicCtrl::Plugin" >
+
+    <requirement id="servicesReg" />
+    <library name="Tuto02DataServiceBasicCtrl" />
+
+</plugin>

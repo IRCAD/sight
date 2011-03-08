@@ -6,7 +6,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-//#include <fwServices/ConfigTemplateManager.hpp>
+//#include <fwServices/AppConfigManager.hpp>
 
 #include <gui/action/ConfigActionSrv.hpp>
 
@@ -99,7 +99,7 @@ private:
     /**
      * @brief keep the association between the PATTERN and the associated key  as fieldAdaptors[PATTERN] = AssociatedKey.
      */
-    std::map< std::string, std::string > m_fieldAdaptors;
+    ::fwData::Composite::sptr m_fieldAdaptors;
 
 };
 

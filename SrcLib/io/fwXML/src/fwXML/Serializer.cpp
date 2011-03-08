@@ -16,8 +16,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/helper.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwTools/Factory.hpp>
@@ -190,7 +190,7 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
     for ( iter= collector.m_objWithFileFormatService.begin(); iter != collector.m_objWithFileFormatService.end(); ++iter )
     {
          ::fwXML::IFileFormatService::sptr filedata = iter->second;
-        assert( fwServices::get< ::fwXML::IFileFormatService >( iter->first ));
+        OSLM_ASSERT("No IFileFormatService found for Object "<<iter->first->getID(), ::fwServices::OSR::has(iter->first, "::fwXML::IFileFormatService"));
         filedata->rootFolder() = this->rootFolder();
         boost::filesystem::path filePath =  filedata->getFullPath() ;
         std::string msg = savingMode?"saving":"loading";
@@ -200,6 +200,8 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
 
         filedata->addHandler( handlerHelper );
         savingMode ? filedata->save() : filedata->load() ;
+        // remove IFileFormatService in OSR
+        ::fwServices::OSR::unregisterService(filedata);
         handlerHelper.m_currentStep++;
     }
 
@@ -242,7 +244,7 @@ int nbObjectHavingFileFormatService()
     while( aggIter != ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator().end() )
     {
         ::fwTools::Object::sptr obj =  aggIter->first.lock();
-        if ( obj && fwServices::has< ::fwXML::IFileFormatService >( obj ) )
+        if ( obj && ::fwServices::OSR::has(obj, "::fwXML::IFileFormatService") )
         {
             nbObjects++;
         }

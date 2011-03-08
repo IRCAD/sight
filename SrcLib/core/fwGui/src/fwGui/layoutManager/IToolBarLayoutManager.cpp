@@ -59,7 +59,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
                 info.m_name = toolBarItem->getExistingAttributeValue("name") ;
             }
 
-            SLM_ASSERT("missing <icon> attribute", toolBarItem->hasAttribute("icon"));
+            //SLM_ASSERT("missing <icon> attribute", toolBarItem->hasAttribute("icon"));
             if( toolBarItem->hasAttribute("icon") )
             {
                 info.m_icon = toolBarItem->getExistingAttributeValue("icon") ;

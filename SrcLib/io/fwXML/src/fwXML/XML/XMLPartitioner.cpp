@@ -9,8 +9,9 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
-#include <fwServices/helper.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwDataIO/writer/IObjectWriter.hpp>
 
@@ -28,7 +29,7 @@
 #include "fwXML/policy/DefaultPathPolicy.hpp"
 
 
-boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = boost::shared_ptr< fwXML::XMLPartitioner >();
+::boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = boost::shared_ptr< fwXML::XMLPartitioner >();
 
 
 namespace fwXML
@@ -89,25 +90,32 @@ void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSpli
 
 void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
 {
-    if ( ::fwServices::support< IFileFormatService >(obj) )
+    if ( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService") )
     {
-        ::fwXML::IFileFormatService::sptr  saver = ::fwServices::get< ::fwXML::IFileFormatService >(obj,0);
-
-        if (saver)
+        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(obj);
+        ::fwXML::IFileFormatService::sptr saver;
+        if( filesSrv.empty() )
         {
-            ::boost::shared_ptr< XMLAggregator > aggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[obj];
-            saver->rootFolder()  = aggregator->rootFolder();
-            saver->localFolder() = aggregator->localFolder();
-            saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
-            saver->extension() = saver->getWriter()->extension();
-            SLM_DEBUG("update path");
+            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(obj->getClassname(), "::fwXML::IFileFormatService");
+            saver = ::fwServices::add< ::fwXML::IFileFormatService >(obj, defaultImpl);
         }
+        else
+        {
+            saver = filesSrv.at(0);
+        }
+
+        ::fwXML::XMLAggregator::sptr aggregator =  ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator()[obj];
+        saver->rootFolder()  = aggregator->rootFolder();
+        saver->localFolder() = aggregator->localFolder();
+        saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
+        saver->extension() = saver->getWriter()->extension();
+        SLM_DEBUG("update path");
     }
 }
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLPartitioner::manage( ::boost::shared_ptr< fwTools::Object > father, ::boost::shared_ptr< fwTools::Object >  son )
+xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Object::sptr  son )
 {
     XMLHierarchy::getDefault()->mapChildFather()[son]=father;
     XMLHierarchy::getDefault()->mapFatherChildren()[father].insert(son);

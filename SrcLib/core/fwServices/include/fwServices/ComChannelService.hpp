@@ -15,6 +15,7 @@ namespace fwServices
 {
 
 class ObjectMsg ;
+class IEditionService;
 
 /**
  * @brief Default communication channel between a source (IEditionService, the subject, associated to a given observed object) and a destination (the service receiving and processing modifications fired by the subject)

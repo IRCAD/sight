@@ -67,6 +67,12 @@ public:
     /// @brief Get the value (constant version).
     const T& value() const throw() { return m_value; }
 
+    /// @brief set the value 
+    void setValue(const T &newValue) throw() { m_value = newValue; }
+
+    /// @brief get the value 
+    T getValue() const throw() { return m_value; }
+
     /// @brief Conversion to a scalar type.
     operator T() throw() { return m_value; }
 

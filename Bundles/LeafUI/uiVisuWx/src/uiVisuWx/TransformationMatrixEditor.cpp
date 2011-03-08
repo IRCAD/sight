@@ -18,6 +18,7 @@
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwServices/Base.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwGuiWx/container/WxContainer.hpp>
 #include <fwWX/convert.hpp>

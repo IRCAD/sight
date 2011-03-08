@@ -1,5 +1,6 @@
-#include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
 #include <fwComEd/CompositeMsg.hpp>
@@ -137,9 +138,10 @@ void ConfigActionSrvWithKey::startConfig()
     }
 
     // Init manager
-    m_configTemplateManager = ::fwServices::ConfigTemplateManager::New();
-    m_configTemplateManager->setConfig( m_viewConfigId, "::fwServices::ServiceObjectConfig" );
-    m_configTemplateManager->setFieldAdaptors( finalMap );
+    ::fwRuntime::ConfigurationElement::csptr config =
+            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_viewConfigId, finalMap );
+    m_configTemplateManager = ::fwServices::AppConfigManager::New();
+    m_configTemplateManager->setConfig( config );
 
     // Launch config
     m_configTemplateManager->launch();

@@ -16,29 +16,42 @@ namespace dialog
 ProgressDialog::ProgressDialog(const std::string &title,const std::string &message)
 {
     m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog>( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
-    m_implementation->setTitle(title);
-    m_implementation->setMessage(message);
+    if(m_implementation)
+    {
+        m_implementation->setTitle(title);
+        m_implementation->setMessage(message);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void ProgressDialog::setTitle(const std::string &title)
 {
-    m_implementation->setTitle(title);
+    if(m_implementation)
+    {
+        m_implementation->setTitle(title);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void ProgressDialog::setMessage(const std::string &msg)
 {
-    m_implementation->setMessage(msg);
+    if(m_implementation)
+    {
+        m_implementation->setMessage(msg);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void ProgressDialog::operator()(float percent,std::string msg)
 {
-    (*m_implementation)(percent,msg);
+    if(m_implementation)
+    {
+
+        (*m_implementation)(percent,msg);
+    }
 }
 
 } //namespace dialog

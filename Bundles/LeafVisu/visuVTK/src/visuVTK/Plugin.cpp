@@ -6,7 +6,7 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwRender/IRender.hpp>
@@ -29,7 +29,6 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     SLM_TRACE_FUNC();
-    //REGISTER_SERVICE( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite) ;
 
     ::fwRenderVTK::vtk::Instantiator::ClassInitialize();
 }

@@ -10,6 +10,7 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -20,13 +21,15 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -114,21 +117,31 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     this->initialize();
 
-    if(m_configuration->hasAttribute("sliceIndex"))
+    if( this->m_configuration->size() > 0 )
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
+        SLM_ASSERT("Sorry, only one xml element \"sliceIndex\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
+        SLM_ASSERT("Sorry, xml element \"sliceIndex\" is empty.", ! (*iter)->getValue().empty() );
+        std::string  orientation = (*iter)->getValue();
+        ::boost::algorithm::trim(orientation);
+        ::boost::algorithm::to_lower(orientation);
+
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
+        else
+        {
+            SLM_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
+        }
     }
 }
 
@@ -209,7 +222,7 @@ void SliceIndexPositionEditor::updateSliceIndex()
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
     unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
 
-    // Update wxSlider
+    // Update QSlider
     int max = image->getSize()[m_orientation]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
     m_sliceSelectorPanel->setSliceValue( index );
@@ -223,13 +236,6 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
     m_sliceSelectorPanel->setTypeSelection( static_cast< int >( type ) );
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    // Get Index
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
-    unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
-    int max = image->getSize()[m_orientation]-1;
-    m_sliceSelectorPanel->setSliceRange( 0, max );
-    m_sliceSelectorPanel->setSliceValue( index );
     this->updateSliceIndex();
 }
 
