@@ -99,12 +99,9 @@ void PatchNoVersionToNewData( xmlNodePtr node )
         }
         catch ( ::fwTools::Failed ef)
         {
-            OSLM_TRACE(" no attrib class for node->name=" << NodeName )
+            OSLM_TRACE(" no attrib class for node->name=" << NodeName );
         }
         OSLM_INFO( "PatchNoVersionToNewData nodeName=" << NodeName << " className=" << className);
-
-
-
 
         // renaming class attribute if required
         if ( !className.empty() )
@@ -260,7 +257,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     // serialize
     std::ofstream ofs_xml( m_rootFolder.string().c_str() );
 
-    assert(object); // check if object is well instanciated
+    SLM_ASSERT("object not instanced", object); // check if object is well instanciated
     OSLM_INFO( "Serializing to " <<   m_rootFolder.string().c_str() << "...." );
     ProcessedXMLFile =  m_rootFolder.string();
 

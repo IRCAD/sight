@@ -86,7 +86,7 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
-    assert( pPatientDB );
+    SLM_ASSERT("pPatientDB not instanced", pPatientDB);
 
     if ( pPatientDB->getPatientSize() > 0 )
     {

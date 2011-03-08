@@ -53,7 +53,7 @@ void GzBufferImageReader::read()
 
     gzFile rawFile = gzopen(file.native_file_string().c_str(), "rb");
 
-    assert(rawFile);
+    SLM_ASSERT("rawFile not instanced", rawFile);
     if ( rawFile == 0 )
     {
         std::string str = "Unable to open ";

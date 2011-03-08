@@ -91,7 +91,7 @@ void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer
     // get new reader
     ::fwDataIO::reader::IObjectReader::sptr reader;
     reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
-    assert(reader);
+    SLM_ASSERT("reader not instanced", reader);
 
     // assign to FileFormatService
     binLoader->setReader( reader );
@@ -103,7 +103,7 @@ xmlNodePtr TriangularMeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj 
 {
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
     xmlNodePtr bufferNode = xmlAddChild( node, xmlNewNode(NULL, BAD_CAST "Buffer"));
-    assert( bufferNode ); // bufferNode must be found !!!
+    SLM_ASSERT("bufferNode not instanced", bufferNode); // bufferNode must be found !!!
 
     // delegate process
     manageSavingBuffer( bufferNode, ::fwData::TriangularMesh::dynamicCast(obj) );
@@ -118,7 +118,7 @@ void TriangularMeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toU
 
     // search "<Buffer/>" node
     xmlNodePtr bufferNode = XMLParser::findChildNamed( source, std::string("Buffer") );
-    assert( bufferNode ); // bufferNode must be found !!!
+    SLM_ASSERT("bufferNode not instanced", bufferNode); // bufferNode must be found !!!
     manageLoadingBuffer( bufferNode , ::fwData::TriangularMesh::dynamicCast(toUpdate) );
 }
 

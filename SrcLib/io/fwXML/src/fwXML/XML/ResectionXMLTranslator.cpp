@@ -29,7 +29,7 @@ xmlNodePtr ResectionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
 
     ::fwData::Resection::sptr pResection = ::fwData::Resection::dynamicCast(obj);
-    assert( pResection );
+    SLM_ASSERT("pResection not instanced", pResection);
 
     // create master node with className+id
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
@@ -61,7 +61,7 @@ xmlNodePtr ResectionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( toUpdate ); // object should exist
+    SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
     ::fwData::Resection::sptr pResection = ::fwData::Resection::dynamicCast(toUpdate);
     pResection->getRefInputs().clear();
@@ -100,7 +100,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                         valueObj = Serializer().ObjectsFromXml( inputsNode, true );
 
                         // Add reconstruction in the vector
-                        assert( valueObj );
+                        SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Reconstruction::dynamicCast( valueObj ) );
                         pResection->getRefInputs().push_back( ::fwData::Reconstruction::dynamicCast( valueObj ) );
 
@@ -120,7 +120,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                         valueObj = Serializer().ObjectsFromXml( outputsNode, true );
 
                         // Add reconstruction in the vector
-                        assert( valueObj );
+                        SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Reconstruction::dynamicCast( valueObj ) );
                         pResection->getRefOutputs().push_back( ::fwData::Reconstruction::dynamicCast( valueObj ) );
 
@@ -134,9 +134,9 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                 valueObj = Serializer().ObjectsFromXml( elementNode, true );
 
                 // Add PlaneList in the vector
-                assert( valueObj );
+                SLM_ASSERT("valueObj not instanced", valueObj);
                 ::fwData::PlaneList::sptr planeList = ::fwData::PlaneList::dynamicCast( valueObj );
-                assert( planeList );
+                SLM_ASSERT("planeList not instanced", planeList);
                 pResection->setPlaneList( planeList );
             }
 

@@ -91,8 +91,8 @@ public:
             if ( eventId == START_SLICING_EVENT)
             {
                 SLM_TRACE("vtkEvent: MiddleButtonPressEvent");
-                assert(m_adaptor);
-                assert(m_picker);
+                SLM_ASSERT("m_adaptor not instanced", m_adaptor);
+                SLM_ASSERT("m_picker not instanced", m_picker);
 
                 double pickPoint[3];
                 double pickedPoint[3];
@@ -130,8 +130,8 @@ public:
             else if ( eventId == STOP_SLICING_EVENT)
             {
                 SLM_TRACE("vtkEvent: MiddleButtonReleaseEvent");
-                assert(m_adaptor);
-                assert(m_picker);
+                SLM_ASSERT("m_adaptor not instanced", m_adaptor);
+                SLM_ASSERT("m_picker not instanced", m_picker);
 
                 if(m_mouseMoveObserved)
                 {
@@ -147,7 +147,7 @@ public:
             else if (eventId == vtkCommand::MouseMoveEvent)
             {
                 SLM_TRACE("vtkEvent: MouseMoveEvent");
-                assert(m_mouseMoveObserved);
+                SLM_ASSERT("m_mouseMoveObserved not instanced", m_mouseMoveObserved);
 
                 int x,y;
                 double pickPoint[3];

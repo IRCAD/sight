@@ -118,7 +118,7 @@ const bool DataFolderValidator::validate( xmlNodePtr node )
 
 const bool DataFolderValidator::validateSingle( xmlNodePtr node )
 {
-    assert(node);
+    SLM_ASSERT("node not instanced", node);
     std::string key( (const char*)(node->name) );
     boost::filesystem::path xsdPath = m_schemaPath[key];
 

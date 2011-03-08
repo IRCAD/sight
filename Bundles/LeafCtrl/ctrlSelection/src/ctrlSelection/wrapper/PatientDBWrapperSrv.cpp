@@ -49,7 +49,7 @@ void PatientDBWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) thr
     if ( message->hasEvent( ::fwServices:: ObjectMsg::UPDATED_OBJECT ) )
     {
         ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >();
-        assert( pDPDB );
+        SLM_ASSERT("pDPDB not instanced", pDPDB);
 
         assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == pDPDB );
 

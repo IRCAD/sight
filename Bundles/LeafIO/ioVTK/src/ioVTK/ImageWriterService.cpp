@@ -164,7 +164,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
-        assert(pImage);
+        SLM_ASSERT("pImage not instanced", pImage);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

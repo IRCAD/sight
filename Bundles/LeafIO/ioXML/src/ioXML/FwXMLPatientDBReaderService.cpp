@@ -228,7 +228,7 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             {
                 // Retrieve dataStruct associated with this service
                 ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
-                assert( associatedPatientDB ) ;
+                SLM_ASSERT("associatedPatientDB not instanced", associatedPatientDB);
 
                 associatedPatientDB->shallowCopy( patientDB );
 
@@ -271,7 +271,7 @@ void FwXMLPatientDBReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE("FwXMLPatientDBReaderService::notificationOfDBUpdate");
     ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >();
-    assert( pDPDB );
+    SLM_ASSERT("pDPDB not instanced", pDPDB);
 
     ::fwComEd::PatientDBMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT, pDPDB );

@@ -118,7 +118,7 @@ bool wxZipFolder::unpackFolder( const wxString & _srcZipFileName, const wxString
             // Create Directories
             wxFileName dirPath = wxFileName::DirName( filePath.GetPath() );
             bool mkdir = dirPath.Mkdir( wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL );
-            assert( mkdir );
+            SLM_ASSERT("mkdir not instanced", mkdir);
 
             // Read zip and writ it in file
             wxFileOutputStream fileStream ( name );

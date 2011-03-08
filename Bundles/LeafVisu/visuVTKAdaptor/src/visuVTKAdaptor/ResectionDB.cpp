@@ -89,7 +89,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( *iter, "::visuVTKAdaptor::Resection" );
-        assert(service);
+        SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
         service->setRenderId( this->getRenderId() );
@@ -108,7 +108,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resec, "::visuVTKAdaptor::Resection" );
-        assert(service);
+        SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
         service->setRenderId( this->getRenderId() );

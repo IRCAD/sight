@@ -47,7 +47,7 @@ ProgressDialog::~ProgressDialog()
 
 FWWX_API void ProgressDialog::operator()(float percent,std::string msg)
 {
-    assert(m_pdialog);
+    SLM_ASSERT("m_pdialog not instanced", m_pdialog);
     int value = (int)(percent*100);
     OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
     m_pdialog->Show(true); // can be hidden if previous load as finished

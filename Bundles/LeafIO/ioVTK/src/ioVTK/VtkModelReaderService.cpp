@@ -124,7 +124,7 @@ void VtkModelReaderService::updating() throw(::fwTools::Failed)
     }
 
     ::fwData::Model::sptr model = this->getObject< ::fwData::Model >( );
-    assert( model ) ;
+    SLM_ASSERT("model not instanced", model);
 
     ::fwData::Model::NewSptr backupModel;
     backupModel->shallowCopy(model);

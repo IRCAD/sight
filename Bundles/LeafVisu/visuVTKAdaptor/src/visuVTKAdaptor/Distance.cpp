@@ -81,7 +81,7 @@ Distance::~Distance() throw()
 
 void Distance::setAxisColor( ::fwData::Color::sptr newColor) throw()
 {
-    assert(newColor);
+    SLM_ASSERT("newColor not instanced", newColor);
     m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(
             newColor->red(),newColor->green(),newColor->blue() );
     m_distanceRepresentation->GetAxis()->GetProperty()->SetOpacity(newColor->alpha() );

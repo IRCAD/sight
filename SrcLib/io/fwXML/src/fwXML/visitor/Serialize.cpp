@@ -28,7 +28,7 @@ Serialize::~Serialize()
 
 void Serialize::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
 {
-    assert(obj);
+    SLM_ASSERT("obj not instanced", obj);
     std::string uuid = ::fwTools::UUID::get(obj);
     std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     OSLM_TRACE( "Serialize Visitor Visiting : Class " << obj->className() << " (" <<  uuid    <<

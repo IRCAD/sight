@@ -23,51 +23,46 @@
 #include <sstream>
 
 #include <boost/cstdint.hpp>
-#include "fwCore/base.hpp"
+#include <fwCore/base.hpp>
 
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/XMLStream.hpp"
 
+namespace fwXML
+{
 
-
-
-
-namespace fwXML {
-
+//------------------------------------------------------------------------------
 
 void XMLParser::validateDoc (xmlDocPtr xmlDoc) throw (::fwTools::Failed)
 {
-    assert(xmlDoc);
-    OSLM_DEBUG( "checking schema ...." );
+    SLM_ASSERT("xmlDoc not instanced", xmlDoc);
+    SLM_DEBUG( "checking schema ...." );
 
     xmlSchemaValidCtxtPtr validationCtxt = xmlSchemaNewValidCtxt(NULL);
     if (validationCtxt == NULL)
     {
         throw ::fwTools::Failed (std::string ("Failed to create the validation context"));
-        return;
     }
 
     //validationCtxt
-    boost::uint32_t  ui32Res = xmlSchemaValidateDoc (validationCtxt, xmlDoc);
+    ::boost::uint32_t  ui32Res = xmlSchemaValidateDoc (validationCtxt, xmlDoc);
     xmlSchemaFreeValidCtxt(validationCtxt);
 
     if (ui32Res > 0)
     {
         throw ::fwTools::Failed (std::string ("XML file not valid against the XML schema"));
-        return;
     }
     else if (ui32Res == std::numeric_limits<boost::uint32_t> ::max() )
     {
         throw ::fwTools::Failed (std::string ("XML validation internal error"));
-        return;
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 xmlNodePtr XMLParser::nextXMLElement (xmlNodePtr pNode)
 {
-    assert(pNode);
+    SLM_ASSERT("pNode not instanced", pNode);
     xmlNodePtr pChild;
 
     for (pChild = pNode; pChild != 0 ; pChild = pChild->next)
@@ -78,56 +73,49 @@ xmlNodePtr XMLParser::nextXMLElement (xmlNodePtr pNode)
         }
     }
     return NULL; // not found !!
-
-
-
 }
 
+//------------------------------------------------------------------------------
 
 std::string XMLParser::getTextValue (xmlNodePtr pNode) throw (::fwTools::Failed)
 {
-    assert(pNode);
+    SLM_ASSERT("pNode not instanced", pNode);
     xmlNodePtr pChild;
-
+    std::string value = "";
     for (pChild = pNode->children; pChild != 0 && pChild->type != XML_TEXT_NODE; pChild = pChild->next);
 
-    if (pChild == NULL)
-        return "";
-    else
+    if (pChild)
     {
         if (pChild->type != XML_TEXT_NODE)
         {
             throw ::fwTools::Failed (std::string ("The current node is not a TEXT node !"));
         }
         else
-            return std::string ((const char*)pChild->content);
+        {
+            value = std::string ((const char*)pChild->content);
+        }
     }
+    return value;
 }
 
-
-
+//------------------------------------------------------------------------------
 
 std::string XMLParser::getAttribute (xmlNodePtr pNode, const std::string& _sAttrName) throw (::fwTools::Failed)
 {
-    assert(pNode);
-
+    SLM_ASSERT("pNode not instanced", pNode);
     xmlChar* psAttr = xmlGetProp (pNode, xmlCharStrdup (_sAttrName.c_str ()));
 
     if (psAttr == NULL)
     {
         throw ::fwTools::Failed (std::string ("The attribute ") + _sAttrName +
             std::string (" does not exist in the node ") + (const char*)pNode->name);
-        return NULL;
     }
-
     const std::string sAttr = (const char*)psAttr;
-
     xmlFree (psAttr);
-
     return sAttr;
 }
 
-
+//------------------------------------------------------------------------------
 
 xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (::fwTools::Failed)
 {
@@ -168,15 +156,13 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlCleanupParser();
 
     return xmlDoc;
-
 }
 
-
+//------------------------------------------------------------------------------
 
 xmlNodePtr XMLParser::findChildNamed(xmlNodePtr start, std::string value)
 {
-    assert(start);
-
+    SLM_ASSERT("start not instanced", start);
     xmlNodePtr elt = start->children; // we parse elements
     while( elt != NULL)
     {
@@ -190,11 +176,11 @@ xmlNodePtr XMLParser::findChildNamed(xmlNodePtr start, std::string value)
 
 }
 
-
+//------------------------------------------------------------------------------
 
 std::string XMLParser::toString(xmlNodePtr node)
 {
-    assert(node);
+    SLM_ASSERT("node not instanced", node);
 
     xmlDocPtr doc = xmlNewDoc(BAD_CAST "1.0");
     xmlDocSetRootElement ( doc , xmlCopyNode( node, 1 ) );
@@ -202,12 +188,11 @@ std::string XMLParser::toString(xmlNodePtr node)
     std::stringstream ss;
     XMLStream::toStream( doc, ss );
 
-    std::string result = ss.str();
-
     // cleaning
     xmlFreeDoc( doc );
-    return result;
+    return ss.str();
 }
 
+//------------------------------------------------------------------------------
 
 }

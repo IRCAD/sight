@@ -34,7 +34,7 @@ ClassFactoryRegistry::create(const KEY &key)  throw(std::invalid_argument)
             )
         {
             ::boost::shared_ptr<TFactory>  tfactory = ::boost::dynamic_pointer_cast< TFactory >( (*f) );
-            assert( tfactory );
+            SLM_ASSERT("tfactory not instanced", tfactory);
             if ( tfactory->canHandle(key) )
             {
                 return tfactory->create();
@@ -66,7 +66,7 @@ ClassFactoryRegistry::subClasses(const KEY &key)  throw(std::invalid_argument)
                )
         {
             ::boost::shared_ptr<TFactory>  tfactory = ::boost::dynamic_pointer_cast< TFactory >( (*f) );
-            assert( tfactory );
+            SLM_ASSERT("tfactory not instanced", tfactory);
             if ( tfactory->canHandle(key) )
             {
                 subClasses.push_back( tfactory->create() ) ;
@@ -96,7 +96,7 @@ ClassFactoryRegistry::subClasses()  throw(std::invalid_argument)
         if ( keyComparatorEquality(  (*f)->baseClassId() ,  typeid(BASECLASS) )   && ::boost::dynamic_pointer_cast< TFactory >( (*f) ) )
         {
             ::boost::shared_ptr<TFactory>  tfactory = ::boost::dynamic_pointer_cast< TFactory >( (*f) );
-            assert( tfactory );
+            SLM_ASSERT("tfactory not instanced", tfactory);
             subClasses.push_back( tfactory->create() ) ;
         }
         ++f;

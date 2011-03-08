@@ -41,8 +41,8 @@ XMLPartitioner::XMLPartitioner()
 : m_pathPolicy ( new DefaultPathPolicy ),
   m_splitPolicy( new AlwaysSplitPolicy )
 {
-    assert( m_pathPolicy  );
-    assert( m_splitPolicy );
+    SLM_ASSERT("m_pathPolicy not instanced", m_pathPolicy);
+    SLM_ASSERT("m_splitPolicy not instanced", m_splitPolicy);
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Ob
         // no splitting :  append in the same serialization unit of its father
         ::fwXML::XMLAggregator::sptr fatherAggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[father];
 
-        assert( fatherAggregator );
+        SLM_ASSERT("fatherAggregator not instanced", fatherAggregator);
         fatherAggregator->append( son );
 
         // record son'as aggregator

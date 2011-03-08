@@ -46,7 +46,7 @@ void Code::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    assert( container );
+    SLM_ASSERT("container not instanced", container);
 
     ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
 

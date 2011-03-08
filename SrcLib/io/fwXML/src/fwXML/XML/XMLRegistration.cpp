@@ -7,11 +7,7 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <typeinfo>
 
-
-
-
 #include "fwXML/config.hpp"
-
 
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
 #include "fwXML/boostSerializer/Object.hpp"

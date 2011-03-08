@@ -75,7 +75,7 @@ void CameraReaderService::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     // Retrieve object
     ::fwData::Camera::sptr cam = this->getObject< ::fwData::Camera>( );
-    assert( cam ) ;
+    SLM_ASSERT("cam not instanced", cam);
 
     OSLM_INFO("path: " << m_fsCameraPath);
     loadCalibration(m_fsCameraPath.string(), cam);
