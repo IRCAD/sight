@@ -1,75 +1,46 @@
 <plugin id="servicesReg" class="::servicesReg::Plugin" >
-    
+
     <library name="servicesReg" />
 
     <requirement id="dataReg" />
     
-    <!-- CORE -->
-    <point id="::fwServices::IService">
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <!-- XML PARSING ASPECT -->
-    <point id="::fwServices::IXMLParser">
-        <implements>::fwServices::IService</implements>
-    </point>
-    
-    <!-- FWSERVICE SERVICE TYPE FOR CONTROLERS -->
-    <point id="::fwServices::IController">
-        <implements>::fwServices::IService</implements>
-    </point>
-
-    <!-- FWSERVICE SERVICE TYPE FOR MESSAGE DELIVERY DELEGATION -->
-    <point id="::fwServices::IDeliveryDelegate">
-        <implements>::fwServices::IService</implements>
-    </point>
-
-
-    <!-- COM ASPECT -->
-    <point id="::fwServices::IEditionService">
-        <implements>::fwServices::IService</implements>
-    </point>
-
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="::fwServices::ServiceObjectConfig"/>
+    <extension-point id="::fwServices::registry::AppConfig" schema="appConfig.xsd"/>
+    
+    <!-- EXTENSION POINT FOR A SERVICE FACTORY -->
+    <extension-point id="::fwServices::registry::ServiceFactory" schema="serviceFactory.xsd"/>
 
     <!-- EXTENSION POINT FOR A SERVICE CONFIGURATION -->
-    <extension-point id="::fwServices::ServiceConfig"/>
+    <extension-point id="::fwServices::registry::ServiceConfig"  schema="serviceConfig.xsd"/>
 
     <!-- SPECIFIC SERVICES -->
-    <point id="::fwServices::DefaultEditor">
-        <implements>::fwServices::IEditionService</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
-    
-    <point id="::fwComEd::IProcessObjectParser">
-        <implements>::fwServices::IXMLParser</implements>
-        <implements>::fwData::ProcessObject</implements>
-    </point>
-    
-    <point id="::fwComEd::ICompositeParser">
-        <implements>::fwServices::IXMLParser</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IEditionService</type>
+        <service>::fwServices::DefaultEditor</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
-    <point id="::fwComEd::TransformationMatrix3DParser">
-        <implements>::fwServices::IXMLParser</implements>
-        <implements>::fwData::TransformationMatrix3D</implements>
-    </point>
-    
-    <point id="::fwServices::ObjectXMLParser">
-        <implements>::fwServices::IXMLParser</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::Composite</service>
+        <object>::fwData::Composite</object>
+    </extension>
 
-    <point id="::fwComEd::ProcessObjectEditor">
-        <implements>::fwServices::IEditionService</implements>
-        <implements>::fwData::ProcessObject</implements>
-    </point>
-    
-    <point id="::fwComEd::CompositeEditor">
-        <implements>::fwServices::IEditionService</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::TransformationMatrix3D</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::Object</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::ICommunication</type>
+        <service>::fwServices::ComChannelService</service>
+        <object>::fwTools::Object</object>
+    </extension>
 </plugin>

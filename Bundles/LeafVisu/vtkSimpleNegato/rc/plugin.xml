@@ -3,10 +3,11 @@
 
 
 <!--    REGISTER_SERVICE( ::fwRender::IRender, ::vtkSimpleNegato::RendererService, ::fwData::Image) ;   -->
-<point id="::vtkSimpleNegato::RendererService" >
-    <implements>::fwRender::IRender</implements>
-    <implements>::fwData::Image</implements>
-</point>
+<extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::vtkSimpleNegato::RendererService</service>
+        <object>::fwData::Image</object>
+    </extension>
 
     
 </plugin>

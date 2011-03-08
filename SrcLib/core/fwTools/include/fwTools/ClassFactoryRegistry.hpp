@@ -22,9 +22,9 @@
 //VAGRM
 #include <iostream>
 #include "fwTools/Stringizer.hpp"
-//using namespace boost;
 
-namespace fwTools {
+namespace fwTools
+{
 
 
 class IClassFactory;
@@ -65,9 +65,6 @@ public:
     {
         bool operator()(::boost::shared_ptr<IClassFactory> f1, ::boost::shared_ptr<IClassFactory> f2) const
         {
-            //return ( !((*f1)==(*f2)) ) && (f1 < f2); // factory which produce same things (but can be different by ptr)
-            //are considerer to be equal
-            //return ( !((*f1)==(*f2)) ) && (f1->stringizedKey() < f2->stringizedKey() );
 #ifdef CLASSFACTORYORDERDEBUG
             SLM_TRACE ( "FactoryWeakOrderer:");
             OSLM_TRACE ( "  f1 " << getString(f1->baseClassId()) << "#"
@@ -114,11 +111,6 @@ public:
      */
     FWTOOLS_API static FactoryContainer &getFactories();
 
-    /*
-         * @brief return ALL factories (const version)
-         */
-    //FWTOOLS_API static const FactoryContainer &getFactories();
-
     /**
      * @brief Retreive managed Element by ClassFactoryRegistry
      */
@@ -150,18 +142,6 @@ public:
     static std::list< ::boost::shared_ptr<BASECLASS > >  subClasses()  throw(std::invalid_argument);
 
 
-//  /*
-//   * @brief return the  map < key , SubClass>  of instances ( SubClass derivated form Baseclass) registred in the registry for all Key
-//   * return empty map if not found
-//   */DOESNT WORK BECAUSE const KEY & is not manager when copying map
-//   */
-//  template<class BASECLASS, class KEY>
-//  static std::map< const KEY &, ::boost::shared_ptr<BASECLASS> >  mapKeySubClasses()  throw(std::invalid_argument);
-
-
-
-
-
 protected :
 
     /// @brief Default constructor : do nothing.
@@ -173,8 +153,6 @@ protected :
     static ::boost::shared_ptr<ClassFactoryRegistry> m_instance;
 
 
-
-
     /// the container for the factories
     FactoryContainer m_registry;
 
@@ -183,7 +161,7 @@ protected :
 
 };
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
 #include "fwTools/ClassFactoryRegistry.hxx"
 

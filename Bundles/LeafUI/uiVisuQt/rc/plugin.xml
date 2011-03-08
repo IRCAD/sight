@@ -6,21 +6,24 @@
     <requirement id="gui"/>
     
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwTools::Object ) ;-->
-    <point id="::uiVisu::SnapshotEditor" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwTools::Object</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisu::SnapshotEditor</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;-->
-    <point id="::uiVisu::TransformationMatrixEditor" >
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::TransformationMatrix3D</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisu::TransformationMatrixEditor</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
 
     <!-- REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::PointEditor, ::fwData::Composite ); -->
-    <point id="::uiVisu::PointEditor">
-        <implements>::gui::editor::IEditor</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisu::PointEditor</service>
+        <object>::fwData::Composite</object>
+    </extension>
     
 </plugin>

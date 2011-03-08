@@ -1,0 +1,80 @@
+<plugin id="TutoPython">
+
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>tutoPythonConfig</id>
+        <type>standard</type>
+        <config>
+            <object type="::fwData::Composite">
+                <item key="PythonString">
+                    <object type="::fwData::String">
+
+                        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                            <gui>
+                                <frame>
+                                    <name>TutoPython</name>
+                                    <icon>Bundles/TutoPython_0-1/tuto.ico</icon>
+                                    <minSize width="800" height="600" />
+                                </frame>
+                                <toolBar>
+                                    <toolBitmapSize height="32" width="32" />
+                                </toolBar>
+                            </gui>
+                            <registry>
+                                <toolBar sid="toolBar" start="yes" />
+                                <view sid="codeEditor" start="yes" />
+                            </registry>
+                        </service>
+
+                        <service uid="toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+                            <gui>
+                                <layout>
+                                    <menuItem name="Test" icon="Bundles/TutoPython_0-1/icons/python.png" />
+                                    <menuItem name="Open" />
+                                    <menuItem name="Quit" icon="Bundles/TutoPython_0-1/icons/cross.png" />
+                                </layout>
+                            </gui>
+                            <registry>
+                                <menuItem sid="PyTest" start="yes" />
+                                <menuItem sid="action_openFile" start="yes" />
+                                <menuItem sid="actionQuit" start="yes" />
+                            </registry>
+                        </service>
+
+
+                        <service uid="PyTest" type="::fwGui::IActionSrv" implementation="::uiPython::action::StringRun" autoComChannel="no">
+                            <state active="true" />
+                            <!--<pyobjects> -->
+                            <!--<item name="" id="" /> -->
+                            <!--</pyobjects> -->
+                        </service>
+
+                        <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+                        <service uid="codeEditor" type="::gui::editor::IEditor" implementation="::guiQt::editor::Code" autoComChannel="yes" />
+
+                    </object>
+                </item>
+
+                <item key="Image">
+                    <object uid="anImage" type="::fwData::Image">
+                        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
+                        <service uid="anImageWriter" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <type mode="writer" />
+                        </service>
+
+                        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                            <start uid="myReaderPathFile" />
+                        </service>
+
+
+                    </object>
+                </item>
+
+                <start type="::fwGui::IFrameSrv" />
+            </object>
+        </config>
+    </extension>
+
+</plugin>

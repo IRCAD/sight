@@ -1,0 +1,204 @@
+<plugin id="Tuto12Picker">
+
+<requirement id="servicesReg" />
+
+<extension implements="::fwServices::registry::AppConfig">
+        <id>Tuto12Picker</id>
+        <type>standard</type>
+        <config>
+
+    <object type="::fwData::Composite">
+        <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+            <gui>
+                <frame>
+                    <name>Tuto12Picker</name>
+                    <icon>Bundles/Tuto12Picker_0-1/tuto.ico</icon>
+                    <minSize width="800" height="600"/>
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="myMenuBar" start="yes" />
+                <view sid="mainView" start="yes" />
+            </registry>
+        </service>
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menu name="File" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menu_File" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Open file" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_openFile" start="yes" />
+                <menuItem sid="action_quit" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <start uid="myReaderPathFile" />
+        </service>
+        <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+        <service uid="mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view caption="Picker world coordinate." />
+                    <view caption="Generic scene" border="11" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="pointView" start="yes" />
+                <view sid="multiViewScene" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiViewScene" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager" >
+                    <view align="center" />
+                    <view align="bottom" minWidth="400" minHeight="30" resizable="no" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="genericScene" start="yes" />
+                <view sid="multiViewScene_bottom" start="yes" />
+            </registry>
+        </service>
+
+
+        <service uid="multiViewScene_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="30" />
+                    <view proportion="0" minWidth="50" />
+                    <view proportion="1" />
+                    <view proportion="0" minWidth="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sliceListEditor" start="no" />
+                <view sid="showScanEditor" start="no" />
+                <view sid="sliderIndexEditor" start="no" />
+                <view sid="snapshotScene1Editor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+            <snap>
+                <scene uid="genericScene" />
+            </snap>
+        </service>
+
+        <!-- myPatientDB description -->
+        <item key="myPatientDB">
+            <object uid="myPatientDB" type="::fwData::PatientDB">
+
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                    <type mode="reader" />
+                    <selection mode="exclude" />
+                    <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
+                </service>
+                <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+
+                <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                    <target>myUpdaterAcq</target>
+                </service>
+
+                <service uid="myUpdaterComCannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                    <target>myUpdaterImg</target>
+                </service>
+
+            </object>
+        </item>
+
+        <!-- CompositeVisu description -->
+        <item key="myCompositeVisu">
+            <object uid="myCompositeVisu" type="::fwData::Composite">
+
+                <service uid="pointView" implementation="::uiVisu::PointEditor" type="::gui::editor::IEditor" autoComChannel="yes"/>
+                <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                    <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
+                    <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                </service>
+
+                <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                    <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
+                    <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
+                    <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                </service>
+
+                <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6"  >
+                    <mode type="stop" />
+                    <config>
+                        <object id="myImage" type="::fwData::Image">
+                            <!-- This service convert a simple fwData::Image to medical Image -->
+                            <service uid="medicalImageConverter" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoComChannel="no" />
+                            <service uid="sliceListEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
+                                <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                            </service>
+                            <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+                                <negatoAdaptor uid="MPRNegatoScene3D" />
+                            </service>
+                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes" >
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
+                        </object>
+                    </config>
+                </service>
+
+                <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <scene>
+                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+
+                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+
+                        <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                        </adaptor>
+                        <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
+                            <config renderer="default" />
+                        </adaptor>
+
+                        <adaptor id="pickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
+                            <config renderer="default" picker="myPicker" />
+                        </adaptor>
+                    </scene>
+                </service>
+            </object>
+        </item>
+
+        <start uid="MyIHM" />
+        <start uid="myUpdaterAcq" />
+        <start uid="myUpdaterImg" />
+        <start uid="myManager" />
+        <start uid="myUpdaterComCannelAcq" />
+        <start uid="myUpdaterComCannelImg" />
+        <start uid="newOBject2newPatientDB"/>
+
+    </object>
+    </config>
+</extension>
+
+</plugin>

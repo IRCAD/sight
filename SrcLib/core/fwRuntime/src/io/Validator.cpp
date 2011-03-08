@@ -108,13 +108,11 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
         throw std::ios_base::failure("Unable to parse the XML file " + xmlFile.string() );
     }
     xmlNodePtr xmlRoot = xmlDocGetRootElement (xmlDoc);
-    if (xmlXIncludeProcessTree (xmlRoot) == -1)
+    if (xmlXIncludeProcessTreeFlags (xmlRoot,XML_PARSE_NOBASEFIX) == -1)
     {
         xmlFreeDoc(xmlDoc);
         throw std::ios_base::failure(std::string ("Unable to manage xinclude !"));
     }
-
-
 
     result = xmlSchemaValidateDoc(schemaValidContext, xmlDoc );
 
@@ -175,6 +173,10 @@ const bool Validator::validate( xmlNodePtr node )
     {
         OSLM_WARN("Validator::validation NOK, error log = " << getErrorLog() ) ;
         OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() ) ;
+        xmlBufferPtr buffer = xmlBufferCreate();
+        xmlNodeDump( buffer, node->doc, node, 1, 1 );
+        OSLM_WARN("Validator::validation NOK, node :\n " << buffer->content) ;
+        xmlBufferFree( buffer );
     }
 
     xmlSchemaFreeValidCtxt(schemaValidContext);

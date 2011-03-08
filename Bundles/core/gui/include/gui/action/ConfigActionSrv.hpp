@@ -6,7 +6,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwServices/ConfigTemplateManager.hpp>
+#include <fwServices/AppConfigManager.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -99,7 +99,7 @@ protected:
     bool m_configIsRunning;
 
     // config manager
-    ::fwServices::ConfigTemplateManager::sptr m_configTemplateManager;
+    ::fwServices::AppConfigManager::sptr m_configTemplateManager;
     /**
      * @brief keep the association between the PATTERN and the associated key  as fieldAdaptors[PATTERN] = AssociatedKey.
      */

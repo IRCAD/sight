@@ -10,7 +10,7 @@
 #include <fwTools/fwID.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 
 #include <vtkRenderWindowInteractor.h>

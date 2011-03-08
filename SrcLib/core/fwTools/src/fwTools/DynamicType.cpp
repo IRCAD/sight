@@ -40,6 +40,11 @@ bool DynamicType::operator!=(const DynamicType &d2) const
 }
 
 
+bool DynamicType::operator<(const DynamicType &d2) const
+{
+    return m_value <  d2.m_value;
+}
+
 
 
 

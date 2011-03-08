@@ -4,7 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <QApplication>
 #include <QMainWindow>
+#include <QCloseEvent>
 
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -39,8 +41,9 @@ void QtMainFrame::setCloseCallback(CloseCallback fct)
 
 void QtMainFrame::closeEvent(QCloseEvent *event)
 {
+    SLM_TRACE_FUNC();
+//    event->ignore();
     m_fctCloseCallback();
-    QMainWindow::closeEvent(event);
 }
 
 

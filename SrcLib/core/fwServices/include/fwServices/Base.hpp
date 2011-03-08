@@ -17,18 +17,10 @@
 #include "fwServices/op/Com.hpp"
 #include "fwServices/ObjectMsg.hpp"
 
-// For creating an object with associated services
-#include "fwServices/op/New.hpp"
-
-// For running service methods
-#include "fwServices/op/Run.hpp"
 
 // For adding/get/erasing/info (has/support/implementationIds)
 #include "fwServices/op/Add.hpp"
 #include "fwServices/op/Get.hpp"
-#include "fwServices/op/Erase.hpp"
-#include "fwServices/op/Info.hpp"
-
 
 
 #endif /*_FWSERVICES_BASE_HPP_*/

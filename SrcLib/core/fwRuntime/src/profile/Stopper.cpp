@@ -23,8 +23,8 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Stopper::Stopper( ::boost::shared_ptr< Starter > starter )
-: Starter( starter->m_identifier )
+Stopper::Stopper( const std::string & identifier )
+: m_identifier( identifier )
 {}
 
 //------------------------------------------------------------------------------

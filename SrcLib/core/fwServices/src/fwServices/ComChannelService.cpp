@@ -14,13 +14,14 @@
 #include <fwTools/fwID.hpp>
 
 #include "fwServices/ComChannelService.hpp"
-#include "fwServices/ObjectServiceRegistry.hpp"
-#include "fwServices/helper.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/op/Get.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/macros.hpp"
-#include "fwServices/monitor/Monitor.hpp"
 #include "fwServices/ObjectMsg.hpp"
+#include "fwServices/IEditionService.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
+
 
 REGISTER_SERVICE( ::fwServices::ICommunication , ::fwServices::ComChannelService , ::fwTools::Object ) ;
 
@@ -28,14 +29,12 @@ namespace fwServices
 {
 
 ComChannelService::ComChannelService() : m_destUUID( std::pair< bool , std::string >(false , "") ), m_priority(0.5)
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ComChannelService::~ComChannelService()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -83,23 +82,34 @@ void ComChannelService::configuring() throw( ::fwTools::Failed )
 void ComChannelService::starting() throw(fwTools::Failed)
 {
     SLM_ASSERT("No UID target", m_destUUID.first );
-    OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second , ::fwTools::fwID::exist( m_destUUID.second ) );
+    OSLM_ASSERT("Unknown UID Objects : "<<m_destUUID.second, ::fwTools::fwID::exist( m_destUUID.second ) );
     m_destination = ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( m_destUUID.second ) ) ;
     OSLM_DEBUG("Destination = " << m_destUUID.second << " found") ;
 
     SLM_ASSERT("intern data mismatch", m_destination.lock()->getID() == m_destUUID.second);
 
-    m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
+    if(m_source.expired())
+    {
+        if(::fwServices::OSR::has(this->getObject(), "::fwServices::IEditionService"))
+        {
+            m_source = ::fwServices::get< ::fwServices::IEditionService >( this->getObject() ) ;
+        }
+        else
+        {
+            m_source = ::fwServices::add< ::fwServices::IEditionService >( this->getObject(), "::fwServices::DefaultEditor" ) ;
+        }
+    }
+    OSLM_ASSERT("ComChannelService object "<<this->getObject()->getID()<<"different of IEditionService object "<<m_source.lock()->getObject()->getID(),
+           m_source.lock()->getObject() == this->getObject());
     OSLM_DEBUG("Source (IEditionService) = " << m_source.lock()->getID() << " found") ;
 
     OSLM_ASSERT("there are similar observations, dest= " <<
-            m_destination.lock()->getID() ,
+            m_destination.lock()->getID() << "\n" << ::fwServices::OSR::getRegistryInformation(),
             !this->hasSimilarObservation());
 
     // Assertion
     OSLM_ASSERT("Destination is expired for ComChannel "<<this->getID(), !m_destination.expired() ) ;
     OSLM_ASSERT("Source is expired for ComChannel "<<this->getID(), !m_source.expired() ) ;
-
 
     if( !m_source.lock()->isAttached( this->getSptr() ) )
     {
@@ -107,7 +117,10 @@ void ComChannelService::starting() throw(fwTools::Failed)
         this->info( msg ) ;
         OSLM_TRACE( "Starting ComChannelService : " << msg.str() << " with priority: " << m_priority);
         m_source.lock()->attach( this->getSptr() );
-        m_source.lock()->start() ;
+        if (! m_source.lock()->isStarted())
+        {
+            m_source.lock()->start() ;
+        }
     }
 
     // Post condition
@@ -139,15 +152,19 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             this->info( msg ) ;
             SLM_TRACE( "Stopping ComChannelService " + msg.str() ); // crash from spylog???
             m_source.lock()->detach( this->getSptr() );
-#ifndef NOT_USE_SRVFAC
+
+            /// Remove IEditionService if it is the last comChannel
             int nbObservers = m_source.lock()->getNbObservers();
             if(nbObservers == 0)
             {
-                m_source.lock()->stop();
-                ::fwServices::erase(m_source.lock());
+                if (m_source.lock()->isStarted())
+                {
+                    m_source.lock()->stop();
+                }
+                ::fwServices::OSR::unregisterService(m_source.lock());
             }
-#endif
         }
+        m_source.reset();
     }
 }
 
@@ -187,7 +204,7 @@ void ComChannelService::info(std::ostream &_sstream )
         // Update _sstream
         if(!m_source.expired() )
         {
-            if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
+            if( !this->m_associatedObject.expired() ) // FIXME expired object not authorized
             {
                 ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
                 _sstream << "ComChannelService (" << status << ") "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
@@ -202,14 +219,13 @@ void ComChannelService::info(std::ostream &_sstream )
         {
             _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
         }
-
     }
     else
     {
         // Update _sstream
         if(!m_source.expired() )
         {
-            if( ::fwServices::OSR::hasObject(m_source.lock().get()) )
+            if( !this->m_associatedObject.expired() ) // FIXME expired object not authorized
             {
                 ::fwTools::Object::sptr observedObject = m_source.lock()->getObject() ;
                 _sstream << "ComChannelService ( com is stopped ) "<< " : SRC = " << observedObject.get() << " (" << observedObject->className() << ")";
@@ -225,7 +241,6 @@ void ComChannelService::info(std::ostream &_sstream )
             _sstream << " - DEST = " << m_destination.lock().get() << " (" << (m_destination.lock())->getClassname() << ")" << " Priority: " << m_priority;
         }
     }
-
 }
 
 //------------------------------------------------------------------------------

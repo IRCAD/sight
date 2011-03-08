@@ -30,6 +30,7 @@
 #include "fwXML/boostSerializer/Dictionary.hpp"
 #include "fwXML/boostSerializer/TransformationMatrix3D.hpp"
 #include "fwXML/boostSerializer/Color.hpp"
+#include "fwXML/boostSerializer/Histogram.hpp"
 #include "fwXML/boostSerializer/TransfertFunctionPoint.hpp"
 #include "fwXML/boostSerializer/TransfertFunction.hpp"
 #include "fwXML/boostSerializer/Point.hpp"
@@ -77,6 +78,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator               
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::PatientDB>              ,  ::fwData::PatientDB              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Patient>                ,  ::fwData::Patient                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Study>                  ,  ::fwData::Study                  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Acquisition>            ,  ::fwData::Acquisition            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Reconstruction>         ,  ::fwData::Reconstruction         );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::DictionaryOrgan>        ,  ::fwData::DictionaryOrgan        );

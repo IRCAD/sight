@@ -3,30 +3,33 @@
     <library name="ioTuto" />
 
     <requirement id="io" />
-    
-<!-- All Reader/Writer can extended by providing a specific configuration, being a user info for instance -->
-    <extension-point id="::ioTuto::ioTuto1" />
 
-<!-- User info like extensions -->  
-    <extension implements="::ioTuto::ioTuto1" >
+<!-- All Reader/Writer can extended by providing a specific configuration, being a user info for instance -->
+<!--     <extension-point id="::ioTuto::ioTuto1" /> -->
+
+<!-- User info like extensions -->
+<!--    <extension implements="::ioTuto::ioTuto1" >
         <info text="Tuto(Ircad)"/>
-    </extension>
-    
+    </extension> -->
+
     <!-- REGISTER_SERVICE( ::io::IReader , ::ioTuto::ExternalDataReaderService , ::fwData::Composite ) ;-->
-    <point id="::ioTuto::ExternalDataReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioTuto::ExternalDataReaderService</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
         <!-- REGISTER_SERVICE( ::io::IReader , ::ioTuto::CompositeReaderService , ::fwData::Composite ) ;-->
-    <point id="::ioTuto::CompositeReaderService" >
-        <implements>::io::IReader</implements>
-        <implements>::fwData::Composite</implements>
-    </point>
-    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioTuto::CompositeReaderService</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
     <!-- REGISTER_SERVICE( ::io::IWriter , ::ioTuto::CompositeWriterService , ::fwData::Composite ) ;-->
-    <point id="::ioTuto::CompositeWriterService" >
-        <implements>::io::IWriter</implements>
-        <implements>::fwData::Composite</implements>
-    </point>    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioTuto::CompositeWriterService</service>
+        <object>::fwData::Composite</object>
+    </extension>
 </plugin>

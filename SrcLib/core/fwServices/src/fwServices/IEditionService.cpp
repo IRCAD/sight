@@ -15,7 +15,7 @@
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/macros.hpp"
 #include "fwServices/ObjectMsg.hpp"
-#include "fwServices/ObjectServiceRegistry.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/op/Com.hpp"
 #include "fwServices/op/Get.hpp"
 

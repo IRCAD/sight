@@ -1,4 +1,8 @@
-<extension id="organManagerConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>organManagerConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
 
@@ -83,12 +87,8 @@
         <start uid="myManagerForOrgansFrameComChannel" />
         <start uid="myUpdaterComChannelReconst" />
 
-        <stop uid="myUpdaterComChannelReconst" />
-        <stop uid="myManagerForOrgansFrameComChannel" />
-        <stop uid="myManagerForOrgansFrame" />
-        <stop uid="myUpdaterReconst" />
-        <stop uid="organManagerFrame" />
-
     </object>
 
-</extension>
+
+        </config>
+    </extension>

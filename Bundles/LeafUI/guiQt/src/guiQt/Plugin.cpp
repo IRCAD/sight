@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/bind.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -11,7 +12,6 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
 
 #include <fwGuiQt/App.hpp>
 
@@ -35,46 +35,34 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     SLM_TRACE_FUNC();
 
-    SLM_ASSERT("Sorry, the rootObject attribute is deprecated, you must remove this field in the profile.xml. You must also change in the configuration the field implements=\"rootObject\" by implements= \"::fwServices::ServiceObjectConfig\"", ! this->getBundle()->hasParameter("rootObject") );
+    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    SLM_ASSERT("Profile is not initialized", profile);
+    ::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
+    m_argc = params.size();
+    char** argv = profile->getRawParams();
 
-    if ( this->getBundle()->hasParameter("config")
-         && this->getBundle()->hasParameter("configFile") )
-    {
-        std::string objectConfigurationName( this->getBundle()->getParameterValue("config") ) ;
-        std::string objectConfigurationFile( this->getBundle()->getParameterValue("configFile") ) ;
+    ::fwGuiQt::App *app;
+    app = new ::fwGuiQt::App( m_argc, argv );
+    m_app = app;
 
-        ::fwServices::OSR::setRootObjectConfigurationName(objectConfigurationName) ;
-        ::fwServices::OSR::setRootObjectConfigurationFile(objectConfigurationFile) ;
-    }
-    else
-    {
-        SLM_FATAL(" Bundle gui, missing param : rootObject, config, configFile in profile");
-    }
-
-    SLM_FATAL_IF("Depreciated parameter Aspect", this->getBundle()->hasParameter("Aspect"));
-
-    if( this->getBundle()->hasParameter("startingMode")
-            &&  this->getBundle()->getParameterValue("startingMode") == "windows")
-    {
-        ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
-        SLM_ASSERT("Profile is not initialized", profile);
-        ::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
-        int    argc = params.size();
-        char** argv = profile->getRawParams();
-
-        ::fwGuiQt::App app( argc, argv );
-
-        app.exec();
-    }
-    else
-    {
-        SLM_FATAL("Starting Mode not available");
-    }
+    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() throw()
-{}
+{
+    delete m_app;
+}
+
+//-----------------------------------------------------------------------------
+
+int Plugin::run() throw()
+{
+    ::fwRuntime::profile::getCurrentProfile()->setup();
+    int res = m_app->exec();
+    ::fwRuntime::profile::getCurrentProfile()->cleanup();
+    return res;
+}
 
 } // namespace guiQt

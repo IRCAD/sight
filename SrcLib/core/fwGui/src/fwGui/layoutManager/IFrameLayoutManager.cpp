@@ -197,7 +197,7 @@ void IFrameLayoutManager::writeConfig()
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::getServices("::preferences::IPreferencesService");
+    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
     if(!preferencesServicesList.empty())
     {
         ::fwServices::IService::sptr prefService = preferencesServicesList[0];

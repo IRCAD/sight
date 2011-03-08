@@ -5,8 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/macros.hpp>
-#include <fwServices/helper.hpp>
-#include <fwServices/ObjectServiceRegistry.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwComEd/PatientDBMsg.hpp>
 
@@ -191,13 +191,8 @@ void VtkPatientDBReaderService::notificationOfDBUpdate()
 
     ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >();
 
-    //::boost::shared_ptr< ::fwComEd::PatientDBMsg > msg ( new ::fwComEd::PatientDBMsg( pDPDB ) ) ;
-    //msg->addMessageInformation( ::fwComEd::PatientDBMsg::NEW_PATIENT );
     ::fwComEd::PatientDBMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT );
-
-//  ::boost::shared_ptr< ::fwServices::IEditionService > basicEditor = ::fwServices::get< ::fwServices::IEditionService >( pDPDB ) ;
-//  basicEditor->notify( msg );
     ::fwServices::IEditionService::notify(this->getSptr(), pDPDB, msg);
 }
 

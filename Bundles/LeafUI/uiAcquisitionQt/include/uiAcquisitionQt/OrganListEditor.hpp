@@ -46,9 +46,6 @@ public :
 
 protected:
 
-
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
-
     ///This method launches the IEditor::starting method.
     virtual void starting() throw(::fwTools::Failed);
 

@@ -4,11 +4,15 @@
     <activate id="servicesReg" version="0-1" />
     <activate id="gui" version="0-1" />
     
-    <activate id="guiQt" version="0-1" >
-        <param id="startingMode" value="windows" />
+    <activate id="gui" version="0-1" />
+    <activate id="guiQt" version="0-1" />
+
+    <activate id="TutoGui" version="0-1" />
+    <activate id="appXml" version="0-1">
         <param id="config" value="tutoGuiConfig" />
-        <param id="configFile" value="./Bundles/TutoGui_0-1/configurations/config.xml" />
     </activate>
 
-    <start id="guiQt" />  
+    <start id="guiQt" />
+    <start id="appXml" />
+    
 </profile>

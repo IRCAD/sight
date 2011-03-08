@@ -1,7 +1,7 @@
 #include <boost/regex.hpp>
 
-#include <fwServices/helper.hpp>
-#include <fwServices/bundle/runtime.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/AppConfig.hpp>
 
 #include "gui/action/ConfigActionSrv.hpp"
 
@@ -121,7 +121,7 @@ void ConfigActionSrv::info( std::ostream &_sstream )
 void ConfigActionSrv::AddGenericUidToFieldApadtor( )
 {
     // Generate generic UID
-    std::string genericUidAdaptor = ::fwServices::ConfigTemplateManager::getUniqueIdentifier( this->getID() );
+    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( this->getID() );
 
     // Init manager
     m_fieldAdaptors["GENERIC_UID"] = genericUidAdaptor;
@@ -133,9 +133,11 @@ void ConfigActionSrv::AddGenericUidToFieldApadtor( )
 void ConfigActionSrv::startConfig()
 {
     AddGenericUidToFieldApadtor();
-    m_configTemplateManager = ::fwServices::ConfigTemplateManager::New();
-    m_configTemplateManager->setConfig( m_viewConfigId, "::fwServices::ServiceObjectConfig" );
-    m_configTemplateManager->setFieldAdaptors( m_fieldAdaptors );
+
+    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_viewConfigId, m_fieldAdaptors );
+    m_configTemplateManager = ::fwServices::AppConfigManager::New();
+    m_configTemplateManager->setConfig( config );
+
 
     // Launch config
     m_configTemplateManager->launch();

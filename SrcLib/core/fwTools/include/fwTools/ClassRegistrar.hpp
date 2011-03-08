@@ -26,14 +26,6 @@
 //Concatenation must not result in an invocation of a macro that uses BOOST_PP_CAT.  If that happens, BOOST_PP_CAT will not expand the second time.
 
 
-/// DANGER keyvalue should not be a temporary variable !!!!!!
-/// REGISTER_BINDING( BaseClassType , SubClassType , std::string, "toto" ); // is OK since "toto" is not tmp and std::string key = "toto" is valid
-//REGISTER_BINDING( BaseClassType , SubClassType ,  std::string, std::string("toto") ) // is NOT OK  std::string("toto") is a temp var
-// correct fix is
-//std::string maKey("toto"); declare a permant non tmp variable
-
-
-
 #define REGISTER_BINDING( BaseClassType , SubClassType , KeyType, keyvalue ) \
     REGISTER_BINDING_ID_CPY( BaseClassType , SubClassType , KeyType, keyvalue, __LINE__ )
 

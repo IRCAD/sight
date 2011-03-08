@@ -163,7 +163,7 @@ void Runtime::addBundles( const ::boost::filesystem::path & repository ) throw(R
     {
         using ::fwRuntime::io::BundleDescriptorReader;
 
-        const BundleDescriptorReader::BundleContainer   bundles = BundleDescriptorReader::createBundles( repository );
+        const BundleDescriptorReader::BundleContainer bundles = BundleDescriptorReader::createBundles( repository );
         std::for_each( bundles.begin(), bundles.end(), StoreBundle(this) );
     }
     catch(const std::exception& exception)

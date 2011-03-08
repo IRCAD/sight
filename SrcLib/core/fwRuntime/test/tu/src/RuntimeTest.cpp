@@ -45,8 +45,6 @@ void RuntimeTest::testRuntime()
         // Test bundle dataReg
         CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
         ::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
-        CPPUNIT_ASSERT(bundle->hasExtension("::fwData::Composite"));
-        CPPUNIT_ASSERT(bundle->hasExtensionPoint("::fwTools::Object"));
         bundle->setEnable(true);
         bundle->start();
         CPPUNIT_ASSERT(bundle->isEnable());
@@ -57,9 +55,9 @@ void RuntimeTest::testRuntime()
         bundle2->start();
 
         // Test runtime extensions
-        CPPUNIT_ASSERT(runtime->findExtension("::fwServices::IEditionService"));
-        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::DefaultEditor"));
-
+        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceFactory"));
+        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceConfig"));
+        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::AppConfig"));
     }
 
 }

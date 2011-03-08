@@ -28,11 +28,17 @@ struct SERVICESREG_CLASS_API Plugin : public ::fwRuntime::Plugin
     /// Overrides start method. Service declarations (services declared in fwServices / fwComEd libraries ).
     SERVICESREG_API void start() throw(::fwRuntime::RuntimeException);
 
+    /// Overrides initialize method
+    SERVICESREG_API void initialize() throw( ::fwRuntime::RuntimeException );
+
+    /// Overrides uninitialize method
+    SERVICESREG_API void uninitialize() throw( ::fwRuntime::RuntimeException );
+
     /// Overrides stop method. Do nothing
     SERVICESREG_API void stop() throw();
 
 };
 
-} // namespace gui
+} // namespace servicesReg
 
 #endif // _SERVICESREG_PLUGIN_HPP_

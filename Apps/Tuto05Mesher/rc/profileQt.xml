@@ -8,10 +8,11 @@
     <activate id="visu" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
     
-    <activate id="gui" version="0-1"/>
-    <activate id="guiQt" version="0-1">
-        <param id="startingMode" value="windows" />
-        <param id="configFile" value="./Bundles/Tuto05Mesher_0-1/configurations/config.xml" />
+    <activate id="gui" version="0-1" />
+    <activate id="guiQt" version="0-1" />
+
+    <activate id="Tuto05Mesher" version="0-1" />
+    <activate id="appXml" version="0-1" >
         <param id="config" value="MesherConfig" />
     </activate>
      
@@ -25,5 +26,7 @@
     
     <start id="dataReg" />
     <start id="visuVTKQt" />
-    <start id="guiQt" /> 
+    <start id="guiQt" />
+    <start id="appXml" />
+     
 </profile>

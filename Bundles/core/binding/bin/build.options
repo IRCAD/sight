@@ -1,0 +1,6 @@
+TYPE = 'bundle'
+VERSION = '0.1'
+
+#USE = []
+LIB = ['fwPython_0.1']
+#BUNDLES = []

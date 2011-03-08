@@ -1,4 +1,8 @@
-<extension id="worldViewConfig" implements="::fwServices::ServiceObjectConfig">
+<extension implements="::fwServices::registry::AppConfig">
+        <id>worldViewConfig</id>
+        <type>standard</type>
+        <config>
+        
 
     <object type="::fwData::Composite">
 
@@ -65,8 +69,9 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="worldViewConfigFrame" />
-        <stop uid="worldViewConfigFrame" />
 
     </object>
 
-</extension>
+
+        </config>
+    </extension>

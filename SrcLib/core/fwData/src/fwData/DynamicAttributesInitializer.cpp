@@ -4,19 +4,21 @@
 #include "fwData/DynamicAttributesInitializer.hpp"
 #include "fwData/Object.hpp"
 
-class InitializerRegistrar
+class InitializerRegistrar : public ::fwCore::BaseObject
 {
 public :
+    fwCoreClassDefinitionsWithFactoryMacro((InitializerRegistrar), (()), new InitializerRegistrar );
+
     InitializerRegistrar()
     {
-        ::fwTools::Factory::addInitializer( ::boost::shared_ptr< ::fwTools::Factory::Initializer >( new ::fwData::DynamicAttributesInitializer ) ) ;
+        ::fwTools::Factory::addInitializer( ::fwData::DynamicAttributesInitializer::New() ) ;
     }
 
     ~InitializerRegistrar()
     {}
 } ;
 
-WPTR(InitializerRegistrar) reg = SPTR(InitializerRegistrar)(new InitializerRegistrar);
+InitializerRegistrar::wptr reg = InitializerRegistrar::New();
 
 
 namespace fwData
@@ -31,6 +33,9 @@ void DynamicAttributesInitializer::init( ::fwTools::Object::wptr _obj)
     }
 }
 
-
+void DynamicAttributesInitializer::uninit( ::fwCore::LogicStamp::csptr key )
+{
+    //TODO
+}
 
 } //end namespace fwData

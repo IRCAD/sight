@@ -1,0 +1,5 @@
+<plugin id="binding" class="::binding::Plugin">
+    
+    <library name="binding" />
+
+</plugin>

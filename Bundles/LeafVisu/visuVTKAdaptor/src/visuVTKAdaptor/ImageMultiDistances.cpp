@@ -40,6 +40,7 @@
 
 #include "visuVTKAdaptor/ImageMultiDistances.hpp"
 #include "visuVTKAdaptor/Distance.hpp"
+#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image ) ;

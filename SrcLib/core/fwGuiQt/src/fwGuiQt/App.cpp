@@ -21,10 +21,12 @@
 
 #include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/profile/Profile.hpp>
+//#include <fwServices/RootManager.hpp>
 
-#include <fwServices/bundle/runtime.hpp>
+
 
 #include <fwGui/dialog/MessageDialog.hpp>
+#include <QMessageBox>
 
 #include "fwGuiQt/App.hpp"
 
@@ -70,7 +72,9 @@ App::App(int & argc, char ** argv)
         //}
     //}
 
-    QObject::connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
+    //QObject::connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
+
+    QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 
 //#ifdef __MACOSX__
     //ProcessSerialNumber PSN;
@@ -79,7 +83,15 @@ App::App(int & argc, char ** argv)
 //#endif
 
     // Initialize root object : root object, views, ...
-    ::fwServices::OSR::initializeRootObject();
+    //::fwServices::RootManager::initializeRootObject();
+}
+
+//-----------------------------------------------------------------------------
+
+void App::aboutToQuit()
+{
+    SLM_TRACE_FUNC();
+    //QMessageBox::critical ( 0, "Titre", "About to quit ..." );
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +101,7 @@ void App::onExit()
     SLM_TRACE_FUNC();
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    ::fwServices::OSR::uninitializeRootObject();
+    //::fwServices::RootManager::uninitializeRootObject();
     QApplication::restoreOverrideCursor();
 
     qApp->flush();

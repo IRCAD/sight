@@ -28,4 +28,5 @@ BUNDLES = [
     'visuVTKAdaptor_0-1'     ,
     'opVTKMesh_0-1'          ,
     'ctrlSelection_0-1'      ,
+    'appXml_0-1'             ,
 ]
