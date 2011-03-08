@@ -15,6 +15,7 @@
 <xsd:include schemaLocation="DynamicType.xsd"/>
 <xsd:include schemaLocation="Field.xsd"/>
 <xsd:include schemaLocation="Image.xsd"/>
+<xsd:include schemaLocation="Histogram.xsd"/>
 <xsd:include schemaLocation="ProcessObject.xsd"/>
 <xsd:include schemaLocation="Patient.xsd"/>
 <xsd:include schemaLocation="Acquisition.xsd"/>

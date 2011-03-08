@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="qualified">
+
+
+<!-- import xml schema for xml:base xml:lang & co // must be included in each schema :/ -->
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+
+<xsd:include schemaLocation="Field.xsd"/>
+
+
+
+<xsd:element name="Histogram" type="HistogramXSDType"/>
+
+<xsd:complexType name="HistogramXSDType">
+    <xsd:sequence>
+        <xsd:element name="BinsWidth"   type="xsd:integer"/>
+        <xsd:element name="MinValue"    type="xsd:float"/>
+        <xsd:element name="MaxValue"    type="xsd:float"/>
+        <xsd:element name="Values"      type="IntegerContainerXSDType"/>
+        <xsd:element name="Field"       type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+
+    <xsd:attribute name="id" type="xsd:string"/>
+    <xsd:attribute name="class" type="xsd:string"/>
+    <xsd:attribute ref="xml:base" />
+</xsd:complexType>
+
+</xsd:schema>
