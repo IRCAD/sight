@@ -17,15 +17,15 @@ namespace fwData
 
 DictionaryOrgan::DictionaryOrgan()
 {
-    SLM_WARN("::fwData::DictionaryOrgan() : (ToDo) field default value");
+    m_name = ::fwData::String::New();
+    m_roi4OrganNativeExp = ::fwData::String::New();
+    m_roi4OrganExp = ::fwData::String::New();
 }
 
 //------------------------------------------------------------------------------
 
 DictionaryOrgan::~DictionaryOrgan()
-{
-    SLM_WARN("::fwData::~DictionaryOrgan() : (ToDo)");
-}
+{}
 
 //------------------------------------------------------------------------------
 

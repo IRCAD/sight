@@ -13,6 +13,9 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
+#include "fwData/Node.hpp"
+#include "fwData/String.hpp"
+
 namespace fwData
 {
 /**
@@ -82,7 +85,38 @@ public:
 
     fwGettersSettersDocMacro(BelongsTo, vBelongsTo, std::vector< std::string >, the string indicating to which organ this one belongs to);
 
+
+    fwGettersSettersDocMacro(Name, name, ::fwData::String::sptr, the name of the organ);
+
+    fwGettersSettersDocMacro(Roi4OrganNativeExp, roi4OrganNativeExp, ::fwData::String::sptr, the string indicating the native expression that describes the roi used to segment organ);
+
+    fwGettersSettersDocMacro(Roi4OrganExp, roi4OrganExp, ::fwData::String::sptr, the string indicating the expression that describes the roi used to segment organ);
+
+    fwGettersSettersDocMacro(Roi4OrganDataNode, roi4OrganDataNode, ::fwData::Node::wptr, the node that represents the roi for organ used to segment organ);
+
+    fwGettersSettersDocMacro(MaskDataNode, maskDataNode, ::fwData::Node::wptr, the node that represents the organ mask);
+
+    fwGettersSettersDocMacro(MeshDataNode, meshDataNode, ::fwData::Node::wptr, the node that represents the organ mesh);
+
 protected :
+
+    /// the name of the organ
+    ::fwData::String::sptr m_name;
+
+    /// the node that represents the roi for organ used to segment organ;
+    ::fwData::Node::wptr m_roi4OrganDataNode;
+
+    /// the node that represents the organ mask
+    ::fwData::Node::wptr m_maskDataNode;
+
+    /// the node that represents the organ mesh
+    ::fwData::Node::wptr m_meshDataNode;
+
+    /// the string indicating the native expression that describes the roi used to segment organ
+    ::fwData::String::sptr m_roi4OrganNativeExp;
+
+    /// the string indicating the expression that describes the roi used to segment organ
+    ::fwData::String::sptr m_roi4OrganExp;
 
     //! the organ structure type
     std::string m_sStructureType;
