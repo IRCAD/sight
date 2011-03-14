@@ -45,11 +45,6 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 //-----------------------------------------------------------------------------
 
 void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
-{}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::stop() throw()
 {
     // Clear all messages
     ::fwServices::GlobalEventManager::getDefault()->clearMessages();
@@ -66,6 +61,11 @@ void Plugin::stop() throw()
     // Clear all factories before stop application.
     ::fwTools::ClassFactoryRegistry::getFactories().clear();
 }
+
+//-----------------------------------------------------------------------------
+
+void Plugin::stop() throw()
+{}
 
 //-----------------------------------------------------------------------------
 
