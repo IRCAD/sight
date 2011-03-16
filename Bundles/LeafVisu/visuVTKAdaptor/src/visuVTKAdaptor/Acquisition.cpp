@@ -98,7 +98,7 @@ void Acquisition::doUpdate() throw(fwTools::Failed)
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
         ( *iter, "::visuVTKAdaptor::Reconstruction" );
-        assert(service);
+        SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
         service->setRenderId( this->getRenderId() );

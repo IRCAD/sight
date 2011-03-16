@@ -452,7 +452,7 @@ wxDataViewItem PatientDBTreeModel::GetParent( const wxDataViewItem &item ) const
     fwDataNode* node = static_cast< fwDataNode * >( item.GetID() );
     if (!node)
     {
-        assert(node);
+        SLM_ASSERT("node not instanced", node);
         return wxDataViewItem(NULL);
     }
 

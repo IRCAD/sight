@@ -77,13 +77,13 @@ public:
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
         assert(m_priority>=0);
-        assert(m_adaptor);
-        assert(m_picker);
+        SLM_ASSERT("m_adaptor not instanced", m_adaptor);
+        SLM_ASSERT("m_picker not instanced", m_picker);
         if ( m_mouseMoveObserved || !m_adaptor->getInteractor()->GetShiftKey() )
         {
             if ( eventId == vtkCommand::MouseMoveEvent )
             {
-                assert(m_mouseMoveObserved);
+                SLM_ASSERT("m_mouseMoveObserved not instanced", m_mouseMoveObserved);
                 process();
             }
             else if ( eventId == START_PROBE_EVENT)
@@ -101,7 +101,7 @@ public:
             }
             else if ( eventId == STOP_PROBE_EVENT && m_mouseMoveObserved)
             {
-                assert(m_mouseMoveObserved);
+                SLM_ASSERT("m_mouseMoveObserved not instanced", m_mouseMoveObserved);
                 m_adaptor->setVisibility(false);
                 m_adaptor->getInteractor()->RemoveObservers(vtkCommand::MouseMoveEvent, this);
                 m_mouseMoveObserved = false;

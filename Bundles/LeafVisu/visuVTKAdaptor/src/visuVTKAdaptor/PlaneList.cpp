@@ -220,7 +220,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
             ::fwRenderVTK::IVtkAdaptorService::sptr servicePlane =
                     ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
                     ( plane, "::visuVTKAdaptor::Plane" );
-            assert(servicePlane);
+            SLM_ASSERT("servicePlane not instanced", servicePlane);
 
             servicePlane->setRenderService(this->getRenderService());
             servicePlane->setRenderId( this->getRenderId() );

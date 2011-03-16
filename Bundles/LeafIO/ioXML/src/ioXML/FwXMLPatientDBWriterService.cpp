@@ -165,7 +165,7 @@ void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
-        assert( associatedPatientDB ) ;
+        SLM_ASSERT("associatedPatientDB not instanced", associatedPatientDB);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

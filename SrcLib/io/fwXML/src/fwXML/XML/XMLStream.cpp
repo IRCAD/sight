@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <iostream>
+#include <fwCore/base.hpp>
 
 #include "fwXML/XML/XMLStream.hpp"
 
@@ -24,7 +25,7 @@ XMLStream::~XMLStream()
 int streamIOWrite(void * context,  const char * buffer, int len)
 {
     std::ostream *pOs = static_cast< std::ostream * >( context );
-    assert(pOs);
+    SLM_ASSERT("pOs not instanced", pOs);
     return   pOs->write(buffer, len)?len:-1;
 }
 
@@ -33,7 +34,7 @@ int streamIOWrite(void * context,  const char * buffer, int len)
 int streamIOClose(void * context)
 {
     std::ostream *pOs = static_cast< std::ostream * >( context );
-    assert(pOs);
+    SLM_ASSERT("pOs not instanced", pOs);
     pOs->flush();
     return   0;
 }
@@ -49,7 +50,7 @@ void XMLStream::toStream( xmlDocPtr doc, std::ostream &os )
     xmlCharEncodingHandlerPtr handler = xmlFindCharEncodingHandler(encoding);
     //xmlCharEncodingHandlerPtr handler = xmlGetCharEncodingHandler(XML_CHAR_ENCODING_UTF8); doesnt work :/
 
-    assert(handler);
+    SLM_ASSERT("handler not instanced", handler);
 
     //xmlThrDefIndentTreeOutput(4);
     xmlOutputBufferPtr outBuff = xmlOutputBufferCreateIO( streamIOWrite , streamIOClose, IOContexte, handler);

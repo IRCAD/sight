@@ -100,7 +100,7 @@ void Reconstruction::createMeshService()
         meshService = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
                 mesh,
                 "::visuVTKAdaptor::TriangularMesh" );
-        assert(meshService);
+        SLM_ASSERT("meshService not instanced", meshService);
         ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor
             = TriangularMesh::dynamicCast(meshService);
 
@@ -202,7 +202,7 @@ void Reconstruction::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwT
         assert(msg->getSubject().lock() == this->getObject());
 
         ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-        assert(reconstruction);
+        SLM_ASSERT("reconstruction not instanced", reconstruction);
 
         if (msg && msg->hasEvent(::fwComEd::ReconstructionMsg::MESH))
         {

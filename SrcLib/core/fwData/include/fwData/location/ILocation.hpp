@@ -51,7 +51,7 @@ protected:
 template<class LOCATION, class RW >
 inline typename LOCATION::sptr getLocation(RW *rw)
 {
-    assert( rw );
+    SLM_ASSERT("rw not instanced", rw);
     typename LOCATION::sptr location;
     location = LOCATION::dynamicCast( rw->getLocation() );
     if ( !location )

@@ -62,7 +62,7 @@ void CompositeWriterService::updating( ) throw(::fwTools::Failed)
 {
     this->configureWithIHM();
     ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
-    assert( pComposite );
+    SLM_ASSERT("pComposite not instanced", pComposite);
 
     ::fwXML::writer::FwXMLObjectWriter myWriter;
 

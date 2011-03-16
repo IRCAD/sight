@@ -109,10 +109,10 @@ void ImageFileFormatService::load()
     // assert( !m_localFolder.empty() ); not mandatory can be loaded at root Folder
 
     //RWPoliciesInstall();
-    assert( m_reader );
+    SLM_ASSERT("m_reader not instanced", m_reader);
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >() ;
-    assert( image ) ;
+    SLM_ASSERT("image not instanced", image);
 
     m_reader->setObject(image);
     ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
@@ -130,10 +130,10 @@ void ImageFileFormatService::save()
     SLM_ASSERT("Filename is empty", !m_filename.empty() );
 
     RWPoliciesInstall();
-    assert( m_writer );
+    SLM_ASSERT("m_writer not instanced", m_writer);
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >() ;
-    assert( image ) ;
+    SLM_ASSERT("image not instanced", image);
 
     if (image->getBuffer() )
     {

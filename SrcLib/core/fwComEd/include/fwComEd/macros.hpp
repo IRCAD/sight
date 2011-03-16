@@ -45,7 +45,7 @@ extern FWCOMED_API const std::string defaultCallbackId;
         {                                                               \
             clientType* const client =                                  \
                 reinterpret_cast< clientType* >( rawClient );           \
-            assert( client );
+            SLM_ASSERT("client not instanced", client);
 
 /**
  * @brief Macro to call after the callback contents.

@@ -466,7 +466,7 @@ void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
     if( meshMsg && meshMsg->hasEvent(::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED) )
     {
        ::fwData::TriangularMesh::sptr mesh = this->getObject < ::fwData::TriangularMesh >();
-       assert(m_polyData);
+       SLM_ASSERT("m_polyData not instanced", m_polyData);
 
        ::vtkIO::updatePolyDataPoints(m_polyData, mesh);
 
@@ -598,7 +598,7 @@ void TriangularMesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::spt
         srv = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
             material, "::visuVTKAdaptor::Material"
             );
-        assert(srv);
+        SLM_ASSERT("srv not instanced", srv);
 
         srv->setRenderService(this->getRenderService());
         srv->start();
@@ -662,7 +662,7 @@ void TriangularMesh::createNormalsService()
                     TriangularMesh,
                     "::visuVTKAdaptor::Normals"
                     );
-        assert(service);
+        SLM_ASSERT("service not instanced", service);
 
         service->setRenderService( this->getRenderService() );
         service->setRenderId     ( this->getRenderId()      );

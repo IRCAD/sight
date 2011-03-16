@@ -71,6 +71,10 @@ std::string InputDialog::getInput()
     {
         m_input = outputText.toStdString();
     }
+    else
+    {
+        m_input = "";
+    }
     return m_input;
 }
 

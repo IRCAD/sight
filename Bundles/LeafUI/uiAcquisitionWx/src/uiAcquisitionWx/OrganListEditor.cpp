@@ -56,7 +56,7 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     m_showCheckBox = new wxCheckBox( container, wxNewId(), _("Hide all organs"));
     m_showCheckBox->SetToolTip(_("Show or hide all organs"));
@@ -86,7 +86,7 @@ void OrganListEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
     container->Unbind( wxEVT_COMMAND_CHECKBOX_CLICKED, &OrganListEditor::onShowReconstructions, this, m_showCheckBox->GetId());
     container->Unbind( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &OrganListEditor::onOrganChoiceVisibility, this,  m_organChoice->GetId());
     container->Unbind( wxEVT_COMMAND_LISTBOX_SELECTED, &OrganListEditor::onOrganChoiceSelection, this,  m_organChoice->GetId());
@@ -147,7 +147,7 @@ void OrganListEditor::updateReconstructions()
     m_map.clear();
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     container->Enable(acq->getReconstructions().first != acq->getReconstructions().second);
 
@@ -209,7 +209,7 @@ void OrganListEditor::onOrganChoiceVisibility(wxCommandEvent & event )
     int item = event.GetInt();
     std::string organSelected = ::fwWX::wx2std(m_organChoice->GetString( item ) );
     ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
-    assert(rec) ;
+    SLM_ASSERT("rec not instanced", rec);
     rec->setIsVisible(!rec->getIsVisible());
 
     ::fwComEd::ReconstructionMsg::NewSptr msg;

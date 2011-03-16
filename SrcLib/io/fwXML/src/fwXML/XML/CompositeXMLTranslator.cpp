@@ -28,7 +28,7 @@ CompositeXMLTranslator::~CompositeXMLTranslator()
 xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
 {
     ::fwData::Composite::sptr  cmp= ::fwData::Composite::dynamicCast(obj);
-    assert( cmp );
+    SLM_ASSERT("cmp not instanced", cmp);
 
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
@@ -57,7 +57,7 @@ xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Obje
 
 void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( toUpdate ); // object should exist
+    SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
     ::fwData::Composite::sptr cmp= ::fwData::Composite::dynamicCast(toUpdate);
 
@@ -69,20 +69,20 @@ void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
         {
             xmlNodePtr keyNode   = XMLParser::findChildNamed( elementNode, "key");
             xmlNodePtr valueNode = XMLParser::findChildNamed( elementNode, "value");
-            assert( keyNode );
-            assert( valueNode );
+            SLM_ASSERT("keyNode not instanced", keyNode);
+            SLM_ASSERT("valueNode not instanced", valueNode);
             OSLM_INFO( "CompositeXMLTranslator::updateDataFromXML"  << BAD_CAST xmlNodeGetContent(keyNode) );
 
             std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
 
             //xmlNodePtr ConcretevalueNode = XMLParser::nextXMLElement( valueNode->children );
             xmlNodePtr ConcretevalueNode = xmlNextElementSibling( valueNode->children );
-            assert( ConcretevalueNode  );
+            SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
 
             ::fwTools::Object::sptr valueObj;
             valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
 
-            assert( valueObj );
+            SLM_ASSERT("valueObj not instanced", valueObj);
             assert( ::fwData::Object::dynamicCast( valueObj ));
             cmp->getRefMap()[key] = ::fwData::Object::dynamicCast( valueObj );
         }

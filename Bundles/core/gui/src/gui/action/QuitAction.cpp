@@ -10,7 +10,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/RootManager.hpp>
 
-#include "fwGui/Application.hpp"
+#include <fwGui/Application.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include "gui/action/QuitAction.hpp"

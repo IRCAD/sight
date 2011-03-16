@@ -63,7 +63,7 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
     const std::string GET_OBJECT = "ref";
 
     ::fwTools::Object::sptr associatedObject = _obj;
-    assert( associatedObject ) ;
+    SLM_ASSERT("associatedObject not instanced", associatedObject);
 
     BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
     {

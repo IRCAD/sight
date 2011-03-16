@@ -8,14 +8,17 @@
 #define _FWXML_BOOSTSERIALIZER_Graph_HPP_
 
 #include <boost/serialization/set.hpp>
+#include <fwTools/fromIsoExtendedString.hpp>
 #include <fwData/Graph.hpp>
 
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
 
-#include <fwTools/fromIsoExtendedString.hpp>
+namespace boost
+{
+namespace serialization
+{
 
-namespace boost {
-namespace serialization {
+//------------------------------------------------------------------------------
 
 /**
  * @brief serialize algorithm via boost.org serialization scheme
@@ -25,8 +28,10 @@ template<class Archive>
 void load(Archive & ar, ::fwData::Graph & _graph, const unsigned int version)
 {
     //ar &  boost::serialization::make_nvp( "nodes" ,  _graph.getRefNodes() );
-    assert(false); // to implement
+    SLM_FATAL("to implement");
 }
+
+//------------------------------------------------------------------------------
 
 template<class Archive>
 void save(Archive & ar, const ::fwData::Graph & _graph, const unsigned int version)
@@ -40,28 +45,26 @@ void save(Archive & ar, const ::fwData::Graph & _graph, const unsigned int versi
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 /// serialize image via boost.org serialization framework (split load/save)
 template<class Archive>
 void serialize(Archive & ar, ::fwData::Graph & _graph, const unsigned int version)
 {
-
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::Graph, fwTools::Object>(NULL,NULL);
+    ::boost::serialization::void_cast_register<  ::fwData::Graph, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_graph,version); // call load or save depending of archive type
 }
 
+//------------------------------------------------------------------------------
 
-
-} } // end namespace
+} //namespace serialization
+} // namespace boost
 
 
 INSTANTIATE_SERIALIZER(::fwData::Graph);
-
-
 
 #endif // _FWXML_BOOSTSERIALIZER_Graph_HPP_
 

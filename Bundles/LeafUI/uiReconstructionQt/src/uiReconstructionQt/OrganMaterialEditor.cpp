@@ -60,7 +60,7 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     m_colourButton = new QPushButton(tr("Color"), container) ;
     m_colourButton->setToolTip(tr("Selected organ's color"));
@@ -155,7 +155,7 @@ void OrganMaterialEditor::onColorButton()
     // Create Color choice dialog.
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     QColor oldColor(red, green, blue);
     QColor color = QColorDialog::getColor(oldColor, container);
@@ -195,7 +195,7 @@ void OrganMaterialEditor::refreshMaterial( )
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     container->setEnabled(!reconstruction->getOrganName().empty());
 

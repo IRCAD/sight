@@ -61,7 +61,7 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     QVBoxLayout* layout = new QVBoxLayout(container);
 
@@ -152,7 +152,7 @@ void OrganListEditor::updateReconstructions()
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
 
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     container->setEnabled(acq->getReconstructions().first != acq->getReconstructions().second);
 
@@ -212,7 +212,7 @@ void OrganListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
 {
     std::string organSelected = item->text().toStdString();
     ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
-    assert(rec) ;
+    SLM_ASSERT("rec not instanced", rec);
 
     bool itemIsChecked = (item->checkState() == Qt::Checked);
 

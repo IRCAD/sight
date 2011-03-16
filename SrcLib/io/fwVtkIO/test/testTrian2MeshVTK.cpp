@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
 
     ::fwData::TriangularMesh::sptr trian= ::fwTools::Factory::New< ::fwData::TriangularMesh>();
-    assert(trian);
+    SLM_ASSERT("trian not instanced", trian);
     ::fwDataIO::reader::TriangularMeshReader trianReader;
     trianReader.setObject(trian);
     trianReader.setFile(trianPath.string());
