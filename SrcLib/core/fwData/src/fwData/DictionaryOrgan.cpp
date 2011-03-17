@@ -17,7 +17,7 @@ namespace fwData
 
 DictionaryOrgan::DictionaryOrgan()
 {
-    m_name = ::fwData::String::New();
+    m_organName = ::fwData::String::New();
     m_roi4OrganNativeExp = ::fwData::String::New();
     m_roi4OrganExp = ::fwData::String::New();
 }

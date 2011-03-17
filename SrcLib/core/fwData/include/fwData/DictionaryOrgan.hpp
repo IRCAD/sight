@@ -86,7 +86,7 @@ public:
     fwGettersSettersDocMacro(BelongsTo, vBelongsTo, std::vector< std::string >, the string indicating to which organ this one belongs to);
 
 
-    fwGettersSettersDocMacro(Name, name, ::fwData::String::sptr, the name of the organ);
+    fwGettersSettersDocMacro(OrganName, organName, ::fwData::String::sptr, the name of the organ);
 
     fwGettersSettersDocMacro(Roi4OrganNativeExp, roi4OrganNativeExp, ::fwData::String::sptr, the string indicating the native expression that describes the roi used to segment organ);
 
@@ -101,7 +101,7 @@ public:
 protected :
 
     /// the name of the organ
-    ::fwData::String::sptr m_name;
+    ::fwData::String::sptr m_organName;
 
     /// the node that represents the roi for organ used to segment organ;
     ::fwData::Node::wptr m_roi4OrganDataNode;
