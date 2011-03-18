@@ -24,13 +24,18 @@ std::string ObjectMsg::DELETE_OBJECT  = "ObjectMsg::DELETE_OBJECT";
 
 //-----------------------------------------------------------------------------
 
-ObjectMsg::ObjectMsg()
+ObjectMsg::ObjectMsg() : m_hasCallback (false)
 {}
 
 //-----------------------------------------------------------------------------
 
 ObjectMsg::~ObjectMsg()
-{}
+{
+    if ( m_hasCallback )
+    {
+        m_callback();
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -157,6 +162,14 @@ void ObjectMsg::setSubject( ::fwTools::Object::wptr _subject)
 }
 
 //-----------------------------------------------------------------------------
+
+void ObjectMsg::setMessageCallback( MessageCallbackType callback )
+{
+    m_callback = callback;
+    m_hasCallback = true;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace fwServices
 

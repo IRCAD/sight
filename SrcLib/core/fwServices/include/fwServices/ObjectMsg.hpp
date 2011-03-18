@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/function.hpp>
+
 #include <fwTools/Object.hpp>
 #include <fwData/Object.hpp>
 
@@ -47,6 +49,9 @@ class FWSERVICES_CLASS_API ObjectMsg : public ::fwTools::Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwTools::Factory::New< ObjectMsg > );
+
+    /// Defines callback type
+    typedef ::boost::function< void () > MessageCallbackType;
 
     /// Constructor, do nothing.
     FWSERVICES_API ObjectMsg();
@@ -133,6 +138,9 @@ public:
      */
     FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, const ObjectMsg& _message) ;
 
+    /// Set a callback to the message which will be executed during message destruction
+    FWSERVICES_API void setMessageCallback( MessageCallbackType callback );
+
 protected :
 
     /**
@@ -156,6 +164,11 @@ private :
     /// Helper to convert string UUID/Classname in pretty string
     static std::string convertToLightString( std::string _initialString );
 
+    /// Callback calls during destruction
+    MessageCallbackType m_callback;
+
+    /// Permits to know if message has a callback
+    bool m_hasCallback;
 };
 
 
