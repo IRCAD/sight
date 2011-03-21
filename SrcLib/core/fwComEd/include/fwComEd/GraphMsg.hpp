@@ -39,7 +39,8 @@ public:
     /// @brief Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_GRAPH;
     FWCOMED_API static std::string ADD_NODE;
-    FWCOMED_API static std::string REMOVE_NODE;
+    FWCOMED_API static std::string REMOVE_NODE; // msg notified AFTER removing node
+    FWCOMED_API static std::string REMOVING_NODE;  // msg notified TO REMOVE a node
     FWCOMED_API static std::string ADD_EDGE;
     FWCOMED_API static std::string REMOVE_EDGE;
     FWCOMED_API static std::string SELECTED_NODE;
@@ -65,22 +66,27 @@ public:
     FWCOMED_API virtual ~GraphMsg() throw();
 
     /// Add a ADD_NODE event with a dataInfo containing the node.
-    FWCOMED_API virtual void addedNode( ::fwData::Node::sptr node );
+    FWCOMED_API virtual void addedNode( ::fwData::Node::csptr node );
     /// Return the added node contained in the dataInfo of ADD_NODE event
     FWCOMED_API virtual ::fwData::Node::csptr getAddedNode() const;
 
     /// Add a REMOVE_NODE event with a dataInfo containing the node.
-    FWCOMED_API virtual void removedNode( ::fwData::Node::sptr node );
+    FWCOMED_API virtual void removedNode( ::fwData::Node::csptr node );
     /// Return the removed node contained in the dataInfo of REMOVE_NODE event
     FWCOMED_API virtual ::fwData::Node::csptr getRemovedNode() const;
 
+    /// Add a REMOVING_NODE event with a dataInfo containing the node.
+    FWCOMED_API virtual void removingNode( ::fwData::Node::csptr node );
+    /// Return the removed node contained in the dataInfo of REMOVING_NODE event
+    FWCOMED_API virtual ::fwData::Node::csptr getRemovingNode() const;
+
     /// Add a SELECTED_NODE event with a dataInfo containing the node.
-    FWCOMED_API virtual void selectedNode( ::fwData::Node::sptr node );
+    FWCOMED_API virtual void selectedNode( ::fwData::Node::csptr node );
     /// Return the selected node contained in the dataInfo of SELECTED_NODE event
     FWCOMED_API virtual ::fwData::Node::csptr getSelectedNode() const;
 
     /// Add a UNSELECTED_NODE event with a dataInfo containing the node.
-    FWCOMED_API virtual void unselectedNode( ::fwData::Node::sptr node );
+    FWCOMED_API virtual void unselectedNode( ::fwData::Node::csptr node );
     /// Return the unselected node contained in the dataInfo of UNSELECTED_NODE event
     FWCOMED_API virtual ::fwData::Node::csptr getUnselectedNode() const;
 
