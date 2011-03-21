@@ -5,6 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/ClassRegistrar.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
 
 #include "fwComEd/GraphMsg.hpp"
 
@@ -20,6 +22,7 @@ std::string GraphMsg::ADD_NODE             = "ADD_NODE";
 std::string GraphMsg::REMOVE_NODE          = "REMOVE_NODE";
 std::string GraphMsg::REMOVING_NODE        = "REMOVING_NODE";
 std::string GraphMsg::ADD_EDGE             = "ADD_EDGE";
+std::string GraphMsg::ADDING_EDGE          = "ADDING_EDGE";
 std::string GraphMsg::REMOVE_EDGE          = "REMOVE_EDGE";
 std::string GraphMsg::SELECTED_NODE        = "SELECTED_NODE";
 std::string GraphMsg::UNSELECTED_NODE      = "UNSELECTED_NODE";
@@ -83,6 +86,33 @@ void GraphMsg::removingNode( ::fwData::Node::csptr node )
 ::fwData::Node::csptr GraphMsg::getRemovingNode() const
 {
     return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::REMOVING_NODE ) );
+}
+
+//-----------------------------------------------------------------------------
+
+void GraphMsg::addingEdge( ::fwData::Node::csptr nodeFrom, ::fwData::Node::csptr nodeTo, std::string outputPortId, std::string inputPortId )
+{
+    ::fwData::Composite::NewSptr edgeInfo;
+    (*edgeInfo)["nodeFrom"] = ::fwData::Node::constCast( nodeFrom );
+    (*edgeInfo)["nodeTo"] = ::fwData::Node::constCast( nodeTo );
+    (*edgeInfo)["outputPortId"] = ::fwData::String::New( outputPortId );
+    (*edgeInfo)["inputPortId"] = ::fwData::String::New( inputPortId );
+    addEvent( GraphMsg::ADDING_EDGE , edgeInfo );
+}
+
+//-----------------------------------------------------------------------------
+
+::boost::tuple< ::fwData::Node::csptr, ::fwData::Node::csptr, std::string, std::string > GraphMsg::getAddingEdge() const
+{
+    ::fwData::Composite::csptr edgeInfoConst = ::fwData::Composite::dynamicConstCast( getDataInfo( GraphMsg::ADDING_EDGE ) );
+    ::fwData::Composite::sptr edgeInfo = ::fwData::Composite::constCast( edgeInfoConst );
+
+    ::fwData::Node::csptr nodeFrom = ::fwData::Node::dynamicConstCast( (*edgeInfo)["nodeFrom"] );
+    ::fwData::Node::csptr nodeTo = ::fwData::Node::dynamicConstCast( (*edgeInfo)["nodeTo"] );
+    std::string outputPortId = ::fwData::String::dynamicConstCast( (*edgeInfo)["outputPortId"] )->value();
+    std::string inputPortId = ::fwData::String::dynamicConstCast( (*edgeInfo)["inputPortId"] )->value();
+
+    return ::boost::make_tuple( nodeFrom, nodeTo, outputPortId, inputPortId);
 }
 
 //-----------------------------------------------------------------------------
