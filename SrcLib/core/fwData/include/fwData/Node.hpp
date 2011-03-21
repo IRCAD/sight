@@ -69,7 +69,7 @@ public:
      *
      * @return input or output port with given identifier
      */
-    FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput);
+    FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput) const;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Node::csptr _source );

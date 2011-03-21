@@ -46,14 +46,14 @@ bool Graph::addNode( Node::sptr node)
 
 //------------------------------------------------------------------------------
 
-bool Graph::removeNode( Node::sptr node)
+bool Graph::removeNode( Node::csptr node)
 {
     // test if connected edge to it
     if ( haveConnectedEdges(node) )
     {
         return false;
     }
-    return (m_nodes.erase(node) > 0 );
+    return (m_nodes.erase( Node::constCast(node) ) > 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ const Graph::NodeContainer &Graph::getCRefNodes() const
 
 //------------------------------------------------------------------------------
 
-bool Graph::haveConnectedEdges(Node::sptr node ) const
+bool Graph::haveConnectedEdges(Node::csptr node ) const
 {
     for ( ConnectionContainer::const_iterator i=m_connections.begin() ; i !=  m_connections.end() ; ++i )
     {
@@ -87,9 +87,9 @@ bool Graph::haveConnectedEdges(Node::sptr node ) const
 //------------------------------------------------------------------------------
 
 Edge::sptr Graph::makeConnection(
-        Node::sptr nodeSource,
+        Node::csptr nodeSource,
         std::string nodeSourceOutputPortID,
-        Node::sptr nodeDestination,
+        Node::csptr nodeDestination,
         std::string nodeDestinationInputPortID,
         std::string EdgeNature )
 {
@@ -108,7 +108,7 @@ Edge::sptr Graph::makeConnection(
 
 //------------------------------------------------------------------------------
 
-bool Graph::addEdge(Edge::sptr edge, Node::sptr nodeSource, Node::sptr nodeDestination)
+bool Graph::addEdge(Edge::sptr edge, Node::csptr nodeSource, Node::csptr nodeDestination)
 {
     // edge not already recorded
     if (m_connections.find( edge ) !=  m_connections.end() )
@@ -116,12 +116,12 @@ bool Graph::addEdge(Edge::sptr edge, Node::sptr nodeSource, Node::sptr nodeDesti
         return false; // edge already stored
     }
     // node registred ?
-    if (m_nodes.find( nodeSource ) ==  m_nodes.end() )
+    if (m_nodes.find( Node::constCast(nodeSource) ) ==  m_nodes.end() )
     {
         return false; // node already stored
     }
     // node registred ?
-    if ( m_nodes.find( nodeDestination ) ==  m_nodes.end() )
+    if ( m_nodes.find( Node::constCast(nodeDestination) ) ==  m_nodes.end() )
     {
         return false; // node already stored
     }
@@ -147,7 +147,7 @@ bool Graph::addEdge(Edge::sptr edge, Node::sptr nodeSource, Node::sptr nodeDesti
         return false; // incompatible type
     }
 
-    m_connections[ edge ] = std::make_pair(nodeSource,nodeDestination);
+    m_connections[ edge ] = std::make_pair(  Node::constCast(nodeSource), Node::constCast(nodeDestination) );
 
     return true;
 
@@ -199,23 +199,23 @@ Node::sptr Graph::getNode( Edge::sptr edge, bool upStream )
 
 //------------------------------------------------------------------------------
 
-std::vector< Edge::sptr > Graph::getInputEdges( Node::sptr node )
+std::vector< Edge::sptr > Graph::getInputEdges( Node::csptr node )
 {
     return getEdges( node, UP_STREAM );
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< Edge::sptr > Graph::getOutputEdges( Node::sptr node )
+std::vector< Edge::sptr > Graph::getOutputEdges( Node::csptr node )
 {
     return getEdges( node, DOWN_STREAM );
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< Edge::sptr > Graph::getEdges( Node::sptr node, bool upStream, std::string nature , std::string portID)
+std::vector< Edge::sptr > Graph::getEdges( Node::csptr node, bool upStream, std::string nature , std::string portID)
 {
-    OSLM_ASSERT("Node "<<node->getID() <<" not found in graph", m_nodes.find(node) != m_nodes.end() );
+    OSLM_ASSERT("Node "<<node->getID() <<" not found in graph", m_nodes.find( Node::constCast(node) ) != m_nodes.end() );
     OSLM_ASSERT("Port "<< portID <<" not found in graph", portID.empty() || node->findPort(portID,upStream) ); // portID if specified must be on node
 
     std::vector< Edge::sptr > result;
@@ -245,7 +245,7 @@ std::vector< Edge::sptr > Graph::getEdges( Node::sptr node, bool upStream, std::
 
 std::vector< ::fwData::Node::sptr >
 Graph::getNodes(
-        ::fwData::Node::sptr node,
+        ::fwData::Node::csptr node,
         bool upStream,
         std::string nature,
         std::string portID )

@@ -39,7 +39,7 @@ ObjectMsg::~ObjectMsg()
 
 //-----------------------------------------------------------------------------
 
-void ObjectMsg::addEvent( std::string _eventId , ::fwData::Object::sptr _pDataInfo )
+void ObjectMsg::addEvent( std::string _eventId , ::fwData::Object::csptr _pDataInfo )
 {
     m_eventId2DataInfo[ _eventId ] = _pDataInfo;
 }
@@ -56,7 +56,7 @@ bool ObjectMsg::hasEvent( std::string _eventId ) const
 std::vector< std::string > ObjectMsg::getEventIds() const
 {
     std::vector< std::string > result ;
-    std::map< std::string , ::fwData::Object::sptr >::const_iterator iter ;
+    std::map< std::string , ::fwData::Object::csptr >::const_iterator iter ;
     for( iter = m_eventId2DataInfo.begin() ; iter != m_eventId2DataInfo.end() ; ++iter )
     {
         result.push_back( iter->first ) ;
@@ -104,7 +104,7 @@ std::string ObjectMsg::getGeneralInfo() const
     std::string destUUID   = convertToLightString( m_subject.lock()->getID() );
 
     std::stringstream eventstream;
-    for(    std::map< std::string, ::fwData::Object::sptr >::const_iterator itEvent2Data = m_eventId2DataInfo.begin();
+    for(    std::map< std::string, ::fwData::Object::csptr >::const_iterator itEvent2Data = m_eventId2DataInfo.begin();
             itEvent2Data != m_eventId2DataInfo.end();
             ++itEvent2Data )
     {

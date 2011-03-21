@@ -74,11 +74,11 @@ void Node::setObject( ::fwData::Object::sptr object )
 
 //------------------------------------------------------------------------------
 
-Port::sptr Node::findPort(const std::string &identifier, /*const std::string &type,*/ bool modeInput)
+Port::sptr Node::findPort(const std::string &identifier, /*const std::string &type,*/ bool modeInput) const
 {
     if ( modeInput)
     {
-        for ( PortContainer::iterator i = m_inputs.begin() ; i != m_inputs.end() ; ++i )
+        for ( PortContainer::const_iterator i = m_inputs.begin() ; i != m_inputs.end() ; ++i )
         {
             if ( (*i)->getIdentifier() == identifier)
             {
@@ -88,7 +88,7 @@ Port::sptr Node::findPort(const std::string &identifier, /*const std::string &ty
     }
     else
     {
-        for ( PortContainer::iterator i = m_outputs.begin() ; i != m_outputs.end() ; ++i )
+        for ( PortContainer::const_iterator i = m_outputs.begin() ; i != m_outputs.end() ; ++i )
         {
             if ( (*i)->getIdentifier() == identifier)
             {

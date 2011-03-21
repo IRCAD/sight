@@ -83,7 +83,7 @@ public:
      * @param[in] _pDataInfo additional information concerning message ( it is an optional parameter )
      * @note a message can contain many events.
      */
-    FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+    FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::csptr _pDataInfo = ::fwData::Object::sptr() );
 
     /**
      * @brief This method is used to know if a specific event declared in the message
@@ -148,7 +148,7 @@ protected :
      *
      * Some event has not data info, in this cases, the event is in map  but the ::fwData::Object::sptr is null.
      */
-    std::map< std::string , ::fwData::Object::sptr > m_eventId2DataInfo;
+    std::map< std::string , ::fwData::Object::csptr > m_eventId2DataInfo;
 
     /// Give some message informations, this method uses getGeneralInfo.
     FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
