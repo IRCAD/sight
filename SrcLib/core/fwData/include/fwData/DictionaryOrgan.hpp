@@ -122,14 +122,13 @@ protected :
     std::string m_sStructureType;
 
     //! the anatomic structure label (skin, internal organ, ...)
-    //  mfo::DictionaryOrgan::SALEVEL m_stSALevel;
     std::string m_sSALabel;
 
     //! flag indicating if the organ is valid
     bool m_bIsMedicalStructure;
 
     //! the color in the AllOrgans structure
-    boost::uint32_t  m_ui32AOColor;
+    ::boost::uint32_t  m_ui32AOColor;
 
     //! the average volume of the organ
     double m_dAvgVolume;
@@ -138,13 +137,13 @@ protected :
     double m_dVolStdDeviation;
 
     //! the number of exams used to calculate the average volume
-    boost::uint32_t  m_ui32NbExams;
+    ::boost::uint32_t  m_ui32NbExams;
 
     //! the position of the organ in the organism
     std::string m_sPosition;
 
     //! the path of the icon corresponding to the organ
-    boost::filesystem::path m_fsIconPath;
+    ::boost::filesystem::path m_fsIconPath;
 
     //!@{
     //! @brief the 4 values defining the default organ color
@@ -155,10 +154,10 @@ protected :
     //!@}
 
     //! the path of the texture file corresponding to the organ
-    boost::filesystem::path m_fsTexturePath;
+    ::boost::filesystem::path m_fsTexturePath;
 
     //! the average number of faces used to represent the organ
-    boost::uint32_t  m_ui32AvgTriangleNb;
+    ::boost::uint32_t  m_ui32AvgTriangleNb;
 
     //! the min intensity, between which the organ should appear in the scan
     double m_dSegMin;

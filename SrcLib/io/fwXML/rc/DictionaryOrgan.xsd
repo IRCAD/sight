@@ -14,10 +14,10 @@
     <xsd:element name="StructureType" type="xsd:string"/>
     <xsd:element name="SALabel" type="xsd:string"/>
     <xsd:element name="IsMedicalStructure" type="xsd:boolean"/>
-    <xsd:element name="AOColor" type="xsd:int"/>
+    <xsd:element name="AOColor" type="xsd:unsignedInt"/>
     <xsd:element name="AvgVolume" type="xsd:double"/>
     <xsd:element name="VolStdDeviation" type="xsd:double"/>
-    <xsd:element name="NbExams" type="xsd:int"/>
+    <xsd:element name="NbExams" type="xsd:unsignedInt"/>
     <xsd:element name="Position" type="xsd:string"/>
     <xsd:element name="IconPath" type="xsd:anyURI"/>
     <xsd:element name="Red" type="xsd:double"/>
@@ -25,7 +25,7 @@
     <xsd:element name="Blue" type="xsd:double"/>
     <xsd:element name="Alpha" type="xsd:double"/>
     <xsd:element name="TexturePath" type="xsd:anyURI"/>
-    <xsd:element name="AvgTriangleNb" type="xsd:int"/>
+    <xsd:element name="AvgTriangleNb" type="xsd:unsignedInt"/>
     <xsd:element name="SegMin" type="xsd:double"/>
     <xsd:element name="SegMax" type="xsd:double"/>
     <xsd:element name="Modality" type="xsd:string"/>
