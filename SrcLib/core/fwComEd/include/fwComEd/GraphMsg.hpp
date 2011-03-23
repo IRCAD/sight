@@ -41,6 +41,7 @@ public:
      */
     /// @brief Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_GRAPH;
+    FWCOMED_API static std::string CLEANING_GRAPH;
     FWCOMED_API static std::string ADD_NODE;
     FWCOMED_API static std::string REMOVE_NODE; // msg notified AFTER removing a node
     FWCOMED_API static std::string REMOVING_NODE;  // msg notified TO REMOVE a node

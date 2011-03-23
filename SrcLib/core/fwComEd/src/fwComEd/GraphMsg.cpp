@@ -18,6 +18,7 @@ namespace fwComEd
 //-----------------------------------------------------------------------------
 
 std::string GraphMsg::NEW_GRAPH            = "NEW_GRAPH";
+std::string GraphMsg::CLEANING_GRAPH       = "CLEANING_GRAPH";
 std::string GraphMsg::ADD_NODE             = "ADD_NODE";
 std::string GraphMsg::REMOVE_NODE          = "REMOVE_NODE";
 std::string GraphMsg::REMOVING_NODE        = "REMOVING_NODE";
