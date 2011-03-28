@@ -460,6 +460,8 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     // memory cleanup
     xmlFreeDoc (xmlDoc);
 
+    ObjectTracker::clear();
+
     return objRoot;
 }
 

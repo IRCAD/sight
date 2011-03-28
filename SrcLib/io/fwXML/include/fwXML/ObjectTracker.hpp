@@ -68,7 +68,7 @@ protected:
     /**
      * @brief typedef of mapping bettwen object id <-> object created
      */
-    typedef std::map< std::string , ::boost::weak_ptr<fwTools::Object> > Registry;
+    typedef std::map< std::string , fwTools::Object::sptr > Registry;
 
     /**
      * @brief mapping bettwen object id <-> object created
