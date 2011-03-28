@@ -33,8 +33,15 @@
     <xsd:element name="SurfaceRupture" type="xsd:double"/>
     <xsd:element name="InteriorRupture" type="xsd:double"/>
     <xsd:element name="Comment" type="xsd:string"/>
-    <xsd:element name="BelongsTo" type="StringContainerXSDType"/>
+    <xsd:element name="BelongsTo" type="PODContainerXSDType"/>
 
+    <xsd:element name="OrganName" type="xsd:anyType"/>
+    <xsd:element name="Roi4OrganNativeExp" type="xsd:anyType"/>
+    <xsd:element name="Roi4OrganExp" type="xsd:anyType"/>
+    <xsd:element name="Roi4OrganDataNode" type="xsd:anyType"/>
+    <xsd:element name="MaskDataNode" type="xsd:anyType"/>
+    <xsd:element name="MeshDataNode" type="xsd:anyType"/>
+    
     <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
 
     </xsd:sequence>
