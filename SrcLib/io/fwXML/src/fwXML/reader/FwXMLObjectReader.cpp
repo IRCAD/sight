@@ -48,36 +48,29 @@ FwXMLObjectReader::~FwXMLObjectReader()
 
 void FwXMLObjectReader::read()
 {
-    try
+    ::boost::filesystem::path file = this->getFile();
+    if(!::boost::filesystem::exists( file ) )
     {
-        ::boost::filesystem::path file = this->getFile();
-        if(!::boost::filesystem::exists( file ) )
-        {
-            throw ::fwTools::Failed("The fwXML file doesn't exist.");
-        }
-        if( !::boost::filesystem::is_regular_file( file ))
-        {
-            throw ::fwTools::Failed("The fwXML file is not regular.");
-        }
-        if( ::boost::filesystem::file_size( file ) <= 0)
-        {
-            throw ::fwTools::Failed("The fwXML file is empty.");
-        }
-
-        ::fwXML::Serializer serializer;
-        // forward event progress to its parents
-        ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &FwXMLObjectReader::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
-        serializer.addHandler ( handler );
-
-        ::fwTools::Object::sptr object = serializer.deSerialize( file, true, true );
-        OSLM_ASSERT("DeSerialization failed for file "<<file.string(), object);
-        m_object = object;
-        m_pObject = object; //FIXME hack to be FIXED in #739
+        throw ::fwTools::Failed("The fwXML file doesn't exist.");
     }
-    catch ( const std::exception& e)
+    if( !::boost::filesystem::is_regular_file( file ))
     {
-        throw(e);
+        throw ::fwTools::Failed("The fwXML file is not regular.");
     }
+    if( ::boost::filesystem::file_size( file ) <= 0)
+    {
+        throw ::fwTools::Failed("The fwXML file is empty.");
+    }
+
+    ::fwXML::Serializer serializer;
+    // forward event progress to its parents
+    ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &FwXMLObjectReader::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
+    serializer.addHandler ( handler );
+
+    ::fwTools::Object::sptr object = serializer.deSerialize( file, true, true );
+    OSLM_ASSERT("DeSerialization failed for file "<<file.string(), object);
+    m_object = object;
+    m_pObject = object; //FIXME hack to be FIXED in #739
 }
 
 //------------------------------------------------------------------------------
