@@ -170,13 +170,13 @@ public:
 
         xmlNodePtr root = xmlNewNode(NULL, xmlStrdup( BAD_CAST rootName.c_str() ) );
 
-        if (typeid( Iterator::value_type) == typeid(std::string))
+        if (typeid( typename Iterator::value_type) == typeid(std::string))
         {
             addProp(root, "item_type", "std::string");
         }
         else
         {
-            addProp(root, "item_type", ::fwCore::TypeDemangler< Iterator::value_type >().getLeafClassname());
+            addProp(root, "item_type", ::fwCore::TypeDemangler< typename Iterator::value_type >().getLeafClassname());
         }
 
         if ( begin == end)
