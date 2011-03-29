@@ -187,6 +187,8 @@ public:
 
     FWDATA_API void shallowCopy( Graph::csptr _source );
 
+    FWDATA_API void deepCopy( Graph::csptr _source );
+
 protected :
 
     /**

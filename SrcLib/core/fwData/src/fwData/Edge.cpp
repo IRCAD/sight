@@ -61,7 +61,7 @@ std::string Edge::getToPortID() const
 
 std::string Edge::getPortID(bool upStream) const
 {
-	return upStream?m_fromPortIdentifier:m_toPortIdentifier;
+    return upStream?m_fromPortIdentifier:m_toPortIdentifier;
 }
 
 //------------------------------------------------------------------------------
@@ -76,6 +76,27 @@ void Edge::setNature(std::string nature)
 const std::string &Edge::getNature() const
 {
     return m_nature;
+}
+
+//------------------------------------------------------------------------------
+void Edge::shallowCopy( Edge::csptr _source )
+{
+
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
+    this->m_toPortIdentifier = _source->m_toPortIdentifier;
+    this->m_nature = _source->m_nature;
+}
+
+//------------------------------------------------------------------------------
+
+void Edge::deepCopy( Edge::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
+    this->m_toPortIdentifier = _source->m_toPortIdentifier;
+    this->m_nature = _source->m_nature;
+
 }
 
 //------------------------------------------------------------------------------

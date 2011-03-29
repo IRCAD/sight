@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <utility>
 #include <boost/foreach.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
@@ -303,6 +304,45 @@ void Graph::shallowCopy( Graph::csptr _source )
     ::fwData::Object::shallowCopyOfChildren(_source );
     m_nodes = _source->m_nodes;
     m_connections = _source->m_connections;
+}
+
+//------------------------------------------------------------------------------
+
+void Graph::deepCopy( Graph::csptr _source )
+{
+    ::fwData::Object::deepCopyOfChildren(_source );
+
+    std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
+//    typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
+//    typedef std::set< Node::sptr >                                         NodeContainer;
+    typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;
+
+    m_nodes.clear();
+    BOOST_FOREACH(::fwData::Node::sptr node, _source->m_nodes)
+    {
+        ::fwData::Node::NewSptr newNode;
+        newNode->deepCopy( Node::constCast(node) );
+        bool addOK =this->addNode(newNode);
+        OSLM_ASSERT("Node "<<newNode->getID() <<" can't be deepCopy ", addOK );
+        correspondenceBetweenNodes.insert(std::make_pair(node, newNode));
+    }
+
+    m_connections.clear();
+    BOOST_FOREACH(ConnectionContainerElt connection, _source->m_connections)
+    {
+        // Edge deep copy .
+        ::fwData::Edge::NewSptr newEdge;
+        newEdge->deepCopy( connection.first );
+        ::fwData::Node::sptr oldNode1 = (connection.second).first;
+        ::fwData::Node::sptr oldNode2 = (connection.second).second;
+        if ((correspondenceBetweenNodes.find(Node::constCast(oldNode1))!= correspondenceBetweenNodes.end())
+             && (correspondenceBetweenNodes.find(Node::constCast(oldNode2)) != correspondenceBetweenNodes.end()))
+        {
+            // Add new Edge
+            this->addEdge(newEdge, correspondenceBetweenNodes[oldNode1], correspondenceBetweenNodes[oldNode2]);
+        }
+    }
+    correspondenceBetweenNodes.clear();
 }
 
 //------------------------------------------------------------------------------
