@@ -40,7 +40,7 @@ public:
     FWDATA_API static const bool DOWN_STREAM;
 
     typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
-    typedef std::set< Node::sptr >                                         NodeContainer;
+    typedef std::set< Node::sptr >                                         NodeContainer;  //  Be carreful, if you change we use erase(it++)
 
     /// Constructor
     FWDATA_API Graph();
@@ -189,14 +189,15 @@ public:
 
     FWDATA_API void deepCopy( Graph::csptr _source );
 
-protected :
-
     /**
      * @brief Check if an edge is connected to the node
      *
      * @return true if at least one edge is connected to given node
      */
     FWDATA_API bool haveConnectedEdges(Node::csptr _node ) const;
+
+protected :
+
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;
