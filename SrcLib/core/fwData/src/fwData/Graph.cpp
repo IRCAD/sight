@@ -313,8 +313,6 @@ void Graph::deepCopy( Graph::csptr _source )
     ::fwData::Object::deepCopyOfChildren(_source );
 
     std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
-//    typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
-//    typedef std::set< Node::sptr >                                         NodeContainer;
     typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;
 
     m_nodes.clear();
