@@ -74,16 +74,9 @@ void VtkRenderService::configureRenderer( ConfigurationType conf )
     {
         m_renderers[id] = vtkRenderer::New();
 
-#ifdef USE_DEPTH_PEELING
         m_renderers[id]->SetUseDepthPeeling     ( 1  );
         m_renderers[id]->SetMaximumNumberOfPeels( 8  );
         m_renderers[id]->SetOcclusionRatio      ( 0. );
-#elif USE_COVERAGE_CULLER
-        vtkFrustumCoverageCuller *culler = vtkFrustumCoverageCuller::New();
-        culler->SetSortingStyleToBackToFront();
-        m_renderers[id]->AddCuller(culler);
-        culler->Delete();
-#endif
 
         if(conf->hasAttribute("layer") )
         {
@@ -456,11 +449,9 @@ void VtkRenderService::startContext()
 
     // For Depth peeling (translucent rendering)
 //    m_interactorManager->getInteractor()->SetRenderWhenDisabled(false);
-//
-//#ifdef USE_DEPTH_PEELING //Depth peeling is only fonctionnal in win32 right now
-//    m_interactorManager->getInteractor()->GetRenderWindow()->SetAlphaBitPlanes(1);
-//    m_interactorManager->getInteractor()->GetRenderWindow()->SetMultiSamples(0);
-//#endif
+
+    m_interactorManager->getInteractor()->GetRenderWindow()->SetAlphaBitPlanes(1);
+    m_interactorManager->getInteractor()->GetRenderWindow()->SetMultiSamples(0);
 
 //    m_interactor->GetRenderWindow()->PointSmoothingOn();
 //    m_interactor->GetRenderWindow()->LineSmoothingOn();
