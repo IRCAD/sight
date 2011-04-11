@@ -45,10 +45,6 @@
 namespace vtkIO
 {
 
-
-//namespace { // anonymous namespace
-
-
 struct DynamicTypeOrderer
 {
   bool operator()(const fwTools::DynamicType & d1, const fwTools::DynamicType &d2) const
@@ -77,9 +73,6 @@ TypeTranslator PixelTypeTranslation = boost::assign::list_of< TypeTranslator::re
                                                                     ( fwTools::makeDynamicType<unsigned long>(),  VTK_UNSIGNED_LONG )
                                                                     ( fwTools::makeDynamicType<float>(),          VTK_FLOAT )
                                                                     ( fwTools::makeDynamicType<double>(),         VTK_DOUBLE );
-
-
-//} // end anonymous namespace
 
 
 const char *myScalarTypeCallback(void *imageData)
@@ -189,7 +182,7 @@ bool fromVTKImage( vtkImageData* source, ::boost::shared_ptr< ::fwData::Image > 
         {
             if (components == 3 && bytePerPixel == 2)
             {
-                OSLM_TRACE ("RGB 16bits");
+                SLM_TRACE ("RGB 16bits");
                 unsigned short* destBufferTyped = ( unsigned short*)destBuffer;
                 unsigned short* inputTyped= (unsigned short*)input;
                 unsigned short* finalPtr = ((unsigned short*)destBuffer) + size;
@@ -207,7 +200,7 @@ bool fromVTKImage( vtkImageData* source, ::boost::shared_ptr< ::fwData::Image > 
             {
                 if (components == 3 && bytePerPixel == 1)
                 {
-                    OSLM_TRACE ("RGB 8bits");
+                    SLM_TRACE ("RGB 8bits");
                     unsigned char* destBufferTyped = ( unsigned char*)destBuffer;
                     unsigned char* inputTyped= ( unsigned char*)input;
                     unsigned char* finalPtr = (( unsigned char*)destBuffer) + size;
@@ -226,13 +219,13 @@ bool fromVTKImage( vtkImageData* source, ::boost::shared_ptr< ::fwData::Image > 
 
                     if (components == 1)
                     {
-                        OSLM_TRACE ("Luminance image");
+                        SLM_TRACE ("Luminance image");
                         memcpy( destBuffer, input , imageMemSize);
                         destination->setPixelType( PixelTypeTranslation.right.at( source->GetScalarType() ) );
                     }
                     else
                     {
-                        OSLM_ERROR ("Dicom image type not supported (image dimension)");
+                        SLM_ERROR ("Dicom image type not supported (image dimension)");
                     }
                 }
             }
@@ -259,12 +252,10 @@ bool fromVTKImage( vtkImageData* source, ::boost::shared_ptr< ::fwData::Image > 
         destination->getRefOrigin()[d]=0.0; //FIXME !!! Hack because our framework (visu services) doesn't support origine
     }
 
-    OSLM_TRACE ("Exit from fromVTKImage");
+    SLM_TRACE ("Exit from fromVTKImage");
 
     return res;
 }
-
-
 
 //------------------------------------------------------------------------------
 
@@ -304,7 +295,6 @@ vtkImageImport* convertToVTKImageImport( ::boost::shared_ptr< ::fwData::Image > 
     importer->Update();
 
     return importer;
-
 }
 
 //------------------------------------------------------------------------------
@@ -348,7 +338,7 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::boost::shared_
 // This method is written to be as fast as possible, take care when modifying it.
 vtkPolyData*  updatePolyDataPoints(vtkPolyData* polyDataDst, ::fwData::TriangularMesh::sptr meshSrc )
 {
-    OSLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     vtkPoints *polyDataPoints = polyDataDst->GetPoints();
     ::fwData::TriangularMesh::PointContainer &points = meshSrc->points();
@@ -383,7 +373,6 @@ vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr mesh )
         polygonGrid->SetPoints(trianPts);
         updatePolyDataPoints(polygonGrid, mesh);
 
-
         ::fwData::TriangularMesh::CellContainer &cells = mesh->cells();
         unsigned int nbCells = cells.size() ;
         assert( nbCells ) ;
@@ -412,38 +401,40 @@ vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr mesh )
 bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangularMesh)
 {
     SLM_TRACE_FUNC();
-
     bool res = false;
-
     vtkPoints *trianPts = polyData->GetPoints();
 
     if (trianPts)
     {
-        ::fwData::TriangularMesh::PointContainer pointContainer;
-        ::fwData::TriangularMesh::CellContainer cellContainer;
+        triangularMesh->cells().clear();
+        triangularMesh->points().clear();
 
-        for (int i=0 ; i< trianPts->GetNumberOfPoints() ; i++)
+        vtkDataArray* points = trianPts->GetData();
+        vtkIdType numberOfTuples = points->GetNumberOfTuples();
+        std::vector<float> vPoint(3, 0.0);
+        triangularMesh->points().resize(numberOfTuples, vPoint);
+        double* tuple;
+        for (vtkIdType i = 0; i < numberOfTuples; ++i)
         {
-            std::vector< float > vPoint(3,0);
-            vPoint[0] = trianPts->GetPoint(i)[0];
-            vPoint[1] = trianPts->GetPoint(i)[1];
-            vPoint[2] = trianPts->GetPoint(i)[2];
-            pointContainer.push_back(vPoint);
-        }
-        triangularMesh->points() = pointContainer;
-
-        for (int i=0 ; i< polyData->GetNumberOfCells() ; i++)
-        {
-            std::vector< int > vCell;
-            for (int j=0 ; j < polyData->GetCell(i)->GetNumberOfPoints() ; j++)
-            {
-                vCell.push_back( polyData->GetCell(i)->GetPointId(j) );
-            }
-            cellContainer.push_back(vCell);
+            tuple = points->GetTuple(i);
+            ::fwData::TriangularMesh::PointContainer::value_type &vPoints = triangularMesh->points()[i];
+            std::copy(tuple, tuple+3, vPoints.begin());
         }
 
-        triangularMesh->cells() = cellContainer;
-
+        vtkIdType numberOfCells = polyData->GetNumberOfCells();
+        std::vector<int> vCell(3, 0);
+        triangularMesh->cells().resize(numberOfCells, vCell);
+        vtkCell* cell;
+        vtkIdList* idList;
+        vtkIdType* idType;
+        for (vtkIdType i = 0 ; i < numberOfCells ; ++i)
+        {
+            cell = polyData->GetCell(i);
+            idList = cell->GetPointIds();
+            idType = idList->GetPointer(0);
+            ::fwData::TriangularMesh::CellContainer::value_type &vCells = triangularMesh->cells()[i];
+            std::copy(idType, idType+3, vCells.begin());
+        }
         res = true;
     }
 
@@ -489,32 +480,9 @@ double computeVolume(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangul
 }
 
 //-----------------------------------------------------------------------------
-//
 
 double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
 {
-
-//  vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
-//
-//  vtkImageData* vi = vtkImageData::New();
-//  vi->SetOrigin( 0,0,0 ); // adjust these to your needs
-//  vi->SetSpacing( 0.5, 0.5, 0.5 ); // adjust these to your needs
-//  vi->SetDimensions( vtkMesh->GetBounds()[1]*2,  vtkMesh->GetBounds()[3]*2,  vtkMesh->GetBounds()[5]*2 ); // adjust these to your needs
-//  vi->SetScalarTypeToUnsignedChar ();
-//  vi->AllocateScalars();
-//  // outputMesh is of vtkPolyData* type and contains your mesh data
-//  vtkPolyDataToImageStencil* pti = vtkPolyDataToImageStencil::New();
-//  pti->SetInput( vtkMesh );
-//  pti->Update();
-//  vtkImageStencil* is = vtkImageStencil::New();
-//  is->SetInput( vi );
-//  is->SetStencil( pti->GetOutput() );
-//  is->ReverseStencilOff();
-//  is->SetBackgroundValue(1);
-//  is->Update();
-//  // is->GetOutput() returns your image data as vtkImageData*
-//  return -1;
-
     vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
 
     vtkImageData* vi = vtkImageData::New();
@@ -527,8 +495,6 @@ double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh 
     // outputMesh is of vtkPolyData* type and contains your mesh data
     vtkPolyDataToImageStencil* pti = vtkPolyDataToImageStencil::New();
     pti->SetInput( vtkMesh );
-    //pti->Update(); do not update because outputspacing is not defined, let sub filter set them
-//  pti->SetTolerance(0.5);
     vtkImageAccumulate* ac = vtkImageAccumulate::New();
     ac->SetInput( vi );
     ac->SetStencil( pti->GetOutput() );
@@ -546,7 +512,6 @@ double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh 
 }
 
 //-----------------------------------------------------------------------------
-
 
 vtkMatrix4x4 *  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
 {
@@ -692,7 +657,6 @@ void convertTF2vtkTF(
     lookupTableDst->SetTableRange( min, min + width );
 
     lookupTableDst->Build();
-
 }
 
 //-----------------------------------------------------------------------------
@@ -720,13 +684,8 @@ void convertTF2vtkTFBW(
         value = ((float) k)/255.0;
         lookupTableDst->SetTableValue( k, value, value, value, alpha );
     }
-
     lookupTableDst->SetTableRange( min, min + width );
-
     lookupTableDst->Build();
-
 }
-
-
 
 } // namespace vtkIO
