@@ -162,7 +162,7 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
 // exemple ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
 {
-    m_filters.insert( std::make_pair( filterName, wildcardList ));
+    m_filters.push_back( std::make_pair( filterName, wildcardList ));
 }
 
 //------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ void LocationDialog::addFilter(const std::string &filterName, const std::string 
 QString LocationDialog::fileFilters()
 {
     std::string result;
-    std::multimap< std::string, std::string >::const_iterator iter;
+    std::vector< std::pair < std::string, std::string > >::const_iterator iter;
     for ( iter = m_filters.begin(); iter!= m_filters.end(); ++iter)
     {
         std::string filterName = iter->first;
