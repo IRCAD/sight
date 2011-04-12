@@ -28,8 +28,16 @@ class FWDATA_CLASS_API Point : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object),
-        (()), ::fwTools::Factory::New< Point >) ;
+
+    fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
+       ((::fwTools::Factory::New< Point > ,() ))
+       ((PointFactory ,((float)) ((float)(0.0)) ((float) (0.0)) ))
+       ((PointFactory ,((Point::sptr)) ))
+       );
+
+    //fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object),( ((float)(0))((float)(0))((float)(0)) ), ::fwTools::Factory::New< Point > ) ;
+
+    //fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object),(()), ::fwTools::Factory::New< Point >) ;
 
     typedef double PointCoordType;
 
@@ -38,6 +46,7 @@ public :
 
     /// Constructor
     FWDATA_API Point();
+
     /// Destructor
     FWDATA_API virtual ~Point();
 
@@ -59,6 +68,10 @@ public :
 
 
 protected :
+
+    /// Point factory
+    FWDATA_API static Point::sptr PointFactory(float x, float y, float z);
+    FWDATA_API static Point::sptr PointFactory( Point::sptr p );
 
     /// point coordinates
     PointCoordArrayType m_vCoord;
