@@ -88,6 +88,9 @@ private:
     /// Title of the future tab created by this action
     std::string m_viewConfigTitle;
 
+    /// Title prefix of the future tab created by this action
+    std::string m_viewConfigtitlePrefixKey;
+
     /// Specify if the config view may be closed
     bool m_closableConfig;
 
