@@ -47,7 +47,8 @@ void MeshWriter::write()
     ::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
 
     vtkGenericDataObjectWriter *writer = vtkGenericDataObjectWriter::New();
-    writer->SetInput( ::vtkIO::toVTKMesh( pTriangularMesh ) );
+    vtkPolyData* vtkMesh = ::vtkIO::toVTKMesh( pTriangularMesh );
+    writer->SetInput( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary ();
 
@@ -56,6 +57,7 @@ void MeshWriter::write()
 
     writer->Write();
     writer->Delete();
+    vtkMesh->Delete();
 }
 
 //------------------------------------------------------------------------------
