@@ -370,7 +370,7 @@ vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr mesh )
 
     if ( mesh && !mesh->points().empty() )
     {
-        vtkPoints *trianPts = vtkPoints::New();
+        vtkSmartPointer< vtkPoints > trianPts = vtkSmartPointer< vtkPoints >::New();
         polygonGrid->SetPoints(trianPts);
         updatePolyDataPoints(polygonGrid, mesh);
 
