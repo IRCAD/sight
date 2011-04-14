@@ -60,17 +60,19 @@ void PSAFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg
                 SLM_ASSERT("Sorry, the subject of message is not a ::fwData::PatientDB", patientDB);
 
                 ::fwData::Patient::sptr pat;
+                ::fwData::String::sptr patientName;
                 ::fwData::Study::sptr stu;
                 ::fwData::Acquisition::sptr acq;
                 if( it->get<6>() != REMOVE )
                 {
                     this->getPSASelection( patientDB, _msg, pat, stu, acq );
+                    patientName = ::fwData::String::NewSptr( pat->getCRefName() );
                 }
                 // Udapte the composite object referenced by the composite key ( it->get<2>() )
                 this->updateComposite(composite, pat, it->get<2>(), it->get<6>() );
                 this->updateComposite(composite, stu, it->get<3>(), it->get<6>() );
                 this->updateComposite(composite, acq, it->get<4>(), it->get<6>() );
-                this->updateComposite(composite, ::fwData::String::NewSptr( pat->getCRefName() ), it->get<5>(), it->get<6>() );
+                this->updateComposite(composite, patientName, it->get<5>(), it->get<6>() );
 
             }
         }
