@@ -34,6 +34,7 @@
 #include <vtkDataSetAttributes.h>
 #include <vtkDataArray.h>
 #include <vtkPointData.h>
+#include <vtkSmartPointer.h>
 //#include <>
 //vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
 #include <fwMath/MeshFunctions.hpp>
@@ -452,12 +453,12 @@ double computeVolume( ::fwData::TriangularMesh::sptr _triangularMesh )
 
     vtkPolyData*  vtkMeshRaw = toVTKMesh( closedMesh );
 
-    vtkPolyDataNormals* filter = vtkPolyDataNormals::New();
+    vtkSmartPointer< vtkPolyDataNormals > filter = vtkSmartPointer< vtkPolyDataNormals >::New();
     filter->SetInput(vtkMeshRaw);
     filter->AutoOrientNormalsOn ();
     filter->FlipNormalsOn ();
 
-    vtkMassProperties  *calculator = vtkMassProperties::New();
+    vtkSmartPointer< vtkMassProperties > calculator = vtkSmartPointer< vtkMassProperties >::New();
     calculator->SetInput( filter->GetOutput() );
     calculator->Update();
     double volume =  calculator->GetVolume();
@@ -473,8 +474,7 @@ double computeVolume( ::fwData::TriangularMesh::sptr _triangularMesh )
     }
 
     vtkMeshRaw->Delete();
-    calculator->Delete();
-    filter->Delete();
+
     return volume;
 }
 
