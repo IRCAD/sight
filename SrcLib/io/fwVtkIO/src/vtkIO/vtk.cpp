@@ -87,7 +87,7 @@ const char *myScalarTypeCallback(void *imageData)
 
 //-----------------------------------------------------------------------------
 
-vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImageData *dst)
+vtkImageData* toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 {
     vtkImageImport *importer = vtkImageImport::New();
 
@@ -141,7 +141,7 @@ vtkImageData* toVTKImage( ::boost::shared_ptr< ::fwData::Image > data,  vtkImage
 
 //-----------------------------------------------------------------------------
 
-bool fromVTKImage( vtkImageData* source, ::boost::shared_ptr< ::fwData::Image > destination )
+bool fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
     assert(destination && source );
 
@@ -260,7 +260,7 @@ bool fromVTKImage( vtkImageData* source, ::boost::shared_ptr< ::fwData::Image > 
 
 //------------------------------------------------------------------------------
 
-vtkImageImport* convertToVTKImageImport( ::boost::shared_ptr< ::fwData::Image > data )
+vtkImageImport* convertToVTKImageImport( ::fwData::Image::sptr data )
 {
     vtkImageImport *importer = vtkImageImport::New();
 
@@ -300,7 +300,7 @@ vtkImageImport* convertToVTKImageImport( ::boost::shared_ptr< ::fwData::Image > 
 
 //------------------------------------------------------------------------------
 
-void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::boost::shared_ptr< ::fwData::Image > _pDataImage )
+void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage )
 {
 
     _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
@@ -480,7 +480,7 @@ double computeVolume( ::fwData::TriangularMesh::sptr _triangularMesh )
 
 //-----------------------------------------------------------------------------
 
-double computeVolumeWithStencil(  ::boost::shared_ptr< ::fwData::TriangularMesh > _triangularMesh )
+double computeVolumeWithStencil(  ::fwData::TriangularMesh::sptr _triangularMesh )
 {
     vtkPolyData*  vtkMesh = toVTKMesh( _triangularMesh );
 

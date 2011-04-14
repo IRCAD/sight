@@ -6,7 +6,7 @@
 
 #include <vtkPolyData.h>
 #include <vtkGenericDataObjectWriter.h>
-
+#include <vtkSmartPointer.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -26,37 +26,35 @@ namespace vtkIO
 MeshWriter::MeshWriter()
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE("vtkIO::MeshWriter::MeshWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 MeshWriter::~MeshWriter()
 {
-    SLM_TRACE("vtkIO::MeshWriter::~MeshWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriter::write()
 {
-    assert( m_object.use_count() );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     ::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
 
-    vtkGenericDataObjectWriter *writer = vtkGenericDataObjectWriter::New();
+    vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
     vtkPolyData* vtkMesh = ::vtkIO::toVTKMesh( pTriangularMesh );
     writer->SetInput( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
-    writer->SetFileTypeToBinary ();
+    writer->SetFileTypeToBinary();
 
     //add progress observation
     ::vtkIO::ProgressVtktoFw( writer, this, getFile().string() );
 
     writer->Write();
-    writer->Delete();
     vtkMesh->Delete();
 }
 
