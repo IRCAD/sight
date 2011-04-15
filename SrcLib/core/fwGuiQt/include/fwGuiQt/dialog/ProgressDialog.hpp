@@ -17,8 +17,12 @@
 #endif
 
 #include <QApplication>
-#include <QProgressDialog>
+#include <QMainWindow>
 #include <QPointer>
+#include <QProgressBar>
+#include <QProgressDialog>
+#include <QStatusBar>
+#include <QString>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 
@@ -66,7 +70,11 @@ public:
 
 protected :
 
+    QString m_title;
+
     QPointer< QProgressDialog >  m_pdialog;
+    QPointer< QProgressBar >     m_pprogressbar;
+    QPointer< QMainWindow >      m_pmainWindow;
 
 };
 } // namespace dialog
