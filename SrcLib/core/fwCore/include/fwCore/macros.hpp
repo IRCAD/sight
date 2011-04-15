@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/** 
+/**
  * @file fwCore/macros.hpp
  * @brief This file defines fwCore base macros.
  *
@@ -52,7 +52,7 @@
 
 
 
-/** @cond 
+/** @cond
  */
 
 #define __FWCORE_TYPEDEF_SELF_NAME               SelfType
@@ -74,7 +74,7 @@
 /** @endcond */
 
 
-/** 
+/**
  * @name Smart pointers macro
  * @{ */
 
@@ -345,7 +345,7 @@
 
 // @endcond
 
-/** 
+/**
  * @name Class declaration helpers
  * @{ */
 
@@ -424,7 +424,7 @@
  * @brief Generate virtual methods that check if passed type is same type of
  * (or a topclass of) 'this' type
  *
- * Example: 
+ * Example:
  * ::fwData::Image::IsTypeOf("::fwData::Object") is true
  * image->isA("::fwData::Object") is true
  *
@@ -443,6 +443,11 @@
         return this->__FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                                                                           \
     }
 
+namespace fwTools {
+template<class, class, class>
+class ClassFactory;
+class Factory;
+}
 /**
  * @brief Generate common construction methods for classes with one factory
  *
@@ -464,6 +469,12 @@
  */
 #define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                     \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                \
+    friend class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME;                                                  \
+    template<typename T>                                                                                 \
+    friend void ::boost::checked_delete(T *x);                                                           \
+    template<class, class, class>                                                 \
+    friend class ::fwTools::ClassFactory;                                                                       \
+    friend class ::fwTools::Factory;                                                                     \
     /* @cond */                                                                                          \
     class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME: public __FWCORE_TYPEDEF_SHARED_PTR_NAME                 \
     {                                                                                                    \

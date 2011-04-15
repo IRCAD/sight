@@ -8,28 +8,21 @@
 
 namespace fwTools {
 
-ProgressAdviser::ProgressAdviser() {
-    // TODO Auto-generated constructor stub
+ProgressAdviser::ProgressAdviser()
+{}
 
-}
+ProgressAdviser::~ProgressAdviser()
+{}
 
-ProgressAdviser::~ProgressAdviser() {
-    // TODO Auto-generated destructor stub
-}
-
-
-void   ProgressAdviser::addHandler(const ProgessHandler &handler)
+void ProgressAdviser::addHandler(const ProgessHandler &handler)
 {
     // append a new ProgressHandler
     m_progressSignal.connect(handler);
 }
 
-
-void   ProgressAdviser::notifyProgress(float percent,std::string msg)
+void ProgressAdviser::notifyProgress(float percent, std::string msg)
 {
     m_progressSignal(percent,msg);
 }
-
-
 
 }

@@ -150,15 +150,15 @@ void VtkModelReaderService::loadMesh( const ::boost::filesystem::path vtkFile, :
 {
     SLM_TRACE_FUNC();
 
-    ::vtkIO::MeshReader myReader;
-    myReader.setObject(_pTriangularMesh);
-    myReader.setFile(vtkFile);
+    ::vtkIO::MeshReader::NewSptr myReader;
+    myReader->setObject(_pTriangularMesh);
+    myReader->setFile(vtkFile);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
-        myReader.addHandler( progressMeterGUI );
-        myReader.read();
+        myReader->addHandler( progressMeterGUI );
+        myReader->read();
     }
     catch (const std::exception & e)
     {

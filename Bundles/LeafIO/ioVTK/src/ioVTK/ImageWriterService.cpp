@@ -87,14 +87,14 @@ void ImageWriterService::configureWithIHM()
 
 void ImageWriterService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("ImageWriterService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void ImageWriterService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("ImageWriterService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -108,19 +108,19 @@ void ImageWriterService::info(std::ostream &_sstream )
 
 bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::boost::shared_ptr< ::fwData::Image > _pImg )
 {
-    SLM_TRACE("ImageWriterService::saveImage");
-    ::vtkIO::ImageWriter myWriter;
+    SLM_TRACE_FUNC();
+    ::vtkIO::ImageWriter::NewSptr myWriter;
 
-    myWriter.setObject(_pImg);
-    myWriter.setFile(vtkFile);
+    myWriter->setObject(_pImg);
+    myWriter->setFile(vtkFile);
 
     bool bValue = true;
 
     try
     {
         fwGui::dialog::ProgressDialog progressMeterGUI("Saving Images ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
 
     }
     catch (const std::exception & e)
@@ -158,7 +158,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path vtkFile, ::b
 
 void ImageWriterService::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE("ImageWriterService::updating()");
+    SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {

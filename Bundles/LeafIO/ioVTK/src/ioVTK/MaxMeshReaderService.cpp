@@ -55,7 +55,7 @@ namespace ioVTK
 MaxMeshReaderService::MaxMeshReaderService() throw():
     m_bServiceIsConfigured(false)
 {
-    SLM_INFO( "[MaxMeshReaderService::MaxMeshReaderService]");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

@@ -147,20 +147,19 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
     bool ok = true;
 
     // Use a reader of vtkIO library to read a vtk image
-    ::vtkIO::ImageReader myReader;
+    ::vtkIO::ImageReader::NewSptr myReader;
     // Set the image (already created, but empty) that will be modifed
-    myReader.setObject(_pImg);
+    myReader->setObject(_pImg);
     // Set the file system path
-    myReader.setFile(vtkFile);
+    myReader->setFile(vtkFile);
 
     try
     {
         // Create a progress bar and attach it to reader
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myReader.addHandler( progressMeterGUI );
+        myReader->addHandler( progressMeterGUI );
         // Launch reading process
-        myReader.read();
-
+        myReader->read();
     }
     catch (const std::exception & e)
     {

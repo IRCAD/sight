@@ -15,6 +15,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/VtiImageWriter.hpp"
+#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::VtiImageWriter, ::vtkIO::VtiImageWriter );
 
@@ -55,6 +56,8 @@ void VtiImageWriter::write()
     compressor->SetCompressionLevel(1);
     writer->SetCompressor( compressor );
     writer->EncodeAppendedDataOff();
+
+    Progressor progress(writer, this->getSptr(), this->getFile().string());
 
     writer->Write();
 }
