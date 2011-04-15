@@ -443,11 +443,23 @@
         return this->__FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                                                                           \
     }
 
-namespace fwTools {
+namespace fwTools
+{
 template<class, class, class>
 class ClassFactory;
 class Factory;
 }
+
+/**
+ * @brief Generate common code for friend class Factory
+ */
+#define fwCoreFriendClassFactoryMacro()              \
+    template<typename T>                             \
+    friend void ::boost::checked_delete(T *x);       \
+    template<class, class, class>                    \
+    friend class ::fwTools::ClassFactory;            \
+    friend class ::fwTools::Factory;
+
 /**
  * @brief Generate common construction methods for classes with one factory
  *
@@ -470,11 +482,6 @@ class Factory;
 #define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                     \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                \
     friend class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME;                                                  \
-    template<typename T>                                                                                 \
-    friend void ::boost::checked_delete(T *x);                                                           \
-    template<class, class, class>                                                 \
-    friend class ::fwTools::ClassFactory;                                                                       \
-    friend class ::fwTools::Factory;                                                                     \
     /* @cond */                                                                                          \
     class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME: public __FWCORE_TYPEDEF_SHARED_PTR_NAME                 \
     {                                                                                                    \
@@ -489,6 +496,7 @@ class Factory;
     /* @endcond */                                                                                       \
     __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY (_factory_, _parameters_);                              \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME);        \
+    fwCoreFriendClassFactoryMacro()                                                                      \
     fwCoreClassnameMacro()                                                                               \
     fwCoreIsTypeOfMacro(_classinfo_)
 
@@ -511,6 +519,7 @@ class Factory;
  */
 #define fwCoreClassDefinitionsWithNFactoriesMacro(_classinfo_, _factories_args_)                                    \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                           \
+    friend class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME;                                                             \
     /* @cond */                                                                                                     \
     class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME: public __FWCORE_TYPEDEF_SHARED_PTR_NAME                            \
     {                                                                                                               \
@@ -526,6 +535,7 @@ class Factory;
     __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES (_factories_args_);                                                \
     /* @endcond */                                                                                                  \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_),__FWCORE_TYPEDEF_ROOTCLASS_NAME);                    \
+    fwCoreFriendClassFactoryMacro()                                                                                 \
     fwCoreClassnameMacro()                                                                                          \
     fwCoreIsTypeOfMacro(_classinfo_)
 
@@ -541,6 +551,7 @@ class Factory;
 #define fwCoreServiceClassDefinitionsMacro(_classinfo_)                                           \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                         \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME); \
+    fwCoreFriendClassFactoryMacro()                                                               \
     fwCoreClassnameMacro()                                                                        \
     fwCoreIsTypeOfMacro(_classinfo_)
 
