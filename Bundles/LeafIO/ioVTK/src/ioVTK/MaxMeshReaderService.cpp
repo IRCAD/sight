@@ -62,7 +62,7 @@ MaxMeshReaderService::MaxMeshReaderService() throw():
 
 void MaxMeshReaderService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
+    this->BaseClass::info( _sstream ) ;
     _sstream << std::endl << " 3ds file reader" ;
 }
 

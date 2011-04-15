@@ -39,16 +39,6 @@ class IOVTK_CLASS_API MeshReaderService : public ::io::IReader
 
 public :
     fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader) ) ;
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API MeshReaderService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~MeshReaderService() throw();
 
     /**
     * @brief Configure the image path.
@@ -60,6 +50,17 @@ public :
 
 
 protected:
+
+    /**
+     * @brief   Constructor
+     *
+     */
+    IOVTK_API MeshReaderService() throw();
+
+    /**
+     * @brief   Destructor
+     */
+    IOVTK_API virtual ~MeshReaderService() throw();
 
     /**
     * @brief Configuring method.

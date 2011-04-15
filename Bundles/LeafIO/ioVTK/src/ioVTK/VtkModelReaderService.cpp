@@ -51,7 +51,7 @@ VtkModelReaderService::VtkModelReaderService() throw():
 
 void VtkModelReaderService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
+    this->BaseClass::info( _sstream ) ;
     _sstream << std::endl << " vtk file reader" ;
 }
 

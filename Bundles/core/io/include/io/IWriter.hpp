@@ -34,16 +34,6 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (IWriter)(::fwServices::IService) ) ;
 
     /**
-     * @brief   Constructor (by default does nothing)
-     */
-    IO_API IWriter() throw() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IO_API virtual ~IWriter() throw() ;
-
-    /**
      * @name    Specific service methods for writing
      */
     //@{
@@ -57,6 +47,17 @@ public :
     IO_API virtual void configureWithIHM() = 0 ;
     ///@}
 
+protected:
+
+    /**
+     * @brief   Constructor (by default does nothing)
+     */
+    IO_API IWriter() throw() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IO_API virtual ~IWriter() throw() ;
 };
 
 }

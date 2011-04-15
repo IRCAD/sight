@@ -39,16 +39,6 @@ class IOVTK_CLASS_API ImageReaderService : public ::io::IReader
 
 public :
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) ) ;
-    /**
-     * @brief Service constructor, default parameter initialization
-     * @post ImageReaderService::m_bServiceIsConfigured is equal to false : service not configured
-     * @post ImageReaderService::m_fsImgPath is empty : path to read not defined
-     */
-    IOVTK_API ImageReaderService() throw();
-
-    /// Destructor, do nothing.
-    IOVTK_API virtual ~ImageReaderService() throw();
-
 
     /**
      * @brief Configure the image path with an wxWidget dialogBox.
@@ -59,6 +49,16 @@ public :
 
 
 protected:
+
+    /**
+     * @brief Service constructor, default parameter initialization
+     * @post ImageReaderService::m_bServiceIsConfigured is equal to false : service not configured
+     * @post ImageReaderService::m_fsImgPath is empty : path to read not defined
+     */
+    IOVTK_API ImageReaderService() throw();
+
+    /// Destructor, do nothing.
+    IOVTK_API virtual ~ImageReaderService() throw();
 
     /**
      * @brief Configure the reader service.

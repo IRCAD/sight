@@ -40,16 +40,6 @@ class IOVTK_CLASS_API MeshWriterService : public ::io::IWriter
 
 public :
     fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)( ::io::IWriter) ) ;
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API MeshWriterService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~MeshWriterService() throw();
 
     /**
     * @brief Configure the mesh path.
@@ -61,6 +51,17 @@ public :
 
 
 protected:
+
+    /**
+     * @brief   Constructor
+     *
+     */
+    IOVTK_API MeshWriterService() throw();
+
+    /**
+     * @brief   Destructor
+     */
+    IOVTK_API virtual ~MeshWriterService() throw();
 
     /**
     * @brief Configuring method.
