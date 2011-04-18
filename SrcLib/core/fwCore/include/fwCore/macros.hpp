@@ -454,8 +454,8 @@ class Factory;
  * @brief Generate common code for friend class Factory
  */
 #define fwCoreFriendClassFactoryMacro()              \
-    template<typename T>                             \
-    friend void ::boost::checked_delete(T *x);       \
+    template<typename _FWCORE_CHECKED_DELETE_T_ >                             \
+    friend void ::boost::checked_delete(_FWCORE_CHECKED_DELETE_T_ *x);       \
     template<class, class, class>                    \
     friend class ::fwTools::ClassFactory;            \
     friend class ::fwTools::Factory;
