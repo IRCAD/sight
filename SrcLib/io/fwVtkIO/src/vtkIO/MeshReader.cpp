@@ -6,6 +6,7 @@
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -13,7 +14,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/MeshReader.hpp"
-#include "vtkIO/ProgressVtktoFw.hpp"
+#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::MeshReader, ::vtkIO::MeshReader );
 
@@ -22,34 +23,33 @@ namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader()
-: ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
+MeshReader::MeshReader() :
+                ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
-    SLM_TRACE("vtkIO::MeshReader::MeshReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 MeshReader::~MeshReader()
 {
-    SLM_TRACE("vtkIO::MeshReader::~MeshReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void MeshReader::read()
 {
-    assert( m_object.use_count() );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     ::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
 
-    vtkGenericDataObjectReader *reader = vtkGenericDataObjectReader::New();
+    vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
 
     //add progress observation
-    ::vtkIO::ProgressVtktoFw( reader, this, getFile().string() );
+    Progressor progress(reader, this->getSptr(), this->getFile().string());
 
     reader->Update();
 
@@ -66,7 +66,6 @@ void MeshReader::read()
         errMsg.append( this->getFile().string() );
         throw( errMsg );
     }
-    reader->Delete();
 }
 
 //------------------------------------------------------------------------------

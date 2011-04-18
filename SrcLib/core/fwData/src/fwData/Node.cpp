@@ -74,11 +74,11 @@ void Node::setObject( ::fwData::Object::sptr object )
 
 //------------------------------------------------------------------------------
 
-Port::sptr Node::findPort(const std::string &identifier, /*const std::string &type,*/ bool modeInput)
+Port::sptr Node::findPort(const std::string &identifier, /*const std::string &type,*/ bool modeInput) const
 {
     if ( modeInput)
     {
-        for ( PortContainer::iterator i = m_inputs.begin() ; i != m_inputs.end() ; ++i )
+        for ( PortContainer::const_iterator i = m_inputs.begin() ; i != m_inputs.end() ; ++i )
         {
             if ( (*i)->getIdentifier() == identifier)
             {
@@ -88,7 +88,7 @@ Port::sptr Node::findPort(const std::string &identifier, /*const std::string &ty
     }
     else
     {
-        for ( PortContainer::iterator i = m_outputs.begin() ; i != m_outputs.end() ; ++i )
+        for ( PortContainer::const_iterator i = m_outputs.begin() ; i != m_outputs.end() ; ++i )
         {
             if ( (*i)->getIdentifier() == identifier)
             {
@@ -108,11 +108,13 @@ void Node::shallowCopy( Node::csptr _source )
     this->m_inputs.clear();
     this->m_outputs.clear();
 
-    ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
-    OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
-    this->m_object = ::fwData::Object::dynamicCast(object);
-    this->m_object->shallowCopy( _source->m_object );
-
+    if( _source->getObject())
+    {
+        ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
+        OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
+        this->m_object = ::fwData::Object::dynamicCast(object);
+        this->m_object->shallowCopy( _source->m_object );
+    }
     BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
     {
         ::fwData::Port::NewSptr newPort;
@@ -136,11 +138,13 @@ void Node::deepCopy( Node::csptr _source )
     this->m_inputs.clear();
     this->m_outputs.clear();
 
-    ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
-    OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
-    this->m_object = ::fwData::Object::dynamicCast(object);
-    this->m_object->deepCopy(_source->m_object);
-
+    if( _source->getObject())
+    {
+        ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
+        OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
+        this->m_object = ::fwData::Object::dynamicCast(object);
+        this->m_object->deepCopy(_source->m_object);
+    }
     BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
     {
         ::fwData::Port::NewSptr newPort;

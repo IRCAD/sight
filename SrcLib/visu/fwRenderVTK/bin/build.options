@@ -18,7 +18,3 @@ LIB = [
     ]
 TYPE = 'shared'
 VERSION = '0-1'
-
-DEF += [
-        'USE_DEPTH_PEELING',
-       ]

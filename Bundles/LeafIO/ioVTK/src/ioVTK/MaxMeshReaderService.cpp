@@ -55,14 +55,14 @@ namespace ioVTK
 MaxMeshReaderService::MaxMeshReaderService() throw():
     m_bServiceIsConfigured(false)
 {
-    SLM_INFO( "[MaxMeshReaderService::MaxMeshReaderService]");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void MaxMeshReaderService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
+    this->BaseClass::info( _sstream ) ;
     _sstream << std::endl << " 3ds file reader" ;
 }
 

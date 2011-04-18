@@ -13,6 +13,9 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
+#include "fwData/Node.hpp"
+#include "fwData/String.hpp"
+
 namespace fwData
 {
 /**
@@ -82,20 +85,50 @@ public:
 
     fwGettersSettersDocMacro(BelongsTo, vBelongsTo, std::vector< std::string >, the string indicating to which organ this one belongs to);
 
+
+    fwGettersSettersDocMacro(OrganName, organName, ::fwData::String::sptr, the name of the organ);
+
+    fwGettersSettersDocMacro(Roi4OrganNativeExp, roi4OrganNativeExp, ::fwData::String::sptr, the string indicating the native expression that describes the roi used to segment organ);
+
+    fwGettersSettersDocMacro(Roi4OrganExp, roi4OrganExp, ::fwData::String::sptr, the string indicating the expression that describes the roi used to segment organ);
+
+    fwGettersSettersDocMacro(Roi4OrganDataNode, roi4OrganDataNode, ::fwData::Node::wptr, the node that represents the roi for organ used to segment organ);
+
+    fwGettersSettersDocMacro(MaskDataNode, maskDataNode, ::fwData::Node::wptr, the node that represents the organ mask);
+
+    fwGettersSettersDocMacro(MeshDataNode, meshDataNode, ::fwData::Node::wptr, the node that represents the organ mesh);
+
 protected :
+
+    /// the name of the organ
+    ::fwData::String::sptr m_organName;
+
+    /// the node that represents the roi for organ used to segment organ;
+    ::fwData::Node::wptr m_roi4OrganDataNode;
+
+    /// the node that represents the organ mask
+    ::fwData::Node::wptr m_maskDataNode;
+
+    /// the node that represents the organ mesh
+    ::fwData::Node::wptr m_meshDataNode;
+
+    /// the string indicating the native expression that describes the roi used to segment organ
+    ::fwData::String::sptr m_roi4OrganNativeExp;
+
+    /// the string indicating the expression that describes the roi used to segment organ
+    ::fwData::String::sptr m_roi4OrganExp;
 
     //! the organ structure type
     std::string m_sStructureType;
 
     //! the anatomic structure label (skin, internal organ, ...)
-    //  mfo::DictionaryOrgan::SALEVEL m_stSALevel;
     std::string m_sSALabel;
 
     //! flag indicating if the organ is valid
     bool m_bIsMedicalStructure;
 
     //! the color in the AllOrgans structure
-    boost::uint32_t  m_ui32AOColor;
+    ::boost::uint32_t  m_ui32AOColor;
 
     //! the average volume of the organ
     double m_dAvgVolume;
@@ -104,13 +137,13 @@ protected :
     double m_dVolStdDeviation;
 
     //! the number of exams used to calculate the average volume
-    boost::uint32_t  m_ui32NbExams;
+    ::boost::uint32_t  m_ui32NbExams;
 
     //! the position of the organ in the organism
     std::string m_sPosition;
 
     //! the path of the icon corresponding to the organ
-    boost::filesystem::path m_fsIconPath;
+    ::boost::filesystem::path m_fsIconPath;
 
     //!@{
     //! @brief the 4 values defining the default organ color
@@ -121,10 +154,10 @@ protected :
     //!@}
 
     //! the path of the texture file corresponding to the organ
-    boost::filesystem::path m_fsTexturePath;
+    ::boost::filesystem::path m_fsTexturePath;
 
     //! the average number of faces used to represent the organ
-    boost::uint32_t  m_ui32AvgTriangleNb;
+    ::boost::uint32_t  m_ui32AvgTriangleNb;
 
     //! the min intensity, between which the organ should appear in the scan
     double m_dSegMin;

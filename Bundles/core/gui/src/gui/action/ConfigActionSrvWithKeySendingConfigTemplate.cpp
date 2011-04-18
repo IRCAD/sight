@@ -23,7 +23,8 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySend
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfigTemplate() throw() :
-        m_fieldAdaptors ( ::fwData::Composite::New() )
+        m_fieldAdaptors ( ::fwData::Composite::New() ),
+        m_viewConfigtitlePrefixKey ("")
 {
     m_closableConfig = true;
     addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
@@ -78,6 +79,11 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
 
     SLM_ASSERT( "Sorry, missing attribute title in <config> xml element.", configElement->hasAttribute("title") );
     m_viewConfigTitle = configElement->getExistingAttributeValue("title");
+
+    if( configElement->hasAttribute("titlePrefixKey") )
+    {
+        m_viewConfigtitlePrefixKey = configElement->getExistingAttributeValue("titlePrefixKey");
+    }
 
     m_closableConfig = configElement->getAttributeValue("closable") != "no";
 
@@ -197,8 +203,20 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
 
+
+    std::stringstream ss;
+    if (    ! m_viewConfigtitlePrefixKey.empty() &&
+            composite->find( m_viewConfigtitlePrefixKey ) != composite->end() )
+    {
+        ::fwData::String::sptr prefix = ::fwData::String::dynamicCast( (*composite)[m_viewConfigtitlePrefixKey] );
+        ss << prefix->getValue() << " - " << m_viewConfigTitle;
+    }
+    else
+    {
+        ss << m_viewConfigTitle;
+    }
     ::fwData::String::NewSptr title;
-    title->value() = m_viewConfigTitle;
+    title->value() = ss.str();
 
     msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
     msg->setFieldSingleElement( fieldID , finalMap );

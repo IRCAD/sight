@@ -32,16 +32,6 @@ class IOVTK_CLASS_API MaxMeshReaderService : public ::io::IReader
 {
 public:
     fwCoreServiceClassDefinitionsMacro ( (MaxMeshReaderService)( ::io::IReader) ) ;
-    typedef ::io::IReader   SuperClass;
-    /**
-     * @brief   Constructor
-     */
-    IOVTK_API MaxMeshReaderService() throw() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API ~MaxMeshReaderService() throw() ;
 
     /**
      * @brief Configure the mesh path.
@@ -62,6 +52,16 @@ public:
 
 
 protected:
+
+    /**
+     * @brief   Constructor
+     */
+    IOVTK_API MaxMeshReaderService() throw() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IOVTK_API ~MaxMeshReaderService() throw() ;
 
     /**
     * @brief Starting method : default does nothing.

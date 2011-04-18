@@ -6,6 +6,7 @@
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
+#include <vtkSmartPointer.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -13,7 +14,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/ImageReader.hpp"
-#include "vtkIO/ProgressVtktoFw.hpp"
+#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::ImageReader, ::vtkIO::ImageReader );
 
@@ -25,31 +26,30 @@ namespace vtkIO
 ImageReader::ImageReader()
 : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
-    SLM_TRACE("vtkIO::ImageReader::ImageReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ImageReader::~ImageReader()
 {
-    SLM_TRACE("vtkIO::ImageReader::~ImageReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void ImageReader::read()
 {
-    assert( m_object.use_count() );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     ::fwData::Image::sptr pImage = getConcreteObject();
 
-    vtkGenericDataObjectReader *reader = vtkGenericDataObjectReader::New();
+    vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
 
     //add progress observation
-    ::vtkIO::ProgressVtktoFw( reader, this, getFile().string() );
+    Progressor progress(reader, this->getSptr(), this->getFile().string());
 
     reader->Update();
 
@@ -66,7 +66,6 @@ void ImageReader::read()
         errMsg.append( this->getFile().string() );
         throw( errMsg );
     }
-    reader->Delete();
 }
 
 //------------------------------------------------------------------------------

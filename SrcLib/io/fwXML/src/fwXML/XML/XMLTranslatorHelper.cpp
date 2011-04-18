@@ -75,7 +75,7 @@ xmlNodePtr XMLTranslatorHelper::toXMLRecursive( ::fwTools::Object::sptr obj )
 void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr source )
 {
     const std::string nameInXML = (const char*)source->name;
-    assert( toUpdate->getLeafClassname() ==  nameInXML );
+    SLM_ASSERT("XML node not correspond to object classname", toUpdate->getLeafClassname() ==  nameInXML );
 
     ::fwXML::XMLTranslator::sptr translator;
     translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  toUpdate->getRootedClassname() );
@@ -143,6 +143,15 @@ xmlNodePtr XMLTranslatorHelper::newElement( const  std::string &name, bool value
     xmlNodePtr result = xmlNewNode( NULL, xmlStrdup( BAD_CAST name.c_str() )  );
     xmlNodeAddContent( result,   BAD_CAST (value?"1":"0")  );
     return result;
+}
+
+
+//------------------------------------------------------------------------------
+
+bool XMLTranslatorHelper::getElement( xmlNodePtr node )
+{
+    std::string str = XMLParser::getTextValue (node);
+    return (str == "1");
 }
 
 //------------------------------------------------------------------------------

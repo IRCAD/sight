@@ -86,14 +86,14 @@ void ReconstructionWriterService::configureWithIHM()
 
 void ReconstructionWriterService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("ReconstructionWriterService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriterService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("ReconstructionWriterService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -107,17 +107,17 @@ void ReconstructionWriterService::info(std::ostream &_sstream )
 
 void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem::path objFile, ::boost::shared_ptr< ::fwData::Acquisition > _pAcq )
 {
-    SLM_TRACE("ReconstructionWriterService::saveImage");
-    ::vtkIO::ReconstructionWriter myWriter;
+    SLM_TRACE_FUNC();
+    ::vtkIO::ReconstructionWriter::NewSptr myWriter;
 
-    myWriter.setObject(_pAcq);
-    myWriter.setFile(objFile);
+    myWriter->setObject(_pAcq);
+    myWriter->setFile(objFile);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Reconstructions ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
 
     }
     catch (const std::exception & e)
@@ -150,7 +150,7 @@ void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem:
 
 void ReconstructionWriterService::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE("ReconstructionWriterService::updating()");
+    SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {

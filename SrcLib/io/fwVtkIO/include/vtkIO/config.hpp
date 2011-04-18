@@ -7,6 +7,9 @@
 #ifndef _VTKIO_CONFIG_HPP_
 #define _VTKIO_CONFIG_HPP_
 
+#ifdef FWVTKIO_EXPORTS
+#define VTKIO_EXPORTS
+#endif
 
 #ifdef _WIN32
 

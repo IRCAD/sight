@@ -35,16 +35,6 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (IReader)(::fwServices::IService) ) ;
 
     /**
-     * @brief   Constructor (by default does nothing)
-     */
-    IO_API IReader() throw() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IO_API virtual ~IReader() throw() ;
-
-    /**
      * @name    Specific service methods for reading
      */
     //@{
@@ -67,6 +57,18 @@ public :
      */
     IO_API virtual std::string getSelectorDialogTitle();
     //@}
+
+protected:
+
+    /**
+     * @brief   Constructor (by default does nothing)
+     */
+    IO_API IReader() throw() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IO_API virtual ~IReader() throw() ;
 
 };
 

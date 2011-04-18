@@ -31,23 +31,21 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/op/Get.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiImageQt/SliceListEditor.hpp"
+#include "uiImageQt/SliceListEditor2.hpp"
 
 namespace uiImage
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::SliceListEditor , ::fwData::Image ) ;
+REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::SliceListEditor2 , ::fwData::Image ) ;
 
 
-SliceListEditor::SliceListEditor() throw()
+SliceListEditor2::SliceListEditor2() throw()
 {
     m_nbSlice = 1;
     addNewHandledEvent( "SCAN_SHOW" );
@@ -55,12 +53,12 @@ SliceListEditor::SliceListEditor() throw()
 
 //------------------------------------------------------------------------------
 
-SliceListEditor::~SliceListEditor() throw()
+SliceListEditor2::~SliceListEditor2() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-void SliceListEditor::starting() throw(::fwTools::Failed)
+void SliceListEditor2::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -76,20 +74,25 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     m_pDropDownMenu = new QMenu(container);
     QActionGroup * actionGroup = new QActionGroup(m_pDropDownMenu);
 
+    m_noSliceItem = new QAction(QObject::tr("No slices"), m_pDropDownMenu);
     m_oneSliceItem = new QAction(QObject::tr("One slice"), m_pDropDownMenu);
-    m_threeSlicesItem = new QAction(QObject::tr("three slices"), m_pDropDownMenu);
+    m_threeSlicesItem = new QAction(QObject::tr("Three slices"), m_pDropDownMenu);
 //  m_obliqueSliceItem = new QAction(QObject::tr("Oblique slice"), m_pDropDownMenu);
+    m_noSliceItem->setCheckable(true);
     m_oneSliceItem->setCheckable(true);
     m_threeSlicesItem->setCheckable(true);
 
+    actionGroup->addAction(m_noSliceItem);
     actionGroup->addAction(m_oneSliceItem);
     actionGroup->addAction(m_threeSlicesItem);
 
+    m_pDropDownMenu->addAction(m_noSliceItem);
     m_pDropDownMenu->addAction(m_oneSliceItem);
     m_pDropDownMenu->addAction(m_threeSlicesItem);
 //    m_pDropDownMenu->addAction(m_obliqueSliceItem);
     m_dropDownButton->setMenu(m_pDropDownMenu);
 
+    QObject::connect(m_noSliceItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
     QObject::connect(m_oneSliceItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
     QObject::connect(m_threeSlicesItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
 //    QObject::connect(m_obliqueSliceItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
@@ -98,6 +101,7 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     vLayout->addWidget( m_dropDownButton);
     vLayout->setContentsMargins(0,0,0,0);
 
+    m_noSliceItem->setChecked(m_nbSlice == 0);
     m_oneSliceItem->setChecked(m_nbSlice == 1);
     m_threeSlicesItem->setChecked(m_nbSlice == 3);
 //  m_obliqueSliceItem->setChecked(m_nbSlice == -1);
@@ -107,9 +111,10 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceListEditor::stopping() throw(::fwTools::Failed)
+void SliceListEditor2::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    QObject::disconnect(m_noSliceItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
     QObject::disconnect(m_oneSliceItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
     QObject::disconnect(m_threeSlicesItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
 
@@ -119,7 +124,7 @@ void SliceListEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceListEditor::configuring() throw(fwTools::Failed)
+void SliceListEditor2::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -139,19 +144,19 @@ void SliceListEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceListEditor::updating() throw(::fwTools::Failed)
+void SliceListEditor2::updating() throw(::fwTools::Failed)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceListEditor::swapping() throw(::fwTools::Failed)
+void SliceListEditor2::swapping() throw(::fwTools::Failed)
 {
 
 }
 //------------------------------------------------------------------------------
 
-void SliceListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void SliceListEditor2::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
@@ -164,30 +169,36 @@ void SliceListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
         if( servId ==  m_adaptorUID )
         {
             ::fwData::Boolean::csptr isShowScan = ::fwData::Boolean::dynamicConstCast(dataInfo);
-            m_dropDownButton->setEnabled(isShowScan->value());
+            m_noSliceItem->setChecked(!isShowScan->value());
+            m_oneSliceItem->setChecked(isShowScan->value() && m_nbSlice == 1);
+            m_threeSlicesItem->setChecked(isShowScan->value() && m_nbSlice == 3);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SliceListEditor::info( std::ostream &_sstream )
+void SliceListEditor2::info( std::ostream &_sstream )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceListEditor::onChangeSliceMode( bool checked )
+void SliceListEditor2::onChangeSliceMode( bool checked )
 {
     if(::fwTools::fwID::exist(m_adaptorUID))
     {
         ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
         ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
-        SLM_ASSERT("SliceListEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
+        SLM_ASSERT("SliceListEditor2 adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
 
         ::fwData::Integer::NewSptr dataInfo;
 
-        if(m_oneSliceItem->isChecked())
+        if(m_noSliceItem->isChecked())
+        {
+            dataInfo->value() = 0;
+        }
+        else if(m_oneSliceItem->isChecked())
         {
             dataInfo->value() = 1;
             m_nbSlice = 1;
@@ -197,11 +208,11 @@ void SliceListEditor::onChangeSliceMode( bool checked )
             dataInfo->value() = 3;
             m_nbSlice = 3;
         }
-        else if(m_obliqueSliceItem->isChecked())
-        {
-            dataInfo->value() = -1;
-            m_nbSlice = -1;
-        }
+//        else if(m_obliqueSliceItem->isChecked())
+//        {
+//            dataInfo->value() = -1;
+//            m_nbSlice = -1;
+//        }
         else
         {
             OSLM_FATAL("Unknown slice mode");

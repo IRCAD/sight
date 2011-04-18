@@ -43,9 +43,9 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiAcquisition::OrganListEditor , ::
 
 OrganListEditor::OrganListEditor() throw()
 {
-    addNewHandledEvent("ShowReconstructions");
-    addNewHandledEvent("SelectReconstruction");
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
     addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------
@@ -128,11 +128,14 @@ void OrganListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
     ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )
     {
-        if ( acquisitionMsg->hasEvent("ShowReconstructions") ||
-                acquisitionMsg->hasEvent("SelectReconstruction") ||
-                acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+        if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) ||
+             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
         {
             this->updating();
+        }
+        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS))
+        {
+            m_organChoice->clear();
         }
     }
 }
@@ -234,7 +237,7 @@ void OrganListEditor::onShowReconstructions(int state )
     acq->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
 
     ::fwComEd::AcquisitionMsg::NewSptr msg;
-    msg->addEvent( "ShowReconstructions" );
+    msg->addEvent( ::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS );
     ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
 
     m_organChoice->setEnabled(state == Qt::Unchecked);

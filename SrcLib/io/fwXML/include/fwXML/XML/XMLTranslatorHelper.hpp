@@ -13,6 +13,8 @@
 #include "fwXML/XML/XMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/ObjectTracker.hpp"
+
+#include <fwCore/Demangler.hpp>
 #include <fwTools/ClassFactoryRegistry.hpp>
 
 
@@ -66,7 +68,7 @@ public:
      */
     static ::boost::shared_ptr< ::fwTools::Object> fromXML( xmlNodePtr source );
 
-    /*
+    /**
      * @brief to node append a new Property with given value
      * the value is converted to string using boost::lexical cast
      * @return the current node
@@ -85,7 +87,7 @@ public:
         return node;
     }
 
-    /*
+    /**
      * @brief to node get the  Property
      * the retrun value is converted from string using boost::lexical cast
      * @return the value
@@ -107,7 +109,7 @@ public:
         return value;
     }
 
-    /*
+    /**
      * @brief an XML helper to create a simple XML element
      * @return a xml node ptr referencing <name>*value*</name>
      */
@@ -120,11 +122,28 @@ public:
         return result;
     }
 
-    /*
+    /**
      * @brief an XML helper to create a simple XML element
      * @return a xml node ptr referencing <name>1</name>
      */
     static xmlNodePtr newElement( const  std::string &name,  bool value );
+
+    /**
+     * @brief an XML helper to get text information to an element node
+     * @return a value lexical casted in VALUE
+     */
+    template<class VALUE>
+    static VALUE getElement(  xmlNodePtr node )
+    {
+        std::string str = XMLParser::getTextValue (node);
+        return ::boost::lexical_cast< VALUE >( str );
+    }
+
+    /**
+     * @brief an XML helper to get text information to an element node
+     * @return a value lexical casted in bool
+     */
+    static bool getElement(  xmlNodePtr node );
 
     /// note iterator on a container of smart pointeur of the same type !!!
     template<class Iterator>
@@ -139,6 +158,34 @@ public:
         for ( Iterator i=begin ; i!= end ; ++i )
         {
             xmlNodePtr node = toXMLRecursive( *i );
+            xmlAddChild(root,node);
+        }
+        return root;
+    }
+
+    /// note iterator on a container of values of the same type !!!
+    template<class Iterator>
+    static xmlNodePtr PODContainerToXml(const std::string &rootName, Iterator begin, Iterator end)
+    {
+
+        xmlNodePtr root = xmlNewNode(NULL, xmlStrdup( BAD_CAST rootName.c_str() ) );
+
+        if (typeid( typename Iterator::value_type) == typeid(std::string))
+        {
+            addProp(root, "item_type", "std::string");
+        }
+        else
+        {
+            addProp(root, "item_type", ::fwCore::TypeDemangler< typename Iterator::value_type >().getLeafClassname());
+        }
+
+        if ( begin == end)
+        {
+            return root;
+        }
+        for ( Iterator i=begin ; i!= end ; ++i )
+        {
+            xmlNodePtr node = newElement( "item", *i );
             xmlAddChild(root,node);
         }
         return root;
@@ -164,6 +211,30 @@ public:
                 cobj = ::boost::dynamic_pointer_cast< typename SharedPtrConcreteObject::element_type >( obj );
                 assert ( cobj );
                 *inserter = cobj;
+
+                // go to next element
+                currentNode = XMLParser::nextXMLElement(currentNode->next);
+            }
+        }
+    }
+
+    template<class InserterIterator>
+    static void  PODcontainerFromXml( xmlNodePtr rootNode, InserterIterator  inserter )
+    {
+        // parse rootNode child then generateObject and insertit
+        SLM_ASSERT("rootNode not instanced", rootNode);
+        if ( rootNode->children != NULL )
+        {
+            xmlNodePtr currentNode = XMLParser::nextXMLElement(rootNode->children);
+            while (currentNode )
+            {
+                OSLM_DEBUG(" PODcontainerFromXml" << (const char*)currentNode->name << currentNode );
+
+                // append to container
+                typedef typename InserterIterator::container_type::value_type PODType;
+                PODType value = getElement< PODType >(currentNode);
+
+                *inserter = value;
 
                 // go to next element
                 currentNode = XMLParser::nextXMLElement(currentNode->next);

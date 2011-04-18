@@ -45,7 +45,7 @@ namespace bindings
     pybuf->suboffsets =  new Py_ssize_t[image->getDimension()];
     pybuf->internal = NULL;
     
-    std::copy(  image->getCRefSize().begin(), image->getCRefSize().end(), pybuf->shape);
+    std::copy(  image->getCRefSize().rbegin(), image->getCRefSize().rend(), pybuf->shape);
     std::fill(pybuf->suboffsets, pybuf->suboffsets+3, -1);
 
     PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'C');

@@ -86,14 +86,14 @@ void MeshWriterService::configureWithIHM()
 
 void MeshWriterService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("MeshWriterService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("MeshWriterService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -107,17 +107,17 @@ void MeshWriterService::info(std::ostream &_sstream )
 
 void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boost::shared_ptr< ::fwData::TriangularMesh > _pMesh )
 {
-    SLM_TRACE("MeshWriterService::saveMesh");
-    ::vtkIO::MeshWriter myWriter;
+    SLM_TRACE_FUNC();
+    ::vtkIO::MeshWriter::NewSptr myWriter;
 
-    myWriter.setObject(_pMesh);
-    myWriter.setFile(vtkFile);
+    myWriter->setObject(_pMesh);
+    myWriter->setFile(vtkFile);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Meshs ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
 
     }
     catch (const std::exception & e)
@@ -151,7 +151,7 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
 
 void MeshWriterService::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE("MeshWriterService::updating()");
+    SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {

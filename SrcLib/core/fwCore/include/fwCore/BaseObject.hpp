@@ -16,26 +16,26 @@
 namespace fwCore
 {
 
-    /**
-     * @brief Base class for all FW4SPL's classes
-     */
-    class FWCORE_CLASS_API BaseObject : public ::boost::enable_shared_from_this<BaseObject>
-    {
+/**
+ * @brief Base class for all FW4SPL's classes
+ */
+class FWCORE_CLASS_API BaseObject : public ::boost::enable_shared_from_this<BaseObject>
+{
 
-        public :
-            fwCoreNonInstanciableClassDefinitionsMacro( (BaseObject) );
+public :
+    fwCoreNonInstanciableClassDefinitionsMacro( (BaseObject) );
     /**
      * @name Constructor/Destructor
      * @{ */
 
-            BaseObject(){};
-            virtual ~BaseObject(){};
+    BaseObject(){};
+    virtual ~BaseObject(){};
 
     /**  @} */
 
-        protected :
-            using ::boost::enable_shared_from_this<BaseObject>::shared_from_this;
-    };
+protected :
+    using ::boost::enable_shared_from_this<BaseObject>::shared_from_this;
+};
 
 } // namespace fwCore
 

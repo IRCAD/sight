@@ -55,6 +55,9 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Image::csptr _source );
 
+    /// image get image information from source. Informations are spacing,origin,size ... expect Fields and bufferDelegate
+    FWDATA_API void getInformation( Image::csptr _source );
+
 
     /**
      * @brief an R/W accessor to the buffer (can involve unserialization/restoration)
@@ -103,6 +106,7 @@ public:
     fwGettersSettersDocMacro(RescaleIntercept, dRescaleIntercept, double, rescale intercept);
 
     fwGettersSettersDocMacro(BufferDelegate, bufferDelegate, ::fwData::IBufferDelegate::sptr, by default use StandardBuffer);
+
 
 protected :
 
