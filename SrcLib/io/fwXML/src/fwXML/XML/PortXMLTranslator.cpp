@@ -28,7 +28,7 @@ PortXMLTranslator::~PortXMLTranslator() {};
 xmlNodePtr PortXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     ::fwData::Port::sptr port = ::fwData::Port::dynamicCast(obj);
-    assert(port);
+    SLM_ASSERT("port not instanced", port);
 
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );

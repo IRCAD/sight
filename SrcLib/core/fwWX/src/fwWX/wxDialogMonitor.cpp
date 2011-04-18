@@ -30,7 +30,7 @@ wxDialogMonitor::wxDialogMonitor(wxWindow* parent, wxMonitor::string_map map_str
 
 void wxDialogMonitor::setOnSelectionCallback( wxMonitorCallback::ptr callback)
 {
-    assert(m_monitor);
+    SLM_ASSERT("m_monitor not instanced", m_monitor);
     m_monitor->setOnSelectionCallback(callback);
 }
 

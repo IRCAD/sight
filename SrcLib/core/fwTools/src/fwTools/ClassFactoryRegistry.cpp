@@ -56,7 +56,7 @@ const ClassFactoryRegistry::ManagedElementContainer
 
 void ClassFactoryRegistry::addFactory(::boost::shared_ptr<IClassFactory> factory)
 {
-    assert( factory );
+    SLM_ASSERT("factory not instanced", factory);
 
     OSLM_TRACE("ClassFactoryRegistry::addFactory " 
             << ::fwCore::Demangler(factory).getRootedClassname() << " addr=" << factory << "exist=" <<

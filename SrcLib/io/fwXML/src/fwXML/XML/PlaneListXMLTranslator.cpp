@@ -29,7 +29,7 @@ xmlNodePtr PlaneListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
 
     ::fwData::PlaneList::sptr pPlaneList = ::fwData::PlaneList::dynamicCast(obj);
-    assert( pPlaneList );
+    SLM_ASSERT("pPlaneList not instanced", pPlaneList);
 
     // create master node with className+id
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
@@ -49,8 +49,8 @@ xmlNodePtr PlaneListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 void PlaneListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( toUpdate ); // object should exist
-    assert( source );
+    SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
+    SLM_ASSERT("source not instanced", source);
     //get its label
     ::fwData::PlaneList::sptr pPlaneList = ::fwData::PlaneList::dynamicCast(toUpdate);
     pPlaneList->getRefPlanes().clear();
@@ -61,7 +61,7 @@ void PlaneListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
     {
         assert(  !xmlStrcmp( planesNode->name, BAD_CAST  "planes") );
         xmlNodePtr planeNode = XMLParser::nextXMLElement( planesNode->children );
-        assert( planeNode );
+        SLM_ASSERT("planeNode not instanced", planeNode);
         while ( planeNode )
         {
             std::string nodeName = (const char *) planeNode->name;
@@ -72,7 +72,7 @@ void PlaneListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                 valueObj = Serializer().ObjectsFromXml( planeNode, true );
 
                 // Add plane in the vector
-                assert( valueObj );
+                SLM_ASSERT("valueObj not instanced", valueObj);
                 assert( ::fwData::Plane::dynamicCast( valueObj ) );
                 pPlaneList->getRefPlanes().push_back( ::fwData::Plane::dynamicCast( valueObj ) );
             }

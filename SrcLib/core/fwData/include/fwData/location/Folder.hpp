@@ -81,7 +81,7 @@ struct enableFolder
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableFolder(RW *rw) : m_rw(rw) { assert(m_rw); }
+    enableFolder(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw); }
 
     /// @brief Set folder filesystem path
     void setFolder(::boost::filesystem::path folder)

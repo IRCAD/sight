@@ -18,15 +18,17 @@ namespace fwXML
 
 //-----------------------------------------------------------------------------
 
-VectorXMLTranslator::VectorXMLTranslator() {};
+VectorXMLTranslator::VectorXMLTranslator()
+{}
 
 //-----------------------------------------------------------------------------
 
-VectorXMLTranslator::~VectorXMLTranslator() {};
+VectorXMLTranslator::~VectorXMLTranslator()
+{}
 
 //-----------------------------------------------------------------------------
 
-xmlNodePtr VectorXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(obj);
 
@@ -44,7 +46,7 @@ xmlNodePtr VectorXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object>
 
 void VectorXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( toUpdate ); // object should exist
+    SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
 
     //get its label
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(toUpdate);
@@ -66,7 +68,7 @@ void VectorXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  
                     {
                         // Load Object
                         ::fwTools::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true  );
-                        assert( valueObj );
+                        SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
                         myVector->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
 

@@ -59,7 +59,7 @@ namespace uiVisu
 
         ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
         QWidget* const container = qtContainer->getQtContainer();
-        assert( container ) ;
+        SLM_ASSERT("container not instanced", container);
 
         QHBoxLayout* hLayout = new QHBoxLayout();
 

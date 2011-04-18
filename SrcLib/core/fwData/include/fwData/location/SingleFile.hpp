@@ -78,7 +78,7 @@ struct enableSingleFile
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableSingleFile(RW *rw) : m_rw(rw) { assert(m_rw);}
+    enableSingleFile(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw);}
 
     /// Set file system path
     void setFile(::boost::filesystem::path path)

@@ -103,7 +103,7 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
         ::fwDataIO::reader::IObjectReader::sptr reader;
         OSLM_DEBUG("ImageXMLTranslator::manageLoadingBuffer initial protocol="<< protocol << " final loading protocol=" << pseudoReader)
         reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
-        assert(reader);
+        SLM_ASSERT("reader not instanced", reader);
 
         // assign to FileFormatService
         binLoader->setReader( reader );
@@ -117,11 +117,11 @@ xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
     // call default xmtl representation
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
     xmlNodePtr node = img2xmlbase.getXMLFrom(obj);
-    assert(node);
+    SLM_ASSERT("node not instanced", node);
 
     // search empty "<Buffer/>" node
     xmlNodePtr bufferNode = XMLParser::findChildNamed( node, std::string("Buffer") );
-    assert( bufferNode ); // bufferNode must be found !!!
+    SLM_ASSERT("bufferNode not instanced", bufferNode); // bufferNode must be found !!!
 
     // delegate process
     manageSavingBuffer( bufferNode, ::fwData::Image::dynamicCast(obj) );
@@ -141,7 +141,7 @@ void ImageXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
 
     // search empty "<Buffer/>" node
     xmlNodePtr bufferNode = XMLParser::findChildNamed( source, std::string("Buffer") );
-    assert( bufferNode ); // bufferNode must be found !!!
+    SLM_ASSERT("bufferNode not instanced", bufferNode); // bufferNode must be found !!!
     manageLoadingBuffer( bufferNode , ::fwData::Image::dynamicCast(toUpdate) );
 }
 

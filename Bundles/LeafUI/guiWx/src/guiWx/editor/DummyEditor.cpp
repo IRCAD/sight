@@ -53,7 +53,7 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     wxBoxSizer* bSizer;
     bSizer = new wxBoxSizer( wxVERTICAL );

@@ -164,7 +164,7 @@ void FwXMLPatient2PatientDBWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Patient::sptr associatedPatient = ::fwData::Patient::dynamicCast( this->getObject() ) ;
-        assert( associatedPatient ) ;
+        SLM_ASSERT("associatedPatient not instanced", associatedPatient);
         ::fwData::PatientDB::NewSptr patientDB;
         patientDB->addPatient(associatedPatient);
 

@@ -120,7 +120,7 @@ std::vector< ::fwTools::Object::sptr > ObjectService::getObjects()
     ObjectService::KSContainer::right_map & right = getDefault()->m_container.right;
     BOOST_FOREACH( ObjectService::KSContainer::right_map::value_type elt, right)
     {
-        if ( std::find(lobjects.begin(), lobjects.end(), elt.first->getObject()) != lobjects.end() )
+        if ( std::find(lobjects.begin(), lobjects.end(), elt.first->getObject()) == lobjects.end() )
         {
             lobjects.push_back( elt.first->getObject() ) ;
         }

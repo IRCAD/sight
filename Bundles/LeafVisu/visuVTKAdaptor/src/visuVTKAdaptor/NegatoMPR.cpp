@@ -335,16 +335,16 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     if(axis >= 0)
     {
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
-        assert(service);
+        SLM_ASSERT("service not instanced", service);
         ::fwComEd::helper::MedicalImageAdaptor::sptr adaptorSrv =
                 ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(service);
-        assert(adaptorSrv);
+        SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
     }
     else
     {
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
-        assert(service);
+        SLM_ASSERT("service not instanced", service);
     }
 
 

@@ -70,7 +70,7 @@ public :
         ::fwData::Point::sptr point= m_service->getObject< ::fwData::Point >();
 
         vtkHandleRepresentation *representation = vtkHandleRepresentation::SafeDownCast(handler->GetRepresentation());
-        assert(handler);
+        SLM_ASSERT("handler not instanced", handler);
         double *world = representation->GetWorldPosition();
 
         ::fwComEd::PointMsg::NewSptr msg;// (  new fwServices::ObjectMsg(point) );
@@ -201,7 +201,7 @@ void Point::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::Point::sptr point = this->getObject < ::fwData::Point >();
 
-    assert(point);
+    SLM_ASSERT("point not instanced", point);
 
     double ps[3];
     assert ( point->getCRefCoord().size()==3 );

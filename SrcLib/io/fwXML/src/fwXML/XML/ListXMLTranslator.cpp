@@ -43,7 +43,7 @@ xmlNodePtr ListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 void ListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( toUpdate ); // object should exist
+    SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
 
     //get its label
     ::fwData::List::sptr myList = ::fwData::List::dynamicCast(toUpdate);
@@ -65,7 +65,7 @@ void ListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xm
                     {
                         // Load Object
                         ::fwTools::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true );
-                        assert( valueObj );
+                        SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
                         myList->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
 

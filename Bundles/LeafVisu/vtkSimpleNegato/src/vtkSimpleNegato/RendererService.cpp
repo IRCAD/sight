@@ -89,7 +89,7 @@ void RendererService::stopping() throw(fwTools::Failed)
         m_outline->Delete();
     }
 
-    assert( m_render );
+    SLM_ASSERT("m_render not instanced", m_render);
     m_render->Delete();
     m_render = 0;
 

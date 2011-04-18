@@ -249,7 +249,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr servicePointList;
             servicePointList = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( landmarks , "::visuVTKAdaptor::PointList");
-            assert( servicePointList );
+            SLM_ASSERT("servicePointList not instanced", servicePointList);
 
             servicePointList->setPickerId( this->getPickerId() );
             servicePointList->setRenderService( this->getRenderService() );
@@ -262,7 +262,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
             {
                 ::fwRenderVTK::IVtkAdaptorService::sptr serviceLabel;
                 serviceLabel = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point , "::visuVTKAdaptor::PointLabel");
-                assert( serviceLabel );
+                SLM_ASSERT("serviceLabel not instanced", serviceLabel);
                 serviceLabel->setRenderService( this->getRenderService() );
                 serviceLabel->start();
                 this->registerService( serviceLabel );

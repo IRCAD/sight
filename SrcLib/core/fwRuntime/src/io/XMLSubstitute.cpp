@@ -66,7 +66,7 @@ xmlDocPtr XMLSubstitute::load( const ::boost::filesystem::path& xmlFile)
         // create the context for xpath
         xmlXPathContextPtr xpathCtx;
         xpathCtx = xmlXPathNewContext(doc);
-        assert( xpathCtx );
+        SLM_ASSERT("xpathCtx not instanced", xpathCtx);
 
         xmlChar *xpathExpr= BAD_CAST "//Substitutions";
         xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
@@ -112,11 +112,11 @@ void XMLSubstitute::substitute( xmlNodePtr original, xmlNodePtr substitutionRule
         // create the context for xpath
         xmlXPathContextPtr xpathCtx;
         xpathCtx = xmlXPathNewContext(original->doc);
-        assert( xpathCtx );
+        SLM_ASSERT("xpathCtx not instanced", xpathCtx);
         // search
         xmlChar *xpathExpr= BAD_CAST xpath.c_str();
         xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
-        assert(xpathObj );
+        SLM_ASSERT("xpathObj not instanced", xpathObj);
 
         int NbNodesFound = xpathObj->nodesetval->nodeNr;
         for (int i=NbNodesFound-1; i >= 0; --i )
@@ -147,7 +147,7 @@ std::list< ::fwRuntime::io::Substitute > XMLSubstitute::getSubstitutions( xmlNod
     // create the context for xpath
     xmlXPathContextPtr xpathCtx;
     xpathCtx = xmlXPathNewContext(substitutionRules->doc);
-    assert( xpathCtx );
+    SLM_ASSERT("xpathCtx not instanced", xpathCtx);
 
     std::list< ::fwRuntime::io::Substitute > result;
 
@@ -156,7 +156,7 @@ std::list< ::fwRuntime::io::Substitute > XMLSubstitute::getSubstitutions( xmlNod
     // xmlXPathObjectPtr::nodesetval : get set of node
     // xmlNodeSetPtr::nodeNr  = nb element
     // xmlNodeSetPtr::nodeTab[i] : ith element : must be processed in reverse order
-    assert(xpathObj );
+    SLM_ASSERT("xpathObj not instanced", xpathObj);
 
     int NbNodesFound = xpathObj->nodesetval->nodeNr;
 

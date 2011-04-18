@@ -23,37 +23,37 @@ namespace serialization {
 template<class Archive>
 void load(Archive & ar, ::fwData::Node & _node, const unsigned int version)
 {
-    assert(false); // to implement
-    ::boost::shared_ptr< ::fwTools::Object > obj;
+    SLM_FATAL("To implement");
+    ::fwTools::Object::sptr obj;
     std::string ss="essai";
     ar &  boost::serialization::make_nvp( "object" , ss /*obj*/ );
     _node.setObject(obj);
-
 }
+
+//------------------------------------------------------------------------------
 
 template<class Archive>
 void save(Archive & ar, const ::fwData::Node & _node, const unsigned int version)
 {
-    const ::boost::shared_ptr< ::fwTools::Object > obj=  _node.getObject(); // make a non cst var
-    assert(obj);
-    ar & boost::serialization::make_nvp( "object" ,  obj );
+    ::fwTools::Object::csptr obj=  _node.getObject(); // make a non cst var
+    SLM_ASSERT("obj not instanced", obj);
+    ar & ::boost::serialization::make_nvp( "object" ,  obj );
 }
 
-
+//------------------------------------------------------------------------------
 
 /// serialize image via boost.org serialization framework (split load/save)
 template<class Archive>
 void serialize(Archive & ar, ::fwData::Node & _node, const unsigned int version)
 {
-
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::Node, fwTools::Object>(NULL,NULL);
+    ::boost::serialization::void_cast_register<  ::fwData::Node, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_node,version); // call load or save depending of archive type
 }
 
-
+//------------------------------------------------------------------------------
 
 } } // end namespace
 

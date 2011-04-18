@@ -163,7 +163,7 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
 
             // Retrieve dataStruct associated with this service
             ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-            assert( associatedImage ) ;
+            SLM_ASSERT("associatedImage not instanced", associatedImage);
 
             //( *( associatedImage ) ) = ( *( image.get() ) ) ;
             associatedImage->shallowCopy( image );
@@ -197,7 +197,7 @@ void FwXMLImageReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE("FwXMLImageReaderService::notificationOfDBUpdate");
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-    assert( pImage );
+    SLM_ASSERT("pImage not instanced", pImage);
 
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;

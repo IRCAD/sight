@@ -157,7 +157,7 @@ void FwXMLImageWriterService::updating() throw(fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-        assert( associatedImage ) ;
+        SLM_ASSERT("associatedImage not instanced", associatedImage);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

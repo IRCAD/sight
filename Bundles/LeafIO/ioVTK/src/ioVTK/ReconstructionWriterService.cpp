@@ -156,7 +156,7 @@ void ReconstructionWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Acquisition::sptr pAcquisition = this->getObject< ::fwData::Acquisition >() ;
-        assert(pAcquisition);
+        SLM_ASSERT("pAcquisition not instanced", pAcquisition);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

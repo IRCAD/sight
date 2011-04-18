@@ -65,7 +65,7 @@ void Timer<F>::start(int rate, bool isOneShot)
 template< typename F >
 void Timer<F>::start()
 {
-    assert(m_function);
+    SLM_ASSERT("m_function not instanced", m_function);
     m_wxTimer->Start( m_rate , m_isOneShot) ;
 }
 

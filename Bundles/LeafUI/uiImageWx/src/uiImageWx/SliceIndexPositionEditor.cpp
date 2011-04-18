@@ -70,7 +70,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
@@ -104,7 +104,7 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
     }
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     wxContainer->clean();
     this->destroy();

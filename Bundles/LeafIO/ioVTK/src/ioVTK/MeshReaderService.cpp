@@ -164,7 +164,7 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
-        assert(pTriangularMesh);
+        SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -182,7 +182,7 @@ void MeshReaderService::notificationOfUpdate()
 {
     SLM_TRACE("MeshReaderService::notificationOfDBUpdate");
     ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
-    assert( pTriangularMesh );
+    SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
 
     ::fwComEd::TriangularMeshMsg::NewSptr msg;;
     msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
