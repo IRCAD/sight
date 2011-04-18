@@ -46,7 +46,7 @@ System::~System()
     {
         remove_all(m_dumpFolder);
     }
-    eraseDumpFolderOfZombies();
+//    eraseDumpFolderOfZombies();
 }
 
 //------------------------------------------------------------------------------
