@@ -7,12 +7,12 @@
 #include <sofa/simulation/tree/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+//#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileRepository.h> 
 #include <sofa/gui/SofaGUI.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/helper/system/glut.h>

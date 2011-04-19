@@ -4,12 +4,13 @@
     <activate id="servicesReg" version="0-1" />
 
     <activate id="gui" version="0-1" />
-    <activate id="guiQt" version="0-1" >
-        <param id="startingMode" value="windows" />
-        <param id="rootObject" value="::fwData::Composite" />
-        <param id="config" value="DemoComSofa" />
-        <param id="configFile" value="./Bundles/PoC02SofaMultiOrgans_0-1/configurations/config.xml" />
+    <activate id="guiQt" version="0-1" />
+    
+    <activate id="DemoComSofa" />
+    <activate id="appXml" version="0-1" >
+        <param id="config" value="DemoComSofaID" />
     </activate>
+    
     <activate id="io" version="0-1" />
     <activate id="visu" version="0-1" />
 
@@ -38,5 +39,6 @@
     <start id="visuVTKQt" />
     <start id="visuVTKAdaptor" />
     <start id="guiQt" />
+    <start id="appXml" />
 
 </profile>
