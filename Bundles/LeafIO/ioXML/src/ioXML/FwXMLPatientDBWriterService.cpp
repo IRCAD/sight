@@ -81,14 +81,14 @@ void FwXMLPatientDBWriterService::configureWithIHM()
 
 void FwXMLPatientDBWriterService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatientDBWriterService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLPatientDBWriterService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatientDBWriterService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ std::string FwXMLPatientDBWriterService::getPersistanceId()
 
 void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path inrFileDir, ::fwData::PatientDB::sptr _pPatient )
 {
-    SLM_TRACE("FwXMLPatientDBWriterService::createPatientDB");
+    SLM_TRACE_FUNC();
     ::fwXML::writer::FwXMLObjectWriter myWriter;
 
     myWriter.setObject(_pPatient);
@@ -132,26 +132,13 @@ void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading : ";
-
-        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                "Warning during loading",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -159,7 +146,7 @@ void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path
 
 void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatientDBWriterService::updating()");
+    SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {
