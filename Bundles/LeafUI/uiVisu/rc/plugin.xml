@@ -1,0 +1,21 @@
+<plugin id="uiVisu" class="::uiVisu::Plugin">
+    <library name="uiVisu"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiVisu::action::CrossTypeAction</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiVisu::action::CameraOrientationAction</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    
+</plugin>

@@ -7,12 +7,12 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
 
-#include "uiVisuQt/Plugin.hpp"
+#include "uiVisu/Plugin.hpp"
 
 namespace uiVisu
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisuQt::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisu::Plugin");
 
 Plugin::~Plugin() throw()
 {}
