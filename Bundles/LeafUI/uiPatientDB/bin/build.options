@@ -1,0 +1,15 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+LIB     = [
+          'fwData_0-1',
+          'fwDataIO_0-2',
+          'fwServices_0-1',
+          'fwComEd_0-1',
+          'fwRuntime_0-3',
+          'fwCore_0-1',
+          'fwTools_0-1',
+          'fwGui_0-1',
+          'fwMath_0-1'
+          ]
+USE     = ['boost']
+BUNDLES = ['gui_0-1','io_0-1']
