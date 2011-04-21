@@ -22,7 +22,7 @@ namespace action
 
 /**
  * @brief   This action allows change the cross type
- * @class   CameraOrientationAction.
+ * @class   CrossTypeAction.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
