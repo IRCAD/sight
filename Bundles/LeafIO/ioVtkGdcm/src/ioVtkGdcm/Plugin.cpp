@@ -6,32 +6,21 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
-#include <io/IReader.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
-
-#include <fwServices/macros.hpp>
 
 #include "ioVtkGdcm/Plugin.hpp"
-#include "ioVtkGdcm/DicomPatientDBReaderService.hpp"
-#include "ioVtkGdcm/DicomPatientDBWriterService.hpp"
-#include "ioVtkGdcm/DicomPatientWriterService.hpp"
-#include "ioVtkGdcm/DicomImageWriterService.hpp"
 
 namespace ioVtkGdcm
 {
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("ioVtkGdcm::Plugin");
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioVtkGdcm::Plugin");
 
 Plugin::~Plugin() throw()
 {}
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
-{
-}
+{}
 
 void Plugin::stop() throw()
 {}
 
-} // namespace operators
+} // namespace ioVtkGdcm
