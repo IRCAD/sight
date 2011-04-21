@@ -4,11 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// ioVtkGdcm - copyright (C) 2008 IRCAD.
-//
-// author   Jean-Baptiste Fasquel
-
-
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
 #include <io/IReader.hpp>

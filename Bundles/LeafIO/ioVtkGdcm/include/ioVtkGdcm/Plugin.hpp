@@ -11,8 +11,12 @@
 
 namespace ioVtkGdcm
 {
+
 /**
- * @author  Jean-Baptiste Fasquel
+ * @brief   This class is started when the bundles is loaded.
+ * @class   Plugin.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009-2011
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -20,13 +24,13 @@ struct Plugin : public ::fwRuntime::Plugin
      * @brief   destructor
      */
     ~Plugin() throw();
-    
+
     // Overrides
     void start() throw(::fwRuntime::RuntimeException);
 
-    // Overrides    
+    // Overrides
     void stop() throw();
-    
+
 };
 
 } // namespace ioVtkGdcm
