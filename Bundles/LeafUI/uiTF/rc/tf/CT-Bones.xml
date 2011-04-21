@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TransfertFunction id="126dd3b9-1d18-4f04-b20d-a35b20492082" class="::fwData::TransfertFunction">
+  <Name>CT-Bones</Name>
+  <Encoding/>
+  <Field id="acece517-5ba6-41ec-8cd7-86b1abfa3dbd" class="::fwTools::Field" label="ID_TRANSFERTFUNCTIONPOINTS">
+    <TransfertFunctionPoint id="bce71c7d-acec-4686-bcc2-ce2cf378c011" class="::fwData::TransfertFunctionPoint">
+      <Value>184</Value>
+      <Field id="20139296-c9c9-473e-b087-07b3ebc544c2" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="809fbf04-b474-423f-8875-ef515a0fe655" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>0</item>
+            <item>0</item>
+            <item>0</item>
+            <item>0</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="c8fd0668-6e24-414f-8d04-99548c457bdf" class="::fwData::TransfertFunctionPoint">
+      <Value>191</Value>
+      <Field id="6c17f897-0509-4b70-b43a-58bc2a607d70" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="be3a1685-277c-4410-9635-17d0b570fd43" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>1</item>
+            <item>0.501961</item>
+            <item>0</item>
+            <item>0.309917</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="2ffb5295-2afc-42a0-bf08-df41d4782a0d" class="::fwData::TransfertFunctionPoint">
+      <Value>247</Value>
+      <Field id="ceb130ed-d7af-4c22-903a-b4b2ef147e93" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="64284600-83c3-44d2-a4db-165b379cea67" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>1</item>
+            <item>1</item>
+            <item>0.72549</item>
+            <item>0.595041</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="9d6f4055-5326-41f5-9727-584cf7fd59ba" class="::fwData::TransfertFunctionPoint">
+      <Value>341</Value>
+      <Field id="5cb58cab-b918-4de4-8e33-dc0dc34fa229" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="d7fcdd04-1a3f-4e1a-8091-7bdf50ff3dce" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>1</item>
+            <item>1</item>
+            <item>1</item>
+            <item>0.791789</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+  </Field>
+</TransfertFunction>

@@ -1,0 +1,15 @@
+<plugin id="uiTF" class="::uiTF::Plugin">
+    <library name="uiTF" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+
+    <requirement id="gui" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiTF::TransferFunctionEditor</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+</plugin>
