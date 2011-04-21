@@ -1,0 +1,21 @@
+<plugin id="uiPatientDBQt" class="::uiPatientDBQt::Plugin">
+    <library name="uiPatientDBQt"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiPatientDB::PatientDBGuiSelectorService</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiPatientDB::PatientDBInfoEditor</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+        
+</plugin>
