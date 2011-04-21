@@ -1,0 +1,19 @@
+<plugin id="visuVTKVRAdaptor" class="visuVTKAdaptor::Plugin">
+
+    <library name="visuVTKVRAdaptor" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visu" />
+    <requirement id="visuVTK" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKVRAdaptor::Volume</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+</plugin>
+
+
+
