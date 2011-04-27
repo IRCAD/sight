@@ -50,19 +50,19 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
                 try
                 {
                     ::gdcm::Reader reader;
-                    reader.SetFileName( sString.c_str() );
+                    reader.SetFileName( it->string().c_str() );
                     if( !reader.Read() )
                     {
-                        OSLM_WARN("Failed to read: " << sString );
+                        OSLM_WARN("Failed to read: " << it->string() );
                     }
                     else
                     {
-                        dicomFiles.push_back(sString.c_str());
+                        dicomFiles.push_back( it->string().c_str() );
                     }
                 }
                 catch (std::exception& e)
                 {
-                    OSLM_ERROR ( "Try with another reader for this file : " << sString.c_str());
+                    OSLM_ERROR ( "Try with another reader for this file : " << it->string().c_str());
                 }
             }
         }
