@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <QDir>
 #include <QStringList>
 
 #include <boost/bind.hpp>
@@ -47,9 +48,16 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     app = new ::fwGuiQt::App( m_argc, argv );
     m_app = app;
 
-    QStringList libraryPaths = app->libraryPaths();
+    QStringList libraryPaths;
+    libraryPaths = app->libraryPaths();
     libraryPaths.removeFirst();
     app->setLibraryPaths(libraryPaths);
+
+    QDir pluginDir("./qtplugins");
+    if (pluginDir.exists())
+    {
+        app->addLibraryPaths(pluginDir.absolutePath());
+    }
 
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
 }
