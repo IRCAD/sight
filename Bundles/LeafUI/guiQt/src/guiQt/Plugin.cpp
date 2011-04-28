@@ -56,7 +56,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     QDir pluginDir("./qtplugins");
     if (pluginDir.exists())
     {
-        app->addLibraryPaths(pluginDir.absolutePath());
+        app->addLibraryPath(pluginDir.absolutePath());
     }
 
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
