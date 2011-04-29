@@ -122,8 +122,8 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     if(img->getFieldSize( "TRANSPARENCY" ) > 0)
     {
-        ::fwData::Integer::sptr min = img->getFieldSingleElement< ::fwData::Integer >( "TRANSPARENCY" );
-        m_valueSlider->setValue( *min );
+        ::fwData::Integer::sptr transparency = img->getFieldSingleElement< ::fwData::Integer >( "TRANSPARENCY" );
+        m_valueSlider->setValue( *transparency );
     }
     else
     {
