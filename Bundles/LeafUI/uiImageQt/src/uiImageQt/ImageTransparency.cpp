@@ -7,27 +7,28 @@
 #include <boost/foreach.hpp>
 
 #include <QHBoxLayout>
-#include <QWidget>
 #include <QLabel>
+#include <QWidget>
 
 #include <fwCore/base.hpp>
 
 #include <fwTools/Object.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/Boolean.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include "uiImageQt/ImageTransparency.hpp"
-
 
 namespace uiImage
 {
@@ -37,7 +38,8 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::ImageTransparency , ::fwDa
 
 ImageTransparency::ImageTransparency() throw()
 {
-    //addNewHandledEvent(::fwComEd::ImageMsg::???);
+    addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
+    addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
 }
 
 //------------------------------------------------------------------------------
@@ -78,6 +80,8 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
     QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +116,31 @@ void ImageTransparency::configuring() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void ImageTransparency::updating() throw(::fwTools::Failed)
-{}
+{
+    QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
+    QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    if(img->getFieldSize( "TRANSPARENCY" ) > 0)
+    {
+        ::fwData::Integer::sptr min = img->getFieldSingleElement< ::fwData::Integer >( "TRANSPARENCY" );
+        m_valueSlider->setValue( *min );
+    }
+    else
+    {
+        m_valueSlider->setValue( 0 );
+    }
+    if(img->getFieldSize( "VISIBILITY" ) > 0)
+    {
+        ::fwData::Boolean::sptr visible = img->getFieldSingleElement< ::fwData::Boolean >( "VISIBILITY" );
+        m_valueCheckBox->setChecked( *visible );
+    }
+    else
+    {
+        m_valueCheckBox->setChecked( true );
+    }
+    QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
+    QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+}
 
 //------------------------------------------------------------------------------
 
@@ -124,6 +152,14 @@ void ImageTransparency::swapping() throw(::fwTools::Failed)
 void ImageTransparency::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
+    if(imageMsg)
+    {
+        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) || imageMsg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY ) )
+        {
+            this->updating();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -138,6 +174,11 @@ void ImageTransparency::info( std::ostream &_sstream )
 void ImageTransparency::onModifyTransparency(int value)
 {
     SLM_TRACE_FUNC();
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    img->setFieldSingleElement( "TRANSPARENCY",  ::fwData::Integer::New(value) );
+    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    imageMsg->addEvent( "TRANSPARENCY" );
+    ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
 }
 
 //------------------------------------------------------------------------------
@@ -145,6 +186,11 @@ void ImageTransparency::onModifyTransparency(int value)
 void ImageTransparency::onModifyVisibility(int value)
 {
     SLM_TRACE_FUNC();
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    img->setFieldSingleElement( "VISIBILITY",  ::fwData::Boolean::New(value != Qt::Unchecked) );
+    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    imageMsg->addEvent( "VISIBILITY" );
+    ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
 }
 
 //------------------------------------------------------------------------------

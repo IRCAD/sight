@@ -33,7 +33,8 @@ std::string ImageMsg::ACTIVATE_SYNC_CROSS = "ACTIVATE_SYNC_CROSS";
 std::string ImageMsg::INACTIVATE_SYNC_CROSS = "INACTIVATE_SYNC_CROSS";
 std::string ImageMsg::CHANGE_SLICE_TYPE = "CHANGE_SLICE_TYPE";
 std::string ImageMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
-
+std::string ImageMsg::TRANSPARENCY = "TRANSPARENCY";
+std::string ImageMsg::VISIBILITY = "VISIBILITY";
 //-----------------------------------------------------------------------------
 
 ImageMsg::ImageMsg() throw()
