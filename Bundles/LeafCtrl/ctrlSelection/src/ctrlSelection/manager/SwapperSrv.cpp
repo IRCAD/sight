@@ -95,7 +95,7 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
     for( SubServicesMapType::iterator iterMap = m_objectsSubServices.begin(); iterMap != m_objectsSubServices.end(); ++iterMap )
     {
         SubServicesVecType subServices = iterMap->second;
-        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        BOOST_REVERSE_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on "<< iterMap->first <<" expired !", subSrv->getService() );
 
