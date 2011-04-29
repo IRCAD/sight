@@ -30,4 +30,9 @@
         <object>::fwData::Image</object>
     </extension>
     
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiImage::ImageTransparency</service>
+        <object>::fwData::Image</object>
+    </extension>
 </plugin>

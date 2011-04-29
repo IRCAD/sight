@@ -1,0 +1,153 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#include <boost/foreach.hpp>
+
+#include <QHBoxLayout>
+#include <QWidget>
+#include <QLabel>
+
+#include <fwCore/base.hpp>
+
+#include <fwTools/Object.hpp>
+
+#include <fwData/Image.hpp>
+
+#include <fwMath/IntrasecTypes.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IService.hpp>
+
+#include <fwComEd/ImageMsg.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include "uiImageQt/ImageTransparency.hpp"
+
+
+namespace uiImage
+{
+
+REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::ImageTransparency , ::fwData::Image ) ;
+
+
+ImageTransparency::ImageTransparency() throw()
+{
+    //addNewHandledEvent(::fwComEd::ImageMsg::???);
+}
+
+//------------------------------------------------------------------------------
+
+ImageTransparency::~ImageTransparency() throw()
+{}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::starting() throw(::fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+    this->::fwGui::IGuiContainerSrv::create();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* const container = qtContainer->getQtContainer();
+    SLM_ASSERT("container not instanced", container);
+
+    QHBoxLayout* hLayout = new QHBoxLayout();
+
+    QLabel* staticText = new QLabel( tr("Transparency: "), container);
+    hLayout->addWidget( staticText, 0, Qt::AlignVCenter );
+
+    m_valueSlider = new QSlider( Qt::Horizontal, container );
+    hLayout->addWidget( m_valueSlider, 1, Qt::AlignVCenter );
+    m_valueSlider->setRange(0, 100);
+    m_valueSlider->setMinimumWidth(100);
+
+    m_valueCheckBox = new QCheckBox( tr("visible"), container);
+    if (!m_shortcut.empty())
+    {
+        m_valueCheckBox->setShortcut(QKeySequence(QString::fromStdString(m_shortcut)));
+    }
+    hLayout->addWidget( m_valueCheckBox, 1, Qt::AlignVCenter );
+
+    container->setLayout( hLayout );
+
+    QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
+    QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::stopping() throw(::fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+    QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
+    QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+
+    this->getContainer()->clean();
+    this->::fwGui::IGuiContainerSrv::destroy();
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::configuring() throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+    this->::fwGui::IGuiContainerSrv::initialize();
+
+    //<shortcut value="X"/>
+    std::vector < ConfigurationType > vectCfg = m_configuration->find("shortcut");
+    if(!vectCfg.empty())
+    {
+        ConfigurationType config = vectCfg.at(0);
+        SLM_ASSERT("Missing attribute value", config->hasAttribute("value"));
+        m_shortcut = config->getAttributeValue("value");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::updating() throw(::fwTools::Failed)
+{}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::swapping() throw(::fwTools::Failed)
+{}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::info( std::ostream &_sstream )
+{
+    _sstream << "Image Features Editor";
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::onModifyTransparency(int value)
+{
+    SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::onModifyVisibility(int value)
+{
+    SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+}
+

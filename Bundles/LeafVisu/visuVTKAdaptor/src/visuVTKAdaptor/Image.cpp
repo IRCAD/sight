@@ -176,7 +176,7 @@ void Image::configuring() throw(fwTools::Failed)
     }
     if(m_configuration->hasAttribute("opacity") )
     {
-    this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
+        this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
     }
     if(m_configuration->hasAttribute("tfalpha") )
     {
