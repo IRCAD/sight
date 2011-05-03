@@ -134,7 +134,7 @@ void TranslateUpdater::configuring()  throw ( ::fwTools::Failed )
         SLM_FATAL_IF( "Sorry, attribute \"fromUID\" is missing", !(*item)->hasAttribute("fromUID") );
         std::string fromUID =  (*item)->getExistingAttributeValue("fromUID");
 
-        OSLM_INFO( "Manage event "<< onEvent <<" from this object "<< fromUID <<" and "<< actionType << " "<< compositeKey <<" in my composite.");
+        OSLM_INFO( "Manage translation from this object "<< fromUID <<", from "<< fromKey << " to "<< toKey <<" in my composite.");
         ::boost::tuple< std::string, std::string, std::string > managedTranslation (fromUID, fromKey, toKey);
         m_managedTranslations.push_back( managedTranslation );
     }
