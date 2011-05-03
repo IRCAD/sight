@@ -82,6 +82,12 @@
         <service>::ctrlSelection::updater::SelectedNodeIOUpdaterSrv</service>
         <object>::fwData::Composite</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::TranslateUpdater</service>
+        <object>::fwData::Composite</object>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IManagerSrv</type>
@@ -125,7 +131,6 @@
         <service>::ctrlSelection::wrapper::PatientDBWrapperSrv</service>
         <object>::fwData::PatientDB</object>
     </extension>
-
 
 </plugin>
 
