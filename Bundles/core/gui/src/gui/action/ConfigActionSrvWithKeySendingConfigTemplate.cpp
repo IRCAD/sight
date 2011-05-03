@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -90,7 +96,6 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
     SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
 
     std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
-    //    SLM_ASSERT("::gui::action::ConfigActionSrv must have at least  one tag <replace>", !replaceTagsConfig.empty());
     std::string adaptor("");
     std::string pattern("");
     BOOST_FOREACH( ConfigurationType replaceItem, replaceTagsConfig)
