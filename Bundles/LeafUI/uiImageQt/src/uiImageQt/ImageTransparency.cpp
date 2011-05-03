@@ -25,6 +25,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -117,35 +118,46 @@ void ImageTransparency::configuring() throw(fwTools::Failed)
 
 void ImageTransparency::updating() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
-    QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-    if(img->getFieldSize( "TRANSPARENCY" ) > 0)
+
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+    m_valueSlider->setEnabled(imageIsValid);
+    m_valueCheckBox->setEnabled(imageIsValid);
+    if (imageIsValid)
     {
-        ::fwData::Integer::sptr transparency = img->getFieldSingleElement< ::fwData::Integer >( "TRANSPARENCY" );
-        m_valueSlider->setValue( *transparency );
+        QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
+        QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+
+
+        if(img->getFieldSize( "TRANSPARENCY" ) > 0)
+        {
+            ::fwData::Integer::sptr transparency = img->getFieldSingleElement< ::fwData::Integer >( "TRANSPARENCY" );
+            m_valueSlider->setValue( *transparency );
+        }
+        else
+        {
+            m_valueSlider->setValue( 0 );
+        }
+        if(img->getFieldSize( "VISIBILITY" ) > 0)
+        {
+            ::fwData::Boolean::sptr visible = img->getFieldSingleElement< ::fwData::Boolean >( "VISIBILITY" );
+            m_valueCheckBox->setChecked( *visible );
+        }
+        else
+        {
+            m_valueCheckBox->setChecked( true );
+        }
+        QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
+        QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
     }
-    else
-    {
-        m_valueSlider->setValue( 0 );
-    }
-    if(img->getFieldSize( "VISIBILITY" ) > 0)
-    {
-        ::fwData::Boolean::sptr visible = img->getFieldSingleElement< ::fwData::Boolean >( "VISIBILITY" );
-        m_valueCheckBox->setChecked( *visible );
-    }
-    else
-    {
-        m_valueCheckBox->setChecked( true );
-    }
-    QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
-    QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTransparency::swapping() throw(::fwTools::Failed)
-{}
+{
+    this->updating();
+}
 
 //------------------------------------------------------------------------------
 

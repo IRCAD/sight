@@ -23,6 +23,7 @@
 #include <fwServices/IService.hpp>
 
 #include <fwComEd/InteractionMsg.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -95,7 +96,11 @@ void ImageInfo::updating() throw(::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void ImageInfo::swapping() throw(::fwTools::Failed)
-{}
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    m_valueText->setEnabled(imageIsValid);
+}
 
 //------------------------------------------------------------------------------
 
@@ -106,16 +111,20 @@ void ImageInfo::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools:
 
     if (interactionMsg)
     {
-        ::fwData::Point::csptr point = interactionMsg->getEventPoint();
-        SLM_ASSERT("Sorry, the object is null", point);
-        if(point)
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        m_valueText->setEnabled(imageIsValid);
+        if (imageIsValid)
         {
-            ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+            ::fwData::Point::csptr point = interactionMsg->getEventPoint();
+            SLM_ASSERT("Sorry, the object is null", point);
+            if(point)
+            {
+                fwVec3d  pointCoord = point->getCoord();
 
-            fwVec3d  pointCoord = point->getCoord();
-
-            std::string intensity = ::fwData::getPixelAsString(image, pointCoord[0], pointCoord[1], pointCoord[2] );;
-            m_valueText->setText(QString::fromStdString(intensity));
+                std::string intensity = ::fwData::getPixelAsString(image, pointCoord[0], pointCoord[1], pointCoord[2] );;
+                m_valueText->setText(QString::fromStdString(intensity));
+            }
         }
     }
 }
@@ -124,7 +133,7 @@ void ImageInfo::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools:
 
 void ImageInfo::info( std::ostream &_sstream )
 {
-    _sstream << "Image Features Editor";
+    _sstream << "Image Info Editor";
 }
 
 //------------------------------------------------------------------------------
