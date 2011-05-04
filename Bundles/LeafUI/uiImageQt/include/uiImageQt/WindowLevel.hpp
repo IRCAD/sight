@@ -79,6 +79,8 @@ protected:
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream &_sstream ) ;
 
+    virtual void setEnabled(bool enable);
+
 protected slots :
 
         void onMinChanged(int val);

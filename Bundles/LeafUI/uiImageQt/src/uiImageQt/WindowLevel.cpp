@@ -22,6 +22,7 @@
 
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -36,6 +37,7 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Im
 
 WindowLevel::WindowLevel() throw()
 {
+    addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
 }
 
 //------------------------------------------------------------------------------
@@ -62,24 +64,18 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     m_valueTextMin = new QLineEdit( container );
     m_valueTextMin->setReadOnly(true);
     m_valueTextMin->setText(QString("%1").arg(min->value()));
-//    m_valueTextMin->setMinimumWidth(20);
 
     m_sliceSelectorMin = new QSlider( Qt::Horizontal, container );
-    m_sliceSelectorMin->setMinimum(min->value());
-    m_sliceSelectorMin->setMaximum(max->value());
     m_sliceSelectorMin->setSliderPosition(min->value());
     m_sliceSelectorMin->setMinimumWidth(40);
 
     m_sliceSelectorMax = new QSlider( Qt::Horizontal, container );
-    m_sliceSelectorMax->setMinimum(min->value());
-    m_sliceSelectorMax->setMaximum(max->value());
     m_sliceSelectorMax->setSliderPosition(max->value());
     m_sliceSelectorMax->setMinimumWidth(40);
 
     m_valueTextMax = new QLineEdit( container );
     m_valueTextMax->setReadOnly(true);
     m_valueTextMax->setText(QString("%1").arg(max->value()));
-//    m_valueTextMax->setMinimumWidth(20);
 
     layout->addWidget( m_valueTextMin, 0);
     layout->addWidget( m_sliceSelectorMin );
@@ -118,13 +114,94 @@ void WindowLevel::configuring() throw(fwTools::Failed)
 void WindowLevel::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    this->setEnabled(imageIsValid);
+
+    if(imageIsValid)
+    {
+
+        ::fwTools::DynamicType pixelType = image->getPixelType();
+        SLM_ASSERT("Sorry, unmanaged type.",  pixelType != ::fwTools::DynamicType());
+
+        std::string imageType = pixelType.string();
+        bool isSigned = pixelType.isSigned();
+        bool isFixedPrecision = pixelType.isFixedPrecision();
+
+        int minValue = 0;
+        int maxValue = 0;
+
+        if(isFixedPrecision)
+        {
+            // Type is long, int, short, char
+            if(isSigned)
+            {
+                if(imageType == "signed int")
+                {
+                    minValue = std::numeric_limits<int>::min();
+                    maxValue = std::numeric_limits<int>::max();
+                }
+                else if(imageType == "signed short")
+                {
+                    minValue = std::numeric_limits<short>::min();
+                    maxValue = std::numeric_limits<short>::max();
+                }
+                else if (imageType == "signed char")
+                {
+                    minValue = std::numeric_limits<signed char>::min();
+                    maxValue = std::numeric_limits<signed char>::max();
+                }
+                else
+                {
+                    SLM_FATAL("The pixel type is not managed.");
+                }
+            }
+            else
+            {
+                if(imageType == "unsigned int")
+                {
+                    minValue = std::numeric_limits<unsigned int>::min();
+                    maxValue = std::numeric_limits<int>::max(); // due to the QSlider which take int and due to the TF uses fwData::Integer
+                }
+                else if(imageType == "unsigned short")
+                {
+                    minValue = std::numeric_limits<unsigned short>::min();
+                    maxValue = std::numeric_limits<unsigned short>::max();
+                }
+                else if (imageType == "unsigned char")
+                {
+                    minValue = std::numeric_limits<signed char>::min();
+                    maxValue = std::numeric_limits<signed char>::max();
+                }
+                else
+                {
+                    SLM_FATAL("The pixel type is not managed.");
+                }
+            }
+
+        }
+        else
+        {
+            // Image in Floa, double format
+            // due to the QSlider which take int and due to the TF uses fwData::Integer
+            minValue = std::numeric_limits<int>::min();
+            maxValue = std::numeric_limits<int>::max();
+        }
+
+        m_sliceSelectorMin->setMinimum(minValue);
+        m_sliceSelectorMin->setMaximum(maxValue);
+
+        m_sliceSelectorMax->setMinimum(minValue);
+        m_sliceSelectorMax->setMaximum(maxValue);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void WindowLevel::swapping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC()
+    SLM_TRACE_FUNC();
     this->updating();
 }
 //------------------------------------------------------------------------------
@@ -145,9 +222,9 @@ void WindowLevel::info( std::ostream & _sstream )
 
 void  WindowLevel::onMinChanged(int val)
 {
-    m_valueTextMin->setText(QString("%1").arg(val));
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
+    m_valueTextMin->setText(QString("%1").arg(val));
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->addEvent( "WINDOWING" );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
@@ -163,6 +240,13 @@ void WindowLevel::onMaxChanged(int val )
     m_valueTextMax->setText(QString("%1").arg(val));
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
+    ::fwTools::DynamicType pixelType = image->getPixelType();
+    if(pixelType.string() == "unsigned int")
+    {
+        // Due to the type int use by the slider we must shift the value.
+        val = val - std::numeric_limits< int>::max();
+    }
+
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->addEvent( "WINDOWING" );
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
@@ -173,5 +257,18 @@ void WindowLevel::onMaxChanged(int val )
 }
 
 //------------------------------------------------------------------------------
+
+void WindowLevel::setEnabled(bool enable)
+{
+    m_sliceSelectorMin->setEnabled(enable);
+    m_valueTextMin->setEnabled(enable);
+
+    m_sliceSelectorMax->setEnabled(enable);
+    m_valueTextMax->setEnabled(enable);
+
+}
+
+//------------------------------------------------------------------------------
+
 }
 
