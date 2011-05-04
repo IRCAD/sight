@@ -128,8 +128,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
 
 void ConfigActionSrvWithKeySendingConfigTemplate::updating() throw(::fwTools::Failed)
 {
-    //this->::gui::action::ConfigActionSrv::updating();
-    sendConfig();
+    this->sendConfig();
 }
 
 //------------------------------------------------------------------------------
@@ -161,8 +160,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::Object
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::info( std::ostream &_sstream )
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 

@@ -29,9 +29,9 @@ ActionCallback::~ActionCallback()
 
 //-----------------------------------------------------------------------------
 
+// if action is checkable, executeQt is executed after checkQt
 void ActionCallback::executeQt(bool checked)
 {
-    this->check(checked);
     this->execute();
 }
 

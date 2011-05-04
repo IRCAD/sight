@@ -91,13 +91,12 @@ void ConfigActionSrv::configuring() throw(fwTools::Failed)
     }
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void ConfigActionSrv::updating() throw(::fwTools::Failed)
+void ConfigActionSrv::setIsActive(bool isActive)
 {
-    bool needRunningConfig = this->::fwGui::IActionSrv::getIsActive();
-
-    if ( needRunningConfig )
+    this->::fwGui::IActionSrv::setIsActive(isActive);
+    if ( isActive )
     {
         this->startConfig();
     }
@@ -106,6 +105,11 @@ void ConfigActionSrv::updating() throw(::fwTools::Failed)
         this->stopConfig();
     }
 }
+
+//------------------------------------------------------------------------------
+
+void ConfigActionSrv::updating() throw(::fwTools::Failed)
+{}
 
 //------------------------------------------------------------------------------
 
@@ -131,7 +135,6 @@ void ConfigActionSrv::AddGenericUidToFieldApadtor( )
 
     // Init manager
     m_fieldAdaptors["GENERIC_UID"] = genericUidAdaptor;
-
 }
 
 //------------------------------------------------------------------------------

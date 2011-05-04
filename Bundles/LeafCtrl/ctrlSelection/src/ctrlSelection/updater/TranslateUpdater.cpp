@@ -90,10 +90,7 @@ void TranslateUpdater::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( :
                     this->updateComposite(composite, ::fwData::Object::sptr() , toKey , REMOVE );
                 }
             }
-
-
         }
-
     }
 }
 
@@ -113,7 +110,6 @@ void TranslateUpdater::stopping()  throw ( ::fwTools::Failed )
 
 void TranslateUpdater::configuring()  throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
     SLM_TRACE_FUNC();
 
     ::fwRuntime::ConfigurationElementContainer handleTranslations = m_configuration->findAllConfigurationElement("translate");

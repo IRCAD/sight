@@ -38,7 +38,7 @@ public :
     FWGUI_API void actionServiceStarting();
 
     /// Set the action service is activated/inactivated.
-    FWGUI_API void setIsActive(bool isActive);
+    FWGUI_API virtual void setIsActive(bool isActive);
 
     /// Return action service is active.
     FWGUI_API bool getIsActive();
@@ -48,7 +48,6 @@ public :
 
     /// Return action service is executable.
     FWGUI_API bool getIsExecutable();
-
 
 protected :
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;

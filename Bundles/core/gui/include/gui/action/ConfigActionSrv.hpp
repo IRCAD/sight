@@ -42,6 +42,9 @@ public :
     /// Destructor. Do nothing.
     GUI_API virtual ~ConfigActionSrv() throw() ;
 
+    /// Set the action service is activated/inactivated.
+    GUI_API virtual void setIsActive(bool isActive);
+
 protected:
 
 
