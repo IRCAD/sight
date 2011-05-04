@@ -194,6 +194,7 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 
         m_sliceSelectorMax->setMinimum(minValue);
         m_sliceSelectorMax->setMaximum(maxValue);
+        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
     }
 }
 
@@ -222,9 +223,12 @@ void WindowLevel::info( std::ostream & _sstream )
 
 void  WindowLevel::onMinChanged(int val)
 {
+    m_valueTextMin->setText(QString("%1").arg(val));
+
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    m_valueTextMin->setText(QString("%1").arg(val));
+    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
+
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->addEvent( "WINDOWING" );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
@@ -240,12 +244,7 @@ void WindowLevel::onMaxChanged(int val )
     m_valueTextMax->setText(QString("%1").arg(val));
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwTools::DynamicType pixelType = image->getPixelType();
-    if(pixelType.string() == "unsigned int")
-    {
-        // Due to the type int use by the slider we must shift the value.
-        val = val - std::numeric_limits< int>::max();
-    }
+    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->addEvent( "WINDOWING" );
