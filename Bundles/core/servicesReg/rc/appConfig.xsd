@@ -33,6 +33,7 @@
             <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
