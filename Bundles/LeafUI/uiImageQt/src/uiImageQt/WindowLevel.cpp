@@ -38,6 +38,7 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Im
 WindowLevel::WindowLevel() throw()
 {
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
+    addNewHandledEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
 }
 
 //------------------------------------------------------------------------------
@@ -51,8 +52,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
+    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
 
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -171,8 +172,8 @@ void WindowLevel::updating() throw(::fwTools::Failed)
                 }
                 else if (imageType == "unsigned char")
                 {
-                    minValue = std::numeric_limits<signed char>::min();
-                    maxValue = std::numeric_limits<signed char>::max();
+                    minValue = std::numeric_limits<unsigned char>::min();
+                    maxValue = std::numeric_limits<unsigned char>::max();
                 }
                 else
                 {
@@ -194,7 +195,6 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 
         m_sliceSelectorMax->setMinimum(minValue);
         m_sliceSelectorMax->setMaximum(maxValue);
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
     }
 }
 
@@ -209,7 +209,17 @@ void WindowLevel::swapping() throw(::fwTools::Failed)
 
 void WindowLevel::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC()
+    SLM_TRACE_FUNC();
+    ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
+
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+    m_sliceSelectorMin->setSliderPosition(min->value());
+    m_sliceSelectorMax->setSliderPosition(max->value());
+    m_valueTextMin->setText(QString("%1").arg(min->value()));
+    m_valueTextMax->setText(QString("%1").arg(max->value()));
+
 }
 
 //------------------------------------------------------------------------------
@@ -227,11 +237,12 @@ void  WindowLevel::onMinChanged(int val)
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
+    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+    min->value() = val;
     ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
-    imageMsg->addEvent( "WINDOWING" );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
     ::fwData::Integer::NewSptr newMin(val);
     imageMsg->setWindowMinMax(newMin, max, image);
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
@@ -244,14 +255,16 @@ void WindowLevel::onMaxChanged(int val )
     m_valueTextMax->setText(QString("%1").arg(val));
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
+    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+    max->value() = val;
     ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
-    imageMsg->addEvent( "WINDOWING" );
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::NewSptr newMax(val);
     imageMsg->setWindowMinMax(min, newMax, image);
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+
 
 }
 
