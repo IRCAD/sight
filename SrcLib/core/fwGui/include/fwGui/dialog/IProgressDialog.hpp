@@ -8,7 +8,9 @@
 #define _FWGUI_IPROGRESSDIALOG_HPP_
 
 #include <string>
-#include <boost/signals/trackable.hpp>
+#include <boost/function.hpp>
+#include <boost/signals.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwData/location/ILocation.hpp>
 
@@ -31,9 +33,11 @@ class FWGUI_CLASS_API IProgressDialog : public ::fwCore::BaseObject, public ::bo
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IProgressDialog)(::fwCore::BaseObject) )
+    fwCoreClassDefinitionsWithFactoryMacro( (IProgressDialog)(::fwCore::BaseObject), (()), progressDialogFactory);
 
     typedef std::string FactoryRegistryKeyType;
+    typedef boost::function< void () >  CancelCallbackType;
+
 
     /// this *unique* key should  be used *for all* factory for specific LocationDialog(qt,wx,...)
     FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
@@ -49,6 +53,26 @@ public:
 
     /// action called by ::fwTools::ProgressAdviser
     FWGUI_API virtual void operator()(float percent,std::string msg) = 0;
+
+    FWGUI_API virtual void setCancelCallback(CancelCallbackType callback);
+
+    FWGUI_API virtual void setCancelRaiseException(bool raise){m_raise = raise;};
+
+    FWGUI_API virtual bool getCanceled(){return m_canceled;};
+
+protected :
+
+    FWGUI_API virtual void cancelPressed();
+
+    CancelCallbackType m_cancelCallback;
+    bool m_canceled;
+    bool m_raise;
+
+protected :
+    static sptr progressDialogFactory()
+    {
+        return ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog >( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
+    }
 
 };
 

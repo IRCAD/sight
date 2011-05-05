@@ -54,5 +54,24 @@ void ProgressDialog::operator()(float percent,std::string msg)
     }
 }
 
+
+//-----------------------------------------------------------------------------
+
+void ProgressDialog::setCancelCallback(CancelCallbackType callback)
+{
+    if(m_implementation)
+    {
+
+        m_implementation->setCancelCallback(callback);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ProgressDialog::cancelPressed()
+{
+    assert(0);
+}
+
 } //namespace dialog
 } //namespace fwGui

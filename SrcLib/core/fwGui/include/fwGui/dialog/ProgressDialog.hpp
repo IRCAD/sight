@@ -45,7 +45,11 @@ public:
     FWGUI_API void operator()(float percent,std::string msg);
 
 
+    FWGUI_API void setCancelCallback(CancelCallbackType callback);
+
 protected :
+
+    FWGUI_API void cancelPressed();
 
     ::fwGui::dialog::IProgressDialog::sptr m_implementation;
 
