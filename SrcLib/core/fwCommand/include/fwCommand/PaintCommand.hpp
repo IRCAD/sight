@@ -22,7 +22,7 @@ namespace fwCommand
 /**
  * @brief Command class to be used by all paint tools.
  */
-struct PaintCommand : public ICommand
+struct FWCOMMAND_CLASS_API PaintCommand : public ICommand
 {
     fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), ::fwTools::Factory::New< PaintCommand > );
 
