@@ -127,6 +127,12 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
                 actionGroup->addAction(action);
             }
 
+            // create shortcut
+            if( !actionInfo.m_shortcut.empty() )
+            {
+                action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
+            }
+
             menuItem->setQtMenuItem(action);
 
             m_menuItems.push_back(menuItem);

@@ -54,27 +54,27 @@ public:
     }ActionType;
 
     class ActionInfo
-         {
-         public :
+    {
+    public :
 
-            ActionInfo() :
-                m_name(""),
-                m_shortcut(""),
-                m_isSeparator(false),
-                m_isCheckable (false),
-                m_isRadio(false),
-                m_isMenu(false),
-                m_type(DEFAULT)
-            {}
+        ActionInfo() :
+            m_name(""),
+            m_shortcut(""),
+            m_isSeparator(false),
+            m_isCheckable (false),
+            m_isRadio(false),
+            m_isMenu(false),
+            m_type(DEFAULT)
+        {}
 
-            std::string m_name;
-            std::string m_shortcut;
-            bool        m_isCheckable;
-            bool        m_isRadio;
-            ActionType  m_type;
-            bool        m_isSeparator;
-            bool        m_isMenu;
-         };
+        std::string m_name;
+        std::string m_shortcut;
+        bool        m_isCheckable;
+        bool        m_isRadio;
+        ActionType  m_type;
+        bool        m_isSeparator;
+        bool        m_isMenu;
+    };
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
 

@@ -46,29 +46,31 @@ public:
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     class ActionInfo
-         {
-         public :
+    {
+    public :
 
-            ActionInfo() :
-                m_name(""),
-                m_icon(""),
-                m_isSeparator(false),
-                m_isSpacer(false),
-                m_isCheckable (false),
-                m_isRadio(false),
-                m_isMenu(false),
-                m_size(0)
-            {}
+        ActionInfo() :
+            m_name(""),
+            m_shortcut(""),
+            m_icon(""),
+            m_isSeparator(false),
+            m_isSpacer(false),
+            m_isCheckable (false),
+            m_isRadio(false),
+            m_isMenu(false),
+            m_size(0)
+        {}
 
-            std::string m_name;
-            std::string m_icon;
-            bool        m_isCheckable;
-            bool        m_isRadio;
-            bool        m_isSeparator;
-            bool        m_isSpacer;
-            bool        m_isMenu;
-            int         m_size;
-         };
+        std::string m_name;
+        std::string m_shortcut;
+        std::string m_icon;
+        bool        m_isCheckable;
+        bool        m_isRadio;
+        bool        m_isSeparator;
+        bool        m_isSpacer;
+        bool        m_isMenu;
+        int         m_size;
+    };
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
 
