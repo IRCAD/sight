@@ -133,4 +133,4 @@ const boost::uint32_t UndoRedoManager::getMaxCommandMemory()
 
 //-----------------------------------------------------------------------------
 
-} // namespace command
+} // namespace fwCommand

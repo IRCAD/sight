@@ -39,7 +39,7 @@ struct FWCOMMAND_CLASS_API Empty : public ICommand
 };
 
 
-} // namespace command
+} // namespace fwCommand
 
 
 #endif //#ifndef _FWCOMMAND_EMPTY_HPP_

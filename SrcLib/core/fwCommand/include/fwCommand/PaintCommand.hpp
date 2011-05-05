@@ -53,7 +53,6 @@ struct FWCOMMAND_CLASS_API PaintCommand : public ICommand
 
     FWCOMMAND_API void setImage( ::fwData::Image::sptr  image );
 
-
 private :
 
      void notifyImageModification();
@@ -83,7 +82,7 @@ private :
 };
 
 
-} // namespace command
+} // namespace fwCommand
 
 
 #endif //#ifndef _FWCOMMAND_PAINTCOMMAND_HPP_

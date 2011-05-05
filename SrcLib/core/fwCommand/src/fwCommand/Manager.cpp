@@ -190,4 +190,4 @@ ICommand::sptr Manager::getFirstRedoableCommand()
 
 //-----------------------------------------------------------------------------
 
-} // namespace command
+} // namespace fwCommand

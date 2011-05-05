@@ -32,6 +32,7 @@ struct FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
 {
 
     fwCoreServiceClassDefinitionsMacro ( (ICommand)(::fwTools::Object) ) ;
+
     /**
      * @brief Virtual destructor.
      */
@@ -63,7 +64,7 @@ struct FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
 };
 
 
-} // namespace command
+} // namespace fwCommand
 
 
 #endif //#ifndef _FWCOMMAND_ICOMMAND_H

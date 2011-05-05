@@ -170,7 +170,7 @@ protected:
 };
 
 
-} // namespace commmand
+} // namespace fwCommand
 
 
 #endif //#ifndef _FWCOMMAND_MANAGER_HPP_
