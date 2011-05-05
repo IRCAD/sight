@@ -35,30 +35,30 @@ struct FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
     /**
      * @brief Virtual destructor.
      */
-    virtual ~ICommand() {};
+    FWCOMMAND_API virtual ~ICommand() {};
 
 
     /**
      * @briefRetrieves the memory footprint of the command.
      */
-    virtual const boost::uint32_t  getSize() const = 0;
+    FWCOMMAND_API virtual const boost::uint32_t  getSize() const = 0;
 
     /**
      * @brief Pure virtual operation that in child classes encapsulates the logic of the change.
      */
-    virtual void apply() /*throw(std::exception)*/ = 0;    // FIXME std::exception to net::cmd::exception
+    FWCOMMAND_API virtual void apply() /*throw(std::exception)*/ = 0;    // FIXME std::exception to net::cmd::exception
 
     /**
      * @brief Pure virtual operation that in child classes encapsulates the logic of undoing a change.
      */
-    virtual void unapply() /*throw(std::exception)*/ = 0;
+    FWCOMMAND_API virtual void unapply() /*throw(std::exception)*/ = 0;
 
     /**
      * @brief Pure virtual operation that in child classes returns the description of the operation
      *
      * particularly useful for undo/redo lists presented to the user.
      */
-    virtual const std::string getDescription( void ) const = 0;
+    FWCOMMAND_API virtual const std::string getDescription( void ) const = 0;
 
 };
 

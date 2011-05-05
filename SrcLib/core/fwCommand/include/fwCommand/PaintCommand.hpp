@@ -27,16 +27,16 @@ struct PaintCommand : public ICommand
     fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), ::fwTools::Factory::New< PaintCommand > );
 
     // Overrides.
-    const boost::uint32_t  getSize() const;
+    FWCOMMAND_API const boost::uint32_t  getSize() const;
 
     // Overrides.
-    void apply();
+    FWCOMMAND_API void apply();
 
     // Overrides.
-    void unapply();
+    FWCOMMAND_API void unapply();
 
     // Overrides.
-    const std::string getDescription( void ) const;
+    FWCOMMAND_API const std::string getDescription( void ) const;
 
     /**
      * @brief Typedef for the voxel index.
@@ -49,14 +49,14 @@ struct PaintCommand : public ICommand
     typedef ::boost::uint8_t VoxelType;
 
     /// Register paint voxel on image
-    void paint( VoxelIndex index, VoxelType oldValue, VoxelType newValue );
+    FWCOMMAND_API void paint( VoxelIndex index, VoxelType oldValue, VoxelType newValue );
 
-    void setImage( ::fwData::Image::sptr  image );
+    FWCOMMAND_API void setImage( ::fwData::Image::sptr  image );
 
 
 private :
 
-    void notifyImageModification();
+     void notifyImageModification();
 
     /**
      * @brief Typedef for the index containers.

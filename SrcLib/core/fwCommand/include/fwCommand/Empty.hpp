@@ -25,16 +25,16 @@ struct Empty : public ICommand
     fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), ::fwTools::Factory::New< Empty > );
 
     // Overrides.
-    const boost::uint32_t  getSize() const;
+    FWCOMMAND_API const boost::uint32_t  getSize() const;
 
     // Overrides.
-    void apply();
+    FWCOMMAND_API void apply();
 
     // Overrides.
-    void unapply();
+    FWCOMMAND_API void unapply();
 
     // Overrides.
-    const std::string getDescription( void ) const;
+    FWCOMMAND_API const std::string getDescription( void ) const;
 
 };
 

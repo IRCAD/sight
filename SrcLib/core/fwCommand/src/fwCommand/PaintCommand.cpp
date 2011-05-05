@@ -100,7 +100,7 @@ const std::string PaintCommand::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-void notifyImageModification()
+void PaintCommand::notifyImageModification()
 {
     // ... need service
 }
