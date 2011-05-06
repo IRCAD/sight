@@ -32,6 +32,8 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) ) ;
 
+protected:
+
     /// Constructor.  Do nothing.
     CTRLSELECTION_API ImageUpdateAxis() throw() ;
 

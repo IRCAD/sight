@@ -20,9 +20,9 @@ REGISTER_BINDING_BYCLASSNAME( ::fwCommand::ICommand, ::fwCommand::PaintCommand, 
 const boost::uint32_t  PaintCommand::getSize() const
 {
     SLM_ASSERT("Index size not correspond to color size.", m_commandIndexContainer.size() == m_commandColorContainer.size() );
-    const boost::uint32_t sizeOf = static_cast<boost::uint32_t>(sizeof(VoxelIndex) + 2*sizeof(VoxelType));
+    const ::boost::uint32_t sizeOf = static_cast<boost::uint32_t>(sizeof(VoxelIndex) + 2*sizeof(VoxelType));
 
-    return static_cast<boost::uint32_t>(sizeof(*this) + m_commandIndexContainer.size()*sizeOf );
+    return static_cast< ::boost::uint32_t >(sizeof(*this) + m_commandIndexContainer.size()*sizeOf );
 }
 
 //-----------------------------------------------------------------------------

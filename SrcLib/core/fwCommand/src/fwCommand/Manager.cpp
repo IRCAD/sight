@@ -23,7 +23,7 @@ REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwCommand::Manager, ::fwComma
 
 //-----------------------------------------------------------------------------
 
-Manager::Manager( const boost::uint32_t maxUndoLevel, const boost::uint32_t maxUndoMemory, const boost::uint32_t maxCommandMemory )
+Manager::Manager( const ::boost::uint32_t maxUndoLevel, const ::boost::uint32_t maxUndoMemory, const ::boost::uint32_t maxCommandMemory )
 : m_maxUndoLevel  ( maxUndoLevel  ),
   m_maxUndoMemory ( maxUndoMemory ),
   m_maxCommandMemory (maxCommandMemory),
@@ -32,6 +32,17 @@ Manager::Manager( const boost::uint32_t maxUndoLevel, const boost::uint32_t maxU
     m_listCmd.push_back( Empty::New() );
     m_lastCmd = m_listCmd.end();
     --m_lastCmd;
+}
+
+//-----------------------------------------------------------------------------
+
+Manager::sptr Manager::ManagerFactory( const ::boost::uint32_t  maxUndoLevel, const ::boost::uint32_t  maxUndoMemory, const ::boost::uint32_t  maxCommandMemory)
+{
+    ::fwCommand::Manager::NewSptr manager;
+    manager->m_maxUndoLevel = maxUndoLevel;
+    manager->m_maxUndoMemory = maxUndoMemory;
+    manager->m_maxCommandMemory = maxCommandMemory;
+    return manager;
 }
 
 //-----------------------------------------------------------------------------
@@ -77,9 +88,9 @@ void Manager::queue( ICommand::sptr pCmd, const bool execute )
     if ( getMaxUndoLevel() > 0 )
     {
         // Ensure that the command size will not overflow the used memory counter.
-        const boost::uint32_t cmdSize = pCmd->getSize();
+        const ::boost::uint32_t cmdSize = pCmd->getSize();
 
-        if( (std::numeric_limits< boost::uint32_t >::max() - m_usedMemory) <= cmdSize )
+        if( (std::numeric_limits< ::boost::uint32_t >::max() - m_usedMemory) <= cmdSize )
         {
             throw std::overflow_error( "Command size will overflow memory usage count." );
         }
@@ -162,16 +173,16 @@ void Manager::clear()
 
 //-----------------------------------------------------------------------------
 
-const boost::uint32_t Manager::getUndoSize()
+const ::boost::uint32_t Manager::getUndoSize()
 {
-    return static_cast<boost::uint32_t> ( std::distance( m_listCmd.begin(), m_lastCmd ) );
+    return static_cast< ::boost::uint32_t> ( std::distance( m_listCmd.begin(), m_lastCmd ) );
 }
 
 //-----------------------------------------------------------------------------
 
-const boost::uint32_t Manager::getRedoSize()
+const ::boost::uint32_t Manager::getRedoSize()
 {
-    return static_cast< boost::uint32_t >( std::distance( m_lastCmd, m_listCmd.end() ) - 1 );
+    return static_cast< ::boost::uint32_t >( std::distance( m_lastCmd, m_listCmd.end() ) - 1 );
 }
 
 //-----------------------------------------------------------------------------

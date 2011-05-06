@@ -27,7 +27,10 @@ namespace fwCommand
  */
 struct FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
 {
-    fwCoreClassDefinitionsWithFactoryMacro( (Manager)(::fwTools::Object), (( )), ::fwTools::Factory::New< Manager > );
+    fwCoreClassDefinitionsWithNFactoriesMacro( (Manager)(::fwTools::Object),
+           ((::fwTools::Factory::New< Manager > ,() ))
+           ((ManagerFactory ,((::boost::uint32_t)) ((::boost::uint32_t)) ((::boost::uint32_t))  ))
+           );
 
     /**
      * @brief Default constructor.
@@ -41,7 +44,9 @@ struct FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
      * @remarks The latest queued command is ignored by the memory usage counter in order to ensure that the latest command could always being stored in the history.
      * @remarks The maximum memory used by the history is maxUndoMemory + maxCommandMemory.
      */
-    FWCOMMAND_API Manager( const boost::uint32_t  maxUndoLevel = 0, const boost::uint32_t  maxUndoMemory = 0, const boost::uint32_t  maxCommandMemory = 1024*1024*32 /* 32 MB */);
+    FWCOMMAND_API Manager( const ::boost::uint32_t  maxUndoLevel = 0, const ::boost::uint32_t  maxUndoMemory = 0, const ::boost::uint32_t  maxCommandMemory = 1024*1024*32 /* 32 MB */);
+
+    FWCOMMAND_API static sptr ManagerFactory( const ::boost::uint32_t  maxUndoLevel, const ::boost::uint32_t  maxUndoMemory , const ::boost::uint32_t  maxCommandMemory);
 
     /**
      * @brief Destructor.
@@ -98,27 +103,27 @@ struct FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
     /**
      * @brief Returns the maximum number of undo that could be stored in the history.
      */
-    FWCOMMAND_API const boost::uint32_t  getMaxUndoLevel() const { return m_maxUndoLevel; }
+    FWCOMMAND_API const ::boost::uint32_t  getMaxUndoLevel() const { return m_maxUndoLevel; }
 
     /**
      * @brief Returns the maximum memory that could be used by the history.
      */
-    FWCOMMAND_API const boost::uint32_t  getMaxUndoMemory() const { return m_maxUndoMemory; }
+    FWCOMMAND_API const ::boost::uint32_t  getMaxUndoMemory() const { return m_maxUndoMemory; }
 
     /**
      * @brief Returns the maximum memory that could be used by a single command.
      */
-    FWCOMMAND_API const boost::uint32_t  getMaxCommandMemory() const { return m_maxCommandMemory; }
+    FWCOMMAND_API const ::boost::uint32_t  getMaxCommandMemory() const { return m_maxCommandMemory; }
 
     /**
      * @briefReturns the number of commands that can be un-done.
      */
-    FWCOMMAND_API const boost::uint32_t  getUndoSize();
+    FWCOMMAND_API const ::boost::uint32_t  getUndoSize();
 
     /**
      * @briefReturns the number of commans that can be re-done.
      */
-    FWCOMMAND_API const boost::uint32_t  getRedoSize();
+    FWCOMMAND_API const ::boost::uint32_t  getRedoSize();
 
 
 
@@ -137,22 +142,22 @@ protected:
     /**
      * @brief  Maximum number of undo that could be stored in the history.
      */
-    boost::uint32_t  m_maxUndoLevel;
+    ::boost::uint32_t  m_maxUndoLevel;
 
     /**
      * @brief Maximum number of bytes that could be used by the history.
      */
-    boost::uint32_t m_maxUndoMemory;
+    ::boost::uint32_t m_maxUndoMemory;
 
     /**
      * @brief Maximum number of bytes that could be used by a single command.
      */
-    boost::uint32_t m_maxCommandMemory;
+    ::boost::uint32_t m_maxCommandMemory;
 
     /**
      * @brief Memory used by the history.
      */
-    boost::uint32_t m_usedMemory;
+    ::boost::uint32_t m_usedMemory;
 
     /**
      * @brief Iterator on the last command applied.

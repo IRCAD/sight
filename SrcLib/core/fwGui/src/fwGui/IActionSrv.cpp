@@ -74,7 +74,7 @@ void IActionSrv::actionServiceStopping()
 void IActionSrv::actionServiceStarting()
 {
     this->m_registrar->actionServiceStarting();
-    this->m_registrar->actionServiceSetActive(m_isActive);
+    this->setIsActive(m_isActive);
 }
 
 //-----------------------------------------------------------------------------
