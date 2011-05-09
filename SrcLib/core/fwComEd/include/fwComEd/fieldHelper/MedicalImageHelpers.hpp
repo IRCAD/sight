@@ -227,12 +227,55 @@ public :
     template < typename T >
     static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T &value);
 
+
+    /**
+     * @brief Return a buffer of image type's size, containing 'value' casted data
+     * @param[in] pImage : reference image
+     * @param[in] value : value to map
+     */
+    template < typename T >
+    static SPTR( ::fwData::Image::BufferType ) getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value);
+
 protected:
 
     /**
      * @brief Merge data from two identical patients.
      */
     FWCOMED_API static void mergeInformation(::fwData::Patient::sptr currentPatient, ::fwData::Patient::sptr importedPatient);
+
+};
+
+
+template < typename VALUE >
+class PixelCastAndSetFunctor
+{
+public:
+    class Param
+    {
+        public:
+        typedef VALUE ValueType;
+        typedef SPTR( ::fwData::Image::BufferType ) BufferTypeSptr;
+
+        Param(ValueType &v): value (v)
+        {};
+
+        const ValueType &value;
+        BufferTypeSptr res;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        unsigned char imageTypeSize = sizeof(IMAGE);
+
+        IMAGE val = ::fwTools::numericRoundCast<IMAGE>(param.value);
+
+        ::fwData::Image::BufferType *buf = reinterpret_cast< ::fwData::Image::BufferType* > (&val);
+
+        SPTR( ::fwData::Image::BufferType ) res ( new ::fwData::Image::BufferType(imageTypeSize) );
+        std::copy(buf, buf+imageTypeSize, res.get());
+        param.res = res;
+    }
 
 };
 
@@ -291,6 +334,19 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point
 
 
 
+template < typename T >
+SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value)
+{
+    typename PixelCastAndSetFunctor<T>::Param param(value);
+
+    ::fwTools::DynamicType type = image->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , PixelCastAndSetFunctor<T> >::invoke( type, param );
+    return param.res;
+}
+
+
+
+
 template < typename INT_INDEX >
 class CastAndCheckFunctor
 {
@@ -305,8 +361,8 @@ public:
         {};
 
         ::fwData::Image::sptr image;
-        bool &isNull;
         const PointType &point;
+        bool &isNull;
     };
 
     template < typename IMAGE >
