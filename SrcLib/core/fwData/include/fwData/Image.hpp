@@ -115,6 +115,8 @@ public:
     FWDATA_API ::boost::shared_ptr< BufferType > getPixelBufferCopy( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z );
     FWDATA_API ::boost::shared_ptr< BufferType > getPixelBufferCopy( VoxelIndexType index );
 
+    FWDATA_API void setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf);
+
 
 protected :
 
