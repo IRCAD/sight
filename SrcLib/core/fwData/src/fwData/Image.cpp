@@ -225,4 +225,40 @@ void Image::getInformation( Image::csptr _source )
 
 //------------------------------------------------------------------------------
 
+void* Image::getPixelBuffer( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z )
+{
+    std::vector<boost::int32_t> size = this->getSize();
+    int offset = x + size[0]*y + z*size[0]*size[1];
+    return getPixelBuffer(offset);
+}
+
+//------------------------------------------------------------------------------
+
+void* Image::getPixelBuffer( VoxelIndexType index )
+{
+    unsigned char imagePixelSize = this->getPixelType().sizeOf();
+    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
+    BufferIndexType bufIndex = index * imagePixelSize;
+    return buf + bufIndex;
+}
+
+//------------------------------------------------------------------------------
+::boost::shared_ptr< Image::BufferType > Image::getPixelBufferCopy( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z )
+{
+    std::vector<boost::int32_t> size = this->getSize();
+    int offset = x + size[0]*y + z*size[0]*size[1];
+    return getPixelBufferCopy(offset);
+}
+
+//------------------------------------------------------------------------------
+
+::boost::shared_ptr< Image::BufferType > Image::getPixelBufferCopy( VoxelIndexType index )
+{
+    unsigned char imagePixelSize = this->getPixelType().sizeOf();
+    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
+    ::boost::shared_ptr< BufferType > res(new BufferType(imagePixelSize));
+    std::copy(buf, buf+imagePixelSize, res.get());
+    return res;
+}
+
 } // namespace fwData

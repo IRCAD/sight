@@ -36,6 +36,9 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwTools::Factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
 
+    typedef ::boost::uint64_t VoxelIndexType;
+    typedef ::boost::uint64_t BufferIndexType;
+    typedef ::boost::uint8_t  BufferType;
     /**
      * @brief Constructor
      */
@@ -107,6 +110,11 @@ public:
 
     fwGettersSettersDocMacro(BufferDelegate, bufferDelegate, ::fwData::IBufferDelegate::sptr, by default use StandardBuffer);
 
+    FWDATA_API void* getPixelBuffer( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z );
+    FWDATA_API void* getPixelBuffer( VoxelIndexType index );
+    FWDATA_API ::boost::shared_ptr< BufferType > getPixelBufferCopy( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z );
+    FWDATA_API ::boost::shared_ptr< BufferType > getPixelBufferCopy( VoxelIndexType index );
+
 
 protected :
 
@@ -154,7 +162,6 @@ FWDATA_API boost::int32_t  imageSizeInBytes( const ::fwData::Image &image);
  * @return pixel value
  */
 FWDATA_API std::string  getPixelAsString( ::fwData::Image::csptr _image, unsigned int _x, unsigned int _y, unsigned int _z );
-
 
 };
 
