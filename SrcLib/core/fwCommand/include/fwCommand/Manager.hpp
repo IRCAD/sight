@@ -125,7 +125,9 @@ struct FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
      */
     FWCOMMAND_API const ::boost::uint32_t  getRedoSize();
 
+    FWCOMMAND_API void setNotifier( ::fwServices::IService::sptr serviceNotifier );
 
+    FWCOMMAND_API ::fwServices::IService::sptr getNotifier();
 
 protected:
 
@@ -172,6 +174,7 @@ protected:
      */
     void removeFirstCmd();
 
+    ::fwServices::IService::wptr m_serviceNotifier;
 };
 
 

@@ -14,6 +14,7 @@
 #include <fwTools/Object.hpp>
 #include <fwTools/macros.hpp>
 
+#include <fwServices/IService.hpp>
 
 #include "fwCommand/config.hpp"
 
@@ -31,13 +32,18 @@ namespace fwCommand
 struct FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
 {
 
+protected :
+
+    ::fwServices::IService::wptr m_serviceNotifier;
+
+public :
+
     fwCoreServiceClassDefinitionsMacro ( (ICommand)(::fwTools::Object) ) ;
 
     /**
      * @brief Virtual destructor.
      */
     FWCOMMAND_API virtual ~ICommand() {};
-
 
     /**
      * @briefRetrieves the memory footprint of the command.
@@ -61,6 +67,9 @@ struct FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
      */
     FWCOMMAND_API virtual const std::string getDescription( void ) const = 0;
 
+    FWCOMMAND_API void setNotifier( ::fwServices::IService::sptr serviceNotifier ) { m_serviceNotifier = serviceNotifier; }
+
+    FWCOMMAND_API ::fwServices::IService::sptr getNotifier() { return m_serviceNotifier.lock(); }
 };
 
 

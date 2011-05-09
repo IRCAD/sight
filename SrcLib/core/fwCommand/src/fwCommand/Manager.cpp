@@ -48,7 +48,7 @@ Manager::sptr Manager::ManagerFactory( const ::boost::uint32_t  maxUndoLevel, co
 //-----------------------------------------------------------------------------
 
 Manager::~Manager() throw()
-{}
+        {}
 
 //-----------------------------------------------------------------------------
 
@@ -67,6 +67,9 @@ void Manager::removeFirstCmd()
 
 void Manager::queue( ICommand::sptr pCmd, const bool execute )
 {
+
+    pCmd->setNotifier( m_serviceNotifier.lock() );
+
     // Erase commands after the current one.
     CmdList::iterator i ( m_listCmd.end()-1 );
     CmdList::iterator iEnd ( m_lastCmd   );
@@ -197,6 +200,20 @@ ICommand::sptr Manager::getFirstUndoableCommand()
 ICommand::sptr Manager::getFirstRedoableCommand()
 {
     return ( m_lastCmd + 1 != m_listCmd.end() ) ? *(m_lastCmd + 1) : ICommand::sptr();
+}
+
+//-----------------------------------------------------------------------------
+
+void Manager::setNotifier( ::fwServices::IService::sptr serviceNotifier )
+{
+    m_serviceNotifier = serviceNotifier;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::sptr Manager::getNotifier()
+{
+    return m_serviceNotifier.lock();
 }
 
 //-----------------------------------------------------------------------------

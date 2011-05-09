@@ -5,8 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/IEditionService.hpp>
+
+#include <fwComEd/ImageMsg.hpp>
 
 #include "fwCommand/PaintCommand.hpp"
+
 
 namespace fwCommand
 {
@@ -102,7 +106,12 @@ const std::string PaintCommand::getDescription() const
 
 void PaintCommand::notifyImageModification()
 {
-    // ... need service
+    if ( ! this->m_serviceNotifier.expired() )
+    {
+        ::fwComEd::ImageMsg::NewSptr msg;
+        msg->addEvent( fwComEd::ImageMsg::BUFFER );
+        ::fwServices::IEditionService::notify( this->getNotifier(), m_image.lock(), msg );
+    }
 }
 
 //-----------------------------------------------------------------------------
