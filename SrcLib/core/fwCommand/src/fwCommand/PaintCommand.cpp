@@ -56,10 +56,12 @@ void PaintCommand::prePaint( VoxelIndex x, VoxelIndex y, VoxelIndex z )
 void PaintCommand::prePaint( VoxelIndex index )
 {
     ::fwData::Image::sptr image = m_image.lock();
+    unsigned int imageTypeSize = image->getPixelType().sizeOf();
+
     m_currentPrepaintIndex = index;
     SLM_ASSERT("currentPrepaintBuff must be empty. Forgot a postPaint call ?", m_currentPrepaintBuff.empty());
-    BufferType *buf  = static_cast<BufferType*>( image->getBuffer() ) + index;
-    std::copy(buf, buf+image->getPixelType().sizeOf(), std::back_insert_iterator<std::vector<BufferType> >(m_currentPrepaintBuff));
+    BufferType *buf  = static_cast<BufferType*>( image->getBuffer() ) + index*imageTypeSize;
+    std::copy(buf, buf+imageTypeSize, std::back_insert_iterator<std::vector<BufferType> >(m_currentPrepaintBuff));
 }
 
 //-----------------------------------------------------------------------------
