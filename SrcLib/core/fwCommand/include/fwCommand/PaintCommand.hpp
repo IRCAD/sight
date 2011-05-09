@@ -38,18 +38,30 @@ struct FWCOMMAND_CLASS_API PaintCommand : public ICommand
     // Overrides.
     FWCOMMAND_API const std::string getDescription( void ) const;
 
-    /**
-     * @brief Typedef for the voxel index.
-     */
-    typedef ::boost::uint32_t VoxelIndex;
 
     /**
-     * @brief Typedef for the voxel color.
+     * @brief Typedef for the buffer index.
      */
-    typedef ::boost::uint8_t VoxelType;
+    typedef ::boost::uint64_t BufferIndex;
+
+    /**
+     * @brief Typedef for the image voxel index.
+     */
+    typedef ::boost::uint64_t VoxelIndex;
+
+    /**
+     * @brief Typedef for the buffer color.
+     */
+    typedef ::boost::uint8_t BufferType;
 
     /// Register paint voxel on image
-    FWCOMMAND_API void paint( VoxelIndex index, VoxelType oldValue, VoxelType newValue );
+    FWCOMMAND_API void paint( BufferIndex index, BufferType oldValue, BufferType newValue );
+
+
+    FWCOMMAND_API void prePaint( VoxelIndex x, VoxelIndex y, VoxelIndex z );
+    FWCOMMAND_API void prePaint( VoxelIndex index );
+
+    FWCOMMAND_API void postPaint();
 
     FWCOMMAND_API void setImage( ::fwData::Image::sptr  image );
 
@@ -60,12 +72,12 @@ private :
     /**
      * @brief Typedef for the index containers.
      */
-    typedef std::vector< VoxelIndex > IndexContainer;
+    typedef std::vector< BufferIndex > IndexContainer;
 
     /**
      * @brief Typedef for the color containers.
      */
-    typedef std::vector< std::pair<VoxelType,VoxelType> > ColorContainer;
+    typedef std::vector< std::pair<BufferType, BufferType> > ColorContainer;
 
     /**
      * @brief The index container
@@ -79,6 +91,10 @@ private :
 
     /// Working image
     ::fwData::Image::wptr  m_image;
+
+    VoxelIndex m_currentPrepaintIndex;
+    std::vector<BufferType> m_currentPrepaintBuff;
+
 };
 
 
