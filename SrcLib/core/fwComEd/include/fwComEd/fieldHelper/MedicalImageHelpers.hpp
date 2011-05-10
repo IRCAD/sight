@@ -8,6 +8,7 @@
 #define _FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP_
 
 #include <utility> // std::pair
+#include <numeric>
 
 
 #include <fwData/Image.hpp>
@@ -30,6 +31,14 @@ namespace fwComEd
 {
 namespace fieldHelper
 {
+
+
+template <class T> struct bitwise_or : std::binary_function <T,T,T> 
+{
+  T operator() (const T& x, const T& y) const
+    {return x|y;}
+};
+
 
 /**
  * @class   MedicalImageHelpers
@@ -209,6 +218,9 @@ public :
     template < typename INT_INDEX>
     static bool isPixelNull(::fwData::Image::sptr image, INT_INDEX &point);
 
+    static bool isBufNull(const ::fwData::Image::BufferType *buf, const unsigned int len);
+
+
     /**
      * @brief Set a pixel value.
      * @param[in] image : image containing the pixel
@@ -346,7 +358,6 @@ SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSp
 
 
 
-
 template < typename INT_INDEX >
 class CastAndCheckFunctor
 {
@@ -382,14 +393,10 @@ public:
 template < typename INT_INDEX>
 bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &point)
 {
-    bool isNull;
-    typename CastAndCheckFunctor<INT_INDEX>::Param param(point, isNull);
-    param.image = image;
+    const unsigned char imageTypeSize = image->getPixelType().sizeOf();
+    ::fwData::Image::BufferType *buf = static_cast< ::fwData::Image::BufferType *> (image->getPixelBuffer(point[0], point[1], point[2]));
 
-    ::fwTools::DynamicType type = image->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndCheckFunctor<INT_INDEX> >::invoke( type, param );
-
-    return isNull;
+    return isBufNull(buf, imageTypeSize);
 }
 
 

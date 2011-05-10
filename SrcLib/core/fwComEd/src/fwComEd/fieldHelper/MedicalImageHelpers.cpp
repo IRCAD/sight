@@ -618,5 +618,20 @@ void MedicalImageHelpers::mergeInformation(::fwData::Patient::sptr currentPatien
 
 //------------------------------------------------------------------------------
 
+bool MedicalImageHelpers::isBufNull(const ::fwData::Image::BufferType *buf, const unsigned int len)
+{
+    bool isNull;
+    const ::fwData::Image::BufferType *ucbuf = static_cast< const ::fwData::Image::BufferType *> (buf);
+    isNull = 0 == std::accumulate(
+            ucbuf,
+            ucbuf+len,
+            0,
+            bitwise_or< ::fwData::Image::BufferType >()
+            );
+    return isNull;
+}
+
+//------------------------------------------------------------------------------
+
 } // fieldHelper
 } // fwComEd
