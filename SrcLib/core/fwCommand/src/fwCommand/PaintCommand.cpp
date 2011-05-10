@@ -27,7 +27,7 @@ const boost::uint32_t  PaintCommand::getSize() const
 {
     SLM_ASSERT("Index size not correspond to color size.",
             m_commandIndexContainer.size() == m_commandColorContainer.size() );
-    const ::boost::uint32_t sizeOf = static_cast<boost::uint32_t>(sizeof(BufferIndex) + 2*sizeof(BufferType));
+    const ::boost::uint32_t sizeOf = static_cast<boost::uint32_t>(sizeof(::fwData::Image::BufferIndexType) + 2*sizeof(::fwData::Image::BufferType));
 
     return static_cast< ::boost::uint32_t >(sizeof(*this) + m_commandIndexContainer.size()*sizeOf );
 }
@@ -41,27 +41,27 @@ void PaintCommand::setImage( ::fwData::Image::sptr  image )
 
 //-----------------------------------------------------------------------------
 
-void PaintCommand::prePaint( VoxelIndex x, VoxelIndex y, VoxelIndex z )
+void PaintCommand::prePaint( ::fwData::Image::VoxelIndexType x, ::fwData::Image::VoxelIndexType y, ::fwData::Image::VoxelIndexType z )
 {
     ::fwData::Image::sptr image = m_image.lock();
     const std::vector< ::boost::int32_t> &size = image->getCRefSize();
     const int &sx = size[0];
     const int &sy = size[1];
-    const VoxelIndex index = x + sx*y + z*sx*sy;
+    const ::fwData::Image::VoxelIndexType index = x + sx*y + z*sx*sy;
     prePaint(index);
 }
 
 //-----------------------------------------------------------------------------
 
-void PaintCommand::prePaint( VoxelIndex index )
+void PaintCommand::prePaint( ::fwData::Image::VoxelIndexType index )
 {
     ::fwData::Image::sptr image = m_image.lock();
     unsigned int imageTypeSize = image->getPixelType().sizeOf();
 
     m_currentPrepaintIndex = index;
     SLM_ASSERT("currentPrepaintBuff must be empty. Forgot a postPaint call ?", m_currentPrepaintBuff.empty());
-    BufferType *buf  = static_cast<BufferType*>( image->getBuffer() ) + index*imageTypeSize;
-    std::copy(buf, buf+imageTypeSize, std::back_insert_iterator<std::vector<BufferType> >(m_currentPrepaintBuff));
+    ::fwData::Image::BufferType *buf  = static_cast< ::fwData::Image::BufferType* >( image->getBuffer() ) + index*imageTypeSize;
+    std::copy(buf, buf+imageTypeSize, std::back_insert_iterator<std::vector< ::fwData::Image::BufferType > >(m_currentPrepaintBuff));
 }
 
 //-----------------------------------------------------------------------------
@@ -69,10 +69,10 @@ void PaintCommand::prePaint( VoxelIndex index )
 void PaintCommand::postPaint()
 {
     ::fwData::Image::sptr image = m_image.lock();
-    BufferType *buf  = static_cast<BufferType*>( image->getBuffer() ) + m_currentPrepaintIndex;
+    ::fwData::Image::BufferType *buf  = static_cast< ::fwData::Image::BufferType* >( image->getBuffer() ) + m_currentPrepaintIndex;
 
     unsigned int imageTypeSize = image->getPixelType().sizeOf();
-    BufferIndex bufIndex = m_currentPrepaintIndex * imageTypeSize;
+    ::fwData::Image::BufferIndexType bufIndex = m_currentPrepaintIndex * imageTypeSize;
 
     for (unsigned int i = 0; i < imageTypeSize; ++i)
     {
@@ -83,7 +83,7 @@ void PaintCommand::postPaint()
 
 //-----------------------------------------------------------------------------
 
-void PaintCommand::paint( BufferIndex index, BufferType oldValue, BufferType newValue )
+void PaintCommand::paint( ::fwData::Image::BufferIndexType index, ::fwData::Image::BufferType oldValue, ::fwData::Image::BufferType newValue )
 {
     m_commandIndexContainer.push_back(index);
     m_commandColorContainer.push_back( std::make_pair(oldValue,newValue) );
@@ -94,13 +94,13 @@ void PaintCommand::paint( BufferIndex index, BufferType oldValue, BufferType new
 void PaintCommand::apply()
 {
     // start image editing
-    BufferType* pixels = static_cast<BufferType*>( m_image.lock()->getBuffer() );
+    ::fwData::Image::BufferType* pixels = static_cast< ::fwData::Image::BufferType* >( m_image.lock()->getBuffer() );
     SLM_ASSERT("commandIndexContainer and commandColorContainer must have same size",
             m_commandColorContainer.size() == m_commandIndexContainer.size());
 
     // do each voxel modification
     ColorContainer::const_iterator indexC( m_commandColorContainer.begin() );
-    BOOST_FOREACH(BufferIndex index, m_commandIndexContainer)
+    BOOST_FOREACH(::fwData::Image::BufferIndexType index, m_commandIndexContainer)
     {
         pixels[ index ] = indexC->second;
         ++indexC;
@@ -113,13 +113,13 @@ void PaintCommand::apply()
 void PaintCommand::unapply()
 {
     // start image editing
-    BufferType * pixels = static_cast<BufferType*>( m_image.lock()->getBuffer() );
+    ::fwData::Image::BufferType * pixels = static_cast< ::fwData::Image::BufferType* >( m_image.lock()->getBuffer() );
     SLM_ASSERT("commandIndexContainer and commandColorContainer must have same size",
             m_commandColorContainer.size() == m_commandIndexContainer.size());
 
     // do each voxel modification
     ColorContainer::const_iterator indexC( m_commandColorContainer.begin() );
-    BOOST_FOREACH(BufferIndex index, m_commandIndexContainer)
+    BOOST_FOREACH(::fwData::Image::BufferIndexType index, m_commandIndexContainer)
     {
         pixels[ index ] = indexC->first;
         ++indexC;
