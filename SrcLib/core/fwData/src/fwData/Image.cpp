@@ -256,7 +256,7 @@ void* Image::getPixelBuffer( VoxelIndexType index )
 {
     unsigned char imagePixelSize = this->getPixelType().sizeOf();
     BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
-    ::boost::shared_ptr< BufferType > res(new BufferType(imagePixelSize));
+    ::boost::shared_ptr< BufferType > res(new BufferType[imagePixelSize]);
     std::copy(buf, buf+imagePixelSize, res.get());
     return res;
 }

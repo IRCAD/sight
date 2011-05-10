@@ -272,7 +272,7 @@ public:
 
         ::fwData::Image::BufferType *buf = reinterpret_cast< ::fwData::Image::BufferType* > (&val);
 
-        SPTR( ::fwData::Image::BufferType ) res ( new ::fwData::Image::BufferType(imageTypeSize) );
+        SPTR( ::fwData::Image::BufferType ) res ( new ::fwData::Image::BufferType[imageTypeSize] );
         std::copy(buf, buf+imageTypeSize, res.get());
         param.res = res;
     }
