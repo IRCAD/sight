@@ -83,8 +83,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     layout->addWidget( m_sliceSelectorMax );
     layout->addWidget( m_valueTextMax, 0 );
 
-    QObject::connect(m_sliceSelectorMin, SIGNAL(sliderMoved( int )), this, SLOT(onMinChanged( int )));
-    QObject::connect(m_sliceSelectorMax, SIGNAL(sliderMoved( int )), this, SLOT(onMaxChanged( int )));
+    QObject::connect(m_sliceSelectorMin, SIGNAL(valueChanged( int )), this, SLOT(onMinChanged( int )));
+    QObject::connect(m_sliceSelectorMax, SIGNAL(valueChanged( int )), this, SLOT(onMaxChanged( int )));
 
     container->setLayout( layout );
     this->updating();
@@ -95,8 +95,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
 
-    QObject::disconnect(m_sliceSelectorMin , SIGNAL(sliderMoved( int )), this, SLOT(onMinChanged( int )));
-    QObject::disconnect(m_sliceSelectorMax, SIGNAL(sliderMoved( int )), this, SLOT(onMaxChanged( int )));
+    QObject::disconnect(m_sliceSelectorMin, SIGNAL(valueChanged( int )), this, SLOT(onMinChanged( int )));
+    QObject::disconnect(m_sliceSelectorMax, SIGNAL(valueChanged( int )), this, SLOT(onMaxChanged( int )));
 
     this->getContainer()->clean();
     this->destroy();
@@ -240,6 +240,12 @@ void  WindowLevel::onMinChanged(int val)
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+    if( max->value() <= val )
+    {
+       max ->value() = val + 10;
+       m_valueTextMax->setText(QString("%1").arg(max->value()));
+       m_sliceSelectorMax->setSliderPosition(max->value());
+    }
     min->value() = val;
     ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
@@ -258,6 +264,12 @@ void WindowLevel::onMaxChanged(int val )
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+    if( val <= min->value() )
+    {
+       min ->value() = val - 10;
+       m_valueTextMin->setText(QString("%1").arg(min->value()));
+       m_sliceSelectorMin->setSliderPosition(min->value());
+    }
     max->value() = val;
     ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
