@@ -11,6 +11,7 @@
 #include <QPointer>
 
 #include <fwTools/Failed.hpp>
+#include <fwData/Integer.hpp>
 #include <gui/editor/IEditor.hpp>
 
 #include "uiImageQt/config.hpp"
@@ -80,11 +81,14 @@ protected:
     UIIMAGEQT_API virtual void info( std::ostream &_sstream ) ;
 
     virtual void setEnabled(bool enable);
+    void sendMsg(::fwData::Integer::sptr min, ::fwData::Integer::sptr max);
 
 protected slots :
 
         void onMinChanged(int val);
         void onMaxChanged(int val);
+        void onMinChanged(QString strVal);
+        void onMaxChanged(QString strVal);
 
 private:
 
