@@ -1,0 +1,409 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>Activity4Config</id>
+    <type>template</type>
+    <config>
+
+
+        <object type="::fwData::Composite">
+
+            <service uid="GENERIC_UID_mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="Negato1" align="center" />
+                        <view caption="Negato2" align="right" minWidth="350" />
+                        <view caption="Negato3" align="right" minWidth="350" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <parent wid="WID_PARENT" />
+                    <toolBar sid="GENERIC_UID_toolBar" start="yes" />
+                    <view sid="GENERIC_UID_multiView_negato1" start="yes" />
+                    <view sid="GENERIC_UID_multiView_negato2" start="yes" />
+                    <view sid="GENERIC_UID_multiView_negato3" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+                <gui>
+                    <layout>
+                        <menuItem name="3D MPR Axial view" icon="Bundles/VRRender_0-9/icons/icon-axial.png" />
+                        <menuItem name="3D MPR Frontal view" icon="Bundles/VRRender_0-9/icons/icon-frontal.png" />
+                        <menuItem name="3D MPR Sagittal view" icon="Bundles/VRRender_0-9/icons/icon-sagittal.png" />
+                        <separator />
+                        <menuItem name="New landmark" icon="Bundles/VRRender_0-9/icons/Add-landmark.png" />
+                        <menuItem name="Focus landmark" icon="Bundles/VRRender_0-9/icons/Find-landmark.png" />
+                        <menuItem name="Hide/Show landmark" icon="Bundles/VRRender_0-9/icons/View-landmark.png" />
+                        <separator />
+                        <menuItem name="Add distance" icon="Bundles/VRRender_0-9/icons/distance.png" />
+                        <menuItem name="Remove distance" icon="Bundles/VRRender_0-9/icons/RemoveDistance.png" />
+                        <menuItem name="Hide distance" icon="Bundles/VRRender_0-9/icons/HideDistance.png" style="check" />
+                        <separator />
+                        <menuItem name="Hide cross" icon="Bundles/VRRender_0-9/icons/HideCross.png" style="radio" />
+                        <menuItem name="Show normal cross" icon="Bundles/VRRender_0-9/icons/NormalCross.png" style="radio" />
+                        <menuItem name="Show full cross" icon="Bundles/VRRender_0-9/icons/FullCross.png" style="radio" />
+                        <separator />
+                        <menuItem name="Manage Organ" icon="Bundles/VRRender_0-9/icons/ManageOrgan.png" style="check" />
+                        <spacer />
+                        <menu name="Visu 3D" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="GENERIC_UID_action_AxialViewMPR3D" start="yes" />
+                    <menuItem sid="GENERIC_UID_action_FrontalViewMPR3D" start="yes" />
+                    <menuItem sid="GENERIC_UID_action_SagittalViewMPR3D" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionNewLandmark" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionFocusLandmark" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionHideLandmark" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionAddDistance" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionRemoveDistance" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionHideDistance" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionHideCross" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionShowNormalCross" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionShowFullCross" start="yes" />
+                    <menuItem sid="GENERIC_UID_action_organManager" start="no" />
+                    <menu sid="GENERIC_UID_menu" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_menu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Manage organs colors" style="check" shortcut="F9" />
+                        <separator />
+                        <menuItem name="Axial view" />
+                        <menuItem name="Frontal view" />
+                        <menuItem name="Sagittal view" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="GENERIC_UID_action_organManager" start="yes" />
+                    <menuItem sid="GENERIC_UID_action_AxialViewMPR3D" start="no" />
+                    <menuItem sid="GENERIC_UID_action_FrontalViewMPR3D" start="no" />
+                    <menuItem sid="GENERIC_UID_action_SagittalViewMPR3D" start="no" />
+                </registry>
+            </service>
+
+        <!-- NEGATO 1 VIEW -->
+            <service uid="GENERIC_UID_multiView_negato1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_negato1" start="no" />
+                    <view sid="GENERIC_UID_multiView_negato1_bottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_multiView_negato1_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_sliceListNegato1Editor" start="no" />
+                    <view sid="GENERIC_UID_snapshotNegato1Editor" start="yes" />
+                    <view sid="GENERIC_UID_slider_negato1" start="no" />
+                    <view sid="GENERIC_UID_distanceNegato1Editor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_snapshotNegato1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+                <snap>
+                    <scene uid="GENERIC_UID_negato1" />
+                </snap>
+            </service>
+
+        <!-- NEGATO 2 VIEW -->
+            <service uid="GENERIC_UID_multiView_negato2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_negato2" start="no" />
+                    <view sid="GENERIC_UID_multiView_negato2_bottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_multiView_negato2_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_snapshotNegato2Editor" start="yes" />
+                    <view sid="GENERIC_UID_slider_negato2" start="no" />
+                    <view sid="GENERIC_UID_distanceNegato2Editor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_snapshotNegato2Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+                <snap>
+                    <scene uid="GENERIC_UID_negato2" />
+                </snap>
+            </service>
+
+        <!-- NEGATO 3 VIEW -->
+            <service uid="GENERIC_UID_multiView_negato3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_negato3" start="no" />
+                    <view sid="GENERIC_UID_multiView_negato3_bottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_multiView_negato3_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_snapshotNegato3Editor" start="yes" />
+                    <view sid="GENERIC_UID_slider_negato3" start="no" />
+                    <view sid="GENERIC_UID_distanceNegato3Editor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_snapshotNegato3Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+                <snap>
+                    <scene uid="GENERIC_UID_negato3" />
+                </snap>
+            </service>
+
+            <service uid="GENERIC_UID_action_organManager" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no">
+                <config id="organManagerConfig" />
+                <replace pattern="ORGAN_MANAGER_ACQUISITION" val="SELECTED_UID_myAcquisition" />
+            </service>
+
+
+        <!-- GENERIC SCENE DEFINITION -->
+            <item key="visuConfig">
+                <object uid="GENERIC_UID_VisuComposite" type="::fwData::Composite">
+
+                <!-- Generic Scene Negato1 -->
+                    <service uid="GENERIC_UID_negato1" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+                            <picker id="negato1default" vtkclass="fwVtkCellPicker" />
+                            <renderer id="default" background="0.0" />
+                            <adaptor id="renderNegato1" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="InteractorScene3D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle3DForNegato" />
+                            </adaptor>
+                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle2DForNegato" />
+                            </adaptor>
+                            <adaptor uid="GENERIC_UID_MPRNegato1" id="MPRNegato1" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                                <config renderer="default" picker="negato1default" slices="3" sliceIndex="axial" />
+                            </adaptor>
+                            <adaptor id="Acquisition" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                                <config renderer="default" picker="negato1default" />
+                            </adaptor>
+                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="myImage">
+                                <config filter="true" renderer="default" picker="negato1default" />
+                            </adaptor>
+                            <adaptor id="landmarksNegato1" class="::visuVTKAdaptor::ImageLandmarks" objectId="myImage">
+                                <config renderer="default" picker="negato1default" />
+                            </adaptor>
+                            <adaptor id="cameraScene3DID" class="::visuVTKAdaptor::Medical3DCamera" objectId="myImage">
+                                <config renderer="default" sliceIndex="axial" />
+                            </adaptor>
+                        </scene>
+                    </service>
+                <!-- Generic Scene Negato2 -->
+                    <service uid="GENERIC_UID_negato2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+                            <picker id="negato2default" vtkclass="fwVtkCellPicker" />
+                            <renderer id="default" background="0.0" />
+                            <adaptor id="renderNegato2" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle2DForNegato" />
+                            </adaptor>
+                            <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                                <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial" />
+                            </adaptor>
+                            <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
+                                <config renderer="default" picker="negato2default" text="" />
+                            </adaptor>
+                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="myImage">
+                                <config filter="true" renderer="default" picker="negato2default" />
+                            </adaptor>
+                            <adaptor id="landmarksNegato2" class="::visuVTKAdaptor::ImageLandmarks" objectId="myImage">
+                                <config renderer="default" picker="negato2default" />
+                            </adaptor>
+                        </scene>
+                    </service>
+
+                <!-- Generic Scene Negato3 -->
+                    <service uid="GENERIC_UID_negato3" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+                            <picker id="negato3default" vtkclass="fwVtkCellPicker" />
+                            <renderer id="default" background="0.0" />
+                            <adaptor id="renderNegato3" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle2DForNegato" />
+                            </adaptor>
+                            <adaptor id="MPRNegato3" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                                <config renderer="default" picker="negato3default" mode="2d" slices="1" sliceIndex="frontal" />
+                            </adaptor>
+                            <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
+                                <config renderer="default" picker="negato3default" text="" />
+                            </adaptor>
+                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="myImage">
+                                <config filter="true" renderer="default" picker="negato3default" />
+                            </adaptor>
+                            <adaptor id="landmarksNegato3" class="::visuVTKAdaptor::ImageLandmarks" objectId="myImage">
+                                <config renderer="default" picker="negato3default" />
+                            </adaptor>
+                        </scene>
+                    </service>
+
+                    <item key="myAcquisition">
+                        <object uid="SELECTED_UID_myAcquisition" src="ref" type="::fwData::Acquisition" />
+                    </item>
+
+                    <item key="myImage">
+                        <object uid="SELECTED_UID_myImage" src="ref" type="::fwData::Image">
+
+                            <service uid="GENERIC_UID_ActionFocusLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::FocusLandmark" autoComChannel="no" />
+
+                            <service uid="GENERIC_UID_ActionNewLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::AddLandmark" autoComChannel="no" />
+
+                            <service uid="GENERIC_UID_ActionHideLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::ShowLandmark" autoComChannel="yes" />
+
+                            <service uid="GENERIC_UID_ActionAddDistance" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::AddDistance" autoComChannel="no" />
+
+                            <service uid="GENERIC_UID_ActionRemoveDistance" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::RemoveDistance" autoComChannel="no" />
+
+                            <service uid="GENERIC_UID_ActionHideDistance" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::ShowDistance" autoComChannel="yes" />
+
+                            <service uid="GENERIC_UID_ActionHideCross" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CrossTypeAction" autoComChannel="no">
+                                <crossType>hide</crossType>
+                            </service>
+
+                            <service uid="GENERIC_UID_ActionShowNormalCross" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CrossTypeAction" autoComChannel="no">
+                                <crossType>half</crossType>
+                                <state active="true" />
+                            </service>
+
+                            <service uid="GENERIC_UID_ActionShowFullCross" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CrossTypeAction" autoComChannel="no">
+                                <crossType>full</crossType>
+                            </service>
+
+                            <service uid="GENERIC_UID_action_SagittalViewMPR3D" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CameraOrientationAction" autoComChannel="no">
+                                <orientation>sagittal</orientation>
+                            </service>
+
+                            <service uid="GENERIC_UID_action_FrontalViewMPR3D" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CameraOrientationAction" autoComChannel="no">
+                                <orientation>frontal</orientation>
+                            </service>
+
+                            <service uid="GENERIC_UID_action_AxialViewMPR3D" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CameraOrientationAction" autoComChannel="no">
+                                <orientation>axial</orientation>
+                            </service>
+
+                            <service uid="GENERIC_UID_MedicalImageSrv" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="no" />
+
+
+                        <!-- Editors for Negato1 -->
+
+                            <service uid="GENERIC_UID_slider_negato1" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
+
+                            <service uid="GENERIC_UID_distanceNegato1Editor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+                                <placeInScene uid="GENERIC_UID_negato1" />
+                            </service>
+
+                            <service uid="GENERIC_UID_sliceListNegato1Editor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor2" autoComChannel="yes">
+                                <negatoAdaptor uid="GENERIC_UID_MPRNegato1" slices="3" />
+                            </service>
+
+
+                        <!-- Editors for Negato2 -->
+
+                            <service uid="GENERIC_UID_slider_negato2" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
+
+                            <service uid="GENERIC_UID_distanceNegato2Editor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+                                <placeInScene uid="GENERIC_UID_negato2" />
+                            </service>
+
+
+                        <!-- Editors for Negato3 -->
+
+                            <service uid="GENERIC_UID_slider_negato3" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                                <sliceIndex>frontal</sliceIndex>
+                            </service>
+
+
+                            <service uid="GENERIC_UID_distanceNegato3Editor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+                                <placeInScene uid="GENERIC_UID_negato3" />
+                            </service>
+
+                        </object>
+                    </item>
+
+                </object>
+            </item>
+
+
+        <!-- START AND STOP SERVICES -->
+            <start uid="GENERIC_UID_mainView" />
+            <start uid="GENERIC_UID_negato1" />
+            <start uid="GENERIC_UID_negato2" />
+            <start uid="GENERIC_UID_negato3" />
+            <start uid="GENERIC_UID_MedicalImageSrv" />
+            <start uid="GENERIC_UID_slider_negato1" />
+            <start uid="GENERIC_UID_slider_negato2" />
+            <start uid="GENERIC_UID_slider_negato3" />
+            <start uid="GENERIC_UID_sliceListNegato1Editor" />
+
+
+        </object>
+
+
+    </config>
+</extension>

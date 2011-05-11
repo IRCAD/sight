@@ -1,0 +1,204 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>VRActivityConfig</id>
+    <type>template</type>
+    <config>
+
+
+        <object type="::fwData::Composite">
+
+            <service uid="GENERIC_UID_mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="VR" align="center" />
+                        <view caption="Negato" align="right" minWidth="350" />
+                        <view caption="TFM" align="right" minWidth="350" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <parent wid="WID_PARENT" />
+                    <toolBar sid="GENERIC_UID_toolBar" start="yes" />
+                    <view sid="GENERIC_UID_vr" start="yes" />
+                    <view sid="GENERIC_UID_multiView_negato" start="yes" />
+                    <view sid="GENERIC_UID_tfm" start="yes" />
+                </registry>
+            </service>
+           
+            <service uid="GENERIC_UID_toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Hide cross" icon="Bundles/VRRender_0-9/icons/HideCross.png" style="radio" />
+                        <menuItem name="Show normal cross" icon="Bundles/VRRender_0-9/icons/NormalCross.png" style="radio" />
+                        <menuItem name="Show full cross" icon="Bundles/VRRender_0-9/icons/FullCross.png" style="radio" />
+                        <separator />
+                        <menuItem name="Show/hide box cropping" icon="Bundles/VRRender_0-9/icons/icon-box.png" />
+                        <menuItem name="Reset box cropping" icon="Bundles/VRRender_0-9/icons/icon-box-reset.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="GENERIC_UID_ActionHideCross" start="no" />
+                    <menuItem sid="GENERIC_UID_ActionShowNormalCross" start="no" />
+                    <menuItem sid="GENERIC_UID_ActionShowFullCross" start="no" />
+                    <menuItem sid="GENERIC_UID_ActionShowHideBoxWidget" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionResetBoxWidget" start="yes" />
+                </registry>
+            </service>
+
+
+
+            <!-- NEGATO 2 VIEW -->
+            <service uid="GENERIC_UID_multiView_negato" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_negato2" start="yes" />
+                    <view sid="GENERIC_UID_multiView_negato2_bottom" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="GENERIC_UID_multiView_negato2_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_snapshotNegato2Editor" start="yes" />
+                    <view sid="GENERIC_UID_slider_negato2" start="no" />
+                    <view sid="GENERIC_UID_distanceNegato2Editor" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="GENERIC_UID_snapshotNegato2Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+                <snap>
+                    <scene uid="GENERIC_UID_negato2" />
+                </snap>
+            </service>
+
+
+
+
+
+
+            <!-- GENERIC SCENE DEFINITION -->
+            <item key="visuConfig">
+                <object uid="GENERIC_UID_VisuComposite" type="::fwData::Composite">
+           
+                    <!-- Generic Scene Negato1 -->
+                    <service uid="GENERIC_UID_vr" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+
+                            <picker id="negato1default" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+
+                            <adaptor id="renderNegato1" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle3DForNegato" />
+                            </adaptor>
+
+                            <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="myImage">
+                                <config renderer="default" />
+                            </adaptor>
+
+                        </scene>
+                    </service>
+
+
+                    <!-- Generic Scene Negato2 -->
+                    <service uid="GENERIC_UID_negato2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+                            <picker id="negato2default" vtkclass="fwVtkCellPicker" />
+                            <renderer id="default" background="0.0" />
+                            <adaptor id="renderNegato2" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle2DForNegato" />
+                            </adaptor>
+                            <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                                <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="frontal" />
+                            </adaptor>
+                            <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
+                                <config renderer="default" picker="negato2default" text="" />
+                            </adaptor>
+                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="myImage">
+                                <config filter="true" renderer="default" picker="negato2default" />
+                            </adaptor>
+                            <adaptor id="landmarksNegato2" class="::visuVTKAdaptor::ImageLandmarks" objectId="myImage">
+                                <config renderer="default" picker="negato2default" />
+                            </adaptor>
+                        </scene>
+                    </service>
+
+
+                    <item key="myImage">
+                        <object uid="SELECTED_UID_myImage" src="ref" type="::fwData::Image">
+
+                            <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" />
+                    
+                            <service uid="GENERIC_UID_MedicalImageSrv" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="no" />
+
+                            <!-- Editors for Negato2 -->
+                            <service uid="GENERIC_UID_slider_negato2" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                                <sliceIndex>frontal</sliceIndex>
+                            </service>
+                            <service uid="GENERIC_UID_distanceNegato2Editor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+                                <placeInScene uid="GENERIC_UID_negato2" />
+                            </service>
+
+                            <service uid="GENERIC_UID_ActionHideCross" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CrossTypeAction" autoComChannel="no">
+                                <crossType>hide</crossType>
+                            </service>
+
+                            <service uid="GENERIC_UID_ActionShowNormalCross" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CrossTypeAction" autoComChannel="no">
+                                <crossType>half</crossType>
+                                <state active="true" />
+                            </service>
+
+                            <service uid="GENERIC_UID_ActionShowFullCross" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CrossTypeAction" autoComChannel="no">
+                                <crossType>full</crossType>
+                            </service>
+
+                            <service uid="GENERIC_UID_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" implementation="::gui::action::ActionNotifyService" autoComChannel="no">
+                                <notify type="::fwServices::ObjectMsg" event="SHOWHIDE_BOX_WIDGET" />
+                            </service>
+
+                            <service uid="GENERIC_UID_ActionResetBoxWidget" type="::fwGui::IActionSrv" implementation="::gui::action::ActionNotifyService" autoComChannel="no">
+                                <notify type="::fwServices::ObjectMsg" event="RESET_BOX_WIDGET" />
+                            </service>
+                            
+                        </object>
+                    </item>
+
+                </object>
+            </item>
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="GENERIC_UID_mainView" />
+            <start uid="GENERIC_UID_MedicalImageSrv" />
+            <start uid="GENERIC_UID_slider_negato2" />
+            <start uid="GENERIC_UID_ActionHideCross" />
+            <start uid="GENERIC_UID_ActionShowNormalCross" />
+            <start uid="GENERIC_UID_ActionShowFullCross" />
+            <update uid="GENERIC_UID_tfm" />
+
+        </object>
+
+
+    </config>
+</extension>
