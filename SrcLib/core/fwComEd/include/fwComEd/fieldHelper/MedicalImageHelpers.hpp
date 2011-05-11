@@ -33,7 +33,7 @@ namespace fieldHelper
 {
 
 
-template <class T> struct bitwise_or : std::binary_function <T,T,T> 
+template <class T> struct bitwise_or : std::binary_function <T,T,T>
 {
   T operator() (const T& x, const T& y) const
     {return x|y;}
@@ -218,7 +218,7 @@ public :
     template < typename INT_INDEX>
     static bool isPixelNull(::fwData::Image::sptr image, INT_INDEX &point);
 
-    static bool isBufNull(const ::fwData::Image::BufferType *buf, const unsigned int len);
+    FWCOMED_API static bool isBufNull(const ::fwData::Image::BufferType *buf, const unsigned int len);
 
 
     /**
