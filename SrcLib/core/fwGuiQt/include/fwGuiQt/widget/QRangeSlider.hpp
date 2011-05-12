@@ -15,7 +15,7 @@ namespace fwGuiQt
 namespace widget
 {
 
-class QRangeSlider : public QWidget
+class FWGUIQT_CLASS_API QRangeSlider : public QWidget
 {
     Q_OBJECT
 
@@ -39,15 +39,15 @@ public:
 
 
 
-    QRangeSlider(QWidget *parent = NULL);
-    virtual ~QRangeSlider();
+    FWGUIQT_API QRangeSlider(QWidget *parent = NULL);
+    FWGUIQT_API virtual ~QRangeSlider();
 
     QSize sizeHint() const {return QSize(100,20);};
 
     void setMinimumMinMaxDelta(double d){ m_minimumMinMaxDelta = d;}
 
 public slots:
-    void setPos(double _min, double _max);
+    FWGUIQT_API void setPos(double _min, double _max);
 
 signals:
     void sliderRangeChanged ( double min, double max);

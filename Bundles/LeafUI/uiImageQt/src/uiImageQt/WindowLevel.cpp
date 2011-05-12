@@ -11,6 +11,8 @@
 #include <QSlider>
 #include <QIntValidator>
 
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
 
@@ -42,7 +44,7 @@ WindowLevel::WindowLevel() throw()
 {
     m_imageDynamicMin   = -200.;
     m_imageDynamicWidth =  500.;
-    
+
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
     addNewHandledEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
 }
@@ -79,7 +81,7 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     //m_valueTextMax->setText(QString("%1").arg(max->value()));
 
     m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider(container);
-    
+
     //m_sliceSelectorMin = new QSlider( Qt::Horizontal, container );
     //m_sliceSelectorMin->setSliderPosition(min->value());
     //m_sliceSelectorMin->setMinimumWidth(40);
@@ -316,16 +318,15 @@ void  WindowLevel::updateWindowLevel(double _min, double _max)
     double wmin = *min;
     double wmax = *max;
 
-    if ( !std::isnan(_min) )
+    if(! ::boost::math::isnan(_min) )
     {
-        SLM_ERROR("MIN NOT NAN");
+        //SLM_ERROR("MIN NOT NAN");
         wmin = toWindowLevel(_min);
         min->value() = wmin;
     }
-
-    if ( !std::isnan(_max) )
+    if(! ::boost::math::isnan(_max) )
     {
-        SLM_ERROR("MAX NOT NAN");
+        //SLM_ERROR("MAX NOT NAN");
         wmax = toWindowLevel(_max);
         max->value() = wmax;
     }
