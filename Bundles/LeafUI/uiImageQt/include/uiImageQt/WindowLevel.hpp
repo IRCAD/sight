@@ -19,6 +19,8 @@
 class QLineEdit;
 class QSlider;
 
+fwCorePredeclare( (fwGuiQt)(widget)(QRangeSlider) );
+
 namespace uiImage
 {
 
@@ -81,21 +83,40 @@ protected:
     UIIMAGEQT_API virtual void info( std::ostream &_sstream ) ;
 
     virtual void setEnabled(bool enable);
-    void sendMsg(::fwData::Integer::sptr min, ::fwData::Integer::sptr max);
+
 
 protected slots :
 
-        void onMinChanged(int val);
-        void onMaxChanged(int val);
-        void onMinChanged(QString strVal);
-        void onMaxChanged(QString strVal);
+    void onMinTextChanged(QString strVal);
+    void onMaxTextChanged(QString strVal);
+
+    void onWindowLevelWidgetChanged(double _min, double _max);
+
+protected:
+    int toWindowLevel(double _val);
+    double fromWindowLevel(int _val);
+
+    void setWidgetWindowMinMax(int _imageMin, int _imageMax);
+
+    void updateWindowLevel(double _min, double _max);
+
+    void onImageWindowLevelChanged(int _imageMin, int _imageMax);
+    void notifyWindowLevel(int _imageMin, int _imageMax);
+    void updateWindowLevelText(int _imageMin, int _imageMax);
+
+    bool onTextChanged(QLineEdit *widget, QString &strVal, int &val);
 
 private:
 
-    QPointer< QSlider > m_sliceSelectorMin;
-    QPointer< QSlider > m_sliceSelectorMax;
+    //QPointer< QSlider > m_sliceSelectorMin;
+    //QPointer< QSlider > m_sliceSelectorMax;
     QPointer< QLineEdit >   m_valueTextMin;
     QPointer< QLineEdit >   m_valueTextMax;
+
+    QPointer< ::fwGuiQt::widget::QRangeSlider > m_rangeSlider;
+
+    double m_imageDynamicMin;
+    double m_imageDynamicWidth;
 
 
 };

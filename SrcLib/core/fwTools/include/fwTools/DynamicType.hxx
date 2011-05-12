@@ -64,7 +64,7 @@ public:
         minMax.second = static_cast< T >( std::numeric_limits< PIXEL >::max() );
 
         ::fwTools::DynamicType type = ::fwTools::makeDynamicType< PIXEL >();
-        if(type.string() == "double" || type.string() == "float")
+        if(!std::numeric_limits< PIXEL >::is_integer)
         {
             // std::numeric_limits::min() returns the smallest positive value for floating types
             minMax.first = minMax.second * -1;

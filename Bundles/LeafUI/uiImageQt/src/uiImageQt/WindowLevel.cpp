@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <QApplication>
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QLineEdit>
@@ -25,6 +26,8 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
+#include <fwGuiQt/widget/QRangeSlider.hpp>
+
 
 #include "uiImageQt/WindowLevel.hpp"
 
@@ -37,6 +40,9 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Im
 
 WindowLevel::WindowLevel() throw()
 {
+    m_imageDynamicMin   = -200.;
+    m_imageDynamicWidth =  500.;
+    
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
     addNewHandledEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
 }
@@ -65,33 +71,38 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     m_valueTextMin = new QLineEdit( container );
     QIntValidator *minValidator = new QIntValidator(m_valueTextMin);
     m_valueTextMin->setValidator(minValidator);
-    m_valueTextMin->setText(QString("%1").arg(min->value()));
-
-    m_sliceSelectorMin = new QSlider( Qt::Horizontal, container );
-    m_sliceSelectorMin->setSliderPosition(min->value());
-    m_sliceSelectorMin->setMinimumWidth(40);
-
-    m_sliceSelectorMax = new QSlider( Qt::Horizontal, container );
-    m_sliceSelectorMax->setSliderPosition(max->value());
-    m_sliceSelectorMax->setMinimumWidth(40);
+    //m_valueTextMin->setText(QString("%1").arg(min->value()));
 
     m_valueTextMax = new QLineEdit( container );
     QIntValidator*  maxValidator = new QIntValidator(m_valueTextMax);
     m_valueTextMax->setValidator(maxValidator);
-    m_valueTextMax->setText(QString("%1").arg(max->value()));
+    //m_valueTextMax->setText(QString("%1").arg(max->value()));
 
-    layout->addWidget( m_valueTextMin, 0);
-    layout->addWidget( m_sliceSelectorMin );
-    layout->addWidget( m_sliceSelectorMax );
-    layout->addWidget( m_valueTextMax, 0 );
+    m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider(container);
+    
+    //m_sliceSelectorMin = new QSlider( Qt::Horizontal, container );
+    //m_sliceSelectorMin->setSliderPosition(min->value());
+    //m_sliceSelectorMin->setMinimumWidth(40);
 
-    QObject::connect(m_sliceSelectorMin, SIGNAL(valueChanged( int )), this, SLOT(onMinChanged( int )));
-    QObject::connect(m_sliceSelectorMax, SIGNAL(valueChanged( int )), this, SLOT(onMaxChanged( int )));
-    QObject::connect(m_valueTextMin, SIGNAL(textChanged( QString )), this, SLOT(onMinChanged( QString )));
-    QObject::connect(m_valueTextMax, SIGNAL(textChanged( QString )), this, SLOT(onMaxChanged( QString )));
+    //m_sliceSelectorMax = new QSlider( Qt::Horizontal, container );
+    //m_sliceSelectorMax->setSliderPosition(max->value());
+    //m_sliceSelectorMax->setMinimumWidth(40);
+
+    layout->addWidget( m_valueTextMin );
+    //layout->addWidget( m_sliceSelectorMin );
+    //layout->addWidget( m_sliceSelectorMax );
+    layout->addWidget( m_rangeSlider, 1 );
+    layout->addWidget( m_valueTextMax );
+
 
     container->setLayout( layout );
     this->updating();
+
+    //onImageWindowLevelChanged(*min, *max);
+
+    QObject::connect(m_valueTextMin, SIGNAL(textEdited( QString )), this, SLOT(onMinTextChanged( QString )));
+    QObject::connect(m_valueTextMax, SIGNAL(textEdited( QString )), this, SLOT(onMaxTextChanged( QString )));
+    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeChanged( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
 }
 
 //------------------------------------------------------------------------------
@@ -99,10 +110,9 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
 
-    QObject::disconnect(m_sliceSelectorMin, SIGNAL(valueChanged( int )), this, SLOT(onMinChanged( int )));
-    QObject::disconnect(m_sliceSelectorMax, SIGNAL(valueChanged( int )), this, SLOT(onMaxChanged( int )));
-    QObject::disconnect(m_valueTextMin, SIGNAL(valueChanged( int )), this, SLOT(onMinChanged( int )));
-    QObject::disconnect(m_valueTextMax, SIGNAL(valueChanged( int )), this, SLOT(onMaxChanged( int )));
+    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeChanged( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::disconnect(m_valueTextMin, SIGNAL(textEdited( QString )), this, SLOT(onMinTextChanged( QString )));
+    QObject::disconnect(m_valueTextMax, SIGNAL(textEdited( QString )), this, SLOT(onMaxTextChanged( QString )));
 
     this->getContainer()->clean();
     this->destroy();
@@ -196,12 +206,19 @@ void WindowLevel::updating() throw(::fwTools::Failed)
             maxValue = std::numeric_limits<int>::max();
         }
 
-        m_sliceSelectorMin->setMinimum(minValue);
-        m_sliceSelectorMin->setMaximum(maxValue);
+        //m_sliceSelectorMin->setMinimum(minValue);
+        //m_sliceSelectorMin->setMaximum(maxValue);
 
-        m_sliceSelectorMax->setMinimum(minValue);
-        m_sliceSelectorMax->setMaximum(maxValue);
+        //m_sliceSelectorMax->setMinimum(minValue);
+        //m_sliceSelectorMax->setMaximum(maxValue);
+
+        //m_imageDynamicMin   = minValue;
+        //m_imageDynamicWidth = maxValue-minValue;
     }
+    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+
+    onImageWindowLevelChanged( *min, *max );
 }
 
 //------------------------------------------------------------------------------
@@ -221,10 +238,11 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-    m_sliceSelectorMin->setSliderPosition(min->value());
-    m_sliceSelectorMax->setSliderPosition(max->value());
-    m_valueTextMin->setText(QString("%1").arg(min->value()));
-    m_valueTextMax->setText(QString("%1").arg(max->value()));
+    //m_sliceSelectorMin->setSliderPosition(min->value());
+    //m_sliceSelectorMax->setSliderPosition(max->value());
+    //m_valueTextMin->setText(QString("%1").arg(min->value()));
+    //m_valueTextMax->setText(QString("%1").arg(max->value()));
+    onImageWindowLevelChanged(*min, *max);
 
 }
 
@@ -237,123 +255,176 @@ void WindowLevel::info( std::ostream & _sstream )
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onMinChanged(int val)
+void WindowLevel::setWidgetWindowMinMax(int _imageMin, int _imageMax)
 {
-    m_valueTextMin->setText(QString("%1").arg(val));
+    //double dynMin = m_imageDynamicMin;
+    //double dynMax = dynMin + m_imageDynamicWidth;
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-    if( max->value() <= val )
-    {
-       max ->value() = val + 10;
-       m_valueTextMax->setText(QString("%1").arg(max->value()));
-       m_sliceSelectorMax->setSliderPosition(max->value());
-    }
-    min->value() = val;
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
+    //if (_imageMin < dynMin)
+    //{
+        //dynMin = _imageMin;
+    //}
+    //if (dynMax < _imageMax)
+    //{
+        //dynMax = _imageMax;
+    //}
 
-    ::fwData::Integer::NewSptr newMin(val);
-    this->sendMsg(newMin,max);
+    //m_imageDynamicMin   = dynMin;
+    //m_imageDynamicWidth = dynMax - dynMin;
+
+    double rangeMin = fromWindowLevel(_imageMin);
+    double rangeMax = fromWindowLevel(_imageMax);
+
+
+    //XXX : Hack because of f4s' TF management
+    m_rangeSlider->setMinimumMinMaxDelta(10./m_imageDynamicWidth);
+
+    m_rangeSlider->setPos(rangeMin, rangeMax);
 }
 
 //------------------------------------------------------------------------------
-
-void  WindowLevel::onMinChanged(QString strVal)
+double WindowLevel::fromWindowLevel(int _val)
 {
-    bool ok=false;
-    int val = strVal.toInt(&ok);
+    double valMin = m_imageDynamicMin;
+    double valMax = valMin + m_imageDynamicWidth;
 
-    m_sliceSelectorMin->setSliderPosition(val);
+    double val = _val;
+    valMin = std::min(val, valMin);
+    valMax = std::max(val, valMax);
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+    m_imageDynamicMin = valMin;
+    m_imageDynamicWidth = valMax - valMin;
 
-    if( max->value() <= val )
-    {
-        max ->value() = val + 10;
-        m_valueTextMax->setText(QString("%1").arg(max->value()));
-        m_sliceSelectorMax->setSliderPosition(max->value());
-    }
-    min->value() = val;
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
-
-    ::fwData::Integer::NewSptr newMin(val);
-    this->sendMsg(newMin,max);
+    return (_val - m_imageDynamicMin) / m_imageDynamicWidth;
 }
 
 //------------------------------------------------------------------------------
-void WindowLevel::onMaxChanged(int val )
+int WindowLevel::toWindowLevel(double _val)
 {
-    m_valueTextMax->setText(QString("%1").arg(val));
+    return m_imageDynamicMin + m_imageDynamicWidth * _val;
+}
+
+//------------------------------------------------------------------------------
+void  WindowLevel::updateWindowLevel(double _min, double _max)
+{
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-    if( val <= min->value() )
+
+    double wmin = *min;
+    double wmax = *max;
+
+    if ( !std::isnan(_min) )
     {
-        min ->value() = val - 10;
-        m_valueTextMin->setText(QString("%1").arg(min->value()));
-        m_sliceSelectorMin->setSliderPosition(min->value());
+        SLM_ERROR("MIN NOT NAN");
+        wmin = toWindowLevel(_min);
+        min->value() = wmin;
     }
-    max->value() = val;
+
+    if ( !std::isnan(_max) )
+    {
+        SLM_ERROR("MAX NOT NAN");
+        wmax = toWindowLevel(_max);
+        max->value() = wmax;
+    }
 
     ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
-    ::fwData::Integer::NewSptr newMax(val);
-    this->sendMsg(min,newMax);
+    setWidgetWindowMinMax( wmin, wmax );
+    notifyWindowLevel(wmin, wmax);
+}
+
+
+//------------------------------------------------------------------------------
+void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
+{
+    updateWindowLevel(_min, _max);
+    updateWindowLevelText( toWindowLevel(_min), toWindowLevel(_max) );
 }
 
 //------------------------------------------------------------------------------
-
-void WindowLevel::onMaxChanged(QString strVal )
+void  WindowLevel::onImageWindowLevelChanged(int _imageMin, int _imageMax)
 {
-    bool ok=false;
-    // due to the validator on QLineEdit xe are sure to have an integer.
-    int val = strVal.toInt(&ok);
-
-    m_sliceSelectorMax->setSliderPosition(val);
-
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-
-    if( val <= min->value() )
-    {
-        min ->value() = val - 10;
-        m_valueTextMin->setText(QString("%1").arg(min->value()));
-        m_sliceSelectorMin->setSliderPosition(min->value());
-    }
-    max->value() = val;
-
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
-
-    ::fwData::Integer::NewSptr newMax(val);
-    this->sendMsg(min,newMax);
+    setWidgetWindowMinMax( _imageMin, _imageMax );
+    updateWindowLevelText( _imageMin, _imageMax );
 }
 
 //------------------------------------------------------------------------------
-
-void WindowLevel::sendMsg(::fwData::Integer::sptr min, ::fwData::Integer::sptr max)
+void  WindowLevel::notifyWindowLevel(int _imageMin, int _imageMax)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Integer::NewSptr min(static_cast < ::fwData::Integer::ValueType >(_imageMin));
+    ::fwData::Integer::NewSptr max(static_cast < ::fwData::Integer::ValueType >(_imageMax));
+
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->setWindowMinMax(min, max, image);
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+ }
+
+//------------------------------------------------------------------------------
+void  WindowLevel::updateWindowLevelText(int _imageMin, int _imageMax)
+{
+    m_valueTextMin->setText(QString("%1").arg(_imageMin));
+    m_valueTextMax->setText(QString("%1").arg(_imageMax));
+}
+
+//------------------------------------------------------------------------------
+
+void  WindowLevel::onMinTextChanged(QString strVal)
+{
+    OSLM_ERROR("MIN CHANGED "<< strVal.toStdString());
+    int min;
+    if(this->onTextChanged(m_valueTextMin, strVal, min))
+    {
+        OSLM_ERROR("MIN CHANGED "<< min << " " << fromWindowLevel(min)<<" ");
+        updateWindowLevel(fromWindowLevel(min), std::numeric_limits<double>::quiet_NaN());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void WindowLevel::onMaxTextChanged(QString strVal)
+{
+    int max;
+    if(this->onTextChanged(m_valueTextMax, strVal, max))
+    {
+        updateWindowLevel(std::numeric_limits<double>::quiet_NaN(), fromWindowLevel(max));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool WindowLevel::onTextChanged(QLineEdit *widget, QString &strVal, int &val)
+{
+    bool ok=false;
+    // due to the validator on QLineEdit xe are sure to have an integer.
+    val = strVal.toInt(&ok);
+
+    QPalette palette;
+    if (!ok)
+    {
+        palette.setBrush(QPalette::Base, QBrush(Qt::red));
+    }
+    else
+    {
+        palette.setBrush(QPalette::Base, QApplication::palette().brush(QPalette::Base));
+    }
+    widget->setPalette(palette);
+    return ok;
 }
 
 //------------------------------------------------------------------------------
 
 void WindowLevel::setEnabled(bool enable)
 {
-    m_sliceSelectorMin->setEnabled(enable);
+    //m_sliceSelectorMin->setEnabled(enable);
     m_valueTextMin->setEnabled(enable);
+    m_rangeSlider->setEnabled(enable);
 
-    m_sliceSelectorMax->setEnabled(enable);
+    //m_sliceSelectorMax->setEnabled(enable);
     m_valueTextMax->setEnabled(enable);
-
 }
 
 //------------------------------------------------------------------------------
