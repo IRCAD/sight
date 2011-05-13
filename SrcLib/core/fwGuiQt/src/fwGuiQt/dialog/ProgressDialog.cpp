@@ -39,7 +39,6 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
     m_pmainWindow = qobject_cast< QMainWindow * >(activeWindow);
 
     m_pcancelButton = new QPushButton("Cancel");
-
     QObject::connect(m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()));
 
     if(m_pmainWindow)
@@ -49,6 +48,8 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
         m_pprogressbar->setValue(0);
         m_pmainWindow->statusBar()->addPermanentWidget(m_pprogressbar,0);
         m_pmainWindow->statusBar()->addPermanentWidget(m_pcancelButton,0);
+        m_pmainWindow->statusBar()->setMinimumHeight(25);
+        m_pmainWindow->statusBar()->setMaximumHeight(25);
     }
     else
     {
