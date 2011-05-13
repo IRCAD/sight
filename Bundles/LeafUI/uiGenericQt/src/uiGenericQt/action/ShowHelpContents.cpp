@@ -76,6 +76,12 @@ void ShowHelpContents::info(std::ostream &_sstream )
 
 void ShowHelpContents::configuring() throw(::fwTools::Failed)
 {
+    /*
+     * .qhp/.qch (source/binary) : Contains a table of contents,
+     *                             an index of items in the documentation, and a file manifest.
+     * .qhcp/.qhc (source/binary): Contains information that is used to customize
+     *                             the appearance and available features of Qt Assistant.
+    */
     this->::fwGui::IActionSrv::initialize();
     if( m_configuration->findConfigurationElement("filename") )
     {
@@ -99,6 +105,7 @@ void ShowHelpContents::updating() throw(::fwTools::Failed)
     QHelpEngine* helpEngine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
     if (!helpEngine->setupData())
     {
+        OSLM_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( "Help file is missing or not correct." );
@@ -106,7 +113,7 @@ void ShowHelpContents::updating() throw(::fwTools::Failed)
         messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
        // Setup help engine information failed.
-       // qhc (Qt Help Collection) or qch (Qt Compressed Help) file is not corect.
+       // qhc (Qt Help Collection) or qch (Qt Compressed Help) file is not correct.
     }
     else
     {
