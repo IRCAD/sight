@@ -18,20 +18,19 @@ namespace fwTools
 Bookmarks::Dictionary Bookmarks::m_dictionary;
 
 //-----------------------------------------------------------------------------
-Bookmarks::~Bookmarks()
-{
-}
 
+Bookmarks::~Bookmarks()
+{}
 
 //-----------------------------------------------------------------------------
+
 bool Bookmarks::exist( Bookmarks::BookmarkName _id)
 {
     return m_dictionary.find( _id ) != m_dictionary.end();
 }
 
-
-
 //-----------------------------------------------------------------------------
+
 void Bookmarks::add( Bookmarks::BookmarkName _bookmark,  ::fwTools::Object::sptr obj )
 {
     OSLM_FATAL_IF("Try to set a  Bookmarks on a null object ", !obj );
@@ -39,28 +38,26 @@ void Bookmarks::add( Bookmarks::BookmarkName _bookmark,  ::fwTools::Object::sptr
 }
 
 //-----------------------------------------------------------------------------
+
 void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
 {
     m_dictionary.erase( m_dictionary.find( _bookmark ) );
 }
 
-
 //-----------------------------------------------------------------------------
+
 ::fwTools::Object::sptr Bookmarks::getObject( Bookmarks::BookmarkName _bookmark )
 {
-
+    ::fwTools::Object::sptr bookmark;
     Dictionary::iterator iter = m_dictionary.find( _bookmark );
-    if ( iter != m_dictionary.end() )
+    if ( iter != m_dictionary.end()  && !iter->second.expired() )
     {
-        if ( iter->second.expired() == false )
-        {
-            return iter->second.lock();
-        }
+        bookmark = iter->second.lock();
     }
-    return  ::fwTools::Object::NewSptr();
+    return  bookmark;
 }
 
-
+//-----------------------------------------------------------------------------
 
 std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::sptr obj )
 {
@@ -68,7 +65,7 @@ std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::s
     Dictionary::iterator iter = m_dictionary.begin();
     for ( ; iter != m_dictionary.end(); ++iter )
     {
-        if ( iter->second.expired() == false && iter->second.lock() == obj )
+        if ( !iter->second.expired() && iter->second.lock() == obj )
         {
             result.push_back(  iter->first );
         }
@@ -76,7 +73,6 @@ std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::s
     return  result;
 }
 
-
-
+//-----------------------------------------------------------------------------
 
 }
