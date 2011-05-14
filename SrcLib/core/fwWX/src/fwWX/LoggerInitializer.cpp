@@ -23,15 +23,14 @@ public:
     virtual ~fwWXLog(){};
 
 protected:
-    virtual void DoLog(wxLogLevel level, const wxString& szString, time_t t);
+    virtual void DoLogRecord(wxLogLevel level, const wxString & msg, const wxLogRecordInfo & info);
 
 };
 
 //------------------------------------------------------------------------------
 
-void fwWXLog::DoLog(wxLogLevel level, const wxString& szString, time_t t)
+void fwWXLog::DoLogRecord(wxLogLevel level, const wxString& szString, const wxLogRecordInfo & info)
 {
-
     wxString logLevel;
 
     switch ( level )
@@ -75,17 +74,16 @@ void fwWXLog::DoLog(wxLogLevel level, const wxString& szString, time_t t)
     std::string msg = "[WX]: " + wx2std(timestamp +": "+ logLevel + szString);
     SLM_WARN(msg);
 
-
     switch ( level )
     {
         case wxLOG_FatalError:
-            wxLog::DoLog(level, szString, t);
+            wxLog::DoLogRecord(level, szString, info);
             break;
         case wxLOG_Error:
-            wxLog::DoLog(level, szString, t);
+            wxLog::DoLogRecord(level, szString, info);
             break;
         case wxLOG_Status:
-            wxLog::DoLog(level, szString, t);
+            wxLog::DoLogRecord(level, szString, info);
             break;
     }
 }
