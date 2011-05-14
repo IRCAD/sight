@@ -3,6 +3,8 @@
 
 #include <wx/slider.h>
 #include <wx/clrpicker.h>
+#include <wx/radiobox.h>
+#include <wx/checkbox.h>
 
 #include <fwTools/Failed.hpp>
 

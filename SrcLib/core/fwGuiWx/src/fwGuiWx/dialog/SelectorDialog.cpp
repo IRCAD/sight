@@ -4,12 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <wx/app.h>
 #include <wx/window.h>
 #include <wx/dialog.h>
 #include <wx/choice.h>
 #include <wx/arrstr.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/button.h>
 
 #include <boost/foreach.hpp>
 

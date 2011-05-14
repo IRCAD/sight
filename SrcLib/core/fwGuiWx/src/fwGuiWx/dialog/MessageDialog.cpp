@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <wx/msgdlg.h>
+
 #include <fwTools/ClassRegistrar.hpp>
 
 #include <fwWX/convert.hpp>

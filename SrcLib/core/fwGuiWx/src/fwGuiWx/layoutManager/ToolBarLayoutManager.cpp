@@ -4,7 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <wx/app.h>
 #include <wx/menu.h>
+#include <wx/image.h>
+#include <wx/log.h>
+#include <wx/frame.h>
 
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
