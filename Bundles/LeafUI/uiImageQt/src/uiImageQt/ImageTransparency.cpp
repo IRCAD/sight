@@ -41,6 +41,7 @@ ImageTransparency::ImageTransparency() throw()
 {
     addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
     addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
+    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +76,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     {
         m_valueCheckBox->setShortcut(QKeySequence(QString::fromStdString(m_shortcut)));
     }
-    hLayout->addWidget( m_valueCheckBox, 1, Qt::AlignVCenter );
+    hLayout->addWidget( m_valueCheckBox, 0, Qt::AlignVCenter );
 
     container->setLayout( hLayout );
 
@@ -167,7 +168,9 @@ void ImageTransparency::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
     if(imageMsg)
     {
-        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) || imageMsg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY ) )
+        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) ||
+             imageMsg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY )   ||
+             imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) )
         {
             this->updating();
         }
