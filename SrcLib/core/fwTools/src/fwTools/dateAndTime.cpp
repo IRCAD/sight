@@ -21,9 +21,7 @@ namespace fwTools
 
 //------------------------------------------------------------------------------
 
-boost::gregorian::date
-strToBoostDate
-( const std::string dateStr )
+::boost::gregorian::date strToBoostDate( const std::string dateStr )
 {
     if ( dateStr.size() < 8 )
     {
@@ -57,9 +55,7 @@ strToBoostDate
 
 //------------------------------------------------------------------------------
 
-boost::posix_time::time_duration
-strToBoostTime
-( const std::string timeStr )
+::boost::posix_time::time_duration strToBoostTime( const std::string timeStr )
 {
     using boost::posix_time::time_duration;
     using boost::posix_time::hours;
@@ -101,23 +97,18 @@ strToBoostTime
         }
 #endif
 
-
     }
 }
 
 //------------------------------------------------------------------------------
 
-boost::posix_time::ptime
-strToBoostDateAndTime
-( const std::string dateStr, const std::string timeStr)
+::boost::posix_time::ptime strToBoostDateAndTime( const std::string dateStr, const std::string timeStr)
 {
     return boost::posix_time::ptime(strToBoostDate(dateStr),strToBoostTime(timeStr));
 }
 
 //------------------------------------------------------------------------------
-std::string
-getDate
-( const boost::posix_time::ptime & dateAndTime )
+std::string getDate( const boost::posix_time::ptime & dateAndTime )
 {
     std::string dateAndTimeStr = boost::posix_time::to_iso_string(dateAndTime);
     return dateAndTimeStr.substr(0,8);;
@@ -125,9 +116,7 @@ getDate
 
 //------------------------------------------------------------------------------
 
-std::string
-getTime
-( const boost::posix_time::ptime & dateAndTime )
+std::string getTime( const boost::posix_time::ptime & dateAndTime )
 {
     std::string dateAndTimeStr = boost::posix_time::to_iso_string(dateAndTime);
     return dateAndTimeStr.substr(9,6);

@@ -14,23 +14,6 @@
 namespace fwTools
 {
 
-//template<class PTR>
-//std::string UUID::get(PTR *ptr)
-//{
-//  for (UUIDContainer::iterator i = m_uuids.begin(); i != m_uuids.end(); ++i)
-//  {
-//      if (!i->first.expired() && i->first.lock().get() == ptr)
-//      {
-//          return i->second;
-//      }
-//  }
-//
-//  CANNOT GENERATE AND STORE THE KEY !!! THROW AN EXCEPTION ????
-//}
-
-
-
-
 template<class T>
 std::string UUID::get(boost::shared_ptr<T> sptr )
 {
@@ -47,17 +30,12 @@ std::string UUID::get(boost::shared_ptr<T> sptr )
     return newUUID;
 }
 
-
-
-
 template<class T>
 std::string UUID::get(boost::weak_ptr<T> wptr)
 {
     assert(wptr.lock().get());
     return get( wptr.lock() );
 }
-
-
 
 template<class T>
 boost::shared_ptr<T> UUID::get( const std::string & uuid)
@@ -77,11 +55,8 @@ boost::shared_ptr<T> UUID::get( const std::string & uuid)
     }
     OSLM_TRACE( "UUID::get with uuid=" << uuid << " Object NOT found !!!");
 
-
     return boost::shared_ptr<T>();
 }
-
-
 
 template<class T>
 bool UUID::supervise(T *ptr)
@@ -109,10 +84,6 @@ bool UUID::supervise(boost::weak_ptr<T> wptr)
     assert(wptr.lock());
     return supervise(wptr.lock().get());
 }
-
-
-
-
 
 
 } // end namespace fwTools

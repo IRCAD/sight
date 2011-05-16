@@ -69,7 +69,6 @@ public:
             #pragma warning( disable : 4800 )
         #endif
 
-        //OSLM_INFO( "canHandle(const KEY &key) with key="<<stringizedKey() << "result="<< keyComparatorEquality( m_keyValue, key )  );
         return keyComparatorEquality( m_keyValue, key );
 
         #ifdef _WIN32
