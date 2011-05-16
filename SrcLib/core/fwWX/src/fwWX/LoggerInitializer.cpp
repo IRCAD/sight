@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <wx/log.h>
+#include <wx/version.h>
 
 #include <fwCore/base.hpp>
 
@@ -23,13 +24,21 @@ public:
     virtual ~fwWXLog(){};
 
 protected:
+#if wxCHECK_VERSION(2, 9, 1)
     virtual void DoLogRecord(wxLogLevel level, const wxString & msg, const wxLogRecordInfo & info);
+#else
+    virtual void DoLog(wxLogLevel level, const wxString& szString, time_t t);
+#endif
 
 };
 
 //------------------------------------------------------------------------------
 
+#if wxCHECK_VERSION(2, 9, 1)
 void fwWXLog::DoLogRecord(wxLogLevel level, const wxString& szString, const wxLogRecordInfo & info)
+#else
+void fwWXLog::DoLog(wxLogLevel level, const wxString& szString, time_t t)
+#endif
 {
     wxString logLevel;
 
@@ -76,6 +85,7 @@ void fwWXLog::DoLogRecord(wxLogLevel level, const wxString& szString, const wxLo
 
     switch ( level )
     {
+#if wxCHECK_VERSION(2, 9, 1)
         case wxLOG_FatalError:
             wxLog::DoLogRecord(level, szString, info);
             break;
@@ -85,6 +95,17 @@ void fwWXLog::DoLogRecord(wxLogLevel level, const wxString& szString, const wxLo
         case wxLOG_Status:
             wxLog::DoLogRecord(level, szString, info);
             break;
+#else
+        case wxLOG_FatalError:
+            wxLog::DoLog(level, szString, t);
+            break;
+        case wxLOG_Error:
+            wxLog::DoLog(level, szString, t);
+            break;
+        case wxLOG_Status:
+            wxLog::DoLog(level, szString, t);
+            break;
+#endif
     }
 }
 

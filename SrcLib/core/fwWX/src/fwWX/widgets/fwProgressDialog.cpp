@@ -84,8 +84,12 @@ fwProgressDialog::fwProgressDialog(const wxString& title,
                                    const wxString& message,
                                    int maximum,
                                    wxWindow *parent,
-                                   int style)
-                : wxDialog(GetParentForModalDialog(parent, style), wxID_ANY, title),
+                                   int style):
+#if wxCHECK_VERSION(2, 9, 1)
+                  wxDialog(GetParentForModalDialog(parent, style), wxID_ANY, title),
+#else
+                  wxDialog(GetParentForModalDialog(parent), wxID_ANY, title),
+#endif
                   m_skip(false),
                   m_delay(3),
                   m_hasAbortButton(false),
