@@ -46,7 +46,7 @@ std::string toStringWithoutAccent( const std::string & str )
 {
     std::string newStr = str;
 
-    std::string withAccent      ("�����������������������������������������������������");
+    std::string withAccent      ("ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ");
     std::string withoutAccent   ("aaaaaaaaaaaaooooooooooooeeeeeeeecciiiiiiiiuuuuuuuuynn");
 
 
