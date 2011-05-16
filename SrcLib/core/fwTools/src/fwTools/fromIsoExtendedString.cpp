@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <sstream>
-//#include <boost/date_time/time_facet.hpp>
 
 #include "fwTools/fromIsoExtendedString.hpp"
 
@@ -46,7 +45,7 @@ std::string toStringWithoutAccent( const std::string & str )
 {
     std::string newStr = str;
 
-    std::string withAccent      ("Ã€ÃÃ‚ÃƒÃ„Ã…Ã Ã¡Ã¢Ã£Ã¤Ã¥Ã’Ã“Ã”Ã•Ã–Ã˜Ã²Ã³Ã´ÃµÃ¶Ã¸ÃˆÃ‰ÃŠÃ‹Ã¨Ã©ÃªÃ«Ã‡Ã§ÃŒÃÃÃÃ¬Ã­Ã®Ã¯Ã™ÃšÃ›ÃœÃ¹ÃºÃ»Ã¼Ã¿Ã‘Ã±");
+    std::string withAccent      ("ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ");
     std::string withoutAccent   ("aaaaaaaaaaaaooooooooooooeeeeeeeecciiiiiiiiuuuuuuuuynn");
 
 
