@@ -87,8 +87,7 @@ protected:
 
 protected slots :
 
-    void onMinTextChanged(QString strVal);
-    void onMaxTextChanged(QString strVal);
+    void onTextEditingFinished();
 
     void onWindowLevelWidgetChanged(double _min, double _max);
 
@@ -96,15 +95,16 @@ protected:
     int toWindowLevel(double _val);
     double fromWindowLevel(int _val);
 
-    void setWidgetWindowMinMax(int _imageMin, int _imageMax);
 
-    void updateWindowLevel(double _min, double _max);
 
     void onImageWindowLevelChanged(int _imageMin, int _imageMax);
     void notifyWindowLevel(int _imageMin, int _imageMax);
-    void updateWindowLevelText(int _imageMin, int _imageMax);
 
-    bool onTextChanged(QLineEdit *widget, QString &strVal, int &val);
+    void updateWidgetMinMax(int _imageMin, int _imageMax);
+    void updateImageWindowLevel(int _imageMin, int _imageMax);
+    void updateTextWindowLevel(int _imageMin, int _imageMax);
+
+    bool onTextChanged(QLineEdit *widget, int &val);
 
 private:
 

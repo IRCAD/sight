@@ -51,12 +51,13 @@ public slots:
 
 signals:
     void sliderRangeChanged ( double min, double max);
+    void sliderRangeEdited ( double min, double max);
 
 protected:
 
 
     void move(int delta);
-    void moved();
+    bool movedTo(double _min, double _max);
 
     virtual void paintEvent ( QPaintEvent * event );
     virtual void mouseMoveEvent ( QMouseEvent * event );

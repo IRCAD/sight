@@ -73,7 +73,7 @@ public:
     int setHandleSize(int size)
     {
         //handle size should be odd
-        m_width = size;// + ((size+1)%2);
+        m_width = size + ((size+1)%2);
         return m_width;
     }
 
@@ -90,6 +90,7 @@ public:
         p = std::min(p, xPosMax());
 
         m_pos = p;
+
         return p;
     }
 
@@ -108,22 +109,31 @@ public:
         return drawingArea().width() - halfWidth() - 1;
     }
 
-    double floatingPos()
+    double toFloatingPos(int p)
     {
-        int p = pos();
         int posMin = xPosMin();
         int posMax = xPosMax();
         return ( (double) (p - posMin) / (double)(posMax - posMin) );
     }
 
+    int fromFloatingPos(double p)
+    {
+        assert( 0. <= p && p <= 1.);
+        int posMin = xPosMin();
+        int extend = (xPosMax()) - posMin;
+
+        return posMin + (int) (p*extend);
+    }
+
+
+    double floatingPos()
+    {
+        return toFloatingPos( pos() );
+    }
+
     void setFloatingPos(double pos)
     {
-        assert( 0. <= pos && pos <= 1.);
-        int posMin = xPosMin();
-        int extend = xPosMax() - posMin;
-
-        int p = posMin + (int) (pos*extend + 0.5);
-        setPos(p);
+        setPos(fromFloatingPos(pos));
     }
 
 protected:
@@ -220,7 +230,6 @@ protected:
 QRangeSlider::QRangeSlider(QWidget *parent)
     : QWidget(parent)
 {
-
     m_minValue = 0.;
     m_maxValue = 1.;
     m_allowMinGreaterThanMax = false;
@@ -238,9 +247,7 @@ QRangeSlider::QRangeSlider(QWidget *parent)
     m_maxHandle = maxh;
     m_window    = new Window(this);
 
-    m_emitRangeChanged = false;
     this->setPos(m_minValue, m_maxValue);
-    m_emitRangeChanged = true;
     this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 }
 
@@ -268,7 +275,7 @@ void QRangeSlider::setPos(double _min, double _max)
     max = maxHandle->pos();
     window->setPos(min, max);
 
-    this->moved();
+    this->movedTo(_min, _max);
     this->update();
 }
 
@@ -280,60 +287,41 @@ void QRangeSlider::move(int delta)
 
     assert(minHandle && maxHandle && window);
 
-    int low, high, dir;
+    int low, high, width, dir;
     dir = ((minHandle->pos() < maxHandle->pos()) ? 1 : -1);
     bool movingRight =  (delta < 0) ;
+
+    low  = minHandle->pos();
+    high = maxHandle->pos();
+    width = high - low;
 
     if(  (movingRight  && dir < 0)
         || (!movingRight && dir > 0 ) )
     {
-        low  = minHandle->pos();
         low  = minHandle->setPos(low-delta);
-        high = low + window->width();
+        high = low + width;
         maxHandle->setPos(high);
     }
     else
     {
-        high = maxHandle->pos();
         high = maxHandle->setPos(high-delta);
-        low  = high - window->width();
+        low  = high - width;
         minHandle->setPos(low);
     }
 
     window->setPos(low, high);
 }
 
-void QRangeSlider::moved()
+bool QRangeSlider::movedTo(double _min, double _max)
 {
-    if (m_emitRangeChanged)
+    bool changed = m_minValue != _min || m_maxValue != _max ;
+    if (changed)
     {
-        Handle *minHandle = Handle::safeCast(m_minHandle);
-        Handle *maxHandle = Handle::safeCast(m_maxHandle);
-        Window *window    = Window::safeCast(m_window);
-
-        assert(minHandle && maxHandle);
-
-        double minValue = minHandle->floatingPos();
-        double maxValue = maxHandle->floatingPos();
-
-        if(!m_allowMinGreaterThanMax && (minValue + m_minimumMinMaxDelta) > maxValue)
-        {
-            double center = (m_minValue + m_maxValue)/2.;
-            minValue = std::max(center - m_minimumMinMaxDelta,0.);
-            maxValue = std::min(center + m_minimumMinMaxDelta,1.);
-            minHandle->setFloatingPos(minValue);
-            maxHandle->setFloatingPos(maxValue);
-            window->setPos(minHandle->pos(), maxHandle->pos());
-        }
-
-
-        if (m_minValue != minValue || maxValue != m_maxValue)
-        {
-            m_minValue = minValue;
-            m_maxValue = maxValue;
-            emit sliderRangeChanged ( m_minValue, m_maxValue );
-        }
+        m_minValue = _min;
+        m_maxValue = _max;
+        emit sliderRangeChanged( m_minValue, m_maxValue );
     }
+    return changed;
 }
 
 void QRangeSlider::paintEvent ( QPaintEvent * /*event*/ )
@@ -369,10 +357,17 @@ void QRangeSlider::mouseMoveEvent ( QMouseEvent * event )
         Window *window    = Window::safeCast(m_window);
         Handle *currentHandle;
 
+
         if( (currentHandle = Handle::safeCast(m_current)) )
         {
+            int oldPos = currentHandle->pos();
             int newPos = event->pos().x();
             currentHandle->setPos(newPos);
+
+            if(!m_allowMinGreaterThanMax && minHandle->floatingPos() + m_minimumMinMaxDelta >= maxHandle->floatingPos() )
+            {
+                currentHandle->setPos(oldPos);
+            }
             window->setPos(minHandle->pos(), maxHandle->pos());
         }
         else if( Window::safeCast(m_current) )
@@ -381,10 +376,16 @@ void QRangeSlider::mouseMoveEvent ( QMouseEvent * event )
 
             minHandle->setPos(m_pressMin);
             maxHandle->setPos(m_pressMax);
+            window->setPos(minHandle->pos(), maxHandle->pos());
             this->move(delta.x());
-
         }
-        this->moved();
+
+        double min = minHandle->floatingPos();
+        double max = maxHandle->floatingPos();
+        if( this->movedTo(min, max) )
+        {
+            emit sliderRangeEdited ( min, max );
+        }
         this->update();
     }
 }
@@ -431,19 +432,15 @@ void QRangeSlider::wheelEvent ( QWheelEvent * event )
 
     if(event->orientation() == Qt::Vertical)
     {
-        low  -= delta;
-        high += delta;
-        //if(!m_allowMinGreaterThanMax)
-        //{
-            //int diff = high - low;
-            //if (diff < m_minimumMinMaxDelta)
-            //{
-                //low  += delta;
-                //high -= delta;
-            //}
-        //}
-        low = minHandle->setPos(low);
-        high = maxHandle->setPos(high);
+        if(!m_allowMinGreaterThanMax)
+        {
+            int diff = (high - low);
+            int minDiff = minHandle->fromFloatingPos(m_minimumMinMaxDelta);
+            delta = std::max(delta,  - (diff - minDiff)/2);
+        }
+
+        low  = minHandle->setPos(low -  delta);
+        high = maxHandle->setPos(high + delta);
         window->setPos(low, high);
     }
     else
@@ -451,16 +448,18 @@ void QRangeSlider::wheelEvent ( QWheelEvent * event )
         this->move(delta);
     }
 
-
-    this->moved();
+    double min = minHandle->floatingPos();
+    double max = maxHandle->floatingPos();
+    if( this->movedTo(min, max) )
+    {
+        emit sliderRangeEdited ( min, max );
+    }
     this->update();
 }
 
 void QRangeSlider::resizeEvent ( QResizeEvent * event )
 {
-    m_emitRangeChanged = false;
     this->setPos(m_minValue, m_maxValue);
-    m_emitRangeChanged = true;
 }
 
 } // namespace widget

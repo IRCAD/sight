@@ -6,7 +6,7 @@
 
 #include <QApplication>
 #include <QWidget>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QLineEdit>
 #include <QSlider>
 #include <QIntValidator>
@@ -68,43 +68,29 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     QWidget * const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    QGridLayout* layout = new QGridLayout();
 
     m_valueTextMin = new QLineEdit( container );
     QIntValidator *minValidator = new QIntValidator(m_valueTextMin);
     m_valueTextMin->setValidator(minValidator);
-    //m_valueTextMin->setText(QString("%1").arg(min->value()));
 
     m_valueTextMax = new QLineEdit( container );
     QIntValidator*  maxValidator = new QIntValidator(m_valueTextMax);
     m_valueTextMax->setValidator(maxValidator);
-    //m_valueTextMax->setText(QString("%1").arg(max->value()));
 
     m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider(container);
 
-    //m_sliceSelectorMin = new QSlider( Qt::Horizontal, container );
-    //m_sliceSelectorMin->setSliderPosition(min->value());
-    //m_sliceSelectorMin->setMinimumWidth(40);
-
-    //m_sliceSelectorMax = new QSlider( Qt::Horizontal, container );
-    //m_sliceSelectorMax->setSliderPosition(max->value());
-    //m_sliceSelectorMax->setMinimumWidth(40);
-
-    layout->addWidget( m_valueTextMin );
-    //layout->addWidget( m_sliceSelectorMin );
-    //layout->addWidget( m_sliceSelectorMax );
-    layout->addWidget( m_rangeSlider, 1 );
-    layout->addWidget( m_valueTextMax );
+    layout->addWidget( m_rangeSlider,  0, 0, 1, -1 );
+    layout->addWidget( m_valueTextMin, 1, 0 );
+    layout->addWidget( m_valueTextMax, 1, 1 );
 
 
     container->setLayout( layout );
     this->updating();
 
-    //onImageWindowLevelChanged(*min, *max);
-
-    QObject::connect(m_valueTextMin, SIGNAL(textEdited( QString )), this, SLOT(onMinTextChanged( QString )));
-    QObject::connect(m_valueTextMax, SIGNAL(textEdited( QString )), this, SLOT(onMaxTextChanged( QString )));
-    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeChanged( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::connect(m_valueTextMin, SIGNAL(editingFinished( )), this, SLOT(onTextEditingFinished( )));
+    QObject::connect(m_valueTextMax, SIGNAL(editingFinished( )), this, SLOT(onTextEditingFinished( )));
+    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
 }
 
 //------------------------------------------------------------------------------
@@ -112,9 +98,9 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
 
-    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeChanged( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
-    QObject::disconnect(m_valueTextMin, SIGNAL(textEdited( QString )), this, SLOT(onMinTextChanged( QString )));
-    QObject::disconnect(m_valueTextMax, SIGNAL(textEdited( QString )), this, SLOT(onMaxTextChanged( QString )));
+    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
+    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
 
     this->getContainer()->clean();
     this->destroy();
@@ -208,14 +194,6 @@ void WindowLevel::updating() throw(::fwTools::Failed)
             maxValue = std::numeric_limits<int>::max();
         }
 
-        //m_sliceSelectorMin->setMinimum(minValue);
-        //m_sliceSelectorMin->setMaximum(maxValue);
-
-        //m_sliceSelectorMax->setMinimum(minValue);
-        //m_sliceSelectorMax->setMaximum(maxValue);
-
-        //m_imageDynamicMin   = minValue;
-        //m_imageDynamicWidth = maxValue-minValue;
     }
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
@@ -240,10 +218,6 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-    //m_sliceSelectorMin->setSliderPosition(min->value());
-    //m_sliceSelectorMax->setSliderPosition(max->value());
-    //m_valueTextMin->setText(QString("%1").arg(min->value()));
-    //m_valueTextMax->setText(QString("%1").arg(max->value()));
     onImageWindowLevelChanged(*min, *max);
 
 }
@@ -257,23 +231,8 @@ void WindowLevel::info( std::ostream & _sstream )
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::setWidgetWindowMinMax(int _imageMin, int _imageMax)
+void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 {
-    //double dynMin = m_imageDynamicMin;
-    //double dynMax = dynMin + m_imageDynamicWidth;
-
-    //if (_imageMin < dynMin)
-    //{
-        //dynMin = _imageMin;
-    //}
-    //if (dynMax < _imageMax)
-    //{
-        //dynMax = _imageMax;
-    //}
-
-    //m_imageDynamicMin   = dynMin;
-    //m_imageDynamicWidth = dynMax - dynMin;
-
     double rangeMin = fromWindowLevel(_imageMin);
     double rangeMax = fromWindowLevel(_imageMax);
 
@@ -297,7 +256,8 @@ double WindowLevel::fromWindowLevel(int _val)
     m_imageDynamicMin = valMin;
     m_imageDynamicWidth = valMax - valMin;
 
-    return (_val - m_imageDynamicMin) / m_imageDynamicWidth;
+    double res = (_val - m_imageDynamicMin) / m_imageDynamicWidth;
+    return res;
 }
 
 //------------------------------------------------------------------------------
@@ -307,7 +267,7 @@ int WindowLevel::toWindowLevel(double _val)
 }
 
 //------------------------------------------------------------------------------
-void  WindowLevel::updateWindowLevel(double _min, double _max)
+void  WindowLevel::updateImageWindowLevel(int _imageMin, int _imageMax)
 {
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -315,41 +275,29 @@ void  WindowLevel::updateWindowLevel(double _min, double _max)
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
 
-    double wmin = *min;
-    double wmax = *max;
-
-    if(! ::boost::math::isnan(_min) )
-    {
-        //SLM_ERROR("MIN NOT NAN");
-        wmin = toWindowLevel(_min);
-        min->value() = wmin;
-    }
-    if(! ::boost::math::isnan(_max) )
-    {
-        //SLM_ERROR("MAX NOT NAN");
-        wmax = toWindowLevel(_max);
-        max->value() = wmax;
-    }
+    min->value() = _imageMin;
+    max->value() = _imageMax;
 
     ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
-    setWidgetWindowMinMax( wmin, wmax );
-    notifyWindowLevel(wmin, wmax);
+    notifyWindowLevel(_imageMin, _imageMax);
 }
 
 
 //------------------------------------------------------------------------------
 void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 {
-    updateWindowLevel(_min, _max);
-    updateWindowLevelText( toWindowLevel(_min), toWindowLevel(_max) );
+    int imageMin = toWindowLevel(_min);
+    int imageMax = toWindowLevel(_max);
+    updateImageWindowLevel(imageMin, imageMax);
+    updateTextWindowLevel (imageMin, imageMax);
 }
 
 //------------------------------------------------------------------------------
 void  WindowLevel::onImageWindowLevelChanged(int _imageMin, int _imageMax)
 {
-    setWidgetWindowMinMax( _imageMin, _imageMax );
-    updateWindowLevelText( _imageMin, _imageMax );
+    updateWidgetMinMax( _imageMin, _imageMax );
+    updateTextWindowLevel( _imageMin, _imageMax );
 }
 
 //------------------------------------------------------------------------------
@@ -365,7 +313,7 @@ void  WindowLevel::notifyWindowLevel(int _imageMin, int _imageMax)
  }
 
 //------------------------------------------------------------------------------
-void  WindowLevel::updateWindowLevelText(int _imageMin, int _imageMax)
+void  WindowLevel::updateTextWindowLevel(int _imageMin, int _imageMax)
 {
     m_valueTextMin->setText(QString("%1").arg(_imageMin));
     m_valueTextMax->setText(QString("%1").arg(_imageMax));
@@ -373,35 +321,23 @@ void  WindowLevel::updateWindowLevelText(int _imageMin, int _imageMax)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onMinTextChanged(QString strVal)
+void  WindowLevel::onTextEditingFinished()
 {
-    OSLM_ERROR("MIN CHANGED "<< strVal.toStdString());
-    int min;
-    if(this->onTextChanged(m_valueTextMin, strVal, min))
+    int min, max;
+    if(this->onTextChanged(m_valueTextMin, min) && this->onTextChanged(m_valueTextMax, max))
     {
-        OSLM_ERROR("MIN CHANGED "<< min << " " << fromWindowLevel(min)<<" ");
-        updateWindowLevel(fromWindowLevel(min), std::numeric_limits<double>::quiet_NaN());
+        updateWidgetMinMax( min, max );
+        updateImageWindowLevel(min, max);
     }
 }
 
-//------------------------------------------------------------------------------
-
-void WindowLevel::onMaxTextChanged(QString strVal)
-{
-    int max;
-    if(this->onTextChanged(m_valueTextMax, strVal, max))
-    {
-        updateWindowLevel(std::numeric_limits<double>::quiet_NaN(), fromWindowLevel(max));
-    }
-}
 
 //------------------------------------------------------------------------------
 
-bool WindowLevel::onTextChanged(QLineEdit *widget, QString &strVal, int &val)
+bool WindowLevel::onTextChanged(QLineEdit *widget, int &val)
 {
     bool ok=false;
-    // due to the validator on QLineEdit xe are sure to have an integer.
-    val = strVal.toInt(&ok);
+    val = widget->text().toInt(&ok);
 
     QPalette palette;
     if (!ok)
@@ -420,11 +356,9 @@ bool WindowLevel::onTextChanged(QLineEdit *widget, QString &strVal, int &val)
 
 void WindowLevel::setEnabled(bool enable)
 {
-    //m_sliceSelectorMin->setEnabled(enable);
     m_valueTextMin->setEnabled(enable);
     m_rangeSlider->setEnabled(enable);
 
-    //m_sliceSelectorMax->setEnabled(enable);
     m_valueTextMax->setEnabled(enable);
 }
 
