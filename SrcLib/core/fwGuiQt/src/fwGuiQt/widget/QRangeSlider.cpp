@@ -1,7 +1,4 @@
 #include <cassert>
-#include <QStyleOptionSlider>
-#include <QGridLayout>
-#include <QPointer>
 #include <QPainter>
 #include <QApplication>
 #include <QMouseEvent>
@@ -333,7 +330,7 @@ void QRangeSlider::paintEvent ( QPaintEvent * /*event*/ )
     QRect rect = this->rect();
     rect.setLeft(rect.left() + m_handleSize/2);
     rect.setRight(rect.right() - m_handleSize/2);
-    painter.fillRect(rect, Qt::white);
+    painter.fillRect(rect, QApplication::palette().base());
 
     painter.setBrush(Qt::cyan);
     m_window->draw(painter, enabled);
