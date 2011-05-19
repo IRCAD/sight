@@ -3,6 +3,7 @@
 <Material name="video" NumberOfVertexShaders="1" NumberOfFragmentShaders="1">
 
   <Shader scope="Vertex" name="videoVert" location="Inline" language="GLSL" entry="main" args="-DVERTEX_PROGRAM">
+    <![CDATA[
         varying vec2  texCoord;
         void main(void)
         {
@@ -12,9 +13,11 @@
           // normal transformation
           gl_Position = ftransform();
         }
+    ]]>
   </Shader>
 
   <Shader scope="Fragment" name="videoFrag" location="Inline" language="GLSL" entry="main" args="-DFRAGMENT_PROGRAM">
+    <![CDATA[
         uniform sampler2D texture;   // input image
         varying vec2  texCoord;
         void main(void)
@@ -25,6 +28,7 @@
           gl_FragColor.r = tmp_color.b;
           gl_FragColor.b = tmp_color.r;
         }
+    ]]>
   </Shader>
 
 </Material>
