@@ -397,13 +397,13 @@ void QRangeSlider::mousePressEvent ( QMouseEvent * event )
     m_pressMin  = minHandle->pos();
     m_pressMax = maxHandle->pos();
 
-    if(m_minHandle->pick(m_pressPos))
-    {
-        m_current = m_minHandle;
-    }
-    else if(m_maxHandle->pick(m_pressPos))
+    if(m_maxHandle->pick(m_pressPos))
     {
         m_current = m_maxHandle;
+    }
+    else if(m_minHandle->pick(m_pressPos))
+    {
+        m_current = m_minHandle;
     }
     else if(m_window->pick(m_pressPos))
     {
