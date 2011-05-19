@@ -16,8 +16,14 @@
 
 #include "uiImageQt/config.hpp"
 
+class QAction;
+class QComboBox;
+class QLabel;
 class QLineEdit;
+class QMenu;
 class QSlider;
+class QToolButton;
+class QSignalMapper;
 
 fwCorePredeclare( (fwGuiQt)(widget)(QRangeSlider) );
 
@@ -88,14 +94,18 @@ protected:
 protected slots :
 
     void onTextEditingFinished();
+    void onToggleTF(bool squareTF);
 
     void onWindowLevelWidgetChanged(double _min, double _max);
+    void onDynamicRangeSelectionChanged(QAction *action);
 
 protected:
+    typedef std::pair< ::fwData::Integer::ValueType, ::fwData::Integer::ValueType > WindowLevelMinMaxType;
+
     int toWindowLevel(double _val);
     double fromWindowLevel(int _val);
 
-
+    WindowLevelMinMaxType getImageWindowMinMax();
 
     void onImageWindowLevelChanged(int _imageMin, int _imageMax);
     void notifyWindowLevel(int _imageMin, int _imageMax);
@@ -104,19 +114,22 @@ protected:
     void updateImageWindowLevel(int _imageMin, int _imageMax);
     void updateTextWindowLevel(int _imageMin, int _imageMax);
 
-    bool onTextChanged(QLineEdit *widget, int &val);
+    void setImageDynamicRange(double min, double max);
+    bool getWidgetIntValue(QLineEdit *widget, int &val);
 
 private:
 
-    //QPointer< QSlider > m_sliceSelectorMin;
-    //QPointer< QSlider > m_sliceSelectorMax;
     QPointer< QLineEdit >   m_valueTextMin;
     QPointer< QLineEdit >   m_valueTextMax;
+    QPointer< QToolButton > m_toggleTFButton;
+    QPointer< QToolButton >   m_dynamicRangeSelection;
+    QPointer< QMenu >         m_dynamicRangeMenu;
+    QPointer< QSignalMapper > m_dynamicRangeSignalMapper;
 
     QPointer< ::fwGuiQt::widget::QRangeSlider > m_rangeSlider;
 
-    double m_imageDynamicMin;
-    double m_imageDynamicWidth;
+    double m_imageDynamicRangeMin;
+    double m_imageDynamicRangeWidth;
 
 
 };

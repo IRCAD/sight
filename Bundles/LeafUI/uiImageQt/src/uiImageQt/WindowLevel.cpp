@@ -5,16 +5,22 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <QApplication>
-#include <QWidget>
+#include <QComboBox>
 #include <QGridLayout>
-#include <QLineEdit>
-#include <QSlider>
 #include <QIntValidator>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QSignalMapper>
+#include <QToolButton>
+#include <QWidget>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
+
+#include <fwComEd/ImageMsg.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -42,8 +48,8 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Im
 
 WindowLevel::WindowLevel() throw()
 {
-    m_imageDynamicMin   = -200.;
-    m_imageDynamicWidth =  500.;
+    m_imageDynamicRangeMin   = -1000.;
+    m_imageDynamicRangeWidth =  4000.;
 
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
     addNewHandledEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
@@ -80,17 +86,52 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 
     m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider(container);
 
+    m_toggleTFButton = new QToolButton(container);
+    QIcon *ico = new QIcon();
+    QString squareIcon("Bundles/uiImageQt_" UIIMAGEQT_VER "/square.png");
+    QString rampIcon("Bundles/uiImageQt_" UIIMAGEQT_VER "/ramp.png");
+    ico->addPixmap(QPixmap(squareIcon), QIcon::Normal,QIcon::On);
+    ico->addPixmap(QPixmap(rampIcon), QIcon::Normal,QIcon::Off);
+    m_toggleTFButton->setIcon(*ico);
+    m_toggleTFButton->setCheckable(true);
+
+
+    m_dynamicRangeSelection = new QToolButton(container);
+    m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
+
+    m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
+    QAction *action1 = m_dynamicRangeMenu->addAction( "-1000; 3000" );
+    QAction *action2 = m_dynamicRangeMenu->addAction( "-200; 300" );
+    QAction *action3 = m_dynamicRangeMenu->addAction( "Fit W/L" );
+    //QAction *action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
+    //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
+    m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
+
+    action1->setData(QVariant(1));
+    action2->setData(QVariant(2));
+    action3->setData(QVariant(3));
+    //action4->setData(QVariant(4));
+    //action5->setData(QVariant(5));
+
+
     layout->addWidget( m_rangeSlider,  0, 0, 1, -1 );
     layout->addWidget( m_valueTextMin, 1, 0 );
-    layout->addWidget( m_valueTextMax, 1, 1 );
+    layout->addWidget( m_toggleTFButton, 1, 1 );
+    layout->addWidget( m_dynamicRangeSelection, 1, 2 );
+    layout->addWidget( m_valueTextMax, 1, 3 );
 
 
     container->setLayout( layout );
     this->updating();
 
-    QObject::connect(m_valueTextMin, SIGNAL(editingFinished( )), this, SLOT(onTextEditingFinished( )));
-    QObject::connect(m_valueTextMax, SIGNAL(editingFinished( )), this, SLOT(onTextEditingFinished( )));
-    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
+    m_dynamicRangeSignalMapper = new QSignalMapper(this);
+
+    QObject::connect(m_valueTextMin, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
+    QObject::connect(m_valueTextMax, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
+    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )) , this, SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::connect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
+    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
+
 }
 
 //------------------------------------------------------------------------------
@@ -98,10 +139,23 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
 
+    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
+    QObject::disconnect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
     QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
     QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
     QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
 
+
+    m_valueTextMin->deleteLater();
+    m_valueTextMax->deleteLater();
+    m_toggleTFButton->deleteLater();
+    m_dynamicRangeSelection->deleteLater();
+    m_dynamicRangeSelection->deleteLater();
+    m_dynamicRangeMenu->deleteLater();
+    m_rangeSlider->deleteLater();
+    m_dynamicRangeSignalMapper->deleteLater();
+
+    QPointer< ::fwGuiQt::widget::QRangeSlider > m_rangeSlider;
     this->getContainer()->clean();
     this->destroy();
 }
@@ -230,6 +284,18 @@ void WindowLevel::info( std::ostream & _sstream )
 }
 
 //------------------------------------------------------------------------------
+WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+
+    WindowLevelMinMaxType res(*min, *max);
+    return res;
+}
+
+
+//------------------------------------------------------------------------------
 
 void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 {
@@ -238,7 +304,7 @@ void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 
 
     //XXX : Hack because of f4s' TF management
-    m_rangeSlider->setMinimumMinMaxDelta(10./m_imageDynamicWidth);
+    m_rangeSlider->setMinimumMinMaxDelta(10./m_imageDynamicRangeWidth);
 
     m_rangeSlider->setPos(rangeMin, rangeMax);
 }
@@ -246,24 +312,23 @@ void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 //------------------------------------------------------------------------------
 double WindowLevel::fromWindowLevel(int _val)
 {
-    double valMin = m_imageDynamicMin;
-    double valMax = valMin + m_imageDynamicWidth;
+    double valMin = m_imageDynamicRangeMin;
+    double valMax = valMin + m_imageDynamicRangeWidth;
 
     double val = _val;
     valMin = std::min(val, valMin);
     valMax = std::max(val, valMax);
 
-    m_imageDynamicMin = valMin;
-    m_imageDynamicWidth = valMax - valMin;
+    setImageDynamicRange(valMin, valMax);
 
-    double res = (_val - m_imageDynamicMin) / m_imageDynamicWidth;
+    double res = (_val - m_imageDynamicRangeMin) / m_imageDynamicRangeWidth;
     return res;
 }
 
 //------------------------------------------------------------------------------
 int WindowLevel::toWindowLevel(double _val)
 {
-    return m_imageDynamicMin + m_imageDynamicWidth * _val;
+    return m_imageDynamicRangeMin + m_imageDynamicRangeWidth * _val;
 }
 
 //------------------------------------------------------------------------------
@@ -294,6 +359,35 @@ void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 }
 
 //------------------------------------------------------------------------------
+void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
+{
+    WindowLevelMinMaxType wl = getImageWindowMinMax();
+    int index = action->data().toInt();
+
+    switch (index)
+    {
+        case 0:
+            break;
+        case 1: // -1000; 3000
+            this->setImageDynamicRange(-1000, 3000);
+            break;
+        case 2: // -200; 300
+            this->setImageDynamicRange(-200, 300);
+            break;
+        case 3: // Fit Window/Level
+            this->setImageDynamicRange(wl.first, wl.second);
+            break;
+        case 4: // Fit Image Range
+            break;
+        case 5: // Custom
+            break;
+        default:
+            SLM_ASSERT("Unknown range selector index", 0);
+    }
+    this->updateWidgetMinMax(wl.first, wl.second);
+}
+
+//------------------------------------------------------------------------------
 void  WindowLevel::onImageWindowLevelChanged(int _imageMin, int _imageMax)
 {
     updateWidgetMinMax( _imageMin, _imageMax );
@@ -315,26 +409,48 @@ void  WindowLevel::notifyWindowLevel(int _imageMin, int _imageMax)
 //------------------------------------------------------------------------------
 void  WindowLevel::updateTextWindowLevel(int _imageMin, int _imageMax)
 {
+
     m_valueTextMin->setText(QString("%1").arg(_imageMin));
     m_valueTextMax->setText(QString("%1").arg(_imageMax));
 }
 
 //------------------------------------------------------------------------------
+void  WindowLevel::onToggleTF(bool squareTF)
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
+    if( squareTF )
+    {
+        ::fwComEd::fieldHelper::MedicalImageHelpers::setSquareTF(image);
+    }
+    else
+    {
+        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image);
+    }
+
+    WindowLevelMinMaxType wl = getImageWindowMinMax();
+    this->updateWidgetMinMax(wl.first, wl.second);
+
+    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
+
+    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    imageMsg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
+    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+}
+
+//------------------------------------------------------------------------------
 void  WindowLevel::onTextEditingFinished()
 {
     int min, max;
-    if(this->onTextChanged(m_valueTextMin, min) && this->onTextChanged(m_valueTextMax, max))
+    if(this->getWidgetIntValue(m_valueTextMin, min) && this->getWidgetIntValue(m_valueTextMax, max))
     {
         updateWidgetMinMax( min, max );
         updateImageWindowLevel(min, max);
     }
 }
 
-
 //------------------------------------------------------------------------------
-
-bool WindowLevel::onTextChanged(QLineEdit *widget, int &val)
+bool WindowLevel::getWidgetIntValue(QLineEdit *widget, int &val)
 {
     bool ok=false;
     val = widget->text().toInt(&ok);
@@ -363,6 +479,15 @@ void WindowLevel::setEnabled(bool enable)
 }
 
 //------------------------------------------------------------------------------
+void WindowLevel::setImageDynamicRange(double min, double max)
+{
+    m_imageDynamicRangeMin = min;
+    m_imageDynamicRangeWidth = max - min;
+
+    m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));
+}
+
+
 
 }
 
