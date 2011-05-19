@@ -258,12 +258,24 @@ public :
 
 
     /**
-     * @brief Return a buffer of image type's size, containing 'value' casted data
+     * @brief Return a buffer of image type's size, containing 'value' casted to image data type
      * @param[in] pImage : reference image
      * @param[in] value : value to map
      */
     template < typename T >
     static SPTR( ::fwData::Image::BufferType ) getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value);
+
+
+    /**
+     * @brief Return minimum and maximum values contained in image. If image
+     * min or max value is out of MINMAXTYPE range, they are clamped to
+     * MINMAXTYPE capacity
+     * @param[in] _img : image
+     * @param[out] _min : minimum value
+     * @param[out] _max : maximum value
+     */
+    template < typename MINMAXTYPE >
+    static void getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE &_min, MINMAXTYPE &_max);
 
 protected:
 
@@ -274,6 +286,8 @@ protected:
 
 };
 
+
+//------------------------------------------------------------------------------
 
 template < typename VALUE >
 class PixelCastAndSetFunctor
@@ -308,6 +322,8 @@ public:
 
 };
 
+
+//------------------------------------------------------------------------------
 
 template < typename VALUE, typename INT_INDEX >
 class CastAndSetFunctor
@@ -344,12 +360,16 @@ public:
 
 
 
+//------------------------------------------------------------------------------
+
 template < typename T >
 void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T &value)
 {
     setPixel(image, point->getCoord(), value);
 }
 
+
+//------------------------------------------------------------------------------
 
 template < typename T , typename INT_INDEX>
 void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value)
@@ -363,6 +383,8 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point
 
 
 
+//------------------------------------------------------------------------------
+
 template < typename T >
 SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value)
 {
@@ -374,6 +396,8 @@ SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSp
 }
 
 
+
+//------------------------------------------------------------------------------
 
 template < typename INT_INDEX >
 class CastAndCheckFunctor
@@ -407,6 +431,8 @@ public:
 
 };
 
+//------------------------------------------------------------------------------
+
 template < typename INT_INDEX>
 bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &point)
 {
@@ -415,6 +441,78 @@ bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &po
 
     return isBufNull(buf, imageTypeSize);
 }
+
+//------------------------------------------------------------------------------
+
+template < typename T >
+class MinMaxFunctor
+{
+public:
+    class Param
+    {
+        public:
+
+        Param(::fwData::Image::sptr _img, T &_min, T &_max):
+            image(_img), min(_min), max(_max)
+        {};
+
+        ::fwData::Image::sptr image;
+        T &min;
+        T &max;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        unsigned int len = size[0]*size[1]*size[2];
+
+        T &min = param.min;
+        T &max = param.max;
+
+        typedef std::numeric_limits<IMAGE> ImgLimits;
+        IMAGE imin = ImgLimits::max();
+        IMAGE imax = (ImgLimits::is_integer) ? ImgLimits::min() : - ImgLimits::max();
+
+        IMAGE * bufEnd = buffer + len;
+        IMAGE currentVoxel;
+
+        for (IMAGE * voxel = buffer; voxel < bufEnd; ++voxel )
+        {
+            currentVoxel = *voxel;
+
+            if ( currentVoxel < imin )
+            {
+                imin = currentVoxel;
+            }
+            else if (currentVoxel > imax)
+            {
+                imax = currentVoxel;
+            }
+        }
+
+        typedef std::numeric_limits<T> TLimits;
+        T minT =  (TLimits::is_integer) ? TLimits::min() : - TLimits::max();
+        T maxT = TLimits::max();
+
+        min = ( imin < minT ) ? minT : static_cast< T > (imin) ;
+        max = ( imax > maxT ) ? maxT : static_cast< T > (imax) ;
+
+    }
+
+};
+
+
+template < typename MINMAXTYPE >
+void MedicalImageHelpers::getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE &_min, MINMAXTYPE &_max)
+{
+    typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
+
+    ::fwTools::DynamicType type = _img->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , MinMaxFunctor<MINMAXTYPE> >::invoke( type, param );
+}
+
 
 
 } // fieldHelper
