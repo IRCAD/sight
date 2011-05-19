@@ -114,7 +114,7 @@ protected:
     void updateImageWindowLevel(int _imageMin, int _imageMax);
     void updateTextWindowLevel(int _imageMin, int _imageMax);
 
-    void setImageDynamicRange(double min, double max);
+    void setWidgetDynamicRange(double min, double max);
     bool getWidgetIntValue(QLineEdit *widget, int &val);
 
 private:
@@ -128,8 +128,8 @@ private:
 
     QPointer< ::fwGuiQt::widget::QRangeSlider > m_rangeSlider;
 
-    double m_imageDynamicRangeMin;
-    double m_imageDynamicRangeWidth;
+    double m_widgetDynamicRangeMin;
+    double m_widgetDynamicRangeWidth;
 
 
 };

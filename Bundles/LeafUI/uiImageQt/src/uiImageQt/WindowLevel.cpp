@@ -48,8 +48,8 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Im
 
 WindowLevel::WindowLevel() throw()
 {
-    m_imageDynamicRangeMin   = -1000.;
-    m_imageDynamicRangeWidth =  4000.;
+    m_widgetDynamicRangeMin   = -1000.;
+    m_widgetDynamicRangeWidth =  4000.;
 
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
     addNewHandledEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
@@ -103,14 +103,14 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     QAction *action1 = m_dynamicRangeMenu->addAction( "-1000; 3000" );
     QAction *action2 = m_dynamicRangeMenu->addAction( "-200; 300" );
     QAction *action3 = m_dynamicRangeMenu->addAction( "Fit W/L" );
-    //QAction *action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
+    QAction *action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
     //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
     m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
 
     action1->setData(QVariant(1));
     action2->setData(QVariant(2));
     action3->setData(QVariant(3));
-    //action4->setData(QVariant(4));
+    action4->setData(QVariant(4));
     //action5->setData(QVariant(5));
 
 
@@ -304,7 +304,7 @@ void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 
 
     //XXX : Hack because of f4s' TF management
-    m_rangeSlider->setMinimumMinMaxDelta(10./m_imageDynamicRangeWidth);
+    m_rangeSlider->setMinimumMinMaxDelta(10./m_widgetDynamicRangeWidth);
 
     m_rangeSlider->setPos(rangeMin, rangeMax);
 }
@@ -312,23 +312,23 @@ void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 //------------------------------------------------------------------------------
 double WindowLevel::fromWindowLevel(int _val)
 {
-    double valMin = m_imageDynamicRangeMin;
-    double valMax = valMin + m_imageDynamicRangeWidth;
+    double valMin = m_widgetDynamicRangeMin;
+    double valMax = valMin + m_widgetDynamicRangeWidth;
 
     double val = _val;
     valMin = std::min(val, valMin);
     valMax = std::max(val, valMax);
 
-    setImageDynamicRange(valMin, valMax);
+    setWidgetDynamicRange(valMin, valMax);
 
-    double res = (_val - m_imageDynamicRangeMin) / m_imageDynamicRangeWidth;
+    double res = (_val - m_widgetDynamicRangeMin) / m_widgetDynamicRangeWidth;
     return res;
 }
 
 //------------------------------------------------------------------------------
 int WindowLevel::toWindowLevel(double _val)
 {
-    return m_imageDynamicRangeMin + m_imageDynamicRangeWidth * _val;
+    return m_widgetDynamicRangeMin + m_widgetDynamicRangeWidth * _val;
 }
 
 //------------------------------------------------------------------------------
@@ -361,29 +361,38 @@ void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 //------------------------------------------------------------------------------
 void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 {
-    WindowLevelMinMaxType wl = getImageWindowMinMax();
+    WindowLevelMinMaxType wl    = getImageWindowMinMax();
+    int min = static_cast <int> (m_widgetDynamicRangeMin);
+    int max = static_cast <int> (m_widgetDynamicRangeWidth) + min;
     int index = action->data().toInt();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     switch (index)
     {
         case 0:
             break;
         case 1: // -1000; 3000
-            this->setImageDynamicRange(-1000, 3000);
+            min = -1000;
+            max =  3000;
             break;
         case 2: // -200; 300
-            this->setImageDynamicRange(-200, 300);
+            min = -100;
+            max =  300;
             break;
         case 3: // Fit Window/Level
-            this->setImageDynamicRange(wl.first, wl.second);
+            min = wl.first;
+            max = wl.second;
             break;
         case 4: // Fit Image Range
+            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
             break;
-        case 5: // Custom
+        case 5: // Custom : TODO
             break;
         default:
             SLM_ASSERT("Unknown range selector index", 0);
     }
+
+    this->setWidgetDynamicRange(min, max);
     this->updateWidgetMinMax(wl.first, wl.second);
 }
 
@@ -479,10 +488,10 @@ void WindowLevel::setEnabled(bool enable)
 }
 
 //------------------------------------------------------------------------------
-void WindowLevel::setImageDynamicRange(double min, double max)
+void WindowLevel::setWidgetDynamicRange(double min, double max)
 {
-    m_imageDynamicRangeMin = min;
-    m_imageDynamicRangeWidth = max - min;
+    m_widgetDynamicRangeMin = min;
+    m_widgetDynamicRangeWidth = max - min;
 
     m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));
 }
