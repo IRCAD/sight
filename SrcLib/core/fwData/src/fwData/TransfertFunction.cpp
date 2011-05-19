@@ -25,6 +25,7 @@ namespace fwData
 
 const Object::FieldID TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS = "ID_TRANSFERTFUNCTIONPOINTS";
 const std::string TransfertFunction::defaultTransfertFunctionName = "CT-GreyLevel";
+const std::string TransfertFunction::squareTransfertFunctionName = "CT-Square";
 //------------------------------------------------------------------------------
 
 TransfertFunction::TransfertFunction ()

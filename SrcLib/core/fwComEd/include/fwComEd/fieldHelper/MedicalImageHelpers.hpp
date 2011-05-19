@@ -89,10 +89,18 @@ public :
     FWCOMED_API static void updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF);
 
     /**
-     * @brief       Update transfer function min/max from window min/max fields.
+     * @brief       Update current transfer function min/max from image window min/max fields.
      * @param[in]   _pImg   image which contains the fields.
      */
     FWCOMED_API static void updateTFFromMinMax( ::fwData::Image::sptr _pImg );
+
+
+    /**
+     * @brief       Update specified transfer function min/max from image window min/max fields.
+     * @param[in]   _pImg   image which contains the fields.
+     * @param[in]   _pTf    Transfert function to update
+     */
+    FWCOMED_API static void updateTFFromMinMax( ::fwData::Image::sptr _pImg, ::fwData::TransfertFunction::sptr _pTf );
 
     /**
      * @brief       Check if the image has a landmark field.
@@ -140,6 +148,15 @@ public :
      * @param[in]   _pImg image which contains the transfer function field.
      */
     FWCOMED_API static void setBWTF( ::fwData::Image::sptr _pImg );
+
+    /**
+     * @brief       Set square transfer function (Black & White).
+     *
+     * If the square transfer function doesn't exist, it is created.
+     *
+     * @param[in]   _pImg image which contains the transfer function field.
+     */
+    FWCOMED_API static void setSquareTF( ::fwData::Image::sptr _pImg );
 
     /**
      * @brief       Check if the image has a comment field.
