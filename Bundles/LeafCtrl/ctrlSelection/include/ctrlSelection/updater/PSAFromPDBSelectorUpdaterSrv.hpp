@@ -79,7 +79,7 @@ private:
             ::fwData::Study::sptr & study,
             ::fwData::Acquisition::sptr & acquisition );
 
-    typedef ::boost::tuple< std::string, std::string, std::string, std::string, std::string, ActionType > PSAManagedEvent;
+    typedef ::boost::tuple< std::string, std::string, std::string, std::string, std::string, std::string, ActionType > PSAManagedEvent;
     typedef std::vector < PSAManagedEvent > PSAManagedEvents;
 
     /// List of the psa managed event

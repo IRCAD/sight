@@ -1,0 +1,145 @@
+<serviceList>
+
+    <service uid="GENERIC_UID_mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+        <gui>
+            <layout type="::fwGui::CardinalLayoutManager">
+                <view align="center" caption="Patient selector" />
+                <view align="right" caption="Patient information" minWidth="400" />
+                <view align="bottom" caption="Visu 2D" minHeight="400" />
+            </layout>
+            <toolBar />
+        </gui>
+        <registry>
+            <parent wid="WID_PARENT" />
+            <toolBar sid="GENERIC_UID_toolBar" start="yes" />
+            <view sid="GENERIC_UID_selector" start="no" />
+            <view sid="GENERIC_UID_infoEditor" start="no" />
+            <view sid="GENERIC_UID_multiView_negato1" start="yes" />
+        </registry>
+    </service>
+
+    <!-- NEGATO VIEW -->
+    <service uid="GENERIC_UID_multiView_negato1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+        <gui>
+            <layout type="::fwGui::LineLayoutManager">
+                <orientation value="vertical" />
+                <view proportion="1" />
+                <view proportion="0" minHeight="30" />
+            </layout>
+        </gui>
+        <registry>
+            <view sid="GENERIC_UID_negato1" start="no" />
+            <view sid="GENERIC_UID_multiView_negato1_bottom" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="GENERIC_UID_multiView_negato1_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+        <gui>
+            <layout type="::fwGui::LineLayoutManager">
+                <orientation value="horizontal" />
+                <view proportion="1" />
+            </layout>
+        </gui>
+        <registry>
+            <view sid="GENERIC_UID_slider_negato1" start="no" />
+        </registry>
+    </service>
+
+    <service uid="GENERIC_UID_toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+        <gui>
+            <layout>
+                <menuItem name="Import patient" icon="Bundles/VRRender_0-9/icons/ImportPatient.png" />
+                <menuItem name="Export selected patient" icon="Bundles/VRRender_0-9/icons/ExportSeletedPatient.png" />
+                <menuItem name="Clone selected image" icon="Bundles/VRRender_0-9/icons/CloneImage.png" />
+                <separator />
+                <menuItem name="2D MPR view" icon="Bundles/VRRender_0-9/icons/icon-2D.png" />
+                <menuItem name="3D MPR view" icon="Bundles/VRRender_0-9/icons/icon-3D.png" />
+                <menuItem name="Volumic view" icon="Bundles/VRRender_0-9/icons/icon-VR.png" />
+                <spacer />
+                <menu name="Patient Data Base" />
+                <separator />
+                <menu name="Help" />
+            </layout>
+        </gui>
+        <registry>
+            <menuItem sid="GENERIC_UID_action_importPatient" start="no" />
+            <menuItem sid="GENERIC_UID_action_exportSelPatient" start="no" />
+            <menuItem sid="GENERIC_UID_action_CloneImage" start="no" />
+            <menuItem sid="GENERIC_UID_action_activity3" start="no" />
+            <menuItem sid="GENERIC_UID_action_activity4" start="no" />
+            <menuItem sid="GENERIC_UID_action_vr_activity" start="no" />
+            <menu sid="GENERIC_UID_menu" start="yes" />
+            <menu sid="GENERIC_UID_menu_help" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="GENERIC_UID_menu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+        <gui>
+            <layout>
+                <menuItem name="Import patient" />
+                <separator />
+                <menuItem name="Export all patients" />
+                <menuItem name="Export selected patient" />
+                <menuItem name="Export selected image" />
+                <separator />
+                <menuItem name="Erase all patients" />
+                <menuItem name="Erase selected image" shortcut="Delete" />
+                <separator />
+                <menuItem name="Clone selected image" />
+                <separator />
+                <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+            </layout>
+        </gui>
+        <registry>
+            <menuItem sid="GENERIC_UID_action_importPatient" start="no" />
+
+            <menuItem sid="GENERIC_UID_action_exportAllPatient" start="no" />
+            <menuItem sid="GENERIC_UID_action_exportSelPatient" start="no" />
+            <menuItem sid="GENERIC_UID_action_exportSelImage" start="no" />
+
+            <menuItem sid="GENERIC_UID_action_eraseAllPatients" start="no" />
+            <menuItem sid="GENERIC_UID_action_eraseSelImage" start="no" />
+
+            <menuItem sid="GENERIC_UID_action_CloneImage" start="no" />
+
+            <menuItem sid="GENERIC_UID_action_quit" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="GENERIC_UID_menu_help" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+        <gui>
+            <layout>
+                <menuItem name="About" specialAction="ABOUT" />
+                <menuItem name="Acknowledgments" />
+                <menuItem name="Help Contents" specialAction="HELP" />
+                <separator />
+                <menuItem name="VR-Render Website" />
+            </layout>
+        </gui>
+        <registry>
+            <menuItem sid="GENERIC_UID_action_about" start="yes" />
+            <menuItem sid="GENERIC_UID_action_acknowledgments" start="yes" />
+            <menuItem sid="GENERIC_UID_action_help" start="yes" />
+            <menuItem sid="GENERIC_UID_action_openBrowser" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="GENERIC_UID_action_about" type="::fwGui::IActionSrv" implementation="::uiGeneric::action::ShowAbout" autoComChannel="no">
+        <filename id="Bundles/VRRender_0-9/about/about.html" />
+    </service>
+
+    <service uid="GENERIC_UID_action_acknowledgments" type="::fwGui::IActionSrv" implementation="::uiGeneric::action::ShowAcknowledgments" autoComChannel="no">
+        <filename id="Bundles/VRRender_0-9/documentations/ack.html" />
+    </service>
+
+    <service uid="GENERIC_UID_action_help" type="::fwGui::IActionSrv" implementation="::uiGeneric::action::ShowHelpContents" autoComChannel="no">
+        <filename id="Bundles/VRRender_0-9/documentations/doc.qhc" />
+    </service>
+
+    <service uid="GENERIC_UID_action_openBrowser" type="::fwGui::IActionSrv" implementation="::uiGeneric::action::LaunchBrowserActionService" autoComChannel="no">
+        <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
+    </service>
+
+    <service uid="GENERIC_UID_action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+</serviceList>

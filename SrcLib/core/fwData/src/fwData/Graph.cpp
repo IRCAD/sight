@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <utility>
 #include <boost/foreach.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
@@ -46,14 +47,14 @@ bool Graph::addNode( Node::sptr node)
 
 //------------------------------------------------------------------------------
 
-bool Graph::removeNode( Node::sptr node)
+bool Graph::removeNode( Node::csptr node)
 {
     // test if connected edge to it
     if ( haveConnectedEdges(node) )
     {
         return false;
     }
-    return (m_nodes.erase(node) > 0 );
+    return (m_nodes.erase( Node::constCast(node) ) > 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +73,7 @@ const Graph::NodeContainer &Graph::getCRefNodes() const
 
 //------------------------------------------------------------------------------
 
-bool Graph::haveConnectedEdges(Node::sptr node ) const
+bool Graph::haveConnectedEdges(Node::csptr node ) const
 {
     for ( ConnectionContainer::const_iterator i=m_connections.begin() ; i !=  m_connections.end() ; ++i )
     {
@@ -87,9 +88,9 @@ bool Graph::haveConnectedEdges(Node::sptr node ) const
 //------------------------------------------------------------------------------
 
 Edge::sptr Graph::makeConnection(
-        Node::sptr nodeSource,
+        Node::csptr nodeSource,
         std::string nodeSourceOutputPortID,
-        Node::sptr nodeDestination,
+        Node::csptr nodeDestination,
         std::string nodeDestinationInputPortID,
         std::string EdgeNature )
 {
@@ -108,7 +109,7 @@ Edge::sptr Graph::makeConnection(
 
 //------------------------------------------------------------------------------
 
-bool Graph::addEdge(Edge::sptr edge, Node::sptr nodeSource, Node::sptr nodeDestination)
+bool Graph::addEdge(Edge::sptr edge, Node::csptr nodeSource, Node::csptr nodeDestination)
 {
     // edge not already recorded
     if (m_connections.find( edge ) !=  m_connections.end() )
@@ -116,12 +117,12 @@ bool Graph::addEdge(Edge::sptr edge, Node::sptr nodeSource, Node::sptr nodeDesti
         return false; // edge already stored
     }
     // node registred ?
-    if (m_nodes.find( nodeSource ) ==  m_nodes.end() )
+    if (m_nodes.find( Node::constCast(nodeSource) ) ==  m_nodes.end() )
     {
         return false; // node already stored
     }
     // node registred ?
-    if ( m_nodes.find( nodeDestination ) ==  m_nodes.end() )
+    if ( m_nodes.find( Node::constCast(nodeDestination) ) ==  m_nodes.end() )
     {
         return false; // node already stored
     }
@@ -147,7 +148,7 @@ bool Graph::addEdge(Edge::sptr edge, Node::sptr nodeSource, Node::sptr nodeDesti
         return false; // incompatible type
     }
 
-    m_connections[ edge ] = std::make_pair(nodeSource,nodeDestination);
+    m_connections[ edge ] = std::make_pair(  Node::constCast(nodeSource), Node::constCast(nodeDestination) );
 
     return true;
 
@@ -199,23 +200,23 @@ Node::sptr Graph::getNode( Edge::sptr edge, bool upStream )
 
 //------------------------------------------------------------------------------
 
-std::vector< Edge::sptr > Graph::getInputEdges( Node::sptr node )
+std::vector< Edge::sptr > Graph::getInputEdges( Node::csptr node )
 {
     return getEdges( node, UP_STREAM );
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< Edge::sptr > Graph::getOutputEdges( Node::sptr node )
+std::vector< Edge::sptr > Graph::getOutputEdges( Node::csptr node )
 {
     return getEdges( node, DOWN_STREAM );
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< Edge::sptr > Graph::getEdges( Node::sptr node, bool upStream, std::string nature , std::string portID)
+std::vector< Edge::sptr > Graph::getEdges( Node::csptr node, bool upStream, std::string nature , std::string portID)
 {
-    OSLM_ASSERT("Node "<<node->getID() <<" not found in graph", m_nodes.find(node) != m_nodes.end() );
+    OSLM_ASSERT("Node "<<node->getID() <<" not found in graph", m_nodes.find( Node::constCast(node) ) != m_nodes.end() );
     OSLM_ASSERT("Port "<< portID <<" not found in graph", portID.empty() || node->findPort(portID,upStream) ); // portID if specified must be on node
 
     std::vector< Edge::sptr > result;
@@ -245,7 +246,7 @@ std::vector< Edge::sptr > Graph::getEdges( Node::sptr node, bool upStream, std::
 
 std::vector< ::fwData::Node::sptr >
 Graph::getNodes(
-        ::fwData::Node::sptr node,
+        ::fwData::Node::csptr node,
         bool upStream,
         std::string nature,
         std::string portID )
@@ -303,6 +304,43 @@ void Graph::shallowCopy( Graph::csptr _source )
     ::fwData::Object::shallowCopyOfChildren(_source );
     m_nodes = _source->m_nodes;
     m_connections = _source->m_connections;
+}
+
+//------------------------------------------------------------------------------
+
+void Graph::deepCopy( Graph::csptr _source )
+{
+    ::fwData::Object::deepCopyOfChildren(_source );
+
+    std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
+    typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;
+
+    m_nodes.clear();
+    BOOST_FOREACH(::fwData::Node::sptr node, _source->m_nodes)
+    {
+        ::fwData::Node::NewSptr newNode;
+        newNode->deepCopy( Node::constCast(node) );
+        bool addOK =this->addNode(newNode);
+        OSLM_ASSERT("Node "<<newNode->getID() <<" can't be deepCopy ", addOK );
+        correspondenceBetweenNodes.insert(std::make_pair(node, newNode));
+    }
+
+    m_connections.clear();
+    BOOST_FOREACH(ConnectionContainerElt connection, _source->m_connections)
+    {
+        // Edge deep copy .
+        ::fwData::Edge::NewSptr newEdge;
+        newEdge->deepCopy( connection.first );
+        ::fwData::Node::sptr oldNode1 = (connection.second).first;
+        ::fwData::Node::sptr oldNode2 = (connection.second).second;
+        if ((correspondenceBetweenNodes.find(Node::constCast(oldNode1))!= correspondenceBetweenNodes.end())
+             && (correspondenceBetweenNodes.find(Node::constCast(oldNode2)) != correspondenceBetweenNodes.end()))
+        {
+            // Add new Edge
+            this->addEdge(newEdge, correspondenceBetweenNodes[oldNode1], correspondenceBetweenNodes[oldNode2]);
+        }
+    }
+    correspondenceBetweenNodes.clear();
 }
 
 //------------------------------------------------------------------------------

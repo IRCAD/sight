@@ -28,6 +28,28 @@ Point::Point ()
 
 //------------------------------------------------------------------------------
 
+Point::sptr Point::PointFactory(float x, float y, float z)
+{
+    Point::sptr point = ::fwData::Point::New();
+    point->m_vCoord[0] = x;
+    point->m_vCoord[1] = y;
+    point->m_vCoord[2] = z;
+    return point;
+}
+
+//------------------------------------------------------------------------------
+
+Point::sptr Point::PointFactory( Point::sptr p )
+{
+    Point::sptr point = ::fwData::Point::New();
+    point->m_vCoord[0] = p->m_vCoord[0];
+    point->m_vCoord[1] = p->m_vCoord[1];
+    point->m_vCoord[2] = p->m_vCoord[2];
+    return point;
+}
+
+//------------------------------------------------------------------------------
+
 Point::~Point ()
 {
     SLM_TRACE_FUNC();

@@ -33,7 +33,7 @@ NodeXMLTranslator::~NodeXMLTranslator()
 xmlNodePtr NodeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     ::fwData::Node::sptr graphNode = ::fwData::Node::dynamicCast(obj);
-    assert(graphNode);
+    SLM_ASSERT("graphNode not instanced", graphNode);
 
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
@@ -74,13 +74,13 @@ void NodeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate, xml
     OSLM_DEBUG("NodeXMLTranslator::updateDataFromXML first XML child" << (const char *) nodeObject->name );
 
     ::fwData::Node::sptr graphNode = ::fwData::Node::dynamicCast(toUpdate);
-    assert(graphNode);
+    SLM_ASSERT("graphNode not instanced", graphNode);
 
     xmlNodePtr nullObj = XMLParser::findChildNamed(source,"nullObject");
     if ( ! nullObj)
     {
         ::fwData::Object::sptr subObject = ::fwData::Object::dynamicCast( XMLTH::fromXML(nodeObject) );
-        assert(subObject);
+        SLM_ASSERT("subObject not instanced", subObject);
         graphNode->setObject( subObject );
     }
 

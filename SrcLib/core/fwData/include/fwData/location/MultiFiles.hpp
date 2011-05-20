@@ -64,7 +64,7 @@ struct enableMultiFiles
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableMultiFiles(RW *rw) : m_rw(rw) {assert(m_rw);}
+    enableMultiFiles(RW *rw) : m_rw(rw) {SLM_ASSERT("m_rw not instanced", m_rw);}
 
     /// Set file system paths
     void setFiles( std::vector< ::boost::filesystem::path>  paths )

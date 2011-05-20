@@ -4,27 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwXML/XML/UniqueXMLAggregator.hpp"
-
 #include <iostream>
+#include <fwCore/base.hpp>
 
+#include "fwXML/XML/UniqueXMLAggregator.hpp"
 
 namespace fwXML
 {
 
 UniqueXMLAggregator::UniqueXMLAggregator()
-{
-}
+{}
+
+//------------------------------------------------------------------------------
 
 UniqueXMLAggregator::~UniqueXMLAggregator()
-{
-}
+{}
 
-
+//------------------------------------------------------------------------------
 
 void UniqueXMLAggregator::append( xmlNodePtr  node)
 {
-    assert(m_xmlDoc);
+    SLM_ASSERT("m_xmlDoc not instanced", m_xmlDoc);
 
     if ( xmlDocGetRootElement( m_xmlDoc) == NULL )
     {
@@ -35,22 +35,18 @@ void UniqueXMLAggregator::append( xmlNodePtr  node)
         xmlAddChild( xmlDocGetRootElement(m_xmlDoc), node );
     }
 
-    assert(m_xmlDoc);
+    SLM_ASSERT("m_xmlDoc not instanced", m_xmlDoc);
     assert( xmlDocGetRootElement( m_xmlDoc) );
 }
 
-
+//------------------------------------------------------------------------------
 
 void UniqueXMLAggregator::append( xmlNodePtr parent, xmlNodePtr  node)
 {
-
     xmlAddChild( parent, node );
 }
 
-
-
-
-
+//------------------------------------------------------------------------------
 
 }
 

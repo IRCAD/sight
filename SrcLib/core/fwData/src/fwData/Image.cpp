@@ -131,15 +131,7 @@ void Image::shallowCopy( Image::csptr _source )
     ::fwTools::Object::shallowCopyOfChildren( _source );
 
     // Assign
-    this->m_ui8Dimension        = _source->m_ui8Dimension;
-    this->m_dtPixelType         = _source->m_dtPixelType;
-    this->m_vSpacing            = _source->m_vSpacing;
-    this->m_vOrigin             = _source->m_vOrigin;
-    this->m_vSize               = _source->m_vSize;
-    this->m_fsFilename          = _source->m_fsFilename;
-    this->m_dWindowCenter       = _source->m_dWindowCenter;
-    this->m_dWindowWidth        = _source->m_dWindowWidth;
-    this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
+    getInformation(_source );
 
     this->m_bufferDelegate  = _source->m_bufferDelegate;
 }
@@ -151,15 +143,7 @@ void Image::deepCopy( Image::csptr _source )
     ::fwTools::Object::deepCopyOfChildren( _source );
 
     // Assign
-    this->m_ui8Dimension        = _source->m_ui8Dimension;
-    this->m_dtPixelType         = _source->m_dtPixelType;
-    this->m_vSpacing            = _source->m_vSpacing;
-    this->m_vOrigin             = _source->m_vOrigin;
-    this->m_vSize               = _source->m_vSize;
-    this->m_fsFilename          = _source->m_fsFilename;
-    this->m_dWindowCenter       = _source->m_dWindowCenter;
-    this->m_dWindowWidth        = _source->m_dWindowWidth;
-    this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
+    getInformation(_source );
 
     if(this->getPixelType() != ::fwTools::DynamicType() && _source->getBufferDelegate() )
     {
@@ -225,6 +209,68 @@ bool & Image::getRefManagesBuff()
     return this->m_bufferDelegate->getRefManagesBuff() ;
 }
 
+
+void Image::getInformation( Image::csptr _source )
+{
+    this->m_ui8Dimension        = _source->m_ui8Dimension;
+    this->m_dtPixelType         = _source->m_dtPixelType;
+    this->m_vSpacing            = _source->m_vSpacing;
+    this->m_vOrigin             = _source->m_vOrigin;
+    this->m_vSize               = _source->m_vSize;
+    this->m_fsFilename          = _source->m_fsFilename;
+    this->m_dWindowCenter       = _source->m_dWindowCenter;
+    this->m_dWindowWidth        = _source->m_dWindowWidth;
+    this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
+}
+
 //------------------------------------------------------------------------------
+
+void* Image::getPixelBuffer( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z )
+{
+    std::vector<boost::int32_t> size = this->getSize();
+    int offset = x + size[0]*y + z*size[0]*size[1];
+    return getPixelBuffer(offset);
+}
+
+//------------------------------------------------------------------------------
+
+void* Image::getPixelBuffer( VoxelIndexType index )
+{
+    unsigned char imagePixelSize = this->getPixelType().sizeOf();
+    BufferType * buf = static_cast < BufferType * > (this->getBuffer());
+    BufferIndexType bufIndex = index * imagePixelSize;
+    return buf + bufIndex;
+}
+
+//------------------------------------------------------------------------------
+::boost::shared_ptr< Image::BufferType > Image::getPixelBufferCopy( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z )
+{
+    std::vector<boost::int32_t> size = this->getSize();
+    int offset = x + size[0]*y + z*size[0]*size[1];
+    return getPixelBufferCopy(offset);
+}
+
+//------------------------------------------------------------------------------
+
+::boost::shared_ptr< Image::BufferType > Image::getPixelBufferCopy( VoxelIndexType index )
+{
+    unsigned char imagePixelSize = this->getPixelType().sizeOf();
+    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
+    ::boost::shared_ptr< BufferType > res(new BufferType[imagePixelSize]);
+    std::copy(buf, buf+imagePixelSize, res.get());
+    return res;
+}
+
+
+//------------------------------------------------------------------------------
+
+void Image::setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf)
+{
+    unsigned char imagePixelSize = this->getPixelType().sizeOf();
+    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
+
+    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
+}
+
 
 } // namespace fwData

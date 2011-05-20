@@ -16,6 +16,8 @@ namespace fwComEd
 //-----------------------------------------------------------------------------
 
 std::string AcquisitionMsg::ADD_RECONSTRUCTION          = "ADD_RECONSTRUCTION";
+std::string AcquisitionMsg::REMOVED_RECONSTRUCTIONS     = "REMOVED_RECONSTRUCTIONS";
+std::string AcquisitionMsg::SHOW_RECONSTRUCTIONS        = "ShowReconstructions";
 std::string AcquisitionMsg::VISIBILITY                  = "VISIBILITY";
 std::string AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SELECTED";
 

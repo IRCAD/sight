@@ -10,7 +10,6 @@
 #include <boost/function.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/Singleton.hpp>
 
 #include "fwServices/config.hpp"
 #include "fwServices/ObjectMsg.hpp"

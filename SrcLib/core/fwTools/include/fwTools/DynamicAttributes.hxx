@@ -36,7 +36,7 @@ public:
     virtual ~DynamicAttributes();
 
     virtual ConstAttrType getConstAttribute( AttrNameType attrName ) const;
-    virtual AttrRefType getAttribute( AttrNameType attrName );
+    virtual AttrType getAttribute( AttrNameType attrName );
     bool        hasAttribute( AttrNameType attrName );
 
     virtual fwToolsSetAttributeSignatureMacro() {};
@@ -45,7 +45,7 @@ public:
 
     virtual fwToolsRegisterAttributeSignatureMacro() {};
 protected:
-
+    virtual AttrRefType getAttributeRef( AttrNameType attrName );
     AttrMapType __FWTOOLS_ATTRIBUTE_MAP_NAME;
 
 
@@ -68,7 +68,15 @@ DynamicAttributes< CLASS >::~DynamicAttributes()
 //------------------------------------------------------------------------------
 
 template< class CLASS >
-typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::getAttribute( AttrNameType attrName )
+typename DynamicAttributes< CLASS >::AttrType DynamicAttributes< CLASS >::getAttribute( AttrNameType attrName )
+{
+    return this->getAttributeRef(attrName);
+}
+
+//------------------------------------------------------------------------------
+
+template< class CLASS >
+typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::getAttributeRef( AttrNameType attrName )
 {
     typename DynamicAttributes::AttrMapType::iterator iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.find(attrName);
     OSLM_FATAL_IF(

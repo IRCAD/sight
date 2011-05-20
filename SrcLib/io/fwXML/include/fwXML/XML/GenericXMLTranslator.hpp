@@ -66,7 +66,7 @@ public:
 
         // check obj is well realated to RealObject
         ::boost::shared_ptr<RealData> robj = boost::dynamic_pointer_cast<RealData >(obj);
-        assert( robj);
+        SLM_ASSERT("robj not instanced", robj);
 
         // create master node with className+id
         xmlNodePtr node = XMLTranslatorHelper::MasterNode( robj );
@@ -80,7 +80,7 @@ public:
         }
 
         xmlNodePtr boostXML =  ao_xml.getXMLNode();
-        assert(boostXML );
+        SLM_ASSERT("boostXML not instanced", boostXML);
         boostXML = boostXML->children;
         while ( boostXML!=NULL )
         {

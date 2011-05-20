@@ -153,11 +153,6 @@ protected:
     /// Get the slice index
     FWCOMED_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
-    /// Set the current slice index
-    FWCOMED_API ::fwData::Integer::sptr getCurrentSliceIndex();
-    /// Get the current slice index
-    FWCOMED_API void setCurrentSliceIndex(::fwData::Integer::sptr);
-
     /// Get the current transfert function
     FWCOMED_API ::fwData::TransfertFunction::sptr getCurrentTransfertFunction();
 

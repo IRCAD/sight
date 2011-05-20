@@ -117,13 +117,14 @@ public :
 
     /// Default transfert function name
     FWDATA_API static const std::string defaultTransfertFunctionName;
+    FWDATA_API static const std::string squareTransfertFunctionName;
 
     /**
      * @brief Create the default transfert function with two points
      *
      * Use the window and level of the image to calculate points values.
      *
-     * @param[in] _pImage image use to create transfert function
+     * @param[in] _pImage image used to create transfert function
      */
     FWDATA_API static TransfertFunction::sptr createDefaultTransfertFunction( ::fwData::Image::sptr _pImage );
 

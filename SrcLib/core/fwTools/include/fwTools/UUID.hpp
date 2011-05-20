@@ -39,18 +39,14 @@ public:
      */
     FWTOOLS_API static bool exist( const std::string & uuid);
 
-//  /// return an uuid to the given object : if no one perviously set then generate a new one
-//  template<class PTR>
-//  std::string get(PTR *ptr);
-
     /**
-     * @brief   Return an uuid to the given object : if no one perviously set then generate a new one (shared_ptr version)
+     * @brief   Return an uuid to the given object : if no one previously set then generate a new one (shared_ptr version)
      */
     template<class T>
     static std::string get(boost::shared_ptr<T> sptr);
 
     /**
-     * @brief   Return an uuid to the given object : if no one perviously set then generate a new one (weak_ptr version)
+     * @brief   Return an uuid to the given object : if no one previously set then generate a new one (weak_ptr version)
      */
     template<class T>
     static std::string get( boost::weak_ptr<T> wptr );
@@ -90,9 +86,6 @@ public:
 
 protected :
 
-
-
-
     /// Store association boost::weak_ptr adress <--> uuid as a string
     typedef std::string UUIDType;
     typedef std::map< boost::weak_ptr<void>, UUIDType  > UUIDContainer;
@@ -130,15 +123,11 @@ protected :
     /**
      * @brief   Helper to find a weak_ptr in the m_uuids
      * @param   wp weeak_ptr to be find
-     * @return  Iterator on the uuid associed to the weak_ptr
+     * @return  Iterator on the uuid associated to the weak_ptr
      */
     UUIDContainer::iterator find( boost::weak_ptr<void> wp );
 
 };
-
-
-
-
 
 }
 

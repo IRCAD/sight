@@ -158,18 +158,26 @@ void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwD
 
 void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Image::sptr _pImg )
 {
-    assert( _pImg->getFieldSize( ::fwComEd::Dictionary::m_windowMinId ) &&
-            _pImg->getFieldSize( ::fwComEd::Dictionary::m_windowMaxId ) &&
-            _pImg->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) );
-
-    ::fwData::Integer::sptr minField = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr maxField = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+    assert( _pImg->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) );
 
     ::fwData::Composite::sptr cTransfertFunction = _pImg->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
     ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
     ::fwData::TransfertFunction::sptr pTF = ::fwData::TransfertFunction::dynamicCast( cTransfertFunction->getRefMap()[sTransfertFunction->value()] );
 
-    updateTFFromMinMax(minField, maxField, pTF);
+    updateTFFromMinMax(_pImg, pTF);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Image::sptr _pImg, ::fwData::TransfertFunction::sptr _pTF )
+{
+    assert( _pImg->getFieldSize( ::fwComEd::Dictionary::m_windowMinId ) &&
+            _pImg->getFieldSize( ::fwComEd::Dictionary::m_windowMaxId ) );
+
+    ::fwData::Integer::sptr minField = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr maxField = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+
+    updateTFFromMinMax(minField, maxField, _pTF);
 }
 
 //------------------------------------------------------------------------------
@@ -184,13 +192,9 @@ void MedicalImageHelpers::setBWTF( ::fwData::Image::sptr _pImg )
     // If have not default Transfert Function (BW)
     if( cTransfertFunction->getRefMap().find( ::fwData::TransfertFunction::defaultTransfertFunctionName ) == cTransfertFunction->getRefMap().end() )
     {
-        ::fwData::Integer::sptr min = _pImg->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId );
-        ::fwData::Integer::sptr max = _pImg->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId );
-        int windowMin = min->value();
-        int windowMax = max->value();
-
         ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(_pImg);
-        tf->setMinMax(windowMin, windowMax);
+
+        updateTFFromMinMax(_pImg, tf);
 
         cTransfertFunction->getRefMap()[ ::fwData::TransfertFunction::defaultTransfertFunctionName ] = tf;
         sTransfertFunction->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
@@ -200,6 +204,65 @@ void MedicalImageHelpers::setBWTF( ::fwData::Image::sptr _pImg )
         sTransfertFunction->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
         updateMinMaxFromTF(_pImg);
     }
+}
+
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpers::setSquareTF( ::fwData::Image::sptr _pImg )
+{
+    checkMinMaxTF( _pImg );
+
+    ::fwData::Composite::sptr cTransfertFunction = _pImg->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+    ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
+
+    ::fwData::TransfertFunction::sptr pTF;
+    ::fwData::Composite::iterator iter = (*cTransfertFunction).find( ::fwData::TransfertFunction::squareTransfertFunctionName );
+
+    // If have not quare Transfert Function (BW)
+    if( iter == cTransfertFunction->getRefMap().end() )
+    {
+        pTF = ::fwData::TransfertFunction::New();
+        pTF->setCRefName(::fwData::TransfertFunction::squareTransfertFunctionName);
+
+        cTransfertFunction->getRefMap()[ ::fwData::TransfertFunction::squareTransfertFunctionName ] = pTF;
+        sTransfertFunction->value() = ::fwData::TransfertFunction::squareTransfertFunctionName;
+    }
+    else
+    {
+        pTF = ::fwData::TransfertFunction::dynamicCast(iter->second);
+        sTransfertFunction->value() = ::fwData::TransfertFunction::squareTransfertFunctionName;
+    }
+
+    pTF->clear();
+
+    int min = 0;
+    int max = 10000;
+    ::fwData::Color::sptr color = pTF->getColor( min-1 );
+    color->getRefRGBA()[0] = 0;
+    color->getRefRGBA()[1] = 0;
+    color->getRefRGBA()[2] = 0;
+    color->getRefRGBA()[3] = 1;
+
+    color = pTF->getColor( min );
+    color->getRefRGBA()[0] = 1;
+    color->getRefRGBA()[1] = 1;
+    color->getRefRGBA()[2] = 1;
+    color->getRefRGBA()[3] = 1;
+
+    color = pTF->getColor( max );
+    color->getRefRGBA()[0] = 1;
+    color->getRefRGBA()[1] = 1;
+    color->getRefRGBA()[2] = 1;
+    color->getRefRGBA()[3] = 1;
+
+    color = pTF->getColor( max+1 );
+    color->getRefRGBA()[0] = 0;
+    color->getRefRGBA()[1] = 0;
+    color->getRefRGBA()[2] = 0;
+    color->getRefRGBA()[3] = 1;
+
+    updateTFFromMinMax(_pImg, pTF);
 }
 
 //------------------------------------------------------------------------------
@@ -324,7 +387,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
 ::fwData::Point::sptr   MedicalImageHelpers::getImageSliceIndices( ::fwData::Image::sptr _pImg )
 {
-    assert( _pImg );
+    SLM_ASSERT("_pImg not instanced", _pImg);
 
     ::fwData::Point::NewSptr point;
 
@@ -614,6 +677,21 @@ void MedicalImageHelpers::mergeInformation(::fwData::Patient::sptr currentPatien
             }
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+bool MedicalImageHelpers::isBufNull(const ::fwData::Image::BufferType *buf, const unsigned int len)
+{
+    bool isNull;
+    const ::fwData::Image::BufferType *ucbuf = static_cast< const ::fwData::Image::BufferType *> (buf);
+    isNull = 0 == std::accumulate(
+            ucbuf,
+            ucbuf+len,
+            0,
+            bitwise_or< ::fwData::Image::BufferType >()
+            );
+    return isNull;
 }
 
 //------------------------------------------------------------------------------

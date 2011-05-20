@@ -7,11 +7,7 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <typeinfo>
 
-
-
-
 #include "fwXML/config.hpp"
-
 
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
 #include "fwXML/boostSerializer/Object.hpp"
@@ -26,7 +22,7 @@
 #include "fwXML/boostSerializer/PatientDB.hpp"
 #include "fwXML/boostSerializer/Acquisition.hpp"
 #include "fwXML/boostSerializer/Reconstruction.hpp"
-#include "fwXML/boostSerializer/DictionaryOrgan.hpp"
+//#include "fwXML/boostSerializer/DictionaryOrgan.hpp"
 #include "fwXML/boostSerializer/Dictionary.hpp"
 #include "fwXML/boostSerializer/TransformationMatrix3D.hpp"
 #include "fwXML/boostSerializer/Color.hpp"
@@ -60,6 +56,7 @@
 #include "fwXML/XML/PlaneXMLTranslator.hpp"
 #include "fwXML/XML/PlaneListXMLTranslator.hpp"
 #include "fwXML/XML/SingleFileXMLTranslator.hpp"
+#include "fwXML/XML/DictionaryOrganXMLTranslator.hpp"
 
 namespace fwXML
 {
@@ -81,7 +78,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::St
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Acquisition>            ,  ::fwData::Acquisition            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Reconstruction>         ,  ::fwData::Reconstruction         );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::DictionaryOrgan>        ,  ::fwData::DictionaryOrgan        );
+//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::DictionaryOrgan>        ,  ::fwData::DictionaryOrgan        );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Dictionary>             ,  ::fwData::Dictionary             );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransfertFunctionPoint> ,  ::fwData::TransfertFunctionPoint );
@@ -101,7 +98,8 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PointListXMLTranslator            
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionXMLTranslator                                  ,  ::fwData::Resection              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                                      ,  ::fwData::Plane                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator                                  ,  ::fwData::PlaneList              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                  , ::fwData::location::SingleFile  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                 ,  ::fwData::location::SingleFile   );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan        );
 }
 
 

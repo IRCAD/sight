@@ -6,6 +6,8 @@
 
 #include <string.h>
 
+#include <fwCore/base.hpp>
+
 #include "fwTools/TypeInfo.hpp"
 
 
@@ -17,31 +19,31 @@ TypeInfo::TypeInfo()
 {
     class Nil {};
     pInfo_ = &typeid(Nil);
-    assert(pInfo_);
+    SLM_ASSERT("pInfo_ not instanced", pInfo_);
 }
 
 TypeInfo::TypeInfo(const std::type_info& ti)
 : pInfo_(&ti)
 {
-    assert(pInfo_);
+    SLM_ASSERT("pInfo_ not instanced", pInfo_);
 }
 
 bool TypeInfo::before(const TypeInfo& rhs) const
 {
-    assert(pInfo_);
+    SLM_ASSERT("pInfo_ not instanced", pInfo_);
     // type_info::before return type is int in some VC libraries
     return pInfo_->before(*rhs.pInfo_) != 0;
 }
 
 const std::type_info& TypeInfo::type_info() const
 {
-    assert(pInfo_);
+    SLM_ASSERT("pInfo_ not instanced", pInfo_);
     return *pInfo_;
 }
 
 const char* TypeInfo::name() const
 {
-    assert(pInfo_);
+    SLM_ASSERT("pInfo_ not instanced", pInfo_);
     return pInfo_->name();
 }
 

@@ -129,7 +129,7 @@ void RendererService::stopping() throw(fwTools::Failed)
     m_interactorManager->uninstallInteractor();
     m_interactorManager.reset();
 
-    assert( m_render );
+    SLM_ASSERT("m_render not instanced", m_render);
     m_render->Delete();
     m_render = 0;
 

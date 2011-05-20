@@ -76,14 +76,14 @@ void FwXMLImageWriterService::configureWithIHM()
 
 void FwXMLImageWriterService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLImageWriterService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLImageWriterService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLImageWriterService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ std::string FwXMLImageWriterService::getPersistanceId()
 
 void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr _pPatient )
 {
-    SLM_TRACE("FwXMLImageWriterService::createImage");
+    SLM_TRACE_FUNC();
     ::fwXML::writer::FwXMLObjectWriter myWriter;
 
     myWriter.setObject(_pPatient);
@@ -127,23 +127,13 @@ void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFile
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                "Warning during loading.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -151,13 +141,13 @@ void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFile
 
 void FwXMLImageWriterService::updating() throw(fwTools::Failed)
 {
-    SLM_TRACE("FwXMLImageWriterService::updating()");
+    SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-        assert( associatedImage ) ;
+        SLM_ASSERT("associatedImage not instanced", associatedImage);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

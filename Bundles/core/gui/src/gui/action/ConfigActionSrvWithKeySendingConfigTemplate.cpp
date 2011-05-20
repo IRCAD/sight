@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -23,7 +29,8 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySend
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfigTemplate() throw() :
-        m_fieldAdaptors ( ::fwData::Composite::New() )
+        m_fieldAdaptors ( ::fwData::Composite::New() ),
+        m_viewConfigtitlePrefixKey ("")
 {
     m_closableConfig = true;
     addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
@@ -79,12 +86,16 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
     SLM_ASSERT( "Sorry, missing attribute title in <config> xml element.", configElement->hasAttribute("title") );
     m_viewConfigTitle = configElement->getExistingAttributeValue("title");
 
+    if( configElement->hasAttribute("titlePrefixKey") )
+    {
+        m_viewConfigtitlePrefixKey = configElement->getExistingAttributeValue("titlePrefixKey");
+    }
+
     m_closableConfig = configElement->getAttributeValue("closable") != "no";
 
     SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
 
     std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
-    //    SLM_ASSERT("::gui::action::ConfigActionSrv must have at least  one tag <replace>", !replaceTagsConfig.empty());
     std::string adaptor("");
     std::string pattern("");
     BOOST_FOREACH( ConfigurationType replaceItem, replaceTagsConfig)
@@ -117,8 +128,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
 
 void ConfigActionSrvWithKeySendingConfigTemplate::updating() throw(::fwTools::Failed)
 {
-    //this->::gui::action::ConfigActionSrv::updating();
-    sendConfig();
+    this->sendConfig();
 }
 
 //------------------------------------------------------------------------------
@@ -150,8 +160,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::Object
 //------------------------------------------------------------------------------
 
 void ConfigActionSrvWithKeySendingConfigTemplate::info( std::ostream &_sstream )
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -197,8 +206,20 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
 
+
+    std::stringstream ss;
+    if (    ! m_viewConfigtitlePrefixKey.empty() &&
+            composite->find( m_viewConfigtitlePrefixKey ) != composite->end() )
+    {
+        ::fwData::String::sptr prefix = ::fwData::String::dynamicCast( (*composite)[m_viewConfigtitlePrefixKey] );
+        ss << prefix->getValue() << " - " << m_viewConfigTitle;
+    }
+    else
+    {
+        ss << m_viewConfigTitle;
+    }
     ::fwData::String::NewSptr title;
-    title->value() = m_viewConfigTitle;
+    title->value() = ss.str();
 
     msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
     msg->setFieldSingleElement( fieldID , finalMap );

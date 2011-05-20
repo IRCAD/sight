@@ -29,7 +29,7 @@ xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
 
     ::fwData::Plane::sptr pPlane = ::fwData::Plane::dynamicCast(obj);
-    assert( pPlane );
+    SLM_ASSERT("pPlane not instanced", pPlane);
 
     // create master node with className+id
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
@@ -48,7 +48,7 @@ xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( toUpdate ); // object should exist
+    SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
     ::fwData::Plane::sptr pPlane = ::fwData::Plane::dynamicCast(toUpdate);
 
@@ -78,7 +78,7 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
                         valueObj = Serializer().ObjectsFromXml( pointsNode, true );
 
                         // Add point in the vector
-                        assert( valueObj );
+                        SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Point::dynamicCast( valueObj ) );
                         assert(p < pPlane->getRefPoints().size());
                         pPlane->getRefPoints()[p] = ::fwData::Point::dynamicCast( valueObj ) ;

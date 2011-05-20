@@ -18,17 +18,14 @@ namespace fwTools {
 
 
 ClassFactoryRegistry::ClassFactoryRegistry()
-{
-}
+{}
 
-
+//------------------------------------------------------------------------------
 
 ClassFactoryRegistry::~ClassFactoryRegistry()
-{
-}
+{}
 
-
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<ClassFactoryRegistry>
 ClassFactoryRegistry::getDefault()
@@ -37,28 +34,25 @@ ClassFactoryRegistry::getDefault()
     {
         m_instance = ::boost::shared_ptr<ClassFactoryRegistry>(new ClassFactoryRegistry);
     }
-    //OSLM_TRACE("ClassFactoryRegistry::getDefault() return addr " << m_instance);
     return  m_instance;
 }
 
-
+//------------------------------------------------------------------------------
 
 const ClassFactoryRegistry::ManagedElementContainer
 &ClassFactoryRegistry::managedElements()
 {
     assert( ClassFactoryRegistry::getDefault()->m_registry.size() == ClassFactoryRegistry::getDefault()->m_managedElements.size() );
     return ClassFactoryRegistry::getDefault()->m_managedElements;
-
 }
 
-
-
+//------------------------------------------------------------------------------
 
 void ClassFactoryRegistry::addFactory(::boost::shared_ptr<IClassFactory> factory)
 {
-    assert( factory );
+    SLM_ASSERT("factory not instanced", factory);
 
-    OSLM_TRACE("ClassFactoryRegistry::addFactory " 
+    OSLM_TRACE("ClassFactoryRegistry::addFactory "
             << ::fwCore::Demangler(factory).getRootedClassname() << " addr=" << factory << "exist=" <<
                 (ClassFactoryRegistry::getDefault()->m_registry.find(factory)!=ClassFactoryRegistry::getDefault()->m_registry.end()) );
     bool firstInsertion = ClassFactoryRegistry::getDefault()->m_registry.insert( factory ).second;
@@ -75,8 +69,7 @@ void ClassFactoryRegistry::addFactory(::boost::shared_ptr<IClassFactory> factory
     }
 }
 
-
-
+//------------------------------------------------------------------------------
 
 std::list< ::boost::shared_ptr< IClassFactory > > ClassFactoryRegistry::getFactories(const ClassFactoryRegistry::ManagedElement &me)
 {
@@ -103,21 +96,14 @@ std::list< ::boost::shared_ptr< IClassFactory > > ClassFactoryRegistry::getFacto
     return result;
 }
 
-
-
+//------------------------------------------------------------------------------
 
 ClassFactoryRegistry::FactoryContainer &ClassFactoryRegistry::getFactories()
 {
     return getDefault()->m_registry;
 }
 
-
-//const ClassFactoryRegistry::FactoryContainer &ClassFactoryRegistry::getFactories() const
-//{
-//  return getDefault()->m_registry;
-//}
-
-
+//------------------------------------------------------------------------------
 
 } // end namespace fwTools {
 

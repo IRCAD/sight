@@ -67,7 +67,7 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     m_dropDownButton = new QPushButton( QObject::tr(">"), container );
     m_dropDownButton->setToolTip( QObject::tr("Manage slice visibility"));
@@ -112,7 +112,6 @@ void SliceListEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     QObject::disconnect(m_oneSliceItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
     QObject::disconnect(m_threeSlicesItem, SIGNAL(triggered(bool)), this, SLOT(onChangeSliceMode(bool)));
-    QObject::disconnect(m_dropDownButton, SIGNAL(clicked()), this, SLOT(onDropDownButton()));
 
     this->getContainer()->clean();
     this->destroy();

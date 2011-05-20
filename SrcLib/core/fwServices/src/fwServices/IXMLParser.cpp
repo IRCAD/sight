@@ -37,7 +37,7 @@ void IXMLParser::updating() throw(::fwTools::Failed)
 //        if( (*configEltIter)->getName() == "object" )
 //        {
 //            fwTools::Object::sptr localObj = fwServices::New( (*configEltIter) ) ;
-//            assert( localObj ) ;
+//            SLM_ASSERT("localObj not instanced", localObj);
 //            assert( (*configEltIter)->hasAttribute("id") ) ;
 //            std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
 //            assert( !this->getObject()->getField(_id) );

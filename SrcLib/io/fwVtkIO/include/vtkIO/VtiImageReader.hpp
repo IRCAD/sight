@@ -10,6 +10,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <vtkActor.h>
+#include <vtkSmartPointer.h>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -36,24 +37,26 @@ class VtiImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData:
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (VtiImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
-                                                     (()),
-                                                     new  VtiImageReader
-                                                );
+    fwCoreClassDefinitionsWithFactoryMacro((VtiImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
+                                           (()),
+                                           new VtiImageReader
+                                          );
 
-
-
-    //! @brief Constructor.
-    VTKIO_API VtiImageReader();
-
-    //! @brief Destructor.
-    VTKIO_API ~VtiImageReader();
+    fwCoreAllowSharedFromThis();
 
     //! @brief Reading operator.
     VTKIO_API void read();
 
     /// @return ".vtk"
     VTKIO_API  std::string extension();
+
+protected:
+
+    //! @brief Constructor.
+    VTKIO_API VtiImageReader();
+
+    //! @brief Destructor.
+    VTKIO_API ~VtiImageReader();
 };
 
 } // namespace vtkIO

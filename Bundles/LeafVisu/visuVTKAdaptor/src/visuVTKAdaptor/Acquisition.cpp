@@ -38,8 +38,9 @@ Acquisition::Acquisition() throw()
 {
     m_clippingPlanes = "";
     m_autoResetCamera = true;
-    addNewHandledEvent("ShowReconstructions");
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
     addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ void Acquisition::configuring() throw(fwTools::Failed)
 void Acquisition::doStart() throw(fwTools::Failed)
 {
     this->doUpdate();
-    addNewHandledEvent("ShowReconstructions");
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------
@@ -98,7 +99,7 @@ void Acquisition::doUpdate() throw(fwTools::Failed)
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
         ( *iter, "::visuVTKAdaptor::Reconstruction" );
-        assert(service);
+        SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
         service->setRenderId( this->getRenderId() );
@@ -136,7 +137,7 @@ void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
     ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )
     {
-        if ( acquisitionMsg->hasEvent("ShowReconstructions") )
+        if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) )
         {
             ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
             bool showRec = true;
@@ -164,6 +165,10 @@ void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
         else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
         {
             this->doUpdate();
+        }
+        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS) )
+        {
+            this->doStop();
         }
     }
 }

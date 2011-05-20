@@ -104,7 +104,7 @@ void Resection::doUpdate() throw(fwTools::Failed)
             ::fwRenderVTK::IVtkAdaptorService::sptr service =
                     ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
             ( *iterRes, "::visuVTKAdaptor::Reconstruction" );
-            assert(service);
+            SLM_ASSERT("service not instanced", service);
 
             service->setTransformId( this->getTransformId() );
             service->setRenderId( this->getRenderId() );

@@ -40,7 +40,7 @@ public:
     FWDATA_API static const bool DOWN_STREAM;
 
     typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
-    typedef std::set< Node::sptr >                                         NodeContainer;
+    typedef std::set< Node::sptr >                                         NodeContainer;  //  Be carreful, if you change we use erase(it++)
 
     /// Constructor
     FWDATA_API Graph();
@@ -60,7 +60,7 @@ public:
      *
      * @return true on sucess
      */
-    FWDATA_API bool removeNode( Node::sptr _node);
+    FWDATA_API bool removeNode( Node::csptr _node);
 
     /**
      * @{
@@ -88,7 +88,7 @@ public:
      * @li edge is unique
      * @li port is compatible identifier & type
      */
-    FWDATA_API bool addEdge(Edge::sptr _edge, Node::sptr _nodeSource, Node::sptr _nodeDestination);
+    FWDATA_API bool addEdge(Edge::sptr _edge, Node::csptr _nodeSource, Node::csptr _nodeDestination);
 
     /**
      * @brief create an edge from given info and add edge in the graph
@@ -96,9 +96,9 @@ public:
      * @return new edge created if success else return null one
      */
     FWDATA_API
-    Edge::sptr makeConnection(  Node::sptr _nodeSource,
+    Edge::sptr makeConnection(  Node::csptr _nodeSource,
                                 std::string _nodeSourceOutputPortID,
-                                Node::sptr _nodeDestination,
+                                Node::csptr _nodeDestination,
                                 std::string _nodeDestinationInputPortID,
                                 std::string _EdgeNature
                              );
@@ -141,7 +141,7 @@ public:
      * @param[in] _node source node
      * @return a vector of edges where _node is source node
      */
-    FWDATA_API std::vector< Edge::sptr > getInputEdges(Node::sptr _node);
+    FWDATA_API std::vector< Edge::sptr > getInputEdges(Node::csptr _node);
 
     /**
      * @brief Get output edges
@@ -149,7 +149,7 @@ public:
      * @param[in] _node destination node
      * @return a vector of  edges where _node is destination node
      */
-    FWDATA_API std::vector< Edge::sptr > getOutputEdges(Node::sptr _node);
+    FWDATA_API std::vector< Edge::sptr > getOutputEdges(Node::csptr _node);
 
     /**
      * @brief Get a vector of edges
@@ -161,7 +161,7 @@ public:
      *
      * @return the vector of all edges with correct nature and portID where _node is a source/destination node
      */
-    FWDATA_API std::vector< Edge::sptr > getEdges(Node::sptr _node, bool _upStream, std::string _nature="",  std::string _portID="");
+    FWDATA_API std::vector< Edge::sptr > getEdges(Node::csptr _node, bool _upStream, std::string _nature="",  std::string _portID="");
 
     /**
      * @brief Get a vector of nodes
@@ -173,7 +173,7 @@ public:
      *
      * @return the vector of all nodes associated with _node
      */
-    FWDATA_API  std::vector< ::fwData::Node::sptr > getNodes( ::fwData::Node::sptr node, bool upStream, std::string nature="",  std::string portID="" );
+    FWDATA_API  std::vector< ::fwData::Node::sptr > getNodes( ::fwData::Node::csptr node, bool upStream, std::string nature="",  std::string portID="" );
 
     /**
      * @return Number of nodes
@@ -187,14 +187,17 @@ public:
 
     FWDATA_API void shallowCopy( Graph::csptr _source );
 
-protected :
+    FWDATA_API void deepCopy( Graph::csptr _source );
 
     /**
      * @brief Check if an edge is connected to the node
      *
      * @return true if at least one edge is connected to given node
      */
-    FWDATA_API bool haveConnectedEdges(Node::sptr _node ) const;
+    FWDATA_API bool haveConnectedEdges(Node::csptr _node ) const;
+
+protected :
+
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;

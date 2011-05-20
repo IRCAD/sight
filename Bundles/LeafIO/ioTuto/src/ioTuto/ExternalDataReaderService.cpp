@@ -101,7 +101,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
 
     std::string imageName;
     ::fwData::Composite::sptr dataComposite = this->getObject< ::fwData::Composite >();
-    assert( dataComposite ) ;
+    SLM_ASSERT("dataComposite not instanced", dataComposite);
     try
     {
         if (::boost::filesystem::exists(m_fsExternalDataPath))

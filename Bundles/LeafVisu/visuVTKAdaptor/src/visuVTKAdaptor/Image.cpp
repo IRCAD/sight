@@ -8,22 +8,24 @@
 
 #include <fwServices/IEditionService.hpp>
 
+#include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/TransfertFunction.hpp>
+
+#include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/String.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 #include <vtkIO/vtk.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
-#include <vtkLookupTable.h>
 #include <vtkImageMapToColors.h>
+#include <vtkLookupTable.h>
 
 #include "visuVTKAdaptor/Image.hpp"
 
@@ -51,9 +53,11 @@ Image::Image() throw()
 
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
     addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
     addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
+    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY      );
+    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY        );
     addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING         );
 }
 
@@ -126,7 +130,6 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
 
     if (imageIsValid)
     {
-
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
             this->destroyPipeline();
@@ -156,6 +159,11 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             imsg->getWindowMinMax( m_windowMin, m_windowMax);
             updateWindowing(image);
         }
+
+        if ( msg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) || msg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY ) )
+        {
+            this->updateImageOpacity();
+        }
     }
     else
     {
@@ -176,7 +184,7 @@ void Image::configuring() throw(fwTools::Failed)
     }
     if(m_configuration->hasAttribute("opacity") )
     {
-    this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
+        this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
     }
     if(m_configuration->hasAttribute("tfalpha") )
     {
@@ -237,9 +245,21 @@ void Image::updateImageOpacity()
     SLM_TRACE_FUNC();
     if (m_imagePortId>= 0)
     {
+        ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+        if(img->getFieldSize( "TRANSPARENCY" ) > 0)
+        {
+            ::fwData::Integer::sptr transparency = img->getFieldSingleElement< ::fwData::Integer >( "TRANSPARENCY" );
+            m_imageOpacity = (100 - (*transparency) ) / 100.0 ;
+        }
+        if(img->getFieldSize( "VISIBILITY" ) > 0)
+        {
+            ::fwData::Boolean::sptr visible = img->getFieldSingleElement< ::fwData::Boolean >( "VISIBILITY" );
+            m_imageOpacity = (*visible)?m_imageOpacity:0.0;
+        }
         vtkImageBlend *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
         imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
         OSLM_TRACE( "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
+        this->setVtkPipelineModified();
     }
 }
 

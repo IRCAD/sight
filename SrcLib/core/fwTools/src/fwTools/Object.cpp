@@ -16,12 +16,13 @@ namespace fwTools {
 
 //------------------------------------------------------------------------------
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwTools::Object, ::fwTools::Object );
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwTools::Field,  ::fwTools::Field);
 //------------------------------------------------------------------------------
 
 const std::string & getLabel(const ::fwTools::Object *obj)
 {
     const Field *lobj = dynamic_cast< const fwTools::Field *>( obj );
-    assert( lobj );
+    SLM_ASSERT("lobj not instanced", lobj);
     return lobj->label();
 }
 
@@ -175,7 +176,7 @@ std::string Object::className() const
     for ( ChildContainer::iterator f = m_children.begin() ;  f != m_children.end(); ++f )
     {
         ::fwTools::Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
-//      assert( lobj );
+//      SLM_ASSERT("lobj not instanced", lobj);
         if ( lobj && lobj->label() == fieldId )
         {
             return lobj;
@@ -193,7 +194,7 @@ std::string Object::className() const
     for ( ChildContainer::const_iterator f = m_children.begin() ;  f != m_children.end(); ++f )
     {
         Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
-//      assert( lobj );
+//      SLM_ASSERT("lobj not instanced", lobj);
         if ( lobj && lobj->label() == fieldId )
         {
             return lobj;

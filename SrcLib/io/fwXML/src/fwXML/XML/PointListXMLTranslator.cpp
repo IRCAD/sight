@@ -29,7 +29,7 @@ xmlNodePtr PointListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
 
     ::fwData::PointList::sptr pPointList = ::fwData::PointList::dynamicCast(obj);
-    assert( pPointList );
+    SLM_ASSERT("pPointList not instanced", pPointList);
 
     // create master node with className+id
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
@@ -54,7 +54,7 @@ xmlNodePtr PointListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 void PointListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    assert( toUpdate ); // object should exist
+    SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
     ::fwData::PointList::sptr pPointList = ::fwData::PointList::dynamicCast(toUpdate);
     pPointList->getRefPoints().clear();
@@ -69,14 +69,14 @@ void PointListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
             if ( nodeName == "element" )
             {
                 xmlNodePtr ConcretevalueNode = XMLParser::nextXMLElement( elementNode->children );
-                assert( ConcretevalueNode );
+                SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
 
                 // Load Point
                 ::fwTools::Object::sptr valueObj;
                 valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
 
                 // Add point in the vector
-                assert( valueObj );
+                SLM_ASSERT("valueObj not instanced", valueObj);
                 assert( ::fwData::Point::dynamicCast( valueObj ) );
                 pPointList->getRefPoints().push_back( ::fwData::Point::dynamicCast( valueObj ) );
             }

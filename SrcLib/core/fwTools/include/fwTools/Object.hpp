@@ -232,14 +232,6 @@ public:
      */
     FWTOOLS_API virtual void deepCopy( Object::csptr _source );
 
-protected :
-
-    ChildContainer m_children;
-
-    ::fwCore::TimeStamp::sptr  m_timeStamp;
-
-    ::fwCore::LogicStamp::sptr m_logicStamp;
-
     /**
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] _source source of the copy.
@@ -251,6 +243,16 @@ protected :
      * @param[in] _source source of the copy.
      */
     FWTOOLS_API void deepCopyOfChildren( Object::csptr _source );
+
+
+protected :
+
+    ChildContainer m_children;
+
+    ::fwCore::TimeStamp::sptr  m_timeStamp;
+
+    ::fwCore::LogicStamp::sptr m_logicStamp;
+
 
     /**
      * @brief A shallow copy of fields (objects in m_children), tests the classname and calls the specific method of the class.

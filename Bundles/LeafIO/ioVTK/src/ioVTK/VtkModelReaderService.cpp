@@ -51,7 +51,7 @@ VtkModelReaderService::VtkModelReaderService() throw():
 
 void VtkModelReaderService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
+    this->BaseClass::info( _sstream ) ;
     _sstream << std::endl << " vtk file reader" ;
 }
 
@@ -124,7 +124,7 @@ void VtkModelReaderService::updating() throw(::fwTools::Failed)
     }
 
     ::fwData::Model::sptr model = this->getObject< ::fwData::Model >( );
-    assert( model ) ;
+    SLM_ASSERT("model not instanced", model);
 
     ::fwData::Model::NewSptr backupModel;
     backupModel->shallowCopy(model);
@@ -150,15 +150,15 @@ void VtkModelReaderService::loadMesh( const ::boost::filesystem::path vtkFile, :
 {
     SLM_TRACE_FUNC();
 
-    ::vtkIO::MeshReader myReader;
-    myReader.setObject(_pTriangularMesh);
-    myReader.setFile(vtkFile);
+    ::vtkIO::MeshReader::NewSptr myReader;
+    myReader->setObject(_pTriangularMesh);
+    myReader->setFile(vtkFile);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
-        myReader.addHandler( progressMeterGUI );
-        myReader.read();
+        myReader->addHandler( progressMeterGUI );
+        myReader->read();
     }
     catch (const std::exception & e)
     {

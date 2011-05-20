@@ -1,89 +1,81 @@
-///* ***** BEGIN LICENSE BLOCK *****
-// * FW4SPL - Copyright (C) IRCAD, 2009-2010.
-// * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-// * published by the Free Software Foundation.
-// * ****** END LICENSE BLOCK ****** */
-//
-//#ifndef _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
-//#define _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
-//
-//#include <vector>
-//#include <fwServices/IService.hpp>
-//
-//#include <fwGui/IActionSrv.hpp>
-//
-//#include "gui/export.hpp"
-//
-//
-//namespace gui
-//{
-//
-//namespace action
-//{
-//
-///**
-// * @brief   This action reset root object. All services are eliminated as well as objects composing the root object.
-// * @class   CloseAction.
-// * @author  IRCAD (Research and Development Team).
-// * @date    2009.
-// */
-//class GUI_CLASS_API ActionNotifyService : public ::fwGui::IActionSrv
-//{
-//
-//public :
-//
-//    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::fwGui::IActionSrv) ) ;
-//
-//    /**
-//    * @brief Constructor. Do nothing.
-//    */
-//    GUI_API ActionNotifyService() throw();
-//
-//    /**
-//    * @brief Destructor. Do nothing.
-//    */
-//    GUI_API virtual ~ActionNotifyService() throw();
-//
-//protected:
-//
-//    enum MessageType {
-//        REMOVE,
-//        ADD,
-//        ADD_OR_REMOVE,
-//        DO_NOTHING
-//    };
-//
-//    /**
-//     * @brief This method gives information about the class. Do nothing.
-//     */
-//    GUI_API virtual void info(std::ostream &_sstream ) ;
-//
-//    GUI_API virtual void starting() throw(::fwTools::Failed);
-//
-//    GUI_API virtual void stopping() throw(::fwTools::Failed);
-//
-//    /**
-//     * @brief This method starts-updates or stops the specified services
-//     */
-//    GUI_API void updating()throw (fwTools::Failed);
-//
-//    GUI_API void updating(::fwServices::ObjectMsg::csptr _msg )throw (fwTools::Failed);
-//
-//    /**
-//     * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
-//     */
-//    GUI_API void configuring() throw( ::fwTools::Failed );
-//
-//private:
-//    // vector representing uuid's services that must be started (true) or stopped (false)
-//    std::vector< std::pair< std::string, MessageType > > m_uuidServices;
-//
-//    std::string m_onevent;
-//};
-//
-//
-//} // namespace action
-//} // namespace gui
-//
-//
-//#endif /*_GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_*/
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
+#define _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
+
+#include <fwServices/IService.hpp>
+
+#include <fwGui/IActionSrv.hpp>
+
+#include "gui/export.hpp"
+
+
+namespace gui
+{
+
+namespace action
+{
+
+class GUI_CLASS_API ActionNotifyService : public ::fwGui::IActionSrv
+{
+
+public :
+
+    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::fwGui::IActionSrv) ) ;
+
+    /**
+    * @brief Constructor. Do nothing.
+    */
+    GUI_API ActionNotifyService() throw();
+
+    /**
+    * @brief Destructor. Do nothing.
+    */
+    GUI_API virtual ~ActionNotifyService() throw();
+
+protected:
+
+    GUI_API virtual void info(std::ostream &_sstream ) ;
+
+    GUI_API void starting() throw(::fwTools::Failed);
+
+    GUI_API void stopping() throw(::fwTools::Failed);
+
+    GUI_API void updating()throw (fwTools::Failed);
+
+    GUI_API void updating(::fwServices::ObjectMsg::csptr _msg )throw (fwTools::Failed);
+
+    /**
+     * @brief Configure the message to send.
+     *
+     * Example of configuration :
+     * @verbatim
+        <service ... >
+            <notify type="::fwServices::ObjectMsg" event="APPLY" />
+        </service>
+       @endverbatim
+     * - <notify> :
+     *   - \b type : the type of the message (i.e. ::fwServices::ObjectMsg)
+     *   - \b event : the event of the message (i.e. "APPLY")
+     */
+    GUI_API void configuring() throw( ::fwTools::Failed );
+
+    /// Message container [(MessageType, Event)]
+    typedef ::boost::tuple< std::string, std::string > MsgEventType;
+
+    /// Notify message vector
+    typedef std::vector < MsgEventType > MsgVectType;
+
+    MsgVectType  m_vectMsg;
+};
+
+
+} // namespace action
+} // namespace gui
+
+
+#endif // _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_

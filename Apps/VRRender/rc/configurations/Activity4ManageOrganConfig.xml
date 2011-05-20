@@ -1,0 +1,91 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>organManagerConfig</id>
+    <type>template</type>
+    <config>
+
+
+        <object type="::fwData::Composite">
+
+        <!-- MAIN FRAME -->
+            <service uid="GENERIC_UID_organManagerFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Organs Manager</name>
+                        <icon>Bundles/VRRender_0-9/vrrender.ico</icon>
+                        <minSize width="400" height="750" />
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_multiViewOrgans" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="GENERIC_UID_multiViewOrgans" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view minHeight="80" proportion="0" />
+                        <view minHeight="40" proportion="0" />
+                        <!--<view minHeight="220" proportion="0" />-->
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="GENERIC_UID_listOrganEditor" start="yes" />
+                    <view sid="GENERIC_UID_organMaterialEditor" start="no" />
+                    <!--<view sid="GENERIC_UID_volumeEditor" start="no" />-->
+                    <view sid="GENERIC_UID_representationEditor" start="no" />
+                </registry>
+            </service>
+
+            <item key="selection">
+                <object type="::fwData::Composite">
+
+                    <service uid="GENERIC_UID_myUpdaterReconst" implementation="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                        <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="myReconstruction" onEvent="REMOVED_RECONSTRUCTIONS" fromUID="*" actionType="REMOVE_IF_PRESENT" />
+                    </service>
+
+                    <service uid="GENERIC_UID_myManagerForOrgansFrame" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes">
+                        <mode type="dummy" />
+                        <config>
+
+                            <object id="myReconstruction" type="::fwData::Reconstruction">
+                                <service uid="GENERIC_UID_organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="no" />
+                                <!--<service uid="GENERIC_UID_volumeEditor" implementation="::uiData::VolumeEditor" type="::gui::editor::IEditor" autoComChannel="no" />-->
+                                <service uid="GENERIC_UID_representationEditor" implementation="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoComChannel="no" />
+                            </object>
+
+                        </config>
+                    </service>
+
+                </object>
+            </item>
+
+
+            <item key="myAcquisition">
+                <object uid="ORGAN_MANAGER_ACQUISITION" src="ref" type="::fwData::Acquisition">
+
+                    <service uid="GENERIC_UID_myUpdaterComChannelReconstFromAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                        <target>GENERIC_UID_myUpdaterReconst</target>
+                    </service>
+
+                    <service uid="GENERIC_UID_listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+
+                </object>
+            </item>
+
+        <!-- START AND STOP SERVICES -->
+            <start uid="GENERIC_UID_organManagerFrame" />
+            <start uid="GENERIC_UID_myUpdaterReconst" />
+            <start uid="GENERIC_UID_myManagerForOrgansFrame" />
+            <start uid="GENERIC_UID_myUpdaterComChannelReconstFromAcq" />
+
+
+        </object>
+
+
+    </config>
+</extension>

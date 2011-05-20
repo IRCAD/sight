@@ -33,7 +33,7 @@ GraphXMLTranslator::~GraphXMLTranslator() {};
 xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
 {
     ::boost::shared_ptr< ::fwData::Graph> graph = boost::dynamic_pointer_cast< ::fwData::Graph>(obj);
-    assert(graph);
+    SLM_ASSERT("graph not instanced", graph);
 
     // create master node with className+id
     xmlNodePtr node = XMLTH::MasterNode( obj );
@@ -70,7 +70,7 @@ void GraphXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
 
     // get NODES
     xmlNodePtr NodeXMLList = XMLParser::findChildNamed( source, "Nodes");
-    assert(NodeXMLList); // <Nodes> entry must exist
+    SLM_ASSERT("NodeXMLList not instanced", NodeXMLList); // <Nodes> entry must exist
     XMLTH::containerFromXml(NodeXMLList, std::inserter( graph->getRefNodes(), graph->getRefNodes().begin() ) );
 
     //assert( graph->getNbNodes() );
@@ -78,7 +78,7 @@ void GraphXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
     {
         // get Edges
         xmlNodePtr edgesList = XMLParser::findChildNamed( source, "Edges");
-        assert(edgesList); // <Nodes> entry must exist
+        SLM_ASSERT("edgesList not instanced", edgesList); // <Nodes> entry must exist
 
         xmlNodePtr connectionNode = XMLParser::nextXMLElement(edgesList->children);
         while (connectionNode )
@@ -96,12 +96,12 @@ void GraphXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
 
             ::fwData::Node::sptr srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc );
             ::fwData::Node::sptr dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst );
-            assert( srcNode );
-            assert( dstNode );
+            SLM_ASSERT("srcNode not instanced", srcNode);
+            SLM_ASSERT("dstNode not instanced", dstNode);
 
             // insert edge
             bool success = graph->addEdge(edge,srcNode, dstNode);
-            assert(success);
+            SLM_ASSERT("success not instanced", success);
 
             // go to next element
             connectionNode = XMLParser::nextXMLElement(connectionNode->next);

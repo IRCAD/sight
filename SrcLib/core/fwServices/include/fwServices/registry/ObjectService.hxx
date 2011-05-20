@@ -72,7 +72,7 @@ std::vector< ::fwTools::Object::sptr > ObjectService::getObjects()
     BOOST_FOREACH( ObjectService::KSContainer::right_map::value_type elt, right)
     {
         SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( elt.first );
-        if ( service && std::find(lobjects.begin(), lobjects.end(), service->getObject()) != lobjects.end() )
+        if ( service && std::find(lobjects.begin(), lobjects.end(), service->getObject()) == lobjects.end() )
         {
             lobjects.push_back( service->getObject() ) ;
         }

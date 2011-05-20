@@ -59,7 +59,6 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
                 info.m_name = toolBarItem->getExistingAttributeValue("name") ;
             }
 
-            //SLM_ASSERT("missing <icon> attribute", toolBarItem->hasAttribute("icon"));
             if( toolBarItem->hasAttribute("icon") )
             {
                 info.m_icon = toolBarItem->getExistingAttributeValue("icon") ;
@@ -72,6 +71,10 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
                 info.m_isRadio = (style == "radio");
             }
 
+            if( toolBarItem->hasAttribute("shortcut") )
+            {
+                info.m_shortcut = toolBarItem->getExistingAttributeValue("shortcut") ;
+            }
             m_actionInfo.push_back(info);
         }
         if( (*iter)->getName() == "separator" )

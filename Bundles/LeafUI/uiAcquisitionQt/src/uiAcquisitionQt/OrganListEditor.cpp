@@ -43,9 +43,9 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiAcquisition::OrganListEditor , ::
 
 OrganListEditor::OrganListEditor() throw()
 {
-    addNewHandledEvent("ShowReconstructions");
-    addNewHandledEvent("SelectReconstruction");
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
     addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
+    addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     QVBoxLayout* layout = new QVBoxLayout(container);
 
@@ -128,11 +128,14 @@ void OrganListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
     ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )
     {
-        if ( acquisitionMsg->hasEvent("ShowReconstructions") ||
-                acquisitionMsg->hasEvent("SelectReconstruction") ||
-                acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+        if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) ||
+             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
         {
             this->updating();
+        }
+        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS))
+        {
+            m_organChoice->clear();
         }
     }
 }
@@ -152,7 +155,7 @@ void OrganListEditor::updateReconstructions()
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
 
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     container->setEnabled(acq->getReconstructions().first != acq->getReconstructions().second);
 
@@ -212,7 +215,7 @@ void OrganListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
 {
     std::string organSelected = item->text().toStdString();
     ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
-    assert(rec) ;
+    SLM_ASSERT("rec not instanced", rec);
 
     bool itemIsChecked = (item->checkState() == Qt::Checked);
 
@@ -234,7 +237,7 @@ void OrganListEditor::onShowReconstructions(int state )
     acq->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
 
     ::fwComEd::AcquisitionMsg::NewSptr msg;
-    msg->addEvent( "ShowReconstructions" );
+    msg->addEvent( ::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS );
     ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
 
     m_organChoice->setEnabled(state == Qt::Unchecked);

@@ -198,7 +198,7 @@
     /** @cond **/                                                                          \
     fwToolsSetAttributeSignatureMacro()                                                    \
     {                                                                                      \
-        AttrRefType::type &theAttr = this->getAttribute(attrName);                         \
+        AttrRefType::type &theAttr = this->getAttributeRef(attrName);                      \
         if (!_obj)                                                                         \
         {                                                                                  \
             theAttr.reset();                                                               \

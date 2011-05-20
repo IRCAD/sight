@@ -70,7 +70,7 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     m_dropDownButton = new wxButton( container, m_idDropDown, _T(">"), wxDefaultPosition, wxSize(25,-1) );
     m_dropDownButton->SetToolTip(_("Manage slice visibility"));
@@ -108,7 +108,7 @@ void SliceListEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_oneSliceItem->GetId());
     m_pDropDownMenu->Unbind(wxEVT_COMMAND_MENU_SELECTED, &SliceListEditor::onChangeSliceMode, this, m_threeSlicesItem->GetId());

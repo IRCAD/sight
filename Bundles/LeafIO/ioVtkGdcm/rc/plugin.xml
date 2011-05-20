@@ -1,0 +1,38 @@
+<plugin id="ioVtkGdcm" class="ioVtkGdcm::Plugin" >
+    <library name="ioVtkGdcm" />
+
+    <requirement id="io" />
+
+    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVtkGdcm::DicomPatientDBReaderService , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioVtkGdcm::DicomPatientDBReaderService</service>
+        <object>::fwData::PatientDB</object>
+        <desc>Dicom Reader (VTK/gdcm)</desc>
+    </extension>
+    
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVtkGdcm::DicomPatientDBWriterService , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVtkGdcm::DicomPatientDBWriterService</service>
+        <object>::fwData::PatientDB</object>
+        <desc>Dicom Writer (VTK/gdcm)</desc>
+    </extension>
+    
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVtkGdcm::DicomPatientWriterService , ::fwData::Patient ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVtkGdcm::DicomPatientWriterService</service>
+        <object>::fwData::Patient</object>
+        <desc>Dicom Writer (VTK/gdcm)</desc>
+    </extension>    
+
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVtkGdcm::DicomImageWriterService , ::fwData::Image ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVtkGdcm::DicomImageWriterService</service>
+        <object>::fwData::Image</object>
+        <desc>Dicom Writer (VTK/gdcm)</desc>
+    </extension>    
+   
+</plugin>

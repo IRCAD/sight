@@ -125,7 +125,7 @@ void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve object
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
-        assert( matrix ) ;
+        SLM_ASSERT("matrix not instanced", matrix);
 
         ::fwDataIO::writer::TransformationMatrix3DWriter writer;
         writer.setObject( matrix );

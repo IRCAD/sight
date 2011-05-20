@@ -75,7 +75,7 @@ public:
             #endif
             T &t)
     {
-        assert(m_current);
+        SLM_ASSERT("m_current not instanced", m_current);
         std::stringstream ss;
         ss << ::fwXML::XMLParser::getTextValue( m_current );
         ss >> const_cast<T &>(t);
@@ -133,17 +133,17 @@ public:
         }
         else
         {
-            assert(m_current);
+            SLM_ASSERT("m_current not instanced", m_current);
             xmlNodePtr child = findNode(  m_current ,nvp.first);
             m_current=(child?child:m_current); // if no child current stay unchanged typically <Dimension>3<Dimension/> elementtary type doesn't have child
-            assert(m_current);
+            SLM_ASSERT("m_current not instanced", m_current);
 #ifndef __MACOSX__
             assert( m_visitedNode.count( m_current)==0 ); // not alrady inserted
 #endif
             m_visitedNode.insert( m_current );
             archive::load( *this , nvp.value());
             m_current = m_current->parent;
-            //assert( m_current );
+            //SLM_ASSERT("m_current not instanced", m_current);
         }
     }
 

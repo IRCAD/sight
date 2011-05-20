@@ -48,7 +48,7 @@ void GzBufferImageWriter::write()
 
     /// test if can open archive
     gzFile rawFile = gzopen( getFile().native_file_string().c_str(), "wb1");
-    assert(rawFile);
+    SLM_ASSERT("rawFile not instanced", rawFile);
     if ( rawFile == 0 )
     {
         std::string str = "GzBufferImageWriter::write unable to open ";

@@ -6,7 +6,7 @@
 
 #include <vtkImageData.h>
 #include <vtkGenericDataObjectWriter.h>
-
+#include <vtkSmartPointer.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -14,7 +14,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/ImageWriter.hpp"
-#include "vtkIO/ProgressVtktoFw.hpp"
+#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::ImageWriter, ::vtkIO::ImageWriter );
 
@@ -25,36 +25,36 @@ namespace vtkIO
 
 ImageWriter::ImageWriter() : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE("vtkIO::ImageWriter::ImageWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ImageWriter::~ImageWriter()
 {
-    SLM_TRACE("vtkIO::ImageWriter::~ImageWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void ImageWriter::write()
 {
-    assert( m_object.use_count() );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     ::fwData::Image::sptr pImage = getConcreteObject();
 
-    vtkGenericDataObjectWriter *writer = vtkGenericDataObjectWriter::New();
-    writer->SetInput( ::vtkIO::toVTKImage( pImage ) );
+    vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
+    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
+    ::vtkIO::toVTKImage( pImage, vtkImage );
+    writer->SetInput( vtkImage );
     writer->SetFileName(this->getFile().string().c_str());
-    writer->SetFileTypeToBinary ();
+    writer->SetFileTypeToBinary();
 
     //add progress observation
-    ::vtkIO::ProgressVtktoFw( writer, this, getFile().string() );
+    Progressor progress(writer, this->getSptr(), this->getFile().string());
 
     writer->Write();
-    writer->Delete();
 }
 
 //------------------------------------------------------------------------------

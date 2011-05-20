@@ -17,12 +17,11 @@
         <object>::fwData::String</object>
         <desc>a multi line editor</desc>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::gui::action::QuitAction</service>
+        <type>::gui::view::IView</type>
+        <service>::guiQt::editor::DynamicView</service>
         <object>::fwTools::Object</object>
     </extension>
-
 
 </plugin>

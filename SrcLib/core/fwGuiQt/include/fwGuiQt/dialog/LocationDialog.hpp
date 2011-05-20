@@ -64,7 +64,7 @@ protected:
     ::boost::filesystem::path m_path;
     ::fwGui::dialog::ILocationDialog::Options m_style;
     ::fwGui::dialog::ILocationDialog::Types m_type;
-    std::multimap< std::string, std::string > m_filters;
+    std::vector< std::pair< std::string, std::string > > m_filters;
 
     /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
     QString fileFilters();

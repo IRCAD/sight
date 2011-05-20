@@ -34,21 +34,20 @@ namespace vtkIO
 ReconstructionWriter::ReconstructionWriter()
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE("vtkIO::ReconstructionWriter::ReconstructionWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ReconstructionWriter::~ReconstructionWriter()
 {
-    SLM_TRACE("vtkIO::ReconstructionWriter::~ReconstructionWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void ReconstructionWriter::write()
 {
-    assert( m_object.use_count() );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
@@ -83,6 +82,8 @@ void ReconstructionWriter::write()
     renderWindow->Delete();
     exporter->Delete();
 }
+
+//------------------------------------------------------------------------------
 
 vtkActor * ReconstructionWriter::createActor( ::fwData::Reconstruction::sptr pReconstruction )
 {
@@ -127,4 +128,4 @@ std::string ReconstructionWriter::extension()
     return ".obj";
 }
 
-} // namespace dicomIO
+} // namespace vtkIO

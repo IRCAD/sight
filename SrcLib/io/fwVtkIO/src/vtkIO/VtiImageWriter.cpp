@@ -7,6 +7,7 @@
 #include <vtkImageData.h>
 #include <vtkXMLImageDataWriter.h>
 #include <vtkZLibDataCompressor.h>
+#include <vtkSmartPointer.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -14,6 +15,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/VtiImageWriter.hpp"
+#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::VtiImageWriter, ::vtkIO::VtiImageWriter );
 
@@ -24,39 +26,40 @@ namespace vtkIO
 
 VtiImageWriter::VtiImageWriter() : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE("vtkIO::VtiImageWriter::VtiImageWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 VtiImageWriter::~VtiImageWriter()
 {
-    SLM_TRACE("vtkIO::VtiImageWriter::~VtiImageWriter");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void VtiImageWriter::write()
 {
-    assert( m_object.use_count() );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     ::fwData::Image::sptr pImage = getConcreteObject();
 
-    vtkXMLImageDataWriter * writer = vtkXMLImageDataWriter::New();
-    writer->SetInput( ::vtkIO::toVTKImage( pImage ) );
+    vtkSmartPointer< vtkXMLImageDataWriter > writer = vtkSmartPointer< vtkXMLImageDataWriter >::New();
+    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
+    ::vtkIO::toVTKImage( pImage, vtkImage );
+    writer->SetInput( vtkImage );
     writer->SetFileName( this->getFile().string().c_str() );
     writer->SetDataModeToAppended();
 
-    vtkZLibDataCompressor* compressor  = vtkZLibDataCompressor::New();
+    vtkSmartPointer< vtkZLibDataCompressor > compressor  = vtkSmartPointer< vtkZLibDataCompressor >::New();
     compressor->SetCompressionLevel(1);
     writer->SetCompressor( compressor );
     writer->EncodeAppendedDataOff();
 
+    Progressor progress(writer, this->getSptr(), this->getFile().string());
+
     writer->Write();
-    compressor->Delete();
-    writer->Delete();
 }
 
 //------------------------------------------------------------------------------

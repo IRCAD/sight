@@ -1,6 +1,8 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwData/Acquisition.hpp>
-#include <fwServices/helper.hpp>
+//#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp> // new
+#include <fwServices/IEditionService.hpp> // new
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -13,6 +15,7 @@
 #include <QString>
 
 #include "opSofa/KeyEvent.hpp"
+
 
 
 namespace opSofa

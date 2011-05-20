@@ -27,7 +27,7 @@ EdgeXMLTranslator::~EdgeXMLTranslator() {};
 xmlNodePtr EdgeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast(obj);
-    assert(edge);
+    SLM_ASSERT("edge not instanced", edge);
 
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );

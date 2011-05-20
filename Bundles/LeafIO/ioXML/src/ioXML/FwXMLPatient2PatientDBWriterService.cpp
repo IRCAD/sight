@@ -83,14 +83,14 @@ void FwXMLPatient2PatientDBWriterService::configureWithIHM()
 
 void FwXMLPatient2PatientDBWriterService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatient2PatientDBWriterService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLPatient2PatientDBWriterService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatient2PatientDBWriterService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ std::string FwXMLPatient2PatientDBWriterService::getPersistanceId()
 
 void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesystem::path inrFileDir, ::fwData::PatientDB::sptr _pPatient )
 {
-    SLM_TRACE("FwXMLPatient2PatientDBWriterService::createPatientDB");
+    SLM_TRACE_FUNC();
     ::fwXML::writer::FwXMLObjectWriter myWriter;
 
     myWriter.setObject(_pPatient);
@@ -134,23 +134,11 @@ void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesyst
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading : ";
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -158,13 +146,13 @@ void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesyst
 
 void FwXMLPatient2PatientDBWriterService::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatient2PatientDBWriterService::updating()");
+    SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Patient::sptr associatedPatient = ::fwData::Patient::dynamicCast( this->getObject() ) ;
-        assert( associatedPatient ) ;
+        SLM_ASSERT("associatedPatient not instanced", associatedPatient);
         ::fwData::PatientDB::NewSptr patientDB;
         patientDB->addPatient(associatedPatient);
 

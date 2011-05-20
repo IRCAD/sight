@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/function.hpp>
+
 #include <fwTools/Object.hpp>
 #include <fwData/Object.hpp>
 
@@ -48,6 +50,9 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwTools::Factory::New< ObjectMsg > );
 
+    /// Defines callback type
+    typedef ::boost::function< void () > MessageCallbackType;
+
     /// Constructor, do nothing.
     FWSERVICES_API ObjectMsg();
 
@@ -78,7 +83,7 @@ public:
      * @param[in] _pDataInfo additional information concerning message ( it is an optional parameter )
      * @note a message can contain many events.
      */
-    FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+    FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::csptr _pDataInfo = ::fwData::Object::sptr() );
 
     /**
      * @brief This method is used to know if a specific event declared in the message
@@ -133,6 +138,9 @@ public:
      */
     FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, const ObjectMsg& _message) ;
 
+    /// Set a callback to the message which will be executed during message destruction
+    FWSERVICES_API void setMessageCallback( MessageCallbackType callback );
+
 protected :
 
     /**
@@ -140,7 +148,7 @@ protected :
      *
      * Some event has not data info, in this cases, the event is in map  but the ::fwData::Object::sptr is null.
      */
-    std::map< std::string , ::fwData::Object::sptr > m_eventId2DataInfo;
+    std::map< std::string , ::fwData::Object::csptr > m_eventId2DataInfo;
 
     /// Give some message informations, this method uses getGeneralInfo.
     FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
@@ -156,6 +164,11 @@ private :
     /// Helper to convert string UUID/Classname in pretty string
     static std::string convertToLightString( std::string _initialString );
 
+    /// Callback calls during destruction
+    MessageCallbackType m_callback;
+
+    /// Permits to know if message has a callback
+    bool m_hasCallback;
 };
 
 

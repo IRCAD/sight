@@ -93,14 +93,14 @@ void MeshReaderService::configureWithIHM()
 
 void MeshReaderService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("MeshReaderService::starting()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void MeshReaderService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("MeshReaderService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -114,17 +114,17 @@ void MeshReaderService::info(std::ostream &_sstream )
 
 void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pTriangularMesh )
 {
-    SLM_TRACE("MeshReaderService::loadMesh");
-    ::vtkIO::MeshReader myReader;
+    SLM_TRACE_FUNC();
+    ::vtkIO::MeshReader::NewSptr myReader;
 
-    myReader.setObject(_pTriangularMesh);
-    myReader.setFile(vtkFile);
+    myReader->setObject(_pTriangularMesh);
+    myReader->setFile(vtkFile);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Meshs ");
-        myReader.addHandler( progressMeterGUI );
-        myReader.read();
+        myReader->addHandler( progressMeterGUI );
+        myReader->read();
 
     }
     catch (const std::exception & e)
@@ -158,13 +158,13 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
 
 void MeshReaderService::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE("MeshReaderService::updating()");
+    SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
-        assert(pTriangularMesh);
+        SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -180,9 +180,9 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
 
 void MeshReaderService::notificationOfUpdate()
 {
-    SLM_TRACE("MeshReaderService::notificationOfDBUpdate");
+    SLM_TRACE_FUNC();
     ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
-    assert( pTriangularMesh );
+    SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
 
     ::fwComEd::TriangularMeshMsg::NewSptr msg;;
     msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;

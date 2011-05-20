@@ -157,24 +157,14 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
         return pObject;
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading : ";
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                "Warning during loading",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         return pObject;
     }
 
@@ -212,7 +202,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         {
             // Retrieve dataStruct associated with this service
             ::fwTools::Object::sptr associatedObject = this->getObject< ::fwTools::Object >();
-            assert( associatedObject ) ;
+            SLM_ASSERT("associatedObject not instanced", associatedObject);
 
             associatedObject->shallowCopy( obj );
 
@@ -229,7 +219,7 @@ void FwXMLGenericReaderService::notificationOfUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
-    assert( object );
+    SLM_ASSERT("object not instanced", object);
     ::fwServices::ObjectMsg::NewSptr msg;
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
     ::fwServices::IEditionService::notify( this->getSptr(),  object, msg );

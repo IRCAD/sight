@@ -40,16 +40,6 @@ class IOVTK_CLASS_API VtkPatientDBReaderService : public ::io::IReader
 
 public :
     fwCoreServiceClassDefinitionsMacro ( (VtkPatientDBReaderService)( ::io::IReader) ) ;
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API VtkPatientDBReaderService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~VtkPatientDBReaderService() throw();
 
     /**
     * @brief Configure the image path.
@@ -61,6 +51,17 @@ public :
 
 
 protected:
+
+    /**
+     * @brief   Constructor
+     *
+     */
+    IOVTK_API VtkPatientDBReaderService() throw();
+
+    /**
+     * @brief   Destructor
+     */
+    IOVTK_API virtual ~VtkPatientDBReaderService() throw();
 
     /**
     * @brief Starting method : default does nothing.

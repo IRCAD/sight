@@ -36,6 +36,13 @@ public:
     /// Destructor
     FWDATA_API virtual ~Edge();
 
+
+    /// @brief do a shallow copy of edge
+    FWDATA_API void shallowCopy( Edge::csptr _source );
+
+    /// @brief do a deep copy of edge
+    FWDATA_API void deepCopy( Edge::csptr _source );
+
     /**
      * @brief Set the edge identifier ("ID_SIZEX" , ...)
      * @param[in] _fromPortIndentifier identifier of port "from"

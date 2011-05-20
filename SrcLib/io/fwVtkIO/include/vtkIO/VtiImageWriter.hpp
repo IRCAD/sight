@@ -36,23 +36,26 @@ class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData:
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (VtiImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-                                                     (()),
-                                                     new  VtiImageWriter
-                                                );
-
-    //! @brief Constructor.
-    VTKIO_API VtiImageWriter();
-
-    //! @brief Destructor.
-    VTKIO_API ~VtiImageWriter();
+    fwCoreClassDefinitionsWithFactoryMacro((VtiImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
+                                           (()),
+                                           new VtiImageWriter
+                                          );
+    fwCoreAllowSharedFromThis();
 
     //! @brief Writing operator.
     VTKIO_API void write();
 
     /// @return ".vti"
     VTKIO_API  std::string extension();
-    };
+
+protected:
+
+    //! @brief Constructor.
+    VTKIO_API VtiImageWriter();
+
+    //! @brief Destructor.
+    VTKIO_API ~VtiImageWriter();
+};
 
 } // namespace vtkIO
 

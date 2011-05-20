@@ -25,7 +25,7 @@
         <service>::fwComEd::parser::Composite</service>
         <object>::fwData::Composite</object>
     </extension>
-
+    
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwComEd::parser::TransformationMatrix3D</service>
@@ -37,7 +37,37 @@
         <service>::fwComEd::parser::Object</service>
         <object>::fwTools::Object</object>
     </extension>
-
+    
+     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::List</service>
+        <object>::fwData::List</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::BooleanParser</service>
+        <object>::fwData::Boolean</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::FloatParser</service>
+        <object>::fwData::Float</object>
+    </extension>
+    
+     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::IntegerParser</service>
+        <object>::fwData::Integer</object>
+    </extension>
+    
+     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::StringParser</service>
+        <object>::fwData::String</object>
+    </extension>
+    
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::ICommunication</type>
         <service>::fwServices::ComChannelService</service>

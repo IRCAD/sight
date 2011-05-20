@@ -107,30 +107,20 @@ void FwXMLPatientDBReaderService::fixFilename(std::string _filename)
 {
     m_fsPatientDBPath = ::boost::filesystem::path( _filename, ::boost::filesystem::native );
     m_bServiceIsConfigured = true;
-
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLPatientDBReaderService::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatientDBReaderService::starting()");
-#ifdef __WXMAC__
-    /*
-    wxFrame *frame = wxDynamicCast( wxTheApp->GetTopWindow() , wxFrame ) ;
-    if (frame != NULL)
-        frame->Connect( wxIDEventFwOpen, wxEventFwOpen, wxCommandEventHandler(wxEvtHandlerOpenFile::open) );
-    else
-        SLM_FATAL ("Window not found !")
-        */
-#endif
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void FwXMLPatientDBReaderService::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE("FwXMLPatientDBReaderService::stopping()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -160,7 +150,7 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 
 ::fwData::PatientDB::sptr FwXMLPatientDBReaderService::createPatientDB( const ::boost::filesystem::path inrFileDir )
 {
-    SLM_TRACE("FwXMLPatientDBReaderService::createPatientDB");
+    SLM_TRACE_FUNC();
     ::fwXML::reader::FwXMLObjectReader myLoader;
     ::fwData::PatientDB::sptr pPatientDB;
 
@@ -177,24 +167,12 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
         std::stringstream ss;
         ss << "Warning during loading : ";
         ss << e.what();
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
         return pPatientDB;
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading : ";
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
         return pPatientDB;
     }
 
@@ -228,7 +206,7 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             {
                 // Retrieve dataStruct associated with this service
                 ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
-                assert( associatedPatientDB ) ;
+                SLM_ASSERT("associatedPatientDB not instanced", associatedPatientDB);
 
                 associatedPatientDB->shallowCopy( patientDB );
 
@@ -240,12 +218,9 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             }
             else
             {
-                ::fwGui::dialog::MessageDialog messageBox;
-                messageBox.setTitle("Image Reader");
-                messageBox.setMessage( "File format unknown. Retry with another file reader." );
-                messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-                messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-                messageBox.show();
+                ::fwGui::dialog::MessageDialog::showMessageDialog("Image Reader",
+                        "File format unknown. Retry with another file reader.",
+                        ::fwGui::dialog::IMessageDialog::WARNING);
             }
         }
         else
@@ -254,13 +229,7 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             xmlFile << "Sorry, the xml file \""
             << m_fsPatientDBPath.string()
             << "\" does not content a PatientDB. This xml file has not been loaded.";
-
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("FwXML PatientDB Reader");
-            messageBox.setMessage( xmlFile.str() );
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
+            ::fwGui::dialog::MessageDialog::showMessageDialog("FwXML PatientDB Reader", xmlFile.str(), ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -269,9 +238,9 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
 
 void FwXMLPatientDBReaderService::notificationOfDBUpdate()
 {
-    SLM_TRACE("FwXMLPatientDBReaderService::notificationOfDBUpdate");
+    SLM_TRACE_FUNC();
     ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >();
-    assert( pDPDB );
+    SLM_ASSERT("pDPDB not instanced", pDPDB);
 
     ::fwComEd::PatientDBMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT, pDPDB );

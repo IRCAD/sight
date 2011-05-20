@@ -124,9 +124,8 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     }
     else
     {
-        assert ( i->second.expired() == false );
         OSLM_DEBUG("ObjectTracker::buildObject "<< className <<"-"<< uniqueIDXML << " previoulsy instanciated : use this one" );
-        return i->second.lock(); // object exist we return it
+        return i->second; // object exist we return it
     }
 }
 

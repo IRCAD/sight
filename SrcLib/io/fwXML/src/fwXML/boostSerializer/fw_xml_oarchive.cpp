@@ -143,7 +143,7 @@ xmlNodePtr fw_xml_oarchive::getXMLNode()
     // // set root
     // xmlDocSetRootElement(pDoc , m_root � );
     // xmlSaveFile( "-" , pDoc );
-    assert( m_root );
+    SLM_ASSERT("m_root not instanced", m_root);
     return m_root;
 }
 

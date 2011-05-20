@@ -124,7 +124,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
-        assert(pImage);
+        SLM_ASSERT("pImage not instanced", pImage);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image has been modified.
 
@@ -147,20 +147,19 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
     bool ok = true;
 
     // Use a reader of vtkIO library to read a vtk image
-    ::vtkIO::ImageReader myReader;
+    ::vtkIO::ImageReader::NewSptr myReader;
     // Set the image (already created, but empty) that will be modifed
-    myReader.setObject(_pImg);
+    myReader->setObject(_pImg);
     // Set the file system path
-    myReader.setFile(vtkFile);
+    myReader->setFile(vtkFile);
 
     try
     {
         // Create a progress bar and attach it to reader
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myReader.addHandler( progressMeterGUI );
+        myReader->addHandler( progressMeterGUI );
         // Launch reading process
-        myReader.read();
-
+        myReader->read();
     }
     catch (const std::exception & e)
     {
@@ -208,7 +207,7 @@ void ImageReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-    assert( pImage );
+    SLM_ASSERT("pImage not instanced", pImage);
 
     // Creation of an image message to say that image is an new image ( or all fields are modified (old version of msg ) )
     ::fwComEd::ImageMsg::NewSptr msg;

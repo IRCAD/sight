@@ -37,22 +37,25 @@ class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Tri
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >),
-                                                     (()),
-                                                     new  MeshReader
-                                                );
-
-    //! @brief Constructor.
-    VTKIO_API MeshReader();
-
-    //! @brief Destructor.
-    VTKIO_API ~MeshReader();
+    fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >),
+                                           (()),
+                                           new MeshReader
+                                          );
+    fwCoreAllowSharedFromThis();
 
     //! @brief Reading operator.
     VTKIO_API void read();
 
     /// @return ".trian"
     VTKIO_API  std::string extension();
+
+protected:
+
+    //! @brief Constructor.
+    VTKIO_API MeshReader();
+
+    //! @brief Destructor.
+    VTKIO_API ~MeshReader();
 };
 
 } // namespace vtkIO

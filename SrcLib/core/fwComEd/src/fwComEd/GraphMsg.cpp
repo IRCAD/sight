@@ -5,6 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/ClassRegistrar.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
 
 #include "fwComEd/GraphMsg.hpp"
 
@@ -16,9 +18,12 @@ namespace fwComEd
 //-----------------------------------------------------------------------------
 
 std::string GraphMsg::NEW_GRAPH            = "NEW_GRAPH";
+std::string GraphMsg::CLEANING_GRAPH       = "CLEANING_GRAPH";
 std::string GraphMsg::ADD_NODE             = "ADD_NODE";
 std::string GraphMsg::REMOVE_NODE          = "REMOVE_NODE";
+std::string GraphMsg::REMOVING_NODE        = "REMOVING_NODE";
 std::string GraphMsg::ADD_EDGE             = "ADD_EDGE";
+std::string GraphMsg::ADDING_EDGE          = "ADDING_EDGE";
 std::string GraphMsg::REMOVE_EDGE          = "REMOVE_EDGE";
 std::string GraphMsg::SELECTED_NODE        = "SELECTED_NODE";
 std::string GraphMsg::UNSELECTED_NODE      = "UNSELECTED_NODE";
@@ -44,7 +49,7 @@ GraphMsg::~GraphMsg() throw()
 //-----------------------------------------------------------------------------
 
 
-void GraphMsg::addedNode( ::fwData::Node::sptr node )
+void GraphMsg::addedNode( ::fwData::Node::csptr node )
 {
     addEvent( GraphMsg::ADD_NODE , node );
 }
@@ -58,7 +63,7 @@ void GraphMsg::addedNode( ::fwData::Node::sptr node )
 
 //-----------------------------------------------------------------------------
 
-void GraphMsg::removedNode( ::fwData::Node::sptr node )
+void GraphMsg::removedNode( ::fwData::Node::csptr node )
 {
     addEvent( GraphMsg::REMOVE_NODE , node );
 }
@@ -72,7 +77,48 @@ void GraphMsg::removedNode( ::fwData::Node::sptr node )
 
 //-----------------------------------------------------------------------------
 
-void GraphMsg::selectedNode( ::fwData::Node::sptr node )
+void GraphMsg::removingNode( ::fwData::Node::csptr node )
+{
+    addEvent( GraphMsg::REMOVING_NODE , node );
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::Node::csptr GraphMsg::getRemovingNode() const
+{
+    return ::fwData::Node::dynamicConstCast( getDataInfo( GraphMsg::REMOVING_NODE ) );
+}
+
+//-----------------------------------------------------------------------------
+
+void GraphMsg::addingEdge( ::fwData::Node::csptr nodeFrom, ::fwData::Node::csptr nodeTo, std::string outputPortId, std::string inputPortId )
+{
+    ::fwData::Composite::NewSptr edgeInfo;
+    (*edgeInfo)["nodeFrom"] = ::fwData::Node::constCast( nodeFrom );
+    (*edgeInfo)["nodeTo"] = ::fwData::Node::constCast( nodeTo );
+    (*edgeInfo)["outputPortId"] = ::fwData::String::New( outputPortId );
+    (*edgeInfo)["inputPortId"] = ::fwData::String::New( inputPortId );
+    addEvent( GraphMsg::ADDING_EDGE , edgeInfo );
+}
+
+//-----------------------------------------------------------------------------
+
+::boost::tuple< ::fwData::Node::csptr, ::fwData::Node::csptr, std::string, std::string > GraphMsg::getAddingEdge() const
+{
+    ::fwData::Composite::csptr edgeInfoConst = ::fwData::Composite::dynamicConstCast( getDataInfo( GraphMsg::ADDING_EDGE ) );
+    ::fwData::Composite::sptr edgeInfo = ::fwData::Composite::constCast( edgeInfoConst );
+
+    ::fwData::Node::csptr nodeFrom = ::fwData::Node::dynamicConstCast( (*edgeInfo)["nodeFrom"] );
+    ::fwData::Node::csptr nodeTo = ::fwData::Node::dynamicConstCast( (*edgeInfo)["nodeTo"] );
+    std::string outputPortId = ::fwData::String::dynamicConstCast( (*edgeInfo)["outputPortId"] )->value();
+    std::string inputPortId = ::fwData::String::dynamicConstCast( (*edgeInfo)["inputPortId"] )->value();
+
+    return ::boost::make_tuple( nodeFrom, nodeTo, outputPortId, inputPortId);
+}
+
+//-----------------------------------------------------------------------------
+
+void GraphMsg::selectedNode( ::fwData::Node::csptr node )
 {
     addEvent( GraphMsg::SELECTED_NODE , node );
 }
@@ -86,7 +132,7 @@ void GraphMsg::selectedNode( ::fwData::Node::sptr node )
 
 //-----------------------------------------------------------------------------
 
-void GraphMsg::unselectedNode( ::fwData::Node::sptr node )
+void GraphMsg::unselectedNode( ::fwData::Node::csptr node )
 {
     addEvent( GraphMsg::UNSELECTED_NODE , node );
 }

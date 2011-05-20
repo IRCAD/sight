@@ -58,7 +58,7 @@ namespace uiVisu
 
         ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
         wxWindow* const container = wxContainer->getWxContainer();
-        assert( container ) ;
+        SLM_ASSERT("container not instanced", container);
 
         wxBoxSizer* hLayout = new wxBoxSizer( wxHORIZONTAL );
 

@@ -10,6 +10,7 @@
 #include <string>
 #include <boost/signal.hpp>
 
+#include <fwCore/base.hpp>
 #include <fwTools/config.hpp>
 
 
@@ -25,10 +26,7 @@ namespace fwTools {
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-class FWTOOLS_CLASS_API ProgressAdviser :  public boost::signals::trackable // allowing to auto disconnect when destructed
-                                                                            // specialy use for cascading ProgressAdviser
-                                                                            // using ::boost::bind
-
+class FWTOOLS_CLASS_API ProgressAdviser : public ::boost::signals::trackable
 {
 public:
 
@@ -36,9 +34,8 @@ public:
     typedef ::boost::signal< void(float, std::string) >   ProgessSignal; // signal for fctor or function returning void and
     /// define the ProgessHandler type
     typedef ProgessSignal::slot_type         ProgessHandler; // signal for fctor or function returning void and
-                                                            // accepting a float as arguement percent
+                                                            // accepting a float as argument percent
                                                             // string for information
-
 
     FWTOOLS_API ProgressAdviser();
     FWTOOLS_API virtual ~ProgressAdviser();
@@ -56,7 +53,6 @@ protected :
 
     /// to notify progress simply use m_progressSignal( percent,msg ) to notify to Handler
     ProgessSignal m_progressSignal;
-
 
 };
 

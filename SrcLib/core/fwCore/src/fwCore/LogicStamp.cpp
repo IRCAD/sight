@@ -26,7 +26,7 @@ void LogicStamp::modified()
 
     m_modifiedLogicalTime = ++globalLogicStamp;
 
-    assert( globalLogicStamp ); // detects overflow
+    SLM_ASSERT("globalLogicStamp not instanced", globalLogicStamp); // detects overflow
 }
 
 

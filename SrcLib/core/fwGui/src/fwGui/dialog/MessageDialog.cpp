@@ -33,10 +33,9 @@ MessageDialog::MessageDialog()
 
 MessageDialog::MessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
 {
+    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
     if(m_implementation)
     {
-
-        m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
         m_implementation->setTitle(title);
         m_implementation->setMessage(message);
         m_implementation->setIcon(icon);

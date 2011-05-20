@@ -12,12 +12,6 @@
 
 #include "fwData/Object.hpp"
 
-// HACK
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwTools::Field, ::fwTools::Field );
-namespace fwTools
-{
-/// END HACK
-}
 
 namespace fwData
 {
@@ -26,16 +20,12 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Object::Object()
-{
-
-}
+{}
 
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{
-
-}
+{}
 
 //------------------------------------------------------------------------------
 

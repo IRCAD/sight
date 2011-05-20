@@ -111,7 +111,7 @@ void IVtkAdaptorService::updating(::fwServices::ObjectMsg::csptr msg) throw(fwTo
 void IVtkAdaptorService::setRenderService( VtkRenderService::sptr service)
 {
     /// Preconditions
-    assert( service ) ;
+    SLM_ASSERT("service not instanced", service);
     assert( this->isStopped() ) ;
 
     m_renderService = service ;

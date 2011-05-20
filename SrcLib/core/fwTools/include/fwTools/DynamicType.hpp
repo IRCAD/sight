@@ -94,6 +94,19 @@ public:
     template<class TYPE>
     static const std::string string();
 
+    /**
+     * @brief return the min and max storable in the DynamicType. take care that min/max value are casted into template T
+     */
+    template<class T>
+    std::pair<T,T> minMax();
+
+    /// return true iff the type use a fixed precision
+    FWTOOLS_API bool isFixedPrecision();
+
+    /// return true iff the type is signed
+    FWTOOLS_API bool isSigned();
+
+
 protected :
 
     std::string m_value; // aka key

@@ -37,17 +37,6 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (VtkModelReaderService)( ::io::IReader) ) ;
 
-    typedef ::io::IReader   SuperClass;
-    /**
-     * @brief   Constructor
-     */
-    IOVTK_API VtkModelReaderService() throw() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API ~VtkModelReaderService() throw() ;
-
     /**
      * @brief Configure the mesh path.
      *
@@ -67,6 +56,16 @@ public:
 
 
 protected:
+
+    /**
+     * @brief   Constructor
+     */
+    IOVTK_API VtkModelReaderService() throw() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IOVTK_API ~VtkModelReaderService() throw() ;
 
     /**
     * @brief Starting method : default does nothing.

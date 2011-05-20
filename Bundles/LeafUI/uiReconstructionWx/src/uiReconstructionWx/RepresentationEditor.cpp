@@ -50,7 +50,7 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
 
@@ -90,7 +90,7 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
 
     container->Unbind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeRepresentation, this,  m_radioBoxRepresentation->GetId());
     container->Unbind( wxEVT_COMMAND_RADIOBOX_SELECTED, &RepresentationEditor::onChangeShading, this,  m_radioBoxShading->GetId());
@@ -116,7 +116,7 @@ void RepresentationEditor::updating() throw(::fwTools::Failed)
     SLM_ASSERT("No Reconstruction!", reconstruction);
     ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
     wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
     m_material = reconstruction->getMaterial() ;
     container->Enable(!reconstruction->getOrganName().empty());
 

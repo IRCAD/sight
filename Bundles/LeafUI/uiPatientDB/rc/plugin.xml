@@ -1,0 +1,59 @@
+<plugin id="uiPatientDB" class="::uiPatientDB::Plugin">
+    <library name="uiPatientDB"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    <requirement id="io"/>
+    
+    
+        <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::CloneImage , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::CloneImage</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+    
+    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::AddPatientDB , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::AddPatientDB</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+    
+    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::ExportPatientDB , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::ExportPatientDB</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+    
+    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::ExportPatient , ::fwData::Patient ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::ExportPatient</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+    
+    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::ErasePatientDB , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::ErasePatientDB</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+    
+    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::ErasePatient , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::ErasePatient</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+    
+    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::ExportImage , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::ExportImage</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
+        
+</plugin>

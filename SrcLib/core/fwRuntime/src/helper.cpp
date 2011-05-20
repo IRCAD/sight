@@ -17,8 +17,8 @@ namespace fwRuntime
 
 std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_ptr< ::fwRuntime::io::Validator > _validator , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _element )
 {
-    assert( _validator ) ;
-    assert( _element ) ;
+    SLM_ASSERT("_validator not instanced", _validator);
+    SLM_ASSERT("_element not instanced", _element);
 
     xmlNodePtr _elementNodePtr = xmlNewNode( NULL,  xmlCharStrdup( _element->getName().c_str() ) );
     ::fwRuntime::ConfigurationElement2XML( _element , _elementNodePtr ) ;
@@ -121,7 +121,7 @@ void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationEle
         OSLM_WARN("Configuration has no config attribute" );
         return ::boost::shared_ptr< ConfigurationElement >() ;
     }
-    assert(false) ;
+    SLM_ASSERT("false not instanced", false);
     return ::boost::shared_ptr< ConfigurationElement >() ;
 }
 

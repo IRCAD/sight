@@ -1,0 +1,123 @@
+<plugin id="VRRender">
+
+    <requirement id="servicesReg" />
+
+    <xi:include href="configurations/Activity1Config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/Activity3Config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/Activity4Config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/Activity4ManageOrganConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/VRActivityConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>VRRenderConfig</id>
+        <type>standard</type>
+        <config>
+
+            <object type="::fwData::Composite">
+
+                <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" implementation="::fwGui::MessageHandler" autoComChannel="no" />
+
+                <service uid="mainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                    <gui>
+                        <frame>
+                            <name>VRRender 0.9.0</name>
+                            <icon>Bundles/VRRender_0-9/vrrender.ico</icon>
+                            <minSize width="800" height="600" />
+                        </frame>
+                    </gui>
+                    <registry>
+                        <view sid="multiTabView" start="no" />
+                    </registry>
+                </service>
+
+                <item key="medicalWorkspace">
+                    <object uid="medicalWorkspace" type="::fwData::Composite">
+
+                    <!--  Patient DB Composite declaration -->
+                        <item key="patientDB">
+                            <object uid="patientDB" type="::fwData::PatientDB">
+
+                                <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+
+                                <service uid="myUpdaterComChannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                                    <target>myUpdaterAcq</target>
+                                </service>
+
+                                <service uid="myUpdaterComChannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                                    <target>myUpdaterImg</target>
+                                </service>
+
+                            </object>
+                        </item>
+                    </object>
+                </item>
+
+                <item key="myCompositeSelection">
+                    <object uid="myCompositeSelection" type="::fwData::Composite">
+
+                        <service uid="multiTabView" type="::gui::view::IView" implementation="::guiQt::editor::DynamicView" autoComChannel="yes" />
+
+                        <service uid="action_activity1" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
+                            <config id="Activity1Config" title="PDB" closable="no" />
+                            <key id="self" pattern="COMPOSITE_SELECTION" />
+
+                            <replace val="patientDB" pattern="UID_OF_SELECTED_PATIENT" />
+                            <replace val="medicalWorkspace" pattern="UID_OF_MEDICAL_WORKSPACE" />
+                        </service>
+
+                        <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                        </service>
+
+                        <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                            <update compositeKey="myImage" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                        </service>
+
+                    </object>
+                </item>
+
+                <start uid="messageHandler" />
+                <start uid="mainFrame" />
+                <start uid="myUpdaterAcq" />
+                <start uid="myUpdaterImg" />
+                <start uid="myUpdaterComChannelAcq" />
+                <start uid="myUpdaterComChannelImg" />
+                <start uid="newOBject2newPatientDB" />
+                <start uid="multiTabView" />
+                <start uid="action_activity1" />
+
+                <update uid="action_activity1" />
+
+            </object>
+
+        </config>
+    </extension>
+
+
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>IOSelectorServiceConfigVRRenderPatientDBReader</id>
+        <service>::uiIO::editor::IOSelectorService</service>
+        <desc>IOSelectorService config for VRRender PatientDB reader</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="exclude" />
+            <addSelection service="::ioXML::FwXMLGenericReaderService" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>IOSelectorServiceConfigVRRenderPatientDBWriter</id>
+        <service>::uiIO::editor::IOSelectorService</service>
+        <desc>IOSelectorService config for VRRender PatientDB writer</desc>
+        <config>
+            <type mode="writer" />
+            <selection mode="exclude" />
+            <addSelection service="::ioXML::FwXMLGenericWriterService" />
+        </config>
+    </extension>
+
+</plugin>

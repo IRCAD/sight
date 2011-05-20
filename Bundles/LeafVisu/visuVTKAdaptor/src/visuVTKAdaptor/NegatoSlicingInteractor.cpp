@@ -91,8 +91,8 @@ public:
             if ( eventId == START_SLICING_EVENT)
             {
                 SLM_TRACE("vtkEvent: MiddleButtonPressEvent");
-                assert(m_adaptor);
-                assert(m_picker);
+                SLM_ASSERT("m_adaptor not instanced", m_adaptor);
+                SLM_ASSERT("m_picker not instanced", m_picker);
 
                 double pickPoint[3];
                 double pickedPoint[3];
@@ -130,8 +130,8 @@ public:
             else if ( eventId == STOP_SLICING_EVENT)
             {
                 SLM_TRACE("vtkEvent: MiddleButtonReleaseEvent");
-                assert(m_adaptor);
-                assert(m_picker);
+                SLM_ASSERT("m_adaptor not instanced", m_adaptor);
+                SLM_ASSERT("m_picker not instanced", m_picker);
 
                 if(m_mouseMoveObserved)
                 {
@@ -147,7 +147,7 @@ public:
             else if (eventId == vtkCommand::MouseMoveEvent)
             {
                 SLM_TRACE("vtkEvent: MouseMoveEvent");
-                assert(m_mouseMoveObserved);
+                SLM_ASSERT("m_mouseMoveObserved not instanced", m_mouseMoveObserved);
 
                 int x,y;
                 double pickPoint[3];
@@ -168,27 +168,27 @@ public:
                 vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
                 char *keySym = rwi->GetKeySym();
 
-                if (std::string(keySym) == "T")
+                if ( std::string(keySym) == "T" || std::string(keySym) == "t" )
                 {
                     m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
                 }
-                else if (std::string(keySym) == "Y")
+                else if (std::string(keySym) == "Y" || std::string(keySym) == "y" )
                 {
                     m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
                 }
-                else if (std::string(keySym) == "G")
+                else if (std::string(keySym) == "G" || std::string(keySym) == "g" )
                 {
                     m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
                 }
-                else if (std::string(keySym) == "H")
+                else if (std::string(keySym) == "H" || std::string(keySym) == "h" )
                 {
                     m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
                 }
-                else if (std::string(keySym) == "B")
+                else if (std::string(keySym) == "B" || std::string(keySym) == "b" )
                 {
                     m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
                 }
-                else if (std::string(keySym) == "N")
+                else if (std::string(keySym) == "N" || std::string(keySym) == "n" )
                 {
                     m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
                 }

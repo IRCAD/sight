@@ -40,6 +40,17 @@ class IOVTK_CLASS_API ImageWriterService : public ::io::IWriter
 
 public :
     fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter) ) ;
+
+    /**
+     * @brief Configure the image path.
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    IOVTK_API virtual void configureWithIHM();
+
+protected:
+
     /**
      * @brief   Constructor
      *
@@ -50,17 +61,6 @@ public :
      * @brief   Destructor
      */
     IOVTK_API virtual ~ImageWriterService() throw();
-
-    /**
-     * @brief Configure the image path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    IOVTK_API virtual void configureWithIHM();
-
-
-protected:
 
     /**
     * @brief Configuring method.

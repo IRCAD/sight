@@ -125,7 +125,7 @@ void Plane::doStart() throw(fwTools::Failed)
         ::fwRenderVTK::IVtkAdaptorService::sptr servicePoint =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
         ( point, "::visuVTKAdaptor::Point" );
-        assert(servicePoint);
+        SLM_ASSERT("servicePoint not instanced", servicePoint);
 
         servicePoint->setRenderService(this->getRenderService());
         servicePoint->setRenderId( this->getRenderId() );

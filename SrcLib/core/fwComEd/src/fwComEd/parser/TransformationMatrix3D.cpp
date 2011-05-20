@@ -33,7 +33,7 @@ void TransformationMatrix3D::updating( ) throw(fwTools::Failed)
 void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
 {
     ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast( _obj );
-    assert( matrix ) ;
+    SLM_ASSERT("matrix not instanced", matrix);
 
     BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
     {

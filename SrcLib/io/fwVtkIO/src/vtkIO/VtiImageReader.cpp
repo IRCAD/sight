@@ -6,6 +6,7 @@
 
 #include <vtkXMLImageDataReader.h>
 #include <vtkImageData.h>
+#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -24,28 +25,30 @@ namespace vtkIO
 VtiImageReader::VtiImageReader()
 : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
-    SLM_TRACE("vtkIO::VtiImageReader::VtiImageReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 VtiImageReader::~VtiImageReader()
 {
-    SLM_TRACE("vtkIO::VtiImageReader::~VtiImageReader");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void VtiImageReader::read()
 {
-    assert( m_object.use_count() );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     ::fwData::Image::sptr pImage = getConcreteObject();
 
-    vtkXMLImageDataReader * reader = vtkXMLImageDataReader::New();
+    vtkSmartPointer< vtkXMLImageDataReader > reader = vtkSmartPointer< vtkXMLImageDataReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
+
+    Progressor progress(reader, this->getSptr(), this->getFile().string());
+
     reader->Update();
 
     vtkDataObject *obj = reader->GetOutput();
@@ -61,7 +64,6 @@ void VtiImageReader::read()
         errMsg.append( this->getFile().string() );
         throw( errMsg );
     }
-    reader->Delete();
 }
 
 //------------------------------------------------------------------------------

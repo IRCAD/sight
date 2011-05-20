@@ -148,7 +148,7 @@ void SnapshotEditor::onSnapButton()
     SLM_TRACE_FUNC();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget *container = qtContainer->getQtContainer();
-    assert( container ) ;
+    SLM_ASSERT("container not instanced", container);
     if( container->isVisible() )
     {
         for(unsigned int i=0; i < m_scenesUID.size(); i++)
