@@ -22,7 +22,7 @@ namespace fwMath
 /**
  * @brief
  */
-FWMATH_API bool IsInclosedVolume(const fwVertexPosition _vertex, const fwVertexIndex _vertexIndex, const fwVec3d &_P );
+FWMATH_API bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex, const fwVec3d &_P );
 
 /**
  * @brief Compute the intersection between triangle(define by threes vertex vert1, vert2, vert3) and the Oz parallel line and cross by the point P.
@@ -30,26 +30,21 @@ FWMATH_API bool IsInclosedVolume(const fwVertexPosition _vertex, const fwVertexI
  * t is the oriented distance of P to the intersection point.
  * u and v is the coordinate of the intersection point in the (O, u, v) triangle coordinate system with :
  * O = vert1. u =  vert2 - O. v =  vert3 - O.
- * "Fast, Minimum Storage Ray/Triangle Intersection", Tomas M�ller, Ben Trumbore.
+ * "Fast, Minimum Storage Ray/Triangle Intersection", Tomas Muller, Ben Trumbore.
  *
  */
 FWMATH_API bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _vert1, fwVec3d _vert2, double &_t, double &_u, double &_v);
 
 /// test whatever a vertex is duplicated or not
-FWMATH_API bool isBorderlessSurface( const fwVertexIndex _vertexIndex);
+FWMATH_API bool isBorderlessSurface( const fwVertexIndex &_vertexIndex);
 
-FWMATH_API void findBorderEdges( const fwVertexIndex _vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours);
-
-///// reorder the edges to be geomatrically chained ( contour[i].second = contour[i+1].first || contour[i+1].second)
-//FWMATH_API void sortBorderEdges(  std::vector<  std::pair< int, int  > >  &contour);
-
+FWMATH_API void findBorderEdges( const fwVertexIndex &_vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours);
 
 /**
  *  @brief Closes the surface if necessary
  * @return True if container mesh is changed
  */
 FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
-
 
 /**
  * remove orphan vertices (i.e not used in _vertexIndex), _vertexIndex is reordered according to vertex suppressions
