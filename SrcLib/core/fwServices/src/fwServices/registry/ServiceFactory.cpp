@@ -104,7 +104,9 @@ void ServiceFactory::parseBundleInformation()
     {
         if ( iter->second->objectImpl.empty() )
         {
-            OSLM_WARN("Service " << iter->first << " of type  " << iter->second->serviceType << " in bundle " << iter->second->bundle->getIdentifier() << " has not object defined in plugin.xml ( declaration missing in dataReg ? ). Else is a service of service (sorry but not managed in this version )");
+            OSLM_WARN("Service " << iter->first << " of type  "
+                    << iter->second->serviceType << " in bundle " << iter->second->bundle->getIdentifier()
+                    << " has not object defined in plugin.xml ( declaration missing in dataReg ? ). Else is a service of service (sorry but not managed in this version )");
 
         }
     }
@@ -170,13 +172,12 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
 
 //------------------------------------------------------------------------------
 
-void ServiceFactory::addFactory
-( ::boost::shared_ptr< ::fwTools::IClassFactory > _factory,
+void ServiceFactory::addFactory( ::fwTools::IClassFactory::sptr _factory,
         const std::string & simpl,
         const std::string & stype,
         const std::string & oimpl)
 {
-    OSLM_DEBUG( "New service registring : "
+    OSLM_DEBUG( "New service registering : "
             << " simpl =" << simpl
             << " stype=" << stype
             << " oimpl=" << oimpl
@@ -191,7 +192,7 @@ void ServiceFactory::addFactory
         OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) has already a registered factory.", ! info->factory );
         OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) is already register and has not the same srv type. ( " << stype << " != " << info->serviceType <<" )", stype == info->serviceType );
         OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) is already register and has not the same oimpl. ( " << oimpl << " != " << info->objectImpl <<" )", oimpl == info->objectImpl );
-        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > >( _factory );
+        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::string > >( _factory );
     }
     else
     {
@@ -199,7 +200,7 @@ void ServiceFactory::addFactory
         ServiceFactoryInfo::NewSptr info;
         info->serviceType = stype;
         info->objectImpl = oimpl;
-        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > >( _factory );
+        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::string > >( _factory );
         m_srvImplTosrvInfo[simpl] = info;
     }
 }

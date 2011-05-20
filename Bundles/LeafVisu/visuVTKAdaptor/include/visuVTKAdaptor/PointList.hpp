@@ -7,6 +7,7 @@
 #ifndef _VISUVTKADAPTOR_POINTLIST_HPP_
 #define _VISUVTKADAPTOR_POINTLIST_HPP_
 
+#include <set>
 #include <vector>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>

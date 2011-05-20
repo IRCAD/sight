@@ -12,10 +12,12 @@
 #include <fwCore/Demangler.hpp>
 
 
-namespace fwTools {
+namespace fwTools
+{
 
-::boost::shared_ptr<ClassFactoryRegistry>  ClassFactoryRegistry::m_instance = ::boost::shared_ptr<ClassFactoryRegistry>();
+ClassFactoryRegistry::sptr  ClassFactoryRegistry::m_instance = ::boost::shared_ptr<ClassFactoryRegistry>();
 
+//------------------------------------------------------------------------------
 
 ClassFactoryRegistry::ClassFactoryRegistry()
 {}
@@ -27,8 +29,7 @@ ClassFactoryRegistry::~ClassFactoryRegistry()
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<ClassFactoryRegistry>
-ClassFactoryRegistry::getDefault()
+::fwTools::ClassFactoryRegistry::sptr ClassFactoryRegistry::getDefault()
 {
     if (m_instance==NULL)
     {
@@ -39,71 +40,55 @@ ClassFactoryRegistry::getDefault()
 
 //------------------------------------------------------------------------------
 
-const ClassFactoryRegistry::ManagedElementContainer
-&ClassFactoryRegistry::managedElements()
-{
-    assert( ClassFactoryRegistry::getDefault()->m_registry.size() == ClassFactoryRegistry::getDefault()->m_managedElements.size() );
-    return ClassFactoryRegistry::getDefault()->m_managedElements;
-}
-
-//------------------------------------------------------------------------------
-
-void ClassFactoryRegistry::addFactory(::boost::shared_ptr<IClassFactory> factory)
-{
-    SLM_ASSERT("factory not instanced", factory);
-
-    OSLM_TRACE("ClassFactoryRegistry::addFactory "
-            << ::fwCore::Demangler(factory).getRootedClassname() << " addr=" << factory << "exist=" <<
-                (ClassFactoryRegistry::getDefault()->m_registry.find(factory)!=ClassFactoryRegistry::getDefault()->m_registry.end()) );
-    bool firstInsertion = ClassFactoryRegistry::getDefault()->m_registry.insert( factory ).second;
-    OSLM_TRACE( "ClassFactoryRegistry::addFactory(this= " << ClassFactoryRegistry::getDefault() << ") "
-                    << getString(factory->baseClassId()) << "-"
-                    << getString(factory->subClassId())  << "-"
-                    << getString(factory->keyId() )      << " keyVal="
-                    << factory->stringizedKey()
-                    <<   (firstInsertion?" firstInsertion":" secondInsertion") );
-    if ( firstInsertion )
-    {
-        ManagedElement me( factory->baseClassId(), factory->subClassId() ,factory->keyId() );
-        ClassFactoryRegistry::getDefault()->m_managedElements.push_back( me );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-std::list< ::boost::shared_ptr< IClassFactory > > ClassFactoryRegistry::getFactories(const ClassFactoryRegistry::ManagedElement &me)
-{
-    std::list< ::boost::shared_ptr< IClassFactory > > result;
-
-    BOOST_FOREACH( ::boost::shared_ptr< IClassFactory > factory, getDefault()->m_registry )
-    {
-        bool candidate = false;
-        candidate     = ( keyComparatorEquality(me.m_baseClass, typeid(void))  ||
-                          keyComparatorEquality( me.m_baseClass ,  factory->baseClassId())
-                        )
-                    &&  ( keyComparatorEquality(me.m_subClass , typeid(void))  ||
-                          keyComparatorEquality(me.m_subClass  , factory->subClassId())
-                        )
-                    &&  ( keyComparatorEquality(me.m_keyType , typeid(void))   ||
-                          keyComparatorEquality(me.m_keyType   , factory->keyId())
-                        );
-        if (candidate)
-        {
-            result.push_back(factory);
-        }
-    }
-
-    return result;
-}
-
-//------------------------------------------------------------------------------
-
-ClassFactoryRegistry::FactoryContainer &ClassFactoryRegistry::getFactories()
+ClassFactoryRegistry::FactoryContainerMap &ClassFactoryRegistry::getFactories()
 {
     return getDefault()->m_registry;
 }
 
 //------------------------------------------------------------------------------
 
-} // end namespace fwTools {
+::fwTools::IClassFactory::sptr ClassFactoryRegistry::getFactory(BaseClassType base, KeyType key)
+{
+    ::fwTools::IClassFactory::sptr factory;
+    if(getFactories().find(base) != getFactories().end() )
+    {
+        FactoryContainer mapFactory =  getFactories()[base];
+        if(mapFactory.find(key) != mapFactory.end() )
+        {
+            factory = mapFactory[key];
+        }
+    }
+    return factory;
+}
+
+//------------------------------------------------------------------------------
+
+void ClassFactoryRegistry::addFactory(::fwTools::IClassFactory::sptr factory)
+{
+    std::string key = factory->stringizedKey();
+    std::string baseClass = ::fwTools::getString(factory->baseClassId());
+    std::string subClass = ::fwTools::getString(factory->subClassId());
+
+    if(getFactories().find(baseClass) == getFactories().end() )
+    {
+        FactoryContainer mapFactory;
+        mapFactory.insert(std::make_pair(key, factory));
+        getFactories().insert(std::make_pair(baseClass, mapFactory));
+    }
+    else
+    {
+        if(getFactories()[baseClass].find(key) == getFactories()[baseClass].end())
+        {
+            getFactories()[baseClass].insert(std::make_pair(key, factory));
+        }
+        else
+        {
+            OSLM_WARN("ClassFactory "<< baseClass << " - " << subClass << " - " << key << " already registered.");
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+} // end namespace fwTools
 

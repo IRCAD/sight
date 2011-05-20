@@ -29,7 +29,10 @@ namespace fwTools {
  */
 class FWTOOLS_CLASS_API IClassFactory
 {
-    public:
+public:
+
+    typedef ::boost::shared_ptr< ::fwTools::IClassFactory > sptr;
+
     FWTOOLS_API IClassFactory();
     FWTOOLS_API virtual ~IClassFactory();
 

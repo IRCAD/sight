@@ -15,12 +15,15 @@
 namespace fwTools
 {
 
+//------------------------------------------------------------------------------
+
 template<>
 std::string getString(const std::string &aString)
 {
     return aString;
 }
 
+//------------------------------------------------------------------------------
 
 template<>
 std::string getString(const std::type_info &ti)
@@ -42,12 +45,15 @@ std::string getString(const std::type_info &ti)
 #endif
 }
 
+//------------------------------------------------------------------------------
+
 template<>
 std::string getString(const TypeInfo &ti)
 {
     return getString(ti.type_info());
 }
 
+//------------------------------------------------------------------------------
 
 template<>
 std::string getString(const signed char &c)
@@ -55,6 +61,7 @@ std::string getString(const signed char &c)
     return boost::lexical_cast<std::string>((short)c);
 }
 
+//------------------------------------------------------------------------------
 
 template<>
 std::string getString(const  char &c)
@@ -62,12 +69,14 @@ std::string getString(const  char &c)
     return boost::lexical_cast<std::string>((short)c);
 }
 
+//------------------------------------------------------------------------------
+
 template<>
 std::string getString(const unsigned char &c)
 {
     return boost::lexical_cast<std::string>((short)c);
 }
 
-
+//------------------------------------------------------------------------------
 
 }
