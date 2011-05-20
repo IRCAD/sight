@@ -40,7 +40,12 @@ public:
 
     GUIQT_API int run() throw();
 
+protected:
+
+    GUIQT_API void loadStyleSheet();
+
 private:
+
     QPointer< QApplication > m_app;
     int m_argc;
 

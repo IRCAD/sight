@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TransfertFunction id="32d32b33-08ef-4be5-9b78-7a6b1f60d5d5" class="::fwData::TransfertFunction">
+  <Name>MRI-T2-vessels</Name>
+  <Encoding/>
+  <Field id="51f4be9b-5a3e-4f86-b6c3-48f764c9243e" class="::fwTools::Field" label="ID_TRANSFERTFUNCTIONPOINTS">
+    <TransfertFunctionPoint id="5975b287-146a-4eb0-9f8b-af6d91833cc6" class="::fwData::TransfertFunctionPoint">
+      <Value>401</Value>
+      <Field id="508e2f41-ee25-4649-a90a-8bd4cba960c0" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="6aee6eec-d487-4dd1-80cf-aa1a52c314eb" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>0</item>
+            <item>0</item>
+            <item>0</item>
+            <item>0</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="80e2b806-8005-4914-b989-8aa43bd454be" class="::fwData::TransfertFunctionPoint">
+      <Value>416</Value>
+      <Field id="62ed8ffa-4b29-4a86-8a8f-5eef6dc5e728" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="4329a9e1-b181-4f30-91fa-1597338c78d3" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>0.501961</item>
+            <item>0</item>
+            <item>0</item>
+            <item>0</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="d4f7b9d0-ab63-4691-be70-1f283c210125" class="::fwData::TransfertFunctionPoint">
+      <Value>480</Value>
+      <Field id="f771d91e-6136-489f-9c57-d5fee719b2f4" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="f20dd2e6-9e75-47ab-b902-7bcad6da87d4" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>1</item>
+            <item>0.501961</item>
+            <item>0.501961</item>
+            <item>0.307263</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="b43510b1-cdca-453c-a0f3-c9871b793e80" class="::fwData::TransfertFunctionPoint">
+      <Value>549</Value>
+      <Field id="1db5b245-e6f7-4c51-a989-366e5e419ad3" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="0970767e-e19b-41bd-983e-41e6a1f90ba9" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>1</item>
+            <item>0.501961</item>
+            <item>0</item>
+            <item>0.606145</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="5f28dc3e-f7a5-466b-aa74-424569af5a26" class="::fwData::TransfertFunctionPoint">
+      <Value>604</Value>
+      <Field id="918d0274-14aa-4812-af5c-e92e80ea23ac" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="17c13455-c34f-4b36-9d0e-aa73035d7ffe" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>1</item>
+            <item>1</item>
+            <item>0</item>
+            <item>0.793296</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+    <TransfertFunctionPoint id="39766b55-cd9f-4a59-81ad-4dd97bcf777b" class="::fwData::TransfertFunctionPoint">
+      <Value>652</Value>
+      <Field id="49fcf45e-5b04-40ac-be1b-7924a3a53c0c" class="::fwTools::Field" label="ID_COLOR">
+        <Color id="a5cb99f3-3c06-4016-8799-a179bebc5acc" class="::fwData::Color">
+          <RGBA>
+            <count>4</count>
+            <item_version>0</item_version>
+            <item>1</item>
+            <item>1</item>
+            <item>1</item>
+            <item>1</item>
+          </RGBA>
+        </Color>
+      </Field>
+    </TransfertFunctionPoint>
+  </Field>
+</TransfertFunction>

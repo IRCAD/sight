@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include <fwCore/base.hpp>
 #include "fwGui/dialog/IProgressDialog.hpp"
 
 namespace fwGui
@@ -13,14 +14,33 @@ namespace dialog
 {
 const IProgressDialog::FactoryRegistryKeyType IProgressDialog::REGISTRY_KEY =  "::fwGui::dialog::ProgressDialog";
 
-IProgressDialog::IProgressDialog()
+IProgressDialog::IProgressDialog() : m_canceled(false), m_raise(true)
 {}
 
 
 IProgressDialog::~IProgressDialog()
 {}
 
-} //namespace dialog
+
+void IProgressDialog::setCancelCallback(CancelCallbackType callback)
+{
+    m_cancelCallback = callback;
+}
+
+void IProgressDialog::cancelPressed()
+{
+    m_canceled = true;
+    if(m_cancelCallback)
+    {
+        m_cancelCallback();
+    }
+    else if (m_raise)
+    {
+        FW_RAISE("Operation canceled");
+    }
+}
+
+} // namespace dialog
 } // namespace fwGui
 
 

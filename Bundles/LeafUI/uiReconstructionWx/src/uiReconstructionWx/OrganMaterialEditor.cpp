@@ -1,6 +1,7 @@
 #include <wx/window.h>
 #include <wx/event.h>
 #include <wx/sizer.h>
+#include <wx/stattext.h>
 
 #include <fwCore/base.hpp>
 

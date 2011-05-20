@@ -1,0 +1,5 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+USE     = ['qtCore', 'boostFilesystem' ]
+LIB = ['fwData_0-1', 'fwGui_0-1','fwGuiQt_0-1', 'fwComEd_0-1', 'fwXML_0-1']
+BUNDLES = ['gui_0-1']

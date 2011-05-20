@@ -4,51 +4,54 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/Demangler.hpp>
-
 #ifdef WIN32
   #include <RPC.h> // use Rpcrt4.dll
 #else
   #include <uuid/uuid.h> // in package uuid-dev and used libuuid
 #endif
 
-#include "fwTools/UUID.hpp"
+#include <fwCore/Demangler.hpp>
 
+#include "fwTools/UUID.hpp"
 
 namespace fwTools
 {
+
 std::map< TypeInfo, ::boost::uint32_t > UUID::m_CategorizedCounter;
 UUID::UUIDContainer UUID::m_uuids;
 
+//-----------------------------------------------------------------------------
 
 UUID::UUID()
-{
-}
+{}
+
+//-----------------------------------------------------------------------------
 
 UUID::~UUID()
-{
-}
+{}
 
+//-----------------------------------------------------------------------------
 
 void UUID::next( UUIDContainer::iterator &iter )
 {
     UUIDContainer::iterator iterCurrent = iter;
-        if ( iterCurrent != m_uuids.end() ) // On n'est pas à la fin ...
+    if ( iterCurrent != m_uuids.end() )
     {
-        iter++; // On passe au suivant
-        if ( iterCurrent->first.expired() == true)
+        iter++;
+        if ( iterCurrent->first.expired())
         {
-            // le précédent est expiré, on l'efface ...
+            // previous item is expired, we remove it
             m_uuids.erase(iterCurrent); // OK C++ stdLib book p 205
         }
 
-        if ( iter != m_uuids.end() && iter->first.expired() == true ) // si le suivant est différent de fin
+        if ( iter != m_uuids.end() && iter->first.expired() )
         {
             next( iter ) ; // if not expired we do not need to search next
         }
     }
 }
 
+//-----------------------------------------------------------------------------
 
 UUID::UUIDContainer::iterator UUID::begin(UUIDContainer &uuidContainer)
 {
@@ -60,8 +63,7 @@ UUID::UUIDContainer::iterator UUID::begin(UUIDContainer &uuidContainer)
      return i;
 }
 
-
-
+//-----------------------------------------------------------------------------
 
 bool UUID::exist( const std::string & uuid )
 {
@@ -77,8 +79,7 @@ bool UUID::exist( const std::string & uuid )
     return false;
 }
 
-
-
+//-----------------------------------------------------------------------------
 
 std::string UUID::generateUUID()
 {
@@ -101,7 +102,7 @@ std::string UUID::generateUUID()
         return extUUID;
 }
 
-
+//-----------------------------------------------------------------------------
 
 // helper to find a weak_ptr in the m_uuids
 UUID::UUIDContainer::iterator UUID::find( boost::weak_ptr<void> wp )
@@ -115,13 +116,14 @@ UUID::UUIDContainer::iterator UUID::find( boost::weak_ptr<void> wp )
 
         if ( i->first.expired()==false   &&    sp == i->first.lock()  )
         {
-                return i;
+            return i;
         }
         next(i);
     }
     return m_uuids.end();
 }
 
+//-----------------------------------------------------------------------------
 
 
 }

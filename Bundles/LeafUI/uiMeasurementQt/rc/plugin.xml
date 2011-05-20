@@ -1,0 +1,14 @@
+<plugin id="uiMeasurementQt" class="::uiMeasurementQt::Plugin">
+    <library name="uiMeasurementQt"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    <requirement id="io"/>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMeasurement::editor::Distance</service>
+        <object>::fwData::Image</object>
+    </extension>
+</plugin>

@@ -8,7 +8,6 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/macros.hpp>
-//#include <fwServices/RootManager.hpp>
 
 #include <fwGui/Cursor.hpp>
 

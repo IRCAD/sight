@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <wx/utils.h>
+#include <wx/cursor.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 

@@ -10,8 +10,12 @@
 #define _FWWX_CONVERT_HPP_
 
 #include <string>
-#include <wx/wx.h>
+
+#ifdef __WXMSW__
+#   include <wx/msw/winundef.h>
+#endif
 #include <wx/string.h>
+
 #include "fwWX/config.hpp"
 
 #ifdef __WXMAC__

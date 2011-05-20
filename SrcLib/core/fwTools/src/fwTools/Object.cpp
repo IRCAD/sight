@@ -16,6 +16,7 @@ namespace fwTools {
 
 //------------------------------------------------------------------------------
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwTools::Object, ::fwTools::Object );
+REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwTools::Field,  ::fwTools::Field);
 //------------------------------------------------------------------------------
 
 const std::string & getLabel(const ::fwTools::Object *obj)

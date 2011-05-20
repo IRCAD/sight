@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <algorithm>
+#include <limits>
 #include <boost/mpl/vector.hpp>
 
 #include "fwTools/StringKeyTypeMapping.hpp"
@@ -49,6 +50,27 @@ DynamicType makeDynamicType(const KEYTYPE &keyType)
     return d;
 }
 
+
+
+template<class T>
+class MinMaxFunctor
+{
+public:
+
+    template< typename PIXEL >
+    void operator()( std::pair<T,T> &minMax )
+    {
+        minMax.first = static_cast< T >( std::numeric_limits< PIXEL >::min() );
+        minMax.second = static_cast< T >( std::numeric_limits< PIXEL >::max() );
+
+        ::fwTools::DynamicType type = ::fwTools::makeDynamicType< PIXEL >();
+        if(!std::numeric_limits< PIXEL >::is_integer)
+        {
+            // std::numeric_limits::min() returns the smallest positive value for floating types
+            minMax.first = minMax.second * -1;
+        }
+    }
+};
 
 
 
@@ -128,6 +150,17 @@ void DynamicType::registerNewType(const std::string &newKey) throw(std::invalid_
 
     throw std::invalid_argument("Dynamic::registerNewType another isMapping is responding");
 }
+
+
+template<class T>
+std::pair<T,T> DynamicType::minMax()
+{
+    typedef boost::mpl::vector< signed char, unsigned char, signed short, unsigned short,  signed int, unsigned int, float, double >:: type SupportedTypes;
+    std::pair<T,T> minMax;
+    Dispatcher<SupportedTypes,MinMaxFunctor<T> >::invoke(*this,minMax);
+    return minMax;
+}
+
 
 
 } //end namespace fwTools {

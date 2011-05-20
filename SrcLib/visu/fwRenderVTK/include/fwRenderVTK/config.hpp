@@ -4,11 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// fwRenderVTK - copyright (C) 2005 IRCAD.
-//
-// author   Jean-Baptiste Fasquel
-
-
 #ifndef _FWRENDERVTK_CONFIG_HPP_
 #define _FWRENDERVTK_CONFIG_HPP_
 

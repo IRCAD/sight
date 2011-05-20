@@ -8,6 +8,7 @@
 #define _FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP_
 
 #include <utility> // std::pair
+#include <numeric>
 
 
 #include <fwData/Image.hpp>
@@ -30,6 +31,14 @@ namespace fwComEd
 {
 namespace fieldHelper
 {
+
+
+template <class T> struct bitwise_or : std::binary_function <T,T,T>
+{
+  T operator() (const T& x, const T& y) const
+    {return x|y;}
+};
+
 
 /**
  * @class   MedicalImageHelpers
@@ -80,10 +89,18 @@ public :
     FWCOMED_API static void updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF);
 
     /**
-     * @brief       Update transfer function min/max from window min/max fields.
+     * @brief       Update current transfer function min/max from image window min/max fields.
      * @param[in]   _pImg   image which contains the fields.
      */
     FWCOMED_API static void updateTFFromMinMax( ::fwData::Image::sptr _pImg );
+
+
+    /**
+     * @brief       Update specified transfer function min/max from image window min/max fields.
+     * @param[in]   _pImg   image which contains the fields.
+     * @param[in]   _pTf    Transfert function to update
+     */
+    FWCOMED_API static void updateTFFromMinMax( ::fwData::Image::sptr _pImg, ::fwData::TransfertFunction::sptr _pTf );
 
     /**
      * @brief       Check if the image has a landmark field.
@@ -131,6 +148,15 @@ public :
      * @param[in]   _pImg image which contains the transfer function field.
      */
     FWCOMED_API static void setBWTF( ::fwData::Image::sptr _pImg );
+
+    /**
+     * @brief       Set square transfer function (Black & White).
+     *
+     * If the square transfer function doesn't exist, it is created.
+     *
+     * @param[in]   _pImg image which contains the transfer function field.
+     */
+    FWCOMED_API static void setSquareTF( ::fwData::Image::sptr _pImg );
 
     /**
      * @brief       Check if the image has a comment field.
@@ -209,6 +235,9 @@ public :
     template < typename INT_INDEX>
     static bool isPixelNull(::fwData::Image::sptr image, INT_INDEX &point);
 
+    FWCOMED_API static bool isBufNull(const ::fwData::Image::BufferType *buf, const unsigned int len);
+
+
     /**
      * @brief Set a pixel value.
      * @param[in] image : image containing the pixel
@@ -227,6 +256,27 @@ public :
     template < typename T >
     static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T &value);
 
+
+    /**
+     * @brief Return a buffer of image type's size, containing 'value' casted to image data type
+     * @param[in] pImage : reference image
+     * @param[in] value : value to map
+     */
+    template < typename T >
+    static SPTR( ::fwData::Image::BufferType ) getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value);
+
+
+    /**
+     * @brief Return minimum and maximum values contained in image. If image
+     * min or max value is out of MINMAXTYPE range, they are clamped to
+     * MINMAXTYPE capacity
+     * @param[in] _img : image
+     * @param[out] _min : minimum value
+     * @param[out] _max : maximum value
+     */
+    template < typename MINMAXTYPE >
+    static void getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE &_min, MINMAXTYPE &_max);
+
 protected:
 
     /**
@@ -236,6 +286,44 @@ protected:
 
 };
 
+
+//------------------------------------------------------------------------------
+
+template < typename VALUE >
+class PixelCastAndSetFunctor
+{
+public:
+    class Param
+    {
+        public:
+        typedef VALUE ValueType;
+        typedef SPTR( ::fwData::Image::BufferType ) BufferTypeSptr;
+
+        Param(ValueType &v): value (v)
+        {};
+
+        const ValueType &value;
+        BufferTypeSptr res;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        unsigned char imageTypeSize = sizeof(IMAGE);
+
+        IMAGE val = ::fwTools::numericRoundCast<IMAGE>(param.value);
+
+        ::fwData::Image::BufferType *buf = reinterpret_cast< ::fwData::Image::BufferType* > (&val);
+
+        SPTR( ::fwData::Image::BufferType ) res ( new ::fwData::Image::BufferType[imageTypeSize] );
+        std::copy(buf, buf+imageTypeSize, res.get());
+        param.res = res;
+    }
+
+};
+
+
+//------------------------------------------------------------------------------
 
 template < typename VALUE, typename INT_INDEX >
 class CastAndSetFunctor
@@ -272,12 +360,16 @@ public:
 
 
 
+//------------------------------------------------------------------------------
+
 template < typename T >
 void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T &value)
 {
     setPixel(image, point->getCoord(), value);
 }
 
+
+//------------------------------------------------------------------------------
 
 template < typename T , typename INT_INDEX>
 void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value)
@@ -290,6 +382,22 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point
 }
 
 
+
+//------------------------------------------------------------------------------
+
+template < typename T >
+SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value)
+{
+    typename PixelCastAndSetFunctor<T>::Param param(value);
+
+    ::fwTools::DynamicType type = image->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , PixelCastAndSetFunctor<T> >::invoke( type, param );
+    return param.res;
+}
+
+
+
+//------------------------------------------------------------------------------
 
 template < typename INT_INDEX >
 class CastAndCheckFunctor
@@ -305,8 +413,8 @@ public:
         {};
 
         ::fwData::Image::sptr image;
-        bool &isNull;
         const PointType &point;
+        bool &isNull;
     };
 
     template < typename IMAGE >
@@ -323,18 +431,88 @@ public:
 
 };
 
+//------------------------------------------------------------------------------
+
 template < typename INT_INDEX>
 bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &point)
 {
-    bool isNull;
-    typename CastAndCheckFunctor<INT_INDEX>::Param param(point, isNull);
-    param.image = image;
+    const unsigned char imageTypeSize = image->getPixelType().sizeOf();
+    ::fwData::Image::BufferType *buf = static_cast< ::fwData::Image::BufferType *> (image->getPixelBuffer(point[0], point[1], point[2]));
 
-    ::fwTools::DynamicType type = image->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndCheckFunctor<INT_INDEX> >::invoke( type, param );
-
-    return isNull;
+    return isBufNull(buf, imageTypeSize);
 }
+
+//------------------------------------------------------------------------------
+
+template < typename T >
+class MinMaxFunctor
+{
+public:
+    class Param
+    {
+        public:
+
+        Param(::fwData::Image::sptr _img, T &_min, T &_max):
+            image(_img), min(_min), max(_max)
+        {};
+
+        ::fwData::Image::sptr image;
+        T &min;
+        T &max;
+    };
+
+    template < typename IMAGE >
+    void operator()( Param &param )
+    {
+        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        unsigned int len = size[0]*size[1]*size[2];
+
+        T &min = param.min;
+        T &max = param.max;
+
+        typedef std::numeric_limits<IMAGE> ImgLimits;
+        IMAGE imin = ImgLimits::max();
+        IMAGE imax = (ImgLimits::is_integer) ? ImgLimits::min() : - ImgLimits::max();
+
+        IMAGE * bufEnd = buffer + len;
+        IMAGE currentVoxel;
+
+        for (IMAGE * voxel = buffer; voxel < bufEnd; ++voxel )
+        {
+            currentVoxel = *voxel;
+
+            if ( currentVoxel < imin )
+            {
+                imin = currentVoxel;
+            }
+            else if (currentVoxel > imax)
+            {
+                imax = currentVoxel;
+            }
+        }
+
+        typedef std::numeric_limits<T> TLimits;
+        T minT =  (TLimits::is_integer) ? TLimits::min() : - TLimits::max();
+        T maxT = TLimits::max();
+
+        min = ( imin < minT ) ? minT : static_cast< T > (imin) ;
+        max = ( imax > maxT ) ? maxT : static_cast< T > (imax) ;
+
+    }
+
+};
+
+
+template < typename MINMAXTYPE >
+void MedicalImageHelpers::getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE &_min, MINMAXTYPE &_max)
+{
+    typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
+
+    ::fwTools::DynamicType type = _img->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , MinMaxFunctor<MINMAXTYPE> >::invoke( type, param );
+}
+
 
 
 } // fieldHelper

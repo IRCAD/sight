@@ -54,6 +54,8 @@ public:
     FWCOMED_API static std::string CHANGE_SLICE_TYPE;
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
+    FWCOMED_API static std::string TRANSPARENCY;
+    FWCOMED_API static std::string VISIBILITY;
     /// @}
 
     /**

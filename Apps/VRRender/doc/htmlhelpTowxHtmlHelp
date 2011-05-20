@@ -1,0 +1,22 @@
+#!/bin/bash
+
+test ! -d $1 && echo "$1 is not a dir" && exit 1 
+
+for i in $1/*html
+do
+    echo -n $i '... '
+    sed -i 's,<div \+class="[^"]\+" \+id=\("[^"]\+"\) *>,<a name=\1 />&,' $i
+    sed -i 's,<[a-z]\+ \+id=\("[^"]\+"\) *>,<a name=\1 />&,' $i
+    echo ok
+done
+
+sed -i  "s/Keyword/Name/g" $1/*hhk
+
+
+# images html theme defautl
+# mogrify -resize "850>" *.jpg
+
+# ipmages htmlhelp
+# mogrify -resize "1024>" *.jpg
+
+echo Done.

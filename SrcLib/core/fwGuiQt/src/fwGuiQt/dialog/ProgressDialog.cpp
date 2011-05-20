@@ -38,6 +38,8 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
 
     m_pmainWindow = qobject_cast< QMainWindow * >(activeWindow);
 
+    m_pcancelButton = new QPushButton("Cancel");
+    QObject::connect(m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()));
 
     if(m_pmainWindow)
     {
@@ -45,6 +47,9 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
         m_pprogressbar->setRange(0,100);
         m_pprogressbar->setValue(0);
         m_pmainWindow->statusBar()->addPermanentWidget(m_pprogressbar,0);
+        m_pmainWindow->statusBar()->addPermanentWidget(m_pcancelButton,0);
+        m_pmainWindow->statusBar()->setMinimumHeight(25);
+        m_pmainWindow->statusBar()->setMaximumHeight(25);
     }
     else
     {
@@ -56,7 +61,7 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
         m_pdialog->setMinimum(0);
         m_pdialog->setMaximum(100);
         m_pdialog->setValue(0);
-        m_pdialog->setCancelButton(0);
+        m_pdialog->setCancelButton(m_pcancelButton);
 
         this->setTitle(title);
         this->setMessage(message);
@@ -80,6 +85,12 @@ ProgressDialog::~ProgressDialog()
     {
         m_pprogressbar->deleteLater();
     }
+
+    if (m_pprogressbar)
+    {
+        m_pcancelButton->deleteLater();
+    }
+
 
     m_pmainWindow = 0;
 }
@@ -144,6 +155,11 @@ void ProgressDialog::setMessage(const std::string &msg)
 }
 
 //------------------------------------------------------------------------------
+
+void ProgressDialog::cancelPressed()
+{
+    IProgressDialog::cancelPressed();
+}
 
 
 } // namespace dialog

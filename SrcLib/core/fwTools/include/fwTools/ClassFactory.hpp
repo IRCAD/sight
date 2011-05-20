@@ -33,12 +33,8 @@ namespace fwTools {
  * \li BASECLASS is the mother of SubClasses (SUBCLASS) and define the common API.
  * \li KEY can be of any type int , std::string, std::type_info etc...
  *
- *  this factory produce an sharedPtr independantly of KEY value this responsability is managed by ClassFactoryRegistry
+ *  this factory produce an sharedPtr independently of KEY value this responsibility is managed by ClassFactoryRegistry
  */
-
-
-
-
 template<class BASECLASS, class SUBCLASS, class KEY>
 class ClassFactory : public TBKClassFactory<BASECLASS,KEY>
 {
@@ -154,6 +150,6 @@ public:
 
 };
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
 #endif /*CLASSBINDER_HPP_*/

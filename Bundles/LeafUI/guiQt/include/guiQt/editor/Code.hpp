@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QTextEdit>
 #include <QString>
+#include <QSyntaxHighlighter>
 
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
@@ -61,6 +62,10 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
+protected:
+    static const std::string PYTHON;
+    static const std::string CPP;
+
 protected slots:
     /**
      * @brief This method is called when the value change.
@@ -70,8 +75,9 @@ protected slots:
     void onModifyValue();
 
 private:
-
-    QPointer< QTextEdit > m_valueCtrl;
+    std::string                    m_language;
+    QPointer< QTextEdit >          m_valueCtrl;
+    QPointer< QSyntaxHighlighter > m_highlighter;
 };
 
 } // namespace editor

@@ -127,6 +127,12 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
                 actionGroup->addAction(action);
             }
 
+            // create shortcut
+            if( !actionInfo.m_shortcut.empty() )
+            {
+                action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
+            }
+
             menuItem->setQtMenuItem(action);
 
             m_menuItems.push_back(menuItem);
@@ -177,7 +183,9 @@ void ToolBarLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sp
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
+    bool oldState = action->blockSignals(true);
     action->setChecked(isChecked);
+    action->blockSignals(oldState);
 }
 
 //-----------------------------------------------------------------------------

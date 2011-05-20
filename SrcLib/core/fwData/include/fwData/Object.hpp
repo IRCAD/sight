@@ -51,6 +51,6 @@ public:
 
 };
 
-} // data
+} // fwData
 
 #endif //_FWDATA_OBJECT_HPP_

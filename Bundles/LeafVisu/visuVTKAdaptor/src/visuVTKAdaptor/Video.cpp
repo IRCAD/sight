@@ -118,14 +118,6 @@ void Video::doUpdate() throw(fwTools::Failed)
 
         this->addToRenderer(this->getActor());
 
-        ::fwData::TransformationMatrix3D::sptr intrinsic = video->getCamera()->getIntrinsicCameraTransformation();
-        double cx = intrinsic->getCoefficient(0, 2);
-        double cy = intrinsic->getCoefficient(1, 2);
-        double* pos = this->getActor()->GetPosition();
-        pos[0]-= size[0]/2.0 - cx;
-        pos[1]-= size[1]/2.0 - cy;
-        this->getActor()->SetPosition(pos);
-
         bText_init  = true;
 
         vtkProperty *property = this->getActor()->GetProperty();

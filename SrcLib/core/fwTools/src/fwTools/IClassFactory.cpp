@@ -6,13 +6,12 @@
 
 #include <string.h>
 
+#include <fwCore/base.hpp>
 
 #include "fwTools/IClassFactory.hpp"
 
-//VAGRM
-#include <fwCore/base.hpp>
-
-namespace fwTools {
+namespace fwTools
+{
 
 IClassFactory::IClassFactory()
 {}
@@ -20,6 +19,4 @@ IClassFactory::IClassFactory()
 IClassFactory::~IClassFactory()
 {}
 
-
-
-} // end namespace fwTools {
+} // end namespace fwTools

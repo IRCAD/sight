@@ -5,28 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <sstream>
-//#include <boost/date_time/time_facet.hpp>
 
 #include "fwTools/fromIsoExtendedString.hpp"
 
 
 namespace fwTools
 {
-//avec boost time_facet
-/*
-boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string ) //const std::string & s
-{
-    std::stringstream ss;
-    boost::posix_time::time_input_facet* input_facet = new boost::posix_time::time_input_facet();
-    input_facet->set_iso_extended_format();
-    ss.imbue(std::locale(ss.getloc(), input_facet));
-    ss.str(time_string);
-    boost::posix_time::ptime  t;
-    ss >> t;
-    return t ;
-}
-*/
-//version sans boost
 
 //------------------------------------------------------------------------------
 
@@ -38,13 +22,13 @@ std::string getDateInXsdFormat( const boost::posix_time::ptime & dateAndTime )
 
 //------------------------------------------------------------------------------
 
-boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string)
+::boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string)
 {
     std::string tmp(time_string);
     std::string::size_type i = 0;
     while ((i = tmp.find('T', i)) != (std::string::size_type)(-1))
     tmp.replace(i++, 1, " ");
-    boost::posix_time::ptime  t = boost::posix_time::time_from_string(tmp);
+    ::boost::posix_time::ptime  t = boost::posix_time::time_from_string(tmp);
     return t;
 }
 

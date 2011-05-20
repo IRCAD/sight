@@ -12,7 +12,7 @@
 namespace uiVisu
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisu::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisuQt::Plugin");
 
 Plugin::~Plugin() throw()
 {}

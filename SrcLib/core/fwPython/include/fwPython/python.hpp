@@ -4,7 +4,6 @@
 
 #include <string>
 #include <vector>
-#include <fwTools/Singleton.hpp>
 
 #include "fwPython/config.hpp"
 

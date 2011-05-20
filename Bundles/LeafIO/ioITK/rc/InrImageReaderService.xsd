@@ -1,0 +1,29 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+    
+<xsd:element name="service" type="serviceXSDType"/>
+
+<xsd:complexType name="serviceXSDType">
+    <xsd:sequence>
+        <xsd:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="filename" minOccurs="0" maxOccurs="1" type="filenameXSDType"/>
+    </xsd:sequence>
+    <xsd:attribute name="implementation" type="xsd:string" use="optional" />
+    <xsd:attribute name="type" type="xsd:string" use="optional" />
+    <xsd:attribute name="uid" type="xsd:string" use="optional" />
+    <xsd:anyAttribute processContents="skip"/>
+</xsd:complexType>
+
+<xsd:complexType name="filenameXSDType">
+    <xsd:attribute name="id" type="xsd:string" use="optional" />
+</xsd:complexType>
+
+<xsd:complexType name="ServiceType">
+    <xsd:sequence>
+        <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xsd:sequence>
+  <xsd:attribute name="type" type="xsd:string" use="required" />
+  <xsd:anyAttribute processContents="skip" />
+</xsd:complexType>
+
+</xsd:schema>
