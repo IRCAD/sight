@@ -70,6 +70,7 @@ void SofaCoreSrv::stopping() throw ( ::fwTools::Failed )
 void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
     if (msg->hasEvent("NEW_SOFA_SCENE")) {
+    
         // Delete object sofa
         delete sofa;
 
@@ -85,6 +86,20 @@ void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools
 
         // Apply at sofa the number of image by second
         sofa->setTimeStepAnimation(1000/50);
+        
+        if (sofa) {
+            // if animation is running
+            if (sofa->isAnimate()) {
+                // Stop animation
+                sofa->stopThread();
+            } else {
+                // Start animation
+                sofa->startThread();
+            }
+        } else {
+            QMessageBox::warning(0, "Warning", "To launch animation you must first load scene file !");
+        }
+        
     }
 
     else if (msg->hasEvent("START_STOP_SOFA")) {
@@ -98,7 +113,7 @@ void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools
                 sofa->startThread();
             }
         } else {
-            QMessageBox::warning(0, "Warning", "For launch animation you must first load scene file !");
+            QMessageBox::warning(0, "Warning", "To launch animation you must first load scene file !");
         }
     }
 

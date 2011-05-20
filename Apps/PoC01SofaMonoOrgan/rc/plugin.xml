@@ -1,15 +1,39 @@
 <plugin id="DemoComSofaConfiguration">
 
-    <extension id="DemoComSofaConfig" implements="::fwData::TriangularMesh">
+    <!--<extension id="DemoComSofaConfig" implements="::fwData::TriangularMesh">-->
+    
+    <requirement id="servicesReg" /> <!-- new -->
+
+    
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>DemoComSofaConfigurationID</id>
+        <type>standard</type>
+        <config> <!-- /new -->
 
         <object uid="CompositeVisu" type="::fwData::Composite">
+        
+        <service uid="RenderingMesh" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <scene>
+                        <!--<picker id="myPicker" vtkclass="fwVtkCellPicker" />-->
+
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+
+                        <adaptor id="MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="TrianMesh">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+
+                    </scene>
+                </service>
 
         <!--  Mesh data creation. -->
         <item key="TrianMesh">
         <object uid="myMesh" type="::fwData::TriangularMesh">
 
             <!-- Mise en place de la fenetre pricipale  -->
-            <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="MyIHM" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
                 <gui>
                     <frame>
                         <name>Altran-Est - Medic@ : PoC 1 Demo integration SOFA-FW4SPL</name>
@@ -126,37 +150,23 @@
 
 
             <!-- Service de lecture du fichier -->
-            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IEditor" uid="readerPathMeshFile" autoComChannel="no">
+            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoComChannel="no">
                 <type mode="reader" />
             </service>
 
             <!-- ****************************************** -->
+            
         </object>
         </item>
+                
 
+        <!--<start type="::fwGui::IFrameSrv" />-->    
+        <start uid="MyIHM" />
 
-
-                <service uid="RenderingMesh" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
-                    <scene>
-                        <!--<picker id="myPicker" vtkclass="fwVtkCellPicker" />-->
-
-                        <renderer id="default" background="0.0" />
-                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                            <config renderer="default" picker="" />
-                        </adaptor>
-
-                        <adaptor id="MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="TrianMesh">
-                            <config renderer="default" picker="" />
-                        </adaptor>
-
-                    </scene>
-                </service>
-
-        <start type="::fwGui::IFrameSrv" />
-
-        <stop type="::fwGui::IFrameSrv" />
+        
 
 
         </object>
+        </config>
     </extension>
 </plugin>

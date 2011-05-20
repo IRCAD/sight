@@ -7,7 +7,9 @@
 #include <fwData/Acquisition.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/helper.hpp>
+//#include <fwServices/helper.hpp>
+#include <fwServices/Base.hpp> // new
+#include <fwServices/IEditionService.hpp> // new
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwCore/spyLog.hpp>
