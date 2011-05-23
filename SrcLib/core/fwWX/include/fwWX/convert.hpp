@@ -19,6 +19,7 @@
 #include "fwWX/config.hpp"
 
 #ifdef __WXMAC__
+#include <wx/event.h>
 wxDECLARE_EVENT(wxEventFwOpen, wxCommandEvent);
 #define wxIDEventFwOpen 27001
 #endif

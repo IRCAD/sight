@@ -7,6 +7,11 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
+#ifdef __MACOSX__
+#include <wx/menu.h>
+#include <wx/button.h>
+#endif
+
 #include <wx/event.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
