@@ -273,4 +273,28 @@ void Image::setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf)
 }
 
 
+//------------------------------------------------------------------------------
+Image::BufferType* Image::getPixelBuffer( Image::BufferType *buffer, const ::boost::int32_t offset, const unsigned char imagePixelSize )
+{
+    BufferIndexType bufIndex = offset * imagePixelSize;
+    return buffer + bufIndex;
+}
+
+//------------------------------------------------------------------------------
+SPTR( Image::BufferType ) Image::getPixelBufferCopy( Image::BufferType *buffer, const ::boost::int32_t offset, const unsigned char imagePixelSize )
+{
+    Image::BufferType* buf = getPixelBuffer(buffer, offset, imagePixelSize);
+    SPTR( Image::BufferType ) res(new BufferType[imagePixelSize]);
+    std::copy(buf, buf+imagePixelSize, res.get());
+    return res;
+}
+
+//------------------------------------------------------------------------------
+void Image::setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, const ::boost::int32_t offset, const unsigned char imagePixelSize )
+{
+    BufferType * buf = static_cast < BufferType * > (getPixelBuffer(destBuffer, offset, imagePixelSize));
+    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
+}
+
+
 } // namespace fwData
