@@ -117,6 +117,9 @@ public:
 
     FWDATA_API void setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf);
 
+    FWDATA_API static Image::BufferType* getPixelBuffer( Image::BufferType *buffer, ::boost::int32_t offset, const unsigned char imagePixelSize );
+    FWDATA_API static SPTR( Image::BufferType ) getPixelBufferCopy( Image::BufferType *buffer, ::boost::int32_t offset, const unsigned char imagePixelSize );
+    FWDATA_API static void  setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, const ::boost::int32_t offset, const unsigned char imagePixelSize );
 
 protected :
 
