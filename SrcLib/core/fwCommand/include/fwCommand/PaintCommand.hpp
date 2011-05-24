@@ -26,6 +26,7 @@ struct FWCOMMAND_CLASS_API PaintCommand : public ICommand
 {
     fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), ::fwTools::Factory::New< PaintCommand > );
 
+
     // Overrides.
     FWCOMMAND_API const boost::uint32_t  getSize() const;
 
@@ -48,6 +49,9 @@ struct FWCOMMAND_CLASS_API PaintCommand : public ICommand
     FWCOMMAND_API void postPaint();
 
     FWCOMMAND_API void setImage( ::fwData::Image::sptr  image );
+
+protected:
+    FWCOMMAND_API PaintCommand();
 
 private :
 
@@ -74,7 +78,8 @@ private :
     ColorContainer  m_commandColorContainer;
 
     /// Working image
-    ::fwData::Image::wptr  m_image;
+    ::fwData::Image::wptr         m_image;
+    ::fwData::Image::BufferType * m_buffer;
 
     ::fwData::Image::VoxelIndexType m_currentPrepaintIndex;
     std::vector< ::fwData::Image::BufferType > m_currentPrepaintBuff;

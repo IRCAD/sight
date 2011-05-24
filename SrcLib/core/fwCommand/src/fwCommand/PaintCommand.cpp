@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
+** BEGIN LICENSE BLOCK *****
  * FW4SPL - Copyright (C) IRCAD, 2009-2010.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
@@ -22,6 +22,12 @@ namespace fwCommand
 REGISTER_BINDING_BYCLASSNAME( ::fwCommand::ICommand, ::fwCommand::PaintCommand, ::fwCommand::PaintCommand );
 
 //-----------------------------------------------------------------------------
+void PaintCommand::postPaint() : ICommand(),
+    m_buffer(0)
+{
+}
+
+//-----------------------------------------------------------------------------
 
 const boost::uint32_t  PaintCommand::getSize() const
 {
@@ -37,6 +43,10 @@ const boost::uint32_t  PaintCommand::getSize() const
 void PaintCommand::setImage( ::fwData::Image::sptr  image )
 {
     m_image = image;
+    //We assume that during all the command construction, the image do not
+    //change and is not destroyed, so we can keep a reference to it buffer
+    m_buffer = static_cast< ::fwData::Image::BufferType* >( image->getBuffer() );
+    SLM_ASSERT("Using a paintcommand on an image without buffer is not possible", m_buffer);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,7 +70,7 @@ void PaintCommand::prePaint( ::fwData::Image::VoxelIndexType index )
 
     m_currentPrepaintIndex = index;
     SLM_ASSERT("currentPrepaintBuff must be empty. Forgot a postPaint call ?", m_currentPrepaintBuff.empty());
-    ::fwData::Image::BufferType *buf  = static_cast< ::fwData::Image::BufferType* >( image->getBuffer() ) + index*imageTypeSize;
+    ::fwData::Image::BufferType *buf  = m_buffer + index*imageTypeSize;
     std::copy(buf, buf+imageTypeSize, std::back_insert_iterator<std::vector< ::fwData::Image::BufferType > >(m_currentPrepaintBuff));
 }
 
@@ -69,7 +79,7 @@ void PaintCommand::prePaint( ::fwData::Image::VoxelIndexType index )
 void PaintCommand::postPaint()
 {
     ::fwData::Image::sptr image = m_image.lock();
-    ::fwData::Image::BufferType *buf  = static_cast< ::fwData::Image::BufferType* >( image->getBuffer() ) + m_currentPrepaintIndex;
+    ::fwData::Image::BufferType *buf  = m_buffer + m_currentPrepaintIndex;
 
     unsigned int imageTypeSize = image->getPixelType().sizeOf();
     ::fwData::Image::BufferIndexType bufIndex = m_currentPrepaintIndex * imageTypeSize;
