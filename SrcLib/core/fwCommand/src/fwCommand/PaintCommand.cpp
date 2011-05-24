@@ -1,4 +1,4 @@
-** BEGIN LICENSE BLOCK *****
+/** BEGIN LICENSE BLOCK *****
  * FW4SPL - Copyright (C) IRCAD, 2009-2010.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
@@ -22,7 +22,7 @@ namespace fwCommand
 REGISTER_BINDING_BYCLASSNAME( ::fwCommand::ICommand, ::fwCommand::PaintCommand, ::fwCommand::PaintCommand );
 
 //-----------------------------------------------------------------------------
-void PaintCommand::postPaint() : ICommand(),
+PaintCommand::PaintCommand() : ICommand(),
     m_buffer(0)
 {
 }
