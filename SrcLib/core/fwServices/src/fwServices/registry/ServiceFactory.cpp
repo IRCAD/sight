@@ -217,8 +217,8 @@ void ServiceFactory::printInfoMap( const SrvRegContainer & src )
     BOOST_FOREACH(SrvRegContainer::value_type srvReg, src)
     {
         OSLM_DEBUG(" Service name = " << srvReg.first );
-        OSLM_DEBUG("  - type   = " << srvReg.second.serviceType );
-        OSLM_DEBUG("  - object = " << srvReg.second.objectImpl);
+        OSLM_DEBUG("  - type   = " << srvReg.second->serviceType );
+        OSLM_DEBUG("  - object = " << srvReg.second->objectImpl);
 
         OSLM_DEBUG_IF("  - bundle = " <<  srvReg.second->bundle->getIdentifier(), srvReg.second->bundle );
         OSLM_DEBUG_IF("  - bundle = ( no bundle registered )", ! srvReg.second->bundle );
