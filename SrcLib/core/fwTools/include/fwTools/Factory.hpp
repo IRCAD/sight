@@ -127,6 +127,7 @@ template< class CLASSNAME >
 ::boost::shared_ptr< CLASSNAME > Factory::New()
 {
     ::boost::shared_ptr< CLASSNAME > newObject( new CLASSNAME ) ;
+    OSLM_ASSERT("Factory::buildData unable to build class from key=" << ::fwTools::getString(typeid(CLASSNAME)), newObject);
     if ( newObject == 0 )
     {
         std::string mes = "Factory::buildData unable to build class from key=";
@@ -150,6 +151,7 @@ template<class KEYTYPE>
     BOOST_STATIC_ASSERT( ::boost::is_pointer<KEYTYPE>::value == false );
 
     ::fwTools::Object::sptr newObject( ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >( key ) );
+    OSLM_ASSERT("Factory::buildData unable to build class from key=" << ::fwTools::getString(key), newObject);
     if ( newObject == 0 )
     {
         std::string mes = "Factory::buildData unable to build class from key=";

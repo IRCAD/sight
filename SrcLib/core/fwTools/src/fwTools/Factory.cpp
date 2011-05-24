@@ -40,7 +40,7 @@ void Factory::addInitializer( ::fwTools::Factory::Initializer::sptr _init )
     ::fwTools::Object::sptr newObject ( ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >( className ) );
     if ( newObject == 0 )
     {
-        OSLM_FATAL( "Factory::buildData unable to build class : " <<  className; )
+        OSLM_FATAL( "Factory::buildData unable to build class : " <<  className);
         std::string mes = "Factory::buildData unable to build class : " + className;
         throw ::fwTools::Failed(mes);
     }
