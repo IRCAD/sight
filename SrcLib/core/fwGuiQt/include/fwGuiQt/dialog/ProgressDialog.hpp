@@ -71,6 +71,8 @@ public:
     /// override
     FWGUIQT_API void setMessage(const std::string &message);
 
+    FWGUIQT_API void hideCancelButton();
+
 protected Q_SLOTS:
     void cancelPressed();
 

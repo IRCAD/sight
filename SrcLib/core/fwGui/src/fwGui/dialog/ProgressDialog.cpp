@@ -73,5 +73,12 @@ void ProgressDialog::cancelPressed()
     assert(0);
 }
 
+//-----------------------------------------------------------------------------
+
+void ProgressDialog::hideCancelButton()
+{
+    m_implementation->hideCancelButton();
+}
+
 } //namespace dialog
 } //namespace fwGui
