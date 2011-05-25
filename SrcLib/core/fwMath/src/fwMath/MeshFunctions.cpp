@@ -7,6 +7,7 @@
 #include <list>
 #include <set>
 #include <boost/foreach.hpp>
+#include <boost/unordered_map.hpp>
 
 #include "fwMath/MeshFunctions.hpp"
 #include "fwMath/VectorFunctions.hpp"
@@ -125,19 +126,19 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 bool isBorderlessSurface(const fwVertexIndex &_vertexIndex)
 {
     typedef std::pair< int, int >  Edge; // always Edge.first < Edge.second !!
-    typedef std::map< Edge, int >  EdgeHistogram;
+    typedef boost::unordered_map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
-    BOOST_FOREACH(fwVertexIndex::value_type vertex, _vertexIndex)
+    BOOST_FOREACH(const fwVertexIndex::value_type &vertex, _vertexIndex)
     {
         OSLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
-        edgesHistogram[std::make_pair(std::min(vertex[0],vertex[1]), std::max(vertex[0],vertex[1]) )]++;
-        edgesHistogram[std::make_pair(std::min(vertex[0],vertex[2]), std::max(vertex[0],vertex[2]) )]++;
-        edgesHistogram[std::make_pair(std::min(vertex[2],vertex[1]), std::max(vertex[2],vertex[1]) )]++;
+        ++edgesHistogram[std::make_pair(std::min(vertex[0],vertex[1]), std::max(vertex[0],vertex[1]) )];
+        ++edgesHistogram[std::make_pair(std::min(vertex[0],vertex[2]), std::max(vertex[0],vertex[2]) )];
+        ++edgesHistogram[std::make_pair(std::min(vertex[2],vertex[1]), std::max(vertex[2],vertex[1]) )];
     }
 
-    BOOST_FOREACH(EdgeHistogram::value_type& histo, edgesHistogram)
+    BOOST_FOREACH(EdgeHistogram::value_type &histo, edgesHistogram)
     {
         if (histo.second<2)
         {
