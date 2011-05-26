@@ -108,7 +108,6 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
     }
 
     std::vector < ConfigurationType > keyTagsConfig = m_configuration->find("key");
-    SLM_ASSERT("::gui::action::ConfigActionSrv must have at least  one tag <key>", !keyTagsConfig.empty());
     if(!keyTagsConfig.empty())
     {
         std::string adaptor("");
