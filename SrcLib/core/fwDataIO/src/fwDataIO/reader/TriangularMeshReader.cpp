@@ -61,28 +61,45 @@ void TriangularMeshReader::read()
         throw std::ios_base::failure(str);
     }
 
-    /// Remove all points and cells
-    triMesh->points().clear();
-    triMesh->cells().clear();
+    ::fwData::TriangularMesh::PointContainer &points = triMesh->points();
+    ::fwData::TriangularMesh::CellContainer  &cells  = triMesh->cells();
 
+    /// Remove all points and cells
+    points.clear();
+    cells.clear();
+
+    std::vector< float > point(3);
+    float &pa = point[0];
+    float &pb = point[1];
+    float &pc = point[2];
+    std::vector< int > cell(3);
+    int &ca = cell[0];
+    int &cb = cell[1];
+    int &cc = cell[2];
+    
     /// Read content and update mesh data structure
-    unsigned int i, nbPts, nbCells;
+    unsigned int nbPts, nbCells, i;
+
     file>>nbPts;
-    for( i=0 ; i<nbPts ; ++i )
+    points.reserve(nbPts);
+    i = nbPts + 1;
+    while (--i)
     {
-        std::vector< float > point(3) ;
-        file>>point[0]>>point[1]>>point[2];
-        triMesh->points().push_back( point ) ;
+        file >> pa >> pb >> pc;
+        points.push_back( point ) ;
     }
+    points.resize(nbPts);
 
     file>>nbCells;
-    for( i=0 ; i<nbCells ; ++i )
+    cells.reserve(nbCells);
+    i = nbCells + 1;
+    while (--i)
     {
-        int a, b, c;
-        std::vector< int > cell(3) ;
-        file>>cell[0]>>cell[1]>>cell[2]>>a>>b>>c;
-        triMesh->cells().push_back( cell ) ;
+        file>>ca >> cb >> cc;
+        file.ignore(20, '\n');
+        cells.push_back( cell ) ;
     }
+    cells.resize(nbCells);
     file.close();
 
 }
