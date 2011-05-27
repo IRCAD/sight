@@ -4,12 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
 
 #include "fwGuiQt/dialog/ProgressDialog.hpp"
 
+#include <QPaintEvent>
 
 REGISTER_BINDING( ::fwGui::dialog::IProgressDialog, ::fwGuiQt::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::FactoryRegistryKeyType , ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
@@ -79,15 +81,18 @@ ProgressDialog::~ProgressDialog()
 
     if (m_pdialog)
     {
+        m_pdialog->hide();
         m_pdialog->deleteLater();
     }
     if (m_pprogressbar)
     {
+        m_pprogressbar->hide();
         m_pprogressbar->deleteLater();
     }
 
     if (m_pprogressbar)
     {
+        m_pcancelButton->hide();
         m_pcancelButton->deleteLater();
     }
 
@@ -104,16 +109,24 @@ void ProgressDialog::operator()(float percent,std::string msg)
     OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
     this->setMessage(msg);
 
-    if (m_pprogressbar)
+    QWidget *widget;
+    if (widget = m_pprogressbar)
     {
         m_pprogressbar->setValue(value);
     }
-    if (m_pdialog)
+    else if (widget = m_pdialog)
     {
         m_pdialog->setValue(value);
     }
 
-    QCoreApplication::processEvents();
+    if (m_processUserEvents)
+    {
+        QCoreApplication::processEvents(QEventLoop::AllEvents);
+    }
+    else
+    {
+        QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    }
 }
 
 //------------------------------------------------------------------------------
