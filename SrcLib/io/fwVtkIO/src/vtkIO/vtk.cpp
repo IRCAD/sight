@@ -607,8 +607,8 @@ void convertTF2vtkTF(
         const ::fwData::Color::ColorArray &vRGBANext = (*iterTFNext)->getColor()->getCRefRGBA();
 
 
-        value = ((*iterTF)->getValue() - min) * widthScale;
-        valueNext = ((*iterTFNext)->getValue() - min) * widthScale;
+        value = ((*iterTF)->getValue() - min) * widthScale + 0.5; // + 0.5 just a hack to cap the integer
+        valueNext = ((*iterTFNext)->getValue() - min) * widthScale + 0.5; // + 0.5 just a hack to cap the integer ex : replace 254.9999999999999999 by 255
 
         R = vRGBA[0];
         G = vRGBA[1];
