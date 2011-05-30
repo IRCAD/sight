@@ -1,42 +1,46 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2011.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MEDICALIMAGESRV_HPP_
-#define _CTRLSELECTION_MEDICALIMAGESRV_HPP_
+#ifndef _CTRLSELECTION_MSGFORWARDERSRV_HPP_
+#define _CTRLSELECTION_MSGFORWARDERSRV_HPP_
+
+#include <boost/tuple/tuple.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IController.hpp>
 
 #include "ctrlSelection/config.hpp"
+#include "ctrlSelection/IWrapperSrv.hpp"
 
 namespace ctrlSelection
 {
 
-
+namespace wrapper
+{
 /**
- * @class  MedicalImageSrv.
- * @brief  This service convert its attached image to a medical image by adding specific fields.
+ * @class  MsgForwarderSrv.
+ * @brief  This service forward an event from specific object to object specified with key in in composite.
  * @author IRCAD (Research and Development Team).
 
- * @date   2010.
+ * @date   2011.
  */
-class CTRLSELECTION_CLASS_API MedicalImageSrv : public ::fwServices::IController
+class CTRLSELECTION_CLASS_API MsgForwarderSrv : public ::ctrlSelection::IWrapperSrv
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (MedicalImageSrv)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MsgForwarderSrv)(::ctrlSelection::IWrapperSrv) ) ;
 
 protected:
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API MedicalImageSrv() throw() ;
+    CTRLSELECTION_API MsgForwarderSrv() throw() ;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~MedicalImageSrv() throw() ;
+    CTRLSELECTION_API virtual ~MsgForwarderSrv() throw() ;
 
     /// Implements starting method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
@@ -50,9 +54,6 @@ protected:
     /// Implements configuring method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
-    /// Implements reconfiguring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
-
     /// Implements updating method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
@@ -63,11 +64,14 @@ protected:
 
 private :
 
-    void convertImage();
+    typedef ::boost::tuple< std::string, std::string, std::string, std::string > EventType;
+    typedef std::vector < EventType > ManagedEventsType;
 
-    std::vector< std::string > m_imageCompositeKeys;
+    /// List of the managed event
+    ManagedEventsType m_managedEvents;
 };
 
+} // wrapper
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MEDICALIMAGESRV_HPP_
+#endif // _CTRLSELECTION_MSGFORWARDERSRV_HPP_
