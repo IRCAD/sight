@@ -507,9 +507,58 @@ void TriangularMesh::doStop() throw(fwTools::Failed)
 void TriangularMesh::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::TriangularMesh::sptr triangularMesh
-        = this->getObject < ::fwData::TriangularMesh >();
+    m_transformService.lock()->stop();
+    ::fwServices::OSR::unregisterService(m_transformService.lock());
+
+    this->setServiceOnMaterial(m_materialService.lock(), m_material);
+    this->setServiceOnMaterial(m_unclippedPartMaterialService.lock() , m_unclippedPartMaterial);
+
+    ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
+
+    this->createTransformService();
+    m_transformService.lock()->start();
     this->updateTriangularMesh( triangularMesh );
+}
+
+//------------------------------------------------------------------------------
+
+void TriangularMesh::createTransformService()
+{
+
+    ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
+
+    ::fwData::TransformationMatrix3D::sptr fieldTransform;
+    if (triangularMesh->getFieldSize("TransformMatrix"))
+    {
+        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+    }
+    else
+    {
+        fieldTransform = ::fwData::TransformationMatrix3D::New();
+        triangularMesh->setFieldSingleElement("TransformMatrix", fieldTransform);
+    }
+
+    vtkTransform *vtkFieldTransform = vtkTransform::New();
+    vtkFieldTransform->Identity();
+    m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
+        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+                fieldTransform,
+                "::visuVTKAdaptor::Transform" ));
+    assert(m_transformService.lock());
+    ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
+
+
+    transformService->setRenderService ( this->getRenderService()  );
+    transformService->setRenderId      ( this->getRenderId()       );
+
+
+    transformService->setTransform(vtkFieldTransform);
+    m_transform->Concatenate(vtkFieldTransform);
+    vtkFieldTransform->Delete();
+
+
+    m_actor->SetUserTransform(m_transform);
+
 }
 
 //------------------------------------------------------------------------------
@@ -728,6 +777,8 @@ void TriangularMesh::buildPipeline()
     if (!m_actor)
     {
         m_actor = this->newActor();
+        this->createTransformService();
+
         this->addToRenderer(m_actor);
         if (this->getPicker())
         {
@@ -841,46 +892,6 @@ vtkActor *TriangularMesh::newActor()
     }
 
     actor->SetMapper(m_mapper);
-
-    if(!this->getTransformId().empty())
-    {
-        m_transform->Concatenate(this->getTransform());
-    }
-
-    ::fwData::TriangularMesh::sptr triangularMesh
-        = this->getObject < ::fwData::TriangularMesh >();
-
-    ::fwData::TransformationMatrix3D::sptr fieldTransform;
-    if (triangularMesh->getFieldSize("TransformMatrix"))
-    {
-        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
-    }
-    else
-    {
-        fieldTransform = ::fwData::TransformationMatrix3D::New();
-        triangularMesh->setFieldSingleElement("TransformMatrix", fieldTransform);
-    }
-
-    vtkTransform *vtkFieldTransform = vtkTransform::New();
-    vtkFieldTransform->Identity();
-    m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
-        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
-                fieldTransform,
-                "::visuVTKAdaptor::Transform" ));
-    assert(m_transformService.lock());
-    ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
-
-
-    transformService->setRenderService ( this->getRenderService()  );
-    transformService->setRenderId      ( this->getRenderId()       );
-
-
-    transformService->setTransform(vtkFieldTransform);
-    m_transform->Concatenate(vtkFieldTransform);
-    vtkFieldTransform->Delete();
-
-
-    actor->SetUserTransform(m_transform);
 
     this->setVtkPipelineModified();
     return actor;
