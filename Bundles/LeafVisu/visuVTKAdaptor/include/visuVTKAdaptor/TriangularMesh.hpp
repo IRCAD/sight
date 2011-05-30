@@ -93,6 +93,7 @@ protected:
     void removeServicesStarterCommand();
     void createServicesStarterCommand();
 
+    void createTransformService();
     void createNormalsService();
     void removeNormalsService();
 
