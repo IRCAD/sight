@@ -510,8 +510,15 @@ void TriangularMesh::doSwap() throw(fwTools::Failed)
     m_transformService.lock()->stop();
     ::fwServices::OSR::unregisterService(m_transformService.lock());
 
-    this->setServiceOnMaterial(m_materialService.lock(), m_material);
-    this->setServiceOnMaterial(m_unclippedPartMaterialService.lock() , m_unclippedPartMaterial);
+
+    ::fwRenderVTK::IVtkAdaptorService::sptr materialService = m_materialService.lock();
+    ::fwRenderVTK::IVtkAdaptorService::sptr unclippedPartMaterialService = m_unclippedPartMaterialService.lock();
+
+    this->setServiceOnMaterial(materialService, m_material);
+    this->setServiceOnMaterial(unclippedPartMaterialService , m_unclippedPartMaterial);
+
+    m_materialService              = materialService;
+    m_unclippedPartMaterialService = unclippedPartMaterialService;
 
     ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
 
