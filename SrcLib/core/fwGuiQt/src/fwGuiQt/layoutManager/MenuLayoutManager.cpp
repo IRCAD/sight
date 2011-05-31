@@ -160,9 +160,7 @@ void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr 
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
-    bool oldState = action->blockSignals(true);
     action->setChecked(isChecked);
-    action->blockSignals(oldState);
 }
 
 //-----------------------------------------------------------------------------
