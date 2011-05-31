@@ -51,6 +51,7 @@ WindowLevel::WindowLevel() throw()
     m_widgetDynamicRangeMin   = -1000.;
     m_widgetDynamicRangeWidth =  4000.;
 
+    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
     addNewHandledEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
 }
@@ -273,6 +274,9 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
     onImageWindowLevelChanged(*min, *max);
+
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    this->setEnabled(imageIsValid);
 
 }
 
