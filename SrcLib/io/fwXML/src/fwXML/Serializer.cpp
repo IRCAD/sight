@@ -155,7 +155,7 @@ void PatchNoVersionToNewData( xmlNodePtr node )
 //------------------------------------------------------------------------------
 
 // an handler helper which transform a single file progress to a group of IO Operation
-struct HandlerHelper : public boost::signals::trackable
+struct HandlerHelper : public ::boost::signals::trackable
 {
     void operator()(float OnFilePercent, std::string filename)
     {
@@ -190,7 +190,7 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
             ::fwXML::IFileFormatService::sptr filedata = elem.second;
             OSLM_ASSERT("No IFileFormatService found for Object "<<elem.first->getID(), ::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"));
             filedata->rootFolder() = this->rootFolder();
-            boost::filesystem::path filePath =  filedata->getFullPath() ;
+            ::boost::filesystem::path filePath =  filedata->getFullPath() ;
             std::string msg = savingMode?"saving":"loading";
             OSLM_DEBUG( msg<< " extraXML for " << elem.first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
 
@@ -295,7 +295,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         if ( savedAggregator.count( aggregator ) == 0 ) // not already saved
         {
             aggIter->second->rootFolder() = this->rootFolder();
-            boost::filesystem::path filePath =  aggIter->second->getFullPath(); ;
+            ::boost::filesystem::path filePath =  aggIter->second->getFullPath(); ;
             OSLM_DEBUG( "Saving XMLAggregator " << filePath.string() << "..." );
             ProcessedXMLFile =  filePath.string();
             {

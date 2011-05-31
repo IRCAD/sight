@@ -27,9 +27,9 @@ void load(Archive & ar, ::fwData::ProcessObject &_algo, const unsigned int versi
 {
      // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register< ::fwData::ProcessObject , fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register< ::fwData::ProcessObject , fwTools::Object>(NULL,NULL);
     std::string newStr;
-    ar &  boost::serialization::make_nvp( "Name" , newStr );
+    ar &  ::boost::serialization::make_nvp( "Name" , newStr );
     _algo.setName(newStr);
 
 
@@ -41,8 +41,8 @@ void save(Archive & ar, const ::fwData::ProcessObject &_algo, const unsigned int
 {
      // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register< ::fwData::ProcessObject, fwTools::Object>(NULL,NULL);
-     ar &  boost::serialization::make_nvp( "Name" , _algo.getName() );
+     ::boost::serialization::void_cast_register< ::fwData::ProcessObject, fwTools::Object>(NULL,NULL);
+     ar &  ::boost::serialization::make_nvp( "Name" , _algo.getName() );
 
 }
 
@@ -58,7 +58,7 @@ void serialize(Archive & ar, ::fwData::ProcessObject &_algo, const unsigned int 
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::ProcessObject, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register<  ::fwData::ProcessObject, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_algo,version); // call load or save depending of archive type
 }

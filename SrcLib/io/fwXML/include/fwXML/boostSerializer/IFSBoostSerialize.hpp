@@ -9,24 +9,17 @@
 #ifndef IFSBOOSTSERIALIZE_H_
 #define IFSBOOSTSERIALIZE_H_
 
-//#define BOOST_ARCHIVE_CUSTOM_OARCHIVE_TYPES boost::archive::fw_xml_oarchive
+//#define BOOST_ARCHIVE_CUSTOM_OARCHIVE_TYPES ::boost::archive::fw_xml_oarchive
 // Be carfull to include sequence !!!! XML archives first then vector/nvp
 
 
 // archives
-//#include <boost/archive/text_oarchive.hpp>
-//#include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 #include "fwXML/boostSerializer/archive/fw_xml_oarchive.hpp"
-#define BOOST_ARCHIVE_CUSTOM_OARCHIVE_TYPES boost::archive::fw_xml_oarchive
+#define BOOST_ARCHIVE_CUSTOM_OARCHIVE_TYPES ::boost::archive::fw_xml_oarchive
 #include "fwXML/boostSerializer/archive/fw_xml_iarchive.hpp"
-#define BOOST_ARCHIVE_CUSTOM_IARCHIVE_TYPES boost::archive::fw_xml_iarchive
-// must be declared before export.hpp wich use struct boost::archive::know_type which use this macro to take into account new declared archive
-
-
-//#include <boost/archive/text_iarchive.hpp>
-//#include <boost/archive/binary_iarchive.hpp>
-//#include <boost/archive/xml_iarchive.hpp>
+#define BOOST_ARCHIVE_CUSTOM_IARCHIVE_TYPES ::boost::archive::fw_xml_iarchive
+// must be declared before export.hpp wich use struct ::boost::archive::know_type which use this macro to take into account new declared archive
 
 #include <boost/serialization/serialization.hpp> // Named Value Pair
 #include <boost/serialization/nvp.hpp> // Named Value Pair
@@ -49,47 +42,20 @@
 // used to inform serializer that a class is a subclass form another
 #include <boost/serialization/void_cast.hpp>
 
-
 #include "fwXML/config.hpp"
-
 
 
 namespace fwXML
 {
- typedef boost::archive::fw_xml_oarchive XmlOArchive;
- typedef boost::archive::fw_xml_iarchive XmlIArchive;
+typedef ::boost::archive::fw_xml_oarchive XmlOArchive;
+typedef ::boost::archive::fw_xml_iarchive XmlIArchive;
 }
 
-/*
-#ifdef FWXML_EXPORTS
-    #define INSTANTIATE_SERIALIZER( Type ) BOOST_CLASS_EXPORT(Type); \
-    namespace boost { \
-    namespace serialization { \
-    FWXML_TEMPLATE_API template FWXML_API void serialize<::fwXML::XmlIArchive>(::fwXML::XmlIArchive &archive, Type &, const unsigned int version); \
-    FWXML_TEMPLATE_API template FWXML_API void serialize<::fwXML::XmlOArchive>(::fwXML::XmlOArchive &archive, Type &, const unsigned int version); \
-    } }
-#else
-#define INSTANTIATE_SERIALIZER( Type )  namespace boost { \
-    namespace serialization { \
-    template FWXML_API void serialize<::fwXML::XmlIArchive>(::fwXML::XmlIArchive &archive, Type &, const unsigned int version); \
-    template FWXML_API void serialize<::fwXML::XmlOArchive>(::fwXML::XmlOArchive &archive, Type &, const unsigned int version); \
-    } }
-#endif
-*/
 
 #define INSTANTIATE_SERIALIZER( Type )  namespace boost { \
     namespace serialization { \
     FWXML_TEMPLATE_API template FWXML_API void serialize< ::fwXML::XmlIArchive>(::fwXML::XmlIArchive &archive, Type &, const unsigned int version); \
     FWXML_TEMPLATE_API template FWXML_API void serialize< ::fwXML::XmlOArchive>(::fwXML::XmlOArchive &archive, Type &, const unsigned int version); \
     } }
-
-
-
-
-
-
-
-
-
 
 #endif /*IFSBOOSTSERIALIZE_H_*/

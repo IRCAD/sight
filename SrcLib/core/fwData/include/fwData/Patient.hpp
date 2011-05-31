@@ -58,9 +58,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Patient::csptr _source );
 
-    /// Copy
-    //FWDATA_API Patient &operator=( const Patient & _patient ) ;
-
     // Studies -----------------------------------------------------------------
     /// Field identifier for studies
     FWDATA_API static const Object::FieldID ID_STUDIES;
@@ -186,9 +183,6 @@ protected:
 
     //! Database indentifier
     boost::int32_t  m_i32DbID;
-
-    //! Vector of study (which contains acquistion and slice ...)
-    //std::vector< ::fwData::Study::sptr > m_vStudies;
 
 };
 

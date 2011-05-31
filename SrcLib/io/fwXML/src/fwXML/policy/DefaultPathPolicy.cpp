@@ -21,7 +21,7 @@ namespace fwXML
     std::stringstream ss ;
     ss << obj->getLeafClassname() << "_" << ::fwTools::UUID::get(obj) << ".xml";
 
-    return  boost::filesystem::path ( ss.str() ) ;
+    return  ::boost::filesystem::path ( ss.str() ) ;
 }
 
 }//namespace fwXML

@@ -72,7 +72,7 @@ void XMLAggregator::append( ::fwTools::Object::wptr  obj )
 
 std::string XMLAggregator::getXMLIncludePathValue(::fwTools::Object::wptr obj)
 {
-    using boost::filesystem::path;
+    using ::boost::filesystem::path;
     path objFolderPath = XMLHierarchy::getDefault()->mapObjectAggregator()[obj]->localFolder();
     path thisAggregatorFolderPath = this->localFolder();
 

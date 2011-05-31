@@ -22,8 +22,8 @@
     #define FWXML_CLASS_API
 
     #pragma warning(disable: 4290)
-    #pragma warning(disable: 4267) // disable warning 'argument'�: conversion de 'size_t' en 'unsigned int', perte possible de donn�es
-    #pragma warning(disable: 4800) // disable warning C4800: 'const int'�: valeur forc�e � la valeur bool�enne 'true' ou 'false' (avertissement sur les performances)
+    #pragma warning(disable: 4267) // disable warning C4267: conversion from 'size_t' to 'type', possible loss of data
+    #pragma warning(disable: 4800) // disable warning C4800: 'const int' : forcing value to bool 'true' or 'false' (performance warning)
 
 #elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
 

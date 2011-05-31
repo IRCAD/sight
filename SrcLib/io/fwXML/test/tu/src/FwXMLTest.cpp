@@ -139,14 +139,14 @@ void FwXMLTest::testFwXML()
     const std::string STUDY1_ZONE           = "IDDICOM" ;
     const std::string STUDY1_RISID          = "risid569" ;
     const std::string STUDY1_UID            = "UID569" ;
-    const boost::int32_t  STUDY1_DBID       = 156 ;
+    const ::boost::int32_t  STUDY1_DBID     = 156 ;
 
     const std::string STUDY2_HOSPITAL       = "hopital2" ;
     const std::string STUDY2_MODALITY       = "modality2" ;
     const std::string STUDY2_ZONE           = "IDDICOM2" ;
     const std::string STUDY2_RISID          = "risid321" ;
     const std::string STUDY2_UID            = "UID321" ;
-    const boost::int32_t  STUDY2_DBID       = 153 ;
+    const ::boost::int32_t  STUDY2_DBID     = 153 ;
 
     // aquisitions informations
     const ::boost::uint8_t  ACQ1_BITSPERPIXEL   = 48 ;

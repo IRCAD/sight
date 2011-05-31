@@ -42,7 +42,7 @@ namespace archive
 {
 
 
-/** @brief IRCAD R&D team framework boost::archive. The purpose of this class is to
+/** @brief IRCAD R&D team framework ::boost::archive. The purpose of this class is to
  * create an xml archive based on the libxml instead a stream like in native boost
  * @author IRCAD (Research and Development Team).
  */
@@ -52,11 +52,11 @@ class fw_xml_oarchive : public detail::common_oarchive< fw_xml_oarchive > // , p
 {
     // permit serialization system priviledged access to permit
     // implementation of inline templates for maximum speed.
-      friend class boost::archive::save_access; // for operator & : ARCHIVEInstance & object :  is ok
+      friend class ::boost::archive::save_access; // for operator & : ARCHIVEInstance & object :  is ok
     #if BOOST_VERSION >= 104000
-      friend class boost::archive::detail::archive_serializer_map<boost::archive::fw_xml_oarchive>;
+      friend class ::boost::archive::detail::archive_serializer_map<boost::archive::fw_xml_oarchive>;
     #else
-      friend class boost::archive::detail::archive_pointer_oserializer<boost::archive::fw_xml_oarchive>;
+      friend class ::boost::archive::detail::archive_pointer_oserializer<boost::archive::fw_xml_oarchive>;
     #endif
 
 
@@ -114,9 +114,9 @@ public:
         )
     {
             assert( nvp.first  ); // if NULL it can be serialized via pointer !!! 07102008 can be null if pass throw ptr
-    //#6  0xb71f389a in boost::archive::detail::pointer_oserializer<boost::archive::fw_xml_oarchive, ::fwData::Node>::save_object_ptr (this=0xb72ab4d0,
+    //#6  0xb71f389a in ::boost::archive::detail::pointer_oserializer<boost::archive::fw_xml_oarchive, ::fwData::Node>::save_object_ptr (this=0xb72ab4d0,
     //    ar=@0xbffbce18, x=0x80fb3e0) at /usr/include/boost/archive/detail/oserializer.hpp:204
-    //204         ar_impl << boost::serialization::make_nvp(NULL, * t);
+    //204         ar_impl << ::boost::serialization::make_nvp(NULL, * t);
 
             assert( nvp.second );
 
@@ -134,7 +134,7 @@ public:
 
     // override NVP function : note WinSux does not deal with Partial Function Template Ordering !!!!
     template< class R>
-    void save_override( boost::serialization::nvp< R > &nvp , BOOST_PFTO int)
+    void save_override( ::boost::serialization::nvp< R > &nvp , BOOST_PFTO int)
     {
         assert( nvp.first  ); // if NULL it can be serialized via pointer !!!
         assert( nvp.second );

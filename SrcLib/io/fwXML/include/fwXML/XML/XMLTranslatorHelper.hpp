@@ -38,7 +38,7 @@ public:
     template<class OBJECTTYPE>
     inline static bool check( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
     {
-        bool valid = boost::dynamic_pointer_cast< OBJECTTYPE >(toUpdate);
+        bool valid = ::boost::dynamic_pointer_cast< OBJECTTYPE >(toUpdate);
         const std::string srcName = (const char*)source->name;
         valid &= ( srcName ==  fwCore::TypeDemangler<OBJECTTYPE>().getLeafClassname() );
         return valid;
@@ -70,7 +70,7 @@ public:
 
     /**
      * @brief to node append a new Property with given value
-     * the value is converted to string using boost::lexical cast
+     * the value is converted to string using ::boost::lexical cast
      * @return the current node
      */
     template<class BASICTYPE >
@@ -79,7 +79,7 @@ public:
         SLM_ASSERT("node not instanced", node);
         assert( !propName.empty() );
 
-        std::string strValue = boost::lexical_cast<std::string>(value);
+        std::string strValue = ::boost::lexical_cast<std::string>(value);
         xmlNewProp( node,
                     xmlStrdup( BAD_CAST propName.c_str() ),
                     xmlStrdup( BAD_CAST strValue.c_str() )
@@ -89,7 +89,7 @@ public:
 
     /**
      * @brief to node get the  Property
-     * the retrun value is converted from string using boost::lexical cast
+     * the retrun value is converted from string using ::boost::lexical cast
      * @return the value
      * @warning
      */
@@ -103,7 +103,7 @@ public:
         assert (psAttr);
 
         const std::string sAttr = (const char*)psAttr;
-        BASICTYPE value = boost::lexical_cast<BASICTYPE>(sAttr);
+        BASICTYPE value = ::boost::lexical_cast<BASICTYPE>(sAttr);
 
         xmlFree(psAttr);
         return value;

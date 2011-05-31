@@ -28,7 +28,7 @@ namespace fwXML
 int getFieldIndex( ::boost::shared_ptr <fwTools::Object> obj )
 {
     ::boost::shared_ptr <fwTools::Object> parent = fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
-    assert ( boost::dynamic_pointer_cast< fwTools::Field >(parent) );
+    assert ( ::boost::dynamic_pointer_cast< fwTools::Field >(parent) );
 
     fwTools::Object::ChildContainer::iterator iter =
     std::find( parent->children().begin(),   parent->children().end(), obj );
@@ -48,7 +48,7 @@ int getFieldIndex( ::boost::shared_ptr <fwTools::Object> obj )
 {
     ::boost::shared_ptr <fwTools::Object> parent = fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
 
-    while ( parent &&  boost::dynamic_pointer_cast< fwTools::Field >(parent) )
+    while ( parent &&  ::boost::dynamic_pointer_cast< fwTools::Field >(parent) )
     {
         parent = dataParent( parent );
     }
@@ -81,7 +81,7 @@ boost::filesystem::path PatientFolderPathPolicy::getPath(::boost::shared_ptr <fw
 
     if ( className == "DictionaryOrgan" )
     {
-        return "dictionary/entry_" + boost::dynamic_pointer_cast< ::fwData::DictionaryOrgan >(obj)->getStructureType() + ".xml";
+        return "dictionary/entry_" + ::boost::dynamic_pointer_cast< ::fwData::DictionaryOrgan >(obj)->getStructureType() + ".xml";
     }
 
     if ( className == "Study" ) // "s#/study.xml"
@@ -95,15 +95,15 @@ boost::filesystem::path PatientFolderPathPolicy::getPath(::boost::shared_ptr <fw
     {
         std::string acquisitionFolder("a");
         acquisitionFolder+=boost::lexical_cast<std::string>( getFieldIndex(obj) );
-        boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).branch_path();
+        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).branch_path();
 
         return  parentFolder / acquisitionFolder / "/acquistion.xml";
     }
 
     if ( className == "Reconstruction" ) // "s#/a#/NOMORGANE/reconstruction.xml"
     {
-        boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).branch_path();
-        std::string organName = boost::dynamic_pointer_cast< ::fwData::Reconstruction >(obj)->getOrganName();
+        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).branch_path();
+        std::string organName = ::boost::dynamic_pointer_cast< ::fwData::Reconstruction >(obj)->getOrganName();
 
         return parentFolder / organName / "reconstruction.xml";
     }

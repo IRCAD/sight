@@ -26,10 +26,10 @@ public:
     virtual ~DataFolderValidator();
 
     /// erase schema and search them on given folder
-    void collecteSchema(const boost::filesystem::path &folder);
+    void collecteSchema(const ::boost::filesystem::path &folder);
 
     /// append schema to schema validation list
-    void registerSchema(const boost::filesystem::path &xsdfilename);
+    void registerSchema(const ::boost::filesystem::path &xsdfilename);
 
     /// clear error Log
     void clearErrorLog();
@@ -45,7 +45,7 @@ public:
      * @param dstFolder : DataFolder path to install schema
      * @param srcFolder ( optional ) if specified copy all XSD file from srcFolder to dstFolder else use default Folder aka share/fwXMLXXX
      */
-    static void copySchema(const boost::filesystem::path &dstFolder, const boost::filesystem::path &srcFolder =  boost::filesystem::path() );
+    static void copySchema(const ::boost::filesystem::path &dstFolder, const ::boost::filesystem::path &srcFolder =  ::boost::filesystem::path() );
 
 protected :
 
@@ -53,7 +53,7 @@ protected :
     const bool validateSingle( xmlNodePtr node );
 
     /// store className <-> xsd location
-    std::map< std::string, boost::filesystem::path > m_schemaPath;
+    std::map< std::string, ::boost::filesystem::path > m_schemaPath;
 
     /// store log from validators
     std::string m_errorLog;

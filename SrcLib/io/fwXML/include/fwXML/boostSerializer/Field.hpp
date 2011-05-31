@@ -29,9 +29,9 @@ void serialize(Archive & ar, ::fwTools::Field &_object, const unsigned int versi
 {
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register< ::fwTools::Field, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register< ::fwTools::Field, fwTools::Object>(NULL,NULL);
 
-     ar &  boost::serialization::make_nvp( "label"  , _object.label() );
+     ar &  ::boost::serialization::make_nvp( "label"  , _object.label() );
 
 }
 

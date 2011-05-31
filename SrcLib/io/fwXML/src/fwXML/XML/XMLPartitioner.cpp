@@ -29,7 +29,7 @@
 #include "fwXML/policy/DefaultPathPolicy.hpp"
 
 
-::boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = boost::shared_ptr< fwXML::XMLPartitioner >();
+::boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = ::boost::shared_ptr< fwXML::XMLPartitioner >();
 
 
 namespace fwXML
