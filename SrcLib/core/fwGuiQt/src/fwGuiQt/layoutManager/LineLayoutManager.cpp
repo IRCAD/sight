@@ -77,7 +77,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
         {
             panel = new QWidget(qtContainer);
         }
-        panel->setMinimumSize(viewInfo.m_minSize.first, viewInfo.m_minSize.second);
+        panel->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
         panel->setContentsMargins(border, border,border, border);
 
         ::fwGuiQt::container::QtContainer::NewSptr subContainer;

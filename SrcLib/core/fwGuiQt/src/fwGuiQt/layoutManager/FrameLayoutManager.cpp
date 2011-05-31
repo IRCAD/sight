@@ -55,7 +55,7 @@ void FrameLayoutManager::createFrame()
 
     m_qtWindow = mainframe;
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
-    m_qtWindow->setMinimumSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second);
+    m_qtWindow->setMinimumSize(std::max(frameInfo.m_minSize.first,0), std::max(frameInfo.m_minSize.second,0));
 
     if(!frameInfo.m_iconPath.empty())
     {
