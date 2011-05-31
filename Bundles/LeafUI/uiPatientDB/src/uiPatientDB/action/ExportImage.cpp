@@ -73,6 +73,7 @@ void ExportImage::configuring() throw( ::fwTools::Failed )
 void ExportImage::updating( ) throw(::fwTools::Failed)
 {
     SLM_TRACE("ExportImage::updating");
+    ::fwGui::LockAction lock(this->getSptr());
 
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pPatientDB not instanced", pPatientDB);

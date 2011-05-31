@@ -113,6 +113,8 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
 
         if( action != DO_NOTHING)
         {
+            ::fwGui::LockAction lock(this->getSptr());
+
             ::fwServices::IService::sptr service = ::fwServices::get( uid ) ;
             SLM_ASSERT("service not found", service);
             switch ( action )
