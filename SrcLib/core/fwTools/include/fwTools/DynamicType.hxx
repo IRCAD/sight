@@ -155,6 +155,7 @@ void DynamicType::registerNewType(const std::string &newKey) throw(std::invalid_
 template<class T>
 std::pair<T,T> DynamicType::minMax()
 {
+    SLM_ASSERT("Unable to have minMax for UnSpecifiedType", this->string() != DynamicType::m_unSpecifiedType);
     typedef boost::mpl::vector< signed char, unsigned char, signed short, unsigned short,  signed int, unsigned int, float, double >:: type SupportedTypes;
     std::pair<T,T> minMax;
     Dispatcher<SupportedTypes,MinMaxFunctor<T> >::invoke(*this,minMax);
@@ -163,4 +164,4 @@ std::pair<T,T> DynamicType::minMax()
 
 
 
-} //end namespace fwTools {
+} //end namespace fwTools
