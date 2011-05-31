@@ -12,7 +12,7 @@ LIB     = [
           'fwGui_0-1',
           'fwGuiQt_0-1',
           ]
-USE     = ['qtCore','qtWebKit','qtHelp','boost']
+USE     = ['qtCore','qtWebKit','qtSqldriversPlugins','qtHelp','boost']
 BUNDLES = ['gui_0-1']
 
 
