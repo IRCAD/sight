@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <limits>
 #include <boost/mpl/vector.hpp>
+#include <fwCore/base.hpp>
 
 #include "fwTools/StringKeyTypeMapping.hpp"
 #include "fwTools/Dispatcher.hpp"
