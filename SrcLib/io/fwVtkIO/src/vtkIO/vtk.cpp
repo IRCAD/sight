@@ -35,10 +35,8 @@
 #include <vtkDataArray.h>
 #include <vtkPointData.h>
 #include <vtkSmartPointer.h>
-//#include <>
-//vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
-#include <fwMath/MeshFunctions.hpp>
 
+#include <fwMath/MeshFunctions.hpp>
 
 #include "vtkIO/vtk.hpp"
 
@@ -64,7 +62,7 @@ typedef  ::boost::bimaps::bimap<
                    > TypeTranslator;
 
 TypeTranslator PixelTypeTranslation = boost::assign::list_of< TypeTranslator::relation >
-                                                                    ( fwTools::makeDynamicType<signed char>(),    VTK_SIGNED_CHAR )
+                                                                    ( fwTools::makeDynamicType<signed char>(),    VTK_CHAR )
                                                                     ( fwTools::makeDynamicType<unsigned char>(),  VTK_UNSIGNED_CHAR )
                                                                     ( fwTools::makeDynamicType<signed short>(),   VTK_SHORT )
                                                                     ( fwTools::makeDynamicType<unsigned short>(), VTK_UNSIGNED_SHORT )
@@ -75,13 +73,22 @@ TypeTranslator PixelTypeTranslation = boost::assign::list_of< TypeTranslator::re
                                                                     ( fwTools::makeDynamicType<float>(),          VTK_FLOAT )
                                                                     ( fwTools::makeDynamicType<double>(),         VTK_DOUBLE );
 
+//-----------------------------------------------------------------------------
+
+int getVtkScalarType(::fwData::Image::sptr image)
+{
+    OSLM_ASSERT("Unknown PixelType "<<image->getPixelType().string(),
+            PixelTypeTranslation.left.find( image->getPixelType() ) != PixelTypeTranslation.left.end() );
+    return PixelTypeTranslation.left.at( image->getPixelType() );
+}
+
+//-----------------------------------------------------------------------------
 
 const char *myScalarTypeCallback(void *imageData)
 {
     ::fwData::Image *trueImageData = static_cast< ::fwData::Image *>(imageData);
-
-    assert ( PixelTypeTranslation.left.find( trueImageData->getPixelType() )!= PixelTypeTranslation.left.end() );
-
+    OSLM_ASSERT("Unknown PixelType "<<trueImageData->getPixelType().string(),
+                PixelTypeTranslation.left.find( trueImageData->getPixelType() ) != PixelTypeTranslation.left.end() );
     return vtkImageScalarTypeNameMacro( PixelTypeTranslation.left.at( trueImageData->getPixelType() ) );
 }
 
@@ -113,14 +120,10 @@ vtkImageData* toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
     importer->SetImportVoidPointer( data->getBuffer() );
 
 
-    // used to set correct pixeltype to VtkImage
-    // vtkImageImport::InvokeExecuteInformationCallbacks() will call
-    // myScalarTypeCallback and waiting for const char * defintion type like "unsigned short"
-    // to produce VTK_TYPE
+
     importer->SetCallbackUserData( data.get() );
-    importer->SetScalarTypeCallback( myScalarTypeCallback );
-
-
+    // used to set correct pixeltype to VtkImage
+    importer->SetDataScalarType( getVtkScalarType(data) );
     importer->Update();
 
     vtkImageData *vtkImage = importer->GetOutput();
@@ -281,18 +284,11 @@ vtkImageImport* convertToVTKImageImport( ::fwData::Image::sptr data )
 
     // copy WholeExtent to DataExtent
     importer->SetDataExtentToWholeExtent();
-
     // no copy, no buffer destruction/management
     importer->SetImportVoidPointer( data->getBuffer() );
-
-
-    // used to set correct pixeltype to VtkImage
-    // vtkImageImport::InvokeExecuteInformationCallbacks() will call
-    // myScalarTypeCallback and waiting for const char * defintion type like "unsigned short"
-    // to produce VTK_TYPE
     importer->SetCallbackUserData( data.get() );
-    importer->SetScalarTypeCallback( myScalarTypeCallback );
-
+    // used to set correct pixeltype to VtkImage
+    importer->SetDataScalarType( getVtkScalarType(data) );
     importer->Update();
 
     return importer;
@@ -320,18 +316,11 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
 
     // copy WholeExtent to DataExtent
     _pImageImport->SetDataExtentToWholeExtent();
-
     // no copy, no buffer destruction/management
     _pImageImport->SetImportVoidPointer( _pDataImage->getBuffer() );
-
-
-    // used to set correct pixeltype to VtkImage
-    // vtkImageImport::InvokeExecuteInformationCallbacks() will call
-    // myScalarTypeCallback and waiting for const char * defintion type like "unsigned short"
-    // to produce VTK_TYPE
     _pImageImport->SetCallbackUserData( _pDataImage.get() );
-    _pImageImport->SetScalarTypeCallback( myScalarTypeCallback );
-
+    // used to set correct pixeltype to VtkImage
+    _pImageImport->SetDataScalarType( getVtkScalarType(_pDataImage) );
 }
 
 //-----------------------------------------------------------------------------
@@ -538,7 +527,6 @@ bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::spt
             _transfoMatrix->setCoefficient(l,c, _matrix->GetElement(l,c));
         }
     }
-
     return res;
 }
 
