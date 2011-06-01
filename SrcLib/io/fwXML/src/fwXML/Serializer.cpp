@@ -90,58 +90,59 @@ void PatchNoVersionToNewData( xmlNodePtr node )
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // manage class attribut : adapt "::data::" to "::fwData::" and manage {String,Float,Interger}Field renaming
+        // manage class attribute : adapt "::data::" to "::fwData::" and manage {String,Float,Interger}Field renaming
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string className,newClassName;
-        try
+        if( xmlHasProp( node, BAD_CAST "class" ) )
         {
-            className = XMLParser::getAttribute (node, "class");
-        }
-        catch ( ::fwTools::Failed ef)
-        {
-            OSLM_TRACE(" no attrib class for node->name=" << NodeName );
-        }
-        OSLM_INFO( "PatchNoVersionToNewData nodeName=" << NodeName << " className=" << className);
+            std::string className, newClassName;
+            try
+            {
+                className = XMLParser::getAttribute (node, "class");
+            }
+            catch ( ::fwTools::Failed ef)
+            {
+                OSLM_TRACE(" no attribute class for node->name=" << NodeName );
+            }
+            OSLM_INFO( "PatchNoVersionToNewData nodeName=" << NodeName << " className=" << className);
 
-        // renaming class attribute if required
-        if ( !className.empty() )
-        {
-            // special case for Object class
-            if ( className.find("::data::Object") != std::string::npos )
+            // renaming class attribute if required
+            if ( !className.empty() )
             {
-                newClassName = "::fwTools::Object";
-            }
-            else if ( className.find("::data::") != std::string::npos ) // general case (namespace)
-            {
-                newClassName = className.replace(0,strlen("::data::"),"::fwData::");
-            }
+                // special case for Object class
+                if ( className.find("::data::Object") != std::string::npos )
+                {
+                    newClassName = "::fwTools::Object";
+                }
+                else if ( className.find("::data::") != std::string::npos ) // general case (namespace)
+                {
+                    newClassName = className.replace(0,strlen("::data::"),"::fwData::");
+                }
 
-            // specific className : StringField, FloatField, IntegerField
-            if ( className.find("StringField") != std::string::npos )
-            {
-                newClassName = className.replace( className.find("StringField"), strlen("StringField"), "String" );
+                // specific className : StringField, FloatField, IntegerField
+                if ( className.find("StringField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("StringField"), strlen("StringField"), "String" );
+                }
+                else if ( className.find("FloatField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("FloatField"), strlen("FloatField"), "Float" );
+                }
+                else if ( className.find("IntegerField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("IntegerField"), strlen("IntegerField"), "Integer" );
+                }
+                else if ( className.find("BooleanField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("BooleanField"), strlen("BooleanField"), "Boolean" );
+                }
             }
-            else if ( className.find("FloatField") != std::string::npos )
+            // change needed ?
+            if ( !newClassName.empty() )
             {
-                newClassName = className.replace( className.find("FloatField"), strlen("FloatField"), "Float" );
-            }
-            else if ( className.find("IntegerField") != std::string::npos )
-            {
-                newClassName = className.replace( className.find("IntegerField"), strlen("IntegerField"), "Integer" );
-            }
-            else if ( className.find("BooleanField") != std::string::npos )
-            {
-                newClassName = className.replace( className.find("BooleanField"), strlen("BooleanField"), "Boolean" );
+                OSLM_DEBUG( "PatchNoVersionToNewData NEWclassName=" << newClassName );
+                xmlSetProp( node , BAD_CAST "class",  xmlStrdup( BAD_CAST newClassName.c_str() ) );
             }
         }
-        // change needed ?
-        if ( !newClassName.empty() )
-        {
-            OSLM_DEBUG( "PatchNoVersionToNewData NEWclassName=" << newClassName );
-            assert( xmlHasProp( node, BAD_CAST "class" ) );
-            xmlSetProp( node , BAD_CAST "class",  xmlStrdup( BAD_CAST newClassName.c_str() ) );
-        }
-
         // continue parsing to child
         node = node->children;
         while ( node )

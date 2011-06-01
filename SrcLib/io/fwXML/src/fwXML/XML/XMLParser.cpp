@@ -173,7 +173,6 @@ xmlNodePtr XMLParser::findChildNamed(xmlNodePtr start, std::string value)
         elt=elt->next;
     }
     return elt; // node not found
-
 }
 
 //------------------------------------------------------------------------------

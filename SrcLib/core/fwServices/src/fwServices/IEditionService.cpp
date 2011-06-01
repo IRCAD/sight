@@ -134,13 +134,7 @@ void IEditionService::notify(
     _pMsg->timeModified();
 
     GlobalEventManager::getDefault()->notify( _pMsg, options );
-    // OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
-    // ::fwServices::IEditionService::sptr srv;
-    // srv = ::fwServices::get< ::fwServices::IEditionService >( _pSubject );
-    // srv->notify( _pMsg, options ) ;
-
     _pSource->sendingModeOff();
-
 }
 
 //-----------------------------------------------------------------------------
@@ -184,21 +178,6 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
             specificObservers.sort( Less );
         }
     }
-
-    /* OLD METHOD
-
-    // Pre-condition
-    assert( observer != 0 );
-
-    // If not already registered, stores the referenced observer.
-    if( findObserver(observer) == m_observers.end() )
-    {
-        m_observers.push_back( observer );
-        // sort the list to put the new element at the right place.
-        m_observers.sort(Less);
-    }
-
-     */
 }
 
 //-----------------------------------------------------------------------------
@@ -226,11 +205,6 @@ void IEditionService::detach( ::fwServices::ComChannelService::sptr observer ) t
             specificObservers.remove_if( IsEqual(observer) );
         }
     }
-
-    /* OLD METHOD
-    // Removes the desired observer.
-    m_observers.remove_if( IsEqual(observer) );
-     */
 }
 
 //-----------------------------------------------------------------------------
@@ -267,23 +241,7 @@ const bool IEditionService::isAttached( ::fwServices::ComChannelService::sptr ob
             }
         }
     }
-
     return isAttached;
-
-    /*
-    bool isAttached = false;
-    isAttached = findObserver( m_globalObservers, observer ) != m_globalObservers.end();
-
-    for (   Event2ObserversContainer::iterator iter = m_event2SpecificObservers.begin();
-            !isAttached && iter != m_event2SpecificObservers.end();
-            ++iter )
-    {
-        ObserverContainer specificObservers = iter->second;
-        isAttached =  findObserver( specificObservers, observer ) != specificObservers.end();
-    }
-
-    return isAttached;
-     */
 }
 
 //-----------------------------------------------------------------------------

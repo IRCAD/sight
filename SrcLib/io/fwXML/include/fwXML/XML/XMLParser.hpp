@@ -77,7 +77,7 @@ FWXML_API static std::string getTextValue (xmlNodePtr pNode) throw (::fwTools::F
  * @param  const std::string& : the attribute's name
  * @return std::string : the value of the attribute
  *
- * @throw : ::fwTools::Failed if attribut doesn't exist
+ * @throw : ::fwTools::Failed if attribute doesn't exist
  * @author IRCAD (Research and Development Team).
  *
  **/
