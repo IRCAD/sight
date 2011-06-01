@@ -47,7 +47,23 @@ TriangularMesh::PointContainer &TriangularMesh::points()
     return m_points ;
 }
 
+//-----------------------------------------------------------------------------
+
+TriangularMesh::ConstPointContainer &TriangularMesh::points() const
+{
+    return m_points ;
+}
+
+//-----------------------------------------------------------------------------
+
 TriangularMesh::CellContainer &TriangularMesh::cells()
+{
+    return m_cells ;
+}
+
+//-----------------------------------------------------------------------------
+
+TriangularMesh::ConstCellContainer &TriangularMesh::cells() const
 {
     return m_cells ;
 }
