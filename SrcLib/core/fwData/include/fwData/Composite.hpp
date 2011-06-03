@@ -100,8 +100,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Composite::csptr _source );
 
-    //FWDATA_API Composite & operator=( const Composite & _composite );
-
 };
 
 

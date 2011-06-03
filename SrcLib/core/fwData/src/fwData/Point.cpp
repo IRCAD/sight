@@ -73,30 +73,6 @@ void Point::deepCopy( Point::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//Point::sptr Point::clone() const
-//{
-//    SLM_TRACE_FUNC();
-//
-//    Point::NewSptr pNewPoint;
-//
-//    // Copy encoding
-//    pNewPoint->m_vCoord = this->m_vCoord;
-//
-//    return pNewPoint;
-//}
-//
-////------------------------------------------------------------------------------
-//
-//Point & Point::operator=( const Point & _point )
-//{
-//    // Copy encoding
-//    m_vCoord = _point.m_vCoord;
-//
-//    return *this;
-//}
-
-//------------------------------------------------------------------------------
-
 } // namespace fwData
 
 

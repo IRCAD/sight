@@ -35,10 +35,6 @@ public :
        ((PointFactory ,((Point::sptr)) ))
        );
 
-    //fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object),( ((float)(0))((float)(0))((float)(0)) ), ::fwTools::Factory::New< Point > ) ;
-
-    //fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object),(()), ::fwTools::Factory::New< Point >) ;
-
     typedef double PointCoordType;
 
     typedef fwVec3d PointCoordArrayType;
@@ -58,14 +54,8 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( Point::csptr _source );
 
-    /// Clone method
-    //FWDATA_API Point::sptr clone() const;
-    /// Copy method
-    //FWDATA_API Point &operator=( const Point & _point ) ;
-
     /// Coordinates of point
     fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
-
 
 protected :
 

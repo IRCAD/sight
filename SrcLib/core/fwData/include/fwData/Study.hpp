@@ -50,9 +50,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Study::csptr _source );
 
-    /// @brief Copy method
-    //FWDATA_API Study &operator=( const Study & _study ) ;
-
     /// Field identifier for acquisitions
     FWDATA_API static const Object::FieldID ID_ACQUISITIONS;
 
@@ -63,7 +60,7 @@ public:
      * @brief Get the number of acquisitions
      * @return acquisition number
      */
-    FWDATA_API boost::uint32_t  getAcquisitionSize() const;
+    FWDATA_API ::boost::uint32_t  getAcquisitionSize() const;
 
     /**
      * add Acquisition
@@ -89,7 +86,7 @@ public:
 
     fwGettersSettersDocMacro(UID, sUID, std::string, the unique Identifier DICOM );
 
-    fwGettersSettersDocMacro(DbID, i32DbID, boost::int32_t, the database indentifier );
+    fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, the database indentifier );
 
     fwGettersSettersDocMacro(Date, date, std::string, the study date );
     fwGettersSettersDocMacro(Time, time, std::string, the study time );
@@ -114,15 +111,11 @@ protected :
     std::string m_sUID;
 
     /// Database indentifier
-    boost::int32_t  m_i32DbID;
+    ::boost::int32_t  m_i32DbID;
 
     std::string m_date;
     std::string m_time;
     std::string m_description;
-
-    // Vector of acquisition (which represents an exam)
-    //std::vector< ::fwData::Acquisition::sptr > m_vAcquisitions;
-
 
 };
 

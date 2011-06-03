@@ -17,14 +17,14 @@ std::string Edge::NATURE_DATA = "data";
 
 Edge::Edge() : m_fromPortIdentifier("not defined"), m_toPortIdentifier("not defined"), m_nature("not defined")
 {
-    // TODO Auto-generated constructor stub
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 Edge::~Edge()
 {
-    // TODO Auto-generated destructor stub
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

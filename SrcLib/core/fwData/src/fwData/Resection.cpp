@@ -84,46 +84,6 @@ void Resection::deepCopy( Resection::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//Resection::sptr Resection::clone() const
-//{
-//    SLM_TRACE_FUNC();
-//
-//    Resection::NewSptr pNewResection;
-//
-//    // Copy encoding
-//    pNewResection->m_planeList = this->m_planeList->clone();
-//
-//    for (   Resection::ResectionInputs::const_iterator iter = this->m_vInputs.begin();
-//            iter != this->m_vInputs.end();
-//            ++iter )
-//    {
-//        pNewResection->m_vInputs.push_back( (*iter)->clone() );
-//    }
-//
-//    for (   Resection::ResectionOutputs::const_iterator iter = this->m_vOutputs.begin();
-//            iter != this->m_vOutputs.end();
-//            ++iter )
-//    {
-//        pNewResection->m_vOutputs.push_back( (*iter)->clone() );
-//    }
-//
-//    return pNewResection;
-//}
-
-//------------------------------------------------------------------------------
-
-//Resection & Resection::operator=( const Resection & _resection )
-//{
-//    // Copy encoding
-//    m_planeList = _resection.m_planeList;
-//    m_vInputs = _resection.m_vInputs;
-//    m_vOutputs = _resection.m_vOutputs;
-//
-//    return *this;
-//}
-
-//------------------------------------------------------------------------------
-
 } // namespace fwData
 
 

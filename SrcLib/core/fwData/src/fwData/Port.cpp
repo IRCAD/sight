@@ -16,14 +16,14 @@ namespace fwData
 
 Port::Port() : m_identifier("IDNOTdefined") , m_type("TypeNotDefined")
 {
-    // TODO Auto-generated constructor stub
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 Port::~Port()
 {
-    // TODO Auto-generated destructor stub
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

@@ -9,9 +9,7 @@
 
 #include <boost/array.hpp>
 
-// export/visibility
 #include "fwData/config.hpp"
-
 #include "fwData/Object.hpp"
 
 namespace fwData
@@ -54,9 +52,6 @@ public :
 
     /// Defines deep copy
     FWDATA_API void deepCopy( Color::csptr _source );
-
-    /// Clone
-    //FWDATA_API Color::sptr clone() const;
 
     fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, the array of color values (red, green, blue, alpha).);
 

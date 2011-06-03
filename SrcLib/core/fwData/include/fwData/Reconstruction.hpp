@@ -48,12 +48,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Reconstruction::csptr _source );
 
-    /// Clone method
-    //FWDATA_API Reconstruction::sptr clone() const;
-
-    /// Copy method
-    //FWDATA_API Reconstruction &operator=( const Reconstruction & _reconstruction ) ;
-
     // Image -------------------------------------------------------------------
     /// @name Image accessor
     /// Field identifier for image
@@ -123,21 +117,15 @@ public:
 
     fwGettersSettersDocMacro(Type3D, sType3D, std::string, the 3D model type);
 
-    fwGettersSettersDocMacro(Path, fsPath, boost::filesystem::path, the reconstruction path);
+    fwGettersSettersDocMacro(Path, fsPath, ::boost::filesystem::path, the reconstruction path);
 
-    fwGettersSettersDocMacro(DbID, i32DbID, boost::int32_t, the database indentifier);
+    fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, the database indentifier);
 
 protected :
 
 
     //! true if this reconstruction is visible
     bool m_bIsVisible;
-
-//  //! Color of the reconstructed organ. eg 1.0 0.52 0.3 0.0
-//  double m_dRed;
-//  double m_dGreen;
-//  double m_dBlue;
-//  double m_dAlpha;
 
     //! Material of reonstruction
     ::fwData::Material::sptr m_pMaterial;
@@ -173,13 +161,10 @@ protected :
     bool m_bMaskGenerated;
 
     //! The level ( is the organ skin, internal organ, a vessel or a pathology ? )
-    boost::uint8_t  m_ui8Level;
+    ::boost::uint8_t  m_ui8Level;
 
     //! The label
-    boost::uint16_t  m_ui16Label;
-
-    //! MT;
-    //bool m_bMT;
+    ::boost::uint16_t  m_ui16Label;
 
     //! true if the 3D reconstruction is generated
     bool m_bGenerated3D;
@@ -195,25 +180,12 @@ protected :
     //@{
 
     //! Reconstruction path
-    boost::filesystem::path m_fsPath;
-
-    // ::fwData::TriangularMesh::sptr m_pTriangularMesh;
-
-
+    ::boost::filesystem::path m_fsPath;
 
     //! Database indentifier
-    boost::int32_t  m_i32DbID;
-
-    //! dictionary organ
-    // ::boost::shared_ptr< ::fwData::DictionaryOrgan > m_pDictionaryOrgan;
-
-    //! image (mask) corresponding to the organ
-    // ::boost::shared_ptr< ::fwData::Image> m_pImage;
+    ::boost::int32_t  m_i32DbID;
 
     //@}
-
-
-
 
 };
 

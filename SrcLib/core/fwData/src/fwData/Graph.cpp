@@ -8,12 +8,11 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
-
 #include <fwTools/Factory.hpp>
+
 #include "fwData/Edge.hpp"
 #include "fwData/Port.hpp"
 #include "fwData/Node.hpp"
-
 #include "fwData/Graph.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Graph,  ::fwData::Graph);
@@ -27,16 +26,12 @@ const bool Graph::DOWN_STREAM = false;
 //------------------------------------------------------------------------------
 
 Graph::Graph()
-{
-    // TODO Auto-generated constructor stub
-}
+{}
 
 //------------------------------------------------------------------------------
 
 Graph::~Graph()
-{
-    // TODO Auto-generated destructor stub
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -151,7 +146,6 @@ bool Graph::addEdge(Edge::sptr edge, Node::csptr nodeSource, Node::csptr nodeDes
     m_connections[ edge ] = std::make_pair(  Node::constCast(nodeSource), Node::constCast(nodeDestination) );
 
     return true;
-
 }
 
 //------------------------------------------------------------------------------

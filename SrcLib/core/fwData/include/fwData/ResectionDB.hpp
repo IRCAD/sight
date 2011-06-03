@@ -48,9 +48,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( ResectionDB::csptr _source );
 
-    /// Copy method
-    //FWDATA_API ResectionDB &operator=( const ResectionDB & _resectionDB ) ;
-
     // Patients ----------------------------------------------------------------
     /// Field identifier for patients
     FWDATA_API static const Object::FieldID ID_RESECTIONS;

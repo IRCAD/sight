@@ -46,12 +46,6 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( PointList::csptr _source );
 
-    /// Clone method
-    //FWDATA_API PointList::sptr clone() const;
-
-    /// Copy method
-    //FWDATA_API PointList &operator=( const PointList & _pointList ) ;
-
     /// Points container
     fwGettersSettersDocMacro(Points, vPoints, PointListContainer, a container of all points);
 

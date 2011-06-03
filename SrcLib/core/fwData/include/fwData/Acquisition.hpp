@@ -54,13 +54,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Acquisition::csptr _source );
 
-
-    /// Clone
-    //FWDATA_API Acquisition::sptr clone() const;
-
-    /// Copy
-    //FWDATA_API Acquisition &operator=( const Acquisition & _acquisition ) ;
-
     // Image -------------------------------------------------------------------
     /// Field identifier for image
     FWDATA_API static const Object::FieldID ID_IMAGE;

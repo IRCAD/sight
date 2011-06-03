@@ -130,7 +130,7 @@ void Patient::setToolBox( ::fwData::Composite::sptr _toolBox )
 //------------------------------------------------------------------------------
 
 ::fwData::Composite::csptr Patient::getToolBox() const
-        {
+{
     ::fwData::Composite::csptr _pToolBox;
 
     if ( this->getFieldSize( Patient::ID_TOOLBOX ) != 0)
@@ -149,9 +149,8 @@ void Patient::setToolBox( ::fwData::Composite::sptr _toolBox )
             SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
         }
     }
-
     return _pToolBox;
-        }
+}
 
 //------------------------------------------------------------------------------
 

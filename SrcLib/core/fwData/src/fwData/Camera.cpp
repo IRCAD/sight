@@ -20,7 +20,7 @@ Camera::Camera() :
 m_extrinsicMatrix( new ::fwData::TransformationMatrix3D ),
 m_intrinsicMatrix( new ::fwData::TransformationMatrix3D )
 {
-    SLM_TRACE("Camera::Camera()");
+    SLM_TRACE_FUNC();
     uint32HL def;
     def.Low = 0;
     def.High = 0;
@@ -32,8 +32,10 @@ m_intrinsicMatrix( new ::fwData::TransformationMatrix3D )
 
 Camera::~Camera() throw()
 {
-    SLM_TRACE("Camera::~Camera()");
+    SLM_TRACE_FUNC();
 }
+
+//------------------------------------------------------------------------------
 
 bool &Camera::dataAvailable()
 {
@@ -41,11 +43,14 @@ bool &Camera::dataAvailable()
 }
 
 //------------------------------------------------------------------------------
+
 void Camera::setExtrinsicCameraTransformation( ::fwData::TransformationMatrix3D::sptr  transMat)
 {
     m_extrinsicMatrix = transMat;
 }
+
 //------------------------------------------------------------------------------
+
 void Camera::setIntrinsicCameraTransformation( ::fwData::TransformationMatrix3D::sptr  transMat)
 {
     m_intrinsicMatrix = transMat;

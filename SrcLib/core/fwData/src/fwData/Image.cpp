@@ -209,6 +209,7 @@ bool & Image::getRefManagesBuff()
     return this->m_bufferDelegate->getRefManagesBuff() ;
 }
 
+//------------------------------------------------------------------------------
 
 void Image::getInformation( Image::csptr _source )
 {
@@ -243,6 +244,7 @@ void* Image::getPixelBuffer( VoxelIndexType index )
 }
 
 //------------------------------------------------------------------------------
+
 ::boost::shared_ptr< Image::BufferType > Image::getPixelBufferCopy( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z )
 {
     std::vector<boost::int32_t> size = this->getSize();
@@ -261,7 +263,6 @@ void* Image::getPixelBuffer( VoxelIndexType index )
     return res;
 }
 
-
 //------------------------------------------------------------------------------
 
 void Image::setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf)
@@ -272,7 +273,6 @@ void Image::setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf)
     std::copy(pixBuf, pixBuf+imagePixelSize, buf);
 }
 
-
 //------------------------------------------------------------------------------
 Image::BufferType* Image::getPixelBuffer( Image::BufferType *buffer, const ::boost::int32_t offset, const unsigned char imagePixelSize )
 {
@@ -281,6 +281,7 @@ Image::BufferType* Image::getPixelBuffer( Image::BufferType *buffer, const ::boo
 }
 
 //------------------------------------------------------------------------------
+
 SPTR( Image::BufferType ) Image::getPixelBufferCopy( Image::BufferType *buffer, const ::boost::int32_t offset, const unsigned char imagePixelSize )
 {
     Image::BufferType* buf = getPixelBuffer(buffer, offset, imagePixelSize);
@@ -290,6 +291,7 @@ SPTR( Image::BufferType ) Image::getPixelBufferCopy( Image::BufferType *buffer, 
 }
 
 //------------------------------------------------------------------------------
+
 void Image::setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, const ::boost::int32_t offset, const unsigned char imagePixelSize )
 {
     BufferType * buf = static_cast < BufferType * > (getPixelBuffer(destBuffer, offset, imagePixelSize));

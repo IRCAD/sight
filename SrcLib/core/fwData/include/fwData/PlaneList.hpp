@@ -46,12 +46,6 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( PlaneList::csptr _source );
 
-    /// Clone method
-    //FWDATA_API PlaneList::sptr clone() const;
-
-    /// Copy method
-    //FWDATA_API PlaneList &operator=( const PlaneList & _planetList ) ;
-
     // Looking for duplicate plan
     FWDATA_API void deleteDuplicatedPlan(void);
 

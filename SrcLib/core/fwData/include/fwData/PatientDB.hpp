@@ -11,9 +11,8 @@
 #include <vector>
 #include <boost/cstdint.hpp>
 
-// export/visibility
-#include "fwData/config.hpp"
 
+#include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Patient.hpp"
 #include "fwData/DownCastIterator.hpp"
@@ -49,9 +48,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( PatientDB::csptr _source );
 
-    /// Copy method
-    //FWDATA_API PatientDB &operator=( const PatientDB & _patientDB ) ;
-
     // Patients ----------------------------------------------------------------
     /// Field identifier for patients
     FWDATA_API static const Object::FieldID ID_PATIENTS;
@@ -62,7 +58,7 @@ public:
     /**
      * @brief Get the number of patients
      */
-    FWDATA_API boost::uint32_t  getPatientSize() const;
+    FWDATA_API ::boost::uint32_t  getPatientSize() const;
 
     /**
      * @brief add patient

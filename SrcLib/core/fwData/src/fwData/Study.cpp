@@ -67,22 +67,6 @@ void Study::deepCopy( Study::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//Study &Study::operator=(const Study & _study)
-//{
-//    this->m_sHospital = _study.m_sHospital;
-//    this->m_sModality = _study.m_sModality;
-//    this->m_sAcquisitionZone = _study.m_sAcquisitionZone;
-//    this->m_sRISId = _study.m_sRISId;
-//    this->m_sUID = _study.m_sUID;
-//    this->m_i32DbID = _study.m_i32DbID;
-//
-//    this->getField( Study::ID_ACQUISITIONS )->children() = _study.getField( Study::ID_ACQUISITIONS )->children();
-//
-//    return (*this);
-//}
-
-//------------------------------------------------------------------------------
-
 boost::uint32_t  Study::getAcquisitionSize() const
 {
     return this->getField( Study::ID_ACQUISITIONS )->children().size();

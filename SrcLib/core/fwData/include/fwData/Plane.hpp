@@ -54,12 +54,6 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( Plane::csptr _source );
 
-    /// Clone method
-    //FWDATA_API Plane::sptr clone() const;
-
-    /// Copy method
-    //FWDATA_API Plane &operator=( const Plane & _plane ) ;
-
     /*
      * @brief Compare method
      *

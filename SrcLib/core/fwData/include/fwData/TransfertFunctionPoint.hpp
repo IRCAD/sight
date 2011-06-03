@@ -51,9 +51,6 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( TransfertFunctionPoint::csptr _source );
 
-    /// Clone
-    //FWDATA_API TransfertFunctionPoint::sptr clone() const;
-
     /// indentier for field color
     static const Object::FieldID ID_COLOR;
 
