@@ -30,9 +30,17 @@ public:
        ((RegionFactory ,((const boost::uint8_t)) ))
        );
 
-
     typedef std::vector<double> OriginType;
     typedef std::vector<boost::int32_t> SizeType;
+
+    FWDATA_API static sptr RegionFactory(const boost::uint8_t _dim);
+
+    fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the region origin);
+
+    fwGettersSettersDocMacro(Size, vSize, std::vector< ::boost::int32_t >, the region size);
+
+protected:
+
     /// Constructor
     FWDATA_API  Region();
 
@@ -42,17 +50,10 @@ public:
      */
     FWDATA_API  Region(boost::uint8_t  _dim);
 
-    FWDATA_API static sptr RegionFactory(const boost::uint8_t _dim);
     /**
      * @brief Destructor
      */
     FWDATA_API  virtual ~Region();
-
-    fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the region origin);
-
-    fwGettersSettersDocMacro(Size, vSize, std::vector< ::boost::int32_t >, the region size);
-
-protected:
 
     //! Origin of the region
     OriginType m_vOrigin;

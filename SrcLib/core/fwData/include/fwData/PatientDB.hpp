@@ -15,7 +15,6 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Patient.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {
@@ -32,13 +31,6 @@ class FWDATA_CLASS_API PatientDB : public Object
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwTools::Factory::New< PatientDB >) ;
-
-    /// Constructor
-    FWDATA_API PatientDB ();
-
-    /// Destructor
-    FWDATA_API virtual ~PatientDB ();
-
 
     fwDataObjectMacro();
 
@@ -73,6 +65,12 @@ public:
     FWDATA_API std::pair< PatientConstIterator, PatientConstIterator > getPatients() const;
     //@]
 
+protected:
+    /// Constructor
+    FWDATA_API PatientDB ();
+
+    /// Destructor
+    FWDATA_API virtual ~PatientDB ();
 };
 
 }//end namespace fwData

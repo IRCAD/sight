@@ -19,7 +19,6 @@
 #include "fwData/Reconstruction.hpp"
 #include "fwData/DownCastIterator.hpp"
 
-
 namespace fwData
 {
 
@@ -39,12 +38,6 @@ class FWDATA_CLASS_API Acquisition : public Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object), (()), ::fwTools::Factory::New< Acquisition >) ;
-
-    /// Constructor
-    FWDATA_API Acquisition();
-    /// Destructor
-    FWDATA_API virtual ~Acquisition();
-
 
     fwDataObjectMacro();
 
@@ -94,7 +87,7 @@ public:
     /// Field identifier for reconstructions
     FWDATA_API static const Object::FieldID ID_RECONSTRUCTIONS;
 
-    typedef ContainerCaster< Reconstruction >::iterator     ReconstructionIterator;
+    typedef ContainerCaster< Reconstruction >::iterator         ReconstructionIterator;
     typedef ContainerCaster< Reconstruction >::const_iterator   ReconstructionConstIterator;
 
     /**
@@ -174,6 +167,11 @@ public:
     fwGettersSettersDocMacro(PathToFiles, pathToFiles, std::string, path to find Dicom files );
 
 protected :
+
+    /// Constructor
+    FWDATA_API Acquisition();
+    /// Destructor
+    FWDATA_API virtual ~Acquisition();
 
     //! Bits per pixel for all picture (frame). A this time, value is 8 or 16 (bits)
     ::boost::uint8_t  m_ui8BitsPerPixel;

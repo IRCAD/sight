@@ -40,12 +40,6 @@ public :
     typedef fwVec3d PointCoordArrayType;
     typedef PointCoordArrayType PointCoordArray; // Remove me
 
-    /// Constructor
-    FWDATA_API Point();
-
-    /// Destructor
-    FWDATA_API virtual ~Point();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -58,6 +52,12 @@ public :
     fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
 
 protected :
+
+    /// Constructor
+    FWDATA_API Point();
+
+    /// Destructor
+    FWDATA_API virtual ~Point();
 
     /// Point factory
     FWDATA_API static Point::sptr PointFactory(float x, float y, float z);

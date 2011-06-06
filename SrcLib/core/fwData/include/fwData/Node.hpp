@@ -37,12 +37,6 @@ public:
     /// Port container
     typedef std::vector< ::fwData::Port::sptr > PortContainer;
 
-    /// constructor
-    FWDATA_API Node();
-
-    /// Destructor
-    FWDATA_API virtual ~Node();
-
     /// Add an input port
     FWDATA_API void addInputPort(::fwData::Port::sptr port);
 
@@ -78,6 +72,12 @@ public:
     FWDATA_API void deepCopy( Node::csptr _source );
 
 protected :
+
+    /// constructor
+    FWDATA_API Node();
+
+    /// Destructor
+    FWDATA_API virtual ~Node();
 
     /// node object
     ::fwData::Object::sptr m_object;

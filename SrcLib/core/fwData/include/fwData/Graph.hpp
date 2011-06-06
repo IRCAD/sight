@@ -11,7 +11,6 @@
 #include <set>
 
 #include "fwData/config.hpp"
-
 #include "fwData/Object.hpp"
 #include "fwData/Edge.hpp"
 #include "fwData/Node.hpp"
@@ -41,12 +40,6 @@ public:
 
     typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
     typedef std::set< Node::sptr >                                         NodeContainer;  //  Be carreful, if you change we use erase(it++)
-
-    /// Constructor
-    FWDATA_API Graph();
-
-    /// Destructor
-    FWDATA_API virtual ~Graph();
 
     /**
      * @brief add a node
@@ -198,6 +191,11 @@ public:
 
 protected :
 
+    /// Constructor
+    FWDATA_API Graph();
+
+    /// Destructor
+    FWDATA_API virtual ~Graph();
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;

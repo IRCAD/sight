@@ -33,12 +33,6 @@ public :
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;
 
-    /// Constructor
-    FWDATA_API Resection();
-
-    /// Destructor
-    FWDATA_API virtual ~Resection();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -63,6 +57,13 @@ public :
     fwGettersSettersDocMacro(IsValid, isValid, bool, the flag if the resection is valid);
 
 protected :
+
+    /// Constructor
+    FWDATA_API Resection();
+
+    /// Destructor
+    FWDATA_API virtual ~Resection();
+
     //! Resection name
     std::string m_name;
 

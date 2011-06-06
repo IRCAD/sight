@@ -36,13 +36,6 @@ public :
 
     typedef ::boost::int32_t TFValueType;
 
-    /// Constructor
-    FWDATA_API TransfertFunctionPoint();
-
-    /// Destructor
-    FWDATA_API virtual ~TransfertFunctionPoint();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -71,6 +64,12 @@ public :
 
 
 protected :
+
+    /// Constructor
+    FWDATA_API TransfertFunctionPoint();
+
+    /// Destructor
+    FWDATA_API virtual ~TransfertFunctionPoint();
 
     //! point value
     TFValueType  m_i32Value;

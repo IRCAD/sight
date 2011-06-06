@@ -33,14 +33,6 @@ public:
             ((SingleFileFactory ,((::boost::filesystem::path)) ))
     );
 
-    FWDATA_API static sptr SingleFileFactory(::boost::filesystem::path _path);
-
-    /// Constructor
-    FWDATA_API SingleFile();
-
-    /// Destructor
-    FWDATA_API virtual ~SingleFile();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -56,6 +48,14 @@ public:
     FWDATA_API ::boost::filesystem::path getPath() const;
 
 protected :
+
+    FWDATA_API static sptr SingleFileFactory(::boost::filesystem::path _path);
+
+    /// Constructor
+    FWDATA_API SingleFile();
+
+    /// Destructor
+    FWDATA_API virtual ~SingleFile();
 
     /// file system path
     ::boost::filesystem::path m_path;

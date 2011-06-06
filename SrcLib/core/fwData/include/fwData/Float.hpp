@@ -28,6 +28,16 @@ class FWDATA_CLASS_API Float : public GenericField< float >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object),( ((const float)(0.0f)) ), GenericFieldFactory< Float >) ;
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Float::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Float::csptr _source );
+
+protected:
     /**
      * @brief Constructor.
      * @param[in] value The initial value.
@@ -38,14 +48,6 @@ public:
      * @brief Destructor.
      */
     FWDATA_API virtual ~Float() throw();
-
-    fwDataObjectMacro();
-
-    /// Defines shallow copy
-    FWDATA_API void shallowCopy( Float::csptr _source );
-
-    /// Defines deep copy
-    FWDATA_API void deepCopy( Float::csptr _source );
 };
 
 } // namespace fwData

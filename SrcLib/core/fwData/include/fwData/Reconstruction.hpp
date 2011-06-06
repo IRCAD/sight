@@ -35,11 +35,6 @@ class FWDATA_CLASS_API Reconstruction : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwTools::Factory::New< Reconstruction >) ;
 
-    /// Constructor
-    FWDATA_API Reconstruction();
-    /// Destructor
-    FWDATA_API virtual ~Reconstruction();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -123,11 +118,15 @@ public:
 
 protected :
 
+    /// Constructor
+    FWDATA_API Reconstruction();
+    /// Destructor
+    FWDATA_API virtual ~Reconstruction();
 
     //! true if this reconstruction is visible
     bool m_bIsVisible;
 
-    //! Material of reonstruction
+    //! Material of reconstruction
     ::fwData::Material::sptr m_pMaterial;
 
     //! Reconstruction format. eg : TRIAN, TRIAN_GPG

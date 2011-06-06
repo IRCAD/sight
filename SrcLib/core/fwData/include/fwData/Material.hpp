@@ -28,13 +28,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwTools::Factory::New< Material >) ;
 
-    /// Constructor
-    FWDATA_API Material();
-
-    /// Destructor
-    FWDATA_API virtual ~Material();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -88,6 +81,12 @@ public:
     fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, the option representation (Standard, normals).);
 
 protected :
+
+    /// Constructor
+    FWDATA_API Material();
+
+    /// Destructor
+    FWDATA_API virtual ~Material();
 
     SHADING_MODE m_shadingMode;
     REPRESENTATION_MODE m_representationMode;

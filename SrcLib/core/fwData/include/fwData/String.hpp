@@ -26,6 +26,16 @@ class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( String::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( String::csptr _source );
+
+protected:
     /**
      * @brief Constructor.
      * @param[in] value The initial value.
@@ -36,15 +46,6 @@ public:
      * @brief Destructor.
      */
     FWDATA_API virtual ~String() throw();
-
-    fwDataObjectMacro();
-
-    /// Defines shallow copy
-    FWDATA_API void shallowCopy( String::csptr _source );
-
-    /// Defines deep copy
-    FWDATA_API void deepCopy( String::csptr _source );
-
 };
 
 }

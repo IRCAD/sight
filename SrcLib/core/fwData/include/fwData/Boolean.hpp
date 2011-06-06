@@ -27,6 +27,16 @@ class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object),( ((const bool)(false)) ), GenericFieldFactory< Boolean >) ;
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Boolean::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Boolean::csptr _source );
+
+protected:
     /**
      * @brief Constructor.
      * @param[in] value The initial value.
@@ -37,14 +47,6 @@ public:
      * @brief Destructor.
      */
     FWDATA_API virtual ~Boolean() throw();
-
-    fwDataObjectMacro();
-
-    /// Defines shallow copy
-    FWDATA_API void shallowCopy( Boolean::csptr _source );
-
-    /// Defines deep copy
-    FWDATA_API void deepCopy( Boolean::csptr _source );
 };
 
 } // namespace fwData

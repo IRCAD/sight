@@ -32,12 +32,6 @@ public :
 
     typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;
 
-    /// Constructor
-    FWDATA_API PlaneList();
-
-    /// Destructor
-    FWDATA_API virtual ~PlaneList();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -53,6 +47,12 @@ public :
     fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, a container of all planes);
 
 protected :
+
+    /// Constructor
+    FWDATA_API PlaneList();
+
+    /// Destructor
+    FWDATA_API virtual ~PlaneList();
 
     //! Planes container
     PlaneListContainer m_vPlanes;

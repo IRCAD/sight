@@ -32,13 +32,6 @@ public :
     typedef double TM3DType;
     typedef std::vector<TM3DType> TMCoefArray;
 
-    //! @brief constructor
-    FWDATA_API TransformationMatrix3D();
-
-    //! @brief destructor
-    FWDATA_API virtual ~TransformationMatrix3D();
-
-
     //duplication methods
     fwDataObjectMacro();
 
@@ -48,9 +41,6 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( TransformationMatrix3D::csptr _source );
 
-
-
-    // Generator result---------------------------------------------------------
 
     fwGettersSettersDocMacro(Coefficients, vCoefficients, TMCoefArray, the elements of the matrix)
 
@@ -68,16 +58,25 @@ public :
     /// Print the coefficients of the matrix
     friend std::ostream& operator<<(std::ostream& s, TransformationMatrix3D mat)
     {
-        for(int l = 0; l < MATRIX_SIZE; l++){
-            for(int c = 0; c < MATRIX_SIZE; c++){
+        for(int l = 0; l < MATRIX_SIZE; l++)
+        {
+            for(int c = 0; c < MATRIX_SIZE; c++)
+            {
                 s << mat.getCoefficient(l, c)<< "\t";
             }
-            s << "\n";
+            s << std::endl;
         }
         return s;
     }
 
 private :
+
+    //! @brief constructor
+    FWDATA_API TransformationMatrix3D();
+
+    //! @brief destructor
+    FWDATA_API virtual ~TransformationMatrix3D();
+
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
     TMCoefArray m_vCoefficients;
 };

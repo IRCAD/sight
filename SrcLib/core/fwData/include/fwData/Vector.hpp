@@ -79,13 +79,6 @@ public:
 
     using ObjectVectorType::get_allocator;
 
-
-    /// Constructor
-    FWDATA_API Vector();
-
-    /// Destructor
-    FWDATA_API virtual ~Vector();
-
     /// @brief get the container of ::fwData::Object
     FWDATA_API Vector &getRefContainer();
 
@@ -100,6 +93,12 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Vector::csptr _source );
 
+protected:
+    /// Constructor
+    FWDATA_API Vector();
+
+    /// Destructor
+    FWDATA_API virtual ~Vector();
 
 };
 }

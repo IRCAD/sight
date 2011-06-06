@@ -25,12 +25,6 @@ class FWDATA_CLASS_API IBufferDelegate
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (IBufferDelegate) );
 
-    /// Constructor
-    FWDATA_API IBufferDelegate();
-
-    /// Destructor
-    FWDATA_API virtual ~IBufferDelegate();
-
     /// @return the buffer
     FWDATA_API virtual void *getBuffer() = 0;
 
@@ -39,8 +33,13 @@ public:
 
     fwGettersSettersDocMacro(ManagesBuff, bManagesBuff, bool, if buffer is managed);
 
-
 protected :
+
+    /// Constructor
+    FWDATA_API IBufferDelegate();
+
+    /// Destructor
+    FWDATA_API virtual ~IBufferDelegate();
 
     void *m_buffer;
 

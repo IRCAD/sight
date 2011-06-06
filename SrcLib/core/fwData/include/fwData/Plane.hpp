@@ -36,16 +36,6 @@ public :
 
     typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
 
-    /// Constructor
-    FWDATA_API Plane();
-
-    /// Build a plane from 3 points.
-    FWDATA_API Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
-
-    /// Destructor
-    FWDATA_API virtual ~Plane();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -76,6 +66,15 @@ public :
     fwGettersSettersDocMacro(IsIntersection, isIntersection, bool, flag if the plane is an intersection one (else an union one));
 
 protected :
+
+    /// Constructor
+    FWDATA_API Plane();
+
+    /// Build a plane from 3 points.
+    FWDATA_API Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
+
+    /// Destructor
+    FWDATA_API virtual ~Plane();
 
     fwPlane m_plane;
     //! Points container

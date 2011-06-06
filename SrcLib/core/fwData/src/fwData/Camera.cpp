@@ -16,11 +16,11 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Camera::Camera() :
-m_extrinsicMatrix( new ::fwData::TransformationMatrix3D ),
-m_intrinsicMatrix( new ::fwData::TransformationMatrix3D )
+Camera::Camera()
 {
     SLM_TRACE_FUNC();
+    m_extrinsicMatrix = ::fwData::TransformationMatrix3D::New();
+    m_intrinsicMatrix = ::fwData::TransformationMatrix3D::New();
     uint32HL def;
     def.Low = 0;
     def.High = 0;

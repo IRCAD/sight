@@ -34,17 +34,6 @@ public :
        ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
        );
 
-    /// Constructor
-    FWDATA_API Color();
-    /// Constructor
-    FWDATA_API Color(ColorType red, ColorType green=1.0, ColorType blue=1.0, ColorType alpha=1.0);
-
-    FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
-
-    /// Destructor
-    FWDATA_API virtual ~Color();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -89,6 +78,16 @@ public :
 
 
 protected :
+
+    /// Constructor
+    FWDATA_API Color();
+    /// Constructor
+    FWDATA_API Color(ColorType red, ColorType green=1.0, ColorType blue=1.0, ColorType alpha=1.0);
+
+    /// Destructor
+    FWDATA_API virtual ~Color();
+
+    FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
 
     //! RGBA of the image (in terms of points)
     ColorArray  m_vRGBA;

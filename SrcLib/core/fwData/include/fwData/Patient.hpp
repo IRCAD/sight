@@ -19,7 +19,6 @@
 #include "fwData/Object.hpp"
 #include "fwData/Study.hpp"
 #include "fwData/Composite.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {
@@ -44,12 +43,6 @@ class FWDATA_CLASS_API Patient : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwTools::Factory::New< Patient >) ;
 
-    /// Constructor
-    FWDATA_API Patient ();
-    /// Destructor
-    FWDATA_API virtual ~Patient ();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -71,7 +64,7 @@ public:
      * @brief Get the number of studies
      * @return number of studies
      */
-    FWDATA_API boost::uint32_t  getStudySize() const;
+    FWDATA_API ::boost::uint32_t  getStudySize() const;
 
     /**
      * @brief add study
@@ -160,6 +153,11 @@ public:
 
 protected:
 
+    /// Constructor
+    FWDATA_API Patient ();
+    /// Destructor
+    FWDATA_API virtual ~Patient ();
+
     //! Patient's name
     std::string m_sName;
 
@@ -170,7 +168,7 @@ protected:
     std::string m_sIDDicom;
 
     //! Birthdate (eg : 19771010)
-    boost::posix_time::ptime m_sBirthdate;
+    ::boost::posix_time::ptime m_sBirthdate;
 
     //! true if the patient is male, false if not
     bool m_bIsMale;
@@ -182,7 +180,7 @@ protected:
      */
 
     //! Database indentifier
-    boost::int32_t  m_i32DbID;
+    ::boost::int32_t  m_i32DbID;
 
 };
 

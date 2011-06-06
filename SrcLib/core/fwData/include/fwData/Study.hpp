@@ -13,7 +13,6 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Acquisition.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {
@@ -35,12 +34,6 @@ class FWDATA_CLASS_API Study : public Object
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwTools::Factory::New< Study >) ;
-
-    /// @brief Constructor
-    FWDATA_API Study();
-    /// @brief Destructor
-    FWDATA_API virtual ~Study();
-
 
     fwDataObjectMacro();
 
@@ -94,6 +87,10 @@ public:
 
 protected :
 
+    /// @brief Constructor
+    FWDATA_API Study();
+    /// @brief Destructor
+    FWDATA_API virtual ~Study();
 
     /// Hospital name (eg : RADIOLOGIE URGENCE CHUV LAUSANNE)
     std::string m_sHospital;
