@@ -18,7 +18,7 @@
 void test_1(const boost::filesystem::path & trianPath)
 {
     SLM_TRACE("test_1");
-    ::boost::shared_ptr< ::fwData::TriangularMesh> trianMesh(new ::fwData::TriangularMesh());
+    ::fwData::TriangularMesh::NewSptr trianMesh;
     ::fwDataIO::reader::TriangularMeshReader* reader = new ::fwDataIO::reader::TriangularMeshReader();
 
     reader->setObject(trianMesh);
@@ -35,8 +35,8 @@ void test_2( const boost::filesystem::path & trianPath1,
              const boost::filesystem::path & trianPath2 )
 {
     SLM_TRACE("test_2");
-    ::boost::shared_ptr< ::fwData::TriangularMesh> trianMesh1(new ::fwData::TriangularMesh());
-    ::boost::shared_ptr< ::fwData::TriangularMesh> trianMesh2(new ::fwData::TriangularMesh());
+    ::fwData::TriangularMesh::NewSptr trianMesh1;
+    ::fwData::TriangularMesh::NewSptr trianMesh2;
 
     ::fwDataIO::reader::TriangularMeshReader* reader = new ::fwDataIO::reader::TriangularMeshReader();
     ::fwDataIO::writer::TriangularMeshWriter* writer = new ::fwDataIO::writer::TriangularMeshWriter();

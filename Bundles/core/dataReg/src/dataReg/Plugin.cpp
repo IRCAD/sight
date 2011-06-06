@@ -20,7 +20,8 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     //Hack: force link with fwData
-    ::fwData::Object obj;
+    ::fwData::Object::NewSptr obj;
+    obj->getClassname();
 }
 
 void Plugin::stop() throw()

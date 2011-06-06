@@ -86,7 +86,7 @@ void load(Archive & ar, ::fwData::Acquisition & _acquisition, const unsigned int
 
     ar &  ::boost::serialization::make_nvp( "PatientPosition" , _acquisition.getRefPatientPosition() );
 
-    //_acquisition.setImage( ::boost::shared_ptr< ::fwData::Image >( new ::fwData::Image() ) );
+    //_acquisition.setImage( ::fwData::Image::NewSptr );
     //ar &  ::boost::serialization::make_nvp( "Image" , *_acquisition.getImage() );
 
     //  ar &  ::boost::serialization::make_nvp( "StructAnat" , _acquisition.getStructAnat() );

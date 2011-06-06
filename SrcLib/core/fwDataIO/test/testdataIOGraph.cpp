@@ -14,33 +14,32 @@
 #include "fwDataIO/Serializer.hpp"
 
 
-boost::shared_ptr< ::fwData::Graph > buildGraph2Node()
+::fwData::Graph::sptr buildGraph2Node()
 {
     // G :
     // n1 --e--> n2
-    using namespace fwData;
-    ::boost::shared_ptr< Graph > g( new Graph() );
+    ::fwData::Graph::NewSptr g;
 
-    ::boost::shared_ptr< Node > n1( new Node() );
-    ::boost::shared_ptr< Port > p1( new Port() );
+    ::fwData::Node::NewSptr n1;
+    ::fwData::Port::NewSptr p1;
     p1->setIdentifier("sizex");
     p1->setType("float");
     n1->addOutputPort( p1 );
-    ::boost::shared_ptr< String > o1( new ::fwData::String() );
+    ::fwData::String::NewSptr o1;
     o1->value()="J aime le rouge";
     n1->setObject(o1);
 
 
-    ::boost::shared_ptr< Node > n2( new Node() );
-    ::boost::shared_ptr< Port > p2( new Port() );
+    ::fwData::Node::NewSptr n2;
+    ::fwData::Port::NewSptr p2;
     p2->setIdentifier("threshold");
     p2->setType("float");
     n2->addInputPort( p2 );
-    ::boost::shared_ptr< ::fwData::Color > o2( new ::fwData::Color() );
+    ::fwData::Color::NewSptr o2;
     o2->getRefRGBA()[0]=1.0;
     n2->setObject(o2);
 
-    ::boost::shared_ptr< Edge > e( new Edge() );
+    ::fwData::Edge::NewSptr e;
     e->setIdentifiers("sizex","threshold");
 
     g->addNode(n1);
@@ -52,14 +51,14 @@ boost::shared_ptr< ::fwData::Graph > buildGraph2Node()
 }
 
 
-boost::shared_ptr< ::fwData::Node > buildNode()
+::fwData::Node::sptr buildNode()
 {
-    ::boost::shared_ptr< ::fwData::Node > n1( new ::fwData::Node() );
-    ::boost::shared_ptr< ::fwData::Port > p1( new ::fwData::Port() );
+    ::fwData::Node::NewSptr n1;
+    ::fwData::Port::NewSptr p1;
     p1->setIdentifier("sizexXX");
     p1->setType("float");
     n1->addOutputPort( p1 );
-    ::boost::shared_ptr< ::fwData::Float > o1( new ::fwData::Float() );
+    ::fwData::Float::NewSptr o1;
     o1->value()=3.1415;
     n1->setObject(o1);
 
@@ -70,10 +69,10 @@ boost::shared_ptr< ::fwData::Node > buildNode()
 
 int main()
 {
-    ::boost::shared_ptr< ::fwData::Graph > g =  buildGraph2Node();
-    ::boost::shared_ptr< ::fwData::Node > n1 =  buildNode();
+    ::fwData::Graph::NewSptr g;
+    ::fwData::Node::NewSptr n1;
     ::fwDataIO::Serializer serializer;
-    serializer.rootFolder() = boost::filesystem::path("./"); // current path
+    serializer.rootFolder() = ::boost::filesystem::path("./"); // current path
     serializer.serialize(g,false);
     serializer.serialize(n1,false);
 }

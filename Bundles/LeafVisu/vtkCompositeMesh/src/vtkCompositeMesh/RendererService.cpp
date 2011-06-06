@@ -202,11 +202,8 @@ void RendererService::createAndAddActorToRender()
     // elementnumber increases for each mesh found:
     unsigned int elementNumber=0;
 
-    //Get my composite objects map:
-    ::fwData::Composite::Container myCompositeMap= myComposite->getRefMap();
-
     //Loop through the composite objects, if it's a mesh, then render it:
-    for(::fwData::Composite::Container::const_iterator it = myCompositeMap.begin(); it != myCompositeMap.end(); ++it)
+    for(::fwData::Composite::Container::const_iterator it = myComposite->begin(); it != myComposite->end(); ++it)
     {
         OSLM_INFO("ObjectName: " << it->first);
         OSLM_INFO("ObjectPointer: " << it->second);
@@ -268,6 +265,8 @@ void RendererService::createAndAddActorToRender()
         elementNumber++;
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void RendererService::updateVTKPipeline()
 {

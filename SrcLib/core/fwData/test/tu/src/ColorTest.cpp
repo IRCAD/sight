@@ -36,7 +36,7 @@ void ColorTest::methode1()
     const float B = 0.5f;
     const float A = 0.6f;
 
-    //::fwData::Color::sptr color(new ::fwData::Color(R, G, B, A));
+    //::fwData::Color::sptr color = ::fwData::Color::New(R, G, B, A);
 
     //CPPUNIT_ASSERT_EQUAL(color->red(), R);
     //CPPUNIT_ASSERT_EQUAL(color->green(), G);

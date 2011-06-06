@@ -115,7 +115,7 @@ void ImageFileFormatService::load()
     SLM_ASSERT("image not instanced", image);
 
     m_reader->setObject(image);
-    ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
+    ::fwData::location::SingleFile::NewSptr path;
     path->setPath( this->getFullPath() );
     m_reader->setLocation( path );
     m_reader->read();
@@ -139,7 +139,7 @@ void ImageFileFormatService::save()
     {
         m_writer->setObject(image);
         this->extension() = m_writer->extension();
-        ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
+        ::fwData::location::SingleFile::NewSptr path;
         path->setPath( this->getFullPath() );
         m_writer->setLocation( path );
         m_writer->write();

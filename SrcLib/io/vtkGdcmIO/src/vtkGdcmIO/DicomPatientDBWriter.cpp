@@ -58,7 +58,7 @@ void DicomPatientDBWriter::write()
         tmp_path += "/patient_" + ::fwTools::getString< int >(iPatient);// + pPatient->getName() + "_" + pPatient->getIDDicom();
         ::vtkGdcmIO::DicomPatientWriter myWriter;
         myWriter.setObject(pPatient);
-        ::boost::shared_ptr< ::fwData::location::Folder > loc(new ::fwData::location::Folder());
+        ::fwData::location::Folder::NewSptr loc;
         if ( ! ::boost::filesystem::exists( tmp_path ) )
         {
             ::boost::filesystem::create_directory( tmp_path );

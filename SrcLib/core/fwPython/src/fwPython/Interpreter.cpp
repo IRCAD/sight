@@ -10,45 +10,45 @@
 namespace fwPython
 {
 
+//------------------------------------------------------------------------------
 
-boost::python::dict GetNamespace( char const* mod )
+::boost::python::dict GetNamespace( char const* mod )
 {
     using namespace boost::python;
     dict moduleNamespace( import( mod ).attr( "__dict__" ) );
     return moduleNamespace;
 }
 
-
-
-
+//------------------------------------------------------------------------------
 
 Interpreter::Interpreter()
 {
-   ::fwPython::initialize();
-   //SLM_ASSERT( "python is not initialized", ::fwPython::isInitialized() );
+    ::fwPython::initialize();
+    //SLM_ASSERT( "python is not initialized", ::fwPython::isInitialized() );
 
-   namespace bp = ::boost::python;
+    namespace bp = ::boost::python;
 
-   try
-   {
-       // Retrieve the main module.
-       bp::object main = bp::import("__main__");
-       // Retrieve the main module's namespace
-       m_globals= main.attr("__dict__");
-   }
-   catch( boost::python::error_already_set const &)
-   {
-       PyErr_Print();
-   }
+    try
+    {
+        // Retrieve the main module.
+        bp::object main = bp::import("__main__");
+        // Retrieve the main module's namespace
+        m_globals= main.attr("__dict__");
+    }
+    catch( boost::python::error_already_set const &)
+    {
+        PyErr_Print();
+    }
 }
 
-
+//------------------------------------------------------------------------------
 
 Interpreter::~Interpreter()
 {
    ::fwPython::finalize();
 }
 
+//------------------------------------------------------------------------------
 
 void Interpreter::addObject( std::string key, ::fwTools::Object::sptr object)
 {
@@ -64,24 +64,25 @@ void Interpreter::addObject( std::string key, ::fwTools::Object::sptr object)
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 int Interpreter::execute(std::string code)
 {
-   namespace bp = ::boost::python;
-   int succes=0;
+    namespace bp = ::boost::python;
+    int succes=0;
 
-   try
-   {
-       bp::object ignored = bp::exec( code.c_str(), m_globals, m_locals );
-   }
-   catch( bp::error_already_set const &)
-   {
-      PyErr_Print();
-      succes = -1;
-   }
-   return succes;
+    try
+    {
+        bp::object ignored = bp::exec( code.c_str(), m_globals, m_locals );
+    }
+    catch( bp::error_already_set const &)
+    {
+        PyErr_Print();
+        succes = -1;
+    }
+    return succes;
 }
 
+//------------------------------------------------------------------------------
 
 }

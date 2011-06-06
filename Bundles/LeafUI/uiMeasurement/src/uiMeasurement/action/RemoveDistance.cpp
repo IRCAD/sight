@@ -18,8 +18,6 @@
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/DownCastIterator.hpp>
-
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>

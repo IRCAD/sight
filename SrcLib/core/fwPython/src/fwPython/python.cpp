@@ -11,8 +11,6 @@
 
 #include "fwPython/python.hpp"
 
-
-
 namespace fwPython
 {
 
@@ -25,8 +23,7 @@ public:
 
 char *Config::home = NULL;
 
-
-
+//------------------------------------------------------------------------------
 
 char * charFromString(std::string str)
 {
@@ -36,6 +33,7 @@ char * charFromString(std::string str)
     return dest;
 }
 
+//------------------------------------------------------------------------------
 
 void initialize()
 {
@@ -46,18 +44,23 @@ void initialize()
     }
 }
 
+//------------------------------------------------------------------------------
+
 bool isInitialized()
 {
     return Py_IsInitialized();
 }
 
+//------------------------------------------------------------------------------
+
 void finalize()
 {
-    //Currently, boost recommands to *not* finalize python
+    //Currently, boost recommends to *not* finalize python
     //Py_Finalize();
     return;
 }
 
+//------------------------------------------------------------------------------
 
 void setHome(std::string dir)
 {
@@ -76,16 +79,20 @@ void setHome(std::string dir)
     SLM_ERROR_IF("Python home must be set before python initialisation", Py_IsInitialized());
 }
 
+//------------------------------------------------------------------------------
+
 void addPath(std::string dir)
 {
     namespace bp = ::boost::python;
-    SLM_ERROR_IF("Python must be initialised before adding a new dir", Py_IsInitialized());
+    SLM_ERROR_IF("Python must be initialized before adding a new dir", Py_IsInitialized());
 
     bp::object sys = bp::import("sys");
     sys.attr("path").attr("insert")(0, dir);
 
     OSLM_INFO(dir << " appended to Python Path");
 }
+
+//------------------------------------------------------------------------------
 
 char* getHome()
 {
