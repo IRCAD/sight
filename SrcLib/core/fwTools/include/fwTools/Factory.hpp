@@ -93,6 +93,16 @@ public :
     static ::boost::shared_ptr< CLASSNAME > New();
 
     /**
+     * @brief This factory construct a new Object BASECLASS from a key which is registered using a REGISTER_BINDING macro
+     * @tparam BASECLASS the class name to build
+     * @tparam KEYTYPE the type of the key used
+     * @param[in] key a const reference on the key value.
+     * @return a smart pointer to the new & initialized object
+     */
+    template<class BASECLASS, class KEYTYPE>
+    static ::boost::shared_ptr< BASECLASS > New(const KEYTYPE &key);
+
+    /**
      * @brief Return a smart pointer data required from a given key registered by a macro REGISTER_BINDING...( ...,  KeyType, keyvalue )
      * This factory construct a new Object from a key which is registered using a REGISTER_BINDING macro
      * @tparam KEYTYPE the type of the key used
@@ -102,7 +112,6 @@ public :
      * the factory cannot produce the required Object
      * @todo  do an explicit specialization of this method for char * to avoid  mistake
      */
-    // reference on KEYTYPE mandatory to also enable non copiable key for example typeid
     template<class KEYTYPE>
     static ::fwTools::Object::sptr New(const KEYTYPE &key);
 
@@ -121,52 +130,8 @@ protected:
     FWTOOLS_API static std::list< Initializer::sptr > m_initializers;
 };
 
-
-
-template< class CLASSNAME >
-::boost::shared_ptr< CLASSNAME > Factory::New()
-{
-    ::boost::shared_ptr< CLASSNAME > newObject( new CLASSNAME ) ;
-    OSLM_ASSERT("Factory::buildData unable to build class from key=" << ::fwTools::getString(typeid(CLASSNAME)), newObject);
-    if ( newObject == 0 )
-    {
-        std::string mes = "Factory::buildData unable to build class from key=";
-        mes += ::fwTools::getString(typeid(CLASSNAME));
-        throw ::fwTools::Failed(mes);
-    }
-
-    BOOST_FOREACH( Initializer::sptr initializer , m_initializers )
-    {
-        initializer->init( newObject );
-    }
-
-    return newObject;
-}
-
-
-
-template<class KEYTYPE>
-::fwTools::Object::sptr Factory::New(const KEYTYPE &key)
-{
-    BOOST_STATIC_ASSERT( ::boost::is_pointer<KEYTYPE>::value == false );
-
-    ::fwTools::Object::sptr newObject( ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >( key ) );
-    OSLM_ASSERT("Factory::buildData unable to build class from key=" << ::fwTools::getString(key), newObject);
-    if ( newObject == 0 )
-    {
-        std::string mes = "Factory::buildData unable to build class from key=";
-        mes += ::fwTools::getString(key);
-        throw ::fwTools::Failed(mes);
-    }
-
-    BOOST_FOREACH( Initializer::sptr initializer , m_initializers )
-    {
-        initializer->init( newObject );
-    }
-
-    return newObject;
-}
-
 } // namespace fwTools
+
+#include "fwTools/Factory.hxx"
 
 #endif //_FWTOOLS_FACTORY_HPP_
