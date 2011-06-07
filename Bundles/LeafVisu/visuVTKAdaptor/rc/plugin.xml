@@ -324,6 +324,13 @@
         <object>::fwData::Composite</object>
     </extension>
 
+    <!-- REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite ); -->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::Image3DCursor</service>
+        <object>::fwData::Image</object>
+    </extension>
+
 </plugin>
 
 

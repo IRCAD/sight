@@ -105,6 +105,12 @@ protected:
      */
     FWCOMED_API void worldToImageSliceIndex(const double world[3], int index[3] );
 
+    /**
+     * @brief Convert from world coordinates system to image coordinates system
+     * @param[in] index : coordinate in the image
+     * @param[out] world : coordinate in the world
+     */
+    FWCOMED_API void sliceIndexToWorld(const int index[3], double world[3] );
 
     /**
      * @brief Get the image spacing.
