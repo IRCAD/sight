@@ -29,7 +29,7 @@ public:
      * @brief return the master node of an Object : className + unique ID as attribue
      * For example <Image id="626b2206-c55b-4a90-b215-d138dc32640e"/> RFC4122 version 4 random based generation
      */
-    static xmlNodePtr MasterNode( ::boost::shared_ptr< ::fwTools::Object> obj );
+    FWXML_API static xmlNodePtr MasterNode( ::boost::shared_ptr< ::fwTools::Object> obj );
 
     /**
      * @brief for debug/quality test only test if objet is of type OBJECTTYPE and source->name is equal to OBJECTTYPE
@@ -48,25 +48,25 @@ public:
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
      * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondance
      */
-    static xmlNodePtr toXML( ::boost::shared_ptr< ::fwTools::Object> obj );
+    FWXML_API static xmlNodePtr toXML( ::boost::shared_ptr< ::fwTools::Object> obj );
 
     /**
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
      * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondance and visit all its Field
      */
-    static xmlNodePtr toXMLRecursive( ::boost::shared_ptr< ::fwTools::Object> obj );
+    FWXML_API static xmlNodePtr toXMLRecursive( ::boost::shared_ptr< ::fwTools::Object> obj );
 
     /**
      * @brief modify the  given object return from the  xmlNode by calling the corresponding XMLTranslator Specialized
      * Use ClassFactoryRegistry , if no correspondance let object unchanged
      * Object must be castable to source->name class
      */
-    static void fromXML( ::boost::shared_ptr< ::fwTools::Object> toUpdate, xmlNodePtr source );
+    FWXML_API static void fromXML( ::boost::shared_ptr< ::fwTools::Object> toUpdate, xmlNodePtr source );
 
     /**
      * @brief return a newObject form an XML node : if object already created use the previous one
      */
-    static ::boost::shared_ptr< ::fwTools::Object> fromXML( xmlNodePtr source );
+    FWXML_API static ::boost::shared_ptr< ::fwTools::Object> fromXML( xmlNodePtr source );
 
     /**
      * @brief to node append a new Property with given value
@@ -126,7 +126,7 @@ public:
      * @brief an XML helper to create a simple XML element
      * @return a xml node ptr referencing <name>1</name>
      */
-    static xmlNodePtr newElement( const  std::string &name,  bool value );
+    FWXML_API static xmlNodePtr newElement( const  std::string &name,  bool value );
 
     /**
      * @brief an XML helper to get text information to an element node
@@ -143,7 +143,7 @@ public:
      * @brief an XML helper to get text information to an element node
      * @return a value lexical casted in bool
      */
-    static bool getElement(  xmlNodePtr node );
+    FWXML_API static bool getElement(  xmlNodePtr node );
 
     /// note iterator on a container of smart pointeur of the same type !!!
     template<class Iterator>
