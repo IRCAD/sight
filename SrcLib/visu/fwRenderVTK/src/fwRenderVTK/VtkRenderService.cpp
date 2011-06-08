@@ -450,8 +450,10 @@ void VtkRenderService::startContext()
     // For Depth peeling (translucent rendering)
 //    m_interactorManager->getInteractor()->SetRenderWhenDisabled(false);
 
+#ifndef __linux
     m_interactorManager->getInteractor()->GetRenderWindow()->SetAlphaBitPlanes(1);
     m_interactorManager->getInteractor()->GetRenderWindow()->SetMultiSamples(0);
+#endif
 
 //    m_interactor->GetRenderWindow()->PointSmoothingOn();
 //    m_interactor->GetRenderWindow()->LineSmoothingOn();
