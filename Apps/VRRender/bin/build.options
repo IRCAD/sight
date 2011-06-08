@@ -14,6 +14,7 @@ BUNDLES = [
     'visuVTKVRAdaptor_0-1'     ,
     'visu_0-1'                 ,
     'ioVTK_0-1'                ,
+    'ioITK_0-1'                ,
     'ioVtkGdcm_0-1'            ,
     'ioXML_0-1'                ,
     'uiGenericQt_0-1'          ,
