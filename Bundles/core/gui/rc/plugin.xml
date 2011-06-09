@@ -89,5 +89,10 @@
         <object>::fwTools::Object</object>
     </extension>
 
-
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::PushObjectSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
+    
 </plugin>
