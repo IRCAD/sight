@@ -44,20 +44,20 @@ void PushObjectSrv::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
-    bool executable = true;
-    std::string src_uid;
-    BOOST_FOREACH(SrcKeyMapType::value_type valElt, m_srcMap )
-    {
-        src_uid = valElt.first;
-        OSLM_ASSERT( src_uid << " doesn't exist", ::fwTools::fwID::exist(src_uid) );
-        ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( src_uid ) );
-        OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
-        BOOST_FOREACH(SrcKeyMapType::key_type keyElt, valElt.second )
-        {
-            executable &= (composite_src->find(keyElt)!= composite_src->end());
-        }
-    }
-    this->::fwGui::IActionSrv::setIsExecutable( executable );
+//    bool executable = true;
+//    std::string src_uid;
+//    BOOST_FOREACH(SrcKeyMapType::value_type valElt, m_srcMap )
+//    {
+//        src_uid = valElt.first;
+//        OSLM_ASSERT( src_uid << " doesn't exist", ::fwTools::fwID::exist(src_uid) );
+//        ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( src_uid ) );
+//        OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
+//        BOOST_FOREACH(SrcKeyMapType::key_type keyElt, valElt.second )
+//        {
+//            executable &= (composite_src->find(keyElt)!= composite_src->end());
+//        }
+//    }
+//    this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------
