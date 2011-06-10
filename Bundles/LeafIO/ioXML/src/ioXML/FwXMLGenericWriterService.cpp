@@ -123,20 +123,6 @@ void FwXMLGenericWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-std::string FwXMLGenericWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLGenericWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLGenericWriterService" ;
-}
-
-//------------------------------------------------------------------------------
-
 void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, ::fwTools::Object::sptr _obj )
 {
     SLM_TRACE_FUNC();

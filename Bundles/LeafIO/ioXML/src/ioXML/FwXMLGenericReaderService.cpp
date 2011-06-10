@@ -152,24 +152,20 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading data ");
         myLoader.addHandler( progressMeterGUI );
         myLoader.read();
+        pObject = ::fwTools::Object::dynamicCast( myLoader.getObject() );
     }
     catch (const std::exception & e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
-        return pObject;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                 "Warning during loading",
                 ::fwGui::dialog::IMessageDialog::WARNING);
-        return pObject;
     }
-
-    pObject = ::fwTools::Object::dynamicCast( myLoader.getObject() );
-
     return pObject;
 }
 

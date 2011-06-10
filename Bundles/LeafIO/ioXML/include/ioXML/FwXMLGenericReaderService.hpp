@@ -38,6 +38,8 @@ class IOXML_CLASS_API FwXMLGenericReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (FwXMLGenericReaderService)(::io::IReader) ) ;
 
+protected:
+
     /**
      * @brief   constructor
      *
@@ -48,8 +50,6 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLGenericReaderService() throw();
-
-protected:
 
     /** Search if archive extension is changed
      * @verbatim

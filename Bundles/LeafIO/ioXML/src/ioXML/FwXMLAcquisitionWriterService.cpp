@@ -99,20 +99,6 @@ void FwXMLAcquisitionWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-std::string FwXMLAcquisitionWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLAcquisitionWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLAcquisitionWriterService" ;
-}
-
-//------------------------------------------------------------------------------
-
 void FwXMLAcquisitionWriterService::saveAcquisition( const ::boost::filesystem::path inrFileDir, ::fwData::Acquisition::sptr _pAcquisition )
 {
     SLM_TRACE_FUNC();

@@ -95,20 +95,6 @@ void FwXMLImageWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-std::string FwXMLImageWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLImageWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLImageWriterService" ;
-}
-
-//------------------------------------------------------------------------------
-
 void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr _pPatient )
 {
     SLM_TRACE_FUNC();

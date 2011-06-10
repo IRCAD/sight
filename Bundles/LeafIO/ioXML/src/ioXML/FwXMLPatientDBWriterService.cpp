@@ -100,20 +100,6 @@ void FwXMLPatientDBWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-std::string FwXMLPatientDBWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLPatientDBWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLPatientDBWriterService" ;
-}
-
-//------------------------------------------------------------------------------
-
 void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path inrFileDir, ::fwData::PatientDB::sptr _pPatient )
 {
     SLM_TRACE_FUNC();
