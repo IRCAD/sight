@@ -222,7 +222,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     }
     else
     {
-            OSLM_TRACE ( "'"<< objectId << "' inexistant, passing by '" << adaptor << "'");
+            OSLM_TRACE ( "'"<< objectId << "' inexistent, passing by '" << adaptor << "'");
     }
 }
 

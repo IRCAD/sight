@@ -44,11 +44,7 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Image3DCursor::Image3DCursor() throw()
-: m_priority(.6)
-, m_cursorPolyData( vtkPolyData::New() )
-, m_cursorMapper  ( vtkPolyDataMapper::New() )
-, m_cursorActor(    vtkActor::New() )
+Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 {
     //handlingEventOff();
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
@@ -57,8 +53,7 @@ Image3DCursor::Image3DCursor() throw()
 //------------------------------------------------------------------------------
 
 Image3DCursor::~Image3DCursor() throw()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 void Image3DCursor::setVisibility( bool visibility )
@@ -83,13 +78,15 @@ void Image3DCursor::configuring() throw(fwTools::Failed)
     }
 }
 
-
 //------------------------------------------------------------------------------
 
 void Image3DCursor::doStart() throw(fwTools::Failed)
 {
+    m_cursorPolyData = vtkSmartPointer<vtkPolyData>::New();
+    m_cursorMapper   = vtkSmartPointer<vtkPolyDataMapper>::New();
+    m_cursorActor    = vtkSmartPointer<vtkActor>::New();
 
-    buildPolyData();
+    this->buildPolyData();
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,1,1);
@@ -98,11 +95,7 @@ void Image3DCursor::doStart() throw(fwTools::Failed)
         m_cursorActor->SetUserTransform(this->getTransform());
     }
     this->addToRenderer(m_cursorActor);
-
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-
-
+    doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +111,7 @@ void Image3DCursor::doUpdate() throw(fwTools::Failed)
     };
     double center[3];
     sliceIndexToWorld(index, center);
-    updateCursorPosition(center);
+    this->updateCursorPosition(center);
 }
 
 //------------------------------------------------------------------------------
@@ -135,6 +128,9 @@ void Image3DCursor::doSwap() throw(fwTools::Failed)
 void Image3DCursor::doStop() throw(fwTools::Failed)
 {
     this->removeAllPropFromRenderer();
+    m_cursorPolyData = 0;
+    m_cursorMapper   = 0;
+    m_cursorActor    = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -153,7 +149,7 @@ void Image3DCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools:
         };
         double center[3];
         sliceIndexToWorld(index, center);
-        updateCursorPosition(center);
+        this->updateCursorPosition(center);
     }
 }
 
@@ -162,9 +158,7 @@ void Image3DCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools:
 void Image3DCursor::updateCursorPosition( double world[3] )
 {
     m_cursorActor->SetPosition(world);
-
     this->setVtkPipelineModified();
-    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -175,7 +169,7 @@ void Image3DCursor::buildPolyData()
     vtkSmartPointer<vtkSphereSource> polySource = vtkSmartPointer<vtkSphereSource>::New();
     polySource->SetCenter(0.0, 0.0, 0.0);
     polySource->SetRadius(8.0);
-    polySource->SetPhiResolution(4);
+    polySource->SetPhiResolution(8);
     polySource->SetThetaResolution(8);
 
     //vtkSmartPointer<vtkParametricBoy> boyFunc = vtkSmartPointer<vtkParametricBoy>::New();
@@ -184,7 +178,6 @@ void Image3DCursor::buildPolyData()
 
     polySource->SetOutput(m_cursorPolyData);
     polySource->Update();
-
     this->setVtkPipelineModified();
 }
 
