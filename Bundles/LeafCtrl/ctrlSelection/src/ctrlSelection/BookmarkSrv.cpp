@@ -7,10 +7,11 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/Bookmarks.hpp>
+#include <fwTools/Object.hpp>
+
+#include <fwData/String.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include "ctrlSelection/BookmarkSrv.hpp"
 
@@ -41,8 +42,24 @@ void BookmarkSrv::configuring()  throw ( ::fwTools::Failed )
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("bookmark");
     SLM_ASSERT("Problem with configuration for BookmarkSrv type, one element \"bookmark\" must be present", m_configuration->findAllConfigurationElement("bookmark").size() == 1 );
 
-    SLM_FATAL_IF( "Sorry, attribute \"name\" is missing", !config->hasAttribute("name") );
-    m_bookmarkName = config->getExistingAttributeValue("name");
+    m_bookmarkName = "";
+
+    if (config->hasAttribute("fromString"))
+    {
+        std::string uid = config->getExistingAttributeValue("fromString");
+        OSLM_ASSERT("Object '" << uid << "' does not exist", ::fwTools::fwID::exist(uid));
+        ::fwData::String::sptr str = ::fwData::String::dynamicCast(::fwTools::fwID::getObject(uid));
+        OSLM_ASSERT("Object '" << uid << "' is not a '::fwData::String'", str);
+        m_bookmarkName = str->value();
+    }
+    if (config->hasAttribute("fromString") && config->hasAttribute("name"))
+    {
+        m_bookmarkName += "_";
+    }
+    if (config->hasAttribute("name"))
+    {
+        m_bookmarkName += config->getExistingAttributeValue("name");
+    }
 }
 
 //-----------------------------------------------------------------------------
