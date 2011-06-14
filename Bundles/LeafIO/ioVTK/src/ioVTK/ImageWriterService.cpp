@@ -79,7 +79,7 @@ void ImageWriterService::configureWithIHM()
     {
         m_fsImgPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsImgPath.branch_path();
+        _sDefaultPath = m_fsImgPath.parent_path();
     }
 }
 

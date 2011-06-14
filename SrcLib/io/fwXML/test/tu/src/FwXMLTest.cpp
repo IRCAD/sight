@@ -40,7 +40,7 @@ void FwXMLTest::testFwXML()
     ::fwData::PatientDB::sptr pPatientDB = createPatientDB();
 
     // save patientDB in fwXML
-    ::boost::filesystem::create_directories( PATH.branch_path() );
+    ::boost::filesystem::create_directories( PATH.parent_path() );
 
     fwXML::Serializer serializer;
     ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy );
@@ -49,7 +49,7 @@ void FwXMLTest::testFwXML()
     ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( PATH.leaf() ) );
     serializer.setPathPolicy( pPathPolicy );
 
-    serializer.rootFolder() = PATH.branch_path().string();
+    serializer.rootFolder() = PATH.parent_path().string();
     bool doSaveSchema = false;
     serializer.serialize(pPatientDB, doSaveSchema);
 
@@ -118,7 +118,7 @@ void FwXMLTest::testFwXML()
     CPPUNIT_ASSERT_EQUAL(image->getWindowWidth(), image2->getWindowWidth());
     CPPUNIT_ASSERT_EQUAL(image->getRescaleIntercept(), image2->getRescaleIntercept());
 
-    ::boost::filesystem::remove_all( PATH.branch_path().string() );
+    ::boost::filesystem::remove_all( PATH.parent_path().string() );
 }
 
 //------------------------------------------------------------------------------

@@ -301,9 +301,9 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
             ProcessedXMLFile =  filePath.string();
             {
                 // create directory structure if needed
-                if ( filePath.branch_path().empty() == false )
+                if ( filePath.parent_path().empty() == false )
                 {
-                    ::boost::filesystem::create_directories(filePath.branch_path());
+                    ::boost::filesystem::create_directories(filePath.parent_path());
                 }
                 std::ofstream outFile(  filePath.string().c_str(), std::ios::binary);
                 ::fwXML::XMLStream::toStream(  aggIter->second->getXMLDoc() , outFile );
@@ -416,7 +416,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     xmlNodePtr xmlRoot = NULL;
 
     // get XMLDOC & root PTR
-    this->rootFolder() = filePath.branch_path();
+    this->rootFolder() = filePath.parent_path();
     ProcessedXMLFile = filePath.string();
 
     xmlDoc = XMLParser::getXmlDocFromFile( filePath );

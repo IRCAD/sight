@@ -95,14 +95,14 @@ boost::filesystem::path PatientFolderPathPolicy::getPath(::boost::shared_ptr <fw
     {
         std::string acquisitionFolder("a");
         acquisitionFolder+=boost::lexical_cast<std::string>( getFieldIndex(obj) );
-        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).branch_path();
+        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).parent_path();
 
         return  parentFolder / acquisitionFolder / "/acquistion.xml";
     }
 
     if ( className == "Reconstruction" ) // "s#/a#/NOMORGANE/reconstruction.xml"
     {
-        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).branch_path();
+        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).parent_path();
         std::string organName = ::boost::dynamic_pointer_cast< ::fwData::Reconstruction >(obj)->getOrganName();
 
         return parentFolder / organName / "reconstruction.xml";

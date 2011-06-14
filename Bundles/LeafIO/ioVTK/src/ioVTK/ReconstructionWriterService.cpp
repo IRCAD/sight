@@ -78,7 +78,7 @@ void ReconstructionWriterService::configureWithIHM()
     {
         m_fsAcqPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsAcqPath.branch_path();
+        _sDefaultPath = m_fsAcqPath.parent_path();
     }
 }
 
