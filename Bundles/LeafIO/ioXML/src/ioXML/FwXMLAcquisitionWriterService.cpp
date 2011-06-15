@@ -186,7 +186,10 @@ void FwXMLAcquisitionWriterService::manageZipAndSaveAcquisition( const ::boost::
     saveAcquisition(xmlfile,_pAcquisition);
 
     // Zip
-    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Saving acquisition");
+    zip->addHandler( progress );
+    zip->packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

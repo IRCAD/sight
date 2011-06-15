@@ -238,8 +238,10 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
-
-    ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Reading");
+    zip->addHandler( progress );
+    zip->unpackFolder( _pArchivePath, destFolder );
 
     // Load
     ::boost::filesystem::path xmlfile = destFolder / "root.xml";

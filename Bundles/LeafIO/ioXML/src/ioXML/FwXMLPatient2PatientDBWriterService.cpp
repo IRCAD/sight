@@ -189,7 +189,10 @@ void FwXMLPatient2PatientDBWriterService::manageZipAndSavePatientDB( const ::boo
     savePatientDB(xmlfile,_pPatient);
 
     // Zip
-    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Saving patient");
+    zip->addHandler( progress );
+    zip->packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );
