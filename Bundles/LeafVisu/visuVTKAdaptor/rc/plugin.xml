@@ -1,13 +1,13 @@
 <plugin id="visuVTKAdaptor" class="visuVTKAdaptor::Plugin" >
-    
+
     <library name="visuVTKAdaptor" />
-    
+
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
     <requirement id="visu" />
     <requirement id="visuVTK" />
 
-    
+
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
@@ -50,37 +50,37 @@
         <service>::visuVTKAdaptor::Acquisition</service>
         <object>::fwData::Acquisition</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ResectionDB</service>
         <object>::fwData::ResectionDB</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Resection</service>
         <object>::fwData::Resection</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Point</service>
         <object>::fwData::Point</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::PointLabel</service>
         <object>::fwData::Point</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::PointList</service>
         <object>::fwData::PointList</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::PointListInteractor</service>
@@ -98,91 +98,97 @@
         <service>::visuVTKAdaptor::ImagePickerInteractor</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Distance</service>
         <object>::fwData::PointList</object>
     </extension>
- 
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ImageMultiDistances</service>
         <object>::fwData::Image</object>
-    </extension>  
-    
+    </extension>
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ImageLandmarks</service>
         <object>::fwData::Image</object>
-    </extension> 
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Text</service>
         <object>::fwTools::Object</object>
-    </extension> 
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ImageText</service>
         <object>::fwData::Image</object>
-    </extension> 
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Model</service>
         <object>::fwData::Model</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Transform</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::BoxWidget</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Video</service>
         <object>::fwData::Video</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Camera</service>
         <object>::fwData::Video</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Camera2</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ResetCamera</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::NegatoOneSlice</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::SlicesCursor</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::SliceFollowerCamera</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Normals</service>
@@ -194,19 +200,19 @@
         <service>::visuVTKAdaptor::InteractorStyle</service>
         <object>::fwTools::Object</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::NegatoWindowingInteractor</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::NegatoSlicingInteractor</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ProbeCursor</service>
@@ -218,12 +224,12 @@
         <service>::visuVTKAdaptor::NegatoMPR</service>
         <object>::fwData::Image</object>
     </extension>
-     
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::PlaneSelector</service>
         <object>::fwTools::Object</object>
-    </extension>   
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
@@ -235,26 +241,26 @@
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::PlaneInteractor</service>
         <object>::fwTools::Object</object>
-    </extension> 
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::PlaneList</service>
         <object>::fwData::PlaneList</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Plane</service>
         <object>::fwData::Plane</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Snapshot</service>
         <object>::fwData::Composite</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Medical3DCamera</service>
