@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <assert.h>
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <fwCore/Demangler.hpp>
@@ -16,6 +17,11 @@
 namespace fwTools
 {
 Bookmarks::Dictionary Bookmarks::m_dictionary;
+
+//-----------------------------------------------------------------------------
+
+Bookmarks::Bookmarks()
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -62,13 +68,24 @@ void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
 std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::sptr obj )
 {
     std::list<Bookmarks::BookmarkName> result;
-    Dictionary::iterator iter = m_dictionary.begin();
-    for ( ; iter != m_dictionary.end(); ++iter )
+    BOOST_FOREACH( Bookmarks::Dictionary::value_type elt, m_dictionary)
     {
-        if ( !iter->second.expired() && iter->second.lock() == obj )
+        if ( !elt.second.expired() && elt.second.lock() == obj )
         {
-            result.push_back(  iter->first );
+            result.push_back(  elt.first );
         }
+    }
+    return  result;
+}
+
+//-----------------------------------------------------------------------------
+
+std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks()
+{
+    std::list<Bookmarks::BookmarkName> result;
+    BOOST_FOREACH( Bookmarks::Dictionary::value_type elt, m_dictionary)
+    {
+        result.push_back( elt.first );
     }
     return  result;
 }
