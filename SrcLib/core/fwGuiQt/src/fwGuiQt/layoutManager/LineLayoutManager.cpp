@@ -13,7 +13,6 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-
 #include "fwGuiQt/layoutManager/LineLayoutManager.hpp"
 
 
@@ -64,30 +63,37 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     const std::list< ViewInfo> &views = this->getViewsInfo();
     BOOST_FOREACH ( ViewInfo viewInfo, views)
     {
-        QWidget *panel;
-        int border = viewInfo.m_border;
-        if(viewInfo.m_caption.first)
+        if(viewInfo.m_isSpacer)
         {
-            QGroupBox *groupbox = new QGroupBox(qtContainer);
-            groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
-            panel = groupbox;
-            border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
+            layout->addStretch();
         }
         else
         {
-            panel = new QWidget(qtContainer);
+            QWidget *panel;
+            int border = viewInfo.m_border;
+            if(viewInfo.m_caption.first)
+            {
+                QGroupBox *groupbox = new QGroupBox(qtContainer);
+                groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
+                panel = groupbox;
+                border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
+            }
+            else
+            {
+                panel = new QWidget(qtContainer);
+            }
+            panel->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
+            panel->setContentsMargins(border, border,border, border);
+
+            ::fwGuiQt::container::QtContainer::NewSptr subContainer;
+            subContainer->setQtContainer(panel);
+            m_subViews.push_back(subContainer);
+
+            layout->addWidget( panel );
+            layout->setStretchFactor(panel, viewInfo.m_proportion);
+
+            subContainer->setVisible( viewInfo.m_visible );
         }
-        panel->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
-        panel->setContentsMargins(border, border,border, border);
-
-        ::fwGuiQt::container::QtContainer::NewSptr subContainer;
-        subContainer->setQtContainer(panel);
-        m_subViews.push_back(subContainer);
-
-        layout->addWidget( panel );
-        layout->setStretchFactor(panel, viewInfo.m_proportion);
-
-        subContainer->setVisible( viewInfo.m_visible );
     }
 }
 
