@@ -286,7 +286,8 @@ bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexInde
             (*iter)[2] = translate[ (*iter)[2]  ];
         }
 
-        _vertex = newVertex;
+//        _vertex = newVertex;
+        _vertex.swap(newVertex);
     }
     return orphanFound;
 }

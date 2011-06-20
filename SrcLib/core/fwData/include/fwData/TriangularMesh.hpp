@@ -67,6 +67,15 @@ public :
      */
     FWDATA_API CellContainer &cells() ;
 
+    /**
+      Clear the point container
+      */
+    FWDATA_API void clearPoints();
+    /**
+      Clear the cell container
+      */
+    FWDATA_API void clearCells();
+
     FWDATA_API void setOneVectorInPointList(int _iIndex, double _fX, double _fY, double _fZ);
 
     FWDATA_API void setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _p3);
@@ -84,6 +93,7 @@ public :
     FWDATA_API int const getNumCells(void) const ;
 
 protected :
+
 
     /**
      * @brief constructor
