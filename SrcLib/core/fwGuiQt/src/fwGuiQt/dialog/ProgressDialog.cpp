@@ -4,14 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-
 #include "fwGuiQt/dialog/ProgressDialog.hpp"
 
-#include <QPaintEvent>
+#include <QPaintEvent> // at the end due to the boost signal/ Qt signal problem.
 
 REGISTER_BINDING( ::fwGui::dialog::IProgressDialog, ::fwGuiQt::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::FactoryRegistryKeyType , ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
@@ -24,21 +22,18 @@ namespace dialog
 
 ProgressDialog::ProgressDialog( const std::string title, const std::string message)
 {
-    QWidget *activeWindow = qApp->activeWindow();
+    QWidget *activeWindow = NULL;
 
-    if(!activeWindow)
+    BOOST_FOREACH (QWidget *widget, QApplication::topLevelWidgets())
     {
-        BOOST_FOREACH (QWidget *widget, QApplication::topLevelWidgets())
+        activeWindow = qobject_cast< QMainWindow * >(widget);
+        // activeWindow must also have a layout to use statusBar()
+        if ( activeWindow && activeWindow->layout())
         {
-            activeWindow = qobject_cast< QMainWindow * >(widget);
-            if (activeWindow)
-            {
-                break;
-            }
+            m_pmainWindow = qobject_cast< QMainWindow * >(activeWindow);
+            break;
         }
     }
-
-    m_pmainWindow = qobject_cast< QMainWindow * >(activeWindow);
 
     m_pcancelButton = new QPushButton("Cancel");
     QObject::connect(m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()));
@@ -55,7 +50,8 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
     }
     else
     {
-        m_pdialog = new QProgressDialog( activeWindow, Qt::WindowStaysOnTopHint );
+        m_pdialog = new QProgressDialog( 0, Qt::WindowStaysOnTopHint );
+//        m_pdialog = new QProgressDialog( activeWindow, Qt::WindowStaysOnTopHint );
 
         // FIXME modal dialog has conflict with MessageHandler
         //m_pdialog->setWindowModality(Qt::WindowModal);
