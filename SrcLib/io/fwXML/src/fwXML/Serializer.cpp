@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <iomanip> // for indentation
+#include <exception>
 
 #include <boost/filesystem/convenience.hpp>
 
@@ -204,8 +205,9 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
             handlerHelper.m_currentStep++;
         }
     }
-    catch (::fwCore::Exception &e) // catch progress bar cancel exception
+    catch (const std::exception & e)
     {
+        OSLM_ERROR("Exception : " << e.what());
         BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
         {
             ::fwXML::IFileFormatService::sptr filedata = elem.second;
@@ -215,7 +217,7 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
                 ::fwServices::OSR::unregisterService(filedata);
             }
         }
-        throw e;
+        throw;
     }
 
     notifyProgress(1.0,"Done");
@@ -467,7 +469,20 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     if (loadExtraXML)
     {
         OSLM_INFO("Serializer::deSerialize also load extraXML");
-        this->IOforExtraXML( objRoot, false );
+        try
+        {
+            this->IOforExtraXML( objRoot, false );
+        }
+        catch (const std::exception & e)
+        {
+            OSLM_ERROR("Exception : " << e.what());
+            // memory cleanup
+            xmlFreeDoc (xmlDoc);
+
+            ObjectTracker::clear();
+
+            throw;
+        }
     }
     else
     {
