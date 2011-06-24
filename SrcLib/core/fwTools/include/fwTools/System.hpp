@@ -88,11 +88,6 @@ protected:
     System();
 
     /**
-     * @brief   A shared pointer to the kernel instance
-     */
-    static ::boost::shared_ptr< System > m_instance;
-
-    /**
      * @brief   The path to the document's dump folder
      */
     ::boost::filesystem::path m_dumpFolder;
