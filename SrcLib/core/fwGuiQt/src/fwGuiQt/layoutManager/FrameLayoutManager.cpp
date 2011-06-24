@@ -83,15 +83,14 @@ void FrameLayoutManager::createFrame()
 
     int posX = frameInfo.m_position.first;
     int posY = frameInfo.m_position.second;
-
-    if (posX < 0 && posY < 0)
+    QPoint pos(posX, posY);
+    if(!this->isOnScreen(pos))
     {
         QRect frect = m_qtWindow->frameGeometry();
         frect.moveCenter(QDesktopWidget().availableGeometry().center());
-        posX = frect.x();
-        posY = frect.y();
+        pos = frect.topLeft();
     }
-    m_qtWindow->move( posX, posY );
+    m_qtWindow->move( pos );
 
     this->setState(frameInfo.m_state);
 
@@ -186,6 +185,18 @@ void FrameLayoutManager::setState( FrameState state )
         state = FULL_SCREEN;
     }
     return state;
+}
+
+//-----------------------------------------------------------------------------
+
+bool FrameLayoutManager::isOnScreen(const QPoint& pos)
+{
+    bool isVisible = false;
+    for(int i=0; i < QDesktopWidget().screenCount() && !isVisible; ++i)
+    {
+        isVisible = QDesktopWidget().availableGeometry(i).contains(pos, true);
+    }
+    return isVisible;
 }
 
 //-----------------------------------------------------------------------------

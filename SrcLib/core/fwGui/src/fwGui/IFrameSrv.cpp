@@ -14,8 +14,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
-//#include <fwServices/RootManager.hpp>
-
 
 #include "fwGui/Application.hpp"
 #include "fwGui/IFrameSrv.hpp"
