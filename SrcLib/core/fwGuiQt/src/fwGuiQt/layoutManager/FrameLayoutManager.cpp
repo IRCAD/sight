@@ -74,23 +74,19 @@ void FrameLayoutManager::createFrame()
         m_qtWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
     }
 
-    int sizeX = frameInfo.m_size.first;
-    int sizeY = frameInfo.m_size.second;
-    if (sizeX > 0 && sizeY > 0)
-    {
-        m_qtWindow->resize( sizeX, sizeY );
-    }
+    int sizeX = (frameInfo.m_size.first  > 0)?frameInfo.m_size.first:m_qtWindow->size().width();
+    int sizeY = (frameInfo.m_size.second > 0)?frameInfo.m_size.second:m_qtWindow->size().height();
 
     int posX = frameInfo.m_position.first;
     int posY = frameInfo.m_position.second;
     QPoint pos(posX, posY);
     if(!this->isOnScreen(pos))
     {
-        QRect frect = m_qtWindow->frameGeometry();
-        frect.moveCenter(QDesktopWidget().availableGeometry().center());
+        QRect frect(0,0,sizeX,sizeY);
+        frect.moveCenter(QDesktopWidget().screenGeometry().center());
         pos = frect.topLeft();
     }
-    m_qtWindow->move( pos );
+    m_qtWindow->setGeometry(pos.x(), pos.y(), sizeX, sizeY);
 
     this->setState(frameInfo.m_state);
 
@@ -117,8 +113,8 @@ void FrameLayoutManager::destroyFrame()
     this->getRefFrameInfo().m_state = this->getState();
     this->getRefFrameInfo().m_size.first = m_qtWindow->size().width();
     this->getRefFrameInfo().m_size.second = m_qtWindow->size().height();
-    this->getRefFrameInfo().m_position.first = m_qtWindow->pos().x();
-    this->getRefFrameInfo().m_position.second = m_qtWindow->pos().y();
+    this->getRefFrameInfo().m_position.first = m_qtWindow->geometry().x();
+    this->getRefFrameInfo().m_position.second = m_qtWindow->geometry().y();
     this->writeConfig();
     m_qtWindow->close();
     QObject::disconnect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
@@ -194,7 +190,7 @@ bool FrameLayoutManager::isOnScreen(const QPoint& pos)
     bool isVisible = false;
     for(int i=0; i < QDesktopWidget().screenCount() && !isVisible; ++i)
     {
-        isVisible = QDesktopWidget().availableGeometry(i).contains(pos, true);
+        isVisible = QDesktopWidget().screenGeometry(i).contains(pos, false);
     }
     return isVisible;
 }
