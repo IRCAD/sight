@@ -208,10 +208,10 @@ struct ITKDicomSaverFunctor
                 seriesWriter->SetInput( itkImage );
                 seriesWriter->SetImageIO( gdcmIO );
 
-                ImageType::RegionType region = itkImage->GetLargestPossibleRegion();
+                itkImageType::RegionType region = itkImage->GetLargestPossibleRegion();
 
-                ImageType::IndexType start = region.GetIndex();
-                ImageType::SizeType  size  = region.GetSize();
+                itkImageType::IndexType start = region.GetIndex();
+                itkImageType::SizeType  size  = region.GetSize();
 
                 std::string format = outputDirectory;
                 std::stringstream file_str;

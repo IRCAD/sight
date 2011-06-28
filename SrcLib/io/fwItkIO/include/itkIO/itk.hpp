@@ -12,7 +12,6 @@
 #include <fwData/Image.hpp>
 
 #include "itkIO/config.hpp"
-#include "itkIO/types.hpp"
 
 namespace itkIO
 {
