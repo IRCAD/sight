@@ -500,13 +500,13 @@ void Volume::buildPipeline( )
     m_volumeProperty->ShadeOn();
     m_volumeProperty->SetInterpolationTypeToLinear();
 
+    m_volumeProperty->SetAmbient( 0.1 );
+    m_volumeProperty->SetDiffuse( 0.7 );
+    m_volumeProperty->SetSpecular( 0.2 );
+    m_volumeProperty->SetSpecularPower( 10.0 );
+
     m_volume->SetMapper(m_volumeMapper);
     m_volume->SetProperty(m_volumeProperty);
-
-    m_volumeProperty->SetAmbient( 0.6 );
-    m_volumeProperty->SetDiffuse( 0.8 );
-    m_volumeProperty->SetSpecular( 0.6 );
-    m_volumeProperty->SetSpecularPower( 70.0 );
 
     setVtkPipelineModified();
 }
