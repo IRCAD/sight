@@ -144,7 +144,7 @@ vtkImageData* toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 
 //-----------------------------------------------------------------------------
 
-bool fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
+void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
     assert(destination && source );
 
@@ -163,7 +163,6 @@ bool fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     void *input = source->GetScalarPointer();
     void *destBuffer;
-    bool res=false;
 
     if (imageMemSize != 0)
     {
@@ -175,90 +174,69 @@ bool fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         try
         {
             destBuffer = new char[ size ];
-            res = true;
         }
         catch (std::exception &e)
         {
             OSLM_ERROR ("Need more memory : " << e.what() );
+            throw;
         }
 
-        if (res)
+        if (components == 3 && bytePerPixel == 2)
         {
-            if (components == 3 && bytePerPixel == 2)
+            SLM_TRACE ("RGB 16bits");
+            unsigned short* destBufferTyped = ( unsigned short*)destBuffer;
+            unsigned short* inputTyped= (unsigned short*)input;
+            unsigned short* finalPtr = ((unsigned short*)destBuffer) + size;
+            unsigned short valR, valG,valB;
+            while (destBufferTyped < finalPtr)
             {
-                SLM_TRACE ("RGB 16bits");
-                unsigned short* destBufferTyped = ( unsigned short*)destBuffer;
-                unsigned short* inputTyped= (unsigned short*)input;
-                unsigned short* finalPtr = ((unsigned short*)destBuffer) + size;
-                while (destBufferTyped < finalPtr)
-                {
-                    unsigned short valR = (unsigned short)(float((*(inputTyped++)) * 0.30));
-                    unsigned short valG = (unsigned short)(float((*(inputTyped++)) * 0.59));
-                    unsigned short valB = (unsigned short)(float((*(inputTyped++)) * 0.11));
-                    (*destBufferTyped)= valR + valG + valB;
-                    destBufferTyped++;
-                }
-                destination->setPixelType( fwTools::makeDynamicType<unsigned short>() );
+                valR = (unsigned short)(float((*(inputTyped++)) * 0.30));
+                valG = (unsigned short)(float((*(inputTyped++)) * 0.59));
+                valB = (unsigned short)(float((*(inputTyped++)) * 0.11));
+                (*destBufferTyped)= valR + valG + valB;
+                destBufferTyped++;
             }
-            else
-            {
-                if (components == 3 && bytePerPixel == 1)
-                {
-                    SLM_TRACE ("RGB 8bits");
-                    unsigned char* destBufferTyped = ( unsigned char*)destBuffer;
-                    unsigned char* inputTyped= ( unsigned char*)input;
-                    unsigned char* finalPtr = (( unsigned char*)destBuffer) + size;
-                    while (destBufferTyped < finalPtr)
-                    {
-                        unsigned char valR = (unsigned char)(float((*(inputTyped++)) * 0.30));
-                        unsigned char valG = (unsigned char)(float((*(inputTyped++)) * 0.59));
-                        unsigned char valB = (unsigned char)(float((*(inputTyped++)) * 0.11));
-                        (*destBufferTyped)= valR + valG + valB;
-                        destBufferTyped++;
-                    }
-                    destination->setPixelType( fwTools::makeDynamicType<unsigned char>() );
-                }
-                else
-                {
-
-                    if (components == 1)
-                    {
-                        SLM_TRACE ("Luminance image");
-                        memcpy( destBuffer, input , imageMemSize);
-                        destination->setPixelType( PixelTypeTranslation.right.at( source->GetScalarType() ) );
-                    }
-                    else
-                    {
-                        SLM_ERROR ("Dicom image type not supported (image dimension)");
-                    }
-                }
-            }
-            destination->setBuffer( destBuffer );
+            destination->setPixelType( fwTools::makeDynamicType<unsigned short>() );
         }
-    }
-    else
-    {
-        OSLM_INFO("imageMemSize : " << imageMemSize );
+        else if (components == 3 && bytePerPixel == 1)
+        {
+            SLM_TRACE ("RGB 8bits");
+            unsigned char* destBufferTyped = ( unsigned char*)destBuffer;
+            unsigned char* inputTyped= ( unsigned char*)input;
+            unsigned char* finalPtr = (( unsigned char*)destBuffer) + size;
+            unsigned char valR, valG,valB;
+            while (destBufferTyped < finalPtr)
+            {
+                valR = (unsigned char)(float((*(inputTyped++)) * 0.30));
+                valG = (unsigned char)(float((*(inputTyped++)) * 0.59));
+                valB = (unsigned char)(float((*(inputTyped++)) * 0.11));
+                (*destBufferTyped)= valR + valG + valB;
+                destBufferTyped++;
+            }
+            destination->setPixelType( fwTools::makeDynamicType<unsigned char>() );
+        }
+        else if (components == 1)
+        {
+            SLM_TRACE ("Luminance image");
+            memcpy( destBuffer, input , imageMemSize);
+            destination->setPixelType( PixelTypeTranslation.right.at( source->GetScalarType() ) );
+        }
+        else
+        {
+            SLM_ERROR ("Dicom image type not supported (image dimension)");
+        }
+        destination->setBuffer( destBuffer );
     }
 
-    if (!res)
-    {
-        destination->getRefSize()[0] = 0;
-        destination->getRefSize()[1] = 0;
-        destination->getRefSize()[2] = 0;
-    }
+    OSLM_INFO_IF("imageMemSize : " << imageMemSize, !res );
 
-    for (boost::uint8_t  d=0; d<dim; ++d)
+    for( ::boost::uint8_t d=0; d<dim; ++d)
     {
         OSLM_TRACE("Size " << destination->getCRefSize()[d]);
         OSLM_TRACE("Origin " << destination->getCRefOrigin()[d]);
         OSLM_TRACE("Spacing " << destination->getCRefSpacing()[d]);
         destination->getRefOrigin()[d]=0.0; //FIXME !!! Hack because our framework (visu services) doesn't support origine
     }
-
-    SLM_TRACE ("Exit from fromVTKImage");
-
-    return res;
 }
 
 //------------------------------------------------------------------------------

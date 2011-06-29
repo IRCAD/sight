@@ -62,11 +62,10 @@ VTKIO_API vtkImageData*  toVTKImage( ::fwData::Image::sptr _data ,  vtkImageData
  *
  * @param[in] _source vtkImageData*.
  * @param[out] _destination ::fwData::Image::sptr.
- * @return bool.
  *
- * Returns \b true if the conversion is a success and \b false if it fails
+ * Throw an exception if the conversion fails
  */
-VTKIO_API bool fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _destination );
+VTKIO_API void fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _destination );
 
 /*!
  * @brief Convert a ::fwData::Image::sptr to a vtkImageImport*.

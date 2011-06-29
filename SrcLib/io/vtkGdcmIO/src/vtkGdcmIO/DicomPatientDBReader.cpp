@@ -221,7 +221,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     {
                         SLM_TRACE ( "New sort (more soft)" );
                         const std::vector<std::string> & sorted = s.GetFilenames();
-                        if (sorted.size() != 0)
+                        if (!sorted.empty())
                         {
                             gdcm::Reader localReader1;
                             gdcm::Reader localReader2;
@@ -295,7 +295,15 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         if ( bMem )
                         {
                             reader->Update();
-                            res = ::vtkIO::fromVTKImage(reader->GetOutput(), pDataImage);
+                            try
+                            {
+                                ::vtkIO::fromVTKImage(reader->GetOutput(), pDataImage);
+                                res = true;
+                            }
+                            catch(std::exception &e)
+                            {
+                                OSLM_ERROR("VTKImage to fwData::Image failed "<<e.what());
+                            }
                         }
                     }
                     catch (std::exception &e)
@@ -433,15 +441,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     patient->addStudy(study);
                     patientDB->addPatient( patient );
                 } // if res == true
-                try /// FIXME !!!! Memory Leak
-                {
-                    reader->Delete();
-                }
-                catch (std::exception& e)
-                {
-                    OSLM_ERROR ( "try to delete tmp image: " << iter->first << " - " << e.what() );
-                }
-
+                reader->Delete();
             } // if nb files > 0
             iter++;
         } // While all data

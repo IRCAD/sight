@@ -55,17 +55,17 @@ void ImageReader::read()
 
     vtkDataObject *obj = reader->GetOutput();
     vtkImageData* img = vtkImageData::SafeDownCast(obj);
-    if(img)
+
+    FW_RAISE_IF("ImageReader cannot read VTK image file :"<<this->getFile().string(), !img);
+    try
     {
-        ::vtkIO::fromVTKImage(img, pImage);
+        ::vtkIO::fromVTKImage( img, pImage);
     }
-    else
+    catch( std::exception &e)
     {
-        std::string errMsg;
-        errMsg  = "ImageReader cannot read VTK image file : ";
-        errMsg.append( this->getFile().string() );
-        throw( errMsg );
+        FW_RAISE("VTKImage to fwData::Image failed "<<e.what());
     }
+
 }
 
 //------------------------------------------------------------------------------
