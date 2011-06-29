@@ -34,6 +34,9 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (IFrameSrv)(::fwServices::IService) ) ;
 
+    /// Get widget defined for porgress bar
+    FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();
+
 protected :
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -55,8 +58,11 @@ protected :
 
     FWGUI_API void destroy();
 
-    static const std::string CLOSE_POLICY_EXIT;
-    static const std::string CLOSE_POLICY_NOTIFY;
+    FWGUI_API static const std::string CLOSE_POLICY_EXIT;
+    FWGUI_API static const std::string CLOSE_POLICY_NOTIFY;
+
+    /// Static reference on a widget defined for progress bar installation
+    FWGUI_API static ::fwGui::container::fwContainer::wptr m_progressWidget;
 
 private:
 
@@ -80,8 +86,6 @@ private:
     bool m_hasToolBar;
 
     std::string m_closePolicy;
-
-
 };
 
 } // namespace fwGui

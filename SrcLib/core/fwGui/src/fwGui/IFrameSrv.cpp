@@ -24,6 +24,8 @@ namespace fwGui
 const std::string IFrameSrv::CLOSE_POLICY_EXIT   = "exit";
 const std::string IFrameSrv::CLOSE_POLICY_NOTIFY = "notify";
 
+::fwGui::container::fwContainer::wptr  IFrameSrv::m_progressWidget = ::boost::weak_ptr< ::fwGui::container::fwContainer >();
+
 IFrameSrv::IFrameSrv() :
         m_hasMenuBar(false),
         m_hasToolBar(false),
@@ -100,6 +102,11 @@ void IFrameSrv::create()
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
     m_frameLayoutManager->createFrame();
     ::fwGui::container::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
+    if ( m_progressWidget.expired() )
+    {
+        m_progressWidget = frame;
+    }
+
     ::fwGui::container::fwContainer::sptr container = m_frameLayoutManager->getContainer();
     std::vector< ::fwGui::container::fwContainer::sptr > subViews;
     subViews.push_back(container);
@@ -212,6 +219,13 @@ void IFrameSrv::onCloseNotify()
     ::fwTools::Object::sptr srvObj = this->getObject();
     objectMsg->addEvent( "WINDOW_CLOSED" );
     ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwGui::container::fwContainer::sptr IFrameSrv::getProgressWidget()
+{
+    return m_progressWidget.lock();
 }
 
 //-----------------------------------------------------------------------------
