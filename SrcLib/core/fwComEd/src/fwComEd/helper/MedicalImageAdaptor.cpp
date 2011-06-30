@@ -144,6 +144,18 @@ void MedicalImageAdaptor::getPlane( double points[4][3] , int sliceNumber)
 
 //------------------------------------------------------------------------------
 
+void MedicalImageAdaptor::sliceIndexToWorld(const int index[3], double world[3] )
+{
+    double spacing[3];
+    this->getImageSpacing(spacing);
+    for ( int i=0 ; i<3 ; ++i )
+    {
+        world[i] = static_cast<int>( (index[i]*spacing[i]) + 0.5*spacing[i] );
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void MedicalImageAdaptor::worldToSliceIndex(const double world[3], int index[3] )
 {
     double spacing[3];

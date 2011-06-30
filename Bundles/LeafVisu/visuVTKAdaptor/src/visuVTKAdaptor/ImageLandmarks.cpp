@@ -11,7 +11,6 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
-#include <fwData/DownCastIterator.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Point.hpp>
 

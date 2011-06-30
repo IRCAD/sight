@@ -42,7 +42,7 @@ void serialize(Archive & ar, ::fwData::Dictionary & _study, const unsigned int v
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::Dictionary, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register<  ::fwData::Dictionary, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_study,version); // call load or save depending of archive type
 }

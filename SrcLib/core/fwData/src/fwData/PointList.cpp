@@ -58,35 +58,6 @@ void PointList::deepCopy( PointList::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//PointList::sptr PointList::clone() const
-//{
-//    SLM_TRACE_FUNC();
-//
-//    PointList::NewSptr pNewPointList;
-//
-//    // Copy encoding
-//    for (   PointList::PointListContainer::const_iterator iter = this->m_vPoints.begin();
-//            iter != this->m_vPoints.end();
-//            ++iter )
-//    {
-//        pNewPointList->m_vPoints.push_back( (*iter)->clone() );
-//    }
-//
-//    return pNewPointList;
-//}
-//
-////------------------------------------------------------------------------------
-//
-//PointList & PointList::operator=( const PointList & _pointList )
-//{
-//    // Copy encoding
-//    m_vPoints = _pointList.m_vPoints;
-//
-//    return *this;
-//}
-
-//------------------------------------------------------------------------------
-
 } // namespace fwData
 
 

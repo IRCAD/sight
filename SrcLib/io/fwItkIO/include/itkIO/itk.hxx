@@ -4,11 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/DynamicType.hpp>
-#include <fwTools/Factory.hpp>
-
 #include <assert.h>
 
+#include <itkImage.h>
+#include <itkImageRegion.h>
+
+#include <fwTools/DynamicType.hpp>
+#include <fwTools/Factory.hpp>
 
 namespace itkIO
 {

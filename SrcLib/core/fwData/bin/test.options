@@ -1,6 +1,0 @@
-TYPE = 'exec'
-LIB  = ['observer','fwTools_0-1','fwCore_0-1']
-USE  = ['wx','boost','itk','python']
-CPPFLAGS  = '-DSPYLOG_LEVEL=6'
-USEVISIBILITY ='no'
-CONSOLE='yes'

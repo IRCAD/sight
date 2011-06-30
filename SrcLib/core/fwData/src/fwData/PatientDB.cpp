@@ -51,16 +51,7 @@ void PatientDB::deepCopy( PatientDB::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//PatientDB & PatientDB::operator=( const PatientDB & _patientDB )
-//{
-//    this->getField( PatientDB::ID_PATIENTS )->children() = _patientDB.getField( PatientDB::ID_PATIENTS )->children();
-//
-//    return *this;
-//}
-
-//------------------------------------------------------------------------------
-
-boost::uint32_t  PatientDB::getPatientSize() const
+::boost::uint32_t  PatientDB::getPatientSize() const
 {
     return this->getField( PatientDB::ID_PATIENTS )->children().size();
 }

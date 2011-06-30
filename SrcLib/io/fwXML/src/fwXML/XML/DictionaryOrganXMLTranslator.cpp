@@ -127,7 +127,7 @@ void DictionaryOrganXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr to
     dicoOrgan->getRefPosition() = XMLTH::getElement< std::string >(XMLParser::findChildNamed( source, "Position"));
 
     std::string iconPath = XMLTH::getElement< std::string >(XMLParser::findChildNamed( source, "IconPath"));;
-    dicoOrgan->setCRefIconPath( boost::filesystem::path(iconPath) );
+    dicoOrgan->setCRefIconPath( ::boost::filesystem::path(iconPath) );
 
     dicoOrgan->getRefRed() = XMLTH::getElement< double >(XMLParser::findChildNamed( source, "Red"));
     dicoOrgan->getRefGreen() = XMLTH::getElement< double >(XMLParser::findChildNamed( source, "Green"));
@@ -135,7 +135,7 @@ void DictionaryOrganXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr to
     dicoOrgan->getRefAlpha() = XMLTH::getElement< double >(XMLParser::findChildNamed( source, "Alpha"));
 
     std::string texturePath = XMLTH::getElement< std::string >(XMLParser::findChildNamed( source, "TexturePath"));;
-    dicoOrgan->setCRefTexturePath( boost::filesystem::path(texturePath) );
+    dicoOrgan->setCRefTexturePath( ::boost::filesystem::path(texturePath) );
 
     dicoOrgan->getRefAvgTriangleNb() = XMLTH::getElement< ::boost::uint32_t >(XMLParser::findChildNamed( source, "AvgTriangleNb"));
     dicoOrgan->getRefSegMin() = XMLTH::getElement< double >(XMLParser::findChildNamed( source, "SegMin"));

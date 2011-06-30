@@ -82,7 +82,7 @@ void AddPatientDB::configuring() throw( ::fwTools::Failed )
 void AddPatientDB::updating( ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->setIsExecutable(false);
+    ::fwGui::LockAction lock(this->getSptr());
     ::fwData::PatientDB::sptr pDocumentPDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pDocumentPDB not instanced", pDocumentPDB);
 
@@ -107,7 +107,6 @@ void AddPatientDB::updating( ) throw(::fwTools::Failed)
     ::fwServices::OSR::unregisterService( pIOSelectorSrv );
 
     ::fwComEd::fieldHelper::MedicalImageHelpers::mergePatientDBInfo( pPDB, pDocumentPDB, this->getSptr() );
-    this->setIsExecutable(true);
 }
 
 //------------------------------------------------------------------------------

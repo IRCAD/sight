@@ -77,14 +77,14 @@ const boost::filesystem::path Native::getPath() const throw(RuntimeException)
     const boost::regex      nativeFileRegex( m_nameDecorator->getNativeName(fullModulePath.leaf()) );
 
     // Walk through the module directory, seeking for a matching file.
-    boost::filesystem::directory_iterator curDirEntry(fullModulePath.branch_path());
+    boost::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
     boost::filesystem::directory_iterator endDirEntry;
     for(; curDirEntry != endDirEntry; ++curDirEntry)
     {
         boost::filesystem::path curEntryPath( *curDirEntry );
         if( boost::regex_match( curEntryPath.leaf(), nativeFileRegex ) == true )
         {
-            result =  m_modulePath.branch_path() / curEntryPath.leaf();
+            result =  m_modulePath.parent_path() / curEntryPath.leaf();
             break;
         }
     }
@@ -98,7 +98,7 @@ const boost::filesystem::path Native::getPath() const throw(RuntimeException)
     const std::string       searchSuffix("_posix_gcc.so");
 
     // Walk through the module directory, seeking for a matching file.
-    boost::filesystem::directory_iterator curDirEntry(fullModulePath.branch_path());
+    boost::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
     boost::filesystem::directory_iterator endDirEntry;
     for(; curDirEntry != endDirEntry; ++curDirEntry)
     {
@@ -106,7 +106,7 @@ const boost::filesystem::path Native::getPath() const throw(RuntimeException)
         std::string curEntryName(curEntryPath.leaf());
         if(curEntryName.find(searchPrefix) != std::string::npos && curEntryName.find(searchSuffix) != std::string::npos)
         {
-            result = m_modulePath.branch_path() / curEntryPath.leaf();
+            result = m_modulePath.parent_path() / curEntryPath.leaf();
             break;
         }
     }

@@ -14,7 +14,7 @@ namespace dialog
 {
 const IProgressDialog::FactoryRegistryKeyType IProgressDialog::REGISTRY_KEY =  "::fwGui::dialog::ProgressDialog";
 
-IProgressDialog::IProgressDialog() : m_canceled(false), m_raise(true)
+IProgressDialog::IProgressDialog() : m_canceled(false), m_raise(true), m_processUserEvents(true)
 {}
 
 //-----------------------------------------------------------------------------

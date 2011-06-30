@@ -31,16 +31,6 @@ public:
     /// IO Container type
     static const std::string OutputKey ;
 
-    /**
-     * @brief   Constructor
-     */
-    FWDATA_API ProcessObject() ;
-
-    /**
-     * @brief   Destructor
-     */
-    FWDATA_API virtual ~ProcessObject();
-
     /// retrieve the input data associated with _id
     FWDATA_API ::fwData::Object::sptr  getInput( std::string _id  );
 
@@ -99,6 +89,17 @@ public:
      * @note this is not a reference: take care not to build iterator on return
      */
     FWDATA_API    Object::ChildContainer getIO();
+
+protected:
+    /**
+     * @brief   Constructor
+     */
+    FWDATA_API ProcessObject() ;
+
+    /**
+     * @brief   Destructor
+     */
+    FWDATA_API virtual ~ProcessObject();
 
 };
 

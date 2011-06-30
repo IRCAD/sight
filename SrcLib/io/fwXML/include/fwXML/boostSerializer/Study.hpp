@@ -22,12 +22,12 @@ namespace serialization {
 template<class Archive>
 void load(Archive & ar, ::fwData::Study & _study, const unsigned int version)
 {
-    ar &  boost::serialization::make_nvp( "Hospital" , _study.getRefHospital() );
-    ar &  boost::serialization::make_nvp( "Modality" , _study.getRefModality() );
-    ar &  boost::serialization::make_nvp( "AcquisitionZone" , _study.getRefAcquisitionZone() );
-    ar &  boost::serialization::make_nvp( "RISId" , _study.getRefRISId() );
-    ar &  boost::serialization::make_nvp( "UID" , _study.getRefUID() );
-    ar &  boost::serialization::make_nvp( "DbID" , _study.getRefDbID() );
+    ar &  ::boost::serialization::make_nvp( "Hospital" , _study.getRefHospital() );
+    ar &  ::boost::serialization::make_nvp( "Modality" , _study.getRefModality() );
+    ar &  ::boost::serialization::make_nvp( "AcquisitionZone" , _study.getRefAcquisitionZone() );
+    ar &  ::boost::serialization::make_nvp( "RISId" , _study.getRefRISId() );
+    ar &  ::boost::serialization::make_nvp( "UID" , _study.getRefUID() );
+    ar &  ::boost::serialization::make_nvp( "DbID" , _study.getRefDbID() );
 }
 
 template<class Archive>
@@ -35,12 +35,12 @@ void save(Archive & ar, const ::fwData::Study & _study, const unsigned int versi
 {
     std::string newStr;
 
-    ar &  boost::serialization::make_nvp( "Hospital" , _study.getCRefHospital() );
-    ar &  boost::serialization::make_nvp( "Modality" , _study.getCRefModality() );
-    ar &  boost::serialization::make_nvp( "AcquisitionZone" , _study.getCRefAcquisitionZone() );
-    ar &  boost::serialization::make_nvp( "RISId" ,  _study.getCRefRISId() );
-    ar &  boost::serialization::make_nvp( "UID" , _study.getCRefUID() );
-    ar &  boost::serialization::make_nvp( "DbID" , _study.getCRefDbID() );
+    ar &  ::boost::serialization::make_nvp( "Hospital" , _study.getCRefHospital() );
+    ar &  ::boost::serialization::make_nvp( "Modality" , _study.getCRefModality() );
+    ar &  ::boost::serialization::make_nvp( "AcquisitionZone" , _study.getCRefAcquisitionZone() );
+    ar &  ::boost::serialization::make_nvp( "RISId" ,  _study.getCRefRISId() );
+    ar &  ::boost::serialization::make_nvp( "UID" , _study.getCRefUID() );
+    ar &  ::boost::serialization::make_nvp( "DbID" , _study.getCRefDbID() );
 }
 
 
@@ -55,7 +55,7 @@ void serialize(Archive & ar, ::fwData::Study & _study, const unsigned int versio
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::Study, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register<  ::fwData::Study, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_study,version); // call load or save depending of archive type
 }

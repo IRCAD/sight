@@ -11,15 +11,12 @@
 #include <vector>
 #include <boost/cstdint.hpp>
 
-// export/visibility
 #include "fwData/config.hpp"
-
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
 #include "fwData/Image.hpp"
 #include "fwData/TransfertFunctionPoint.hpp"
 #include "fwData/DownCastIterator.hpp"
-
 
 namespace fwData
 {
@@ -38,11 +35,6 @@ class FWDATA_CLASS_API TransfertFunction : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction)(::fwData::Object), (()), ::fwTools::Factory::New< TransfertFunction >) ;
 
-    /// Constructor
-    FWDATA_API TransfertFunction();
-    /// Destructor
-    FWDATA_API virtual ~TransfertFunction();
-
     /// Maccro for deep and shallow copies
     fwDataObjectMacro();
 
@@ -51,15 +43,6 @@ public :
 
     /// Deep copy method
     FWDATA_API void deepCopy( TransfertFunction::csptr _source );
-
-    /// Constructor by copy
-    //FWDATA_API TransfertFunction( const TransfertFunction & _transfertFunction );
-
-    /// Copy method
-    //FWDATA_API TransfertFunction & operator=( const TransfertFunction & _transfertFunction );
-
-    /// Clone method
-    //FWDATA_API TransfertFunction::sptr clone() const;
 
     // TransfertFunctionPoints ---------------------------------------------------------------------
     /// Field identifier for transfert function points
@@ -143,11 +126,12 @@ public :
      */
     FWDATA_API void setMinMax( ::fwData::TransfertFunctionPoint::TFValueType _min, ::fwData::TransfertFunctionPoint::TFValueType _max );
 
-
 protected :
 
-    /// Copy method
-    //void copy( const TransfertFunction & _transfertFunction );
+    /// Constructor
+    FWDATA_API TransfertFunction();
+    /// Destructor
+    FWDATA_API virtual ~TransfertFunction();
 
     //! Encoding
     std::string m_sEncoding;

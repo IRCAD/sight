@@ -139,7 +139,7 @@ void DicomImageWriterService::saveImage( const ::boost::filesystem::path _patien
     ::vtkGdcmIO::DicomImageWriter myWriter;
 
     myWriter.setObject(_pImage);
-    ::boost::shared_ptr< ::fwData::location::Folder > loc(new ::fwData::location::Folder());
+    ::fwData::location::Folder::NewSptr loc;
     loc->setFolder(_patientDBPath);
     myWriter.setLocation(loc);
 

@@ -29,7 +29,7 @@ void serialize(Archive & ar, ::fwData::String &_object, const unsigned int versi
     // can be well casted to the derivated one during the deserialization
     ::boost::serialization::void_cast_register< ::fwData::String, ::fwTools::Object>(NULL,NULL);
 
-    ar &  boost::serialization::make_nvp( "value"  , _object.value() );
+    ar &  ::boost::serialization::make_nvp( "value"  , _object.value() );
 }
 
 }

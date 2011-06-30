@@ -31,12 +31,6 @@ public:
     FWDATA_API static std::string NATURE_FLOW;
     FWDATA_API static std::string NATURE_DATA;
 
-    /// Constructor
-    FWDATA_API Edge();
-    /// Destructor
-    FWDATA_API virtual ~Edge();
-
-
     /// @brief do a shallow copy of edge
     FWDATA_API void shallowCopy( Edge::csptr _source );
 
@@ -73,6 +67,11 @@ public:
     FWDATA_API const std::string &getNature() const;
 
 protected :
+
+    /// Constructor
+    FWDATA_API Edge();
+    /// Destructor
+    FWDATA_API virtual ~Edge();
 
     std::string m_fromPortIdentifier; // "ID_SIZEX" , ...
     std::string m_toPortIdentifier; // "ID_SIZEX" , ...

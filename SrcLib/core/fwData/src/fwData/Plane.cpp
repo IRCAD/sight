@@ -64,30 +64,6 @@ void Plane::deepCopy( Plane::csptr _source )
     this->m_vPoints[2]->deepCopy( _source->m_vPoints[2] );
     this->m_plane = _source->m_plane;
 }
-//------------------------------------------------------------------------------
-
-//Plane::sptr Plane::clone() const
-//{
-//    SLM_TRACE_FUNC();
-//
-//    Plane::NewSptr pNewPlane;
-//
-//    pNewPlane->m_vPoints[0] = this->m_vPoints[0];
-//    pNewPlane->m_vPoints[1] = this->m_vPoints[1];
-//    pNewPlane->m_vPoints[2] = this->m_vPoints[2];
-//
-//    return pNewPlane;
-//}
-//
-////------------------------------------------------------------------------------
-//
-//Plane & Plane::operator=( const Plane & _plane )
-//{
-//    // Copy encoding
-//    m_vPoints = _plane.m_vPoints;
-//
-//    return *this;
-//}
 
 //------------------------------------------------------------------------------
 

@@ -31,17 +31,6 @@ public :
     fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
         (()), ::fwTools::Factory::New< Line >) ;
 
-    /// Constructor
-    FWDATA_API Line();
-
-    /// Build a Line from 2 points.
-    FWDATA_API Line(::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction);
-
-
-    /// Destructor
-    FWDATA_API virtual ~Line();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -50,12 +39,6 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( Line::csptr _source );
 
-    /// Clone method
-    //FWDATA_API Line::sptr clone() const;
-
-    /// Copy method
-    //FWDATA_API Line &operator=( const Line & _Line ) ;
-
     FWDATA_API void setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction);
 
     /// Points container
@@ -63,6 +46,15 @@ public :
     fwGettersSettersDocMacro(Direction, direction, ::fwData::Point::sptr, a point direction);
 
 protected :
+
+    /// Constructor
+    FWDATA_API Line();
+
+    /// Build a Line from 2 points.
+    FWDATA_API Line(::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction);
+
+    /// Destructor
+    FWDATA_API virtual ~Line();
 
     //! Points container
     ::fwData::Point::sptr m_position;

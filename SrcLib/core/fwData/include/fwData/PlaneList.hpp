@@ -32,12 +32,6 @@ public :
 
     typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;
 
-    /// Constructor
-    FWDATA_API PlaneList();
-
-    /// Destructor
-    FWDATA_API virtual ~PlaneList();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -46,12 +40,6 @@ public :
     /// Defines deep copy
     FWDATA_API void deepCopy( PlaneList::csptr _source );
 
-    /// Clone method
-    //FWDATA_API PlaneList::sptr clone() const;
-
-    /// Copy method
-    //FWDATA_API PlaneList &operator=( const PlaneList & _planetList ) ;
-
     // Looking for duplicate plan
     FWDATA_API void deleteDuplicatedPlan(void);
 
@@ -59,6 +47,12 @@ public :
     fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, a container of all planes);
 
 protected :
+
+    /// Constructor
+    FWDATA_API PlaneList();
+
+    /// Destructor
+    FWDATA_API virtual ~PlaneList();
 
     //! Planes container
     PlaneListContainer m_vPlanes;

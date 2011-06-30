@@ -68,19 +68,23 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     m_buttonGroup = new QButtonGroup(groupBox);
 
     QRadioButton *buttonSurface = new QRadioButton ( tr("Surface"), groupBox );
+    buttonSurface->setMinimumSize(buttonSurface->sizeHint());
     m_buttonGroup->addButton(buttonSurface, 0);
     layoutGroupBox->addWidget(buttonSurface);
     buttonSurface->setChecked(true);
 
     QRadioButton *buttonPoint = new QRadioButton ( tr("Point"), groupBox );
+    buttonPoint->setMinimumSize(buttonPoint->sizeHint());
     m_buttonGroup->addButton(buttonPoint, 1);
     layoutGroupBox->addWidget(buttonPoint);
 
     QRadioButton *buttonWireframe = new QRadioButton ( tr("Wireframe"), groupBox );
+    buttonWireframe->setMinimumSize(buttonWireframe->sizeHint());
     m_buttonGroup->addButton(buttonWireframe, 2);
     layoutGroupBox->addWidget(buttonWireframe);
 
     QRadioButton *buttonEdge = new QRadioButton ( tr("Edge"), groupBox );
+    buttonEdge->setMinimumSize(buttonEdge->sizeHint());
     m_buttonGroup->addButton(buttonEdge, 3);
     layoutGroupBox->addWidget(buttonEdge);
 
@@ -91,20 +95,23 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     m_buttonGroupShading = new QButtonGroup(groupBoxShading);
 
     QRadioButton *buttonFlat = new QRadioButton ( tr("Flat"), groupBoxShading );
+    buttonFlat->setMinimumSize(buttonFlat->sizeHint());
     m_buttonGroupShading->addButton(buttonFlat, 0);
     layoutGroupBoxShading->addWidget(buttonFlat);
     buttonFlat->setChecked(true);
 
     QRadioButton *buttonGouraud = new QRadioButton ( tr("Gouraud"), groupBoxShading );
+    buttonGouraud->setMinimumSize(buttonGouraud->sizeHint());
     m_buttonGroupShading->addButton(buttonGouraud, 1);
     layoutGroupBoxShading->addWidget(buttonGouraud);
 
     QRadioButton *buttonPhong = new QRadioButton ( tr("Phong"), groupBoxShading );
+    buttonPhong->setMinimumSize(buttonPhong->sizeHint());
     m_buttonGroupShading->addButton(buttonPhong, 2);
     layoutGroupBoxShading->addWidget(buttonPhong);
 
-
     m_normalsCheckBox = new QCheckBox( tr("Show normals"), container);
+    m_normalsCheckBox->setMinimumSize(m_normalsCheckBox->sizeHint());
     m_normalsCheckBox->setToolTip(tr("Show or hide normals"));
 
     layout->addWidget( groupBox);

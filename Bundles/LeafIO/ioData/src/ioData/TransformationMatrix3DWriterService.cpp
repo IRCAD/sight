@@ -104,7 +104,7 @@ void TransformationMatrix3DWriterService::configureWithIHM()
     {
         m_filename = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = m_filename.branch_path();
+        _sDefaultPath = m_filename.parent_path();
     }
 
 }

@@ -28,7 +28,6 @@ namespace fwServices
 class FWSERVICES_CLASS_API GlobalEventManager
 {
 
-
 public:
 
     enum DeliveryType {
@@ -61,10 +60,6 @@ protected :
     GlobalEventManager();
 
     FWSERVICES_API static SPTR(GlobalEventManager) m_ClassInstance;
-
-    //  bool pushEventInDeque( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options );
-    //
-    //  bool messagesHaveSameEffect( ::fwServices::ObjectMsg::sptr _pMsg1, ::fwServices::ObjectMsg::sptr _pMsg2 );
 
     typedef std::pair< ::fwServices::ObjectMsg::sptr, ::fwServices::ComChannelService::MsgOptionsType > MessageAndOptions;
 

@@ -78,7 +78,8 @@ void ExportPatient::configuring() throw( ::fwTools::Failed )
 //------------------------------------------------------------------------------
 void ExportPatient::updating( ) throw(::fwTools::Failed)
 {
-    SLM_TRACE("ExportPatient::updating");
+    SLM_TRACE_FUNC();
+    ::fwGui::LockAction lock(this->getSptr());
 
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pPatientDB not instanced", pPatientDB);

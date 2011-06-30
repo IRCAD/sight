@@ -54,51 +54,53 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             orientation == "vertical" || orientation == "horizontal");
     m_orientation = (orientation == "vertical")? VERTICAL:HORIZONTAL ;
 
-    std::vector < ConfigurationType > vectViews = configuration->find("view");
-    SLM_TRACE_IF("No view define.", vectViews.empty() );
     m_views.clear();
-    BOOST_FOREACH (ConfigurationType view, vectViews)
+    BOOST_FOREACH (ConfigurationType view, configuration->getElements())
     {
-        ViewInfo vi;
-        if( view->hasAttribute("proportion") )
+        if( view->getName() == "spacer" )
         {
-            std::string proportion = view->getExistingAttributeValue("proportion") ;
-            vi.m_proportion = ::boost::lexical_cast< int >(proportion) ;
+            ViewInfo vi;
+            vi.m_isSpacer = true;
+            m_views.push_back(vi);
         }
-
-        if( view->hasAttribute("border") )
+        else if( view->getName() == "view" )
         {
-            std::string border = view->getExistingAttributeValue("border") ;
-            vi.m_border = ::boost::lexical_cast< int >(border) ;
+            ViewInfo vi;
+            if( view->hasAttribute("proportion") )
+            {
+                std::string proportion = view->getExistingAttributeValue("proportion") ;
+                vi.m_proportion = ::boost::lexical_cast< int >(proportion) ;
+            }
+            if( view->hasAttribute("border") )
+            {
+                std::string border = view->getExistingAttributeValue("border") ;
+                vi.m_border = ::boost::lexical_cast< int >(border) ;
+            }
+            if( view->hasAttribute("caption") )
+            {
+                vi.m_caption.first = true;
+                vi.m_caption.second = view->getExistingAttributeValue("caption") ;
+            }
+            if( view->hasAttribute("minWidth") )
+            {
+                std::string width = view->getExistingAttributeValue("minWidth") ;
+                vi.m_minSize.first = ::boost::lexical_cast< int >(width) ;
+            }
+            if( view->hasAttribute("minHeight") )
+            {
+                std::string height = view->getExistingAttributeValue("minHeight") ;
+                vi.m_minSize.second = ::boost::lexical_cast< int >(height) ;
+            }
+            if( view->hasAttribute("visible") )
+            {
+                std::string visible = view->getExistingAttributeValue("visible") ;
+                OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                        (visible == "true") || (visible == "false") ||
+                        (visible == "yes") || (visible == "no"));
+                vi.m_visible = ((visible == "true") || (visible == "yes"));
+            }
+            m_views.push_back(vi);
         }
-
-        if( view->hasAttribute("caption") )
-        {
-            vi.m_caption.first = true;
-            vi.m_caption.second = view->getExistingAttributeValue("caption") ;
-        }
-
-        if( view->hasAttribute("minWidth") )
-        {
-            std::string width = view->getExistingAttributeValue("minWidth") ;
-            vi.m_minSize.first = ::boost::lexical_cast< int >(width) ;
-        }
-
-        if( view->hasAttribute("minHeight") )
-        {
-            std::string height = view->getExistingAttributeValue("minHeight") ;
-            vi.m_minSize.second = ::boost::lexical_cast< int >(height) ;
-        }
-
-        if( view->hasAttribute("visible") )
-        {
-            std::string visible = view->getExistingAttributeValue("visible") ;
-            OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
-                    (visible == "true") || (visible == "false") ||
-                    (visible == "yes") || (visible == "no"));
-            vi.m_visible = ((visible == "true") || (visible == "yes"));
-        }
-        m_views.push_back(vi);
     }
 }
 

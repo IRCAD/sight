@@ -116,7 +116,7 @@ protected :
     FWTOOLS_API static std::list< std::string > m_managedTypes;
 
     /// Value for not specified type
-    static const std::string m_unSpecifiedType;
+    FWTOOLS_API static const std::string m_unSpecifiedType;
 
 
 

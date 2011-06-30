@@ -55,52 +55,6 @@ void GlobalEventManager::clearMessages()
 
 //-----------------------------------------------------------------------------
 
-////-----------------------------------------------------------------------------
-//
-//bool GlobalEventManager::messagesHaveSameEffect( ::fwServices::ObjectMsg::sptr _pMsg1, ::fwServices::ObjectMsg::sptr _pMsg2 )
-//{
-//  bool messagesHaveSameEffect = ( _pMsg1->getSubject().lock().get() == _pMsg2->getSubject().lock().get() );
-//
-//  std::vector< std::string > events1 = _pMsg1->getEventIds();
-//  std::vector< std::string > events2 = _pMsg2->getEventIds();
-//
-//  messagesHaveSameEffect =
-//          messagesHaveSameEffect &&
-//          events1.size() == 1 &&
-//          events2.size() == 1 &&
-//          events1[0] == events2[0];
-//
-//  return messagesHaveSameEffect;
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//bool GlobalEventManager::pushEventInDeque( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServices::ComChannelService::MsgOptionsType _options )
-//{
-//  if ( m_msgDeque.size() > 1 )
-//  {
-//      ::fwServices::ObjectMsg::sptr pLastMsg = m_msgDeque.back().first;
-//      if ( messagesHaveSameEffect( pLastMsg, _pMsg ) )
-//      {
-//          OSLM_INFO( "MSG Not Register (Same Msg In Deque) : " << _pMsg->getGeneralInfo() );
-//      }
-//      else
-//      {
-//          OSLM_INFO( "MSG Register Notification : " << _pMsg->getGeneralInfo() );
-//          MessageAndOptions msg ( _pMsg, _options );
-//          m_msgDeque.push_back( msg );
-//      }
-//  }
-//  else
-//  {
-//      OSLM_INFO( "MSG Register Notification : " << _pMsg->getGeneralInfo() );
-//      MessageAndOptions msg ( _pMsg, _options );
-//      m_msgDeque.push_back( msg );
-//  }
-//}
-
-//-----------------------------------------------------------------------------
-
 bool GlobalEventManager::pending()
 {
     return !m_msgDeque.empty();
@@ -157,7 +111,6 @@ void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServic
         OSLM_INFO( "MSG queued for immediate notification : " << _pMsg->getGeneralInfo() );
         MessageAndOptions msg ( _pMsg, _options );
         m_msgDeque.push_back( msg );
-        //pushEventInDeque( _pMsg, _options );
 
         if ( m_msgDeque.size() == 1 )
         {

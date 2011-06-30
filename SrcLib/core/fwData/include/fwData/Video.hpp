@@ -34,16 +34,6 @@ public:
 
     typedef ::boost::uint8_t VideoType;
 
-    /**
-     * @brief constructor
-     */
-    FWDATA_API Video();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~Video() throw();
-
     /// @brief Get the buffer size along X axis
     FWDATA_API ::boost::uint32_t  getXSize() const { return m_ui32XSize; };
 
@@ -85,9 +75,17 @@ public:
     //! The address of the image buffer
     VideoType  * m_pImageBuffer;
 
-
-
 protected :
+
+    /**
+     * @brief constructor
+     */
+    FWDATA_API Video();
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Video() throw();
 
     /// Flag if the video is available
     bool m_dataAvailable;

@@ -29,6 +29,7 @@ class FWGUI_CLASS_API IActionSrv : public ::fwServices::IService
 public :
 
     fwCoreServiceClassDefinitionsMacro ( (IActionSrv)(::fwServices::IService) ) ;
+    fwCoreAllowSharedFromThis();
 
     /// Method called when the action service is stopping
     FWGUI_API void actionServiceStopping();
@@ -89,6 +90,25 @@ private:
     bool m_isActive;
     bool m_isExecutable;
 };
+
+//-----------------------------------------------------------------------------
+
+class LockAction
+{
+public:
+    LockAction(IActionSrv::wptr action) : m_action(action)
+    {
+        m_action.lock()->setIsExecutable(false);
+    }
+    ~LockAction()
+    {
+        m_action.lock()->setIsExecutable(true);
+    }
+private:
+    IActionSrv::wptr m_action;
+};
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwGui
 

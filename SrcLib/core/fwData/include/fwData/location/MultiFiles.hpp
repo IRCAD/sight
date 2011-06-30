@@ -29,12 +29,6 @@ class FWDATA_CLASS_API MultiFiles  : public ILocation
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (MultiFiles)(ILocation), (()), new MultiFiles ) ;
 
-    /// Constructor
-    FWDATA_API MultiFiles();
-
-    /// Destructor
-    FWDATA_API virtual ~MultiFiles();
-
     /// Set file system paths
     FWDATA_API void setPaths( std::vector< ::boost::filesystem::path>  paths );
 
@@ -42,6 +36,12 @@ public:
     FWDATA_API std::vector< ::boost::filesystem::path> getPaths();
 
 protected :
+
+    /// Constructor
+    FWDATA_API MultiFiles();
+
+    /// Destructor
+    FWDATA_API virtual ~MultiFiles();
 
     /// file system paths
     std::vector< ::boost::filesystem::path> m_paths;

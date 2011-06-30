@@ -31,12 +31,6 @@ class FWDATA_CLASS_API DictionaryOrgan : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwTools::Factory::New< DictionaryOrgan >) ;
 
-    /// Constructor
-    FWDATA_API DictionaryOrgan();
-
-    /// Destructor
-    FWDATA_API virtual ~DictionaryOrgan();
-
     // Generator result---------------------------------------------------------
 
     fwGettersSettersDocMacro(StructureType, sStructureType, std::string, the organ structure type);
@@ -99,6 +93,12 @@ public:
     fwGettersSettersDocMacro(MeshDataNode, meshDataNode, ::fwData::Node::wptr, the node that represents the organ mesh);
 
 protected :
+
+    /// Constructor
+    FWDATA_API DictionaryOrgan();
+
+    /// Destructor
+    FWDATA_API virtual ~DictionaryOrgan();
 
     /// the name of the organ
     ::fwData::String::sptr m_organName;

@@ -72,7 +72,7 @@ void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer
     ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
     binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
     binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
-    binLoader->localFolder() = fileLocation.branch_path();
+    binLoader->localFolder() = fileLocation.parent_path();
 
     // find and update IO Protocol
     std::string protocol = XMLTH::getProp<std::string>(boostXMLBuffer,"protocol");

@@ -123,20 +123,6 @@ void FwXMLGenericWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-std::string FwXMLGenericWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLGenericWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLGenericWriterService" ;
-}
-
-//------------------------------------------------------------------------------
-
 void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, ::fwTools::Object::sptr _obj )
 {
     SLM_TRACE_FUNC();
@@ -224,7 +210,10 @@ void FwXMLGenericWriterService::manageZipAndSaveData( const ::boost::filesystem:
     saveData(xmlfile,_obj);
 
     // Zip
-    ::fwZip::ZipFolder::packFolder( srcFolder, path );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Saving");
+    zip->addHandler( progress );
+    zip->packFolder( srcFolder, path );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

@@ -39,16 +39,6 @@ public:
     typedef ::boost::uint64_t VoxelIndexType;
     typedef ::boost::uint64_t BufferIndexType;
     typedef ::boost::uint8_t  BufferType;
-    /**
-     * @brief Constructor
-     */
-    FWDATA_API Image();
-
-    /**
-     * @brief Destructor
-     */
-    FWDATA_API virtual ~Image() throw();
-
 
     fwDataObjectMacro();
 
@@ -122,6 +112,16 @@ public:
     FWDATA_API static void  setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, const ::boost::int32_t offset, const unsigned char imagePixelSize );
 
 protected :
+
+    /**
+     * @brief Constructor
+     */
+    FWDATA_API Image();
+
+    /**
+     * @brief Destructor
+     */
+    FWDATA_API virtual ~Image() throw();
 
     //! image dimension, ex : 3 for image 3D
     ::boost::uint8_t  m_ui8Dimension;

@@ -29,17 +29,18 @@ class FWDATA_CLASS_API StandardBuffer : public ::fwCore::BaseObject, public IBuf
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (StandardBuffer)(IBufferDelegate), (()), new StandardBuffer ) ;
 
-    /// Constructor
-    FWDATA_API StandardBuffer();
-
-    /// Destructor
-    FWDATA_API virtual ~StandardBuffer();
-
     /// Get buffer
     FWDATA_API virtual void *getBuffer();
 
     /// Set buffer
     FWDATA_API virtual void setBuffer(void *);
+
+protected:
+    /// Constructor
+    FWDATA_API StandardBuffer();
+
+    /// Destructor
+    FWDATA_API virtual ~StandardBuffer();
 };
 
 }

@@ -59,35 +59,6 @@ void Material::deepCopy( Material::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//Material::sptr Material::clone() const
-//{
-//    SLM_TRACE("Material::clone()");
-//    ::fwData::Material::NewSptr pMaterial;
-//
-//    pMaterial->m_ambient = this->m_ambient;
-//    pMaterial->m_diffuse = this->m_diffuse;
-//    pMaterial->m_shadingMode = this->m_shadingMode;
-//    pMaterial->m_representationMode = this->m_representationMode;
-//
-//    return pMaterial;
-//}
-
-//------------------------------------------------------------------------------
-//
-//Color &Material::ambient()
-//{
-//    return m_ambient ;
-//}
-//
-////------------------------------------------------------------------------------
-//
-//Color &Material::diffuse()
-//{
-//    return m_diffuse ;
-//}
-
-//------------------------------------------------------------------------------
-
 Color::sptr Material::ambient() const
 {
     return m_ambient ;

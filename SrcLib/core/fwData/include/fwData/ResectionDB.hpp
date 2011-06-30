@@ -11,9 +11,7 @@
 #include <vector>
 #include <boost/cstdint.hpp>
 
-// export/visibility
 #include "fwData/config.hpp"
-
 #include "fwData/Object.hpp"
 #include "fwData/Resection.hpp"
 #include "fwData/DownCastIterator.hpp"
@@ -34,12 +32,6 @@ class FWDATA_CLASS_API ResectionDB : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwTools::Factory::New< ResectionDB >) ;
 
-    /// Constructor
-    FWDATA_API ResectionDB ();
-
-    /// Destructor
-    FWDATA_API virtual ~ResectionDB ();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -47,9 +39,6 @@ public:
 
     /// Defines deep copy
     FWDATA_API void deepCopy( ResectionDB::csptr _source );
-
-    /// Copy method
-    //FWDATA_API ResectionDB &operator=( const ResectionDB & _resectionDB ) ;
 
     // Patients ----------------------------------------------------------------
     /// Field identifier for patients
@@ -61,7 +50,7 @@ public:
     /**
      * @brief Get the number of resections
      */
-    FWDATA_API boost::uint32_t  getResectionSize() const;
+    FWDATA_API ::boost::uint32_t  getResectionSize() const;
 
     /**
      * @brief add resection
@@ -79,6 +68,13 @@ public:
     fwGettersSettersDocMacro(SafeResection, safeResection, ::fwData::Resection::sptr, Get the safe part of the resections);
 
 protected:
+
+    /// Constructor
+    FWDATA_API ResectionDB ();
+
+    /// Destructor
+    FWDATA_API virtual ~ResectionDB ();
+
     ::fwData::Resection::sptr m_safeResection;
 };
 

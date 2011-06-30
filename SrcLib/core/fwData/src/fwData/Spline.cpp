@@ -15,14 +15,14 @@ namespace fwData
 
 Spline::Spline()
 {
-    SLM_WARN("::fwData::Spline()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 Spline::~Spline()
 {
-    SLM_WARN("::fwData::~Spline()");
+    SLM_TRACE_FUNC();
     m_points.clear();
 }
 

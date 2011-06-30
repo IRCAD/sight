@@ -506,7 +506,7 @@ void TransferFunctionEditor::exportTF()
         try
         {
             ::boost::filesystem::path tfPath = fileName->getPath();
-            ::boost::filesystem::path tfPathRoot = tfPath.branch_path();
+            ::boost::filesystem::path tfPathRoot = tfPath.parent_path();
 
             bool exportFile = true;
             if ( ::boost::filesystem::exists(tfPath) )

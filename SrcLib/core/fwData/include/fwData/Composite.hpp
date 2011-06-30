@@ -81,12 +81,6 @@ public:
 
     using ObjectMapType::get_allocator;
 
-    /// Constructor
-    FWDATA_API Composite();
-
-    /// Destructor
-    FWDATA_API virtual ~Composite();
-
     /// @brief get the container of ::fwData::Object
     FWDATA_API Composite &getRefMap();
     /// @brief get the container of ::fwData::Object
@@ -100,8 +94,12 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Composite::csptr _source );
 
-    //FWDATA_API Composite & operator=( const Composite & _composite );
+protected:
+    /// Constructor
+    FWDATA_API Composite();
 
+    /// Destructor
+    FWDATA_API virtual ~Composite();
 };
 
 

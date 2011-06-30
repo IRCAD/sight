@@ -26,23 +26,23 @@ namespace serialization {
 template<class Archive>
 void save(Archive & ar, const ::fwData::Histogram &_histogram, const unsigned int version)
 {
-    boost::serialization::void_cast_register<  ::fwData::Histogram, fwTools::Object>(NULL,NULL);
+    ::boost::serialization::void_cast_register<  ::fwData::Histogram, fwTools::Object>(NULL,NULL);
 
-    ar &  boost::serialization::make_nvp( "BinsWidth" , _histogram.getCRefBinsWidth() );
-    ar &  boost::serialization::make_nvp( "MaxValue" , _histogram.getCRefMaxValue() );
-    ar &  boost::serialization::make_nvp( "MinValue" , _histogram.getCRefMinValue() );
-    ar &  boost::serialization::make_nvp( "Values" , _histogram.getCRefValues() );
+    ar &  ::boost::serialization::make_nvp( "BinsWidth" , _histogram.getCRefBinsWidth() );
+    ar &  ::boost::serialization::make_nvp( "MaxValue" , _histogram.getCRefMaxValue() );
+    ar &  ::boost::serialization::make_nvp( "MinValue" , _histogram.getCRefMinValue() );
+    ar &  ::boost::serialization::make_nvp( "Values" , _histogram.getCRefValues() );
 }
 
 template<class Archive>
 void load(Archive & ar, ::fwData::Histogram &_histogram, const unsigned int version)
 {
-    boost::serialization::void_cast_register<  ::fwData::Histogram, fwTools::Object>(NULL,NULL);
+    ::boost::serialization::void_cast_register<  ::fwData::Histogram, fwTools::Object>(NULL,NULL);
 
-    ar &  boost::serialization::make_nvp( "BinsWidth" , _histogram.getRefBinsWidth() );
-    ar &  boost::serialization::make_nvp( "MaxValue" , _histogram.getRefMaxValue() );
-    ar &  boost::serialization::make_nvp( "MinValue" , _histogram.getRefMinValue() );
-    ar &  boost::serialization::make_nvp( "Values" , _histogram.getRefValues() );
+    ar &  ::boost::serialization::make_nvp( "BinsWidth" , _histogram.getRefBinsWidth() );
+    ar &  ::boost::serialization::make_nvp( "MaxValue" , _histogram.getRefMaxValue() );
+    ar &  ::boost::serialization::make_nvp( "MinValue" , _histogram.getRefMinValue() );
+    ar &  ::boost::serialization::make_nvp( "Values" , _histogram.getRefValues() );
 }
 
 
@@ -55,7 +55,7 @@ void serialize(Archive & ar, ::fwData::Histogram & _histogram, const unsigned in
 {
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::Histogram, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register<  ::fwData::Histogram, fwTools::Object>(NULL,NULL);
 
     split_free(ar, _histogram, version); // call load or save depending of archive type
 }

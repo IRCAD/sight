@@ -11,9 +11,8 @@
 #include "fwTools/Stringizer.hpp"
 
 
-
-
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @class   TBKClassFactory
@@ -39,7 +38,7 @@ public:
     typedef BASECLASS BaseClass;
 
     /// the type of the Key
-    typedef KEYTYPE       KeyType;
+    typedef KEYTYPE   KeyType;
 
     /**
      * @brief Default destructor : do nothing.
@@ -117,18 +116,15 @@ public:
      */
      std::string stringizedKey() const
      {
-         //return ::fwTools::getString<KEY>(m_keyValue);
          return m_keyStringized;
      }
-
-
 
 protected :
 
     /**
      * @brief Constructor : only derived base class can be instantiated
      */
-    TBKClassFactory(const KeyType &key) : m_keyValue(key), m_keyStringized( ::fwTools::getString<KEYTYPE>(m_keyValue) )
+    TBKClassFactory(const KeyType &key) : m_keyValue(key), m_keyStringized( ::fwTools::getString(m_keyValue) )
     {};
 
     const KeyType & m_keyValue;
@@ -140,6 +136,6 @@ private :
 
 };
 
-} // end namespace fwTools {
+} // end namespace fwTools
 
 #endif /*TBKCLASSFACTORY_H_*/

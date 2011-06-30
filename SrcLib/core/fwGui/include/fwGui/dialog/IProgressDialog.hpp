@@ -62,6 +62,10 @@ public:
     FWGUI_API virtual void hideCancelButton() {};
 
 
+    FWGUI_API virtual void hideCancelButton() {};
+
+    FWGUI_API virtual void setProcessUserEvents(bool process){m_processUserEvents = process;}
+
 protected :
 
     FWGUI_API virtual void cancelPressed();
@@ -69,6 +73,8 @@ protected :
     CancelCallbackType m_cancelCallback;
     bool m_canceled;
     bool m_raise;
+
+    bool m_processUserEvents;
 
 protected :
     static sptr progressDialogFactory()

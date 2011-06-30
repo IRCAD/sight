@@ -7,9 +7,13 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwGui/container/fwContainer.hpp>
+#include <fwGui/IFrameSrv.hpp>
+
 
 #include "fwGuiQt/dialog/ProgressDialog.hpp"
 
+#include <QPaintEvent> // at the end due to the boost signal/ Qt signal problem.
 
 REGISTER_BINDING( ::fwGui::dialog::IProgressDialog, ::fwGuiQt::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::FactoryRegistryKeyType , ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
@@ -21,27 +25,35 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 ProgressDialog::ProgressDialog( const std::string title, const std::string message)
+:   m_title (""),
+    m_pdialog ( NULL ),
+    m_pprogressbar ( NULL ),
+    m_pcancelButton ( NULL ),
+    m_pmainWindow ( NULL )
 {
-    QWidget *activeWindow = qApp->activeWindow();
 
-    if(!activeWindow)
-    {
-        BOOST_FOREACH (QWidget *widget, QApplication::topLevelWidgets())
-        {
-            activeWindow = qobject_cast< QMainWindow * >(widget);
-            if (activeWindow)
-            {
-                break;
-            }
-        }
-    }
+    // Use progress widget defined by IFrameSrv
+    ::fwGui::container::fwContainer::sptr progressWidget = ::fwGui::IFrameSrv::getProgressWidget();
+    QWidget *activeWindow = ::fwGuiQt::container::QtContainer::dynamicCast( progressWidget )->getQtContainer();
+    m_pmainWindow = qobject_cast< QMainWindow * >( activeWindow );
 
-    m_pmainWindow = qobject_cast< QMainWindow * >(activeWindow);
+//    QWidget *activeWindow = NULL;
+//
+//    BOOST_FOREACH (QWidget *widget, QApplication::topLevelWidgets())
+//    {
+//        activeWindow = qobject_cast< QMainWindow * >(widget);
+//        // activeWindow must also have a layout to use statusBar()
+//        if ( activeWindow && activeWindow->layout())
+//        {
+//            m_pmainWindow = qobject_cast< QMainWindow * >(activeWindow);
+//            break;
+//        }
+//    }
 
     m_pcancelButton = new QPushButton("Cancel");
-    QObject::connect(m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()));
+    QObject::connect( m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()) );
 
-    if(m_pmainWindow)
+    if ( m_pmainWindow )
     {
         m_pprogressbar = new QProgressBar();
         m_pprogressbar->setRange(0,100);
@@ -53,7 +65,8 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
     }
     else
     {
-        m_pdialog = new QProgressDialog( activeWindow, Qt::WindowStaysOnTopHint );
+        m_pdialog = new QProgressDialog( 0, Qt::WindowStaysOnTopHint );
+       //m_pdialog = new QProgressDialog( activeWindow, Qt::WindowStaysOnTopHint );
 
         // FIXME modal dialog has conflict with MessageHandler
         //m_pdialog->setWindowModality(Qt::WindowModal);
@@ -74,23 +87,26 @@ ProgressDialog::ProgressDialog( const std::string title, const std::string messa
 
 ProgressDialog::~ProgressDialog()
 {
+    QObject::disconnect( m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()) );
+
     this->setTitle("");
     this->setMessage("");
 
     if (m_pdialog)
     {
+        m_pdialog->hide();
         m_pdialog->deleteLater();
     }
-    if (m_pprogressbar)
+    else if ( m_pprogressbar )
     {
-        m_pprogressbar->deleteLater();
-    }
-
-    if (m_pprogressbar)
-    {
+        m_pmainWindow->statusBar()->removeWidget( m_pprogressbar );
+        m_pmainWindow->statusBar()->removeWidget( m_pcancelButton );
+        m_pcancelButton->hide();
         m_pcancelButton->deleteLater();
-    }
+        m_pprogressbar->hide();
+        m_pprogressbar->deleteLater();
 
+    }
 
     m_pmainWindow = 0;
 }
@@ -104,16 +120,23 @@ void ProgressDialog::operator()(float percent,std::string msg)
     OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
     this->setMessage(msg);
 
-    if (m_pprogressbar)
+    if ( m_pprogressbar )
     {
         m_pprogressbar->setValue(value);
     }
-    if (m_pdialog)
+    else if ( m_pdialog )
     {
         m_pdialog->setValue(value);
     }
 
-    QCoreApplication::processEvents();
+    if ( m_processUserEvents )
+    {
+        QCoreApplication::processEvents(QEventLoop::AllEvents);
+    }
+    else
+    {
+        QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -122,11 +145,11 @@ void ProgressDialog::operator()(float percent,std::string msg)
 void ProgressDialog::setTitle(const std::string &title)
 {
     m_title = QString::fromStdString(title);
-    if (m_pprogressbar)
+    if ( m_pprogressbar )
     {
         m_pmainWindow->statusBar()->showMessage(m_title);
     }
-    if (m_pdialog)
+    else if ( m_pdialog )
     {
         m_pdialog->setWindowTitle(m_title);
     }
@@ -144,11 +167,11 @@ void ProgressDialog::setMessage(const std::string &msg)
     }
 
     message += QString::fromStdString(msg);
-    if (m_pprogressbar)
+    if ( m_pprogressbar )
     {
         m_pmainWindow->statusBar()->showMessage(message);
     }
-    if (m_pdialog)
+    else if ( m_pdialog )
     {
         m_pdialog->setLabelText(message);
     }

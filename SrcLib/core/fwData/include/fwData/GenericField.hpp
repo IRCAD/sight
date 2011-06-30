@@ -44,25 +44,6 @@ public:
 
     typedef T ValueType;
 
-    template< typename GT >
-    static typename GT::sptr GenericFieldFactory(const typename GT::ValueType value);
-
-    static sptr GenericFieldFactory(const T value);
-
-
-    /**
-     * @brief Constructor.
-     * @param[in] value The initial value.
-     */
-    FWDATA_API GenericField( const T value = T( ) ) throw()
-    :   m_value( value )
-    {}
-
-    /**
-     * @brief Destructor.
-     */
-    FWDATA_API virtual ~GenericField() throw() {}
-
     /// @brief Get the value (mutable version).
     T& value() throw() { return m_value; }
 
@@ -126,6 +107,26 @@ public:
     }
 
 protected:
+
+    template< typename GT >
+    static typename GT::sptr GenericFieldFactory(const typename GT::ValueType value);
+
+    static sptr GenericFieldFactory(const T value);
+
+
+    /**
+     * @brief Constructor.
+     * @param[in] value The initial value.
+     */
+    FWDATA_API GenericField( const T value = T( ) ) throw()
+    :   m_value( value )
+    {}
+
+    /**
+     * @brief Destructor.
+     */
+    FWDATA_API virtual ~GenericField() throw() {}
+
     virtual std::ostream & toOStream( std::ostream &_os ) const
     {
         return _os << this->value();

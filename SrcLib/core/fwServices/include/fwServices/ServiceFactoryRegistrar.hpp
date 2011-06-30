@@ -19,14 +19,15 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 
 #define REGISTER_BINDING_ID_CPY_V2( BaseClassType , SubClassType , KeyType, keyvalue, id )                                                            \
-    static const KeyType  BOOST_PP_CAT(registredKeyValue, id ) = keyvalue;                                                                         \
+    static const KeyType  BOOST_PP_CAT(registredKeyValue, id ) = keyvalue;                                                                            \
     static ::fwServices::ServiceFactoryRegistrar< BaseClassType, SubClassType, KeyType > BOOST_PP_CAT( registrar, id ) ( BOOST_PP_CAT(registredKeyValue, id ) );
 
 
-namespace fwServices {
+namespace fwServices
+{
 
 /**
- * @brief This is an helper for registring an Class : internaly it create the factory and register it
+ * @brief This is an helper for registering an Class : internally it create the factory and register it
  * to FactoryRegistry
  * @class ClassRegistrar
  * @author  IRCAD (Research and Development Team).
@@ -44,12 +45,11 @@ public:
      */
     ServiceFactoryRegistrar(const KEY & key)
     {
+        std::string simpl = ::fwCore::TypeDemangler<SUBCLASS>().getClassname();
         // create factory
-        ::boost::shared_ptr< ::fwTools::IClassFactory >  af( new ::fwTools::ClassFactory< BASECLASS,SUBCLASS,KEY >(key) );
-
+        ::boost::shared_ptr< ::fwTools::IClassFactory >  af( new ::fwTools::ClassFactory< BASECLASS, SUBCLASS, std::string >(simpl) );
         // register it
-        ::fwTools::ClassFactoryRegistry::addFactory( af );
-        ::fwServices::registry::ServiceFactory::getDefault()->addFactory( af, ::fwCore::TypeDemangler<SUBCLASS>().getClassname(), key.first, key.second);
+        ::fwServices::registry::ServiceFactory::getDefault()->addFactory( af, simpl, key.first, key.second);
     }
 
 };

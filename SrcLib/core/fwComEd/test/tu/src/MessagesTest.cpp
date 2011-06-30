@@ -54,7 +54,7 @@ void MessagesTest::testImageMsg()
     const std::string MYMODIF1 = ::fwComEd::ImageMsg::BUFFER;
     const std::string MYMODIF2 = ::fwComEd::ImageMsg::WINDOWING;
 
-    ::fwData::Integer::sptr intField(new ::fwData::Integer(23));
+    ::fwData::Integer::sptr intField = ::fwData::Integer::New(23);
     ::fwData::Image::NewSptr image;
 
     // create message

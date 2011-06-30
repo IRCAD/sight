@@ -127,7 +127,7 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     getcwd (workingDirectorySaved, 1024);
 
     // set new working directory
-    std::string rootFolder = rootFile.branch_path().string();
+    std::string rootFolder = rootFile.parent_path().string();
     chdir (rootFolder.c_str ());
     OSLM_DEBUG( "change working dir to " <<   rootFolder << "...." );
 
@@ -173,7 +173,6 @@ xmlNodePtr XMLParser::findChildNamed(xmlNodePtr start, std::string value)
         elt=elt->next;
     }
     return elt; // node not found
-
 }
 
 //------------------------------------------------------------------------------

@@ -34,6 +34,7 @@ public:
      * @{
      */
     /// @brief Event identifier used to inform for modification
+    FWCOMED_API static std::string VALUE_IS_MODIFIED;
     FWCOMED_API static std::string POINT_IS_MODIFIED;
     FWCOMED_API static std::string START_POINT_INTERACTION;
     /// @}

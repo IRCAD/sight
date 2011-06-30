@@ -65,8 +65,8 @@ void FwXMLPatient2PatientDBWriterService::configureWithIHM()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle( "Choose a fxz or a xml file" );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("fwXML archive","*.xml");
     dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*.xml");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
@@ -98,20 +98,6 @@ void FwXMLPatient2PatientDBWriterService::stopping() throw(::fwTools::Failed)
 void FwXMLPatient2PatientDBWriterService::info(std::ostream &_sstream )
 {
     _sstream << "FwXMLPatient2PatientDBWriterService::info" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLPatient2PatientDBWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLPatient2PatientDBWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLPatient2PatientDBWriterService" ;
 }
 
 //------------------------------------------------------------------------------
@@ -203,7 +189,10 @@ void FwXMLPatient2PatientDBWriterService::manageZipAndSavePatientDB( const ::boo
     savePatientDB(xmlfile,_pPatient);
 
     // Zip
-    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Saving patient");
+    zip->addHandler( progress );
+    zip->packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

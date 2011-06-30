@@ -7,11 +7,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
+#include <fwTools/Factory.hpp>
 
 #include "fwData/TransfertFunctionPoint.hpp"
 #include "fwData/Color.hpp"
-
-#include <fwTools/Factory.hpp>
 
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::TransfertFunctionPoint, ::fwData::TransfertFunctionPoint );
@@ -24,7 +23,7 @@ const Object::FieldID TransfertFunctionPoint::ID_COLOR = "ID_COLOR";
 TransfertFunctionPoint::TransfertFunctionPoint () :
 m_i32Value(0)
 {
-    SLM_TRACE("::fwData::TransfertFunctionPoint()");
+    SLM_TRACE_FUNC();
     this->setFieldSingleElement( TransfertFunctionPoint::ID_COLOR, ::fwTools::Factory::New< Color >() );
 }
 
@@ -32,7 +31,7 @@ m_i32Value(0)
 
 TransfertFunctionPoint::~TransfertFunctionPoint ()
 {
-    SLM_TRACE("::fwData::~TransfertFunctionPoint()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -50,19 +49,6 @@ void TransfertFunctionPoint::deepCopy( TransfertFunctionPoint::csptr _source )
     ::fwTools::Object::deepCopyOfChildren( _source );
     this->m_i32Value = _source->m_i32Value;
 }
-
-//------------------------------------------------------------------------------
-
-//TransfertFunctionPoint::sptr TransfertFunctionPoint::clone() const
-//{
-//    TransfertFunctionPoint::sptr pNewTransfertFunctionPoint = ::fwTools::Factory::New< TransfertFunctionPoint >();
-//
-//    // Copy encoding
-//    pNewTransfertFunctionPoint->m_i32Value = this->m_i32Value;
-//    pNewTransfertFunctionPoint->setColor( this->getColor()->clone() );
-//
-//    return pNewTransfertFunctionPoint;
-//}
 
 //------------------------------------------------------------------------------
 

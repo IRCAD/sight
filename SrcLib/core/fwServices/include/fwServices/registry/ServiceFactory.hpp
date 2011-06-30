@@ -61,7 +61,7 @@ class FWSERVICES_CLASS_API ServiceFactoryInfo : public ::fwTools::Object
         std::string desc;
 
         ::boost::shared_ptr< ::fwRuntime::Bundle > bundle;
-        ::boost::shared_ptr< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > > factory;
+        ::boost::shared_ptr< ::fwTools::TBKClassFactory< ::fwServices::IService, std::string > > factory;
 };
 
 

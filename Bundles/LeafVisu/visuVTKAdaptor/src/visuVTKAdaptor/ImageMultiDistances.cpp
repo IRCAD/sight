@@ -18,7 +18,6 @@
 #include <fwData/Color.hpp>
 #include <fwData/DownCastIterator.hpp>
 
-
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 
@@ -345,8 +344,6 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
 
     if( isShown && hasDistanceField )
     {
-        OSLM_TRACE(" image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().size()");
-
         typedef ::fwData::ContainerCaster< ::fwData::PointList >::iterator Iterator;
         Iterator plIter( image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().begin() );
         Iterator end( image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().end() );
@@ -373,6 +370,7 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
 
 void ImageMultiDistances::removeDistance(  ::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed)
 {
@@ -383,6 +381,7 @@ void ImageMultiDistances::removeDistance(  ::fwData::PointList::sptr plToRemove 
     doUpdate();
 }
 
+//------------------------------------------------------------------------------
 
 void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwTools::Failed)
 {
@@ -410,9 +409,6 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
     this->installSubServices(newPL);
     this->setVtkPipelineModified();
 }
-
-
-
 
 //------------------------------------------------------------------------------
 

@@ -230,13 +230,42 @@ void InrImageIO::ReadImageInformation()
                 }
                 else if(pixsize=="32 bits")
                 {
-                    m_ComponentType = ULONG;
+                    if ( 4 == sizeof(unsigned int) )
+                    {
+                        m_ComponentType = UINT;
+                    }
+                    else if ( 4 == sizeof(unsigned long) )
+                    {
+                        m_ComponentType = ULONG;
+                    }
+                    else
+                    {
+                        ExceptionObject exception(__FILE__, __LINE__);
+                        std::stringstream errorMessage;
+                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
+                        exception.SetDescription(errorMessage.str());
+                        throw exception;
+                    }
                 }
-                /*
                 else if(pixsize=="64 bits")
                 {
+                    if ( 8 == sizeof(unsigned int) )
+                    {
+                        m_ComponentType = UINT;
+                    }
+                    else if ( 8 == sizeof(unsigned long) )
+                    {
+                        m_ComponentType = ULONG;
+                    }
+                    else
+                    {
+                        ExceptionObject exception(__FILE__, __LINE__);
+                        std::stringstream errorMessage;
+                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
+                        exception.SetDescription(errorMessage.str());
+                        throw exception;
+                    }
                 }
-                */
                 else
                 {
                     ExceptionObject exception(__FILE__, __LINE__);
@@ -258,13 +287,42 @@ void InrImageIO::ReadImageInformation()
                 }
                 else if(pixsize=="32 bits")
                 {
-                    m_ComponentType = LONG;
+                    if ( 4 == sizeof(int) )
+                    {
+                        m_ComponentType = INT;
+                    }
+                    else if ( 4 == sizeof(long) )
+                    {
+                        m_ComponentType = LONG;
+                    }
+                    else
+                    {
+                        ExceptionObject exception(__FILE__, __LINE__);
+                        std::stringstream errorMessage;
+                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
+                        exception.SetDescription(errorMessage.str());
+                        throw exception;
+                    }
                 }
-                /*
                 else if(pixsize=="64 bits")
                 {
+                    if ( 8 == sizeof(int) )
+                    {
+                        m_ComponentType = INT;
+                    }
+                    else if ( 8 == sizeof(long) )
+                    {
+                        m_ComponentType = LONG;
+                    }
+                    else
+                    {
+                        ExceptionObject exception(__FILE__, __LINE__);
+                        std::stringstream errorMessage;
+                        errorMessage << "Invalid INR file.\n" << "Invalid PIXSIZE.";
+                        exception.SetDescription(errorMessage.str());
+                        throw exception;
+                    }
                 }
-                */
                 else
                 {
                     ExceptionObject exception(__FILE__, __LINE__);

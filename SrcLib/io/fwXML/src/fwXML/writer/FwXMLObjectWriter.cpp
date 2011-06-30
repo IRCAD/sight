@@ -50,7 +50,7 @@ void FwXMLObjectWriter::write()
     assert( ! getFile().string().empty() );
 
     ::fwXML::Serializer serializer;
-    serializer.rootFolder() = getFile().branch_path().string();
+    serializer.rootFolder() = getFile().parent_path().string();
 
     ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy );
     serializer.setSplitPolicy( spolicy );

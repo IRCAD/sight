@@ -73,7 +73,6 @@ void Profile::add( SPTR( Activater ) activater )
 void Profile::add( SPTR( Starter ) starter )
 {
     m_starters.push_back( starter );
-    //m_stoppers.push_back( SPTR( Stopper ) ( new Stopper(starter) ));
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +99,6 @@ void Profile::add( SPTR( Uninitializer ) uninitializer )
 void Profile::start()
 {
     std::for_each( m_activaters.begin(), m_activaters.end(), Apply< ActivaterContainer::value_type >() );
-
 
     // Check validity of extension
     Runtime * rntm( Runtime::getDefault() );
@@ -153,12 +151,9 @@ void Profile::stop()
 void Profile::setup()
 {
     InitializerContainer initializers;
-    //while (m_initializers.size())
-    //{
-        initializers = m_initializers;
-        m_initializers.clear();
-        std::for_each( initializers.begin(), initializers.end(), Apply< InitializerContainer::value_type >() );
-    //}
+    initializers = m_initializers;
+    m_initializers.clear();
+    std::for_each( initializers.begin(), initializers.end(), Apply< InitializerContainer::value_type >() );
 }
 
 //------------------------------------------------------------------------------

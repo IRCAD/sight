@@ -40,16 +40,6 @@ public:
     typedef std::map< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr  > Container ;
 
     /**
-     * @brief constructor
-     */
-    FWDATA_API Model();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~Model() throw();
-
-    /**
      * @brief returns editable mesh container
      */
     FWDATA_API Container &getRefMap() ;
@@ -66,6 +56,17 @@ public:
     FWDATA_API void deepCopy( Model::csptr _source );
 
 protected:
+
+    /**
+     * @brief constructor
+     */
+    FWDATA_API Model();
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Model() throw();
+
     Container m_map;
 };
 

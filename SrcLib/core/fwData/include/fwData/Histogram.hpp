@@ -33,12 +33,6 @@ public:
 
     typedef std::vector< long > fwHistogramValues;
 
-    /// Constructor
-    FWDATA_API Histogram();
-
-    /// Destructor
-    FWDATA_API virtual ~Histogram();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -48,8 +42,8 @@ public:
     FWDATA_API void deepCopy( Histogram::csptr _source );
 
     /**
-     * @brief Add the given pixel value into the histogram. 
-     * 
+     * @brief Add the given pixel value into the histogram.
+     *
      * This void will chose the right bins where the pixel must be added (if the bins width parameter is greater than 1).
      *
      * @param pixel the pixel value to be added into the histogram.
@@ -63,12 +57,12 @@ public:
      * @param _max upper value of the range
      *
      * @return number of pixels that are within [_min, _max]
-     */ 
+     */
     FWDATA_API long getNbPixels( float _min, float _max );
 
     /**
      * @brief Initialize the histogram.
-     * 
+     *
      * @param min Defines the lower pixel value of the image that this histogram belongs to.
      * @param max Defines the upper pixel value of the image that this histogram belongs to.
      * @param binsWidth Defines the desired bins' width in order to classify pixels.
@@ -77,7 +71,7 @@ public:
 
     /**
      * @brief Return true if the given pixel value is set within histogram's boudaries.
-     * 
+     *
      * @param _pixel the pixel value
      *
      * @return true if the pixel value is set within histogram's boundaries.
@@ -90,6 +84,12 @@ public:
     fwGettersSettersDocMacro(MaxValue, maxValue, float, maximum value within the histogram);
 
 protected:
+
+    /// Constructor
+    FWDATA_API Histogram();
+
+    /// Destructor
+    FWDATA_API virtual ~Histogram();
 
     /**
      * @brief Histogram values.

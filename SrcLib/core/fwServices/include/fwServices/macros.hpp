@@ -52,7 +52,8 @@ namespace fwServices
             ::fwServices::ObjectServiceKeyType ,                                                                                   \
             ::fwServices::ObjectServiceKeyType( ::fwCore::getClassname<ServiceType>(), ::fwCore::getClassname<ServiceObject>() ) , \
             BOOST_PP_CAT( __LINE__ , A )                                                                                           \
-            ) ;
+            ) ;                                                                                                                    \
+    REGISTER_BINDING_BYCLASSNAME( ServiceType, ServiceImpl, ServiceImpl );
 
 //@}
 

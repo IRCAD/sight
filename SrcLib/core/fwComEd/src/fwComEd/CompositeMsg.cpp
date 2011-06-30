@@ -28,11 +28,12 @@ std::string CompositeMsg::SWAPPED_FIELDS = "SWAPPED_FIELDS";
 //-------------------------------------------------------------------------
 
 CompositeMsg::CompositeMsg() throw()
-: m_removedFields ( new ::fwData::Composite() ),
-m_addedFields ( new ::fwData::Composite() ),
-m_swappedOldFields ( new ::fwData::Composite() ),
-m_swappedNewFields ( new ::fwData::Composite() )
-{}
+{
+    m_removedFields    = ::fwData::Composite::New();
+    m_addedFields      = ::fwData::Composite::New();
+    m_swappedOldFields = ::fwData::Composite::New();
+    m_swappedNewFields = ::fwData::Composite::New();
+}
 
 //-------------------------------------------------------------------------
 
@@ -45,7 +46,6 @@ void CompositeMsg::addEventModifiedFields( const std::vector< std::string > & _m
 {
     m_modifiedFields = _modifiedFields;
     this->addEvent(MODIFIED_FIELDS);
-
 }
 
 //-------------------------------------------------------------------------
@@ -56,7 +56,6 @@ void CompositeMsg::addEventModifiedField( std::string _modifiedField )
     {
         this->addEvent( MODIFIED_FIELDS );
     }
-
     m_modifiedFields.push_back(_modifiedField);
 }
 
@@ -74,7 +73,6 @@ void CompositeMsg::addEventModifiedFields( const std::vector< std::string > & _m
 std::vector< std::string > CompositeMsg::getEventModifiedFields() const
 {
     SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_FIELDS event", this->hasEvent(MODIFIED_FIELDS));
-
     return m_modifiedFields;
 }
 

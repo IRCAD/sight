@@ -7,7 +7,6 @@
 #include <wx/wx.h>
 #include <wx/sizer.h>
 #include <wx/colour.h>
-//#include <wx/list.h>
 
 #include <fwCore/base.hpp>
 
@@ -67,11 +66,11 @@ void AcquisitionSelectorPanel::itemSelectionNotification( long itemIndex )
 {
     SLM_TRACE_FUNC();
 
-    ::boost::shared_ptr< ::fwData::Object > acqSelected ( new ::fwData::Object() );
+    ::fwData::Object::NewSptr acqSelected;
     acqSelected->children().clear();
-    acqSelected->children().push_back( ::boost::shared_ptr< ::fwData::Integer > ( new ::fwData::Integer(m_lineToAcq[itemIndex][0]) ) );
-    acqSelected->children().push_back( ::boost::shared_ptr< ::fwData::Integer > ( new ::fwData::Integer(m_lineToAcq[itemIndex][1]) ) );
-    acqSelected->children().push_back( ::boost::shared_ptr< ::fwData::Integer > ( new ::fwData::Integer(m_lineToAcq[itemIndex][2]) ) );
+    acqSelected->children().push_back( ::fwData::Integer::New(m_lineToAcq[itemIndex][0]) );
+    acqSelected->children().push_back( ::fwData::Integer::New(m_lineToAcq[itemIndex][1]) );
+    acqSelected->children().push_back( ::fwData::Integer::New(m_lineToAcq[itemIndex][2]) );
 
     ::fwComEd::PatientDBMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );

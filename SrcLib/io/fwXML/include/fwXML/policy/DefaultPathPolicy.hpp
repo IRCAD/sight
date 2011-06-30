@@ -32,7 +32,7 @@ public :
      *
      * @return path of the Object
      **/
-     FWXML_API virtual  boost::filesystem::path getPath( ::boost::shared_ptr < ::fwTools::Object > obj ) ;
+     FWXML_API virtual  ::boost::filesystem::path getPath( ::boost::shared_ptr < ::fwTools::Object > obj ) ;
 
  }; //class DefaultPathPolicy
  

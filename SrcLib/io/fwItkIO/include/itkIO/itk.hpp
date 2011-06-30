@@ -12,7 +12,6 @@
 #include <fwData/Image.hpp>
 
 #include "itkIO/config.hpp"
-#include "itkIO/types.hpp"
 
 namespace itkIO
 {
@@ -29,9 +28,6 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
 /// ITKIMAGE::PixelType correspond to imageData->getPixelType
 template< class ITKIMAGE>
 typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData);
-
-/// compute the volume of an U8 image : nbVoxels * VoxelVoume
-double computeVolume( ::fwData::Image::sptr imageData );
 
 }
 

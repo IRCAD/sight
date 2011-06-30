@@ -58,35 +58,6 @@ void PlaneList::deepCopy( PlaneList::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//PlaneList::sptr PlaneList::clone() const
-//{
-//    SLM_TRACE_FUNC();
-//
-//    PlaneList::NewSptr pNewPlaneList;
-//
-//    // Copy encoding
-//    for (   PlaneList::PlaneListContainer::const_iterator iter = this->m_vPlanes.begin();
-//            iter != this->m_vPlanes.end();
-//            ++iter )
-//    {
-//        pNewPlaneList->m_vPlanes.push_back( (*iter)->clone() );
-//    }
-//
-//    return pNewPlaneList;
-//}
-//
-////------------------------------------------------------------------------------
-//
-//PlaneList & PlaneList::operator=( const PlaneList & _planetList )
-//{
-//    // Copy encoding
-//    m_vPlanes = _planetList.m_vPlanes;
-//
-//    return *this;
-//}
-
-//------------------------------------------------------------------------------
-
 void PlaneList::deleteDuplicatedPlan(void)
 {
     ::fwData::PlaneList::PlaneListContainer::iterator iter = this->m_vPlanes.begin();

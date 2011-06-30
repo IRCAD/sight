@@ -26,6 +26,23 @@ namespace action
  * @brief   To manage configuration file defines in xml extension.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
+ *
+ * This action works on a ::fwData::Composite. It action starts/stops a template configuration given by its identifier in this action configuration.
+ *  - You can specified pattern to replace in the template configuration by the tag 'replace'.
+ *  - You can specified pattern to replace by the uid of the object contained by the composite with the given key
+ *  - The pattern GENERIC_UID is replaced by a generated unique identifier when the configuration is launch.
+ *  This assure that the created object and services in the configuration have a unique uid even if this
+ *  configuration is launch several times.
+ *
+ * Example of this service configuration
+ * @verbatim
+   <service implementation="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
+       <config id="IdOfTemplateConfig" />
+       <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
+       <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
+   </service>
+   @endverbatim
+ * @see ::gui::action::ConfigActionSrv
  */
 class GUI_CLASS_API ConfigActionSrvWithKey : public ::gui::action::ConfigActionSrv
 {
@@ -66,16 +83,16 @@ protected:
      *
      * Call the IAction::configuring()
      *
-     *Example of this service configuration
+     * Example of this service configuration
      * @verbatim
        <service implementation="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
-           <config id="IdOfExtension" />
-           <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
-           <key id= "KEY" pattern = "PATIENT_TO_REPLACE_BY_KEY" />
+           <config id="IdOfTemplateConfig" />
+           <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
+           <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
        </service>
         @endverbatim
-      * It MUST have at least one key node and at least one replace node.
-      */
+     * It MUST have at least one key node and at least one replace node.
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides

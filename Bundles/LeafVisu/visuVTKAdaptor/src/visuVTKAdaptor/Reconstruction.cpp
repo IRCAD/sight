@@ -143,37 +143,8 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr meshService = m_meshService.lock();
 
-        ::fwData::Reconstruction::sptr reconstruction
-            = this->getObject < ::fwData::Reconstruction >();
-
-        ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor
-            = TriangularMesh::dynamicCast(meshService);
-
-        /*
-           OSLM_INFO( "Volume of " << reconstruction->getOrganName()
-           << " : " << ::vtkIO::computeVolume(reconstruction->getTriangularMesh()) << " mm^3"
-           << " isClosed " << ::fwMath::isBorderlessSurface(  reconstruction->getTriangularMesh()->cells() )
-           << " nbHole " << contours.size()
-           );
-           for (int i=0; i<contours.size(); ++i )
-           {
-           OSLM_INFO("contour num=" << i << "contains " << contours[i].size()<< " edges ");
-           }
-
-           OSLM_INFO("CLOSESURFACE")
-           ::fwMath::closeSurface(  reconstruction->getTriangularMesh()->points(), reconstruction->getTriangularMesh()->cells() );
-           OSLM_INFO( "Volume of (closed) " << reconstruction->getOrganName()
-           << " : " << ::vtkIO::computeVolume(reconstruction->getTriangularMesh()) << " mm^3"
-           << " isClosed " << ::fwMath::isBorderlessSurface(  reconstruction->getTriangularMesh()->cells() )
-           );
-
-           ::vtkIO::MeshWriter writer;
-           boost::filesystem::path dst("/tmp/" + reconstruction->getOrganName() + ".vtk");
-           writer.setFile( dst );
-           writer.setObject(  reconstruction->getTriangularMesh() );
-           writer.write();
-           */
-
+        ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
+        ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor = TriangularMesh::dynamicCast(meshService);
         meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
 
         meshAdaptor->setMaterial     ( reconstruction->getMaterial()       );

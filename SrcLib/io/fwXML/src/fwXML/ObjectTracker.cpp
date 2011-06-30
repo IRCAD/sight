@@ -95,7 +95,7 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     if ( uniqueIDXML.empty() )
     {
         OSLM_DEBUG("ObjectTracker::buildObject "<< className << " generated without id");
-        return ::boost::dynamic_pointer_cast< fwTools::Object >( ::fwTools::Factory::buildData( className ) ) ;
+        return ::boost::dynamic_pointer_cast< ::fwTools::Object >( ::fwTools::Factory::buildData( className ) ) ;
     }
 
     Registry::iterator i =  m_buildedObject.find( uniqueIDXML );
@@ -124,7 +124,7 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     }
     else
     {
-        OSLM_DEBUG("ObjectTracker::buildObject "<< className <<"-"<< uniqueIDXML << " previoulsy instanciated : use this one" );
+        OSLM_DEBUG("ObjectTracker::buildObject "<< className <<"-"<< uniqueIDXML << " previoulsy instantiated : use this one" );
         return i->second; // object exist we return it
     }
 }

@@ -23,13 +23,13 @@ namespace serialization {
 template<class Archive>
 void load(Archive & ar, ::fwData::TransformationMatrix3D & _transformationMatrix3D, const unsigned int version)
 {
-    ar &  boost::serialization::make_nvp( "Coefficients" , _transformationMatrix3D.getRefCoefficients() );
+    ar &  ::boost::serialization::make_nvp( "Coefficients" , _transformationMatrix3D.getRefCoefficients() );
 }
 
 template<class Archive>
 void save(Archive & ar, const ::fwData::TransformationMatrix3D & _transformationMatrix3D, const unsigned int version)
 {
-    ar &  boost::serialization::make_nvp( "Coefficients" , _transformationMatrix3D.getCRefCoefficients() );
+    ar &  ::boost::serialization::make_nvp( "Coefficients" , _transformationMatrix3D.getCRefCoefficients() );
 }
 
 
@@ -44,7 +44,7 @@ void serialize(Archive & ar, ::fwData::TransformationMatrix3D & _transformationM
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::TransformationMatrix3D, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register<  ::fwData::TransformationMatrix3D, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_transformationMatrix3D,version); // call load or save depending of archive type
 }

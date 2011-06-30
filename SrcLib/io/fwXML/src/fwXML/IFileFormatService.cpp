@@ -45,7 +45,7 @@ void IFileFormatService::setReader( ::fwDataIO::reader::IObjectReader::sptr _rea
 
     progadviser = dynamic_cast< ::fwTools::ProgressAdviser *>( m_reader.get() );
 
-    using namespace boost::lambda;
+    using namespace ::boost::lambda;
 
     if ( progadviser  )
     {
@@ -64,7 +64,7 @@ void IFileFormatService::setWriter( ::fwDataIO::writer::IObjectWriter::sptr _wri
 
     progadviser = dynamic_cast< ::fwTools::ProgressAdviser *>( m_writer.get() );
 
-    using namespace boost::lambda;
+    using namespace ::boost::lambda;
 
     if ( progadviser  )
     {

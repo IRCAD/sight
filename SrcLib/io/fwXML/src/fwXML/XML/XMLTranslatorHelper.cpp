@@ -35,7 +35,7 @@ xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwTools::Object::sptr obj )
 
     // append an unique id to its objects
 
-    // OLD STYLE std::string id = boost::lexical_cast<std::string>(obj);
+    // OLD STYLE std::string id = ::boost::lexical_cast<std::string>(obj);
     std::string id = ::fwTools::UUID::get(obj  );
 
     xmlNewProp( node, BAD_CAST "id", xmlStrdup( BAD_CAST  id.c_str() ));

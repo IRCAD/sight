@@ -39,7 +39,7 @@ void ImageReaderWriterTest::methode1()
     ::fwData::Image::sptr image = createImage();
 
     // save image in inr
-    ::boost::filesystem::create_directories( PATH.branch_path() );
+    ::boost::filesystem::create_directories( PATH.parent_path() );
     ::itkIO::ImageWriter::NewSptr myWriter;
     myWriter->setObject(image);
     myWriter->setFile(PATH);
@@ -52,7 +52,7 @@ void ImageReaderWriterTest::methode1()
     myReader->setFile(PATH);
     myReader->read();
 
-    ::boost::filesystem::remove_all( PATH.branch_path().string() );
+    ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     // check Image
     CPPUNIT_ASSERT_EQUAL(image->getDimension(), image2->getDimension());
