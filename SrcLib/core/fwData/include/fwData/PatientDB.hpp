@@ -11,12 +11,10 @@
 #include <vector>
 #include <boost/cstdint.hpp>
 
-// export/visibility
-#include "fwData/config.hpp"
 
+#include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Patient.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {
@@ -34,13 +32,6 @@ class FWDATA_CLASS_API PatientDB : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwTools::Factory::New< PatientDB >) ;
 
-    /// Constructor
-    FWDATA_API PatientDB ();
-
-    /// Destructor
-    FWDATA_API virtual ~PatientDB ();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -48,9 +39,6 @@ public:
 
     /// Defines deep copy
     FWDATA_API void deepCopy( PatientDB::csptr _source );
-
-    /// Copy method
-    //FWDATA_API PatientDB &operator=( const PatientDB & _patientDB ) ;
 
     // Patients ----------------------------------------------------------------
     /// Field identifier for patients
@@ -62,7 +50,7 @@ public:
     /**
      * @brief Get the number of patients
      */
-    FWDATA_API boost::uint32_t  getPatientSize() const;
+    FWDATA_API ::boost::uint32_t  getPatientSize() const;
 
     /**
      * @brief add patient
@@ -77,6 +65,12 @@ public:
     FWDATA_API std::pair< PatientConstIterator, PatientConstIterator > getPatients() const;
     //@]
 
+protected:
+    /// Constructor
+    FWDATA_API PatientDB ();
+
+    /// Destructor
+    FWDATA_API virtual ~PatientDB ();
 };
 
 }//end namespace fwData

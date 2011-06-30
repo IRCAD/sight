@@ -109,7 +109,7 @@ struct ITKLoaderFunctor
 void ImageReader::read()
 {
     ::boost::filesystem::path file = getFile();
-    assert( ::boost::filesystem::exists( file ) );
+    OSLM_ASSERT("File: "<<file<<" doesn't exist", ::boost::filesystem::exists( file ) );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
@@ -124,12 +124,7 @@ void ImageReader::read()
 
     assert( m_object.lock() ); // verify that ::fwData::Image is well produced
     // Post Condition image with a pixel type
-    assert( getConcreteObject()->getPixelType() != ::fwTools::DynamicType() );
-
-    if(getConcreteObject()->getPixelType().isType<unsigned char>())
-    {
-        OSLM_INFO("Volume of image" << file.string() << " : "<< ::itkIO::computeVolume(  getConcreteObject()  ) << " mm^3" );
-    }
+    SLM_ASSERT("Image has an unspecified type", getConcreteObject()->getPixelType() != ::fwTools::DynamicType() );
 }
 
 //------------------------------------------------------------------------------

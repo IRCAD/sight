@@ -30,6 +30,8 @@ class IOXML_CLASS_API FwXMLAcquisitionWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (FwXMLAcquisitionWriterService)(::io::IWriter) ) ;
 
+protected:
+
     /**
      * @brief   constructor
      *
@@ -40,8 +42,6 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLAcquisitionWriterService() throw();
-
-protected:
 
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
@@ -60,13 +60,6 @@ protected:
 
     /// Override
     IOXML_API void info(std::ostream &_sstream ) ;
-
-    /// Override
-    IOXML_API std::string getCfgExtensionPoint() ;
-
-    /// Override
-    IOXML_API virtual std::string getPersistanceId() ;
-
 
     /// Override
     IOXML_API virtual void configureWithIHM();

@@ -95,7 +95,7 @@ void TriangularMeshReaderService::configureWithIHM()
     {
         m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsMeshPath.branch_path();
+        _sDefaultPath = m_fsMeshPath.parent_path();
     }
 }
 

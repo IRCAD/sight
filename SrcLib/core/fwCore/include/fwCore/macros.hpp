@@ -17,7 +17,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
 #include <boost/preprocessor/comparison/greater.hpp>
@@ -450,14 +449,29 @@ class ClassFactory;
 class Factory;
 }
 
+namespace boost{
+namespace serialization{
+class access;
+}}
+
+namespace boost{
+namespace python{
+namespace objects {
+template <class, class>
+class pointer_holder;
+}}}
+
 /**
  * @brief Generate common code for friend class Factory
  */
-#define fwCoreFriendClassFactoryMacro()              \
-    template<typename _FWCORE_CHECKED_DELETE_T_ >                             \
+#define fwCoreFriendClassFactoryMacro()                                      \
+    friend class ::boost::serialization::access;                             \
+    template<class, class>                                                   \
+    friend class ::boost::python::objects::pointer_holder;                   \
+    template<typename _FWCORE_CHECKED_DELETE_T_ >                            \
     friend void ::boost::checked_delete(_FWCORE_CHECKED_DELETE_T_ *x);       \
-    template<class, class, class>                    \
-    friend class ::fwTools::ClassFactory;            \
+    template<class, class, class>                                            \
+    friend class ::fwTools::ClassFactory;                                    \
     friend class ::fwTools::Factory;
 
 /**

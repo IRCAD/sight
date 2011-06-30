@@ -86,7 +86,7 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
         ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
         binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
         binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
-        binLoader->localFolder() = fileLocation.branch_path();
+        binLoader->localFolder() = fileLocation.parent_path();
 
         std::string pseudoReader = protocol;
         if (  protocol.find("Writer") != std::string::npos )

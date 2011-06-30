@@ -29,7 +29,6 @@
 
 #include "itkIO/DicomPatientDBReader.hpp"
 #include "itkIO/itk.hpp"
-#include "itkIO/types.hpp"
 #include "itkIO/helper/ProgressItkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::itkIO::DicomPatientDBReader, ::itkIO::DicomPatientDBReader );

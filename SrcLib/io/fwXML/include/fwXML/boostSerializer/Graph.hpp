@@ -27,7 +27,7 @@ namespace serialization
 template<class Archive>
 void load(Archive & ar, ::fwData::Graph & _graph, const unsigned int version)
 {
-    //ar &  boost::serialization::make_nvp( "nodes" ,  _graph.getRefNodes() );
+    //ar &  ::boost::serialization::make_nvp( "nodes" ,  _graph.getRefNodes() );
     SLM_FATAL("to implement");
 }
 
@@ -36,12 +36,12 @@ void load(Archive & ar, ::fwData::Graph & _graph, const unsigned int version)
 template<class Archive>
 void save(Archive & ar, const ::fwData::Graph & _graph, const unsigned int version)
 {
-    //ar &  boost::serialization::make_nvp( "nodes" , _graph.getCRefNodes() );
+    //ar &  ::boost::serialization::make_nvp( "nodes" , _graph.getCRefNodes() );
     int nbElt = _graph.getCRefNodes().size();
-    ar &  boost::serialization::make_nvp( "nbNodes", nbElt );
+    ar &  ::boost::serialization::make_nvp( "nbNodes", nbElt );
     for ( ::fwData::Graph::NodeContainer::const_iterator  i= _graph.getCRefNodes().begin(); i!=_graph.getCRefNodes().end(); ++i)
     {
-        ar &  boost::serialization::make_nvp( "Node", **i );
+        ar &  ::boost::serialization::make_nvp( "Node", **i );
     }
 }
 

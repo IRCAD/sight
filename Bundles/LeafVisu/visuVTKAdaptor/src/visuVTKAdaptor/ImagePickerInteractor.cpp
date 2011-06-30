@@ -27,10 +27,9 @@
 #include <fwServices/Factory.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-
+#include <fwServices/IEditionService.hpp>
 
 #include "visuVTKAdaptor/ImagePickerInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent

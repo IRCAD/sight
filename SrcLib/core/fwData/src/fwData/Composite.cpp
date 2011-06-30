@@ -19,14 +19,12 @@ namespace fwData
 Composite::Composite()
 {
     SLM_TRACE_FUNC();
-    // TODO Auto-generated constructor stub
 }
 
 
 Composite::~Composite()
 {
     SLM_TRACE_FUNC();
-    // TODO Auto-generated destructor stub
 }
 
 
@@ -46,7 +44,6 @@ Composite const &Composite::getRefMap() const
 void Composite::shallowCopy( Composite::csptr _source )
 {
     ::fwTools::Object::shallowCopyOfChildren( _source );
-    //(ObjectMapType)(*this) = (ObjectMapType)(*(_source.get()));
     this->clear();
 
      for(    Composite::Container::const_iterator iter = _source->begin();
@@ -76,13 +73,5 @@ void Composite::deepCopy( Composite::csptr _source )
 }
 
 //------------------------------------------------------------------------------
-
-//Composite & Composite::operator=( const Composite & _composite )
-//{
-//   //Copy encoding
-//    m_map = _composite.m_map;
-//
-//    return *this;
-//}
 
 }

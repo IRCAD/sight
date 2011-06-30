@@ -38,7 +38,6 @@ public:
     typedef List Container;
     typedef ObjectListType ContainerType;
 
-
     using ObjectListType::reference;
     using ObjectListType::const_reference;
     using ObjectListType::iterator;
@@ -86,13 +85,6 @@ public:
     using ObjectListType::get_allocator;
 
 
-
-    /// Constructor
-    FWDATA_API List();
-
-    /// Destructor
-    FWDATA_API virtual ~List();
-
     /// @brief get the container of ::fwData::Object
     FWDATA_API List &getRefContainer();
 
@@ -107,6 +99,12 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( List::csptr _source );
 
+protected:
+    /// Constructor
+    FWDATA_API List();
+
+    /// Destructor
+    FWDATA_API virtual ~List();
 };
 }
 

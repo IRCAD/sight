@@ -6,8 +6,8 @@
 
 #include <vector>
 
-#include "fwTools/IClassFactory.hpp"
-#include "fwTools/TBKClassFactory.hpp"
+#include <fwTools/IClassFactory.hpp>
+#include <fwTools/TBKClassFactory.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Runtime.hpp>
@@ -42,7 +42,6 @@ ServiceFactory::~ServiceFactory()
 
 void ServiceFactory::parseBundleInformation()
 {
-
     SrvRegContainer bundleInfoMap;
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -98,41 +97,39 @@ void ServiceFactory::parseBundleInformation()
         bundleInfoMap[ service] = info;
     }
     // Verify object
-    for ( SrvRegContainer::iterator iter = bundleInfoMap.begin();
-            iter != bundleInfoMap.end();
-            ++iter )
+    BOOST_FOREACH(SrvRegContainer::value_type bundle, bundleInfoMap)
     {
-        if ( iter->second->objectImpl.empty() )
+        if ( bundle.second->objectImpl.empty() )
         {
-            OSLM_WARN("Service " << iter->first << " of type  " << iter->second->serviceType << " in bundle " << iter->second->bundle->getIdentifier() << " has not object defined in plugin.xml ( declaration missing in dataReg ? ). Else is a service of service (sorry but not managed in this version )");
+            OSLM_WARN("Service " << bundle.first << " of type  "
+                    << bundle.second->serviceType << " in bundle " << bundle.second->bundle->getIdentifier()
+                    << " has not object defined in plugin.xml ( declaration missing in dataReg ? ). Else is a service of service (sorry but not managed in this version )");
 
         }
     }
 
     //Print information
-    printInfoMap( bundleInfoMap );
+    this->printInfoMap( bundleInfoMap );
 
     // Merge data info
-    for ( SrvRegContainer::iterator iterBundle = bundleInfoMap.begin();
-            iterBundle != bundleInfoMap.end();
-            ++iterBundle )
+    BOOST_FOREACH(SrvRegContainer::value_type bundle, bundleInfoMap)
     {
-        SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( iterBundle->first );
+        SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( bundle.first );
 
         if ( iter != m_srvImplTosrvInfo.end() )
         {
-            OSLM_DEBUG("Have already information (from register maccro) about this service ( " << iterBundle->first << " )." );
+            OSLM_DEBUG("Have already information (from register maccro) about this service ( " << bundle.first << " )." );
             ServiceFactoryInfo::sptr info = iter->second;
-            ServiceFactoryInfo::sptr infoBundle = iterBundle->second;
+            ServiceFactoryInfo::sptr infoBundle = bundle.second;
             SLM_ASSERT("Try to add bundle, but bundle exists.", ! info->bundle );
             SLM_ASSERT("Try to add bundle, but this srv is already register and has not the same srv type.", infoBundle->serviceType == info->serviceType );
-            SLM_ASSERT("Try to add bundle, but this srv (" << iterBundle->first << ")is already register and has not the same oimpl. ( "<< infoBundle->objectImpl <<" != "<< info->objectImpl <<" )", infoBundle->objectImpl == info->objectImpl );
+            SLM_ASSERT("Try to add bundle, but this srv (" << bundle.first << ")is already register and has not the same oimpl. ( "<< infoBundle->objectImpl <<" != "<< info->objectImpl <<" )", infoBundle->objectImpl == info->objectImpl );
             info->bundle =  infoBundle->bundle;
             info->desc =  infoBundle->desc;
         }
         else
         {
-            m_srvImplTosrvInfo[ iterBundle->first ] = iterBundle->second;
+            m_srvImplTosrvInfo[ bundle.first ] = bundle.second;
         }
 
     }
@@ -146,6 +143,7 @@ void ServiceFactory::parseBundleInformation()
 
 IService::sptr ServiceFactory::create( const std::string & _srvType, const std::string & _srvImpl )
 {
+    IService::sptr service;
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
     OSLM_ASSERT("Sorry don't find in ServiceFactory the service called " << _srvImpl , iter != m_srvImplTosrvInfo.end() );
     ServiceFactoryInfo::sptr info = iter->second;
@@ -154,7 +152,7 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     OSLM_ASSERT("Sorry, type of service must correspond. "<< _srvType << " != " << info->serviceType, _srvType == info->serviceType);
     if ( info->factory )
     {
-        return info->factory->create();
+        service = info->factory->create();
     }
     else
     {
@@ -162,21 +160,21 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
         info->bundle->start();
         ::fwRuntime::profile::getCurrentProfile()->setup();
         SLM_ASSERT( "Sorry after bundle loading ( " << info->bundle->getIdentifier() << " ) , factory must exist.", info->factory );
-        return info->factory->create();
+        service = info->factory->create();
     }
 
-    checkServicesNotDeclaredInPluginXml();
+    this->checkServicesNotDeclaredInPluginXml();
+    return service;
 }
 
 //------------------------------------------------------------------------------
 
-void ServiceFactory::addFactory
-( ::boost::shared_ptr< ::fwTools::IClassFactory > _factory,
+void ServiceFactory::addFactory( ::fwTools::IClassFactory::sptr _factory,
         const std::string & simpl,
         const std::string & stype,
         const std::string & oimpl)
 {
-    OSLM_DEBUG( "New service registring : "
+    OSLM_DEBUG( "New service registering : "
             << " simpl =" << simpl
             << " stype=" << stype
             << " oimpl=" << oimpl
@@ -191,7 +189,7 @@ void ServiceFactory::addFactory
         OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) has already a registered factory.", ! info->factory );
         OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) is already register and has not the same srv type. ( " << stype << " != " << info->serviceType <<" )", stype == info->serviceType );
         OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) is already register and has not the same oimpl. ( " << oimpl << " != " << info->objectImpl <<" )", oimpl == info->objectImpl );
-        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > >( _factory );
+        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::string > >( _factory );
     }
     else
     {
@@ -199,7 +197,7 @@ void ServiceFactory::addFactory
         ServiceFactoryInfo::NewSptr info;
         info->serviceType = stype;
         info->objectImpl = oimpl;
-        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::pair< std::string, std::string > > >( _factory );
+        info->factory =  ::boost::dynamic_pointer_cast< ::fwTools::TBKClassFactory< ::fwServices::IService, std::string > >( _factory );
         m_srvImplTosrvInfo[simpl] = info;
     }
 }
@@ -216,19 +214,17 @@ ServiceFactory::ServiceFactory()
 void ServiceFactory::printInfoMap( const SrvRegContainer & src )
 {
     //Print information
-    for (   SrvRegContainer::const_iterator iter = src.begin();
-            iter != src.end();
-            ++iter )
+    BOOST_FOREACH(SrvRegContainer::value_type srvReg, src)
     {
-        OSLM_DEBUG(" Service name = " << iter->first );
-        OSLM_DEBUG("  - type   = " << iter->second->serviceType );
-        OSLM_DEBUG("  - object = " << iter->second->objectImpl);
+        OSLM_DEBUG(" Service name = " << srvReg.first );
+        OSLM_DEBUG("  - type   = " << srvReg.second->serviceType );
+        OSLM_DEBUG("  - object = " << srvReg.second->objectImpl);
 
-        OSLM_DEBUG_IF("  - bundle = " <<  iter->second->bundle->getIdentifier(), iter->second->bundle );
-        OSLM_DEBUG_IF("  - bundle = ( no bundle registered )", ! iter->second->bundle );
+        OSLM_DEBUG_IF("  - bundle = " <<  srvReg.second->bundle->getIdentifier(), srvReg.second->bundle );
+        OSLM_DEBUG_IF("  - bundle = ( no bundle registered )", ! srvReg.second->bundle );
 
-        OSLM_DEBUG_IF("  - name after creation = " <<  iter->second->factory->create()->getClassname(), iter->second->factory );
-        OSLM_DEBUG_IF("  - name after creation = ( no factory registered )", ! iter->second->factory );
+        OSLM_DEBUG_IF("  - name after creation = " <<  srvReg.second->factory->create()->getClassname(), srvReg.second->factory );
+        OSLM_DEBUG_IF("  - name after creation = ( no factory registered )", ! srvReg.second->factory );
     }
 }
 
@@ -237,13 +233,11 @@ void ServiceFactory::printInfoMap( const SrvRegContainer & src )
 void ServiceFactory::checkServicesNotDeclaredInPluginXml()
 {
     //Print information
-    for (   SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.begin();
-            iter != m_srvImplTosrvInfo.end();
-            ++iter )
+    BOOST_FOREACH(SrvRegContainer::value_type srvReg, m_srvImplTosrvInfo)
     {
-        if ( ! iter->second->bundle )
+        if ( ! srvReg.second->bundle )
         {
-            OSLM_WARN("Service " << iter->first << " is not declared/found in a plugin.xml." );
+            OSLM_WARN("Service " << srvReg.first << " is not declared/found in a plugin.xml." );
         }
     }
 }

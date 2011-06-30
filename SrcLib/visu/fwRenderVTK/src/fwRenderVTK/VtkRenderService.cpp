@@ -89,9 +89,9 @@ void VtkRenderService::configureRenderer( ConfigurationType conf )
     {
         if(background[0] == '#')
         {
-            ::fwData::Color color;
-            color.setRGBA(background);
-            m_renderers[id]->SetBackground(color.getRefRGBA()[0], color.getRefRGBA()[1], color.getRefRGBA()[2]);
+            ::fwData::Color::NewSptr color;
+            color->setRGBA(background);
+            m_renderers[id]->SetBackground(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
         }
         else
         {
@@ -222,7 +222,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     }
     else
     {
-            OSLM_TRACE ( "'"<< objectId << "' inexistant, passing by '" << adaptor << "'");
+            OSLM_TRACE ( "'"<< objectId << "' inexistent, passing by '" << adaptor << "'");
     }
 }
 
@@ -450,8 +450,10 @@ void VtkRenderService::startContext()
     // For Depth peeling (translucent rendering)
 //    m_interactorManager->getInteractor()->SetRenderWhenDisabled(false);
 
+#ifndef __linux
     m_interactorManager->getInteractor()->GetRenderWindow()->SetAlphaBitPlanes(1);
     m_interactorManager->getInteractor()->GetRenderWindow()->SetMultiSamples(0);
+#endif
 
 //    m_interactor->GetRenderWindow()->PointSmoothingOn();
 //    m_interactor->GetRenderWindow()->LineSmoothingOn();

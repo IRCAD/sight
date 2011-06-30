@@ -22,13 +22,13 @@ namespace serialization {
 template<class Archive>
 void load(Archive & ar, ::fwData::TransfertFunctionPoint & _transfertFunctionPoint, const unsigned int version)
 {
-     ar &  boost::serialization::make_nvp( "Value" , _transfertFunctionPoint.getRefValue() );
+     ar &  ::boost::serialization::make_nvp( "Value" , _transfertFunctionPoint.getRefValue() );
 }
 
 template<class Archive>
 void save(Archive & ar, const ::fwData::TransfertFunctionPoint & _transfertFunctionPoint, const unsigned int version)
 {
-    ar &  boost::serialization::make_nvp( "Value" , _transfertFunctionPoint.getCRefValue() );
+    ar &  ::boost::serialization::make_nvp( "Value" , _transfertFunctionPoint.getCRefValue() );
 }
 
 
@@ -43,7 +43,7 @@ void serialize(Archive & ar, ::fwData::TransfertFunctionPoint & _transfertFuncti
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::TransfertFunctionPoint, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register<  ::fwData::TransfertFunctionPoint, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_transfertFunctionPoint,version); // call load or save depending of archive type
 }

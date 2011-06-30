@@ -7,25 +7,19 @@
 #ifndef CLASSFACTORYREGISTRY_HPP_
 #define CLASSFACTORYREGISTRY_HPP_
 
-#include <vector>
-#include <set>
-#include <list>
 #include <map>
-#include <boost/shared_ptr.hpp>
-#include <boost/tuple/tuple.hpp>
+#include <iostream>
 #include <stdexcept>
+
+#include <boost/shared_ptr.hpp>
 
 #include "fwTools/config.hpp"
 #include "fwTools/TypeInfo.hpp"
 #include "fwTools/IClassFactory.hpp"
-
-//VAGRM
-#include <iostream>
 #include "fwTools/Stringizer.hpp"
 
 namespace fwTools
 {
-
 
 class IClassFactory;
 
@@ -42,80 +36,20 @@ class FWTOOLS_CLASS_API ClassFactoryRegistry
 {
 public:
 
-    FWTOOLS_API struct ManagedElement
-    {
-        ManagedElement(const TypeInfo &base, const TypeInfo &sub,const TypeInfo &key)
-        : m_baseClass(base), m_subClass(sub),m_keyType(key)
-        { }
+    typedef ::boost::shared_ptr< ::fwTools::ClassFactoryRegistry > sptr;
 
-        TypeInfo m_baseClass;
-        TypeInfo m_subClass;
-        TypeInfo m_keyType;
-    };
-
-    typedef std::vector<ManagedElement > ManagedElementContainer;
-
-
-    /**
-     * @brief define a order between factory.
-     * The ordering is defined as a lexical ordering with tuple ( BASECLASS,SUBCLASS,KEYTYPE ). element of tuple are
-     * compared using their string representation
-     */
-    struct FactoryWeakOrderer
-    {
-        bool operator()(::boost::shared_ptr<IClassFactory> f1, ::boost::shared_ptr<IClassFactory> f2) const
-        {
-#ifdef CLASSFACTORYORDERDEBUG
-            SLM_TRACE ( "FactoryWeakOrderer:");
-            OSLM_TRACE ( "  f1 " << getString(f1->baseClassId()) << "#"
-                              << getString(f1->subClassId())    << "#"
-                              << getString(f1->keyId() )        << " #keyVal="
-                              << f1->stringizedKey() );
-            OSLM_TRACE ( "  f2 " << getString(f2->baseClassId()) << "#"
-                                 << getString(f2->subClassId())  << "#"
-                                 << getString(f2->keyId() )      << " #keyVal="
-                                 << f2->stringizedKey() );
-#endif
-            bool result;
-
-            result = (*f1) < (*f2);
-#ifdef CLASSFACTORYORDERDEBUG
-            OSLM_TRACE ( "  result=" << result );
-#endif
-            return result;
-
-        }
-    };
-
-    /// Container of all SUBCLASS factories
-    typedef std::set< ::boost::shared_ptr<IClassFactory> ,FactoryWeakOrderer > FactoryContainer;
-
+    typedef std::string KeyType;
+    typedef std::map< KeyType, ::fwTools::IClassFactory::sptr > FactoryContainer;
+    typedef std::string BaseClassType;
+    typedef std::map< BaseClassType, FactoryContainer> FactoryContainerMap;
 
     /// Destructor : do nothing
     FWTOOLS_API virtual ~ClassFactoryRegistry();
 
-
-    /**
-     * @brief Add the factory in registry
-     */
-    FWTOOLS_API static void addFactory(::boost::shared_ptr< IClassFactory > factory);
-
-
-    /**
-     * @brief Return factories which correspond to me. typeid(void) in me act as wildCard
-     */
-    FWTOOLS_API static std::list< ::boost::shared_ptr< IClassFactory > > getFactories(const ManagedElement &me);
-
     /**
      * @brief Return ALL factories
      */
-    FWTOOLS_API static FactoryContainer &getFactories();
-
-    /**
-     * @brief Retreive managed Element by ClassFactoryRegistry
-     */
-    FWTOOLS_API static const ManagedElementContainer &managedElements();
-
+    FWTOOLS_API static FactoryContainerMap &getFactories();
 
     /**
      * @brief Return *the* SubClass instance ( derivated form Baseclass) which is related to given key value.
@@ -124,23 +58,11 @@ public:
      * @return The SubClass instance or a null smart ptr if not found
      */
     template<class BASECLASS, class KEY>
-    static ::boost::shared_ptr<BASECLASS > create(const KEY &key)  throw(std::invalid_argument);
+    static ::boost::shared_ptr< BASECLASS > create(const KEY &key)  throw(std::invalid_argument);
 
-    /**
-     * @brief Return the  list of SubClass instances ( derivated form Baseclass) registred in the registry with KEY value
-     * @return The  list of SubClass instances or an empty list if not found
-     */
-    template<class BASECLASS, class KEY>
-    static std::list< ::boost::shared_ptr<BASECLASS > >  subClasses(const KEY &key)  throw(std::invalid_argument);
+    FWTOOLS_API static ::fwTools::IClassFactory::sptr getFactory(BaseClassType base, KeyType key);
 
-
-    /**
-     * @brief Return the  list of SubClass instances ( derivated form Baseclass) registred in the registry for all Key
-     * @return The  list of SubClass instances or an empty list if not found
-     */
-    template<class BASECLASS>
-    static std::list< ::boost::shared_ptr<BASECLASS > >  subClasses()  throw(std::invalid_argument);
-
+    FWTOOLS_API static void addFactory(::fwTools::IClassFactory::sptr factory);
 
 protected :
 
@@ -148,16 +70,12 @@ protected :
     FWTOOLS_API ClassFactoryRegistry();
 
     /// @brief Return the default Instance
-    FWTOOLS_API static ::boost::shared_ptr<ClassFactoryRegistry> getDefault();
+    FWTOOLS_API static ::fwTools::ClassFactoryRegistry::sptr getDefault();
 
-    static ::boost::shared_ptr<ClassFactoryRegistry> m_instance;
-
+    static ::fwTools::ClassFactoryRegistry::sptr m_instance;
 
     /// the container for the factories
-    FactoryContainer m_registry;
-
-    /// Container BaseClass-SubClass-KeyType Info
-    ManagedElementContainer m_managedElements;
+    FactoryContainerMap m_registry;
 
 };
 

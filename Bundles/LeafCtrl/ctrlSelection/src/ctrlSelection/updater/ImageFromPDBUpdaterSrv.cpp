@@ -47,7 +47,7 @@ void ImageFromPDBUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) thr
         if( _msg->hasEvent( it->get<0>() ) )
         {
             ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast( _msg->getSubject().lock() );
-            SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
+            SLM_ASSERT("Sorry, the subject of message is not a ::fwData::Object", obj);
 
             // Test if we manage this event from this object message uid ( it->get<1>() )
             if( obj->getID() == it->get<1>() )

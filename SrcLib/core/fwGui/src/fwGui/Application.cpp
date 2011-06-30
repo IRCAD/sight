@@ -14,15 +14,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 Application::Application()
-{
-    //m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::IApplication>( ::fwGui::IApplication::REGISTRY_KEY );
-}
+{}
 
 //-----------------------------------------------------------------------------
 
 Application::~Application()
 {}
 
+//-----------------------------------------------------------------------------
 
 Application::sptr Application::factory()
 {

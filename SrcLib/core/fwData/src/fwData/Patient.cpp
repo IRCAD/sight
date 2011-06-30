@@ -34,9 +34,7 @@ Patient::Patient () :
 //------------------------------------------------------------------------------
 
 Patient::~Patient ()
-{
-    SLM_WARN("::fwData::~Patient() : (ToDo) Destruction of study vector");
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -63,22 +61,6 @@ void Patient::deepCopy( Patient::csptr _source )
     this->m_bIsMale     = _source->m_bIsMale;
     this->m_i32DbID     = _source->m_i32DbID;
 }
-
-//------------------------------------------------------------------------------
-
-//Patient &Patient::operator=(const Patient &_patient)
-//{
-//    this->m_sName       = _patient.m_sName;
-//    this->m_sFirstname  = _patient.m_sFirstname;
-//    this->m_sIDDicom    = _patient.m_sIDDicom;
-//    this->m_sBirthdate  = _patient.m_sBirthdate;
-//    this->m_bIsMale     = _patient.m_bIsMale;
-//    this->m_i32DbID     = _patient.m_i32DbID;
-//
-//    this->getField( Patient::ID_STUDIES )->children() = _patient.getField( Patient::ID_STUDIES )->children();
-//
-//    return (*this);
-//}
 
 //------------------------------------------------------------------------------
 
@@ -148,7 +130,7 @@ void Patient::setToolBox( ::fwData::Composite::sptr _toolBox )
 //------------------------------------------------------------------------------
 
 ::fwData::Composite::csptr Patient::getToolBox() const
-        {
+{
     ::fwData::Composite::csptr _pToolBox;
 
     if ( this->getFieldSize( Patient::ID_TOOLBOX ) != 0)
@@ -167,9 +149,8 @@ void Patient::setToolBox( ::fwData::Composite::sptr _toolBox )
             SLM_WARN("Patient::getToolBox : return a null toolBox pointer.");
         }
     }
-
     return _pToolBox;
-        }
+}
 
 //------------------------------------------------------------------------------
 
@@ -206,7 +187,7 @@ void Patient::setScenarios( ::fwData::Composite::sptr _scenarios )
 //------------------------------------------------------------------------------
 
 ::fwData::Composite::csptr Patient::getScenarios() const
-        {
+{
     ::fwData::Composite::csptr _pScenarios;
 
     if ( this->getFieldSize( Patient::ID_SCENARIOS ) != 0)

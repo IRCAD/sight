@@ -170,7 +170,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     boost::filesystem::path tmpCompleteLocation ( location.is_complete() == true ? location : boost::filesystem::current_path() / location);
     tmpCompleteLocation.normalize();
 
-    const boost::filesystem::path completeLocation ( tmpCompleteLocation.branch_path() );
+    const boost::filesystem::path completeLocation ( tmpCompleteLocation.parent_path() );
 
 
     ::boost::filesystem::path descriptorLocation ( tmpCompleteLocation );

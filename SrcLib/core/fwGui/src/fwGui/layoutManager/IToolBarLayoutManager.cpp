@@ -104,7 +104,6 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
                 info.m_name = (*iter)->getExistingAttributeValue("name") ;
             }
 
-//            SLM_ASSERT("missing <icon> attribute", (*iter)->hasAttribute("icon"));
             if( (*iter)->hasAttribute("icon") )
             {
                 info.m_icon = (*iter)->getExistingAttributeValue("icon") ;

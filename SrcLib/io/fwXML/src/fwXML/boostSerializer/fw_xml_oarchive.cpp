@@ -30,10 +30,10 @@
   // an external file. This class should is required if we want to save a pointer in the archive
   #if BOOST_VERSION >= 104000
      template
-     class boost::archive::detail::archive_serializer_map<boost::archive::fw_xml_oarchive>;
+     class ::boost::archive::detail::archive_serializer_map<boost::archive::fw_xml_oarchive>;
   #else
      template
-     class boost::archive::detail::archive_pointer_oserializer<boost::archive::fw_xml_oarchive>;
+     class ::boost::archive::detail::archive_pointer_oserializer<boost::archive::fw_xml_oarchive>;
   #endif
 #endif
 
@@ -41,7 +41,7 @@
 // an external file. This class should be required if we want to save binary data in a UUENCODE form
 #ifndef WIN32
 template
-class boost::archive::basic_text_oprimitive<  std::stringstream >;
+class ::boost::archive::basic_text_oprimitive<  std::stringstream >;
 #endif
 
 // basic_text_oprimitive have save_binary method public but its constructor is protected :/
@@ -55,7 +55,7 @@ namespace archive
 {
 
 
-/** @brief IRCAD R&D team framework boost::archive. The purpose of this class is to
+/** @brief IRCAD R&D team framework ::boost::archive. The purpose of this class is to
  * create an xml archive based on the libxml instread a stream like in native boost
  * @author IRCAD (Research and Development Team).
  */

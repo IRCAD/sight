@@ -16,6 +16,12 @@
         <service>::uiImage::SliceListEditor</service>
         <object>::fwData::Image</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiImage::SliceListEditor2</service>
+        <object>::fwData::Image</object>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>

@@ -18,7 +18,7 @@ namespace fwData
 
 Color::Color ()
 {
-    SLM_TRACE("::fwData::Color()");
+    SLM_TRACE_FUNC();
     m_vRGBA[0] = 1.0;
     m_vRGBA[1] = 1.0;
     m_vRGBA[2] = 1.0;
@@ -27,7 +27,7 @@ Color::Color ()
 
 Color::Color(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)
 {
-    SLM_TRACE("::fwData::Color(float red, float green, float blue, float alpha)");
+    SLM_TRACE_FUNC();
     m_vRGBA[0] = red;
     m_vRGBA[1] = green;
     m_vRGBA[2] = blue;
@@ -45,12 +45,12 @@ Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Co
     color->m_vRGBA[3] = alpha;
     return color;
 }
-    
+
 //------------------------------------------------------------------------------
 
 Color::~Color ()
 {
-    SLM_TRACE("::fwData::~Color()");
+    SLM_TRACE_FUNC();
 }
 
 
@@ -69,18 +69,6 @@ void Color::deepCopy( Color::csptr _source )
     ::fwTools::Object::deepCopyOfChildren( _source );
     this->m_vRGBA = _source->m_vRGBA;
 }
-
-//------------------------------------------------------------------------------
-
-//Color::sptr Color::clone() const
-//{
-//    Color::NewSptr pNewColor;
-//
-//    // Copy encoding
-//    pNewColor->m_vRGBA = this->m_vRGBA;
-//
-//    return pNewColor;
-//}
 
 //------------------------------------------------------------------------------
 

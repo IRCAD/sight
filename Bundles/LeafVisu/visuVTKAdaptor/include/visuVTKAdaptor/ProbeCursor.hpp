@@ -9,8 +9,11 @@
 
 #include <fwData/TransfertFunction.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
+#include "visuVTKAdaptor/config.hpp"
 
 class vtkCommand;
 class vtkActor;

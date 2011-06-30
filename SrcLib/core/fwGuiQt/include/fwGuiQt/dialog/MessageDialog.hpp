@@ -61,8 +61,6 @@ protected:
     ::fwGui::dialog::IMessageDialog::Buttons m_buttons;
     /// Icon
     ::fwGui::dialog::IMessageDialog::Icons m_icon;
-
-    //static const std::map< ::fwGui::dialog::IMessageDialog::Icons, QMessageBox::Icon> qtIcons;
 };
 } // namespace dialog
 } // namespace fwGuiQt

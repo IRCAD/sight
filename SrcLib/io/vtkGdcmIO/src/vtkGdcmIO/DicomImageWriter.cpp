@@ -61,7 +61,7 @@ void DicomImageWriter::write()
 
     ::vtkGdcmIO::DicomPatientWriter myWriter;
     myWriter.setObject(pPatient);
-    ::boost::shared_ptr< ::fwData::location::Folder > loc(new ::fwData::location::Folder());
+    ::fwData::location::Folder::NewSptr loc;
     loc->setFolder(imagePath);
     myWriter.setLocation(loc);
     // forward event progress to its parents

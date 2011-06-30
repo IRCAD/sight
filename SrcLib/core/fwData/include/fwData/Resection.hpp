@@ -33,12 +33,6 @@ public :
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;
 
-    /// Constructor
-    FWDATA_API Resection();
-
-    /// Destructor
-    FWDATA_API virtual ~Resection();
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -46,12 +40,6 @@ public :
 
     /// Defines deep copy
     FWDATA_API void deepCopy( Resection::csptr _source );
-
-    /// Clone method
-  //  FWDATA_API Resection::sptr clone() const;
-
-    /// Copy method
-    //FWDATA_API Resection &operator=( const Resection & _planetList ) ;
 
     /// PlaneList
     fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, the plane list);
@@ -69,6 +57,13 @@ public :
     fwGettersSettersDocMacro(IsValid, isValid, bool, the flag if the resection is valid);
 
 protected :
+
+    /// Constructor
+    FWDATA_API Resection();
+
+    /// Destructor
+    FWDATA_API virtual ~Resection();
+
     //! Resection name
     std::string m_name;
 

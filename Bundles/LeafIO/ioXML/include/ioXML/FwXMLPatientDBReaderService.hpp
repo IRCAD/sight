@@ -33,6 +33,8 @@ class IOXML_CLASS_API FwXMLPatientDBReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (FwXMLPatientDBReaderService)(::io::IReader) ) ;
 
+protected:
+
     /**
      * @brief   constructor
      *
@@ -43,8 +45,6 @@ public :
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLPatientDBReaderService() throw();
-
-protected:
 
     /// Override
     IOXML_API virtual void configuring() throw(::fwTools::Failed) ;

@@ -31,12 +31,15 @@ public :
      * @struct point
      * @brief Defines a 3D %point for a spline.
      */
-    struct point {
-        int id;            /**< @brief Identifier */
-        double p[3];       /**< @brief Point coordinates */
-        double normal[3];  /**< @brief Normal coordinates*/
-        Color c;           /**< @brief Point color*/
-        bool isVisible;    /**< @brief Flag if %point is visible */
+    class point
+    {
+    public:
+
+        int id;                      /**< @brief Identifier */
+        double p[3];                 /**< @brief Point coordinates */
+        double normal[3];            /**< @brief Normal coordinates*/
+        ::fwData::Color::sptr c;     /**< @brief Point color*/
+        bool isVisible;              /**< @brief Flag if %point is visible */
 
         point &operator=( const point & _point )
         {
@@ -48,24 +51,13 @@ public :
             this->normal[1] = _point.normal[1];
             this->normal[2] = _point.normal[2];
             this->isVisible = _point.isVisible;
-            c.deepCopy( _point.c.getConstSptr() );
+            c->deepCopy( _point.c );
             return(*this);
         };
     };
 
     /// 3D %point container
     typedef std::vector< point > Points ;
-
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API Spline();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~Spline() ;
 
     /**
      * @brief returns editable point container
@@ -79,6 +71,16 @@ public :
     fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
 
 protected :
+
+    /**
+     * @brief constructor
+     */
+    FWDATA_API Spline();
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Spline() ;
 
     /// Points container
     Points      m_points ;

@@ -30,6 +30,8 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (MedicalImageSrv)(::fwServices::IController) ) ;
 
+protected:
+
     /// Constructor.  Do nothing.
     CTRLSELECTION_API MedicalImageSrv() throw() ;
 

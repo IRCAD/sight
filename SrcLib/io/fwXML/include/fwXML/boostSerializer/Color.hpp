@@ -22,8 +22,8 @@ namespace serialization {
 template<class Archive>
 void load(Archive & ar, ::fwData::Color & _color, const unsigned int version)
 {
-    std::vector< ::fwData::Color::ColorType > tmp; // compatibility mode std::vector -> boost::array
-     ar &  boost::serialization::make_nvp( "RGBA" ,tmp );
+    std::vector< ::fwData::Color::ColorType > tmp; // compatibility mode std::vector -> ::boost::array
+     ar &  ::boost::serialization::make_nvp( "RGBA" ,tmp );
     // _color.setCRefRGBA() = tmp;
      std::copy(tmp.begin(), tmp.end(), _color.getRefRGBA().begin());
 }
@@ -31,9 +31,9 @@ void load(Archive & ar, ::fwData::Color & _color, const unsigned int version)
 template<class Archive>
 void save(Archive & ar, const ::fwData::Color & _color, const unsigned int version)
 {
-    std::vector< ::fwData::Color::ColorType > tmp( _color.getCRefRGBA().size() ); // compatibility mode std::vector -> boost::array
+    std::vector< ::fwData::Color::ColorType > tmp( _color.getCRefRGBA().size() ); // compatibility mode std::vector -> ::boost::array
     std::copy( _color.getCRefRGBA().begin(), _color.getCRefRGBA().end(), tmp.begin());
-    ar &  boost::serialization::make_nvp( "RGBA" , tmp );
+    ar &  ::boost::serialization::make_nvp( "RGBA" , tmp );
 }
 
 
@@ -48,7 +48,7 @@ void serialize(Archive & ar, ::fwData::Color & _color, const unsigned int versio
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register<  ::fwData::Color, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register<  ::fwData::Color, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_color,version); // call load or save depending of archive type
 }

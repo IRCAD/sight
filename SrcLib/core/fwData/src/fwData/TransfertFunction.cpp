@@ -11,9 +11,6 @@
 
 #include "fwData/Color.hpp"
 #include "fwData/TransfertFunctionPoint.hpp"
-
-
-
 #include "fwData/TransfertFunction.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::TransfertFunction, ::fwData::TransfertFunction );
@@ -30,16 +27,14 @@ const std::string TransfertFunction::squareTransfertFunctionName = "CT-Square";
 
 TransfertFunction::TransfertFunction ()
 {
-    SLM_TRACE("::fwData::TransfertFunction()");
+    SLM_TRACE_FUNC();
     setField( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS );
 }
 
 //------------------------------------------------------------------------------
 
 TransfertFunction::~TransfertFunction ()
-{
-    SLM_WARN("::fwData::~TransfertFunction() : (ToDo) Destruction of study vector");
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -58,51 +53,6 @@ void TransfertFunction::deepCopy( TransfertFunction::csptr _source )
     this->m_sName = _source->m_sName;
     this->m_sEncoding = _source->m_sEncoding;
 }
-
-//------------------------------------------------------------------------------
-
-//TransfertFunction::TransfertFunction( const TransfertFunction & _transfertFunction )
-//{
-//    copy(_transfertFunction);
-//}
-
-//------------------------------------------------------------------------------
-
-//TransfertFunction & TransfertFunction::operator=( const TransfertFunction & _transfertFunction )
-//{
-//    copy(_transfertFunction);
-//    return *this;
-//}
-////------------------------------------------------------------------------------
-//
-//void TransfertFunction::copy( const TransfertFunction & _transfertFunction )
-//{
-//    this->m_sName = _transfertFunction.m_sName;
-//    this->m_sEncoding = _transfertFunction.m_sEncoding;
-//    this->getField( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS )->children() = _transfertFunction.getField( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS )->children();
-//}
-//
-////------------------------------------------------------------------------------
-//
-//TransfertFunction::sptr TransfertFunction::clone() const
-//{
-//    TransfertFunction::NewSptr pNewTransfertFunction;
-//
-//    // Copy encoding
-//    pNewTransfertFunction->m_sEncoding = this->m_sEncoding;
-//    pNewTransfertFunction->m_sName = this->m_sName;
-//
-//    // Copy TransfertFunctionPoints
-//    ::std::pair< TransfertFunctionPointConstIterator, TransfertFunctionPointConstIterator > range = this->getTransfertFunctionPoints();
-//    TransfertFunctionPointConstIterator iterPoint = range.first;
-//    while( iterPoint != range.second )
-//    {
-//        pNewTransfertFunction->addFieldElement( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS, (*iterPoint)->clone() );
-//        ++iterPoint;
-//    }
-//
-//    return pNewTransfertFunction;
-//}
 
 //------------------------------------------------------------------------------
 
@@ -154,18 +104,13 @@ std::pair< TransfertFunction::TransfertFunctionPointConstIterator, TransfertFunc
         }
     }
 
-    if( itemIsFound )
-    {
-    }
-    else
+    if( !itemIsFound )
     {
         ::fwData::TransfertFunctionPoint::NewSptr pTransfertFunctionPoint;
         pTransfertFunctionPoint->setValue(_i32Value);
         this->addFieldElement( TransfertFunction::ID_TRANSFERTFUNCTIONPOINTS, pTransfertFunctionPoint );
         pColor = pTransfertFunctionPoint->getColor();
     }
-
-
     return pColor;
 }
 
@@ -198,6 +143,7 @@ void TransfertFunction::erase( ::fwData::TransfertFunctionPoint::TFValueType  _i
     }
 }
 //------------------------------------------------------------------------------
+
 void TransfertFunction::insert( ::fwData::TransfertFunctionPoint::sptr pTransfertFunctionPoint )
 {
     erase( pTransfertFunctionPoint->getValue() );
@@ -279,8 +225,6 @@ std::pair< ::boost::int32_t, ::boost::int32_t > TransfertFunction::getMinMax() c
 
 void TransfertFunction::setMinMax( ::fwData::TransfertFunctionPoint::TFValueType _min, ::fwData::TransfertFunctionPoint::TFValueType _max )
 {
-
-    //::fwData::TransfertFunction::sptr pTransfertFunctionClone = this->clone();
     ::fwData::TransfertFunction::NewSptr pTransfertFunctionClone;
     pTransfertFunctionClone->deepCopy( this->getSptr() );
     this->clear();

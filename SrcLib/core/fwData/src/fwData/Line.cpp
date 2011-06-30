@@ -57,31 +57,6 @@ void Line::deepCopy( Line::csptr _source )
     this->m_direction->deepCopy( _source->m_direction );
 }
 
-////------------------------------------------------------------------------------
-//
-//Line::sptr Line::clone() const
-//{
-//    SLM_TRACE_FUNC();
-//
-//    Line::NewSptr pNewLine;
-//
-//    pNewLine->m_position = this->m_position;
-//    pNewLine->m_direction = this->m_direction;
-//
-//    return pNewLine;
-//}
-//
-////------------------------------------------------------------------------------
-//
-//Line & Line::operator=( const ::fwData::Line& _line )
-//{
-//    // Copy encoding
-//    this->m_position = _line.m_position;
-//    this->m_direction = _line.m_direction;
-//
-//    return *this;
-//}
-
 //------------------------------------------------------------------------------
 
 void Line::setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction) {

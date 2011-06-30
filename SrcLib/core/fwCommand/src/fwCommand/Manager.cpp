@@ -54,7 +54,7 @@ Manager::~Manager() throw()
 
 void Manager::removeFirstCmd()
 {
-    assert( m_listCmd.size() > 1 );
+    SLM_ASSERT("List command is empty", !m_listCmd.empty());
 
     CmdList::iterator pos( m_listCmd.begin() + 1 );
     ICommand::sptr pCmd = *pos;
@@ -67,7 +67,6 @@ void Manager::removeFirstCmd()
 
 void Manager::queue( ICommand::sptr pCmd, const bool execute )
 {
-
     pCmd->setNotifier( m_serviceNotifier.lock() );
 
     // Erase commands after the current one.
@@ -78,17 +77,18 @@ void Manager::queue( ICommand::sptr pCmd, const bool execute )
     {
         ICommand::sptr pCmd = (*i);
         m_usedMemory -= pCmd->getSize();
-
         --i;
-
         m_listCmd.pop_back();
     }
 
     // Execute command, if needed
-    if ( execute ) pCmd->apply();
+    if ( execute )
+    {
+        pCmd->apply();
+    }
 
     // Queue command.
-    if ( getMaxUndoLevel() > 0 )
+    if ( this->getMaxUndoLevel() > 0 )
     {
         // Ensure that the command size will not overflow the used memory counter.
         const ::boost::uint32_t cmdSize = pCmd->getSize();
@@ -99,23 +99,26 @@ void Manager::queue( ICommand::sptr pCmd, const bool execute )
         }
 
         // Pushes the command
-        if ( cmdSize <= getMaxCommandMemory() )
+        if ( cmdSize <= this->getMaxCommandMemory() )
         {
+
+            if ( m_listCmd.size() + 1 > this->getMaxUndoLevel() )
+            {
+                this->removeFirstCmd();
+            }
+
+            // Purges some command in the history.
+            while (m_usedMemory + cmdSize > getMaxUndoMemory() &&  !m_listCmd.empty() )
+            {
+                this->removeFirstCmd();
+            }
+
             m_listCmd.push_back( pCmd );
             m_usedMemory += cmdSize;
-        }
 
-        // Purges some command in the history.
-        while (
-                (m_listCmd.size()-1 > getMaxUndoLevel()) ||
-                (m_usedMemory - cmdSize > getMaxUndoMemory() )
-        )
-        {
-            removeFirstCmd();
+            m_lastCmd = m_listCmd.end();
+            --m_lastCmd;
         }
-
-        m_lastCmd = m_listCmd.end();
-        --m_lastCmd;
     }
     //else nothing to do
 }
@@ -162,15 +165,11 @@ void Manager::clear()
     while ( i != iEnd )
     {
         CmdList::iterator j( i );
-
         ++i;
-
         m_listCmd.erase( j );
     }
 
     m_usedMemory = 0;
-
-    //
     m_lastCmd = m_listCmd.begin();
 }
 

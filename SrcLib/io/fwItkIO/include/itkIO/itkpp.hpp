@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DATACONVERT_ITKPP_HPP_
-#define _DATACONVERT_ITKPP_HPP_
+#ifndef _FWITKIO_ITKPP_HPP_
+#define _FWITKIO_ITKPP_HPP_
 
 #include <boost/shared_ptr.hpp>
 
@@ -17,7 +17,6 @@
 #include <fwData/Image.hpp>
 
 #include "itkIO/config.hpp"
-#include "itkIO/types.hpp"
 
 namespace itkIO
 {
@@ -35,4 +34,4 @@ typename ScannerType::Pointer  itkppScannerFactory( ::fwData::Image::sptr imageD
 
 #include "itkIO/itkpp.hxx"
 
-#endif // _DATACONVERT_ITKPP_HPP_
+#endif // _FWITKIO_ITKPP_HPP_

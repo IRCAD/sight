@@ -25,9 +25,9 @@ void serialize(Archive & ar, ::fwData::Boolean &_object, const unsigned int vers
 {
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     boost::serialization::void_cast_register< ::fwData::Boolean, fwTools::Object>(NULL,NULL);
+     ::boost::serialization::void_cast_register< ::fwData::Boolean, fwTools::Object>(NULL,NULL);
 
-     ar &  boost::serialization::make_nvp( "value"  , _object.value() );
+     ar &  ::boost::serialization::make_nvp( "value"  , _object.value() );
 
 }
 

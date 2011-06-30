@@ -45,17 +45,13 @@ public :
 
     typedef std::list< Link  >                                  typedefLinkContainer;
 
-
-public :
+protected :
 
     /// Constructor
     FWDATA_API Pipeline();
 
     /// Destructor
     FWDATA_API virtual ~Pipeline();
-
-
-protected :
 
     std::vector< ::fwData::ProcessObject::sptr > m_vectorProcessObject;
 

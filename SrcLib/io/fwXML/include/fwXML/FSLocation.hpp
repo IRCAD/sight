@@ -31,22 +31,22 @@ public:
     FWXML_API  std::string & extension();
 
     /// retreive the filename ( no directory no extension )
-    FWXML_API  boost::filesystem::path & filename();
+    FWXML_API  ::boost::filesystem::path & filename();
 
     /// retreive the local Folder ( the relative path from rootFolder to directory containing filename )
-    FWXML_API  boost::filesystem::path & localFolder();
+    FWXML_API  ::boost::filesystem::path & localFolder();
 
     /// return the root directory of the patient Folder;
-    FWXML_API  boost::filesystem::path & rootFolder();
+    FWXML_API  ::boost::filesystem::path & rootFolder();
 
     /// return get the complete/fullAbsolute  path i.e  this->rootFolder() / this->localFolder() / getFullFilename().
-    FWXML_API  boost::filesystem::path  getFullPath() const ;
+    FWXML_API  ::boost::filesystem::path  getFullPath() const ;
 
     /// get filename + extension
-    FWXML_API boost::filesystem::path  getFullFilename() const;
+    FWXML_API ::boost::filesystem::path  getFullFilename() const;
 
     /// return get the local path path i.e  / this->localFolder() / this->filename().
-    FWXML_API  boost::filesystem::path  getLocalPath() const ;
+    FWXML_API  ::boost::filesystem::path  getLocalPath() const ;
 
 protected :
 
@@ -54,13 +54,13 @@ protected :
     std::string m_extension;
 
     /// the representation of the filename (no directory and no extension)
-    boost::filesystem::path m_filename;
+    ::boost::filesystem::path m_filename;
 
     /// the local path
-    boost::filesystem::path m_localFolder;
+    ::boost::filesystem::path m_localFolder;
 
     /// the root path
-    boost::filesystem::path m_rootFolder;
+    ::boost::filesystem::path m_rootFolder;
 };
 
 }

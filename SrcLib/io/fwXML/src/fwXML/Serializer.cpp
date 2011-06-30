@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <iomanip> // for indentation
+#include <exception>
 
 #include <boost/filesystem/convenience.hpp>
 
@@ -90,58 +91,59 @@ void PatchNoVersionToNewData( xmlNodePtr node )
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // manage class attribut : adapt "::data::" to "::fwData::" and manage {String,Float,Interger}Field renaming
+        // manage class attribute : adapt "::data::" to "::fwData::" and manage {String,Float,Interger}Field renaming
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string className,newClassName;
-        try
+        if( xmlHasProp( node, BAD_CAST "class" ) )
         {
-            className = XMLParser::getAttribute (node, "class");
-        }
-        catch ( ::fwTools::Failed ef)
-        {
-            OSLM_TRACE(" no attrib class for node->name=" << NodeName );
-        }
-        OSLM_INFO( "PatchNoVersionToNewData nodeName=" << NodeName << " className=" << className);
+            std::string className, newClassName;
+            try
+            {
+                className = XMLParser::getAttribute (node, "class");
+            }
+            catch ( ::fwTools::Failed ef)
+            {
+                OSLM_TRACE(" no attribute class for node->name=" << NodeName );
+            }
+            OSLM_INFO( "PatchNoVersionToNewData nodeName=" << NodeName << " className=" << className);
 
-        // renaming class attribute if required
-        if ( !className.empty() )
-        {
-            // special case for Object class
-            if ( className.find("::data::Object") != std::string::npos )
+            // renaming class attribute if required
+            if ( !className.empty() )
             {
-                newClassName = "::fwTools::Object";
-            }
-            else if ( className.find("::data::") != std::string::npos ) // general case (namespace)
-            {
-                newClassName = className.replace(0,strlen("::data::"),"::fwData::");
-            }
+                // special case for Object class
+                if ( className.find("::data::Object") != std::string::npos )
+                {
+                    newClassName = "::fwTools::Object";
+                }
+                else if ( className.find("::data::") != std::string::npos ) // general case (namespace)
+                {
+                    newClassName = className.replace(0,strlen("::data::"),"::fwData::");
+                }
 
-            // specific className : StringField, FloatField, IntegerField
-            if ( className.find("StringField") != std::string::npos )
-            {
-                newClassName = className.replace( className.find("StringField"), strlen("StringField"), "String" );
+                // specific className : StringField, FloatField, IntegerField
+                if ( className.find("StringField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("StringField"), strlen("StringField"), "String" );
+                }
+                else if ( className.find("FloatField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("FloatField"), strlen("FloatField"), "Float" );
+                }
+                else if ( className.find("IntegerField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("IntegerField"), strlen("IntegerField"), "Integer" );
+                }
+                else if ( className.find("BooleanField") != std::string::npos )
+                {
+                    newClassName = className.replace( className.find("BooleanField"), strlen("BooleanField"), "Boolean" );
+                }
             }
-            else if ( className.find("FloatField") != std::string::npos )
+            // change needed ?
+            if ( !newClassName.empty() )
             {
-                newClassName = className.replace( className.find("FloatField"), strlen("FloatField"), "Float" );
-            }
-            else if ( className.find("IntegerField") != std::string::npos )
-            {
-                newClassName = className.replace( className.find("IntegerField"), strlen("IntegerField"), "Integer" );
-            }
-            else if ( className.find("BooleanField") != std::string::npos )
-            {
-                newClassName = className.replace( className.find("BooleanField"), strlen("BooleanField"), "Boolean" );
+                OSLM_DEBUG( "PatchNoVersionToNewData NEWclassName=" << newClassName );
+                xmlSetProp( node , BAD_CAST "class",  xmlStrdup( BAD_CAST newClassName.c_str() ) );
             }
         }
-        // change needed ?
-        if ( !newClassName.empty() )
-        {
-            OSLM_DEBUG( "PatchNoVersionToNewData NEWclassName=" << newClassName );
-            assert( xmlHasProp( node, BAD_CAST "class" ) );
-            xmlSetProp( node , BAD_CAST "class",  xmlStrdup( BAD_CAST newClassName.c_str() ) );
-        }
-
         // continue parsing to child
         node = node->children;
         while ( node )
@@ -155,7 +157,7 @@ void PatchNoVersionToNewData( xmlNodePtr node )
 //------------------------------------------------------------------------------
 
 // an handler helper which transform a single file progress to a group of IO Operation
-struct HandlerHelper : public boost::signals::trackable
+struct HandlerHelper : public ::boost::signals::trackable
 {
     void operator()(float OnFilePercent, std::string filename)
     {
@@ -183,23 +185,39 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
     handlerHelper.m_currentStep = 0;
     handlerHelper.m_nbSteps = collector.m_objWithFileFormatService.size();
 
-    ::visitor::CollectFileFormatService::MapObjectFileFormatService::iterator iter;
-    for ( iter= collector.m_objWithFileFormatService.begin(); iter != collector.m_objWithFileFormatService.end(); ++iter )
+    try
     {
-         ::fwXML::IFileFormatService::sptr filedata = iter->second;
-        OSLM_ASSERT("No IFileFormatService found for Object "<<iter->first->getID(), ::fwServices::OSR::has(iter->first, "::fwXML::IFileFormatService"));
-        filedata->rootFolder() = this->rootFolder();
-        boost::filesystem::path filePath =  filedata->getFullPath() ;
-        std::string msg = savingMode?"saving":"loading";
-        OSLM_DEBUG( msg<< " extraXML for " << iter->first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
+        BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
+        {
+            ::fwXML::IFileFormatService::sptr filedata = elem.second;
+            OSLM_ASSERT("No IFileFormatService found for Object "<<elem.first->getID(), ::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"));
+            filedata->rootFolder() = this->rootFolder();
+            ::boost::filesystem::path filePath =  filedata->getFullPath() ;
+            std::string msg = savingMode?"saving":"loading";
+            OSLM_DEBUG( msg<< " extraXML for " << elem.first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
 
-        //notifyProgress( currentStep*1.0/nbSteps,  filePath.string() );
+            //notifyProgress( currentStep*1.0/nbSteps,  filePath.string() );
 
-        filedata->addHandler( handlerHelper );
-        savingMode ? filedata->save() : filedata->load() ;
-        // remove IFileFormatService in OSR
-        ::fwServices::OSR::unregisterService(filedata);
-        handlerHelper.m_currentStep++;
+            filedata->addHandler( handlerHelper );
+            savingMode ? filedata->save() : filedata->load() ;
+            // remove IFileFormatService in OSR
+            ::fwServices::OSR::unregisterService(filedata);
+            handlerHelper.m_currentStep++;
+        }
+    }
+    catch (const std::exception & e)
+    {
+        OSLM_ERROR("Exception : " << e.what());
+        BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
+        {
+            ::fwXML::IFileFormatService::sptr filedata = elem.second;
+            if (::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"))
+            {
+                // remove IFileFormatService in OSR
+                ::fwServices::OSR::unregisterService(filedata);
+            }
+        }
+        throw;
     }
 
     notifyProgress(1.0,"Done");
@@ -280,14 +298,14 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         if ( savedAggregator.count( aggregator ) == 0 ) // not already saved
         {
             aggIter->second->rootFolder() = this->rootFolder();
-            boost::filesystem::path filePath =  aggIter->second->getFullPath(); ;
+            ::boost::filesystem::path filePath =  aggIter->second->getFullPath(); ;
             OSLM_DEBUG( "Saving XMLAggregator " << filePath.string() << "..." );
             ProcessedXMLFile =  filePath.string();
             {
                 // create directory structure if needed
-                if ( filePath.branch_path().empty() == false )
+                if ( filePath.parent_path().empty() == false )
                 {
-                    ::boost::filesystem::create_directories(filePath.branch_path());
+                    ::boost::filesystem::create_directories(filePath.parent_path());
                 }
                 std::ofstream outFile(  filePath.string().c_str(), std::ios::binary);
                 ::fwXML::XMLStream::toStream(  aggIter->second->getXMLDoc() , outFile );
@@ -400,7 +418,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     xmlNodePtr xmlRoot = NULL;
 
     // get XMLDOC & root PTR
-    this->rootFolder() = filePath.branch_path();
+    this->rootFolder() = filePath.parent_path();
     ProcessedXMLFile = filePath.string();
 
     xmlDoc = XMLParser::getXmlDocFromFile( filePath );
@@ -451,7 +469,20 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     if (loadExtraXML)
     {
         OSLM_INFO("Serializer::deSerialize also load extraXML");
-        this->IOforExtraXML( objRoot, false );
+        try
+        {
+            this->IOforExtraXML( objRoot, false );
+        }
+        catch (const std::exception & e)
+        {
+            OSLM_ERROR("Exception : " << e.what());
+            // memory cleanup
+            xmlFreeDoc (xmlDoc);
+
+            ObjectTracker::clear();
+
+            throw;
+        }
     }
     else
     {

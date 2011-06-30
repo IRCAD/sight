@@ -53,7 +53,7 @@ void LocationDialog::setTitle(const std::string &title)
 {
     QWidget *parent = qApp->activeWindow();
     QString caption = QString::fromStdString(m_title);
-    QString path = QString::fromStdString(m_path.parent_path().string());
+    QString path = QString::fromStdString(m_path.string());
     QString filter = this->fileFilters();
     ::fwData::location::ILocation::sptr location;
 

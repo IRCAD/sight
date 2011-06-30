@@ -19,40 +19,41 @@
 
 #include "fwTools/TypeInfo.hpp"
 #include "fwTools/config.hpp"
- namespace fwTools
+
+namespace fwTools
 {
 
 
 namespace
 {
-    struct NumericCast{
-        template<class T>
-        static std::string eval(const T &t)
-        {
-            // note boost::lexical_cast with char is a ASCII-code convertion
-            // instead numerical casting. We provide fix with specialization
-            return boost::lexical_cast<std::string>(t);
-        }
+struct NumericCast
+{
+    template<class T>
+    static std::string eval(const T &t)
+    {
+        // note boost::lexical_cast with char is a ASCII-code conversion
+        // instead numerical casting. We provide fix with specialization
+        return ::boost::lexical_cast<std::string>(t);
+    }
+};
 
-    };
-
-    struct Default{
-        template<class T>
-        static std::string eval(const T &t)
-            {
-            return "No getString for " + fwCore::Demangler(typeid(t)).getRootedClassname();
-            }
-
-        };
+struct Default
+{
+    template<class T>
+    static std::string eval(const T &t)
+    {
+        return "No getString for " + ::fwCore::Demangler(typeid(t)).getRootedClassname();
+    }
+};
 }
 
 /**
- * @name Convertion value to string
+ * @name Conversion value to string
  * @{
  */
 
-// inline mandatory to be supported in multi compilation unit and avoid conflit when linking
-// function doesn exist code is rewritted
+// inline mandatory to be supported in multi compilation unit and avoid conflict when linking
+// function doesn't exist code is rewritted
 /**
  * @brief       Convert the value to a string
  * @param[in]   t value
@@ -61,14 +62,13 @@ namespace
 template<class T>
 inline std::string getString(const T &t)
 {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<  boost::is_arithmetic<T>::value,
-                                                               NumericCast,
-                                                               Default
-                                                            >::type Choice;
+    typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<  boost::is_arithmetic<T>::value,
+            NumericCast,
+            Default
+            >::type Choice;
 
-        return Choice::eval(t);
+    return Choice::eval(t);
 }
-
 
 /**
  * @brief       Convert a pair of values to a string.
@@ -85,8 +85,6 @@ inline std::string getString(const std::pair<T1,T2> &t)
     res += getString(t.first) + "," + getString(t.second) + "]";
     return res;
 }
-
-
 
 /**
  * @brief       Convert container values to a string
@@ -114,46 +112,31 @@ inline std::string getString(ForwardIterator begin,ForwardIterator end)
 }
 
 
-
-
 // explicit specialization
-template<> FWTOOLS_API
-std::string getString(const std::string &aString);
+template<>
+FWTOOLS_API std::string getString(const std::string &aString);
 
 
-template<> FWTOOLS_API
-std::string getString(const std::type_info &ti);
+template<>
+FWTOOLS_API std::string getString(const std::type_info &ti);
 
 
-template<> FWTOOLS_API
-std::string getString(const TypeInfo &ti);
+template<>
+FWTOOLS_API std::string getString(const TypeInfo &ti);
 
 // char are numerically casted
-template<> FWTOOLS_API
-std::string getString(const signed char &c);
+template<>
+FWTOOLS_API std::string getString(const signed char &c);
 
 // char are numerically casted // signed char and char doesn't are the same :/ !!!!
-template<> FWTOOLS_API
-std::string getString(const char &c);
+template<>
+FWTOOLS_API std::string getString(const char &c);
 
 // char are numerically casted
-template<> FWTOOLS_API
-std::string getString(const unsigned char &c);
+template<>
+FWTOOLS_API std::string getString(const unsigned char &c);
 
 ///@}
-//(***)
-//       ::boost::shared_ptr< IToString > converter = fwTools::create< IToString >(typeid(T));
-//
-//      if ( converter )
-//      {
-//          return converter.toString(t); // IToString::toString( boost::any t) { any_cast<BONTYPE> -> string }
-//      }
-//      else
-//      {
-//          return "No Stringizer for " + fwTools::ClassName::get(typeid(t));
-//      }
-// version non polymorphic à la sauce template (suffisant dans un premier temps)
-
 
 }
 

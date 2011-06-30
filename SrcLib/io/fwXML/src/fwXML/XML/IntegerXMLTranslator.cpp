@@ -46,7 +46,7 @@ void IntegerXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate, 
     ::fwData::Integer::sptr integer= ::fwData::Integer::dynamicCast(toUpdate);
     SLM_ASSERT("::fwData::Integer dynamicCast failed", integer );
     std::string litteralValue = XMLParser::getTextValue(source);
-    integer->value() = boost::lexical_cast< int >(  litteralValue );
+    integer->value() = ::boost::lexical_cast< int >(  litteralValue );
 }
 
 //------------------------------------------------------------------------------

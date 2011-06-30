@@ -47,14 +47,9 @@ IServiceProxy getSrv(std::string o)
     return proxy;
 }
 
-
-//BOOST_PYTHON_MODULE(fwTools)
-//{
-//}
-
 BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
 {                         // install  Py_InitModule with name + methods/class/function
-    using namespace boost::python;
+    using namespace ::boost::python;
 
     // fwTools::Object binding
     class_< ::fwTools::Object , ::fwTools::Object::sptr >("Object",no_init)

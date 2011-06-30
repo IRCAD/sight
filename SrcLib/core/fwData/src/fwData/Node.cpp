@@ -20,14 +20,14 @@ namespace fwData
 
 Node::Node()
 {
-    // TODO Auto-generated constructor stub
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 Node::~Node()
 {
-    // TODO Auto-generated destructor stub
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

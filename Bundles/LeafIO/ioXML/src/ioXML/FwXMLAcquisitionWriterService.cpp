@@ -99,20 +99,6 @@ void FwXMLAcquisitionWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-std::string FwXMLAcquisitionWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLAcquisitionWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLAcquisitionWriterService" ;
-}
-
-//------------------------------------------------------------------------------
-
 void FwXMLAcquisitionWriterService::saveAcquisition( const ::boost::filesystem::path inrFileDir, ::fwData::Acquisition::sptr _pAcquisition )
 {
     SLM_TRACE_FUNC();
@@ -200,7 +186,10 @@ void FwXMLAcquisitionWriterService::manageZipAndSaveAcquisition( const ::boost::
     saveAcquisition(xmlfile,_pAcquisition);
 
     // Zip
-    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Saving acquisition");
+    zip->addHandler( progress );
+    zip->packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

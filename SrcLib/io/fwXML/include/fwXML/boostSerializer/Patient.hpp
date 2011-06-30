@@ -22,19 +22,19 @@ namespace serialization {
 template<class Archive>
 void load(Archive & ar, ::fwData::Patient & _patient, const unsigned int version)
 {
-    ar &  boost::serialization::make_nvp( "Name" , _patient.getRefName() );
+    ar &  ::boost::serialization::make_nvp( "Name" , _patient.getRefName() );
 
-    ar &  boost::serialization::make_nvp( "Firstname" , _patient.getRefFirstname() );
+    ar &  ::boost::serialization::make_nvp( "Firstname" , _patient.getRefFirstname() );
 
-    ar &  boost::serialization::make_nvp( "IDDicom" , _patient.getRefIDDicom() );
+    ar &  ::boost::serialization::make_nvp( "IDDicom" , _patient.getRefIDDicom() );
 
     std::string birthdate;
-    ar &  boost::serialization::make_nvp( "Birthdate" , birthdate );
+    ar &  ::boost::serialization::make_nvp( "Birthdate" , birthdate );
     _patient.setCRefBirthdate( fwTools::fromIsoExtendedString( birthdate ) );
 
-    ar &  boost::serialization::make_nvp( "IsMale" , _patient.getRefIsMale() );
+    ar &  ::boost::serialization::make_nvp( "IsMale" , _patient.getRefIsMale() );
 
-    ar &  boost::serialization::make_nvp( "DbID" , _patient.getRefDbID() );
+    ar &  ::boost::serialization::make_nvp( "DbID" , _patient.getRefDbID() );
 
 }
 
@@ -43,18 +43,18 @@ void save(Archive & ar, const ::fwData::Patient & _patient, const unsigned int v
 {
     std::string newStr;
 
-    ar &  boost::serialization::make_nvp( "Name" , _patient.getCRefName() );
+    ar &  ::boost::serialization::make_nvp( "Name" , _patient.getCRefName() );
 
-    ar &  boost::serialization::make_nvp( "Firstname" , _patient.getCRefFirstname() );
+    ar &  ::boost::serialization::make_nvp( "Firstname" , _patient.getCRefFirstname() );
 
-    ar &  boost::serialization::make_nvp( "IDDicom" , _patient.getCRefIDDicom() );
+    ar &  ::boost::serialization::make_nvp( "IDDicom" , _patient.getCRefIDDicom() );
 
     std::string birthdate = fwTools::toIsoExtendedString( _patient.getCRefBirthdate() );
-    ar &  boost::serialization::make_nvp( "Birthdate" , birthdate );
+    ar &  ::boost::serialization::make_nvp( "Birthdate" , birthdate );
 
-    ar &  boost::serialization::make_nvp( "IsMale" , _patient.getCRefIsMale() );
+    ar &  ::boost::serialization::make_nvp( "IsMale" , _patient.getCRefIsMale() );
 
-    ar &  boost::serialization::make_nvp( "DbID" , _patient.getCRefDbID() );
+    ar &  ::boost::serialization::make_nvp( "DbID" , _patient.getCRefDbID() );
 
 
 }

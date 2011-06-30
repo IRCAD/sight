@@ -37,7 +37,7 @@ public:
 
     xmlNodePtr getBoostRootNode( xmlNodePtr xmlFileNodeObject )
     {
-        // find all children of xmlFileNodeObject which are inserted during boost::serialization.
+        // find all children of xmlFileNodeObject which are inserted during ::boost::serialization.
         // The purpose of this function is to retrieve boost node from dynamic node
         // this node will be used with fw_xmliarchive which update object information
         // by default all node which are not a labeledObject are considered as boostnode
@@ -65,7 +65,7 @@ public:
         OSLM_DEBUG("GenericXMLTranslator for " << obj->className() << "-" <<  obj.get() );
 
         // check obj is well realated to RealObject
-        ::boost::shared_ptr<RealData> robj = boost::dynamic_pointer_cast<RealData >(obj);
+        ::boost::shared_ptr<RealData> robj = ::boost::dynamic_pointer_cast<RealData >(obj);
         SLM_ASSERT("robj not instanced", robj);
 
         // create master node with className+id

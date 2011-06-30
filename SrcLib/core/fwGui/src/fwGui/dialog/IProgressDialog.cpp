@@ -14,18 +14,22 @@ namespace dialog
 {
 const IProgressDialog::FactoryRegistryKeyType IProgressDialog::REGISTRY_KEY =  "::fwGui::dialog::ProgressDialog";
 
-IProgressDialog::IProgressDialog() : m_canceled(false), m_raise(true)
+IProgressDialog::IProgressDialog() : m_canceled(false), m_raise(true), m_processUserEvents(true)
 {}
 
+//-----------------------------------------------------------------------------
 
 IProgressDialog::~IProgressDialog()
 {}
 
+//-----------------------------------------------------------------------------
 
 void IProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
     m_cancelCallback = callback;
 }
+
+//-----------------------------------------------------------------------------
 
 void IProgressDialog::cancelPressed()
 {
@@ -39,6 +43,8 @@ void IProgressDialog::cancelPressed()
         FW_RAISE("Operation canceled");
     }
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace dialog
 } // namespace fwGui

@@ -43,11 +43,13 @@ class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::Dyn
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwTools::Factory::New< Object > );
 
+protected:
+
     /// Constructor
-    FWDATA_API Object(); // FIXME set private
+    FWDATA_API Object();
 
     /// Destructor
-    FWDATA_API virtual ~Object() ; // need to be polymorphic !!!
+    FWDATA_API virtual ~Object() ;
 
 };
 

@@ -29,7 +29,7 @@
 #include "fwXML/policy/DefaultPathPolicy.hpp"
 
 
-::boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = boost::shared_ptr< fwXML::XMLPartitioner >();
+::boost::shared_ptr< fwXML::XMLPartitioner > fwXML::XMLPartitioner::m_ClassInstance = ::boost::shared_ptr< fwXML::XMLPartitioner >();
 
 
 namespace fwXML
@@ -127,7 +127,7 @@ xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Ob
         XMLAggregator::NewSptr newAggregator;
 
         newAggregator->rootFolder()  =   DefaultRoot();
-        newAggregator->localFolder() =  m_pathPolicy->getPath(son).branch_path();
+        newAggregator->localFolder() =  m_pathPolicy->getPath(son).parent_path();
         newAggregator->filename()    = ::boost::filesystem::basename( m_pathPolicy->getPath(son).leaf() ) ;
         newAggregator->extension()   = ::boost::filesystem::extension( m_pathPolicy->getPath(son).leaf() );
         newAggregator->append(son);
@@ -164,7 +164,7 @@ xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Ob
 
         // FSLocation
         newAggregator->rootFolder()  =   DefaultRoot();
-        newAggregator->localFolder() =  m_pathPolicy->getPath(son).branch_path();
+        newAggregator->localFolder() =  m_pathPolicy->getPath(son).parent_path();
         newAggregator->filename()    = ::boost::filesystem::basename( m_pathPolicy->getPath(son).leaf() ) ;
         newAggregator->extension()   = ::boost::filesystem::extension( m_pathPolicy->getPath(son).leaf() );
 

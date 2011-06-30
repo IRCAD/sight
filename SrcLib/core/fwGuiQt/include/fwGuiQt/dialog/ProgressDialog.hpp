@@ -26,6 +26,7 @@
 #include <QString>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
+#include "fwGuiQt/container/QtContainer.hpp"
 
 #ifdef QT_NO_KEYWORDS_FWDEF
 #undef QT_NO_KEYWORDS
@@ -70,6 +71,8 @@ public:
 
     /// override
     FWGUIQT_API void setMessage(const std::string &message);
+
+    FWGUIQT_API void hideCancelButton();
 
 protected Q_SLOTS:
     void cancelPressed();

@@ -20,6 +20,7 @@ TriangularMesh::~TriangularMesh()
 {
     m_points.clear();
     m_cells.clear();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -99,6 +100,22 @@ const int TriangularMesh::getNumPoints() const
 const int TriangularMesh::getNumCells() const
 {
     return ( (int)m_cells.size() );
+}
+
+void TriangularMesh::clearPoints()
+{
+    PointContainer emptyVector; // Size=0 and capacity=0
+    m_points.clear();
+    // The swap reinitiaize the size value and capacity to 0
+    m_points.swap(emptyVector);
+}
+
+void TriangularMesh::clearCells()
+{
+    CellContainer emptyVector; //Size=0 and capacity=0
+    m_cells.clear();
+    // The swap reinitiaize the size value and capacity to 0
+    m_cells.swap(emptyVector);
 }
 
 } // namespace fwData

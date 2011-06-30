@@ -61,7 +61,7 @@ void MeshFileFormatService::load()
     SLM_ASSERT("mesh not instanced", mesh);
 
     m_reader->setObject(mesh);
-    ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
+    ::fwData::location::SingleFile::NewSptr path;
     path->setPath( this->getFullPath() );
     m_reader->setLocation( path );
     m_reader->read();
@@ -85,7 +85,7 @@ void MeshFileFormatService::save()
 
     m_writer->setObject(mesh);
     this->extension() = m_writer->extension();
-    ::fwData::location::SingleFile::sptr path( new ::fwData::location::SingleFile() );
+    ::fwData::location::SingleFile::NewSptr path;
     path->setPath( this->getFullPath() );
     m_writer->setLocation( path );
     m_writer->write();

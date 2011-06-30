@@ -66,7 +66,7 @@ void IVtkAdaptorService::starting() throw(fwTools::Failed)
     assert( m_renderService.lock() );
 
     doStart();
-    //requestRender();
+    requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -80,14 +80,14 @@ void IVtkAdaptorService::stopping() throw(fwTools::Failed)
         ::fwServices::OSR::unregisterService( m_communicationChannelService.lock() );
     }
     doStop();
-    //requestRender();
+    requestRender();
 }
 //------------------------------------------------------------------------------
 
 void IVtkAdaptorService::swapping() throw(fwTools::Failed)
 {
     doSwap();
-    //requestRender();
+    requestRender();
 }
 
 //------------------------------------------------------------------------------

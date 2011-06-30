@@ -100,20 +100,6 @@ void FwXMLPatientDBWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-std::string FwXMLPatientDBWriterService::getCfgExtensionPoint()
-{
-    return "" ;
-}
-
-//------------------------------------------------------------------------------
-
-std::string FwXMLPatientDBWriterService::getPersistanceId()
-{
-    return "ioITK::FwXMLPatientDBWriterService" ;
-}
-
-//------------------------------------------------------------------------------
-
 void FwXMLPatientDBWriterService::savePatientDB( const ::boost::filesystem::path inrFileDir, ::fwData::PatientDB::sptr _pPatient )
 {
     SLM_TRACE_FUNC();
@@ -203,7 +189,10 @@ void FwXMLPatientDBWriterService::manageZipAndSavePatientDB( const ::boost::file
     savePatientDB(xmlfile,_pPatient);
 
     // Zip
-    ::fwZip::ZipFolder::packFolder( srcFolder, inrFileDir );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Saving patient");
+    zip->addHandler( progress );
+    zip->packFolder( srcFolder, inrFileDir );
 
     // Remove temp folder
     ::boost::filesystem::remove_all( srcFolder );

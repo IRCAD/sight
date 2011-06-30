@@ -32,12 +32,6 @@ class FWDATA_CLASS_API Dictionary : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwTools::Factory::New< Dictionary >) ;
 
-    /// Constructor
-    FWDATA_API Dictionary();
-
-    /// Destructor
-    FWDATA_API virtual ~Dictionary();
-
     //--------------------------------------------------------------------------
     /// Field identifier for organ dictionary
     static const Object::FieldID ID_DICTIONARY_ORGANS;
@@ -80,6 +74,13 @@ public :
     FWDATA_API std::pair< DictionaryOrganIterator, DictionaryOrganIterator > getDictionaryOrgans();
     FWDATA_API std::pair< DictionaryOrganConstIterator, DictionaryOrganConstIterator > getDictionaryOrgans() const;
     //@}
+
+protected:
+    /// Constructor
+    FWDATA_API Dictionary();
+
+    /// Destructor
+    FWDATA_API virtual ~Dictionary();
 };
 
 } // namespace fwData

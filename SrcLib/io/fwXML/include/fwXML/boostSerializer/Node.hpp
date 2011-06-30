@@ -26,7 +26,7 @@ void load(Archive & ar, ::fwData::Node & _node, const unsigned int version)
     SLM_FATAL("To implement");
     ::fwTools::Object::sptr obj;
     std::string ss="essai";
-    ar &  boost::serialization::make_nvp( "object" , ss /*obj*/ );
+    ar &  ::boost::serialization::make_nvp( "object" , ss /*obj*/ );
     _node.setObject(obj);
 }
 

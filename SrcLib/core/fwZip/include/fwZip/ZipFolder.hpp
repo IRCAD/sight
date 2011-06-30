@@ -9,6 +9,8 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include <fwTools/ProgressAdviser.hpp>
+
 #include "fwZip/config.hpp"
 
 namespace fwZip
@@ -24,10 +26,13 @@ namespace fwZip
  *
  * This class provides static method to zip or unzip folder. Methods use wxWidgets API to archive data. The compression rate is equal to 0 ( simple archive ).
  */
-class FWZIP_CLASS_API ZipFolder
+class FWZIP_CLASS_API ZipFolder : public ::fwCore::BaseObject, public ::fwTools::ProgressAdviser
 {
 
 public:
+
+    fwCoreClassDefinitionsWithFactoryMacro((ZipFolder)(::fwCore::BaseObject), (()), new ZipFolder);
+    fwCoreAllowSharedFromThis();
 
     /**
      * @brief This method is used to compress (zip format) a folder
@@ -37,7 +42,7 @@ public:
      * @see this method use wxDirTraverserZIP class to realize the directory exploration
      * @todo Set in parameter the compression rate.
      */
-    FWZIP_API static bool packFolder( const ::boost::filesystem::path & _srcFolderName, const ::boost::filesystem::path & _destZipFileName );
+    FWZIP_API bool packFolder( const ::boost::filesystem::path & _srcFolderName, const ::boost::filesystem::path & _destZipFileName );
 
     /**
      * @brief This method is used to uncompress (zip format) a folder
@@ -45,8 +50,15 @@ public:
      * @param[in] destFolderName file path resulting to folder decompression
      * @return true if folder decompression is a success
      */
-    FWZIP_API static bool unpackFolder( const ::boost::filesystem::path & _srcZipFileName, const ::boost::filesystem::path & _destFolderName );
+    FWZIP_API bool unpackFolder( const ::boost::filesystem::path & _srcZipFileName, const ::boost::filesystem::path & _destFolderName );
 
+protected:
+
+    //! @brief Constructor.
+    FWZIP_API ZipFolder();
+
+    //! @brief Destructor.
+    FWZIP_API ~ZipFolder();
 };
 
 //------------------------------------------------------------------------------

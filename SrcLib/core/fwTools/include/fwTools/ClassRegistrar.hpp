@@ -43,10 +43,11 @@
 
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
- * @brief This is an helper for registring an Class : internaly it create the factory and register it
+ * @brief This is an helper for registering a Class : internaly it create the factory and register it
  * to FactoryRegistry
  * @class ClassRegistrar
  * @author  IRCAD (Research and Development Team).
@@ -65,19 +66,18 @@ public:
     ClassRegistrar(const KEY & key)
     {
         // create factory
-        ::boost::shared_ptr< IClassFactory >  af( new ClassFactory< BASECLASS,SUBCLASS,KEY >(key) );
+        ::fwTools::IClassFactory::sptr  af( new ClassFactory< BASECLASS,SUBCLASS,KEY >(key) );
         // register it
-        OSLM_DEBUG( "Class Factory Registration BaseClass=" << getString( af->baseClassId() )
-                    << " SubClass =" << getString( af->subClassId() )
-                    << " KeyClass=" << getString( af->keyId() )
-                    << " KeyValue=" << af->stringizedKey()
-                  )
-        ClassFactoryRegistry::addFactory( af );
+        OSLM_DEBUG( "Class Factory Registration BaseClass= " << getString( af->baseClassId() )
+                << " SubClass= " << ::fwTools::getString( af->subClassId() )
+                << " KeyClass= " << ::fwTools::getString( af->keyId() )
+                << " KeyValue= " << af->stringizedKey()
+        );
+        ::fwTools::ClassFactoryRegistry::addFactory( af );
     }
-
 };
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
 
 #endif /*CLASSREGISTRAR_HPP_*/

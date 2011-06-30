@@ -37,7 +37,6 @@ public:
 
     typedef std::string BookmarkName;
 
-
     /**
      * Test if the given id exist (i.e recorded in Bookmarks dictionary)
      * @param[in] _id : the id to test
@@ -59,11 +58,18 @@ public:
     /**
      * @brief retrieve the list of bookmarks attach to an object
      */
-    FWTOOLS_API std::list<BookmarkName> getBookmarks(  SPTR(::fwTools::Object ) );
+    FWTOOLS_API static std::list<BookmarkName> getBookmarks(  SPTR(::fwTools::Object ) );
 
-    FWTOOLS_API virtual ~Bookmarks() ;
+    /**
+     * @brief retrieve the list of bookmarks
+     */
+    FWTOOLS_API static std::list<Bookmarks::BookmarkName> getBookmarks();
 
 protected :
+
+    FWTOOLS_API Bookmarks();
+
+    FWTOOLS_API virtual ~Bookmarks() ;
 
    typedef ::boost::unordered_map< BookmarkName, WPTR(::fwTools::Object ) > Dictionary;
 

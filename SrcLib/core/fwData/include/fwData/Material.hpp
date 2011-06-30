@@ -28,13 +28,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwTools::Factory::New< Material >) ;
 
-    /// Constructor
-    FWDATA_API Material();
-
-    /// Destructor
-    FWDATA_API virtual ~Material();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -42,9 +35,6 @@ public:
 
     /// Defines deep copy
     FWDATA_API void deepCopy( Material::csptr _source );
-
-    /// Clone method
-    //FWDATA_API Material::sptr clone() const;
 
     /**
     * @brief returns editable ambient color
@@ -55,17 +45,6 @@ public:
     * @brief returns editable diffuse color
     */
     FWDATA_API Color::sptr diffuse() const;
-
-//    /**
-//    * @brief returns read-only  ambient color
-//    */
-//    FWDATA_API const Color &ambient() const;
-//
-//    /**
-//    * @brief returns read-only  diffuse color
-//    */
-//    FWDATA_API const Color &diffuse() const;
-
 
     /*
      * @brief Options
@@ -102,6 +81,12 @@ public:
     fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, the option representation (Standard, normals).);
 
 protected :
+
+    /// Constructor
+    FWDATA_API Material();
+
+    /// Destructor
+    FWDATA_API virtual ~Material();
 
     SHADING_MODE m_shadingMode;
     REPRESENTATION_MODE m_representationMode;

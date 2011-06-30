@@ -6,35 +6,35 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
-
 #include "fwData/Vector.hpp"
-
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Vector,  ::fwData::Vector);
 
 namespace fwData
 {
 
+//------------------------------------------------------------------------------
 
 Vector::Vector()
 {
     SLM_TRACE_FUNC();
-    // TODO Auto-generated constructor stub
 }
 
+//------------------------------------------------------------------------------
 
 Vector::~Vector()
 {
     SLM_TRACE_FUNC();
-    // TODO Auto-generated destructor stub
 }
 
+//------------------------------------------------------------------------------
 
 Vector &Vector::getRefContainer()
 {
     return *this;
 }
 
+//------------------------------------------------------------------------------
 
 Vector const &Vector::getRefContainer() const
 {

@@ -267,7 +267,10 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
 
-    ::fwZip::ZipFolder::unpackFolder( _pArchivePath, destFolder );
+    ::fwZip::ZipFolder::NewSptr zip;
+    ::fwGui::dialog::ProgressDialog progress("Reading patient");
+    zip->addHandler( progress );
+    zip->unpackFolder( _pArchivePath, destFolder );
 
     // Load
     ::boost::filesystem::path xmlfile = destFolder / "patient.xml";

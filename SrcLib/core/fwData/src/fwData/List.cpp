@@ -15,26 +15,28 @@ REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::List,  ::fwData::List
 namespace fwData
 {
 
+//------------------------------------------------------------------------------
 
 List::List()
 {
     SLM_TRACE_FUNC();
-    // TODO Auto-generated constructor stub
 }
 
+//------------------------------------------------------------------------------
 
 List::~List()
 {
     SLM_TRACE_FUNC();
-    // TODO Auto-generated destructor stub
 }
 
+//------------------------------------------------------------------------------
 
 List &List::getRefContainer()
 {
     return *this;
 }
 
+//------------------------------------------------------------------------------
 
 List const &List::getRefContainer() const
 {

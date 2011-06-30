@@ -85,7 +85,7 @@ void VtkPatientDBReaderService::configureWithIHM()
     {
         m_fsImagePath = result->getPath();
         m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsImagePath.branch_path();
+        _sDefaultPath = m_fsImagePath.parent_path();
     }
 }
 

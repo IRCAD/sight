@@ -114,7 +114,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             //TODO
         }
 
-        insideWidget->setMinimumSize(viewInfo.m_minSize.first, viewInfo.m_minSize.second);
+        insideWidget->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
 
         //TODO
         // - viewInfo.m_position

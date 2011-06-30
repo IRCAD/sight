@@ -28,12 +28,14 @@ class FWDATA_CLASS_API None : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object), (()), ::fwTools::Factory::New< None >) ;
 
+    FWDATA_API static bool isNone(::fwData::Object::sptr object);
+
+protected:
     /// Constructor
     FWDATA_API None();
     /// Destructor
     FWDATA_API virtual ~None();
 
-    FWDATA_API static bool isNone(::fwData::Object::sptr object);
 }; // end class None
 
 } // end namespace fwData

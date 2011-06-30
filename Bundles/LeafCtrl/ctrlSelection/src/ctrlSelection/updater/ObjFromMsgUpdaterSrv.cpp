@@ -50,7 +50,7 @@ void ObjFromMsgUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw
             SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
 
             // Test if we manage this event from this object message uid ( it->get<1>() )
-            if( obj->getID() == it->get<1>() )
+            if( it->get<1>() == "*" || obj->getID() == it->get<1>() )
             {
                 // Udapte the composite object referenced by the composite key ( it->get<2>() )
                 this->updateComposite(composite, obj, it->get<2>(), it->get<3>() );

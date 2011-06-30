@@ -34,8 +34,6 @@
 namespace fwTools
 {
 
-::boost::shared_ptr<System> System::m_instance;
-
 //------------------------------------------------------------------------------
 
 System::~System()
@@ -53,11 +51,15 @@ System::~System()
 
 const ::boost::shared_ptr<System> System::getDefault() throw()
 {
-    if(m_instance.get() == 0)
+    /// A shared pointer to the kernel instance
+    static ::boost::shared_ptr< System > instance;
+
+    if ( instance.get() == 0 )
     {
-        m_instance = ::boost::shared_ptr<System>(new System());
+        instance = ::boost::shared_ptr<System>(new System());
     }
-    return m_instance;
+
+    return instance;
 }
 
 //------------------------------------------------------------------------------

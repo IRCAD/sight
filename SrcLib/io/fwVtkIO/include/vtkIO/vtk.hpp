@@ -35,6 +35,15 @@ class vtkLookupTable;
 namespace vtkIO
 {
 
+/*!
+ * @brief Convert ::fwData::Image PixelType to the VTK data type of pixels.
+ *
+ * @param[in] image ::fwData::Image::sptr.
+ * @return int : VTK data scalar type
+ *
+ */
+VTKIO_API int getVtkScalarType(::fwData::Image::sptr image);
+
 /**
  * @brief Allocate a new vtkImageData* from a ::fwData::Image::sptr.
  *
@@ -53,11 +62,10 @@ VTKIO_API vtkImageData*  toVTKImage( ::fwData::Image::sptr _data ,  vtkImageData
  *
  * @param[in] _source vtkImageData*.
  * @param[out] _destination ::fwData::Image::sptr.
- * @return bool.
  *
- * Returns \b true if the conversion is a success and \b false if it fails
+ * Throw an exception if the conversion fails
  */
-VTKIO_API bool fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _destination );
+VTKIO_API void fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _destination );
 
 /*!
  * @brief Convert a ::fwData::Image::sptr to a vtkImageImport*.

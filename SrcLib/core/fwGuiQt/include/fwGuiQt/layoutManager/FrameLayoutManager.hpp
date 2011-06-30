@@ -9,6 +9,7 @@
 
 #include <QPointer>
 #include <QObject>
+#include <QPoint>
 
 #include <fwCore/base.hpp>
 
@@ -61,6 +62,7 @@ private:
 
     void setState(FrameState state);
     FrameState getState();
+    bool isOnScreen(const QPoint& pos);
 
     QPointer<QMainWindow> m_qtWindow;
 };

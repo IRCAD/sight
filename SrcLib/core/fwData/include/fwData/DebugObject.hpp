@@ -26,12 +26,6 @@ class FWDATA_CLASS_API DebugObject : public ::fwCore::BaseObject
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (DebugObject), (()), new DebugObject) ;
 
-    /// Construcotr
-    FWDATA_API DebugObject();
-
-    /// Destructor
-    FWDATA_API virtual ~DebugObject();
-
     /**
      * @brief Print informations about the object
      *
@@ -42,6 +36,13 @@ public:
      * @param[in] _level number of blank before text
      */
     FWDATA_API static void print( std::ostream &_os, fwTools::Object *_object, int _level = 0 );
+
+protected:
+    /// Construcotr
+    FWDATA_API DebugObject();
+
+    /// Destructor
+    FWDATA_API virtual ~DebugObject();
 };
 
 } // namespace fwData

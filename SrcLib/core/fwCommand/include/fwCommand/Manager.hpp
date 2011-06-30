@@ -25,8 +25,10 @@ namespace fwCommand
  *
  * @todo macro command.
  */
-struct FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
+class FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
 {
+public:
+
     fwCoreClassDefinitionsWithNFactoriesMacro( (Manager)(::fwTools::Object),
            ((::fwTools::Factory::New< Manager > ,() ))
            ((ManagerFactory ,((::boost::uint32_t)) ((::boost::uint32_t)) ((::boost::uint32_t))  ))
@@ -168,7 +170,7 @@ protected:
 
 
     /**
-     * @brief Remove first command in m_listCmd and dessalocate this command.
+     * @brief Remove first command in m_listCmd and desalocate this command.
      *
      * @pre m_listCmd not empty.
      */

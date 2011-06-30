@@ -27,6 +27,16 @@ class FWDATA_CLASS_API Integer : public GenericField< int >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object),( ((const int)(0)) ), GenericFieldFactory< Integer >) ;
+
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Integer::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Integer::csptr _source );
+
+protected:
     /**
      * @brief Constructor.
      * @param[in] value The initial value.
@@ -37,14 +47,6 @@ public:
      * @brief Destructor.
      */
     FWDATA_API virtual ~Integer() throw();
-
-    fwDataObjectMacro();
-
-    /// Defines shallow copy
-    FWDATA_API void shallowCopy( Integer::csptr _source );
-
-    /// Defines deep copy
-    FWDATA_API void deepCopy( Integer::csptr _source );
 };
 
 } // namespace fwData

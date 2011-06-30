@@ -49,15 +49,6 @@ void ResectionDB::deepCopy( ResectionDB::csptr _source )
 
 //------------------------------------------------------------------------------
 
-//ResectionDB & ResectionDB::operator=( const ResectionDB & _resectionDB )
-//{
-//    this->getField( ResectionDB::ID_RESECTIONS )->children() = _resectionDB.getField( ResectionDB::ID_RESECTIONS )->children();
-//
-//    return *this;
-//}
-
-//------------------------------------------------------------------------------
-
 boost::uint32_t  ResectionDB::getResectionSize() const
 {
     return this->getField( ResectionDB::ID_RESECTIONS )->children().size();

@@ -13,7 +13,6 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Acquisition.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {
@@ -36,12 +35,6 @@ class FWDATA_CLASS_API Study : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwTools::Factory::New< Study >) ;
 
-    /// @brief Constructor
-    FWDATA_API Study();
-    /// @brief Destructor
-    FWDATA_API virtual ~Study();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -49,9 +42,6 @@ public:
 
     /// Defines deep copy
     FWDATA_API void deepCopy( Study::csptr _source );
-
-    /// @brief Copy method
-    //FWDATA_API Study &operator=( const Study & _study ) ;
 
     /// Field identifier for acquisitions
     FWDATA_API static const Object::FieldID ID_ACQUISITIONS;
@@ -63,7 +53,7 @@ public:
      * @brief Get the number of acquisitions
      * @return acquisition number
      */
-    FWDATA_API boost::uint32_t  getAcquisitionSize() const;
+    FWDATA_API ::boost::uint32_t  getAcquisitionSize() const;
 
     /**
      * add Acquisition
@@ -89,7 +79,7 @@ public:
 
     fwGettersSettersDocMacro(UID, sUID, std::string, the unique Identifier DICOM );
 
-    fwGettersSettersDocMacro(DbID, i32DbID, boost::int32_t, the database indentifier );
+    fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, the database indentifier );
 
     fwGettersSettersDocMacro(Date, date, std::string, the study date );
     fwGettersSettersDocMacro(Time, time, std::string, the study time );
@@ -97,6 +87,10 @@ public:
 
 protected :
 
+    /// @brief Constructor
+    FWDATA_API Study();
+    /// @brief Destructor
+    FWDATA_API virtual ~Study();
 
     /// Hospital name (eg : RADIOLOGIE URGENCE CHUV LAUSANNE)
     std::string m_sHospital;
@@ -114,15 +108,11 @@ protected :
     std::string m_sUID;
 
     /// Database indentifier
-    boost::int32_t  m_i32DbID;
+    ::boost::int32_t  m_i32DbID;
 
     std::string m_date;
     std::string m_time;
     std::string m_description;
-
-    // Vector of acquisition (which represents an exam)
-    //std::vector< ::fwData::Acquisition::sptr > m_vAcquisitions;
-
 
 };
 

@@ -15,45 +15,52 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Video::Video() :
-m_ui32XSize(0),
-m_ui32YSize(0),
-m_ui8BPP(1),
-m_pImageBuffer(0),
-m_dataAvailable(false),
-m_lastModified(0),
-m_camera( new ::fwData::Camera)
+        m_ui32XSize(0),
+        m_ui32YSize(0),
+        m_ui8BPP(1),
+        m_pImageBuffer(0),
+        m_dataAvailable(false),
+        m_lastModified(0)
 {
-    SLM_TRACE("Video::Video()");
+    SLM_TRACE_FUNC();
+    m_camera = ::fwData::Camera::New();
 }
 
 //------------------------------------------------------------------------------
 
 Video::~Video() throw()
 {
-    SLM_TRACE("Video::~Video()");
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
+
 ::boost::interprocess::interprocess_mutex &Video::getMutex()
 {
     return m_mutex;
 }
+
+//------------------------------------------------------------------------------
 
 bool &Video::dataAvailable()
 {
     return m_dataAvailable;
 }
 
+//------------------------------------------------------------------------------
+
 ::boost::uint64_t Video::getLastModified()
 {
-//  ::boost::interprocess::scoped_lock< ::boost::interprocess::interprocess_mutex > lock(m_mutex);
     return m_lastModified;
 }
 
+//------------------------------------------------------------------------------
+
 void Video::Modified()
 {
-//  ::boost::interprocess::scoped_lock< ::boost::interprocess::interprocess_mutex > lock(m_mutex);
     m_lastModified++;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace fwData

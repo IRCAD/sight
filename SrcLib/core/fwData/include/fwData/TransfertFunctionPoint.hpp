@@ -36,13 +36,6 @@ public :
 
     typedef ::boost::int32_t TFValueType;
 
-    /// Constructor
-    FWDATA_API TransfertFunctionPoint();
-
-    /// Destructor
-    FWDATA_API virtual ~TransfertFunctionPoint();
-
-
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -50,9 +43,6 @@ public :
 
     /// Defines deep copy
     FWDATA_API void deepCopy( TransfertFunctionPoint::csptr _source );
-
-    /// Clone
-    //FWDATA_API TransfertFunctionPoint::sptr clone() const;
 
     /// indentier for field color
     static const Object::FieldID ID_COLOR;
@@ -74,6 +64,12 @@ public :
 
 
 protected :
+
+    /// Constructor
+    FWDATA_API TransfertFunctionPoint();
+
+    /// Destructor
+    FWDATA_API virtual ~TransfertFunctionPoint();
 
     //! point value
     TFValueType  m_i32Value;

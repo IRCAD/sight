@@ -47,6 +47,8 @@ public:
 
     FWGUI_API void setCancelCallback(CancelCallbackType callback);
 
+    FWGUI_API void hideCancelButton();
+
 protected :
 
     FWGUI_API void cancelPressed();

@@ -20,8 +20,9 @@ namespace fwCommand
  *
  * This command is used to initialize the Manager of command and avoid an empty commands list in the Manager.
  */
-struct FWCOMMAND_CLASS_API Empty : public ICommand
+class FWCOMMAND_CLASS_API Empty : public ICommand
 {
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), ::fwTools::Factory::New< Empty > );
 
     // Overrides.

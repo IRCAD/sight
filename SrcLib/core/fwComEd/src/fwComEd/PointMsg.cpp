@@ -15,6 +15,7 @@ namespace fwComEd
 
 //-----------------------------------------------------------------------------
 
+std::string PointMsg::VALUE_IS_MODIFIED       = "VALUE_IS_MODIFIED";
 std::string PointMsg::POINT_IS_MODIFIED       = "POINT_IS_MODIFIED";
 std::string PointMsg::START_POINT_INTERACTION = "START_POINT_INTERACTION";
 

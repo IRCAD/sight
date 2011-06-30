@@ -22,7 +22,7 @@ namespace serialization {
 template<class Archive>
 void load(Archive & ar, ::fwData::Point & _point, const unsigned int version)
 {
-    std::vector< ::fwData::Point::PointCoordType > tmp; // compatibility mode std::vector -> boost::array
+    std::vector< ::fwData::Point::PointCoordType > tmp; // compatibility mode std::vector -> ::boost::array
     ar & ::boost::serialization::make_nvp( "Coord" , tmp );
     std::copy(tmp.begin(), tmp.end(), _point.getRefCoord().begin());
 }
@@ -30,7 +30,7 @@ void load(Archive & ar, ::fwData::Point & _point, const unsigned int version)
 template<class Archive>
 void save(Archive & ar, const ::fwData::Point & _point, const unsigned int version)
 {
-    std::vector< ::fwData::Point::PointCoordType > tmp( _point.getCRefCoord().size() ); // compatibility mode std::vector -> boost::array
+    std::vector< ::fwData::Point::PointCoordType > tmp( _point.getCRefCoord().size() ); // compatibility mode std::vector -> ::boost::array
     std::copy( _point.getCRefCoord().begin(), _point.getCRefCoord().end(), tmp.begin());
     ar &  ::boost::serialization::make_nvp( "Coord" , tmp );
 }

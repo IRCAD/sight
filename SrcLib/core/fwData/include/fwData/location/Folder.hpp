@@ -27,21 +27,12 @@ namespace location
 class FWDATA_CLASS_API Folder  : public ILocation
 {
 public:
-    //fwCoreClassDefinitionsWithFactoryMacro( (Folder)(ILocation), (()), new Folder ) ;
 
     fwCoreClassDefinitionsWithNFactoriesMacro(
             (Folder)(ILocation),
             ((::fwTools::Factory::New< Folder > ,() ))
             ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
     );
-
-    /// Constructor
-    FWDATA_API Folder();
-
-    FWDATA_API static sptr FolderFactory(::boost::filesystem::path _path, bool recursive=false );
-
-    /// Destructor
-    FWDATA_API virtual ~Folder();
 
     /// @brief Set folder filesystem path
     FWDATA_API void setFolder( ::boost::filesystem::path folder);
@@ -56,6 +47,13 @@ public:
     FWDATA_API bool getRecursive();
 
 protected :
+    /// Constructor
+    FWDATA_API Folder();
+
+    FWDATA_API static sptr FolderFactory(::boost::filesystem::path _path, bool recursive=false );
+
+    /// Destructor
+    FWDATA_API virtual ~Folder();
 
     /// %Folder path
     ::boost::filesystem::path m_folder;

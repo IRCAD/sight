@@ -27,15 +27,6 @@ class FWDATA_CLASS_API Camera : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Camera)(::fwData::Object), (()), ::fwTools::Factory::New< Camera >) ;
     typedef struct{ unsigned long Low; unsigned long High; }uint32HL;
-    /**
-     * @brief constructor
-     */
-    FWDATA_API Camera();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~Camera() throw();
 
     /// @brief set the extrinsic transformation matrix
     FWDATA_API void setExtrinsicCameraTransformation(::fwData::TransformationMatrix3D::sptr transMat);
@@ -87,6 +78,17 @@ public:
     FWDATA_API void setCameraGUID(uint32HL _cameraGUID);
 
 protected :
+
+    /**
+     * @brief constructor
+     */
+    FWDATA_API Camera();
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Camera() throw();
+
     /// extrinsic matrix
     ::fwData::TransformationMatrix3D::sptr m_extrinsicMatrix;
 
