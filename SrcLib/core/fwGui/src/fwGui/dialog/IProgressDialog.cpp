@@ -17,15 +17,19 @@ const IProgressDialog::FactoryRegistryKeyType IProgressDialog::REGISTRY_KEY =  "
 IProgressDialog::IProgressDialog() : m_canceled(false), m_raise(true)
 {}
 
+//-----------------------------------------------------------------------------
 
 IProgressDialog::~IProgressDialog()
 {}
 
+//-----------------------------------------------------------------------------
 
 void IProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
     m_cancelCallback = callback;
 }
+
+//-----------------------------------------------------------------------------
 
 void IProgressDialog::cancelPressed()
 {
@@ -39,6 +43,8 @@ void IProgressDialog::cancelPressed()
         FW_RAISE("Operation canceled");
     }
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace dialog
 } // namespace fwGui

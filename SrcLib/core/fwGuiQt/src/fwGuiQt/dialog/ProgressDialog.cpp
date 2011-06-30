@@ -161,6 +161,11 @@ void ProgressDialog::cancelPressed()
     IProgressDialog::cancelPressed();
 }
 
+//------------------------------------------------------------------------------
+void ProgressDialog::hideCancelButton()
+{
+    m_pcancelButton->hide();
+}
 
 } // namespace dialog
 } // namespace fwGuiQt

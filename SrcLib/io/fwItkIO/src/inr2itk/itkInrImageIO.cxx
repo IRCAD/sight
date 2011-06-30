@@ -17,6 +17,7 @@
 #include <itkExceptionObject.h>
 
 #include <fwCore/spyLog.hpp>
+#include <fwCore/Exception.hpp>
 
 #include "inr2itk/itkInrImageIO.h"
 
@@ -380,11 +381,19 @@ void InrImageIO::Read(void * buffer)
     int nbStep = 10;
     long long int size = (  (GetImageSizeInBytes()>1024*1024*10)?  ( GetImageSizeInBytes() / nbStep ) + 1 : GetImageSizeInBytes()  );
     int step = 0;
-    while ( bytesRead < GetImageSizeInBytes() && step < nbStep )
+    try
     {
-        step++;
-        UpdateProgress(  ((float)bytesRead)/GetImageSizeInBytes() );
-        bytesRead += gzread( file , ((char *)buffer)+bytesRead,  min(size, GetImageSizeInBytes() - bytesRead)  );
+        while ( bytesRead < GetImageSizeInBytes() && step < nbStep )
+        {
+            step++;
+            UpdateProgress(  ((float)bytesRead)/GetImageSizeInBytes() );
+            bytesRead += gzread( file , ((char *)buffer)+bytesRead,  min(size, GetImageSizeInBytes() - bytesRead)  );
+        }
+    }
+    catch(::fwCore::Exception &e) // catch progress bar cancel exception
+    {
+        gzclose(file);
+        throw e;
     }
     UpdateProgress( 1.0 );
     // End replace
@@ -677,11 +686,19 @@ void InrImageIO::Write(const void* buffer)
         // by
         int written = 0;
         long long int size = (  (GetImageSizeInBytes()>1024*1024*10)? ( GetImageSizeInBytes() / 10 ) + 1 : GetImageSizeInBytes()  );
-        while ( written <   GetImageSizeInBytes() )
+        try
         {
-            UpdateProgress(  ((float)written)/GetImageSizeInBytes() );
-            written += gzwrite( outputFile , ((char *)buffer)+written,  min(size, GetImageSizeInBytes() - written)  );
+            while ( written <   GetImageSizeInBytes() )
+            {
+                UpdateProgress(  ((float)written)/GetImageSizeInBytes() );
+                written += gzwrite( outputFile , ((char *)buffer)+written,  min(size, GetImageSizeInBytes() - written)  );
 
+            }
+        }
+        catch(::fwCore::Exception &e) // catch progress bar cancel exception
+        {
+            gzclose(outputFile);
+            throw e;
         }
         UpdateProgress( 1.0 );
         // End replace
@@ -706,10 +723,18 @@ void InrImageIO::Write(const void* buffer)
         // by :
         int written = 0;
         long long int size = (  (GetImageSizeInBytes()>1024*1024*10)? ( GetImageSizeInBytes() / 10 ) + 1 : GetImageSizeInBytes()  );
-        while ( written <   GetImageSizeInBytes() )
+        try
         {
-            UpdateProgress(  ((float)written)/GetImageSizeInBytes() );
-            written += fwrite( ((char *)buffer)+written, 1,  min(size, GetImageSizeInBytes() - written)  , outputFile);
+            while ( written <   GetImageSizeInBytes() )
+            {
+                UpdateProgress(  ((float)written)/GetImageSizeInBytes() );
+                written += fwrite( ((char *)buffer)+written, 1,  min(size, GetImageSizeInBytes() - written)  , outputFile);
+            }
+        }
+        catch(::fwCore::Exception &e) // catch progress bar cancel exception
+        {
+            gzclose(outputFile);
+            throw e;
         }
         UpdateProgress( 1.0 );
         // End replace

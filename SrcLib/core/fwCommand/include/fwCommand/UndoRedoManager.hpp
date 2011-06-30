@@ -27,8 +27,9 @@ namespace fwCommand
  *
  * @todo macro command.
  */
-struct FWCOMMAND_CLASS_API UndoRedoManager : public ::fwTools::Object
+class FWCOMMAND_CLASS_API UndoRedoManager : public ::fwTools::Object
 {
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (UndoRedoManager)(::fwTools::Object), (( )), ::fwTools::Factory::New< UndoRedoManager > );
 
     /// Return the unique Instance, create it if required at first access

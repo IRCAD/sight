@@ -183,23 +183,38 @@ void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode
     handlerHelper.m_currentStep = 0;
     handlerHelper.m_nbSteps = collector.m_objWithFileFormatService.size();
 
-    ::visitor::CollectFileFormatService::MapObjectFileFormatService::iterator iter;
-    for ( iter= collector.m_objWithFileFormatService.begin(); iter != collector.m_objWithFileFormatService.end(); ++iter )
+    try
     {
-         ::fwXML::IFileFormatService::sptr filedata = iter->second;
-        OSLM_ASSERT("No IFileFormatService found for Object "<<iter->first->getID(), ::fwServices::OSR::has(iter->first, "::fwXML::IFileFormatService"));
-        filedata->rootFolder() = this->rootFolder();
-        boost::filesystem::path filePath =  filedata->getFullPath() ;
-        std::string msg = savingMode?"saving":"loading";
-        OSLM_DEBUG( msg<< " extraXML for " << iter->first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
+        BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
+        {
+            ::fwXML::IFileFormatService::sptr filedata = elem.second;
+            OSLM_ASSERT("No IFileFormatService found for Object "<<elem.first->getID(), ::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"));
+            filedata->rootFolder() = this->rootFolder();
+            boost::filesystem::path filePath =  filedata->getFullPath() ;
+            std::string msg = savingMode?"saving":"loading";
+            OSLM_DEBUG( msg<< " extraXML for " << elem.first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
 
-        //notifyProgress( currentStep*1.0/nbSteps,  filePath.string() );
+            //notifyProgress( currentStep*1.0/nbSteps,  filePath.string() );
 
-        filedata->addHandler( handlerHelper );
-        savingMode ? filedata->save() : filedata->load() ;
-        // remove IFileFormatService in OSR
-        ::fwServices::OSR::unregisterService(filedata);
-        handlerHelper.m_currentStep++;
+            filedata->addHandler( handlerHelper );
+            savingMode ? filedata->save() : filedata->load() ;
+            // remove IFileFormatService in OSR
+            ::fwServices::OSR::unregisterService(filedata);
+            handlerHelper.m_currentStep++;
+        }
+    }
+    catch (::fwCore::Exception &e) // catch progress bar cancel exception
+    {
+        BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
+        {
+            ::fwXML::IFileFormatService::sptr filedata = elem.second;
+            if (::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"))
+            {
+                // remove IFileFormatService in OSR
+                ::fwServices::OSR::unregisterService(filedata);
+            }
+        }
+        throw e;
     }
 
     notifyProgress(1.0,"Done");

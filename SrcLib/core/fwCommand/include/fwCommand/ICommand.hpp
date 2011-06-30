@@ -29,7 +29,7 @@ namespace fwCommand
  * tracking of the executed command (quite useful when keeping a menu of last performed
  * operations).
  */
-struct FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
+class FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
 {
 
 protected :
