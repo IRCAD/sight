@@ -31,12 +31,16 @@
     <activate id="uiMeasurement" version="0-1" />
     <activate id="uiMeasurementQt" version="0-1" />
 
+    <activate id="ioITK" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioVtkGdcm" version="0-1" />
-    <activate id="ioXML" version="0-1" />
+    <activate id="ioXML" version="0-1" >
+        <param id="defaultImageWriter" value="::itkIO::ImageWriter" />
+    </activate>
 
     <activate id="uiTF" version="0-1" />
 
+    <start id="ioITK" />
     <start id="ioVTK" />
     <start id="visuVTK" />
     <start id="visuVTKQt" />

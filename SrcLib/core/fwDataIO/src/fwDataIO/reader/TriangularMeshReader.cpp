@@ -70,11 +70,6 @@ void TriangularMeshReader::read()
     ::fwData::TriangularMesh::PointContainer &points = triMesh->points();
     ::fwData::TriangularMesh::CellContainer  &cells  = triMesh->cells();
 
-    /// Remove all points and cells
-//    points.clear();
-//    cells.clear();
-
-
     std::vector< float > point(3);
     float &pa = point[0];
     float &pb = point[1];
@@ -83,7 +78,7 @@ void TriangularMeshReader::read()
     int &ca = cell[0];
     int &cb = cell[1];
     int &cc = cell[2];
-
+    
     /// Read content and update mesh data structure
     unsigned int nbPts, nbCells, i;
 
