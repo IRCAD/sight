@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="extension" type="ExtensionType" />
+
+    <xs:complexType name="ExtensionType">
+        <xs:sequence>
+            <xs:element name="policy" type="PolicyType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="implements" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="PolicyType">
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="threshold" type="xs:nonNegativeInteger" use="optional" />
+    </xs:complexType>
+</xs:schema>
+  
