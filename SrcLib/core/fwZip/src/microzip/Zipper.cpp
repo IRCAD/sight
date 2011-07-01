@@ -87,7 +87,11 @@ bool Zipper::ZipFolder(::boost::filesystem::path folderPath, ::boost::filesystem
     // make zip path
     if(zipFilePath.empty())
     {
+#if BOOST_FILESYSTEM_VERSION > 2
+        ::boost::filesystem::path zipFile(folderPath.filename().string() + ".zip");
+#else
         ::boost::filesystem::path zipFile(folderPath.filename() + ".zip");
+#endif
         zipFilePath = folderPath.parent_path() / zipFile ;
     }
     Zipper zip;
@@ -415,11 +419,16 @@ bool Zipper::OpenZip(::boost::filesystem::path filePath, ::boost::filesystem::pa
 unsigned long Zipper::getFileAttributes(::boost::filesystem::path const filePath)
 {
     unsigned long attrib = 0;
+#if BOOST_FILESYSTEM_VERSION > 2
+    std::string native_directory = filePath.string();
+#else
+    std::string native_directory = filePath.native_directory_string();
+#endif
 #ifdef _WIN32
-    attrib = ::GetFileAttributes(filePath.native_directory_string().c_str());
+    attrib = ::GetFileAttributes(native_directory.c_str());
 #else
     struct stat path_stat;
-    if ( ::stat( filePath.native_directory_string().c_str(), &path_stat ) == 0 )
+    if ( ::stat( native_directory.c_str(), &path_stat ) == 0 )
     {
         attrib = path_stat.st_mode;
     }

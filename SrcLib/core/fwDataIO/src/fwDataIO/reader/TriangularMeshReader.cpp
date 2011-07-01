@@ -46,19 +46,17 @@ void TriangularMeshReader::read()
     ::boost::filesystem::path path = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
 
-    OSLM_INFO( "[TriangularMeshReader::read] Trian file: " << path);
+    OSLM_INFO( "[TriangularMeshReader::read] Trian file: " << path.string());
     assert( path.empty() ==  false );
 
     ::boost::shared_ptr< ::fwData::TriangularMesh > triMesh = getConcreteObject();
 
     std::fstream file;
-    file.open(path.native_file_string().c_str(), std::fstream::in);
+    file.open(path.string().c_str(), std::fstream::in);
     if (!file.is_open())
     {
-        OSLM_ERROR( "Trian file loading error for " << path);
-        std::string str = "Unable to open ";
-        str+= path.native_file_string();
-        throw std::ios_base::failure(str);
+        OSLM_ERROR( "Trian file loading error for " << path.string());
+        throw std::ios_base::failure("Unable to open " + path.string());
     }
 
 
@@ -78,7 +76,7 @@ void TriangularMeshReader::read()
     int &ca = cell[0];
     int &cb = cell[1];
     int &cc = cell[2];
-    
+
     /// Read content and update mesh data structure
     unsigned int nbPts, nbCells, i;
 

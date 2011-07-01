@@ -135,7 +135,7 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
         model->getRefMap().clear();
 
         vtk3DSImporter *importer1 = vtk3DSImporter::New();
-        importer1->SetFileName(m_fsMeshPath.native_file_string().c_str());
+        importer1->SetFileName(m_fsMeshPath.string().c_str());
         importer1->ComputeNormalsOn();
         importer1->Read();
 

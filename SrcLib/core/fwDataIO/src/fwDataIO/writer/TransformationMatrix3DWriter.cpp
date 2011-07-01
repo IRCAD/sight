@@ -45,7 +45,7 @@ TransformationMatrix3DWriter::~TransformationMatrix3DWriter()
 void TransformationMatrix3DWriter::write()
 {
     std::fstream file;
-    file.open(getFile().native_file_string().c_str(), std::fstream::out);
+    file.open(getFile().string().c_str(), std::fstream::out);
     if (!file.is_open())
     {
         OSLM_ERROR( "Trf file writing error for " << getFile());
@@ -68,6 +68,7 @@ void TransformationMatrix3DWriter::write()
     file.close();
 }
 
+//------------------------------------------------------------------------------
 
 std::string  TransformationMatrix3DWriter::extension()
 {

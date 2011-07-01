@@ -108,12 +108,12 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
         {
             // reading of the file
             std::fstream file;
-            file.open(m_fsExternalDataPath.native_file_string().c_str(), std::fstream::in);
+            file.open(m_fsExternalDataPath.string().c_str(), std::fstream::in);
             if (!file.is_open())
             {
                 OSLM_ERROR( "External data file loading error for " << m_fsExternalDataPath);
                 std::string str = "Unable to open ";
-                str+= m_fsExternalDataPath.native_file_string();
+                str+= m_fsExternalDataPath.string();
                 throw std::ios_base::failure(str);
             }
             file >> imageName;

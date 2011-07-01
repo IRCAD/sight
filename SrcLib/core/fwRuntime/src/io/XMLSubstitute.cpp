@@ -58,7 +58,11 @@ std::map< std::string, std::string > &XMLSubstitute::getRefDictionary()
 
 xmlDocPtr XMLSubstitute::load( const ::boost::filesystem::path& xmlFile)
 {
+#if BOOST_FILESYSTEM_VERSION > 2
+    xmlDocPtr doc = xmlParseFile(  xmlFile.string().c_str() );
+#else
     xmlDocPtr doc = xmlParseFile(  xmlFile.native_file_string().c_str() );
+#endif
 
     if ( ! m_dictionary.empty() ) // dictionary empty => classic xmlParseFile()
     {

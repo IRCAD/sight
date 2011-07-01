@@ -59,7 +59,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IO_API virtual void configureWithIHM();
+    IODATA_API virtual void configureWithIHM();
 
     /**
      * @brief   returns  (filename) extension

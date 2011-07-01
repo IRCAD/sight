@@ -23,8 +23,6 @@ namespace fwRuntime
 namespace io
 {
 
-
-
 std::string ProfileReader::ID                    ("id");
 std::string ProfileReader::NAME                  ("name");
 std::string ProfileReader::VALUE                 ("value");
@@ -36,7 +34,7 @@ std::string ProfileReader::PARAM                 ("param");
 std::string ProfileReader::DIS_EXT_PT            ("disable-extension-point");
 std::string ProfileReader::DIS_EXT               ("disable-extension");
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const boost::filesystem::path & path )
 {
@@ -51,20 +49,10 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         throw RuntimeException("'" + normalizedPath.string() + "': not a a file.");
     }
 
-
     // Validation
-
-#ifndef FWRUNTIME_VER
-
-    const boost::filesystem::path profileXSDLocation( boost::filesystem::current_path() / "share/runtime_0-0/profile.xsd" );
-
-#else
-
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/profile.xsd";
-    const boost::filesystem::path profileXSDLocation( boost::filesystem::current_path() / fileLocation.str() );
-
-#endif
+    const ::boost::filesystem::path profileXSDLocation( ::boost::filesystem::current_path() / fileLocation.str() );
 
     Validator   validator(profileXSDLocation);
 
@@ -73,9 +61,12 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         throw RuntimeException(validator.getErrorLog());
     }
 
-
     // Get the document.
+#if BOOST_FILESYSTEM_VERSION > 2
+    xmlDocPtr document = xmlParseFile(normalizedPath.string().c_str());
+#else
     xmlDocPtr document = xmlParseFile(normalizedPath.native_file_string().c_str());
+#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the profile file.");
@@ -97,11 +88,10 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         std::string sVersion( pVersion );
         bool checkSingleInstance = pChkInst && std::string(pChkInst) == "true";
 
-
         xmlFree(pName);
         xmlFree(pVersion);
         xmlFree(pChkInst);
-        
+
         // Creates and process the profile element.
          ::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
 
@@ -120,7 +110,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::processProfile(xmlNodePtr node)
 {
@@ -147,7 +137,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
     return profile;
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ::fwRuntime::profile::Activater > ProfileReader::processActivater(xmlNodePtr node)
 {
@@ -170,11 +160,9 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         }
     }
 
-
     // Creates the activater object.
     using ::fwRuntime::profile::Activater;
-     ::boost::shared_ptr< Activater >   activater( new Activater(identifier, version) );
-
+    ::boost::shared_ptr< Activater >   activater( new Activater(identifier, version) );
 
     // Processes child node that are the parameters
     xmlNodePtr  curChild = node->children;
@@ -198,13 +186,11 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
             continue;
         }
     }
-
-
     // Job's done.
     return activater;
 }
 
-
+//------------------------------------------------------------------------------
 
 void ProfileReader::processActivaterParam(xmlNodePtr node, ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
@@ -226,12 +212,11 @@ void ProfileReader::processActivaterParam(xmlNodePtr node, ::boost::shared_ptr< 
             continue;
         }
     }
-
     // Stores the parameter into the activater.
     activater->addParameter( identifier, value );
 }
 
-
+//------------------------------------------------------------------------------
 
 void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node, ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
@@ -252,7 +237,7 @@ void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node, ::boo
     activater->addDisableExtensionPoint( identifier );
 }
 
-
+//------------------------------------------------------------------------------
 
 void ProfileReader::processActivaterDisableExtension(xmlNodePtr node, ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
@@ -273,7 +258,7 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node, ::boost::s
     activater->addDisableExtension( identifier );
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ::fwRuntime::profile::Starter > ProfileReader::processStarter(xmlNodePtr node)
 {
@@ -289,14 +274,13 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node, ::boost::s
         }
     }
 
-
     // Creates the activater object.
     using ::fwRuntime::profile::Starter;
      ::boost::shared_ptr< Starter > starter( new Starter(identifier) );
     return starter;
 }
 
-
+//------------------------------------------------------------------------------
 
 } // namespace io
 

@@ -29,7 +29,7 @@
 mfo::CPatient * loadMfoPatient( const boost::filesystem::path & patientXml, const boost::filesystem::path & dicoXml )
 {
     mfo::CPatient * mfoPatient = NULL;
-    mfoPatient = xmlmfo::CXmlMfo::GetPatientAndDictionary( patientXml.string()/*native_file_string()*/, dicoXml.string()/*native_file_string()*/ );
+    mfoPatient = xmlmfo::CXmlMfo::GetPatientAndDictionary( patientXml.string(), dicoXml.string() );
     SLM_ASSERT("mfoPatient not instanced", mfoPatient);
 
     return mfoPatient;

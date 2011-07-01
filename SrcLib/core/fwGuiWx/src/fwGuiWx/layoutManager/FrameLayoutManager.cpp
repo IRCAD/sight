@@ -76,8 +76,8 @@ void FrameLayoutManager::createFrame()
 
     if(!frameInfo.m_iconPath.empty())
     {
-        wxIcon icon( ::fwWX::std2wx(frameInfo.m_iconPath.native_file_string()), wxBITMAP_TYPE_ICO );
-        OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.native_file_string(), icon.Ok());
+        wxIcon icon( ::fwWX::std2wx(frameInfo.m_iconPath.string()), wxBITMAP_TYPE_ICO );
+        OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.string(), icon.Ok());
         m_wxFrame->SetIcon( icon );
     }
     m_wxFrame->Move( wxPoint(frameInfo.m_position.first, frameInfo.m_position.second) );

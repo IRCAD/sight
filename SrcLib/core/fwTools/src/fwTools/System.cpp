@@ -219,7 +219,11 @@ void System::eraseDumpFolderOfZombies() const
 #if BOOST_VERSION < 103600
         std::string pidStr = (*iter_dir).leaf();
 #else
+    #if BOOST_FILESYSTEM_VERSION > 2
+        std::string pidStr = (*iter_dir).path().filename().string();
+    #else
         std::string pidStr = (*iter_dir).filename();
+    #endif
 #endif
         try
         {

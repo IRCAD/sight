@@ -42,10 +42,9 @@ InrPatientDBReader::~InrPatientDBReader()
 
 //------------------------------------------------------------------------------
 
-void InrPatientDBReader::searchRecursivelyInrFile
-(   const ::boost::filesystem::path & path,
-    ::std::vector< ::boost::filesystem::path > & inrFiles,
-    bool recursiveSearch )
+void InrPatientDBReader::searchRecursivelyInrFile(   const ::boost::filesystem::path & path,
+        ::std::vector< ::boost::filesystem::path > & inrFiles,
+         bool recursiveSearch )
 {
     for( ::boost::filesystem::directory_iterator it(path); it != ::boost::filesystem::directory_iterator(); ++it)
     {
@@ -56,7 +55,11 @@ void InrPatientDBReader::searchRecursivelyInrFile
         }
         else
         {
+#if BOOST_FILESYSTEM_VERSION > 2
+            std::string fileStr = (*it).path().string();
+#else
             std::string fileStr = (*it).string();
+#endif
             if ( fileStr.size() > 7 )
             {
                 std::string ext1 = fileStr.substr(fileStr.size()-4,4);
