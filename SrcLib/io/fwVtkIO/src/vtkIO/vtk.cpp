@@ -426,8 +426,8 @@ double computeVolume( ::fwData::TriangularMesh::sptr _triangularMesh )
 
     vtkSmartPointer< vtkPolyDataNormals > filter = vtkSmartPointer< vtkPolyDataNormals >::New();
     filter->SetInput(vtkMeshRaw);
-    filter->AutoOrientNormalsOn ();
-    filter->FlipNormalsOn ();
+    filter->AutoOrientNormalsOn();
+    filter->FlipNormalsOff();
 
     vtkSmartPointer< vtkMassProperties > calculator = vtkSmartPointer< vtkMassProperties >::New();
     calculator->SetInput( filter->GetOutput() );
