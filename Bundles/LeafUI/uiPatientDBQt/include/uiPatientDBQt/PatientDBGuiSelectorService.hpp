@@ -11,6 +11,8 @@
 #include <QObject>
 #include <QTreeWidget>
 
+#include <fwData/Patient.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
 #include "uiPatientDBQt/config.hpp"
@@ -31,13 +33,12 @@ class UIPATIENTDBQT_CLASS_API PatientDBGuiSelectorService : public QObject, publ
 public :
     fwCoreServiceClassDefinitionsMacro ( (PatientDBGuiSelectorService)(::gui::editor::IEditor) ) ;
 
+protected:
     /// Constructor
     UIPATIENTDBQT_API PatientDBGuiSelectorService();
 
     /// Destructor
     UIPATIENTDBQT_API virtual ~PatientDBGuiSelectorService() throw() ;
-
-protected:
 
     void starting() throw(::fwTools::Failed);
 
@@ -52,6 +53,9 @@ protected:
     void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     void info( std::ostream &_sstream ) ;
+
+    /// Updated the PatientDB m_imageSelectedId field with the last added image of the patient given by its index in PatientDB
+    void selectLastAddedImage(int patientIndex);
 
 protected slots:
 

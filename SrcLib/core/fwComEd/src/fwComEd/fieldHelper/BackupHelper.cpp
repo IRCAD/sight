@@ -187,7 +187,7 @@ namespace fieldHelper
 
         // Fire Event
         ::fwComEd::PatientDBMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::PatientDBMsg::ADD_PATIENT );
+        msg->addEvent( ::fwComEd::PatientDBMsg::ADD_PATIENT, ::fwData::Integer::New(myIntPat->value()) );
 
         ::fwServices::IEditionService::notify(_MsgSource, _pPatientDB, msg);
     }
