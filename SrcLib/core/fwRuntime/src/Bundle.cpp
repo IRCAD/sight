@@ -327,7 +327,7 @@ void Bundle::loadLibraries() throw(RuntimeException)
     // Ensure the bundle is enabled.
     if( m_enable == false )
     {
-        throw RuntimeException( m_identifier + ": bundle is not enable." );
+        throw RuntimeException( m_identifier + ": bundle is not enabled." );
     }
 
     // Pre-condition
@@ -418,7 +418,7 @@ void Bundle::start() throw(RuntimeException)
     OSLM_ASSERT("Bundle "<< this->getIdentifier() << " already started.", !m_started );
     if( m_enable == false )
     {
-        throw RuntimeException( m_identifier + ": bundle is not enable." );
+        throw RuntimeException( m_identifier + ": bundle is not enabled." );
     }
 
     if( m_plugin == 0 )
