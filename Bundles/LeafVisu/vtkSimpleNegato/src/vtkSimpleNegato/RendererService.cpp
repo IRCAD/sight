@@ -11,6 +11,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
+#include <vtkSmartPointer.h>
 
 #include <fwData/Image.hpp>
 
@@ -159,7 +160,8 @@ void RendererService::refresh()
 
 void RendererService::initVTKPipeline()
 {
-    vtkImageData* vtk_img = ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >());
+    vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
+    ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
     m_outline = vtkOutlineFilter::New();
     m_outline->SetInput(vtk_img);
@@ -216,7 +218,6 @@ void RendererService::initVTKPipeline()
     m_render->AddActor( outlineActor);
 
     // Repaint and resize window
-    //m_wxmanager->Update();
     m_render->ResetCamera();
 
     picker->Delete();
@@ -229,7 +230,8 @@ void RendererService::initVTKPipeline()
 void RendererService::updateVTKPipeline()
 {
     assert(this->getObject< ::fwData::Image >());
-    vtkImageData* vtk_img = ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >());
+    vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
+    ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
     m_outline->SetInput(vtk_img);
     m_negatoSagittal->SetInput(vtk_img);
