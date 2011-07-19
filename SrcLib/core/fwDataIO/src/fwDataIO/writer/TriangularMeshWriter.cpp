@@ -43,7 +43,7 @@ void TriangularMeshWriter::write()
     OSLM_INFO( "[TriangularMeshReader::read] Trian file: " << getFile());
     assert( getFile().empty() ==  false );
 
-    ::boost::shared_ptr< ::fwData::TriangularMesh > triMesh = getConcreteObject();
+    ::fwData::TriangularMesh::sptr triMesh = getConcreteObject();
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);
@@ -74,6 +74,7 @@ void TriangularMeshWriter::write()
     file.close();
 }
 
+//------------------------------------------------------------------------------
 
 std::string  TriangularMeshWriter::extension()
 {
