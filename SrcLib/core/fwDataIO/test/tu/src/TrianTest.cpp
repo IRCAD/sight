@@ -64,8 +64,8 @@ void TrianTest::test_1()
     reader->setFile(m_tmpTrianPath1);
     reader->read();
 
-    CPPUNIT_ASSERT(trianMesh->getNumPoints() == NBPTS);
-    CPPUNIT_ASSERT(trianMesh->getNumCells() == NBCELLS);
+    CPPUNIT_ASSERT_EQUAL(trianMesh->getNumPoints(), (int)NBPTS);
+    CPPUNIT_ASSERT_EQUAL(trianMesh->getNumCells(), (int)NBCELLS);
 }
 
 //------------------------------------------------------------------------------
@@ -90,10 +90,10 @@ void TrianTest::test_2()
     reader->setFile(m_tmpTrianPath2);
     reader->read();
 
-    CPPUNIT_ASSERT(trianMesh1->getNumPoints() == NBPTS);
-    CPPUNIT_ASSERT(trianMesh1->getNumCells()  == NBCELLS);
-    CPPUNIT_ASSERT(trianMesh1->getNumCells()  == trianMesh2->getNumCells());
-    CPPUNIT_ASSERT(trianMesh1->getNumPoints() == trianMesh2->getNumPoints());
+    CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumPoints(), (int)NBPTS);
+    CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumCells(),  (int)NBCELLS);
+    CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumCells(),  trianMesh2->getNumCells());
+    CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumPoints(), trianMesh2->getNumPoints());
     CPPUNIT_ASSERT(trianMesh1->points() == trianMesh2->points());
     CPPUNIT_ASSERT(trianMesh1->cells()  == trianMesh2->cells());
 }

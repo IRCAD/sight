@@ -56,20 +56,20 @@ void TrianTest::testTrianToVtk()
     vtkPolyData *mesh = ::vtkIO::toVTKMesh( trian1 );
     CPPUNIT_ASSERT( mesh );
 
-    CPPUNIT_ASSERT(poly_source->GetNumberOfVerts()  == mesh->GetNumberOfVerts());
-    CPPUNIT_ASSERT(poly_source->GetNumberOfLines()  == mesh->GetNumberOfLines());
-    CPPUNIT_ASSERT(poly_source->GetNumberOfPolys()  == mesh->GetNumberOfPolys());
-    CPPUNIT_ASSERT(poly_source->GetNumberOfStrips() == mesh->GetNumberOfStrips());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfVerts(), mesh->GetNumberOfVerts());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfLines(), mesh->GetNumberOfLines());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPolys(), mesh->GetNumberOfPolys());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfStrips(), mesh->GetNumberOfStrips());
 
 
     ::fwData::TriangularMesh::NewSptr trian2;
     CPPUNIT_ASSERT( trian2 );
     ::vtkIO::fromVTKMesh(mesh, trian2);
 
-    CPPUNIT_ASSERT(trian1->getNumCells()  == trian2->getNumCells());
-    CPPUNIT_ASSERT(trian1->getNumPoints() == trian2->getNumPoints());
+    CPPUNIT_ASSERT_EQUAL(trian1->getNumCells(),  trian2->getNumCells());
+    CPPUNIT_ASSERT_EQUAL(trian1->getNumPoints(), trian2->getNumPoints());
     CPPUNIT_ASSERT(trian1->points() == trian2->points());
-    CPPUNIT_ASSERT(trian1->cells()  == trian2->cells());
+    CPPUNIT_ASSERT(trian1->cells() ==  trian2->cells());
 
     mesh->Delete();
 }
