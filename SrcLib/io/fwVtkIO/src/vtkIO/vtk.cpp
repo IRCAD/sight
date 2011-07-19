@@ -325,8 +325,6 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 
     if (trianPts)
     {
-//        triangularMesh->cells().clear();
-//        triangularMesh->points().clear();
         // Clear the container cells and set its capacity to 0
         triangularMesh->clearCells();
         // Clear the container points and set its capacity to 0
