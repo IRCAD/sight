@@ -1,3 +1,0 @@
-CONSOLE = 'yes'
-TYPE = 'exec'
-CPPFLAGS = '-DSPYLOG_LEVEL=6'
