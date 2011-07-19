@@ -122,9 +122,6 @@ protected:
     TriangularMeshVtkCommand *m_planeCollectionShifterCallback;
     TriangularMeshVtkCommand *m_servicesStarterCallback;
 
-
-
-    ::fwData::TriangularMesh::wptr m_triangularMesh;
     ::fwData::Material::sptr       m_material;
     ::fwData::Material::sptr       m_unclippedPartMaterial;
 
@@ -140,9 +137,6 @@ public :
    VISUVTKADAPTOR_API vtkActor * getActor(){ return m_actor; }
 
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 
