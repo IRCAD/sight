@@ -46,13 +46,11 @@ void RuntimeTest::testRuntime()
         CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
         ::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
         bundle->setEnable(true);
-        bundle->start();
         CPPUNIT_ASSERT(bundle->isEnable());
 
         // Test bundle servicesReg
         ::boost::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
         bundle2->setEnable(true);
-        bundle2->start();
 
         // Test runtime extensions
         CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceFactory"));
