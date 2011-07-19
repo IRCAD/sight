@@ -32,7 +32,7 @@ void CompositeTest::methode1()
 {
     //typedef std::pair<std::string, ::fwData::Object::sptr> pair_type;
     typedef ::fwData::Composite::value_type pair_type;
-    const pair_type PAIRS[] = { 
+    const pair_type PAIRS[] = {
         std::make_pair( "object"       , ::fwData::Object::New()       ),
         std::make_pair( "boolean true" , ::fwData::Boolean::New(true)  ),
         std::make_pair( "boolean false", ::fwData::Boolean::New(false) ),
@@ -43,7 +43,6 @@ void CompositeTest::methode1()
     ::fwData::Composite::ContainerType stdmap;
 
     ::fwData::Composite::NewSptr composite;
-    ::fwData::Composite::Container compositeContainer = composite->getRefMap();
 
     CPPUNIT_ASSERT( composite->size() == 0 );
 
