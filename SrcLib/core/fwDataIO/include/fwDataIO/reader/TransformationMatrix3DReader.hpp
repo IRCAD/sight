@@ -34,10 +34,10 @@ class FWDATAIO_CLASS_API TransformationMatrix3DReader :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (TransformationMatrix3DReader)(GenericObjectReader< ::fwData::TransformationMatrix3D >),
-                                                 (()),
-                                                 new  TransformationMatrix3DReader
-                                            );
+    fwCoreClassDefinitionsWithFactoryMacro((TransformationMatrix3DReader)(GenericObjectReader< ::fwData::TransformationMatrix3D >),
+                                           (()),
+                                           new  TransformationMatrix3DReader
+                                           );
 
     /// Constructor. Do nothing.
     FWDATAIO_API TransformationMatrix3DReader();
