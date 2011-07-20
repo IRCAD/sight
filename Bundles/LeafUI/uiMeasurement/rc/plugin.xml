@@ -6,42 +6,42 @@
     <requirement id="gui"/>
     <requirement id="io"/>
     
-    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::AddDistance , ::fwData::Image ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiMeasurement::action::SaveLandmark</service>
+        <object>::fwData::Image</object>
+    </extension>
+    
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMeasurement::action::AddDistance</service>
         <object>::fwData::Image</object>
     </extension>
 
-    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowDistance , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMeasurement::action::ShowDistance</service>
         <object>::fwData::Image</object>
     </extension>
     
-    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::RemoveDistance , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMeasurement::action::RemoveDistance</service>
         <object>::fwData::Image</object>
     </extension>
 
-    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::AddLandmark , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMeasurement::action::AddLandmark</service>
         <object>::fwData::Image</object>
     </extension>
     
-    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::FocusLandmark , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMeasurement::action::FocusLandmark</service>
         <object>::fwData::Image</object>
     </extension>
         
-    <!--REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowLandmark , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMeasurement::action::ShowLandmark</service>
