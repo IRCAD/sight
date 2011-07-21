@@ -28,6 +28,7 @@
                 <gui>
                     <layout>
                         <menuItem name="New landmark" icon="Bundles/VRRender_0-9/icons//Add-landmark.png" />
+                        <menuItem name="Load landmark" icon="Bundles/VRMed_0-7/icons/Load-landmark.png" />
                         <menuItem name="Save landmark" icon="Bundles/VRRender_0-9/icons/Save-landmark.png" />
                         <menuItem name="Focus landmark" icon="Bundles/VRRender_0-9/icons/Find-landmark.png" />
                         <menuItem name="Hide/Show landmark" icon="Bundles/VRRender_0-9/icons/View-landmark.png" />
@@ -43,6 +44,7 @@
                 </gui>
                 <registry>
                     <menuItem sid="GENERIC_UID_ActionNewLandmark" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionLoadLandmark" start="yes" />
                     <menuItem sid="GENERIC_UID_ActionSaveLandmark" start="yes" />
                     <menuItem sid="GENERIC_UID_ActionFocusLandmark" start="yes" />
                     <menuItem sid="GENERIC_UID_ActionHideLandmark" start="yes" />
@@ -279,6 +281,7 @@
 
                             <service uid="GENERIC_UID_ActionFocusLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::FocusLandmark" autoComChannel="no" />
                             <service uid="GENERIC_UID_ActionNewLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::AddLandmark" autoComChannel="no" />
+                            <service uid="GENERIC_UID_ActionLoadLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::LoadLandmark" autoComChannel="no" />
                             <service uid="GENERIC_UID_ActionSaveLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::SaveLandmark" autoComChannel="no" />
                             <service uid="GENERIC_UID_ActionHideLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::ShowLandmark" autoComChannel="yes" />
                             <service uid="GENERIC_UID_ActionAddDistance" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::AddDistance" autoComChannel="no" />

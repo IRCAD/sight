@@ -87,19 +87,14 @@ bool defineLabel(std::string &name)
 
 void AddLandmark::updating() throw(::fwTools::Failed)
 {
-    namespace ns = ::fwComEd::fieldHelper;
-
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     if (image->getBuffer()==NULL )
     {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Add landmarks");
-        messageBox.setMessage( "Sorry, it is impossible to add image landmarks. There is not loaded image in the software." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Add landmarks",
+                "Sorry, it is impossible to add image landmarks. There is not loaded image in the software.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         return;
     }
 
@@ -107,12 +102,12 @@ void AddLandmark::updating() throw(::fwTools::Failed)
     if ( defineLabel(value) )
     {
         //get landmarks
-        ns::MedicalImageHelpers::checkLandmarks(  image );
+        ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
         ::fwData::PointList::sptr landmarks =  image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
         // create a new point
-        ::fwData::Point::sptr   newPoint = ns::MedicalImageHelpers::getImageSliceIndices( image );
+        ::fwData::Point::sptr newPoint = ::fwComEd::fieldHelper::MedicalImageHelpers::getImageSliceIndices( image );
         // transform slice to mm
         std::transform( newPoint->getRefCoord().begin(),newPoint->getRefCoord().end(),
                 image->getCRefSpacing().begin(),

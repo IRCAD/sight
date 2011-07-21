@@ -14,6 +14,12 @@
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
+        <service>::uiMeasurement::action::LoadLandmark</service>
+        <object>::fwData::Image</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
         <service>::uiMeasurement::action::AddDistance</service>
         <object>::fwData::Image</object>
     </extension>
