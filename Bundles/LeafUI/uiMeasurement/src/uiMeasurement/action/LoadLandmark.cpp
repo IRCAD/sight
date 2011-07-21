@@ -99,7 +99,7 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
         unsigned int index = 0;
         BOOST_FOREACH( vnl_vector<double> point, vPoints)
         {
-            ::fwData::Point::sptr newPoint = ::fwData::Point::New(point[0], point[1], point[3]);
+            ::fwData::Point::sptr newPoint = ::fwData::Point::New(point[0], point[1], point[2]);
             ::fwData::String::sptr label = ::fwData::String::New(vNames[index]);
             newPoint->setFieldSingleElement( ::fwComEd::Dictionary::m_labelId , label );
             landmarks->getRefPoints().push_back( newPoint );
