@@ -75,7 +75,11 @@ void Darwin::load() throw(RuntimeException)
     if(m_handle == 0)
     {
         // Opens the dynamic library.
+#if BOOST_FILESYSTEM_VERSION > 2
+        m_handle = dlopen(getFullPath(true).string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
+#else
         m_handle = dlopen(getFullPath(true).native_file_string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
+#endif
         if(m_handle == 0)
         {
             std::string message(dlerror());

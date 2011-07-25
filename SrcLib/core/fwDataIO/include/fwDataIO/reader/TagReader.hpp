@@ -40,7 +40,10 @@ class FWDATAIO_CLASS_API TagReader :
 {
 
 public :
-
+    fwCoreClassDefinitionsWithFactoryMacro( (TagReader)(GenericObjectReader< ::fwData::Tag >),
+                                            (()),
+                                            new  TagReader
+                                           );
     /// Constructor. Do nothing.
     FWDATAIO_API TagReader();
 

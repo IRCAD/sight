@@ -1,0 +1,6 @@
+CLASSTEST=[
+          'TrianTest',
+          ]
+USE = ['boost']
+LIB = ['fwTools_0-1','fwCore_0-1','fwData_0-1','fwVtkIO_0-1']
+CONSOLE='yes'

@@ -47,12 +47,12 @@ void GzBufferImageWriter::write()
     OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className()) ;
 
     /// test if can open archive
-    gzFile rawFile = gzopen( getFile().native_file_string().c_str(), "wb1");
+    gzFile rawFile = gzopen( getFile().string().c_str(), "wb1");
     SLM_ASSERT("rawFile not instanced", rawFile);
     if ( rawFile == 0 )
     {
         std::string str = "GzBufferImageWriter::write unable to open ";
-        str+= getFile().native_file_string();
+        str+= getFile().string();
         gzclose(rawFile);
         throw std::ios_base::failure(str);
     }
@@ -66,7 +66,7 @@ void GzBufferImageWriter::write()
     if ( uncompressedbyteswrited!=imageSizeInBytes )
     {
         std::string str = "GzBufferImageWriter::write unable to write ";
-        str+=  getFile().native_file_string();
+        str+=  getFile().string();
         gzclose(rawFile);
         throw std::ios_base::failure(str);
     }

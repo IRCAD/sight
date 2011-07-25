@@ -63,12 +63,10 @@ void CloneImage::updating( ) throw(::fwTools::Failed)
     ::fwData::Image::sptr pImage = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(patientDB);
     if( !pImage )
     {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Clone Image");
-        messageBox.setMessage( "Sorry, it is impossible to clone image. There are not selected image in the software." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Clone Image",
+                "Sorry, it is impossible to clone image. There are not selected image in the software.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
     else
     {

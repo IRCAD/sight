@@ -43,15 +43,15 @@ void TriangularMeshWriter::write()
     OSLM_INFO( "[TriangularMeshReader::read] Trian file: " << getFile());
     assert( getFile().empty() ==  false );
 
-    ::boost::shared_ptr< ::fwData::TriangularMesh > triMesh = getConcreteObject();
+    ::fwData::TriangularMesh::sptr triMesh = getConcreteObject();
 
     std::fstream file;
-    file.open(getFile().native_file_string().c_str(), std::fstream::out);
+    file.open(getFile().string().c_str(), std::fstream::out);
     if (!file.is_open())
     {
-        OSLM_ERROR( "Trian file writing error for " << getFile());
+        OSLM_ERROR( "Trian file writing error for " << getFile().string());
         std::string str = "Unable to write ";
-        str+= getFile().native_file_string();
+        str+= getFile().string();
         throw std::ios_base::failure(str);
     }
 
@@ -74,6 +74,7 @@ void TriangularMeshWriter::write()
     file.close();
 }
 
+//------------------------------------------------------------------------------
 
 std::string  TriangularMeshWriter::extension()
 {

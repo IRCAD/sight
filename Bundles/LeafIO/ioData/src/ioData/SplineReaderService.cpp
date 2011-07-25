@@ -146,10 +146,10 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
     ::boost::filesystem::path location(m_file) ;
 
     std::fstream file;
-    file.open(location.native_file_string().c_str(), std::fstream::in);
+    file.open(location.string().c_str(), std::fstream::in);
     if (!file.is_open())
     {
-        OSLM_WARN( "Object Matrix file loading error for " + location.native_file_string());
+        OSLM_WARN( "Object Matrix file loading error for " + location.string());
         return matrix;
     }
     double val;

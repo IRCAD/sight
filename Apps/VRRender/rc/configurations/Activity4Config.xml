@@ -32,6 +32,9 @@
                         <menuItem name="3D MPR Sagittal view" icon="Bundles/VRRender_0-9/icons/icon-sagittal.png" />
                         <separator />
                         <menuItem name="New landmark" icon="Bundles/VRRender_0-9/icons/Add-landmark.png" />
+                        <menuItem name="Remove landmark" icon="Bundles/VRRender_0-9/icons/Remove-landmark.png" />
+                        <menuItem name="Load landmark" icon="Bundles/VRRender_0-9/icons/Load-landmark.png" />
+                        <menuItem name="Save landmark" icon="Bundles/VRRender_0-9/icons/Save-landmark.png" />
                         <menuItem name="Focus landmark" icon="Bundles/VRRender_0-9/icons/Find-landmark.png" />
                         <menuItem name="Hide/Show landmark" icon="Bundles/VRRender_0-9/icons/View-landmark.png" />
                         <separator />
@@ -53,6 +56,9 @@
                     <menuItem sid="GENERIC_UID_action_FrontalViewMPR3D" start="yes" />
                     <menuItem sid="GENERIC_UID_action_SagittalViewMPR3D" start="yes" />
                     <menuItem sid="GENERIC_UID_ActionNewLandmark" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionRemoveLandmark" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionLoadLandmark" start="yes" />
+                    <menuItem sid="GENERIC_UID_ActionSaveLandmark" start="yes" />
                     <menuItem sid="GENERIC_UID_ActionFocusLandmark" start="yes" />
                     <menuItem sid="GENERIC_UID_ActionHideLandmark" start="yes" />
                     <menuItem sid="GENERIC_UID_ActionAddDistance" start="yes" />
@@ -84,7 +90,7 @@
                 </registry>
             </service>
 
-        <!-- NEGATO 1 VIEW -->
+            <!-- NEGATO 1 VIEW -->
             <service uid="GENERIC_UID_multiView_negato1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
@@ -123,7 +129,7 @@
                 </snap>
             </service>
 
-        <!-- NEGATO 2 VIEW -->
+            <!-- NEGATO 2 VIEW -->
             <service uid="GENERIC_UID_multiView_negato2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
@@ -160,7 +166,7 @@
                 </snap>
             </service>
 
-        <!-- NEGATO 3 VIEW -->
+            <!-- NEGATO 3 VIEW -->
             <service uid="GENERIC_UID_multiView_negato3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
@@ -203,7 +209,7 @@
             </service>
 
 
-        <!-- GENERIC SCENE DEFINITION -->
+            <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
                 <object uid="GENERIC_UID_VisuComposite" type="::fwData::Composite">
 
@@ -241,7 +247,7 @@
                             </adaptor>
                         </scene>
                     </service>
-                <!-- Generic Scene Negato2 -->
+                    <!-- Generic Scene Negato2 -->
                     <service uid="GENERIC_UID_negato2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
                         <scene>
                             <picker id="negato2default" vtkclass="fwVtkCellPicker" />
@@ -270,7 +276,7 @@
                         </scene>
                     </service>
 
-                <!-- Generic Scene Negato3 -->
+                    <!-- Generic Scene Negato3 -->
                     <service uid="GENERIC_UID_negato3" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
                         <scene>
                             <picker id="negato3default" vtkclass="fwVtkCellPicker" />
@@ -307,15 +313,13 @@
                         <object uid="SELECTED_UID_myImage" src="ref" type="::fwData::Image">
 
                             <service uid="GENERIC_UID_ActionFocusLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::FocusLandmark" autoComChannel="no" />
-
                             <service uid="GENERIC_UID_ActionNewLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::AddLandmark" autoComChannel="no" />
-
+                            <service uid="GENERIC_UID_ActionRemoveLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::RemoveLandmark" autoComChannel="no" />
+                            <service uid="GENERIC_UID_ActionLoadLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::LoadLandmark" autoComChannel="no" />
+                            <service uid="GENERIC_UID_ActionSaveLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::SaveLandmark" autoComChannel="no" />
                             <service uid="GENERIC_UID_ActionHideLandmark" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::ShowLandmark" autoComChannel="yes" />
-
                             <service uid="GENERIC_UID_ActionAddDistance" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::AddDistance" autoComChannel="no" />
-
                             <service uid="GENERIC_UID_ActionRemoveDistance" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::RemoveDistance" autoComChannel="no" />
-
                             <service uid="GENERIC_UID_ActionHideDistance" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::ShowDistance" autoComChannel="yes" />
 
                             <service uid="GENERIC_UID_ActionHideCross" type="::fwGui::IActionSrv" implementation="::uiVisu::action::CrossTypeAction" autoComChannel="no">
@@ -361,7 +365,7 @@
                             </service>
 
 
-                        <!-- Editors for Negato2 -->
+                            <!-- Editors for Negato2 -->
 
                             <service uid="GENERIC_UID_slider_negato2" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
                                 <sliceIndex>axial</sliceIndex>
@@ -372,7 +376,7 @@
                             </service>
 
 
-                        <!-- Editors for Negato3 -->
+                            <!-- Editors for Negato3 -->
 
                             <service uid="GENERIC_UID_slider_negato3" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
                                 <sliceIndex>frontal</sliceIndex>
@@ -390,7 +394,7 @@
             </item>
 
 
-        <!-- START AND STOP SERVICES -->
+            <!-- START AND STOP SERVICES -->
             <start uid="GENERIC_UID_mainView" />
             <start uid="GENERIC_UID_negato1" />
             <start uid="GENERIC_UID_negato2" />
@@ -400,7 +404,6 @@
             <start uid="GENERIC_UID_slider_negato2" />
             <start uid="GENERIC_UID_slider_negato3" />
             <start uid="GENERIC_UID_sliceListNegato1Editor" />
-
 
         </object>
 

@@ -18,7 +18,6 @@
 
 #include <fwData/Object.hpp>
 #include <fwData/PatientDB.hpp>
-#include <fwData/Patient.hpp>
 #include <fwData/Study.hpp>
 #include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
@@ -146,6 +145,15 @@ void PatientDBGuiSelectorService::updating( ::fwServices::ObjectMsg::csptr _msg 
     ::fwComEd::PatientDBMsg::csptr pPatientDBMsg = ::fwComEd::PatientDBMsg::dynamicConstCast( _msg ) ;
     if ( pPatientDBMsg )
     {
+        if (pPatientDBMsg->hasEvent(::fwComEd::PatientDBMsg::ADD_PATIENT))
+        {
+            ::fwData::Object::csptr dataInfo = pPatientDBMsg->getDataInfo(::fwComEd::PatientDBMsg::ADD_PATIENT);
+            if ( dataInfo )
+            {
+                ::fwData::Integer::csptr index = ::fwData::Integer::dynamicConstCast(dataInfo);
+                this->selectLastAddedImage(index->value());
+            }
+        }
         this->updating();
     }
 }
@@ -337,6 +345,27 @@ void PatientDBGuiSelectorService::onSelectionChange(QTreeWidgetItem * current, Q
 void PatientDBGuiSelectorService::configuring() throw(::fwTools::Failed)
 {
     this->::fwGui::IGuiContainerSrv::initialize();
+}
+
+//------------------------------------------------------------------------------
+
+void PatientDBGuiSelectorService::selectLastAddedImage(int patientIndex)
+{
+    ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
+
+    ::fwData::PatientDB::PatientIterator patientIter = pPatientDB->getPatients().first;
+    patientIter += patientIndex;
+
+    int studyIndex = (*patientIter)->getStudySize() - 1;
+    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
+    studyIter += studyIndex;
+
+    int acqIndex = (*studyIter)->getAcquisitionSize() - 1;
+
+    pPatientDB->removeField( ::fwComEd::Dictionary::m_imageSelectedId );
+    pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(patientIndex));
+    pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(studyIndex));
+    pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(acqIndex));
 }
 
 //------------------------------------------------------------------------------

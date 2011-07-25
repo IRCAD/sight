@@ -366,7 +366,7 @@ TriangularMesh::TriangularMesh() throw()
     m_mapper            = vtkPolyDataMapper::New();
     m_pipelineInput     = m_mapper;
 
-    m_computeNormals     = false;
+    m_computeNormals     = true;
     m_computeNormalsAtUpdate = true;
 
     m_autoResetCamera   = true;
@@ -439,8 +439,7 @@ void TriangularMesh::doUpdate() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::TriangularMesh::sptr triangularMesh
-        = this->getObject < ::fwData::TriangularMesh >();
+    ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
     this->updateTriangularMesh( triangularMesh );
 }
 
@@ -458,8 +457,7 @@ void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
 
     if( meshMsg && meshMsg->hasEvent(::fwComEd::TriangularMeshMsg::NEW_MESH) )
     {
-        ::fwData::TriangularMesh::sptr triangularMesh
-            = this->getObject < ::fwData::TriangularMesh >();
+        ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
         this->updateTriangularMesh( triangularMesh );
     }
 
@@ -674,11 +672,14 @@ void TriangularMesh::setMaterial(::fwData::Material::sptr material)
     m_material = material;
 }
 
+//------------------------------------------------------------------------------
+
 void TriangularMesh::setUnclippedPartMaterial(::fwData::Material::sptr material)
 {
     m_unclippedPartMaterial = material;
 }
 
+//------------------------------------------------------------------------------
 
 void TriangularMesh::setMapperInput(vtkAlgorithmOutput *input)
 {
@@ -707,8 +708,7 @@ void TriangularMesh::updateOptionsMode()
 
 void TriangularMesh::createNormalsService()
 {
-    ::fwData::TriangularMesh::sptr TriangularMesh
-        = this->getObject < ::fwData::TriangularMesh >();
+    ::fwData::TriangularMesh::sptr TriangularMesh = this->getObject < ::fwData::TriangularMesh >();
 
 
     if(m_mapperInput)
@@ -817,30 +817,30 @@ void TriangularMesh::buildPipeline()
 
 void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 {
-    m_triangularMesh = mesh;
-
-    if (m_polyData)
+    if(m_manageMapperInput)
     {
-        m_polyData->Delete();
-        m_polyData = 0;
+        if (m_polyData)
+        {
+            m_polyData->Delete();
+            m_polyData = 0;
+        }
+
+        m_polyData = ::vtkIO::toVTKMesh(mesh);
+
+        if (m_computeNormalsAtUpdate)
+        {
+            m_normals->SetInput( m_polyData );
+            m_normals->Update();
+            m_polyData->DeepCopy(m_normals->GetOutput());
+        }
+
+        this->updateMapper();
+
+        if (m_autoResetCamera)
+        {
+            this->getRenderer()->ResetCamera();
+        }
     }
-
-    m_polyData = ::vtkIO::toVTKMesh(mesh);
-
-    if (m_computeNormalsAtUpdate)
-    {
-        m_normals->SetInput( m_polyData );
-        m_normals->Update();
-        m_polyData->DeepCopy(m_normals->GetOutput());
-    }
-
-    this->updateMapper();
-
-    if (m_autoResetCamera)
-    {
-        this->getRenderer()->ResetCamera();
-    }
-
     this->setVtkPipelineModified();
 }
 
@@ -848,10 +848,8 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 
 void TriangularMesh::updateMapper()
 {
-
-    vtkPolyDataMapper *mapper  = 0;
+    vtkPolyDataMapper  *mapper = 0;
     vtkPolyDataAlgorithm *algo = 0;
-    vtkDepthSortPolyData *sort = 0;
 
     SLM_ASSERT("Bad vtkPolyData", m_polyData);
 
@@ -876,15 +874,8 @@ vtkActor *TriangularMesh::newActor()
 {
     vtkActor *actor = vtkActor::New();
 
-    //m_pipelineInput->SetInput( m_polyData );
-
-    //::fwData::TriangularMesh::sptr triangularMesh
-    //    = this->getObject < ::fwData::TriangularMesh >();
-    //this->updateTriangularMesh( triangularMesh );
-
     m_mapper->SetInputConnection(m_mapperInput);
 
-    //m_mapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)
     {
         vtkPlaneCollection *newClippingPlanes = vtkPlaneCollection::New();

@@ -1,0 +1,34 @@
+<plugin id="memory" class="memory::Plugin">
+
+    <library name="memory"/>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwMemory::IMemoryService</type>
+        <service>::memory::ImageMemoryService</service>
+        <object>::fwData::Image</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwMemory::IMemoryService</type>
+        <service>::memory::TriangularMeshMemoryService</service>
+        <object>::fwData::TriangularMesh</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwMemory::IDumpService</type>
+        <service>::memory::dump::ImageDumpService</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+
+    <extension-point id="::memory::DumpPolicy" schema="dumpPolicy.xsd" />
+
+    <extension implements="::memory::DumpPolicy" >
+        <policy id="LimitedMemoryDumpPolicy" threshold="300"  />  <!-- unit in Mo -->
+    </extension>
+
+    <extension implements="::memory::DumpPolicy" >
+        <policy id="NeverDumpPolicy" />
+    </extension>
+
+</plugin>

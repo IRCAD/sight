@@ -54,8 +54,11 @@ void FwXMLObjectWriter::write()
 
     ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy );
     serializer.setSplitPolicy( spolicy );
-
+#if BOOST_FILESYSTEM_VERSION > 2
+    ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( getFile().filename().string() ) );
+#else
     ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( getFile().leaf() ) );
+#endif
     serializer.setPathPolicy( pPathPolicy );
 
     // forward event progress to its parents

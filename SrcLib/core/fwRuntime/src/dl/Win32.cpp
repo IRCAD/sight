@@ -54,8 +54,13 @@ void Win32::load() throw(RuntimeException)
     if(m_handle == 0)
     {
         // Opens the dynamic library.
-        OSLM_TRACE("Opens the dynamic library " << getFullPath(true).native_file_string());
-        m_handle = LoadLibrary( getFullPath(true).native_file_string().c_str() );
+#if BOOST_FILESYSTEM_VERSION > 2
+        std::string lib(getFullPath(true).string());
+#else
+        std::string lib(getFullPath(true).native_file_string());
+#endif
+        OSLM_TRACE("Opens the dynamic library " << lib);
+        m_handle = LoadLibrary( lib.c_str() );
         if(m_handle == 0)
         {
             // Retrieves the last error message.

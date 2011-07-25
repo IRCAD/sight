@@ -23,49 +23,53 @@
 
 namespace fwRuntime
 {
-
 namespace io
 {
 
-
+//------------------------------------------------------------------------------
 
 Validator::Validator( const std::string & buffer )
 {
     m_xsd_content = buffer ;
 }
 
-
+//------------------------------------------------------------------------------
 
 Validator::Validator( const boost::filesystem::path & path )
 {
+#if BOOST_FILESYSTEM_VERSION > 2
+    std::string strPath( path.string() );
+#else
+    std::string strPath( path.native_file_string() );
+#endif
     // Checks the path validity.
-    if( boost::filesystem::exists(path) == false || boost::filesystem::is_directory(path) )
+    if( ::boost::filesystem::exists(path) == false || ::boost::filesystem::is_directory(path) )
     {
-        throw RuntimeException( path.native_file_string() + ": is not a valid path to an xml schema file." );
+        throw RuntimeException( strPath + ": is not a valid path to an xml schema file." );
     }
-
-    m_xsd_content = path.native_file_string() ;
+    m_xsd_content = strPath;
 }
 
-
+//------------------------------------------------------------------------------
 
 Validator::~Validator()
-{
-}
+{}
 
+//------------------------------------------------------------------------------
 
 void Validator::clearErrorLog()
 {
     m_errorLog.str( std::string() );
 }
 
+//------------------------------------------------------------------------------
 
 const std::string Validator::getErrorLog() const
 {
     return m_errorLog.str();
 }
 
-
+//------------------------------------------------------------------------------
 
 const bool Validator::validate( const boost::filesystem::path & xmlFile )
 {
@@ -121,7 +125,7 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
     if ( result !=0 )
     {
         OSLM_WARN("Validator::validation NOK, error log = " << getErrorLog() ) ;
-        OSLM_WARN("Validator::validation NOK, xml = " << xmlFile.native_file_string() ) ;
+        OSLM_WARN("Validator::validation NOK, xml = " << xmlFile.string() ) ;
         OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() ) ;
     }
 
@@ -132,6 +136,7 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
     return result == 0;
 }
 
+//------------------------------------------------------------------------------
 
 const bool Validator::validate( xmlNodePtr node )
 {
@@ -166,7 +171,6 @@ const bool Validator::validate( xmlNodePtr node )
     xmlSchemaSetParserStructuredErrors(schemaParserContext, Validator::ErrorHandler, this );
     xmlSchemaSetValidStructuredErrors( schemaValidContext, Validator::ErrorHandler, this );
 
-
     result = xmlSchemaValidateOneElement( schemaValidContext, node );
 
     if ( result !=0 )
@@ -186,6 +190,7 @@ const bool Validator::validate( xmlNodePtr node )
     return result == 0;
 }
 
+//------------------------------------------------------------------------------
 
 void Validator::ErrorHandler( void * userData, xmlErrorPtr error )
 {
@@ -194,10 +199,14 @@ void Validator::ErrorHandler( void * userData, xmlErrorPtr error )
     validator->m_errorLog << "At line " << error->line << ": " << error->message;
 }
 
+//------------------------------------------------------------------------------
+
 std::string Validator::getXsdContent()
 {
     return m_xsd_content ;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace io
 

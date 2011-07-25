@@ -52,6 +52,7 @@ bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, co
     unsigned int index=0;
     if (zip.OpenZip(_destZipFileName, _srcFolderName))
     {
+        std::string filename;
         for( ::boost::filesystem::recursive_directory_iterator it(_srcFolderName);
                 it != ::boost::filesystem::recursive_directory_iterator(); ++it)
         {
@@ -59,8 +60,13 @@ bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, co
             this->notifyProgress( percent , msg );
             if(! ::boost::filesystem::is_directory(*it))
             {
-                if( ::boost::ends_with(it->string(), ".inr.gz") ||
-                        ::boost::ends_with(it->string(), ".vtk") )
+#if BOOST_FILESYSTEM_VERSION > 2
+                filename = it->path().string();
+#else
+                filename = it->string();
+#endif
+                if( ::boost::ends_with(filename, ".inr.gz") ||
+                        ::boost::ends_with(filename, ".vtk") )
                 {
                     compressLevel = Z_NO_COMPRESSION;
                 }

@@ -533,7 +533,11 @@ void TransferFunctionEditor::exportTF()
             {
                 fwXML::Serializer serializer;
                 serializer.rootFolder() = tfPathRoot.string();
+#if BOOST_FILESYSTEM_VERSION > 2
+                ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.filename().string()));
+#else
                 ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.leaf()));
+#endif
                 serializer.setPathPolicy(pPathPolicy);
                 ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > pSplitPolicy (new ::fwXML::NeverSplitPolicy());
                 serializer.setSplitPolicy(pSplitPolicy);

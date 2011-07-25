@@ -9,6 +9,7 @@ LIB     = [
           'fwCore_0-1',
           'fwTools_0-1',
           'fwGui_0-1',
+          'ARLcore_0-1',
           ]
 USE     = ['boost']
 BUNDLES = ['gui_0-1',]

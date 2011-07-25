@@ -7,9 +7,6 @@
 
 #include "fwDataIO/writer/IObjectWriter.hpp"
 
-
-
-
 namespace fwDataIO
 {
 

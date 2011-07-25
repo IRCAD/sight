@@ -79,7 +79,10 @@ void SwapperSrv::reconfiguring()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::updating() throw ( ::fwTools::Failed )
-{}
+{
+    stopping();
+    starting();
+}
 
 //-----------------------------------------------------------------------------
 
@@ -141,7 +144,6 @@ void SwapperSrv::starting()  throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
-
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
     {
