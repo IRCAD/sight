@@ -139,6 +139,12 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     std::copy( source->GetSpacing(), source->GetSpacing()+dim, destination->getRefSpacing().begin() );
     std::copy( source->GetOrigin(), source->GetOrigin()+dim, destination->getRefOrigin().begin() );
 
+    if(dim == 2)
+    {
+        destination->getRefSize()[2] = destination->getRefSpacing()[2] = 1;
+    }
+    SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
+
     // ensure image size correct
     source->UpdateInformation();
     source->PropagateUpdateExtent();
@@ -150,10 +156,10 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     if (imageMemSize != 0)
     {
-        int nbImg = (destination->getRefSize()[2] == 0) ? 1 : destination->getRefSize()[2] ;
-        int bytePerPixel = (((imageMemSize / destination->getRefSize()[0] ) / destination->getRefSize()[1] ) / nbImg ) / source->GetNumberOfScalarComponents();
+        int nbImg = destination->getRefSize()[2] ;
+        int bytePerPixel = source->GetScalarSize();
         int components = source->GetNumberOfScalarComponents();
-        int size = ( imageMemSize / components );// * bytePerPixel;
+        int size = ( imageMemSize / components );
         OSLM_TRACE("imageMemSize : " << imageMemSize << " - bytePerPixel : " << bytePerPixel << " - finalSize : " << size);
         try
         {
