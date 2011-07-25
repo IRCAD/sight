@@ -83,12 +83,10 @@ void ExportImage::updating( ) throw(::fwTools::Failed)
         ::fwData::Image::sptr pImage = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pPatientDB);
         if(pImage == 0)
         {
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Image export");
-            messageBox.setMessage( "Sorry, it is impossible to export image. There are not selected patients in the software." );
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Image export",
+                    "Sorry, it is impossible to export image. There are not selected patients in the software.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
         }
         else
         {
@@ -111,12 +109,10 @@ void ExportImage::updating( ) throw(::fwTools::Failed)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Image export");
-        messageBox.setMessage( "Sorry, it is impossible to export image. There are not loaded patients in the software." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                            "Image export",
+                            "Sorry, it is impossible to export image. There are not loaded patients in the software.",
+                            ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
