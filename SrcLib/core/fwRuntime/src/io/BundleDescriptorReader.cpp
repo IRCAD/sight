@@ -30,30 +30,19 @@ namespace io
 {
 
 std::string BundleDescriptorReader::CLASS("class");
-
 std::string BundleDescriptorReader::EXTENSION("extension");
-
 std::string BundleDescriptorReader::EXTENSION_POINT("extension-point");
-
 std::string BundleDescriptorReader::ID("id");
-
 std::string BundleDescriptorReader::IMPLEMENTS("implements");
-
 std::string BundleDescriptorReader::LIBRARY("library");
-
 std::string BundleDescriptorReader::NAME("name");
-
 std::string BundleDescriptorReader::PLUGIN("plugin");
-
 std::string BundleDescriptorReader::REQUIREMENT("requirement");
-
 std::string BundleDescriptorReader::SCHEMA("schema");
-
 std::string BundleDescriptorReader::VERSION("version");
-
 std::string BundleDescriptorReader::POINT("point");
 
-
+//------------------------------------------------------------------------------
 
 const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBundles(const boost::filesystem::path& location) throw(RuntimeException)
 {
@@ -90,7 +79,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     return bundles;
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const boost::filesystem::path& location) throw(RuntimeException)
 {
@@ -106,18 +95,9 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     }
 
     // Validation
-
-#ifndef FWRUNTIME_VER
-
-    const boost::filesystem::path pluginXSDLocation( boost::filesystem::current_path() / "share/runtime_0-0/plugin.xsd" );
-
-#else
-
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
     const boost::filesystem::path pluginXSDLocation( boost::filesystem::current_path() / fileLocation.str() );
-
-#endif
 
     Validator   validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
@@ -126,7 +106,6 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     }
 
     // Get the document.
-//  xmlDocPtr document = xmlParseFile(descriptorLocation.native_file_string().c_str());
     xmlDocPtr document = ::fwRuntime::io::XMLSubstitute::getDefault()->load(descriptorLocation);
     if(document == 0)
     {
@@ -180,18 +159,9 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     }
 
     // Validation
-
-#ifndef FWRUNTIME_VER
-
-    const boost::filesystem::path pluginXSDLocation( boost::filesystem::current_path() / "share/runtime_0-0/plugin.xsd" );
-
-#else
-
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
     const boost::filesystem::path pluginXSDLocation( boost::filesystem::current_path() / fileLocation.str() );
-
-#endif
 
     Validator   validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
@@ -200,7 +170,6 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     }
 
     // Get the document.
-//  xmlDocPtr document = xmlParseFile(descriptorLocation.native_file_string().c_str());
     xmlDocPtr document = ::fwRuntime::io::XMLSubstitute::getDefault()->load(descriptorLocation);
     if(document == 0)
     {
@@ -211,7 +180,6 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     {
         // Get the root node.
         xmlNodePtr rootNode = xmlDocGetRootElement(document);
-
         if (xmlXIncludeProcessTreeFlags (rootNode, XML_PARSE_NOBASEFIX) == -1)
         {
             throw RuntimeException("Unable to manage xinclude !");
@@ -284,6 +252,8 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     return configurationElement;
 }
 
+//------------------------------------------------------------------------------
+
 ::boost::shared_ptr<Extension> BundleDescriptorReader::processExtension(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException)
 {
     // Processes all extension attributes.
@@ -322,6 +292,8 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     // Job's done.
     return extension;
 }
+
+//------------------------------------------------------------------------------
 
 std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_ptr<Extension> > > BundleDescriptorReader::processPoint(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException)
 {
@@ -364,6 +336,8 @@ std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_pt
     return std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_ptr<Extension> > >( extensionPoint , extensionContainer ) ;
 }
 
+//------------------------------------------------------------------------------
+
 ::boost::shared_ptr<ExtensionPoint> BundleDescriptorReader::processExtensionPoint(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException)
 {
     // Processes all extension attributes.
@@ -384,7 +358,6 @@ std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_pt
             continue;
         }
     }
-
     // Creates the extension instance.
      ::boost::shared_ptr<ExtensionPoint> point(new ExtensionPoint(bundle, identifier, schema));
 
@@ -392,6 +365,7 @@ std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_pt
     return point;
 }
 
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr node) throw(RuntimeException)
 {
@@ -412,6 +386,7 @@ std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_pt
     return library;
 }
 
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node, const boost::filesystem::path& location) throw(RuntimeException)
 {
@@ -512,6 +487,8 @@ std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_pt
     return bundle;
 }
 
+//------------------------------------------------------------------------------
+
 const std::string BundleDescriptorReader::processRequirement(xmlNodePtr node) throw(RuntimeException)
 {
     // Processes all requirement attributes.
@@ -536,6 +513,7 @@ const std::string BundleDescriptorReader::processRequirement(xmlNodePtr node) th
     return identifier;
 }
 
-} // namesapce io
+//------------------------------------------------------------------------------
 
+} // namesapce io
 } // namespace fwRuntime

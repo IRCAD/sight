@@ -531,6 +531,7 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
     ::fwData::PatientDB::PatientIterator patientBegin = _patientDBFrom->getPatients().first;
     ::fwData::PatientDB::PatientIterator patientEnd     = _patientDBFrom->getPatients().second;
     ::fwData::PatientDB::PatientIterator patient        = patientBegin;
+    int index = 0;
     while ( patient != patientEnd )
     {
         // remove reconstructions images
@@ -570,6 +571,7 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
         bool patientExist = false;
         ::fwData::PatientDB::PatientIterator oldPatient = _patientDBTo->getPatients().first;
         ::fwData::PatientDB::PatientIterator oldPatientEnd  = _patientDBTo->getPatients().second;
+        index = 0;
         for ( ; oldPatient != oldPatientEnd ; ++oldPatient)
         {
             if (    (*patient)->getName() == (*oldPatient)->getName() &&
@@ -578,7 +580,9 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
             {
                 patientExist = true;
                 mergeInformation((*oldPatient),(*patient));
+                break;
             }
+            index++;
         }
         if ( !patientExist )
         {
@@ -593,7 +597,7 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
         ::fwComEd::PatientDBMsg::NewSptr msg;
         if( hasOldPatients )
         {
-            msg->addEvent(::fwComEd::PatientDBMsg::ADD_PATIENT);
+            msg->addEvent(::fwComEd::PatientDBMsg::ADD_PATIENT, ::fwData::Integer::New(index));
             msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
         }
         else

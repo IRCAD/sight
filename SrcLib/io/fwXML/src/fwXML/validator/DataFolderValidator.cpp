@@ -38,13 +38,12 @@ void DataFolderValidator::collecteSchema(const ::boost::filesystem::path &folder
     fs::directory_iterator end_iter;
     for ( fs::directory_iterator dir_itr( folder );   dir_itr != end_iter;   ++dir_itr )
     {
-#if BOOST_VERSION < 103600
-        if (fs::extension( dir_itr->leaf()  ) == ".xsd" )
+#if BOOST_FILESYSTEM_VERSION > 2
+        if (fs::extension( dir_itr->path().filename()  ) == ".xsd" )
 #else
         if (fs::extension( dir_itr->filename()  ) == ".xsd" )
 #endif
         {
-            ::boost::filesystem::path p=*dir_itr;
             registerSchema( *dir_itr );
         }
     }
@@ -148,13 +147,9 @@ void DataFolderValidator::copySchema(const ::boost::filesystem::path &dstFolder,
     ::boost::filesystem::path sourcePath;
     if ( srcFolder.empty() )
     {
-#ifndef FWXML_VER
-        sourcePath =  fs::current_path() / "share/fwXML_0-1" ;
-#else
         std::ostringstream pathLocation;
         pathLocation << "share/fwXML_" <<  FWXML_VER;
         sourcePath = fs::current_path() / pathLocation.str();
-#endif
     }
     else
     {
@@ -171,18 +166,15 @@ void DataFolderValidator::copySchema(const ::boost::filesystem::path &dstFolder,
 
         if ( !fs::is_directory( *dir_itr ) )
         {
-#if BOOST_VERSION < 103600
-            if (fs::extension( dir_itr->leaf()  ) == ".xsd" )
-#else
-            if (fs::extension( dir_itr->filename()  ) == ".xsd" )
-#endif
+#if BOOST_FILESYSTEM_VERSION > 2
+            if (fs::extension( dir_itr->path().filename()  ) == ".xsd" )
             {
-#if BOOST_VERSION < 103600
-                fs::path dstFile = dstFolder / dir_itr->leaf();
+                fs::path dstFile = dstFolder / dir_itr->path().filename();
 #else
-                fs::path dstFile = dstFolder / dir_itr->filename();
+                if (fs::extension( dir_itr->filename()  ) == ".xsd" )
+                {
+                    fs::path dstFile = dstFolder / dir_itr->filename();
 #endif
-
                 if (  fs::exists(dstFile ) )
                 {
                     fs::remove( dstFile ); // allow overwriting schema

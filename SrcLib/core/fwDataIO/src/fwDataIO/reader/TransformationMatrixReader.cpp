@@ -9,8 +9,6 @@
 
 #include <boost/filesystem/convenience.hpp>
 
-
-
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -20,21 +18,20 @@
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::TransformationMatrix3DReader, ::fwDataIO::reader::TransformationMatrix3DReader );
 
 
-namespace fwDataIO {
-namespace reader{
-
-TransformationMatrix3DReader::TransformationMatrix3DReader()
-: ::fwData::location::enableSingleFile< IObjectReader >(this)
+namespace fwDataIO
 {
-    // TODO Auto-generated constructor stub
+namespace reader
+{
 
-}
+TransformationMatrix3DReader::TransformationMatrix3DReader() : ::fwData::location::enableSingleFile< IObjectReader >(this)
+{}
 
-TransformationMatrix3DReader::~TransformationMatrix3DReader() {
-    // TODO Auto-generated destructor stub
-}
+//------------------------------------------------------------------------------
 
+TransformationMatrix3DReader::~TransformationMatrix3DReader()
+{}
 
+//------------------------------------------------------------------------------
 
 void TransformationMatrix3DReader::read()
 {
@@ -61,12 +58,14 @@ void TransformationMatrix3DReader::read()
     assert(this->getConcreteObject()->getRefCoefficients().size()==16 );
 }
 
+//------------------------------------------------------------------------------
 
 std::string  TransformationMatrix3DReader::extension()
 {
     return (".trf");
 }
 
+//------------------------------------------------------------------------------
 
-}
-}
+} // namespace reader
+} // namespace fwDataIO

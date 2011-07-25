@@ -38,31 +38,37 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
     std::string strIgnoreFile = ".zip|.txt|.htm|.html|.xml|.exe|.gz|.dir|.gif|.jpeg|.jpg|dicomdir|.DS_Store";
     ::boost::algorithm::split( vecStr, strIgnoreFile, ::boost::algorithm::is_any_of("|"), ::boost::algorithm::token_compress_on );
 
+    std::string lowerFilename;
+    std::string filename;
     for( ::boost::filesystem::recursive_directory_iterator it(dirPath);
             it != ::boost::filesystem::recursive_directory_iterator(); ++it)
     {
         if(! ::boost::filesystem::is_directory(*it))
         {
-            std::string sString = it->string();
-            std::transform ( sString.begin(), sString.end(), sString.begin(), tolower );
-            if(DicomSearch::compare( sString, &vecStr) )
+#if BOOST_FILESYSTEM_VERSION > 2
+            lowerFilename = filename = it->path().string();
+#else
+            lowerFilename = filename = it->string();
+#endif
+            std::transform ( lowerFilename.begin(), lowerFilename.end(), lowerFilename.begin(), tolower );
+            if(DicomSearch::compare( lowerFilename, &vecStr) )
             {
                 try
                 {
                     ::gdcm::Reader reader;
-                    reader.SetFileName( it->string().c_str() );
+                    reader.SetFileName( filename.c_str() );
                     if( !reader.Read() )
                     {
-                        OSLM_WARN("Failed to read: " << it->string() );
+                        OSLM_WARN("Failed to read: " << filename );
                     }
                     else
                     {
-                        dicomFiles.push_back( it->string().c_str() );
+                        dicomFiles.push_back( filename.c_str() );
                     }
                 }
                 catch (std::exception& e)
                 {
-                    OSLM_ERROR ( "Try with another reader for this file : " << it->string().c_str());
+                    OSLM_ERROR ( "Try with another reader for this file : " << filename.c_str());
                 }
             }
         }

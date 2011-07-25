@@ -36,12 +36,16 @@ void ClassFactoryRegistryTest::methode1()
 
     ::fwTools::ClassFactoryRegistry::addFactory(cf);
 
-    std::list< ::boost::shared_ptr< ::fwTools::Object > > list =  ::fwTools::ClassFactoryRegistry::subClasses< ::fwTools::Object >(STR);
+    std::string base = ::fwTools::getString(typeid(::fwTools::Object));
+    ::fwTools::IClassFactory::sptr factory = ::fwTools::ClassFactoryRegistry::getFactory(base, STR);
 
     ::fwTools::Object::sptr obj = ::fwTools::ClassFactoryRegistry::create< ::fwTools::Object >(STR);
 
-    CPPUNIT_ASSERT(list.begin() != list.end());
+    CPPUNIT_ASSERT(factory);
     CPPUNIT_ASSERT(obj);
+
+    ::fwTools::Field::sptr field = ::fwTools::Field::dynamicCast(obj);
+    CPPUNIT_ASSERT(field);
 }
 
 

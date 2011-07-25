@@ -121,8 +121,11 @@ void Snapshot::snap(std::string filePath)
     fs::path pathImageSnap(filePath);
 
     std::string ext = ".jpg";
+#if BOOST_FILESYSTEM_VERSION > 2
+    ext = pathImageSnap.extension().string();
+#else
     ext = pathImageSnap.extension();
-
+#endif
     vtkImageWriter* writer = 0;
 
     if( ext==".jpg" || ext==".jpeg" )

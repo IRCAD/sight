@@ -91,7 +91,6 @@ void TransformationMatrix3DReaderService::configuring( ) throw(::fwTools::Failed
 
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
-
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 

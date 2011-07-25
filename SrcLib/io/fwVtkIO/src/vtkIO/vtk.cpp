@@ -21,6 +21,7 @@
 #include <vtkPolyDataWriter.h>
 #include <vtkImageData.h>
 #include <vtkImageImport.h>
+#include <vtkImageExport.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkLookupTable.h>
@@ -94,10 +95,9 @@ const char *myScalarTypeCallback(void *imageData)
 
 //-----------------------------------------------------------------------------
 
-vtkImageData* toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
+void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 {
-    vtkImageImport *importer = vtkImageImport::New();
-
+    vtkSmartPointer< vtkImageImport > importer = vtkSmartPointer< vtkImageImport >::New();
     importer->SetDataSpacing( data->getSpacing().at(0),
                               data->getSpacing().at(1),
                               data->getSpacing().at(2)
@@ -118,28 +118,12 @@ vtkImageData* toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 
     // no copy, no buffer destruction/management
     importer->SetImportVoidPointer( data->getBuffer() );
-
-
-
     importer->SetCallbackUserData( data.get() );
     // used to set correct pixeltype to VtkImage
     importer->SetDataScalarType( getVtkScalarType(data) );
     importer->Update();
 
-    vtkImageData *vtkImage = importer->GetOutput();
-
-    if (dst)
-    {
-        dst->ShallowCopy(vtkImage);
-        importer->Delete();
-    }
-
-    SLM_ERROR_IF("::vtkIO::toVTKImage will not longer return a vtkImageData."
-                  "You should update the usage of this function in your code, "
-                  "and pass a vtkImageData as second argument", dst == NULL);
-
-    return vtkImage;
-
+    dst->ShallowCopy(importer->GetOutput());
 }
 
 //-----------------------------------------------------------------------------
@@ -155,6 +139,12 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     std::copy( source->GetSpacing(), source->GetSpacing()+dim, destination->getRefSpacing().begin() );
     std::copy( source->GetOrigin(), source->GetOrigin()+dim, destination->getRefOrigin().begin() );
 
+    if(dim == 2)
+    {
+        destination->getRefSize()[2] = destination->getRefSpacing()[2] = 1;
+    }
+    SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
+
     // ensure image size correct
     source->UpdateInformation();
     source->PropagateUpdateExtent();
@@ -166,10 +156,10 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     if (imageMemSize != 0)
     {
-        int nbImg = (destination->getRefSize()[2] == 0) ? 1 : destination->getRefSize()[2] ;
-        int bytePerPixel = (((imageMemSize / destination->getRefSize()[0] ) / destination->getRefSize()[1] ) / nbImg ) / source->GetNumberOfScalarComponents();
+        int nbImg = destination->getRefSize()[2] ;
+        int bytePerPixel = source->GetScalarSize();
         int components = source->GetNumberOfScalarComponents();
-        int size = ( imageMemSize / components );// * bytePerPixel;
+        int size = ( imageMemSize / components );
         OSLM_TRACE("imageMemSize : " << imageMemSize << " - bytePerPixel : " << bytePerPixel << " - finalSize : " << size);
         try
         {
@@ -223,7 +213,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         }
         else
         {
-            SLM_ERROR ("Dicom image type not supported (image dimension)");
+            SLM_ERROR ("Image type not supported (image dimension)");
         }
         destination->setBuffer( destBuffer );
     }
@@ -237,39 +227,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         OSLM_TRACE("Spacing " << destination->getCRefSpacing()[d]);
         destination->getRefOrigin()[d]=0.0; //FIXME !!! Hack because our framework (visu services) doesn't support origine
     }
-}
-
-//------------------------------------------------------------------------------
-
-vtkImageImport* convertToVTKImageImport( ::fwData::Image::sptr data )
-{
-    vtkImageImport *importer = vtkImageImport::New();
-
-    importer->SetDataSpacing( data->getSpacing().at(0),
-                              data->getSpacing().at(1),
-                              data->getSpacing().at(2)
-                            );
-
-    importer->SetDataOrigin( data->getCRefOrigin().at(0),
-                             data->getCRefOrigin().at(1),
-                             data->getCRefOrigin().at(2)
-                            );
-
-    importer->SetWholeExtent(   (int)data->getCRefOrigin().at(0), data->getCRefSize().at(0) -1,
-                                (int)data->getCRefOrigin().at(1), data->getCRefSize().at(1) -1,
-                                (int)data->getCRefOrigin().at(2), data->getCRefSize().at(2) -1
-                            );
-
-    // copy WholeExtent to DataExtent
-    importer->SetDataExtentToWholeExtent();
-    // no copy, no buffer destruction/management
-    importer->SetImportVoidPointer( data->getBuffer() );
-    importer->SetCallbackUserData( data.get() );
-    // used to set correct pixeltype to VtkImage
-    importer->SetDataScalarType( getVtkScalarType(data) );
-    importer->Update();
-
-    return importer;
 }
 
 //------------------------------------------------------------------------------
@@ -374,8 +331,6 @@ bool fromVTKMesh( vtkPolyData *polyData, ::fwData::TriangularMesh::sptr triangul
 
     if (trianPts)
     {
-//        triangularMesh->cells().clear();
-//        triangularMesh->points().clear();
         // Clear the container cells and set its capacity to 0
         triangularMesh->clearCells();
         // Clear the container points and set its capacity to 0
@@ -426,8 +381,8 @@ double computeVolume( ::fwData::TriangularMesh::sptr _triangularMesh )
 
     vtkSmartPointer< vtkPolyDataNormals > filter = vtkSmartPointer< vtkPolyDataNormals >::New();
     filter->SetInput(vtkMeshRaw);
-    filter->AutoOrientNormalsOn ();
-    filter->FlipNormalsOn ();
+    filter->AutoOrientNormalsOn();
+    filter->FlipNormalsOff();
 
     vtkSmartPointer< vtkMassProperties > calculator = vtkSmartPointer< vtkMassProperties >::New();
     calculator->SetInput( filter->GetOutput() );

@@ -51,15 +51,15 @@ void FwXMLObjectReader::read()
     ::boost::filesystem::path file = this->getFile();
     if(!::boost::filesystem::exists( file ) )
     {
-        throw ::fwTools::Failed("The fwXML file doesn't exist.");
+        throw ::fwTools::Failed(file.string() + " doesn't exist.");
     }
     if( !::boost::filesystem::is_regular_file( file ))
     {
-        throw ::fwTools::Failed("The fwXML file is not regular.");
+        throw ::fwTools::Failed(file.string() + " is not regular a regular file.");
     }
     if( ::boost::filesystem::file_size( file ) <= 0)
     {
-        throw ::fwTools::Failed("The fwXML file is empty.");
+        throw ::fwTools::Failed(file.string() + " is empty.");
     }
 
     ::fwXML::Serializer serializer;

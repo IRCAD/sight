@@ -130,9 +130,12 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     std::string rootFolder = rootFile.parent_path().string();
     chdir (rootFolder.c_str ());
     OSLM_DEBUG( "change working dir to " <<   rootFolder << "...." );
-
     OSLM_DEBUG( "parsing XML file " <<   rootFile.string() << "...." );
+#if BOOST_FILESYSTEM_VERSION > 2
+    xmlDoc = xmlParseFile ( rootFile.filename().string().c_str () );
+#else
     xmlDoc = xmlParseFile ( rootFile.leaf().c_str () );
+#endif
     if (xmlDoc == NULL)
     {
         xmlCleanupParser ();

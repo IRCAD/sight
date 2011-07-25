@@ -150,22 +150,18 @@ void ExportPatient::updating( ) throw(::fwTools::Failed)
         }
         else
         {
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Patient export");
-            messageBox.setMessage( "Sorry, it is impossible to export patients. No patient selected." );
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Patient export",
+                    "Sorry, it is impossible to export patients. No patient selected.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
     else
     {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Patient export");
-        messageBox.setMessage( "Sorry, it is impossible to export patients. There are not loaded patients in the software." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Patient export",
+                "Sorry, it is impossible to export patients. There are not loaded patients in the software.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
 }

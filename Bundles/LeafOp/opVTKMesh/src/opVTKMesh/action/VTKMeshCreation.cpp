@@ -22,6 +22,8 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkDecimatePro.h>
 #include <vtkGeometryFilter.h>
+#include <vtkSmartPointer.h>
+#include <vtkImageData.h>
 
 #include "opVTKMesh/action/VTKMeshCreation.hpp"
 
@@ -109,18 +111,19 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
     ///VTK Mesher
 
     // vtk img
-    vtkImageData * vtkImage = ::vtkIO::toVTKImage( pImage );
+    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
+    ::vtkIO::toVTKImage( pImage, vtkImage );
 
     // contour filter
-    vtkDiscreteMarchingCubes * contourFilter = vtkDiscreteMarchingCubes ::New();
-    contourFilter->SetInput((vtkDataObject *)vtkImage);
+    vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
+    contourFilter->SetInput(vtkImage);
     contourFilter->SetValue(0, 255);
     contourFilter->ComputeScalarsOn();
     contourFilter->ComputeNormalsOn();
     contourFilter->Update();
 
     // smooth filter
-    vtkWindowedSincPolyDataFilter * smoothFilter = vtkWindowedSincPolyDataFilter::New();
+    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter = vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
     smoothFilter->SetInput(contourFilter->GetOutput());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
@@ -138,7 +141,7 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
       unsigned int reduction = m_reduction;
       if( reduction > 0 )
       {
-          vtkDecimatePro * decimate = vtkDecimatePro::New();
+          vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
           decimate->SetInput( smoothFilter->GetOutput() );
           decimate->SetTargetReduction( reduction/100.0 );
           decimate->PreserveTopologyOff();

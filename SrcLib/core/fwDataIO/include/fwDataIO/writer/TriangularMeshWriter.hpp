@@ -44,6 +44,10 @@ class FWDATAIO_CLASS_API TriangularMeshWriter :
 
 public :
 
+    fwCoreClassDefinitionsWithFactoryMacro((TriangularMeshWriter)(GenericObjectWriter< ::fwData::TriangularMesh >),
+                                           (()),
+                                           new  TriangularMeshWriter
+                                           );
     /// Constructor. Do nothing.
     FWDATAIO_API TriangularMeshWriter( );
 

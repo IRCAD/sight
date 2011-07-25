@@ -55,12 +55,12 @@ void TagReader::read()
     ::boost::shared_ptr< ::fwData::Tag > tag = getConcreteObject();
 
     std::fstream file;
-    file.open(path.native_file_string().c_str(), std::fstream::in);
+    file.open(path.string().c_str(), std::fstream::in);
     if (!file.is_open())
     {
-        OSLM_ERROR( "Tag file loading error for " << path);
+        OSLM_ERROR( "Tag file loading error for " << path.string());
         std::string str = "Unable to open ";
-        str+= path.native_file_string();
+        str+= path.string();
         throw std::ios_base::failure(str);
     }
 
@@ -91,9 +91,9 @@ void TagReader::read()
         }
         else
         {
-            OSLM_ERROR( "Tag file loading error for " << path<<" with type "<<type);
+            OSLM_ERROR( "Tag file loading error for " << path.string() <<" with type "<<type);
             std::string str = "Unable to open ";
-            str+= path.native_file_string();
+            str+= path.string();
             throw std::ios_base::failure(str);
         }
     }

@@ -137,6 +137,7 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
         }
         else
         {
+            img->setFieldSingleElement( "TRANSPARENCY", ::fwData::Integer::New(0) );
             m_valueSlider->setValue( 0 );
         }
         if(img->getFieldSize( "VISIBILITY" ) > 0)
@@ -146,6 +147,7 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
         }
         else
         {
+            img->setFieldSingleElement( "VISIBILITY", ::fwData::Boolean::New(true) );
             m_valueCheckBox->setChecked( true );
         }
         QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));

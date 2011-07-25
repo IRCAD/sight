@@ -24,6 +24,8 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkDecimatePro.h>
 #include <vtkGeometryFilter.h>
+#include <vtkSmartPointer.h>
+#include <vtkImageData.h>
 
 #include "opVTKMesh/VTKMesherService.hpp"
 
@@ -79,32 +81,25 @@ void VTKMesherService::configuring() throw ( ::fwTools::Failed )
 void VTKMesherService::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-
-    /// Retreive object
-//    OSLM_ASSERT("Not found the image defined by uid : " << m_imageUID, ::fwTools::fwID::exist(m_imageUID)) ;
-//    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageUID) ) ;
-//    OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID)) ;
-//    ::fwData::TriangularMesh::sptr pMesh = ::fwData::TriangularMesh::dynamicCast( ::fwTools::fwID::getObject(m_meshUID) ) ;
-
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     ::fwData::Image::sptr pImage = acq->getImage();
 
     ::fwData::TriangularMesh::NewSptr pMesh;
-    ///VTK Mesher
 
     // vtk img
-    vtkImageData * vtkImage = ::vtkIO::toVTKImage( pImage );
+    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
+    ::vtkIO::toVTKImage( pImage, vtkImage );
 
     // contour filter
-    vtkDiscreteMarchingCubes * contourFilter = vtkDiscreteMarchingCubes ::New();
-    contourFilter->SetInput((vtkDataObject *)vtkImage);
+    vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
+    contourFilter->SetInput(vtkImage);
     contourFilter->SetValue(0, 255);
     contourFilter->ComputeScalarsOn();
     contourFilter->ComputeNormalsOn();
     contourFilter->Update();
 
     // smooth filter
-    vtkWindowedSincPolyDataFilter * smoothFilter = vtkWindowedSincPolyDataFilter::New();
+    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter = vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
     smoothFilter->SetInput(contourFilter->GetOutput());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
@@ -122,7 +117,7 @@ void VTKMesherService::updating() throw ( ::fwTools::Failed )
       unsigned int reduction = m_reduction;
       if( reduction > 0 )
       {
-          vtkDecimatePro * decimate = vtkDecimatePro::New();
+          vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
           decimate->SetInput( smoothFilter->GetOutput() );
           decimate->SetTargetReduction( reduction/100.0 );
           decimate->PreserveTopologyOff();

@@ -51,13 +51,13 @@ void GzBufferImageReader::read()
 
     char *ptr =new char[imageSizeInBytes];
 
-    gzFile rawFile = gzopen(file.native_file_string().c_str(), "rb");
+    gzFile rawFile = gzopen(file.string().c_str(), "rb");
 
     SLM_ASSERT("rawFile not instanced", rawFile);
     if ( rawFile == 0 )
     {
         std::string str = "Unable to open ";
-        str+= file.native_file_string();
+        str+= file.string();
         throw std::ios_base::failure(str);
     }
 
@@ -67,7 +67,7 @@ void GzBufferImageReader::read()
     if ( uncompressedbytesreaded!=imageSizeInBytes )
     {
         std::string str = "Unable to read ";
-        str+= file.native_file_string();
+        str+= file.string();
         throw std::ios_base::failure(str);
     }
 

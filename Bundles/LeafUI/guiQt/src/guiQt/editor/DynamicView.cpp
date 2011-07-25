@@ -190,7 +190,7 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         m_dynamicInfoMap[widget] = info;
 
         m_tabWidget->addTab(widget, finalTitle );
-        //m_tabWidget->setCurrentWidget(widget);
+        m_tabWidget->setCurrentWidget(widget);
     }
 }
 
