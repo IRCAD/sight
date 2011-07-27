@@ -59,16 +59,16 @@ void DicomImageWriter::write()
     pStudy->addAcquisition(pAcquisition);
     pAcquisition->setImage(pImage);
 
-    ::vtkGdcmIO::DicomPatientWriter myWriter;
-    myWriter.setObject(pPatient);
+    ::vtkGdcmIO::DicomPatientWriter::NewSptr myWriter;
+    myWriter->setObject(pPatient);
     ::fwData::location::Folder::NewSptr loc;
     loc->setFolder(imagePath);
-    myWriter.setLocation(loc);
+    myWriter->setLocation(loc);
     // forward event progress to its parents
     ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &DicomImageWriter::notifyProgress, this, ::boost::lambda::_1, ::boost::lambda::_2);
-    myWriter.addHandler ( handler );
+    myWriter->addHandler ( handler );
 
-    myWriter.write();
+    myWriter->write();
 }
 
 //------------------------------------------------------------------------------

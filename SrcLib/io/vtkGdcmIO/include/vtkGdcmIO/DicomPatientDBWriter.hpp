@@ -26,10 +26,10 @@ class DicomPatientDBWriter : public ::fwDataIO::writer::GenericObjectWriter< ::f
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (DicomPatientDBWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::PatientDB>),
-                                                     (()),
-                                                     new  DicomPatientDBWriter
-                                                );
+    fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::PatientDB>),
+                                           (()),
+                                           new  DicomPatientDBWriter
+                                          );
 
     VTKGDCMIO_API DicomPatientDBWriter();
 

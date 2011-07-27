@@ -21,10 +21,15 @@ namespace vtkGdcmIO
 class DicomPatientDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >,
                              public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
                              public ::fwTools::ProgressAdviser
-
 {
 
 public :
+
+    fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >),
+                                           (()),
+                                           new DicomPatientDBReader
+                                          );
+    fwCoreAllowSharedFromThis();
 
     VTKGDCMIO_API DicomPatientDBReader();
 
