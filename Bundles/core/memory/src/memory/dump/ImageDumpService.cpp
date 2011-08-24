@@ -171,7 +171,6 @@ void ImageDumpService::dump()
     SLM_DEBUG("Dump process : saving");
 
     assert(!m_image.expired());
-    //::fwDataIO::ITKImageWriter::writerToFile( this->m_fsFilename.string(), m_image.lock() );
     ::itkIO::ImageWriter::NewSptr writer;
     writer->setObject(m_image.lock());
     writer->setFile( this->m_fsFilename  );
