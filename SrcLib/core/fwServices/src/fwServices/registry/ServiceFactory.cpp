@@ -156,10 +156,12 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     }
     else
     {
-        SLM_ASSERT( "Sorry bundle must exist if a factory missing.", info->bundle );
+        OSLM_ASSERT( "Sorry a bundle must declare the factory "<< _srvImpl <<". Service declaration is missing (or misspelled) in a bundle plugin ?", info->bundle );
+        OSLM_ASSERT( "Sorry bundle is already load ( " << info->bundle->getIdentifier() << " ) , factory "<< _srvImpl << " is still missing. Service declaration is missing (or misspelled) in a .cpp file ?", ! info->bundle->isStarted() );
+
         info->bundle->start();
         ::fwRuntime::profile::getCurrentProfile()->setup();
-        SLM_ASSERT( "Sorry after bundle loading ( " << info->bundle->getIdentifier() << " ) , factory must exist.", info->factory );
+        SLM_ASSERT( "Sorry after bundle loading ( " << info->bundle->getIdentifier() << " ) , factory "<< _srvImpl << " is still missing. Service declaration is missing (or misspelled) in a .cpp file ?", info->factory );
         service = info->factory->create();
     }
 
