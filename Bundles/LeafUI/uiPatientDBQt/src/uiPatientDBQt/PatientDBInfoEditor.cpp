@@ -188,8 +188,8 @@ void PatientDBInfoEditor::updating() throw(::fwTools::Failed)
         serieItem->addChild(bitsPerPixelItem);
 
         QTreeWidgetItem* imageTypeItem = new QTreeWidgetItem();
-        imageTypeItem->setText(0, tr("ImageType"));
-        imageTypeItem->setText(1, QString::fromStdString(acq->getImageType()));
+        imageTypeItem->setText(0, tr("ImagePixelType"));
+        imageTypeItem->setText(1, QString::fromStdString(acq->getImage()->getPixelType().string()));
         serieItem->addChild(imageTypeItem);
 
 #ifdef USE_INTERNAL_FEATURES
