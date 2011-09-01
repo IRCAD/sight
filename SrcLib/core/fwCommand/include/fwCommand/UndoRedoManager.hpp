@@ -9,8 +9,33 @@
 
 #include <deque>
 
+// See http://www.boost.org/doc/libs/1_47_0/doc/html/signals/s04.html
+#ifndef SIGNALSLIB_HPP_INCLUDED
+#define SIGNALSLIB_HPP_INCLUDED 
+
+#if defined(signals) && defined(QOBJECTDEFS_H) && \
+  !defined(QT_MOC_CPP)
+#  undef signals
+#  define signals signals
+#endif
+
 #include <boost/signal.hpp>
 #include <boost/signals/connection.hpp>
+namespace boost
+{
+  namespace signalslib = signals;
+}
+
+#if defined(signals) && defined(QOBJECTDEFS_H) && \
+  !defined(QT_MOC_CPP)
+#  undef signals
+// Restore the macro definition of "signals", as it was
+// defined by Qt's <qobjectdefs.h>.
+#  define signals protected
+#endif
+
+#endif
+
 #include <boost/cstdint.hpp>
 
 #include <fwTools/Object.hpp>
@@ -34,7 +59,7 @@ class FWCOMMAND_CLASS_API UndoRedoManager : public ::fwTools::Object
 {
 public:
     typedef ::boost::signal<void (std::string)>  SignalType;
-    typedef ::boost::signals::connection         ConnectionType;
+    typedef ::boost::signalslib::connection         ConnectionType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (UndoRedoManager)(::fwTools::Object), (( )), ::fwTools::Factory::New< UndoRedoManager > );
 
