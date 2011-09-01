@@ -61,19 +61,25 @@ void PSAFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg
 
                 ::fwData::Patient::sptr pat;
                 ::fwData::String::sptr patientName;
+                ::fwData::String::sptr patientInfo;
                 ::fwData::Study::sptr stu;
                 ::fwData::Acquisition::sptr acq;
-                if( it->get<6>() != REMOVE )
+                if( it->get<7>() != REMOVE )
                 {
                     this->getPSASelection( patientDB, _msg, pat, stu, acq );
                     patientName = ::fwData::String::NewSptr( pat->getCRefName() );
+                    std::string acqDate = ::boost::posix_time::to_iso_extended_string( acq->getCreationDate() );
+                    acqDate =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
+                    std::stringstream info;
+                    info << pat->getCRefName() << "\n" << acqDate;
+                    patientInfo = ::fwData::String::NewSptr( info.str() );
                 }
                 // Udapte the composite object referenced by the composite key ( it->get<2>() )
-                this->updateComposite(composite, pat, it->get<2>(), it->get<6>() );
-                this->updateComposite(composite, stu, it->get<3>(), it->get<6>() );
-                this->updateComposite(composite, acq, it->get<4>(), it->get<6>() );
-                this->updateComposite(composite, patientName, it->get<5>(), it->get<6>() );
-
+                this->updateComposite(composite, pat, it->get<2>(), it->get<7>() );
+                this->updateComposite(composite, stu, it->get<3>(), it->get<7>() );
+                this->updateComposite(composite, acq, it->get<4>(), it->get<7>() );
+                this->updateComposite(composite, patientName, it->get<5>(), it->get<7>() );
+                this->updateComposite(composite, patientInfo, it->get<6>(), it->get<7>() );
             }
         }
     }
@@ -134,7 +140,6 @@ void PSAFromPDBSelectorUpdaterSrv::stopping()  throw ( ::fwTools::Failed )
 void PSAFromPDBSelectorUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    SLM_TRACE_FUNC();
 
     ::fwRuntime::ConfigurationElementContainer handleEvents = m_configuration->findAllConfigurationElement("update");
 
@@ -154,9 +159,11 @@ void PSAFromPDBSelectorUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
         SLM_FATAL_IF( "Sorry, attribute \"acquisitionKey\" is missing", !(*item)->hasAttribute("acquisitionKey") );
         std::string acquisitionKey =  (*item)->getExistingAttributeValue("acquisitionKey");
 
-        SLM_FATAL_IF( "Sorry, attribute \"acquisitionKey\" is missing", !(*item)->hasAttribute("acquisitionKey") );
+        SLM_FATAL_IF( "Sorry, attribute \"patientNameKey\" is missing", !(*item)->hasAttribute("patientNameKey") );
         std::string patientNameKey =  (*item)->getExistingAttributeValue("patientNameKey");
 
+        SLM_FATAL_IF( "Sorry, attribute \"acquisitionKey\" is missing", !(*item)->hasAttribute("patientInfoKey") );
+        std::string patientInfoKey =  (*item)->getExistingAttributeValue("patientInfoKey");
 
         SLM_FATAL_IF( "Sorry, attribute \"onEvent\" is missing", !(*item)->hasAttribute("onEvent") );
         std::string onEvent =  (*item)->getExistingAttributeValue("onEvent");
@@ -180,7 +187,7 @@ void PSAFromPDBSelectorUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
         }
 
         OSLM_INFO( "Manage event "<< onEvent <<" from this object "<< fromUID <<" and "<< actionType << " "<< patientKey << "  " << studyKey << "  " << acquisitionKey << "  " << patientNameKey << " in my composite.");
-        PSAManagedEvent managedEvent (onEvent, fromUID, patientKey, studyKey, acquisitionKey, patientNameKey, action);
+        PSAManagedEvent managedEvent (onEvent, fromUID, patientKey, studyKey, acquisitionKey, patientNameKey, patientInfoKey, action);
         m_psaManagedEvents.push_back( managedEvent );
         addNewHandledEvent( onEvent );
     }

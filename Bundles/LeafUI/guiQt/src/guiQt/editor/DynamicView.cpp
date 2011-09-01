@@ -141,7 +141,16 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
     {
         std::string title = ::fwData::String::dynamicConstCast( _msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) )->value();
         bool closable = _msg->getFieldSingleElement< ::fwData::Boolean >("closable")->value();
-
+        std::string icon = "";
+        std::string tooltip = "";
+        if(_msg->getFieldSize("icon"))
+        {
+            icon = _msg->getFieldSingleElement< ::fwData::String >("icon")->value();
+        }
+        if(_msg->getFieldSize("tooltip"))
+        {
+            tooltip = _msg->getFieldSingleElement< ::fwData::String >("tooltip")->value();
+        }
         // Manage title count
         if ( m_titleToCount.find( title ) !=  m_titleToCount.end() )
         {
@@ -187,9 +196,19 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         info.wid       = wid;
         info.title     = title;
         info.closable  = closable;
+        info.icon      = icon;
+        info.tooltip   = tooltip;
         m_dynamicInfoMap[widget] = info;
 
-        m_tabWidget->addTab(widget, finalTitle );
+        int index = m_tabWidget->addTab(widget, finalTitle );
+        if(!info.tooltip.empty())
+        {
+            m_tabWidget->setTabToolTip(index, QString::fromStdString(info.tooltip));
+        }
+        if(!info.icon.empty())
+        {
+            m_tabWidget->setTabIcon(index, QIcon(QString::fromStdString(info.icon)) );
+        }
         m_tabWidget->setCurrentWidget(widget);
     }
 }

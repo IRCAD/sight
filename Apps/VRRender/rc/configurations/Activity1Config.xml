@@ -12,19 +12,19 @@
                 <object uid="COMPOSITE_SELECTION" src="ref" type="::fwData::Composite">
 
                     <service uid="GENERIC_UID_action_activity3" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
-                        <config id="Activity3Config" title="Visu 2D" titlePrefixKey="tabPrefix" />
+                        <config id="Activity3Config" title="Visu 2D" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" icon="Bundles/VRRender_0-9/icons/icon-2D.png" />
                         <key id="myImage" pattern="SELECTED_UID_myImage" />
                         <replace val="UID_OF_SELECTED_PATIENT" pattern="SELECTED_UID_myPatientDB" />
                     </service>
                     
                     <service uid="GENERIC_UID_action_vr_activity" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
-                        <config id="VRActivityConfig" title="VR" titlePrefixKey="tabPrefix" />
+                        <config id="VRActivityConfig" title="VR" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" icon="Bundles/VRRender_0-9/icons/icon-VR.png" />
                         <key id="myImage" pattern="SELECTED_UID_myImage" />
                         <replace val="UID_OF_SELECTED_PATIENT" pattern="SELECTED_UID_myPatientDB" />
                     </service>
 
                     <service uid="GENERIC_UID_action_activity4" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
-                        <config id="Activity4Config" title="Visu 3D" titlePrefixKey="tabPrefix" />
+                        <config id="Activity4Config" title="Visu 3D" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" icon="Bundles/VRRender_0-9/icons/icon-3D.png" />
                         <key id="myImage" pattern="SELECTED_UID_myImage" />
                         <key id="myAcquisition" pattern="SELECTED_UID_myAcquisition" />
                     </service>

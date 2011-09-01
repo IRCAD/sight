@@ -45,7 +45,7 @@ namespace action
  * Example of this service configuration
  * @verbatim
    <service implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" type="::fwGui::IActionSrv">
-       <config id="IdOfTemplateConfig" title="Visu 3D" titlePrefixKey="tabPrefix" />
+       <config id="IdOfTemplateConfig" title="Visu 3D" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" />
        <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
        <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
    </service>
@@ -94,7 +94,7 @@ protected:
      *Example of this service configuration
      * @verbatim
        <service implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" type="::fwGui::IActionSrv">
-           <config id="IdOfTemplateConfig" title="Visu 3D" titlePrefixKey="tabPrefix" />
+           <config id="IdOfTemplateConfig" title="Visu 3D" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" />
            <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
            <key id= "KEY" pattern = "PATIENT_TO_REPLACE_BY_KEY" />
        </service>
@@ -117,8 +117,14 @@ private:
     /// Title of the future tab created by this action
     std::string m_viewConfigTitle;
 
+    /// ToolTip of the future tab created by this action
+    std::string m_tooltipConfigTitleKey;
+
+    /// Icon of the future tab created by this action
+    std::string m_iconConfigId;
+
     /// Title prefix of the future tab created by this action
-    std::string m_viewConfigtitlePrefixKey;
+    std::string m_viewConfigTitlePrefixKey;
 
     /// Specify if the config view may be closed
     bool m_closableConfig;
