@@ -45,6 +45,7 @@ UndoRedoManager::~UndoRedoManager() throw()
 void UndoRedoManager::queue( ICommand::sptr pCmd, const bool execute )
 {
     m_currentManager->queue(pCmd,execute);
+    m_sig("QUEUE_EVENT");
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +53,7 @@ void UndoRedoManager::queue( ICommand::sptr pCmd, const bool execute )
 void UndoRedoManager::forward()
 {
     m_currentManager->forward();
+    m_sig("FORWARD_EVENT");
 }
 
 //-----------------------------------------------------------------------------
@@ -59,6 +61,7 @@ void UndoRedoManager::forward()
 void UndoRedoManager::backward()
 {
     m_currentManager->backward();
+    m_sig("BACKWARD_EVENT");
 }
 
 //-----------------------------------------------------------------------------
@@ -66,18 +69,19 @@ void UndoRedoManager::backward()
 void UndoRedoManager::clear()
 {
     m_currentManager->clear();
+    m_sig("CLEAR_EVENT");
 }
 
 //-----------------------------------------------------------------------------
 
-const boost::uint32_t UndoRedoManager::getUndoSize()
+const ::boost::uint32_t UndoRedoManager::getUndoSize()
 {
     return m_currentManager->getUndoSize();
 }
 
 //-----------------------------------------------------------------------------
 
-const boost::uint32_t UndoRedoManager::getRedoSize()
+const ::boost::uint32_t UndoRedoManager::getRedoSize()
 {
     return m_currentManager->getRedoSize();
 }
@@ -112,23 +116,37 @@ void UndoRedoManager::removeManager()
 
 //-----------------------------------------------------------------------------
 
-const boost::uint32_t UndoRedoManager::getMaxUndoLevel()
+const ::boost::uint32_t UndoRedoManager::getMaxUndoLevel()
 {
     return m_currentManager->getMaxUndoLevel();
 }
 
 //-----------------------------------------------------------------------------
 
-const boost::uint32_t UndoRedoManager::getMaxUndoMemory()
+const ::boost::uint32_t UndoRedoManager::getMaxUndoMemory()
 {
     return m_currentManager->getMaxUndoMemory();
 }
 
 //-----------------------------------------------------------------------------
 
-const boost::uint32_t UndoRedoManager::getMaxCommandMemory()
+const ::boost::uint32_t UndoRedoManager::getMaxCommandMemory()
 {
     return m_currentManager->getMaxCommandMemory();
+}
+
+//-----------------------------------------------------------------------------
+
+UndoRedoManager::ConnectionType UndoRedoManager::connect(SignalType::slot_function_type subscriber)
+{
+    return m_sig.connect(subscriber);
+}
+
+//-----------------------------------------------------------------------------
+
+void UndoRedoManager::disconnect(UndoRedoManager::ConnectionType subscriber)
+{
+    subscriber.disconnect();
 }
 
 //-----------------------------------------------------------------------------

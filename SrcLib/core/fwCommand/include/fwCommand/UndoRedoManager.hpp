@@ -8,6 +8,9 @@
 #define _FWFWCOMMAND_UNDOREDOMANAGER_HPP_
 
 #include <deque>
+
+#include <boost/signal.hpp>
+#include <boost/signals/connection.hpp>
 #include <boost/cstdint.hpp>
 
 #include <fwTools/Object.hpp>
@@ -30,6 +33,9 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API UndoRedoManager : public ::fwTools::Object
 {
 public:
+    typedef ::boost::signal<void (std::string)>  SignalType;
+    typedef ::boost::signals::connection         ConnectionType;
+
     fwCoreClassDefinitionsWithFactoryMacro( (UndoRedoManager)(::fwTools::Object), (( )), ::fwTools::Factory::New< UndoRedoManager > );
 
     /// Return the unique Instance, create it if required at first access
@@ -49,8 +55,8 @@ public:
     /**
      * @brief Execute the command and push it in the history.
      *
-     * @param cmdthe command
-     * @param executesets to true if queue must execute the given command, false if not
+     * @param cmd the command
+     * @param execute sets to true if queue must execute the given command, false if not
      *
      * @todo Remove use of size on list (OPT)
      */
@@ -90,27 +96,27 @@ public:
     /**
      * @brief Returns the maximum number of undo that could be stored in the history.
      */
-    FWCOMMAND_API const boost::uint32_t getMaxUndoLevel();
+    FWCOMMAND_API const ::boost::uint32_t getMaxUndoLevel();
 
     /**
      * @brief Returns the maximum memory that could be used by the history.
      */
-    FWCOMMAND_API const boost::uint32_t getMaxUndoMemory();
+    FWCOMMAND_API const ::boost::uint32_t getMaxUndoMemory();
 
     /**
      * @brief Returns the maximum memory that could be used by a single command.
      */
-    FWCOMMAND_API const boost::uint32_t getMaxCommandMemory();
+    FWCOMMAND_API const ::boost::uint32_t getMaxCommandMemory();
 
     /**
      * @briefReturns the number of commands that can be un-done.
      */
-    FWCOMMAND_API const boost::uint32_t getUndoSize();
+    FWCOMMAND_API const ::boost::uint32_t getUndoSize();
 
     /**
-     * @brief Returns the number of commans that can be re-done.
+     * @brief Returns the number of commands that can be re-done.
      */
-    FWCOMMAND_API const boost::uint32_t getRedoSize();
+    FWCOMMAND_API const ::boost::uint32_t getRedoSize();
 
     /**
      * @brief Set the new undo/redo manager
@@ -122,6 +128,11 @@ public:
      */
     FWCOMMAND_API void removeManager();
 
+
+    FWCOMMAND_API ConnectionType connect(SignalType::slot_function_type subscriber);
+
+    FWCOMMAND_API void disconnect(ConnectionType subscriber);
+
 protected:
 
     Manager::sptr m_currentManager;
@@ -131,7 +142,8 @@ protected:
      */
     FWCOMMAND_API UndoRedoManager();
 
-
+private :
+    SignalType  m_sig;
 };
 
 
