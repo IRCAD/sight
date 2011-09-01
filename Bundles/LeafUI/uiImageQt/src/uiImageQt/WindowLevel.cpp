@@ -48,7 +48,7 @@ REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Im
 
 WindowLevel::WindowLevel() throw()
 {
-    m_widgetDynamicRangeMin   = -1000.;
+    m_widgetDynamicRangeMin   = -1024.;
     m_widgetDynamicRangeWidth =  4000.;
 
     addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
@@ -101,8 +101,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
 
     m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
-    QAction *action1 = m_dynamicRangeMenu->addAction( "-1000; 3000" );
-    QAction *action2 = m_dynamicRangeMenu->addAction( "-200; 300" );
+    QAction *action1 = m_dynamicRangeMenu->addAction( "-1024; 1023" );
+    QAction *action2 = m_dynamicRangeMenu->addAction( "-100; 300" );
     QAction *action3 = m_dynamicRangeMenu->addAction( "Fit W/L" );
     QAction *action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
     //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
@@ -375,11 +375,11 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
     {
         case 0:
             break;
-        case 1: // -1000; 3000
-            min = -1000;
-            max =  3000;
+        case 1: // -1024; 1023
+            min = -1024;
+            max =  1023;
             break;
-        case 2: // -200; 300
+        case 2: // -100; 300
             min = -100;
             max =  300;
             break;
