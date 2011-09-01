@@ -597,7 +597,11 @@ void TransferFunctionEditor::initTransferFunctions()
                     ::boost::filesystem::extension(*it) == ".xml" )
             {
                 paths.push_back(*it);
+#if BOOST_FILESYSTEM_VERSION > 2
+                OSLM_DEBUG( "New TF xml parsed in bundle :" << it->path().string() );
+#else
                 OSLM_DEBUG( "New TF xml parsed in bundle :" << it->string() );
+#endif
             }
         }
 
