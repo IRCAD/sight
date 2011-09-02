@@ -37,6 +37,8 @@ public :
 
     VTKGDCMIO_API void read();
 
+    VTKGDCMIO_API void readFiles( const std::vector< std::string >& filenames);
+
 
 private :
 

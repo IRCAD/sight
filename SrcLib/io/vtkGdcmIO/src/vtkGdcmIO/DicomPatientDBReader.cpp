@@ -471,6 +471,17 @@ void DicomPatientDBReader::read()
     this->addPatients( patientDB , filenames);
 }
 
+
+//------------------------------------------------------------------------------
+
+void DicomPatientDBReader::readFiles( const std::vector< std::string >& filenames)
+{
+    SLM_TRACE_FUNC();
+    ::fwData::PatientDB::sptr patientDB = this->getConcreteObject();
+    this->addPatients( patientDB , filenames);
+}
+//------------------------------------------------------------------------------
+
 } //namespace vtkGdcmIO
 
 
