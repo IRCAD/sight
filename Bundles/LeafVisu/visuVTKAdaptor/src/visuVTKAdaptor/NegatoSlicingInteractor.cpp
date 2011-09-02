@@ -163,7 +163,7 @@ public:
                     m_adaptor->updateSlicing(pickedPoint);
                 }
             }
-            else if (eventId == vtkCommand::KeyPressEvent)
+            else if (eventId == vtkCommand::KeyPressEvent && !m_adaptor->getInteractor()->GetControlKey())
             {
                 vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
                 char *keySym = rwi->GetKeySym();
