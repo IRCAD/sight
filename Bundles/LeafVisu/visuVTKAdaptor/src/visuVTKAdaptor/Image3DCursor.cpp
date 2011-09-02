@@ -11,6 +11,8 @@
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/TransfertFunction.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Color.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
@@ -48,6 +50,7 @@ Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 {
     //handlingEventOff();
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    addNewHandledEvent( "NEW_SPHERE_CONFIG" );
 }
 
 //------------------------------------------------------------------------------
@@ -86,10 +89,25 @@ void Image3DCursor::doStart() throw(fwTools::Failed)
     m_cursorMapper   = vtkSmartPointer<vtkPolyDataMapper>::New();
     m_cursorActor    = vtkSmartPointer<vtkActor>::New();
 
-    this->buildPolyData();
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+
+    if ( img->getFieldSize("IMAGE3DCURSOR_RADIUS") > 0 && img->getFieldSize("IMAGE3DCURSOR_COLOR") > 0 )
+    {
+        ::fwData::Float::sptr radius = img->getFieldSingleElement< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
+        ::fwData::Color::sptr color = img->getFieldSingleElement< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
+
+        this->buildPolyData(radius->value());
+        m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
+    }
+    else
+    {
+        this->buildPolyData();
+        m_cursorActor->GetProperty()->SetColor(1,1,1);
+    }
+
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
-    m_cursorActor->GetProperty()->SetColor(1,1,1);
+
     if(!this->getTransformId().empty())
     {
         m_cursorActor->SetUserTransform(this->getTransform());
@@ -151,6 +169,19 @@ void Image3DCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools:
         sliceIndexToWorld(index, center);
         this->updateCursorPosition(center);
     }
+
+    if ( msg->hasEvent( "NEW_SPHERE_CONFIG" ) )
+    {
+        ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+        ::fwData::Float::sptr radius = img->getFieldSingleElement< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
+        ::fwData::Color::sptr color = img->getFieldSingleElement< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
+
+        m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
+        buildPolyData(radius->value());
+
+        m_cursorMapper->SetInput( m_cursorPolyData );
+        this->setVtkPipelineModified();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -163,12 +194,12 @@ void Image3DCursor::updateCursorPosition( double world[3] )
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::buildPolyData()
+void Image3DCursor::buildPolyData(float radius)
 {
     // point are stored Left,right,up,down
     vtkSmartPointer<vtkSphereSource> polySource = vtkSmartPointer<vtkSphereSource>::New();
     polySource->SetCenter(0.0, 0.0, 0.0);
-    polySource->SetRadius(8.0);
+    polySource->SetRadius(radius);
     polySource->SetPhiResolution(8);
     polySource->SetThetaResolution(8);
 
@@ -178,7 +209,7 @@ void Image3DCursor::buildPolyData()
 
     polySource->SetOutput(m_cursorPolyData);
     polySource->Update();
-    this->setVtkPipelineModified();
+    //this->setVtkPipelineModified();
 }
 
 
