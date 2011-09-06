@@ -83,7 +83,8 @@ namespace vtkGdcmIO
 //------------------------------------------------------------------------------
 
 DicomPatientDBReader::DicomPatientDBReader() :
-    ::fwData::location::enableFolder< IObjectReader >(this)
+    ::fwData::location::enableFolder< IObjectReader >(this),
+    ::fwData::location::enableMultiFiles< IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -101,8 +102,10 @@ DicomPatientDBReader::~DicomPatientDBReader()
 {
     SLM_TRACE_FUNC();
     ::fwData::PatientDB::sptr patientDB = this->getConcreteObject();
+
     std::vector<std::string> filenames;
     ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(dicomDir, filenames);
+
     this->addPatients( patientDB , filenames);
     return patientDB;
 }
@@ -467,20 +470,19 @@ void DicomPatientDBReader::read()
     SLM_TRACE_FUNC();
     ::fwData::PatientDB::sptr patientDB = this->getConcreteObject();
     std::vector<std::string> filenames;
-    ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
+    if(::fwData::location::have <::fwData::location::Folder, ::fwDataIO::reader::IObjectReader >(this))
+    {
+        ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
+    }
+    else if(::fwData::location::have <::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader >(this))
+    {
+        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        {
+            filenames.push_back(file.string());
+        }
+    }
     this->addPatients( patientDB , filenames);
 }
-
-
-//------------------------------------------------------------------------------
-
-void DicomPatientDBReader::readFiles( const std::vector< std::string >& filenames)
-{
-    SLM_TRACE_FUNC();
-    ::fwData::PatientDB::sptr patientDB = this->getConcreteObject();
-    this->addPatients( patientDB , filenames);
-}
-//------------------------------------------------------------------------------
 
 } //namespace vtkGdcmIO
 
