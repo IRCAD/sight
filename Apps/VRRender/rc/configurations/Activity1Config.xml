@@ -41,7 +41,7 @@
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
                             <adaptor id="MPRNegato1" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="negato1default" mode="2d" slices="1" sliceIndex="axial" />
+                                <config renderer="default" picker="negato1default" mode="2d" slices="1" sliceIndex="axial" useColorTF="no" />
                             </adaptor>
                             <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
                                 <config renderer="default" picker="negato1default" text="" />
