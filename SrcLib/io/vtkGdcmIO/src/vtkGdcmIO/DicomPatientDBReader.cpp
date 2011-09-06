@@ -470,11 +470,11 @@ void DicomPatientDBReader::read()
     SLM_TRACE_FUNC();
     ::fwData::PatientDB::sptr patientDB = this->getConcreteObject();
     std::vector<std::string> filenames;
-    if(::fwData::location::have <::fwData::location::Folder, ::fwDataIO::reader::IObjectReader >(this))
+    if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
     {
         ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
     }
-    else if(::fwData::location::have <::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader >(this))
+    else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
         BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
         {
