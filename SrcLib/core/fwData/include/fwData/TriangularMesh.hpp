@@ -35,8 +35,11 @@ public :
 
     /// 3D point container
     typedef std::vector< std::vector< float > >     PointContainer ;
+    typedef const std::vector< std::vector< float > >   ConstPointContainer ;
+
     /// A cell contains indices of the three points related to a triangular cell
     typedef std::vector< std::vector< int > >         CellContainer ;
+    typedef const std::vector< std::vector< int > >     ConstCellContainer ;
 
     /**
      * Typedef using for pointer function
@@ -62,10 +65,22 @@ public :
      * @brief returns editable point container
      */
     FWDATA_API PointContainer &points() ;
+
+    /**
+     * @brief returns point container
+     */
+    FWDATA_API ConstPointContainer &points() const;
+
     /**
      * @brief returns editable cell container
      */
     FWDATA_API CellContainer &cells() ;
+
+    /**
+     * @brief returns cell container
+     */
+    FWDATA_API ConstCellContainer &cells() const;
+
 
     /**
       Clear the point container
