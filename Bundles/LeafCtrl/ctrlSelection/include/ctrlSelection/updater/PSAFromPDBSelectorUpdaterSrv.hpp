@@ -50,8 +50,8 @@ protected:
      * @brief Configure the services : declare the event to react.
      * @verbatim
             <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
-                <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="PatientName" patientInfoKey="PatientInfo" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="PatientName" patientInfoKey="PatientInfo" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
             </service>
       @endverbatim
      * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
@@ -79,7 +79,7 @@ private:
             ::fwData::Study::sptr & study,
             ::fwData::Acquisition::sptr & acquisition );
 
-    typedef ::boost::tuple< std::string, std::string, std::string, std::string, std::string, std::string, ActionType > PSAManagedEvent;
+    typedef ::boost::tuple< std::string, std::string, std::string, std::string, std::string, std::string, std::string, ActionType > PSAManagedEvent;
     typedef std::vector < PSAManagedEvent > PSAManagedEvents;
 
     /// List of the psa managed event

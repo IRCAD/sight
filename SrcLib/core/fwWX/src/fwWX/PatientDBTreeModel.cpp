@@ -21,8 +21,6 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
-//#include <fwDataIO/reader/TriangularMeshReader.hpp>
-
 #if wxCHECK_VERSION(2, 9, 0)
 
 #include <fwTools/dateAndTime.hpp>
@@ -68,7 +66,7 @@ wxVariant fwPatientNode::getCell(unsigned int _col)
     wxVariant res;
     switch (_col)
     {
-//      case 0 : res << wxDataViewIconText(wxConvertMB2WX( (m_patient.lock()->getName() + " " + m_patient.lock()->getFirstname()).c_str())); break;
+//      case 0 : res << wxDataViewIconText(::fwWX::std2wx( (m_patient.lock()->getName() + " " + m_patient.lock()->getFirstname()).c_str())); break;
         case 0 : res << wxDataViewIconText(::fwWX::std2wx( (m_patient.lock()->getName() + " " + m_patient.lock()->getFirstname()).c_str())); break;
 //      case 0 : res = wxString(wxConvertMB2WX(m_patient->getName().c_str())); break;
         case 3 : res = wxString(""); break;
@@ -110,16 +108,13 @@ wxVariant fwAcqNode::getCell(unsigned int _col)
 
     switch (_col)
     {
-//      case 0 : res = wxString(wxConvertMB2WX(zone.c_str()));break;
         case 0 :
             if( this->isSelected() )
             {
-//              res << wxDataViewIconText( wxString(wxConvertMB2WX(zone.c_str())), wxIcon( eye_xpm ));
                 res << wxDataViewIconText(::fwWX::std2wx(zone.c_str()), wxIcon( eye_xpm ));
             }
             else
             {
-//              res << wxDataViewIconText( wxString(wxConvertMB2WX(zone.c_str())), wxIcon( ));
                 res << wxDataViewIconText( ::fwWX::std2wx(zone.c_str()), wxIcon( ));
             }
             break;
@@ -230,8 +225,6 @@ void PatientDBTreeModel::AddPatient( ::fwData::Patient::wptr _patient )
     while ( study != studyEnd )
     {
         int indexS = study - studyBegin;
-//      fwStudyNode *study_node = new fwStudyNode( patient_node, *study, indexP, indexS );
-//      patient_node->Append( study_node );
 
         ::fwData::Study::AcquisitionIterator acquisitionBegin = (*study)->getAcquisitions().first;
         ::fwData::Study::AcquisitionIterator acquisitionEnd = (*study)->getAcquisitions().second;
@@ -242,53 +235,6 @@ void PatientDBTreeModel::AddPatient( ::fwData::Patient::wptr _patient )
             int indexA = acquisition - acquisitionBegin;
             fwAcqNode *acq_node = new fwAcqNode( patient_node, *study, *acquisition, indexP, indexS, indexA );
             patient_node->Append( acq_node );
-
-            // -------------------------------------------------------------
-//          if((*acquisition)->getReconstructionSize() <= 0)
-//          {
-//              ::fwData::TriangularMesh::NewSptr trian1;
-//              ::fwDataIO::reader::TriangularMeshReader reader1;
-//              reader1.setObject(trian1);
-//              reader1.setFile("./AR-Surg/VideoTest/BoB/liver.trian");
-//              reader1.read();
-//              assert(!reader1.getConcreteObject()->points().empty());
-//
-//              ::fwData::TriangularMesh::NewSptr trian2;
-//              ::fwDataIO::reader::TriangularMeshReader reader2;
-//              reader2.setObject(trian2);
-//              reader2.setFile("./AR-Surg/VideoTest/BoB/skin.trian");
-//              reader2.read();
-//              assert(!reader2.getConcreteObject()->points().empty());
-//
-//
-//              ::fwData::Reconstruction::NewSptr reconst1;
-//              ::fwData::Reconstruction::NewSptr reconst2;
-//
-//              reconst1->setTriangularMesh(trian1);
-//              reconst2->setTriangularMesh(trian2);
-//              reconst1->setCRefOrganName("liver");
-//              reconst2->setCRefOrganName("liver");
-//              (*acquisition)->addReconstruction(reconst1);
-//              (*acquisition)->addReconstruction(reconst2);
-//          }
-//
-//          fwReconstNode *reconst_node1 = new fwReconstNode( acq_node, reconst1, indexP, indexS, indexA, 0 );
-//          acq_node->Append( reconst_node1 );
-//          fwReconstNode *reconst_node2 = new fwReconstNode( acq_node, reconst2, indexP, indexS, indexA, 1 );
-//          acq_node->Append( reconst_node2 );
-            // --------------------------------------------------------------
-
-//          ::fwData::Acquisition::ReconstructionIterator reconstructionBegin = (*acquisition)->getReconstructions().first;
-//          ::fwData::Acquisition::ReconstructionIterator reconstructionEnd = (*acquisition)->getReconstructions().second;
-//          ::fwData::Acquisition::ReconstructionIterator reconstruction = reconstructionBegin;
-//          while ( reconstruction != reconstructionEnd )
-//          {
-//              fwReconstNode *reconst_node = new fwReconstNode( acq_node, *reconstruction, indexP,
-//                      indexS, indexA, reconstruction - reconstructionBegin  );
-//              acq_node->Append( reconst_node );
-//
-//              ++reconstruction;
-//          }
 
             ++acquisition;
         }

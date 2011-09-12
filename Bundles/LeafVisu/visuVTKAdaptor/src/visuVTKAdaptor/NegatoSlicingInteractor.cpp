@@ -163,11 +163,21 @@ public:
                     m_adaptor->updateSlicing(pickedPoint);
                 }
             }
-            else if (eventId == vtkCommand::KeyPressEvent)
+            else if (eventId == vtkCommand::KeyPressEvent && !m_adaptor->getInteractor()->GetControlKey())
             {
                 vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
                 char *keySym = rwi->GetKeySym();
 
+
+                if ( std::string(keySym) == "A" || std::string(keySym) == "a" )
+                {
+                    m_adaptor->pushSlice(-1, m_adaptor->getOrientation());
+                    OSLM_ERROR("Ohoh" << m_adaptor->getOrientation());
+                }
+                else if (std::string(keySym) == "Z" || std::string(keySym) == "z" )
+                {
+                    m_adaptor->pushSlice(1, m_adaptor->getOrientation());
+                }
                 if ( std::string(keySym) == "T" || std::string(keySym) == "t" )
                 {
                     m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
@@ -238,6 +248,7 @@ NegatoSlicingInteractor::NegatoSlicingInteractor() throw()
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //-----------------------------------------------------------------------------
@@ -319,6 +330,25 @@ void NegatoSlicingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) thro
     if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
     {
         ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
+    }
+
+    if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
+    {
+        ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+
+        int fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] )->value();
+        int toSliceType =   ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] )->value();
+
+        if( toSliceType == static_cast<int>(m_orientation) )
+        {
+            setOrientation( static_cast< Orientation >( fromSliceType ));
+        }
+        else if(fromSliceType == static_cast<int>(m_orientation))
+        {
+            setOrientation( static_cast< Orientation >( toSliceType ));
+        }
     }
 }
 

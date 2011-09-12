@@ -156,19 +156,8 @@ void Manager::backward()
 
 void Manager::clear()
 {
-    CmdList::iterator i( m_listCmd.begin() );
-    CmdList::iterator iEnd( m_listCmd.end() );
-
-    // don't remove the first command (Empty).
-    ++i;
-
-    while ( i != iEnd )
-    {
-        CmdList::iterator j( i );
-        ++i;
-        m_listCmd.erase( j );
-    }
-
+    m_listCmd.clear();
+    m_listCmd.push_back( Empty::New() );
     m_usedMemory = 0;
     m_lastCmd = m_listCmd.begin();
 }

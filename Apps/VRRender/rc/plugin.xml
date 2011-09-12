@@ -67,8 +67,8 @@
                         </service>
 
                         <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
-                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                         </service>
 
                         <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">

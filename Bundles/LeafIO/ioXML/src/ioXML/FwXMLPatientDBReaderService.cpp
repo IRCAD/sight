@@ -105,7 +105,7 @@ void FwXMLPatientDBReaderService::configureWithIHM()
 
 void FwXMLPatientDBReaderService::fixFilename(std::string _filename)
 {
-    m_fsPatientDBPath = ::boost::filesystem::path( _filename, ::boost::filesystem::native );
+    m_fsPatientDBPath = ::boost::filesystem::path( _filename );
     m_bServiceIsConfigured = true;
 }
 

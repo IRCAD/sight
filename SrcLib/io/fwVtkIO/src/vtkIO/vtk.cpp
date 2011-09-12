@@ -218,7 +218,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         destination->setBuffer( destBuffer );
     }
 
-    OSLM_INFO_IF("imageMemSize : " << imageMemSize, !res );
+    //OSLM_INFO_IF("imageMemSize : " << imageMemSize, !res );
 
     for( ::boost::uint8_t d=0; d<dim; ++d)
     {

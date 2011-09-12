@@ -11,6 +11,7 @@
 #include <fwTools/ProgressAdviser.hpp>
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/MultiFiles.hpp>
 
 #include "vtkGdcmIO/config.hpp"
 
@@ -20,18 +21,23 @@ namespace vtkGdcmIO
 
 class DicomPatientDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >,
                              public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
+                             public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader > ,
                              public ::fwTools::ProgressAdviser
-
 {
 
 public :
+
+    fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >),
+                                           (()),
+                                           new DicomPatientDBReader
+                                          );
+    fwCoreAllowSharedFromThis();
 
     VTKGDCMIO_API DicomPatientDBReader();
 
     VTKGDCMIO_API ~DicomPatientDBReader();
 
     VTKGDCMIO_API void read();
-
 
 private :
 

@@ -113,29 +113,33 @@ ProgressDialog::~ProgressDialog()
 
 //------------------------------------------------------------------------------
 
-void ProgressDialog::operator()(float percent,std::string msg)
+void ProgressDialog::operator()(float percent, std::string msg)
 {
     SLM_ASSERT("m_pdialog or m_pprogressbar not instanced", m_pprogressbar || m_pdialog);
     int value = (int)(percent*100);
-    OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
-    this->setMessage(msg);
+    if(value != this->m_value)
+    {
+        OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
+        this->setMessage(msg);
 
-    if ( m_pprogressbar )
-    {
-        m_pprogressbar->setValue(value);
-    }
-    else if ( m_pdialog )
-    {
-        m_pdialog->setValue(value);
-    }
+        if ( m_pprogressbar )
+        {
+            m_pprogressbar->setValue(value);
+        }
+        else if ( m_pdialog )
+        {
+            m_pdialog->setValue(value);
+        }
 
-    if ( m_processUserEvents )
-    {
-        QCoreApplication::processEvents(QEventLoop::AllEvents);
-    }
-    else
-    {
-        QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        if ( m_processUserEvents )
+        {
+            QCoreApplication::processEvents(QEventLoop::AllEvents);
+        }
+        else
+        {
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
+        this->m_value = value;
     }
 }
 

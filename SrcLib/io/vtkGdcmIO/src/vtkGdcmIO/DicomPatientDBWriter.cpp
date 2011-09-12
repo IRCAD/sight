@@ -56,8 +56,8 @@ void DicomPatientDBWriter::write()
         ::fwData::Patient::sptr pPatient = (*patientIter);
 
         tmp_path += "/patient_" + ::fwTools::getString< int >(iPatient);// + pPatient->getName() + "_" + pPatient->getIDDicom();
-        ::vtkGdcmIO::DicomPatientWriter myWriter;
-        myWriter.setObject(pPatient);
+        ::vtkGdcmIO::DicomPatientWriter::NewSptr myWriter;
+        myWriter->setObject(pPatient);
         ::fwData::location::Folder::NewSptr loc;
         if ( ! ::boost::filesystem::exists( tmp_path ) )
         {
@@ -65,12 +65,11 @@ void DicomPatientDBWriter::write()
         }
 
         loc->setFolder(tmp_path);
-        myWriter.setLocation(loc);
+        myWriter->setLocation(loc);
         // forward event progress to its parents
         ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &DicomPatientDBWriter::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
-        myWriter.addHandler ( handler );
-
-        myWriter.write();
+        myWriter->addHandler ( handler );
+        myWriter->write();
     }
 }
 

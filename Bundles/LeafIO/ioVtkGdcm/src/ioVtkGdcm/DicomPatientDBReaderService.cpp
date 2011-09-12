@@ -16,7 +16,7 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <fwGui/dialog/PulseProgressDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -127,23 +127,16 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
 ::fwData::PatientDB::sptr DicomPatientDBReaderService::createPatientDB( const ::boost::filesystem::path dicomDir )
 {
     SLM_TRACE_FUNC();
-    ::vtkGdcmIO::DicomPatientDBReader myLoader;
-
+    ::vtkGdcmIO::DicomPatientDBReader::NewSptr myLoader;
     ::fwData::PatientDB::NewSptr dummy;
-    myLoader.setObject( dummy );
-    myLoader.setFolder(dicomDir);
+    myLoader->setObject( dummy );
+    myLoader->setFolder(dicomDir);
 
     try
     {
-#ifndef __MACOSX__
-        ::fwTools::ProgressToLogger progressMeterText("Loading DicomPatientDBReaderService : ");
-        myLoader.addHandler( progressMeterText );
-        ::fwGui::dialog::PulseProgressDialog::Stuff stuff = ::boost::bind( &::vtkGdcmIO::DicomPatientDBReader::read, &myLoader);
-        ::fwGui::dialog::PulseProgressDialog p2("Load Dicom Image",  stuff ,  "Operation in progress");
-        p2.show();
-#else
-        myLoader.read();
-#endif
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
+        myLoader->addHandler( progressMeterGUI );
+        myLoader->read();
     }
     catch (const std::exception & e)
     {
@@ -158,7 +151,7 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
                 "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
-    return myLoader.getConcreteObject();
+    return myLoader->getConcreteObject();
 }
 
 //------------------------------------------------------------------------------

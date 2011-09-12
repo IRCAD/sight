@@ -31,9 +31,11 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/dateAndTime.hpp>
 
+#include <vtkIO/vtk.hpp>
+#include <vtkIO/helper/ProgressVtkToFw.hpp>
 
 #include "vtkGdcmIO/DicomPatientWriter.hpp"
-#include "vtkIO/vtk.hpp"
+
 
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkGdcmIO::DicomPatientWriter, ::vtkGdcmIO::DicomPatientWriter );
@@ -64,8 +66,8 @@ struct VTKDicomSaverFunctor
     struct Parameter
     {
         ::boost::filesystem::path   m_filename;
-        ::fwData::Patient::sptr         m_dataPatient;
-        DicomPatientWriter *        m_fwWriter;
+        ::fwData::Patient::sptr     m_dataPatient;
+        DicomPatientWriter::sptr    m_fwWriter;
     };
 
     template<class PIXELTYPE>
@@ -114,16 +116,9 @@ struct VTKDicomSaverFunctor
                 unsigned int nfiles = myVtkImage->GetDimensions()[2];
                 fg.SetNumberOfFilenames( nfiles );
                 bool b = fg.Generate();
-                if( ! b )
-                {
-                    OSLM_FATAL("FilenameGenerator::Generate() failed");
-                    assert( false && "FilenameGenerator::Generate() failed" );
-                }
-                if( ! fg.GetNumberOfFilenames() )
-                {
-                    OSLM_FATAL("FilenameGenerator::Generate() failed somehow...");
-                    assert( false && "FilenameGenerator::Generate() failed somehow..." );
-                }
+                SLM_FATAL_IF("FilenameGenerator::Generate() failed", !b);
+                SLM_FATAL_IF("FilenameGenerator::Generate() failed somehow...", !fg.GetNumberOfFilenames());
+
                 vtkStringArray *filenames = vtkStringArray::New();
                 for(unsigned int i = 0; i < fg.GetNumberOfFilenames(); ++i)
                 {
@@ -245,7 +240,11 @@ struct VTKDicomSaverFunctor
 
                 // Writing data
                 //--------------------------------------------------------------
-                vtkGDCMImageWriter * writer = vtkGDCMImageWriter::New();
+                vtkSmartPointer< vtkGDCMImageWriter > writer = vtkSmartPointer< vtkGDCMImageWriter >::New();
+
+                //add progress observation
+                ::vtkIO::Progressor progress(writer, param.m_fwWriter,  outputDirectory.string());
+
                 writer->SetInput( myVtkImage );
 
                 // writer->SetFileLowerLeft( reader->GetFileLowerLeft() ); Replace by function
@@ -260,7 +259,7 @@ struct VTKDicomSaverFunctor
 
                 writer->SetFileNames( filenames );
                 writer->Write();
-                writer->Delete();
+
                 filenames->Delete();
             }
         }
@@ -279,7 +278,7 @@ void DicomPatientWriter::write()
     VTKDicomSaverFunctor::Parameter saverParam;
     saverParam.m_filename =  this->getFolder();
     saverParam.m_dataPatient = getConcreteObject();
-    saverParam.m_fwWriter =  this;
+    saverParam.m_fwWriter =  this->getSptr();
     assert( saverParam.m_dataPatient );
     // Study selection
     ::fwData::Patient::StudyIterator studyIter = saverParam.m_dataPatient->getStudies().first;

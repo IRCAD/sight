@@ -57,7 +57,7 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
                 {
                     ::gdcm::Reader reader;
                     reader.SetFileName( filename.c_str() );
-                    if( !reader.Read() )
+                    if( !reader.Read() )// with GDCM2.0.18 use !reader.CanRead()
                     {
                         OSLM_WARN("Failed to read: " << filename );
                     }
