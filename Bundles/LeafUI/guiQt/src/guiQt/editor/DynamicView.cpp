@@ -49,8 +49,8 @@ namespace guiQt
 {
 namespace editor
 {
-REGISTER_SERVICE( ::gui::view::IView , ::guiQt::editor::DynamicView , ::fwTools::Object ) ;
 
+REGISTER_SERVICE( ::gui::view::IView , ::guiQt::editor::DynamicView , ::fwTools::Object ) ;
 
 DynamicView::DynamicView() throw()
 {
@@ -123,14 +123,13 @@ void DynamicView::configuring() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void DynamicView::updating() throw(::fwTools::Failed)
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void DynamicView::swapping() throw(::fwTools::Failed)
-{
-}
+{}
+
 //------------------------------------------------------------------------------
 
 void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
@@ -139,7 +138,16 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
 
     if (_msg->hasEvent("NEW_CONFIGURATION_HELPER"))
     {
+        SLM_ASSERT("Missing field 'tabID' in message", _msg->getFieldSize("tabID"));
+        std::string tabID = _msg->getFieldSingleElement< ::fwData::String >("tabID")->value();
         std::string title = ::fwData::String::dynamicConstCast( _msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) )->value();
+        if(m_tabIDList.find(tabID) != m_tabIDList.end() )
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog("New tab",
+                    "Sorry, the tab " + title + " cannot be opened twice.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+            return;
+        }
         bool closable = _msg->getFieldSingleElement< ::fwData::Boolean >("closable")->value();
         std::string icon = "";
         std::string tooltip = "";
@@ -170,11 +178,11 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         subContainer->setQtContainer(widget);
         ::fwGui::GuiRegistry::registerWIDContainer(wid, subContainer);
 
-        std::string viewConfigID = _msg->getFieldSingleElement< ::fwData::String >("viewConfigID")->value();
         ::fwData::Composite::sptr fieldAdaptors = _msg->getFieldSingleElement< ::fwData::Composite >("::fwServices::registry::AppConfig");
         (*fieldAdaptors)[ "WID_PARENT" ] = fwData::String::New( wid );
 
 
+        std::string viewConfigID = _msg->getFieldSingleElement< ::fwData::String >("viewConfigID")->value();
         ::fwRuntime::ConfigurationElement::csptr config =
                 ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( viewConfigID, fieldAdaptors );
 
@@ -198,7 +206,10 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         info.closable  = closable;
         info.icon      = icon;
         info.tooltip   = tooltip;
+        info.tabID     = tabID;
+
         m_dynamicInfoMap[widget] = info;
+        m_tabIDList.insert(tabID);
 
         int index = m_tabWidget->addTab(widget, finalTitle );
         if(!info.tooltip.empty())
@@ -216,8 +227,7 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
 //------------------------------------------------------------------------------
 
 void DynamicView::info( std::ostream &_sstream )
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -235,7 +245,7 @@ void DynamicView::closeTab( int index, bool forceClose )
     if ( info.closable || forceClose )
     {
         m_dynamicInfoMap.erase(widget);
-
+        m_tabIDList.erase(info.tabID);
         if (!m_dynamicConfigStartStop)
         {
             info.helper->stopAndDestroy();
@@ -261,18 +271,13 @@ void DynamicView::closeTab( int index, bool forceClose )
     }
     else
     {
-        ::fwGui::dialog::MessageDialog dialog;
-        dialog.setTitle("Close tab");
-        dialog.setMessage("Sorry, the tab " + info.title + " can not be closed.");
-        dialog.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        dialog.addButton(::fwGui::dialog::IMessageDialog::OK);
-        dialog.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Close tab",
+                "Sorry, the tab " + info.title + " can not be closed.",
+                ::fwGui::dialog::IMessageDialog::INFO);
     }
 }
 
 //------------------------------------------------------------------------------
-
-
 
 void DynamicView::changedTab( int index )
 {
