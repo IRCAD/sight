@@ -26,10 +26,10 @@ class DicomImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwDat
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (DicomImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
-                                                     (()),
-                                                     new  DicomImageWriter
-                                                );
+    fwCoreClassDefinitionsWithFactoryMacro( (DicomImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
+                                            (()),
+                                            new  DicomImageWriter
+                                          );
 
     VTKGDCMIO_API DicomImageWriter();
 

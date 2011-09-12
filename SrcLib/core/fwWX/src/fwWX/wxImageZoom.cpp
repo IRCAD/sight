@@ -87,20 +87,20 @@ wxImageZoom::wxImageZoom(wxWindow* parent, ::boost::filesystem::path _path_png )
 :wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX )
 {
     m_compteur = 0 ;
-    //m_txt_ctrl_etat = new wxTextCtrl(this, -3, _T("evt detecte"), wxPoint( 0,50 ),wxDefaultSize) ;
-    std::string path = _path_png.native_directory_string() ;
+#if BOOST_FILESYSTEM_VERSION > 2
+    std::string path = _path_png.string();
+#else
+    std::string path = _path_png.native_directory_string();
+#endif
     wxString wx_path = ::fwWX::std2wx(path) ;
     m_img = wxImage( wx_path, wxBITMAP_TYPE_PNG) ;
     m_bmp = wxBitmap( m_img ) ;
 
     m_Pos = wxPoint( 20, 20) ;
-    //m_txt1 = new wxStaticText(this, wxID_ANY, _T("txt1"), wxPoint(10,10 ), wxSize(80,25)) ;
     this->SetScrollbars(100, 100, 100, 100) ;
     this->EnableScrolling(true, true) ;
 
     this->Connect(wxEVT_PAINT, wxPaintEventHandler(wxImageZoom::OnPaint)) ;
-    //this->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(wxImageZoom::OnMouseUp)) ;
-    //this->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(wxImageZoom::OnMouseDown)) ;
     this->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(wxImageZoom::OnMouseWheel)) ;
     //dragImage
 

@@ -69,6 +69,8 @@ TriangularMesh::ConstCellContainer &TriangularMesh::cells() const
     return m_cells ;
 }
 
+//-----------------------------------------------------------------------------
+
 void TriangularMesh::setOneVectorInPointList(int _iIndex, double _fX, double _fY, double _fZ)
 {
     assert( (0 <= _iIndex) );

@@ -231,7 +231,7 @@
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
                             <adaptor uid="GENERIC_UID_MPRNegato1" id="MPRNegato1" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="negato1default" slices="3" sliceIndex="axial" />
+                                <config renderer="default" picker="negato1default" slices="3" sliceIndex="axial" useColorTF="no" />
                             </adaptor>
                             <adaptor id="Acquisition" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
                                 <config renderer="default" picker="negato1default" />
@@ -262,7 +262,7 @@
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
                             <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial" />
+                                <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial" useColorTF="no" />
                             </adaptor>
                             <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
                                 <config renderer="default" picker="negato2default" text="" />
@@ -291,7 +291,7 @@
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
                             <adaptor id="MPRNegato3" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="negato3default" mode="2d" slices="1" sliceIndex="frontal" />
+                                <config renderer="default" picker="negato3default" mode="2d" slices="1" sliceIndex="frontal" useColorTF="no" />
                             </adaptor>
                             <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
                                 <config renderer="default" picker="negato3default" text="" />

@@ -30,7 +30,9 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySend
 
 ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfigTemplate() throw() :
         m_fieldAdaptors ( ::fwData::Composite::New() ),
-        m_viewConfigtitlePrefixKey ("")
+        m_viewConfigTitlePrefixKey (""),
+        m_iconConfigId(""),
+        m_tooltipConfigTitleKey("")
 {
     m_closableConfig = true;
     addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
@@ -86,9 +88,17 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
     SLM_ASSERT( "Sorry, missing attribute title in <config> xml element.", configElement->hasAttribute("title") );
     m_viewConfigTitle = configElement->getExistingAttributeValue("title");
 
+    if(configElement->hasAttribute("icon"))
+    {
+        m_iconConfigId = configElement->getExistingAttributeValue("icon");
+    }
     if( configElement->hasAttribute("titlePrefixKey") )
     {
-        m_viewConfigtitlePrefixKey = configElement->getExistingAttributeValue("titlePrefixKey");
+        m_viewConfigTitlePrefixKey = configElement->getExistingAttributeValue("titlePrefixKey");
+    }
+    if( configElement->hasAttribute("tooltipKey") )
+    {
+        m_tooltipConfigTitleKey = configElement->getExistingAttributeValue("tooltipKey");
     }
 
     m_closableConfig = configElement->getAttributeValue("closable") != "no";
@@ -202,29 +212,36 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     std::string fieldID = "::fwServices::registry::AppConfig";
     std::string viewConfigID = "viewConfigID";
     std::string closableFieldID = "closable";
-
+    std::string iconFieldID = "icon";
+    std::string tooltipFieldID = "tooltip";
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
 
 
     std::stringstream ss;
-    if (    ! m_viewConfigtitlePrefixKey.empty() &&
-            composite->find( m_viewConfigtitlePrefixKey ) != composite->end() )
+    if (    ! m_viewConfigTitlePrefixKey.empty() &&
+            composite->find( m_viewConfigTitlePrefixKey ) != composite->end() )
     {
-        ::fwData::String::sptr prefix = ::fwData::String::dynamicCast( (*composite)[m_viewConfigtitlePrefixKey] );
+        ::fwData::String::sptr prefix = ::fwData::String::dynamicCast( (*composite)[m_viewConfigTitlePrefixKey] );
         ss << prefix->getValue() << " - " << m_viewConfigTitle;
     }
     else
     {
         ss << m_viewConfigTitle;
     }
+    if ( ! m_tooltipConfigTitleKey.empty() &&
+            composite->find( m_tooltipConfigTitleKey ) != composite->end() )
+    {
+        ::fwData::String::sptr tooltip = ::fwData::String::dynamicCast( (*composite)[m_tooltipConfigTitleKey] );
+        msg->setFieldSingleElement( tooltipFieldID, tooltip );
+    }
+
     ::fwData::String::NewSptr title;
     title->value() = ss.str();
-
     msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
     msg->setFieldSingleElement( fieldID , finalMap );
-    msg->setFieldSingleElement( viewConfigID , ::fwData::String::New(m_viewConfigId) );
-    msg->setFieldSingleElement( closableFieldID , ::fwData::Boolean::New(m_closableConfig));
-
+    msg->setFieldSingleElement( viewConfigID, ::fwData::String::New(m_viewConfigId) );
+    msg->setFieldSingleElement( closableFieldID, ::fwData::Boolean::New(m_closableConfig));
+    msg->setFieldSingleElement( iconFieldID, ::fwData::String::New(m_iconConfigId) );
 
     ::fwServices::IEditionService::notify(this->getSptr(), composite, msg);
 }

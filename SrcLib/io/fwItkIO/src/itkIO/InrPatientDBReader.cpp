@@ -67,7 +67,11 @@ void InrPatientDBReader::searchRecursivelyInrFile(   const ::boost::filesystem::
 
                 if( ext1 == ".inr" || ext2 == ".inr.gz" )
                 {
+#if BOOST_FILESYSTEM_VERSION > 2
+                    OSLM_DEBUG( "Inr File Found : " << it->path().string() );
+#else
                     OSLM_DEBUG( "Inr File Found : " << it->string() );
+#endif
                     inrFiles.push_back(*it);
                 }
             }

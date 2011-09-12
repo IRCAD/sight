@@ -38,11 +38,9 @@ namespace fwTools
 
 System::~System()
 {
-    using boost::filesystem::exists;
-    using boost::filesystem::remove_all;
-    if ( ! m_dumpFolder.empty() && exists(m_dumpFolder) )
+    if ( ! m_dumpFolder.empty() && ::boost::filesystem::exists(m_dumpFolder) )
     {
-        remove_all(m_dumpFolder);
+        ::boost::filesystem::remove_all(m_dumpFolder);
     }
 //    eraseDumpFolderOfZombies();
 }
@@ -101,11 +99,9 @@ std::string getPersonalizedTmp()
 
 ::boost::filesystem::path System::getTemporaryFolder() throw()
 {
-    using boost::filesystem::path;
+    static ::boost::filesystem::path tmpdir;
 
-    static path tmpdir;
-
-    if ( tmpdir != path() )
+    if ( tmpdir != ::boost::filesystem::path() )
     {
         return tmpdir; // path already setted
     }
@@ -124,32 +120,32 @@ std::string getPersonalizedTmp()
     }
     if( userEnvTmp )
     {
-        tmpdir = path(userEnvTmp) / getPersonalizedTmp() ;
+        tmpdir = ::boost::filesystem::path(userEnvTmp) / getPersonalizedTmp() ;
         OSLM_INFO("Temp Folder : " << tmpdir.string() );
-        create_directories(tmpdir);
+        ::boost::filesystem::create_directories(tmpdir);
         return tmpdir ;
     }
 
     if( userEnvTemp )
     {
-        tmpdir = path(userEnvTemp) / getPersonalizedTmp() ;
+        tmpdir = ::boost::filesystem::path(userEnvTemp) / getPersonalizedTmp() ;
         OSLM_INFO("Temp Folder : " << tmpdir.string() );
-        create_directories(tmpdir);
+        ::boost::filesystem::create_directories(tmpdir);
         return tmpdir ;
     }
     // FIXME allow a more configurable choice for DumpFolder
-    path DriveD("D:\\",boost::filesystem::native);
-    path DriveC("C:\\",boost::filesystem::native);
+    ::boost::filesystem::path DriveD("D:\\");
+    ::boost::filesystem::path DriveC("C:\\");
 
-    if ( exists( DriveD ) )
+    if ( ::boost::filesystem::exists( DriveD ) )
     {
         tmpdir = DriveD / getPersonalizedTmp();
 
         try
         {
-            create_directory( tmpdir );
-            create_directory( tmpdir / "writabletest" );
-            remove( tmpdir / "writabletest" );
+            ::boost::filesystem::create_directory( tmpdir );
+            ::boost::filesystem::create_directory( tmpdir / "writabletest" );
+            ::boost::filesystem::remove( tmpdir / "writabletest" );
             return tmpdir;
         }
         catch(...)
@@ -159,13 +155,13 @@ std::string getPersonalizedTmp()
     }
 
     // default behavior
-    tmpdir = DriveC / path(getPersonalizedTmp(),boost::filesystem::native);
+    tmpdir = DriveC / ::boost::filesystem::path(getPersonalizedTmp());
 
 #else
-    tmpdir = path("/tmp") /  path( getPersonalizedTmp() );
+    tmpdir = ::boost::filesystem::path("/tmp") /  ::boost::filesystem::path( getPersonalizedTmp() );
 #endif
 
-    create_directories(tmpdir);
+    ::boost::filesystem::create_directories(tmpdir);
     return tmpdir;
 }
 
@@ -177,22 +173,19 @@ System::System()
     SLM_ASSERT("Process "<< pid << " is not started", isProcessRunning(pid) );
     m_dumpFolder = System::getTemporaryFolder() / boost::lexical_cast<std::string>(pid);
 
-    using boost::filesystem::exists;
-    using boost::filesystem::create_directory;
-
     // create TemporaryFolder if necessary
-    if (!exists(System::getTemporaryFolder()))
+    if (!::boost::filesystem::exists(System::getTemporaryFolder()))
     {
-        create_directory(System::getTemporaryFolder());
+        ::boost::filesystem::create_directory(System::getTemporaryFolder());
     }
 
     // create dumpFolder if necessary
-    if (!exists(m_dumpFolder))
+    if (!::boost::filesystem::exists(m_dumpFolder))
     {
-        create_directory(m_dumpFolder);
+        ::boost::filesystem::create_directory(m_dumpFolder);
     }
 
-    if (!exists(m_dumpFolder))
+    if (!::boost::filesystem::exists(m_dumpFolder))
     {
         std::string str = "DumpableDataBuffer unable to use";
         str+= m_dumpFolder.string() + " directory to dump Image memory buffer";
@@ -245,9 +238,8 @@ void System::eraseDumpFolderOfZombies() const
 void System::cleanDumpFolder() const
 {
     // remove all files in subfolder
-    using ::boost::filesystem::directory_iterator;
-    directory_iterator end_itr; // default  construction yields past-the-end
-    directory_iterator iter_dir( m_dumpFolder );
+    ::boost::filesystem::directory_iterator end_itr; // default  construction yields past-the-end
+    ::boost::filesystem::directory_iterator iter_dir( m_dumpFolder );
     for ( ; iter_dir != end_itr; ++iter_dir )
     {
         ::boost::filesystem::remove_all(*iter_dir);

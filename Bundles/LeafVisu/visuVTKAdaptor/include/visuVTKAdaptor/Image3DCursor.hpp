@@ -24,7 +24,7 @@ class vtkPolyDataMapper;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Image3DCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API Image3DCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
@@ -49,7 +49,7 @@ protected:
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
-    void buildPolyData();
+    void buildPolyData(float radius = 1.0);
 
     double m_priority;
 

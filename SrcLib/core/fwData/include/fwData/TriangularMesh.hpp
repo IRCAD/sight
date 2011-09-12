@@ -36,6 +36,7 @@ public :
     /// 3D point container
     typedef std::vector< std::vector< float > >         PointContainer ;
     typedef const std::vector< std::vector< float > >   ConstPointContainer ;
+
     /// A cell contains indices of the three points related to a triangular cell
     typedef std::vector< std::vector< int > >           CellContainer ;
     typedef const std::vector< std::vector< int > >     ConstCellContainer ;

@@ -97,6 +97,8 @@ protected:
         std::string wid;
         std::string title;
         bool closable;
+        std::string icon;
+        std::string tooltip;
     };
 
     typedef std::map< QWidget* , DynamicViewInfo > DynamicViewInfoMapType;

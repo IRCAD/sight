@@ -40,6 +40,7 @@
 #include <vtkImageChangeInformation.h>
 #include <vtkMedicalImageProperties.h>
 #include <vtkImageMapToColors.h>
+#include <vtkSmartPointer.h>
 
 #include <gdcmImageHelper.h>
 #include <gdcmIPPSorter.h>
@@ -56,6 +57,7 @@
 #include <gdcmFile.h>
 
 #include <vtkIO/vtk.hpp>
+#include <vtkIO/helper/ProgressVtkToFw.hpp>
 
 #include "vtkGdcmIO/DicomPatientDBReader.hpp"
 #include "vtkGdcmIO/helper/GdcmHelper.hpp"
@@ -81,7 +83,8 @@ namespace vtkGdcmIO
 //------------------------------------------------------------------------------
 
 DicomPatientDBReader::DicomPatientDBReader() :
-    ::fwData::location::enableFolder< IObjectReader >(this)
+    ::fwData::location::enableFolder< IObjectReader >(this),
+    ::fwData::location::enableMultiFiles< IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -99,8 +102,10 @@ DicomPatientDBReader::~DicomPatientDBReader()
 {
     SLM_TRACE_FUNC();
     ::fwData::PatientDB::sptr patientDB = this->getConcreteObject();
+
     std::vector<std::string> filenames;
     ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(dicomDir, filenames);
+
     this->addPatients( patientDB , filenames);
     return patientDB;
 }
@@ -184,14 +189,15 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
 
         std::map< std::string, std::vector< std::string > >::iterator iter = mapSeries.begin();
         std::map< std::string, std::vector< std::string > >::iterator iterEnd = mapSeries.end();
+
         while (iter != iterEnd)
         {
             OSLM_TRACE ( " first : " << iter->first );
             if ( iter->second.size() != 0 )
             {
                 OSLM_TRACE ( " second : " << *(iter->second.begin()) );
-                vtkStringArray *files = vtkStringArray::New();
-                vtkGDCMImageReader * reader = vtkGDCMImageReader::New();
+                vtkSmartPointer< vtkStringArray > files = vtkSmartPointer< vtkStringArray >::New();
+                vtkSmartPointer< vtkGDCMImageReader > reader = vtkSmartPointer< vtkGDCMImageReader >::New();
                 reader->FileLowerLeftOn();
                 gdcm::IPPSorter s;
                 s.SetComputeZSpacing( true );
@@ -294,6 +300,8 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         bool bMem = true;
                         if ( bMem )
                         {
+                            //add progress observation
+                            ::vtkIO::Progressor progress(reader, this->getSptr(), "Serie " + iter->first);
                             reader->Update();
                             try
                             {
@@ -315,7 +323,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         OSLM_ERROR ( "Error during conversion" );
                     }
                 }
-                files->Delete();
 
                 if (res)
                 {
@@ -441,7 +448,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     patient->addStudy(study);
                     patientDB->addPatient( patient );
                 } // if res == true
-                reader->Delete();
             } // if nb files > 0
             iter++;
         } // While all data
@@ -464,7 +470,17 @@ void DicomPatientDBReader::read()
     SLM_TRACE_FUNC();
     ::fwData::PatientDB::sptr patientDB = this->getConcreteObject();
     std::vector<std::string> filenames;
-    ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
+    if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
+    {
+        ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
+    }
+    else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
+    {
+        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        {
+            filenames.push_back(file.string());
+        }
+    }
     this->addPatients( patientDB , filenames);
 }
 

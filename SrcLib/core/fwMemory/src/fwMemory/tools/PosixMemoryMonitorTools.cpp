@@ -377,7 +377,11 @@ void PosixMemoryMonitorTools::getAllStatus( Status & allStat )
         if( ::boost::filesystem::is_directory(*it) )
         {
             ::boost::filesystem::path tmpPath = (*it);
+#if BOOST_FILESYSTEM_VERSION > 2
+            std::string dirName = tmpPath.filename().string();
+#else
             std::string dirName = tmpPath.leaf();
+#endif
             if ( regex_match(dirName, e) )
             {
                 int pid = strtoul(dirName.c_str(), NULL, 0);
@@ -425,7 +429,11 @@ void PosixMemoryMonitorTools::printAllStatus()
         if( ::boost::filesystem::is_directory(*it) )
         {
             ::boost::filesystem::path tmpPath = (*it);
+#if BOOST_FILESYSTEM_VERSION > 2
+            std::string dirName = tmpPath.filename().string();
+#else
             std::string dirName = tmpPath.leaf();
+#endif
             if ( regex_match(dirName, e) )
             {
                 int pid = strtoul(dirName.c_str(), NULL, 0);

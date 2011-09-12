@@ -26,10 +26,11 @@ class DicomPatientWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwD
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (DicomPatientWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Patient>),
-                                                     (()),
-                                                     new  DicomPatientWriter
-                                                );
+    fwCoreClassDefinitionsWithFactoryMacro((DicomPatientWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Patient>),
+                                           (()),
+                                           new  DicomPatientWriter
+                                          );
+    fwCoreAllowSharedFromThis();
 
     VTKGDCMIO_API DicomPatientWriter();
 

@@ -14,6 +14,9 @@
 #include <fwData/Float.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/FloatMsg.hpp>
+
+#include <fwServices/IEditionService.hpp>
 
 #include "ctrlSelection/ImageUpdateAxis.hpp"
 
@@ -128,6 +131,10 @@ void ImageUpdateAxis::updating() throw ( ::fwTools::Failed )
     OSLM_ASSERT("Object " << m_floatID << " is not a valid ::fwData::Float", dataFloat);
 
     dataFloat->value() = (float) m_orientation;
+    OSLM_TRACE(dataFloat->getID() << " new value : " << *dataFloat);
+    ::fwComEd::FloatMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
+    ::fwServices::IEditionService::notify(this->getSptr(), dataFloat, msg);
 }
 
 //-----------------------------------------------------------------------------

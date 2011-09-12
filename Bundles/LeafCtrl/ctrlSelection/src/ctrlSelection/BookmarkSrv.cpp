@@ -73,7 +73,11 @@ void BookmarkSrv::starting()  throw ( ::fwTools::Failed )
 
 void BookmarkSrv::stopping()  throw ( ::fwTools::Failed )
 {
-    ::fwTools::Bookmarks::remove( m_bookmarkName);
+    OSLM_WARN_IF("Bookmark \""<< m_bookmarkName << "\" already removed", ::fwTools::Bookmarks::exist( m_bookmarkName ));
+    if(::fwTools::Bookmarks::exist( m_bookmarkName ))
+    {
+        ::fwTools::Bookmarks::remove( m_bookmarkName);
+    }
 }
 
 //-----------------------------------------------------------------------------

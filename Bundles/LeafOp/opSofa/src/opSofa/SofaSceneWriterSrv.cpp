@@ -198,7 +198,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     if (answer == QMessageBox::Yes) {
         // Notification
         ::fwServices::ObjectMsg::NewSptr msg;
-        ::fwData::String::sptr data(new ::fwData::String(scnFile));
+        ::fwData::String::NewSptr data(scnFile);
         msg->addEvent( "NEW_SOFA_SCENE", data );
         ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
     }

@@ -71,7 +71,8 @@ protected :
     CancelCallbackType m_cancelCallback;
     bool m_canceled;
     bool m_raise;
-
+    ///progress bar's current value: [0-100]
+    int  m_value;
     bool m_processUserEvents;
 
 protected :
