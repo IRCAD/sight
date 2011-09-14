@@ -32,14 +32,15 @@ public :
                                           );
     fwCoreAllowSharedFromThis();
 
-    VTKGDCMIO_API DicomPatientWriter();
-
-    VTKGDCMIO_API ~DicomPatientWriter();
-
     VTKGDCMIO_API void write();
 
     VTKGDCMIO_API std::string  extension();
 
+protected:
+
+    VTKGDCMIO_API DicomPatientWriter();
+
+    VTKGDCMIO_API ~DicomPatientWriter();
 };
 
 } // namespace VTKGDCMIO

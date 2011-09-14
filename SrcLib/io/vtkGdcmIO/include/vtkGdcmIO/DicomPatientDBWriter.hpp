@@ -30,15 +30,18 @@ public :
                                            (()),
                                            new  DicomPatientDBWriter
                                           );
+    fwCoreAllowSharedFromThis();
 
-    VTKGDCMIO_API DicomPatientDBWriter();
-
-    VTKGDCMIO_API ~DicomPatientDBWriter();
 
     VTKGDCMIO_API void write();
 
     VTKGDCMIO_API std::string  extension();
 
+protected:
+
+    VTKGDCMIO_API DicomPatientDBWriter();
+
+    VTKGDCMIO_API ~DicomPatientDBWriter();
 };
 
 } // namespace vtkGdcmIO
