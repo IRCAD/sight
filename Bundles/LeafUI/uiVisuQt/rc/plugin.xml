@@ -25,5 +25,11 @@
         <service>::uiVisu::PointEditor</service>
         <object>::fwData::Composite</object>
     </extension>
-    
+  
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisu::BasicFloatEditor</service>
+        <object>::fwData::Float</object>
+    </extension>
+      
 </plugin>
