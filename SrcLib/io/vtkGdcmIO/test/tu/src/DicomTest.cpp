@@ -46,17 +46,17 @@ void DicomTest::methode1()
 
     ::boost::filesystem::create_directories( PATH );
 
-    ::vtkGdcmIO::DicomPatientDBWriter writer;
-    writer.setObject(pPatientDB);
-    writer.setFolder(PATH);
-    writer.write();
+    ::vtkGdcmIO::DicomPatientDBWriter::NewSptr writer;
+    writer->setObject(pPatientDB);
+    writer->setFolder(PATH);
+    writer->write();
 
     // load patientDB
     ::fwData::PatientDB::NewSptr pPatientDB2;
-    ::vtkGdcmIO::DicomPatientDBReader reader;
-    reader.setObject(pPatientDB2);
-    reader.setFolder(PATH);
-    reader.read();
+    ::vtkGdcmIO::DicomPatientDBReader::NewSptr reader;
+    reader->setObject(pPatientDB2);
+    reader->setFolder(PATH);
+    reader->read();
 
     ::boost::filesystem::remove_all( PATH.string() );
 

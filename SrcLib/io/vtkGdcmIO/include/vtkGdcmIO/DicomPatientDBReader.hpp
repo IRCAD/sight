@@ -33,11 +33,13 @@ public :
                                           );
     fwCoreAllowSharedFromThis();
 
+    VTKGDCMIO_API void read();
+
+protected:
+
     VTKGDCMIO_API DicomPatientDBReader();
 
     VTKGDCMIO_API ~DicomPatientDBReader();
-
-    VTKGDCMIO_API void read();
 
 private :
 
