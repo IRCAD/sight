@@ -1,0 +1,121 @@
+
+<plugin id="Tuto13Scene2D">
+
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>tutoScene2DConfig</id>
+        <type>standard</type>
+        <config>
+            <object type="::fwData::Image">
+
+                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                    <gui>
+                        <frame>
+                            <name>TutoScene132D</name>
+                            <icon>Bundles/Tuto13Scene2D_0-1/tuto.ico</icon>
+                            <minSize width="800" height="600" />
+                        </frame>
+                    </gui>
+                    <registry>
+                        <view sid="GENERIC_UID_GlobalView" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="GENERIC_UID_GlobalView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager" >
+                            <orientation value="vertical" />
+                            <view caption="Scene2D" />
+                            <view caption="FloatEditor" proportion="0" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="GENERIC_UID_Scene2D" start="no" />
+                        <view sid="GENERIC_UID_FloatEditor" start="no" />
+                    </registry>
+                </service>
+                
+                <item key="myCompositeVisu">
+
+                    <object uid="myCompositeVisu" type="::fwData::Composite">
+                        
+                        <service uid="GENERIC_UID_Scene2D" implementation="::scene2D::Render" type="::fwRender::IRender" autoComChannel="yes">
+
+                            <scene>
+
+                                <viewport id="view1" x="-100" y="-100" width="200" height="200" />
+
+                                <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                                <!-- <axis id="axe1-5" origin="-5.0" scale="1.0" scaleType="LINEAR" />
+                                <axis id="axe1y" origin="5.0" scale="10.0" scaleType="LINEAR" />
+                                <axis id="axe2" origin="0.0" scale="50.0" scaleType="LOG" /> -->
+                                
+                                <!--
+                                <adaptor id="sin" class="::scene2D::adaptor::Sin" objectId="self">
+                                    <config xMin="-50" xMax="50" />
+                                </adaptor> 
+
+                                <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
+                                    <config xMin="-500" xMax="500" yMin="-500" yMax="500" xSpacing="10" ySpacing="10" color="green" xAxis="axe1" yAxis="axe1y"/>
+                                </adaptor>
+
+                                <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+                                    <config x1="-1000" x2="1000" y1="0" y2="0" color="red" zValue="1" />
+                                </adaptor>
+
+                                <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
+                                    <config x1="0" x2="0" y1="-1000" y2="1000" color="red" zValue="1" />
+                                </adaptor>
+
+                                <adaptor id="grid2" class="::scene2D::adaptor::Grid2D" objectId="self">
+                                    <config xMin="-300" xMax="300" yMin="-300" yMax="300" xSpacing="10" ySpacing="10" color="blue" xAxis="axe1" yAxis="axe2" />
+                                </adaptor> -->
+                              
+                                <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="myData">
+                                    <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
+                                </adaptor>
+                              
+                                <adaptor id="square1" class="::scene2D::adaptor::Square" objectId="self">
+                                    <config x="0" y="0" size="15" color="red" zValue="4" />
+                                </adaptor>
+                                
+                                <adaptor id="square2" class="::scene2D::adaptor::Square" objectId="self">
+                                    <config x="20" y="20" size="30" color="blue" zValue="3" />
+                                </adaptor>
+                                
+                                <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+                                    <config x1="-100" x2="100" y1="0" y2="0" color="red" zValue="5" />
+                                </adaptor>
+
+                                <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
+                                    <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
+                                </adaptor>
+                                
+                            </scene>
+
+                        </service>
+                      
+                        <item key="myData">
+
+                            <object uid="GENERIC_UID_Float" type="::fwData::Float">
+
+                                <service uid="GENERIC_UID_FloatEditor" implementation="::uiVisu::BasicFloatEditor" type="::gui::editor::IEditor" autoComChannel="yes"/>
+                              
+                            </object>
+
+                        </item>
+
+
+                    </object>
+
+                </item>
+
+                <start uid="myFrame" />
+                <start uid="GENERIC_UID_Scene2D" />
+                <start uid="GENERIC_UID_FloatEditor" />
+              
+            </object>
+        </config>
+    </extension>
+</plugin>
