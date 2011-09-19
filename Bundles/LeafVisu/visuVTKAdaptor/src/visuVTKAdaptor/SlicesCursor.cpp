@@ -313,6 +313,10 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
     double sliceWorld[3];
     for (int dim=0; dim<3; ++dim )
     {
+        // !!!!!!!!!!!!!!!!
+        // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
+        // !!!!!!!!!!!!!!!!
+        //sliceWorld[dim] = pos[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
         sliceWorld[dim] = pos[dim]*image->getSpacing()[dim];
     }
 
@@ -328,6 +332,11 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
             cursorPoints[p+2][dim] = sliceWorld[dim];
             if ( (dim + p + 1)%3 == m_orientation )
             {
+                // !!!!!!!!!!!!!!!!
+                // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
+                // !!!!!!!!!!!!!!!!
+                //cursorPoints[p+2][dim] =  (image->getSize()[dim]-1)*image->getSpacing()[dim] + image->getOrigin().at(dim);
+                //cursorPoints[p][dim] = 0 + image->getOrigin().at(dim);
                 cursorPoints[p][dim] = 0;
                 cursorPoints[p+2][dim] =  (image->getSize()[dim]-1)*image->getSpacing()[dim];
             }

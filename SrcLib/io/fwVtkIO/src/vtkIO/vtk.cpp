@@ -103,14 +103,17 @@ void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
                               data->getSpacing().at(2)
                             );
 
-    importer->SetDataOrigin( data->getCRefOrigin().at(0),
-                             data->getCRefOrigin().at(1),
-                             data->getCRefOrigin().at(2)
+    // !!!!!!!!!!!!!!!!
+    // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
+    // !!!!!!!!!!!!!!!!
+    importer->SetDataOrigin( 0.0, //data->getCRefOrigin().at(0),
+                             0.0, //data->getCRefOrigin().at(1),
+                             0.0  //data->getCRefOrigin().at(2)
                             );
 
-    importer->SetWholeExtent(   (int)data->getCRefOrigin().at(0), data->getCRefSize().at(0) -1,
-                                (int)data->getCRefOrigin().at(1), data->getCRefSize().at(1) -1,
-                                (int)data->getCRefOrigin().at(2), data->getCRefSize().at(2) -1
+    importer->SetWholeExtent(   0, data->getCRefSize().at(0) -1,
+                                0, data->getCRefSize().at(1) -1,
+                                0, data->getCRefSize().at(2) -1
                             );
 
     // copy WholeExtent to DataExtent
@@ -244,9 +247,9 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
                                     _pDataImage->getCRefOrigin().at(2)
                                 );
 
-    _pImageImport->SetWholeExtent(  (int)_pDataImage->getCRefOrigin().at(0), _pDataImage->getCRefSize().at(0) -1,
-                                    (int)_pDataImage->getCRefOrigin().at(1), _pDataImage->getCRefSize().at(1) -1,
-                                    (int)_pDataImage->getCRefOrigin().at(2), _pDataImage->getCRefSize().at(2) -1
+    _pImageImport->SetWholeExtent(  0, _pDataImage->getCRefSize().at(0) -1,
+                                    0, _pDataImage->getCRefSize().at(1) -1,
+                                    0, _pDataImage->getCRefSize().at(2) -1
                                 );
 
     // copy WholeExtent to DataExtent
