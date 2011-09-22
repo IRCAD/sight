@@ -28,7 +28,7 @@ namespace adaptor
 ViewportRangeSelector::ViewportRangeSelector() throw()
     : m_isLeftInteracting( false ), m_isRightInteracting( false ), m_isInteracting( false ), m_clickCatchRange( 15 )
 {
-
+     this->handlingEventOff(); // This service no handling event
 }
 
 //---------------------------------------------------------------------------------------------------------------
