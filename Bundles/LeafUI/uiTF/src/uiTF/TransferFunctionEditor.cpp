@@ -58,6 +58,7 @@ REGISTER_SERVICE( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor, ::fwDa
 TransferFunctionEditor::TransferFunctionEditor() throw()
 {
     SLM_TRACE_FUNC();
+    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -152,6 +153,30 @@ void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
 void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+
+    // Test if tf selection has changed
+    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
+    if(imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
+    {
+        std::string currentValInEditor = m_pTransferFunctionPreset->currentText().toStdString();
+        std::string currentVal = m_selectedTranferFunctionId.lock()->value();
+
+        if ( currentValInEditor != currentVal )
+        {
+            QString qval = currentVal.c_str();
+            int currentIndex = m_pTransferFunctionPreset->findText( qval );
+
+            if( currentIndex == -1 ) // item not found
+            {
+                m_pTransferFunctionPreset->addItem( qval );
+                m_pTransferFunctionPreset->setCurrentIndex( m_pTransferFunctionPreset->count() - 1 );
+            }
+            else
+            {
+                m_pTransferFunctionPreset->setCurrentIndex( currentIndex );
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -161,7 +186,7 @@ void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 
     // Qt signals management ( disconnection )
-    QObject::disconnect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT((int)));
+    QObject::disconnect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT(presetChoice(int)));
     QObject::disconnect(m_deleteButton, SIGNAL(   pressed()), this, SLOT(deleteTF()));
     QObject::disconnect(m_newButton, SIGNAL(   pressed()), this, SLOT(newTF()));
     QObject::disconnect(m_reinitializeButton, SIGNAL(   pressed()), this, SLOT(reinitializeTF()));

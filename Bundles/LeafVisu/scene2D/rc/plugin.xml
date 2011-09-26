@@ -1,0 +1,101 @@
+<plugin id="scene2D" class="::scene2D::Plugin">
+
+    <library name="scene2D" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::scene2D::Render</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::Sin</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::Grid2D</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::Line</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::Square</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::GridFromFloat</service>
+        <object>::fwData::Float</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::TransferFunction</service>
+        <object>::fwData::Image</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::Negato</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::Histogram</service>
+        <object>::fwData::Histogram</object>
+    </extension>
+   
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::CurvedHistogram</service>
+        <object>::fwData::Histogram</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::ViewportRangeSelector</service>
+        <object>::scene2D::data::Viewport</object>
+    </extension>
+ 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::ViewportUpdater</service>
+        <object>::scene2D::data::Viewport</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::HistogramCursor</service>
+        <object>::fwData::Histogram</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::HistogramValue</service>
+        <object>::fwData::Histogram</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::ScaleValues</service>
+        <object>::fwData::Composite</object>
+    </extension>
+   
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::Axis</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

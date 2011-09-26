@@ -1,0 +1,21 @@
+<profile name="tutoScene2DName" version="0.1">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    <activate id="gui" version="0-1" />
+    <activate id="Tuto13Scene2D" />
+    <activate id="guiQt" version="0-1" />
+    <activate id="scene2D" version="0-1" />
+    
+    <activate id="uiVisu" version="0-1" />
+    <activate id="uiVisuQt" version="0-1" />
+    
+    <activate id="appXml" version="0-1" >
+        <param id="config" value="tutoScene2DConfig" />
+    </activate>
+
+    <start id="scene2D" />
+    <start id="appXml" />
+    <start id="guiQt" />
+    
+</profile>

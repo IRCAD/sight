@@ -45,6 +45,7 @@ void FwXMLTest::testFwXML()
     fwXML::Serializer serializer;
     ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy() );
     serializer.setSplitPolicy( spolicy );
+
 #if BOOST_FILESYSTEM_VERSION > 2
     ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( PATH.filename().string() ) );
 #else

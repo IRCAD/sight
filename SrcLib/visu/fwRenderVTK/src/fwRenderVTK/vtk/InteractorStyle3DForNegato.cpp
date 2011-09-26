@@ -14,6 +14,7 @@
 #include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderWindow.h>
+#include "vtkCellPicker.h"
 
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
@@ -45,6 +46,58 @@ void InteractorStyle3DForNegato::OnChar()
                 rwi->GetEventPosition()[1]);
         this->CurrentRenderer->ResetCamera();
         rwi->Render();
+        break;
+    case 'f' :
+    case 'F' :
+    {
+        this->AnimState = VTKIS_ANIM_ON;
+        vtkAssemblyPath *path = NULL;
+        this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                rwi->GetEventPosition()[1]);
+        rwi->GetPicker()->Pick(rwi->GetEventPosition()[0],
+                rwi->GetEventPosition()[1],
+                0.0,
+                this->CurrentRenderer);
+        vtkAbstractPropPicker *picker;
+        if ((picker=vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker())))
+        {
+            path = picker->GetPath();
+        }
+        if (path != NULL)
+        {
+            rwi->FlyTo(this->CurrentRenderer, picker->GetPickPosition());
+        }
+        this->AnimState = VTKIS_ANIM_OFF;
+    }
+    break;
+
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void InteractorStyle3DForNegato::OnKeyUp()
+{
+    vtkRenderWindowInteractor *rwi = this->Interactor;
+
+    switch (rwi->GetKeyCode())
+    {
+    case 'q' :
+        OnLeftButtonUp();
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void InteractorStyle3DForNegato::OnKeyDown()
+{
+    vtkRenderWindowInteractor *rwi = this->Interactor;
+
+    switch (rwi->GetKeyCode())
+    {
+    case 'q' :
+        OnLeftButtonDown();
         break;
     }
 }
