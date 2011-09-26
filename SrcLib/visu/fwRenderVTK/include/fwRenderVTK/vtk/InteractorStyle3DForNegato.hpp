@@ -27,6 +27,8 @@ public:
     FWRENDERVTK_API virtual void OnMiddleButtonDown();
 
     FWRENDERVTK_API virtual void OnChar();
+    FWRENDERVTK_API virtual void OnKeyUp();
+    FWRENDERVTK_API virtual void OnKeyDown();
 
     FWRENDERVTK_API virtual void OnLeftButtonDown();
     FWRENDERVTK_API virtual void OnMouseMove();

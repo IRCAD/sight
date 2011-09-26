@@ -30,15 +30,17 @@ public :
                                             (()),
                                             new  DicomImageWriter
                                           );
-
-    VTKGDCMIO_API DicomImageWriter();
-
-    VTKGDCMIO_API ~DicomImageWriter();
+    fwCoreAllowSharedFromThis();
 
     VTKGDCMIO_API void write();
 
     VTKGDCMIO_API std::string  extension();
 
+protected:
+
+    VTKGDCMIO_API DicomImageWriter();
+
+    VTKGDCMIO_API ~DicomImageWriter();
 };
 
 } // namespace vtkGdcmIO
