@@ -44,7 +44,7 @@ bool UUID::exist( const UUID::UUIDType & uuid)
 
 const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 {
-    SLM_ASSERT("Object expired", !object);
+    SLM_ASSERT("Object expired", object);
     UUID::sptr uuidObject = object->m_uuid;
     if(uuidObject->m_uuid.empty())
     {
