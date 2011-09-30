@@ -28,6 +28,15 @@ namespace io
 
 //------------------------------------------------------------------------------
 
+Validator::Validator( const Validator &validator )
+{
+    m_xsd_content = validator.m_xsd_content;
+    m_schemaParserContext = validator.m_schemaParserContext;
+    m_schema = validator.m_schema;
+}
+
+//------------------------------------------------------------------------------
+
 Validator::Validator( const std::string & buffer )
 {
     m_xsd_content = buffer ;
@@ -53,7 +62,8 @@ Validator::Validator( const boost::filesystem::path & path )
 //------------------------------------------------------------------------------
 
 Validator::~Validator()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,34 +84,38 @@ const std::string Validator::getErrorLog() const
 const bool Validator::validate( const boost::filesystem::path & xmlFile )
 {
     int result;
-    xmlSchemaParserCtxtPtr schemaParserContext;
-    xmlSchemaPtr schema;
     xmlSchemaValidCtxtPtr schemaValidContext;
 
     // Open XML schema file
-    if ((schemaParserContext = xmlSchemaNewParserCtxt(m_xsd_content.c_str())) == NULL)
+    if ( !m_schemaParserContext )
     {
-        return false;
+        if (!(m_schemaParserContext = SchemaParserCtxtSptr (
+                  xmlSchemaNewParserCtxt(m_xsd_content.c_str()),
+                  xmlSchemaFreeParserCtxt)
+              ) )
+        {
+            return false;
+        }
     }
 
     // Load XML schema content
-    schema = xmlSchemaParse(schemaParserContext);
-    if (schema == NULL)
+    if (!m_schema)
     {
-        xmlSchemaFreeParserCtxt( schemaParserContext );
+        m_schema = SchemaSptr ( xmlSchemaParse(m_schemaParserContext.get()), xmlSchemaFree );
+    }
+    if (!m_schema)
+    {
         return false;
     }
 
     // Create XML schemas validation context
-    if ((schemaValidContext = xmlSchemaNewValidCtxt(schema)) == NULL)
+    if ((schemaValidContext = xmlSchemaNewValidCtxt(m_schema.get())) == NULL)
     {
-        xmlSchemaFree(schema);
-        xmlSchemaFreeParserCtxt( schemaParserContext );
         return false;
     }
 
      // Set the structured error callback
-    xmlSchemaSetParserStructuredErrors(schemaParserContext, Validator::ErrorHandler, this );
+    xmlSchemaSetParserStructuredErrors(m_schemaParserContext.get(), Validator::ErrorHandler, this );
     xmlSchemaSetValidStructuredErrors( schemaValidContext, Validator::ErrorHandler, this );
 
 
@@ -130,8 +144,6 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
     }
 
     xmlSchemaFreeValidCtxt(schemaValidContext);
-    xmlSchemaFree( schema );
-    xmlSchemaFreeParserCtxt( schemaParserContext );
 
     return result == 0;
 }
@@ -141,34 +153,38 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
 const bool Validator::validate( xmlNodePtr node )
 {
     int result;
-    xmlSchemaParserCtxtPtr schemaParserContext;
-    xmlSchemaPtr schema;
     xmlSchemaValidCtxtPtr schemaValidContext;
 
     // Open XML schema file
-    if ((schemaParserContext = xmlSchemaNewParserCtxt(m_xsd_content.c_str())) == NULL)
+    if ( !m_schemaParserContext )
     {
-        return false;
+        if (!(m_schemaParserContext = SchemaParserCtxtSptr (
+                  xmlSchemaNewParserCtxt(m_xsd_content.c_str()),
+                  xmlSchemaFreeParserCtxt)
+              ) )
+        {
+            return false;
+        }
     }
 
     // Load XML schema content
-    schema = xmlSchemaParse(schemaParserContext);
-    if (schema == NULL)
+    if (!m_schema)
     {
-        xmlSchemaFreeParserCtxt( schemaParserContext );
+        m_schema = SchemaSptr ( xmlSchemaParse(m_schemaParserContext.get()), xmlSchemaFree );
+    }
+    if (!m_schema)
+    {
         return false;
     }
 
     // Create XML schemas validation context
-    if ((schemaValidContext = xmlSchemaNewValidCtxt(schema)) == NULL)
+    if ((schemaValidContext = xmlSchemaNewValidCtxt(m_schema.get())) == NULL)
     {
-        xmlSchemaFree(schema);
-        xmlSchemaFreeParserCtxt( schemaParserContext );
         return false;
     }
 
      // Set the structured error callback
-    xmlSchemaSetParserStructuredErrors(schemaParserContext, Validator::ErrorHandler, this );
+    xmlSchemaSetParserStructuredErrors(m_schemaParserContext.get(), Validator::ErrorHandler, this );
     xmlSchemaSetValidStructuredErrors( schemaValidContext, Validator::ErrorHandler, this );
 
     result = xmlSchemaValidateOneElement( schemaValidContext, node );
@@ -184,8 +200,6 @@ const bool Validator::validate( xmlNodePtr node )
     }
 
     xmlSchemaFreeValidCtxt(schemaValidContext);
-    xmlSchemaFree( schema );
-    xmlSchemaFreeParserCtxt( schemaParserContext );
 
     return result == 0;
 }

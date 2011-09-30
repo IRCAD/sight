@@ -9,6 +9,8 @@
 
 #include <string>
 #include <sstream>
+
+#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 #include <libxml/tree.h>
 #include <libxml/xmlschemastypes.h>
@@ -37,6 +39,15 @@ struct Validator
 {
 
     /**
+     * @brief   Copy Constructor
+     *
+     * Copy a validator.
+     *
+     * @param   validator to be copied
+     */
+    FWRUNTIME_API Validator( const Validator &validator );
+
+    /**
      * @brief   Constructor
      *
      * Builds a validator with a string containing a XML shema.
@@ -58,7 +69,6 @@ struct Validator
      * @brief   Destructor
      */
     FWRUNTIME_API ~Validator();
-
 
     /**
      * @brief   Clears the error log.
@@ -103,6 +113,11 @@ private:
     std::string             m_xsd_content ;
     std::ostringstream      m_errorLog;
 
+    typedef ::boost::shared_ptr< xmlSchemaParserCtxt > SchemaParserCtxtSptr;
+    typedef ::boost::shared_ptr< xmlSchema > SchemaSptr;
+
+    SchemaParserCtxtSptr  m_schemaParserContext;
+    SchemaSptr            m_schema;
 
     static void ErrorHandler( void * userData, xmlErrorPtr error );
 

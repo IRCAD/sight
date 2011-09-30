@@ -16,6 +16,9 @@
 
 namespace fwXML
 {
+
+DataFolderValidator::ValidatorMapType DataFolderValidator::s_validators;
+
 //-----------------------------------------------------------------------------
 
 DataFolderValidator::DataFolderValidator()
@@ -118,10 +121,17 @@ const bool DataFolderValidator::validateSingle( xmlNodePtr node )
 
     OSLM_DEBUG("key" << key << " - name : " << xsdPath.string());
 
+
+
     if ( !xsdPath.empty() )
     {
+        if (s_validators.find(key) == s_validators.end())
+        {
+            ::fwRuntime::io::Validator validator(xsdPath);
+            s_validators.insert( ValidatorMapType::value_type(key, validator));
+        }
         //xmlNodePtr newNode = xmlCopyNode(node,1);
-        ::fwRuntime::io::Validator validator(xsdPath);
+        ::fwRuntime::io::Validator &validator = (*s_validators.find(key)).second;
         OSLM_INFO(" DataFolderValidator::validateSingle " << key );
 
         result = validator.validate(node);
