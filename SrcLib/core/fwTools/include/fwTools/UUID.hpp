@@ -4,21 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef UUID_HPP_
-#define UUID_HPP_
+#ifndef _FWTOOLS_UUID_HPP_
+#define _FWTOOLS_UUID_HPP_
 
 #include <string>
 #include <map>
 
-#include <stdexcept>
-
-#include <boost/cstdint.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/type_traits.hpp>
-
 #include <fwCore/base.hpp>
+
+#include "fwTools/Object.hpp"
 #include "fwTools/config.hpp"
-#include "fwTools/TypeInfo.hpp"
 
 namespace fwTools
 {
@@ -33,80 +28,37 @@ class FWTOOLS_CLASS_API UUID
 {
 public:
 
+    fwCoreClassDefinitionsWithFactoryMacro((UUID), (( )), new UUID );
+
+    typedef std::string UUIDType;
 
     /**
      * @brief   Return true iff the given uuid is used
      */
-    FWTOOLS_API static bool exist( const std::string & uuid);
+    FWTOOLS_API static bool exist( const UUIDType & uuid);
 
     /**
-     * @brief   Return an uuid to the given object : if no one previously set then generate a new one (shared_ptr version)
+     * @brief   Return an uuid to the given object : if no one previously set then generate a new one
      */
-    template<class T>
-    static std::string get(boost::shared_ptr<T> sptr);
-
-    /**
-     * @brief   Return an uuid to the given object : if no one previously set then generate a new one (weak_ptr version)
-     */
-    template<class T>
-    static std::string get( boost::weak_ptr<T> wptr );
+    FWTOOLS_API static const UUIDType& get(::fwTools::Object::sptr object);
 
 
     /**
      * @brief   Return a smart ptr on the object related to a given UUID : return null shared if not supervised
      */
-    template<class T>
-    static boost::shared_ptr<T> get( const std::string & uuid );
-
-
-    /**
-     * @brief   Return true iff the ptr avec already an uuid assigned
-     */
-    template<class T>
-    static bool supervise(T *ptr);
-
-    /**
-     * @brief   Return true iff the weak ptr avec already an uuid assigned (weak_ptr version)
-     */
-    template<class T>
-    static bool supervise(boost::weak_ptr<T> wptr);
-
-    /**
-     * @brief   Return true iff the shared ptr avec already an uuid assigned (shared_ptr version)
-     */
-    template<class T>
-    static bool supervise(boost::shared_ptr<T> sptr);
-
+    FWTOOLS_API static ::fwTools::Object::sptr get( const UUIDType & uuid );
 
     /**
      * @brief   Return a new extended UUID;
      */
-    FWTOOLS_API static std::string generateUUID();
-
+    FWTOOLS_API static UUIDType generateUUID();
 
 protected :
 
-    /// Store association boost::weak_ptr adress <--> uuid as a string
-    typedef std::string UUIDType;
-    typedef std::map< boost::weak_ptr<void>, UUIDType  > UUIDContainer;
+    /// Store association ::boost::weak_ptr <--> uuid as a string
+    typedef std::map< UUIDType, ::fwTools::Object::wptr > UUIDContainer;
 
-    FWTOOLS_API static UUIDContainer m_uuids;
-
-    /**
-     * @brief   Return the next non expired weak ptr; erase all expired discovered
-     * @note    To also be called before a for loop to remobe first element ( if necessary )
-     */
-    FWTOOLS_API static void next( UUIDContainer::iterator &iter );
-
-    /**
-     * @brief   Return the first non expired element
-     */
-    FWTOOLS_API static UUIDContainer::iterator begin(UUIDContainer &uuidContainer);
-
-    /**
-     * @brief   Maintain lastest index available for a given typeinfo
-     */
-    FWTOOLS_API static std::map< TypeInfo, ::boost::uint32_t > m_CategorizedCounter;
+    FWTOOLS_API static UUIDContainer m_uuidMap;
 
     /**
      * @brief   Default constructor : does nothing.
@@ -118,20 +70,14 @@ protected :
      */
     FWTOOLS_API virtual ~UUID();
 
+private:
 
-
-    /**
-     * @brief   Helper to find a weak_ptr in the m_uuids
-     * @param   wp weeak_ptr to be find
-     * @return  Iterator on the uuid associated to the weak_ptr
-     */
-    UUIDContainer::iterator find( boost::weak_ptr<void> wp );
+    /// local UUID, empty by default if not generated.
+    UUIDType m_uuid;
 
 };
 
 }
 
-#include "fwTools/UUID.hxx"
 
-
-#endif /* UUID_HPP_ */
+#endif /* _FWTOOLS_UUID_HPP_ */

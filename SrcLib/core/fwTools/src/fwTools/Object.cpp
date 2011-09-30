@@ -8,112 +8,19 @@
 
 #include "fwTools/ClassRegistrar.hpp"
 #include "fwTools/Object.hpp"
+#include "fwTools/Field.hpp"
 #include "fwTools/UUID.hpp"
 #include "fwTools/Factory.hpp"
 
-namespace fwTools {
-
-//------------------------------------------------------------------------------
-
-const std::string & getLabel(const ::fwTools::Object *obj)
+namespace fwTools
 {
-    const Field *lobj = dynamic_cast< const fwTools::Field *>( obj );
-    SLM_ASSERT("lobj not instanced", lobj);
-    return lobj->label();
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::Field::sptr castToField(::fwTools::Object::sptr obj)
-{
-    assert( fwTools::Field::dynamicCast(obj) );
-    return fwTools::Field::dynamicCast(obj);
-}
-
-//------------------------------------------------------------------------------
-
-Field::Field()
-{
-}
-
-//------------------------------------------------------------------------------
-
-Field::Field(const std::string &newLabel ) :  m_label(newLabel)
-{
-}
-
-//------------------------------------------------------------------------------
-
-Field::~Field()
-{
-}
-
-//------------------------------------------------------------------------------
-
-std::string & Field::label()
-{
-    return m_label;
-}
-
-//------------------------------------------------------------------------------
-
-const std::string & Field::label() const
-{
-    return m_label;
-}
-
-//------------------------------------------------------------------------------
-
-void Field::shallowCopy( ::fwTools::Field::csptr _source )
-{
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    m_label = _source->m_label;
-}
-
-//------------------------------------------------------------------------------
-
-void Field::deepCopy( ::fwTools::Field::csptr _source )
-{
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    m_label = _source->m_label;
-}
-
-//------------------------------------------------------------------------------
-
-void Field::shallowCopy( ::fwTools::Field::sptr _source )
-{
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    m_label = _source->m_label;
-}
-
-//------------------------------------------------------------------------------
-
-void Field::deepCopy( ::fwTools::Field::sptr _source )
-{
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    m_label = _source->m_label;
-}
-
-//------------------------------------------------------------------------------
-
-void Field::shallowCopy( ::fwTools::Object::csptr _source )
-{
-    ::fwTools::Object::shallowCopy< ::fwTools::Field >( _source );
-}
-
-//------------------------------------------------------------------------------
-
-
-void Field::deepCopy( ::fwTools::Object::csptr _source )
-{
-    ::fwTools::Object::deepCopy< ::fwTools::Field >( _source );
-}
 
 //------------------------------------------------------------------------------
 
 Object::Object() :
     m_timeStamp ( ::fwCore::TimeStamp::New()  ),
-    m_logicStamp( ::fwCore::LogicStamp::New() )
+    m_logicStamp( ::fwCore::LogicStamp::New() ),
+    m_uuid( ::fwTools::UUID::New() )
 {
     m_OSRKey = ::fwCore::LogicStamp::New();
     m_OSRKey->modified();
@@ -144,16 +51,14 @@ std::string Object::className() const
     return this->getClassname();
 }
 
-
 //------------------------------------------------------------------------------
 
 ::fwTools::Field::sptr Object::setField( const FieldID &fieldId )
 {
     Field::sptr field = getField(fieldId);
-
     if ( field.get()==NULL )
     {
-        fwTools::Field::NewSptr newfield(fieldId);
+        ::fwTools::Field::NewSptr newfield(fieldId);
         m_children.push_back( newfield );
         return newfield ;
     }
@@ -168,17 +73,14 @@ std::string Object::className() const
 
 ::fwTools::Field::sptr Object::getField( const FieldID &fieldId )
 {
-
     for ( ChildContainer::iterator f = m_children.begin() ;  f != m_children.end(); ++f )
     {
         ::fwTools::Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
-//      SLM_ASSERT("lobj not instanced", lobj);
         if ( lobj && lobj->label() == fieldId )
         {
             return lobj;
         }
     }
-
     return ::fwTools::Field::sptr();
 }
 
@@ -186,17 +88,14 @@ std::string Object::className() const
 
 ::fwTools::Field::csptr Object::getField( const FieldID &fieldId ) const
 {
-
     for ( ChildContainer::const_iterator f = m_children.begin() ;  f != m_children.end(); ++f )
     {
         Field::sptr lobj = ::fwTools::Field::dynamicCast( *f );
-//      SLM_ASSERT("lobj not instanced", lobj);
         if ( lobj && lobj->label() == fieldId )
         {
             return lobj;
         }
     }
-
     return Field::sptr();
 }
 
@@ -220,7 +119,6 @@ std::string Object::className() const
     }
     return _result->getField(fieldId) ;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -250,7 +148,8 @@ void Object::removeField( const FieldID &fieldId )
     if ( getField(fieldId) )
     {
         // field exist append newSubObject as *unique* element
-        assert( field->children().size() < 2 ); // change behavior of Field ?? many element -> one ?
+        OSLM_ASSERT("Field "<<fieldId<<" exist, replace only unique element",
+                field->children().size() < 2 ); // change behavior of Field ?? many element -> one ?
         field->children().clear();
         field->children().push_back( newSubObject );
         return field;
@@ -258,12 +157,11 @@ void Object::removeField( const FieldID &fieldId )
     else
     {
         // field doesn no exist create it then append new element
-        fwTools::Field::NewSptr newfield(fieldId);
+        ::fwTools::Field::NewSptr newfield(fieldId);
         newfield->children().push_back(newSubObject);
         m_children.push_back( newfield);
         return newfield;
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -293,7 +191,6 @@ void Object::removeField( const FieldID &fieldId )
 void Object::removeFieldElement( const FieldID &fieldId, ::fwTools::Object::sptr subObjectToRemove )
 {
     ::fwTools::Field::sptr field = getField(fieldId);
-
     if ( field)
     {
         ChildContainer::iterator i;
@@ -360,7 +257,6 @@ void Object::deepCopyOfChildren( Object::csptr _source )
             ++f )
     {
         ::fwTools::Object::sptr sourceSubObject = *f;
-        //::fwTools::Object::NewSptr newSubObject;
         ::fwTools::Object::sptr newSubObject = ::fwTools::Factory::buildData( sourceSubObject->getClassname() );
         newSubObject->deepCopy( sourceSubObject );
         m_children.push_back( newSubObject );

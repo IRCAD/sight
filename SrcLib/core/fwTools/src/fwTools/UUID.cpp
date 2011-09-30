@@ -10,80 +10,68 @@
   #include <uuid/uuid.h> // in package uuid-dev and used libuuid
 #endif
 
-#include <fwCore/Demangler.hpp>
-
 #include "fwTools/UUID.hpp"
 
 namespace fwTools
 {
 
-std::map< TypeInfo, ::boost::uint32_t > UUID::m_CategorizedCounter;
-UUID::UUIDContainer UUID::m_uuids;
+UUID::UUIDContainer UUID::m_uuidMap;
 
 //-----------------------------------------------------------------------------
 
-UUID::UUID()
+UUID::UUID() : m_uuid("")
 {}
 
 //-----------------------------------------------------------------------------
 
 UUID::~UUID()
-{}
-
-//-----------------------------------------------------------------------------
-
-void UUID::next( UUIDContainer::iterator &iter )
 {
-    UUIDContainer::iterator iterCurrent = iter;
-    if ( iterCurrent != m_uuids.end() )
+    UUID::UUIDContainer::iterator iter = UUID::m_uuidMap.find(m_uuid);
+    if( iter != UUID::m_uuidMap.end())
     {
-        iter++;
-        if ( iterCurrent->first.expired())
-        {
-            // previous item is expired, we remove it
-            m_uuids.erase(iterCurrent); // OK C++ stdLib book p 205
-        }
-
-        if ( iter != m_uuids.end() && iter->first.expired() )
-        {
-            next( iter ) ; // if not expired we do not need to search next
-        }
+        UUID::m_uuidMap.erase(iter);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-UUID::UUIDContainer::iterator UUID::begin(UUIDContainer &uuidContainer)
+bool UUID::exist( const UUID::UUIDType & uuid)
 {
-     UUIDContainer::iterator i=m_uuids.begin();
-     while( i != m_uuids.end() && i->first.expired() )
-     {
-         next(i);
-     }
-     return i;
+    return ( UUID::m_uuidMap.find(uuid) != UUID::m_uuidMap.end() );
 }
 
 //-----------------------------------------------------------------------------
 
-bool UUID::exist( const std::string & uuid )
+const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 {
-    UUIDContainer::iterator i= begin(m_uuids) ;
-    while ( i!= m_uuids.end() )
+    SLM_ASSERT("Object expired", !object);
+    UUID::sptr uuidObject = object->m_uuid;
+    if(uuidObject->m_uuid.empty())
     {
-        if ( i->second == uuid)
-        {
-            return true;
-        }
-        next(i);
+        uuidObject->m_uuid = UUID::generateUUID();
+        UUID::m_uuidMap.insert(UUID::UUIDContainer::value_type(uuidObject->m_uuid, object));
     }
-    return false;
+    return uuidObject->m_uuid;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string UUID::generateUUID()
+::fwTools::Object::sptr UUID::get( const UUID::UUIDType & uuid )
 {
-    std::string extUUID;
+    ::fwTools::Object::sptr obj;
+    UUID::UUIDContainer::iterator iter = UUID::m_uuidMap.find(uuid);
+    if( iter != UUID::m_uuidMap.end() )
+    {
+        obj = iter->second.lock();
+    }
+    return obj;
+}
+
+//-----------------------------------------------------------------------------
+
+UUID::UUIDType UUID::generateUUID()
+{
+    UUID::UUIDType extUUID;
 
 #ifdef WIN32
         UCHAR *str = NULL;
@@ -103,27 +91,5 @@ std::string UUID::generateUUID()
 }
 
 //-----------------------------------------------------------------------------
-
-// helper to find a weak_ptr in the m_uuids
-UUID::UUIDContainer::iterator UUID::find( boost::weak_ptr<void> wp )
-{
-    assert ( !wp.expired() );
-
-    boost::shared_ptr<void> sp = wp.lock();
-    UUIDContainer::iterator i= begin( m_uuids) ;
-    while ( i!= m_uuids.end() )
-    {
-
-        if ( i->first.expired()==false   &&    sp == i->first.lock()  )
-        {
-            return i;
-        }
-        next(i);
-    }
-    return m_uuids.end();
-}
-
-//-----------------------------------------------------------------------------
-
 
 }
