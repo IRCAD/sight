@@ -3,10 +3,13 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+#include <cstring>
+#include <functional>
+#include <numeric>
 #include <stdexcept>
-#include <boost/bimap/bimap.hpp>
 
 #include <boost/assign/list_of.hpp>
+#include <boost/bimap/bimap.hpp>
 #include <boost/cast.hpp>
 
 #include <vtkImageImport.h>
@@ -131,16 +134,68 @@ void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 
 //-----------------------------------------------------------------------------
 
+
+template< typename IMAGETYPE >
+void *newBuffer(size_t size)
+{
+    IMAGETYPE *destBuffer;
+    try
+    {
+        destBuffer = new IMAGETYPE[ size ];
+    }
+    catch (std::exception &e)
+    {
+        OSLM_ERROR ("No enough memory to allocate an image of type "
+                << fwTools::makeDynamicType<IMAGETYPE>().string()
+                << " and of size "<< size << "." << std::endl 
+                << e.what() );
+        throw;
+    }
+    return destBuffer;
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename IMAGETYPE >
+void fromRGBBuffer( void *input, size_t size, void *&destBuffer)
+{
+    destBuffer = newBuffer<IMAGETYPE>(size);
+
+    IMAGETYPE *destBufferTyped = (IMAGETYPE*)destBuffer;
+    IMAGETYPE *inputTyped      = (IMAGETYPE*)input;
+    IMAGETYPE *finalPtr        = ((IMAGETYPE*)destBuffer) + size;
+    IMAGETYPE valR, valG,valB;
+
+    while (destBufferTyped < finalPtr)
+    {
+        valR = (IMAGETYPE)(float((*(inputTyped++)) * 0.30));
+        valG = (IMAGETYPE)(float((*(inputTyped++)) * 0.59));
+        valB = (IMAGETYPE)(float((*(inputTyped++)) * 0.11));
+        (*destBufferTyped++) = valR + valG + valB;
+    }
+}
+//-----------------------------------------------------------------------------
+
+
 void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
     assert(destination && source );
 
+    // ensure image size correct
+    source->UpdateInformation();
+    source->PropagateUpdateExtent();
+
     int dim = source->GetDataDimension() ;
     OSLM_TRACE("source->GetDataDimension() : " << dim);
+
+    destination->getRefSize().resize(dim);
+    destination->getRefSpacing().resize(dim);
+    destination->getRefOrigin().resize(dim);
+
     destination->setDimension( dim );
-    std::copy( source->GetDimensions(), source->GetDimensions()+dim, destination->getRefSize().begin() );
-    std::copy( source->GetSpacing(), source->GetSpacing()+dim, destination->getRefSpacing().begin() );
-    std::copy( source->GetOrigin(), source->GetOrigin()+dim, destination->getRefOrigin().begin() );
+    std::copy( source->GetDimensions(), source->GetDimensions()+dim, destination->getRefSize().begin()    );
+    std::copy( source->GetSpacing()   , source->GetSpacing()+dim   , destination->getRefSpacing().begin() );
+    std::copy( source->GetOrigin()    , source->GetOrigin()+dim    , destination->getRefOrigin().begin()  );
 
     if(dim == 2)
     {
@@ -148,87 +203,53 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     }
     SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
 
-    // ensure image size correct
-    source->UpdateInformation();
-    source->PropagateUpdateExtent();
-    // GetEstimatedMemorySize return value in kilobytes
-    unsigned long imageMemSize = source->GetEstimatedMemorySize() * 1024;
-
+    int *dimensions = source->GetDimensions();
+    size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 1, std::multiplies<size_t>() );
     void *input = source->GetScalarPointer();
     void *destBuffer;
 
-    if (imageMemSize != 0)
+    if (size != 0)
     {
-        int nbImg = destination->getRefSize()[2] ;
-        int bytePerPixel = source->GetScalarSize();
-        int components = source->GetNumberOfScalarComponents();
-        int size = ( imageMemSize / components );
-        OSLM_TRACE("imageMemSize : " << imageMemSize << " - bytePerPixel : " << bytePerPixel << " - finalSize : " << size);
-        try
-        {
-            destBuffer = new char[ size ];
-        }
-        catch (std::exception &e)
-        {
-            OSLM_ERROR ("Need more memory : " << e.what() );
-            throw;
-        }
+        int nbBytePerPixel = source->GetScalarSize();
+        int nbComponents = source->GetNumberOfScalarComponents();
+        OSLM_TRACE("imageMemSize : " << imageMemSize << " - nbBytePerPixel : " << nbBytePerPixel << " - finalSize : " << size);
 
-        if (components == 3 && bytePerPixel == 2)
+        if (nbComponents == 3 && nbBytePerPixel == 2)
         {
             SLM_TRACE ("RGB 16bits");
-            unsigned short* destBufferTyped = ( unsigned short*)destBuffer;
-            unsigned short* inputTyped= (unsigned short*)input;
-            unsigned short* finalPtr = ((unsigned short*)destBuffer) + size;
-            unsigned short valR, valG,valB;
-            while (destBufferTyped < finalPtr)
-            {
-                valR = (unsigned short)(float((*(inputTyped++)) * 0.30));
-                valG = (unsigned short)(float((*(inputTyped++)) * 0.59));
-                valB = (unsigned short)(float((*(inputTyped++)) * 0.11));
-                (*destBufferTyped)= valR + valG + valB;
-                destBufferTyped++;
-            }
-            destination->setPixelType( fwTools::makeDynamicType<unsigned short>() );
+
+            fromRGBBuffer< unsigned short >(input, size, destBuffer);
+            destination->setPixelType( fwTools::makeDynamicType< unsigned short >() );
         }
-        else if (components == 3 && bytePerPixel == 1)
+        else if (nbComponents == 3 && nbBytePerPixel == 1)
         {
             SLM_TRACE ("RGB 8bits");
-            unsigned char* destBufferTyped = ( unsigned char*)destBuffer;
-            unsigned char* inputTyped= ( unsigned char*)input;
-            unsigned char* finalPtr = (( unsigned char*)destBuffer) + size;
-            unsigned char valR, valG,valB;
-            while (destBufferTyped < finalPtr)
-            {
-                valR = (unsigned char)(float((*(inputTyped++)) * 0.30));
-                valG = (unsigned char)(float((*(inputTyped++)) * 0.59));
-                valB = (unsigned char)(float((*(inputTyped++)) * 0.11));
-                (*destBufferTyped)= valR + valG + valB;
-                destBufferTyped++;
-            }
-            destination->setPixelType( fwTools::makeDynamicType<unsigned char>() );
+            fromRGBBuffer< unsigned char >(input, size, destBuffer);
+            destination->setPixelType( fwTools::makeDynamicType< unsigned char >() );
         }
-        else if (components == 1)
+        else if (nbComponents == 1)
         {
             SLM_TRACE ("Luminance image");
-            memcpy( destBuffer, input , imageMemSize);
+            OSLM_ERROR("PixelTypeTranslation.right.at( source->GetScalarType() )  : " << PixelTypeTranslation.right.at( source->GetScalarType() ).string());
             destination->setPixelType( PixelTypeTranslation.right.at( source->GetScalarType() ) );
+            size_t sizeInBytes = ::fwData::imageSizeInBytes(*destination);
+            destBuffer = new char[sizeInBytes];
+            std::memcpy(destBuffer, input, sizeInBytes);
         }
         else
         {
-            SLM_ERROR ("Image type not supported (image dimension)");
+            OSLM_ERROR ("Image type not supported (image nbComponents:"<< nbComponents <<")");
         }
         destination->setBuffer( destBuffer );
     }
 
-    //OSLM_INFO_IF("imageMemSize : " << imageMemSize, !res );
 
     for( ::boost::uint8_t d=0; d<dim; ++d)
     {
-        OSLM_TRACE("Size " << destination->getCRefSize()[d]);
-        OSLM_TRACE("Origin " << destination->getCRefOrigin()[d]);
-        OSLM_TRACE("Spacing " << destination->getCRefSpacing()[d]);
-        destination->getRefOrigin()[d]=0.0; //FIXME !!! Hack because our framework (visu services) doesn't support origine
+        OSLM_TRACE("Size["<< d << "]:" << destination->getCRefSize()[d]);
+        OSLM_TRACE("Origin["<< d << "]:" << destination->getCRefOrigin()[d]);
+        OSLM_TRACE("Spacing["<< d << "]:" << destination->getCRefSpacing()[d]);
+        destination->getRefOrigin()[d]=0.0; //FIXME !!! Hack because we currently don't support image origin (visu services)
     }
 }
 
