@@ -188,20 +188,16 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     int dim = source->GetDataDimension() ;
     OSLM_TRACE("source->GetDataDimension() : " << dim);
 
-    destination->getRefSize().resize(dim);
-    destination->getRefSpacing().resize(dim);
-    destination->getRefOrigin().resize(dim);
+    SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
+    std::fill(destination->getRefSize().begin(), destination->getRefSize().end(), 1);
+    std::fill(destination->getRefSpacing().begin(), destination->getRefSpacing().end(), 1);
+    std::fill(destination->getRefOrigin().begin(), destination->getRefOrigin().end(), 1);
 
     destination->setDimension( dim );
     std::copy( source->GetDimensions(), source->GetDimensions()+dim, destination->getRefSize().begin()    );
     std::copy( source->GetSpacing()   , source->GetSpacing()+dim   , destination->getRefSpacing().begin() );
     std::copy( source->GetOrigin()    , source->GetOrigin()+dim    , destination->getRefOrigin().begin()  );
 
-    if(dim == 2)
-    {
-        destination->getRefSize()[2] = destination->getRefSpacing()[2] = 1;
-    }
-    SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
 
     int *dimensions = source->GetDimensions();
     size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 1, std::multiplies<size_t>() );
@@ -230,7 +226,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         else if (nbComponents == 1)
         {
             SLM_TRACE ("Luminance image");
-            OSLM_ERROR("PixelTypeTranslation.right.at( source->GetScalarType() )  : " << PixelTypeTranslation.right.at( source->GetScalarType() ).string());
             destination->setPixelType( PixelTypeTranslation.right.at( source->GetScalarType() ) );
             size_t sizeInBytes = ::fwData::imageSizeInBytes(*destination);
             destBuffer = new char[sizeInBytes];
