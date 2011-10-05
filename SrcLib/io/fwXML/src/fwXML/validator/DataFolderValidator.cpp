@@ -17,12 +17,11 @@
 namespace fwXML
 {
 
-DataFolderValidator::ValidatorMapType DataFolderValidator::s_validators;
-
 //-----------------------------------------------------------------------------
 
 DataFolderValidator::DataFolderValidator()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -122,16 +121,22 @@ const bool DataFolderValidator::validateSingle( xmlNodePtr node )
     OSLM_DEBUG("key" << key << " - name : " << xsdPath.string());
 
 
-
     if ( !xsdPath.empty() )
     {
-        if (s_validators.find(key) == s_validators.end())
+        std::string path;
+#if BOOST_FILESYSTEM_VERSION > 2
+        path = xsdPath.string();
+#else
+        path = xsdPath.native_file_string();
+#endif
+        if (m_validators.find(path) == m_validators.end())
         {
             ::fwRuntime::io::Validator validator(xsdPath);
-            s_validators.insert( ValidatorMapType::value_type(key, validator));
+            m_validators.insert( ValidatorMapType::value_type(path, validator));
         }
         //xmlNodePtr newNode = xmlCopyNode(node,1);
-        ::fwRuntime::io::Validator &validator = (*s_validators.find(key)).second;
+        ::fwRuntime::io::Validator &validator = (*m_validators.find(path)).second;
+
         OSLM_INFO(" DataFolderValidator::validateSingle " << key );
 
         result = validator.validate(node);

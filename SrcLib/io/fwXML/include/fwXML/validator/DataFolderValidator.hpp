@@ -56,7 +56,7 @@ protected :
     std::map< std::string, ::boost::filesystem::path > m_schemaPath;
 
     typedef std::map< std::string, ::fwRuntime::io::Validator > ValidatorMapType;
-    static ValidatorMapType s_validators;
+    ValidatorMapType m_validators;
 
     /// store log from validators
     std::string m_errorLog;
