@@ -110,14 +110,18 @@ struct Validator
 
 private:
 
+    void initializeContext();
+
     std::string             m_xsd_content ;
     std::ostringstream      m_errorLog;
 
     typedef ::boost::shared_ptr< xmlSchemaParserCtxt > SchemaParserCtxtSptr;
     typedef ::boost::shared_ptr< xmlSchema > SchemaSptr;
+    typedef ::boost::shared_ptr< xmlSchemaValidCtxt > SchemaValidCtxtSptr;
 
     SchemaParserCtxtSptr  m_schemaParserContext;
     SchemaSptr            m_schema;
+    SchemaValidCtxtSptr   m_schemaValidContext;
 
     static void ErrorHandler( void * userData, xmlErrorPtr error );
 
