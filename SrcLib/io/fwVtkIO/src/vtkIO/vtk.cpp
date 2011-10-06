@@ -208,7 +208,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     {
         int nbBytePerPixel = source->GetScalarSize();
         int nbComponents = source->GetNumberOfScalarComponents();
-        OSLM_TRACE("imageMemSize : " << imageMemSize << " - nbBytePerPixel : " << nbBytePerPixel << " - finalSize : " << size);
+        OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
         if (nbComponents == 3 && nbBytePerPixel == 2)
         {
