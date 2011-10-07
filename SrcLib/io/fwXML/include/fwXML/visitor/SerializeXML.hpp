@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef SERIALIZEXMLBREATH_FIRST_H
-#define SERIALIZEXMLBREATH_FIRST_H
+#ifndef _FWXML_VISITOR_SERIALIZEXML_HPP
+#define _FWXML_VISITOR_SERIALIZEXML_HPP
 
 #include <map>
 #include <boost/shared_ptr.hpp>
@@ -42,4 +42,4 @@ public:
 
 }
 
-#endif /*SERIALIZEXMLBREATH_FIRST_H*/
+#endif /*_FWXML_VISITOR_SERIALIZEXML_HPP*/

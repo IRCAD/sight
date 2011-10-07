@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef SERIALIZEBREATH_FIRST_H
-#define SERIALIZEBREATH_FIRST_H
+#ifndef _FWXML_VISITOR_SERIALIZE_HPP
+#define _FWXML_VISITOR_SERIALIZE_HPP
 
 #include "fwXML/config.hpp"
 #include <fwData/visitor/BreathFirst.hpp>
@@ -35,4 +35,4 @@ public:
 
 }
 
-#endif /*SERIALIZEBREATH_FIRST_H*/
+#endif /*_FWXML_VISITOR_SERIALIZE_HPP*/
