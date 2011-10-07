@@ -92,23 +92,23 @@ const bool DataFolderValidator::validate( xmlNodePtr node )
     }
 
     std::vector< xmlNodePtr >::iterator iter;
+    xmlDocPtr  doc = xmlNewDoc(BAD_CAST "1.0");
+    xmlNodePtr subNode;
     for(iter = nodes.begin(); iter != nodes.end(); ++iter)
     {
         // create a sub doc to validate
         // see http://mail.gnome.org/archives/xml/2006-May/msg00094.html for pb detail
-        xmlDocPtr  doc = xmlNewDoc(BAD_CAST "1.0");
-        xmlNodePtr subNode =  *iter;
-        xmlDocSetRootElement(doc, subNode );
+        subNode = *iter;
+        xmlDocSetRootElement(doc, subNode);
 
-        result &= validate( subNode );
+        result &= validate(subNode);
 
-        xmlFreeDoc(doc);
-
-        if ( result==false )
+        if (result == false)
         {
             return false; // with correct errlog setted
         }
     }
+    xmlFreeDoc(doc);
     return result;
 }
 
