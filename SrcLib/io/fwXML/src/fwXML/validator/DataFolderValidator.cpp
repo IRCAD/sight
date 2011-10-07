@@ -79,31 +79,34 @@ const std::string DataFolderValidator::getErrorLog() const
 
 const bool DataFolderValidator::validate( xmlNodePtr node )
 {
+    std::vector< xmlNodePtr > nodes;
     bool result = validateSingle(node);
     node = node->children;
     while ( result && node)
     {
-        if ( node->type != XML_ELEMENT_NODE )
+        if ( node->type == XML_ELEMENT_NODE )
         {
-            node = node->next;
+            nodes.push_back(node);
         }
-        else
+        node = node->next;
+    }
+
+    std::vector< xmlNodePtr >::iterator iter;
+    for(iter = nodes.begin(); iter != nodes.end(); ++iter)
+    {
+        // create a sub doc to validate
+        // see http://mail.gnome.org/archives/xml/2006-May/msg00094.html for pb detail
+        xmlDocPtr  doc = xmlNewDoc(BAD_CAST "1.0");
+        xmlNodePtr subNode =  *iter;
+        xmlDocSetRootElement(doc, subNode );
+
+        result &= validate( subNode );
+
+        xmlFreeDoc(doc);
+
+        if ( result==false )
         {
-            // create a sub doc to validate
-            // see http://mail.gnome.org/archives/xml/2006-May/msg00094.html for pb detail
-            xmlDocPtr  doc = xmlNewDoc(BAD_CAST "1.0");
-            xmlNodePtr newSubNode =  xmlCopyNode(node,1);
-            xmlDocSetRootElement(doc, newSubNode );
-
-            result &= validate( newSubNode );
-
-            xmlFreeDoc(doc);
-
-            if ( result==false )
-            {
-                return false; // with correct errlog setted
-            }
-            node = node->next;
+            return false; // with correct errlog setted
         }
     }
     return result;

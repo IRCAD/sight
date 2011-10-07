@@ -424,12 +424,15 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     if ( validateWithSchema )
     {
+        xmlNodePtr rootToBeValidated = xmlCopyNode(xmlRoot,1);
         // validation
         DataFolderValidator validator;
         validator.collecteSchema( this->rootFolder() );
-        bool validationOK = validator.validate( xmlRoot );
+        bool validationOK = validator.validate( rootToBeValidated );
         OSLM_INFO("XML VALIDATION (1=OK) OF " <<  filePath.string() << " result=" << validationOK );
         OSLM_INFO("XML VALIDATION ERROR LOG ==BEGIN " << validator.getErrorLog() << " END==" );
+
+        xmlFreeNode(rootToBeValidated);
 
         if ( validationOK == false )
         {
