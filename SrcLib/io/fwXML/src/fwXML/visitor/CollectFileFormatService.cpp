@@ -40,7 +40,7 @@ void CollectFileFormatService::visit( ::fwTools::Object::sptr obj)
                 "(" <<  ::fwTools::UUID::get(obj)    <<
                 ") HAS<FileFormatService>" <<  (::fwServices::OSR::has(obj, "::fwXML::IFileFormatService")?"yes":"no") <<
                 "ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
-                "(" << (m_source ? ::fwTools::UUID::get(m_source):"NoSOURCENOUUID";) << ")"
+                "(" << (m_source ? ::fwTools::UUID::get(m_source):"NoSOURCENOUUID") << ")"
                 );
 
     SLM_ASSERT("Object is null",obj);
