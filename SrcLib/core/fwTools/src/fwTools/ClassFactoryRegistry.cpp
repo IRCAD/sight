@@ -52,7 +52,7 @@ ClassFactoryRegistry::FactoryContainerMap &ClassFactoryRegistry::getFactories()
     ::fwTools::IClassFactory::sptr factory;
     if(getFactories().find(base) != getFactories().end() )
     {
-        FactoryContainer mapFactory =  getFactories()[base];
+        FactoryContainer &mapFactory =  getFactories()[base];
         if(mapFactory.find(key) != mapFactory.end() )
         {
             factory = mapFactory[key];
@@ -69,17 +69,19 @@ void ClassFactoryRegistry::addFactory(::fwTools::IClassFactory::sptr factory)
     std::string baseClass = ::fwTools::getString(factory->baseClassId());
     std::string subClass = ::fwTools::getString(factory->subClassId());
 
-    if(getFactories().find(baseClass) == getFactories().end() )
+    ClassFactoryRegistry::FactoryContainerMap &factoryMap = getFactories();
+
+    if(factoryMap.find(baseClass) == factoryMap.end() )
     {
         FactoryContainer mapFactory;
         mapFactory.insert(std::make_pair(key, factory));
-        getFactories().insert(std::make_pair(baseClass, mapFactory));
+        factoryMap.insert(std::make_pair(baseClass, mapFactory));
     }
     else
     {
-        if(getFactories()[baseClass].find(key) == getFactories()[baseClass].end())
+        if(factoryMap[baseClass].find(key) == factoryMap[baseClass].end())
         {
-            getFactories()[baseClass].insert(std::make_pair(key, factory));
+            factoryMap[baseClass].insert(std::make_pair(key, factory));
         }
         else
         {

@@ -106,20 +106,11 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
         ::fwTools::Object::sptr newObject = ::fwTools::Object::dynamicCast( ::fwTools::Factory::buildData( className ) ) ;
         m_buildedObject[uniqueIDXML] = newObject;
         OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " first instantiation");
-        if ( ::fwTools::UUID::supervise(newObject) == false )
-        {
-            std::string newID = ::fwTools::UUID::get(newObject); // generate a new one
-            m_oldNewUUIDTranslation[uniqueIDXML] = newID;
-            OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " new UUID : "
-                        << ::fwTools::UUID::get(newObject) );
-        }
-        else
-        {
-            std::string currentID = ::fwTools::UUID::get(newObject);
-            m_oldNewUUIDTranslation[uniqueIDXML] = currentID;
-            OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " use previous UUID : "
-                                    << ::fwTools::UUID::get(newObject) );
-        }
+
+        std::string uuid = ::fwTools::UUID::get(newObject); // generate a new one if not supervised
+        m_oldNewUUIDTranslation[uniqueIDXML] = uuid;
+        OSLM_DEBUG("ObjectTracker::buildObject "<<className<<"-"<<newObject.get() << " UUID : " << uuid);
+
         return newObject;
     }
     else

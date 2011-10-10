@@ -4,10 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <set>
+#include <boost/assign/list_of.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/IEditionService.hpp>
 
+#include <fwTools/UUID.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -32,7 +36,8 @@ ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfig
         m_fieldAdaptors ( ::fwData::Composite::New() ),
         m_viewConfigTitlePrefixKey (""),
         m_iconConfigId(""),
-        m_tooltipConfigTitleKey("")
+        m_tooltipConfigTitleKey(""),
+        m_isUnique(false)
 {
     m_closableConfig = true;
     addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
@@ -99,6 +104,13 @@ void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::F
     if( configElement->hasAttribute("tooltipKey") )
     {
         m_tooltipConfigTitleKey = configElement->getExistingAttributeValue("tooltipKey");
+    }
+    if( configElement->hasAttribute("unique") )
+    {
+        std::string unique_str = configElement->getExistingAttributeValue("unique");
+        m_isUnique = (unique_str == "true" || unique_str == "yes");
+        const std::set< std::string> uniqueMapValue = ::boost::assign::list_of("yes")("no")("true")("false");
+        OSLM_ASSERT("Wrong value for attribute 'unique': "<<unique_str, uniqueMapValue.find(unique_str) != uniqueMapValue.end());
     }
 
     m_closableConfig = configElement->getAttributeValue("closable") != "no";
@@ -209,13 +221,30 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     //configTemplateManager->setConfig( config );
 
 
-    std::string fieldID = "::fwServices::registry::AppConfig";
-    std::string viewConfigID = "viewConfigID";
+    std::string fieldID         = "::fwServices::registry::AppConfig";
+    std::string viewConfigID    = "viewConfigID";
     std::string closableFieldID = "closable";
-    std::string iconFieldID = "icon";
-    std::string tooltipFieldID = "tooltip";
+    std::string iconFieldID     = "icon";
+    std::string tooltipFieldID  = "tooltip";
+    std::string tabIDFieldID    = "tabID";
+    std::string tabID;
+    if(m_isUnique)
+    {
+        tabID = "TABID";
+        std::map< std::string, std::string >::const_iterator itr;
+        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        {
+            ::fwData::Composite::ContainerType::iterator key = composite->find(itr->second);
+            OSLM_ASSERT("Missing key "<<itr->second<<" in composite", key!= composite->end());
+            ::fwTools::Object::sptr obj = key->second;
+            tabID += "_" + obj->getID();
+        }
+    }
+    else
+    {
+        tabID = "TABID_" + ::fwTools::UUID::generateUUID();
+    }
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
-
 
     std::stringstream ss;
     if (    ! m_viewConfigTitlePrefixKey.empty() &&
@@ -241,6 +270,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     msg->setFieldSingleElement( fieldID , finalMap );
     msg->setFieldSingleElement( viewConfigID, ::fwData::String::New(m_viewConfigId) );
     msg->setFieldSingleElement( closableFieldID, ::fwData::Boolean::New(m_closableConfig));
+    msg->setFieldSingleElement( tabIDFieldID, ::fwData::String::New(tabID));
     msg->setFieldSingleElement( iconFieldID, ::fwData::String::New(m_iconConfigId) );
 
     ::fwServices::IEditionService::notify(this->getSptr(), composite, msg);

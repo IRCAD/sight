@@ -347,7 +347,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         throw ::fwTools::Failed(mesg);
     }
 
-    assert(className.size());
+    SLM_ASSERT("Empty classname", !className.empty());
     std::string idXML = ObjectTracker::getID(xmlNode );
 
     OSLM_DEBUG("ObjectsFromXml : manage Object " << xmlNode->name );
@@ -403,10 +403,8 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     ::fwTools::Field::sptr  tmp = ::fwTools::Field::dynamicCast(newObject);
     OSLM_DEBUG(" ObjectsFromXml return " << newObject->className()  );
-    if (tmp)
-    {
-        OSLM_WARN(" with label= " << tmp->label());
-    }
+    OSLM_DEBUG_IF(" with label= " << tmp->label(), tmp);
+
     return newObject;
 }
 
@@ -426,12 +424,15 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     if ( validateWithSchema )
     {
+        xmlNodePtr rootToBeValidated = xmlCopyNode(xmlRoot,1);
         // validation
         DataFolderValidator validator;
         validator.collecteSchema( this->rootFolder() );
-        bool validationOK = validator.validate( xmlRoot );
+        bool validationOK = validator.validate( rootToBeValidated );
         OSLM_INFO("XML VALIDATION (1=OK) OF " <<  filePath.string() << " result=" << validationOK );
         OSLM_INFO("XML VALIDATION ERROR LOG ==BEGIN " << validator.getErrorLog() << " END==" );
+
+        xmlFreeNode(rootToBeValidated);
 
         if ( validationOK == false )
         {

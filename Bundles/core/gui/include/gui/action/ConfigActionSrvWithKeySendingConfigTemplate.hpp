@@ -129,6 +129,9 @@ private:
     /// Specify if the config view may be closed
     bool m_closableConfig;
 
+    /// Specify if the config view must be unique
+    bool m_isUnique;
+
     /**
      * @brief keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
      */

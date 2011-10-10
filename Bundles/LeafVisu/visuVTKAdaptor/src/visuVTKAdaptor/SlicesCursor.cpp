@@ -304,49 +304,69 @@ void SlicesCursor::doUpdate() throw(fwTools::Failed)
 
 void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 {
-    unsigned int pos[3];
-
-    pos[2] = m_axialIndex->value();
-    pos[1] = m_frontalIndex->value();
-    pos[0] = m_sagittalIndex->value();
-
-    double sliceWorld[3];
-    for (int dim=0; dim<3; ++dim )
+    float scale = m_isSelected ? 1.0 : m_scale;
+    if (scale <= 0)
     {
-        sliceWorld[dim] = pos[dim]*image->getSpacing()[dim];
+        m_cursorActor->VisibilityOff();
     }
-
-    double cursorPoints[8][3]; // point AB,BC,CD,AD,ABM,BCM,CDM,ADM
-
-    for ( int p=0; p<2; ++p )
+    else
     {
+        m_cursorActor->VisibilityOn();
+
+        unsigned int pos[3];
+
+        pos[2] = m_axialIndex->value();
+        pos[1] = m_frontalIndex->value();
+        pos[0] = m_sagittalIndex->value();
+
+        double sliceWorld[3];
         for (int dim=0; dim<3; ++dim )
         {
-            //cursorPoints[p][dim] =   ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : 0 );
-            //cursorPoints[p+2][dim] = ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : (image->getSize()[dim]-1)*image->getSpacing()[dim] );
-            cursorPoints[p][dim] = sliceWorld[dim];
-            cursorPoints[p+2][dim] = sliceWorld[dim];
-            if ( (dim + p + 1)%3 == m_orientation )
+            // !!!!!!!!!!!!!!!!
+            // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
+            // !!!!!!!!!!!!!!!!
+            //sliceWorld[dim] = pos[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
+            sliceWorld[dim] = pos[dim]*image->getSpacing()[dim];
+        }
+
+        double cursorPoints[8][3]; // point AB,BC,CD,AD,ABM,BCM,CDM,ADM
+
+        for ( int p=0; p<2; ++p )
+        {
+            for (int dim=0; dim<3; ++dim )
             {
-                cursorPoints[p][dim] = 0;
-                cursorPoints[p+2][dim] =  (image->getSize()[dim]-1)*image->getSpacing()[dim];
+                //cursorPoints[p][dim] =   ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : 0 );
+                //cursorPoints[p+2][dim] = ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : (image->getSize()[dim]-1)*image->getSpacing()[dim] );
+                cursorPoints[p][dim] = sliceWorld[dim];
+                cursorPoints[p+2][dim] = sliceWorld[dim];
+                if ( (dim + p + 1)%3 == m_orientation )
+                {
+                    // !!!!!!!!!!!!!!!!
+                    // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
+                    // !!!!!!!!!!!!!!!!
+                    //cursorPoints[p+2][dim] =  (image->getSize()[dim]-1)*image->getSpacing()[dim] + image->getOrigin().at(dim);
+                    //cursorPoints[p][dim] = 0 + image->getOrigin().at(dim);
+                    cursorPoints[p][dim] = 0;
+                    cursorPoints[p+2][dim] =  (image->getSize()[dim]-1)*image->getSpacing()[dim];
+                }
             }
         }
-    }
 
-    float scale = m_isSelected ? 1.0 : m_scale;
-    // Compute ABM & CDM
-    computeCrossPoints( cursorPoints[0], cursorPoints[2], sliceWorld, scale, cursorPoints[4], cursorPoints[6] );
-    // Compute BCM & ADM
-    computeCrossPoints( cursorPoints[1], cursorPoints[3], sliceWorld, scale, cursorPoints[5], cursorPoints[7] );
 
-    vtkPoints* points = m_cursorPolyData->GetPoints();
 
-    for ( int i=0; i < 8; ++i)
-    {
+        // Compute ABM & CDM
+        computeCrossPoints( cursorPoints[0], cursorPoints[2], sliceWorld, scale, cursorPoints[4], cursorPoints[6] );
+        // Compute BCM & ADM
+        computeCrossPoints( cursorPoints[1], cursorPoints[3], sliceWorld, scale, cursorPoints[5], cursorPoints[7] );
+
+        vtkPoints* points = m_cursorPolyData->GetPoints();
+
+        for ( int i=0; i < 8; ++i)
+        {
             points->SetPoint(i,cursorPoints[i]);
-    }
+        }
 
+    }
     m_cursorPolyData->Modified();
     this->setVtkPipelineModified();
 }

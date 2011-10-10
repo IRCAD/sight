@@ -94,8 +94,8 @@ void GraphXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
             std::string uuidSrc = ObjectTracker::xmlID2RuntimeID( uuidSrcXML );
             std::string uuidDst = ObjectTracker::xmlID2RuntimeID(uuidDstXML );
 
-            ::fwData::Node::sptr srcNode = ::fwTools::UUID::get< ::fwData::Node >( uuidSrc );
-            ::fwData::Node::sptr dstNode = ::fwTools::UUID::get< ::fwData::Node >( uuidDst );
+            ::fwData::Node::sptr srcNode = ::fwData::Node::dynamicCast( ::fwTools::UUID::get(uuidSrc) );
+            ::fwData::Node::sptr dstNode = ::fwData::Node::dynamicCast( ::fwTools::UUID::get(uuidDst) );
             SLM_ASSERT("srcNode not instanced", srcNode);
             SLM_ASSERT("dstNode not instanced", dstNode);
 

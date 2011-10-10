@@ -25,6 +25,10 @@ class FWDATA_CLASS_API BreathFirst : public  IVisitor
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (BreathFirst)(IVisitor) ) ;
 
+    FWDATA_API BreathFirst();
+
+    FWDATA_API virtual ~BreathFirst();
+
     FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 
     /// override processing of childs : scan breath first ( aka fields[0] , fields[1] , ...)
@@ -36,7 +40,7 @@ protected :
     typedef ::fwTools::Object::sptr  Source;
     typedef ::fwTools::Object::sptr  Child;
     std::list< std::pair< Source ,Child > > m_fifo;
-
+    int m_recursionLevel;
 };
 
 } // namespace visitor

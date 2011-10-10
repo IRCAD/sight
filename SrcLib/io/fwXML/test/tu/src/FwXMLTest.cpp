@@ -43,7 +43,7 @@ void FwXMLTest::testFwXML()
     ::boost::filesystem::create_directories( PATH.parent_path() );
 
     fwXML::Serializer serializer;
-    ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy );
+    ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy() );
     serializer.setSplitPolicy( spolicy );
 
 #if BOOST_FILESYSTEM_VERSION > 2

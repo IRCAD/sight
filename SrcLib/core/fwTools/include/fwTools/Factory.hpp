@@ -63,7 +63,7 @@ public :
          * The Factory will process Initializer::init() on this object for all registered Initializers
          * @param[in] _obj  the object to be initialized (weak ptr)
          */
-        FWTOOLS_API virtual void init( ::fwTools::Object::wptr _obj ) = 0;
+        FWTOOLS_API virtual void init( ::fwTools::Object::sptr _obj ) = 0;
 
         /**
          * @brief Uninitializes data with the LogicStamp 'key'

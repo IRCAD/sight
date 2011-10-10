@@ -280,7 +280,7 @@ void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr 
     }
     else
     {
-        OSLM_WARN("Sorry, object "<<objectId<<" not found in configuration.");
+        OSLM_DEBUG("Object "<<objectId<<" not managed.");
     }
 }
 //-----------------------------------------------------------------------------
@@ -380,7 +380,7 @@ void SwapperSrv::removeObject( const std::string objectId )
     }
     else
     {
-        OSLM_WARN("Object "<<objectId<<" not found in managed objects.");
+        OSLM_DEBUG("Object "<<objectId<<" not managed.");
     }
 }
 //-----------------------------------------------------------------------------

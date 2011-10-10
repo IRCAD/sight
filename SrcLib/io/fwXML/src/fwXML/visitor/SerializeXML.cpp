@@ -37,13 +37,12 @@ SerializeXML::~SerializeXML()
 void SerializeXML::visit( ::fwTools::Object::sptr obj)
 {
     SLM_ASSERT("Object is null", obj);
-    std::string uuid = ::fwTools::UUID::get(obj);
-    std::string srcUuid = m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     bool supportFileFormatSrv =  ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService");
     OSLM_DEBUG( "SerializeXML Visitor Visiting : Class " << obj->className() <<
-            "(" <<  uuid    <<
+            "(" <<  ::fwTools::UUID::get(obj)    <<
             ") Support<FileFormatService>" <<  (supportFileFormatSrv?"yes":"no") <<
-            "ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
+            "ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
+            "(" << (m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID") << ")"
     );
 
     // get XMLTranslator

@@ -410,6 +410,10 @@ void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3] , double 
                 //setOrientation( (dim==2?2:(dim+1)%2) ); // KEEP Z but swap X,Y
                 this->setOrientation(dim);
             }
+            // !!!!!!!!!!!!!!!!
+            // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
+            // !!!!!!!!!!!!!!!!
+            //probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
             probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim];
         }
 
@@ -424,6 +428,10 @@ void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3] , double 
                     worldCross[p][dim] = 0;
                     ::boost::int32_t size = image->getSize().at(dim)-1;
                     double spacing = image->getSpacing().at(dim);
+                    // !!!!!!!!!!!!!!!!
+                    // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
+                    // !!!!!!!!!!!!!!!!
+                    //worldCross[p+2][dim] =  size * spacing + image->getOrigin().at(dim);
                     worldCross[p+2][dim] =  size * spacing;
                 }
             }

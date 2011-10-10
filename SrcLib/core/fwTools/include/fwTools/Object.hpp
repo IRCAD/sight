@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_LIGHTOBJECT_HPP_
-#define _FWTOOLS_LIGHTOBJECT_HPP_
+#ifndef _FWTOOLS_OBJECT_HPP_
+#define _FWTOOLS_OBJECT_HPP_
 
 #include <string>
 #include <vector>
@@ -17,10 +17,11 @@
 #include "fwTools/config.hpp"
 #include "fwTools/fwID.hpp"
 
-namespace fwTools {
+namespace fwTools
+{
 
-class Object;
 class Field;
+class UUID;
 
 /**
  * @brief   Define Base class for FW4SPL objects and services
@@ -34,15 +35,15 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro((Object), (()), new Object );
     fwCoreAllowSharedFromThis();
 
-
+    friend class ::fwTools::UUID;
 
     typedef std::string FieldID;
 
     /// sub object contained by this one
     typedef std::vector< ::fwTools::Object::sptr > ChildContainer;
 
-    typedef boost::shared_ptr< ::fwTools::Field > FieldSptr; // required du to a Field is declared afterward
-    typedef boost::shared_ptr< const ::fwTools::Field > FieldCSptr; // required du to a Field is declared afterward
+    typedef ::boost::shared_ptr< ::fwTools::Field > FieldSptr; // required du to a Field is declared afterward
+    typedef ::boost::shared_ptr< const ::fwTools::Field > FieldCSptr; // required du to a Field is declared afterward
 
 
     // expose API for ID management
@@ -253,6 +254,7 @@ protected :
 
     ::fwCore::LogicStamp::sptr m_logicStamp;
 
+    SPTR(::fwTools::UUID) m_uuid;
 
     /**
      * @brief A shallow copy of fields (objects in m_children), tests the classname and calls the specific method of the class.
@@ -281,73 +283,9 @@ private :
     ::fwCore::LogicStamp::sptr m_OSRKey;
 };
 
-/**
- * @brief   Class for objects fields.
- * @class   Field.
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
- */
-class FWTOOLS_CLASS_API Field :  public ::fwTools::Object
-{
-public:
-    fwCoreClassDefinitionsWithFactoryMacro((Field)(::fwTools::Object), (()) ( ((const std::string &)) ) , new Field );
-
-    /// default constructor label is empty
-    FWTOOLS_API Field();
-
-    /// constructor with a given name
-    FWTOOLS_API Field(const std::string &newlabel);
-
-    /// retreive read only reference on label for the current class
-    FWTOOLS_API const std::string &label() const;
-
-    /// retreive r/w reference on label for the current class
-    FWTOOLS_API std::string & label();
-
-    FWTOOLS_API virtual ~Field();
-
-    /**
-     * @brief A shallow copy (also called "bitwise copy") simply copies chunks of memory from one location to another.
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API void shallowCopy( ::fwTools::Field::csptr _source );
-    FWTOOLS_API void shallowCopy( ::fwTools::Field::sptr _source );
-
-    /**
-     * @brief A deep copy clone all source object parameters (sub-ojects are duplcated in memory). For a sptr on sub-object, method allocates a new object.
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API void deepCopy( ::fwTools::Field::csptr _source );
-    FWTOOLS_API void deepCopy( ::fwTools::Field::sptr _source );
-
-    FWTOOLS_API void shallowCopy( ::fwTools::Object::csptr _source );
-
-    FWTOOLS_API void deepCopy( ::fwTools::Object::csptr _source );
-
-protected :
-
-    std::string m_label;
-
-};
-
-/**
- * @brief Return label (if any) from a ::fwTools::Object
- *
- * @pre ::fwTools::Object must be a Field
- */
-FWTOOLS_API const std::string & getLabel(const ::fwTools::Object *obj);
-
-/**
- * @brief Return Field smart_pointer (if possible) from a ::fwTools::Object
- *
- * @pre ::fwTools::Object must be a Field
- */
-FWTOOLS_API ::fwTools::Field::sptr castToField(::fwTools::Object::sptr obj);
-
-
-
 }
 
+#include "fwTools/Field.hpp"
 #include "fwTools/Object.hxx"
 
-#endif /* LIGHTOBJECT_HPP_ */
+#endif /* _FWTOOLS_OBJECT_HPP_ */

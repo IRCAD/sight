@@ -16,10 +16,12 @@
 
 namespace fwXML
 {
+
 //-----------------------------------------------------------------------------
 
 DataFolderValidator::DataFolderValidator()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -77,33 +79,36 @@ const std::string DataFolderValidator::getErrorLog() const
 
 const bool DataFolderValidator::validate( xmlNodePtr node )
 {
+    std::vector< xmlNodePtr > nodes;
     bool result = validateSingle(node);
     node = node->children;
     while ( result && node)
     {
-        if ( node->type != XML_ELEMENT_NODE )
+        if ( node->type == XML_ELEMENT_NODE )
         {
-            node = node->next;
+            nodes.push_back(node);
         }
-        else
+        node = node->next;
+    }
+
+    std::vector< xmlNodePtr >::iterator iter;
+    xmlDocPtr  doc = xmlNewDoc(BAD_CAST "1.0");
+    xmlNodePtr subNode;
+    for(iter = nodes.begin(); iter != nodes.end(); ++iter)
+    {
+        // create a sub doc to validate
+        // see http://mail.gnome.org/archives/xml/2006-May/msg00094.html for pb detail
+        subNode = *iter;
+        xmlDocSetRootElement(doc, subNode);
+
+        result &= validate(subNode);
+
+        if (result == false)
         {
-            // create a sub doc to validate
-            // see http://mail.gnome.org/archives/xml/2006-May/msg00094.html for pb detail
-            xmlDocPtr  doc = xmlNewDoc(BAD_CAST "1.0");
-            xmlNodePtr newSubNode =  xmlCopyNode(node,1);
-            xmlDocSetRootElement(doc, newSubNode );
-
-            result &= validate( newSubNode );
-
-            xmlFreeDoc(doc);
-
-            if ( result==false )
-            {
-                return false; // with correct errlog setted
-            }
-            node = node->next;
+            return false; // with correct errlog setted
         }
     }
+    xmlFreeDoc(doc);
     return result;
 }
 
@@ -118,10 +123,23 @@ const bool DataFolderValidator::validateSingle( xmlNodePtr node )
 
     OSLM_DEBUG("key" << key << " - name : " << xsdPath.string());
 
+
     if ( !xsdPath.empty() )
     {
+        std::string path;
+#if BOOST_FILESYSTEM_VERSION > 2
+        path = xsdPath.string();
+#else
+        path = xsdPath.native_file_string();
+#endif
+        if (m_validators.find(path) == m_validators.end())
+        {
+            ::fwRuntime::io::Validator validator(xsdPath);
+            m_validators.insert( ValidatorMapType::value_type(path, validator));
+        }
         //xmlNodePtr newNode = xmlCopyNode(node,1);
-        ::fwRuntime::io::Validator validator(xsdPath);
+        ::fwRuntime::io::Validator &validator = (*m_validators.find(path)).second;
+
         OSLM_INFO(" DataFolderValidator::validateSingle " << key );
 
         result = validator.validate(node);
