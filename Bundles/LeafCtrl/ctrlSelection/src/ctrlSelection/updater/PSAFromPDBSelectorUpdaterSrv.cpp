@@ -162,7 +162,7 @@ void PSAFromPDBSelectorUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
         SLM_FATAL_IF( "Sorry, attribute \"patientNameKey\" is missing", !(*item)->hasAttribute("patientNameKey") );
         std::string patientNameKey =  (*item)->getExistingAttributeValue("patientNameKey");
 
-        SLM_FATAL_IF( "Sorry, attribute \"acquisitionKey\" is missing", !(*item)->hasAttribute("patientInfoKey") );
+        SLM_FATAL_IF( "Sorry, attribute \"patientInfoKey\" is missing", !(*item)->hasAttribute("patientInfoKey") );
         std::string patientInfoKey =  (*item)->getExistingAttributeValue("patientInfoKey");
 
         SLM_FATAL_IF( "Sorry, attribute \"onEvent\" is missing", !(*item)->hasAttribute("onEvent") );

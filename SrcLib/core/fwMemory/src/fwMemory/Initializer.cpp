@@ -22,33 +22,33 @@ namespace fwMemory
 
 //------------------------------------------------------------------------------
 
-void Initializer::init( ::fwTools::Object::wptr _obj)
+void Initializer::init( ::fwTools::Object::sptr _obj)
 {
-    OSLM_TRACE("fwMemory::Initializer install and start MEMORY service for " + _obj.lock()->className() ) ;
-    if( ::fwServices::registry::ServiceFactory::getDefault()->support(_obj.lock()->getClassname(), "::fwMemory::IMemoryService") )
+    OSLM_TRACE("fwMemory::Initializer install and start MEMORY service for " + _obj->className() ) ;
+    if( ::fwServices::registry::ServiceFactory::getDefault()->support(_obj->getClassname(), "::fwMemory::IMemoryService") )
     {
         // To avoid invoking the IMemoryService::start() several times
-        if( ! ::fwServices::OSR::has(_obj.lock(), "::fwMemory::IMemoryService") )
+        if( ! ::fwServices::OSR::has(_obj, "::fwMemory::IMemoryService") )
         {
-            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(_obj.lock()->getClassname(), "::fwMemory::IMemoryService");
-            ::fwServices::IService::sptr srv = ::fwServices::add( _obj.lock(), "::fwMemory::IMemoryService", defaultImpl) ;
+            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(_obj->getClassname(), "::fwMemory::IMemoryService");
+            ::fwServices::IService::sptr srv = ::fwServices::add( _obj, "::fwMemory::IMemoryService", defaultImpl) ;
             srv->start();
-            m_container[_obj.lock()->getOSRKey()].push_back(srv);
+            m_container[_obj->getOSRKey()].push_back(srv);
         }
     }
 
-    OSLM_TRACE("fwMemory::Initializer install and start DUMP service if possible for " + _obj.lock()->className() ) ;
-    if( ::fwServices::registry::ServiceFactory::getDefault()->support(_obj.lock()->getClassname(), "::fwMemory::IDumpService") )
+    OSLM_TRACE("fwMemory::Initializer install and start DUMP service if possible for " + _obj->className() ) ;
+    if( ::fwServices::registry::ServiceFactory::getDefault()->support(_obj->getClassname(), "::fwMemory::IDumpService") )
     {
-        OSLM_TRACE("Support DUMP service for " + _obj.lock()->className() ) ;
+        OSLM_TRACE("Support DUMP service for " + _obj->className() ) ;
         // To avoid invoking the IDumpService::start() several times
-        if( ! ::fwServices::OSR::has(_obj.lock(), "::fwMemory::IDumpService") )
+        if( ! ::fwServices::OSR::has(_obj, "::fwMemory::IDumpService") )
         {
-            OSLM_TRACE("Start DUMP service for " + _obj.lock()->className() ) ;
-            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(_obj.lock()->getClassname(), "::fwMemory::IDumpService");
-            ::fwServices::IService::sptr srv = ::fwServices::add( _obj.lock(), "::fwMemory::IDumpService", defaultImpl) ;
+            OSLM_TRACE("Start DUMP service for " + _obj->className() ) ;
+            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(_obj->getClassname(), "::fwMemory::IDumpService");
+            ::fwServices::IService::sptr srv = ::fwServices::add( _obj, "::fwMemory::IDumpService", defaultImpl) ;
             srv->start();
-            m_container[_obj.lock()->getOSRKey()].push_back(srv);
+            m_container[_obj->getOSRKey()].push_back(srv);
         }
     }
 }

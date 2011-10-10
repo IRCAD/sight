@@ -14,7 +14,6 @@ namespace visitor
 void accept( ::fwTools::Object::sptr object,  ::fwData::visitor::IVisitor *visitor )
 {
     SLM_ASSERT("visitor not instanced", visitor);
-
     visitor->visit(object);
     visitor->next( object, object->children() );
 }

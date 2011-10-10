@@ -150,15 +150,19 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
           decimate->SetSplitAngle( 120 );
           decimate->Update();
           polyData = decimate->GetOutput();
+          OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
+          bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
       }
       else
       {
           polyData = smoothFilter->GetOutput();
+          OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
+          bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
       }
 
 
-    OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-    bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
+//    OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
+//    bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
 
     /// Notification
     ::fwComEd::TriangularMeshMsg::NewSptr msg;;

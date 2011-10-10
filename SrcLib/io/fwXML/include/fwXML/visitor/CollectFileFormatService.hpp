@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef CollectFileFormatServiceBREATH_FIRST_H
-#define CollectFileFormatServiceBREATH_FIRST_H
+#ifndef _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
+#define _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
 
 #include "fwXML/config.hpp"
 #include <fwData/visitor/BreathFirst.hpp>
@@ -42,4 +42,4 @@ public:
 
 }
 
-#endif /*CollectFileFormatServiceBREATH_FIRST_H*/
+#endif /*_FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP*/

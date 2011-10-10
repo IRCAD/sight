@@ -112,7 +112,7 @@ void PatientDBGuiSelectorService::starting() throw(::fwTools::Failed)
     m_pSelectorPanel->setAlternatingRowColors( true );
 
     QStringList labels;
-    labels << tr("Name") << tr("Modality") << tr("Acq. date") << tr("Image size") << tr("Voxel size") << tr("Comment");
+    labels << tr("Name") << tr("Modality") << tr("Acq. date") << tr("Image size") << tr("Voxel size") << tr("Position origin") << tr("Comment");
     m_pSelectorPanel->setHeaderLabels(labels);
 
     int cellWidthT1 = 80;
@@ -123,8 +123,9 @@ void PatientDBGuiSelectorService::starting() throw(::fwTools::Failed)
     m_pSelectorPanel->setColumnWidth(1, cellWidthT1);
     m_pSelectorPanel->setColumnWidth(2, cellWidthT2);
     m_pSelectorPanel->setColumnWidth(3, cellWidthT2);
-    m_pSelectorPanel->setColumnWidth(4, cellWidthT2);
-    m_pSelectorPanel->setColumnWidth(5, cellWidthT4);
+    m_pSelectorPanel->setColumnWidth(4, cellWidthT3);
+    m_pSelectorPanel->setColumnWidth(5, cellWidthT3);
+    m_pSelectorPanel->setColumnWidth(6, cellWidthT4);
 
     layout->addWidget( m_pSelectorPanel, 1);
     layout->setContentsMargins(0,0,0,0);
@@ -233,6 +234,7 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                 // Get Infos
                 std::string zone = (pStudy->getAcquisitionZone().length())?pStudy->getAcquisitionZone():"Unknown zone";
                 std::string voxelSize = "";
+                std::string origin = "";
                 std::string nbImages = "";
                 std::string acqDate = ::boost::posix_time::to_iso_extended_string( pAcquisition->getCreationDate() );
                 acqDate =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
@@ -247,6 +249,13 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                                     << pAcquisition->getImage()->getSpacing()[1] << " x "
                                     << pAcquisition->getImage()->getSpacing()[2];
                     voxelSize = voxelSizeStream.str();
+
+
+                    std::stringstream originStream;
+                    originStream << pAcquisition->getImage()->getOrigin()[0] << " x "
+                                    << pAcquisition->getImage()->getOrigin()[1] << " x "
+                                    << pAcquisition->getImage()->getOrigin()[2];
+                    origin = originStream.str();
                 }
                 ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(pAcquisition->getImage());
                 if ( ! pAcquisition->getImage()->getFieldSize( ::fwComEd::Dictionary::m_imageLabelId) )
@@ -262,7 +271,8 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                 acquisitionItem->setText(2, QString::fromStdString(acqDate));
                 acquisitionItem->setText(3, QString::fromStdString(nbImages));
                 acquisitionItem->setText(4, QString::fromStdString(voxelSize));
-                acquisitionItem->setText(5, QString::fromStdString(comment));
+                acquisitionItem->setText(5, QString::fromStdString(origin));
+                acquisitionItem->setText(6, QString::fromStdString(comment));
                 QByteArray selection;
                 selection.append(indexP);
                 selection.append(indexS);

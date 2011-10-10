@@ -73,18 +73,21 @@ void ActionNotifyService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(
 
 void ActionNotifyService::updating() throw( ::fwTools::Failed )
 {
-    BOOST_FOREACH(MsgEventType msg, m_vectMsg)
+    if (this->confirmAction())
     {
-        const std::string msgType = msg.get<0>();
-        const std::string event   = msg.get<1>();
-        ::fwTools::Object::sptr obj = ::fwTools::Factory::New(msgType);
-        OSLM_ASSERT(msgType << " creation failed", obj);
-        ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::dynamicCast(obj);
-        OSLM_ASSERT(msgType << " dynamicCast failed", objectMsg);
+        BOOST_FOREACH(MsgEventType msg, m_vectMsg)
+        {
+            const std::string msgType = msg.get<0>();
+            const std::string event   = msg.get<1>();
+            ::fwTools::Object::sptr obj = ::fwTools::Factory::New(msgType);
+            OSLM_ASSERT(msgType << " creation failed", obj);
+            ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::dynamicCast(obj);
+            OSLM_ASSERT(msgType << " dynamicCast failed", objectMsg);
 
-        ::fwTools::Object::sptr srvObj = this->getObject();
-        objectMsg->addEvent( event );
-        ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
+            ::fwTools::Object::sptr srvObj = this->getObject();
+            objectMsg->addEvent( event );
+            ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
+        }
     }
 }
 

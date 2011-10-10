@@ -26,7 +26,7 @@ public :
     FWMEMORY_API Initializer() {} ;
     FWMEMORY_API ~Initializer() {} ;
 
-    FWMEMORY_API virtual void init( ::fwTools::Object::wptr _obj);
+    FWMEMORY_API virtual void init( ::fwTools::Object::sptr _obj);
     FWMEMORY_API virtual void uninit( ::fwCore::LogicStamp::csptr key );
 
 private:

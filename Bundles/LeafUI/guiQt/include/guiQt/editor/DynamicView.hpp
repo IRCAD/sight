@@ -8,6 +8,7 @@
 #define _GUIQT_EDITOR_DYNAMICVIEW_HPP_
 
 #include <map>
+#include <set>
 
 #include <QObject>
 #include <QPointer>
@@ -99,6 +100,7 @@ protected:
         bool closable;
         std::string icon;
         std::string tooltip;
+        std::string tabID;
     };
 
     typedef std::map< QWidget* , DynamicViewInfo > DynamicViewInfoMapType;
@@ -107,6 +109,7 @@ protected:
     QPointer<QWidget> m_currentWidget;
 
     std::map< std::string, unsigned int > m_titleToCount;
+    std::set< std::string > m_tabIDList;
 
     DynamicViewInfoMapType m_dynamicInfoMap;
     bool m_dynamicConfigStartStop;

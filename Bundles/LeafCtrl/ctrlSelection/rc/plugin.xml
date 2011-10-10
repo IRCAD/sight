@@ -148,6 +148,12 @@
         <service>::ctrlSelection::wrapper::MsgForwarderSrv</service>
         <object>::fwData::Composite</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IWrapperSrv</type>
+        <service>::ctrlSelection::wrapper::ObjToCompositeMsgForwarderSrv</service>
+        <object>::fwData::Composite</object>
+    </extension>
 </plugin>
 
 

@@ -11,13 +11,15 @@
 #include <fwServices/Base.hpp>
 
 #include "fwGui/IActionSrv.hpp"
+#include "fwGui/dialog/MessageDialog.hpp"
 
 namespace fwGui
 {
 
 IActionSrv::IActionSrv() :
         m_isActive(false),
-        m_isExecutable(true)
+        m_isExecutable(true),
+        m_confirmAction(false)
 {}
 
 //-----------------------------------------------------------------------------
@@ -57,6 +59,21 @@ void IActionSrv::initialize()
                 std::string isExecutable = stateCfg->getExistingAttributeValue("executable");
                 SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'", (isExecutable == "true") || (isExecutable == "false"));
                 m_isExecutable = (isExecutable == "true") ;
+            }
+        }
+
+        if( (*iter)->getName() == "confirmation" )
+        {
+            ConfigurationType cfg = *iter;
+
+            SLM_ASSERT("Missing attribute 'value'", cfg->hasAttribute("value"));
+            std::string confirm = cfg->getExistingAttributeValue("value");
+            SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'", (confirm == "true") || (confirm == "false"));
+            m_confirmAction = (confirm == "true") ;
+
+            if( cfg->hasAttribute("message") )
+            {
+                m_confirmMessage = cfg->getExistingAttributeValue("message");
             }
         }
     }
@@ -107,6 +124,32 @@ bool IActionSrv::getIsExecutable()
     return m_isExecutable;
 }
 
+//-----------------------------------------------------------------------------
+
+bool IActionSrv::confirmAction()
+{
+    bool actionIsConfirmed = true;
+
+    if (m_confirmAction)
+    {
+        ::fwGui::dialog::MessageDialog dialog;
+        dialog.setTitle("Confirmation");
+        std::stringstream ss;
+        ss << "Do you really want to execute this action ? ";
+        if (!m_confirmMessage.empty())
+        {
+            ss << std::endl << m_confirmMessage;
+        }
+        dialog.setMessage( ss.str() );
+        dialog.setIcon( ::fwGui::dialog::MessageDialog::QUESTION );
+        dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
+        ::fwGui::dialog::MessageDialog::Buttons button = dialog.show();
+
+        actionIsConfirmed = (button == ::fwGui::dialog::MessageDialog::YES);
+    }
+
+    return actionIsConfirmed;
+}
 //-----------------------------------------------------------------------------
 
 }

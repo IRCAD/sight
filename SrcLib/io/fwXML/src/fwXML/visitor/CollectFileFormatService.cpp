@@ -34,18 +34,16 @@ CollectFileFormatService::~CollectFileFormatService()
 
 //------------------------------------------------------------------------------
 
-void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> obj)
+void CollectFileFormatService::visit( ::fwTools::Object::sptr obj)
 {
-    std::string uuid = ::fwTools::UUID::get(obj);
-    std::string srcUuid = m_source ? ::fwTools::UUID::get(m_source):"NoSOURCENOUUID";
     OSLM_TRACE( "CollectFileFormatService Visitor Visiting : Class " << obj->className() <<
-                "(" <<  uuid    <<
-                ") HASt<FileFormatService>" <<  (::fwServices::OSR::has(obj, "::fwXML::IFileFormatService")?"yes":"no") <<
-                "ParentClass: " <<  (m_source?m_source->className():"NULL")   << "(" << srcUuid << ")"
+                "(" <<  ::fwTools::UUID::get(obj)    <<
+                ") HAS<FileFormatService>" <<  (::fwServices::OSR::has(obj, "::fwXML::IFileFormatService")?"yes":"no") <<
+                "ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
+                "(" << (m_source ? ::fwTools::UUID::get(m_source):"NoSOURCENOUUID") << ")"
                 );
 
-
-    SLM_ASSERT("Objets is null",obj);
+    SLM_ASSERT("Object is null",obj);
     if ( ::fwServices::OSR::has(obj, "::fwXML::IFileFormatService") )
     {
         m_objWithFileFormatService[obj] = ::fwServices::get< ::fwXML::IFileFormatService >( obj );
@@ -57,10 +55,15 @@ void CollectFileFormatService::visit( ::boost::shared_ptr< ::fwTools::Object> ob
 void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
     this->::fwData::visitor::BreathFirst::next( src, src->children() );
-    ::fwTools::Object::ChildContainer tmpContainer;
 
-    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( src );
-    if ( composite )
+    ::fwData::Composite::sptr composite;
+    ::fwData::Vector::sptr vector;
+    ::fwData::List::sptr list;
+    ::fwData::Resection::sptr resection;
+    ::fwData::Graph::sptr graph;
+    ::fwData::Node::sptr node;
+
+    if ( composite = ::fwData::Composite::dynamicCast( src ))
     {
         ::fwData::Composite::Container::iterator i;
         for ( i = composite->getRefMap().begin(); i != composite->getRefMap().end(); ++i)
@@ -68,9 +71,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( i->second , this);
         }
     }
-
-    ::fwData::Vector::sptr vector = ::fwData::Vector::dynamicCast( src );
-    if ( vector )
+    else if ( vector = ::fwData::Vector::dynamicCast( src ))
     {
         ::fwData::Vector::Container::iterator i;
         for ( i = vector->getRefContainer().begin(); i != vector->getRefContainer().end(); ++i)
@@ -78,9 +79,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *i , this);
         }
     }
-
-    ::fwData::List::sptr list = ::fwData::List::dynamicCast( src );
-    if ( list )
+    else if ( list  = ::fwData::List::dynamicCast( src ))
     {
         ::fwData::List::Container::iterator i;
         for ( i = list->getRefContainer().begin(); i != list->getRefContainer().end(); ++i)
@@ -88,9 +87,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *i , this);
         }
     }
-
-    ::fwData::Resection::sptr resection = ::fwData::Resection::dynamicCast( src );
-    if ( resection )
+    else if ( resection = ::fwData::Resection::dynamicCast( src ))
     {
         ::fwData::Resection::ResectionInputs::const_iterator i;
         for ( i = resection->getCRefInputs().begin(); i != resection->getCRefInputs().end(); ++i)
@@ -103,9 +100,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *j , this);
         }
     }
-
-    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast( src );
-    if ( graph )
+    else if ( graph  = ::fwData::Graph::dynamicCast( src ))
     {
         ::fwData::Graph::NodeContainer::iterator i;
         for ( i = graph->getRefNodes().begin(); i != graph->getRefNodes().end(); ++i)
@@ -113,10 +108,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *i , this);
         }
     }
-
-
-    ::fwData::Node::sptr node = ::fwData::Node::dynamicCast( src );
-    if ( node && node->getObject() )
+    else if ( (node = ::fwData::Node::dynamicCast( src ) ) && node->getObject() )
     {
         ::fwData::visitor::accept( node->getObject() , this);
     }

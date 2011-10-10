@@ -136,18 +136,18 @@ void DicomImageWriterService::saveImage( const ::boost::filesystem::path _patien
         ::fwData::Image::sptr _pImage )
 {
     SLM_TRACE("DicomImageWriterService::saveImage");
-    ::vtkGdcmIO::DicomImageWriter myWriter;
+    ::vtkGdcmIO::DicomImageWriter::NewSptr myWriter;
 
-    myWriter.setObject(_pImage);
+    myWriter->setObject(_pImage);
     ::fwData::location::Folder::NewSptr loc;
     loc->setFolder(_patientDBPath);
-    myWriter.setLocation(loc);
+    myWriter->setLocation(loc);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Image ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
 
     }
     catch (const std::exception & e)

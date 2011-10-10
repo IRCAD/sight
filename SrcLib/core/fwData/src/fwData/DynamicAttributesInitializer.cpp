@@ -24,9 +24,9 @@ InitializerRegistrar::wptr reg = InitializerRegistrar::New();
 namespace fwData
 {
 
-void DynamicAttributesInitializer::init( ::fwTools::Object::wptr _obj)
+void DynamicAttributesInitializer::init( ::fwTools::Object::sptr _obj)
 {
-    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(_obj.lock());
+    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(_obj);
     if (obj)
     {
         obj->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();

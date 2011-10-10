@@ -15,14 +15,28 @@ namespace fwData
 namespace visitor
 {
 
+//------------------------------------------------------------------------------
+
+BreathFirst::BreathFirst() : m_recursionLevel(0)
+{
+}
+
+//------------------------------------------------------------------------------
+
+BreathFirst::~BreathFirst()
+{
+}
+
+//------------------------------------------------------------------------------
 
 void BreathFirst::next(::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
 {
+    ++m_recursionLevel;
     // insert ONLY ONCE child in breathFirst order+source
     ::fwTools::Object::ChildContainer::iterator f;
     for (f = fields.begin(); f != fields.end() ; ++f)
     {
-        assert( ::fwTools::Object::dynamicCast( *f ) );
+        SLM_ASSERT("fwTools::Object dynamicCast failed", ::fwTools::Object::dynamicCast( *f ) );
         std::pair< Source , Child > key( src, ::fwTools::Object::dynamicCast( *f ) );
         if ( std::find( m_fifo.begin(), m_fifo.end(),  key )==m_fifo.end()  )
         {
@@ -32,14 +46,20 @@ void BreathFirst::next(::fwTools::Object::sptr src, ::fwTools::Object::ChildCont
     }
 
     // process list
-    while ( !m_fifo.empty() )
+    if (m_recursionLevel == 1)
     {
-        m_source = m_fifo.front().first;
-        Child achild= m_fifo.front().second;
-        m_fifo.pop_front();
-        accept( achild, this );
+        while ( !m_fifo.empty() )
+        {
+            m_source = m_fifo.front().first;
+            Child achild= m_fifo.front().second;
+            m_fifo.pop_front();
+            accept( achild, this );
+        }
     }
+    --m_recursionLevel;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace visitor
 
