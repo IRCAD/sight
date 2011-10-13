@@ -1,0 +1,23 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>config00</id>
+    <type>standard</type>
+    <config>
+
+        <object type="::fwData::Image">
+
+            <service uid="myMainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <gui>
+                    <frame>
+                        <name>Tuto 00</name>
+                        <icon>Bundles/TutoDevForum_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+            </service>
+
+
+            <start uid="myMainFrame" />
+
+        </object>
+    </config>
+</extension>

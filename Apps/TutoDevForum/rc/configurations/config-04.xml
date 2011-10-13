@@ -1,0 +1,60 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>config04</id>
+    <type>standard</type>
+    <config>
+
+        <object type="::fwData::Image">
+
+            <service uid="myMainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <gui>
+                    <frame>
+                        <name>Tuto 04</name>
+                        <icon>Bundles/TutoDevForum_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="myMenuBar" start="yes" />
+                    <view sid="myViewer" start="no" />
+                </registry>
+            </service>
+
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="myMenu" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="myMenu" implementation="::gui::aspect::DefaultMenuSrv" type="::fwGui::IMenuSrv" autoComChannel="no">
+                <gui>
+                    <layout>
+                        <menuItem name="New VTK Image" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="myAction" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="myAction" implementation="::devForum::tuto04::ImageReaderActionService" type="::fwGui::IActionSrv" autoComChannel="no" />
+
+            <service uid="myViewer" implementation="::devForum::tuto03::ImageViewerService" type="::fwRender::IRender" autoComChannel="yes" />
+
+            <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+            <start uid="myMainFrame" />
+            <start uid="myViewer" />
+
+        </object>
+
+    </config>
+</extension>

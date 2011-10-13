@@ -1,0 +1,65 @@
+<plugin id="devForumQt" class="::devForum::Plugin" >
+
+    <library name="devForumQt" />
+
+    <requirement id="dataReg" />    <!-- For all tutos -->
+    <requirement id="visu" />       <!-- For all tutos -->
+    <requirement id="io" />         <!-- For tuto : 2,3,4 -->
+    <requirement id="gui" />        <!-- For tuto : 4 -->
+
+    <!-- Service declaration for Tuto 01 -->
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::devForum::tuto01::ImageViewerService</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <!-- Service declaration for Tuto 02 -->
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::devForum::tuto02::ImageViewerService</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::devForum::tuto02::ImageReaderService</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+
+    <!-- Service declaration for Tuto 03 -->
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::devForum::tuto03::ImageViewerService</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::devForum::tuto03::ImageReaderService</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+
+    <!-- Service declaration for Tuto 04 -->
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::devForum::tuto04::ImageReaderService</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::devForum::tuto04::ImageReaderActionService</service>
+        <object>::fwData::Image</object>
+    </extension>
+    
+</plugin>
+
+
+
