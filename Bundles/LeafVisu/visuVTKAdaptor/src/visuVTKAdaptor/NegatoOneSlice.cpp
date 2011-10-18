@@ -19,6 +19,7 @@
 #include <vtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
+#include <vtkImageBlend.h>
 
 #include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImageSlice.hpp"
@@ -176,7 +177,10 @@ void NegatoOneSlice::cleanImageSource()
 void NegatoOneSlice::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->getImageAdaptor()->start();
+    if (! vtkImageBlend::SafeDownCast(this->getImageSource()))
+    {
+        this->getImageAdaptor()->start();
+    }
     this->getImageSliceAdaptor()->start();
 }
 
@@ -205,7 +209,10 @@ void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->getImageAdaptor()->update();
+    if (! vtkImageBlend::SafeDownCast(this->getImageSource()))
+    {
+        this->getImageAdaptor()->update();
+    }
     this->getImageSliceAdaptor()->update();
 }
 
