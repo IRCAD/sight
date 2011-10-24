@@ -29,7 +29,8 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
 
     for (boost::uint8_t  d=0; d<dim; ++d)
     {
-        _vOrigin[d] = itkImage->GetBufferedRegion().GetIndex()[d];
+        // _vOrigin[d] = itkImage->GetBufferedRegion().GetIndex()[d];
+        _vOrigin[d] = itkImage->GetOrigin()[d];
         _vSize[d] = itkImage->GetBufferedRegion().GetSize()[d];
         _vSpacing[d] = itkImage->GetSpacing()[d];
     }
@@ -105,7 +106,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
     unsigned long nbpixels=1;
     for (::boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension; ++d)
     {
-        itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
+        // itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
         itkRegion.SetSize( d,   imageData->getCRefSize()[d] );
         nbpixels *= itkRegion.GetSize()[d];;
     }
