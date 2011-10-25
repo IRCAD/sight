@@ -135,6 +135,10 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > m
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
             }
+            else
+            {
+                ::fwGui::GuiRegistry::actionServiceStarting(sid.first);
+            }
         }
     }
 }
