@@ -95,6 +95,7 @@ protected slots :
 
     void onTextEditingFinished();
     void onToggleTF(bool squareTF);
+    void onToggleAutoWL(bool autoWL);
 
     void onWindowLevelWidgetChanged(double _min, double _max);
     void onDynamicRangeSelectionChanged(QAction *action);
@@ -116,12 +117,14 @@ protected:
 
     void setWidgetDynamicRange(double min, double max);
     bool getWidgetIntValue(QLineEdit *widget, int &val);
+    bool checkMinMax(int &min, int &max);
 
 private:
 
     QPointer< QLineEdit >   m_valueTextMin;
     QPointer< QLineEdit >   m_valueTextMax;
     QPointer< QToolButton > m_toggleTFButton;
+    QPointer< QToolButton > m_toggleAutoButton;
     QPointer< QToolButton >   m_dynamicRangeSelection;
     QPointer< QMenu >         m_dynamicRangeMenu;
     QPointer< QSignalMapper > m_dynamicRangeSignalMapper;
@@ -131,6 +134,7 @@ private:
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
 
+    bool m_autoWindowing;
 
 };
 
