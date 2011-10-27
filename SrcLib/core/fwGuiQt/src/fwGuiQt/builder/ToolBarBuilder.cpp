@@ -55,7 +55,24 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     if (window)
     {
         bool visible = window->isVisible();
-        window->addToolBar( toolBar );
+
+        Qt::ToolBarArea area;
+        switch (m_aligment)
+        {
+        case TOP:
+            area = Qt::TopToolBarArea;
+            break;
+        case BOTTOM:
+            area = Qt::BottomToolBarArea;
+            break;
+        case RIGHT:
+            area = Qt::RightToolBarArea;
+            break;
+        case LEFT:
+            area = Qt::LeftToolBarArea;
+            break;
+        }
+        window->addToolBar( area, toolBar );
 
         //on Os X, the window is hidden (???)
         window->setVisible(visible);
@@ -64,7 +81,26 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     {
         QWidget * widget = m_parent->getQtContainer();
         SLM_ASSERT("Parent container must have a layout", widget->layout());
-        QVBoxLayout * layout = qobject_cast<QVBoxLayout*> ( widget->layout() );
+        QBoxLayout * layout = qobject_cast<QBoxLayout*> ( widget->layout() );
+        switch (m_aligment)
+        {
+        case TOP:
+            layout->setDirection(QBoxLayout::TopToBottom);
+            toolBar->setOrientation(Qt::Horizontal);
+            break;
+        case BOTTOM:
+            layout->setDirection(QBoxLayout::BottomToTop);
+            toolBar->setOrientation(Qt::Horizontal);
+            break;
+        case RIGHT:
+            layout->setDirection(QBoxLayout::RightToLeft);
+            toolBar->setOrientation(Qt::Vertical);
+            break;
+        case LEFT:
+            layout->setDirection(QBoxLayout::LeftToRight);
+            toolBar->setOrientation(Qt::Vertical);
+            break;
+        }
         SLM_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
         layout->insertWidget(0, toolBar, 0);
     }

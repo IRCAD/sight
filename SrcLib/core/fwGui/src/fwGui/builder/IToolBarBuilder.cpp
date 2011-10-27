@@ -26,7 +26,7 @@ const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::fwGui:
 
 //-----------------------------------------------------------------------------
 
-IToolBarBuilder::IToolBarBuilder()
+IToolBarBuilder::IToolBarBuilder(): m_aligment(TOP)
 {
     m_toolBitmapSize = std::make_pair(32, 32);
 }
@@ -43,6 +43,31 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be toolBar",
                 configuration->getName() == "toolBar");
 
+
+    if (configuration->hasAttribute("align"))
+    {
+        std::string aligment = configuration->getExistingAttributeValue("align");
+        if (aligment == "top")
+        {
+            m_aligment = TOP;
+        }
+        else  if (aligment == "bottom")
+        {
+            m_aligment = BOTTOM;
+        }
+        else  if (aligment == "right")
+        {
+            m_aligment = RIGHT;
+        }
+        else  if (aligment == "left")
+        {
+            m_aligment = LEFT;
+        }
+        else
+        {
+            OSLM_FATAL("Wrong value '"<< aligment <<"' for 'align' attribute (require top, bottom, right or left)");
+        }
+    }
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
     for( iter = configuration->begin() ; iter != configuration->end() ; ++iter )

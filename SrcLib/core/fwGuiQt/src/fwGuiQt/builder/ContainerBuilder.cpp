@@ -90,7 +90,7 @@ void ContainerBuilder::setParent(::fwGui::container::fwContainer::sptr parent)
         if(!qtParent->layout())
         {
             SLM_TRACE("New parent container hasn't layout");
-            QVBoxLayout *layout = new QVBoxLayout();
+            QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom);
             layout->setContentsMargins(0, 0, 0, 0);
             qtParent->setLayout(layout);
         }
