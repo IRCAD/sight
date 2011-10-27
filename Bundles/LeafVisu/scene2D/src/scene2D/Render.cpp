@@ -198,7 +198,7 @@ void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
     {
-        SLM_FATAL("ToDo IM");
+        //SLM_FATAL("ToDo IM");
     }
 }
 
@@ -208,7 +208,7 @@ void Render::swapping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    SLM_FATAL("ToDo IM");
+    //SLM_FATAL("ToDo IM");
 }
 
 //-----------------------------------------------------------------------------
