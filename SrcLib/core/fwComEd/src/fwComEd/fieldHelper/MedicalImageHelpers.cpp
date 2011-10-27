@@ -42,7 +42,7 @@ std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _
         ::fwData::Integer::NewSptr minField;
         ::fwData::Integer::NewSptr maxField;
 
-        if ( _pImg->getWindowWidth() != 0 )
+        if ( _pImg->getWindowWidth() >= 10 ) // because of TF management
         {
             minField->value() = _pImg->getWindowCenter() - _pImg->getWindowWidth() / 2.0;
             maxField->value() = _pImg->getWindowCenter() + _pImg->getWindowWidth() / 2.0;
