@@ -7,7 +7,7 @@
 #include <QVBoxLayout>
 #include <QList>
 #include <QVariant>
-#include <QByteArray>
+#include <QList>
 #include <QIcon>
 #include <QPixmap>
 
@@ -64,6 +64,8 @@ static const char * eye_xpm[] = {
 "    XXXXXXX     ",
 "                ",
 "                "};
+
+Q_DECLARE_METATYPE( QList<int> );
 
 //------------------------------------------------------------------------------
 
@@ -210,12 +212,12 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
         QTreeWidgetItem* patientItem = new QTreeWidgetItem();
         std::string name = pPatient->getName() + " " + pPatient->getFirstname();
         patientItem->setText(0, QString::fromStdString(name));
-        QByteArray selectionP;
+        QList<int> selectionP;
         selectionP.append(indexP);
         selectionP.append(indexS);
         selectionP.append(indexA);
-        QVariant v(selectionP);
-        patientItem->setData(0, Qt::UserRole, v);
+
+        patientItem->setData(0, Qt::UserRole, QVariant::fromValue(selectionP));
         m_pSelectorPanel->addTopLevelItem( patientItem );
 
         while ( study != studyEnd )
@@ -273,12 +275,12 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                 acquisitionItem->setText(4, QString::fromStdString(voxelSize));
                 acquisitionItem->setText(5, QString::fromStdString(origin));
                 acquisitionItem->setText(6, QString::fromStdString(comment));
-                QByteArray selection;
+                QList<int> selection;
                 selection.append(indexP);
                 selection.append(indexS);
                 selection.append(indexA);
-                QVariant v(selection);
-                acquisitionItem->setData(0, Qt::UserRole, v);
+
+                acquisitionItem->setData(0, Qt::UserRole, QVariant::fromValue(selection));
                 patientItem->addChild(acquisitionItem);
 
                 if (indexP == selPatient && indexS == selStudy && indexA == selAcq)
@@ -330,7 +332,8 @@ void PatientDBGuiSelectorService::onSelectionChange(QTreeWidgetItem * current, Q
         ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
 
         QVariant variant = current->data(0, Qt::UserRole);
-        QByteArray list = variant.value< QByteArray >();
+
+        QList<int> list = variant.value< QList<int> >();
 
         ::fwData::Object::NewSptr acqSelected;
         acqSelected->children().push_back( ::fwData::Integer::NewSptr(list[0]) );
