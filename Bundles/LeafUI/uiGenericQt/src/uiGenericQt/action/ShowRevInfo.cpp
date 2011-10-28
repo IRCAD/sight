@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <iostream>
+#include <fstream>
 
 #include <QApplication>
 #include <QTextBrowser>
