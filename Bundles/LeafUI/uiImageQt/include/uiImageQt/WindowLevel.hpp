@@ -54,6 +54,8 @@ public :
     /// Destructor. Do nothing.
     UIIMAGEQT_API virtual ~WindowLevel() throw() ;
 
+    UIIMAGEQT_API void notifyWindowLevelCallback();
+
 protected:
 
     /**
@@ -133,7 +135,11 @@ private:
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
-
+    int m_imageMin;
+    int m_imageMax;
+    int m_notifiedImageMin;
+    int m_notifiedImageMax;
+    bool m_isNotifying;
     bool m_autoWindowing;
 
 };

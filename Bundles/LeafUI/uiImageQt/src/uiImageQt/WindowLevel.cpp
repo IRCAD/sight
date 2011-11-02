@@ -51,6 +51,9 @@ WindowLevel::WindowLevel() throw()
     m_widgetDynamicRangeMin   = -1024.;
     m_widgetDynamicRangeWidth =  4000.;
     m_autoWindowing = false;
+    m_imageMin = -200;
+    m_imageMax = 300;
+    m_isNotifying = false;
 
     addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
@@ -306,18 +309,23 @@ int WindowLevel::toWindowLevel(double _val)
 //------------------------------------------------------------------------------
 void  WindowLevel::updateImageWindowLevel(int _imageMin, int _imageMax)
 {
+    m_imageMin = _imageMin;
+    m_imageMax = _imageMax;
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    if (!m_isNotifying)
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+        ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+        ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
 
-    min->value() = _imageMin;
-    max->value() = _imageMax;
+        min->value() = _imageMin;
+        max->value() = _imageMax;
 
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
+        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
-    notifyWindowLevel(_imageMin, _imageMax);
+        notifyWindowLevel(_imageMin, _imageMax);
+    }
 }
 
 
@@ -382,10 +390,28 @@ void  WindowLevel::notifyWindowLevel(int _imageMin, int _imageMax)
     ::fwData::Integer::NewSptr min(static_cast < ::fwData::Integer::ValueType >(_imageMin));
     ::fwData::Integer::NewSptr max(static_cast < ::fwData::Integer::ValueType >(_imageMax));
 
+    m_notifiedImageMin = _imageMin;
+    m_notifiedImageMax = _imageMax;
+
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->setWindowMinMax(min, max, image);
+    imageMsg->setMessageCallback( ::boost::bind( &WindowLevel::notifyWindowLevelCallback, this ) );
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
- }
+
+    m_isNotifying = true;
+}
+
+//------------------------------------------------------------------------------
+
+void  WindowLevel::notifyWindowLevelCallback()
+{
+    m_isNotifying = false;
+
+    if (m_notifiedImageMin != m_imageMin || m_notifiedImageMax != m_imageMax)
+    {
+        this->updateImageWindowLevel(m_imageMin, m_imageMax);
+    }
+}
 
 //------------------------------------------------------------------------------
 void  WindowLevel::updateTextWindowLevel(int _imageMin, int _imageMax)
