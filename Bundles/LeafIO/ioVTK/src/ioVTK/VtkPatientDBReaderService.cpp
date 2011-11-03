@@ -24,12 +24,15 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
 #include <fwTools/Factory.hpp>
 
+#include <fwDataIO/reader/IObjectReader.hpp>
 #include <vtkIO/ImageReader.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
+#include <vtkIO/MetaImageReader.hpp>
+#include <vtkIO/VtiImageReader.hpp>
 
 #include "ioVTK/VtkPatientDBReaderService.hpp"
 
@@ -69,18 +72,19 @@ void VtkPatientDBReaderService::configuring() throw(::fwTools::Failed)
 void VtkPatientDBReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a VtkImage file");
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("VtkImage","*.vtk");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
+     dialogFile.setTitle("Choose a file to load an image");
+     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+     dialogFile.addFilter("Vtk","*.vtk");
+     dialogFile.addFilter("Vti","*.vtk");
+     dialogFile.addFilter("MetaImage","*.mhd");
+     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+     ::fwData::location::SingleFile::sptr  result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         m_fsImagePath = result->getPath();
@@ -101,45 +105,69 @@ void VtkPatientDBReaderService::info(std::ostream &_sstream )
 bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtkFileDir, ::fwData::Image::sptr img )
 {
     SLM_TRACE_FUNC();
-    bool res = false;
-    ::vtkIO::ImageReader::NewSptr myLoader;
-    myLoader->setObject(img);
-    myLoader->setFile(vtkFileDir);
+    bool res = true;
+
+    // Use a reader of vtkIO library to read an image
+    ::fwDataIO::reader::IObjectReader::sptr myReader;
+    // Create a progress bar and attach it to reader
+    ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
+    std::string ext = ::boost::filesystem::extension(vtkFileDir);
+    ::boost::algorithm::to_lower(ext);
+
+    if(ext == ".vtk")
+    {
+        ::vtkIO::ImageReader::NewSptr vtkReader;
+        vtkReader->addHandler( progressMeterGUI );
+        // Set the file system path
+        vtkReader->setFile(vtkFileDir);
+        myReader = vtkReader;
+    }
+    else if(ext == ".vti")
+    {
+        ::vtkIO::VtiImageReader::NewSptr vtiReader;
+        vtiReader->addHandler( progressMeterGUI );
+        vtiReader->setFile(vtkFileDir);
+        myReader = vtiReader;
+    }
+    else if(ext == ".mhd")
+    {
+        ::vtkIO::MetaImageReader::NewSptr mhdReader;
+        mhdReader->addHandler( progressMeterGUI );
+        mhdReader->setFile(vtkFileDir);
+        myReader = mhdReader;
+    }
+    else
+    {
+        OSLM_FATAL("Unknown extension for file "<< vtkFileDir);
+    }
+
+    myReader->setObject(img);
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myLoader->addHandler( progressMeterGUI );
-        myLoader->read();
-        res = true;
+        // Launch reading process
+        myReader->read();
     }
     catch (const std::exception & e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
+        res = false;
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading. ";
-
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                        "Warning",
+                        "Warning during loading.",
+                        ::fwGui::dialog::IMessageDialog::WARNING);
+        res = false;
     }
-
     return res;
-
 }
 
 //------------------------------------------------------------------------------
@@ -179,7 +207,7 @@ void VtkPatientDBReaderService::updating() throw(::fwTools::Failed)
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
 
-            notificationOfDBUpdate();
+            this->notificationOfDBUpdate();
 
             cursor.setDefaultCursor();
         }
