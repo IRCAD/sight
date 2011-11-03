@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_VTIIMAGEWRITER_HPP_
-#define _VTKIO_VTIIMAGEWRITER_HPP_
+#ifndef _VTKIO_METAIMAGEREADER_HPP_
+#define _VTKIO_METAIMAGEREADER_HPP_
 
 #include <boost/filesystem/path.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwTools/ProgressAdviser.hpp>
 #include <fwData/Image.hpp>
@@ -20,41 +20,42 @@ namespace vtkIO
 {
 
 /**
- * @brief   Write an image.
- * @class   VtiImageWriter.
+ * @brief   Read a MetaImage.
+ * @class   MetaImageReader.
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
- * Write a VTK Image using the VTK lib
+ * Read a MetaImage using the VTK lib
  */
-class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-                             public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
+class MetaImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
+                             public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
                              public ::fwTools::ProgressAdviser
 {
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((VtiImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
+    fwCoreClassDefinitionsWithFactoryMacro((MetaImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
                                            (()),
-                                           new VtiImageWriter
+                                           new MetaImageReader
                                           );
+
     fwCoreAllowSharedFromThis();
 
-    //! @brief Writing operator.
-    VTKIO_API void write();
+    //! @brief Reading operator.
+    VTKIO_API void read();
 
-    /// @return ".vti"
+    /// @return ".mhd"
     VTKIO_API  std::string extension();
 
 protected:
 
     //! @brief Constructor.
-    VTKIO_API VtiImageWriter();
+    VTKIO_API MetaImageReader();
 
     //! @brief Destructor.
-    VTKIO_API ~VtiImageWriter();
+    VTKIO_API ~MetaImageReader();
 };
 
 } // namespace vtkIO
 
-#endif // _VTKIO_VTIIMAGEWRITER_HPP_
+#endif // _VTKIO_METAIMAGEREADER_HPP_

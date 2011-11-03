@@ -5,25 +5,25 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <vtkSmartPointer.h>
-#include <vtkXMLImageDataReader.h>
+#include <vtkMetaImageReader.h>
 #include <vtkImageData.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 
 #include <fwCore/base.hpp>
 
-#include "vtkIO/vtk.hpp"
-#include "vtkIO/VtiImageReader.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
+#include "vtkIO/vtk.hpp"
+#include "vtkIO/MetaImageReader.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::VtiImageReader, ::vtkIO::VtiImageReader );
+REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::MetaImageReader, ::vtkIO::MetaImageReader );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-VtiImageReader::VtiImageReader()
+MetaImageReader::MetaImageReader()
 : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
@@ -31,21 +31,21 @@ VtiImageReader::VtiImageReader()
 
 //------------------------------------------------------------------------------
 
-VtiImageReader::~VtiImageReader()
+MetaImageReader::~MetaImageReader()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void VtiImageReader::read()
+void MetaImageReader::read()
 {
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::Image::sptr pImage = getConcreteObject();
+    ::fwData::Image::sptr pImage = this->getConcreteObject();
 
-    vtkSmartPointer< vtkXMLImageDataReader > reader = vtkSmartPointer< vtkXMLImageDataReader >::New();
+    vtkSmartPointer< vtkMetaImageReader > reader = vtkSmartPointer< vtkMetaImageReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
 
     Progressor progress(reader, this->getSptr(), this->getFile().string());
@@ -54,22 +54,22 @@ void VtiImageReader::read()
 
     vtkDataObject *obj = reader->GetOutput();
     vtkImageData* img = vtkImageData::SafeDownCast(obj);
-    FW_RAISE_IF("VtiImageReader cannot read Vti image file :"<<this->getFile().string(), !img);
+    FW_RAISE_IF("MetaImageReader cannot read mhd image file :"<<this->getFile().string(), !img);
     try
     {
         ::vtkIO::fromVTKImage( img, pImage);
     }
     catch( std::exception &e)
     {
-        FW_RAISE("VTIImage to fwData::Image failed "<<e.what());
+        FW_RAISE("MetaImage to fwData::Image failed "<<e.what());
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::string  VtiImageReader::extension()
+std::string  MetaImageReader::extension()
 {
-   return ".vti";
+   return ".mhd";
 }
 
 } // namespace vtkIO
