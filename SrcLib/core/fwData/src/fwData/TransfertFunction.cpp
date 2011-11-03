@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <cmath>
 #include <fwCore/base.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
@@ -247,7 +248,7 @@ void TransfertFunction::setMinMax( ::fwData::TransfertFunctionPoint::TFValueType
     while ( iterTF != end )
     {
         ::fwData::TransfertFunctionPoint::TFValueType oldValue = (*iterTF)->getValue();
-        ::fwData::TransfertFunctionPoint::TFValueType newValue = _min +  ( oldValue - oldMin ) * newWidth / (float) oldWidth;
+        ::fwData::TransfertFunctionPoint::TFValueType newValue = _min + (int) floor(( oldValue - oldMin ) * (newWidth / (double) oldWidth) + 0.5);
 
         colorOrigin = pTransfertFunctionClone->getColor( oldValue );
         color = this->getColor( newValue );
