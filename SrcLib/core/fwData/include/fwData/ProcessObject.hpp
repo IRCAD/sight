@@ -11,7 +11,7 @@
 
 #include "fwData/Object.hpp"
 
-fwCorePredeclare( (data)(Field) );
+fwCorePredeclare( (fwData)(Field) );
 
 namespace fwData
 {

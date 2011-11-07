@@ -371,7 +371,7 @@
  * @param _cls_ Class to predeclare, in the form (some)(namespace)(class)
  *
  *   Example :
- *   fwCorePredeclare( (data)(Image) ) expands to :
+ *   fwCorePredeclare( (fwData)(Image) ) expands to :
  *   namespace fwData {
  *     class Image;
  *     }
