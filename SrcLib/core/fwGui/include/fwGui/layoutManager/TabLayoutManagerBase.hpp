@@ -50,11 +50,13 @@ public:
 
          ViewInfo() :
              m_caption(""),
-             m_isSelect(false)
+             m_isSelect(false),
+             m_useScrollBar(false)
          {}
 
          std::string  m_caption;
          bool         m_isSelect;
+         bool         m_useScrollBar;
      };
 
     /// Constructor. Do nothing.

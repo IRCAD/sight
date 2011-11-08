@@ -8,6 +8,7 @@
 
 #include <QTabWidget>
 #include <QBoxLayout>
+#include <QScrollArea>
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
@@ -64,7 +65,18 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
         subContainer->setQtContainer(widget);
         m_subViews.push_back(subContainer);
 
-        int idx = m_tabWidget->addTab( widget, QString::fromStdString(viewInfo.m_caption));
+        int idx = 0;
+        if(viewInfo.m_useScrollBar)
+        {
+            QScrollArea *scrollArea = new QScrollArea();
+            scrollArea->setWidget(widget);
+            scrollArea->setWidgetResizable ( true );
+            idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));
+        }
+        else
+        {
+            idx = m_tabWidget->addTab( widget, QString::fromStdString(viewInfo.m_caption));
+        }
         if (viewInfo.m_isSelect )
         {
             m_tabWidget->setCurrentIndex(idx);
