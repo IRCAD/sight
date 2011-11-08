@@ -462,14 +462,6 @@ void TransferFunctionEditor::importTF()
 
             if ( tfIsImported )
             {
-                // If we have one TF imported and if it is the first, clear composite before add TF
-                if ( ! someTfHasBeenImported )
-                {
-                    someTfHasBeenImported = true;
-                    (*m_tranferFunctionComposite.lock()).clear();
-                    m_pTransferFunctionPreset->clear();
-                }
-
                 if( hasTransferFunctionName( pTf->getName() ) )
                 {
                     pTf->setCRefName( createTransferFunctionName( pTf->getName() ) );
