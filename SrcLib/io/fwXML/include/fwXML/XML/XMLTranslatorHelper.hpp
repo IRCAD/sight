@@ -9,7 +9,8 @@
 
 #include <string>
 #include <iterator>
-#include "libxml/tree.h"
+#include <libxml/tree.h>
+
 #include "fwXML/XML/XMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/ObjectTracker.hpp"

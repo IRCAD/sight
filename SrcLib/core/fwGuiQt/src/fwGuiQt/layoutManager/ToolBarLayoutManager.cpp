@@ -88,7 +88,14 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             menu->setQtMenu(qtMenu);
 
             QToolButton * toolButton = new QToolButton();
-            toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+            if (toolBar->orientation() == Qt::Horizontal)
+            {
+                toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+            }
+            else
+            {
+                toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            }
             toolButton->setMenu(qtMenu);
             toolButton->setPopupMode(QToolButton::InstantPopup);
             toolButton->setText(QString::fromStdString(actionInfo.m_name));

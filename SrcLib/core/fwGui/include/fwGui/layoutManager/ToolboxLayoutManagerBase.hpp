@@ -52,7 +52,8 @@ public:
              m_minSize (std::make_pair(-1,-1)),
              m_caption (""),
              m_visible (true),
-             m_expanded(false)
+             m_expanded(false),
+             m_useScrollBar(false)
          {}
 
          int                    m_border;
@@ -60,6 +61,7 @@ public:
          std::string            m_caption;
          bool                   m_visible;
          bool                   m_expanded;
+         bool                   m_useScrollBar;
      };
 
     /// Constructor. Do nothing.

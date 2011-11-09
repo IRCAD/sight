@@ -85,6 +85,13 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
                         (expanded == "yes") || (expanded == "no"));
                 vi.m_expanded = ((expanded == "true") || (expanded == "yes"));
             }
+            if( view->hasAttribute("useScrollBar") )
+            {
+                std::string useScrollBar = view->getExistingAttributeValue("useScrollBar") ;
+                OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
+                        (useScrollBar == "yes") || (useScrollBar == "no"));
+                vi.m_useScrollBar = (useScrollBar=="yes") ;
+            }
             m_views.push_back(vi);
         }
     }

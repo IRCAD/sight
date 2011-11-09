@@ -3,7 +3,6 @@
 
     <requirement id="io" />
 
-    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::MaxMeshReaderService , ::fwData::Model ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::MaxMeshReaderService</service>
@@ -11,7 +10,6 @@
         <desc>3ds Reader (VTK)</desc>
     </extension>
 
-    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwData::Acquisition ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVTK::ReconstructionWriterService</service>
@@ -19,7 +17,6 @@
         <desc>Reconstructions Writer (VTK)</desc>
     </extension>
 
-    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVTK::ImageWriterService</service>
@@ -27,7 +24,6 @@
         <desc>VTK Image Writer (VTK)</desc>
     </extension>
 
-    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::ImageReaderService</service>
@@ -35,8 +31,6 @@
         <desc>VTK Image Reader (VTK)</desc>
     </extension>
 
-
-    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::TriangularMesh) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::MeshReaderService</service>
@@ -44,7 +38,6 @@
         <desc>VTK Mesh Reader (VTK)</desc>
     </extension>
 
-    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::TriangularMesh ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVTK::MeshWriterService</service>
@@ -52,8 +45,6 @@
         <desc>VTK Mesh Writer (VTK)</desc>
     </extension>
 
-
-    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData::PatientDB ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::VtkPatientDBReaderService</service>
@@ -61,7 +52,6 @@
         <desc>VTK Image Reader (VTK)</desc>
     </extension>
 
-    <!--    REGISTER_SERVICE( ::io::IReader , ::ioVTK::::ioVTK::VtkModelReaderService , ::fwData::PatientDB ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::VtkModelReaderService</service>

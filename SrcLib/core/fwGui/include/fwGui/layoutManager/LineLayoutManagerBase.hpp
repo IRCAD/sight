@@ -60,7 +60,8 @@ public:
              m_minSize (std::make_pair(-1,-1)),
              m_caption (std::make_pair(false,"")),
              m_visible (true),
-             m_isSpacer(false)
+             m_isSpacer(false),
+             m_useScrollBar(false)
          {}
 
          int                            m_proportion;
@@ -69,6 +70,7 @@ public:
          std::pair< bool, std::string > m_caption;
          bool                           m_visible;
          bool                           m_isSpacer;
+         bool                           m_useScrollBar;
      };
 
     /// Constructor. Do nothing.

@@ -22,7 +22,7 @@
 #include "fwData/macros.hpp"
 #include "fwData/config.hpp"
 
-fwCorePredeclare( (data)(visitor)(IVisitor) );
+fwCorePredeclare( (fwData)(visitor)(IVisitor) );
 
 namespace fwData
 {
@@ -30,7 +30,7 @@ namespace fwData
 
 /**
  * @brief   Base class for each data object.
- * Each object can optionally embed sub-object with string indentifier. We name this concept a Field.
+ * Each object can optionally embed sub-object with string identifier. We name this concept a Field.
  * An Object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
  *

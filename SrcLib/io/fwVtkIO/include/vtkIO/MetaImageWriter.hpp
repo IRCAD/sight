@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_VTIIMAGEWRITER_HPP_
-#define _VTKIO_VTIIMAGEWRITER_HPP_
+#ifndef _VTKIO_METAIMAGEWRITER_HPP_
+#define _VTKIO_METAIMAGEWRITER_HPP_
 
 #include <boost/filesystem/path.hpp>
 
@@ -20,41 +20,41 @@ namespace vtkIO
 {
 
 /**
- * @brief   Write an image.
- * @class   VtiImageWriter.
+ * @brief   Write a MetaImage.
+ * @class   MetaImageWriter.
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
- * Write a VTK Image using the VTK lib
+ * Write a MetaImage using the VTK lib
  */
-class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+class MetaImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
                              public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
                              public ::fwTools::ProgressAdviser
 {
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((VtiImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
+    fwCoreClassDefinitionsWithFactoryMacro((MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
                                            (()),
-                                           new VtiImageWriter
+                                           new MetaImageWriter
                                           );
     fwCoreAllowSharedFromThis();
 
     //! @brief Writing operator.
     VTKIO_API void write();
 
-    /// @return ".vti"
+    /// @return ".mhd"
     VTKIO_API  std::string extension();
 
 protected:
 
     //! @brief Constructor.
-    VTKIO_API VtiImageWriter();
+    VTKIO_API MetaImageWriter();
 
     //! @brief Destructor.
-    VTKIO_API ~VtiImageWriter();
+    VTKIO_API ~MetaImageWriter();
 };
 
 } // namespace vtkIO
 
-#endif // _VTKIO_VTIIMAGEWRITER_HPP_
+#endif // _VTKIO_METAIMAGEWRITER_HPP_

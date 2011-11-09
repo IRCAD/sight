@@ -42,7 +42,7 @@ std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _
         ::fwData::Integer::NewSptr minField;
         ::fwData::Integer::NewSptr maxField;
 
-        if ( _pImg->getWindowWidth() != 0 )
+        if ( _pImg->getWindowWidth() >= 10 ) // because of TF management
         {
             minField->value() = _pImg->getWindowCenter() - _pImg->getWindowWidth() / 2.0;
             maxField->value() = _pImg->getWindowCenter() + _pImg->getWindowWidth() / 2.0;
@@ -106,7 +106,7 @@ std::pair<bool,bool> MedicalImageHelpers::checkMinMaxTF( ::fwData::Image::sptr _
         std::pair< ::boost::int32_t, ::boost::int32_t > currentMinMax = pTF->getMinMax();
 
         // ACH => Normaly this case does not exit in the current framework
-        OSLM_ASSERT("Current TransfertFunction Min Max are out of bounds ["<<windowMin<<", "<<windowMax<<"]",
+        OSLM_ASSERT("Current TransfertFunction Min Max are out of bounds ["<<windowMin<<", "<<windowMax<<"] != [" <<currentMinMax.first<<", "<<currentMinMax.second<<"]",
                 windowMin == currentMinMax.first && windowMax == currentMinMax.second );
         if ( windowMin != currentMinMax.first || windowMax != currentMinMax.second )
         {
@@ -236,33 +236,34 @@ void MedicalImageHelpers::setSquareTF( ::fwData::Image::sptr _pImg )
 
     pTF->clear();
 
-    int min = 0;
-    int max = 10000;
-    ::fwData::Color::sptr color = pTF->getColor( min-1 );
+    ::fwData::Integer::sptr minField = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+    ::fwData::Integer::sptr maxField = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+
+    int min = minField->value();
+    int max = maxField->value();
+    ::fwData::Color::sptr color = pTF->getColor( min );
     color->getRefRGBA()[0] = 0;
     color->getRefRGBA()[1] = 0;
     color->getRefRGBA()[2] = 0;
+    color->getRefRGBA()[3] = 0;
+
+    color = pTF->getColor( min +1 );
+    color->getRefRGBA()[0] = 1;
+    color->getRefRGBA()[1] = 1;
+    color->getRefRGBA()[2] = 1;
     color->getRefRGBA()[3] = 1;
 
-    color = pTF->getColor( min );
+    color = pTF->getColor( max -1 );
     color->getRefRGBA()[0] = 1;
     color->getRefRGBA()[1] = 1;
     color->getRefRGBA()[2] = 1;
     color->getRefRGBA()[3] = 1;
 
     color = pTF->getColor( max );
-    color->getRefRGBA()[0] = 1;
-    color->getRefRGBA()[1] = 1;
-    color->getRefRGBA()[2] = 1;
-    color->getRefRGBA()[3] = 1;
-
-    color = pTF->getColor( max+1 );
     color->getRefRGBA()[0] = 0;
     color->getRefRGBA()[1] = 0;
     color->getRefRGBA()[2] = 0;
-    color->getRefRGBA()[3] = 1;
-
-    updateTFFromMinMax(_pImg, pTF);
+    color->getRefRGBA()[3] = 0;
 }
 
 //------------------------------------------------------------------------------

@@ -15,8 +15,6 @@
 #include "fwXML/boostSerializer/DynamicType.hpp"
 
 
-
-
 namespace boost {
 namespace serialization {
 
@@ -73,13 +71,7 @@ void load(Archive & ar, ::fwData::Image &_image, const unsigned int version)
      // read Buffer element to be correct with XML parsing but doesn't interpret field delegated to abother mechanisme
     std::string dummy;
     ar &  ::boost::serialization::make_nvp( "Buffer"   , dummy );
-
-
-
 }
-
-
-
 
 
 /// serialize image via boost.org serialization framework (split load/save)

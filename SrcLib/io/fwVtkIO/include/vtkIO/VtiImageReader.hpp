@@ -9,9 +9,6 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <vtkActor.h>
-#include <vtkSmartPointer.h>
-
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwTools/ProgressAdviser.hpp>

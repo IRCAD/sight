@@ -71,7 +71,19 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
         subContainer->setQtContainer(panel);
         m_subViews.push_back(subContainer);
 
-        int index = toolbox->addItem(panel, QString::fromStdString(viewInfo.m_caption));
+        int index = 0;
+        if(viewInfo.m_useScrollBar)
+        {
+            QScrollArea *scrollArea = new QScrollArea();
+            scrollArea->setWidget(panel);
+            scrollArea->setWidgetResizable ( true );
+            index = toolbox->addItem(scrollArea, QString::fromStdString(viewInfo.m_caption));
+        }
+        else
+        {
+            index = toolbox->addItem(panel, QString::fromStdString(viewInfo.m_caption));
+        }
+
         if(viewInfo.m_expanded)
         {
             toolbox->expandItem(index);

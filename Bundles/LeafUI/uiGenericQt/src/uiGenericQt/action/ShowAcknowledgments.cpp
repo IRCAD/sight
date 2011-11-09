@@ -61,7 +61,7 @@ void ShowAcknowledgments::configuring() throw(::fwTools::Failed)
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
         m_fsAckPath = ::boost::filesystem::path( filename ) ;
         m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAckPath);
-        OSLM_WARN_IF("Acknowledgements file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
+        OSLM_WARN_IF("Acknowledgments file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
         OSLM_TRACE("Filename found " << filename ) ;
     }
 }

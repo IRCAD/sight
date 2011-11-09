@@ -50,6 +50,10 @@ WindowLevel::WindowLevel() throw()
 {
     m_widgetDynamicRangeMin   = -1024.;
     m_widgetDynamicRangeWidth =  4000.;
+    m_autoWindowing = false;
+    m_imageMin = -200;
+    m_imageMax = 300;
+    m_isNotifying = false;
 
     addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
     addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
@@ -96,6 +100,16 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     m_toggleTFButton->setIcon(*ico);
     m_toggleTFButton->setCheckable(true);
 
+    m_toggleAutoButton = new QToolButton(container);
+    QIcon *icon = new QIcon();
+    QString windo("Bundles/uiImageQt_" UIIMAGEQT_VER "/windowing.svg");
+    icon->addFile(windo, QSize(), QIcon::Normal,QIcon::On);
+    QString nowindo("Bundles/uiImageQt_" UIIMAGEQT_VER "/nowindowing.svg");
+    icon->addFile(nowindo, QSize(), QIcon::Normal,QIcon::Off);
+    m_toggleAutoButton->setIcon(*icon);
+    m_toggleAutoButton->setToolTip("Automatic Windowing");
+    m_toggleAutoButton->setCheckable(true);
+    m_toggleAutoButton->setChecked(m_autoWindowing);
 
     m_dynamicRangeSelection = new QToolButton(container);
     m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
@@ -118,8 +132,9 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     layout->addWidget( m_rangeSlider,  0, 0, 1, -1 );
     layout->addWidget( m_valueTextMin, 1, 0 );
     layout->addWidget( m_toggleTFButton, 1, 1 );
-    layout->addWidget( m_dynamicRangeSelection, 1, 2 );
-    layout->addWidget( m_valueTextMax, 1, 3 );
+    layout->addWidget( m_toggleAutoButton, 1, 2 );
+    layout->addWidget( m_dynamicRangeSelection, 1, 3 );
+    layout->addWidget( m_valueTextMax, 1, 4 );
 
 
     container->setLayout( layout );
@@ -131,6 +146,7 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     QObject::connect(m_valueTextMax, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
     QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )) , this, SLOT(onWindowLevelWidgetChanged( double, double )));
     QObject::connect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
+    QObject::connect(m_toggleAutoButton, SIGNAL(toggled( bool )), this, SLOT(onToggleAutoWL( bool )));
     QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
 
 }
@@ -156,7 +172,6 @@ void WindowLevel::stopping() throw(::fwTools::Failed)
     m_rangeSlider->deleteLater();
     m_dynamicRangeSignalMapper->deleteLater();
 
-    QPointer< ::fwGuiQt::widget::QRangeSlider > m_rangeSlider;
     this->getContainer()->clean();
     this->destroy();
 }
@@ -167,6 +182,18 @@ void WindowLevel::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->initialize();
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("config");
+    if (!configs.empty())
+    {
+        ::fwRuntime::ConfigurationElement::sptr config = configs.front();
+        if (config->hasAttribute("autoWindowing"))
+        {
+            std::string autoWindowing = config->getExistingAttributeValue("autoWindowing");
+            SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!", autoWindowing == "yes" || autoWindowing == "no");
+            m_autoWindowing = (autoWindowing == "yes");
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -179,77 +206,14 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
-    if(imageIsValid)
+    if(imageIsValid && m_autoWindowing)
     {
-
-        ::fwTools::DynamicType pixelType = image->getPixelType();
-        SLM_ASSERT("Sorry, unmanaged type.",  pixelType != ::fwTools::DynamicType());
-
-        std::string imageType = pixelType.string();
-        bool isSigned = pixelType.isSigned();
-        bool isFixedPrecision = pixelType.isFixedPrecision();
-
-        int minValue = 0;
-        int maxValue = 0;
-
-        if(isFixedPrecision)
-        {
-            // Type is long, int, short, char
-            if(isSigned)
-            {
-                if(imageType == "signed int")
-                {
-                    minValue = std::numeric_limits<int>::min();
-                    maxValue = std::numeric_limits<int>::max();
-                }
-                else if(imageType == "signed short")
-                {
-                    minValue = std::numeric_limits<short>::min();
-                    maxValue = std::numeric_limits<short>::max();
-                }
-                else if (imageType == "signed char")
-                {
-                    minValue = std::numeric_limits<signed char>::min();
-                    maxValue = std::numeric_limits<signed char>::max();
-                }
-                else
-                {
-                    SLM_FATAL("The pixel type is not managed.");
-                }
-            }
-            else
-            {
-                if(imageType == "unsigned int")
-                {
-                    minValue = std::numeric_limits<unsigned int>::min();
-                    maxValue = std::numeric_limits<int>::max(); // due to the QSlider which take int and due to the TF uses fwData::Integer
-                }
-                else if(imageType == "unsigned short")
-                {
-                    minValue = std::numeric_limits<unsigned short>::min();
-                    maxValue = std::numeric_limits<unsigned short>::max();
-                }
-                else if (imageType == "unsigned char")
-                {
-                    minValue = std::numeric_limits<unsigned char>::min();
-                    maxValue = std::numeric_limits<unsigned char>::max();
-                }
-                else
-                {
-                    SLM_FATAL("The pixel type is not managed.");
-                }
-            }
-
-        }
-        else
-        {
-            // Image in Floa, double format
-            // due to the QSlider which take int and due to the TF uses fwData::Integer
-            minValue = std::numeric_limits<int>::min();
-            maxValue = std::numeric_limits<int>::max();
-        }
-
+        int min, max;
+        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        this->checkMinMax(min, max);
+        this->updateImageWindowLevel(min, max);
     }
+
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
 
@@ -271,13 +235,21 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
     ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    if (m_autoWindowing && imageIsValid && imageMessage->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
+    {
+        int min, max;
+        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        this->checkMinMax(min, max);
+        this->updateImageWindowLevel(min, max);
+    }
+
     ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
     ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
     onImageWindowLevelChanged(*min, *max);
 
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
-
 }
 
 //------------------------------------------------------------------------------
@@ -300,7 +272,6 @@ WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 
 
 //------------------------------------------------------------------------------
-
 void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 {
     double rangeMin = fromWindowLevel(_imageMin);
@@ -338,18 +309,23 @@ int WindowLevel::toWindowLevel(double _val)
 //------------------------------------------------------------------------------
 void  WindowLevel::updateImageWindowLevel(int _imageMin, int _imageMax)
 {
+    m_imageMin = _imageMin;
+    m_imageMax = _imageMax;
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    if (!m_isNotifying)
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+        ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
+        ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
 
-    min->value() = _imageMin;
-    max->value() = _imageMax;
+        min->value() = _imageMin;
+        max->value() = _imageMax;
 
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
+        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
 
-    notifyWindowLevel(_imageMin, _imageMax);
+        notifyWindowLevel(_imageMin, _imageMax);
+    }
 }
 
 
@@ -414,10 +390,28 @@ void  WindowLevel::notifyWindowLevel(int _imageMin, int _imageMax)
     ::fwData::Integer::NewSptr min(static_cast < ::fwData::Integer::ValueType >(_imageMin));
     ::fwData::Integer::NewSptr max(static_cast < ::fwData::Integer::ValueType >(_imageMax));
 
+    m_notifiedImageMin = _imageMin;
+    m_notifiedImageMax = _imageMax;
+
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->setWindowMinMax(min, max, image);
+    imageMsg->setMessageCallback( ::boost::bind( &WindowLevel::notifyWindowLevelCallback, this ) );
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
- }
+
+    m_isNotifying = true;
+}
+
+//------------------------------------------------------------------------------
+
+void  WindowLevel::notifyWindowLevelCallback()
+{
+    m_isNotifying = false;
+
+    if (m_notifiedImageMin != m_imageMin || m_notifiedImageMax != m_imageMax)
+    {
+        this->updateImageWindowLevel(m_imageMin, m_imageMax);
+    }
+}
 
 //------------------------------------------------------------------------------
 void  WindowLevel::updateTextWindowLevel(int _imageMin, int _imageMax)
@@ -452,11 +446,32 @@ void  WindowLevel::onToggleTF(bool squareTF)
 }
 
 //------------------------------------------------------------------------------
+
+void  WindowLevel::onToggleAutoWL(bool autoWL)
+{
+     m_autoWindowing = autoWL;
+
+     if (m_autoWindowing)
+     {
+         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+         int min, max;
+         ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+         this->checkMinMax(min, max);
+         this->updateImageWindowLevel(min, max);
+         this->onImageWindowLevelChanged(min, max);
+     }
+}
+
+//------------------------------------------------------------------------------
 void  WindowLevel::onTextEditingFinished()
 {
     int min, max;
     if(this->getWidgetIntValue(m_valueTextMin, min) && this->getWidgetIntValue(m_valueTextMax, max))
     {
+        if ( ! this->checkMinMax( min, max ))
+        {
+            this->updateTextWindowLevel(min, max);
+        }
         updateWidgetMinMax( min, max );
         updateImageWindowLevel(min, max);
     }
@@ -482,13 +497,12 @@ bool WindowLevel::getWidgetIntValue(QLineEdit *widget, int &val)
 }
 
 //------------------------------------------------------------------------------
-
 void WindowLevel::setEnabled(bool enable)
 {
-    m_valueTextMin->setEnabled(enable);
-    m_rangeSlider->setEnabled(enable);
-
-    m_valueTextMax->setEnabled(enable);
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget * const container = qtContainer->getQtContainer();
+    SLM_ASSERT("container not instanced", container);
+    container->setEnabled(enable);
 }
 
 //------------------------------------------------------------------------------
@@ -500,6 +514,17 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
     m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));
 }
 
+//------------------------------------------------------------------------------
+bool WindowLevel::checkMinMax(int &min, int &max)
+{
+    bool isOk = true;
+    if (max - min < 10)
+    {
+        max = min + 10;
+        isOk = false;
+    }
+    return isOk;
+}
 
 
 }

@@ -76,14 +76,14 @@ void UndoRedoManager::clear()
 
 const ::boost::uint32_t UndoRedoManager::getUndoSize()
 {
-    return m_currentManager->getUndoSize();
+    return m_currentManager ? m_currentManager->getUndoSize() : 0;
 }
 
 //-----------------------------------------------------------------------------
 
 const ::boost::uint32_t UndoRedoManager::getRedoSize()
 {
-    return m_currentManager->getRedoSize();
+    return m_currentManager ? m_currentManager->getRedoSize() : 0;
 }
 
 //-----------------------------------------------------------------------------

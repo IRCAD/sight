@@ -134,6 +134,10 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr 
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
             }
+            else
+            {
+                ::fwGui::GuiRegistry::actionServiceStarting(sid.first);
+            }
         }
     }
 }

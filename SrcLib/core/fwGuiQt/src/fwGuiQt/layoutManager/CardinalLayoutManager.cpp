@@ -8,6 +8,7 @@
 #include <QDockWidget>
 #include <QBoxLayout>
 #include <QGroupBox>
+#include <QScrollArea>
 
 #include <boost/foreach.hpp>
 
@@ -54,6 +55,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
     {
         QWidget *widget;
         QWidget *insideWidget;
+        QScrollArea *scrollArea;
 
         if(viewInfo.m_align==CENTER)
         {
@@ -72,7 +74,18 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
                     !hasCentral);
 
-            m_qtWindow->setCentralWidget(widget);
+            if (viewInfo.m_useScrollBar)
+            {
+                scrollArea = new QScrollArea();
+                scrollArea->setWidget(widget);
+                scrollArea->setWidgetResizable ( true );
+                m_qtWindow->setCentralWidget(scrollArea);
+            }
+            else
+            {
+                m_qtWindow->setCentralWidget(widget);
+            }
+
             insideWidget->setVisible(viewInfo.m_visible);
             hasCentral = true;
         }
@@ -105,7 +118,17 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 dockWidget->setTitleBarWidget(widget);
             }
 
-            dockWidget->setWidget(insideWidget);
+            if (viewInfo.m_useScrollBar)
+            {
+                scrollArea = new QScrollArea();
+                scrollArea->setWidget(insideWidget);
+                scrollArea->setWidgetResizable ( true );
+                dockWidget->setWidget(scrollArea);
+            }
+            else
+            {
+                dockWidget->setWidget(insideWidget);
+            }
             dockWidget->setVisible(viewInfo.m_visible);
         }
 
@@ -114,7 +137,14 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             //TODO
         }
 
-        insideWidget->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
+        if (viewInfo.m_useScrollBar)
+        {
+            scrollArea->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
+        }
+        else
+        {
+            insideWidget->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
+        }
 
         //TODO
         // - viewInfo.m_position
