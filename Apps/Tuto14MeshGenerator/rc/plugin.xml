@@ -1,0 +1,137 @@
+<plugin id="Tuto14MeshGenerator">
+
+<requirement id="servicesReg" />
+
+<extension implements="::fwServices::registry::AppConfig">
+    <id>Tuto14MeshGenerator</id>
+    <type>standard</type>
+    <config>
+
+        <object type="::fwData::Composite">
+            <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+                <gui>
+                    <frame>
+                        <name>Tuto14MeshGenerator</name>
+                        <icon>Bundles/Tuto14MeshGenerator_0-1/tuto.ico</icon>
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="myMenuBar" start="yes" />
+                    <view sid="multiView_scene1" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Generator" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                    <menu sid="menu_Generator" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open file" shortcut="Ctrl+O" />
+                        <menuItem name="Save file" shortcut="Ctrl+S" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openFile" start="yes" />
+                    <menuItem sid="action_saveFile" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_Generator" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+                <gui>
+                    <layout>
+                        <menuItem name="Generate triangle" />
+                        <menuItem name="Generate quad" />
+                        <menuItem name="Generate triangle and quad" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_genTrian" start="yes" />
+                    <menuItem sid="action_genQuad" start="yes" />
+                    <menuItem sid="action_genTrianQuad" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="myReaderPathFile" />
+            </service>
+            <service uid="action_saveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="myWriterPathFile" />
+            </service>
+            <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+            <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager" >
+                        <view align="center" />
+                        <view align="bottom" minWidth="400" minHeight="30" resizable="no" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                </registry>
+            </service>
+
+            <!-- CompositeVisu description -->
+            <item key="myCompositeVisu">
+                <object uid="myCompositeVisu" type="::fwData::Composite">
+
+                    <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+                            <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+                            <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" picker="" />
+                            </adaptor>
+
+                        </scene>
+                    </service>
+
+                    <item key="myMesh">
+                        <object type="::fwData::TriangularMesh">
+
+                            <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                                <type mode="reader" />
+                            </service>
+                            <service uid="myWriterPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                                <type mode="writer" />
+                            </service>
+                            
+                            <service uid="action_genTrian" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="GenTriangle" />
+                            </service>
+                            <service uid="action_genQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="GenQuad" />
+                            </service>
+                            <service uid="action_genTrianQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="GenTriangleQuad" />
+                            </service>
+                            
+                        </object>
+                    </item>
+                </object>
+            </item>
+
+            <start uid="MyIHM" />
+
+        </object>
+        
+    </config>
+</extension>
+
+</plugin>
