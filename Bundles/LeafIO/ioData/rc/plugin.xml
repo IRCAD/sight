@@ -42,5 +42,11 @@
         <object>::fwData::TriangularMesh</object>
         <desc>TriangularMesh Writer</desc>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::ioData::action::MeshGeneratorSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
 </plugin>
