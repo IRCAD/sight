@@ -9,6 +9,9 @@
 
 
     <object type="::fwData::Composite">
+    
+        <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" implementation="::fwGui::MessageHandler" autoComChannel="no" />
+    
         <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
             <gui>
                 <frame>
@@ -419,6 +422,7 @@
             </object>
         </item>
 
+        <start uid="messageHandler" />
         <start uid="MyIHM" />
         <start uid="GENERIC_UID_Scene2D_Shutter" />
         <start uid="GENERIC_UID_Scene2D" />
