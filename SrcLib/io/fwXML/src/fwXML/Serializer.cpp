@@ -35,6 +35,7 @@
 #include "fwXML/IFileFormatService.hpp"
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/XMLTranslator.hpp"
+#include "fwXML/XML/XMLPatch.hpp"
 #include "fwXML/ObjectTracker.hpp"
 #include "fwXML/visitor/CollectFileFormatService.hpp"
 #include "fwXML/validator/DataFolderValidator.hpp"
@@ -43,116 +44,9 @@
 namespace fwXML
 {
 
-
 std::string ProcessedXMLFile = std::string();
 
-boost::filesystem::path Serializer::m_rootFolder(".");
-
-//------------------------------------------------------------------------------
-
-void PatchNoVersionToNewData( xmlNodePtr node )
-{
-    if (node &&  node->type == XML_ELEMENT_NODE)
-    {
-        std::string NodeName( (const char*)node->name );
-
-        //////////////////////
-        // renaming node name
-        //////////////////////
-        if ( NodeName == "StringField")  { xmlNodeSetName(node, BAD_CAST "String");  }
-        if ( NodeName == "FloatField")   { xmlNodeSetName(node, BAD_CAST "Float");   }
-        if ( NodeName == "IntegerField") { xmlNodeSetName(node, BAD_CAST "Integer"); }
-        if ( NodeName == "BooleanField") { xmlNodeSetName(node, BAD_CAST "Boolean"); }
-
-
-        ////////////////////////////////////////////////////////////////////////
-        // manage extraXML : search for  <Buffer> sub node with attribute protocol="::DataIO:: -> ::fwDataIO::
-        ///////////////////////////////////////////////////////////////////////
-        std::string protocolValue;
-        xmlNodePtr bufferNode;
-        try
-        {
-            bufferNode = XMLParser::findChildNamed( node, "Buffer");
-            if ( bufferNode )
-            {
-                protocolValue = XMLParser::getAttribute (bufferNode, "protocol");
-            }
-        }
-        catch ( ::fwTools::Failed ef)
-        {
-            OSLM_TRACE(" no protocol class for node->name=" << NodeName )
-        }
-        // if protocol exist and contain ::dataIO:: replace it by fwDataIO
-        if ( !protocolValue.empty() &&  ( protocolValue.find("::dataIO::") != std::string::npos ) )
-        {
-            protocolValue = protocolValue.replace(0,strlen("::dataIO::"),"::fwDataIO::");
-            xmlSetProp( bufferNode , BAD_CAST "protocol",  xmlStrdup( BAD_CAST protocolValue.c_str() ) );
-        }
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // manage class attribute : adapt "::data::" to "::fwData::" and manage {String,Float,Interger}Field renaming
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if( xmlHasProp( node, BAD_CAST "class" ) )
-        {
-            std::string className, newClassName;
-            try
-            {
-                className = XMLParser::getAttribute (node, "class");
-            }
-            catch ( ::fwTools::Failed ef)
-            {
-                OSLM_TRACE(" no attribute class for node->name=" << NodeName );
-            }
-            OSLM_INFO( "PatchNoVersionToNewData nodeName=" << NodeName << " className=" << className);
-
-            // renaming class attribute if required
-            if ( !className.empty() )
-            {
-                // special case for Object class
-                if ( className.find("::data::Object") != std::string::npos )
-                {
-                    newClassName = "::fwTools::Object";
-                }
-                else if ( className.find("::data::") != std::string::npos ) // general case (namespace)
-                {
-                    newClassName = className.replace(0,strlen("::data::"),"::fwData::");
-                }
-
-                // specific className : StringField, FloatField, IntegerField
-                if ( className.find("StringField") != std::string::npos )
-                {
-                    newClassName = className.replace( className.find("StringField"), strlen("StringField"), "String" );
-                }
-                else if ( className.find("FloatField") != std::string::npos )
-                {
-                    newClassName = className.replace( className.find("FloatField"), strlen("FloatField"), "Float" );
-                }
-                else if ( className.find("IntegerField") != std::string::npos )
-                {
-                    newClassName = className.replace( className.find("IntegerField"), strlen("IntegerField"), "Integer" );
-                }
-                else if ( className.find("BooleanField") != std::string::npos )
-                {
-                    newClassName = className.replace( className.find("BooleanField"), strlen("BooleanField"), "Boolean" );
-                }
-            }
-            // change needed ?
-            if ( !newClassName.empty() )
-            {
-                OSLM_DEBUG( "PatchNoVersionToNewData NEWclassName=" << newClassName );
-                xmlSetProp( node , BAD_CAST "class",  xmlStrdup( BAD_CAST newClassName.c_str() ) );
-            }
-        }
-        // continue parsing to child
-        node = node->children;
-        while ( node )
-        {
-            PatchNoVersionToNewData(node);
-            node = node->next;
-        }
-    }
-}
+::boost::filesystem::path Serializer::m_rootFolder(".");
 
 //------------------------------------------------------------------------------
 
@@ -479,21 +373,48 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     xmlNodePtr rootObject = NULL;
     xmlNodePtr archive =  !xmlStrcmp( xmlRoot->name, BAD_CAST "archive" )? xmlRoot: NULL;
 
+    std::string vProtocol = "0";
     if (archive)
     {
         xmlNodePtr protocol = XMLParser::findChildNamed(archive,"protocol");
         OSLM_ASSERT( "No protocol version for archive : " << filePath.string(), protocol );
+        vProtocol = XMLParser::getAttribute(protocol, "version");
         xmlNodePtr content = XMLParser::findChildNamed(archive,"content");
         OSLM_ASSERT( "No content for archive : " << filePath.string() , content );
         rootObject = XMLParser::nextXMLElement(content->children);
     }
-    else
-    {
-        OSLM_WARN( "No  versionned  archive : " << filePath.string() );
-        rootObject = xmlRoot;
-        PatchNoVersionToNewData( rootObject ); // internal function
 
+    XMLAggregator::Version dataVersion(vProtocol);
+
+    if (dataVersion > XMLAggregator::Version::current())
+    {
+        std::stringstream stream;
+        stream << "Data version " << dataVersion.string()
+                            << " is too recent compared to the software version ("
+                            << XMLAggregator::Version::current().string() << ")\n"
+                            <<"Contact rd-support@ircad.fr to have more information.";
+        throw ::fwTools::Failed( stream.str() );
     }
+    else if(dataVersion < XMLAggregator::Version::current())
+    {
+        if(dataVersion == XMLAggregator::Version(0)
+            && XMLAggregator::Version::current() == XMLAggregator::Version(1) )
+        {
+            OSLM_WARN( "No  versioned  archive : " << filePath.string() );
+            rootObject = xmlRoot;
+            XMLPatch::PatchNoVersionToNewData( rootObject ); // internal function
+        }
+        else
+        {
+            std::stringstream stream;
+            stream << "Data version " << dataVersion.string()
+                                << " is too old compared to the software version ("
+                                << XMLAggregator::Version::current().string() << ")\n"
+                                <<"Contact rd-support@ircad.fr to have more information.";
+            throw ::fwTools::Failed( stream.str() );
+        }
+    }
+
 
     ObjectTracker::clear();
 
