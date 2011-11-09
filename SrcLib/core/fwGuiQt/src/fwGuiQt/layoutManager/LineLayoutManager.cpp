@@ -9,6 +9,7 @@
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QStyle>
+#include <QScrollArea>
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
@@ -89,8 +90,20 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             subContainer->setQtContainer(panel);
             m_subViews.push_back(subContainer);
 
-            layout->addWidget( panel );
-            layout->setStretchFactor(panel, viewInfo.m_proportion);
+            if(viewInfo.m_useScrollBar)
+            {
+                QScrollArea *scrollArea = new QScrollArea();
+                scrollArea->setWidget(panel);
+                scrollArea->setWidgetResizable ( true );
+
+                layout->addWidget( scrollArea );
+                layout->setStretchFactor(scrollArea, viewInfo.m_proportion);
+            }
+            else
+            {
+                layout->addWidget( panel );
+                layout->setStretchFactor(panel, viewInfo.m_proportion);
+            }
 
             subContainer->setVisible( viewInfo.m_visible );
         }

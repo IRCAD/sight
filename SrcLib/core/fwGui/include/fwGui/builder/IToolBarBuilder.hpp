@@ -44,6 +44,15 @@ public:
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
 
+    typedef enum
+    {
+        TOP,
+        BOTTOM,
+        RIGHT,
+        LEFT
+    } Aligment;
+
+
     /// Constructor. Do nothing.
     FWGUI_API IToolBarBuilder();
 
@@ -88,6 +97,8 @@ protected:
     ::fwGui::container::fwToolBar::sptr m_toolBar;
 
     std::pair< int, int > m_toolBitmapSize;
+
+    Aligment m_aligment;
 
 };
 

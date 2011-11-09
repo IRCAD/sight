@@ -353,7 +353,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     OSLM_DEBUG("ObjectsFromXml : manage Object " << xmlNode->name );
     if ( ObjectTracker::isAlreadyInstanciated( idXML ) )
     {
-        OSLM_DEBUG("ObjectsFromXml : manageObject " << xmlNode->name  << "already Instancited with idXML " << idXML);
+        OSLM_DEBUG("ObjectsFromXml : manageObject " << xmlNode->name  << "already instantiated with idXML " << idXML);
         return ObjectTracker::buildObject( className , idXML  );
     }
 
@@ -364,31 +364,63 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     assert( newObject.get() );
 
     bool classicObject = ( xmlStrcmp( xmlNode->name, BAD_CAST "Field" ) != 0 ) ;
-
+    ::fwData::Object::sptr newDataObject = ::fwData::Object::dynamicCast( newObject );
     // classic object ignore all children expect Field
     // labeledObject manage all children
     while ( child!=NULL )
     {
         if ( child->type == XML_ELEMENT_NODE )
         {
+            std::string nodeName((const char*)child->name );
             // normal parent object ignore chlidren which are not Field
-            if ( classicObject &&  xmlStrcmp( child->name, BAD_CAST "Field" ) )
-            {
-                OSLM_DEBUG( "ObjectsFromXml : " << xmlNode->name << " ignoring " << child->name );
-            }
-            else
+            OSLM_DEBUG_IF( "ObjectsFromXml : " << xmlNode->name << " ignoring " << child->name, classicObject &&  nodeName != "Field" );
+            if (!classicObject || nodeName == "Field")
             {
                 OSLM_DEBUG( "ObjectsFromXml : " <<  xmlNode->name << " accept " << child->name );
-                ::fwTools::Object::sptr newChild = ObjectsFromXml( child, loadExtraXML );
+                ::fwTools::Object::sptr newChild = this->ObjectsFromXml( child, loadExtraXML );
                 assert (newChild);
                 newObject->children().push_back( newChild );
+            }
+
+            if ( nodeName == "DynamicAttributes" && newDataObject)
+            {
+                xmlNodePtr elementNode = xmlNextElementSibling(child->children);
+                while (elementNode)
+                {
+                    std::string nodeName = (const char *) elementNode->name;
+                    if ( nodeName == "element" )
+                    {
+                        xmlNodePtr keyNode   = XMLParser::findChildNamed( elementNode, "key");
+                        xmlNodePtr valueNode = XMLParser::findChildNamed( elementNode, "value");
+                        SLM_ASSERT("keyNode not instanced", keyNode);
+                        SLM_ASSERT("valueNode not instanced", valueNode);
+                        OSLM_INFO( "CompositeXMLTranslator::updateDataFromXML"  << BAD_CAST xmlNodeGetContent(keyNode) );
+
+                        std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
+
+                        xmlNodePtr ConcretevalueNode = xmlNextElementSibling( valueNode->children );
+                        SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
+
+                        ::fwTools::Object::sptr valueObj;
+                        valueObj = this->ObjectsFromXml( ConcretevalueNode, true );
+
+                        SLM_ASSERT("valueObj not instanced", valueObj);
+                        assert( ::fwData::Object::dynamicCast( valueObj ));
+
+                        if(newDataObject->hasAttribute(key))
+                        {
+                            newDataObject->setAttribute(key, ::fwData::Object::dynamicCast( valueObj ));
+                        }
+                    }
+                    elementNode = xmlNextElementSibling(elementNode->next);
+                }
             }
         }
         child = child->next;
     }
 
     // update data form XML
-    ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< fwXML::XMLTranslator  >(  newObject->getClassname()  );
+    ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  newObject->getClassname()  );
 
     OSLM_DEBUG("ObjectsFromXml : Looking for XMLTranslator for "<< newObject->getClassname());
     if (translator.get() )
@@ -465,7 +497,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     ObjectTracker::clear();
 
-    ::fwTools::Object::sptr objRoot = ObjectsFromXml( rootObject , loadExtraXML );
+    ::fwTools::Object::sptr objRoot = this->ObjectsFromXml( rootObject, loadExtraXML );
 
     if (loadExtraXML)
     {

@@ -99,6 +99,13 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
                         (visible == "yes") || (visible == "no"));
                 vi.m_visible = ((visible == "true") || (visible == "yes"));
             }
+            if( view->hasAttribute("useScrollBar") )
+            {
+                std::string useScrollBar = view->getExistingAttributeValue("useScrollBar") ;
+                OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
+                        (useScrollBar == "yes") || (useScrollBar == "no"));
+                vi.m_useScrollBar = (useScrollBar=="yes") ;
+            }
             m_views.push_back(vi);
         }
     }

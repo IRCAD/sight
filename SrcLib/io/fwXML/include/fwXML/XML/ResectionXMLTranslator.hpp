@@ -7,18 +7,9 @@
 #ifndef _fwXML_XML_RESECTIONXMLTRANSLATOR_HPP_
 #define _fwXML_XML_RESECTIONXMLTRANSLATOR_HPP_
 
-#include <boost/lexical_cast.hpp>
+#include <fwTools/Object.hpp>
 
-#include <fwCore/base.hpp>
-
-#include <iostream>
-#include <sstream>
-
-#include <fwData/Resection.hpp>
 #include "fwXML/XML/XMLTranslator.hpp"
-
-
-
 
 namespace fwXML
 {
@@ -39,8 +30,6 @@ public:
 
     /// get Object from an XML node
     FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
-
-protected :
 
 };
 

@@ -296,6 +296,12 @@
         <service>::visuVTKAdaptor::Image3DCursor</service>
         <object>::fwData::Image</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ImagesBlend</service>
+        <object>::fwData::Composite</object>
+    </extension>
 
 </plugin>
 

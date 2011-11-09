@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwServices/Base.hpp>
@@ -72,6 +74,32 @@ void SerializeXML::visit( ::fwTools::Object::sptr obj)
 
     // update XML
     xmlNodePtr objectXMLNode = translator->getXMLFrom(obj);
+
+    // save DynamicAttributes
+    ::fwData::Object::sptr dataObject = ::fwData::Object::dynamicCast(obj);
+    if(dataObject && !dataObject->getAttributeNames().empty())
+    {
+        xmlNodePtr dynAttributeNode = xmlNewNode( NULL, xmlStrdup( BAD_CAST "DynamicAttributes" )  );
+        xmlAddChild(objectXMLNode, dynAttributeNode);
+        BOOST_FOREACH( ::fwData::Object::AttrNameType name, dataObject->getAttributeNames() )
+        {
+            ::fwData::Object::sptr objAttribute = dataObject->getAttribute(name);
+            if(objAttribute)
+            {
+                xmlNodePtr elementNode = xmlNewNode(NULL, BAD_CAST "element");
+                xmlAddChild(dynAttributeNode, elementNode);
+
+                xmlNodePtr keyNode = xmlNewNode(NULL, BAD_CAST "key");
+                xmlNodeAddContent( keyNode,  xmlStrdup( BAD_CAST name.c_str() ) );
+                xmlAddChild(elementNode, keyNode);
+
+                xmlNodePtr valueNode = xmlNewNode(NULL, BAD_CAST "value");
+                xmlNodePtr trueValueNode = ::fwXML::XMLTranslatorHelper::toXMLRecursive(objAttribute);
+                xmlAddChild(elementNode, valueNode);
+                xmlAddChild(valueNode, trueValueNode);
+            }
+        }
+    }
     if ( m_correspondance[m_source] ) //manage the root
     {
         xmlAddChild(m_correspondance[m_source] , objectXMLNode );

@@ -1,0 +1,27 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>config01</id>
+    <type>standard</type>
+    <config>
+
+        <object type="::fwData::Image">
+
+            <service uid="myMainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <gui>
+                    <frame>
+                        <name>Tuto 01</name>
+                        <icon>Bundles/TutoDevForum_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="myViewer" start="yes" />
+                </registry>
+            </service>
+
+            <service implementation="::devForum::tuto01::ImageViewerService" type="::fwRender::IRender" uid="myViewer" autoComChannel="no" />
+
+            <start uid="myMainFrame" />
+
+        </object>
+    </config>
+</extension>

@@ -9,8 +9,6 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <vtkActor.h>
-
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwTools/ProgressAdviser.hpp>

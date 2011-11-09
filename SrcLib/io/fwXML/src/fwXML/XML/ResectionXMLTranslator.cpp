@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-//#include <fwData/String.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <fwData/Resection.hpp>
 
 #include "fwXML/XML/ResectionXMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"

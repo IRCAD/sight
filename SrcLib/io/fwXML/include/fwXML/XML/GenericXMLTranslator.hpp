@@ -60,7 +60,7 @@ public:
     }
 
     /// get XML from current object
-    FWXML_API xmlNodePtr getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+    FWXML_API xmlNodePtr getXMLFrom( ::boost::shared_ptr< ::fwTools::Object> obj )
     {
         OSLM_DEBUG("GenericXMLTranslator for " << obj->className() << "-" <<  obj.get() );
 
@@ -96,7 +96,7 @@ public:
     }
 
     /// get Object from an XML node
-    FWXML_API void updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+    FWXML_API void updateDataFromXML( ::boost::shared_ptr< ::fwTools::Object > toUpdate,  xmlNodePtr source)
     {
         // TODO assertion xmlNode.name() == RealData.className();
         OSLM_DEBUG("GenericXMLTranslator::updateDataFromXML( obj " << toUpdate->className() << " XMLNode source " << source->name );

@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <vtkSmartPointer.h>
 #include <vtkXMLImageDataReader.h>
 #include <vtkImageData.h>
-#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -14,6 +14,7 @@
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/VtiImageReader.hpp"
+#include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::VtiImageReader, ::vtkIO::VtiImageReader );
 

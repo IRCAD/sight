@@ -10,6 +10,7 @@
 #include <QPointer>
 #include <QObject>
 #include <QTreeWidget>
+#include <QMetaType>
 
 #include <fwData/Patient.hpp>
 
@@ -17,6 +18,7 @@
 
 #include "uiPatientDBQt/config.hpp"
 
+Q_DECLARE_METATYPE( QList<int> );
 
 namespace uiPatientDB
 {

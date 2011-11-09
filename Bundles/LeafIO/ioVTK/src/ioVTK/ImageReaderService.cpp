@@ -3,6 +3,8 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
 #include <fwCore/base.hpp>
@@ -18,9 +20,12 @@
 
 #include <io/IReader.hpp>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwDataIO/reader/IObjectReader.hpp>
 #include <vtkIO/ImageReader.hpp>
+#include <vtkIO/MetaImageReader.hpp>
+#include <vtkIO/VtiImageReader.hpp>
 
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -32,7 +37,7 @@ namespace ioVTK
 
 //------------------------------------------------------------------------------
 
-// Register a new reader of ::data::Image
+// Register a new reader of ::fwData::Image
 REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image );
 
 //------------------------------------------------------------------------------
@@ -75,14 +80,16 @@ void ImageReaderService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a vtk file to load an image");
+    dialogFile.setTitle("Choose a file to load an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.addFilter("Vti","*.vtk");
+    dialogFile.addFilter("MetaImage","*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath();
@@ -111,7 +118,7 @@ void ImageReaderService::stopping() throw ( ::fwTools::Failed )
 
 void ImageReaderService::info( std::ostream &_sstream )
 {
-    _sstream << "ImageReaderService::info (ToDo :))";
+    _sstream << "ImageReaderService::info";
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +137,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        if ( loadImage( m_fsImgPath, pImage ) )
+        if ( this->loadImage( m_fsImgPath, pImage ) )
         {
             notificationOfDBUpdate();
         }
@@ -140,24 +147,50 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::fwData::Image::sptr _pImg )
+bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::fwData::Image::sptr _pImg )
 {
     SLM_TRACE_FUNC();
-
     bool ok = true;
 
-    // Use a reader of vtkIO library to read a vtk image
-    ::vtkIO::ImageReader::NewSptr myReader;
-    // Set the image (already created, but empty) that will be modifed
+    // Use a reader of vtkIO library to read an image
+    ::fwDataIO::reader::IObjectReader::sptr myReader;
+    // Create a progress bar and attach it to reader
+    ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
+    std::string ext = ::boost::filesystem::extension(imgFile);
+    ::boost::algorithm::to_lower(ext);
+
+    if(ext == ".vtk")
+    {
+        ::vtkIO::ImageReader::NewSptr vtkReader;
+        vtkReader->addHandler( progressMeterGUI );
+        // Set the file system path
+        vtkReader->setFile(imgFile);
+        myReader = vtkReader;
+    }
+    else if(ext == ".vti")
+    {
+        ::vtkIO::VtiImageReader::NewSptr vtiReader;
+        vtiReader->addHandler( progressMeterGUI );
+        vtiReader->setFile(imgFile);
+        myReader = vtiReader;
+    }
+    else if(ext == ".mhd")
+    {
+        ::vtkIO::MetaImageReader::NewSptr mhdReader;
+        mhdReader->addHandler( progressMeterGUI );
+        mhdReader->setFile(imgFile);
+        myReader = mhdReader;
+    }
+    else
+    {
+        OSLM_FATAL("Unknown extension for file "<< imgFile);
+    }
+
+    // Set the image (already created, but empty) that will be modified
     myReader->setObject(_pImg);
-    // Set the file system path
-    myReader->setFile(vtkFile);
 
     try
     {
-        // Create a progress bar and attach it to reader
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myReader->addHandler( progressMeterGUI );
         // Launch reading process
         myReader->read();
     }
@@ -166,27 +199,18 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path vtkFile, ::f
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading.";
-
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                        "Warning",
+                        "Warning during loading.",
+                        ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
 

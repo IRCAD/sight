@@ -67,7 +67,8 @@ public:
              m_position(0),
              m_layer(0),
              m_row(0),
-             m_caption (std::make_pair(false,""))
+             m_caption (std::make_pair(false,"")),
+             m_useScrollBar(false)
          {}
 
          Align                            m_align;
@@ -78,6 +79,7 @@ public:
          int                              m_layer;
          int                              m_row;
          std::pair< bool, std::string >   m_caption;
+         bool                             m_useScrollBar;
      };
 
     /// Constructor. Do nothing.

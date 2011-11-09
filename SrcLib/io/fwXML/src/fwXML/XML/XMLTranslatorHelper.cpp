@@ -7,6 +7,7 @@
 #include <fwTools/UUID.hpp>
 #include <fwData/Object.hpp>
 #include <fwData/visitor/accept.hpp>
+
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 #include "fwXML/XML/TrivialXMLTranslator.hpp"
 #include "fwXML/visitor/SerializeXML.hpp"
