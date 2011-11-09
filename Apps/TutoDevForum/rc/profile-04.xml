@@ -1,0 +1,24 @@
+<profile name="TutoDevForum" version="0.1">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    <activate id="io" version="0-1" />
+
+    <activate id="visu" version="0-1" />
+    <activate id="visuVTKWx" version="0-1" />
+
+    <activate id="gui" version="0-1" />
+    <activate id="guiWx" version="0-1" />
+
+    <activate id="TutoDevForum" />
+    <activate id="appXml" version="0-1">
+        <param id="config" value="config04" />
+    </activate>
+
+    <activate id="devForum" version="0-1" />
+
+    <start id="appXml" />
+    <start id="guiWx" />
+
+</profile>
+
