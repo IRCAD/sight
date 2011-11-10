@@ -129,7 +129,7 @@ public:
 #ifdef CLASSFACTORYORDERDEBUG
                 SLM_TRACE("keyLower" <<  isMyKeyLower(otherKey) );
 #endif
-                return isMyKeyLower(otherKey);
+                return this->isMyKeyLower(otherKey);
             }
 #ifdef CLASSFACTORYORDERDEBUG
             OSLM_TRACE("return false");
