@@ -73,8 +73,7 @@ public :
     FWDATA_API virtual void setItem(const IndexType &id, const size_t component, const void *value);
 
     ///Returns the pointer to the data in the buffer
-    FWDATA_API virtual void* getItem(const IndexType &id) const;
-    FWDATA_API virtual void* getItem(const IndexType &id, const size_t component) const;
+    FWDATA_API virtual void* getItem(const IndexType &id, const size_t component = 0) const;
 
     ///Copies the data to the buffer pointed by <value>
     FWDATA_API virtual void  getItem(const IndexType &id, void *value) const;
@@ -83,6 +82,10 @@ public :
 
 
     FWDATA_API virtual void *getBuffer() const;
+
+    /// Returns the begining/end of the buffer interpreted as a char buffer
+    char* begin() const;
+    char* end() const;
 
     /// Returns the begining/end of the buffer, casted to T
     template< typename T > T* begin() const;
@@ -103,6 +106,11 @@ public :
     FWDATA_API virtual bool getIsBufferOwner() const;
 
     FWDATA_API virtual ::fwTools::DynamicType getType() const;
+
+    size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+    char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+
+    static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
 protected:
     FWDATA_API Array();
