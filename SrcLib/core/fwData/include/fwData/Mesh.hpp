@@ -7,13 +7,13 @@
 #ifndef _FWDATA_MESH_HPP_
 #define _FWDATA_MESH_HPP_
 
+#include <boost/cstdint.hpp>
 #include <boost/multi_array.hpp>
 #include "fwData/Array.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/Mesh.hpp"
 
 #include "fwData/config.hpp"
-
 
 namespace fwData
 {
@@ -34,7 +34,7 @@ public:
     fwDataObjectMacro();
 
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;
-    typedef uint64_t Id;
+    typedef boost::uint64_t Id;
 
     typedef enum {
         NONE = 0,
