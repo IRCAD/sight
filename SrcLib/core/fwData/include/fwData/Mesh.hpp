@@ -66,25 +66,28 @@ public:
     FWDATA_API void deepCopy( Mesh::csptr _source );
 
 
-    FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0);
+    FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0) throw(::fwData::Exception);
 
-    FWDATA_API size_t allocatePointNormals();
-    FWDATA_API size_t allocatePointColors();
-    FWDATA_API size_t allocateCellNormals();
-    FWDATA_API size_t allocateCellColors();
+    FWDATA_API size_t allocatePointNormals() throw(::fwData::Exception);
+    FWDATA_API size_t allocatePointColors() throw(::fwData::Exception);
+    FWDATA_API size_t allocateCellNormals() throw(::fwData::Exception);
+    FWDATA_API size_t allocateCellColors() throw(::fwData::Exception);
 
-    FWDATA_API void stripAllocatedMemory();
+    FWDATA_API void stripAllocatedMemory() throw(::fwData::Exception);
 
-    FWDATA_API Id insertNextPoint(PointValueType x, PointValueType y, PointValueType z);
+    FWDATA_API Id insertNextPoint(const PointValueType p[3]) throw(::fwData::Exception);
+    FWDATA_API Id insertNextPoint(PointValueType x, PointValueType y, PointValueType z) throw(::fwData::Exception);
     FWDATA_API void setPoint(Id id, PointValueType x, PointValueType y, PointValueType z);
 
-    FWDATA_API Id insertNextCell(CellValueType p);
-    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2);
-    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3);
-    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3, CellValueType p4);
 
-    template <typename T> Id insertNextCell(CellTypes type, const T &pointsBegin, const T &pointsEnd);
-    template <typename T> Id insertNextCell(CellTypes type, const T &pointsBegin, size_t nb);
+    Id insertNextCell(CellTypes type, const CellValueType *cell, size_t nb) throw(::fwData::Exception);
+    FWDATA_API Id insertNextCell(CellValueType p) throw(::fwData::Exception);
+    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2) throw(::fwData::Exception);
+    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3) throw(::fwData::Exception);
+    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3, CellValueType p4) throw(::fwData::Exception);
+
+    template <typename T> Id insertNextCell(CellTypes type, const T &pointsBegin, const T &pointsEnd) throw(::fwData::Exception);
+    template <typename T> Id insertNextCell(CellTypes type, const T &pointsBegin, size_t nb) throw(::fwData::Exception);
 
     FWDATA_API void cleanCells();
 
@@ -95,7 +98,7 @@ public:
     FWDATA_API CellDataOffsetsMultiArrayType getCellDataOffsets() const;
     FWDATA_API PointColorsMultiArrayType     getPointColors() const;
     FWDATA_API CellColorsMultiArrayType      getCellColors() const;
-    FWDATA_API PointNormalsMultiArrayType    getPointNormalsType() const;
+    FWDATA_API PointNormalsMultiArrayType    getPointNormals() const;
     FWDATA_API CellNormalsMultiArrayType     getCellNormals() const;
 
     FWDATA_API void setPointArray            (::fwData::Array::sptr array);
@@ -104,17 +107,17 @@ public:
     FWDATA_API void setCellDataOffsetsArray  (::fwData::Array::sptr array);
     FWDATA_API void setPointColorsArray      (::fwData::Array::sptr array);
     FWDATA_API void setCellColorsArray       (::fwData::Array::sptr array);
-    FWDATA_API void setPointNormalsTypeArray (::fwData::Array::sptr array);
+    FWDATA_API void setPointNormalsArray     (::fwData::Array::sptr array);
     FWDATA_API void setCellNormalsArray      (::fwData::Array::sptr array);
 
     FWDATA_API ::fwData::Array::sptr getPointsArray           () const;
     FWDATA_API ::fwData::Array::sptr getCellTypesArray        () const;
     FWDATA_API ::fwData::Array::sptr getCellDataArray         () const;
     FWDATA_API ::fwData::Array::sptr getCellDataOffsetsArray  () const;
-    FWDATA_API ::fwData::Array::sptr getPointColorsArray      () const;
-    FWDATA_API ::fwData::Array::sptr getCellColorsArray       () const;
-    FWDATA_API ::fwData::Array::sptr getPointNormalsTypeArray () const;
-    FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
+    //FWDATA_API ::fwData::Array::sptr getPointColorsArray      () const;
+    //FWDATA_API ::fwData::Array::sptr getCellColorsArray       () const;
+    //FWDATA_API ::fwData::Array::sptr getPointNormalsArray     () const;
+    //FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
 
 
 
@@ -145,9 +148,9 @@ protected:
     FWDATA_API virtual ~Mesh() ;
 
 
-    size_t m_nbPoints;
-    size_t m_nbCells;
-    size_t m_nbCellsData;
+    Id m_nbPoints;
+    Id m_nbCells;
+    Id m_cellsDataSize;
 
     ::fwData::Array::sptr m_points;
     ::fwData::Array::sptr m_cellTypes;
@@ -162,6 +165,12 @@ protected:
 
 
 };
+
+template <typename T> 
+Mesh::Id Mesh::insertNextCell(CellTypes type, const T &pointsBegin, size_t nb) throw(::fwData::Exception)
+{
+    
+}
 
 } // namespace fwData
 
