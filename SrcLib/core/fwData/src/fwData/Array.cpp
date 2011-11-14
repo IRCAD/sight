@@ -150,8 +150,8 @@ size_t Array::allocate(const ::fwTools::Type &type, const SizeType &size, const 
 
 size_t Array::allocate(const std::string &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception)
 {
-    ::fwTools::Type dynType = ::fwTools::Type::create(type);
-    return allocate( dynType, size, nbOfComponents);
+    ::fwTools::Type type = ::fwTools::Type::create(type);
+    return allocate( type, size, nbOfComponents);
 }
 
 
@@ -204,7 +204,7 @@ size_t Array::resize(
 
 size_t Array::resize(const SizeType &size, const size_t nbOfComponents, const bool reallocate) throw(::fwData::Exception)
 {
-    return this->resize(this->m_type, size, this->m_nbOfComponents, reallocate);
+    return this->resize(this->m_type, size, nbOfComponents, reallocate);
 }
 
 //------------------------------------------------------------------------------
@@ -217,8 +217,8 @@ size_t Array::resize(const SizeType &size, const bool reallocate) throw(::fwData
 
 size_t Array::resize(const std::string &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate) throw(::fwData::Exception)
 {
-    ::fwTools::Type dynType = ::fwTools::Type::create(type);
-    return this->resize( dynType, size, nbOfComponents, reallocate);
+    ::fwTools::Type type = ::fwTools::Type::create(type);
+    return this->resize( type, size, nbOfComponents, reallocate);
 }
 
 
