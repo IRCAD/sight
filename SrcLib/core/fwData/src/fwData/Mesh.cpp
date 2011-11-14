@@ -58,8 +58,50 @@ void Mesh::shallowCopy( Mesh::csptr _source )
 {
     this->::fwTools::Object::shallowCopyOfChildren( _source );
 
-    //TODO
+    m_nbPoints      = _source->m_nbPoints;
+    m_nbCells       = _source->m_nbCells;
+    m_cellsDataSize = _source->m_cellsDataSize;
 
+    m_points          = ::fwData::Array::New();
+    m_cellTypes       = ::fwData::Array::New();
+    m_cellData        = ::fwData::Array::New();
+    m_cellDataOffsets = ::fwData::Array::New();
+
+    m_points->shallowCopy(_source->m_points);
+    m_cellTypes->shallowCopy(_source->m_cellTypes);
+    m_cellData->shallowCopy(_source->m_cellData);
+    m_cellDataOffsets->shallowCopy(_source->m_cellDataOffsets);
+    m_pointColors.reset();
+    m_cellColors.reset();
+    m_pointNormals.reset();
+    m_cellNormals.reset();
+
+    if(_source->m_pointColors)
+    {
+        m_pointColors = ::fwData::Array::New();
+        m_pointColors->shallowCopy(_source->m_pointColors);
+    }
+    if(_source->m_cellColors)
+    {
+        m_cellColors = ::fwData::Array::New();
+        m_cellColors->shallowCopy(_source->m_cellColors);
+    }
+    if(_source->m_pointNormals)
+    {
+        m_pointNormals = ::fwData::Array::New();
+        m_pointNormals->shallowCopy(_source->m_pointNormals);
+    }
+    if(_source->m_cellNormals)
+    {
+        m_cellNormals = ::fwData::Array::New();
+        m_cellNormals->shallowCopy(_source->m_cellNormals);
+    }
+
+    m_arrayMap.clear();
+    BOOST_FOREACH(ArrayMapType::value_type element, _source->m_arrayMap)
+    {
+        m_arrayMap[element.first]->shallowCopy(element.second);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -68,14 +110,54 @@ void Mesh::deepCopy( Mesh::csptr _source )
 {
     this->::fwTools::Object::deepCopyOfChildren( _source );
 
-    //TODO
+    m_nbPoints      = _source->m_nbPoints;
+    m_nbCells       = _source->m_nbCells;
+    m_cellsDataSize = _source->m_cellsDataSize;
+
+    m_points->deepCopy(_source->m_points);
+    m_cellTypes->deepCopy(_source->m_cellTypes);
+    m_cellData->deepCopy(_source->m_cellData);
+    m_cellDataOffsets->deepCopy(_source->m_cellDataOffsets);
+
+    m_points          = ::fwData::Array::New();
+    m_cellTypes       = ::fwData::Array::New();
+    m_cellData        = ::fwData::Array::New();
+    m_cellDataOffsets = ::fwData::Array::New();
+    m_pointColors.reset();
+    m_cellColors.reset();
+    m_pointNormals.reset();
+    m_cellNormals.reset();
+
+    if(_source->m_pointColors)
+    {
+        m_pointColors = ::fwData::Array::New();
+        m_pointColors->deepCopy(_source->m_pointColors);
+    }
+    if(_source->m_cellColors)
+    {
+        m_cellColors = ::fwData::Array::New();
+        m_cellColors->deepCopy(_source->m_cellColors);
+    }
+    if(_source->m_pointNormals)
+    {
+        m_pointNormals = ::fwData::Array::New();
+        m_pointNormals->deepCopy(_source->m_pointNormals);
+    }
+    if(_source->m_cellNormals)
+    {
+        m_cellNormals = ::fwData::Array::New();
+        m_cellNormals->deepCopy(_source->m_cellNormals);
+    }
+
+    m_arrayMap.clear();
+    BOOST_FOREACH(ArrayMapType::value_type element, _source->m_arrayMap)
+    {
+    m_arrayMap[element.first]->deepCopy(element.second);
+    }
 
 }
-
 //------------------------------------------------------------------------------
 
-
-//------------------------------------------------------------------------------
 
 size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::fwData::Exception)
 {
@@ -166,12 +248,12 @@ void Mesh::setPoint(Id id, PointValueType x, PointValueType y, PointValueType z)
 
 Mesh::Id Mesh::insertNextCell(CellTypes type, const CellValueType *cell, size_t nb) throw(::fwData::Exception)
 {
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NONE'", type == NONE && nb == 0);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'", type == POINT && nb == 1);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'EDGE'", type == EDGE && nb == 2);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TRIANGLE'", type == TRIANGLE && nb == 3);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'", type == QUAD && nb == 4);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'", type == POLY && nb > 4);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NONE'", type != NONE || nb == 0);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'", type != POINT || nb == 1);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'EDGE'", type != EDGE || nb == 2);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TRIANGLE'", type != TRIANGLE || nb == 3);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'", type != QUAD || nb == 4);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'", type != POLY || nb > 4);
 
     size_t allocatedCellTypes       = m_cellTypes->getSize().at(0);
     size_t allocatedCellDataOffsets = m_cellDataOffsets->getSize().at(0);
