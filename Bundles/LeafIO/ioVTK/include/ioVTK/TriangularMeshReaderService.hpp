@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTK_MESHREADERSERVICE_HPP_
-#define _IOVTK_MESHREADERSERVICE_HPP_
+#ifndef _IOVTK_TRIANGULARMESHREADERSERVICE_HPP_
+#define _IOVTK_TRIANGULARMESHREADERSERVICE_HPP_
 
 #include <string>
 #include <boost/filesystem/path.hpp>
@@ -25,20 +25,20 @@ namespace ioVTK
 
 /**
  * @brief   Mesh reader service.
- * @class   MeshReaderService .
+ * @class   TriangularMeshReaderService .
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
  * Service reading a VTK mesh using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::TriangularMesh )
+ * REGISTER_SERVICE( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh )
  */
-class IOVTK_CLASS_API MeshReaderService : public ::io::IReader
+class IOVTK_CLASS_API TriangularMeshReaderService : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TriangularMeshReaderService)( ::io::IReader) ) ;
 
     /**
     * @brief Configure the image path.
@@ -55,19 +55,19 @@ protected:
      * @brief   Constructor
      *
      */
-    IOVTK_API MeshReaderService() throw();
+    IOVTK_API TriangularMeshReaderService() throw();
 
     /**
      * @brief   Destructor
      */
-    IOVTK_API virtual ~MeshReaderService() throw();
+    IOVTK_API virtual ~TriangularMeshReaderService() throw();
 
     /**
     * @brief Configuring method.
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::ioVTK::MeshReaderService" type="::io::IReader">
+    <service implementation="::ioVTK::TriangularMeshReaderService" type="::io::IReader">
         <filename id=".../meshTest.vtk"/>
     </service>
     @endverbatim
@@ -150,4 +150,4 @@ private :
 
 } // namespace ioVTK
 
-#endif //_IOVTK_MESHREADERSERVICE_HPP_
+#endif //_IOVTK_TRIANGULARMESHREADERSERVICE_HPP_

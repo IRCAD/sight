@@ -60,7 +60,7 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
         m_readerSrv->setConfiguration( readerCfg ) ;
         m_readerSrv->configure();
 
-        m_writerSrv = ::fwServices::add(m_triangularMesh, "::io::IWriter", "::ioVTK::MeshWriterService");
+        m_writerSrv = ::fwServices::add(m_triangularMesh, "::io::IWriter", "::ioVTK::TriangularMeshWriterService");
         ::fwRuntime::EConfigurationElement::NewSptr writerCfg( "service" );
         ::fwRuntime::EConfigurationElement::NewSptr writerFilenameCfg( "filename" );
         writerFilenameCfg->setAttributeValue("id", vtkMeshPath);

@@ -13,17 +13,17 @@
 #include <fwCore/base.hpp>
 
 #include "vtkIO/vtk.hpp"
-#include "vtkIO/MeshReader.hpp"
+#include "vtkIO/TriangularMeshReader.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::MeshReader, ::vtkIO::MeshReader );
+REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::TriangularMeshReader, ::vtkIO::TriangularMeshReader );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader() :
+TriangularMeshReader::TriangularMeshReader() :
                 ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
@@ -31,14 +31,14 @@ MeshReader::MeshReader() :
 
 //------------------------------------------------------------------------------
 
-MeshReader::~MeshReader()
+TriangularMeshReader::~TriangularMeshReader()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReader::read()
+void TriangularMeshReader::read()
 {
     assert( !m_object.expired() );
     assert( m_object.lock() );
@@ -62,7 +62,7 @@ void MeshReader::read()
     else
     {
         std::string errMsg;
-        errMsg  = "MeshReader cannot read VTK Mesh file : ";
+        errMsg  = "TriangularMeshReader cannot read VTK Mesh file : ";
         errMsg.append( this->getFile().string() );
         throw( errMsg );
     }
@@ -70,7 +70,7 @@ void MeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  MeshReader::extension()
+std::string  TriangularMeshReader::extension()
 {
    return ".trian";
 }

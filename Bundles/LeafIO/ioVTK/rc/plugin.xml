@@ -33,14 +33,14 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioVTK::MeshReaderService</service>
+        <service>::ioVTK::TriangularMeshReaderService</service>
         <object>::fwData::TriangularMesh</object>
         <desc>VTK Mesh Reader (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioVTK::MeshWriterService</service>
+        <service>::ioVTK::TriangularMeshWriterService</service>
         <object>::fwData::TriangularMesh</object>
         <desc>VTK Mesh Writer (VTK)</desc>
     </extension>

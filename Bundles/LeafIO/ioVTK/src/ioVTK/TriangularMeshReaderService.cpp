@@ -4,14 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/filesystem/operations.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
+#include <fwComEd/TriangularMeshMsg.hpp>
 
-#include <io/IWriter.hpp>
+#include <fwServices/ObjectMsg.hpp>
+
+#include <io/IReader.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -24,53 +29,55 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/MeshWriter.hpp>
+#include <vtkIO/TriangularMeshReader.hpp>
 
-#include "ioVTK/MeshWriterService.hpp"
+#include "ioVTK/TriangularMeshReaderService.hpp"
 
 
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::TriangularMesh ) ;
+REGISTER_SERVICE( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
 
 //------------------------------------------------------------------------------
 
-MeshWriterService::MeshWriterService() throw() :
+TriangularMeshReaderService::TriangularMeshReaderService() throw() :
     m_bServiceIsConfigured(false),
     m_fsMeshPath("")
 {}
 
 //------------------------------------------------------------------------------
 
-MeshWriterService::~MeshWriterService() throw()
+TriangularMeshReaderService::~TriangularMeshReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::configuring() throw(::fwTools::Failed)
+void TriangularMeshReaderService::configuring() throw(::fwTools::Failed)
 {
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
         m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = true;
+        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsMeshPath);
         OSLM_TRACE("Filename found" << filename ) ;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::configureWithIHM()
+void TriangularMeshReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
+
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a vtk file to save Mesh");
+    dialogFile.setTitle("Choose a vtk file to load Mesh");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::SingleFile::sptr  result;
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -84,40 +91,40 @@ void MeshWriterService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::starting() throw(::fwTools::Failed)
+void TriangularMeshReaderService::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::stopping() throw(::fwTools::Failed)
+void TriangularMeshReaderService::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::info(std::ostream &_sstream )
+void TriangularMeshReaderService::info(std::ostream &_sstream )
 {
-    _sstream << "MeshWriterService::info";
+    _sstream << "TriangularMeshReaderService::info";
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boost::shared_ptr< ::fwData::TriangularMesh > _pMesh )
+void TriangularMeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pTriangularMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshWriter::NewSptr myWriter;
+    ::vtkIO::TriangularMeshReader::NewSptr myReader;
 
-    myWriter->setObject(_pMesh);
-    myWriter->setFile(vtkFile);
+    myReader->setObject(_pTriangularMesh);
+    myReader->setFile(vtkFile);
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Meshs ");
-        myWriter->addHandler( progressMeterGUI );
-        myWriter->write();
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Meshs ");
+        myReader->addHandler( progressMeterGUI );
+        myReader->read();
 
     }
     catch (const std::exception & e)
@@ -131,12 +138,12 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
         messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
         messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
+
     }
     catch( ... )
     {
         std::stringstream ss;
-        ss << "Warning during loading : ";
-
+        ss << "Warning during loading. ";
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( ss.str() );
@@ -149,7 +156,7 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::updating() throw(::fwTools::Failed)
+void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -162,14 +169,27 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        saveMesh(m_fsMeshPath,pTriangularMesh);
+        loadMesh(m_fsMeshPath, pTriangularMesh);
+        notificationOfUpdate();
 
         cursor.setDefaultCursor();
-
-        m_bServiceIsConfigured = false;
     }
 }
 
 //------------------------------------------------------------------------------
+
+void TriangularMeshReaderService::notificationOfUpdate()
+{
+    SLM_TRACE_FUNC();
+    ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
+    SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
+
+    ::fwComEd::TriangularMeshMsg::NewSptr msg;;
+    msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
+    ::fwServices::IEditionService::notify(this->getSptr(), pTriangularMesh, msg);
+}
+
+//------------------------------------------------------------------------------
+
 
 } // namespace ioVtk

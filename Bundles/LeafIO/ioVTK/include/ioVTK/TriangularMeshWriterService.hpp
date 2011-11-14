@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTK_MESHWRITERSERVICE_HPP_
-#define _IOVTK_MESHWRITERSERVICE_HPP_
+#ifndef _IOVTK_TRIANGULARMESHWRITERSERVICE_HPP_
+#define _IOVTK_TRIANGULARMESHWRITERSERVICE_HPP_
 
 #include <string>
 #include <boost/filesystem/path.hpp>
@@ -26,20 +26,20 @@ namespace ioVTK
 
 /**
  * @brief   VTK mesh writer service.
- * @class   MeshWriterService.
+ * @class   TriangularMeshWriterService.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
  * Service writing a VTK Mesh using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::TriangularMesh )
+ * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh )
  */
-class IOVTK_CLASS_API MeshWriterService : public ::io::IWriter
+class IOVTK_CLASS_API TriangularMeshWriterService : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)( ::io::IWriter) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TriangularMeshWriterService)( ::io::IWriter) ) ;
 
     /**
     * @brief Configure the mesh path.
@@ -56,19 +56,19 @@ protected:
      * @brief   Constructor
      *
      */
-    IOVTK_API MeshWriterService() throw();
+    IOVTK_API TriangularMeshWriterService() throw();
 
     /**
      * @brief   Destructor
      */
-    IOVTK_API virtual ~MeshWriterService() throw();
+    IOVTK_API virtual ~TriangularMeshWriterService() throw();
 
     /**
     * @brief Configuring method.
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::ioVTK::MeshWriterService" type="::io::IWriter">
+    <service implementation="::ioVTK::TriangularMeshWriterService" type="::io::IWriter">
         <filename id=".../meshTest.vtk"/>
     </service>
     @endverbatim
@@ -142,4 +142,4 @@ private :
 
 } // namespace ioVTK
 
-#endif //_IOVTK_MESHWRITERSERVICE_HPP_
+#endif //_IOVTK_TRIANGULARMESHWRITERSERVICE_HPP_

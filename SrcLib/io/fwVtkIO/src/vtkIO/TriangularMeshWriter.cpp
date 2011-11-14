@@ -13,17 +13,17 @@
 #include <fwCore/base.hpp>
 
 #include "vtkIO/vtk.hpp"
-#include "vtkIO/MeshWriter.hpp"
+#include "vtkIO/TriangularMeshWriter.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::MeshWriter, ::vtkIO::MeshWriter );
+REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::TriangularMeshWriter, ::vtkIO::TriangularMeshWriter );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter()
+TriangularMeshWriter::TriangularMeshWriter()
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
@@ -31,14 +31,14 @@ MeshWriter::MeshWriter()
 
 //------------------------------------------------------------------------------
 
-MeshWriter::~MeshWriter()
+TriangularMeshWriter::~TriangularMeshWriter()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriter::write()
+void TriangularMeshWriter::write()
 {
     assert( !m_object.expired() );
     assert( m_object.lock() );
@@ -60,7 +60,7 @@ void MeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  MeshWriter::extension()
+std::string  TriangularMeshWriter::extension()
 {
    return ".trian";
 }

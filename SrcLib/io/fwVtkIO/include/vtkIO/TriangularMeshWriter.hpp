@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_MESHREADER_HPP_
-#define _VTKIO_MESHREADER_HPP_
+#ifndef _VTKIO_TRIANGULARMESHWRITER_HPP_
+#define _VTKIO_TRIANGULARMESHWRITER_HPP_
 
 #include <boost/filesystem/path.hpp>
 
 #include <vtkActor.h>
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
+#include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwTools/ProgressAdviser.hpp>
 #include <fwData/TriangularMesh.hpp>
@@ -22,29 +22,29 @@ namespace vtkIO
 {
 
 /**
- * @brief   Read a mesh.
- * @class   MeshReader.
+ * @brief   Write a mesh.
+ * @class   TriangularMeshWriter.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
- * Read a VTK Mesh using the VTK lib
+ * Write a VTK Mesh using the VTK lib
  */
 
-class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >,
-                             public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
+class TriangularMeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >,
+                             public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
                              public ::fwTools::ProgressAdviser
 {
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >),
+    fwCoreClassDefinitionsWithFactoryMacro((TriangularMeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >),
                                            (()),
-                                           new MeshReader
+                                           new TriangularMeshWriter
                                           );
     fwCoreAllowSharedFromThis();
 
     //! @brief Reading operator.
-    VTKIO_API void read();
+    VTKIO_API void write();
 
     /// @return ".trian"
     VTKIO_API  std::string extension();
@@ -52,12 +52,12 @@ public :
 protected:
 
     //! @brief Constructor.
-    VTKIO_API MeshReader();
+    VTKIO_API TriangularMeshWriter();
 
     //! @brief Destructor.
-    VTKIO_API ~MeshReader();
+    VTKIO_API ~TriangularMeshWriter();
 };
 
 } // namespace vtkIO
 
-#endif // _VTKIO_MESHREADER_HPP_
+#endif // _VTKIO_TRIANGULARMESHWRITER_HPP_
