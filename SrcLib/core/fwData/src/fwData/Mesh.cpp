@@ -33,6 +33,16 @@ Mesh::Mesh()
     m_nbPoints    = 0;
     m_nbCells     = 0;
     m_cellsDataSize = 0;
+
+    m_points          = ::fwData::Array::New();
+    m_cellTypes       = ::fwData::Array::New();
+    m_cellData        = ::fwData::Array::New();
+    m_cellDataOffsets = ::fwData::Array::New();
+
+    m_points->allocate("float", list_of(0), 3);
+    m_cellTypes->allocate("uint8", list_of(0), 1);
+    m_cellData->allocate("uint64", list_of(0), 1);
+    m_cellDataOffsets->allocate("uint64", list_of(0), 1);
 }
 
 //------------------------------------------------------------------------------
@@ -49,6 +59,7 @@ void Mesh::shallowCopy( Mesh::csptr _source )
     this->::fwTools::Object::shallowCopyOfChildren( _source );
 
     //TODO
+
 }
 
 //------------------------------------------------------------------------------
@@ -58,6 +69,7 @@ void Mesh::deepCopy( Mesh::csptr _source )
     this->::fwTools::Object::deepCopyOfChildren( _source );
 
     //TODO
+
 }
 
 //------------------------------------------------------------------------------
@@ -67,11 +79,6 @@ void Mesh::deepCopy( Mesh::csptr _source )
 
 size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::fwData::Exception)
 {
-    m_points          = ::fwData::Array::New();
-    m_cellTypes       = ::fwData::Array::New();
-    m_cellData        = ::fwData::Array::New();
-    m_cellDataOffsets = ::fwData::Array::New();
-
     if (nbCellsData == 0)
     {
         nbCellsData = 3*nbCells;
@@ -79,10 +86,10 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 
     size_t allocatedSize = 0;
 
-    allocatedSize += m_points->allocate("float", list_of(nbPts), 3);
-    allocatedSize += m_cellTypes->allocate("char", list_of(nbCells), 1);
-    allocatedSize += m_cellData->allocate("uint64_t", list_of(nbCellsData), 1);
-    allocatedSize += m_cellDataOffsets->allocate("uint64_t", list_of(nbCells), 1);
+    allocatedSize += m_points->resize(list_of(nbPts));
+    allocatedSize += m_cellTypes->resize(list_of(nbCells));
+    allocatedSize += m_cellData->resize(list_of(nbCellsData));
+    allocatedSize += m_cellDataOffsets->resize(list_of(nbCells));
 
     return allocatedSize;
 }
