@@ -79,7 +79,7 @@ public :
     FWDATA_API virtual void  getItem(const IndexType &id, void *value) const;
     FWDATA_API virtual void  getItem(const IndexType &id, const size_t component, void *value) const;
 
-
+    template< typename T > T* getItem(const IndexType &id, const size_t component = 0) const;
 
     FWDATA_API virtual void *getBuffer() const;
 
@@ -107,8 +107,8 @@ public :
 
     FWDATA_API virtual ::fwTools::DynamicType getType() const;
 
-    size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
-    char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+    FWDATA_API char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
 
     static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
@@ -154,6 +154,10 @@ template< typename T > const T* Array::cend() const
     return reinterpret_cast<const T*> (static_cast<char*>(m_buffer) + this->getSizeInBytes());
 }
 
+template< typename T > T* Array::getItem(const IndexType &id, const size_t component) const
+{
+    return static_cast<T*> (getItem(id, component));
+}
 
 
 

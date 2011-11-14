@@ -304,18 +304,20 @@ size_t Array::getBufferOffset( const ::fwData::Array::IndexType &id, size_t comp
             id.size() == m_size.size()
             );
 
-    OffsetType offsets;
+    OffsetType offsets(id.size());
 
     std::transform(id.begin(), id.end(), m_strides.begin(), offsets.begin(), std::multiplies<OffsetType::value_type>() );
 
     size_t offset;
-    offset = std::accumulate(offsets.begin(), offsets.end(), sizeOfType, std::multiplies<OffsetType::value_type>() );
+    offset = std::accumulate(offsets.begin(), offsets.end(), 0);
 
     offset += component*sizeOfType;
 
     return offset;
 
 }
+
+//------------------------------------------------------------------------------
 
 char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const
 {
