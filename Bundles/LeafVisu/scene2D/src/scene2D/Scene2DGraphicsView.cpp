@@ -9,6 +9,8 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/Render.hpp"
 
+#include <QMouseEvent>
+
 namespace scene2D
 {
 
@@ -75,17 +77,35 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonPress );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
-
-    if( _event->buttons() == Qt::LeftButton )
-    {
-        sceneEvent->setButton( ::scene2D::data::Event::LeftButton );
-    }
-    else if( _event->buttons() == Qt::RightButton )
-    {
-        sceneEvent->setButton( ::scene2D::data::Event::RightButton );
-    }
+    sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
+}
+
+//-----------------------------------------------------------------------------
+
+::scene2D::data::Event::Button Scene2DGraphicsView::getScene2DButtonFromEvent( QMouseEvent* _event )
+{
+    ::scene2D::data::Event::Button button;
+
+    if( _event->button() == Qt::LeftButton )
+    {
+        button = ::scene2D::data::Event::LeftButton;
+    }
+    else if( _event->button() == Qt::RightButton )
+    {
+        button = ::scene2D::data::Event::RightButton;
+    }
+    else if( _event->button() == Qt::MidButton )
+    {
+        button = ::scene2D::data::Event::MidButton;
+    }
+    else
+    {
+        button = ::scene2D::data::Event::NoButton;
+    }
+
+    return button;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,15 +119,7 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonDoubleClick );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
-
-    if( _event->buttons() == Qt::LeftButton )
-    {
-        sceneEvent->setButton( ::scene2D::data::Event::LeftButton );
-    }
-    else if( _event->buttons() == Qt::RightButton )
-    {
-        sceneEvent->setButton( ::scene2D::data::Event::RightButton );
-    }
+    sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
@@ -121,6 +133,8 @@ void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent * _event )
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonRelease );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
+
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
 
@@ -134,6 +148,8 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent * _event )
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseMove );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
+
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
 
@@ -148,6 +164,7 @@ void Scene2DGraphicsView::wheelEvent ( QWheelEvent * _event )
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( (scrollUp) ? ::scene2D::data::Event::MouseWheelUp : ::scene2D::data::Event::MouseWheelDown);
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
 

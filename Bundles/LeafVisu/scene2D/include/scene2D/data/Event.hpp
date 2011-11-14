@@ -44,8 +44,7 @@ public:
     {   NoButton,
         LeftButton,
         RightButton,
-        MidButton,
-        MiddleButton
+        MidButton
     } Button;
 
     typedef enum

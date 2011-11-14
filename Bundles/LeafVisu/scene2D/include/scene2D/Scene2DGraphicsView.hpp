@@ -14,6 +14,7 @@
 
 #include "scene2D/config.hpp"
 #include "scene2D/data/Viewport.hpp"
+#include "scene2D/data/Event.hpp"
 
 namespace scene2D
 {
@@ -54,6 +55,8 @@ protected :
 
     WPTR(::scene2D::data::Viewport) m_viewport;
     WPTR(::scene2D::Render) m_scene2DRender;
+
+    ::scene2D::data::Event::Button getScene2DButtonFromEvent( QMouseEvent* _event );
 
     void paintEvent ( QPaintEvent * event );
 
