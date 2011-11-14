@@ -96,7 +96,7 @@ public:
     template <typename T>
     static Type create();
 
-    static Type create(std::string name);
+    FWTOOLS_API static Type create(std::string name);
 
 protected :
 
