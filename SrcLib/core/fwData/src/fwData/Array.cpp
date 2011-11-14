@@ -20,7 +20,7 @@ namespace fwData
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Array, ::fwData::Array);
 
 inline size_t computeSizeInBytes(
-        const ::fwTools::DynamicType &type,
+        const ::fwTools::Type &type,
         const ::fwData::Array::SizeType &size,
         const size_t &nbOfComponents )
 {
@@ -119,7 +119,7 @@ void *Array::getBuffer() const
 
 //------------------------------------------------------------------------------
 
-size_t Array::allocate(const ::fwTools::DynamicType &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception)
+size_t Array::allocate(const ::fwTools::Type &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception)
 {
     size_t bufSize = computeSizeInBytes(type, size, nbOfComponents);
     if(m_buffer == NULL)
@@ -150,7 +150,7 @@ size_t Array::allocate(const ::fwTools::DynamicType &type, const SizeType &size,
 
 size_t Array::allocate(const std::string &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception)
 {
-    ::fwTools::DynamicType dynType = ::fwTools::makeDynamicType(type);
+    ::fwTools::Type dynType = ::fwTools::Type::create(type);
     return allocate( dynType, size, nbOfComponents);
 }
 
@@ -158,7 +158,7 @@ size_t Array::allocate(const std::string &type, const SizeType &size, const size
 //------------------------------------------------------------------------------
 
 size_t Array::resize(
-        const ::fwTools::DynamicType &type,
+        const ::fwTools::Type &type,
         const SizeType &size,
         const size_t nbOfComponents,
         const bool reallocate
@@ -217,7 +217,7 @@ size_t Array::resize(const SizeType &size, const bool reallocate) throw(::fwData
 
 size_t Array::resize(const std::string &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate) throw(::fwData::Exception)
 {
-    ::fwTools::DynamicType dynType = ::fwTools::makeDynamicType(type);
+    ::fwTools::Type dynType = ::fwTools::Type::create(type);
     return this->resize( dynType, size, nbOfComponents, reallocate);
 }
 
@@ -230,7 +230,7 @@ void Array::clear()
         m_buffer = 0;
 
         m_strides.clear();
-        m_type = ::fwTools::DynamicType();
+        m_type = ::fwTools::Type();
         m_size.clear();
         m_nbOfComponents = 0;
         m_isBufferOwner = false;
@@ -297,7 +297,7 @@ bool Array::getIsBufferOwner() const
 //------------------------------------------------------------------------------
 
 
-::fwTools::DynamicType Array::getType() const
+::fwTools::Type Array::getType() const
 {
     return m_type;
 }

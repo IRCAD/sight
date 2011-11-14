@@ -7,7 +7,7 @@
 #ifndef _FWDATA_ARRAY_HPP_
 #define _FWDATA_ARRAY_HPP_
 
-#include <fwTools/DynamicType.hpp>
+#include <fwTools/Type.hpp>
 
 #include "fwData/Exception.hpp"
 
@@ -56,10 +56,10 @@ public :
     //reallocate parameter is true, the reallocation is performed. Otherwise,
     //an exception is thrown.
 
-    FWDATA_API virtual size_t allocate(const ::fwTools::DynamicType &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception);
+    FWDATA_API virtual size_t allocate(const ::fwTools::Type &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception);
     FWDATA_API virtual size_t allocate(const std::string &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception);
 
-    FWDATA_API virtual size_t resize(const ::fwTools::DynamicType &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
     FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
     FWDATA_API virtual size_t resize(const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
     FWDATA_API virtual size_t resize(const SizeType &size, const bool reallocate = false) throw(::fwData::Exception);
@@ -106,7 +106,7 @@ public :
     FWDATA_API virtual void setIsBufferOwner(const bool own);
     FWDATA_API virtual bool getIsBufferOwner() const;
 
-    FWDATA_API virtual ::fwTools::DynamicType getType() const;
+    FWDATA_API virtual ::fwTools::Type getType() const;
 
     FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
     FWDATA_API char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
@@ -127,7 +127,7 @@ protected:
 
 
     //=============================================================================
-    ::fwTools::DynamicType m_type;
+    ::fwTools::Type m_type;
     void * m_buffer;
     SizeType  m_size;
     size_t m_nbOfComponents;
