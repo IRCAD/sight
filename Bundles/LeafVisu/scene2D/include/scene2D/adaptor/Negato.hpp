@@ -57,6 +57,8 @@ private:
      */
     QGraphicsPixmapItem * m_pixmapItem;
 
+    QGraphicsItemGroup* m_layer;
+
     bool m_pointIsCaptured;
     bool m_negatoIsBeingMoved;
     scene2D::data::Coord m_oldCoord;

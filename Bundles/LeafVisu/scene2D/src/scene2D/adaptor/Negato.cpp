@@ -140,11 +140,16 @@ void Negato::doStart() throw ( ::fwTools::Failed )
     m_qimg = this->createQImage();
     this->updateFromImage( m_qimg );
     QPixmap m_pixmap = QPixmap::fromImage( *m_qimg );
-    m_pixmapItem =  this->getScene2DRender()->getScene()->addPixmap( m_pixmap );
+    //m_pixmapItem =  this->getScene2DRender()->getScene()->addPixmap( m_pixmap );
+    m_pixmapItem = new QGraphicsPixmapItem(m_pixmap);
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     std::vector< double > spacing = image->getSpacing();
     m_pixmapItem->scale( spacing[0], spacing[1] );
+
+    m_layer = new QGraphicsItemGroup();
+    m_layer->addToGroup(m_pixmapItem);
+    this->getScene2DRender()->getScene()->addItem( m_layer );
 
     m_pos = m_pixmapItem->pos();
 }
@@ -154,9 +159,14 @@ void Negato::doStart() throw ( ::fwTools::Failed )
 void Negato::doUpdate() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+
     this->updateFromImage( m_qimg );
     QPixmap m_pixmap = QPixmap::fromImage( *m_qimg );
     m_pixmapItem->setPixmap( m_pixmap );
+
+    // Adjust the layer's position and zValue depending on the associated axis
+    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
+    m_layer->setZValue(m_zValue);
 }
 
 //-----------------------------------------------------------------------------
@@ -186,8 +196,12 @@ void Negato::doSwap() throw ( ::fwTools::Failed )
 void Negato::doStop() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    
+    this->getScene2DRender()->getScene()->removeItem(m_layer);
+
     delete m_qimg;
-    this->getScene2DRender()->getScene()->removeItem(m_pixmapItem);
+    delete m_pixmapItem;
+    delete  m_layer;
 }
 
 //-----------------------------------------------------------------------------
@@ -200,8 +214,8 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     OSLM_TRACE("Image origin = " << origin[0] << ", " << origin[1] << ", " << origin[2]);
 
     ::scene2D::data::Coord coord = this->getScene2DRender()->mapToScene( _event->getCoord() );
-    coord.setX( coord.getX() / m_pixmapItem->scale() );
-    coord.setY( coord.getY() / m_pixmapItem->scale() );
+    coord.setX( coord.getX() / m_layer->scale() );
+    coord.setY( coord.getY() / m_layer->scale() );
 
     if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
             && _event->getButton() == ::scene2D::data::Event::RightButton )
@@ -229,11 +243,11 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     }
     else if(_event->getType() == ::scene2D::data::Event::MouseWheelUp)
     {
-        m_pixmapItem->setScale(m_pixmapItem->scale() * m_scaleRatio);  
+        m_layer->setScale(m_layer->scale() * m_scaleRatio);  
     }
     else if(_event->getType() == ::scene2D::data::Event::MouseWheelDown)
     {
-        m_pixmapItem->setScale(m_pixmapItem->scale() / m_scaleRatio); 
+        m_layer->setScale(m_layer->scale() / m_scaleRatio); 
     }
     else if(_event->getButton() == ::scene2D::data::Event::MidButton)
     {
@@ -252,8 +266,9 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     {
         if(_event->getType() == ::scene2D::data::Event::MouseMove)
         {
-            QRectF r = m_pixmapItem->sceneBoundingRect();
-            m_pixmapItem->setPos( r.x() + (coord.getX() - m_pos.x()), r.y() + (coord.getY() - m_pos.y()) );
+            m_pixmapItem->setPos(
+                    m_pixmapItem->pos().x() + (coord.getX() - m_pos.x()),
+                    m_pixmapItem->pos().y() + (coord.getY() - m_pos.y()) );
 
             m_pos.setX(coord.getX());
             m_pos.setY(coord.getY());
