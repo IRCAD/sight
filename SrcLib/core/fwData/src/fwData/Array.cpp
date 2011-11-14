@@ -237,6 +237,13 @@ void Array::clear()
     }
 }
 
+
+//------------------------------------------------------------------------------
+
+size_t Array::getElementSizeInBytes() const
+{
+    return m_type.sizeOf() * m_nbOfComponents;
+}
 //------------------------------------------------------------------------------
 
 size_t Array::getSizeInBytes() const

@@ -95,6 +95,7 @@ public :
 
 
 
+    FWDATA_API size_t getElementSizeInBytes() const;
     FWDATA_API virtual size_t getSizeInBytes() const;
 
     FWDATA_API virtual SizeType   getSize() const;
