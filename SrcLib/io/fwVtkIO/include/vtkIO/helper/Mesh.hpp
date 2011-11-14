@@ -1,0 +1,72 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef _VTKIO_HELPER_MESH_HPP_
+#define _VTKIO_HELPER_MESH_HPP_
+
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+
+#include <fwData/Mesh.hpp>
+
+#include "vtkIO/config.hpp"
+
+namespace vtkIO
+{
+
+namespace helper
+{
+
+/**
+ * @brief   Helper to manage vtkPolyData and fwData::Mesh.
+ * @class   Mesh.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2011.
+ *
+ */
+class VTKIO_CLASS_API Mesh
+{
+
+public :
+
+    /*!
+     * @brief Convert a vtkPolyData to a ::fwData::Mesh::sptr.
+     *
+     * @param[in] _polyData vtkPolyData.
+     * @param[out] _mesh ::fwData::Mesh::sptr.
+     *
+     * Returns \b true if the conversion is a success and \b false if it fails
+     */
+    VTKIO_API static void fromVTKMesh(  vtkSmartPointer<vtkPolyData> _polyData, ::fwData::Mesh::sptr _mesh );
+
+    /*!
+     * @brief Convert a ::fwData::Mesh::sptr to a vtkPolyData.
+     *
+     * @param[in] _mesh ::fwData::Mesh::sptr.
+     *  @param[out] _polyData vtkPolyData.
+     */
+    VTKIO_API static void toVTKMesh( ::fwData::Mesh::sptr _mesh, vtkSmartPointer<vtkPolyData> _polyData);
+
+    /*!
+     * @brief Update a vtkPolyData with ::fwData::Mesh::sptr points
+     *
+     * @param[out] polyData vtkPolyData
+     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @return vtkPolyData
+     *
+     * Warning : be carefull with updatePoints : this may change the number of
+     * vertex of the polydata, cells will not be updated.
+     * Returns the updated vtkPolyPata
+     */
+    VTKIO_API static vtkSmartPointer<vtkPolyData>  updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc );
+
+
+};
+
+} // namespace helper
+} // namespace vtkIO
+
+#endif // _VTKIO_HELPER_MESH_HPP_

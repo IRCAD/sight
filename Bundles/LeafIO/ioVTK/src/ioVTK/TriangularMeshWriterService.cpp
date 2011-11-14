@@ -67,7 +67,7 @@ void TriangularMeshWriterService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a vtk file to save Mesh");
+    dialogFile.setTitle("Choose a vtk file to save triangle mesh");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
@@ -105,7 +105,7 @@ void TriangularMeshWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boost::shared_ptr< ::fwData::TriangularMesh > _pMesh )
+void TriangularMeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
     ::vtkIO::TriangularMeshWriter::NewSptr myWriter;
@@ -115,7 +115,7 @@ void TriangularMeshWriterService::saveMesh( const ::boost::filesystem::path vtkF
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Meshs ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Mesh");
         myWriter->addHandler( progressMeterGUI );
         myWriter->write();
 
@@ -123,27 +123,19 @@ void TriangularMeshWriterService::saveMesh( const ::boost::filesystem::path vtkF
     catch (const std::exception & e)
     {
         std::stringstream ss;
-        ss << "Warning during loading : " << e.what();
+        ss << "Warning during saving : " << e.what();
 
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading : ";
-
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                "Warning during saving",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

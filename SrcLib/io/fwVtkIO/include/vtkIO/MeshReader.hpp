@@ -4,15 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_TRIANGULARMESHREADER_HPP_
-#define _VTKIO_TRIANGULARMESHREADER_HPP_
+#ifndef _VTKIO_MESHREADER_HPP_
+#define _VTKIO_MESHREADER_HPP_
 
 #include <boost/filesystem/path.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwTools/ProgressAdviser.hpp>
-#include <fwData/TriangularMesh.hpp>
+
+#include <fwData/Mesh.hpp>
 
 #include "vtkIO/config.hpp"
 
@@ -21,41 +22,41 @@ namespace vtkIO
 
 /**
  * @brief   Read a mesh.
- * @class   TriangularMeshReader.
+ * @class   MeshReader.
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
  * Read a VTK Mesh using the VTK lib
  */
 
-class TriangularMeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >,
+class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
                              public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
                              public ::fwTools::ProgressAdviser
 {
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((TriangularMeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >),
+    fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >),
                                            (()),
-                                           new TriangularMeshReader
+                                           new MeshReader
                                           );
     fwCoreAllowSharedFromThis();
 
     //! @brief Reading operator.
     VTKIO_API void read();
 
-    /// @return ".trian"
+    /// @return ".vtk"
     VTKIO_API  std::string extension();
 
 protected:
 
     //! @brief Constructor.
-    VTKIO_API TriangularMeshReader();
+    VTKIO_API MeshReader();
 
     //! @brief Destructor.
-    VTKIO_API ~TriangularMeshReader();
+    VTKIO_API ~MeshReader();
 };
 
 } // namespace vtkIO
 
-#endif // _VTKIO_TRIANGULARMESHREADER_HPP_
+#endif // _VTKIO_MESHREADER_HPP_

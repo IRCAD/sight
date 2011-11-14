@@ -11,16 +11,12 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
-#include <fwComEd/TriangularMeshMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 
-#include <io/IReader.hpp>
-
 #include <fwCore/base.hpp>
 
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -29,31 +25,31 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/TriangularMeshReader.hpp>
+#include <vtkIO/MeshReader.hpp>
 
-#include "ioVTK/TriangularMeshReaderService.hpp"
+#include "ioVTK/MeshReaderService.hpp"
 
 
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
+REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh ) ;
 
 //------------------------------------------------------------------------------
 
-TriangularMeshReaderService::TriangularMeshReaderService() throw() :
+MeshReaderService::MeshReaderService() throw() :
     m_bServiceIsConfigured(false),
     m_fsMeshPath("")
 {}
 
 //------------------------------------------------------------------------------
 
-TriangularMeshReaderService::~TriangularMeshReaderService() throw()
+MeshReaderService::~MeshReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::configuring() throw(::fwTools::Failed)
+void MeshReaderService::configuring() throw(::fwTools::Failed)
 {
     if( m_configuration->findConfigurationElement("filename") )
     {
@@ -66,14 +62,14 @@ void TriangularMeshReaderService::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::configureWithIHM()
+void MeshReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
 
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a vtk file to load triangle mesh");
+    dialogFile.setTitle("Choose a vtk file to load Mesh");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
@@ -91,33 +87,33 @@ void TriangularMeshReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::starting() throw(::fwTools::Failed)
+void MeshReaderService::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::stopping() throw(::fwTools::Failed)
+void MeshReaderService::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::info(std::ostream &_sstream )
+void MeshReaderService::info(std::ostream &_sstream )
 {
-    _sstream << "TriangularMeshReaderService::info";
+    _sstream << "MeshReaderService::info";
 }
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pTriangularMesh )
+void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::TriangularMeshReader::NewSptr myReader;
+    ::vtkIO::MeshReader::NewSptr myReader;
 
-    myReader->setObject(_pTriangularMesh);
+    myReader->setObject(_pMesh);
     myReader->setFile(vtkFile);
 
     try
@@ -149,21 +145,21 @@ void TriangularMeshReaderService::loadMesh( const ::boost::filesystem::path vtkF
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
+void MeshReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     if( m_bServiceIsConfigured )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
-        SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
+        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >() ;
+        SLM_ASSERT("pMesh not instanced", pMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        loadMesh(m_fsMeshPath, pTriangularMesh);
-        notificationOfUpdate();
+        this->loadMesh(m_fsMeshPath, pMesh);
+        this->notificationOfUpdate();
 
         cursor.setDefaultCursor();
     }
@@ -171,15 +167,15 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::notificationOfUpdate()
+void MeshReaderService::notificationOfUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
-    SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
+    ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
+    SLM_ASSERT("pMesh not instanced", pMesh);
 
-    ::fwComEd::TriangularMeshMsg::NewSptr msg;;
-    msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), pTriangularMesh, msg);
+    ::fwComEd::MeshMsg::NewSptr msg;;
+    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
+    ::fwServices::IEditionService::notify(this->getSptr(), pMesh, msg);
 }
 
 //------------------------------------------------------------------------------
