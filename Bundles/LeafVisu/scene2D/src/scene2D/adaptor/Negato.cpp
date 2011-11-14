@@ -36,7 +36,7 @@ namespace adaptor
 //-----------------------------------------------------------------------------
 
 Negato::Negato() throw()
-: m_pointIsCaptured (false)
+: m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false)
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
@@ -59,9 +59,14 @@ void Negato::configuring() throw ( ::fwTools::Failed )
 
     SLM_TRACE("IAdaptor configuring ok");
 
-    if (!m_configuration->getAttributeValue("zValue").empty())
+    //if (!m_configuration->getAttributeValue("zValue").empty())
+    //{
+    //    m_zValue = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("zValue"));
+    //}
+    
+    if( !m_configuration->getAttributeValue("scaleRatio").empty() )
     {
-        m_zValue = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("zValue"));
+        m_scaleRatio = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("scaleRatio") );
     }
 }
 
@@ -138,8 +143,10 @@ void Negato::doStart() throw ( ::fwTools::Failed )
     m_pixmapItem =  this->getScene2DRender()->getScene()->addPixmap( m_pixmap );
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-        std::vector< double > spacing = image->getSpacing();
-        m_pixmapItem->scale( spacing[0], spacing[1] );
+    std::vector< double > spacing = image->getSpacing();
+    m_pixmapItem->scale( spacing[0], spacing[1] );
+
+    m_pos = m_pixmapItem->pos();
 }
 
 //-----------------------------------------------------------------------------
@@ -188,26 +195,70 @@ void Negato::doStop() throw ( ::fwTools::Failed )
 void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
-    if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress && _event->getButton() == ::scene2D::data::Event::RightButton )
+
+    std::vector< double > origin = ::fwData::Image::dynamicCast( this->getObject< fwData::Image>() )->getOrigin();
+    OSLM_TRACE("Image origin = " << origin[0] << ", " << origin[1] << ", " << origin[2]);
+
+    ::scene2D::data::Coord coord = this->getScene2DRender()->mapToScene( _event->getCoord() );
+    coord.setX( coord.getX() / m_pixmapItem->scale() );
+    coord.setY( coord.getY() / m_pixmapItem->scale() );
+
+    if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
+            && _event->getButton() == ::scene2D::data::Event::RightButton )
     {
         OSLM_TRACE("Point is captured");
         m_pointIsCaptured = true;
         m_oldCoord = _event->getCoord();
         _event->setAccepted(true);
     }
-    else if ( m_pointIsCaptured && _event->getType() == ::scene2D::data::Event::MouseMove )
+    else if ( m_pointIsCaptured )
     {
-        ::scene2D::data::Coord newCoord = _event->getCoord();
-        this->changeImageMinMaxFromCoord( m_oldCoord, newCoord );
-        m_oldCoord = newCoord;
-        _event->setAccepted(true);
+        if( _event->getType() == ::scene2D::data::Event::MouseMove )
+        {
+            ::scene2D::data::Coord newCoord = _event->getCoord();
+            this->changeImageMinMaxFromCoord( m_oldCoord, newCoord );
+            m_oldCoord = newCoord;
+            _event->setAccepted(true);
+        }
+        else if( _event->getButton() == ::scene2D::data::Event::RightButton
+                && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+        {
+            m_pointIsCaptured = false;
+            _event->setAccepted(true);
+        }
     }
-    else if ( _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+    else if(_event->getType() == ::scene2D::data::Event::MouseWheelUp)
     {
-        m_pointIsCaptured = false;
-        _event->setAccepted(true);
+        m_pixmapItem->setScale(m_pixmapItem->scale() * m_scaleRatio);  
     }
+    else if(_event->getType() == ::scene2D::data::Event::MouseWheelDown)
+    {
+        m_pixmapItem->setScale(m_pixmapItem->scale() / m_scaleRatio); 
+    }
+    else if(_event->getButton() == ::scene2D::data::Event::MidButton)
+    {
+        if(_event->getType() == ::scene2D::data::Event::MouseButtonPress)
+        {
+            m_negatoIsBeingMoved = true;
+            m_pos.setX( coord.getX() );
+            m_pos.setY( coord.getY() );
+        }
+        else if(_event->getType() == ::scene2D::data::Event::MouseButtonRelease)
+        {
+            m_negatoIsBeingMoved = false;
+        }
+    }
+    else if(m_negatoIsBeingMoved)
+    {
+        if(_event->getType() == ::scene2D::data::Event::MouseMove)
+        {
+            QRectF r = m_pixmapItem->sceneBoundingRect();
+            m_pixmapItem->setPos( r.x() + (coord.getX() - m_pos.x()), r.y() + (coord.getY() - m_pos.y()) );
 
+            m_pos.setX(coord.getX());
+            m_pos.setY(coord.getY());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

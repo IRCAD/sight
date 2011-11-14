@@ -43,11 +43,25 @@ private:
     void updateFromImage( QImage * qimg );
     void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
 
+    /**
+     * @brief Pixmap graphics item position used for drag and drop.
+     */
+    QPointF m_pos;
+
     QImage * m_qimg;
+
+    /**
+     * @brief A pixmap item into which image's content is set with a QPixmap
+     *
+     * TODO: see if QGraphicsScene::addPixmap(QPixmap) could be more useful
+     */
     QGraphicsPixmapItem * m_pixmapItem;
 
     bool m_pointIsCaptured;
+    bool m_negatoIsBeingMoved;
     scene2D::data::Coord m_oldCoord;
+
+    float m_scaleRatio;
 };
 
 
