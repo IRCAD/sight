@@ -67,10 +67,10 @@
             </service>
             
             <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="myReaderPathFile" />
+                <start uid="myReaderTrianMesh" />
             </service>
             <service uid="action_saveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="myWriterPathFile" />
+                <start uid="myWriterMesh" />
             </service>
             <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
 
@@ -98,17 +98,30 @@
                             <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                 <config renderer="default" picker="" />
                             </adaptor>
-
+                            <adaptor id="myTrianAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myTrianMesh">
+                                <config renderer="default" picker="" />
+                            </adaptor>
                         </scene>
                     </service>
 
                     <item key="myMesh">
-                        <object type="::fwData::TriangularMesh">
-
-                            <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                        <object type="::fwData::Mesh">
+                            <service uid="myReaderMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
                                 <type mode="reader" />
                             </service>
-                            <service uid="myWriterPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <service uid="myWriterMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                                <type mode="writer" />
+                            </service>
+                        </object>
+                    </item>
+                    
+                    <item key="myTrianMesh">
+                        <object type="::fwData::TriangularMesh">
+
+                            <service uid="myReaderTrianMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                                <type mode="reader" />
+                            </service>
+                            <service uid="myWriterTrianMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
                                 <type mode="writer" />
                             </service>
                             

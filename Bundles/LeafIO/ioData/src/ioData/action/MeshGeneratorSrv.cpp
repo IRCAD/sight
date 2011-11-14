@@ -10,6 +10,15 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
 
+#include <fwComEd/TriangularMeshMsg.hpp>
+
+#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <fwDataTools/MeshGenerator.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include "ioData/action/MeshGeneratorSrv.hpp"
 
 namespace ioData
@@ -79,7 +88,28 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
     ::fwTools::Object::sptr obj = this->getObject();
     if(m_functor == "GenTriangle")
     {
-        SLM_WARN("Todo GenTriangle");
+        ::fwData::TriangularMesh::sptr trian = this->getObject< ::fwData::TriangularMesh >();
+        SLM_ASSERT("TriangularMesh dynamicCast failed", trian);
+        ::fwData::Mesh::NewSptr mesh;
+        ::fwDataTools::MeshGenerator::NewSptr generator;
+        try
+        {
+            generator->generateTriangleMesh(mesh);
+            ::fwDataTools::MeshGenerator::toTriangularMesh(mesh, trian);
+        }
+        catch (const std::exception & e)
+        {
+            std::stringstream ss;
+            ss << "Warning during generating : " << e.what();
+
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    ss.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+        }
+        ::fwComEd::TriangularMeshMsg::NewSptr msg;
+        msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH );
+        ::fwServices::IEditionService::notify(this->getSptr(), trian, msg);
     }
     else if(m_functor == "GenQuad")
     {
@@ -87,7 +117,27 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
     }
     else if(m_functor == "GenTriangleQuad")
     {
-        SLM_WARN("Todo GenTriangleQuad");
+        ::fwData::TriangularMesh::sptr trian = this->getObject< ::fwData::TriangularMesh >();
+        SLM_ASSERT("TriangularMesh dynamicCast failed", trian);
+        ::fwData::Mesh::NewSptr mesh;
+        try
+        {
+            ::fwDataTools::MeshGenerator::fromTriangularMesh(trian, mesh);
+            ::fwDataTools::MeshGenerator::toTriangularMesh(mesh, trian);
+        }
+        catch (const std::exception & e)
+        {
+            std::stringstream ss;
+            ss << "Warning during generating : " << e.what();
+
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    ss.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+        }
+        ::fwComEd::TriangularMeshMsg::NewSptr msg;
+        msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH );
+        ::fwServices::IEditionService::notify(this->getSptr(), trian, msg);
     }
     ::fwServices::ObjectMsg::NewSptr objectMsg;
     objectMsg->addEvent( "VALUE_IS_MODIFIED" );
