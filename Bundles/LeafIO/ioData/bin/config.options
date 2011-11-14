@@ -1,5 +1,0 @@
-TEST='no'
-TESTRUNNER='testRunnerBasic'
-TESTFIXTURE='1'
-TESTLIB='cppunit'
-#TYPE='shared'

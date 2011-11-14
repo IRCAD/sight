@@ -44,6 +44,13 @@
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioData::MeshWriterService</service>
+        <object>::fwData::Mesh</object>
+        <desc>Mesh triangle Writer</desc>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::ioData::action::MeshGeneratorSrv</service>
         <object>::fwTools::Object</object>

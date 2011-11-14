@@ -58,7 +58,7 @@ public:
     IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
 
     /**
-     * @brief Configure the image path.
+     * @brief Configure the mesh path.
      *
      * This method is used to find
      * the file path  using a file selector.
@@ -92,8 +92,8 @@ protected:
      *
      * XML configuration sample:
      * @verbatim
-    <service type="::ioData::TriangularMeshReaderService">
-        <filename>../matrix.trf</filename>
+    <service implementation="::ioData::TriangularMeshReaderService">
+        <filename>../mesh.trian</filename>
     </service>
      @endverbatim
      *

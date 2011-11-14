@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_TRIANGULARMESHWRITER_HPP_
-#define _IODATA_TRIANGULARMESHWRITER_HPP_
+#ifndef _IODATA_MESHWRITER_HPP_
+#define _IODATA_MESHWRITER_HPP_
 
 #include <io/IWriter.hpp>
 #include <boost/filesystem/path.hpp>
@@ -15,10 +15,10 @@
 namespace ioData
 {
 /**
- * @brief   Triangular mesh writer service.
- * @class   TriangularMeshWriterService.
+ * @brief   Mesh writer service.
+ * @class   MeshWriterService.
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
  * Service writing a mesh object.
  * @li This service has no specified start and stop method.
@@ -26,15 +26,15 @@ namespace ioData
  * @li Use update() to write the mesh and notify observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwData::TriangularMesh )
+ * REGISTER_SERVICE( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh )
  */
-class IODATA_CLASS_API TriangularMeshWriterService : public ::io::IWriter
+class IODATA_CLASS_API MeshWriterService : public ::io::IWriter
 {
 
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (TriangularMeshWriterService)(::io::IWriter) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)(::io::IWriter) ) ;
 
      /// Super class of writer services
     typedef ::io::IWriter   SuperClass;
@@ -42,12 +42,12 @@ public:
     /**
      * @brief   Constructor : does nothing
      */
-    IODATA_API TriangularMeshWriterService() ;
+    IODATA_API MeshWriterService() ;
 
     /**
      * @brief   destructor
      */
-    IODATA_API ~TriangularMeshWriterService() throw() ;
+    IODATA_API ~MeshWriterService() throw() ;
 
     /** @name Specified writer service methods ( override from ::io::IWriter )
      * @{
@@ -93,7 +93,7 @@ protected:
      *
      * XML configuration sample:
      * @verbatim
-    <service implementation="::ioData::TriangularMeshWriterService">
+    <service implementation="::ioData::MeshWriterService" >
         <filename>../mesh.trian</filename>
     </service>
      @endverbatim
@@ -106,7 +106,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
      *
      * This method is used to update the service.
-     * The mesh is written with the writer ::fwDataIO::writer::TriangularMeshWriter.
+     * The mesh is written with the writer ::fwDataIO::writer::MeshWriter.
      * Notify writing.
      */
     IODATA_API void updating() throw(::fwTools::Failed);
@@ -114,7 +114,7 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
@@ -139,4 +139,4 @@ private :
 
 }
 
-#endif /*_IODATA_TRIANGULARMESHWRITER_HPP_*/
+#endif /*_IODATA_MESHWRITER_HPP_*/
