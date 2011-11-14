@@ -13,6 +13,7 @@ class ArrayTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE( ArrayTest );
     CPPUNIT_TEST( allocation );
     CPPUNIT_TEST( resize );
+    CPPUNIT_TEST( reallocate );
     CPPUNIT_TEST_SUITE_END();
 protected:
 
@@ -23,5 +24,6 @@ public:
     // fonctions de tests
     void allocation();
     void resize();
+    void reallocate();
 };
 #endif // FWDATA_TU_ARRAYTEST_H
