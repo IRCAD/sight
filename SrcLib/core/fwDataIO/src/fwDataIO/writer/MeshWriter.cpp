@@ -66,6 +66,8 @@ void MeshWriter::write()
 
     nbCells = triMesh->getNumberOfCells();
     ::fwData::Mesh::CellDataMultiArrayType cells = triMesh->getCellData();
+    size_t cellsSize = nbCells*3;
+    SLM_ASSERT("Wrong CellDataMultiArray size", cells.size() == cellsSize);
     file<<nbCells<<std::endl;
     typedef ::fwData::Mesh::CellDataMultiArrayType::index CellTypesIndex;
     ::fwData::Array::sptr normals;// = triMesh->getCellNormalsArray();
@@ -77,7 +79,7 @@ void MeshWriter::write()
 //        SLM_ASSERT("", cellTypes->getSize()[0] == normals->getSize()[0]);
 //
 //        ::fwData::Mesh::CellNormalsMultiArrayType cellNormals = triMesh->getCellNormals();
-//        for (CellTypesIndex i = 0; i != nbCells; i+=3)
+//        for (CellTypesIndex i = 0; i < cellsSize; i+=3)
 //        {
 //            file<<cells[i]<<" "<<cells[i+1]<<" "<<cells[i+2]<<" "
 //                    <<cellNormals[i/3][0]<<" "<<cellNormals[i/3][1]<<" "<<cellNormals[i/3][2]<<std::endl;
@@ -85,7 +87,7 @@ void MeshWriter::write()
     }
     else
     {
-        for (CellTypesIndex i = 0; i != nbCells; i+=3)
+        for (CellTypesIndex i = 0; i < cellsSize; i+=3)
         {
             file<<cells[i]<<" "<<cells[i+1]<<" "<<cells[i+2]<<" "
                     <<-1<<" "<<-1<<" "<<-1<<std::endl;
