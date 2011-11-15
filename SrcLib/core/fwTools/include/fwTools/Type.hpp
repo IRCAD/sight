@@ -176,18 +176,18 @@ const std::pair<T,T> Type::minMax() const
 
 //-----------------------------------------------------------------------------
 
-template<> const std::string Type::typeToString< ::boost::uint8_t  >();
-template<> const std::string Type::typeToString< ::boost::uint16_t >();
-template<> const std::string Type::typeToString< ::boost::uint32_t >();
-template<> const std::string Type::typeToString< ::boost::uint64_t >();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint8_t  >();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint16_t >();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint32_t >();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint64_t >();
 
-template<> const std::string Type::typeToString< ::boost::int8_t  > ();
-template<> const std::string Type::typeToString< ::boost::int16_t > ();
-template<> const std::string Type::typeToString< ::boost::int32_t > ();
-template<> const std::string Type::typeToString< ::boost::int64_t > ();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int8_t  > ();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int16_t > ();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int32_t > ();
+template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int64_t > ();
 
-template<> const std::string Type::typeToString< float  >  ();
-template<> const std::string Type::typeToString< double >  ();
+template<> FWTOOLS_API const std::string Type::typeToString< float  >  ();
+template<> FWTOOLS_API const std::string Type::typeToString< double >  ();
 
 } //end namespace fwTools
 
