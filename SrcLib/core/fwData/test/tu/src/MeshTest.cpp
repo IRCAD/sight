@@ -6,6 +6,7 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
+#include <boost/cstdint.hpp>
 #include "fwData/Mesh.hpp"
 #include "MeshTest.hpp"
 
@@ -30,9 +31,13 @@ void MeshTest::allocation()
     ::fwData::Mesh::NewSptr mesh;
     size_t pointSize = 3000;
     size_t cellSize = 2000;
-    mesh->allocate(pointSize, cellSize);
+    size_t cellDataSize = 8000;
+    mesh->allocate(pointSize, cellSize, cellDataSize);
     CPPUNIT_ASSERT_EQUAL(pointSize, mesh->getPointsArray()->getSize()[0]);
     CPPUNIT_ASSERT_EQUAL(cellSize, mesh->getCellTypesArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(cellDataSize, mesh->getCellDataArray()->getSize()[0]);
+
+    mesh->allocatePointNormals();
 }
 
 void MeshTest::insertion()
@@ -60,5 +65,28 @@ void MeshTest::insertion()
 
     CPPUNIT_ASSERT_EQUAL((size_t)8, mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL((size_t)5, mesh->getNumberOfCells());
+
+    ::fwData::Mesh::PointMultiArrayType pointArray = mesh->getPoints();
+    CPPUNIT_ASSERT_EQUAL((float) 10, pointArray[0][0]);
+    CPPUNIT_ASSERT_EQUAL((float) 20, pointArray[2][1]);
+    CPPUNIT_ASSERT_EQUAL((float) 52, pointArray[7][2]);
+
+    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsetArray = mesh->getCellDataOffsets();
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)0, cellDataOffsetArray[0]);
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)2, cellDataOffsetArray[1]);
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)9, cellDataOffsetArray[3]);
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)13, cellDataOffsetArray[4]);
+
+    ::fwData::Mesh::CellDataMultiArrayType cellDataArray = mesh->getCellData();
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)1, cellDataArray[cellDataOffsetArray[0]]);
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)1, cellDataArray[cellDataOffsetArray[1]]);
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)3, cellDataArray[cellDataOffsetArray[3]]);
+    CPPUNIT_ASSERT_EQUAL( (::boost::uint64_t)1, cellDataArray[cellDataOffsetArray[4]]);
+
+    ::fwData::Mesh::CellTypesMultiArrayType cellTypesArray = mesh->getCellTypes();
+    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::EDGE, static_cast< ::fwData::Mesh::CellTypesEnum >(cellTypesArray[0]));
+    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast < ::fwData::Mesh::CellTypesEnum >(cellTypesArray[1]));
+    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(cellTypesArray[3]));
+    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(cellTypesArray[4]));
 }
 

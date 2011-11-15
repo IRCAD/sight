@@ -40,9 +40,9 @@ Mesh::Mesh()
     m_cellDataOffsets = ::fwData::Array::New();
 
     m_points->setType("float");
-    m_cellTypes->setType("float");
-    m_cellData->setType("float");
-    m_cellDataOffsets->setType("float");
+    m_cellTypes->setType("uint8");
+    m_cellData->setType("uint64");
+    m_cellDataOffsets->setType("uint64");
     m_points->setNumberOfComponents(3);
     m_cellTypes->setNumberOfComponents(1);
     m_cellData->setNumberOfComponents(1);
@@ -71,9 +71,9 @@ void Mesh::shallowCopy( Mesh::csptr _source )
     m_cellData        = ::fwData::Array::New();
     m_cellDataOffsets = ::fwData::Array::New();
     m_points->setType("float");
-    m_cellTypes->setType("float");
-    m_cellData->setType("float");
-    m_cellDataOffsets->setType("float");
+    m_cellTypes->setType("uint8");
+    m_cellData->setType("uint64");
+    m_cellDataOffsets->setType("uint64");
     m_points->setNumberOfComponents(3);
     m_cellTypes->setNumberOfComponents(1);
     m_cellData->setNumberOfComponents(1);
@@ -136,9 +136,9 @@ void Mesh::deepCopy( Mesh::csptr _source )
     m_cellData        = ::fwData::Array::New();
     m_cellDataOffsets = ::fwData::Array::New();
     m_points->setType("float");
-    m_cellTypes->setType("float");
-    m_cellData->setType("float");
-    m_cellDataOffsets->setType("float");
+    m_cellTypes->setType("uint8");
+    m_cellData->setType("uint64");
+    m_cellDataOffsets->setType("uint64");
     m_points->setNumberOfComponents(3);
     m_cellTypes->setNumberOfComponents(1);
     m_cellData->setNumberOfComponents(1);
@@ -267,7 +267,7 @@ void Mesh::setPoint(Id id, PointValueType x, PointValueType y, PointValueType z)
 
 //------------------------------------------------------------------------------
 
-Mesh::Id Mesh::insertNextCell(CellTypes type, const CellValueType *cell, size_t nb) throw(::fwData::Exception)
+Mesh::Id Mesh::insertNextCell(CellTypesEnum type, const CellValueType *cell, size_t nb) throw(::fwData::Exception)
 {
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NONE'", type != NONE || nb == 0);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'", type != POINT || nb == 1);
@@ -297,7 +297,7 @@ Mesh::Id Mesh::insertNextCell(CellTypes type, const CellValueType *cell, size_t 
     }
 
 
-    const CellTypes t[1] = {type};
+    const CellTypes t[1] = {static_cast<CellTypes>(type)};
     m_cellTypes->setItem(list_of(m_nbCells), t);
 
     Id *buf = reinterpret_cast<Id*>(m_cellData->getBufferPtr(list_of(m_cellsDataSize), 0, sizeof(Id)));

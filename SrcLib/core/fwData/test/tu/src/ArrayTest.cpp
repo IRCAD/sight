@@ -191,6 +191,9 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(6)(32))));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(7)(94))));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(8)(23))));
+
+    array->clear();
+    CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getSizeInBytes());
 }
 
 

@@ -43,12 +43,13 @@ public:
         TRIANGLE,
         QUAD,
         POLY
-    } CellTypes;
+    } CellTypesEnum;
 
     typedef float PointValueType;
     typedef float ColorValueType;
     typedef float NormalValueType;
     typedef Id    CellValueType;
+    typedef char  CellTypes;
 
     typedef boost::multi_array_ref<PointValueType, 2>  PointMultiArrayType;
     typedef boost::multi_array_ref<CellTypes, 1>       CellTypesMultiArrayType;
@@ -80,13 +81,13 @@ public:
     FWDATA_API void setPoint(Id id, PointValueType x, PointValueType y, PointValueType z);
 
 
-    FWDATA_API Id insertNextCell(CellTypes type, const CellValueType *cell, size_t nb) throw(::fwData::Exception);
+    FWDATA_API Id insertNextCell(CellTypesEnum type, const CellValueType *cell, size_t nb) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3, CellValueType p4) throw(::fwData::Exception);
 
-    template <typename T> Id insertNextCell(CellTypes type, const T &pointsBegin, const T &pointsEnd) throw(::fwData::Exception);
+    template <typename T> Id insertNextCell(CellTypesEnum type, const T &pointsBegin, const T &pointsEnd) throw(::fwData::Exception);
 
     FWDATA_API void cleanCells();
 
