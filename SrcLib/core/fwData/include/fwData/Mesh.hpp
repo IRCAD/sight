@@ -45,20 +45,26 @@ public:
         POLY
     } CellTypesEnum;
 
+    typedef enum {
+        RGB = 3,
+        RGBA = 4
+    } ColorArrayTypes;
+
     typedef float PointValueType;
     typedef float ColorValueType;
     typedef float NormalValueType;
     typedef Id    CellValueType;
+    typedef Id    CellDataOffsetType;
     typedef char  CellTypes;
 
-    typedef boost::multi_array_ref<PointValueType, 2>  PointMultiArrayType;
-    typedef boost::multi_array_ref<CellTypes, 1>       CellTypesMultiArrayType;
-    typedef boost::multi_array_ref<CellValueType, 1>   CellDataMultiArrayType;
-    typedef boost::multi_array_ref<Id, 1>              CellDataOffsetsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType, 2>  PointColorsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType, 2>  CellColorsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType, 2> PointNormalsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType, 2> CellNormalsMultiArrayType;
+    typedef boost::multi_array_ref<PointValueType   , 2> PointMultiArrayType;
+    typedef boost::multi_array_ref<CellTypes        , 1> CellTypesMultiArrayType;
+    typedef boost::multi_array_ref<CellValueType    , 1> CellDataMultiArrayType;
+    typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType   , 2>  PointColorsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType   , 2>  CellColorsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType  , 2> PointNormalsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType  , 2> CellNormalsMultiArrayType;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Mesh::csptr _source );
@@ -70,11 +76,11 @@ public:
     FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0) throw(::fwData::Exception);
 
     FWDATA_API size_t allocatePointNormals() throw(::fwData::Exception);
-    FWDATA_API size_t allocatePointColors() throw(::fwData::Exception);
+    FWDATA_API size_t allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception);
     FWDATA_API size_t allocateCellNormals() throw(::fwData::Exception);
-    FWDATA_API size_t allocateCellColors() throw(::fwData::Exception);
+    FWDATA_API size_t allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception);
 
-    FWDATA_API void stripAllocatedMemory() throw(::fwData::Exception);
+    FWDATA_API size_t adjustAllocatedMemory() throw(::fwData::Exception);
 
     FWDATA_API Id insertNextPoint(const PointValueType p[3]) throw(::fwData::Exception);
     FWDATA_API Id insertNextPoint(PointValueType x, PointValueType y, PointValueType z) throw(::fwData::Exception);
@@ -131,8 +137,14 @@ public:
     FWDATA_API void clearCellColors();
 
 
-    FWDATA_API size_t getNumberOfPoints() const;
-    FWDATA_API size_t getNumberOfCells() const;
+    FWDATA_API void setNumberOfPoints(Id nb);
+    FWDATA_API Id getNumberOfPoints() const;
+
+    FWDATA_API void setNumberOfCells(Id nb);
+    FWDATA_API Id getNumberOfCells() const;
+
+    FWDATA_API void setCellDataSize(Id nb);
+    FWDATA_API Id getCellDataSize() const;
 
     FWDATA_API size_t getDataSizeInBytes() const;
     FWDATA_API size_t getAllocatedSizeInBytes() const;
@@ -143,6 +155,8 @@ public:
 
 
 protected:
+
+    FWDATA_API void initArrays();
 
     FWDATA_API Mesh();
     FWDATA_API virtual ~Mesh() ;

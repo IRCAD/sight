@@ -63,8 +63,8 @@ void MeshTest::insertion()
     ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
     mesh->insertNextCell(::fwData::Mesh::POLY, p2, 6);
 
-    CPPUNIT_ASSERT_EQUAL((size_t)8, mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL((size_t)5, mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)8, mesh->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)5, mesh->getNumberOfCells());
 
     ::fwData::Mesh::PointMultiArrayType pointArray = mesh->getPoints();
     CPPUNIT_ASSERT_EQUAL((float) 10, pointArray[0][0]);

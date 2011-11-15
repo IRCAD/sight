@@ -34,29 +34,35 @@ Mesh::Mesh()
     m_nbCells     = 0;
     m_cellsDataSize = 0;
 
-    m_points          = ::fwData::Array::New();
-    m_cellTypes       = ::fwData::Array::New();
-    m_cellData        = ::fwData::Array::New();
-    m_cellDataOffsets = ::fwData::Array::New();
-
-    m_points->setType("float");
-    m_cellTypes->setType("uint8");
-    m_cellData->setType("uint64");
-    m_cellDataOffsets->setType("uint64");
-    m_points->setNumberOfComponents(3);
-    m_cellTypes->setNumberOfComponents(1);
-    m_cellData->setNumberOfComponents(1);
-    m_cellDataOffsets->setNumberOfComponents(1);
+    this->initArrays();
 }
 
 //------------------------------------------------------------------------------
 
 Mesh::~Mesh()
 {
-// TODO
 }
 
 //------------------------------------------------------------------------------
+void Mesh::initArrays()
+{
+    m_points          = ::fwData::Array::New();
+    m_cellTypes       = ::fwData::Array::New();
+    m_cellData        = ::fwData::Array::New();
+    m_cellDataOffsets = ::fwData::Array::New();
+
+    m_points->setType(::fwTools::Type::create<PointValueType>());
+    m_points->setNumberOfComponents(3);
+
+    m_cellTypes->setType(::fwTools::Type::create<CellTypes>());
+    m_cellTypes->setNumberOfComponents(1);
+
+    m_cellData->setType(::fwTools::Type::create<CellValueType>());
+    m_cellData->setNumberOfComponents(1);
+
+    m_cellDataOffsets->setType(::fwTools::Type::create<CellDataOffsetType>());
+    m_cellDataOffsets->setNumberOfComponents(1);
+}
 
 void Mesh::shallowCopy( Mesh::csptr _source )
 {
@@ -66,18 +72,7 @@ void Mesh::shallowCopy( Mesh::csptr _source )
     m_nbCells       = _source->m_nbCells;
     m_cellsDataSize = _source->m_cellsDataSize;
 
-    m_points          = ::fwData::Array::New();
-    m_cellTypes       = ::fwData::Array::New();
-    m_cellData        = ::fwData::Array::New();
-    m_cellDataOffsets = ::fwData::Array::New();
-    m_points->setType("float");
-    m_cellTypes->setType("uint8");
-    m_cellData->setType("uint64");
-    m_cellDataOffsets->setType("uint64");
-    m_points->setNumberOfComponents(3);
-    m_cellTypes->setNumberOfComponents(1);
-    m_cellData->setNumberOfComponents(1);
-    m_cellDataOffsets->setNumberOfComponents(1);
+    this->initArrays();
 
     m_points->shallowCopy(_source->m_points);
     m_cellTypes->shallowCopy(_source->m_cellTypes);
@@ -131,18 +126,7 @@ void Mesh::deepCopy( Mesh::csptr _source )
     m_cellData->deepCopy(_source->m_cellData);
     m_cellDataOffsets->deepCopy(_source->m_cellDataOffsets);
 
-    m_points          = ::fwData::Array::New();
-    m_cellTypes       = ::fwData::Array::New();
-    m_cellData        = ::fwData::Array::New();
-    m_cellDataOffsets = ::fwData::Array::New();
-    m_points->setType("float");
-    m_cellTypes->setType("uint8");
-    m_cellData->setType("uint64");
-    m_cellDataOffsets->setType("uint64");
-    m_points->setNumberOfComponents(3);
-    m_cellTypes->setNumberOfComponents(1);
-    m_cellData->setNumberOfComponents(1);
-    m_cellDataOffsets->setNumberOfComponents(1);
+    this->initArrays();
 
     m_pointColors.reset();
     m_cellColors.reset();
@@ -201,39 +185,71 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 
 size_t Mesh::allocatePointNormals() throw(::fwData::Exception)
 {
-// TODO
-    return 0;
+    size_t allocatedSize = 0;
+    m_pointNormals  = ::fwData::Array::New();
+    allocatedSize += m_pointNormals->resize( ::fwTools::Type::create<NormalValueType>(), list_of(m_nbPoints), 3, true);
+    return allocatedSize;
 }
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocatePointColors() throw(::fwData::Exception)
+size_t Mesh::allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception)
 {
-// TODO
-    return 0;
+    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    size_t allocatedSize = 0;
+    m_pointColors  = ::fwData::Array::New();
+    allocatedSize += m_pointColors->resize( ::fwTools::Type::create<ColorValueType>(), list_of(m_nbPoints), t, true);
+    return allocatedSize;
 }
 
 //------------------------------------------------------------------------------
 
 size_t Mesh::allocateCellNormals() throw(::fwData::Exception)
 {
-// TODO
-    return 0;
+    size_t allocatedSize = 0;
+    m_cellNormals  = ::fwData::Array::New();
+    allocatedSize += m_cellNormals->resize( ::fwTools::Type::create<NormalValueType>(), list_of(m_nbCells), 3, true);
+    return allocatedSize;
 }
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocateCellColors() throw(::fwData::Exception)
+size_t Mesh::allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception)
 {
-// TODO
-    return 0;
+    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    size_t allocatedSize = 0;
+    m_cellColors  = ::fwData::Array::New();
+    allocatedSize += m_cellColors->resize( ::fwTools::Type::create<ColorValueType>(), list_of(m_nbCells), t, true);
+    return allocatedSize;
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::stripAllocatedMemory() throw(::fwData::Exception)
+size_t Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
 {
-// TODO
+    size_t oldAllocatedSize = this->getAllocatedSizeInBytes();
+
+    if(! m_points)
+    {
+        this->initArrays();
+    }
+
+    m_points->resize(list_of(m_nbPoints), true);
+    m_cellTypes->resize(list_of(m_nbCells), true);
+    m_cellData->resize(list_of(m_cellsDataSize), true);
+    m_cellDataOffsets->resize(list_of(m_nbCells), true);
+    m_pointColors  && (m_pointColors->resize(list_of(m_nbPoints), true));
+    m_cellColors   && (m_cellColors->resize(list_of(m_nbCells), true));
+    m_pointNormals && (m_pointNormals->resize(list_of(m_nbPoints), true));
+    m_cellNormals  && (m_cellNormals->resize(list_of(m_nbCells), true));
+
+
+    size_t newAllocatedSize = this->getAllocatedSizeInBytes();
+    SLM_ASSERT(
+            "Error stipping memory : allocated size: " << newAllocatedSize
+            << " != data size : " << this->getDataSizeInBytes(),
+            newAllocatedSize == this->getDataSizeInBytes());
+    return oldAllocatedSize - newAllocatedSize;
 }
 
 //------------------------------------------------------------------------------
@@ -300,10 +316,12 @@ Mesh::Id Mesh::insertNextCell(CellTypesEnum type, const CellValueType *cell, siz
     const CellTypes t[1] = {static_cast<CellTypes>(type)};
     m_cellTypes->setItem(list_of(m_nbCells), t);
 
-    Id *buf = reinterpret_cast<Id*>(m_cellData->getBufferPtr(list_of(m_cellsDataSize), 0, sizeof(Id)));
+    CellValueType *buf = reinterpret_cast<CellValueType*>(
+            m_cellData->getBufferPtr(list_of(m_cellsDataSize), 0, sizeof(CellValueType))
+            );
     std::copy(cell, cell+nb, buf);
 
-    const Id id[1] = {m_cellsDataSize};
+    const CellDataOffsetType id[1] = {m_cellsDataSize};
     m_cellDataOffsets->setItem(list_of(m_nbCells), id);
 
     m_cellsDataSize += nb;
@@ -582,23 +600,51 @@ void Mesh::clearCellColors()
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::getNumberOfPoints() const
+void Mesh::setNumberOfPoints(Mesh::Id nb)
+{
+    m_nbPoints = nb;
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::getNumberOfPoints() const
 {
     return m_nbPoints;
 }
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::getNumberOfCells() const
+void Mesh::setNumberOfCells(Mesh::Id nb)
+{
+    m_nbCells = nb;
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::getNumberOfCells() const
 {
     return m_nbCells;
+}
+
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellDataSize(Mesh::Id size)
+{
+    m_cellsDataSize = size;
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::getCellDataSize() const
+{
+    return m_cellsDataSize;
 }
 
 //------------------------------------------------------------------------------
 
 size_t Mesh::getDataSizeInBytes() const
 {
-    //TODO
     size_t size = 0;
 
     m_points         && (size += m_points->getElementSizeInBytes() * m_nbPoints);
