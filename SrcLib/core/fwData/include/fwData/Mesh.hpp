@@ -37,7 +37,7 @@ public:
     typedef boost::uint64_t Id;
 
     typedef enum {
-        NONE = 0,
+        NO_CELL = 0,
         POINT,
         EDGE,
         TRIANGLE,
@@ -57,14 +57,14 @@ public:
     typedef Id    CellDataOffsetType;
     typedef char  CellTypes;
 
-    typedef boost::multi_array_ref<PointValueType   , 2> PointMultiArrayType;
-    typedef boost::multi_array_ref<CellTypes        , 1> CellTypesMultiArrayType;
-    typedef boost::multi_array_ref<CellValueType    , 1> CellDataMultiArrayType;
+    typedef boost::multi_array_ref<PointValueType    , 2> PointMultiArrayType;
+    typedef boost::multi_array_ref<CellTypes         , 1> CellTypesMultiArrayType;
+    typedef boost::multi_array_ref<CellValueType     , 1> CellDataMultiArrayType;
     typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType   , 2>  PointColorsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType   , 2>  CellColorsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType  , 2> PointNormalsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType  , 2> CellNormalsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType    , 2> PointColorsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType    , 2> CellColorsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType   , 2> PointNormalsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType   , 2> CellNormalsMultiArrayType;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Mesh::csptr _source );
@@ -84,6 +84,8 @@ public:
 
     FWDATA_API Id insertNextPoint(const PointValueType p[3]) throw(::fwData::Exception);
     FWDATA_API Id insertNextPoint(PointValueType x, PointValueType y, PointValueType z) throw(::fwData::Exception);
+
+    FWDATA_API void setPoint(Id id, const PointValueType p[3]);
     FWDATA_API void setPoint(Id id, PointValueType x, PointValueType y, PointValueType z);
 
 
@@ -95,7 +97,7 @@ public:
 
     template <typename T> Id insertNextCell(CellTypesEnum type, const T &pointsBegin, const T &pointsEnd) throw(::fwData::Exception);
 
-    FWDATA_API void cleanCells();
+    //FWDATA_API void cleanCells();
 
 
     FWDATA_API PointMultiArrayType           getPoints() const;
@@ -120,10 +122,10 @@ public:
     FWDATA_API ::fwData::Array::sptr getCellTypesArray        () const;
     FWDATA_API ::fwData::Array::sptr getCellDataArray         () const;
     FWDATA_API ::fwData::Array::sptr getCellDataOffsetsArray  () const;
-    //FWDATA_API ::fwData::Array::sptr getPointColorsArray      () const;
-    //FWDATA_API ::fwData::Array::sptr getCellColorsArray       () const;
-    //FWDATA_API ::fwData::Array::sptr getPointNormalsArray     () const;
-    //FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
+    FWDATA_API ::fwData::Array::sptr getPointColorsArray      () const;
+    FWDATA_API ::fwData::Array::sptr getCellColorsArray       () const;
+    FWDATA_API ::fwData::Array::sptr getPointNormalsArray     () const;
+    FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
 
 
 

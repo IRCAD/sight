@@ -271,21 +271,29 @@ Mesh::Id Mesh::insertNextPoint(const PointValueType p[3]) throw(::fwData::Except
 Mesh::Id Mesh::insertNextPoint(PointValueType x, PointValueType y, PointValueType z) throw(::fwData::Exception)
 {
     const PointValueType p[3] = {x,y,z};
-    return insertNextPoint(p);
+    return this->insertNextPoint(p);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPoint(Id id, const PointValueType p[3])
+{
+    m_points->setItem(list_of(id), p);
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPoint(Id id, PointValueType x, PointValueType y, PointValueType z)
 {
-// TODO
+    const PointValueType p[3] = {x,y,z};
+    this->setPoint(id, p);
 }
 
 //------------------------------------------------------------------------------
 
 Mesh::Id Mesh::insertNextCell(CellTypesEnum type, const CellValueType *cell, size_t nb) throw(::fwData::Exception)
 {
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NONE'", type != NONE || nb == 0);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'", type != NO_CELL || nb == 0);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'", type != POINT || nb == 1);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'EDGE'", type != EDGE || nb == 2);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TRIANGLE'", type != TRIANGLE || nb == 3);
@@ -364,10 +372,10 @@ Mesh::Id Mesh::insertNextCell(CellValueType p1, CellValueType p2, CellValueType 
 
 //------------------------------------------------------------------------------
 
-void Mesh::cleanCells()
-{
-// TODO
-}
+//void Mesh::cleanCells()
+//{
+//    //TODO
+//}
 
 //------------------------------------------------------------------------------
 
@@ -411,86 +419,98 @@ Mesh::CellDataOffsetsMultiArrayType Mesh::getCellDataOffsets() const
 
 //------------------------------------------------------------------------------
 
-//Mesh::PointColorsMultiArrayType Mesh::getPointColors() const
-//{
-//// TODO
-//}
+Mesh::PointColorsMultiArrayType Mesh::getPointColors() const
+{
+    return PointColorsMultiArrayType(
+            static_cast<PointColorsMultiArrayType::element *>(m_pointColors->getBuffer()),
+            boost::extents[m_nbPoints][m_pointColors->getNumberOfComponents()]
+            );
+}
 
-////------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//Mesh::CellColorsMultiArrayType Mesh::getCellColors() const
-//{
-//// TODO
-//}
+Mesh::CellColorsMultiArrayType Mesh::getCellColors() const
+{
+    return CellColorsMultiArrayType(
+            static_cast<CellColorsMultiArrayType::element *>(m_cellColors->getBuffer()),
+            boost::extents[m_nbCells][m_cellColors->getNumberOfComponents()]
+            );
+}
 
-////------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//Mesh::PointNormalsMultiArrayType Mesh::getPointNormals() const
-//{
-//// TODO
-//}
+Mesh::PointNormalsMultiArrayType Mesh::getPointNormals() const
+{
+    return PointNormalsMultiArrayType(
+            static_cast<PointNormalsMultiArrayType::element *>(m_pointNormals->getBuffer()),
+            boost::extents[m_nbPoints][m_pointNormals->getNumberOfComponents()]
+            );
+}
 
-////------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//Mesh::CellNormalsMultiArrayType Mesh::getCellNormals() const
-//{
-//// TODO
-//}
+Mesh::CellNormalsMultiArrayType Mesh::getCellNormals() const
+{
+    return CellColorsMultiArrayType(
+            static_cast<CellColorsMultiArrayType::element *>(m_cellNormals->getBuffer()),
+            boost::extents[m_nbCells][m_cellNormals->getNumberOfComponents()]
+            );
+}
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPointArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_points = array;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellTypesArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_cellTypes = array;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellDataArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_cellData = array;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellDataOffsetsArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_cellDataOffsets = array;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPointColorsArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_pointColors = array;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellColorsArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_cellColors = array;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPointNormalsArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_pointNormals = array;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellNormalsArray (::fwData::Array::sptr array)
 {
-// TODO
+    m_cellNormals = array;
 }
 
 //------------------------------------------------------------------------------
@@ -523,79 +543,93 @@ void Mesh::setCellNormalsArray (::fwData::Array::sptr array)
 
 //------------------------------------------------------------------------------
 
-//::fwData::Array::sptr Mesh::getPointColorsArray () const
-//{
-    //return m_pointColors;
-//}
+::fwData::Array::sptr Mesh::getPointColorsArray () const
+{
+    return m_pointColors;
+}
 
-////------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//::fwData::Array::sptr Mesh::getCellColorsArray () const
-//{
-    //return m_cellColors;
-//}
+::fwData::Array::sptr Mesh::getCellColorsArray () const
+{
+    return m_cellColors;
+}
 
-////------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//::fwData::Array::sptr Mesh::getPointNormalsArray () const
-//{
-    //return m_pointNormals;
-//}
+::fwData::Array::sptr Mesh::getPointNormalsArray () const
+{
+    return m_pointNormals;
+}
 
-////------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//::fwData::Array::sptr Mesh::getCellNormalsArray () const
-//{
-    //return m_cellNormals;
-//}
+::fwData::Array::sptr Mesh::getCellNormalsArray () const
+{
+    return m_cellNormals;
+}
 
 //------------------------------------------------------------------------------
 
 void Mesh::clearPoints()
 {
-// TODO
+    m_nbPoints = 0;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::clearCells()
 {
-// TODO
+    m_nbCells = 0;
+    m_cellsDataSize = 0;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::clear()
 {
-// TODO
+    this->clearPointNormals();
+    this->clearPointColors();
+    this->clearCellNormals();
+    this->clearCellColors();
+
+    m_points.reset();
+    m_cellTypes.reset();
+    m_cellData.reset();
+    m_cellDataOffsets.reset();
+
+    this->initArrays();
+
+    this->clearPoints();
+    this->clearCells();
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::clearPointNormals()
 {
-// TODO
+    m_pointNormals.reset();
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::clearPointColors()
 {
-// TODO
+    m_pointColors.reset();
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::clearCellNormals()
 {
-// TODO
+    m_cellNormals.reset();
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::clearCellColors()
 {
-// TODO
+    m_cellColors.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -647,14 +681,14 @@ size_t Mesh::getDataSizeInBytes() const
 {
     size_t size = 0;
 
-    m_points         && (size += m_points->getElementSizeInBytes() * m_nbPoints);
-    m_cellTypes      && (size += m_cellTypes->getElementSizeInBytes() * m_nbCells );
-    m_cellData       && (size += m_cellData->getElementSizeInBytes() * m_cellsDataSize);
-    m_cellDataOffsets&& (size += m_cellDataOffsets->getElementSizeInBytes() * m_nbCells);
-    m_pointColors    && (size += m_pointColors->getElementSizeInBytes() * m_nbPoints);
-    m_cellColors     && (size += m_cellColors->getElementSizeInBytes() * m_nbCells);
-    m_pointNormals   && (size += m_pointNormals->getElementSizeInBytes() * m_nbPoints);
-    m_cellNormals    && (size += m_cellNormals->getElementSizeInBytes() * m_nbCells);
+    m_points          && (size += m_points->getElementSizeInBytes() * m_nbPoints);
+    m_cellTypes       && (size += m_cellTypes->getElementSizeInBytes() * m_nbCells );
+    m_cellData        && (size += m_cellData->getElementSizeInBytes() * m_cellsDataSize);
+    m_cellDataOffsets && (size += m_cellDataOffsets->getElementSizeInBytes() * m_nbCells);
+    m_pointColors     && (size += m_pointColors->getElementSizeInBytes() * m_nbPoints);
+    m_cellColors      && (size += m_cellColors->getElementSizeInBytes() * m_nbCells);
+    m_pointNormals    && (size += m_pointNormals->getElementSizeInBytes() * m_nbPoints);
+    m_cellNormals     && (size += m_cellNormals->getElementSizeInBytes() * m_nbCells);
 
     return size;
 }
@@ -681,7 +715,7 @@ size_t Mesh::getAllocatedSizeInBytes() const
 
 void Mesh::addDataArray(const std::string &name, ::fwData::Array::sptr array)
 {
-// TODO
+    m_arrayMap[name] = array;
 }
 
 //------------------------------------------------------------------------------
@@ -701,7 +735,7 @@ void Mesh::addDataArray(const std::string &name, ::fwData::Array::sptr array)
 
 void Mesh::removeDataArray(const std::string &name)
 {
-// TODO
+    m_arrayMap.erase(name);
 }
 
 //------------------------------------------------------------------------------
