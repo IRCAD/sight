@@ -59,6 +59,7 @@ Array::Array():
 
 Array::~Array()
 {
+    this->clear();
 }
 
 //------------------------------------------------------------------------------
@@ -187,7 +188,10 @@ void Array::clear()
 {
     if (m_buffer)
     {
-        free(m_buffer);
+        if(m_isBufferOwner)
+        {
+            free(m_buffer);
+        }
         m_buffer = 0;
 
         m_strides.clear();
