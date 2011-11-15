@@ -49,8 +49,8 @@ public:
 
     typedef enum
     {  NoModifier,
-       Shift,
-       Control,
+       ShiftModifier,
+       ControlModifier,
        AltModifier
     } Modifier;
 

@@ -78,8 +78,40 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonPress );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
+    sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
+}
+
+//-----------------------------------------------------------------------------
+
+::scene2D::data::Event::Modifier Scene2DGraphicsView::getScene2DModifierFromEvent( QMouseEvent* _event )
+{
+    ::scene2D::data::Event::Modifier modifier;
+
+    if(_event->modifiers() == Qt::ControlModifier)
+    {
+        modifier = ::scene2D::data::Event::ControlModifier;
+    }
+    else if(_event->modifiers() == Qt::AltModifier)
+    {
+        modifier = ::scene2D::data::Event::AltModifier; 
+    }
+    else if(_event->modifiers() == Qt::ShiftModifier)
+    {
+        modifier = ::scene2D::data::Event::ShiftModifier;
+    }
+    else if(_event->modifiers() == Qt::NoModifier)
+    {
+        modifier = ::scene2D::data::Event::NoModifier;
+    }
+    else
+    {
+        modifier = ::scene2D::data::Event::NoModifier;
+    }
+
+    // TODO: add support for combined modifiers
+    return modifier;
 }
 
 //-----------------------------------------------------------------------------
@@ -120,6 +152,7 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonDoubleClick );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
+    sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
@@ -134,6 +167,7 @@ void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent * _event )
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonRelease );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
+    sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
@@ -149,6 +183,7 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent * _event )
     sceneEvent->setType( ::scene2D::data::Event::MouseMove );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
+    sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }

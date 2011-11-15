@@ -57,6 +57,7 @@ protected :
     WPTR(::scene2D::Render) m_scene2DRender;
 
     ::scene2D::data::Event::Button getScene2DButtonFromEvent( QMouseEvent* _event );
+    ::scene2D::data::Event::Modifier getScene2DModifierFromEvent( QMouseEvent* _event );
 
     void paintEvent ( QPaintEvent * event );
 
