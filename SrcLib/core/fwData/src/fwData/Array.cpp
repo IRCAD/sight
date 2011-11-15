@@ -135,7 +135,7 @@ size_t Array::allocate(const ::fwTools::Type &type, const SizeType &size, const 
     else
     {
         FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
-                "Tryed to allocate an already allocated Array ");
+                "Tried to allocate an already allocated Array ");
     }
 
     this->m_type = type;
@@ -182,13 +182,13 @@ size_t Array::resize(
         else
         {
             FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
-                    "Tryed to reallocate an non-allocated Array ");
+                    "Tried to reallocate an non-allocated Array ");
         }
     }
     else if(reallocate && !m_isBufferOwner)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
-                "Tryed to reallocate a not owned Buffer.");
+                "Tried to reallocate a not owned Buffer.");
     }
 
     this->m_strides = computeStrides(size, nbOfComponents, type.sizeOf());

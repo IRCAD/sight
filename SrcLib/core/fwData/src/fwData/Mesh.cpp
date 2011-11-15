@@ -168,10 +168,10 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 
     size_t allocatedSize = 0;
 
-    allocatedSize += m_points->resize(list_of(nbPts));
-    allocatedSize += m_cellTypes->resize(list_of(nbCells));
-    allocatedSize += m_cellData->resize(list_of(nbCellsData));
-    allocatedSize += m_cellDataOffsets->resize(list_of(nbCells));
+    allocatedSize += m_points->resize(list_of(nbPts), true);
+    allocatedSize += m_cellTypes->resize(list_of(nbCells), true);
+    allocatedSize += m_cellData->resize(list_of(nbCellsData), true);
+    allocatedSize += m_cellDataOffsets->resize(list_of(nbCells), true);
 
     return allocatedSize;
 }
