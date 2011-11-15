@@ -163,8 +163,8 @@ void MeshGenerator::generateTriangleMesh(::fwData::Mesh::sptr mesh)
             idx3 = this->addPoint(pt3, mesh);
             idx4 = this->addPoint(pt4, mesh);
 
-            //create TrianCell (idx1, idx2, idx3)
-            mesh->insertNextCell(idx1, idx2, idx3);
+            //create TrianCell (idx1, idx4, idx2)
+            mesh->insertNextCell(idx1, idx4, idx2);
             //create TrianCell (idx1, idx3, idx4)
             mesh->insertNextCell(idx1, idx3, idx4);
         }
@@ -202,8 +202,10 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     trian->cells().resize(numberOfCells, vCell);
 
     ::fwData::Mesh::CellDataMultiArrayType cells = mesh->getCellData();
-    typedef ::fwData::Mesh::CellDataMultiArrayType::index CellTypesIndex;;
-    for (CellTypesIndex i = 0; i < numberOfCells; i+=3)
+    typedef ::fwData::Mesh::CellDataMultiArrayType::index CellTypesIndex;
+    size_t cellsSize = numberOfCells*3;
+    SLM_ASSERT("Wrong CellDataMultiArray size", cells.size() == cellsSize);
+    for (CellTypesIndex i = 0; i < cellsSize; i+=3)
     {
         ::fwData::TriangularMesh::CellContainer::value_type &vCells = trian->cells()[i/3];
         vCells[0] = cells[i];
@@ -235,14 +237,13 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
     SLM_ASSERT("Wrong cellDataOffsetArray dim", cellDataOffsetArray->getSize().size()==1);
     SLM_ASSERT("Wrong cellDataOffsetArray size", cellDataOffsetArray->getSize()[0]==vCells.size());
 
-
     //Initialized pointsArray
     for(size_t i=0; i<vPoints.size(); i++)
     {
         mesh->insertNextPoint(vPoints[i][0], vPoints[i][1], vPoints[i][2]);
     }
 
-    //Initialized pointsArray
+    //Initialized cellsArray
     ::fwData::Mesh::CellValueType* cells = cellsArray->begin< ::fwData::Mesh::CellValueType >();
     for(size_t i=0; i<vCells.size(); i++)
     {
