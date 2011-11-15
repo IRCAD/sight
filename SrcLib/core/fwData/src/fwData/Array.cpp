@@ -119,6 +119,17 @@ void *Array::getBuffer() const
 }
 
 //------------------------------------------------------------------------------
+void Array::setBuffer(void *buf, bool takeOwnership)
+{
+    if(m_buffer != NULL && m_isBufferOwner)
+    {
+        free(m_buffer);
+    }
+    m_buffer = buf;
+    m_isBufferOwner = (buf != NULL) && takeOwnership;
+}
+
+//------------------------------------------------------------------------------
 
 size_t Array::resize(
         const ::fwTools::Type &type,
@@ -188,17 +199,12 @@ void Array::clear()
 {
     if (m_buffer)
     {
-        if(m_isBufferOwner)
-        {
-            free(m_buffer);
-        }
-        m_buffer = 0;
+        this->setBuffer(NULL);
 
         m_strides.clear();
         m_type = ::fwTools::Type();
         m_size.clear();
         m_nbOfComponents = 0;
-        m_isBufferOwner = false;
     }
 }
 

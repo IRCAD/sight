@@ -88,6 +88,11 @@ public:
     FWDATA_API void setPoint(Id id, const PointValueType p[3]);
     FWDATA_API void setPoint(Id id, PointValueType x, PointValueType y, PointValueType z);
 
+    FWDATA_API void setPointColor(Id id, const ColorValueType p[4]);
+    FWDATA_API void setCellColor(Id id, const ColorValueType p[4]);
+    FWDATA_API void setPointNormal(Id id, const NormalValueType p[3]);
+    FWDATA_API void setCellNormal(Id id, const NormalValueType p[3]);
+
 
     FWDATA_API Id insertNextCell(CellTypesEnum type, const CellValueType *cell, size_t nb) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p) throw(::fwData::Exception);

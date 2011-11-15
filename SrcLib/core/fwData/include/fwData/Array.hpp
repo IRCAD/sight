@@ -78,6 +78,7 @@ public :
     template< typename T > T* getItem(const IndexType &id, const size_t component = 0) const;
 
     FWDATA_API virtual void *getBuffer() const;
+    FWDATA_API virtual void setBuffer(void *buf, bool takeOwnership = false);
 
     /// Returns the begining/end of the buffer interpreted as a char buffer
     char* begin() const;

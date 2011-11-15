@@ -291,6 +291,39 @@ void Mesh::setPoint(Id id, PointValueType x, PointValueType y, PointValueType z)
 
 //------------------------------------------------------------------------------
 
+void setPointColor(Id id, const ColorValueType c[4]);
+{
+    m_pointColors->setItem(list_of(id), c);
+}
+
+//------------------------------------------------------------------------------
+
+void setCellColor(Id id, const ColorValueType c[4]);
+{
+    m_cellColors->setItem(list_of(id), c);
+}
+
+//------------------------------------------------------------------------------
+
+void setPointNormal(Id id, const NormalValueType n[3]);
+{
+    m_pointNormals->setItem(list_of(id), n);
+}
+
+//------------------------------------------------------------------------------
+
+void setCellNormal(Id id, const NormalValueType n[3]);
+{
+    m_cellNormals->setItem(list_of(id), n);
+}
+
+//------------------------------------------------------------------------------
+
+
+
+
+//------------------------------------------------------------------------------
+
 Mesh::Id Mesh::insertNextCell(CellTypesEnum type, const CellValueType *cell, size_t nb) throw(::fwData::Exception)
 {
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'", type != NO_CELL || nb == 0);
