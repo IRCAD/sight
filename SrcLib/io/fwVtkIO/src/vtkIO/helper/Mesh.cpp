@@ -112,10 +112,10 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyD
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     vtkPoints *polyDataPoints = polyDataDst->GetPoints();
-    size_t nbPoints = polyDataPoints->GetNumberOfPoints();
+    ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints() ;
     ::fwData::Mesh::PointMultiArrayType points = meshSrc->getPoints();
 
-    if (meshSrc->getNumberOfPoints() != polyDataPoints->GetNumberOfPoints())
+    if (nbPoints != polyDataPoints->GetNumberOfPoints())
     {
         polyDataPoints->SetNumberOfPoints(nbPoints);
     }
