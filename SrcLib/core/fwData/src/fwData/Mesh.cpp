@@ -39,10 +39,14 @@ Mesh::Mesh()
     m_cellData        = ::fwData::Array::New();
     m_cellDataOffsets = ::fwData::Array::New();
 
-    m_points->allocate("float", list_of(0), 3);
-    m_cellTypes->allocate("uint8", list_of(0), 1);
-    m_cellData->allocate("uint64", list_of(0), 1);
-    m_cellDataOffsets->allocate("uint64", list_of(0), 1);
+    m_points->setType("float");
+    m_cellTypes->setType("float");
+    m_cellData->setType("float");
+    m_cellDataOffsets->setType("float");
+    m_points->setNumberOfComponents(3);
+    m_cellTypes->setNumberOfComponents(1);
+    m_cellData->setNumberOfComponents(1);
+    m_cellDataOffsets->setNumberOfComponents(1);
 }
 
 //------------------------------------------------------------------------------
@@ -66,6 +70,14 @@ void Mesh::shallowCopy( Mesh::csptr _source )
     m_cellTypes       = ::fwData::Array::New();
     m_cellData        = ::fwData::Array::New();
     m_cellDataOffsets = ::fwData::Array::New();
+    m_points->setType("float");
+    m_cellTypes->setType("float");
+    m_cellData->setType("float");
+    m_cellDataOffsets->setType("float");
+    m_points->setNumberOfComponents(3);
+    m_cellTypes->setNumberOfComponents(1);
+    m_cellData->setNumberOfComponents(1);
+    m_cellDataOffsets->setNumberOfComponents(1);
 
     m_points->shallowCopy(_source->m_points);
     m_cellTypes->shallowCopy(_source->m_cellTypes);
@@ -123,6 +135,15 @@ void Mesh::deepCopy( Mesh::csptr _source )
     m_cellTypes       = ::fwData::Array::New();
     m_cellData        = ::fwData::Array::New();
     m_cellDataOffsets = ::fwData::Array::New();
+    m_points->setType("float");
+    m_cellTypes->setType("float");
+    m_cellData->setType("float");
+    m_cellDataOffsets->setType("float");
+    m_points->setNumberOfComponents(3);
+    m_cellTypes->setNumberOfComponents(1);
+    m_cellData->setNumberOfComponents(1);
+    m_cellDataOffsets->setNumberOfComponents(1);
+
     m_pointColors.reset();
     m_cellColors.reset();
     m_pointNormals.reset();
@@ -168,10 +189,10 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 
     size_t allocatedSize = 0;
 
-    allocatedSize += m_points->resize(list_of(nbPts), true);
-    allocatedSize += m_cellTypes->resize(list_of(nbCells), true);
-    allocatedSize += m_cellData->resize(list_of(nbCellsData), true);
-    allocatedSize += m_cellDataOffsets->resize(list_of(nbCells), true);
+    allocatedSize += m_points->resize         ( list_of(nbPts)      , true);
+    allocatedSize += m_cellTypes->resize      ( list_of(nbCells)    , true);
+    allocatedSize += m_cellData->resize       ( list_of(nbCellsData), true);
+    allocatedSize += m_cellDataOffsets->resize( list_of(nbCells)    , true);
 
     return allocatedSize;
 }

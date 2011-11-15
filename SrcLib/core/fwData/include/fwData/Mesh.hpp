@@ -87,7 +87,6 @@ public:
     FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3, CellValueType p4) throw(::fwData::Exception);
 
     template <typename T> Id insertNextCell(CellTypes type, const T &pointsBegin, const T &pointsEnd) throw(::fwData::Exception);
-    template <typename T> Id insertNextCell(CellTypes type, const T &pointsBegin, size_t nb) throw(::fwData::Exception);
 
     FWDATA_API void cleanCells();
 
@@ -165,12 +164,6 @@ protected:
 
 
 };
-
-template <typename T> 
-Mesh::Id Mesh::insertNextCell(CellTypes type, const T &pointsBegin, size_t nb) throw(::fwData::Exception)
-{
-    
-}
 
 } // namespace fwData
 

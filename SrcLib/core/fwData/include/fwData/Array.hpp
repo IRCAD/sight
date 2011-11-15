@@ -55,10 +55,6 @@ public :
     //reallocation is required. If the reallocation is needed and the
     //reallocate parameter is true, the reallocation is performed. Otherwise,
     //an exception is thrown.
-
-    FWDATA_API virtual size_t allocate(const ::fwTools::Type &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception);
-    FWDATA_API virtual size_t allocate(const std::string &type, const SizeType &size, const size_t nbOfComponents) throw(::fwData::Exception);
-
     FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
     FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
     FWDATA_API virtual size_t resize(const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
@@ -100,12 +96,16 @@ public :
 
     FWDATA_API virtual SizeType   getSize() const;
     FWDATA_API virtual OffsetType getStrides() const;
+
+    FWDATA_API virtual void setNumberOfComponents(size_t nb);
     FWDATA_API virtual size_t getNumberOfComponents() const;
     FWDATA_API virtual size_t getNumberOfDimensions() const;
 
     FWDATA_API virtual void setIsBufferOwner(const bool own);
     FWDATA_API virtual bool getIsBufferOwner() const;
 
+    FWDATA_API virtual void setType(const std::string &type);
+    FWDATA_API virtual void setType(const ::fwTools::Type &type);
     FWDATA_API virtual ::fwTools::Type getType() const;
 
     FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;

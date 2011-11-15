@@ -32,7 +32,7 @@ void ArrayTest::allocation()
     ::fwData::Array::SizeType size;
     size += 10,100;
 
-    array->allocate("uint32", size, NB_COMPONENT);
+    array->resize("uint32", size, NB_COMPONENT, true);
 
     CPPUNIT_ASSERT_EQUAL(size.size(), array->getNumberOfDimensions());
     CPPUNIT_ASSERT_EQUAL(size[0], array->getSize()[0]);
@@ -49,7 +49,7 @@ void ArrayTest::resize()
     ::fwData::Array::SizeType size;
     size += 10,100;
 
-    array->allocate("uint32", size, NB_COMPONENT);
+    array->resize("uint32", size, NB_COMPONENT, true);
 
     unsigned int count = 0;
     unsigned int *iter = array->begin<unsigned int>();
@@ -118,7 +118,7 @@ void ArrayTest::reallocate()
     ::fwData::Array::SizeType size;
     size += 10,100;
 
-    array->allocate("uint32", size, NB_COMPONENT);
+    array->resize("uint32", size, NB_COMPONENT, true);
 
     unsigned int count = 0;
     unsigned int *iter = array->begin<unsigned int>();
