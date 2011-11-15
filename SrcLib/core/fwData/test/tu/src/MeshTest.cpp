@@ -38,7 +38,7 @@ void MeshTest::allocation()
 void MeshTest::insertion()
 {
     ::fwData::Mesh::NewSptr mesh;
-//    mesh->allocate(2, 2);
+    mesh->allocate(2, 2);
     mesh->insertNextPoint(10, 20, 30);
     mesh->insertNextPoint(10, 10, 10);
     mesh->insertNextPoint(20, 20, 10);

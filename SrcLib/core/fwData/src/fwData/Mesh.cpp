@@ -270,7 +270,7 @@ Mesh::Id Mesh::insertNextCell(CellTypes type, const CellValueType *cell, size_t 
 
     size_t allocatedCellData = m_cellData->getSize().at(0);
 
-    if( allocatedCellData + nb <= m_cellsDataSize )
+    if( allocatedCellData <= m_cellsDataSize + nb )
     {
         m_cellData->resize(list_of(allocatedCellData + CELLDATA_REALLOC_STEP), true);
     }
