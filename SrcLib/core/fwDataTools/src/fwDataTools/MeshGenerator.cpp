@@ -55,10 +55,6 @@ void MeshGenerator::generateQuadMesh(::fwData::Mesh::sptr mesh)
             idx2 = this->addPoint(pt2, mesh);
             idx3 = this->addPoint(pt3, mesh);
             idx4 = this->addPoint(pt4, mesh);
-//            idx1 = mesh->insertNextPoint(pt1[0], pt1[1], pt1[2]);
-//            idx2 = mesh->insertNextPoint(pt2[0], pt2[1], pt2[2]);
-//            idx3 = mesh->insertNextPoint(pt3[0], pt3[1], pt3[2]);
-//            idx4 = mesh->insertNextPoint(pt4[0], pt4[1], pt4[2]);
 
             //create QuadCell (idx1, idx3, idx4, idx2)
             mesh->insertNextCell(idx1, idx3, idx4, idx2);
@@ -90,10 +86,6 @@ void MeshGenerator::generateQuadMesh(::fwData::Mesh::sptr mesh)
             idx2 = this->addPoint(pt2, mesh);
             idx3 = this->addPoint(pt3, mesh);
             idx4 = this->addPoint(pt4, mesh);
-//            idx1 = mesh->insertNextPoint(pt1[0], pt1[1], pt1[2]);
-//            idx2 = mesh->insertNextPoint(pt2[0], pt2[1], pt2[2]);
-//            idx3 = mesh->insertNextPoint(pt3[0], pt3[1], pt3[2]);
-//            idx4 = mesh->insertNextPoint(pt4[0], pt4[1], pt4[2]);
 
             //create QuadCell (idx1, idx3, idx4, idx2)
             mesh->insertNextCell(idx1, idx3, idx4, idx2);
@@ -107,8 +99,6 @@ void MeshGenerator::generateTriangleMesh(::fwData::Mesh::sptr mesh)
 {
     size_t nbPointsByEdge = 10;
     float edgeDim = 100.;
-
-    mesh->allocate(3, 3, 3);
 
     ::fwData::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
     ::fwData::Mesh::Id idx1, idx2, idx3, idx4;
@@ -139,10 +129,6 @@ void MeshGenerator::generateTriangleMesh(::fwData::Mesh::sptr mesh)
             idx2 = this->addPoint(pt2, mesh);
             idx3 = this->addPoint(pt3, mesh);
             idx4 = this->addPoint(pt4, mesh);
-//            idx1 = mesh->insertNextPoint(pt1[0], pt1[1], pt1[2]);
-//            idx2 = mesh->insertNextPoint(pt2[0], pt2[1], pt2[2]);
-//            idx3 = mesh->insertNextPoint(pt3[0], pt3[1], pt3[2]);
-//            idx4 = mesh->insertNextPoint(pt4[0], pt4[1], pt4[2]);
 
             //create TrianCell (idx1, idx4, idx2)
             mesh->insertNextCell(idx1, idx4, idx2);
@@ -176,10 +162,6 @@ void MeshGenerator::generateTriangleMesh(::fwData::Mesh::sptr mesh)
             idx2 = this->addPoint(pt2, mesh);
             idx3 = this->addPoint(pt3, mesh);
             idx4 = this->addPoint(pt4, mesh);
-//            idx1 = mesh->insertNextPoint(pt1[0], pt1[1], pt1[2]);
-//            idx2 = mesh->insertNextPoint(pt2[0], pt2[1], pt2[2]);
-//            idx3 = mesh->insertNextPoint(pt3[0], pt3[1], pt3[2]);
-//            idx4 = mesh->insertNextPoint(pt4[0], pt4[1], pt4[2]);
 
             //create TrianCell (idx1, idx2, idx3)
             mesh->insertNextCell(idx1, idx2, idx3);
@@ -208,10 +190,10 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     typedef ::fwData::Mesh::PointMultiArrayType::index PointTypesIndex;
     for (PointTypesIndex i = 0; i != numberOfPoints; ++i)
     {
-        ::fwData::TriangularMesh::PointContainer::value_type &vPoints = trian->points()[i];
+        ::fwData::TriangularMesh::PointContainer::value_type &point = trian->points()[i];
         for (PointTypesIndex j = 0; j != 3; ++j)
         {
-            vPoint[i] = points[i][j];
+            point[j] = points[i][j];
         }
     }
 
@@ -221,7 +203,7 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
 
     ::fwData::Mesh::CellDataMultiArrayType cells = mesh->getCellData();
     typedef ::fwData::Mesh::CellDataMultiArrayType::index CellTypesIndex;;
-    for (CellTypesIndex i = 0; i != numberOfCells; i+=3)
+    for (CellTypesIndex i = 0; i < numberOfCells; i+=3)
     {
         ::fwData::TriangularMesh::CellContainer::value_type &vCells = trian->cells()[i/3];
         vCells[0] = cells[i];
@@ -244,46 +226,27 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
     ::fwData::Array::sptr cellDataOffsetArray = mesh->getCellDataOffsetsArray();
     ::fwData::Array::sptr cellTypeArray = mesh->getCellTypesArray();
 
-
-    //Initialized cellTypeArray
-    ::fwData::Mesh::CellTypes* cellTypes = cellTypeArray->begin< ::fwData::Mesh::CellTypes >();
-    SLM_ASSERT("Wrong CellTypeArray dim",cellTypeArray->getSize().size()==1);
-    SLM_ASSERT("Wrong CellTypeArray size",cellTypeArray->getSize()[0]==vCells.size());
-    for(size_t i=0; i<cellTypeArray->getSize()[0]; i++)
-    {
-        cellTypes[i] = ::fwData::Mesh::TRIANGLE;
-    }
+    SLM_ASSERT("Wrong CellTypeArray dim", cellTypeArray->getSize().size()==1);
+    SLM_ASSERT("Wrong CellTypeArray size", cellTypeArray->getSize()[0]==vCells.size());
+    SLM_ASSERT("Wrong pointsArray dim", pointsArray->getSize().size()==1);
+    SLM_ASSERT("Wrong pointsArray size", pointsArray->getSize()[0]==vPoints.size());
+    SLM_ASSERT("Wrong cellsArray dim", cellsArray->getSize().size()==1);
+    SLM_ASSERT("Wrong cellsArray size", cellsArray->getSize()[0]==vCells.size()*3);
+    SLM_ASSERT("Wrong cellDataOffsetArray dim", cellDataOffsetArray->getSize().size()==1);
+    SLM_ASSERT("Wrong cellDataOffsetArray size", cellDataOffsetArray->getSize()[0]==vCells.size());
 
 
     //Initialized pointsArray
-    ::fwData::Mesh::PointValueType* points = pointsArray->begin< ::fwData::Mesh::PointValueType >();
-    SLM_ASSERT("Wrong pointsArray dim", pointsArray->getSize().size()==1);
-    SLM_ASSERT("Wrong pointsArray size",pointsArray->getSize()[0]==vPoints.size()*3);
     for(size_t i=0; i<vPoints.size(); i++)
     {
-        points[i*3]   = vPoints[i][0];
-        points[i*3+1] = vPoints[i][1];
-        points[i*3+2] = vPoints[i][2];
+        mesh->insertNextPoint(vPoints[i][0], vPoints[i][1], vPoints[i][2]);
     }
 
     //Initialized pointsArray
     ::fwData::Mesh::CellValueType* cells = cellsArray->begin< ::fwData::Mesh::CellValueType >();
-    SLM_ASSERT("Wrong cellsArray dim", cellsArray->getSize().size()==1);
-    SLM_ASSERT("Wrong cellsArray size",cellsArray->getSize()[0]==vCells.size()*3);
     for(size_t i=0; i<vCells.size(); i++)
     {
-        cells[i*3]   = vCells[i][0];
-        cells[i*3+1] = vCells[i][1];
-        cells[i*3+2] = vCells[i][2];
-    }
-
-    //Initialized cellDataOffsetArray
-    ::fwData::Mesh::Id* cellDataOffset = cellDataOffsetArray->begin< ::fwData::Mesh::Id >();
-    SLM_ASSERT("Wrong cellDataOffsetArray dim",cellDataOffsetArray->getSize().size()==1);
-    SLM_ASSERT("Wrong cellDataOffsetArray size",cellDataOffsetArray->getSize()[0]==vCells.size());
-    for(size_t i=0; i<cellDataOffsetArray->getSize()[0]; i++)
-    {
-        cellDataOffset[i] = 3*i;
+        mesh->insertNextCell(vCells[i][0], vCells[i][1], vCells[i][2]);
     }
 }
 

@@ -29,21 +29,12 @@ public:
     {}
     Point(float _x, float _y, float _z) : x(_x), y(_y), z(_z)
     {}
-    bool operator==(const Point& pt) const
-    {
-        return (this->x == pt.x && this->y == pt.y && this->z == pt.z);
-    }
-    bool operator>(const Point& pt) const
-    {
-        return (this->x > pt.x && this->y > pt.y && this->z > pt.z);
-    }
+
     bool operator<(const Point& pt) const
     {
-        return (this->x < pt.x && this->y < pt.y && this->z < pt.z);
-    }
-    bool operator() (const Point pt1, const Point pt2) const
-    {
-        return (pt1 < pt2);
+        return (   this->x < pt.x
+                ||(this->x == pt.x && this->y < pt.y)
+                ||(this->x == pt.x && this->y == pt.y && this->z < pt.z) );
     }
 };
 
