@@ -80,7 +80,7 @@ public:
     FWDATA_API void setPoint(Id id, PointValueType x, PointValueType y, PointValueType z);
 
 
-    Id insertNextCell(CellTypes type, const CellValueType *cell, size_t nb) throw(::fwData::Exception);
+    FWDATA_API Id insertNextCell(CellTypes type, const CellValueType *cell, size_t nb) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2) throw(::fwData::Exception);
     FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3) throw(::fwData::Exception);

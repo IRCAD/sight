@@ -72,7 +72,7 @@ void ArrayTest::resize()
     ::fwData::Array::SizeType newSize;
     newSize += 100,10;
 
-    array->resize("uint32", newSize, NB_COMPONENT);
+    array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getBufferOffset(list_of(1)(0), 0, 4));
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
@@ -86,7 +86,7 @@ void ArrayTest::resize()
     newSize.clear();
     newSize += 25,40;
 
-    array->resize("uint32", newSize, NB_COMPONENT);
+    array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
@@ -99,7 +99,8 @@ void ArrayTest::resize()
     newSize.clear();
     newSize += 100;
 
-    array->resize("uint32", newSize, 10);
+    const size_t nbComponant = 10;
+    array->resize(newSize, nbComponant, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)40, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0), 0)));
@@ -136,7 +137,7 @@ void ArrayTest::reallocate()
     ::fwData::Array::SizeType newSize;
     newSize += 100,100;
 
-    array->resize("uint32", newSize, NB_COMPONENT, true);
+    array->resize(newSize, NB_COMPONENT, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*100*100, array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
@@ -175,6 +176,21 @@ void ArrayTest::reallocate()
     unsigned int value4 = 16165;
     array->setItem(list_of(99)(99), 1, &value4);
     CPPUNIT_ASSERT_EQUAL(  value4, *(array->getItem< unsigned int >(list_of(99)(99), 1)));
+
+
+    newSize.clear();
+    newSize += 10, 100;
+
+    array->resize(newSize, NB_COMPONENT, true);
+    CPPUNIT_ASSERT(newSize == array->getSize());
+    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(8)(23))));
 }
 
 

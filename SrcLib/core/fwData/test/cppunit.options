@@ -28,6 +28,7 @@ CLASSTEST=[
     'TransformationMatrix3DTest',
     'VideoTest',
     'ArrayTest',
+    'MeshTest',
 # TODO: 
 #    'DownCastIteratorTest',
 #    'GenericFieldTest',

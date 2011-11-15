@@ -320,7 +320,7 @@ Mesh::Id Mesh::insertNextCell(CellValueType p1, CellValueType p2, CellValueType 
 Mesh::Id Mesh::insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3, CellValueType p4) throw(::fwData::Exception)
 {
     CellValueType p[4] = {p1, p2, p3, p4};
-    return insertNextCell(QUAD, p, 1);
+    return insertNextCell(QUAD, p, 4);
 }
 
 //------------------------------------------------------------------------------
