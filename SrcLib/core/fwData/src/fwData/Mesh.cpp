@@ -291,28 +291,28 @@ void Mesh::setPoint(Id id, PointValueType x, PointValueType y, PointValueType z)
 
 //------------------------------------------------------------------------------
 
-void setPointColor(Id id, const ColorValueType c[4]);
+void Mesh::setPointColor(Id id, const ColorValueType c[4])
 {
     m_pointColors->setItem(list_of(id), c);
 }
 
 //------------------------------------------------------------------------------
 
-void setCellColor(Id id, const ColorValueType c[4]);
+void Mesh::setCellColor(Id id, const ColorValueType c[4])
 {
     m_cellColors->setItem(list_of(id), c);
 }
 
 //------------------------------------------------------------------------------
 
-void setPointNormal(Id id, const NormalValueType n[3]);
+void Mesh::setPointNormal(Id id, const NormalValueType n[3])
 {
     m_pointNormals->setItem(list_of(id), n);
 }
 
 //------------------------------------------------------------------------------
 
-void setCellNormal(Id id, const NormalValueType n[3]);
+void Mesh::setCellNormal(Id id, const NormalValueType n[3])
 {
     m_cellNormals->setItem(list_of(id), n);
 }
