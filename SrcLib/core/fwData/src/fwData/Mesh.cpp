@@ -240,7 +240,7 @@ void Mesh::stripAllocatedMemory() throw(::fwData::Exception)
 
 Mesh::Id Mesh::insertNextPoint(const PointValueType p[3]) throw(::fwData::Exception)
 {
-    size_t allocatedPts = m_points->getSize().at(0);
+    size_t allocatedPts = m_points->empty() ? 0 : m_points->getSize().at(0);
     if( allocatedPts <= m_nbPoints )
     {
         m_points->resize(list_of(allocatedPts + POINT_REALLOC_STEP), true);
@@ -276,8 +276,8 @@ Mesh::Id Mesh::insertNextCell(CellTypesEnum type, const CellValueType *cell, siz
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'", type != QUAD || nb == 4);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'", type != POLY || nb > 4);
 
-    size_t allocatedCellTypes       = m_cellTypes->getSize().at(0);
-    size_t allocatedCellDataOffsets = m_cellDataOffsets->getSize().at(0);
+    size_t allocatedCellTypes       = m_cellTypes->empty() ? 0 : m_cellTypes->getSize().at(0);
+    size_t allocatedCellDataOffsets = m_cellDataOffsets->empty() ? 0 : m_cellDataOffsets->getSize().at(0);
 
     if( allocatedCellTypes <= m_nbCells )
     {
@@ -289,7 +289,7 @@ Mesh::Id Mesh::insertNextCell(CellTypesEnum type, const CellValueType *cell, siz
     }
 
 
-    size_t allocatedCellData = m_cellData->getSize().at(0);
+    size_t allocatedCellData = m_cellData->empty() ? 0 : m_cellData->getSize().at(0);
 
     if( allocatedCellData <= m_cellsDataSize + nb )
     {

@@ -55,10 +55,10 @@ public :
     //reallocation is required. If the reallocation is needed and the
     //reallocate parameter is true, the reallocation is performed. Otherwise,
     //an exception is thrown.
-    FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
-    FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
-    FWDATA_API virtual size_t resize(const SizeType &size, const size_t nbOfComponents, const bool reallocate = false) throw(::fwData::Exception);
-    FWDATA_API virtual size_t resize(const SizeType &size, const bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, size_t nbOfComponents, bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const SizeType &size, size_t nbOfComponents, bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const SizeType &size, bool reallocate = false) throw(::fwData::Exception);
 
     FWDATA_API virtual void clear();
 
@@ -89,6 +89,7 @@ public :
     template< typename T > const T* cbegin() const;
     template< typename T > const T* cend() const;
 
+    FWDATA_API virtual bool empty() const;
 
 
     FWDATA_API size_t getElementSizeInBytes() const;

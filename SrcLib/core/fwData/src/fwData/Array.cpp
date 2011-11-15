@@ -122,10 +122,11 @@ void *Array::getBuffer() const
 size_t Array::resize(
         const ::fwTools::Type &type,
         const SizeType &size,
-        const size_t nbOfComponents,
-        const bool reallocate
+        size_t nbOfComponents,
+        bool reallocate
         ) throw(::fwData::Exception)
 {
+    nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
     size_t oldBufSize = this->getSizeInBytes();
     size_t bufSize = computeSizeInBytes(type, size, nbOfComponents);
 
@@ -161,25 +162,26 @@ size_t Array::resize(
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const SizeType &size, const size_t nbOfComponents, const bool reallocate) throw(::fwData::Exception)
+size_t Array::resize(const SizeType &size, size_t nbOfComponents, bool reallocate) throw(::fwData::Exception)
 {
     return this->resize(m_type, size, nbOfComponents, reallocate);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const SizeType &size, const bool reallocate) throw(::fwData::Exception)
+size_t Array::resize(const SizeType &size, bool reallocate) throw(::fwData::Exception)
 {
     return this->resize(m_type, size, m_nbOfComponents, reallocate);
 }
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const std::string &type, const SizeType &size, const size_t nbOfComponents, const bool reallocate) throw(::fwData::Exception)
+size_t Array::resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate) throw(::fwData::Exception)
 {
     ::fwTools::Type fwType = ::fwTools::Type::create(type);
     return this->resize( fwType, size, nbOfComponents, reallocate);
 }
 
+//------------------------------------------------------------------------------
 
 void Array::clear()
 {
@@ -196,6 +198,12 @@ void Array::clear()
     }
 }
 
+//------------------------------------------------------------------------------
+
+bool Array::empty() const
+{
+    return m_size.empty();
+}
 
 //------------------------------------------------------------------------------
 
@@ -229,7 +237,7 @@ size_t Array::getSizeInBytes() const
 
 void Array::setNumberOfComponents(size_t nb)
 {
-    m_nbOfComponents = nb;
+    m_nbOfComponents = (nb == 0) ? 1 : nb;
     this->resize(
             m_type,
             m_size,
