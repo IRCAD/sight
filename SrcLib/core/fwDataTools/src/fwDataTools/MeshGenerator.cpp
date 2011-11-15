@@ -31,9 +31,9 @@ void MeshGenerator::generateQuadMesh(::fwData::Mesh::sptr mesh)
     float step = edgeDim / nbPointsByEdge;
 
     //Face Y = edgeDim
-    for(size_t x=0; x<nbPointsByEdge-1; x++)
+    for(size_t x=0; x<nbPointsByEdge; x++)
     {
-        for(size_t z=0; z<nbPointsByEdge-1; z++)
+        for(size_t z=0; z<nbPointsByEdge; z++)
         {
             pt1[0] = x*step;
             pt1[1] = edgeDim;
@@ -62,9 +62,9 @@ void MeshGenerator::generateQuadMesh(::fwData::Mesh::sptr mesh)
     }
 
     //Face X = edgeDim
-    for(size_t y=0; y<nbPointsByEdge-1; y++)
+    for(size_t y=0; y<nbPointsByEdge; y++)
     {
-        for(size_t z=0; z<nbPointsByEdge-1; z++)
+        for(size_t z=0; z<nbPointsByEdge; z++)
         {
             pt1[0] = edgeDim;
             pt1[1] = y*step;
@@ -105,9 +105,9 @@ void MeshGenerator::generateTriangleMesh(::fwData::Mesh::sptr mesh)
     float step = edgeDim / nbPointsByEdge;
 
     //Face Z = 0
-    for(size_t x=0; x<nbPointsByEdge-1; x++)
+    for(size_t x=0; x<nbPointsByEdge; x++)
     {
-        for(size_t y=0; y<nbPointsByEdge-1; y++)
+        for(size_t y=0; y<nbPointsByEdge; y++)
         {
             pt1[0] = x*step;
             pt1[1] = y*step;
@@ -138,9 +138,9 @@ void MeshGenerator::generateTriangleMesh(::fwData::Mesh::sptr mesh)
     }
 
     //Face X = 0
-    for(size_t y=0; y<nbPointsByEdge-1; y++)
+    for(size_t y=0; y<nbPointsByEdge; y++)
     {
-        for(size_t z=0; z<nbPointsByEdge-1; z++)
+        for(size_t z=0; z<nbPointsByEdge; z++)
         {
             pt1[0] = 0;
             pt1[1] = y*step;
