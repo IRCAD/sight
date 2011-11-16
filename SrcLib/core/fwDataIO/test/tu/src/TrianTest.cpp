@@ -9,6 +9,7 @@
 
 #include <fwTools/System.hpp>
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwDataIO/reader/TriangularMeshReader.hpp>
 #include <fwDataIO/writer/TriangularMeshWriter.hpp>

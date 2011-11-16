@@ -157,7 +157,7 @@ void MeshTest::insertion()
 
     ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
     mesh->insertNextCell(::fwData::Mesh::POLY, p3, 5);
-    
+
     CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)8, mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)6, mesh->getNumberOfCells());
 
@@ -404,7 +404,7 @@ void MeshTest::copy()
     CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize()  , deepCopyMesh->getCellDataSize());
 
     CPPUNIT_ASSERT(mesh->getPointsArray()->getSize()          == deepCopyMesh->getPointsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellTypesArray()->getSize()       == deepCopyMesh->getPointsArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getCellTypesArray()->getSize()       == deepCopyMesh->getCellTypesArray()->getSize());
     CPPUNIT_ASSERT(mesh->getCellDataOffsetsArray()->getSize() == deepCopyMesh->getCellDataOffsetsArray()->getSize());
     CPPUNIT_ASSERT(mesh->getCellDataArray()->getSize()        == deepCopyMesh->getCellDataArray()->getSize());
     CPPUNIT_ASSERT(mesh->getPointColorsArray()->getSize()     == deepCopyMesh->getPointColorsArray()->getSize());

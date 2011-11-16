@@ -252,6 +252,7 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
     ::fwData::TriangularMesh::PointContainer& vPoints = trian->points();
     ::fwData::TriangularMesh::CellContainer& vCells = trian->cells();
 
+    mesh->clear();
     mesh->allocate(vPoints.size(), vCells.size(), vCells.size()*3);
 
     ::fwData::Array::sptr pointsArray = mesh->getPointsArray();
@@ -280,6 +281,7 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
     {
         mesh->insertNextCell(vCells[i][0], vCells[i][1], vCells[i][2]);
     }
+    mesh->adjustAllocatedMemory();
 }
 
 //------------------------------------------------------------------------------
