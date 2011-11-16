@@ -68,47 +68,21 @@ void Mesh::shallowCopy( Mesh::csptr _source )
 {
     this->::fwTools::Object::shallowCopyOfChildren( _source );
 
-    m_nbPoints      = _source->m_nbPoints;
-    m_nbCells       = _source->m_nbCells;
-    m_cellsDataSize = _source->m_cellsDataSize;
+    m_nbPoints        = _source->m_nbPoints;
+    m_nbCells         = _source->m_nbCells;
+    m_cellsDataSize   = _source->m_cellsDataSize;
 
-    this->initArrays();
+    m_points          = _source->m_points;
+    m_cellTypes       = _source->m_cellTypes;
+    m_cellData        = _source->m_cellData;
+    m_cellDataOffsets = _source->m_cellDataOffsets;
 
-    m_points->shallowCopy(_source->m_points);
-    m_cellTypes->shallowCopy(_source->m_cellTypes);
-    m_cellData->shallowCopy(_source->m_cellData);
-    m_cellDataOffsets->shallowCopy(_source->m_cellDataOffsets);
-    m_pointColors.reset();
-    m_cellColors.reset();
-    m_pointNormals.reset();
-    m_cellNormals.reset();
+    m_pointColors     = _source->m_pointColors;
+    m_cellColors      = _source->m_cellColors;
+    m_pointNormals    = _source->m_pointNormals;
+    m_cellNormals     = _source->m_cellNormals;
 
-    if(_source->m_pointColors)
-    {
-        m_pointColors = ::fwData::Array::New();
-        m_pointColors->shallowCopy(_source->m_pointColors);
-    }
-    if(_source->m_cellColors)
-    {
-        m_cellColors = ::fwData::Array::New();
-        m_cellColors->shallowCopy(_source->m_cellColors);
-    }
-    if(_source->m_pointNormals)
-    {
-        m_pointNormals = ::fwData::Array::New();
-        m_pointNormals->shallowCopy(_source->m_pointNormals);
-    }
-    if(_source->m_cellNormals)
-    {
-        m_cellNormals = ::fwData::Array::New();
-        m_cellNormals->shallowCopy(_source->m_cellNormals);
-    }
-
-    m_arrayMap.clear();
-    BOOST_FOREACH(ArrayMapType::value_type element, _source->m_arrayMap)
-    {
-        m_arrayMap[element.first]->shallowCopy(element.second);
-    }
+    m_arrayMap        = _source->m_arrayMap;
 }
 
 //------------------------------------------------------------------------------
@@ -121,12 +95,12 @@ void Mesh::deepCopy( Mesh::csptr _source )
     m_nbCells       = _source->m_nbCells;
     m_cellsDataSize = _source->m_cellsDataSize;
 
+    this->initArrays();
+
     m_points->deepCopy(_source->m_points);
     m_cellTypes->deepCopy(_source->m_cellTypes);
     m_cellData->deepCopy(_source->m_cellData);
     m_cellDataOffsets->deepCopy(_source->m_cellDataOffsets);
-
-    this->initArrays();
 
     m_pointColors.reset();
     m_cellColors.reset();
@@ -157,7 +131,7 @@ void Mesh::deepCopy( Mesh::csptr _source )
     m_arrayMap.clear();
     BOOST_FOREACH(ArrayMapType::value_type element, _source->m_arrayMap)
     {
-    m_arrayMap[element.first]->deepCopy(element.second);
+        m_arrayMap[element.first]->deepCopy(element.second);
     }
 
 }
@@ -637,11 +611,6 @@ void Mesh::clear()
     this->clearPointColors();
     this->clearCellNormals();
     this->clearCellColors();
-
-    m_points.reset();
-    m_cellTypes.reset();
-    m_cellData.reset();
-    m_cellDataOffsets.reset();
 
     this->initArrays();
 
