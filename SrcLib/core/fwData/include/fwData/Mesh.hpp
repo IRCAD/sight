@@ -80,7 +80,7 @@ public:
     FWDATA_API size_t allocateCellNormals() throw(::fwData::Exception);
     FWDATA_API size_t allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception);
 
-    FWDATA_API size_t adjustAllocatedMemory() throw(::fwData::Exception);
+    FWDATA_API bool adjustAllocatedMemory() throw(::fwData::Exception);
 
     FWDATA_API Id insertNextPoint(const PointValueType p[3]) throw(::fwData::Exception);
     FWDATA_API Id insertNextPoint(PointValueType x, PointValueType y, PointValueType z) throw(::fwData::Exception);

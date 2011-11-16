@@ -211,7 +211,7 @@ size_t Mesh::allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception)
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
+bool Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
 {
     size_t oldAllocatedSize = this->getAllocatedSizeInBytes();
 
@@ -232,10 +232,10 @@ size_t Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
 
     size_t newAllocatedSize = this->getAllocatedSizeInBytes();
     SLM_ASSERT(
-            "Error stipping memory : allocated size: " << newAllocatedSize
+            "Error adjusting memory : allocated size: " << newAllocatedSize
             << " != data size : " << this->getDataSizeInBytes(),
             newAllocatedSize == this->getDataSizeInBytes());
-    return oldAllocatedSize - newAllocatedSize;
+    return oldAllocatedSize != newAllocatedSize;
 }
 
 //------------------------------------------------------------------------------
