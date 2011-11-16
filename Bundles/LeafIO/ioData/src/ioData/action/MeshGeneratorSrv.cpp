@@ -90,24 +90,28 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
     SLM_ASSERT("Mesh dynamicCast failed", mesh);
-
+    ::fwComEd::MeshMsg::NewSptr msg;
     try
     {
         if(m_functor == "GenTriangle")
         {
             ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
         }
         else if(m_functor == "GenQuad")
         {
             ::fwDataTools::MeshGenerator::generateQuadMesh(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
         }
         else if(m_functor == "GenTriangleQuad")
         {
             ::fwDataTools::MeshGenerator::generateTriangleQuadMesh(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
         }
         else if(m_functor == "ShakeMeshPoint")
         {
             ::fwDataTools::MeshGenerator::shakePoint(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED );
         }
         ::fwDataTools::MeshGenerator::colorizePointMesh(mesh);
     }
@@ -122,9 +126,6 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
                 ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
-    ::fwComEd::MeshMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    msg->addEvent( "VALUE_IS_MODIFIED" );
     ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
 }
 
