@@ -16,6 +16,7 @@ namespace fwComEd
 //-----------------------------------------------------------------------------
 
 std::string MeshMsg::NEW_MESH = "NEW_MESH";
+std::string MeshMsg::VERTEX_MODIFIED = "VERTEX_MODIFIED";
 
 //-----------------------------------------------------------------------------
 

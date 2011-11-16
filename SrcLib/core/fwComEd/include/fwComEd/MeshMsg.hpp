@@ -30,6 +30,7 @@ public:
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_MESH;
+    FWCOMED_API static std::string VERTEX_MODIFIED;
 
     /// Constructor. Do nothing.
     FWCOMED_API MeshMsg() throw();
