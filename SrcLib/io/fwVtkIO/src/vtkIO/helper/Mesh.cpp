@@ -6,6 +6,7 @@
 
 #include <vtkPoints.h>
 #include <vtkDataArray.h>
+#include <vtkPointData.h>
 #include <vtkCell.h>
 
 #include "vtkIO/helper/Mesh.hpp"
@@ -67,11 +68,11 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
 
 //------------------------------------------------------------------------------
 
-void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> _polyData)
+void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> polyData)
 {
     vtkSmartPointer< vtkPoints > pts = vtkSmartPointer< vtkPoints >::New();
-    _polyData->SetPoints(pts);
-    Mesh::updatePolyDataPoints(_polyData, mesh);
+    polyData->SetPoints(pts);
+    Mesh::updatePolyDataPoints(polyData, mesh);
 
     unsigned int nbCells = mesh->getNumberOfCells() ;
 
@@ -79,7 +80,7 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> _p
     ::fwData::Mesh::CellDataMultiArrayType cellData = mesh->getCellData();
     ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
 
-    _polyData->Allocate(4, nbCells);
+    polyData->Allocate(4, nbCells);
 
     vtkIdType typeVtkCell;
     vtkIdType cell[4];
@@ -93,7 +94,7 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> _p
             cell[0] = cellData[offset];
             cell[1] = cellData[offset+1];
             cell[2] = cellData[offset+2];
-            _polyData->InsertNextCell( typeVtkCell, 3, cell );
+            polyData->InsertNextCell( typeVtkCell, 3, cell );
         }
         else if ( cellType == ::fwData::Mesh::QUAD )
         {
@@ -102,9 +103,32 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> _p
             cell[1] = cellData[offset+1];
             cell[2] = cellData[offset+2];
             cell[3] = cellData[offset+3];
-            _polyData->InsertNextCell( typeVtkCell, 4, cell );
+            polyData->InsertNextCell( typeVtkCell, 4, cell );
         }
     }
+    if(mesh->getPointColorsArray())
+    {
+        unsigned char col[3] = {255, 0, 0};
+        ::fwData::Mesh::PointColorsMultiArrayType pointsColor = mesh->getPointColors();
+
+        vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+        colors->SetNumberOfComponents(3);
+        colors->SetName("Colors");
+        colors->InsertNextTupleValue(col);
+
+        typedef ::fwData::Mesh::PointMultiArrayType::index PointTypesIndex;
+        ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
+        for (PointTypesIndex i = 0; i != nbPoints; ++i)
+        {
+            col[0] = pointsColor[i][0];
+            col[1] = pointsColor[i][1];
+            col[2] = pointsColor[i][2];
+            colors->InsertNextTupleValue(col);
+        }
+
+        polyData->GetPointData()->SetScalars(colors);
+    }
+
 }
 
 //------------------------------------------------------------------------------
