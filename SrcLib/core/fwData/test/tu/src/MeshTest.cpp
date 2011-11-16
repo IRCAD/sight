@@ -72,13 +72,13 @@ void MeshTest::allocation()
     mesh->insertNextPoint(20, 20, 10);
 
     mesh->insertNextCell(1, 2, 3);
-    CPPUNIT_ASSERT_EQUAL((size_t)3, mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL((size_t)1, mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)3, mesh->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)1, mesh->getNumberOfCells());
 
     mesh->allocatePointNormals();
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh->getPointNormalsArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointNormalsArray()->getSize()[0]);
     mesh->allocatePointColors(::fwData::Mesh::RGB);
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh->getPointColorsArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointColorsArray()->getSize()[0]);
 
     CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), mesh->getPointNormalsArray()->getType().sizeOf());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), mesh->getPointNormalsArray()->getNumberOfComponents());
@@ -89,9 +89,9 @@ void MeshTest::allocation()
     CPPUNIT_ASSERT_EQUAL(pointAllocatedSize + cellSize + cellDataOffsetsAllocatedSize + cellDataAllocatedSize + pointNormalsAllocatedSize + pointColorsAllocatedSize, mesh->getAllocatedSizeInBytes());
 
     mesh->allocateCellNormals();
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh->getCellNormalsArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfCells()), mesh->getCellNormalsArray()->getSize()[0]);
     mesh->allocateCellColors(::fwData::Mesh::RGBA);
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh->getCellColorsArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfCells()), mesh->getCellColorsArray()->getSize()[0]);
 
     size_t oldsize = mesh->getAllocatedSizeInBytes();
     bool adjusted = mesh->adjustAllocatedMemory();
@@ -99,10 +99,10 @@ void MeshTest::allocation()
     CPPUNIT_ASSERT_EQUAL(true, adjusted);
     CPPUNIT_ASSERT(oldsize > newSize);
 
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh->getPointsArray()->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh->getPointsArray()->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh->getCellTypesArray()->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), mesh->getCellDataArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointsArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointsArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfCells()) , mesh->getCellTypesArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getCellDataSize()  ), mesh->getCellDataArray()->getSize()[0]);
 
     mesh->clear();
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id) 0, mesh->getNumberOfPoints());
@@ -126,9 +126,9 @@ void MeshTest::allocation()
     CPPUNIT_ASSERT_EQUAL(nbCells, mesh->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(newCellDataSize, mesh->getCellDataSize());
 
-    CPPUNIT_ASSERT_EQUAL(nbPoints, mesh->getPointsArray()->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(nbCells, mesh->getCellTypesArray()->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(newCellDataSize, mesh->getCellDataArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(nbPoints), mesh->getPointsArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(nbCells), mesh->getCellTypesArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(newCellDataSize), mesh->getCellDataArray()->getSize()[0]);
 }
 
 //-----------------------------------------------------------------------------
