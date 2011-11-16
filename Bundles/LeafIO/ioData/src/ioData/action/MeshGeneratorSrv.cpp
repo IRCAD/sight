@@ -10,7 +10,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/TriangularMeshMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Mesh.hpp>
@@ -26,7 +26,7 @@ namespace ioData
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::ioData::action::MeshGeneratorSrv , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::ioData::action::MeshGeneratorSrv , ::fwData::Mesh ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +54,10 @@ void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
     SLM_ASSERT( "Sorry, missing attribute functor in <config> xml element.", configElement->hasAttribute("functor") );
     m_functor = configElement->getExistingAttributeValue("functor");
     OSLM_ASSERT("Wrong functor name "<<m_functor << " (required GenTriangle, GenQuad or GenTriangleQuad)",
-            m_functor == "GenTriangle" || m_functor == "GenQuad" || m_functor == "GenTriangleQuad");
+            m_functor == "GenTriangle"
+                    || m_functor == "GenQuad"
+                    || m_functor == "GenTriangleQuad"
+                    || m_functor == "ShakeMeshPoint");
 }
 
 //-----------------------------------------------------------------------------
@@ -85,63 +88,44 @@ void MeshGeneratorSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::
 void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    ::fwTools::Object::sptr obj = this->getObject();
-    if(m_functor == "GenTriangle")
-    {
-        ::fwData::TriangularMesh::sptr trian = this->getObject< ::fwData::TriangularMesh >();
-        SLM_ASSERT("TriangularMesh dynamicCast failed", trian);
-        ::fwData::Mesh::NewSptr mesh;
-        ::fwDataTools::MeshGenerator::NewSptr generator;
-        try
-        {
-            generator->generateTriangleMesh(mesh);
-            ::fwDataTools::MeshGenerator::toTriangularMesh(mesh, trian);
-        }
-        catch (const std::exception & e)
-        {
-            std::stringstream ss;
-            ss << "Warning during generating : " << e.what();
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    SLM_ASSERT("Mesh dynamicCast failed", mesh);
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Warning",
-                    ss.str(),
-                    ::fwGui::dialog::IMessageDialog::WARNING);
-        }
-        ::fwComEd::TriangularMeshMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH );
-        ::fwServices::IEditionService::notify(this->getSptr(), trian, msg);
-    }
-    else if(m_functor == "GenQuad")
+    try
     {
-        SLM_WARN("Todo GenQuad");
-    }
-    else if(m_functor == "GenTriangleQuad")
-    {
-        ::fwData::TriangularMesh::sptr trian = this->getObject< ::fwData::TriangularMesh >();
-        SLM_ASSERT("TriangularMesh dynamicCast failed", trian);
-        ::fwData::Mesh::NewSptr mesh;
-        try
+        if(m_functor == "GenTriangle")
         {
-            ::fwDataTools::MeshGenerator::fromTriangularMesh(trian, mesh);
-            ::fwDataTools::MeshGenerator::toTriangularMesh(mesh, trian);
+            ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
         }
-        catch (const std::exception & e)
+        else if(m_functor == "GenQuad")
         {
-            std::stringstream ss;
-            ss << "Warning during generating : " << e.what();
+            ::fwDataTools::MeshGenerator::generateQuadMesh(mesh);
+        }
+        else if(m_functor == "GenTriangleQuad")
+        {
+            ::fwDataTools::MeshGenerator::generateTriangleQuadMesh(mesh);
+        }
+        else if(m_functor == "ShakeMeshPoint")
+        {
+            ::fwDataTools::MeshGenerator::shakePoint(mesh);
+        }
+        ::fwDataTools::MeshGenerator::colorizePointMesh(mesh);
+    }
+    catch (const std::exception & e)
+    {
+        std::stringstream ss;
+        ss << "Warning during generating : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Warning",
-                    ss.str(),
-                    ::fwGui::dialog::IMessageDialog::WARNING);
-        }
-        ::fwComEd::TriangularMeshMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH );
-        ::fwServices::IEditionService::notify(this->getSptr(), trian, msg);
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
-    ::fwServices::ObjectMsg::NewSptr objectMsg;
-    objectMsg->addEvent( "VALUE_IS_MODIFIED" );
-    ::fwServices::IEditionService::notify(this->getSptr(), obj, objectMsg);
+
+    ::fwComEd::MeshMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
+    msg->addEvent( "VALUE_IS_MODIFIED" );
+    ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
 }
 
 //-----------------------------------------------------------------------------

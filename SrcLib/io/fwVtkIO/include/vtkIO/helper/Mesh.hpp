@@ -46,7 +46,7 @@ public :
      * @brief Convert a ::fwData::Mesh::sptr to a vtkPolyData.
      *
      * @param[in] _mesh ::fwData::Mesh::sptr.
-     *  @param[out] _polyData vtkPolyData.
+     * @param[out] _polyData vtkPolyData.
      */
     VTKIO_API static void toVTKMesh( ::fwData::Mesh::sptr _mesh, vtkSmartPointer<vtkPolyData> _polyData);
 

@@ -56,29 +56,100 @@ public :
                                           );
     fwCoreAllowSharedFromThis();
 
+    typedef std::map<Point, ::fwData::Mesh::Id> PointsMapType;
+
+    /**
+     * @brief Add quad cells in mesh, this method generates synthetic data (two face of a cube).
+     *
+     * @param[out]  mesh fwData::Mesh Mesh structure to fill with quad cells.
+     * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
+     * @param[in]   nbPointsByEdge size_t Number of points by edge.
+     * @param[in]   edgeDim float Edge dimension in 3D world.
+     */
+    FWDATATOOLS_API static void addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t nbPointsByEdge = 10, float edgeDim = 100.);
+
+    /**
+     * @brief Add triangle cells in mesh, this method generates synthetic data (two face of a cube).
+     *
+     * @param[out]  mesh fwData::Mesh Mesh structure to fill with triangle cells.
+     * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
+     * @param[in]   nbPointsByEdge size_t Number of points by edge.
+     * @param[in]   edgeDim float Edge dimension in 3D world.
+     */
+    FWDATATOOLS_API static void addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t nbPointsByEdge = 10, float edgeDim = 100.);
+
     /**
      * @brief Generate a quad mesh.
-     *
-     * @param[in]  mesh fwData::Mesh empty mesh structure to fill with quad cells.
+     * @see addQuadMesh
+     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with quad cells.
      */
-    FWDATATOOLS_API void generateQuadMesh(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void generateQuadMesh(::fwData::Mesh::sptr mesh);
 
     /**
      * @brief Generate a triangle mesh.
-     *
-     * @param[in]  mesh fwData::Mesh empty mesh structure to fill with triangle cell.
+     * @see addTriangleMesh
+     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with triangle cell.
      */
-    FWDATATOOLS_API void generateTriangleMesh(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void generateTriangleMesh(::fwData::Mesh::sptr mesh);
 
+    /**
+     * @brief Generate a mesh with quad and triangle cells.
+     * @see addQuadMesh
+     * @see addTriangleMesh
+     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with quad and triangle cells.
+     */
+    FWDATATOOLS_API static void generateTriangleQuadMesh(::fwData::Mesh::sptr mesh);
+
+    /**
+     * @brief Generate cell normals for the mesh.
+     *
+     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with cell normals.
+     */
+    FWDATATOOLS_API static void generateCellNormals(::fwData::Mesh::sptr mesh);
+
+    /**
+     * @brief Shake points of the mesh.
+     *
+     * @param[out]  mesh fwData::Mesh empty mesh structure to shake.
+     */
+    FWDATATOOLS_API static void shakePoint(::fwData::Mesh::sptr mesh);
+
+    /**
+     * @brief Colorize  mesh (vertex point color).
+     *
+     * @param[in]  mesh fwData::Mesh mesh structure to colorize.
+     */
+    FWDATATOOLS_API static void colorizePointMesh(::fwData::Mesh::sptr mesh);
+
+    /**
+     * @brief Convert fwData::Mesh to fwData::TriangularMesh structure.
+     *
+     * @param[in]   mesh fwData::Mesh mesh to convert.
+     * @param[out]  trian fwData::TriangularMesh destination for the converted mesh.
+     *
+     * @pre Mesh must contains only triangular cells.
+     */
     FWDATATOOLS_API static void toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::TriangularMesh::sptr trian);
 
+    /**
+     * @brief Convert fwData::TriangularMesh to fwData::Mesh structure.
+     *
+     * @param[in]  trian fwData::TriangularMesh triangular mesh to convert.
+     * @param[out] mesh fwData::Mesh destination for the converted triangular mesh.
+     */
     FWDATATOOLS_API static void fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::fwData::Mesh::sptr mesh);
 
+    /**
+     * @brief
+     *
+     * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
+     * @param[in]  cell CellTypes to find in mesh.
+     */
     FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell);
 
 protected:
 
-    FWDATATOOLS_API ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt, ::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt, ::fwData::Mesh::sptr mesh, PointsMapType& points);
 
     //! @brief Constructor.
     FWDATATOOLS_API MeshGenerator();
@@ -86,8 +157,6 @@ protected:
     //! @brief Destructor.
     FWDATATOOLS_API virtual ~MeshGenerator();
 
-    typedef std::map<Point, ::fwData::Mesh::Id> PointsMapType;
-    PointsMapType m_points;
 };
 
 } // namespace fwDataTools

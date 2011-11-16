@@ -58,7 +58,7 @@ protected:
              <config functor="GenTriangle" />
          </service>
         @endverbatim
-      * - functor available : "GenTriangle", "GenQuad" and "GenTriangleQuad"
+      * - functor available : "GenTriangle", "GenQuad", "GenTriangleQuad" and "ShakeMeshPoint"
       */
     IODATA_API virtual void configuring() throw( ::fwTools::Failed ) ;
 

@@ -57,17 +57,19 @@
                         <menuItem name="Generate triangle" />
                         <menuItem name="Generate quad" />
                         <menuItem name="Generate triangle and quad" />
+                        <menuItem name="Shake mesh point" shortcut="Alt+S" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="action_genTrian" start="yes" />
                     <menuItem sid="action_genQuad" start="yes" />
                     <menuItem sid="action_genTrianQuad" start="yes" />
+                    <menuItem sid="action_shakeMeshPoint" start="yes" />
                 </registry>
             </service>
             
             <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
-                <start uid="myReaderTrianMesh" />
+                <start uid="myReaderMesh" />
             </service>
             <service uid="action_saveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                 <start uid="myWriterMesh" />
@@ -101,6 +103,9 @@
                             <adaptor id="myTrianAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myTrianMesh">
                                 <config renderer="default" picker="" />
                             </adaptor>
+                            <adaptor id="myMeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myMesh">
+                                <config renderer="default" picker="" />
+                            </adaptor>
                         </scene>
                     </service>
 
@@ -112,6 +117,20 @@
                             <service uid="myWriterMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
                                 <type mode="writer" />
                             </service>
+                            
+                            <service uid="action_genTrian" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="GenTriangle" />
+                            </service>
+                            <service uid="action_genQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="GenQuad" />
+                            </service>
+                            <service uid="action_genTrianQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="GenTriangleQuad" />
+                            </service>
+                            <service uid="action_shakeMeshPoint" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="ShakeMeshPoint" />
+                            </service>
+                            
                         </object>
                     </item>
                     
@@ -123,16 +142,6 @@
                             </service>
                             <service uid="myWriterTrianMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
                                 <type mode="writer" />
-                            </service>
-                            
-                            <service uid="action_genTrian" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
-                                <config functor="GenTriangle" />
-                            </service>
-                            <service uid="action_genQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
-                                <config functor="GenQuad" />
-                            </service>
-                            <service uid="action_genTrianQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
-                                <config functor="GenTriangleQuad" />
                             </service>
                             
                         </object>
