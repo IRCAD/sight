@@ -217,8 +217,8 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     std::vector<float> vPoint(3, 0.0);
     trian->points().resize(numberOfPoints, vPoint);
 
-    ::fwData::Mesh::PointMultiArrayType points = mesh->getPoints();
-    typedef ::fwData::Mesh::PointMultiArrayType::index PointTypesIndex;
+    ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
+    typedef ::fwData::Mesh::PointsMultiArrayType::index PointTypesIndex;
     for (PointTypesIndex i = 0; i != numberOfPoints; ++i)
     {
         ::fwData::TriangularMesh::PointContainer::value_type &point = trian->points()[i];
@@ -306,6 +306,8 @@ bool MeshGenerator::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh:
 void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
 {
     mesh->allocateCellNormals();
+
+
 //    ::fwData::Mesh::Id idCell;
 //    ::fwData::Mesh::NormalValueType cellNormalZ[3] = {0,0,1};
 //    mesh->setCellNormal(idCell, cellNormalZ);
@@ -350,7 +352,7 @@ void MeshGenerator::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 void MeshGenerator::shakePoint(::fwData::Mesh::sptr mesh)
 {
     size_t nbPts = mesh->getNumberOfPoints();
-    ::fwData::Mesh::PointMultiArrayType points = mesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
     srand( time(NULL) );
     for(size_t i=0 ; i<nbPts ; ++i )
     {

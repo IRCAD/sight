@@ -60,7 +60,7 @@ public:
     typedef Id             CellDataOffsetType;
     typedef boost::uint8_t CellTypes;
 
-    typedef boost::multi_array_ref<PointValueType    , 2> PointMultiArrayType;
+    typedef boost::multi_array_ref<PointValueType    , 2> PointsMultiArrayType;
     typedef boost::multi_array_ref<CellTypes         , 1> CellTypesMultiArrayType;
     typedef boost::multi_array_ref<CellValueType     , 1> CellDataMultiArrayType;
     typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
@@ -229,7 +229,7 @@ public:
      *
      * @return requested array
      */
-    FWDATA_API PointMultiArrayType           getPoints() const;
+    FWDATA_API PointsMultiArrayType           getPoints() const;
     FWDATA_API CellTypesMultiArrayType       getCellTypes() const;
     FWDATA_API CellDataMultiArrayType        getCellData() const;
     FWDATA_API CellDataOffsetsMultiArrayType getCellDataOffsets() const;

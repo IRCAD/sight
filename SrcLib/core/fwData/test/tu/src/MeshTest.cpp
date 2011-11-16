@@ -162,7 +162,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)6, mesh->getNumberOfCells());
 
 
-    ::fwData::Mesh::PointMultiArrayType pointArray = mesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType pointArray = mesh->getPoints();
     CPPUNIT_ASSERT_EQUAL((float) 10, pointArray[0][0]);
     CPPUNIT_ASSERT_EQUAL((float) 20, pointArray[2][1]);
     CPPUNIT_ASSERT_EQUAL((float) 52, pointArray[7][2]);
@@ -303,7 +303,7 @@ void MeshTest::addingArray()
     nbPoints++;
     CPPUNIT_ASSERT_EQUAL(nbPoints, mesh->getNumberOfPoints());
 
-    ::fwData::Mesh::PointMultiArrayType pointMultiArray = mesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType pointMultiArray = mesh->getPoints();
     CPPUNIT_ASSERT_EQUAL(*(pointArray->getItem< ::fwData::Mesh::PointValueType >(list_of(0),0)), pointMultiArray[0][0]);
     CPPUNIT_ASSERT_EQUAL(*(pointArray->getItem< ::fwData::Mesh::PointValueType >(list_of(12),2)), pointMultiArray[12][2]);
     CPPUNIT_ASSERT_EQUAL(*(pointArray->getItem< ::fwData::Mesh::PointValueType >(list_of(45),1)), pointMultiArray[45][1]);
@@ -409,8 +409,8 @@ void MeshTest::copy()
     CPPUNIT_ASSERT(mesh->getCellDataArray()->getSize()        == deepCopyMesh->getCellDataArray()->getSize());
     CPPUNIT_ASSERT(mesh->getPointColorsArray()->getSize()     == deepCopyMesh->getPointColorsArray()->getSize());
 
-    ::fwData::Mesh::PointMultiArrayType meshPointArray = mesh->getPoints();
-    ::fwData::Mesh::PointMultiArrayType deepCopyMeshPointArray = deepCopyMesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType meshPointArray = mesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType deepCopyMeshPointArray = deepCopyMesh->getPoints();
 
     for (int i=0 ; i< mesh->getNumberOfPoints() ; i++)
     {

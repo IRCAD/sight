@@ -398,10 +398,10 @@ Mesh::Id Mesh::insertNextCell(CellValueType p1, CellValueType p2, CellValueType 
 
 //------------------------------------------------------------------------------
 
-Mesh::PointMultiArrayType Mesh::getPoints() const
+Mesh::PointsMultiArrayType Mesh::getPoints() const
 {
-    return PointMultiArrayType(
-            static_cast<PointMultiArrayType::element*>(m_points->getBuffer()),
+    return PointsMultiArrayType(
+            static_cast<PointsMultiArrayType::element*>(m_points->getBuffer()),
             boost::extents[m_nbPoints][3]
             );
 }

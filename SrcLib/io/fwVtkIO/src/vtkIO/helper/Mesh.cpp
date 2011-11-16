@@ -116,7 +116,7 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> po
         colors->SetName("Colors");
         colors->InsertNextTupleValue(col);
 
-        typedef ::fwData::Mesh::PointMultiArrayType::index PointTypesIndex;
+        typedef ::fwData::Mesh::PointsMultiArrayType::index PointTypesIndex;
         ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
         for (PointTypesIndex i = 0; i != nbPoints; ++i)
         {
@@ -139,7 +139,7 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyD
 
     vtkPoints *polyDataPoints = polyDataDst->GetPoints();
     ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints() ;
-    ::fwData::Mesh::PointMultiArrayType points = meshSrc->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = meshSrc->getPoints();
 
     if (nbPoints != polyDataPoints->GetNumberOfPoints())
     {
@@ -147,7 +147,7 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyD
     }
 
     vtkIdType id = 0;
-    typedef ::fwData::Mesh::PointMultiArrayType::index PointTypesIndex;
+    typedef ::fwData::Mesh::PointsMultiArrayType::index PointTypesIndex;
     for (PointTypesIndex i = 0; i != nbPoints; ++i)
     {
         polyDataPoints->SetPoint(id++, points[i][0], points[i][1], points[i][2]);

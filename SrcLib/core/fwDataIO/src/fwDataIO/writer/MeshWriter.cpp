@@ -57,7 +57,7 @@ void MeshWriter::write()
 
     size_t i, nbPts, nbCells;
     nbPts = triMesh->getNumberOfPoints();
-    ::fwData::Mesh::PointMultiArrayType points = triMesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = triMesh->getPoints();
     file<<nbPts<<std::endl;
     for( i=0 ; i<nbPts ; ++i )
     {
