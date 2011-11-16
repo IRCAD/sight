@@ -7,7 +7,10 @@
 #include <vtkPoints.h>
 #include <vtkDataArray.h>
 #include <vtkPointData.h>
+#include <vtkCellData.h>
 #include <vtkCell.h>
+
+#include <fwData/Array.hpp>
 
 #include "vtkIO/helper/Mesh.hpp"
 
@@ -106,29 +109,9 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> po
             polyData->InsertNextCell( typeVtkCell, 4, cell );
         }
     }
-    if(mesh->getPointColorsArray())
-    {
-        unsigned char col[3] = {255, 0, 0};
-        ::fwData::Mesh::PointColorsMultiArrayType pointsColor = mesh->getPointColors();
 
-        vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        colors->SetNumberOfComponents(3);
-        colors->SetName("Colors");
-        colors->InsertNextTupleValue(col);
-
-        typedef ::fwData::Mesh::PointsMultiArrayType::index PointTypesIndex;
-        ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
-        for (PointTypesIndex i = 0; i != nbPoints; ++i)
-        {
-            col[0] = pointsColor[i][0];
-            col[1] = pointsColor[i][1];
-            col[2] = pointsColor[i][2];
-            colors->InsertNextTupleValue(col);
-        }
-
-        polyData->GetPointData()->SetScalars(colors);
-    }
-
+    Mesh::updatePolyDataPointColor(polyData, mesh);
+    Mesh::updatePolyDataCellColor(polyData, mesh);
 }
 
 //------------------------------------------------------------------------------
@@ -154,6 +137,78 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyD
     }
 
     polyDataPoints->Modified();
+    return polyDataDst;
+}
+
+//------------------------------------------------------------------------------
+
+vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc )
+{
+    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+
+    ::fwData::Array::sptr pointColorArray = meshSrc->getPointColorsArray();
+    if(pointColorArray)
+    {
+        vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+        size_t nbComponents = pointColorArray->getNumberOfComponents();
+        colors->SetNumberOfComponents(nbComponents);
+        colors->SetName("Colors");
+
+        ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints() ;
+        ::fwData::Array::IndexType colorIndex(1);
+        for (size_t i = 0; i != nbPoints; ++i)
+        {
+            colorIndex[0] = i;
+            colors->InsertNextTupleValue(pointColorArray->getItem<unsigned char>(colorIndex));
+        }
+        polyDataDst->GetPointData()->SetScalars(colors);
+        polyDataDst->Modified();
+    }
+    else
+    {
+        if(polyDataDst->GetPointData()->HasArray("Colors"))
+        {
+            polyDataDst->GetPointData()->RemoveArray("Colors");
+        }
+        polyDataDst->Modified();
+    }
+
+    return polyDataDst;
+}
+
+//------------------------------------------------------------------------------
+
+vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc )
+{
+    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+
+    ::fwData::Array::sptr cellColorArray = meshSrc->getCellColorsArray();
+    if(cellColorArray)
+    {
+        vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+        size_t nbComponents = cellColorArray->getNumberOfComponents();
+        colors->SetNumberOfComponents(nbComponents);
+        colors->SetName("Colors");
+
+        ::fwData::Mesh::Id nbCells = meshSrc->getNumberOfCells() ;
+        ::fwData::Array::IndexType colorIndex(1);
+        for (size_t i = 0; i != nbCells; ++i)
+        {
+            colorIndex[0] = i;
+            colors->InsertNextTupleValue(cellColorArray->getItem<unsigned char>(colorIndex));
+        }
+        polyDataDst->GetCellData()->SetScalars(colors);
+        polyDataDst->Modified();
+    }
+    else
+    {
+        if(polyDataDst->GetCellData()->HasArray("Colors"))
+        {
+            polyDataDst->GetCellData()->RemoveArray("Colors");
+        }
+        polyDataDst->Modified();
+    }
+
     return polyDataDst;
 }
 

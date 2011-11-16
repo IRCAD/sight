@@ -380,6 +380,8 @@ Mesh::Mesh() throw()
     addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
     addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
+    addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
+    addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -456,19 +458,33 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
         this->updateOptionsMode();
     }
 
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH) )
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH))
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
         this->updateMesh( mesh );
     }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_COLORS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
+        ::vtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_COLORS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        SLM_ASSERT("m_polyData not instanced", m_polyData);
+
+        ::vtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
     {
        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
        ::vtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
-
        this->setVtkPipelineModified();
     }
 }
@@ -530,7 +546,6 @@ void Mesh::doSwap() throw(fwTools::Failed)
 
 void Mesh::createTransformService()
 {
-
     ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
@@ -643,7 +658,6 @@ vtkAlgorithmOutput *Mesh::getMapperInput()
 
 void Mesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv, ::fwData::Material::sptr material)
 {
-
     if (! srv)
     {
         srv = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
@@ -885,7 +899,6 @@ vtkActor *Mesh::newActor()
     }
 
     actor->SetMapper(m_mapper);
-
     this->setVtkPipelineModified();
     return actor;
 }

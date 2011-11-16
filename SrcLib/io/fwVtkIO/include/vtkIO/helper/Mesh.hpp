@@ -63,7 +63,27 @@ public :
      */
     VTKIO_API static vtkSmartPointer<vtkPolyData>  updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc );
 
+    /*!
+     * @brief Update a vtkPolyData with point color of fwData::Mesh
+     *
+     * @param[out] polyData vtkPolyData
+     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @return vtkPolyData
+     *
+     * Returns the updated vtkPolyPata
+     */
+    VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
 
+    /*!
+     * @brief Update a vtkPolyData with cell color of fwData::Mesh
+     *
+     * @param[out] polyData vtkPolyData
+     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @return vtkPolyData
+     *
+     * Returns the updated vtkPolyPata
+     */
+    VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc );
 };
 
 } // namespace helper
