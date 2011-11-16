@@ -31,6 +31,8 @@ public:
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_MESH;
     FWCOMED_API static std::string VERTEX_MODIFIED;
+    FWCOMED_API static std::string POINT_COLORS_MODIFIED;
+    FWCOMED_API static std::string CELL_COLORS_MODIFIED;
 
     /// Constructor. Do nothing.
     FWCOMED_API MeshMsg() throw();
