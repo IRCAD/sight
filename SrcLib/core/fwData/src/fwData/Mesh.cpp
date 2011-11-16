@@ -186,7 +186,10 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 size_t Mesh::allocatePointNormals() throw(::fwData::Exception)
 {
     size_t allocatedSize = 0;
-    m_pointNormals  = ::fwData::Array::New();
+    if (! m_pointNormals )
+    {
+        m_pointNormals  = ::fwData::Array::New();
+    }
     allocatedSize += m_pointNormals->resize( ::fwTools::Type::create<NormalValueType>(), list_of(m_nbPoints), 3, true);
     return allocatedSize;
 }
@@ -197,7 +200,10 @@ size_t Mesh::allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception)
 {
     OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
-    m_pointColors  = ::fwData::Array::New();
+    if (! m_pointColors )
+    {
+        m_pointColors  = ::fwData::Array::New();
+    }
     allocatedSize += m_pointColors->resize( ::fwTools::Type::create<ColorValueType>(), list_of(m_nbPoints), t, true);
     return allocatedSize;
 }
@@ -207,7 +213,10 @@ size_t Mesh::allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception)
 size_t Mesh::allocateCellNormals() throw(::fwData::Exception)
 {
     size_t allocatedSize = 0;
-    m_cellNormals  = ::fwData::Array::New();
+    if (! m_cellNormals )
+    {
+        m_cellNormals  = ::fwData::Array::New();
+    }
     allocatedSize += m_cellNormals->resize( ::fwTools::Type::create<NormalValueType>(), list_of(m_nbCells), 3, true);
     return allocatedSize;
 }
@@ -218,7 +227,10 @@ size_t Mesh::allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception)
 {
     OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
-    m_cellColors  = ::fwData::Array::New();
+    if (! m_cellColors )
+    {
+        m_cellColors  = ::fwData::Array::New();
+    }
     allocatedSize += m_cellColors->resize( ::fwTools::Type::create<ColorValueType>(), list_of(m_nbCells), t, true);
     return allocatedSize;
 }
