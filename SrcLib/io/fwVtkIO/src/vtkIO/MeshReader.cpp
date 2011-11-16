@@ -54,17 +54,8 @@ void MeshReader::read()
 
     vtkDataObject *obj = reader->GetOutput();
     vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
-    if(mesh)
-    {
-        ::vtkIO::helper::Mesh::fromVTKMesh(mesh, pMesh);
-    }
-    else
-    {
-        std::string errMsg;
-        errMsg  = "MeshReader cannot read VTK Mesh file : ";
-        errMsg.append( this->getFile().string() );
-        throw( errMsg );
-    }
+    FW_RAISE_IF("MeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
+    ::vtkIO::helper::Mesh::fromVTKMesh(mesh, pMesh);
 }
 
 //------------------------------------------------------------------------------

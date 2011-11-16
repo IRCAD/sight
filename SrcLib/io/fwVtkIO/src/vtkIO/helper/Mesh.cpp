@@ -22,6 +22,7 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
     vtkPoints *points = polyData->GetPoints();
     if (points)
     {
+        mesh->clear();
         vtkIdType numberOfPoints = points->GetNumberOfPoints();
         vtkIdType numberOfCells = polyData->GetNumberOfCells();
 
