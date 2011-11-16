@@ -92,7 +92,7 @@ void Array::deepCopy( Array::csptr _source )
 
     if( _source->m_buffer )
     {
-        this->resize(_source->m_type, _source->m_size, _source->m_nbOfComponents);
+        this->resize(_source->m_type, _source->m_size, _source->m_nbOfComponents, true);
         std::copy(_source->begin(), _source->end(), this->begin());
     }
 }
