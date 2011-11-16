@@ -327,6 +327,23 @@ void MeshGenerator::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
         mesh->setPointColor(i, color);
     }
 }
+//------------------------------------------------------------------------------
+
+void MeshGenerator::colorizeMeshCells(::fwData::Mesh::sptr mesh)
+{
+    mesh->allocateCellColors(::fwData::Mesh::RGBA);
+    ::fwData::Mesh::ColorValueType color[4];
+    size_t numberOfCells = mesh->getNumberOfCells();
+    srand( time(NULL) );
+    for(size_t i = 0; i<numberOfCells; ++i)
+    {
+        color[0] = rand()%256;
+        color[1] = rand()%256;
+        color[2] = rand()%256;
+        color[3] = rand()%256;
+        mesh->setCellColor(i, color);
+    }
+}
 
 //------------------------------------------------------------------------------
 

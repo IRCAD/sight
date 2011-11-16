@@ -115,11 +115,18 @@ public :
     FWDATATOOLS_API static void shakePoint(::fwData::Mesh::sptr mesh);
 
     /**
-     * @brief Colorize  mesh (vertex point color).
+     * @brief Colorize mesh (vertex point color).
      *
      * @param[in]  mesh fwData::Mesh mesh structure to colorize.
      */
     FWDATATOOLS_API static void colorizeMeshPoints(::fwData::Mesh::sptr mesh);
+
+    /**
+     * @brief Colorize mesh (cell color).
+     *
+     * @param[in]  mesh fwData::Mesh mesh structure to colorize.
+     */
+    FWDATATOOLS_API static void colorizeMeshCells(::fwData::Mesh::sptr mesh);
 
     /**
      * @brief Convert fwData::Mesh to fwData::TriangularMesh structure.

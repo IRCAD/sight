@@ -118,13 +118,15 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
         }
         else if(m_functor == "ColorizeMeshCells")
         {
-            //::fwDataTools::MeshGenerator::colorizeMeshCells(mesh);
+            ::fwDataTools::MeshGenerator::colorizeMeshCells(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
+            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
             ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
+            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
         }
     }
     catch (const std::exception & e)

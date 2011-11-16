@@ -59,7 +59,7 @@
                         <menuItem name="Generate triangle and quad" />
                         <menuItem name="Shake mesh point" shortcut="Alt+S" />
                         <menuItem name="Colorize mesh point" shortcut="U" />
-                        <menuItem name="Colorize mesh cells" shortcut="U" />
+                        <menuItem name="Colorize mesh cells" shortcut="I" />
                     </layout>
                 </gui>
                 <registry>
