@@ -470,8 +470,8 @@ Mesh::PointNormalsMultiArrayType Mesh::getPointNormals() const
 
 Mesh::CellNormalsMultiArrayType Mesh::getCellNormals() const
 {
-    return CellColorsMultiArrayType(
-            static_cast<CellColorsMultiArrayType::element *>(m_cellNormals->getBuffer()),
+    return CellNormalsMultiArrayType(
+            static_cast<CellNormalsMultiArrayType::element *>(m_cellNormals->getBuffer()),
             boost::extents[m_nbCells][m_cellNormals->getNumberOfComponents()]
             );
 }

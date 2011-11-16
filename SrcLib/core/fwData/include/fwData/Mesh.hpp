@@ -54,7 +54,7 @@ public:
     } ColorArrayTypes;
 
     typedef float          PointValueType;
-    typedef float          ColorValueType;
+    typedef boost::uint8_t ColorValueType;
     typedef float          NormalValueType;
     typedef Id             CellValueType;
     typedef Id             CellDataOffsetType;
