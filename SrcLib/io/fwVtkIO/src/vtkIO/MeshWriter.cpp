@@ -54,6 +54,7 @@ void MeshWriter::write()
 
     //add progress observation
     Progressor progress(writer, this->getSptr(), this->getFile().string());
+    writer->Update();
 }
 
 //------------------------------------------------------------------------------
