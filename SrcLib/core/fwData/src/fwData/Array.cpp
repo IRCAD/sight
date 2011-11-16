@@ -148,9 +148,10 @@ size_t Array::resize(
         m_buffer = realloc(m_buffer, bufSize);
         if (m_buffer == NULL)
         {
+            m_buffer = oldBuf; // if realloc fail, oldBuf keeps unchanged
             FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
-                    "Was not able to reallocate " << (bufSize - oldBufSize)
-                    << "bytes for the Array." );
+                    "Was not able to (re)allocate the array from " << oldBufSize
+                    << " bytes to " << bufSize);
         }
         else if (oldBuf == NULL )
         {
@@ -160,7 +161,7 @@ size_t Array::resize(
     else if(reallocate && !m_isBufferOwner)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
-                "Tried to reallocate a not owned Buffer.");
+                "Tried to reallocate a not-owned Buffer.");
     }
 
     m_strides = computeStrides(size, nbOfComponents, type.sizeOf());
