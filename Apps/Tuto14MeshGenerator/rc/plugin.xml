@@ -58,6 +58,8 @@
                         <menuItem name="Generate quad" />
                         <menuItem name="Generate triangle and quad" />
                         <menuItem name="Shake mesh point" shortcut="Alt+S" />
+                        <menuItem name="Colorize mesh point" shortcut="U" />
+                        <menuItem name="Colorize mesh cells" shortcut="U" />
                     </layout>
                 </gui>
                 <registry>
@@ -65,6 +67,8 @@
                     <menuItem sid="action_genQuad" start="yes" />
                     <menuItem sid="action_genTrianQuad" start="yes" />
                     <menuItem sid="action_shakeMeshPoint" start="yes" />
+                    <menuItem sid="action_colorizeMeshPoints" start="yes" />
+                    <menuItem sid="action_colorizeMeshCells" start="yes" />
                 </registry>
             </service>
             
@@ -129,6 +133,12 @@
                             </service>
                             <service uid="action_shakeMeshPoint" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
                                 <config functor="ShakeMeshPoint" />
+                            </service>
+                            <service uid="action_colorizeMeshPoints" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="ColorizeMeshPoints" />
+                            </service>
+                            <service uid="action_colorizeMeshCells" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="ColorizeMeshCells" />
                             </service>
                             
                         </object>

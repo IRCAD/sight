@@ -119,7 +119,7 @@ public :
      *
      * @param[in]  mesh fwData::Mesh mesh structure to colorize.
      */
-    FWDATATOOLS_API static void colorizePointMesh(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void colorizeMeshPoints(::fwData::Mesh::sptr mesh);
 
     /**
      * @brief Convert fwData::Mesh to fwData::TriangularMesh structure.

@@ -57,7 +57,10 @@ void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
             m_functor == "GenTriangle"
                     || m_functor == "GenQuad"
                     || m_functor == "GenTriangleQuad"
-                    || m_functor == "ShakeMeshPoint");
+                    || m_functor == "ShakeMeshPoint"
+                    || m_functor == "ColorizeMeshPoints"
+                    || m_functor == "ColorizeMeshCells"
+                    );
 }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +116,16 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
             ::fwDataTools::MeshGenerator::shakePoint(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED );
         }
-        ::fwDataTools::MeshGenerator::colorizePointMesh(mesh);
+        else if(m_functor == "ColorizeMeshCells")
+        {
+            //::fwDataTools::MeshGenerator::colorizeMeshCells(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
+        }
+        else if(m_functor == "ColorizeMeshPoints")
+        {
+            ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
+        }
     }
     catch (const std::exception & e)
     {

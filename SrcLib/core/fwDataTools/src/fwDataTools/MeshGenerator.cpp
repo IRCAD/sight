@@ -313,7 +313,7 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::colorizePointMesh(::fwData::Mesh::sptr mesh)
+void MeshGenerator::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 {
     mesh->allocatePointColors(::fwData::Mesh::RGB);
     ::fwData::Mesh::ColorValueType color[4];
