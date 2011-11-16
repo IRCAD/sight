@@ -17,9 +17,16 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
+        <service>::ioData::MeshReaderService</service>
+        <object>::fwData::Mesh</object>
+        <desc>Trian file reader</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
         <service>::ioData::TriangularMeshReaderService</service>
         <object>::fwData::TriangularMesh</object>
-        <desc>TriangularMesh Reader</desc>
+        <desc>Trian file reader</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -40,14 +47,14 @@
         <type>::io::IWriter</type>
         <service>::ioData::TriangularMeshWriterService</service>
         <object>::fwData::TriangularMesh</object>
-        <desc>TriangularMesh Writer</desc>
+        <desc>Trian file writer</desc>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioData::MeshWriterService</service>
         <object>::fwData::Mesh</object>
-        <desc>Mesh triangle Writer</desc>
+        <desc>Trian file writer</desc>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
