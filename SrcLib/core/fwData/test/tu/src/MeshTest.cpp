@@ -235,17 +235,17 @@ void MeshTest::colorsNormals()
     {
         for (int c=0 ; c < 4 ; c++)
         {
-            pointColorArray[id][c] = id + c/10.f;
+            pointColorArray[id][c] = id * 10 + c;
         }
     }
-    CPPUNIT_ASSERT_EQUAL(0.0f, pointColorArray[0][0]);
-    CPPUNIT_ASSERT_EQUAL(2.1f, pointColorArray[2][1]);
-    CPPUNIT_ASSERT_EQUAL(5.0f, pointColorArray[5][0]);
-    CPPUNIT_ASSERT_EQUAL(7.3f, pointColorArray[7][3]);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >( 0), pointColorArray[0][0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(21), pointColorArray[2][1]);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(50), pointColorArray[5][0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(73), pointColorArray[7][3]);
 
-    ::fwData::Mesh::ColorValueType color[4] = {0.5f, 0.8f, 0.6f, 1.0f };
+    ::fwData::Mesh::ColorValueType color[4] = {5, 8, 6, 10};
     mesh->setPointColor(5, color);
-    CPPUNIT_ASSERT_EQUAL(0.8f, pointColorArray[5][1]);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(8), pointColorArray[5][1]);
 
     mesh->allocateCellNormals();
     ::fwData::Mesh::CellNormalsMultiArrayType cellNormalArray = mesh->getCellNormals();
@@ -263,7 +263,7 @@ void MeshTest::colorsNormals()
     CPPUNIT_ASSERT_EQUAL(4.2f, cellNormalArray[4][2]);
     CPPUNIT_ASSERT_EQUAL(5.0f, cellNormalArray[5][0]);
 
-    ::fwData::Mesh::NormalValueType normal[3] = {0.9f, 0.4f, 0.2f };
+    ::fwData::Mesh::NormalValueType normal[3] = {0.9f, 0.4f, 0.2f};
     mesh->setCellNormal(4, normal);
     CPPUNIT_ASSERT_EQUAL(0.2f, cellNormalArray[4][2]);
 }
