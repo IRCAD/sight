@@ -40,6 +40,7 @@ protected:
 private:
 
     QImage * createQImage();
+    void processResizeEvent();
     void updateFromImage( QImage * qimg );
     void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
 

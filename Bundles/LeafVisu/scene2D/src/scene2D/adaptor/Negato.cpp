@@ -210,6 +210,8 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
 
+    this->initializeViewSize();
+
     std::vector< double > origin = ::fwData::Image::dynamicCast( this->getObject< fwData::Image>() )->getOrigin();
     OSLM_TRACE("Image origin = " << origin[0] << ", " << origin[1] << ", " << origin[2]);
 
@@ -274,6 +276,22 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
             m_pos.setY(coord.getY());
         }
     }
+    else if(_event->getType() == ::scene2D::data::Event::Resize)
+    {
+        this->processResizeEvent();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Negato::processResizeEvent()
+{
+    ViewSizeRatio ratio = this->getViewSizeRatio();
+
+    QTransform transform;
+    transform.scale(ratio.first, ratio.second);
+
+    m_layer->setTransform(transform);
 }
 
 //-----------------------------------------------------------------------------
