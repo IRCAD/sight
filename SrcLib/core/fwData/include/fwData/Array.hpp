@@ -186,12 +186,19 @@ public :
 
 
     /**
-     * @brief Getter the size of one element of the array,
+     * @brief Get the size of one element of the array,
      * ie. sizeof type * nbOfComponents
      *
      * @return One array elemet size in bytes.
      */
     FWDATA_API virtual size_t getElementSizeInBytes() const;
+
+    /**
+     * @brief Get the number of elements of type <getType()> in the array
+     *
+     * @return number of array elements
+     */
+    FWDATA_API virtual size_t getNumberOfElements() const;
 
     /**
      * @brief Getter for the array view size
@@ -328,17 +335,18 @@ template< typename T > T*       Array::begin() const
 
 template< typename T > T*       Array::end() const
 {
+    //return reinterpret_cast<T*> (static_cast<char*>(m_buffer) + this->getSizeInBytes());
     return reinterpret_cast<T*> (static_cast<char*>(m_buffer) + this->getSizeInBytes());
 }
 
 template< typename T > const T* Array::cbegin() const
 {
-    return static_cast<const T*>(m_buffer);
+    return static_cast<const T*>(begin<T>());
 }
 
 template< typename T > const T* Array::cend() const
 {
-    return reinterpret_cast<const T*> (static_cast<char*>(m_buffer) + this->getSizeInBytes());
+    return reinterpret_cast<const T*> (end<T>());
 }
 
 template< typename T > T* Array::getItem(const IndexType &id, const size_t component) const

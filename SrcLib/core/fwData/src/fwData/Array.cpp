@@ -19,12 +19,12 @@ namespace fwData
 
 REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Array, ::fwData::Array);
 
-inline size_t computeSizeInBytes(
-        const ::fwTools::Type &type,
+inline size_t computeSize(
+        size_t elementSize,
         const ::fwData::Array::SizeType &size,
-        const size_t &nbOfComponents )
+        size_t nbOfComponents )
 {
-    size_t total = type.sizeOf();
+    size_t total = elementSize;
     total *= std::accumulate (size.begin(), size.end(), nbOfComponents, std::multiplies< ::fwData::Array::SizeType::value_type >() );
     return total;
 }
@@ -140,7 +140,7 @@ size_t Array::resize(
 {
     nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
     size_t oldBufSize = this->getSizeInBytes();
-    size_t bufSize = computeSizeInBytes(type, size, nbOfComponents);
+    size_t bufSize = computeSize(type.sizeOf(), size, nbOfComponents);
 
     if(reallocate && (m_isBufferOwner || m_buffer == NULL))
     {
@@ -222,11 +222,19 @@ size_t Array::getElementSizeInBytes() const
 {
     return m_type.sizeOf() * m_nbOfComponents;
 }
+
+//------------------------------------------------------------------------------
+
+size_t Array::getNumberOfElements() const
+{
+    return computeSize(1, m_size, m_nbOfComponents);
+}
+
 //------------------------------------------------------------------------------
 
 size_t Array::getSizeInBytes() const
 {
-    return computeSizeInBytes(m_type, m_size, m_nbOfComponents);
+    return computeSize(m_type.sizeOf(), m_size, m_nbOfComponents);
 }
 
 //------------------------------------------------------------------------------
