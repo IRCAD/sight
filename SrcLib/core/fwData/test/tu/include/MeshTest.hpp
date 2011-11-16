@@ -13,6 +13,9 @@ class MeshTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE( MeshTest );
     CPPUNIT_TEST( allocation );
     CPPUNIT_TEST( insertion );
+    CPPUNIT_TEST( colorsNormals );
+    CPPUNIT_TEST( addingArray );
+    CPPUNIT_TEST( copy );
     CPPUNIT_TEST_SUITE_END();
 protected:
 
@@ -23,5 +26,8 @@ public:
     // fonctions de tests
     void allocation();
     void insertion();
+    void colorsNormals();
+    void addingArray();
+    void copy();
 };
 #endif // FWDATA_TU_MESHTEST_H
