@@ -199,8 +199,8 @@ void MeshGenerator::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& po
             idx3 = MeshGenerator::addPoint(pt3, mesh, points);
             idx4 = MeshGenerator::addPoint(pt4, mesh, points);
 
-            mesh->insertNextCell(idx1, idx4, idx2);
-            mesh->insertNextCell(idx1, idx3, idx4);
+            mesh->insertNextCell(idx2, idx4, idx3);
+            mesh->insertNextCell(idx1, idx2, idx3);
         }
     }
 }
@@ -397,7 +397,7 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
             case 3:
                 {
                     computeTriangleNormal(point, cell, n);
-                    
+
                     mesh->setCellNormal(i, reinterpret_cast< ::fwData::Mesh::NormalValueType* >(&n));
                 }
                 break;
