@@ -103,9 +103,14 @@ void MeshTest::testExportImportSyntheticMesh()
     ::fwData::Mesh::NewSptr mesh1;
     ::fwDataTools::MeshGenerator::generateTriangleQuadMesh(mesh1);
     ::fwDataTools::MeshGenerator::shakePoint(mesh1);
+    ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh1);
+    ::fwDataTools::MeshGenerator::colorizeMeshCells(mesh1);
+    ::fwDataTools::MeshGenerator::generatePointNormals(mesh1);
+    ::fwDataTools::MeshGenerator::generateCellNormals(mesh1);
+
     mesh1->adjustAllocatedMemory();
 
-    ::boost::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() / "testExportImportSyntheticMesh.trian";
+    ::boost::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() / "testExportImportSyntheticMesh.vtk";
 
     ::vtkIO::MeshWriter::NewSptr writer;
     writer->setObject(mesh1);

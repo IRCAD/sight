@@ -66,6 +66,76 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
                 FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
+
+
+        if(polyData->GetPointData()->HasArray("Colors"))
+        {
+            vtkSmartPointer<vtkUnsignedCharArray> colors;
+            colors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetArray("Colors"));
+            FW_RAISE_IF("Only vtkUnsignedCharArray is supported to manage color.", !colors);
+
+            size_t nbComponents = colors->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
+                    nbComponents == 3 || nbComponents == 4);
+            mesh->allocatePointColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
+            ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
+            for (size_t i = 0; i != nbPoints; ++i)
+            {
+                mesh->setPointColor(i, colors->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(polyData->GetCellData()->HasArray("Colors"))
+        {
+            vtkSmartPointer<vtkUnsignedCharArray> colors;
+            colors = vtkUnsignedCharArray::SafeDownCast(polyData->GetCellData()->GetArray("Colors"));
+            FW_RAISE_IF("Only vtkUnsignedCharArray is supported to manage color.", !colors);
+
+            size_t nbComponents = colors->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
+                    nbComponents == 3 || nbComponents == 4);
+            mesh->allocateCellColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
+            ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells() ;
+            for (size_t i = 0; i != nbCells; ++i)
+            {
+                mesh->setCellColor(i, colors->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(polyData->GetPointData()->GetAttribute(vtkDataSetAttributes::NORMALS))
+        {
+            vtkSmartPointer<vtkFloatArray> normals;
+            normals = vtkFloatArray::SafeDownCast(polyData->GetPointData()->GetNormals());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage normals.", !normals);
+
+            size_t nbComponents = normals->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
+
+            mesh->allocatePointNormals();
+            ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
+            for (size_t i = 0; i != nbPoints; ++i)
+            {
+                mesh->setPointNormal(i, normals->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(polyData->GetCellData()->GetAttribute(vtkDataSetAttributes::NORMALS))
+        {
+            vtkSmartPointer<vtkFloatArray> normals;
+            normals = vtkFloatArray::SafeDownCast(polyData->GetCellData()->GetNormals());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage normals.", !normals);
+
+            size_t nbComponents = normals->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
+
+            mesh->allocateCellNormals();
+            ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells() ;
+            for (size_t i = 0; i != nbCells; ++i)
+            {
+                mesh->setCellNormal(i, normals->GetPointer(i*nbComponents));
+            }
+        }
+
         mesh->adjustAllocatedMemory();
     }
 }

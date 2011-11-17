@@ -573,7 +573,7 @@ void MeshGenerator::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
     for(size_t i = 0; i<numberOfPoints; ++i)
     {
         color[0] = rand()%256;
-        color[1] = rand()%256;
+        color[1] = 0;//rand()%256;
         color[2] = rand()%256;
         mesh->setPointColor(i, color);
     }
@@ -589,7 +589,7 @@ void MeshGenerator::colorizeMeshCells(::fwData::Mesh::sptr mesh)
     {
         color[0] = rand()%256;
         color[1] = rand()%256;
-        color[2] = rand()%256;
+        color[2] = 0;//rand()%256;
         color[3] = rand()%256;
         mesh->setCellColor(i, color);
     }
