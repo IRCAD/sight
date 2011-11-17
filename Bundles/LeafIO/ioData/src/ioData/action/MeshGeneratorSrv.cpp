@@ -62,6 +62,8 @@ void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
                     || m_functor == "ColorizeMeshCells"
                     || m_functor == "ComputePointNormals"
                     || m_functor == "ComputeCellNormals"
+                    || m_functor == "ShakePointNormals"
+                    || m_functor == "ShakeCellNormals"
                     );
 }
 
@@ -71,6 +73,7 @@ void MeshGeneratorSrv::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
+    ::fwDataTools::MeshGenerator::initRand();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,6 +139,16 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
         else if(m_functor == "ComputePointNormals")
         {
             ::fwDataTools::MeshGenerator::generatePointNormals(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
+        }
+        else if(m_functor == "ShakeCellNormals")
+        {
+            ::fwDataTools::MeshGenerator::shakeCellNormals(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+        }
+        else if(m_functor == "ShakePointNormals")
+        {
+            ::fwDataTools::MeshGenerator::shakePointNormals(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
         }
     }
