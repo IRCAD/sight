@@ -27,6 +27,13 @@ class VISUVTKADAPTOR_CLASS_API MeshNormals: public ::fwRenderVTK::IVtkAdaptorSer
 
 public:
 
+    typedef enum
+    {
+        NONE,
+        POINT_NORMAL,
+        CELL_NORMAL
+    } NormalRepresentation;
+
     fwCoreServiceClassDefinitionsMacro ( (MeshNormals)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
     VISUVTKADAPTOR_API MeshNormals() throw();
@@ -49,8 +56,10 @@ protected:
 
 private:
 
+    NormalRepresentation m_normalRepresentation;
     vtkSmartPointer< vtkPolyData > m_polyData;
     vtkSmartPointer< vtkActor >    m_actor;
+    static std::map< std::string, NormalRepresentation > m_normalRepresentationConversion;
 };
 
 

@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/assign/list_of.hpp>
+
 #include <vtkCellCenters.h>
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
@@ -26,18 +28,26 @@ REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNorma
 namespace visuVTKAdaptor
 {
 
+std::map< std::string, MeshNormals::NormalRepresentation >
+MeshNormals::m_normalRepresentationConversion
+        = ::boost::assign::map_list_of(std::string("POINT"), POINT_NORMAL)
+                                      (std::string("CELL"), CELL_NORMAL)
+                                      (std::string("NONE"), NONE);
+
 //------------------------------------------------------------------------------
 
-MeshNormals::MeshNormals() throw()
+MeshNormals::MeshNormals() throw() : m_normalRepresentation(CELL_NORMAL)
 {
     m_actor = vtkActor::New();
 
     addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
     addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+
+    addNewHandledEvent ("SHOW_CELL_NORMALS");
+    addNewHandledEvent ("SHOW_POINT_NORMALS");
+    addNewHandledEvent ("HIDE_NORMALS");
 }
 
 //------------------------------------------------------------------------------
@@ -57,6 +67,14 @@ void MeshNormals::configuring() throw( ::fwTools::Failed)
     assert(m_configuration->getName() == "config");
     this->setPickerId( m_configuration->getAttributeValue("picker") );
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    if(m_configuration->hasAttribute("normal") )
+    {
+        std::string normal = m_configuration->getExistingAttributeValue("normal");
+        SLM_ASSERT("Wrong normal representation '"<<normal << "' (required POINT, CELL or NONE)",
+                m_normalRepresentationConversion.find(normal) != m_normalRepresentationConversion.end());
+
+        m_normalRepresentation = m_normalRepresentationConversion[normal];
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -99,50 +117,103 @@ void MeshNormals::setPolyData(vtkSmartPointer< vtkPolyData > polydata)
         m_polyData = polydata;
     }
 }
-//
+
 //------------------------------------------------------------------------------
 
 void MeshNormals::updateMeshNormals()
 {
-    //if(!m_polyData)
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+
+    if(m_normalRepresentation == NONE)
     {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        m_actor->SetVisibility( false );
+    }
+    else
+    {
         m_polyData = vtkSmartPointer< vtkPolyData >::New();
         ::vtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+
+        vtkSmartPointer<vtkPolyDataAlgorithm> algo;
+        if(m_normalRepresentation == CELL_NORMAL)
+        {
+            algo = vtkSmartPointer<vtkCellCenters>::New();
+        }
+        else if(m_normalRepresentation == POINT_NORMAL)
+        {
+            vtkSmartPointer<vtkMaskPoints> ptMask = vtkSmartPointer<vtkMaskPoints>::New();
+            ptMask->SetOnRatio(1);
+            ptMask->RandomModeOn();
+            algo = ptMask;
+        }
+
+        algo->SetInput(m_polyData);
+        vtkSmartPointer<vtkArrowSource> arrow = vtkSmartPointer<vtkArrowSource>::New();
+
+        vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
+        glyph->SetInputConnection(algo->GetOutputPort());
+        glyph->SetSource(arrow->GetOutput());
+        glyph->SetVectorModeToUseNormal();
+        glyph->SetScaleModeToScaleByVector();
+        glyph->SetScaleFactor(10.0);
+        vtkSmartPointer<vtkPolyDataMapper> glyphMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        glyphMapper->SetInputConnection(glyph->GetOutputPort());
+
+        m_actor->SetVisibility( true );
+        this->getActor()->SetMapper(glyphMapper);
+        this->getActor()->GetProperty()->SetColor(1., 1., 1.);
     }
-
-    vtkCellCenters* ptMask = vtkCellCenters::New();
-//    vtkMaskPoints* ptMask = vtkMaskPoints::New();
-    ptMask->SetInput(m_polyData);
-//    ptMask->SetOnRatio(1);
-//    ptMask->RandomModeOn();
-
-    vtkArrowSource* arrow = vtkArrowSource::New();
-
-    vtkGlyph3D* glyph = vtkGlyph3D::New();
-    glyph->SetInputConnection(ptMask->GetOutputPort());
-    glyph->SetSource(arrow->GetOutput());
-    glyph->SetVectorModeToUseNormal();
-    glyph->SetScaleModeToScaleByVector();
-    glyph->SetScaleFactor(10.0);
-    vtkPolyDataMapper* glyphMapper = vtkPolyDataMapper::New();
-    glyphMapper->SetInputConnection(glyph->GetOutputPort());
-
-    this->getActor()->SetMapper(glyphMapper);
-    this->getActor()->GetProperty()->SetColor(1., 1., 1.);
-
-    glyphMapper->Delete();
-    glyph->Delete();
-    arrow->Delete();
     this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void MeshNormals::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->doUpdate();
+    ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(msg);
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH))
+    {
+        this->updateMeshNormals();
+    }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
+    {
+        ::vtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
+
+    if( meshMsg && meshMsg->hasEvent("SHOW_CELL_NORMALS"))
+    {
+        m_normalRepresentation = CELL_NORMAL;
+        this->updateMeshNormals();
+    }
+
+    if( meshMsg && meshMsg->hasEvent("SHOW_POINT_NORMALS"))
+    {
+        m_normalRepresentation = POINT_NORMAL;
+        this->updateMeshNormals();
+    }
+
+    if( meshMsg && meshMsg->hasEvent("HIDE_NORMALS"))
+    {
+        m_normalRepresentation = NONE;
+        this->updateMeshNormals();
+    }
 }
 
 //------------------------------------------------------------------------------

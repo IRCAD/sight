@@ -673,15 +673,14 @@ void Mesh::setUnclippedPartMaterial(::fwData::Material::sptr material)
 
 void Mesh::updateOptionsMode()
 {
-    this->createNormalsService();
-//    if (m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS)
-//    {
-//        this->createNormalsService();
-//    }
-//    else
-//    {
-//        this->removeNormalsService();
-//    }
+    if (m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS)
+    {
+        this->createNormalsService();
+    }
+    else
+    {
+        this->removeNormalsService();
+    }
 }
 
 //------------------------------------------------------------------------------
