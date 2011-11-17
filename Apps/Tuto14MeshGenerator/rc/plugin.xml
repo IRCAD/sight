@@ -57,13 +57,21 @@
                         <menuItem name="Generate triangle" shortcut="A" />
                         <menuItem name="Generate quad" shortcut="Z" />
                         <menuItem name="Generate triangle and quad" shortcut="E" />
+                        <separator />
                         <menuItem name="Shake mesh point" shortcut="Q" />
+                        <separator />
                         <menuItem name="Colorize mesh point" shortcut="U" />
                         <menuItem name="Colorize mesh cells" shortcut="I" />
+                        <separator />
                         <menuItem name="Compute point normals" shortcut="O" />
                         <menuItem name="Compute cell normals" shortcut="P" />
+                        <separator />
                         <menuItem name="Shake point normals" shortcut="L" />
                         <menuItem name="Shake cell normals" shortcut="M" />
+                        <separator />
+                        <menuItem name="Show point normals" />
+                        <menuItem name="Show cell normals" />
+                        <menuItem name="Hide normals" />
                     </layout>
                 </gui>
                 <registry>
@@ -77,6 +85,10 @@
                     <menuItem sid="action_computeCellNormals" start="yes" />
                     <menuItem sid="action_shakePointNormals" start="yes" />
                     <menuItem sid="action_shakeCellNormals" start="yes" />
+
+                    <menuItem sid="action_showPointNormals" start="yes" />                    
+                    <menuItem sid="action_showCellNormals" start="yes" />                    
+                    <menuItem sid="action_hideNormals" start="yes" />                    
                 </registry>
             </service>
             
@@ -117,6 +129,9 @@
                             </adaptor>
                             <adaptor id="myMeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myMesh">
                                 <config renderer="default" picker="" />
+                            </adaptor>
+                            <adaptor id="myMeshNormalsAdaptor" class="::visuVTKAdaptor::MeshNormals" objectId="myMesh">
+                                <config renderer="default" picker="" normal="CELL" />
                             </adaptor>
                         </scene>
                     </service>
@@ -160,19 +175,20 @@
                             <service uid="action_shakeCellNormals" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
                                 <config functor="ShakeCellNormals" />
                             </service>
-                            
+                            <service uid="action_showCellNormals" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <notify type="::fwComEd::MeshMsg" event="SHOW_CELL_NORMALS" />
+                            </service>
+                            <service uid="action_showPointNormals" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <notify type="::fwComEd::MeshMsg" event="SHOW_POINT_NORMALS" />
+                            </service>
+                            <service uid="action_hideNormals" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <notify type="::fwComEd::MeshMsg" event="HIDE_NORMALS" />
+                            </service>
                         </object>
                     </item>
                     
                     <item key="myTrianMesh">
                         <object type="::fwData::TriangularMesh">
-
-                            <service uid="myReaderTrianMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
-                                <type mode="reader" />
-                            </service>
-                            <service uid="myWriterTrianMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
-                                <type mode="writer" />
-                            </service>
                             
                         </object>
                     </item>
