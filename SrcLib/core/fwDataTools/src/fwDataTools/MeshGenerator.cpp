@@ -303,14 +303,135 @@ bool MeshGenerator::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh:
 
 //------------------------------------------------------------------------------
 
+typedef boost::multi_array_ref<Point, 1> PointsMultiArrayType;
+
+
+Vector<float> &computeTriangleNormal(const Point &p1, const Point &p2, const Point &p3, Vector<float> &n)
+{
+    n = Vector<float>(p1, p2);
+    Vector<float> v(p1, p3);
+    n.crossWith(v);
+    n.normalize();
+    return n;
+}
+
+//------------------------------------------------------------------------------
+
+Vector<float> &computeTriangleNormal( const PointsMultiArrayType &points, const ::fwData::Mesh::CellValueType *cell, Vector<float> &n)
+{
+    const Point &p1 = points[cell[0]];
+    const Point &p2 = points[cell[1]];
+    const Point &p3 = points[cell[2]];
+
+    computeTriangleNormal(p1, p2, p3, n);
+    return n;
+}
+
+//------------------------------------------------------------------------------
+
+Vector<float> &computeCellNormal( const PointsMultiArrayType &points, const ::fwData::Mesh::CellValueType *cell, size_t cellSize, Vector<float> &n)
+{
+    n = Vector<float>();
+    Vector<float> v;
+
+    for (size_t i=0; i< cellSize; ++i)
+    {
+        const Point &p1 = points[cell[i  ]];
+        const Point &p2 = points[cell[(i+1)% cellSize]];
+        const Point &p3 = points[cell[(i+2)% cellSize]];
+
+        computeTriangleNormal(p1, p2, p3, n);
+
+        n += v;
+    }
+
+    n /= cellSize;
+    n.normalize();
+    return n;
+}
+
+//------------------------------------------------------------------------------
+
 void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
 {
     mesh->allocateCellNormals();
 
 
-//    ::fwData::Mesh::Id idCell;
-//    ::fwData::Mesh::NormalValueType cellNormalZ[3] = {0,0,1};
-//    mesh->setCellNormal(idCell, cellNormalZ);
+    PointsMultiArrayType point = PointsMultiArrayType(
+            static_cast<PointsMultiArrayType::element*>(mesh->getPointsArray()->getBuffer()),
+            boost::extents[mesh->getNumberOfPoints()]
+            );
+
+    ::fwData::Mesh::CellTypesMultiArrayType       cellTypes       = mesh->getCellTypes();
+    ::fwData::Mesh::CellDataMultiArrayType        cellData        = mesh->getCellData();
+    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
+    //::fwData::Mesh::CellNormalsMultiArrayType     cellNormals     = mesh->getCellNormals();
+
+
+    //::fwData::Mesh::NormalValueType n[3];
+    const Vector<float> vZero;
+    Vector<float> n;
+    ::fwData::Mesh::CellTypes type;
+    ::fwData::Mesh::CellDataOffsetType offset;
+    ::fwData::Mesh::CellValueType *cell;
+    ::fwData::Mesh::Id cellLen = 0;
+    ::fwData::Mesh::PointValueType *p1, *p2, *p3, *p4;
+
+    size_t numberOfCells = mesh->getNumberOfCells();
+    size_t cellDataSize = mesh->getCellDataSize();
+
+    for(size_t i = 0; i<numberOfCells; ++i)
+    {
+        type = cellTypes[i];
+        offset = cellDataOffsets[i];
+        cell = &cellData[offset];
+        switch (type)
+        {
+            case 0:
+            case 1:
+            case 2:
+                n = vZero;
+                mesh->setCellNormal(i, reinterpret_cast< ::fwData::Mesh::NormalValueType* >(&n));
+                break;
+            case 3:
+                {
+                    computeTriangleNormal(point, cell, n);
+                    
+                    mesh->setCellNormal(i, reinterpret_cast< ::fwData::Mesh::NormalValueType* >(&n));
+                }
+                break;
+            case 4:
+            case 5:
+                {
+                    const size_t i1 = i+1;
+                    cellLen = (( i1 < numberOfCells )? cellDataOffsets[i1]:cellDataSize) - cellDataOffsets[i];
+
+                    computeCellNormal(point, cell, cellLen, n);
+
+                    mesh->setCellNormal(i, reinterpret_cast< ::fwData::Mesh::NormalValueType* >(&n));
+                }
+        }
+    }
+
+}
+
+
+//------------------------------------------------------------------------------
+
+void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
+{
+    //TODO
+    //mesh->allocatePointNormals();
+
+    //::fwData::Mesh::PointsMultiArrayType          point           = mesh->getPoints();
+    //::fwData::Mesh::CellTypesMultiArrayType       cellTypes       = mesh->getCellTypes();
+    //::fwData::Mesh::CellDataMultiArrayType        cellData        = mesh->getCellData();
+    //::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
+    //::fwData::Mesh::PointNormalsMultiArrayType    pointNormals    = mesh->getPointNormals();
+
+////    ::fwData::Mesh::Id idCell;
+////    ::fwData::Mesh::NormalValueType cellNormalZ[3] = {0,0,1};
+////    mesh->setCellNormal(idCell, cellNormalZ);
 }
 
 //------------------------------------------------------------------------------

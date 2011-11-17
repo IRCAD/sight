@@ -12,31 +12,12 @@
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Mesh.hpp>
 
+#include "fwDataTools/Vector.hxx"
 #include "fwDataTools/export.hpp"
 
 namespace fwDataTools
 {
 
-class Point
-{
-public:
-
-    float x;
-    float y;
-    float z;
-
-    Point() : x(0.), y(0.), z(0.)
-    {}
-    Point(float _x, float _y, float _z) : x(_x), y(_y), z(_z)
-    {}
-
-    bool operator<(const Point& pt) const
-    {
-        return (   this->x < pt.x
-                ||(this->x == pt.x && this->y < pt.y)
-                ||(this->x == pt.x && this->y == pt.y && this->z < pt.z) );
-    }
-};
 
 /**
  * @brief   This helper generates a mesh using specified structure (quad or triangle).
@@ -100,12 +81,20 @@ public :
      */
     FWDATATOOLS_API static void generateTriangleQuadMesh(::fwData::Mesh::sptr mesh);
 
+
     /**
      * @brief Generate cell normals for the mesh.
      *
      * @param[out]  mesh fwData::Mesh empty mesh structure to fill with cell normals.
      */
     FWDATATOOLS_API static void generateCellNormals(::fwData::Mesh::sptr mesh);
+
+    /**
+     * @brief Generate cell normals for the mesh.
+     *
+     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with cell normals.
+     */
+    FWDATATOOLS_API static void generatePointNormals(::fwData::Mesh::sptr mesh);
 
     /**
      * @brief Shake points of the mesh.
