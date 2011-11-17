@@ -135,7 +135,7 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
         }
         else if(m_functor == "ComputePointNormals")
         {
-            //::fwDataTools::MeshGenerator::generatePointNormals(mesh);
+            ::fwDataTools::MeshGenerator::generatePointNormals(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
         }
     }
