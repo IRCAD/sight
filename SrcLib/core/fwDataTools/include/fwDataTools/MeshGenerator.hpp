@@ -39,6 +39,12 @@ public :
 
     typedef std::map<Point, ::fwData::Mesh::Id> PointsMapType;
 
+
+    /**
+     * @brief Initialize 'rand' seed
+     */
+    FWDATATOOLS_API static void initRand();
+
     /**
      * @brief Add quad cells in mesh, this method generates synthetic data (two face of a cube).
      *
@@ -85,21 +91,45 @@ public :
     /**
      * @brief Generate cell normals for the mesh.
      *
-     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with cell normals.
+     * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
      */
     FWDATATOOLS_API static void generateCellNormals(::fwData::Mesh::sptr mesh);
 
     /**
      * @brief Generate cell normals for the mesh.
      *
-     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with cell normals.
+     * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
      */
     FWDATATOOLS_API static void generatePointNormals(::fwData::Mesh::sptr mesh);
 
     /**
+     * @brief Shake Array of Normals.
+     *
+     * Array must have 3 float components, 1 dimention. Otherwise, shakeNormals
+     * will do nothing.
+     *
+     * @param[out]  mesh fwData::Array structure to shake normals.
+     */
+    FWDATATOOLS_API static void shakeNormals(::fwData::Array::sptr array);
+
+    /**
+     * @brief Shake point Normals.
+     *
+     * @param[out]  mesh fwData::Mesh structure to shake normals.
+     */
+    FWDATATOOLS_API static void shakePointNormals(::fwData::Mesh::sptr mesh);
+
+    /**
+     * @brief Shake cell Normals.
+     *
+     * @param[out]  mesh fwData::Mesh structure to shake normals.
+     */
+    FWDATATOOLS_API static void shakeCellNormals(::fwData::Mesh::sptr mesh);
+
+    /**
      * @brief Shake points of the mesh.
      *
-     * @param[out]  mesh fwData::Mesh empty mesh structure to shake.
+     * @param[out]  mesh fwData::Mesh structure to shake.
      */
     FWDATATOOLS_API static void shakePoint(::fwData::Mesh::sptr mesh);
 

@@ -30,6 +30,12 @@ MeshGenerator::~MeshGenerator()
 {}
 
 //------------------------------------------------------------------------------
+void MeshGenerator::initRand()
+{
+    std::srand(std::time(NULL));
+}
+
+//------------------------------------------------------------------------------
 
 void MeshGenerator::generateTriangleQuadMesh(::fwData::Mesh::sptr mesh)
 {
@@ -511,12 +517,59 @@ void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
+void MeshGenerator::shakeNormals(::fwData::Array::sptr array)
+{
+    void *buf;
+    if(array
+            && array->getType() == ::fwTools::Type::create<float>()
+            && (buf = array->getBuffer())
+            && array->getNumberOfComponents() == 3
+            && array->getNumberOfDimensions() == 1
+            )
+    {
+        typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
+        const ::fwData::Mesh::Id nbOfNormals = array->getSize().at(0);
+        NormalsMultiArrayType normals = NormalsMultiArrayType(
+                static_cast<NormalsMultiArrayType::element*>(buf),
+                boost::extents[nbOfNormals]
+                );
+
+        struct {
+            float operator()()
+            { return ((rand()%101-50.f))/500.f; };
+        } RandFloat;
+
+        for (::fwData::Mesh::Id i = 0; i < nbOfNormals; ++i)
+        {
+            Vector<float> v(RandFloat(), RandFloat(), RandFloat());
+            normals[i] += v;
+            normals[i].normalize();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshGenerator::shakePointNormals(::fwData::Mesh::sptr mesh)
+{
+    shakeNormals(mesh->getPointNormalsArray());
+}
+
+
+//------------------------------------------------------------------------------
+
+void MeshGenerator::shakeCellNormals(::fwData::Mesh::sptr mesh)
+{
+    shakeNormals(mesh->getCellNormalsArray());
+}
+
+//------------------------------------------------------------------------------
+
 void MeshGenerator::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 {
     mesh->allocatePointColors(::fwData::Mesh::RGB);
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfPoints = mesh->getNumberOfPoints();
-    srand( std::time(NULL) );
     for(size_t i = 0; i<numberOfPoints; ++i)
     {
         color[0] = rand()%256;
@@ -532,7 +585,6 @@ void MeshGenerator::colorizeMeshCells(::fwData::Mesh::sptr mesh)
     mesh->allocateCellColors(::fwData::Mesh::RGBA);
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfCells = mesh->getNumberOfCells();
-    srand( std::time(NULL) );
     for(size_t i = 0; i<numberOfCells; ++i)
     {
         color[0] = rand()%256;
@@ -549,7 +601,6 @@ void MeshGenerator::shakePoint(::fwData::Mesh::sptr mesh)
 {
     size_t nbPts = mesh->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
-    srand( std::time(NULL) );
     for(size_t i=0 ; i<nbPts ; ++i )
     {
         points[i][0] += 2 * (rand()%5 - 2)/2.;
