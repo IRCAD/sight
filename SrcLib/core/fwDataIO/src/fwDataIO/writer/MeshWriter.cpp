@@ -90,15 +90,21 @@ void MeshWriter::write()
         while (cellBuf != cellBufEnd)
         {
 
-            file << (*cellBuf++) << " " << (*cellBuf++) << " " << (*cellBuf++) << " " 
-                 << (*normalBuf++) << " "  << (*normalBuf++) << " "  << (*normalBuf++) << std::endl;
+            file << (*cellBuf++) << " " ;
+            file << (*cellBuf++) << " " ;
+            file << (*cellBuf++) << " " ;
+            file << (*normalBuf++) << " " ;
+            file << (*normalBuf++) << " " ;
+            file << (*normalBuf++) << std::endl;
         }
     }
     else
     {
         while (cellBuf != cellBufEnd)
         {
-            file << (*cellBuf++) << " " << (*cellBuf++) << " " << (*cellBuf++) << " -1 -1 -1" << std::endl;
+            file << (*cellBuf++) << " ";
+            file << (*cellBuf++) << " ";
+            file << (*cellBuf++) << " -1 -1 -1" << std::endl;
         }
     }
     file.close();
