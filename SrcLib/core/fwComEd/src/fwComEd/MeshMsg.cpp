@@ -19,6 +19,9 @@ std::string MeshMsg::NEW_MESH              = "NEW_MESH";
 std::string MeshMsg::VERTEX_MODIFIED       = "VERTEX_MODIFIED";
 std::string MeshMsg::POINT_COLORS_MODIFIED = "POINT_COLORS_MODIFIED";
 std::string MeshMsg::CELL_COLORS_MODIFIED  = "CELL_COLORS_MODIFIED";
+std::string MeshMsg::POINT_NORMALS_MODIFIED = "POINT_NORMALS_MODIFIED";
+std::string MeshMsg::CELL_NORMALS_MODIFIED  = "CELL_NORMALS_MODIFIED";
+
 
 //-----------------------------------------------------------------------------
 

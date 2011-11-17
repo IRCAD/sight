@@ -33,6 +33,8 @@ public:
     FWCOMED_API static std::string VERTEX_MODIFIED;
     FWCOMED_API static std::string POINT_COLORS_MODIFIED;
     FWCOMED_API static std::string CELL_COLORS_MODIFIED;
+    FWCOMED_API static std::string POINT_NORMALS_MODIFIED;
+    FWCOMED_API static std::string CELL_NORMALS_MODIFIED;
 
     /// Constructor. Do nothing.
     FWCOMED_API MeshMsg() throw();
