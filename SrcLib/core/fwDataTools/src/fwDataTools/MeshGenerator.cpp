@@ -4,7 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <time.h>
+#include <map>
+
+#include <cstdlib>
+#include <ctime>
 
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
@@ -365,10 +368,8 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
     ::fwData::Mesh::CellTypesMultiArrayType       cellTypes       = mesh->getCellTypes();
     ::fwData::Mesh::CellDataMultiArrayType        cellData        = mesh->getCellData();
     ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
-    //::fwData::Mesh::CellNormalsMultiArrayType     cellNormals     = mesh->getCellNormals();
 
 
-    //::fwData::Mesh::NormalValueType n[3];
     const Vector<float> vZero;
     Vector<float> n;
     ::fwData::Mesh::CellTypes type;
@@ -377,10 +378,10 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
     ::fwData::Mesh::Id cellLen = 0;
     ::fwData::Mesh::PointValueType *p1, *p2, *p3, *p4;
 
-    size_t numberOfCells = mesh->getNumberOfCells();
-    size_t cellDataSize = mesh->getCellDataSize();
+    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+    const ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
 
-    for(size_t i = 0; i<numberOfCells; ++i)
+    for(::fwData::Mesh::Id i = 0; i<numberOfCells; ++i)
     {
         type = cellTypes[i];
         offset = cellDataOffsets[i];
@@ -403,7 +404,7 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
             case 4:
             case 5:
                 {
-                    const size_t i1 = i+1;
+                    const ::fwData::Mesh::Id i1 = i+1;
                     cellLen = (( i1 < numberOfCells )? cellDataOffsets[i1]:cellDataSize) - cellDataOffsets[i];
 
                     computeCellNormal(point, cell, cellLen, n);
@@ -420,18 +421,92 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
 
 void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
 {
-    //TODO
-    //mesh->allocatePointNormals();
+    typedef std::multimap< ::fwData::Mesh::CellValueType, Vector<float> > VectorMultiMap;
+    VectorMultiMap vectors;
 
-    //::fwData::Mesh::PointsMultiArrayType          point           = mesh->getPoints();
-    //::fwData::Mesh::CellTypesMultiArrayType       cellTypes       = mesh->getCellTypes();
-    //::fwData::Mesh::CellDataMultiArrayType        cellData        = mesh->getCellData();
-    //::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
-    //::fwData::Mesh::PointNormalsMultiArrayType    pointNormals    = mesh->getPointNormals();
+    mesh->allocatePointNormals();
 
-////    ::fwData::Mesh::Id idCell;
-////    ::fwData::Mesh::NormalValueType cellNormalZ[3] = {0,0,1};
-////    mesh->setCellNormal(idCell, cellNormalZ);
+    const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
+    PointsMultiArrayType point = PointsMultiArrayType(
+            static_cast<PointsMultiArrayType::element*>(mesh->getPointsArray()->getBuffer()),
+            boost::extents[nbOfPoints]
+            );
+
+    ::fwData::Mesh::CellTypesMultiArrayType       cellTypes       = mesh->getCellTypes();
+    ::fwData::Mesh::CellDataMultiArrayType        cellData        = mesh->getCellData();
+    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
+
+
+    const Vector<float> vZero;
+    Vector<float> n;
+    ::fwData::Mesh::CellTypes type;
+    ::fwData::Mesh::CellDataOffsetType offset;
+    ::fwData::Mesh::CellValueType *cell;
+    ::fwData::Mesh::Id cellLen = 0;
+    ::fwData::Mesh::PointValueType *p1, *p2, *p3, *p4;
+
+    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+    const ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
+
+    for(::fwData::Mesh::Id i = 0; i<numberOfCells; ++i)
+    {
+        type = cellTypes[i];
+        offset = cellDataOffsets[i];
+        cell = &cellData[offset];
+        cellLen = type;
+        switch (type)
+        {
+            case 0:
+            case 1:
+            case 2:
+                n = vZero;
+                break;
+            case 3:
+                computeTriangleNormal(point, cell, n);
+                break;
+            case 4:
+            case 5:
+                {
+                    const ::fwData::Mesh::Id i1 = i+1;
+                    cellLen = (( i1 < numberOfCells )? cellDataOffsets[i1]:cellDataSize) - cellDataOffsets[i];
+
+                    computeCellNormal(point, cell, cellLen, n);
+                }
+        }
+
+        ::fwData::Mesh::CellValueType *pointId;
+        ::fwData::Mesh::CellValueType *cellEnd = cell + cellLen;
+        for(pointId = cell; pointId != cellEnd; ++pointId)
+        {
+            vectors.insert(VectorMultiMap::value_type(*pointId, n));
+        }
+
+    }
+
+    VectorMultiMap::iterator it;
+    std::pair<VectorMultiMap::iterator,VectorMultiMap::iterator> ret;
+
+    size_t count;
+    for(::fwData::Mesh::Id i = 0; i<nbOfPoints; ++i)
+    {
+        ret = vectors.equal_range(i);
+        n = vZero;
+        count = 0;
+
+        for (it=ret.first; it!=ret.second; ++it, ++count)
+        {
+            Vector<float> &v = it->second;
+            n += it->second;
+        }
+        if (count>0)
+        {
+            n /= count;
+        }
+
+        n.normalize();
+        mesh->setPointNormal(i, reinterpret_cast< ::fwData::Mesh::NormalValueType* >(&n));
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -441,7 +516,7 @@ void MeshGenerator::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
     mesh->allocatePointColors(::fwData::Mesh::RGB);
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfPoints = mesh->getNumberOfPoints();
-    srand( time(NULL) );
+    srand( std::time(NULL) );
     for(size_t i = 0; i<numberOfPoints; ++i)
     {
         color[0] = rand()%256;
@@ -457,7 +532,7 @@ void MeshGenerator::colorizeMeshCells(::fwData::Mesh::sptr mesh)
     mesh->allocateCellColors(::fwData::Mesh::RGBA);
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfCells = mesh->getNumberOfCells();
-    srand( time(NULL) );
+    srand( std::time(NULL) );
     for(size_t i = 0; i<numberOfCells; ++i)
     {
         color[0] = rand()%256;
@@ -474,7 +549,7 @@ void MeshGenerator::shakePoint(::fwData::Mesh::sptr mesh)
 {
     size_t nbPts = mesh->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
-    srand( time(NULL) );
+    srand( std::time(NULL) );
     for(size_t i=0 ; i<nbPts ; ++i )
     {
         points[i][0] += 2 * (rand()%5 - 2)/2.;
