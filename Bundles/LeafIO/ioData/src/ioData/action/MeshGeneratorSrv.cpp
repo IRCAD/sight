@@ -60,6 +60,8 @@ void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
                     || m_functor == "ShakeMeshPoint"
                     || m_functor == "ColorizeMeshPoints"
                     || m_functor == "ColorizeMeshCells"
+                    || m_functor == "ComputePointNormals"
+                    || m_functor == "ComputeCellNormals"
                     );
 }
 
@@ -125,6 +127,16 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
         {
             ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
+        }
+        else if(m_functor == "ComputeCellNormals")
+        {
+            ::fwDataTools::MeshGenerator::generateCellNormals(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+        }
+        else if(m_functor == "ComputePointNormals")
+        {
+            //::fwDataTools::MeshGenerator::generatePointNormals(mesh);
+            msg->addEvent( ::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
         }
     }
     catch (const std::exception & e)

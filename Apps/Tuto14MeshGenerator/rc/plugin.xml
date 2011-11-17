@@ -54,12 +54,14 @@
             <service uid="menu_Generator" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
                 <gui>
                     <layout>
-                        <menuItem name="Generate triangle" />
-                        <menuItem name="Generate quad" />
-                        <menuItem name="Generate triangle and quad" />
+                        <menuItem name="Generate triangle" shortcut="A" />
+                        <menuItem name="Generate quad" shortcut="Z" />
+                        <menuItem name="Generate triangle and quad" shortcut="E" />
                         <menuItem name="Shake mesh point" shortcut="Alt+S" />
                         <menuItem name="Colorize mesh point" shortcut="U" />
                         <menuItem name="Colorize mesh cells" shortcut="I" />
+                        <menuItem name="Compute cell normals" shortcut="O" />
+                        <menuItem name="Compute point normals" shortcut="P" />
                     </layout>
                 </gui>
                 <registry>
@@ -69,6 +71,8 @@
                     <menuItem sid="action_shakeMeshPoint" start="yes" />
                     <menuItem sid="action_colorizeMeshPoints" start="yes" />
                     <menuItem sid="action_colorizeMeshCells" start="yes" />
+                    <menuItem sid="action_computeCellNormals" start="yes" />
+                    <menuItem sid="action_computePointNormals" start="yes" />
                 </registry>
             </service>
             
@@ -139,6 +143,12 @@
                             </service>
                             <service uid="action_colorizeMeshCells" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
                                 <config functor="ColorizeMeshCells" />
+                            </service>
+                            <service uid="action_computePointNormals" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="ComputePointNormals" />
+                            </service>
+                            <service uid="action_computeCellNormals" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="ComputeCellNormals" />
                             </service>
                             
                         </object>
