@@ -46,16 +46,10 @@ public:
     VISUVTKADAPTOR_API ::fwData::Material::sptr getUnclippedMaterial();
     VISUVTKADAPTOR_API void setUnclippedPartMaterial(::fwData::Material::sptr material);
 
-
-    VISUVTKADAPTOR_API void setSharpEdgeAngle  ( double angle );
-    VISUVTKADAPTOR_API double getSharpEdgeAngle( );
-
     VISUVTKADAPTOR_API void setShowClippedPart ( bool show );
     VISUVTKADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::VtkRenderService::VtkObjectIdType id );
 
     VISUVTKADAPTOR_API void setVtkClippingPlanes               ( vtkPlaneCollection *planes );
-    VISUVTKADAPTOR_API void setMapperInput                     ( vtkAlgorithmOutput *input  );
-    VISUVTKADAPTOR_API vtkAlgorithmOutput *getMapperInput      ( );
     VISUVTKADAPTOR_API void setActorPropertyToUnclippedMaterial( bool opt );
 
     /// Active/Inactive automatic reset on camera. By default =true.
@@ -79,10 +73,7 @@ protected:
     vtkActor *newActor();
     void buildPipeline();
 
-
-    void updateMapper();
     void updateMesh ( ::fwData::Mesh::sptr mesh );
-    void updateMaterial       ( ::fwData::Material::sptr material   );
 
     void setServiceOnMaterial(
         ::fwRenderVTK::IVtkAdaptorService::sptr &srv,
@@ -97,22 +88,11 @@ protected:
     void createNormalsService();
     void removeNormalsService();
 
-
-
-
     bool   m_showClippedPart;
-    double m_sharpEdgeAngle;
-    bool   m_manageMapperInput;
     bool   m_autoResetCamera;
 
-    bool m_computeNormals;
-    bool m_computeNormalsAtUpdate;
-
-    vtkAlgorithm       *m_pipelineInput;
-    vtkAlgorithmOutput *m_mapperInput;
     vtkPolyData        *m_polyData;
     vtkPolyDataMapper  *m_mapper;
-    vtkPolyDataNormals *m_normals;
     vtkActor           *m_actor;
     vtkCommand         *m_depthSortCommand;
 

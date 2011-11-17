@@ -36,7 +36,7 @@
 #include <vtkTransform.h>
 
 #include "visuVTKAdaptor/Material.hpp"
-#include "visuVTKAdaptor/Normals.hpp"
+#include "visuVTKAdaptor/MeshNormals.hpp"
 
 #include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/Mesh.hpp"
@@ -299,10 +299,7 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
                 meshAdaptor->setRenderService ( service->getRenderService()  );
                 meshAdaptor->setRenderId      ( service->getRenderId()       );
                 meshAdaptor->setPickerId      ( service->getPickerId()       );
-                meshAdaptor->setMapperInput   ( service->getMapperInput()    );
-                meshAdaptor->setSharpEdgeAngle( service->getSharpEdgeAngle() );
                 meshAdaptor->setMaterial      ( service->getMaterial()       );
-
                 meshAdaptor->setVtkClippingPlanes( newCollection );
 
                 meshAdaptor->start();
@@ -354,21 +351,13 @@ Mesh::Mesh() throw()
     m_unclippedPartMaterial->ambient()->setRGBA("#aaaaff44");
 
     m_clippingPlanesId  = "";
-    m_sharpEdgeAngle    = 180;
 
     m_showClippedPart   = false;
     m_clippingPlanes    = 0;
     m_actor             = 0;
-    m_normals           = vtkPolyDataNormals::New();
 
-    m_manageMapperInput = true;
-    m_mapperInput       = 0;
     m_polyData          = 0;
     m_mapper            = vtkPolyDataMapper::New();
-    m_pipelineInput     = m_mapper;
-
-    m_computeNormals     = true;
-    m_computeNormalsAtUpdate = true;
 
     m_autoResetCamera   = true;
 
@@ -382,6 +371,8 @@ Mesh::Mesh() throw()
     addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
+    addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
+    addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -392,9 +383,6 @@ Mesh::~Mesh() throw()
 
     m_mapper->Delete();
     m_mapper = 0;
-
-    m_normals->Delete();
-    m_normals = 0;
 
     m_transform->Delete();
     m_transform = 0;
@@ -486,6 +474,18 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
 
        ::vtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
        this->setVtkPipelineModified();
+    }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+        this->setVtkPipelineModified();
     }
 }
 
@@ -635,27 +635,6 @@ void Mesh::setClippingPlanesId(::fwRenderVTK::VtkRenderService::VtkObjectIdType 
 
 //------------------------------------------------------------------------------
 
-void Mesh::setSharpEdgeAngle(double angle)
-{
-    m_sharpEdgeAngle = angle;
-}
-
-//------------------------------------------------------------------------------
-
-double Mesh::getSharpEdgeAngle()
-{
-    return m_sharpEdgeAngle;
-}
-
-//------------------------------------------------------------------------------
-
-vtkAlgorithmOutput *Mesh::getMapperInput()
-{
-    return m_mapperInput;
-}
-
-//------------------------------------------------------------------------------
-
 void Mesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv, ::fwData::Material::sptr material)
 {
     if (! srv)
@@ -692,52 +671,39 @@ void Mesh::setUnclippedPartMaterial(::fwData::Material::sptr material)
 
 //------------------------------------------------------------------------------
 
-void Mesh::setMapperInput(vtkAlgorithmOutput *input)
-{
-    if (input)
-    {
-        m_mapperInput = input;
-        m_manageMapperInput = false;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void Mesh::updateOptionsMode()
 {
-    if (m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS)
-    {
-        createNormalsService();
-    }
-    else
-    {
-        removeNormalsService();
-    }
+    this->createNormalsService();
+//    if (m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS)
+//    {
+//        this->createNormalsService();
+//    }
+//    else
+//    {
+//        this->removeNormalsService();
+//    }
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::createNormalsService()
 {
-    ::fwData::Mesh::sptr Mesh = this->getObject < ::fwData::Mesh >();
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
-    if(m_mapperInput)
-    {
-        ::fwRenderVTK::IVtkAdaptorService::sptr service =
+    ::fwRenderVTK::IVtkAdaptorService::sptr service =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
-                    Mesh,
-                    "::visuVTKAdaptor::Normals"
-                    );
-        SLM_ASSERT("service not instanced", service);
+                    mesh,
+                    "::visuVTKAdaptor::MeshNormals"
+            );
+    SLM_ASSERT("service not instanced", service);
 
-        service->setRenderService( this->getRenderService() );
-        service->setRenderId     ( this->getRenderId()      );
-        service->setPickerId     ( this->getPickerId()      );
-        ::visuVTKAdaptor::Normals::dynamicCast(service)->setMapperInput( m_mapperInput );
-        service->start();
+    service->setRenderService( this->getRenderService() );
+    service->setRenderId     ( this->getRenderId()      );
+    service->setPickerId     ( this->getPickerId()      );
+    ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );
+    service->start();
 
-        m_normalsService = service;
-    }
+    m_normalsService = service;
 }
 
 //------------------------------------------------------------------------------
@@ -755,23 +721,6 @@ void Mesh::removeNormalsService()
 
 void Mesh::buildPipeline()
 {
-    m_pipelineInput = m_mapper;
-
-    if ( m_manageMapperInput )
-    {
-        m_normals->ComputePointNormalsOn();
-        m_normals->ComputeCellNormalsOff();
-        m_normals->ConsistencyOn();
-        m_normals->SplittingOff();
-        m_normals->SetFeatureAngle( m_sharpEdgeAngle );
-
-        if (m_computeNormals)
-        {
-           m_mapperInput   = m_normals->GetOutputPort();
-           m_pipelineInput = m_normals;
-        }
-    }
-
     ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
     if (!m_clippingPlanesId.empty())
@@ -802,14 +751,8 @@ void Mesh::buildPipeline()
         }
     }
 
-    if ( m_manageMapperInput )
-    {
-        this->updateMaterial( m_material );
-        this->updateMesh( mesh );
-        this->updateMapper();
-
-        this->updateOptionsMode();
-    }
+    this->updateMesh( mesh );
+    this->updateOptionsMode();
 
     setActorPropertyToUnclippedMaterial(false);
 
@@ -826,55 +769,20 @@ void Mesh::buildPipeline()
 
 void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
 {
-    if(m_manageMapperInput)
+    if (m_polyData)
     {
-        if (m_polyData)
-        {
-            m_polyData->Delete();
-            m_polyData = 0;
-        }
-        m_polyData = vtkPolyData::New();
-        ::vtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+        m_polyData->Delete();
+        m_polyData = 0;
+    }
+    m_polyData = vtkPolyData::New();
+    ::vtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+    m_mapper->SetInput(m_polyData);
 
-        if (m_computeNormalsAtUpdate)
-        {
-            m_normals->SetInput( m_polyData );
-            m_normals->Update();
-            m_polyData->DeepCopy(m_normals->GetOutput());
-        }
-
-        this->updateMapper();
-
-        if (m_autoResetCamera)
-        {
-            this->getRenderer()->ResetCamera();
-        }
+    if (m_autoResetCamera)
+    {
+        this->getRenderer()->ResetCamera();
     }
     this->setVtkPipelineModified();
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::updateMapper()
-{
-    vtkPolyDataMapper  *mapper = 0;
-    vtkPolyDataAlgorithm *algo = 0;
-
-    SLM_ASSERT("Bad vtkPolyData", m_polyData);
-
-    if( algo = vtkPolyDataAlgorithm::SafeDownCast(m_pipelineInput) )
-    {
-        algo->SetInput( m_polyData );
-        SLM_ASSERT ("missing mapper input", m_mapperInput);
-        m_mapper->SetInputConnection(m_mapperInput);
-    }
-    else if (mapper = vtkPolyDataMapper::SafeDownCast(m_pipelineInput) )
-    {
-        SLM_ASSERT ("mapper input should be 0", m_mapperInput == 0 );
-        mapper->SetInput( m_polyData );
-    }
-
-    SLM_ASSERT( "Bad pipeline input", algo || mapper);
 }
 
 //------------------------------------------------------------------------------
@@ -882,8 +790,7 @@ void Mesh::updateMapper()
 vtkActor *Mesh::newActor()
 {
     vtkActor *actor = vtkActor::New();
-
-    m_mapper->SetInputConnection(m_mapperInput);
+    m_mapper->SetInput(m_polyData);
 
     if (m_clippingPlanes)
     {
@@ -901,13 +808,6 @@ vtkActor *Mesh::newActor()
     actor->SetMapper(m_mapper);
     this->setVtkPipelineModified();
     return actor;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::updateMaterial( ::fwData::Material::sptr material )
-{
-    return ;
 }
 
 //------------------------------------------------------------------------------
