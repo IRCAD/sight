@@ -84,6 +84,28 @@ public :
      * Returns the updated vtkPolyPata
      */
     VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc );
+
+    /*!
+     * @brief Update a vtkPolyData with point normals of fwData::Mesh
+     *
+     * @param[out] polyData vtkPolyData
+     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @return vtkPolyData
+     *
+     * Returns the updated vtkPolyPata
+     */
+    VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+
+    /*!
+     * @brief Update a vtkPolyData with cell normals of fwData::Mesh
+     *
+     * @param[out] polyData vtkPolyData
+     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @return vtkPolyData
+     *
+     * Returns the updated vtkPolyPata
+     */
+    VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
 };
 
 } // namespace helper
