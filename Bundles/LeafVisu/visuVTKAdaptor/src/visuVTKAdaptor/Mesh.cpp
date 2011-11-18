@@ -368,6 +368,7 @@ Mesh::Mesh() throw()
 
     addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
+    addNewHandledEvent (::fwServices::ObjectMsg::UPDATED_OBJECT);
     addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
@@ -446,7 +447,8 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
         this->updateOptionsMode();
     }
 
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH))
+    if( msg->hasEvent(::fwServices::ObjectMsg::UPDATED_OBJECT)
+            || (meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH)) )
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
         this->updateMesh( mesh );
