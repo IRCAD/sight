@@ -72,6 +72,8 @@
                         <menuItem name="Show point normals" style="radio" />
                         <menuItem name="Show cell normals" style="radio" />
                         <menuItem name="Hide normals" style="radio" />
+                        <separator />
+                        <menuItem name="mesh deformation" shortcut="D"/>
                     </layout>
                 </gui>
                 <registry>
@@ -88,7 +90,10 @@
 
                     <menuItem sid="action_showPointNormals" start="yes" />                    
                     <menuItem sid="action_showCellNormals" start="yes" />                    
-                    <menuItem sid="action_hideNormals" start="yes" />                    
+                    <menuItem sid="action_hideNormals" start="yes" />
+                    
+                    <menuItem sid="action_meshDeformation" start="yes" />
+                                        
                 </registry>
             </service>
             
@@ -185,6 +190,11 @@
                             <service uid="action_hideNormals" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
                                 <notify type="::fwComEd::MeshMsg" event="HIDE_NORMALS" />
                             </service>
+                            
+                            <service uid="action_meshDeformation" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <config functor="MeshDeformation" />
+                            </service>
+                            
                         </object>
                     </item>
                     

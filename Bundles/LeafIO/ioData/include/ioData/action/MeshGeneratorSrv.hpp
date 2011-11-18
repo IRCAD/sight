@@ -10,6 +10,7 @@
 #include <fwServices/IService.hpp>
 
 #include <fwGui/IActionSrv.hpp>
+#include <fwDataTools/AlgoMeshDeformation.hpp>
 
 #include "ioData/export.hpp"
 
@@ -90,6 +91,9 @@ private:
 
     /// Functor name used to generate mesh.
     std::string m_functor;
+
+    /// Algo use to animate a deformation on the mesh
+    ::fwDataTools::AlgoMeshDeformation m_animator;
 };
 
 

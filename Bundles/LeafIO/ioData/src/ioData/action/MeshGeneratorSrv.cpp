@@ -64,7 +64,9 @@ void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
                     || m_functor == "ComputeCellNormals"
                     || m_functor == "ShakePointNormals"
                     || m_functor == "ShakeCellNormals"
+                    || m_functor == "MeshDeformation"
                     );
+
 }
 
 //-----------------------------------------------------------------------------
@@ -150,6 +152,12 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
         {
             ::fwDataTools::MeshGenerator::shakePointNormals(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
+        }
+        else if(m_functor == "MeshDeformation")
+        {
+            m_animator.computeDeformation( mesh, 100, 50 );
+            msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED );
+            msg->addEvent( ::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
         }
     }
     catch (const std::exception & e)
