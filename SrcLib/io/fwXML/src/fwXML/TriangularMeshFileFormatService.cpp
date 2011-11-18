@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwXML/MeshFileFormatService.hpp"
+#include "fwXML/TriangularMeshFileFormatService.hpp"
 
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -17,26 +17,26 @@
 #include <fwDataIO/writer/TriangularMeshWriter.hpp>
 
 
-REGISTER_SERVICE( ::fwXML::IFileFormatService , ::fwXML::MeshFileFormatService , ::fwData::TriangularMesh);
+REGISTER_SERVICE( ::fwXML::IFileFormatService , ::fwXML::TriangularMeshFileFormatService , ::fwData::TriangularMesh);
 
 namespace fwXML
 {
 
 //------------------------------------------------------------------------------
 
-MeshFileFormatService::MeshFileFormatService()
+TriangularMeshFileFormatService::TriangularMeshFileFormatService()
 {
     RWPoliciesInstall();
 }
 
 //------------------------------------------------------------------------------
 
-MeshFileFormatService::~MeshFileFormatService()
+TriangularMeshFileFormatService::~TriangularMeshFileFormatService()
 {}
 
 //------------------------------------------------------------------------------
 
-void MeshFileFormatService::RWPoliciesInstall()
+void TriangularMeshFileFormatService::RWPoliciesInstall()
 {
     assert(  m_reader.get() == 0 );
     assert(  m_writer.get() == 0 );
@@ -47,9 +47,9 @@ void MeshFileFormatService::RWPoliciesInstall()
 
 //------------------------------------------------------------------------------
 
-void MeshFileFormatService::load()
+void TriangularMeshFileFormatService::load()
 {
-    SLM_TRACE("MeshFileFormatService::load");
+    SLM_TRACE("TriangularMeshFileFormatService::load");
     // precondition
 
     assert( !m_filename.empty() );
@@ -69,7 +69,7 @@ void MeshFileFormatService::load()
 
 //------------------------------------------------------------------------------
 
-void MeshFileFormatService::save()
+void TriangularMeshFileFormatService::save()
 {
     SLM_TRACE_FUNC();
 

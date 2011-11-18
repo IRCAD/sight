@@ -67,7 +67,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwXML::IFileFormatService</type>
-        <service>::fwXML::MeshFileFormatService</service>
+        <service>::fwXML::TriangularMeshFileFormatService</service>
         <object>::fwData::TriangularMesh</object>
     </extension>
     

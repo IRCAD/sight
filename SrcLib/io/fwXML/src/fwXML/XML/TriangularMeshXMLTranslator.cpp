@@ -40,7 +40,7 @@ void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer 
     ::fwXML::IFileFormatService::sptr binSaver;
     if( filesSrv.empty() )
     {
-        binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::MeshFileFormatService");
+        binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
     }
     else
     {
@@ -62,7 +62,7 @@ void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer
     ::fwXML::IFileFormatService::sptr binLoader;
     if( filesSrv.empty() )
     {
-        binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::MeshFileFormatService");
+        binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
     }
     else
     {
@@ -123,6 +123,5 @@ void TriangularMeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toU
 }
 
 //------------------------------------------------------------------------------
-
 
 }

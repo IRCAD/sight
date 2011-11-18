@@ -17,15 +17,14 @@ namespace fwXML
 
 /**
  * @brief The purpose of this class is to provide an io service to save data
- * @TODO allow specialisation for a specific saver itk DICOM ETC... AS SUBCLASS or strategy pattern .
  */
-class FWXML_CLASS_API MeshFileFormatService : public IFileFormatService
+class FWXML_CLASS_API TriangularMeshFileFormatService : public IFileFormatService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (MeshFileFormatService)(::fwXML::IFileFormatService) ) ;
-    FWXML_API MeshFileFormatService();
+    fwCoreServiceClassDefinitionsMacro ( (TriangularMeshFileFormatService)(::fwXML::IFileFormatService) ) ;
+    FWXML_API TriangularMeshFileFormatService();
 
-    FWXML_API virtual ~MeshFileFormatService();
+    FWXML_API virtual ~TriangularMeshFileFormatService();
 
     FWXML_API virtual void load();
 
