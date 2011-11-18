@@ -25,7 +25,8 @@ void save(Archive & ar, const ::fwData::Array &_array, const unsigned int versio
 {
     ::boost::serialization::void_cast_register< ::fwData::Array, ::fwTools::Object>(NULL,NULL);
     size_t nbComponents = _array.getNumberOfComponents();
-    ar &  ::boost::serialization::make_nvp( "Size", _array.getSize() );
+    ::fwData::Array::SizeType size = _array.getSize();
+    ar &  ::boost::serialization::make_nvp( "Size", size);
     ar &  ::boost::serialization::make_nvp( "NumberOfComponents", nbComponents );
     ar &  ::boost::serialization::make_nvp( "Type", _array.getType().string() );
 
