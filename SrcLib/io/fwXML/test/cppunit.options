@@ -1,6 +1,7 @@
 CLASSTEST=[
            'FwXMLTest',
            'ArrayTest',
+           'MeshTest',
            ]
            
 USE = ['boost']
@@ -10,7 +11,8 @@ LIB = [
       'fwCore_0-1',
       'fwRuntime_0-3',
       'fwData_0-1',
-      'fwServices_0-1'
+      'fwServices_0-1',
+      'fwDataTools_0-1',
       ]
 CONSOLE='yes'
 
