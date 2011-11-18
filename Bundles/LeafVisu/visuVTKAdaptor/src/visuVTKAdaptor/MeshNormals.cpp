@@ -10,6 +10,7 @@
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
 #include <vtkGlyph3D.h>
+#include <vtkGlyphSource2D.h>
 #include <vtkMaskPoints.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -25,6 +26,7 @@
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh ) ;
 
+
 namespace visuVTKAdaptor
 {
 
@@ -33,6 +35,8 @@ MeshNormals::m_normalRepresentationConversion
         = ::boost::assign::map_list_of(std::string("POINT"), POINT_NORMAL)
                                       (std::string("CELL"), CELL_NORMAL)
                                       (std::string("NONE"), NONE);
+
+
 
 //------------------------------------------------------------------------------
 
@@ -147,7 +151,24 @@ void MeshNormals::updateMeshNormals()
         }
 
         algo->SetInput(m_polyData);
-        vtkSmartPointer<vtkArrowSource> arrow = vtkSmartPointer<vtkArrowSource>::New();
+
+        //vtkSmartPointer<vtkArrowSource> arrow = vtkSmartPointer<vtkArrowSource>::New();
+        vtkSmartPointer<vtkGlyphSource2D> arrow = vtkSmartPointer<vtkGlyphSource2D>::New();
+
+        //arrow->SetGlyphTypeToVertex ();
+        //arrow->SetGlyphTypeToDash ();
+        //arrow->SetGlyphTypeToCross ();
+        //arrow->SetGlyphTypeToThickCross ();
+        //arrow->SetGlyphTypeToTriangle ();
+        //arrow->SetGlyphTypeToSquare ();
+        //arrow->SetGlyphTypeToCircle ();
+        //arrow->SetGlyphTypeToDiamond ();
+        arrow->SetGlyphTypeToArrow ();
+        //arrow->SetGlyphTypeToThickArrow ();
+        //arrow->SetGlyphTypeToHookedArrow ();
+        //arrow->SetGlyphTypeToEdgeArrow ();
+
+        arrow->FilledOff();
 
         vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
         glyph->SetInputConnection(algo->GetOutputPort());
@@ -155,6 +176,7 @@ void MeshNormals::updateMeshNormals()
         glyph->SetVectorModeToUseNormal();
         glyph->SetScaleModeToScaleByVector();
         glyph->SetScaleFactor(10.0);
+
         vtkSmartPointer<vtkPolyDataMapper> glyphMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         glyphMapper->SetInputConnection(glyph->GetOutputPort());
 
