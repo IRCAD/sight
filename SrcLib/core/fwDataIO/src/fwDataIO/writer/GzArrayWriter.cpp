@@ -52,7 +52,7 @@ void GzArrayWriter::write()
     }
 
     // file is OK : process now
-    size_t arraySizeInBytes = array->getElementSizeInBytes();
+    size_t arraySizeInBytes = array->getSizeInBytes();
 
     unsigned int uncompressedbyteswrited = gzwrite(rawFile, array->getBuffer(), arraySizeInBytes);
     gzclose(rawFile);
