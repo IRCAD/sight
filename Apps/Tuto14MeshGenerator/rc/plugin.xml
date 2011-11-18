@@ -195,6 +195,10 @@
                                 <config functor="MeshDeformation" />
                             </service>
                             
+                            <service uid="msgWrapper" implementation="::ctrlSelection::wrapper::MsgWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoComChannel="yes">
+                                <wrapper onEvent="ObjectMsg::UPDATED_OBJECT" toEvent="NEW_MESH" toMsgType="::fwComEd::MeshMsg" />
+                            </service>
+                            
                         </object>
                     </item>
                     
@@ -207,7 +211,8 @@
             </item>
 
             <start uid="MyIHM" />
-
+            <start uid="msgWrapper" />
+            
         </object>
         
     </config>
