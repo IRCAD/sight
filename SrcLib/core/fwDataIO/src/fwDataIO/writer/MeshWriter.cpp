@@ -89,7 +89,6 @@ void MeshWriter::write()
 
         while (cellBuf != cellBufEnd)
         {
-
             file << (*cellBuf++) << " " ;
             file << (*cellBuf++) << " " ;
             file << (*cellBuf++) << " " ;

@@ -15,6 +15,9 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/home/phoenix/statement/sequence.hpp>
 #include <boost/spirit/home/phoenix/container.hpp>
+#include <boost/spirit/home/phoenix/bind/bind_member_function.hpp>
+#include <boost/spirit/home/phoenix/core/argument.hpp>
+#include <boost/spirit/home/phoenix/operator/bitwise.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -35,9 +38,23 @@ namespace fwDataIO
 namespace reader
 {
 
+//------------------------------------------------------------------------------
+
+struct cell_data_offset_generator {
+        ::fwData::Mesh::CellDataOffsetType current;
+        cell_data_offset_generator() {current=0;}
+        int operator()() {
+            ::fwData::Mesh::CellDataOffsetType res = current;
+            current += 3;
+            return res;
+        }
+} ;
+
+//------------------------------------------------------------------------------
+
 
 template <typename Iterator>
-bool parseTrian(Iterator first, Iterator last, ::fwData::TriangularMesh::PointContainer &points, ::fwData::TriangularMesh::CellContainer &cells)
+bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 {
     using boost::spirit::qi::ulong_long;
     using boost::spirit::qi::int_;
@@ -46,6 +63,9 @@ bool parseTrian(Iterator first, Iterator last, ::fwData::TriangularMesh::PointCo
     using boost::spirit::qi::_1;
     using boost::spirit::qi::_2;
     using boost::spirit::qi::_3;
+    using boost::spirit::qi::_4;
+    using boost::spirit::qi::_5;
+    using boost::spirit::qi::_6;
     using boost::spirit::qi::repeat;
     using boost::spirit::ascii::space;
     using boost::phoenix::push_back;
@@ -55,35 +75,116 @@ bool parseTrian(Iterator first, Iterator last, ::fwData::TriangularMesh::PointCo
     unsigned long long int nbPoints;
     unsigned long long int nbCells;
 
-    ::fwData::TriangularMesh::PointContainer::value_type point(3);
-    float &pa = point[0];
-    float &pb = point[1];
-    float &pc = point[2];
-    ::fwData::TriangularMesh::CellContainer::value_type cell(3);
-    int &ca = cell[0];
-    int &cb = cell[1];
-    int &cc = cell[2];
+
+    mesh->allocateCellNormals();
+
+    ::fwData::Array::sptr pointArray           = mesh->getPointsArray();
+    ::fwData::Array::sptr cellDataArray        = mesh->getCellDataArray();
+    ::fwData::Array::sptr cellTypesArray       = mesh->getCellTypesArray();
+    ::fwData::Array::sptr cellDataOffsetsArray = mesh->getCellDataOffsetsArray();
+    ::fwData::Array::sptr cellNormalsArray     = mesh->getCellNormalsArray();
+
+
+    ::fwData::Array::SizeType pointArraySize;
+    ::fwData::Array::SizeType cellArraySize;
+
+    ::fwData::Mesh::PointValueType  *pointArrayBuffer       = 0;
+    ::fwData::Mesh::CellValueType   *cellDataArrayBuffer    = 0;
+    ::fwData::Mesh::NormalValueType *cellNormalsArrayBuffer = 0;
 
     bool r = phrase_parse(first, last,
 
         //  Begin grammar
         (
-            ulong_long[ phx::ref(nbPoints) = _1, phx::reserve(phx::ref(points), phx::ref(nbPoints)) ] >>
-            repeat(phx::ref(nbPoints))[ (float_ >> float_ >> float_)[phx::ref(pa) = _1, phx::ref(pb) = _2, phx::ref(pc) = _3, phx::push_back(phx::ref(points),phx::ref(point))] ] >>
+            ulong_long
+            [
+                ref(nbPoints) = _1,
+                phx::bind(&::fwData::Mesh::setNumberOfPoints, *mesh, _1),
+                phx::push_back(ref(pointArraySize),ref(nbPoints)),
+                phx::bind(&::fwData::Array::resize, *pointArray, ref(pointArraySize), true) ,
+                ref(pointArrayBuffer) = phx::bind(&::fwData::Array::begin< ::fwData::Mesh::PointValueType >, *pointArray )
+            ]
 
-            ulong_long[ phx::ref(nbCells) = _1, phx::reserve(phx::ref(cells), phx::ref(nbCells)) ] >>
-            repeat(phx::ref(nbCells))[ (int_ >> int_ >> int_ >> "-1 -1 -1")[phx::ref(ca) = _1, phx::ref(cb) = _2, phx::ref(cc) = _3, phx::push_back(phx::ref(cells),phx::ref(cell))]  ]
+            >> repeat(ref(nbPoints))
+            [
+                (float_ >> float_ >> float_)
+                [
+                    *ref(pointArrayBuffer)++ = _1,
+                    *ref(pointArrayBuffer)++ = _2,
+                    *ref(pointArrayBuffer)++ = _3
+                ]
+            ]
+
+            >> ulong_long
+            [
+                ref(nbCells) = _1,
+                phx::bind(&::fwData::Mesh::setNumberOfCells, *mesh, _1),
+                phx::bind(&::fwData::Mesh::setCellDataSize, *mesh, _1*3),
+                phx::bind(&::fwData::Mesh::adjustAllocatedMemory, *mesh),
+                ref(cellDataArrayBuffer) = phx::bind(&::fwData::Array::begin< ::fwData::Mesh::CellValueType >, *cellDataArray ),
+                ref(cellNormalsArrayBuffer) = phx::bind(&::fwData::Array::begin< ::fwData::Mesh::NormalValueType >, *cellNormalsArray )
+            ]
+
+            >> repeat(ref(nbCells))
+            [
+                (int_ >> int_ >> int_ >> float_ >> float_ >> float_)
+                [
+                    *ref(cellDataArrayBuffer)++ = _1,
+                    *ref(cellDataArrayBuffer)++ = _2,
+                    *ref(cellDataArrayBuffer)++ = _3,
+                    *ref(cellNormalsArrayBuffer)++ = _4,
+                    *ref(cellNormalsArrayBuffer)++ = _5,
+                    *ref(cellNormalsArrayBuffer)++ = _6
+                ]
+            ]
         ),
         //  End grammar
 
         space
         );
 
+    std::fill( 
+            cellTypesArray->begin< ::fwData::Mesh::CellTypes >(),
+            cellTypesArray->end< ::fwData::Mesh::CellTypes >(),
+            static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE)
+            );
+
+
+    cell_data_offset_generator cellDataOffsetGenerator;
+
+    std::generate(
+            cellDataOffsetsArray->begin< ::fwData::Mesh::CellDataOffsetType >(),
+            cellDataOffsetsArray->end< ::fwData::Mesh::CellDataOffsetType >(),
+            cellDataOffsetGenerator
+            );
+
+
+
+    // Check if normals array is filled of -1. values
+    const float normalBadValue = -1.f;
+    const int nBadValue = *reinterpret_cast<const int*>(&normalBadValue);
+
+    float normal = normalBadValue;
+    int &n = *reinterpret_cast<int*>(&normal);
+    n = std::accumulate(
+            cellNormalsArray->begin< int >(),
+            cellNormalsArray->end< int >(),
+            n,
+            boost::phoenix::arg_names::arg1 & nBadValue
+            );
+
+    if (normal == -1)
+    {
+        mesh->clearCellNormals();
+        SLM_WARN("normals equals to (-1,-1,-1) : normals removed.");
+    }
+
     if (first != last) // fail if we didn't get a full match
         return false;
     return r;
 
 }
+
 
 
 //------------------------------------------------------------------------------
@@ -98,16 +199,6 @@ MeshReader::~MeshReader()
 {}
 
 //------------------------------------------------------------------------------
-
-struct cell_data_offset_generator {
-        ::fwData::Mesh::CellDataOffsetType current;
-        cell_data_offset_generator() {current=0;}
-        int operator()() {
-            ::fwData::Mesh::CellDataOffsetType res = current;
-            current += 3;
-            return res;
-        }
-} ;
 
 void MeshReader::read()
 {
@@ -145,53 +236,13 @@ void MeshReader::read()
 
     ::fwData::Mesh::sptr mesh = getConcreteObject();
 
-    ::fwData::TriangularMesh::PointContainer newPoints;
-    ::fwData::TriangularMesh::CellContainer  newCells;
-
     mesh->clear();
 
-    if (!parseTrian(buffer, buffer+length, newPoints, newCells))
+    if (!parseTrian2(buffer, buffer+length, mesh))
     {
         OSLM_ERROR( "Bad file format : " << path.string());
         throw std::ios_base::failure("Unable to open " + path.string() + " : Bad file format.");
     }
-
-
-    mesh->setNumberOfPoints(newPoints.size());
-    mesh->setNumberOfCells(newCells.size());
-    mesh->setCellDataSize(newCells.size() * 3);
-
-    mesh->adjustAllocatedMemory();
-
-    ::fwData::Mesh::PointValueType *pointIter = mesh->getPointsArray()->begin< ::fwData::Mesh::PointValueType >();
-    BOOST_FOREACH( const ::fwData::TriangularMesh::PointContainer::value_type &p, newPoints )
-    {
-        std::copy(p.begin(), p.end(), pointIter);
-        pointIter += 3;
-    }
-
-    ::fwData::Array::sptr cellTypesArray = mesh->getCellTypesArray();
-    std::fill( 
-            cellTypesArray->begin< ::fwData::Mesh::CellTypes >(),
-            cellTypesArray->end< ::fwData::Mesh::CellTypes >(),
-            static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE)
-            );
-
-    ::fwData::Mesh::CellValueType *cellIter = mesh->getCellDataArray()->begin< ::fwData::Mesh::CellValueType >();
-    BOOST_FOREACH( const ::fwData::TriangularMesh::CellContainer::value_type &c, newCells )
-    {
-        std::copy(c.begin(), c.end(), cellIter);
-        cellIter += 3;
-    }
-
-    cell_data_offset_generator cellDataOffsetGenerator;
-
-    ::fwData::Array::sptr cellDataOffsetsArray = mesh->getCellDataOffsetsArray();
-    std::generate(
-            cellDataOffsetsArray->begin< ::fwData::Mesh::CellDataOffsetType >(),
-            cellDataOffsetsArray->end< ::fwData::Mesh::CellDataOffsetType >(),
-            cellDataOffsetGenerator
-            );
 
 }
 
