@@ -47,19 +47,19 @@ public:
 
     /**
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
-     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondance
+     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence
      */
     FWXML_API static xmlNodePtr toXML( ::boost::shared_ptr< ::fwTools::Object> obj );
 
     /**
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
-     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondance and visit all its Field
+     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence and visit all its Field
      */
     FWXML_API static xmlNodePtr toXMLRecursive( ::boost::shared_ptr< ::fwTools::Object> obj );
 
     /**
      * @brief modify the  given object return from the  xmlNode by calling the corresponding XMLTranslator Specialized
-     * Use ClassFactoryRegistry , if no correspondance let object unchanged
+     * Use ClassFactoryRegistry , if no correspondence let object unchanged
      * Object must be castable to source->name class
      */
     FWXML_API static void fromXML( ::boost::shared_ptr< ::fwTools::Object> toUpdate, xmlNodePtr source );

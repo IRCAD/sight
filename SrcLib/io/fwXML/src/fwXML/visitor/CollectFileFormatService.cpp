@@ -14,6 +14,7 @@
 #include <fwData/List.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Graph.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwServices/Base.hpp>
 
@@ -62,6 +63,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     ::fwData::Resection::sptr resection;
     ::fwData::Graph::sptr graph;
     ::fwData::Node::sptr node;
+    ::fwData::Mesh::sptr mesh;
 
     if ( composite = ::fwData::Composite::dynamicCast( src ))
     {
@@ -111,6 +113,29 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     else if ( (node = ::fwData::Node::dynamicCast( src ) ) && node->getObject() )
     {
         ::fwData::visitor::accept( node->getObject() , this);
+    }
+    else if ( mesh = ::fwData::Mesh::dynamicCast( src ) )
+    {
+        ::fwData::visitor::accept( mesh->getPointsArray() , this);
+        ::fwData::visitor::accept( mesh->getCellTypesArray() , this);
+        ::fwData::visitor::accept( mesh->getCellDataArray() , this);
+        ::fwData::visitor::accept( mesh->getCellDataOffsetsArray() , this);
+        if(mesh->getPointColorsArray())
+        {
+            ::fwData::visitor::accept( mesh->getPointColorsArray() , this);
+        }
+        if(mesh->getCellColorsArray())
+        {
+            ::fwData::visitor::accept( mesh->getCellColorsArray() , this);
+        }
+        if(mesh->getPointNormalsArray())
+        {
+            ::fwData::visitor::accept( mesh->getPointNormalsArray() , this);
+        }
+        if(mesh->getCellNormalsArray())
+        {
+            ::fwData::visitor::accept( mesh->getCellNormalsArray() , this);
+        }
     }
 }
 

@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Mesh.hpp>
+
 #include <fwTools/ClassRegistrar.hpp>
 #include <typeinfo>
 
@@ -58,6 +60,7 @@
 #include "fwXML/XML/SingleFileXMLTranslator.hpp"
 #include "fwXML/XML/DictionaryOrganXMLTranslator.hpp"
 #include "fwXML/XML/ArrayXMLTranslator.hpp"
+#include "fwXML/XML/MeshXMLTranslator.hpp"
 
 namespace fwXML
 {
@@ -102,6 +105,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator            
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                 ,  ::fwData::location::SingleFile   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan        );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ArrayXMLTranslator                                      ,  ::fwData::Array                  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MeshXMLTranslator                                       ,  ::fwData::Mesh                   );
 }
 
 
