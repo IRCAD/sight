@@ -65,11 +65,12 @@ void ArrayTest::testArray()
     CPPUNIT_ASSERT(::boost::filesystem::exists(testFile));
 
     // load Array
-    ::fwData::Array::sptr array2 = ::fwData::Array::dynamicCast(serializer.deSerialize(testFile));
+    ::fwData::Array::sptr array2 = ::fwData::Array::dynamicCast(serializer.deSerialize(testFile, true));
 
     // check Array
     CPPUNIT_ASSERT(array2);
 
+    CPPUNIT_ASSERT_EQUAL(array1->getSizeInBytes(), array2->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(array1->getElementSizeInBytes(), array2->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(array1->getNumberOfDimensions(), array2->getNumberOfDimensions());
     CPPUNIT_ASSERT(array1->getSize() == array2->getSize());
@@ -113,7 +114,13 @@ void ArrayTest::compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr
     size += 10,100;
 
     array->resize("uint32", size, NB_COMPONENT, true);
+    char *iter = array->begin<char>();
 
+    unsigned int count = 0;
+    for (; iter != array->end<char>() ; ++iter)
+    {
+        *iter = count++;
+    }
     return array;
 }
 
