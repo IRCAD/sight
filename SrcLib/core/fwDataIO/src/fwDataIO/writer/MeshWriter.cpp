@@ -47,6 +47,8 @@ void MeshWriter::write()
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);
+    file.precision(std::numeric_limits< float >::digits10);
+
     if (!file.is_open())
     {
         OSLM_ERROR( "Trian file writing error for " << getFile().string());
