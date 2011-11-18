@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <algorithm>
-#include <iostream> //REMOVEME
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
@@ -24,13 +23,15 @@
 namespace fwXML
 {
 
-// from an object ( in a FIELD it is *mandatory* ) find its index/rank in parent Field which contain it
-int getFieldIndex( ::boost::shared_ptr <fwTools::Object> obj )
-{
-    ::boost::shared_ptr <fwTools::Object> parent = fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
-    assert ( ::boost::dynamic_pointer_cast< fwTools::Field >(parent) );
+//------------------------------------------------------------------------------
 
-    fwTools::Object::ChildContainer::iterator iter =
+// from an object ( in a FIELD it is *mandatory* ) find its index/rank in parent Field which contain it
+int getFieldIndex( ::fwTools::Object::sptr obj )
+{
+    ::fwTools::Object::sptr parent = ::fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
+    assert ( ::fwTools::Field::dynamicCast(parent) );
+
+    ::fwTools::Object::ChildContainer::iterator iter =
     std::find( parent->children().begin(),   parent->children().end(), obj );
 
     // must exist
@@ -40,15 +41,16 @@ int getFieldIndex( ::boost::shared_ptr <fwTools::Object> obj )
     OSLM_DEBUG( "getFieldIndex" << obj->className() << " addr=" << obj.get() << " indexFound=" << index );
 
     return index;
-
 }
 
-// from an object find transitivaly the first parent which is not a Field
-::boost::shared_ptr <fwTools::Object> dataParent( ::boost::shared_ptr <fwTools::Object> obj )
-{
-    ::boost::shared_ptr <fwTools::Object> parent = fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
+//------------------------------------------------------------------------------
 
-    while ( parent &&  ::boost::dynamic_pointer_cast< fwTools::Field >(parent) )
+// from an object find transitivaly the first parent which is not a Field
+::fwTools::Object::sptr dataParent( ::fwTools::Object::sptr obj )
+{
+    ::fwTools::Object::sptr parent = ::fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
+
+    while ( parent &&  ::fwTools::Field::dynamicCast(parent) )
     {
         parent = dataParent( parent );
     }
@@ -57,14 +59,11 @@ int getFieldIndex( ::boost::shared_ptr <fwTools::Object> obj )
     OSLM_DEBUG( "dataParentof ( " << obj->className() << " addr=" << obj.get() << " ) return " <<  parent->className() << " addr=" << parent.get()  );
 
     return parent;
-
-
 }
 
+//------------------------------------------------------------------------------
 
-
-
-boost::filesystem::path PatientFolderPathPolicy::getPath(::boost::shared_ptr <fwTools::Object> obj )
+::boost::filesystem::path PatientFolderPathPolicy::getPath(::fwTools::Object::sptr obj )
 {
     static IndexPathPolicy fpolicy;
 
@@ -108,11 +107,6 @@ boost::filesystem::path PatientFolderPathPolicy::getPath(::boost::shared_ptr <fw
         return parentFolder / organName / "reconstruction.xml";
     }
 
-
-
-
-
-    //return DefaultPathPolicy().getPath(obj);
     return fpolicy.getPath(obj);
 }
 

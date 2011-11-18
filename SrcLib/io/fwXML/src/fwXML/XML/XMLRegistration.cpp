@@ -57,6 +57,7 @@
 #include "fwXML/XML/PlaneListXMLTranslator.hpp"
 #include "fwXML/XML/SingleFileXMLTranslator.hpp"
 #include "fwXML/XML/DictionaryOrganXMLTranslator.hpp"
+#include "fwXML/XML/ArrayXMLTranslator.hpp"
 
 namespace fwXML
 {
@@ -64,21 +65,21 @@ namespace fwXML
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator<fwTools::Object>                   ,  fwTools::Object                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
-//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Integer>                 ,  ::fwData::Integer                 );
+//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Integer>                 ,  ::fwData::Integer             );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , FieldXMLTranslator                                      ,  ::fwTools::Field                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ProcessObject>          ,  ::fwData::ProcessObject          );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Region>                 ,  ::fwData::Region                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );
-//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::String>                 ,  ::fwData::String                 );
+//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::String>                 ,  ::fwData::String               );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::PatientDB>              ,  ::fwData::PatientDB              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Patient>                ,  ::fwData::Patient                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Study>                  ,  ::fwData::Study                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram                  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Acquisition>            ,  ::fwData::Acquisition            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Reconstruction>         ,  ::fwData::Reconstruction         );
-//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::DictionaryOrgan>        ,  ::fwData::DictionaryOrgan        );
+//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::DictionaryOrgan>        ,  ::fwData::DictionaryOrgan      );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Dictionary>             ,  ::fwData::Dictionary             );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransfertFunctionPoint> ,  ::fwData::TransfertFunctionPoint );
@@ -100,6 +101,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator                                  ,  ::fwData::PlaneList              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                 ,  ::fwData::location::SingleFile   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan        );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ArrayXMLTranslator                                      ,  ::fwData::Array                  );
 }
 
 

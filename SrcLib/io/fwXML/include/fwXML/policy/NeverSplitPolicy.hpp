@@ -19,10 +19,12 @@ namespace fwXML
 class FWXML_CLASS_API NeverSplitPolicy : public ISplitPolicy
 {
 public:
+    fwCoreClassDefinitionsWithFactoryMacro((NeverSplitPolicy)(ISplitPolicy), ( () ), new NeverSplitPolicy );
+
     /**
      * @brief   true if the object should be spliten, false otherwise
      */
-    FWXML_API virtual bool split(::boost::shared_ptr< ::fwTools::Object > obj);
+    FWXML_API virtual bool split(::fwTools::Object::sptr obj);
 
     /**
      * @brief       Virtual destructor

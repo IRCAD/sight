@@ -10,8 +10,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 
-#include "fwXML/config.hpp"
 #include <fwData/Object.hpp>
+#include "fwXML/config.hpp"
 
 namespace fwXML
 {
@@ -25,7 +25,7 @@ namespace fwXML
  *
  */
 
-class FWXML_CLASS_API IPathPolicy
+class FWXML_CLASS_API IPathPolicy : public ::fwCore::BaseObject
 {
 
 public :
@@ -40,7 +40,7 @@ public :
      * @return path of the Object
      *
      **/
-     FWXML_API virtual ::boost::filesystem::path getPath( ::boost::shared_ptr < ::fwTools::Object > obj ) = 0 ;
+     FWXML_API virtual ::boost::filesystem::path getPath( ::fwTools::Object::sptr obj ) = 0 ;
 
     /**
      * @brief       Virtual destructor

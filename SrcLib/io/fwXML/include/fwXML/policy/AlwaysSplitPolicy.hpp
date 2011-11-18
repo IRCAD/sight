@@ -20,10 +20,13 @@ namespace fwXML
 class FWXML_CLASS_API AlwaysSplitPolicy : public ISplitPolicy
 {
 public:
+
+    fwCoreClassDefinitionsWithFactoryMacro((AlwaysSplitPolicy)(ISplitPolicy), ( () ), new AlwaysSplitPolicy );
+
     /**
      * @brief   always return true
      */
-    FWXML_API virtual bool split(::boost::shared_ptr< ::fwTools::Object > obj);
+    FWXML_API virtual bool split(::fwTools::Object::sptr obj);
 };
 
 } //namespace fwXML

@@ -77,4 +77,10 @@
         <object>::fwData::Image</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwXML::IFileFormatService</type>
+        <service>::fwXML::ArrayFileFormatService</service>
+        <object>::fwData::Array</object>
+    </extension>
+    
 </plugin>

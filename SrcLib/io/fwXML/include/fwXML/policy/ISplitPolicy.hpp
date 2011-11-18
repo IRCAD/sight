@@ -22,7 +22,7 @@ namespace fwXML
  * a split by creating a new XMLAggregator
  *
  */
-class FWXML_CLASS_API ISplitPolicy
+class FWXML_CLASS_API ISplitPolicy : public ::fwCore::BaseObject
 {
 public:
     /**
@@ -32,7 +32,7 @@ public:
      *
      * @return  true iff the object should be splitted, false otherwise
      */
-    FWXML_API virtual bool split(::boost::shared_ptr< ::fwTools::Object > obj) = 0 ;
+    FWXML_API virtual bool split(::fwTools::Object::sptr obj) = 0 ;
 
     /**
      * @brief       Virtual destructor

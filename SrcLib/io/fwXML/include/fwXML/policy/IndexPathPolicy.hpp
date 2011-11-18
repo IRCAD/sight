@@ -29,6 +29,9 @@ namespace fwXML
 class FWXML_CLASS_API IndexPathPolicy : public IPathPolicy
  {
 public :
+
+    fwCoreClassDefinitionsWithFactoryMacro((IndexPathPolicy)(IPathPolicy), ( () ), new IndexPathPolicy );
+
     /**
       * @brief  defines a path to save an Object
       * Path : <className>_<IndexNumber>.xml
@@ -36,7 +39,7 @@ public :
       * @param obj object to save
       * @return path of the Object
       */
-    FWXML_API virtual ::boost::filesystem::path getPath(::boost::shared_ptr< ::fwTools::Object > obj) ;
+    FWXML_API virtual ::boost::filesystem::path getPath(::fwTools::Object::sptr obj) ;
 
 private :
 
@@ -44,7 +47,7 @@ private :
     std::map<std::string, int> m_lastIndexAvailable ;
 
     /// maintain object addr <-> index
-    std::map< ::boost::weak_ptr < ::fwTools::Object >, int> m_index ;
+    std::map< ::fwTools::Object::wptr, int> m_index ;
 
  }; //class IndexPathPolicy
 

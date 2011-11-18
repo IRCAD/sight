@@ -11,9 +11,8 @@
 namespace fwXML
 {
 
-::boost::filesystem::path IndexPathPolicy::getPath(::boost::shared_ptr < ::fwTools::Object > obj)
+::boost::filesystem::path IndexPathPolicy::getPath(::fwTools::Object::sptr obj)
 {
-
     if ( m_index[obj] != 0 )
     {
         // index exist m_index[obj] correctly set

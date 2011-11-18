@@ -26,6 +26,8 @@ class FWXML_CLASS_API PatientFolderPathPolicy : public IPathPolicy
  {
 public :
 
+    fwCoreClassDefinitionsWithFactoryMacro((PatientFolderPathPolicy)(IPathPolicy), ( () ), new PatientFolderPathPolicy );
+
      /**
      * @brief   defines a path to save an Object
      *
@@ -36,9 +38,9 @@ public :
      * @return path of the Object
      *
      **/
-     FWXML_API virtual ::boost::filesystem::path getPath(::boost::shared_ptr <fwTools::Object> obj ) ;
+     FWXML_API virtual ::boost::filesystem::path getPath(::fwTools::Object::sptr obj ) ;
 
- }; //class PatientFolderPathPolicy
+ };
 
 }//namespace fwXML
 
