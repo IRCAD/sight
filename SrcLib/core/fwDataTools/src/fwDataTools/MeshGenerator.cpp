@@ -19,6 +19,11 @@ using namespace boost::assign;
 namespace fwDataTools
 {
 
+struct RandFloat{
+    float operator()()
+    { return ((rand()%101-50.f))/500.f; };
+} ;
+
 //------------------------------------------------------------------------------
 
 MeshGenerator::MeshGenerator()
@@ -534,14 +539,11 @@ void MeshGenerator::shakeNormals(::fwData::Array::sptr array)
                 boost::extents[nbOfNormals]
                 );
 
-        struct {
-            float operator()()
-            { return ((rand()%101-50.f))/500.f; };
-        } RandFloat;
 
+        RandFloat randFloat;
         for (::fwData::Mesh::Id i = 0; i < nbOfNormals; ++i)
         {
-            Vector<float> v(RandFloat(), RandFloat(), RandFloat());
+            Vector<float> v(randFloat(), randFloat(), randFloat());
             normals[i] += v;
             normals[i].normalize();
         }
@@ -601,11 +603,12 @@ void MeshGenerator::shakePoint(::fwData::Mesh::sptr mesh)
 {
     size_t nbPts = mesh->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
+    RandFloat randFloat;
     for(size_t i=0 ; i<nbPts ; ++i )
     {
-        points[i][0] += 2 * (rand()%5 - 2)/2.;
-        points[i][1] += 2 * (rand()%5 - 2)/2.;
-        points[i][2] += 2 * (rand()%5 - 2)/2.;
+        points[i][0] += randFloat()*5;
+        points[i][1] += randFloat()*5;
+        points[i][2] += randFloat()*5;
     }
 }
 
