@@ -162,15 +162,13 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 
     // Check if normals array is filled of -1. values
     const float normalBadValue = -1.f;
-    const int nBadValue = *reinterpret_cast<const int*>(&normalBadValue);
-
     float normal = normalBadValue;
     int &n = *reinterpret_cast<int*>(&normal);
-    n = std::accumulate(
+
+    std::for_each(
             cellNormalsArray->begin< int >(),
             cellNormalsArray->end< int >(),
-            n,
-            boost::phoenix::arg_names::arg1 & nBadValue
+            ref(n) &= boost::phoenix::arg_names::arg1
             );
 
     if (normal == -1)
