@@ -1,7 +1,7 @@
 CLASSTEST=[
-           'FwXMLTest',
-           'ArrayTest',
-           'MeshTest',
+           'ObjectTest',
+           'ObjectGenerator',
+           'ObjectComparator',
            ]
            
 USE = ['boost']
