@@ -16,7 +16,7 @@
     <xsd:element name="ReconstructionFormat" type="xsd:string"/>
     <xsd:element name="OrganName" type="xsd:string"/>
     <xsd:element name="StructureType" type="xsd:string"/>
-    <xsd:element name="IsClosed" type="xsd:boolean"/>
+    <xsd:element name="IsClosed" type="TriboolType"/>
     <xsd:element name="IsAutomatic" type="xsd:boolean"/>
     <xsd:element name="AvgVolume" type="xsd:double"/>
     <xsd:element name="VolStdDeviation" type="xsd:double"/>
@@ -37,5 +37,13 @@
     <xsd:attribute name="class" type="xsd:string"/>
     <xsd:attribute ref="xml:base" />
 </xsd:complexType>
+
+<xsd:simpleType name="TriboolType">
+  <xsd:restriction base="xsd:integer">
+    <xsd:enumeration value="-1"/>
+    <xsd:enumeration value="0"/>
+    <xsd:enumeration value="1"/>
+  </xsd:restriction>
+</xsd:simpleType>
 
 </xsd:schema>
