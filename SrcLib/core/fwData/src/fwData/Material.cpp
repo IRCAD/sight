@@ -71,6 +71,20 @@ Color::sptr Material::diffuse() const
     return m_diffuse ;
 }
 
+//------------------------------------------------------------------------------
 
+void Material::setAmbient(Color::sptr ambient)
+{
+    m_ambient = ambient;
+}
+
+//------------------------------------------------------------------------------
+
+void Material::setDiffuse(Color::sptr diffuse)
+{
+    m_diffuse = diffuse;
+}
+
+//------------------------------------------------------------------------------
 
 }

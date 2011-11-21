@@ -33,7 +33,6 @@
 #include "fwXML/boostSerializer/TransfertFunction.hpp"
 #include "fwXML/boostSerializer/Point.hpp"
 #include "fwXML/boostSerializer/ResectionDB.hpp"
-
 //#include "fwXML/boostSerializer/Graph.hpp"
 
 
@@ -61,6 +60,7 @@
 #include "fwXML/XML/DictionaryOrganXMLTranslator.hpp"
 #include "fwXML/XML/ArrayXMLTranslator.hpp"
 #include "fwXML/XML/MeshXMLTranslator.hpp"
+#include "fwXML/XML/MaterialXMLTranslator.hpp"
 
 namespace fwXML
 {
@@ -106,6 +106,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator           
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan        );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ArrayXMLTranslator                                      ,  ::fwData::Array                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MeshXMLTranslator                                       ,  ::fwData::Mesh                   );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MaterialXMLTranslator                                   ,  ::fwData::Material               );
 }
 
 
