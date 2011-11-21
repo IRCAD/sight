@@ -51,6 +51,68 @@ FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexI
  */
 FWMATH_API bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
 
+//-----------------------------------------------------------------------------
+template <typename T, typename U>
+std::pair< T, U > makeOrderedPair(const T first, const U second)
+{
+    if (first < second)
+    {
+        return std::pair< T, U >(first, second);
+    }
+    else
+    {
+        return std::pair< T, U >(second, first);
+    }
+}
+
+//-----------------------------------------------------------------------------
+template <typename T, typename U>
+bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBegin, U* cellDataOffsetsEnd)
+{
+    typedef std::pair< T, T >  Edge; // always Edge.first < Edge.second !!
+    typedef boost::unordered_map< Edge, int >  EdgeHistogram;
+    EdgeHistogram edgesHistogram;
+    bool isBorderless = true;
+
+    size_t dataLen = 0;
+    size_t numberOfCells = cellDataOffsetsBegin - cellDataOffsetsEnd;
+    U* iter = cellDataOffsetsBegin;
+    U* iter2 = cellDataOffsetsBegin + 1;
+    const U* iterEnd = cellDataOffsetsEnd - 1;
+
+
+    for (
+            ;
+            iter != iterEnd || ( iter != cellDataOffsetsEnd && (dataLen = (cellDataEnd - cellDataBegin) - *iter) ) ;
+            dataLen = *++iter2 - *++iter
+        )
+    {
+        T* iterCell = cellDataBegin + *iter;
+        T* iterCell2 = iterCell + 1;
+        T* beginCell = iterCell;
+        const T* iterCellEnd = beginCell + dataLen - 1;
+        for (
+                ;
+                iterCell != iterCellEnd || ( iterCell != (beginCell + dataLen) && (iterCell2 = beginCell) ) ;
+                ++iterCell, ++iterCell2
+            )
+        {
+            ++edgesHistogram[makeOrderedPair(*iterCell, *(iterCell2))];
+        }
+    }
+
+    BOOST_FOREACH(EdgeHistogram::value_type &histo, edgesHistogram)
+    {
+        if (histo.second<2)
+        {
+            isBorderless = false;
+            break;
+        }
+    }
+
+    return isBorderless;
+}
+
 }
 
 #endif /* _FWMATH_MESHFUNCTIONS_HPP_ */

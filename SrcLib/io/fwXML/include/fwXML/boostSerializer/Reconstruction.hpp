@@ -34,7 +34,21 @@ void load(Archive & ar, ::fwData::Reconstruction & _reconstruction, const unsign
     ar &  ::boost::serialization::make_nvp( "ReconstructionFormat" , _reconstruction.getRefReconstructionFormat() );
     ar &  ::boost::serialization::make_nvp( "OrganName" , _reconstruction.getRefOrganName() );
     ar &  ::boost::serialization::make_nvp( "StructureType" , _reconstruction.getRefStructureType() );
-    ar &  ::boost::serialization::make_nvp( "IsClosed" , _reconstruction.getRefIsClosed() );
+
+    int isClosed = -1;
+    ar &  ::boost::serialization::make_nvp( "IsClosed" , isClosed );
+    switch(isClosed)
+    {
+    case 0:
+        _reconstruction.getRefIsClosed() = false;
+        break;
+    case 1:
+        _reconstruction.getRefIsClosed() = true;
+        break;
+    default:
+        _reconstruction.getRefIsClosed() = ::boost::logic::indeterminate ;
+    }
+
     ar &  ::boost::serialization::make_nvp( "IsAutomatic" , _reconstruction.getRefIsAutomatic() );
     ar &  ::boost::serialization::make_nvp( "AvgVolume" , _reconstruction.getRefAvgVolume() );
     ar &  ::boost::serialization::make_nvp( "VolStdDeviation" , _reconstruction.getRefVolStdDeviation() );
@@ -74,7 +88,9 @@ void save(Archive & ar, const ::fwData::Reconstruction & _reconstruction, const 
 //  newStr = ::fwTools::toStringWithoutAccent( _reconstruction.getCRefStructureType() );
     ar &  ::boost::serialization::make_nvp( "StructureType" , _reconstruction.getCRefStructureType() );
 
-    ar &  ::boost::serialization::make_nvp( "IsClosed" , _reconstruction.getCRefIsClosed() );
+    int isClosed = ( ::boost::logic::indeterminate(_reconstruction.getCRefIsClosed()) ) ? -1 : ( (_reconstruction.getCRefIsClosed()) ? 1 : 0 );
+    ar &  ::boost::serialization::make_nvp( "IsClosed" , isClosed);
+
     ar &  ::boost::serialization::make_nvp( "IsAutomatic" , _reconstruction.getCRefIsAutomatic() );
     ar &  ::boost::serialization::make_nvp( "AvgVolume" , _reconstruction.getCRefAvgVolume() );
     ar &  ::boost::serialization::make_nvp( "VolStdDeviation" , _reconstruction.getCRefVolStdDeviation() );

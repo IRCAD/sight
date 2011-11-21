@@ -9,8 +9,10 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/Factory.hpp>
 
+#include <fwMath/MeshFunctions.hpp>
+
 #include "fwData/Image.hpp"
-#include "fwData/TriangularMesh.hpp"
+#include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Reconstruction.hpp"
 
@@ -31,7 +33,7 @@ Reconstruction::Reconstruction() :
     m_sReconstructionFormat(""),
     m_sOrganName(""),
     m_sStructureType(""),
-    m_bIsClosed(false),
+    m_bIsClosed( ::boost::logic::indeterminate ),
     m_bIsAutomatic(false),
     m_dAvgVolume(0),
     m_dVolStdDeviation(0),
@@ -173,31 +175,31 @@ void Reconstruction::setImage( ::fwData::Image::sptr _pImage )
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::setTriangularMesh( ::fwData::TriangularMesh::sptr _pTriangularMesh )
+void Reconstruction::setMesh( ::fwData::Mesh::sptr _pMesh )
 {
-    if ( _pTriangularMesh == 0 )
+    if ( _pMesh == 0 )
     {
         SLM_WARN("Reconstruction::setImage : the image pointer is null.");
         this->setField( Reconstruction::ID_MESH ); // the previous image is deleted
     }
     else
     {
-        this->setFieldSingleElement( Reconstruction::ID_MESH, _pTriangularMesh );
+        this->setFieldSingleElement( Reconstruction::ID_MESH, _pMesh );
     }
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::TriangularMesh::csptr Reconstruction::getTriangularMesh() const
+::fwData::Mesh::csptr Reconstruction::getMesh() const
 {
-    return const_cast< Reconstruction *  >(this)->getTriangularMesh();
+    return const_cast< Reconstruction *  >(this)->getMesh();
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::TriangularMesh::sptr Reconstruction::getTriangularMesh()
+::fwData::Mesh::sptr Reconstruction::getMesh()
 {
-    ::fwData::TriangularMesh::sptr _pTriangularMesh;
+    ::fwData::Mesh::sptr _pMesh;
 
     const unsigned int NbChildren = this->getField( Reconstruction::ID_MESH )->children().size();
 
@@ -206,13 +208,13 @@ void Reconstruction::setTriangularMesh( ::fwData::TriangularMesh::sptr _pTriangu
     // Test if the image is allocated
     if( NbChildren == 1 )
     {
-        _pTriangularMesh = boost::dynamic_pointer_cast< ::fwData::TriangularMesh > ( this->getField( Reconstruction::ID_MESH )->children()[0] );
+        _pMesh = boost::dynamic_pointer_cast< ::fwData::Mesh > ( this->getField( Reconstruction::ID_MESH )->children()[0] );
     }
     else
     {
-        SLM_WARN("Reconstruction::getTriangularMesh : return an image pointer is null.");
+        SLM_WARN("Reconstruction::getMesh : return an image pointer is null.");
     }
-    return _pTriangularMesh;
+    return _pMesh;
 }
 
 //------------------------------------------------------------------------------
@@ -234,6 +236,54 @@ void Reconstruction::setMaterial( ::fwData::Material::sptr _pMaterial )
 ::fwData::Material::sptr Reconstruction::getMaterial()
 {
     return m_pMaterial;
+}
+
+//------------------------------------------------------------------------------
+
+bool Reconstruction::getIsClosed()
+{
+    bool isClosed = false;
+    if (::boost::logic::indeterminate(m_bIsClosed))
+    {
+        ::fwData::Mesh::sptr mesh = this->getMesh();
+        ::fwData::Array::sptr cellData = mesh->getCellDataArray();
+        ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
+        ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
+        ::fwData::Mesh::Id nbOfCells = mesh->getNumberOfCells();
+        ::fwData::Mesh::CellValueType* cellDataBegin = cellData->begin< ::fwData::Mesh::CellValueType >();
+        ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
+        ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = cellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
+        ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
+
+        isClosed = ::fwMath::isBorderlessSurface(cellDataBegin, cellDataEnd, cellDataOffsetsBegin, cellDataOffsetsEnd );
+        m_bIsClosed = isClosed;
+    }
+    else
+    {
+        isClosed = m_bIsClosed;
+    }
+    return isClosed;
+}
+
+//------------------------------------------------------------------------------
+
+::boost::logic::tribool &Reconstruction::getRefIsClosed()
+{
+    return m_bIsClosed;
+}
+
+//------------------------------------------------------------------------------
+
+const ::boost::logic::tribool& Reconstruction::getCRefIsClosed() const
+{
+    return m_bIsClosed;
+}
+
+//------------------------------------------------------------------------------
+
+void Reconstruction::setIsClosed(::boost::logic::tribool isClosed)
+{
+    m_bIsClosed = isClosed;
 }
 
 //------------------------------------------------------------------------------
