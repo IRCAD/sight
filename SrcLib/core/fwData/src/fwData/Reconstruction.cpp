@@ -179,20 +179,27 @@ void Reconstruction::setMesh( ::fwData::Mesh::sptr _pMesh )
 {
     if ( _pMesh == 0 )
     {
-        SLM_WARN("Reconstruction::setImage : the image pointer is null.");
+        SLM_WARN("Reconstruction::setMesh : the mesh pointer is null.");
         this->setField( Reconstruction::ID_MESH ); // the previous image is deleted
+        m_bIsClosed = ::boost::logic::indeterminate;
     }
     else
     {
+        if (_pMesh != this->getMesh())
+        {
+            m_bIsClosed = ::boost::logic::indeterminate;
+        }
         this->setFieldSingleElement( Reconstruction::ID_MESH, _pMesh );
     }
+
+
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::Mesh::csptr Reconstruction::getMesh() const
 {
-    return const_cast< Reconstruction *  >(this)->getMesh();
+    return this->getMesh();
 }
 
 //------------------------------------------------------------------------------
@@ -248,14 +255,16 @@ bool Reconstruction::getIsClosed()
         ::fwData::Mesh::sptr mesh = this->getMesh();
         ::fwData::Array::sptr cellData = mesh->getCellDataArray();
         ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
+        ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
         ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
         ::fwData::Mesh::Id nbOfCells = mesh->getNumberOfCells();
         ::fwData::Mesh::CellValueType* cellDataBegin = cellData->begin< ::fwData::Mesh::CellValueType >();
         ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
         ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = cellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
         ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
+        ::fwData::Mesh::CellTypes* cellTypesBegin = cellTypes->begin< ::fwData::Mesh::CellTypes >();
 
-        isClosed = ::fwMath::isBorderlessSurface(cellDataBegin, cellDataEnd, cellDataOffsetsBegin, cellDataOffsetsEnd );
+        isClosed = ::fwMath::isBorderlessSurface(cellDataBegin, cellDataEnd, cellDataOffsetsBegin, cellDataOffsetsEnd, cellTypesBegin );
         m_bIsClosed = isClosed;
     }
     else
