@@ -14,6 +14,8 @@
 class ObjectTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ObjectTest );
+    CPPUNIT_TEST( testColor );
+    CPPUNIT_TEST( testMaterial );
     CPPUNIT_TEST( testArray );
     CPPUNIT_TEST( testMesh );
     CPPUNIT_TEST( testPatientDB );
@@ -26,6 +28,8 @@ public:
 
     static ::fwData::Object::sptr serialize(std::string fileName, ::fwData::Object::sptr obj1);
 
+    void testMaterial();
+    void testColor();
     void testArray();
     void testMesh();
     void testPatientDB();

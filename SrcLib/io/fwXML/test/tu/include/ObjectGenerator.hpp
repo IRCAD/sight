@@ -15,6 +15,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Color.hpp>
 
 class ObjectGenerator
 {
@@ -27,7 +29,8 @@ public:
     static ::fwData::Image::sptr createImage();
     static ::fwData::Array::sptr createArray();
     static ::fwData::Mesh::sptr createMesh();
-
+    static ::fwData::Material::sptr createMaterial();
+    static ::fwData::Color::sptr createColor();
 };
 
 #endif // _FWXML_TEST_TU_OBJECT_GENERATOR_HPP_

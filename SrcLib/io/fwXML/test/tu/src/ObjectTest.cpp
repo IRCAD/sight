@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <time.h>
+
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
@@ -26,6 +28,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ObjectTest );
 void ObjectTest::setUp()
 {
     // Set up context before running a test.
+    srand(time(NULL));
 }
 
 //------------------------------------------------------------------------------
@@ -98,6 +101,26 @@ void ObjectTest::testPatientDB()
     ::fwData::PatientDB::sptr pdb2 = ::fwData::PatientDB::dynamicCast(ObjectTest::serialize("PatientDB.xml", pdb1));
     CPPUNIT_ASSERT(pdb2);
     ObjectComparator::comparePatientDB(pdb1, pdb2);
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::testColor()
+{
+    ::fwData::Color::sptr col1 = ObjectGenerator::createColor();
+    ::fwData::Color::sptr col2 = ::fwData::Color::dynamicCast(ObjectTest::serialize("Color.xml", col1));
+    CPPUNIT_ASSERT(col2);
+    ObjectComparator::compareColor(col1, col2);
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::testMaterial()
+{
+    ::fwData::Material::sptr mat1 = ObjectGenerator::createMaterial();
+    ::fwData::Material::sptr mat2 = ::fwData::Material::dynamicCast(ObjectTest::serialize("Material.xml", mat1));
+    CPPUNIT_ASSERT(mat2);
+    ObjectComparator::compareMaterial(mat1, mat2);
 }
 
 //------------------------------------------------------------------------------

@@ -134,6 +134,8 @@ using namespace boost::assign;
 
     pAcq->setImage(ObjectGenerator::createImage());
 
+    pAcq->addReconstruction(ObjectGenerator::createReconstruction());
+
     return pAcq;
 }
 
@@ -142,7 +144,9 @@ using namespace boost::assign;
 ::fwData::Reconstruction::sptr ObjectGenerator::createReconstruction()
 {
     ::fwData::Reconstruction::NewSptr pRecons;
-
+    pRecons->setImage(ObjectGenerator::createImage());
+    pRecons->setMesh(ObjectGenerator::createMesh());
+    pRecons->setMaterial(ObjectGenerator::createMaterial());
     return pRecons;
 }
 
@@ -187,6 +191,29 @@ using namespace boost::assign;
     pImage->setBuffer(buff);
 
     return pImage;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Material::sptr ObjectGenerator::createMaterial()
+{
+    ::fwData::Material::NewSptr mat;
+    mat->setShadingMode(::fwData::Material::MODE_PHONG);
+    mat->setRepresentationMode(::fwData::Material::MODE_SURFACE);
+    mat->setOptionsMode(::fwData::Material::MODE_STANDARD);
+
+    mat->ambient()->deepCopy(ObjectGenerator::createColor());
+    mat->diffuse()->deepCopy(ObjectGenerator::createColor());
+    return mat;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Color::sptr ObjectGenerator::createColor()
+{
+    ::fwData::Color::NewSptr col;
+    col->setRGBA(rand()%100 / 100., rand()%100 / 100., rand()%100 / 100., rand()%100 / 100.);
+    return col;
 }
 
 //------------------------------------------------------------------------------
