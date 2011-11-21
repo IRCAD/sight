@@ -548,6 +548,11 @@ void Mesh::createTransformService()
 {
     ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
+    if(!this->getTransformId().empty())
+    {
+        m_transform->Concatenate(this->getTransform());
+    }
+
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
     if (mesh->getFieldSize("TransformMatrix"))
     {
