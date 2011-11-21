@@ -43,7 +43,7 @@ void ArrayTest::testArray()
 {
     ::boost::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() / "ArrayTest" / "Array.xml";
 
-    ::fwData::Array::sptr array1 = this->generateArray();
+    ::fwData::Array::sptr array1 = ArrayTest::generateArray();
 
     // save Array in fwXML
     ::boost::filesystem::create_directories( testFile.parent_path() );

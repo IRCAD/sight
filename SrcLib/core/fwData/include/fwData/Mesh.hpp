@@ -86,7 +86,7 @@ public:
      * @param nbCells
      * @param nbCellsData
      *
-     * @return 
+     * @return
      *
      * @throw ::fwData::Exception
      */
@@ -186,7 +186,7 @@ public:
      * @throw ::fwData::Exception
      */
     FWDATA_API void setPointNormal(Id id, const NormalValueType n[3]);
-    
+
     /**
      * @brief Set a cell normal.
      *
@@ -272,7 +272,7 @@ public:
      * @brief Clear mesh points.
      * Calling this method don't impact memory allocation.
      *
-     * @return 
+     * @return
      */
     FWDATA_API void clearPoints();
 
@@ -280,7 +280,7 @@ public:
      * @brief Clear mesh cells.
      * Calling this method don't impact memory allocation.
      *
-     * @return 
+     * @return
      */
     FWDATA_API void clearCells();
 
@@ -339,7 +339,7 @@ public:
     FWDATA_API void addDataArray(const std::string &name, ::fwData::Array::sptr array);
     FWDATA_API ::fwData::Array::sptr getDataArray(const std::string &name) const;
     FWDATA_API void removeDataArray(const std::string &name);
-
+    FWDATA_API std::vector<std::string> getDataArrayNames() const;
 
 protected:
 

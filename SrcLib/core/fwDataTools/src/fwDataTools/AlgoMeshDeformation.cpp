@@ -83,9 +83,9 @@ void AlgoMeshDeformation::initSimu()
     m_yCenter = (max - min) / 2 + min;
 
     if ( ! m_mesh.lock()->getPointColorsArray() )
-     {
-         ::fwDataTools::MeshGenerator::colorizeMeshPoints( m_mesh.lock() );
-     }
+    {
+        ::fwDataTools::MeshGenerator::colorizeMeshPoints( m_mesh.lock() );
+    }
 }
 
 //-----------------------------------------------------------------------------

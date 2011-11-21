@@ -66,6 +66,18 @@ xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
     {
         (*meshArrays)["cellNormals"]   = pMesh->getCellNormalsArray();
     }
+    std::vector<std::string> vectNames = pMesh->getDataArrayNames();
+    if(!vectNames.empty())
+    {
+        ::fwData::Composite::NewSptr dataArrays;
+        BOOST_FOREACH(std::string name, vectNames)
+        {
+            ::fwData::Array::sptr array = pMesh->getDataArray(name);
+            OSLM_ASSERT("Array "<<name<<" not initialized in Mesh.",array);
+            (*dataArrays)[name] = array;
+        }
+        (*meshArrays)["dataArray"] = dataArrays;
+    }
 
     xmlNodePtr meshArraysNode = XMLTH::toXMLRecursive(meshArrays);
     xmlAddChild( masterNode , meshArraysNode);
@@ -131,6 +143,15 @@ void MeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xm
                 if(meshArrays->find("cellNormals")!=meshArrays->end())
                 {
                     pMesh->setCellNormalsArray(::fwData::Array::dynamicCast((*meshArrays)["cellNormals"]));
+                }
+                if(meshArrays->find("dataArray")!=meshArrays->end())
+                {
+                    ::fwData::Composite::sptr dataArrays = ::fwData::Composite::dynamicCast((*meshArrays)["dataArray"]);
+                    BOOST_FOREACH(::fwData::Composite::value_type elt, *dataArrays)
+                    {
+                        ::fwData::Array::sptr array = ::fwData::Array::dynamicCast(elt.second);
+                        pMesh->addDataArray(elt.first, array);
+                    }
                 }
             }
 

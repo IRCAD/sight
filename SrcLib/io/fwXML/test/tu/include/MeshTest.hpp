@@ -7,6 +7,7 @@
 #ifndef _FWXML_TEST_TU_MESHTEST_HPP_
 #define _FWXML_TEST_TU_MESHTEST_HPP_
 
+#include <boost/foreach.hpp>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwData/Mesh.hpp>
@@ -30,6 +31,7 @@ public:
 
     void compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
     void compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
+    void compareDataArrayMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
 };
 
 #endif //_FWXML_TEST_TU_MESHTEST_HPP_

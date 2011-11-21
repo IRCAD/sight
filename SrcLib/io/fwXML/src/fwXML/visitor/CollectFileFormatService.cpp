@@ -136,6 +136,13 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
         {
             ::fwData::visitor::accept( mesh->getCellNormalsArray() , this);
         }
+        std::vector<std::string> vectNames = mesh->getDataArrayNames();
+        BOOST_FOREACH(std::string name, vectNames)
+        {
+            ::fwData::Array::sptr array = mesh->getDataArray(name);
+            OSLM_ASSERT("Array "<<name<<" not initialized in Mesh.",array);
+            ::fwData::visitor::accept( array, this);
+        }
     }
 }
 

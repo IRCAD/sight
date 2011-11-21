@@ -22,11 +22,11 @@ public:
 
     void testArray();
 
+    static ::fwData::Array::sptr generateArray();
 private:
 
     void compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
 
-    ::fwData::Array::sptr generateArray();
 
 };
 

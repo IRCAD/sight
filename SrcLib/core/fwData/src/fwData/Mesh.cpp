@@ -9,6 +9,7 @@
 #include <functional>
 #include <numeric>
 
+#include <boost/bind.hpp>
 #include <boost/assign/list_of.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
@@ -743,6 +744,17 @@ void Mesh::addDataArray(const std::string &name, ::fwData::Array::sptr array)
         res = iter->second;
     }
     return res;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> Mesh::getDataArrayNames() const
+{
+    std::vector<std::string> vectNames;
+    std::transform( m_arrayMap.begin(), m_arrayMap.end(),
+            std::back_inserter(vectNames),
+            ::boost::bind(& ArrayMapType::value_type::first,_1) );
+    return vectNames;
 }
 
 //------------------------------------------------------------------------------

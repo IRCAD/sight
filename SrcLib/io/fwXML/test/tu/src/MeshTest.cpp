@@ -16,6 +16,7 @@
 #include <fwXML/policy/UniquePathPolicy.hpp>
 
 #include "MeshTest.hpp"
+#include "ArrayTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( MeshTest );
@@ -46,6 +47,12 @@ void MeshTest::testExportImportSyntheticMesh()
     ::fwDataTools::MeshGenerator::generatePointNormals(mesh1);
     ::fwDataTools::MeshGenerator::generateCellNormals(mesh1);
 
+    ::fwData::Array::sptr dataArray1 = ArrayTest::generateArray();
+    ::fwData::Array::sptr dataArray2 = ArrayTest::generateArray();
+
+    mesh1->addDataArray("dataArray1", dataArray1);
+    mesh1->addDataArray("dataArray2", dataArray2);
+
     mesh1->adjustAllocatedMemory();
 
     ::boost::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() / "MeshTest" / "Mesh.xml";
@@ -72,6 +79,8 @@ void MeshTest::testExportImportSyntheticMesh()
 
     // check Mesh
     CPPUNIT_ASSERT(mesh2);
+    CPPUNIT_ASSERT(mesh2->getDataArray("dataArray1"));
+    CPPUNIT_ASSERT(mesh2->getDataArray("dataArray2"));
 
     this->compareMesh(mesh1, mesh2);
 
@@ -94,6 +103,22 @@ void MeshTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh
     this->compareBuffer(mesh1->getCellColorsArray(), mesh2->getCellColorsArray());
     this->compareBuffer(mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray());
     this->compareBuffer(mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray());
+
+    this->compareDataArrayMesh(mesh1, mesh2);
+}
+//------------------------------------------------------------------------------
+
+void MeshTest::compareDataArrayMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2)
+{
+    CPPUNIT_ASSERT( mesh1->getDataArrayNames() == mesh2->getDataArrayNames());
+
+    std::vector<std::string> vectNames = mesh1->getDataArrayNames();
+    BOOST_FOREACH(std::string name, vectNames)
+    {
+        ::fwData::Array::sptr array1 = mesh1->getDataArray(name);
+        ::fwData::Array::sptr array2 = mesh2->getDataArray(name);
+        this->compareBuffer(array1, array2);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -114,3 +139,5 @@ void MeshTest::compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr 
         }
     }
 }
+
+//------------------------------------------------------------------------------
