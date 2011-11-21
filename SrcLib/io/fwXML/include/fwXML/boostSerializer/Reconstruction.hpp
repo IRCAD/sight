@@ -13,11 +13,11 @@
 #include <fwData/Image.hpp>
 
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
-//#include "fwXML/boostSerializer/instanciateSerializers2.hpp"
 
-
-namespace boost {
-namespace serialization {
+namespace boost
+{
+namespace serialization
+{
 
 /**
  * @brief serialize algorithm via boost.org serialization scheme
@@ -65,8 +65,6 @@ void load(Archive & ar, ::fwData::Reconstruction & _reconstruction, const unsign
     _reconstruction.setCRefPath( ::boost::filesystem::path(path) );
 
     ar &  ::boost::serialization::make_nvp( "DbID" , _reconstruction.getRefDbID() );
-
-
 }
 
 template<class Archive>
@@ -78,14 +76,8 @@ void save(Archive & ar, const ::fwData::Reconstruction & _reconstruction, const 
     ar &  ::boost::serialization::make_nvp( "Green" , _reconstruction.getMaterial()->ambient()->green() );
     ar &  ::boost::serialization::make_nvp( "Blue" , _reconstruction.getMaterial()->ambient()->blue() );
     ar &  ::boost::serialization::make_nvp( "Alpha" , _reconstruction.getMaterial()->ambient()->alpha() );
-
-//  newStr = ::fwTools::toStringWithoutAccent( _reconstruction.getCRefReconstructionFormat() );
     ar &  ::boost::serialization::make_nvp( "ReconstructionFormat" , _reconstruction.getCRefReconstructionFormat() );
-
-//  newStr = ::fwTools::toStringWithoutAccent( _reconstruction.getCRefOrganName() );
     ar &  ::boost::serialization::make_nvp( "OrganName" , _reconstruction.getCRefOrganName() );
-
-//  newStr = ::fwTools::toStringWithoutAccent( _reconstruction.getCRefStructureType() );
     ar &  ::boost::serialization::make_nvp( "StructureType" , _reconstruction.getCRefStructureType() );
 
     int isClosed = ( ::boost::logic::indeterminate(_reconstruction.getCRefIsClosed()) ) ? -1 : ( (_reconstruction.getCRefIsClosed()) ? 1 : 0 );
@@ -95,35 +87,24 @@ void save(Archive & ar, const ::fwData::Reconstruction & _reconstruction, const 
     ar &  ::boost::serialization::make_nvp( "AvgVolume" , _reconstruction.getCRefAvgVolume() );
     ar &  ::boost::serialization::make_nvp( "VolStdDeviation" , _reconstruction.getCRefVolStdDeviation() );
     ar &  ::boost::serialization::make_nvp( "VolPctConfidence" , _reconstruction.getCRefVolPctConfidence() );
-
-//  newStr = ::fwTools::toStringWithoutAccent( _reconstruction.getCRefReconstructionTime() );
     ar &  ::boost::serialization::make_nvp( "ReconstructionTime" ,  _reconstruction.getCRefReconstructionTime() );
-
     ar &  ::boost::serialization::make_nvp( "MaskGenerated" , _reconstruction.getCRefMaskGenerated() );
     ar &  ::boost::serialization::make_nvp( "Level" , _reconstruction.getCRefLevel() );
     ar &  ::boost::serialization::make_nvp( "Label" , _reconstruction.getCRefLabel() );
     ar &  ::boost::serialization::make_nvp( "Generated3D" , _reconstruction.getCRefGenerated3D() );
-
-//  newStr = ::fwTools::toStringWithoutAccent( _reconstruction.getCRefType3D() );
     ar &  ::boost::serialization::make_nvp( "Type3D" , _reconstruction.getCRefType3D() );
 
     std::string path = _reconstruction.getCRefPath().string();
     ar &  ::boost::serialization::make_nvp( "Path" , path );
 
     ar &  ::boost::serialization::make_nvp( "DbID" , _reconstruction.getCRefDbID() );
-
 }
-
-
-
-
 
 
 /// serialize image via boost.org serialization framework (split load/save)
 template<class Archive>
 void serialize(Archive & ar, ::fwData::Reconstruction & _study, const unsigned int version)
 {
-
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
     ::boost::serialization::void_cast_register< ::fwData::Reconstruction, ::fwTools::Object>(NULL,NULL);
@@ -132,7 +113,8 @@ void serialize(Archive & ar, ::fwData::Reconstruction & _study, const unsigned i
 }
 
 
-} } // end namespace
+} // namespace serialization
+} // namespace boost
 
 INSTANTIATE_SERIALIZER(::fwData::Reconstruction);
 
