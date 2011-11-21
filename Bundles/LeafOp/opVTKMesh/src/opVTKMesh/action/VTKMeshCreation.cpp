@@ -7,13 +7,14 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/TriangularMeshMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 
+#include <vtkIO/helper/Mesh.hpp>
 #include <vtkIO/vtk.hpp>
 
 #include <vtkDiscreteMarchingCubes.h>
@@ -106,7 +107,7 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
     OSLM_ASSERT("Not found the image defined by uid : " << m_imageUID, ::fwTools::fwID::exist(m_imageUID)) ;
     ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageUID) ) ;
     OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID)) ;
-    ::fwData::TriangularMesh::sptr pMesh = ::fwData::TriangularMesh::dynamicCast( ::fwTools::fwID::getObject(m_meshUID) ) ;
+    ::fwData::Mesh::sptr pMesh = ::fwData::Mesh::dynamicCast( ::fwTools::fwID::getObject(m_meshUID) ) ;
 
     ///VTK Mesher
 
@@ -135,38 +136,38 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 
 
     // Get polyData
-      vtkPolyData * polyData;
+    vtkSmartPointer< vtkPolyData > polyData;
 
-      // decimate filter
-      unsigned int reduction = m_reduction;
-      if( reduction > 0 )
-      {
-          vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
-          decimate->SetInput( smoothFilter->GetOutput() );
-          decimate->SetTargetReduction( reduction/100.0 );
-          decimate->PreserveTopologyOff();
-          decimate->SplittingOn();
-          decimate->BoundaryVertexDeletionOn();
-          decimate->SetSplitAngle( 120 );
-          decimate->Update();
-          polyData = decimate->GetOutput();
-          OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-          bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
-      }
-      else
-      {
-          polyData = smoothFilter->GetOutput();
-          OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-          bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
-      }
+    // decimate filter
+    unsigned int reduction = m_reduction;
+    if( reduction > 0 )
+    {
+        vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
+        decimate->SetInput( smoothFilter->GetOutput() );
+        decimate->SetTargetReduction( reduction/100.0 );
+        decimate->PreserveTopologyOff();
+        decimate->SplittingOn();
+        decimate->BoundaryVertexDeletionOn();
+        decimate->SetSplitAngle( 120 );
+        decimate->Update();
+        polyData = decimate->GetOutput();
+        OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
+        ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
+    }
+    else
+    {
+        polyData = smoothFilter->GetOutput();
+        OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
+        ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
+    }
 
 
 //    OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
 //    bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
 
     /// Notification
-    ::fwComEd::TriangularMeshMsg::NewSptr msg;;
-    msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
+    ::fwComEd::MeshMsg::NewSptr msg;;
+    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
     ::fwServices::IEditionService::notify( this->getSptr(), pMesh, msg );
 }
 

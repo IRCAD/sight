@@ -312,7 +312,7 @@ void RepresentationEditor::notifyTriangularMesh()
 
     ::fwComEd::MaterialMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getTriangularMesh(), msg);
+    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), msg);
 }
 }
 

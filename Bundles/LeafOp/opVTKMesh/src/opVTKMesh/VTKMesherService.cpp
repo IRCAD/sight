@@ -16,6 +16,7 @@
 
 #include <fwComEd/AcquisitionMsg.hpp>
 
+#include <vtkIO/helper/Mesh.hpp>
 #include <vtkIO/vtk.hpp>
 
 #include <vtkDiscreteMarchingCubes.h>
@@ -84,7 +85,7 @@ void VTKMesherService::updating() throw ( ::fwTools::Failed )
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
     ::fwData::Image::sptr pImage = acq->getImage();
 
-    ::fwData::TriangularMesh::NewSptr pMesh;
+    ::fwData::Mesh::NewSptr pMesh;
 
     // vtk img
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
@@ -111,7 +112,7 @@ void VTKMesherService::updating() throw ( ::fwTools::Failed )
 
 
     // Get polyData
-      vtkPolyData * polyData;
+    vtkSmartPointer< vtkPolyData > polyData;
 
       // decimate filter
       unsigned int reduction = m_reduction;
@@ -127,13 +128,13 @@ void VTKMesherService::updating() throw ( ::fwTools::Failed )
           decimate->Update();
           polyData = decimate->GetOutput();
           OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-          bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
+          ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
       }
       else
       {
           polyData = smoothFilter->GetOutput();
           OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-          bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
+          ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
       }
 
 
@@ -148,7 +149,7 @@ void VTKMesherService::updating() throw ( ::fwTools::Failed )
     pReconstruction->setIsAutomatic(true);
     pReconstruction->setAvgVolume(-1);
     // Set Triangular Mesh
-    pReconstruction->setTriangularMesh(pMesh);
+    pReconstruction->setMesh(pMesh);
 
     acq->addReconstruction(pReconstruction);
 

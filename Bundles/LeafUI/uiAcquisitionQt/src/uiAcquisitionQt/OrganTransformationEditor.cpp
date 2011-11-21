@@ -235,7 +235,7 @@ void OrganTransformationEditor::OnReconstructionCheck(QListWidgetItem *currentIt
 
         ::std::string item_name = currentItem->text().toStdString();
         ::fwData::Reconstruction::sptr pReconstruction = mReconstructionMap[item_name];
-        ::fwData::TriangularMesh::sptr pMesh = pReconstruction->getTriangularMesh();
+        ::fwData::Mesh::sptr pMesh = pReconstruction->getMesh();
 
         ::fwComEd::helper::Composite aCompositeHelper(pComposite);
         if ((currentItem->checkState()) == Qt::Checked)
@@ -268,7 +268,7 @@ void OrganTransformationEditor::OnResetClick()
         for( ; it!= pAcquisition->getReconstructions().second; ++it )
         {
 
-            ::fwData::TriangularMesh::sptr pTmpTrMesh = (*it)->getTriangularMesh();
+            ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
 
             ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
@@ -296,7 +296,7 @@ void OrganTransformationEditor::OnSaveClick()
         for( ; it!= pAcquisition->getReconstructions().second; ++it )
         {
 
-            ::fwData::TriangularMesh::sptr pTmpTrMesh = (*it)->getTriangularMesh();
+            ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
             ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
@@ -334,7 +334,7 @@ void OrganTransformationEditor::OnLoadClick()
             for( ; it!= pAcquisition->getReconstructions().second; ++it )
             {
 
-                ::fwData::TriangularMesh::sptr pTmpTrMesh = (*it)->getTriangularMesh();
+                ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
                 if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
                 {
                     ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
@@ -379,7 +379,7 @@ void OrganTransformationEditor::OnTestClick()
         for( ; it!= pAcquisition->getReconstructions().second; ++it )
         {
 
-            ::fwData::TriangularMesh::sptr pTmpTrMesh = (*it)->getTriangularMesh();
+            ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
 
             ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)

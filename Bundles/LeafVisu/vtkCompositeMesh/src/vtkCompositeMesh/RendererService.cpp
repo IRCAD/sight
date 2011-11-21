@@ -17,18 +17,19 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkTransform.h>
 
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Material.hpp>
 
 #include <fwComEd/CameraMsg.hpp>
-#include <fwComEd/TriangularMeshMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
 
+#include <vtkIO/helper/Mesh.hpp>
 #include <vtkIO/vtk.hpp>
 
 #include "vtkCompositeMesh/RendererService.hpp"
@@ -78,7 +79,7 @@ private:
 RendererService::RendererService() throw()
                                     : m_render( 0 ), m_bPipelineIsInit(false), m_isCamMaster(false)
 {
-    this->IService::addNewHandledEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH );
+    this->IService::addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
     this->IService::addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
 }
 
@@ -147,8 +148,8 @@ void RendererService::updating() throw(fwTools::Failed)
 
 void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
 {
-    ::fwComEd::TriangularMeshMsg::csptr TriangularMeshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(_msg);
-    if ( TriangularMeshMsg && TriangularMeshMsg->hasEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) )
+    ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(_msg);
+    if ( meshMsg && meshMsg->hasEvent( ::fwComEd::MeshMsg::NEW_MESH ) )
     {
         if(!m_bPipelineIsInit)
         {
@@ -209,24 +210,27 @@ void RendererService::createAndAddActorToRender()
         OSLM_INFO("ObjectPointer: " << it->second);
         OSLM_INFO("ObjectType: " << it->second->getClassname () << '\n');
 
-        ::fwData::TriangularMesh::sptr myMesh =::fwData::TriangularMesh::dynamicCast (it->second);
-        vtkPolyData* vtk_polyData = ::vtkIO::toVTKMesh(myMesh);
-        OSLM_INFO("Loaded: " << it->first);
-        vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
-
-        m_normals = vtkPolyDataNormals::New();
-        m_normals->SetInput(vtk_polyData);
-        mapper->SetInputConnection(m_normals->GetOutputPort());
-
-        vtkActor* actor =  vtkActor::New();
-        actor->SetMapper( mapper);
-
-        // Add the actors
-        m_render->AddActor( actor);
+        ::fwData::Mesh::sptr myMesh =::fwData::Mesh::dynamicCast (it->second);
 
         // If it's a mesh, then put it in the pipeline:
         if( myMesh )
         {
+            vtkSmartPointer<vtkPolyData> vtk_polyData = vtkSmartPointer<vtkPolyData>::New();
+            ::vtkIO::helper::Mesh::toVTKMesh( myMesh, vtk_polyData);
+            OSLM_INFO("Loaded: " << it->first);
+            vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+
+            m_normals = vtkPolyDataNormals::New();
+            m_normals->SetInput(vtk_polyData);
+            mapper->SetInputConnection(m_normals->GetOutputPort());
+
+            vtkActor* actor =  vtkActor::New();
+            actor->SetMapper( mapper);
+
+            // Add the actors
+            m_render->AddActor( actor);
+
+
             OSLM_INFO("Mesh found: " << it->first);
             if (myMesh->getFieldSize( "MaterialMesh" ) == 0)
             {
@@ -250,6 +254,7 @@ void RendererService::createAndAddActorToRender()
                 ::fwData::Material::sptr matObjPtr = myMesh->getFieldSingleElement< ::fwData::Material >( "MaterialMesh" );
                 actor->GetProperty()->SetColor (matObjPtr->ambient()->red(), matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
             }
+            mapper->Delete();
         }
         m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
         m_loc = new vtkLocalCommand(this);
@@ -261,7 +266,7 @@ void RendererService::createAndAddActorToRender()
         // Repaint and resize window
         m_render->ResetCamera();
         OSLM_INFO("displayed: " << it->first);
-        mapper->Delete();
+
         elementNumber++;
     }
 }
@@ -280,7 +285,7 @@ void RendererService::updateVTKPipeline()
 
 void RendererService::updateCamPosition()
 {
-    ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >();
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
 
     vtkCamera* camera = m_render->GetActiveCamera();
 

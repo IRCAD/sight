@@ -9,7 +9,7 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwServices/IService.hpp>
 
 #include "tutoTrianConverterCtrl/config.hpp"
@@ -43,7 +43,7 @@ public:
     TUTOTRIANCONVERTERCTRL_API void uninitialize() throw();
 
 private:
-    ::fwData::TriangularMesh::sptr m_triangularMesh;
+    ::fwData::Mesh::sptr m_mesh;
     ::fwServices::IService::sptr m_writerSrv;
     ::fwServices::IService::sptr m_readerSrv;
 };

@@ -144,19 +144,19 @@
                         <config renderer="default" picker="" />
                     </adaptor>
 
-                    <adaptor id="TMAdaptor1" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                    <adaptor id="TMAdaptor1" class="::visuVTKAdaptor::Mesh" objectId="mesh">
                         <config renderer="default" picker="" />
                     </adaptor>
 
-                    <adaptor id="TMAdaptor2" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                    <adaptor id="TMAdaptor2" class="::visuVTKAdaptor::Mesh" objectId="mesh">
                         <config renderer="default" picker="" transform="mat6" />
                     </adaptor>
                     
-                    <adaptor id="TMAdaptor3" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                    <adaptor id="TMAdaptor3" class="::visuVTKAdaptor::Mesh" objectId="mesh">
                         <config renderer="default" picker="" transform="mat7" />
                     </adaptor>
                     
-                    <adaptor id="TMAdaptor4" class="::visuVTKAdaptor::TriangularMesh" objectId="mesh">
+                    <adaptor id="TMAdaptor4" class="::visuVTKAdaptor::Mesh" objectId="mesh">
                         <config renderer="default" picker="" transform="mat8" />
                     </adaptor>
 
@@ -214,7 +214,7 @@
             </item>
 
             <item key="mesh">
-                <object uid="mesh" type="::fwData::TriangularMesh">
+                <object uid="mesh" type="::fwData::Mesh">
                     <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
                 </object>
             </item>
