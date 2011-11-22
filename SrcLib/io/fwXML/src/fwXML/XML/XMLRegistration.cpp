@@ -11,6 +11,8 @@
 
 #include "fwXML/config.hpp"
 
+#include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
+#include "fwXML/boostSerializer/Object.hpp"
 #include "fwXML/boostSerializer/Acquisition.hpp"
 #include "fwXML/boostSerializer/Array.hpp"
 #include "fwXML/boostSerializer/Boolean.hpp"
@@ -20,14 +22,10 @@
 #include "fwXML/boostSerializer/DynamicType.hpp"
 #include "fwXML/boostSerializer/Field.hpp"
 #include "fwXML/boostSerializer/Float.hpp"
-#include "fwXML/boostSerializer/Graph.hpp"
 #include "fwXML/boostSerializer/Histogram.hpp"
-#include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
 #include "fwXML/boostSerializer/Image.hpp"
 #include "fwXML/boostSerializer/Integer.hpp"
 #include "fwXML/boostSerializer/Material.hpp"
-#include "fwXML/boostSerializer/Node.hpp"
-#include "fwXML/boostSerializer/Object.hpp"
 #include "fwXML/boostSerializer/Patient.hpp"
 #include "fwXML/boostSerializer/PatientDB.hpp"
 #include "fwXML/boostSerializer/Point.hpp"
@@ -68,20 +66,18 @@
 #include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
 #include "fwXML/XML/VectorXMLTranslator.hpp"
 
-
+INSTANTIATE_SERIALIZER(::fwTools::Object);
 INSTANTIATE_SERIALIZER(::fwData::Acquisition);
-INSTANTIATE_SERIALIZER(::fwData::Array)
+INSTANTIATE_SERIALIZER(::fwData::Array);
 INSTANTIATE_SERIALIZER(::fwData::Boolean);
 INSTANTIATE_SERIALIZER(::fwData::Color);
 INSTANTIATE_SERIALIZER(::fwData::Dictionary);
 INSTANTIATE_SERIALIZER(::fwData::DictionaryOrgan);
 INSTANTIATE_SERIALIZER(::fwData::Float);
-INSTANTIATE_SERIALIZER(::fwData::Graph);
 INSTANTIATE_SERIALIZER(::fwData::Histogram)
-INSTANTIATE_SERIALIZER(::fwData::Image)
+INSTANTIATE_SERIALIZER(::fwData::Image);
 INSTANTIATE_SERIALIZER(::fwData::Integer);
 INSTANTIATE_SERIALIZER(::fwData::Material);
-INSTANTIATE_SERIALIZER(::fwData::Node);
 INSTANTIATE_SERIALIZER(::fwData::Patient);
 INSTANTIATE_SERIALIZER(::fwData::PatientDB);
 INSTANTIATE_SERIALIZER(::fwData::Point);
@@ -94,23 +90,18 @@ INSTANTIATE_SERIALIZER(::fwData::Study);
 INSTANTIATE_SERIALIZER(::fwData::TransfertFunction);
 INSTANTIATE_SERIALIZER(::fwData::TransfertFunctionPoint);
 INSTANTIATE_SERIALIZER(::fwData::TransformationMatrix3D);
-INSTANTIATE_SERIALIZER(fwTools::DynamicType);
-INSTANTIATE_SERIALIZER(fwTools::Field);
-INSTANTIATE_SERIALIZER(fwTools::Object);
+INSTANTIATE_SERIALIZER(::fwTools::DynamicType);
+INSTANTIATE_SERIALIZER(::fwTools::Field);
 
 
 namespace fwXML
 {
 
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator<fwTools::Object>                   ,  fwTools::Object                  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwTools::Object>                ,  ::fwTools::Object                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , FieldXMLTranslator                                      ,  ::fwTools::Field                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ProcessObject>          ,  ::fwData::ProcessObject          );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Region>                 ,  ::fwData::Region                 );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::PatientDB>              ,  ::fwData::PatientDB              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Patient>                ,  ::fwData::Patient                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Study>                  ,  ::fwData::Study                  );
@@ -122,6 +113,11 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Tr
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransfertFunction>      ,  ::fwData::TransfertFunction      );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Color>                  ,  ::fwData::Color                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ResectionDB>            ,  ::fwData::ResectionDB            );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , FieldXMLTranslator                                      ,  ::fwTools::Field                 );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , NodeXMLTranslator                                       ,  ::fwData::Node                   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GraphXMLTranslator                                      ,  ::fwData::Graph                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PortXMLTranslator                                       ,  ::fwData::Port                   );
@@ -130,7 +126,6 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , TriangularMeshXMLTranslator       
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , CompositeXMLTranslator                                  ,  ::fwData::Composite              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , VectorXMLTranslator                                     ,  ::fwData::Vector                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ListXMLTranslator                                       ,  ::fwData::List                   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PointListXMLTranslator                                  ,  ::fwData::PointList              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionXMLTranslator                                  ,  ::fwData::Resection              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                                      ,  ::fwData::Plane                  );
