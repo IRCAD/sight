@@ -58,7 +58,7 @@ void ObjectTest::tearDown()
     serializer.setPathPolicy( pPathPolicy );
 
     serializer.rootFolder() = testFile.parent_path().string();
-    bool doSaveSchema = false;
+    bool doSaveSchema = true;
     serializer.serialize(obj1, doSaveSchema);
     CPPUNIT_ASSERT(::boost::filesystem::exists(testFile));
 

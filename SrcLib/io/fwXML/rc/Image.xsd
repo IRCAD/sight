@@ -11,10 +11,10 @@
         <xsd:element name="Dimension"        type="xsd:positiveInteger"/>
         <xsd:element name="PixelType"        type="DynamicTypeXSDType"/>
         <xsd:element name="ManagesBuff"      type="xsd:boolean"/>
-        <xsd:element name="Spacing"             type="FloatContainerXSDType"/>
-        <xsd:element name="Origin"           type="IntegerContainerXSDType"/>
+        <xsd:element name="Spacing"          type="FloatContainerXSDType"/>
+        <xsd:element name="Origin"           type="FloatContainerXSDType"/>
         <xsd:element name="Size"             type="IntegerContainerXSDType"/>
-        <xsd:element name="Filename"          type="xsd:string"/>
+        <xsd:element name="Filename"         type="xsd:string"/>
         <xsd:element name="WindowCenter"     type="xsd:float"/>
         <xsd:element name= "WindowWidth"     type="xsd:float"/>
         <xsd:element name="RescaleIntercept" type="xsd:float"/>

@@ -159,15 +159,10 @@ using namespace boost::assign;
     // images informations
     const ::boost::uint8_t IMG_DIMENSION   = 3;
     const bool IMG_MANAGESBUFF             = true ;
-    //const double IMG_CREFSPACING           = 2.5 ;
     std::vector<double> IMG_VECTORCREFSPACING (3,2.5);
-    //IMG_VECTORCREFSPACING.push_back( IMG_CREFSPACING ) ;
-    //const double IMG_CREFORIGIN = 3 ;
     std::vector<double> IMG_VECTORCREFORIGIN  (3,12.3);
-    //IMG_VECTORCREFORIGIN.push_back( IMG_CREFORIGIN ) ;
     ::boost::int32_t IMG_CREFSIZE = 50 ;
     std::vector< ::boost::int32_t > IMG_VECTORCREFSIZE (3,IMG_CREFSIZE);
-    //IMG_VECTORCREFSIZE.push_back( IMG_CREFSIZE ) ;
     const ::boost::filesystem::path IMG_CREFFILENAME   = ::boost::filesystem::path("D:/TMP") ;
     const double IMG_WINDOWCENTER = 86 ;
     const double IMG_WINDOWWIDTH = 345 ;

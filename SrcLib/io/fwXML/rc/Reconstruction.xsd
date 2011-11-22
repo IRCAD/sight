@@ -3,47 +3,50 @@
 <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
 
 <xsd:include schemaLocation="Field.xsd"/>
+<xsd:include schemaLocation="Material.xsd"/>
 
 <xsd:element name="Reconstruction" type="ReconstructionXSDType"/>
 
 <xsd:complexType name="ReconstructionXSDType">
     <xsd:sequence>
-    <xsd:element name="IsVisible" type="xsd:boolean"/>
-    <xsd:element name="Red" type="xsd:double"/>
-    <xsd:element name="Green" type="xsd:double"/>
-    <xsd:element name="Blue" type="xsd:double"/>
-    <xsd:element name="Alpha" type="xsd:double"/>
-    <xsd:element name="ReconstructionFormat" type="xsd:string"/>
-    <xsd:element name="OrganName" type="xsd:string"/>
-    <xsd:element name="StructureType" type="xsd:string"/>
-    <xsd:element name="IsClosed" type="TriboolType"/>
-    <xsd:element name="IsAutomatic" type="xsd:boolean"/>
-    <xsd:element name="AvgVolume" type="xsd:double"/>
-    <xsd:element name="VolStdDeviation" type="xsd:double"/>
-    <xsd:element name="VolPctConfidence" type="xsd:double"/>
-    <xsd:element name="ReconstructionTime" type="xsd:string"/>
-    <xsd:element name="MaskGenerated" type="xsd:boolean"/>
-    <xsd:element name="Level" type="xsd:byte"/>
-    <xsd:element name="Label" type="xsd:short"/>
-    <xsd:element name="Generated3D" type="xsd:boolean"/>
-    <xsd:element name="Type3D" type="xsd:string"/>
-    <xsd:element name="Path" type="xsd:anyURI"/>
-    <xsd:element name="DbID" type="xsd:int"/>
-
-    <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
-
+        <xsd:element name="IsVisible" type="xsd:boolean"/>
+        <xsd:element name="ReconstructionFormat" type="xsd:string"/>
+        <xsd:element name="OrganName" type="xsd:string"/>
+        <xsd:element name="StructureType" type="xsd:string"/>
+        <xsd:element name="IsClosed" type="TriboolType"/>
+        <xsd:element name="IsAutomatic" type="xsd:boolean"/>
+        <xsd:element name="AvgVolume" type="xsd:double"/>
+        <xsd:element name="VolStdDeviation" type="xsd:double"/>
+        <xsd:element name="VolPctConfidence" type="xsd:double"/>
+        <xsd:element name="ReconstructionTime" type="xsd:string"/>
+        <xsd:element name="MaskGenerated" type="xsd:boolean"/>
+        <xsd:element name="Level" type="xsd:byte"/>
+        <xsd:element name="Label" type="xsd:short"/>
+        <xsd:element name="Generated3D" type="xsd:boolean"/>
+        <xsd:element name="Type3D" type="xsd:string"/>
+        <xsd:element name="Path" type="xsd:anyURI"/>
+        <xsd:element name="DbID" type="xsd:int"/>
+        <xsd:element name="material" type="MaterialType" />
+        <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
+    
     <xsd:attribute name="id" type="xsd:string"/>
     <xsd:attribute name="class" type="xsd:string"/>
     <xsd:attribute ref="xml:base" />
 </xsd:complexType>
 
 <xsd:simpleType name="TriboolType">
-  <xsd:restriction base="xsd:integer">
-    <xsd:enumeration value="-1"/>
-    <xsd:enumeration value="0"/>
-    <xsd:enumeration value="1"/>
-  </xsd:restriction>
+    <xsd:restriction base="xsd:integer">
+      <xsd:enumeration value="-1"/>
+      <xsd:enumeration value="0"/>
+      <xsd:enumeration value="1"/>
+    </xsd:restriction>
 </xsd:simpleType>
+
+<xsd:complexType name="MaterialType">
+    <xsd:sequence>
+        <xsd:element name="Material" type="MaterialXSDType" minOccurs="1" maxOccurs="1" />
+    </xsd:sequence>
+</xsd:complexType>
 
 </xsd:schema>
