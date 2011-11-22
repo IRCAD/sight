@@ -121,7 +121,7 @@ void Reconstruction::createMeshService()
         m_meshService = meshService;
         this->registerService(meshService);
         OSLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
-        OSLM_TRACE("Mesh nb points : "<< mesh->getNumPoints());
+        OSLM_TRACE("Mesh nb points : "<< mesh->getNumberOfPoints());
     }
 }
 
