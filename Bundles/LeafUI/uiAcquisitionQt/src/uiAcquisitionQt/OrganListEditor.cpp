@@ -150,6 +150,7 @@ void OrganListEditor::info( std::ostream &_sstream )
 
 void OrganListEditor::updateReconstructions()
 {
+    m_organChoice->blockSignals(true);
     m_organChoice->clear();
     m_map.clear();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -183,6 +184,7 @@ void OrganListEditor::updateReconstructions()
         m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
         m_organChoice->setEnabled(m_showCheckBox->checkState() == Qt::Unchecked);
     }
+    m_organChoice->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
