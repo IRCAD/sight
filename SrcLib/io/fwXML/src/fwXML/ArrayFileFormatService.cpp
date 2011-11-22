@@ -11,8 +11,8 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwDataIO/writer/GzArrayWriter.hpp>
-#include <fwDataIO/reader/GzArrayReader.hpp>
+#include <fwDataIO/writer/ArrayWriter.hpp>
+#include <fwDataIO/reader/ArrayReader.hpp>
 
 #include "fwXML/ArrayFileFormatService.hpp"
 
@@ -26,8 +26,8 @@ namespace fwXML
 
 ArrayFileFormatService::ArrayFileFormatService()
 {
-    m_reader = ::fwDataIO::reader::GzArrayReader::New();
-    m_writer = ::fwDataIO::writer::GzArrayWriter::New();
+    m_reader = ::fwDataIO::reader::ArrayReader::New();
+    m_writer = ::fwDataIO::writer::ArrayWriter::New();
 }
 
 //------------------------------------------------------------------------------
