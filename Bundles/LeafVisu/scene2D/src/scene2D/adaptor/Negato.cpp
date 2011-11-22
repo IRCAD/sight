@@ -59,11 +59,6 @@ void Negato::configuring() throw ( ::fwTools::Failed )
 
     SLM_TRACE("IAdaptor configuring ok");
 
-    //if (!m_configuration->getAttributeValue("zValue").empty())
-    //{
-    //    m_zValue = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("zValue"));
-    //}
-    
     if( !m_configuration->getAttributeValue("scaleRatio").empty() )
     {
         m_scaleRatio = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("scaleRatio") );
@@ -140,7 +135,6 @@ void Negato::doStart() throw ( ::fwTools::Failed )
     m_qimg = this->createQImage();
     this->updateFromImage( m_qimg );
     QPixmap m_pixmap = QPixmap::fromImage( *m_qimg );
-    //m_pixmapItem =  this->getScene2DRender()->getScene()->addPixmap( m_pixmap );
     m_pixmapItem = new QGraphicsPixmapItem(m_pixmap);
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -196,12 +190,12 @@ void Negato::doSwap() throw ( ::fwTools::Failed )
 void Negato::doStop() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    
+
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
     delete m_qimg;
     delete m_pixmapItem;
-    delete  m_layer;
+    delete m_layer;
 }
 
 //-----------------------------------------------------------------------------
@@ -210,19 +204,13 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
 
-    this->initializeViewSize();
-
-    std::vector< double > origin = ::fwData::Image::dynamicCast( this->getObject< fwData::Image>() )->getOrigin();
-    OSLM_TRACE("Image origin = " << origin[0] << ", " << origin[1] << ", " << origin[2]);
-
     ::scene2D::data::Coord coord = this->getScene2DRender()->mapToScene( _event->getCoord() );
-    coord.setX( coord.getX() / m_layer->scale() );
-    coord.setY( coord.getY() / m_layer->scale() );
+    coord.setX( coord.getX() / m_layer->scale());
+    coord.setY( coord.getY() / m_layer->scale());
 
     if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
             && _event->getButton() == ::scene2D::data::Event::RightButton )
     {
-        OSLM_TRACE("Point is captured");
         m_pointIsCaptured = true;
         m_oldCoord = _event->getCoord();
         _event->setAccepted(true);
@@ -245,11 +233,11 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     }
     else if(_event->getType() == ::scene2D::data::Event::MouseWheelUp)
     {
-        m_layer->setScale(m_layer->scale() * m_scaleRatio);  
+        m_layer->setScale(m_layer->scale() * m_scaleRatio);
     }
     else if(_event->getType() == ::scene2D::data::Event::MouseWheelDown)
     {
-        m_layer->setScale(m_layer->scale() / m_scaleRatio); 
+        m_layer->setScale(m_layer->scale() / m_scaleRatio);
     }
     else if(_event->getButton() == ::scene2D::data::Event::MidButton)
     {
@@ -276,22 +264,6 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
             m_pos.setY(coord.getY());
         }
     }
-    else if(_event->getType() == ::scene2D::data::Event::Resize)
-    {
-        this->processResizeEvent();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void Negato::processResizeEvent()
-{
-    ViewSizeRatio ratio = this->getViewSizeRatio();
-
-    QTransform transform;
-    transform.scale(ratio.first, ratio.second);
-
-    m_layer->setTransform(transform);
 }
 
 //-----------------------------------------------------------------------------
@@ -301,11 +273,11 @@ void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::Integer::sptr minInt;
-    ::fwTools::getFieldFromObject(minInt   , image, ::fwComEd::Dictionary::m_windowMinId   , ::fwData::Integer::New(0) );
+    ::fwTools::getFieldFromObject(minInt, image, ::fwComEd::Dictionary::m_windowMinId, ::fwData::Integer::New(0));
     double min = minInt->value();
 
     ::fwData::Integer::sptr maxInt;
-    ::fwTools::getFieldFromObject(maxInt   , image, ::fwComEd::Dictionary::m_windowMaxId   , ::fwData::Integer::New(100) );
+    ::fwTools::getFieldFromObject(maxInt, image, ::fwComEd::Dictionary::m_windowMaxId, ::fwData::Integer::New(100));
     double max = maxInt->value();
 
     double window = newCoord.getX() - m_oldCoord.getX();
