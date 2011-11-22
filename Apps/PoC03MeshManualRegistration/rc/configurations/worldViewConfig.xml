@@ -42,11 +42,11 @@
                             <config renderer="default" picker="" autoresetcamera="no" />
                         </adaptor>
 
-                        <adaptor id="myCam1MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam1Mesh">
+                        <adaptor id="myCam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myCam1Mesh">
                             <config renderer="default" picker="myPicker" transform="myCam1PosMatrixTransform" autoresetcamera="no" />
                         </adaptor>
 
-                        <adaptor id="myCam2MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam2Mesh">
+                        <adaptor id="myCam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myCam2Mesh">
                             <config renderer="default" picker="myPicker" transform="myCam2PosMatrixTransform" autoresetcamera="no" />
                         </adaptor>
                         <adaptor id="myCamWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
