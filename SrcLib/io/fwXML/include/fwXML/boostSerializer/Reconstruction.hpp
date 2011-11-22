@@ -108,7 +108,5 @@ void serialize(Archive & ar, ::fwData::Reconstruction & _study, const unsigned i
 } // namespace serialization
 } // namespace boost
 
-INSTANTIATE_SERIALIZER(::fwData::Reconstruction);
-
 #endif // _FWXML_BOOSTSERIALIZER_RECONSTRUCTION_HPP_
 

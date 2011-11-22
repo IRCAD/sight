@@ -78,8 +78,6 @@ void serialize(Archive & ar, ::fwData::Array &array, const unsigned int version)
 } //namespace serialization
 } //namespace boost
 
-INSTANTIATE_SERIALIZER(::fwData::Array)
-
 #endif // _FWXML_BOOSTSERIALISER_ARRAY_HPP
 
 

@@ -15,7 +15,6 @@
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 #include "fwXML/IFileFormatService.hpp"
 
-#include "fwXML/boostSerializer/Color.hpp"
 #include "fwXML/boostSerializer/Material.hpp"
 
 #include "fwXML/XML/MaterialXMLTranslator.hpp"

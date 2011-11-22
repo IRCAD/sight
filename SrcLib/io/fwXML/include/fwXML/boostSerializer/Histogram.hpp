@@ -65,8 +65,6 @@ void serialize(Archive & ar, ::fwData::Histogram & _histogram, const unsigned in
 
 }
 
-INSTANTIATE_SERIALIZER(::fwData::Histogram)
-
 #endif // _HISTOGRAM_BOOST_SERIALISER_HPP
 
 

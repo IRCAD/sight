@@ -64,7 +64,5 @@ void serialize(Archive & ar, ::fwData::Graph & _graph, const unsigned int versio
 } // namespace boost
 
 
-INSTANTIATE_SERIALIZER(::fwData::Graph);
-
 #endif // _FWXML_BOOSTSERIALIZER_Graph_HPP_
 

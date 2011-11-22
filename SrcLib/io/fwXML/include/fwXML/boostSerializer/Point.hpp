@@ -57,7 +57,5 @@ void serialize(Archive & ar, ::fwData::Point & _point, const unsigned int versio
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::Point);
-
 #endif // _FWXML_BOOSTSERIALIZER_POINT_HPP_
 

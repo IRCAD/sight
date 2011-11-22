@@ -33,6 +33,4 @@ void serialize(Archive & ar, ::fwData::Float &_object, const unsigned int versio
 }
 }
 
-INSTANTIATE_SERIALIZER(::fwData::Float);
-
 #endif // _Float_SERIALIZER_HPP

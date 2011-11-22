@@ -11,52 +11,92 @@
 
 #include "fwXML/config.hpp"
 
-#include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
-#include "fwXML/boostSerializer/Object.hpp"
-#include "fwXML/boostSerializer/Float.hpp"
-#include "fwXML/boostSerializer/Boolean.hpp"
-#include "fwXML/boostSerializer/Study.hpp"
-#include "fwXML/boostSerializer/String.hpp"
-#include "fwXML/boostSerializer/Patient.hpp"
-#include "fwXML/boostSerializer/ProcessObject.hpp"
-#include "fwXML/boostSerializer/Region.hpp"
-#include "fwXML/boostSerializer/PatientDB.hpp"
 #include "fwXML/boostSerializer/Acquisition.hpp"
-#include "fwXML/boostSerializer/Dictionary.hpp"
-#include "fwXML/boostSerializer/TransformationMatrix3D.hpp"
+#include "fwXML/boostSerializer/Array.hpp"
+#include "fwXML/boostSerializer/Boolean.hpp"
 #include "fwXML/boostSerializer/Color.hpp"
+#include "fwXML/boostSerializer/Dictionary.hpp"
+#include "fwXML/boostSerializer/DictionaryOrgan.hpp"
+#include "fwXML/boostSerializer/DynamicType.hpp"
+#include "fwXML/boostSerializer/Field.hpp"
+#include "fwXML/boostSerializer/Float.hpp"
+#include "fwXML/boostSerializer/Graph.hpp"
 #include "fwXML/boostSerializer/Histogram.hpp"
-#include "fwXML/boostSerializer/TransfertFunctionPoint.hpp"
-#include "fwXML/boostSerializer/TransfertFunction.hpp"
+#include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
+#include "fwXML/boostSerializer/Image.hpp"
+#include "fwXML/boostSerializer/Integer.hpp"
+#include "fwXML/boostSerializer/Material.hpp"
+#include "fwXML/boostSerializer/Node.hpp"
+#include "fwXML/boostSerializer/Object.hpp"
+#include "fwXML/boostSerializer/Patient.hpp"
+#include "fwXML/boostSerializer/PatientDB.hpp"
 #include "fwXML/boostSerializer/Point.hpp"
+#include "fwXML/boostSerializer/ProcessObject.hpp"
+#include "fwXML/boostSerializer/Reconstruction.hpp"
+#include "fwXML/boostSerializer/Region.hpp"
 #include "fwXML/boostSerializer/ResectionDB.hpp"
+#include "fwXML/boostSerializer/String.hpp"
+#include "fwXML/boostSerializer/Study.hpp"
+#include "fwXML/boostSerializer/TransfertFunction.hpp"
+#include "fwXML/boostSerializer/TransfertFunctionPoint.hpp"
+#include "fwXML/boostSerializer/TransformationMatrix3D.hpp"
 
 // translator generic
 #include "fwXML/XML/GenericXMLTranslator.hpp"
 
 // specific
-#include "fwXML/XML/ImageXMLTranslator.hpp"
-#include "fwXML/XML/FieldXMLTranslator.hpp"
-#include "fwXML/XML/IntegerXMLTranslator.hpp"
-#include "fwXML/XML/StringXMLTranslator.hpp"
-#include "fwXML/XML/PortXMLTranslator.hpp"
-#include "fwXML/XML/EdgeXMLTranslator.hpp"
-#include "fwXML/XML/NodeXMLTranslator.hpp"
-#include "fwXML/XML/GraphXMLTranslator.hpp"
-#include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
-#include "fwXML/XML/CompositeXMLTranslator.hpp"
-#include "fwXML/XML/ListXMLTranslator.hpp"
-#include "fwXML/XML/VectorXMLTranslator.hpp"
-#include "fwXML/XML/PointListXMLTranslator.hpp"
-#include "fwXML/XML/ResectionXMLTranslator.hpp"
-#include "fwXML/XML/PlaneXMLTranslator.hpp"
-#include "fwXML/XML/PlaneListXMLTranslator.hpp"
-#include "fwXML/XML/SingleFileXMLTranslator.hpp"
-#include "fwXML/XML/DictionaryOrganXMLTranslator.hpp"
 #include "fwXML/XML/ArrayXMLTranslator.hpp"
-#include "fwXML/XML/MeshXMLTranslator.hpp"
+#include "fwXML/XML/CompositeXMLTranslator.hpp"
+#include "fwXML/XML/DictionaryOrganXMLTranslator.hpp"
+#include "fwXML/XML/EdgeXMLTranslator.hpp"
+#include "fwXML/XML/FieldXMLTranslator.hpp"
+#include "fwXML/XML/GraphXMLTranslator.hpp"
+#include "fwXML/XML/ImageXMLTranslator.hpp"
+#include "fwXML/XML/IntegerXMLTranslator.hpp"
+#include "fwXML/XML/ListXMLTranslator.hpp"
 #include "fwXML/XML/MaterialXMLTranslator.hpp"
+#include "fwXML/XML/MeshXMLTranslator.hpp"
+#include "fwXML/XML/NodeXMLTranslator.hpp"
+#include "fwXML/XML/PlaneListXMLTranslator.hpp"
+#include "fwXML/XML/PlaneXMLTranslator.hpp"
+#include "fwXML/XML/PointListXMLTranslator.hpp"
+#include "fwXML/XML/PortXMLTranslator.hpp"
 #include "fwXML/XML/ReconstructionXMLTranslator.hpp"
+#include "fwXML/XML/ResectionXMLTranslator.hpp"
+#include "fwXML/XML/SingleFileXMLTranslator.hpp"
+#include "fwXML/XML/StringXMLTranslator.hpp"
+#include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
+#include "fwXML/XML/VectorXMLTranslator.hpp"
+
+
+INSTANTIATE_SERIALIZER(::fwData::Acquisition);
+INSTANTIATE_SERIALIZER(::fwData::Array)
+INSTANTIATE_SERIALIZER(::fwData::Boolean);
+INSTANTIATE_SERIALIZER(::fwData::Color);
+INSTANTIATE_SERIALIZER(::fwData::Dictionary);
+INSTANTIATE_SERIALIZER(::fwData::DictionaryOrgan);
+INSTANTIATE_SERIALIZER(::fwData::Float);
+INSTANTIATE_SERIALIZER(::fwData::Graph);
+INSTANTIATE_SERIALIZER(::fwData::Histogram)
+INSTANTIATE_SERIALIZER(::fwData::Image)
+INSTANTIATE_SERIALIZER(::fwData::Integer);
+INSTANTIATE_SERIALIZER(::fwData::Material);
+INSTANTIATE_SERIALIZER(::fwData::Node);
+INSTANTIATE_SERIALIZER(::fwData::Patient);
+INSTANTIATE_SERIALIZER(::fwData::PatientDB);
+INSTANTIATE_SERIALIZER(::fwData::Point);
+INSTANTIATE_SERIALIZER(::fwData::ProcessObject);
+INSTANTIATE_SERIALIZER(::fwData::Reconstruction);
+INSTANTIATE_SERIALIZER(::fwData::Region);
+INSTANTIATE_SERIALIZER(::fwData::ResectionDB);
+INSTANTIATE_SERIALIZER(::fwData::String);
+INSTANTIATE_SERIALIZER(::fwData::Study);
+INSTANTIATE_SERIALIZER(::fwData::TransfertFunction);
+INSTANTIATE_SERIALIZER(::fwData::TransfertFunctionPoint);
+INSTANTIATE_SERIALIZER(::fwData::TransformationMatrix3D);
+INSTANTIATE_SERIALIZER(fwTools::DynamicType);
+INSTANTIATE_SERIALIZER(fwTools::Field);
+INSTANTIATE_SERIALIZER(fwTools::Object);
 
 
 namespace fwXML

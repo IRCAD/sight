@@ -78,8 +78,6 @@ void serialize(Archive & ar, ::fwData::Patient & _patient, const unsigned int ve
 } } // end namespace
 
 
-INSTANTIATE_SERIALIZER(::fwData::Patient);
-
 
 
 #endif // _FWXML_BOOSTSERIALIZER_PATIENT_HPP_

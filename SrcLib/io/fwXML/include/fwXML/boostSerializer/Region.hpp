@@ -47,7 +47,5 @@ void serialize(Archive & ar, ::fwData::Region &_region, const unsigned int versi
 
 } }
 
-INSTANTIATE_SERIALIZER(::fwData::Region);
-
 #endif // _REGION_HPP_
 

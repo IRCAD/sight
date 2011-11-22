@@ -58,7 +58,5 @@ void serialize(Archive & ar, ::fwData::Color & _color, const unsigned int versio
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::Color);
-
 #endif // _FWXML_BOOSTSERIALIZER_COLOR_HPP_
 

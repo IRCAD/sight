@@ -191,7 +191,6 @@ void serialize(Archive & ar, ::fwData::Acquisition & _study, const unsigned int 
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::Acquisition);
 
 #endif // _FWXML_BOOSTSERIALIZER_ACQUISITION_HPP_
 

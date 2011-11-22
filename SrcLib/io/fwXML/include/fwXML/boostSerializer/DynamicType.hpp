@@ -58,6 +58,4 @@ void serialize(Archive & ar, fwTools::DynamicType &dynamicType, const unsigned i
 
 } }
 
-INSTANTIATE_SERIALIZER(fwTools::DynamicType);
-
 #endif // _DYNAMICTYPE_SERIALISER_HPP

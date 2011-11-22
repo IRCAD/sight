@@ -33,6 +33,4 @@ void serialize(Archive & ar, ::fwData::Integer &_object, const unsigned int vers
 }
 }
 
-INSTANTIATE_SERIALIZER(::fwData::Integer);
-
 #endif // _INTEGER_SERIALIZER_HPP

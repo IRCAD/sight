@@ -37,7 +37,5 @@ void serialize(Archive & ar, ::fwData::Material & _material, const unsigned int 
 } // namespace serialization
 } // namespace boost
 
-INSTANTIATE_SERIALIZER(::fwData::Material);
-
 #endif // _FWXML_BOOSTSERIALIZER_MATERIAL_HPP_
 

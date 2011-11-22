@@ -24,10 +24,6 @@ template<class Archive>
 void load(Archive & ar, ::fwData::Node & _node, const unsigned int version)
 {
     SLM_FATAL("To implement");
-    ::fwTools::Object::sptr obj;
-    std::string ss="essai";
-    ar &  ::boost::serialization::make_nvp( "object" , ss /*obj*/ );
-    _node.setObject(obj);
 }
 
 //------------------------------------------------------------------------------
@@ -57,8 +53,6 @@ void serialize(Archive & ar, ::fwData::Node & _node, const unsigned int version)
 
 } } // end namespace
 
-
-INSTANTIATE_SERIALIZER(::fwData::Node);
 
 
 
