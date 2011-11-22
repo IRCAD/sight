@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <cmath>
+
 #include <boost/assign/std/vector.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -251,6 +253,57 @@ using namespace boost::assign;
         *iter = count++;
     }
     return array;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::TriangularMesh::sptr ObjectGenerator::createTriangularMesh()
+{
+    ::fwData::TriangularMesh::NewSptr trian;
+    const unsigned int nbPts   = 100;
+    const unsigned int nbCells = 100;
+    unsigned int i;
+
+    std::vector<float> vPoint(3, 0.0);
+    trian->points().resize(nbPts, vPoint);
+    for( i=0 ; i<nbPts ; ++i )
+    {
+        ::fwData::TriangularMesh::PointContainer::value_type &vPoints = trian->points()[i];
+        vPoints[0] = i;
+        vPoints[1] = i+1;
+        vPoints[2] = i+2;
+    }
+
+    std::vector<int> vCell(3, 0);
+    trian->cells().resize(nbCells, vCell);
+    for( i=0 ; i<nbCells ; ++i )
+    {
+        ::fwData::TriangularMesh::CellContainer::value_type &vCells = trian->cells()[i];
+        vCells[0] = i%nbPts;
+        vCells[1] = (i+1)%nbPts;
+        vCells[2] = (i+2)%nbPts;
+    }
+    return trian;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::TransfertFunction::sptr ObjectGenerator::createTransfertFunction()
+{
+    ::fwData::TransfertFunction::NewSptr tf;
+
+    size_t min, max, step;
+    int val1 = rand()%2000 - 1000;
+    int val2 = rand()%2000 - 1000;
+    int val3 = rand()%50 + 1;
+    min = std::min(val1, val2);
+    max = std::max(val1, val2) + 1;
+    step = ceil((double) ((max - min) / val3));
+    for(size_t i = min; i <= max ; i+=step )
+    {
+        tf->getColor(i)->deepCopy(ObjectGenerator::createColor());
+    }
+    return tf;
 }
 
 //------------------------------------------------------------------------------

@@ -18,6 +18,8 @@ class ObjectTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testMaterial );
     CPPUNIT_TEST( testArray );
     CPPUNIT_TEST( testMesh );
+    CPPUNIT_TEST( testTriangularMesh );
+    CPPUNIT_TEST( testTransfertFunction );
     CPPUNIT_TEST( testPatientDB );
     CPPUNIT_TEST_SUITE_END();
 
@@ -32,6 +34,8 @@ public:
     void testColor();
     void testArray();
     void testMesh();
+    void testTriangularMesh();
+    void testTransfertFunction();
     void testPatientDB();
 };
 

@@ -124,3 +124,23 @@ void ObjectTest::testMaterial()
 }
 
 //------------------------------------------------------------------------------
+
+void ObjectTest::testTriangularMesh()
+{
+    ::fwData::TriangularMesh::sptr trian1 = ObjectGenerator::createTriangularMesh();
+    ::fwData::TriangularMesh::sptr trian2 = ::fwData::TriangularMesh::dynamicCast(ObjectTest::serialize("TriangularMesh.xml", trian1));
+    CPPUNIT_ASSERT(trian2);
+    ObjectComparator::compareTriangularMesh(trian1, trian2);
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::testTransfertFunction()
+{
+    ::fwData::TransfertFunction::sptr tf1 = ObjectGenerator::createTransfertFunction();
+    ::fwData::TransfertFunction::sptr tf2 = ::fwData::TransfertFunction::dynamicCast(ObjectTest::serialize("TriangularMesh.xml", tf1));
+    CPPUNIT_ASSERT(tf2);
+    ObjectComparator::compareTransfertFunction(tf1, tf2);
+}
+
+//------------------------------------------------------------------------------

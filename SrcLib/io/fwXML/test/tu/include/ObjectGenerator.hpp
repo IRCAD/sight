@@ -17,6 +17,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Color.hpp>
+#include <fwData/TriangularMesh.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 class ObjectGenerator
 {
@@ -31,6 +33,8 @@ public:
     static ::fwData::Mesh::sptr createMesh();
     static ::fwData::Material::sptr createMaterial();
     static ::fwData::Color::sptr createColor();
+    static ::fwData::TriangularMesh::sptr createTriangularMesh();
+    static ::fwData::TransfertFunction::sptr createTransfertFunction();
 };
 
 #endif // _FWXML_TEST_TU_OBJECT_GENERATOR_HPP_
