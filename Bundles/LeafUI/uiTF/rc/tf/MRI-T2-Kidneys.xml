@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="1.0" />
+  <protocol version="2" />
   <content>
     <TransfertFunction id="c0998c2f-edfc-46bd-bf03-8d5f926f7fae" class="::fwData::TransfertFunction">
       <Name>MRI-T2-kidneys</Name>

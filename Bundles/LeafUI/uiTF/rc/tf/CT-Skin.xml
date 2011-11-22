@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="1.0" />
+  <protocol version="2" />
   <content>
     <TransfertFunction id="462d2ffd-bd50-4812-bc02-6c9254a59e3b" class="::fwData::TransfertFunction">
       <Name>CT-Skin</Name>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="1.0" />
+  <protocol version="2" />
   <content>
     <TransfertFunction id="e809a13d-4c4e-4d82-806e-fa2878451bd5" class="::fwData::TransfertFunction">
       <Name>CT-Thorax</Name>
