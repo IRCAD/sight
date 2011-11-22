@@ -110,20 +110,22 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     m_buttonGroupShading->addButton(buttonPhong, 2);
     layoutGroupBoxShading->addWidget(buttonPhong);
 
+    layout->addWidget( groupBox);
+    layout->addWidget( groupBoxShading);
+
+#ifdef _DEBUG
     m_normalsCheckBox = new QCheckBox( tr("Show normals"), container);
     m_normalsCheckBox->setMinimumSize(m_normalsCheckBox->sizeHint());
     m_normalsCheckBox->setToolTip(tr("Show or hide normals"));
-
-    layout->addWidget( groupBox);
-    layout->addWidget( groupBoxShading);
     layout->addWidget( m_normalsCheckBox);
+    QObject::connect(m_normalsCheckBox, SIGNAL(stateChanged( int )), this, SLOT(onShowNormals( int )));
+#endif
 
     container->setLayout( layout );
     container->setEnabled(false);
 
     QObject::connect(m_buttonGroup, SIGNAL(buttonClicked ( int )), this, SLOT(onChangeRepresentation( int )));
     QObject::connect(m_buttonGroupShading, SIGNAL(buttonClicked ( int )), this, SLOT(onChangeShading( int )));
-    QObject::connect(m_normalsCheckBox, SIGNAL(stateChanged( int )), this, SLOT(onShowNormals( int )));
 
     this->updating();
 }
@@ -136,7 +138,10 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked ( QAbstractButton *)), this, SLOT(onChangeRepresentation(QAbstractButton *)));
     QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked ( QAbstractButton *)), this, SLOT(onChangeShading(QAbstractButton *)));
+
+#ifdef _DEBUG
     QObject::disconnect(m_normalsCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowNormals(int)));
+#endif
 
     this->getContainer()->clean();
     this->destroy();
@@ -327,7 +332,9 @@ void RepresentationEditor::refreshShading()
 
 void RepresentationEditor::refreshNormals()
 {
+#ifdef _DEBUG
     m_normalsCheckBox->setCheckState(m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS ? Qt::Checked : Qt::Unchecked);
+#endif
 }
 
 //------------------------------------------------------------------------------
