@@ -290,7 +290,7 @@ void RepresentationEditor::onShowNormals(wxCommandEvent & event )
         m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
     }
 
-    this->notifyTriangularMesh();
+    this->notifyMesh();
 }
 
 //------------------------------------------------------------------------------
@@ -306,7 +306,7 @@ void RepresentationEditor::notifyMaterial()
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::notifyTriangularMesh()
+void RepresentationEditor::notifyMesh()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
 

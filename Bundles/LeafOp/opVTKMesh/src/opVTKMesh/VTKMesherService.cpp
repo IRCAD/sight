@@ -7,7 +7,7 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Acquisition.hpp>
 

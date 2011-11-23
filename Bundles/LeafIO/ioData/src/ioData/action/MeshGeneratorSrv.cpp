@@ -12,7 +12,6 @@
 
 #include <fwComEd/MeshMsg.hpp>
 
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/Mesh.hpp>
 
 #include <fwDataTools/MeshGenerator.hpp>

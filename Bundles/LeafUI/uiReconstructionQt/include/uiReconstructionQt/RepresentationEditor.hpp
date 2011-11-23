@@ -70,7 +70,7 @@ protected:
     virtual void info( std::ostream &_sstream ) ;
 
     void notifyMaterial();
-    void notifyTriangularMesh();
+    void notifyMesh();
 
 protected slots:
 
