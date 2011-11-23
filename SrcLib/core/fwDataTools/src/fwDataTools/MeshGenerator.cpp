@@ -4,17 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+
+#include "fwDataTools/thread/RegionThreader.hpp"
+
 #include <map>
 
 #include <cstdlib>
 #include <ctime>
 
 #include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
 
 #include "fwDataTools/MeshGenerator.hpp"
 
-using namespace boost::assign;
 
 namespace fwDataTools
 {
@@ -366,20 +367,17 @@ Vector<float> &computeCellNormal( const PointsMultiArrayType &points, const ::fw
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
+void generateRegionCellNormals(::fwData::Mesh::sptr mesh, const ::fwData::Mesh::Id regionMin, const ::fwData::Mesh::Id regionMax)
 {
-    mesh->allocateCellNormals();
-
-
     PointsMultiArrayType point = PointsMultiArrayType(
             static_cast<PointsMultiArrayType::element*>(mesh->getPointsArray()->getBuffer()),
             boost::extents[mesh->getNumberOfPoints()]
             );
 
+
     ::fwData::Mesh::CellTypesMultiArrayType       cellTypes       = mesh->getCellTypes();
     ::fwData::Mesh::CellDataMultiArrayType        cellData        = mesh->getCellData();
     ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
-
 
     const Vector<float> vZero;
     Vector<float> n;
@@ -387,12 +385,11 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
     ::fwData::Mesh::CellDataOffsetType offset;
     ::fwData::Mesh::CellValueType *cell;
     ::fwData::Mesh::Id cellLen = 0;
-    ::fwData::Mesh::PointValueType *p1, *p2, *p3, *p4;
 
     const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
     const ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
 
-    for(::fwData::Mesh::Id i = 0; i<numberOfCells; ++i)
+    for(::fwData::Mesh::Id i = regionMin; i<regionMax; ++i)
     {
         type = cellTypes[i];
         offset = cellDataOffsets[i];
@@ -424,18 +421,32 @@ void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
                 }
         }
     }
-
 }
+
+
 
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
+void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
 {
-    typedef std::multimap< ::fwData::Mesh::CellValueType, Vector<float> > VectorMultiMap;
-    VectorMultiMap vectors;
+    mesh->allocateCellNormals();
 
-    mesh->allocatePointNormals();
+    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+
+    ::fwDataTools::thread::RegionThreader rt;
+    rt( ::boost::bind(&generateRegionCellNormals, mesh, _1, _2), numberOfCells );
+
+    return;
+
+}
+
+
+typedef std::multimap< ::fwData::Mesh::CellValueType, Vector<float> > VectorMultiMap;
+
+void generateRegionCellNormalsByPoints(std::vector< VectorMultiMap > &vectorsData, size_t dataId, ::fwData::Mesh::sptr mesh, const ::fwData::Mesh::Id regionMin, const ::fwData::Mesh::Id regionMax)
+{
+    VectorMultiMap &vectors = vectorsData[dataId];
 
     const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
     PointsMultiArrayType point = PointsMultiArrayType(
@@ -454,12 +465,11 @@ void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
     ::fwData::Mesh::CellDataOffsetType offset;
     ::fwData::Mesh::CellValueType *cell;
     ::fwData::Mesh::Id cellLen = 0;
-    ::fwData::Mesh::PointValueType *p1, *p2, *p3, *p4;
 
     const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
     const ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
 
-    for(::fwData::Mesh::Id i = 0; i<numberOfCells; ++i)
+    for(::fwData::Mesh::Id i = regionMin; i<regionMax; ++i)
     {
         type = cellTypes[i];
         offset = cellDataOffsets[i];
@@ -493,12 +503,20 @@ void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
         }
 
     }
+}
+
+void normalizeRegionCellNormals(VectorMultiMap &vectors, ::fwData::Mesh::sptr mesh, const ::fwData::Mesh::Id regionMin, const ::fwData::Mesh::Id regionMax)
+{
+    const Vector<float> vZero;
+    Vector<float> n;
+
 
     VectorMultiMap::iterator it;
     std::pair<VectorMultiMap::iterator,VectorMultiMap::iterator> ret;
 
-    size_t count;
-    for(::fwData::Mesh::Id i = 0; i<nbOfPoints; ++i)
+    size_t count = 0;
+
+    for(::fwData::Mesh::Id i = regionMin; i<regionMax; ++i)
     {
         ret = vectors.equal_range(i);
         n = vZero;
@@ -517,6 +535,46 @@ void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
         n.normalize();
         mesh->setPointNormal(i, reinterpret_cast< ::fwData::Mesh::NormalValueType* >(&n));
     }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
+{
+
+    mesh->allocatePointNormals();
+
+    std::vector< VectorMultiMap > cellNormalsByPoints;
+    VectorMultiMap vectors;
+
+
+    ::fwDataTools::thread::RegionThreader rt;
+
+    cellNormalsByPoints.resize(rt.numberOfThread());
+
+    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+    const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
+
+    rt( ::boost::bind(&generateRegionCellNormalsByPoints,
+                        boost::ref(cellNormalsByPoints),
+                        _3, mesh, _1, _2),
+            numberOfCells);
+
+
+    std::vector< VectorMultiMap >::iterator iter = cellNormalsByPoints.begin();
+
+    vectors.swap(*iter++);
+
+    for(; iter != cellNormalsByPoints.end(); ++iter)
+    {
+        VectorMultiMap &mm = *iter;
+        vectors.insert(mm.begin(), mm.end());
+    }
+
+    rt( boost::bind( &normalizeRegionCellNormals,
+                 boost::ref(vectors),
+                 mesh, _1, _2),
+            nbOfPoints);
 
 }
 

@@ -79,7 +79,7 @@ private:
 
 };
 
-}   // namespace fwBreathing
+}   // namespace fwDataTools
 
 #endif  // _FWDATATOOLS_ALGOMESHDEFORMATION_HPP_
 
