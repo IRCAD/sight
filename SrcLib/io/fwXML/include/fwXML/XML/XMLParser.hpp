@@ -45,6 +45,7 @@ FWXML_API static void validateDoc (xmlDocPtr xmlDoc) throw (::fwTools::Failed);
 FWXML_API static xmlNodePtr nextXMLElement (xmlNodePtr pNode);
 
 
+FWXML_API static xmlNodePtr getChildrenXMLElement (xmlNodePtr pNode);
 
 /**
  * @brief

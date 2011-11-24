@@ -25,6 +25,9 @@ namespace fwXML
 class FWXML_CLASS_API ISplitPolicy : public ::fwCore::BaseObject
 {
 public:
+
+    fwCoreNonInstanciableClassDefinitionsMacro ( (ISplitPolicy)(::fwCore::BaseObject) ) ;
+
     /**
      * @brief define if object must be splitted
      *

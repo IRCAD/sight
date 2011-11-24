@@ -63,7 +63,7 @@ void ReconstructionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toU
     xmlNodePtr materialNode = XMLParser::findChildNamed( source, std::string("material") );
     SLM_ASSERT("materialNode not instanced", materialNode);
 
-    xmlNodePtr cMaterialNode = xmlNextElementSibling( materialNode->children );
+    xmlNodePtr cMaterialNode = ::fwXML::XMLParser::getChildrenXMLElement(materialNode );
     SLM_ASSERT("cMaterialNode not instanced", cMaterialNode);
 
     ::fwTools::Object::sptr valueObj;

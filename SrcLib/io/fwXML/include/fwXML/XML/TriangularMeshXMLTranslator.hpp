@@ -9,16 +9,9 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include <fwCore/base.hpp>
-
-#include <iostream>
-#include <sstream>
-
 #include <fwData/TriangularMesh.hpp>
 
-
 #include "fwXML/XML/XMLTranslator.hpp"
-
 
 namespace fwXML
 {
@@ -34,19 +27,19 @@ public:
     FWXML_API virtual ~TriangularMeshXMLTranslator() ;
 
     /// get XML from current object
-    FWXML_API xmlNodePtr getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj );
+    FWXML_API xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj );
 
 
     /// get Object from an XML node
-    FWXML_API void updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source);
+    FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
 
 protected :
 
     /// manage extra serialization : read image from path extracted from filename attribut in <Buffer> xml node
-    FWXML_API void manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> );
+    FWXML_API void manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr );
 
     /// manage extra serialization : only inform <Buffer filename attribut />
-    FWXML_API void manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> );
+    FWXML_API void manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr );
 };
 
 }

@@ -65,13 +65,13 @@ void ImageFileFormatService::RWPoliciesInstall()
         }
         else
         {
-            setReader( ::boost::shared_ptr< ::fwDataIO::reader::GzBufferImageReader >( new ::fwDataIO::reader::GzBufferImageReader() ));
+            setReader( ::fwDataIO::reader::GzBufferImageReader::New() );
         }
     }
 
     // try to install Writrer
     ::fwDataIO::writer::IObjectWriter::sptr writer;
-    writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >(m_preferedWriter);
+    writer = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >(m_preferedWriter);
     OSLM_WARN_IF(" prefered Writer" << m_preferedWriter << " cannot be instanciated => use default one", !m_preferedWriter.empty() && !writer);
     if ( writer )
     {
@@ -86,19 +86,17 @@ void ImageFileFormatService::RWPoliciesInstall()
         }
         else
         {
-            writer = fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::itkIO::ImageWriter" );
+            writer = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::writer::IObjectWriter, std::string >( "::itkIO::ImageWriter" );
             if ( writer )
             {
                 setWriter( writer );
             }
             else
             {
-                setWriter( ::boost::shared_ptr< ::fwDataIO::writer::GzBufferImageWriter >( new ::fwDataIO::writer::GzBufferImageWriter() ));
+                setWriter( ::fwDataIO::writer::GzBufferImageWriter::New() );
             }
-
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -106,9 +104,7 @@ void ImageFileFormatService::RWPoliciesInstall()
 void ImageFileFormatService::load()
 {
     assert( !m_filename.empty() );
-    // assert( !m_localFolder.empty() ); not mandatory can be loaded at root Folder
 
-    //RWPoliciesInstall();
     SLM_ASSERT("m_reader not instanced", m_reader);
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >() ;

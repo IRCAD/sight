@@ -35,9 +35,7 @@ xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwTools::Object::sptr obj )
     xmlNodePtr node = xmlNewNode(NULL, xmlStrdup( BAD_CAST obj->getLeafClassname().c_str() ) );
 
     // append an unique id to its objects
-
-    // OLD STYLE std::string id = ::boost::lexical_cast<std::string>(obj);
-    std::string id = ::fwTools::UUID::get(obj  );
+    std::string id = ::fwTools::UUID::get(obj);
 
     xmlNewProp( node, BAD_CAST "id", xmlStrdup( BAD_CAST  id.c_str() ));
     xmlNewProp( node, BAD_CAST "class", xmlStrdup( BAD_CAST  obj->getRootedClassname().c_str() ));
@@ -90,7 +88,7 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
         {
             if ( child->type == XML_ELEMENT_NODE )
             {
-                // normal parent object ignore chlidren which are not Field
+                // normal parent object ignore children which are not Field
                 if ( classicObject &&  xmlStrcmp( child->name, BAD_CAST "Field" ) )
                 {
                     OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " << source->name << " ignoring " << child->name );

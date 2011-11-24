@@ -6,6 +6,8 @@
 
 #include <limits>
 
+#include <boost/assign/std/set.hpp>
+
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libxml/xinclude.h>
@@ -27,6 +29,8 @@
 
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/XMLStream.hpp"
+
+using namespace ::boost::assign;
 
 namespace fwXML
 {
@@ -62,17 +66,29 @@ void XMLParser::validateDoc (xmlDocPtr xmlDoc) throw (::fwTools::Failed)
 
 xmlNodePtr XMLParser::nextXMLElement (xmlNodePtr pNode)
 {
-    SLM_ASSERT("pNode not instanced", pNode);
-    xmlNodePtr pChild;
-
-    for (pChild = pNode; pChild != 0 ; pChild = pChild->next)
+    xmlNodePtr pNextNode;
+    for (pNextNode = pNode; pNextNode != 0 ; pNextNode = pNextNode->next)
     {
-        if ( pChild->type == XML_ELEMENT_NODE )
+        if ( pNextNode->type == XML_ELEMENT_NODE )
         {
-            return pChild;
+            return pNextNode;
         }
     }
     return NULL; // not found !!
+}
+
+//------------------------------------------------------------------------------
+
+xmlNodePtr XMLParser::getChildrenXMLElement (xmlNodePtr pNode)
+{
+    std::set<int> ignoredNodeType;
+    ignoredNodeType += XML_TEXT_NODE, XML_CDATA_SECTION_NODE, XML_COMMENT_NODE;
+    xmlNodePtr childNode = pNode->children;
+    if(!childNode || ignoredNodeType.find(childNode->type) != ignoredNodeType.end())
+    {
+        childNode = xmlNextElementSibling( pNode->children );
+    }
+    return childNode;
 }
 
 //------------------------------------------------------------------------------

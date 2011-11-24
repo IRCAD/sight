@@ -7,9 +7,9 @@
 #ifndef _FWXML_VISITOR_SERIALIZE_HPP
 #define _FWXML_VISITOR_SERIALIZE_HPP
 
-#include "fwXML/config.hpp"
 #include <fwData/visitor/BreathFirst.hpp>
 
+#include "fwXML/config.hpp"
 
 namespace visitor
 {
@@ -28,9 +28,7 @@ public:
     FWXML_API virtual ~Serialize();
 
     // override call serialize service for object
-    FWXML_API virtual void visit( ::boost::shared_ptr< ::fwTools::Object > obj);
-
-
+    FWXML_API virtual void visit( ::fwTools::Object::sptr obj);
 };
 
 }

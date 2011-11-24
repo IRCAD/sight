@@ -30,18 +30,18 @@ public:
      * @brief return the master node of an Object : className + unique ID as attribue
      * For example <Image id="626b2206-c55b-4a90-b215-d138dc32640e"/> RFC4122 version 4 random based generation
      */
-    FWXML_API static xmlNodePtr MasterNode( ::boost::shared_ptr< ::fwTools::Object> obj );
+    FWXML_API static xmlNodePtr MasterNode( ::fwTools::Object::sptr obj );
 
     /**
      * @brief for debug/quality test only test if objet is of type OBJECTTYPE and source->name is equal to OBJECTTYPE
      * class name
      */
     template<class OBJECTTYPE>
-    inline static bool check( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source)
+    inline static bool check( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
     {
         bool valid = ::boost::dynamic_pointer_cast< OBJECTTYPE >(toUpdate);
         const std::string srcName = (const char*)source->name;
-        valid &= ( srcName ==  fwCore::TypeDemangler<OBJECTTYPE>().getLeafClassname() );
+        valid &= ( srcName == ::fwCore::TypeDemangler<OBJECTTYPE>().getLeafClassname() );
         return valid;
     }
 
@@ -49,25 +49,25 @@ public:
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
      * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence
      */
-    FWXML_API static xmlNodePtr toXML( ::boost::shared_ptr< ::fwTools::Object> obj );
+    FWXML_API static xmlNodePtr toXML( ::fwTools::Object::sptr obj );
 
     /**
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
      * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence and visit all its Field
      */
-    FWXML_API static xmlNodePtr toXMLRecursive( ::boost::shared_ptr< ::fwTools::Object> obj );
+    FWXML_API static xmlNodePtr toXMLRecursive( ::fwTools::Object::sptr obj );
 
     /**
      * @brief modify the  given object return from the  xmlNode by calling the corresponding XMLTranslator Specialized
      * Use ClassFactoryRegistry , if no correspondence let object unchanged
      * Object must be castable to source->name class
      */
-    FWXML_API static void fromXML( ::boost::shared_ptr< ::fwTools::Object> toUpdate, xmlNodePtr source );
+    FWXML_API static void fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr source );
 
     /**
      * @brief return a newObject form an XML node : if object already created use the previous one
      */
-    FWXML_API static ::boost::shared_ptr< ::fwTools::Object> fromXML( xmlNodePtr source );
+    FWXML_API static ::fwTools::Object::sptr fromXML( xmlNodePtr source );
 
     /**
      * @brief to node append a new Property with given value

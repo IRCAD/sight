@@ -70,9 +70,9 @@ void MaterialXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,
     SLM_ASSERT("ambientNode not instanced", ambientNode);
     xmlNodePtr diffuseNode = XMLParser::findChildNamed( source, std::string("diffuse") );
     SLM_ASSERT("diffuseNode not instanced", diffuseNode);
-    xmlNodePtr cAmbientNode = xmlNextElementSibling( ambientNode->children );
+    xmlNodePtr cAmbientNode = ::fwXML::XMLParser::getChildrenXMLElement(ambientNode);
     SLM_ASSERT("cAmbientNode not instanced", cAmbientNode);
-    xmlNodePtr cDiffuseNode = xmlNextElementSibling( diffuseNode->children );
+    xmlNodePtr cDiffuseNode = ::fwXML::XMLParser::getChildrenXMLElement(diffuseNode);
     SLM_ASSERT("cDiffuseNode not instanced", cDiffuseNode);
 
     ::fwTools::Object::sptr valueObj;

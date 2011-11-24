@@ -80,7 +80,7 @@ xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
     }
 
     xmlNodePtr meshArraysNode = XMLTH::toXMLRecursive(meshArrays);
-    xmlAddChild( masterNode , meshArraysNode);
+    xmlAddChild( masterNode, meshArraysNode);
 
     return masterNode;
 }
@@ -154,9 +154,8 @@ void MeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xm
                     }
                 }
             }
-
             // Element ++
-            elementNode = XMLParser::nextXMLElement( elementNode->next );
+            elementNode = ::fwXML::XMLParser::nextXMLElement(elementNode->next);
         }
     }
 }

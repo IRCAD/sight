@@ -55,7 +55,7 @@ void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer 
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> mesh )
+void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr mesh )
 {
     // get XML node related to Buffer //FIXMEXPATH
     std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(mesh);

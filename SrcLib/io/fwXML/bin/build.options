@@ -5,7 +5,8 @@ LIB  = [
        'fwTools_0-1',
        'fwCore_0-1',
        'fwServices_0-1',
-       'fwDataIO_0-2'
+       'fwDataIO_0-2',
+       'fwDataTools_0-1',
        ]
 USE  = ['boost','boostFilesystem','boostSerialization','libxml2']
 

@@ -52,12 +52,12 @@ void FwXMLObjectWriter::write()
     ::fwXML::Serializer serializer;
     serializer.rootFolder() = getFile().parent_path().string();
 
-    ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy );
+    ::fwXML::NeverSplitPolicy::NewSptr spolicy;
     serializer.setSplitPolicy( spolicy );
 #if BOOST_FILESYSTEM_VERSION > 2
-    ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( getFile().filename().string() ) );
+    ::fwXML::UniquePathPolicy::sptr pPathPolicy( new ::fwXML::UniquePathPolicy( getFile().filename().string() ) );
 #else
-    ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( getFile().leaf() ) );
+    ::fwXML::UniquePathPolicy::sptr pPathPolicy( new ::fwXML::UniquePathPolicy( getFile().leaf() ) );
 #endif
     serializer.setPathPolicy( pPathPolicy );
 

@@ -138,7 +138,7 @@ void ObjectTest::testTriangularMesh()
 void ObjectTest::testTransfertFunction()
 {
     ::fwData::TransfertFunction::sptr tf1 = ObjectGenerator::createTransfertFunction();
-    ::fwData::TransfertFunction::sptr tf2 = ::fwData::TransfertFunction::dynamicCast(ObjectTest::serialize("TriangularMesh.xml", tf1));
+    ::fwData::TransfertFunction::sptr tf2 = ::fwData::TransfertFunction::dynamicCast(ObjectTest::serialize("TransfertFunction.xml", tf1));
     CPPUNIT_ASSERT(tf2);
     ObjectComparator::compareTransfertFunction(tf1, tf2);
 }

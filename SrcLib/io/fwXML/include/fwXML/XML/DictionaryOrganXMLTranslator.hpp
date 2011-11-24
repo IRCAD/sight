@@ -25,11 +25,11 @@ public:
     FWXML_API virtual ~DictionaryOrganXMLTranslator() ;
 
     /// get XML from current object
-    FWXML_API xmlNodePtr getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj );
+    FWXML_API xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj );
 
 
     /// get Object from an XML Graph
-    FWXML_API void updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source);
+    FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
 
 protected :
 

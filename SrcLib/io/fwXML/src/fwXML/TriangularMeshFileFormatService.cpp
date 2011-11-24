@@ -41,8 +41,8 @@ void TriangularMeshFileFormatService::RWPoliciesInstall()
     assert(  m_reader.get() == 0 );
     assert(  m_writer.get() == 0 );
 
-    m_reader = ::boost::shared_ptr< ::fwDataIO::reader::TriangularMeshReader >( new ::fwDataIO::reader::TriangularMeshReader() );
-    m_writer = ::boost::shared_ptr< ::fwDataIO::writer::TriangularMeshWriter >( new ::fwDataIO::writer::TriangularMeshWriter() );
+    m_reader = ::fwDataIO::reader::TriangularMeshReader::New();
+    m_writer = ::fwDataIO::writer::TriangularMeshWriter::New();
 }
 
 //------------------------------------------------------------------------------

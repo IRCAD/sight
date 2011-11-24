@@ -32,7 +32,7 @@ public:
      * @param option : select the desired information level ( 0 = short, 1 = fields without splitted fields, 2 = all fields )
      * @return an object string representation
      */
-    FWXML_API static const std::string toString( ::boost::shared_ptr< fwTools::Object > object, unsigned int option = 0 );
+    FWXML_API static const std::string toString( ::fwTools::Object::sptr object, unsigned int option = 0 );
 
 };
 

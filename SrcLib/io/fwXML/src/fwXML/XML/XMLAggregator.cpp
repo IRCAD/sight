@@ -56,8 +56,8 @@ void XMLAggregator::append( ::fwTools::Object::wptr  obj )
         ::fwTools::Object::sptr  dobj = (*o).lock();
         for ( fwTools::Object::ChildContainer::iterator c = dobj->children().begin() ; c !=  dobj->children().end(); ++c  )
         {
-            assert( ::boost::dynamic_pointer_cast< fwTools::Object >( *c ) );
-            ::boost::shared_ptr<fwTools::Object> child = ::boost::dynamic_pointer_cast< fwTools::Object >(*c);
+            ::fwTools::Object::sptr child = ::fwTools::Object::dynamicCast(*c);
+            SLM_ASSERT("fwTools::Object dynamicCast failed", child );
             if ( m_objects.find( child ) != m_objects.end() ) // child is in m_objects => it is not a root
             {
                 m_roots.remove(child);
@@ -88,7 +88,7 @@ xmlNodePtr XMLAggregator::getXMLInclude(::fwTools::Object::wptr obj)
     assert( !obj.expired() );
     assert ( m_objects.find( obj) ==  m_objects.end() ); // " xi::include must be performed only if obj is not in the same aggregator
 
-    ::boost::shared_ptr<XMLAggregator> otherAggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[obj];
+    XMLAggregator::sptr otherAggregator =  XMLHierarchy::getDefault()->mapObjectAggregator()[obj];
 
     if (  otherAggregator )
     {
@@ -120,11 +120,11 @@ xmlDocPtr XMLAggregator::getXMLDoc()
     for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
     {
         ::fwTools::Object::sptr dobj = (*o).lock();
-        ::boost::shared_ptr< ::fwXML::XMLTranslator > translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  dobj->getClassname()  );
+        ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  dobj->getClassname()  );
         //SLM_ASSERT("translator not instanced", translator);
         if (translator==NULL)
         {
-            translator = ::boost::shared_ptr< ::fwXML::XMLTranslator >( new TrivialXMLTranslator );
+            translator = ::fwXML::TrivialXMLTranslator::New();
             OSLM_ERROR( "no XMLTranslator for" << dobj->getClassname() << "(" << dobj << ") use Trivial XML Translator");
         }
 
@@ -158,7 +158,7 @@ xmlDocPtr XMLAggregator::getXMLDoc()
     }
 
     // Phase 3;
-    ::fwTools::Object::wptr root = getRootObject();
+    ::fwTools::Object::wptr root = this->getRootObject();
 
     // set nodes
     xmlDocPtr doc = xmlNewDoc(BAD_CAST XML_DEFAULT_VERSION);

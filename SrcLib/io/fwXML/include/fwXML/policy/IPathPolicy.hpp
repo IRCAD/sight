@@ -29,6 +29,9 @@ class FWXML_CLASS_API IPathPolicy : public ::fwCore::BaseObject
 {
 
 public :
+
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IPathPolicy)(::fwCore::BaseObject) ) ;
+
     /**
      *
      * @brief   defines a path to save an Object

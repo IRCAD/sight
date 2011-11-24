@@ -4,22 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
 #ifndef _FWXML_BOOSTSERIALIZER_ACQUISITION_HPP_
 #define _FWXML_BOOSTSERIALIZER_ACQUISITION_HPP_
 
 #include <fwCore/base.hpp>
+#include <fwTools/fromIsoExtendedString.hpp>
 
 #include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
 
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
-//#include "fwXML/boostSerializer/instanciateSerializers2.hpp"
-#include <fwTools/fromIsoExtendedString.hpp>
 
-namespace boost {
-namespace serialization {
+namespace boost
+{
+namespace serialization
+{
 
 /**
  * @brief serialize algorithm via boost.org serialization scheme
@@ -85,13 +84,6 @@ void load(Archive & ar, ::fwData::Acquisition & _acquisition, const unsigned int
     ar &  ::boost::serialization::make_nvp( "MedicalPrinterCorp" , _acquisition.getRefMedicalPrinterCorp() );
 
     ar &  ::boost::serialization::make_nvp( "PatientPosition" , _acquisition.getRefPatientPosition() );
-
-    //_acquisition.setImage( ::fwData::Image::NewSptr );
-    //ar &  ::boost::serialization::make_nvp( "Image" , *_acquisition.getImage() );
-
-    //  ar &  ::boost::serialization::make_nvp( "StructAnat" , _acquisition.getStructAnat() );
-
-    //  ar &  ::boost::serialization::make_nvp( "Pipeline" , _acquisition.getPipeline() );
 }
 
 template<class Archive>
@@ -151,42 +143,19 @@ void save(Archive & ar, const ::fwData::Acquisition & _acquisition, const unsign
     ar &  ::boost::serialization::make_nvp( "MedicalPrinterCorp" , _acquisition.getCRefMedicalPrinterCorp() );
 
     ar &  ::boost::serialization::make_nvp( "PatientPosition" , _acquisition.getCRefPatientPosition() );
-
-    //::boost::shared_ptr < const ::fwData::Image > image = _acquisition.getImage();
-    //ar &  ::boost::serialization::make_nvp( "Image" , *image );
-    /*
-    ::boost::shared_ptr < const ::fwData::Image > structAnat = _acquisition.getStructAnat();
-    if ( structAnat != 0 )
-    {
-        ar &  ::boost::serialization::make_nvp( "StructAnat" , *structAnat );
-    }
-    else
-    {
-        SLM_WARN("save (Acquisition) : StructAnat is null. replace field by \"\" (empty string).");
-        std::string nullPtr("");
-        ar &  ::boost::serialization::make_nvp( "StructAnat" , nullPtr );
-    }
-    */
-//  ar &  ::boost::serialization::make_nvp( "Pipeline" , _acquisition.getPipeline() );
 }
-
-
-
-
 
 
 /// serialize image via boost.org serialization framework (split load/save)
 template<class Archive>
 void serialize(Archive & ar, ::fwData::Acquisition & _study, const unsigned int version)
 {
-
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
-     ::boost::serialization::void_cast_register<  ::fwData::Acquisition, fwTools::Object>(NULL,NULL);
+    ::boost::serialization::void_cast_register<  ::fwData::Acquisition, fwTools::Object>(NULL,NULL);
 
     split_free(ar,_study,version); // call load or save depending of archive type
 }
-
 
 
 } } // end namespace
