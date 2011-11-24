@@ -48,7 +48,8 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
 {
     if (    m_mesh.expired() ||
             m_nbPoints != _mesh->getNumberOfPoints() ||
-            m_nbCells  != _mesh->getNumberOfCells() )
+            m_nbCells  != _mesh->getNumberOfCells()  ||
+            !_mesh->getPointColorsArray())
     {
         this->setParam( _mesh, 50, 50 );
         this->initSimu();
