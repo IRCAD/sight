@@ -69,9 +69,9 @@
                         <menuItem name="Shake point normals" shortcut="L" />
                         <menuItem name="Shake cell normals" shortcut="M" />
                         <separator />
-                        <menuItem name="Show point normals" style="radio" />
-                        <menuItem name="Show cell normals" style="radio" />
-                        <menuItem name="Hide normals" style="radio" />
+                        <menuItem name="Show point normals" style="radio" shortcut="2" />
+                        <menuItem name="Show cell normals" style="radio" shortcut="1" />
+                        <menuItem name="Hide normals" style="radio" shortcut="0" />
                         <separator />
                         <menuItem name="mesh deformation" shortcut="D"/>
                     </layout>
