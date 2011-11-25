@@ -292,14 +292,14 @@ using namespace boost::assign;
 {
     ::fwData::TransfertFunction::NewSptr tf;
 
-    size_t min, max, step;
+    int min, max, step;
     int val1 = rand()%2000 - 1000;
     int val2 = rand()%2000 - 1000;
     int val3 = rand()%50 + 1;
     min = std::min(val1, val2);
     max = std::max(val1, val2) + 1;
     step = ceil((double) ((max - min) / val3));
-    for(size_t i = min; i <= max ; i+=step )
+    for(int i = min; i <= max ; i+=step )
     {
         tf->getColor(i)->deepCopy(ObjectGenerator::createColor());
     }
