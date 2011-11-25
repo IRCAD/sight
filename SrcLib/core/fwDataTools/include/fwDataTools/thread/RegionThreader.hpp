@@ -7,7 +7,9 @@
 #ifndef _FWDATATOOLS_THREAD_REGIONTHREADER_HPP_
 #define _FWDATATOOLS_THREAD_REGIONTHREADER_HPP_
 
+#include <algorithm>
 #include <cstddef>
+#include <limits>
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
@@ -21,7 +23,6 @@ namespace thread
 {
 
 
-
 class RegionThreader
 {
 
@@ -31,8 +32,8 @@ public:
         : m_nbThread( (::boost::thread::hardware_concurrency() > 1) ? ::boost::thread::hardware_concurrency() : 1 )
     {}
 
-    RegionThreader(size_t nbThread)
-        : m_nbThread((nbThread > 1) ? nbThread : 1)
+    RegionThreader(size_t nbThread, bool capped = true)
+        : m_nbThread( std::min( capped ? ::boost::thread::hardware_concurrency() : std::numeric_limits<size_t>::max() , (nbThread > 1) ? nbThread : 1) )
     {}
 
     template<typename T> void operator()(T func, const size_t dataSize)
