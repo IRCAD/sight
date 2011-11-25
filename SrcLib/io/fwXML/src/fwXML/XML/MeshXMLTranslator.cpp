@@ -123,7 +123,7 @@ void MeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xm
                 ::fwData::Composite::sptr meshArrays = ::fwData::Composite::dynamicCast(valueObj);
                 SLM_ASSERT("composite not instanced", meshArrays);
 
-                pMesh->setPointArray(::fwData::Array::dynamicCast((*meshArrays)["points"]) );
+                pMesh->setPointsArray(::fwData::Array::dynamicCast((*meshArrays)["points"]) );
                 pMesh->setCellTypesArray(::fwData::Array::dynamicCast((*meshArrays)["cellTypes"]));
                 pMesh->setCellDataArray(::fwData::Array::dynamicCast((*meshArrays)["cellData"]));
                 pMesh->setCellDataOffsetsArray(::fwData::Array::dynamicCast((*meshArrays)["cellDataOffsets"]));

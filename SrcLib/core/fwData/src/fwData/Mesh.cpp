@@ -479,7 +479,7 @@ Mesh::CellNormalsMultiArrayType Mesh::getCellNormals() const
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPointArray (::fwData::Array::sptr array)
+void Mesh::setPointsArray (::fwData::Array::sptr array)
 {
     m_points = array;
 }

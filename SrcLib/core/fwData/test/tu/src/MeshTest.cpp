@@ -293,7 +293,7 @@ void MeshTest::addingArray()
         count++;
     }
 
-    mesh->setPointArray(pointArray);
+    mesh->setPointsArray(pointArray);
     mesh->setNumberOfPoints(nbPoints);
 
     CPPUNIT_ASSERT_EQUAL(nbPoints, mesh->getNumberOfPoints());

@@ -312,7 +312,7 @@ public:
     FWDATA_API CellNormalsMultiArrayType     getCellNormals() const;
 
     /// Sets the internal corresponding array
-    FWDATA_API void setPointArray            (::fwData::Array::sptr array);
+    FWDATA_API void setPointsArray           (::fwData::Array::sptr array);
     /// Sets the internal corresponding array
     FWDATA_API void setCellTypesArray        (::fwData::Array::sptr array);
     /// Sets the internal corresponding array
@@ -348,16 +348,12 @@ public:
     /**
      * @brief Clear mesh points.
      * Calling this method don't impact memory allocation.
-     *
-     * @return
      */
     FWDATA_API void clearPoints();
 
     /**
      * @brief Clear mesh cells.
      * Calling this method don't impact memory allocation.
-     *
-     * @return
      */
     FWDATA_API void clearCells();
 
