@@ -4,11 +4,7 @@
     <activate id="servicesReg" version="0-1" /> 
 
     <activate id="gui" version="0-1" />
-    <activate id="guiQt" version="0-1" >
-        <param id="startingMode" value="windows" />
-        <param id="config" value="PoC04SofaInteractive" />
-        <param id="configFile" value="./Bundles/PoC04SofaInteractive_0-1/configurations/configuration.xml" />
-    </activate>
+    <activate id="guiQt" version="0-1" />
     <activate id="io" version="0-1" />
     <activate id="visu" version="0-1" />
 
@@ -31,11 +27,17 @@
     <activate id="opSofa" version="0-1" />
 
     <activate id="opVTKMesh" version="0-1" />
-
+    
+    <activate id="PoC04SofaInteractive" />
+    <activate id="appXml" version="0-1" >
+        <param id="config" value="PoC04SofaInteractive" />
+    </activate>
+    
     <!-- Start components -->
     <start id="visuVTK" />
     <start id="visuVTKQt" />
     <start id="visuVTKAdaptor" />
+    <start id="appXml" />
     <start id="guiQt" />
 
 </profile>

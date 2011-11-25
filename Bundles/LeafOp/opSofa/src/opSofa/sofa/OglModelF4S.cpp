@@ -6,13 +6,13 @@
  *  data from F4S
  *  @param pMesh : pointer to the triangular mesh
  */
-void OglModelF4S::loadTriangularMesh(::fwData::TriangularMesh::sptr pMesh)
+void OglModelF4S::loadMesh(::fwData::Mesh::sptr pMesh)
 {
     MeshF4S *mesh = new MeshF4S();
-    mesh->loadTriangularMesh(pMesh);
+    mesh->loadMesh(pMesh);
 
     sofa::helper::io::Mesh *objLoader = mesh;
-    
+
     setMesh(*objLoader,false);
     applyUVTransformation();
 }

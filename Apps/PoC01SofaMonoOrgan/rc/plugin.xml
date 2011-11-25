@@ -1,6 +1,6 @@
 <plugin id="DemoComSofaConfiguration">
 
-    <!--<extension id="DemoComSofaConfig" implements="::fwData::TriangularMesh">-->
+    <!--<extension id="DemoComSofaConfig" implements="::fwData::Mesh">-->
     
     <requirement id="servicesReg" /> <!-- new -->
 
@@ -21,7 +21,7 @@
                             <config renderer="default" picker="" />
                         </adaptor>
 
-                        <adaptor id="MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="TrianMesh">
+                        <adaptor id="MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="TrianMesh">
                             <config renderer="default" picker="" />
                         </adaptor>
 
@@ -30,7 +30,7 @@
 
         <!--  Mesh data creation. -->
         <item key="TrianMesh">
-        <object uid="myMesh" type="::fwData::TriangularMesh">
+        <object uid="myMesh" type="::fwData::Mesh">
 
             <!-- Mise en place de la fenetre pricipale  -->
             <service uid="MyIHM" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">

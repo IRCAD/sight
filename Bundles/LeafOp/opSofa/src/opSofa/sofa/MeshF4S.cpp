@@ -8,30 +8,31 @@ using namespace sofa::defaulttype;
  *  mesh object from SOFA
  *  @param pMesh : pointer to the triangular mesh
  */
-void MeshF4S::loadTriangularMesh(::fwData::TriangularMesh::sptr pMesh) {
+void MeshF4S::loadMesh(::fwData::Mesh::sptr pMesh)
+{
     // Copy points to Sofa
-    int const nbPoints = pMesh->getNumPoints();
-    std::vector<std::vector<float > > &fromMesh = pMesh->points();
+    const size_t nbPoints = pMesh->getNumberOfPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = pMesh->getPoints();
     vertices.resize(nbPoints);
     for (int p=0;p<nbPoints;p++)
     {
-      vertices[p][0] = (SReal)fromMesh[p][0];
-      vertices[p][1] = (SReal)fromMesh[p][1];
-      vertices[p][2] = (SReal)fromMesh[p][2];
+        vertices[p][0] = (SReal)points[p][0];
+        vertices[p][1] = (SReal)points[p][1];
+        vertices[p][2] = (SReal)points[p][2];
     }
-    
+
     // Copy cells to Sofa
-    int const nbCells = pMesh->getNumCells();
-    std::vector<std::vector<int > > &fromMesh2 = pMesh->cells();
+    const size_t nbCells = pMesh->getNumberOfCells();
+    ::fwData::Mesh::CellDataMultiArrayType cells = pMesh->getCellData();
     facets.resize(nbCells);
-    for (int f=0;f<nbCells;f++)
+    for (int i=0, f=0; f<nbCells; f++,i+=3)
     {
         facets[f].resize(3);
         facets[f][0].resize(3);
         facets[f][1].resize(3);
         facets[f][2].resize(3);
-        facets[f][0][0] = fromMesh2[f][0];
-        facets[f][0][1] = fromMesh2[f][1];
-        facets[f][0][2] = fromMesh2[f][2];
+        facets[f][0][0] = cells[i];
+        facets[f][0][1] = cells[i+1];
+        facets[f][0][2] = cells[i+2];
     }
 }

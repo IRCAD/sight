@@ -5,7 +5,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include "opSofa/SofaBusiness.hpp"
-#include <fwComEd/TriangularMeshMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwData/PatientDB.hpp>
 
@@ -19,7 +19,7 @@ class SofaThread : public QThread
     Q_OBJECT
 
 public:
-    SofaThread(SofaBusiness*, std::vector<fwData::TriangularMesh::sptr>*, ::fwServices::IService::sptr service);
+    SofaThread(SofaBusiness*, std::vector<fwData::Mesh::sptr>*, ::fwServices::IService::sptr service);
     void stop();
     bool isRunning();
 
@@ -38,7 +38,7 @@ private:
     /**
      * @brief Flag to request the thread to stop
      */
-    bool stopRun; 
+    bool stopRun;
 
     /**
      * @brief Pointer to the SofaBusiness object
@@ -48,7 +48,7 @@ private:
     /**
      * @brief Pointer to the message structure
      */
-    fwComEd::TriangularMeshMsg::NewSptr msg;
+    fwComEd::MeshMsg::sptr msg;
 
     /**
      * @brief Pointer to the service Fw4spl
@@ -58,7 +58,7 @@ private:
     /**
      * @brief list of mesh
      */
-    std::vector<fwData::TriangularMesh::sptr> *meshs;
+    std::vector<fwData::Mesh::sptr> *meshs;
 
     /**
      * @brief mutex to synchronize threads

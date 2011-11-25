@@ -3,7 +3,7 @@
 
 
 #include <sofa/component/visualmodel/OglModel.h>
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 
 /**
  * @brief Class inherited from OglModel and permitting the SOFA framework
@@ -13,7 +13,7 @@ class OglModelF4S : public sofa::component::visualmodel::OglModel
 {
 
 public:
-    void loadTriangularMesh(::fwData::TriangularMesh::sptr);
+    void loadMesh(::fwData::Mesh::sptr);
 };
 
 

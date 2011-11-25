@@ -1,8 +1,8 @@
 #include <fwTools/UUID.hpp>
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
-#include <fwComEd/TriangularMeshMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 #include <vtkIO/vtk.hpp>
 
 #include <QInputDialog>
@@ -82,7 +82,7 @@ void SofaTrianSrv::updating() throw ( ::fwTools::Failed )
 
         // Retreive object
         OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID)) ;
-        ::fwData::TriangularMesh::sptr pMesh = ::fwData::TriangularMesh::dynamicCast(::fwTools::fwID::getObject( m_meshUID )) ;
+        ::fwData::Mesh::sptr pMesh = ::fwData::Mesh::dynamicCast(::fwTools::fwID::getObject( m_meshUID )) ;
 
         int ips = QInputDialog::getDouble(0, "Nombre d'image par seconde", "FPS :", 10, 1, 1000, 0);
 
