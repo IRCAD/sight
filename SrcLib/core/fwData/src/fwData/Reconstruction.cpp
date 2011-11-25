@@ -133,12 +133,12 @@ void Reconstruction::setImage( ::fwData::Image::sptr _pImage )
 {
     ::fwData::Image::csptr _pImage;
 
-    const unsigned int NbChildren = this->getField( Reconstruction::ID_IMAGE )->children().size();
+    const unsigned int nbChildren = this->getField( Reconstruction::ID_IMAGE )->children().size();
 
-    assert ( NbChildren <= 1 );
+    assert ( nbChildren <= 1 );
 
     // Test if the image is allocated
-    if( NbChildren == 1 )
+    if( nbChildren == 1 )
     {
         _pImage = ::fwData::Image::dynamicCast ( this->getField( Reconstruction::ID_IMAGE )->children()[0] );
     }
@@ -156,12 +156,12 @@ void Reconstruction::setImage( ::fwData::Image::sptr _pImage )
 {
     ::fwData::Image::sptr _pImage;
 
-    const unsigned int NbChildren = this->getField( Reconstruction::ID_IMAGE )->children().size();
+    const unsigned int nbChildren = this->getField( Reconstruction::ID_IMAGE )->children().size();
 
-    assert ( NbChildren <= 1 );
+    assert ( nbChildren <= 1 );
 
     // Test if the image is allocated
-    if( NbChildren == 1 )
+    if( nbChildren == 1 )
     {
         _pImage = ::fwData::Image::dynamicCast ( this->getField( Reconstruction::ID_IMAGE )->children()[0] );
     }
@@ -199,7 +199,20 @@ void Reconstruction::setMesh( ::fwData::Mesh::sptr _pMesh )
 
 ::fwData::Mesh::csptr Reconstruction::getMesh() const
 {
-    return this->getMesh();
+    ::fwData::Mesh::csptr _pMesh;
+
+    const unsigned int nbChildren = this->getField( Reconstruction::ID_MESH )->children().size();
+
+    assert ( nbChildren <= 1 );
+
+    // Test if the image is allocated
+    if( nbChildren == 1 )
+    {
+        _pMesh = boost::dynamic_pointer_cast< ::fwData::Mesh > ( this->getField( Reconstruction::ID_MESH )->children()[0] );
+    }
+    SLM_WARN_IF("Reconstruction::getMesh : return an image pointer is null.", nbChildren == 0);
+
+    return _pMesh;
 }
 
 //------------------------------------------------------------------------------
@@ -208,19 +221,17 @@ void Reconstruction::setMesh( ::fwData::Mesh::sptr _pMesh )
 {
     ::fwData::Mesh::sptr _pMesh;
 
-    const unsigned int NbChildren = this->getField( Reconstruction::ID_MESH )->children().size();
+    const unsigned int nbChildren = this->getField( Reconstruction::ID_MESH )->children().size();
 
-    assert ( NbChildren <= 1 );
+    assert ( nbChildren <= 1 );
 
     // Test if the image is allocated
-    if( NbChildren == 1 )
+    if( nbChildren == 1 )
     {
         _pMesh = boost::dynamic_pointer_cast< ::fwData::Mesh > ( this->getField( Reconstruction::ID_MESH )->children()[0] );
     }
-    else
-    {
-        SLM_WARN("Reconstruction::getMesh : return an image pointer is null.");
-    }
+    SLM_WARN_IF("Reconstruction::getMesh : return an image pointer is null.", nbChildren == 0);
+
     return _pMesh;
 }
 
@@ -252,25 +263,31 @@ bool Reconstruction::getIsClosed()
     bool isClosed = false;
     if (::boost::logic::indeterminate(m_bIsClosed))
     {
-        ::fwData::Mesh::sptr mesh = this->getMesh();
-        ::fwData::Array::sptr cellData = mesh->getCellDataArray();
-        ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
-        ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
-        ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
-        ::fwData::Mesh::Id nbOfCells = mesh->getNumberOfCells();
-        ::fwData::Mesh::CellValueType* cellDataBegin = cellData->begin< ::fwData::Mesh::CellValueType >();
-        ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
-        ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = cellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
-        ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
-        ::fwData::Mesh::CellTypes* cellTypesBegin = cellTypes->begin< ::fwData::Mesh::CellTypes >();
+        m_bIsClosed = Reconstruction::isClosed(this->getSptr());
+    }
+    isClosed = m_bIsClosed;
+    return isClosed;
+}
 
-        isClosed = ::fwMath::isBorderlessSurface(cellDataBegin, cellDataEnd, cellDataOffsetsBegin, cellDataOffsetsEnd, cellTypesBegin );
-        m_bIsClosed = isClosed;
-    }
-    else
-    {
-        isClosed = m_bIsClosed;
-    }
+//------------------------------------------------------------------------------
+
+bool Reconstruction::isClosed(Reconstruction::csptr reconstruction)
+{
+
+    bool isClosed = false;
+    ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
+    ::fwData::Array::sptr cellData = mesh->getCellDataArray();
+    ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
+    ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
+    ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
+    ::fwData::Mesh::Id nbOfCells = mesh->getNumberOfCells();
+    ::fwData::Mesh::CellValueType* cellDataBegin = cellData->begin< ::fwData::Mesh::CellValueType >();
+    ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
+    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = cellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
+    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
+    ::fwData::Mesh::CellTypes* cellTypesBegin = cellTypes->begin< ::fwData::Mesh::CellTypes >();
+
+    isClosed = ::fwMath::isBorderlessSurface(cellDataBegin, cellDataEnd, cellDataOffsetsBegin, cellDataOffsetsEnd, cellTypesBegin );
     return isClosed;
 }
 

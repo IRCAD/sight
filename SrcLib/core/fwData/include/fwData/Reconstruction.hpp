@@ -36,6 +36,7 @@ class FWDATA_CLASS_API Reconstruction : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwTools::Factory::New< Reconstruction >) ;
 
+    fwCoreAllowSharedFromThis()
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -120,6 +121,12 @@ public:
      * The result is computed if m_bIsClosed is undefined
      */
     FWDATA_API bool getIsClosed();
+
+    /*!
+     * @brief Return true if the reconstruction is closed.
+     * The result is computed for each call.
+     */
+    static FWDATA_API bool isClosed(Reconstruction::csptr);
 
     //! Get/Set if the reconstruction is closed
     FWDATA_API ::boost::logic::tribool& getRefIsClosed();
