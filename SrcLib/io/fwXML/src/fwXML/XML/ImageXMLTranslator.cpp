@@ -103,7 +103,7 @@ void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXME
         ::fwDataIO::reader::IObjectReader::sptr reader;
         OSLM_DEBUG("ImageXMLTranslator::manageLoadingBuffer initial protocol="<< protocol << " final loading protocol=" << pseudoReader)
         reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
-        SLM_ASSERT("reader not instanced", reader);
+        FW_RAISE_IF("Reader "<<pseudoReader<<" not available.", !reader);
 
         // assign to FileFormatService
         binLoader->setReader( reader );

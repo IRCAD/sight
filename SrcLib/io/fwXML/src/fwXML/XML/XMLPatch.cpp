@@ -92,7 +92,7 @@ void XMLPatch::PatchVersion1ToVersion2( xmlNodePtr node )
         } //end (nodeName == "Reconstruction")
         else
         {
-            node = node->children;
+            node = ::fwXML::XMLParser::getChildrenXMLElement(node);
             while ( node )
             {
                 PatchVersion1ToVersion2(node);
@@ -148,13 +148,9 @@ void XMLPatch::PatchNoVersionToVersion1( xmlNodePtr node )
         // manage class attribut : adapt "::data::" to "::fwData::" and manage {String,Float,Interger}Field renaming
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::string className,newClassName;
-        try
+        if( xmlHasProp(node, BAD_CAST "class") )
         {
             className = XMLParser::getAttribute (node, "class");
-        }
-        catch ( ::fwTools::Failed ef)
-        {
-            OSLM_TRACE(" no attrib class for node->name=" << NodeName );
         }
         OSLM_INFO( "PatchNoVersionToNewData nodeName=" << NodeName << " className=" << className);
 
@@ -198,7 +194,7 @@ void XMLPatch::PatchNoVersionToVersion1( xmlNodePtr node )
         }
 
         // continue parsing to child
-        node = node->children;
+        node = ::fwXML::XMLParser::getChildrenXMLElement(node);
         while ( node )
         {
             PatchNoVersionToVersion1(node);

@@ -151,27 +151,26 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 {
     std::vector< std::string > extensions ;
     extensions.push_back(".xml");
+    extensions.push_back(".fxz");
     return extensions ;
 }
 
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
-::fwTools::Object::sptr FwXMLGenericReaderService::loadData( const ::boost::filesystem::path inrFileDir )
+::fwTools::Object::sptr FwXMLGenericReaderService::loadData( const ::boost::filesystem::path xmlFile )
 {
     SLM_TRACE_FUNC();
-    ::fwXML::reader::FwXMLObjectReader myLoader;
+    ::fwXML::reader::FwXMLObjectReader::NewSptr myLoader;
     ::fwTools::Object::sptr pObject;
 
-    myLoader.setFile(inrFileDir);
+    myLoader->setFile(xmlFile);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading data ");
-        myLoader.addHandler( progressMeterGUI );
-        myLoader.read();
-        pObject = ::fwTools::Object::dynamicCast( myLoader.getObject() );
+        myLoader->addHandler( progressMeterGUI );
+        myLoader->read();
+        pObject = ::fwTools::Object::dynamicCast( myLoader->getObject() );
     }
     catch (const std::exception & e)
     {
@@ -192,8 +191,6 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
 void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 {
-    OSLM_TRACE("FwXMLGenericReaderService::updating()  m_fsObjectPath:"<<  m_fsObjectPath);
-
     SLM_TRACE_FUNC();
 
     if( !m_reader.getFile().empty() )
@@ -203,14 +200,14 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        m_reader.setFile( correctFileFormat( m_reader.getFile() ));
-        if ( isAnFwxmlArchive( m_reader.getFile() ) )
+        m_reader.setFile( this->correctFileFormat( m_reader.getFile() ));
+        if ( this->isAnFwxmlArchive( m_reader.getFile() ) )
         {
-            obj = manageZipAndLoadData( m_reader.getFile() );
+            obj = this->manageZipAndLoadData( m_reader.getFile() );
         }
         else
         {
-            obj = loadData(m_reader.getFile() );
+            obj = this->loadData(m_reader.getFile() );
         }
 
         if (obj)
@@ -219,9 +216,21 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
             ::fwTools::Object::sptr associatedObject = this->getObject< ::fwTools::Object >();
             SLM_ASSERT("associatedObject not instanced", associatedObject);
 
-            associatedObject->shallowCopy( obj );
-
-            notificationOfUpdate();
+            if(obj->getClassname() != associatedObject->getClassname())
+            {
+                std::stringstream stream;
+                stream << "Sorry, the file "<<m_reader.getFile()<< " contains a "
+                        << obj->getRootedClassname() << ", and you need a "
+                        << associatedObject->getRootedClassname();
+                ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                            stream.str(),
+                            ::fwGui::dialog::IMessageDialog::WARNING);
+            }
+            else
+            {
+                associatedObject->shallowCopy( obj );
+                notificationOfUpdate();
+            }
         }
         cursor.setDefaultCursor();
     }
@@ -263,12 +272,28 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     zip->unpackFolder( _pArchivePath, destFolder );
 
     // Load
-    ::boost::filesystem::path xmlfile = destFolder / "root.xml";
-    obj = loadData( xmlfile );
-
+    ::boost::filesystem::path xmlFile;
+    if(::boost::filesystem::exists(destFolder/"root.xml"))
+    {
+        xmlFile = destFolder / "root.xml";
+        obj = this->loadData( xmlFile );
+    }
+    else if(::boost::filesystem::exists(destFolder/"patient.xml"))
+    {
+        xmlFile = destFolder / "patient.xml";
+        obj = this->loadData( xmlFile );
+    }
+    else
+    {
+        std::stringstream stream;
+        stream << "Sorry, "<<_pArchivePath<< " is not valid a valid fxz file."
+               << this->getObject< ::fwTools::Object >()->getRootedClassname();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                        stream.str(),
+                        ::fwGui::dialog::IMessageDialog::WARNING);
+    }
     // Remove temp folder
     ::boost::filesystem::remove_all( destFolder );
-
     return obj;
 }
 

@@ -34,7 +34,6 @@ struct FWXML_CLASS_API XMLParser
 FWXML_API static void validateDoc (xmlDocPtr xmlDoc) throw (::fwTools::Failed);
 
 
-
 /**
  * @brief
  * search via ->next->next the first xml node which is a node Element !
@@ -44,7 +43,12 @@ FWXML_API static void validateDoc (xmlDocPtr xmlDoc) throw (::fwTools::Failed);
  */
 FWXML_API static xmlNodePtr nextXMLElement (xmlNodePtr pNode);
 
-
+/**
+ * @brief
+ * search via ->children/next the first children xml node which is a node Element
+ * @param : a node to parse via ->children
+ * @return : the first element which is an ELEMENT_NODE, NULL if not found
+ */
 FWXML_API static xmlNodePtr getChildrenXMLElement (xmlNodePtr pNode);
 
 /**
@@ -55,8 +59,6 @@ FWXML_API static xmlNodePtr getChildrenXMLElement (xmlNodePtr pNode);
  * @author IRCAD (Research and Development Team).
  */
 FWXML_API static xmlDocPtr getXmlDocFromFile(boost::filesystem::path rootFile) throw (::fwTools::Failed);
-
-
 
 
 /**
@@ -71,7 +73,6 @@ FWXML_API static xmlDocPtr getXmlDocFromFile(boost::filesystem::path rootFile) t
 FWXML_API static std::string getTextValue (xmlNodePtr pNode) throw (::fwTools::Failed);
 
 
-
 /**
  * @brief Extracts the (text) value of an attribute of a node
  * @param  xmlNodePtr : the node of which the text has to be extracted
@@ -82,8 +83,7 @@ FWXML_API static std::string getTextValue (xmlNodePtr pNode) throw (::fwTools::F
  * @author IRCAD (Research and Development Team).
  *
  **/
-FWXML_API static std::string getAttribute (xmlNodePtr pNode, const std::string& _sAttrName) throw (::fwTools::Failed);
-
+FWXML_API static std::string getAttribute(xmlNodePtr pNode, const std::string& _sAttrName) throw (::fwTools::Failed);
 
 /**
  * brief search the *first* child of a node which have the name which is equal to be given value
@@ -95,18 +95,15 @@ FWXML_API static std::string getAttribute (xmlNodePtr pNode, const std::string& 
 FWXML_API static xmlNodePtr findChildNamed(xmlNodePtr start, std::string value);
 
 
-
 /**
  * @brief return a string from a xml node by creating a viewable mini docXML, for debugging purpose
  * @author IRCAD (Research and Development Team).
  */
 FWXML_API static std::string toString(xmlNodePtr node);
 
-
 };
 
 }
-
 
 
 #endif /*XMLPARSER_HPP_*/
