@@ -15,7 +15,13 @@ namespace fwDataTools
 //-----------------------------------------------------------------------------
 
 AlgoMeshDeformation::AlgoMeshDeformation() throw() :
-        m_step(0), m_nbStep(0), m_amplitude(40), m_direction(1), m_nbPoints(0), m_nbCells(0), m_yCenter(0)
+        m_amplitude(40),
+        m_step(0),
+        m_direction(1),
+        m_nbPoints(0),
+        m_nbCells(0),
+        m_yCenter(0),
+        m_nbStep(0)
 {}
 
 //-----------------------------------------------------------------------------

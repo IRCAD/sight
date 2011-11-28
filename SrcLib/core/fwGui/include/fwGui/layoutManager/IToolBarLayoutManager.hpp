@@ -53,10 +53,10 @@ public:
             m_name(""),
             m_shortcut(""),
             m_icon(""),
-            m_isSeparator(false),
-            m_isSpacer(false),
             m_isCheckable (false),
             m_isRadio(false),
+            m_isSeparator(false),
+            m_isSpacer(false),
             m_isMenu(false),
             m_size(0)
         {}

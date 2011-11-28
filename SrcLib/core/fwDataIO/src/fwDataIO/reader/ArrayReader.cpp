@@ -54,7 +54,7 @@ void ArrayReader::read()
     fs.seekg(0, std::ios::beg);
 
     FW_RAISE_IF(file << ": Bad file size, expected: " << arraySizeInBytes << ", was: " << fileSize,
-            arraySizeInBytes != fileSize);
+            arraySizeInBytes - fileSize == 0);
 
     fs.read(buff, arraySizeInBytes);
 

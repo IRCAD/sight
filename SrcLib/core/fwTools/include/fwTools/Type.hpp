@@ -152,6 +152,9 @@ void Type::setType()
         // std::numeric_limits::min() returns the smallest positive value for floating types
         min = max * -1;
     }
+
+    m_min = min;
+    m_max = max;
 }
 
 //-----------------------------------------------------------------------------

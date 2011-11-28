@@ -121,7 +121,7 @@ public:
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::map< std::string, std::pair<int, bool> > SIDToolBarMapType;
+    typedef std::map< std::string, std::pair<unsigned int, bool> > SIDToolBarMapType;
 
     /**
      * @brief All toolBar services ID managed and associated with pair containing:

@@ -9,6 +9,7 @@
 
 #include <map>
 #include <boost/shared_ptr.hpp>
+#include <boost/version.hpp>
 #include "fwData/config.hpp"
 
 #include <fwData/Object.hpp>
@@ -104,6 +105,20 @@ protected:
 
 
 } //namespace fwData
+
+
+// boost 1.47 issue with FOREACH
+#if BOOST_VERSION == 104700
+namespace boost { namespace foreach
+{
+    template<>
+    struct is_noncopyable<
+        ::fwData::Composite
+    > : mpl::true_
+    {};
+}}
+#endif
+
 
 #endif /* _FWDATA_COMPOSITE_HPP_ */
 

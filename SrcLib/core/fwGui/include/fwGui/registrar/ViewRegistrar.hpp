@@ -134,8 +134,8 @@ public:
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::map< std::string, std::pair<int, bool> > SIDContainerMapType;
-    typedef std::map< std::string, int > WIDContainerMapType;
+    typedef std::map< std::string, std::pair<unsigned int, bool> > SIDContainerMapType;
+    typedef std::map< std::string, unsigned int > WIDContainerMapType;
     typedef std::pair< std::string, bool > SIDMenuBarPairType;
     typedef std::pair< std::string, bool > SIDToolBarPairType;
 

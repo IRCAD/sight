@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include "fwDataTools/thread/RegionThreader.hpp"
+#include <boost/type_traits/make_unsigned.hpp>
 
 #include <map>
 
@@ -13,6 +12,8 @@
 #include <ctime>
 
 #include <boost/foreach.hpp>
+
+#include "fwDataTools/thread/RegionThreader.hpp"
 
 #include "fwDataTools/MeshGenerator.hpp"
 
@@ -233,7 +234,7 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     trian->points().resize(numberOfPoints, vPoint);
 
     ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
-    typedef ::fwData::Mesh::PointsMultiArrayType::index PointTypesIndex;
+    typedef boost::make_unsigned< ::fwData::Mesh::PointsMultiArrayType::index >::type PointTypesIndex;
     for (PointTypesIndex i = 0; i != numberOfPoints; ++i)
     {
         ::fwData::TriangularMesh::PointContainer::value_type &point = trian->points()[i];
@@ -248,7 +249,7 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     trian->cells().resize(numberOfCells, vCell);
 
     ::fwData::Mesh::CellDataMultiArrayType cells = mesh->getCellData();
-    typedef ::fwData::Mesh::CellDataMultiArrayType::index CellTypesIndex;
+    typedef boost::make_unsigned< ::fwData::Mesh::CellDataMultiArrayType::index >::type CellTypesIndex;
     size_t cellsSize = numberOfCells*3;
     SLM_ASSERT("Wrong CellDataMultiArray size", cells.size() == cellsSize);
     for (CellTypesIndex i = 0; i < cellsSize; i+=3)
@@ -291,7 +292,6 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
     }
 
     //Initialized cellsArray
-    ::fwData::Mesh::CellValueType* cells = cellsArray->begin< ::fwData::Mesh::CellValueType >();
     for(size_t i=0; i<vCells.size(); i++)
     {
         mesh->insertNextCell(vCells[i][0], vCells[i][1], vCells[i][2]);
@@ -433,7 +433,6 @@ void vectorSum( std::vector< std::vector<T> > &vectors, size_t regionMin, size_t
     }
 
     typename std::vector< std::vector<T> >::iterator vIter = vectors.begin();
-    typename std::vector< std::vector<T> >::iterator vIter2 = vectors.begin();
 
     std::vector<T> &res = vectors[0];
 

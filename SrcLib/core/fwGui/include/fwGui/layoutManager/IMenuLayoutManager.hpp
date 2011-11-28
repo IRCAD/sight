@@ -60,11 +60,11 @@ public:
         ActionInfo() :
             m_name(""),
             m_shortcut(""),
-            m_isSeparator(false),
             m_isCheckable (false),
             m_isRadio(false),
-            m_isMenu(false),
-            m_type(DEFAULT)
+            m_type(DEFAULT),
+            m_isSeparator(false),
+            m_isMenu(false)
         {}
 
         std::string m_name;

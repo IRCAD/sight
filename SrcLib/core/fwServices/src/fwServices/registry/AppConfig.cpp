@@ -11,6 +11,7 @@
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
 
+#include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
 #include "fwServices/registry/AppConfig.hpp"
@@ -176,7 +177,7 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & gr
 AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;
-    BOOST_FOREACH( ::fwData::Composite::value_type elem, fieldAdaptors->getRefMap() )
+    BOOST_FOREACH(const ::fwData::Composite::value_type &elem, *fieldAdaptors )
     {
         fields[elem.first] = ::fwData::String::dynamicCast( elem.second )->value();
     }

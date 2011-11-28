@@ -88,7 +88,6 @@ void Array::deepCopy( Array::csptr _source )
     m_nbOfComponents = _source->m_nbOfComponents;
 
     this->clear();
-    size_t length = _source->getSizeInBytes();
 
     if( _source->m_buffer )
     {

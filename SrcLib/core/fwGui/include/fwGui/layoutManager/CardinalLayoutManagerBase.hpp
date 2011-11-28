@@ -62,8 +62,8 @@ public:
          ViewInfo() :
              m_align (CENTER),
              m_minSize (std::make_pair(-1,-1)),
-             m_isResizable(true),
              m_visible (true),
+             m_isResizable(true),
              m_position(0),
              m_layer(0),
              m_row(0),

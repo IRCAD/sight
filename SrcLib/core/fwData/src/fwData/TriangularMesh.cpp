@@ -74,7 +74,7 @@ TriangularMesh::ConstCellContainer &TriangularMesh::cells() const
 void TriangularMesh::setOneVectorInPointList(int _iIndex, double _fX, double _fY, double _fZ)
 {
     assert( (0 <= _iIndex) );
-    if ( _iIndex >= m_points.size() )// Resize if necessary
+    if ( ((PointContainer::size_type)_iIndex) >= m_points.size() )// Resize if necessary
         m_points.resize( _iIndex + 1 );
     std::vector<float> v(3);
     m_points[_iIndex] = v;
@@ -86,7 +86,7 @@ void TriangularMesh::setOneVectorInPointList(int _iIndex, double _fX, double _fY
 void TriangularMesh::setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _p3)
 {
     assert( (0 <= _iIndex) );
-    if ( _iIndex >= m_cells.size() )// Resize if necessary
+    if ( ((CellContainer::size_type)_iIndex) >= m_cells.size() )// Resize if necessary
         m_cells.resize( _iIndex + 1 );
     std::vector<int> v(3);
     m_cells[_iIndex] = v;

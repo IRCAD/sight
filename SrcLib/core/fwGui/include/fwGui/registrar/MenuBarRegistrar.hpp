@@ -95,7 +95,7 @@ public:
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::map< std::string, std::pair<int, bool> > SIDMenuMapType;
+    typedef std::map< std::string, std::pair<unsigned int, bool> > SIDMenuMapType;
 
     /**
      * @brief All menu services ID managed and associated with pair containing:

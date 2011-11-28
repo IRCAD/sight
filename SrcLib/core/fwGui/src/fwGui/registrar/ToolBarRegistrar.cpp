@@ -54,7 +54,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
             configuration->getName() == "registry");
 
     // index represents associated toolBar with position in toolBars vector
-    int index = 0;
+    unsigned int index = 0;
     m_callbacks.clear();
     // initialize m_actionSids map with configuration
     std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
@@ -72,9 +72,8 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
                 start = (startValue=="yes");
             }
             std::string sid = menuItem->getAttributeValue("sid");
-            std::pair<int, bool> indexStart =  std::make_pair( index, start);
             OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_actionSids.find(sid) == m_actionSids.end());
-            m_actionSids[sid] = indexStart;
+            m_actionSids[sid] = SIDToolBarMapType::mapped_type(index, start);
 
             ::fwGui::ActionCallbackBase::sptr callback ;
             callback = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ActionCallbackBase >( ::fwGui::ActionCallbackBase::REGISTRY_KEY );
@@ -102,9 +101,8 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
                 start = (startValue=="yes");
             }
             std::string sid = menu->getAttributeValue("sid");
-            std::pair<int, bool> indexStart =  std::make_pair( index, start);
             OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_actionSids.find(sid) == m_actionSids.end());
-            m_menuSids[sid] = indexStart;
+            m_menuSids[sid] = SIDToolBarMapType::mapped_type(index, start);
         }
         index++;
     }

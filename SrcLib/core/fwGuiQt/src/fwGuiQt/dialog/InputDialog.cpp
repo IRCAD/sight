@@ -62,7 +62,6 @@ std::string InputDialog::getInput()
 {
     QString title = QObject::tr(m_title.c_str());
     QString text = QObject::tr(m_message.c_str());
-    QWidget *parent = 0;
 
     bool IsOkClicked;
     QString outputText = QInputDialog::getText(qApp->activeWindow(), title, text, QLineEdit::Normal,QString::fromStdString(m_input),&IsOkClicked);

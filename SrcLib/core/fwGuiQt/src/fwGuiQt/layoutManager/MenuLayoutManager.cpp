@@ -129,7 +129,6 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
 void MenuLayoutManager::destroyLayout()
 {
-    QMenu* menu = m_parent->getQtMenu();
     this->destroyActions();
     m_menuItems.clear();
     m_parent->clean();
