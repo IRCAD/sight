@@ -375,6 +375,7 @@ Mesh::Mesh() throw()
     addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
     addNewHandledEvent ("SHOW_POINT_COLORS");
     addNewHandledEvent ("SHOW_CELL_COLORS");
+    addNewHandledEvent ("HIDE_COLORS");
 }
 
 //------------------------------------------------------------------------------
@@ -491,12 +492,19 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
     }
     if (meshMsg && meshMsg->hasEvent("SHOW_POINT_COLORS"))
     {
+        m_mapper->ScalarVisibilityOn();
         m_mapper->SetScalarModeToUsePointData();
         this->setVtkPipelineModified();
     }
     else if (meshMsg && meshMsg->hasEvent("SHOW_CELL_COLORS"))
     {
+        m_mapper->ScalarVisibilityOn();
         m_mapper->SetScalarModeToUseCellData();
+        this->setVtkPipelineModified();
+    }
+    else if (meshMsg && meshMsg->hasEvent("HIDE_COLORS"))
+    {
+        m_mapper->ScalarVisibilityOff();
         this->setVtkPipelineModified();
     }
 }
