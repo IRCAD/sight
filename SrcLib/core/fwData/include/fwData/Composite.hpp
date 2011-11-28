@@ -9,7 +9,6 @@
 
 #include <map>
 #include <boost/shared_ptr.hpp>
-#include <boost/version.hpp>
 #include "fwData/config.hpp"
 
 #include <fwData/Object.hpp>
@@ -108,7 +107,7 @@ protected:
 
 
 // boost 1.47 issue with FOREACH
-#if BOOST_VERSION == 104700
+#if defined(__clang__) && BOOST_VERSION == 104700
 namespace boost { namespace foreach
 {
     template<>
