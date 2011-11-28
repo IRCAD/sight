@@ -87,7 +87,7 @@ private:
 
     QPointer<QButtonGroup> m_buttonGroup;
     QPointer<QButtonGroup> m_buttonGroupShading;
-    QPointer<QCheckBox> m_normalsCheckBox;
+    QPointer<QButtonGroup> m_normalsRadioBox ;
 
     ::fwData::Material::sptr m_material ;
 

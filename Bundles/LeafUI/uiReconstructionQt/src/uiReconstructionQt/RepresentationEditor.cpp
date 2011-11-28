@@ -9,7 +9,6 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QButtonGroup>
-#include <QCheckBox>
 
 #include <fwCore/base.hpp>
 
@@ -18,6 +17,7 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
@@ -114,11 +114,25 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     layout->addWidget( groupBoxShading);
 
 #ifdef _DEBUG
-    m_normalsCheckBox = new QCheckBox( tr("Show normals"), container);
-    m_normalsCheckBox->setMinimumSize(m_normalsCheckBox->sizeHint());
-    m_normalsCheckBox->setToolTip(tr("Show or hide normals"));
-    layout->addWidget( m_normalsCheckBox);
-    QObject::connect(m_normalsCheckBox, SIGNAL(stateChanged( int )), this, SLOT(onShowNormals( int )));
+    QGroupBox *groupBoxNormals =new QGroupBox(tr("Normals"), container);
+    QVBoxLayout * layoutGroupBoxNormals = new QVBoxLayout(groupBoxNormals);
+    m_normalsRadioBox = new QButtonGroup(container);
+    QRadioButton* pointNormalsButton = new QRadioButton(tr("Show point normals"), container);
+    QRadioButton* cellNormalsButton = new QRadioButton(tr("Show cell normals"), container);
+    QRadioButton* hideNormalsButton = new QRadioButton(tr("Hide normals"), container);
+
+    m_normalsRadioBox->addButton(pointNormalsButton, 2);
+    m_normalsRadioBox->addButton(cellNormalsButton, 1);
+    m_normalsRadioBox->addButton(hideNormalsButton, 0);
+
+    layoutGroupBoxNormals->addWidget( pointNormalsButton);
+    layoutGroupBoxNormals->addWidget( cellNormalsButton);
+    layoutGroupBoxNormals->addWidget( hideNormalsButton);
+
+    layout->addWidget(groupBoxNormals);
+
+    QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
+
 #endif
 
     container->setLayout( layout );
@@ -140,7 +154,7 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked ( QAbstractButton *)), this, SLOT(onChangeShading(QAbstractButton *)));
 
 #ifdef _DEBUG
-    QObject::disconnect(m_normalsCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowNormals(int)));
+    QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
 #endif
 
     this->getContainer()->clean();
@@ -333,7 +347,10 @@ void RepresentationEditor::refreshShading()
 void RepresentationEditor::refreshNormals()
 {
 #ifdef _DEBUG
-    m_normalsCheckBox->setCheckState(m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS ? Qt::Checked : Qt::Unchecked);
+    QAbstractButton *buttonHide = m_normalsRadioBox->button(0);
+    buttonHide->setChecked(m_material->getOptionsMode() == ::fwData::Material::MODE_STANDARD);
+    QAbstractButton *buttonNormals = m_normalsRadioBox->button(1);
+    buttonNormals->setChecked(m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS);
 #endif
 }
 
@@ -341,16 +358,26 @@ void RepresentationEditor::refreshNormals()
 
 void RepresentationEditor::onShowNormals(int state )
 {
-    if ( state == Qt::Checked)
+    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwComEd::MeshMsg::NewSptr meshMsg;
+    switch (state)
     {
-        m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
+        case 0:
+            m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
+            break;
+        case 1:
+            m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
+            meshMsg->addEvent("SHOW_CELL_NORMALS");
+            break;
+        case 2:
+            m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
+            meshMsg->addEvent("SHOW_POINT_NORMALS");
+            break;
     }
-    else
-    {
-        m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
-    }
-
-    this->notifyMesh();
+    ::fwComEd::MaterialMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
+    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), msg);
+    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), meshMsg);
 }
 
 //------------------------------------------------------------------------------
