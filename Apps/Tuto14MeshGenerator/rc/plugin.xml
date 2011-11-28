@@ -73,6 +73,9 @@
                         <menuItem name="Show cell normals" style="radio" shortcut="1" />
                         <menuItem name="Hide normals" style="radio" shortcut="0" />
                         <separator />
+                        <menuItem name="Show point colors" style="radio" shortcut="4" />
+                        <menuItem name="Show cell colors" style="radio" shortcut="5" />
+                        <separator />
                         <menuItem name="mesh deformation" shortcut="D"/>
                     </layout>
                 </gui>
@@ -91,6 +94,9 @@
                     <menuItem sid="action_showPointNormals" start="yes" />                    
                     <menuItem sid="action_showCellNormals" start="yes" />                    
                     <menuItem sid="action_hideNormals" start="yes" />
+                    
+                    <menuItem sid="action_showPointColors" start="yes" />                    
+                    <menuItem sid="action_showCellColors" start="yes" />                    
                     
                     <menuItem sid="action_meshDeformation" start="yes" />
                                         
@@ -195,6 +201,13 @@
                                 <config functor="MeshDeformation" />
                             </service>
                             
+                            <service uid="action_showPointColors" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <notify type="::fwComEd::MeshMsg" event="SHOW_POINT_COLORS" />
+                            </service>
+                            <service uid="action_showCellColors" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <notify type="::fwComEd::MeshMsg" event="SHOW_CELL_COLORS" />
+                            </service>
+                                                        
                             <service uid="msgWrapper" implementation="::ctrlSelection::wrapper::MsgWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoComChannel="yes">
                                 <wrapper onEvent="ObjectMsg::UPDATED_OBJECT" toEvent="NEW_MESH" toMsgType="::fwComEd::MeshMsg" />
                             </service>
