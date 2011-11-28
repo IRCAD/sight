@@ -75,6 +75,7 @@
                         <separator />
                         <menuItem name="Show point colors" style="radio" shortcut="4" />
                         <menuItem name="Show cell colors" style="radio" shortcut="5" />
+                        <menuItem name="Hide colors" style="radio" shortcut="6" />
                         <separator />
                         <menuItem name="mesh deformation" shortcut="D"/>
                     </layout>
@@ -97,6 +98,7 @@
                     
                     <menuItem sid="action_showPointColors" start="yes" />                    
                     <menuItem sid="action_showCellColors" start="yes" />                    
+                    <menuItem sid="action_hideColors" start="yes" />
                     
                     <menuItem sid="action_meshDeformation" start="yes" />
                                         
@@ -206,6 +208,9 @@
                             </service>
                             <service uid="action_showCellColors" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
                                 <notify type="::fwComEd::MeshMsg" event="SHOW_CELL_COLORS" />
+                            </service>
+                            <service uid="action_hideColors" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                                <notify type="::fwComEd::MeshMsg" event="HIDE_COLORS" />
                             </service>
                                                         
                             <service uid="msgWrapper" implementation="::ctrlSelection::wrapper::MsgWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoComChannel="yes">
