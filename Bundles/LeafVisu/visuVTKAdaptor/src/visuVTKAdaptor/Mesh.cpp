@@ -373,6 +373,8 @@ Mesh::Mesh() throw()
     addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
     addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+    addNewHandledEvent ("SHOW_POINT_COLORS");
+    addNewHandledEvent ("SHOW_CELL_COLORS");
 }
 
 //------------------------------------------------------------------------------
@@ -485,6 +487,16 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
         ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
+    if (meshMsg && meshMsg->hasEvent("SHOW_POINT_COLORS"))
+    {
+        m_mapper->SetScalarModeToUsePointData();
+        this->setVtkPipelineModified();
+    }
+    else if (meshMsg && meshMsg->hasEvent("SHOW_CELL_COLORS"))
+    {
+        m_mapper->SetScalarModeToUseCellData();
         this->setVtkPipelineModified();
     }
 }
@@ -692,22 +704,25 @@ void Mesh::updateOptionsMode()
 
 void Mesh::createNormalsService()
 {
-    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    if ( m_normalsService.expired() )
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
-    ::fwRenderVTK::IVtkAdaptorService::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
-                    mesh,
-                    "::visuVTKAdaptor::MeshNormals"
-            );
-    SLM_ASSERT("service not instanced", service);
+        ::fwRenderVTK::IVtkAdaptorService::sptr service =
+                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
+                        mesh,
+                        "::visuVTKAdaptor::MeshNormals"
+                );
+        SLM_ASSERT("service not instanced", service);
 
-    service->setRenderService( this->getRenderService() );
-    service->setRenderId     ( this->getRenderId()      );
-    service->setPickerId     ( this->getPickerId()      );
-    ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );
-    service->start();
+        service->setRenderService( this->getRenderService() );
+        service->setRenderId     ( this->getRenderId()      );
+        service->setPickerId     ( this->getPickerId()      );
+        ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );
+        service->start();
 
-    m_normalsService = service;
+        m_normalsService = service;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -718,6 +733,7 @@ void Mesh::removeNormalsService()
     {
         m_normalsService.lock()->stop();
         ::fwServices::OSR::unregisterService(m_normalsService.lock());
+        m_normalsService.reset();
     }
 }
 
