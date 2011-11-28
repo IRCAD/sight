@@ -18,25 +18,16 @@ LocationDialog::LocationDialog()
     m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::ILocationDialog>( ::fwGui::dialog::ILocationDialog::REGISTRY_KEY);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void LocationDialog::setTitle(const std::string &title)
-{
-    m_implementation->setTitle(title);
-}
+LocationDialog::~LocationDialog()
+{}
 
 //-----------------------------------------------------------------------------
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
     return m_implementation->show();
-}
-
-//-----------------------------------------------------------------------------
-
-void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr loc)
-{
-    m_implementation->setDefaultLocation( loc );
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +39,6 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type)
 
 //-----------------------------------------------------------------------------
 
-// exemple ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
 {
     m_implementation->addFilter(filterName,wildcardList);
@@ -59,6 +49,41 @@ void LocationDialog::addFilter(const std::string &filterName, const std::string 
 ILocationDialog& LocationDialog::setOption( ::fwGui::dialog::ILocationDialog::Options option)
 {
     return m_implementation->setOption(option);
+}
+
+//-----------------------------------------------------------------------------
+
+void LocationDialog::setTitle(const std::string& title)
+{
+    m_implementation->setTitle(title);
+}
+
+//-----------------------------------------------------------------------------
+
+const std::string& LocationDialog::getTitle()
+{
+    return m_implementation->getTitle();
+}
+
+//-----------------------------------------------------------------------------
+
+void LocationDialog::setDefaultLocation(::fwData::location::ILocation::sptr loc)
+{
+    m_implementation->setDefaultLocation(loc);
+}
+
+//-----------------------------------------------------------------------------
+
+const ::boost::filesystem::path LocationDialog::getDefaultLocation()
+{
+    return m_implementation->getDefaultLocation();
+}
+
+//-----------------------------------------------------------------------------
+
+void LocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr loc)
+{
+    m_implementation->saveDefaultLocation(loc);
 }
 
 //-----------------------------------------------------------------------------

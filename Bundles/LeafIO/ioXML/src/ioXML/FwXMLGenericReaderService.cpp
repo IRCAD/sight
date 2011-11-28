@@ -113,6 +113,7 @@ void FwXMLGenericReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         m_reader.setFile( result->getPath() );
     }
 }
