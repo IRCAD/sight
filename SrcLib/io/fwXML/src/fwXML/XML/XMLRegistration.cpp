@@ -62,6 +62,7 @@
 #include "fwXML/XML/ReconstructionXMLTranslator.hpp"
 #include "fwXML/XML/ResectionXMLTranslator.hpp"
 #include "fwXML/XML/SingleFileXMLTranslator.hpp"
+#include "fwXML/XML/FolderXMLTranslator.hpp"
 #include "fwXML/XML/StringXMLTranslator.hpp"
 #include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
 #include "fwXML/XML/VectorXMLTranslator.hpp"
@@ -131,6 +132,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionXMLTranslator            
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                                      ,  ::fwData::Plane                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator                                  ,  ::fwData::PlaneList              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                 ,  ::fwData::location::SingleFile   );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , FolderXMLTranslator                                     ,  ::fwData::location::Folder       );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan        );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ArrayXMLTranslator                                      ,  ::fwData::Array                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MeshXMLTranslator                                       ,  ::fwData::Mesh                   );

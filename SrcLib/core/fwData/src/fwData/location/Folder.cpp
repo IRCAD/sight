@@ -25,6 +25,7 @@ Folder::Folder()
 Folder::~Folder()
 {}
 
+//------------------------------------------------------------------------------
 
 Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursive )
 {
@@ -33,6 +34,21 @@ Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursi
     return folder;
 }
 
+//------------------------------------------------------------------------------
+
+void Folder::shallowCopy( Folder::csptr _source )
+{
+    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->m_folder = _source->m_folder;
+}
+
+//------------------------------------------------------------------------------
+
+void Folder::deepCopy( Folder::csptr _source )
+{
+    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->m_folder = _source->m_folder;
+}
 
 //------------------------------------------------------------------------------
 

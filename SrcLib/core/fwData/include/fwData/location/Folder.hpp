@@ -34,6 +34,14 @@ public:
             ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
     );
 
+    fwDataObjectMacro();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Folder::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Folder::csptr _source );
+
     /// @brief Set folder filesystem path
     FWDATA_API void setFolder( ::boost::filesystem::path folder);
 
@@ -59,7 +67,7 @@ protected :
     ::boost::filesystem::path m_folder;
 
     /// Flag if folder is recursive
-    bool                      m_isRecursive;
+    bool m_isRecursive;
 
 };
 
