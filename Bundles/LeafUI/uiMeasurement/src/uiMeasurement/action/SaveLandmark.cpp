@@ -86,6 +86,8 @@ void SaveLandmark::updating() throw(::fwTools::Failed)
     {
         ::boost::filesystem::path filename = result->getPath();
         _sDefaultPath = filename.parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        
         //get landmarks
         ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
         ::fwData::PointList::sptr landmarks =  image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);

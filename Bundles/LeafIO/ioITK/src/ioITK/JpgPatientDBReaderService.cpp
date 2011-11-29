@@ -67,6 +67,7 @@ void JpgPatientDBReaderService::configureWithIHM()
         _sDefaultPath = result->getFolder();
         m_fsPatientDBPath = result->getFolder();
         m_bServiceIsConfigured = true;
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
 }
 

@@ -426,17 +426,14 @@ void TransferFunctionEditor::importTF()
 
     if ( files )
     {
-        fwXML::Serializer serializer;
+        ::fwXML::Serializer serializer;
         ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new fwXML::NeverSplitPolicy);
         serializer.setSplitPolicy(spolicy);
         ::fwData::TransfertFunction::sptr  pTf;
 
         bool tfIsImported;
-
-
         BOOST_FOREACH( ::boost::filesystem::path tfPath, files->getPaths() )
         {
-
             tfIsImported = true;
             ::fwTools::Object::sptr  pObject;
 

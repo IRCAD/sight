@@ -82,6 +82,7 @@ void MeshReaderService::configureWithIHM()
         m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
         _sDefaultPath = m_fsMeshPath.parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
 }
 

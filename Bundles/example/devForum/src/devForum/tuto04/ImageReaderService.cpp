@@ -8,6 +8,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwWX/convert.hpp>
 
 #include "devForum/tuto04/ImageReaderService.hpp"
 
@@ -52,7 +53,7 @@ void ImageReaderService::configureWithIHM()
     // If the user choose an vtk file, the image path is initialized
     if( file.IsEmpty() == false )
     {
-        m_fsImgPath = ::boost::filesystem::path( wxConvertWX2MB(file) );
+        m_fsImgPath = ::boost::filesystem::path( ::fwWX::wx2std(file) );
     }
 }
 

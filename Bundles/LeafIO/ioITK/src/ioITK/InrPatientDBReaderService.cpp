@@ -85,9 +85,10 @@ void InrPatientDBReaderService::configureWithIHM()
             result= ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
             if (result)
             {
-                _sDefaultPath = result->getPaths()[0];
+                _sDefaultPath = result->getPaths()[0].parent_path();
                 m_files = result->getPaths();
                 m_bServiceIsConfigured = true;
+                dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
             }
         }
         else
@@ -105,6 +106,7 @@ void InrPatientDBReaderService::configureWithIHM()
                 m_folder = result->getFolder();
                 m_isRecursive = (selection == choices[2]);
                 m_bServiceIsConfigured = true;
+                dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
             }
         }
     }

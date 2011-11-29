@@ -66,8 +66,9 @@ void FwXMLImageWriterService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath() ;
+        _sDefaultPath = result->getPath().parent_path() ;
         m_fsImagePath = result->getPath() ;
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         m_bServiceIsConfigured = true;
     }
 }

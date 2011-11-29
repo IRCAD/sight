@@ -71,6 +71,7 @@ void DicomImageWriterService::configureWithIHM()
     {
         _sDefaultPath = result->getFolder();
         m_fsImagePath = result->getFolder();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         m_bServiceIsConfigured = true;
     }
 }
