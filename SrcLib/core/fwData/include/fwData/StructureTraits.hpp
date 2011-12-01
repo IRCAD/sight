@@ -23,7 +23,19 @@ class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwTools::Factory::New< StructureTraits >) ;
 
-    typedef std::vector<std::string> CategoryContainer;
+    typedef enum
+    {
+        BODY,
+        HEAD,
+        NECK,
+        THORAX,
+        ABDOMEN,
+        PELVIS,
+        ARM,
+        LEG
+    }Category;
+
+    typedef std::vector<Category> CategoryContainer;
     typedef std::string ROIExpression;
 
     typedef enum
@@ -39,7 +51,7 @@ public:
 
     fwGettersSettersDocMacro(Type, type, std::string, the structure type);
 
-    fwGettersSettersDocMacro(Categorie, categories, CategoryContainer, the structure type);
+    fwGettersSettersDocMacro(Categories, categories, CategoryContainer, the structure type);
 
     fwGettersSettersDocMacro(Class, class, StructureClass, the structure class);
 

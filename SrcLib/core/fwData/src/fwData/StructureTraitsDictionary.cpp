@@ -19,6 +19,14 @@ namespace fwData
 
 StructureTraitsDictionary::StructureTraitsDictionary ()
 {
+    ::fwData::StructureTraits::NewSptr world;
+    world->setType("World");
+    world->setClass(StructureTraits::NO_CONSTRAINT);
+    world->setColor(::fwData::Color::New(1.0, 1.0, 1.0, 1.0));
+    StructureTraits::CategoryContainer categories(1);
+    categories[0] = StructureTraits::BODY;
+    world->setCategories(categories);
+    this->addStructure(world);
 }
 
 
@@ -40,7 +48,20 @@ StructureTraits::sptr StructureTraitsDictionary::getStructure(std::string type)
 
 void StructureTraitsDictionary::addStructure(StructureTraits::sptr structureTraits)
 {
-    m_structureTraitsMap[structureTraits->getType()] = structureTraits;
+    std::string type = structureTraits->getType();
+    StructureTraits::StructureClass structClass = structureTraits->getClass();
+    std::string attachment = structureTraits->getAttachmentType();
+    FW_RAISE_IF("Structure of type '" << type << "' already exist", m_structureTraitsMap.find(type) != m_structureTraitsMap.end());
+    FW_RAISE_IF("Structure of class '" << structClass << "' can not have attachment",
+            !(attachment.empty() || structClass == StructureTraits::LESION || structClass == StructureTraits::FUNCTIONAL) );
+    FW_RAISE_IF("Structure attachment '" << attachment << "' not found in dictionary",
+            !(attachment.empty() || m_structureTraitsMap.find(attachment) != m_structureTraitsMap.end() ) );
+    FW_RAISE_IF("Structure attachment '" << attachment << "' must be of class ORGAN",
+            !(attachment.empty() || m_structureTraitsMap[attachment]->getClass() == StructureTraits::ORGAN ) );
+    FW_RAISE_IF("Structure must have at least one category",
+            structureTraits->getCategories().empty());
+
+    m_structureTraitsMap[type] = structureTraits;
 }
 
 //------------------------------------------------------------------------------
