@@ -25,6 +25,9 @@ public:
 
     typedef std::map< std::string, ::fwData::StructureTraits::sptr > StructureTraitsMapType;
 
+    /// Add a structure
+    FWDATA_API void addStructure(StructureTraits::sptr structureTraits);
+
 protected :
 
     /// Constructor
@@ -35,9 +38,6 @@ protected :
 
     /// Return the structure traits for given type
     FWDATA_API StructureTraits::sptr getStructure(std::string type);
-
-    /// Add a structure
-    FWDATA_API void addStructure(StructureTraits::sptr structureTraits);
 
 private:
 
