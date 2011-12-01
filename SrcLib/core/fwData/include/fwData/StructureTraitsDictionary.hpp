@@ -28,6 +28,9 @@ public:
     /// Add a structure
     FWDATA_API void addStructure(StructureTraits::sptr structureTraits);
 
+    /// Return the structure traits for given type
+    FWDATA_API StructureTraits::sptr getStructure(std::string type);
+
 protected :
 
     /// Constructor
@@ -35,9 +38,6 @@ protected :
 
     /// Destructor. Does nothing.
     FWDATA_API virtual ~StructureTraitsDictionary() throw();
-
-    /// Return the structure traits for given type
-    FWDATA_API StructureTraits::sptr getStructure(std::string type);
 
 private:
 
