@@ -69,7 +69,7 @@ protected :
     FWDATA_API StructureTraits();
 
     /// Destructor. Does nothing.
-    FWDATA_API virtual ~StructureTraits() throw();
+    FWDATA_API virtual ~StructureTraits();
 
 private:
 
