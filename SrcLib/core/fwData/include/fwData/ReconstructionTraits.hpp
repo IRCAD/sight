@@ -42,7 +42,7 @@ protected :
     /**
      * @brief destructor
      */
-    FWDATA_API virtual ~ReconstructionTraits() throw();
+    FWDATA_API virtual ~ReconstructionTraits();
 
 private:
 

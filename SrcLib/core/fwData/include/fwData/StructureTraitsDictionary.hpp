@@ -37,7 +37,7 @@ protected :
     FWDATA_API StructureTraitsDictionary();
 
     /// Destructor. Does nothing.
-    FWDATA_API virtual ~StructureTraitsDictionary() throw();
+    FWDATA_API virtual ~StructureTraitsDictionary();
 
 private:
 

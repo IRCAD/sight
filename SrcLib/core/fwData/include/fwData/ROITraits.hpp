@@ -42,7 +42,7 @@ protected :
     /**
      * @brief destructor
      */
-    FWDATA_API virtual ~ROITraits() throw();
+    FWDATA_API virtual ~ROITraits();
 
 private:
 
