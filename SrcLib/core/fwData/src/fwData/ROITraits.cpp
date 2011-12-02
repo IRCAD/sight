@@ -39,7 +39,12 @@ void ROITraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
 
 ::fwData::Node::sptr ROITraits::getMaskOpNode()
 {
-    return m_maskOpNode.lock();
+    ::fwData::Node::sptr opNode;
+    if ( m_evaluatedExp != "W" ) // Thus mask op node must be assigned
+    {
+        opNode = m_maskOpNode.lock();
+    }
+    return opNode;
 }
 
 //------------------------------------------------------------------------------

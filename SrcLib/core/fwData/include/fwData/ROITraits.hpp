@@ -31,7 +31,7 @@ public:
     /// Set the ROI mask node used for ROI
     FWDATA_API void setMaskOpNode( ::fwData::Node::sptr maskOpNode );
 
-    /// Get the ROI mask node used for ROI
+    /// Get the ROI mask node used for ROI, the only case where sptr can be null is when m_evaluatedExp correspond to "W" ( W <=> World <=> no roi constraint ).
     FWDATA_API ::fwData::Node::sptr getMaskOpNode();
 
     /// Set the associated structure traits
