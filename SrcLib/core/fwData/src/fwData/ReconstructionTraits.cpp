@@ -15,18 +15,59 @@ REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::ReconstructionTraits,
 
 namespace fwData
 {
+
+//------------------------------------------------------------------------------
+
+void ReconstructionTraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
+{
+    m_maskOpNode = maskOpNode;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Node::sptr ReconstructionTraits::getMaskOpNode()
+{
+    return m_maskOpNode.lock();
+}
+
+//------------------------------------------------------------------------------
+
+void ReconstructionTraits::setMeshOpNode( ::fwData::Node::sptr meshOpNode )
+{
+    m_meshOpNode =  meshOpNode;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Node::sptr ReconstructionTraits::getMeshOpNode()
+{
+    return m_meshOpNode.lock();
+}
+
+//------------------------------------------------------------------------------
+
+void ReconstructionTraits::setStructureTraits( ::fwData::StructureTraits::sptr structureTraits )
+{
+    m_structureTraits = structureTraits;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::StructureTraits::sptr ReconstructionTraits::getStructureTraits()
+{
+    return m_structureTraits.lock();
+}
+
 //------------------------------------------------------------------------------
 
 ReconstructionTraits::ReconstructionTraits()
-{
-}
+{}
 
 
 //------------------------------------------------------------------------------
 
 ReconstructionTraits::~ReconstructionTraits()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 

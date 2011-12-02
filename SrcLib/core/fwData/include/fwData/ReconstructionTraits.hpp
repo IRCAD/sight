@@ -26,11 +26,23 @@ public:
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 
-    fwGettersSettersDocMacro(MaskNode, maskOpNode, ::fwData::Node::wptr, the reconstruction operator mask node);
+    /// Set the reconstruction operator mask node
+    FWDATA_API void setMaskOpNode( ::fwData::Node::sptr maskOpNode );
 
-    fwGettersSettersDocMacro(MeshNode, meshOpNode, ::fwData::Node::wptr, the reconstruction operator mesh node);
+    /// Get the reconstruction operator mask node
+    FWDATA_API ::fwData::Node::sptr getMaskOpNode();
 
-    fwGettersSettersDocMacro(StructureTraits, structureTraits, StructureTraits::wptr, the associated structure traits);
+    /// Set the reconstruction operator mesh node
+    FWDATA_API void setMeshOpNode( ::fwData::Node::sptr meshOpNode );
+
+    /// Get the reconstruction operator mesh node
+    FWDATA_API ::fwData::Node::sptr getMeshOpNode();
+
+    /// Set the associated structure traits
+    FWDATA_API void setStructureTraits( ::fwData::StructureTraits::sptr structureTraits );
+
+    /// Get the associated structure traits
+    FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
 
 protected :
 

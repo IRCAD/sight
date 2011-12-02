@@ -15,12 +15,12 @@ REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::ROITraits, ::fwData::
 
 namespace fwData
 {
+
 //------------------------------------------------------------------------------
 
 ROITraits::ROITraits()
 {
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -30,6 +30,33 @@ ROITraits::~ROITraits()
 
 //------------------------------------------------------------------------------
 
+void ROITraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
+{
+    m_maskOpNode = maskOpNode;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Node::sptr ROITraits::getMaskOpNode()
+{
+    return m_maskOpNode.lock();
+}
+
+//------------------------------------------------------------------------------
+
+void ROITraits::setStructureTraits( ::fwData::StructureTraits::sptr structureTraits )
+{
+    m_structureTraits = structureTraits;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::StructureTraits::sptr ROITraits::getStructureTraits()
+{
+    return m_structureTraits.lock();
+}
+
+//------------------------------------------------------------------------------
 } // namespace fwData
 
 

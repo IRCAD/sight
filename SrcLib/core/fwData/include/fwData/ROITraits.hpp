@@ -26,11 +26,19 @@ public:
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 
-    fwGettersSettersDocMacro(MaskNode, maskNode, ::fwData::Node::wptr, the ROI mask node used for ROI);
-
-    fwGettersSettersDocMacro(StructureTraits, structureTraits, StructureTraits::wptr, the associated structure traits);
-
     fwGettersSettersDocMacro(EvaluatedExp, evaluatedExp, StructureTraits::ROIExpression, the ROI evaluated expression);
+
+    /// Set the ROI mask node used for ROI
+    FWDATA_API void setMaskOpNode( ::fwData::Node::sptr maskOpNode );
+
+    /// Get the ROI mask node used for ROI
+    FWDATA_API ::fwData::Node::sptr getMaskOpNode();
+
+    /// Set the associated structure traits
+    FWDATA_API void setStructureTraits( ::fwData::StructureTraits::sptr structureTraits );
+
+    /// Get the associated structure traits
+    FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
 
 protected :
 
@@ -50,7 +58,7 @@ private:
     std::string m_identifier;
 
     /// mask node used for ROITraits
-    ::fwData::Node::wptr m_maskNode;
+    ::fwData::Node::wptr m_maskOpNode;
 
     /// associated structure traits
     ::fwData::StructureTraits::wptr m_structureTraits;
