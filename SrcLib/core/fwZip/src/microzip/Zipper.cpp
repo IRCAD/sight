@@ -301,23 +301,23 @@ bool Zipper::AddFolderToZip(::boost::filesystem::path folderPath, bool bIgnoreFi
     if ( ! folderName.string().empty())
     {
         // open the file in the zip
-        int nRet = zipOpenNewFileInZip(m_uzFile,
-                                       (folderName.string()+"/").c_str(),
-                                       &zfi,
-                                       NULL,
-                                       0,
-                                       NULL,
-                                       0,
-                                       NULL,
-                                       Z_DEFLATED,
-                                       level);
+        zipOpenNewFileInZip(m_uzFile,
+                            (folderName.string()+"/").c_str(),
+                            &zfi,
+                            NULL,
+                            0,
+                            NULL,
+                            0,
+                            NULL,
+                            Z_DEFLATED,
+                            level);
 
         zipCloseFileInZip(m_uzFile);
     }
 
     ::boost::filesystem::directory_iterator iter(folderPath);
     ::boost::filesystem::directory_iterator end;
-    for ( iter ; iter!=end ; ++iter)
+    for ( ; iter!=end ; ++iter)
     {
         if ( ::boost::filesystem::is_regular_file(iter->status()) )
         {

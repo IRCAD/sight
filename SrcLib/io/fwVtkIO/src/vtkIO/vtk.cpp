@@ -199,7 +199,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     std::copy( source->GetOrigin()    , source->GetOrigin()+dim    , destination->getRefOrigin().begin()  );
 
 
-    int *dimensions = source->GetDimensions();
     size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 1, std::multiplies<size_t>() );
     void *input = source->GetScalarPointer();
     void *destBuffer;

@@ -65,7 +65,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     ::fwData::Node::sptr node;
     ::fwData::Mesh::sptr mesh;
 
-    if ( composite = ::fwData::Composite::dynamicCast( src ))
+    if ( (composite = ::fwData::Composite::dynamicCast( src )) )
     {
         ::fwData::Composite::Container::iterator i;
         for ( i = composite->getRefMap().begin(); i != composite->getRefMap().end(); ++i)
@@ -73,7 +73,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( i->second , this);
         }
     }
-    else if ( vector = ::fwData::Vector::dynamicCast( src ))
+    else if ( (vector = ::fwData::Vector::dynamicCast( src )))
     {
         ::fwData::Vector::Container::iterator i;
         for ( i = vector->getRefContainer().begin(); i != vector->getRefContainer().end(); ++i)
@@ -81,7 +81,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *i , this);
         }
     }
-    else if ( list  = ::fwData::List::dynamicCast( src ))
+    else if ( (list  = ::fwData::List::dynamicCast( src )))
     {
         ::fwData::List::Container::iterator i;
         for ( i = list->getRefContainer().begin(); i != list->getRefContainer().end(); ++i)
@@ -89,7 +89,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *i , this);
         }
     }
-    else if ( resection = ::fwData::Resection::dynamicCast( src ))
+    else if ( (resection = ::fwData::Resection::dynamicCast( src )))
     {
         ::fwData::Resection::ResectionInputs::const_iterator i;
         for ( i = resection->getCRefInputs().begin(); i != resection->getCRefInputs().end(); ++i)
@@ -102,7 +102,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *j , this);
         }
     }
-    else if ( graph  = ::fwData::Graph::dynamicCast( src ))
+    else if ( (graph  = ::fwData::Graph::dynamicCast( src )))
     {
         ::fwData::Graph::NodeContainer::iterator i;
         for ( i = graph->getRefNodes().begin(); i != graph->getRefNodes().end(); ++i)
@@ -114,7 +114,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     {
         ::fwData::visitor::accept( node->getObject() , this);
     }
-    else if ( mesh = ::fwData::Mesh::dynamicCast( src ) )
+    else if ( (mesh = ::fwData::Mesh::dynamicCast( src ) ))
     {
         ::fwData::visitor::accept( mesh->getPointsArray() , this);
         ::fwData::visitor::accept( mesh->getCellTypesArray() , this);
