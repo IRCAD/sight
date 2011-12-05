@@ -31,6 +31,9 @@ public:
     /// Return the structure traits for given type
     FWDATA_API StructureTraits::sptr getStructure(std::string type);
 
+    /// Return all array names stock in the structureTraits-map
+    FWDATA_API std::vector<std::string> getStructureTypeNames() const;
+
 protected :
 
     /// Constructor

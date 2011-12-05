@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/bind.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -62,6 +64,17 @@ void StructureTraitsDictionary::addStructure(StructureTraits::sptr structureTrai
             structureTraits->getCategories().empty());
 
     m_structureTraitsMap[type] = structureTraits;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> StructureTraitsDictionary::getStructureTypeNames() const
+{
+    std::vector<std::string> vectNames;
+    std::transform( m_structureTraitsMap.begin(), m_structureTraitsMap.end(),
+            std::back_inserter(vectNames),
+            ::boost::bind(& StructureTraitsMapType::value_type::first,_1) );
+    return vectNames;
 }
 
 //------------------------------------------------------------------------------
