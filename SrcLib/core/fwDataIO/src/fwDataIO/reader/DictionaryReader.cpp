@@ -19,6 +19,7 @@
 #include <boost/spirit/include/phoenix_bind.hpp>
 #include <boost/spirit/home/phoenix/statement/sequence.hpp>
 #include <boost/spirit/home/phoenix/container.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
@@ -92,7 +93,8 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         using boost::spirit::qi::eoi;
         namespace phx = boost::phoenix;
 
-        lines = +line >> eoi  ;
+        lines = +( line[phx::push_back(qi::_val, qi::_1)] | comment ) >> eoi  ;
+        comment =  lit('#') >> *(char_- eol)>> +qi::eol;
 
         line = trimmed_string >> lit(';')
                   >> omit[*blank]>> lit('(')
@@ -102,22 +104,29 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
                     >>  dbl
                 >> lit(')') >> omit[*blank]
                 >> lit(';')
-                >>  trimmed_string >> lit(';')
+                >>  stringSet >> lit(';')
                 >>  trimmed_string >> lit(';')
                 >>  trimmed_string >> lit(';')
                 >> +qi::eol;
 
         trimmed_string =   str[qi::_val = phx::bind(trim, qi::_1)] ;
-
         str =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "]) ;
+
+        stringSet =   strWithComma[qi::_val = phx::bind(trim, qi::_1)] ;
+        strWithComma =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "] | char_(',')[qi::_val += _1]) ;
+
 
         dbl = omit[*blank] >> double_ >> omit[*blank];
     }
 
     qi::rule<Iterator, double()> dbl;
     qi::rule<Iterator, std::string()> str;
+    qi::rule<Iterator, std::string()> strWithComma;
 
+    qi::rule<Iterator, std::string()> comment;
     qi::rule<Iterator, std::string()> trimmed_string;
+    qi::rule<Iterator, std::string()> stringSet;
+
     qi::rule<Iterator, ::fwDataIO::line()> line;
     qi::rule<Iterator, std::vector< ::fwDataIO::line >() > lines;
 
