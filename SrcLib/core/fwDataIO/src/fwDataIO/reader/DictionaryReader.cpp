@@ -49,6 +49,8 @@ struct line
     std::string catgegory;
     std::string organClass;
     std::string attachment;
+    std::string nativeExp;
+    std::string nativeExpGeo;
 };
 }
 
@@ -62,6 +64,8 @@ BOOST_FUSION_ADAPT_STRUCT(
     (std::string, catgegory)
     (std::string, organClass)
     (std::string, attachment)
+    (std::string, nativeExp)
+    (std::string, nativeExpGeo)
 )
 
 inline std::string trim ( std::string &s )
@@ -107,23 +111,31 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
                 >>  stringSet >> lit(';')
                 >>  trimmed_string >> lit(';')
                 >>  trimmed_string >> lit(';')
+                >>  trimmed_stringExp >> lit(';')
+                >>  trimmed_stringExp >> lit(';')
                 >> +qi::eol;
 
         trimmed_string =   str[qi::_val = phx::bind(trim, qi::_1)] ;
         str =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "]) ;
+
+        trimmed_stringExp =   strExp[qi::_val = phx::bind(trim, qi::_1)] ;
+        strExp =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "] |char_("()_")[qi::_val += _1] ) ;
 
         stringSet =   strWithComma[qi::_val = phx::bind(trim, qi::_1)] ;
         strWithComma =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "] | char_(',')[qi::_val += _1]) ;
 
 
         dbl = omit[*blank] >> double_ >> omit[*blank];
+
     }
 
     qi::rule<Iterator, double()> dbl;
     qi::rule<Iterator, std::string()> str;
+    qi::rule<Iterator, std::string()> strExp;
     qi::rule<Iterator, std::string()> strWithComma;
 
     qi::rule<Iterator, std::string()> comment;
+    qi::rule<Iterator, std::string()> trimmed_stringExp;
     qi::rule<Iterator, std::string()> trimmed_string;
     qi::rule<Iterator, std::string()> stringSet;
 
@@ -237,6 +249,8 @@ void DictionaryReader::read()
         }
         newOrgan->setCategories(categories);
         newOrgan->setAttachmentType(line.attachment);
+        newOrgan->setNativeExp(line.nativeExp);
+        newOrgan->setNativeGeometricExp(line.nativeExpGeo);
         structDico->addStructure(newOrgan);
     }
 }
