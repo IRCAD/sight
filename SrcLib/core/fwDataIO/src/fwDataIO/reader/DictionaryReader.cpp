@@ -94,7 +94,7 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         namespace phx = boost::phoenix;
 
         lines = +( line[phx::push_back(qi::_val, qi::_1)] | comment ) >> eoi  ;
-        comment =  lit('#') >> *(char_- eol)>> +qi::eol;
+        comment =  *blank >> lit('#') >> *(char_- eol)>> +qi::eol;
 
         line = trimmed_string >> lit(';')
                   >> omit[*blank]>> lit('(')
