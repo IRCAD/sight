@@ -197,7 +197,7 @@ void DictionaryReader::read()
     file.close();
 
 
-    std::vector <::fwDataIO::line> dicolines;
+    std::vector < ::fwDataIO::line > dicolines;
     if (!parse(buffer, buffer+length, buf, dicolines))
     {
             OSLM_ERROR( "Bad file format : " << path.string());
