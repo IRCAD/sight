@@ -32,7 +32,9 @@ public:
         ABDOMEN,
         PELVIS,
         ARM,
-        LEG
+        LEG,
+        LIVER_SEGMENTS,
+        OTHER
     }Category;
 
     typedef std::vector<Category> CategoryContainer;
