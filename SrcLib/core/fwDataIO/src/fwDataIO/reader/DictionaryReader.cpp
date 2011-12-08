@@ -4,9 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifdef DEBUG
+  #define BOOST_SPIRIT_DEBUG
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <exception>
 
 #include <boost/cstdint.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -14,6 +19,7 @@
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_eol.hpp>
+#include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_bind.hpp>
@@ -95,7 +101,10 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         using ascii::char_;
         using boost::spirit::qi::eol;
         using boost::spirit::qi::eoi;
+        using boost::phoenix::construct;
         namespace phx = boost::phoenix;
+
+        error.clear();
 
         lines = +( line[phx::push_back(qi::_val, qi::_1)] | comment ) >> eoi  ;
         comment =  *blank >> lit('#') >> *(char_- eol)>> +qi::eol;
@@ -127,6 +136,28 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
 
         dbl = omit[*blank] >> double_ >> omit[*blank];
 
+    #ifdef BOOST_SPIRIT_DEBUG
+      BOOST_SPIRIT_DEBUG_NODE(comment);
+      BOOST_SPIRIT_DEBUG_NODE(trimmedString);
+      BOOST_SPIRIT_DEBUG_NODE(trimmedStringExpr);
+      BOOST_SPIRIT_DEBUG_NODE(stringSet);
+      BOOST_SPIRIT_DEBUG_NODE(dbl);
+      BOOST_SPIRIT_DEBUG_NODE(line);
+      BOOST_SPIRIT_DEBUG_NODE(lines);
+    #endif
+
+      qi::on_error< qi::fail>
+      (
+              line
+              , phx::ref( (std::ostream &)error )
+                    << phx::val("Error! Expecting ")
+                    << qi::_4                      // what failed?
+                    << phx::val(" here: \"")
+                    << phx::construct<std::string>(qi::_3, qi::_2)   // iterators to error-pos, end
+                    << phx::val("\"")
+                    << std::endl
+        );
+
     }
 
     qi::rule<Iterator, double()> dbl;
@@ -141,13 +172,13 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
 
     qi::rule<Iterator, ::fwDataIO::line()> line;
     qi::rule<Iterator, std::vector< ::fwDataIO::line >() > lines;
-
+    std::stringstream error;
 };
 
 namespace reader
 {
 template <typename Iterator>
-bool parse(Iterator first,  Iterator last, std::string& buf, std::vector<fwDataIO::line>& lines)
+std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& buf, std::vector<fwDataIO::line>& lines)
 {
     using boost::spirit::ascii::space;
     using boost::spirit::ascii::blank;
@@ -161,13 +192,12 @@ bool parse(Iterator first,  Iterator last, std::string& buf, std::vector<fwDataI
     iterator_type iter = buf.begin();
     iterator_type end = buf.end();
 
-    line_parser g; // Our grammar
+    line_parser grammar; // Our grammar
 
-    bool result = phrase_parse(iter, end, g,  space - blank - eol, lines);
-
-//    if (first != last) // fail if we didn't get a full match
-//        return false;
-    return result;
+    bool result = phrase_parse(iter, end, grammar,  space - blank - eol, lines);
+    bool success =  result && (iter == end);
+    std::string msg = grammar.error.str();
+    return std::make_pair( success, msg );
 }
 
 //------------------------------------------------------------------------------
@@ -203,7 +233,8 @@ void DictionaryReader::read()
     if (!file.is_open())
     {
         OSLM_ERROR( "Dictionary file loading error for " << path.string());
-        throw std::ios_base::failure("Unable to open " + path.string());
+        std::string error  = "Unable to open " + path.string();
+        throw std::exception(error.c_str());
     }
 
     file.seekg (0, std::ios::end);
@@ -219,11 +250,14 @@ void DictionaryReader::read()
 
 
     std::vector < ::fwDataIO::line > dicolines;
-    if (!parse(buffer, buffer+length, buf, dicolines))
+    std::pair<bool,std::string> result = parse(buffer, buffer+length, buf, dicolines);
+    if (!result.first)
     {
-            OSLM_ERROR( "Bad file format : " << path.string());
-            throw std::ios_base::failure("Unable to parse " + path.string() + " : Bad file format.");
+        OSLM_ERROR( "Bad file format : " << path.string() << " Msg : " << result.second);
+        std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
+        throw std::exception(error.c_str());
     }
+
     // File the dictionary Structure
     ::fwData::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
@@ -231,7 +265,6 @@ void DictionaryReader::read()
     {
         ::fwData::StructureTraits::NewSptr newOrgan;
         newOrgan->setType(line.type);
-
 
         ::fwData::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter = ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(line.organClass);
         SLM_ASSERT("Class "<<line.organClass<<" not found.", strClassIter != ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end());
