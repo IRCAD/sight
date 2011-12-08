@@ -10,6 +10,7 @@
 
 #include <boost/cstdint.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/detail/case_conv.hpp>
 #include <boost/algorithm/string/split.hpp>
 
 #include <boost/spirit/include/qi.hpp>
@@ -100,7 +101,7 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         lines = +( line[phx::push_back(qi::_val, qi::_1)] | comment ) >> eoi  ;
         comment =  *blank >> lit('#') >> *(char_- eol)>> +qi::eol;
 
-        line = trimmed_string >> lit(';')
+        line = trimmedString >> lit(';')
                   >> omit[*blank]>> lit('(')
                     >>  dbl   >> lit(',')
                     >>  dbl   >> lit(',')
@@ -109,20 +110,20 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
                 >> lit(')') >> omit[*blank]
                 >> lit(';')
                 >>  stringSet >> lit(';')
-                >>  trimmed_string >> lit(';')
-                >>  trimmed_string >> lit(';')
-                >>  trimmed_stringExp >> lit(';')
-                >>  trimmed_stringExp >> lit(';')
+                >>  trimmedString >> lit(';')
+                >>  trimmedString >> lit(';')
+                >>  trimmedStringExpr >> lit(';')
+                >>  trimmedStringExpr
                 >> +qi::eol;
 
-        trimmed_string =   str[qi::_val = phx::bind(trim, qi::_1)] ;
-        str =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "]) ;
+        trimmedString =   str[qi::_val = phx::bind(trim, qi::_1)] ;
+        str =   *( (alnum|char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]) ;
 
-        trimmed_stringExp =   strExp[qi::_val = phx::bind(trim, qi::_1)] ;
-        strExp =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "] |char_("()_,.+-")[qi::_val += _1] ) ;
+        trimmedStringExpr =   stringExpr[qi::_val = phx::bind(trim, qi::_1)] ;
+        stringExpr =   *( (alnum|char_("()_,."))[qi::_val += qi::_1] | blank[qi::_val += " "] ) ;
 
-        stringSet =   strWithComma[qi::_val = phx::bind(trim, qi::_1)] ;
-        strWithComma =   *( alnum[qi::_val += qi::_1] | blank[qi::_val += " "] | char_(',')[qi::_val += _1]) ;
+        stringSet =   stringWithComma[qi::_val = phx::bind(trim, qi::_1)] ;
+        stringWithComma =   *( (alnum| char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "] ) ;
 
 
         dbl = omit[*blank] >> double_ >> omit[*blank];
@@ -131,12 +132,12 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
 
     qi::rule<Iterator, double()> dbl;
     qi::rule<Iterator, std::string()> str;
-    qi::rule<Iterator, std::string()> strExp;
-    qi::rule<Iterator, std::string()> strWithComma;
+    qi::rule<Iterator, std::string()> stringExpr;
+    qi::rule<Iterator, std::string()> stringWithComma;
 
     qi::rule<Iterator, std::string()> comment;
-    qi::rule<Iterator, std::string()> trimmed_stringExp;
-    qi::rule<Iterator, std::string()> trimmed_string;
+    qi::rule<Iterator, std::string()> trimmedStringExpr;
+    qi::rule<Iterator, std::string()> trimmedString;
     qi::rule<Iterator, std::string()> stringSet;
 
     qi::rule<Iterator, ::fwDataIO::line()> line;
@@ -243,8 +244,9 @@ void DictionaryReader::read()
         ::fwData::StructureTraits::CategoryContainer categories;
         BOOST_FOREACH(std::string category, categorylist)
         {
-            ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter = ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(category);
-            SLM_ASSERT("Category "<<category <<" not found.", strCategoryIter != ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end());
+            std::string cat = ::boost::algorithm::trim_copy(category);
+            ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter = ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(cat);
+            SLM_ASSERT("Category "<<cat <<" not found.", strCategoryIter != ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end());
             categories.push_back(strCategoryIter->second);
         }
         newOrgan->setCategories(categories);
