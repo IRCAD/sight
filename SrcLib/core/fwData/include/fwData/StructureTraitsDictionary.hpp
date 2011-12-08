@@ -16,19 +16,31 @@ namespace fwData
  * @class   StructureTraitsDictionary
  * @brief   This class defines a dictionary of structure traits.
  * @author  IRCAD (Research and Development Team).
- * @date    2007-20011.
+ * @date    2007-2011.
+ *
+ * @note The dictionary cannot contain two structure with the same type.
+ * @see StructureTraits
  */
 class FWDATA_CLASS_API StructureTraitsDictionary : public ::fwData::Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object), (()), ::fwTools::Factory::New< StructureTraitsDictionary >) ;
 
-    typedef std::map< std::string, ::fwData::StructureTraits::sptr > StructureTraitsMapType;
 
-    /// Add a structure
+    /**
+     * @brief Add a structure in dictionary
+     * @param [in] structureTraits a StructureTraits correctly initialised.
+     * @pre A structure with the same type cannot exist in dictionary.
+     * @pre Only structure of class 'Lesion' or 'Functional' can have attachment.
+     * @pre Structure attachment must be of class 'Organ' and must exist in dictionary.
+     * @pre Structure type cannot contain space.
+     */
     FWDATA_API void addStructure(StructureTraits::sptr structureTraits);
 
-    /// Return the structure traits for given type
+    /**
+     * @brief Return the structure traits for given type
+     * @pre given 'type' must exist in dictionary
+     */
     FWDATA_API StructureTraits::sptr getStructure(std::string type);
 
     /// Return all array names stock in the structureTraits-map
@@ -43,8 +55,9 @@ protected :
     FWDATA_API virtual ~StructureTraitsDictionary();
 
 private:
+    typedef std::map< std::string, ::fwData::StructureTraits::sptr > StructureTraitsMapType;
 
-    /// map of structure traits
+    /// map to register structure traits. Map key is structure type.
     StructureTraitsMapType m_structureTraitsMap;
 
 };

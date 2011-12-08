@@ -16,13 +16,23 @@ namespace fwData
  * @class   StructureTraits
  * @brief   This class defines structure traits.
  * @author  IRCAD (Research and Development Team).
- * @date    2007-20011.
+ * @date    2007-2011.
+ *
+ * A structure traits contains :
+ *  - [required] a type (ie. Skin, Liver, ...)
+ *  - [required] a category (or more) : Body, Head, Neck, Thorax, Abdomen, Pelvis, Arm, Leg, Liver_segments, Other
+ *  - [required] a class : Tool, Environment, Vessel, Lesion, Organ, Functional, No_constraint
+ *  - [required] a color
+ *  - [optional] an attachment if class is LESION or FUNCTIONAL
+ *  - [optional] a native ROI expression : ex. inter(world(type(Skin)),not(class(Organ)))
+ *  - [optional] a native geometric ROI expression
  */
 class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwTools::Factory::New< StructureTraits >) ;
 
+    /// Defines structure categories
     typedef enum
     {
         BODY,
@@ -40,6 +50,7 @@ public:
     typedef std::vector<Category> CategoryContainer;
     typedef std::string ROIExpression;
 
+    /// Defines structure class
     typedef enum
     {
         TOOL,

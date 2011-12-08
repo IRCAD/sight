@@ -15,9 +15,18 @@ namespace fwData
 {
 /**
  * @class   ROITraits
- * @brief   This class defines ROI traits
+ * @brief   This class defines ROI traits.
  * @author  IRCAD (Research and Development Team).
- * @date    2007-20011.
+ * @date    2007-2011.
+ *
+ * A ROI traits contains :
+ *  - an identifier
+ *  - an evaluated expression : ex. inter(skin,liver)
+ *  - a ROI mask node used for ROI, the only case where sptr can be null is when evaluated expression correspond to "W" ( W <=> World <=> no roi constraint ).
+ *  - a structure traits associated to the ROI
+ *
+ * @note Several ROITraits can be associated to the same structure.
+ * @see StructureTraits
  */
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
@@ -63,7 +72,7 @@ private:
     /// associated structure traits
     ::fwData::StructureTraits::wptr m_structureTraits;
 
-    /// roi evalulated expression
+    /// roi evaluated expression
     StructureTraits::ROIExpression m_evaluatedExp;
 
 

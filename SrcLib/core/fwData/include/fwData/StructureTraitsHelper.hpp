@@ -22,9 +22,11 @@ class FWDATA_CLASS_API StructureTraitsHelper
 public :
 
     typedef ::boost::bimaps::bimap< ::fwData::StructureTraits::StructureClass, std::string > ClassTranslatorType;
+    /// Map to translate structure class (string vs enum)
     FWDATA_API static const ClassTranslatorType s_CLASSTRANSLATOR;
 
     typedef ::boost::bimaps::bimap< ::fwData::StructureTraits::Category, std::string > CategoryTranslatorType;
+    /// Map to translate structure categories (string vs enum)
     FWDATA_API static const CategoryTranslatorType s_CATEGORYTRANSLATOR;
 
 };

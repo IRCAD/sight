@@ -15,9 +15,17 @@ namespace fwData
 {
 /**
  * @class   ReconstructionTraits
- * @brief   This class defines Reconstruction traits
+ * @brief   This class defines Reconstruction traits.
  * @author  IRCAD (Research and Development Team).
  * @date    2007-20011.
+ *
+ * A ReconstructionTraits contains :
+ *  - an identifier
+ *  - a structure traits associated to the reconstruction
+ *  - a mask operator node
+ *  - a mesh operator node
+ *
+ * @see StructureTraits
  */
 class FWDATA_CLASS_API ReconstructionTraits : public ::fwData::Object
 {
@@ -29,13 +37,13 @@ public:
     /// Set the reconstruction operator mask node
     FWDATA_API void setMaskOpNode( ::fwData::Node::sptr maskOpNode );
 
-    /// Get the reconstruction operator mask node
+    /// Get the reconstruction operator mask node. Return a null pointer if the mask node is not defined.
     FWDATA_API ::fwData::Node::sptr getMaskOpNode();
 
-    /// Set the reconstruction operator mesh node
+    /// Set the reconstruction operator mesh node.
     FWDATA_API void setMeshOpNode( ::fwData::Node::sptr meshOpNode );
 
-    /// Get the reconstruction operator mesh node
+    /// Get the reconstruction operator mesh node. Return a null pointer if the mesh node is not defined.
     FWDATA_API ::fwData::Node::sptr getMeshOpNode();
 
     /// Set the associated structure traits
