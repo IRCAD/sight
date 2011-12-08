@@ -62,6 +62,8 @@ void StructureTraitsDictionary::addStructure(StructureTraits::sptr structureTrai
             !(attachment.empty() || m_structureTraitsMap[attachment]->getClass() == StructureTraits::ORGAN ) );
     FW_RAISE_IF("Structure must have at least one category",
             structureTraits->getCategories().empty());
+    FW_RAISE_IF("Wrong structure type '" << type<< "', a type cannot contain space" , structureTraits->getType().find(" ") != std::string::npos );
+
 
     m_structureTraitsMap[type] = structureTraits;
 }
