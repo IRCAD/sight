@@ -120,7 +120,7 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         str =   *( (alnum|char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]) ;
 
         trimmedStringExpr =   stringExpr[qi::_val = phx::bind(trim, qi::_1)] ;
-        stringExpr =   *( (alnum|char_("()_,."))[qi::_val += qi::_1] | blank[qi::_val += " "] ) ;
+        stringExpr =   *( (alnum|char_("()_,.+-"))[qi::_val += qi::_1] | blank[qi::_val += " "] ) ;
 
         stringSet =   stringWithComma[qi::_val = phx::bind(trim, qi::_1)] ;
         stringWithComma =   *( (alnum| char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "] ) ;
