@@ -27,6 +27,7 @@ CLASSTEST=[
     'TransfertFunctionTest',
     'TransformationMatrix3DTest',
     'VideoTest',
+    'StructureTraitsDictionaryTest',
 # TODO: 
 #    'DownCastIteratorTest',
 #    'GenericFieldTest',
