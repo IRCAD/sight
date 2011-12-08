@@ -27,7 +27,12 @@ void ReconstructionTraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
 
 ::fwData::Node::sptr ReconstructionTraits::getMaskOpNode()
 {
-    return m_maskOpNode.lock();
+    ::fwData::Node::sptr opNode;
+    if ( ! m_maskOpNode.expired() )
+    {
+        opNode = m_maskOpNode.lock();
+    }
+    return opNode;
 }
 
 //------------------------------------------------------------------------------
@@ -41,7 +46,12 @@ void ReconstructionTraits::setMeshOpNode( ::fwData::Node::sptr meshOpNode )
 
 ::fwData::Node::sptr ReconstructionTraits::getMeshOpNode()
 {
-    return m_meshOpNode.lock();
+    ::fwData::Node::sptr opNode;
+    if ( ! m_meshOpNode.expired() )
+    {
+        opNode = m_meshOpNode.lock();
+    }
+    return opNode;
 }
 
 //------------------------------------------------------------------------------
