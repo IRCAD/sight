@@ -10,7 +10,6 @@
 
 #include <boost/cstdint.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/detail/case_conv.hpp>
 #include <boost/algorithm/string/split.hpp>
 
 #include <boost/spirit/include/qi.hpp>
