@@ -11,7 +11,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <exception>
 
 #include <boost/cstdint.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -28,6 +27,8 @@
 #include <boost/spirit/include/phoenix_stl.hpp>
 
 #include <boost/fusion/include/adapt_struct.hpp>
+
+#include <fwCore/exceptionmacros.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
 
@@ -230,12 +231,8 @@ void DictionaryReader::read()
     std::ifstream file;
     file.open(path.string().c_str(), std::ios::binary );
 
-    if (!file.is_open())
-    {
-        OSLM_ERROR( "Dictionary file loading error for " << path.string());
-        std::string error  = "Unable to open " + path.string();
-        throw std::exception(error.c_str());
-    }
+    std::string errorOpen  = "Unable to open " + path.string();
+    FW_RAISE_IF(errorOpen, !file.is_open());
 
     file.seekg (0, std::ios::end);
     length = file.tellg();
@@ -251,12 +248,9 @@ void DictionaryReader::read()
 
     std::vector < ::fwDataIO::line > dicolines;
     std::pair<bool,std::string> result = parse(buffer, buffer+length, buf, dicolines);
-    if (!result.first)
-    {
-        OSLM_ERROR( "Bad file format : " << path.string() << " Msg : " << result.second);
-        std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
-        throw std::exception(error.c_str());
-    }
+
+    std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
+    FW_RAISE_IF(error, !result.first);
 
     // File the dictionary Structure
     ::fwData::StructureTraitsDictionary::sptr structDico = getConcreteObject();
