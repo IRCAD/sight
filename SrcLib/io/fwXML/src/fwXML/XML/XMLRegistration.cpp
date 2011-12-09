@@ -57,6 +57,9 @@
 #include "fwXML/XML/PlaneListXMLTranslator.hpp"
 #include "fwXML/XML/SingleFileXMLTranslator.hpp"
 #include "fwXML/XML/DictionaryOrganXMLTranslator.hpp"
+#include "fwXML/XML/StructureTraitsXMLTranslator.hpp"
+#include "fwXML/XML/ROITraitsXMLTranslator.hpp"
+#include "fwXML/XML/ReconstructionTraitsXMLTranslator.hpp"
 
 namespace fwXML
 {
@@ -100,6 +103,9 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator                                  ,  ::fwData::PlaneList              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                 ,  ::fwData::location::SingleFile   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan        );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsXMLTranslator                            ,  ::fwData::StructureTraits        );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ROITraitsXMLTranslator                                  ,  ::fwData::ROITraits              );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionTraitsXMLTranslator                       ,  ::fwData::ReconstructionTraits   );
 }
 
 
