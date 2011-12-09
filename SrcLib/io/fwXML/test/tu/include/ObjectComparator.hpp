@@ -7,6 +7,7 @@
 #ifndef _FWXML_TEST_TU_OBJECT_COMPARATOR_HPP_
 #define _FWXML_TEST_TU_OBJECT_COMPARATOR_HPP_
 
+#include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/StructureTraits.hpp>
 #include <fwData/ROITraits.hpp>
 #include <fwData/ReconstructionTraits.hpp>
@@ -16,6 +17,7 @@
 class ObjectComparator
 {
 public:
+    static void compareStructureTraitsDictionary(::fwData::StructureTraitsDictionary::sptr structureDico1, ::fwData::StructureTraitsDictionary::sptr structureDico2);
     static void compareStructureTraits(::fwData::StructureTraits::sptr structure1, ::fwData::StructureTraits::sptr structure2);
     static void compareROITraits(::fwData::ROITraits::sptr roi1, ::fwData::ROITraits::sptr roi2);
     static void compareReconstructionTraits(::fwData::ReconstructionTraits::sptr rec1, ::fwData::ReconstructionTraits::sptr rec2);

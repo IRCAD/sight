@@ -67,9 +67,19 @@ void ObjectTest::tearDown()
     // check object
     CPPUNIT_ASSERT(obj2);
 
-//    ::boost::filesystem::remove_all( testFile.parent_path().string() );
+    ::boost::filesystem::remove_all( testFile.parent_path().string() );
 
     return obj2;
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::testStructureTraitsDictionary()
+{
+    ::fwData::StructureTraitsDictionary::sptr structureDico1 = ObjectGenerator::createStructureTraitsDictionary();
+    ::fwData::StructureTraitsDictionary::sptr structureDico2 = ::fwData::StructureTraitsDictionary::dynamicCast(ObjectTest::serializeOldVersion("StructureTraitsDictionary.xml", structureDico1));
+    CPPUNIT_ASSERT(structureDico2);
+    ObjectComparator::compareStructureTraitsDictionary(structureDico1, structureDico2);
 }
 
 //------------------------------------------------------------------------------

@@ -17,6 +17,7 @@ class ObjectTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testStructureTraits );
     CPPUNIT_TEST( testROITraits );
     CPPUNIT_TEST( testReconstructionTraits );
+    CPPUNIT_TEST( testStructureTraitsDictionary );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -29,6 +30,7 @@ public:
     void testStructureTraits();
     void testROITraits();
     void testReconstructionTraits();
+    void testStructureTraitsDictionary();
 };
 
 #endif // _FWXML_TEST_TU_OBJECTTEST_HPP_

@@ -18,6 +18,25 @@ using namespace fwData;
 
 //------------------------------------------------------------------------------
 
+void ObjectComparator::compareStructureTraitsDictionary(::fwData::StructureTraitsDictionary::sptr structureDico1, ::fwData::StructureTraitsDictionary::sptr structureDico2)
+{
+    CPPUNIT_ASSERT(structureDico1);
+    CPPUNIT_ASSERT(structureDico2);
+    std::vector<std::string> structureTypes1 = structureDico1->getStructureTypeNames();
+    std::vector<std::string> structureTypes2 = structureDico2->getStructureTypeNames();
+    CPPUNIT_ASSERT_EQUAL(structureTypes1.size(), structureTypes2.size());
+    CPPUNIT_ASSERT(std::equal(structureTypes1.begin(), structureTypes1.end(), structureTypes2.begin()));
+
+    BOOST_FOREACH(std::string type, structureTypes1)
+    {
+        ::fwData::StructureTraits::sptr structure1 = structureDico1->getStructure(type);
+        ::fwData::StructureTraits::sptr structure2 = structureDico2->getStructure(type);
+        ObjectComparator::compareStructureTraits(structure1, structure2);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ObjectComparator::compareStructureTraits(::fwData::StructureTraits::sptr structure1, ::fwData::StructureTraits::sptr structure2)
 {
     // check structure
@@ -31,10 +50,10 @@ void ObjectComparator::compareStructureTraits(::fwData::StructureTraits::sptr st
 
     ::fwData::Color::sptr color1 = structure1->getColor();
     ::fwData::Color::sptr color2 = structure2->getColor();
-    CPPUNIT_ASSERT_EQUAL(color1->red(), color2->red());
-    CPPUNIT_ASSERT_EQUAL(color1->green(), color2->green());
-    CPPUNIT_ASSERT_EQUAL(color1->blue(), color2->blue());
-    CPPUNIT_ASSERT_EQUAL(color1->alpha(), color2->alpha());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->red(), color2->red(), 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), color2->green(), 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->blue(), color2->blue(), 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->alpha(), color2->alpha(), 0.000001);
 
     ::fwData::StructureTraits::CategoryContainer categories1 = structure1->getCategories();
     ::fwData::StructureTraits::CategoryContainer categories2 = structure2->getCategories();

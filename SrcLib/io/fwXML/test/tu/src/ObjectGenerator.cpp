@@ -16,6 +16,61 @@ using namespace boost::assign;
 
 //------------------------------------------------------------------------------
 
+::fwData::StructureTraitsDictionary::sptr ObjectGenerator::createStructureTraitsDictionary()
+{
+    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    ::fwData::StructureTraits::NewSptr skin;
+    std::string skinType = "Skin";
+    skin->setType(skinType);
+    skin->setClass(::fwData::StructureTraits::ENVIRONMENT);
+    ::fwData::Color::sptr skinColor = ::fwData::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 1.0f);
+    skin->setColor(skinColor);
+    ::fwData::StructureTraits::CategoryContainer skinCat(1);
+    skinCat[0] = ::fwData::StructureTraits::BODY;
+    skin->setCategories(skinCat);
+    structDico->addStructure(skin);
+
+    ::fwData::StructureTraits::NewSptr liver;
+    liver->setType("Liver");
+    liver->setClass(::fwData::StructureTraits::ORGAN);
+    liver->setColor(::fwData::Color::New(204.0f/255.0f, 51.0f/255.0f, 51.0f/255.0f, 1.0));
+    ::fwData::StructureTraits::CategoryContainer liverCat(1);
+    liverCat[0] = ::fwData::StructureTraits::ABDOMEN;
+    liver->setCategories(liverCat);
+    std::string nativeExp = "inter(world(type(Skin)),not(class(Organ)))";
+    liver->setNativeExp(nativeExp);
+    structDico->addStructure(liver);
+
+    ::fwData::StructureTraits::NewSptr liverTumor;
+    liverTumor->setType("Liver_Tumor");
+    liverTumor->setClass(::fwData::StructureTraits::LESION);
+    liverTumor->setColor(::fwData::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
+    ::fwData::StructureTraits::CategoryContainer liverTumorCat(1);
+    liverTumorCat[0] = ::fwData::StructureTraits::ABDOMEN;
+    liverTumor->setCategories(liverTumorCat);
+    liverTumor->setAttachmentType("Liver");
+    structDico->addStructure(liverTumor);
+
+    ::fwData::StructureTraits::NewSptr tumor;
+    tumor->setType("Tumor");
+    tumor->setClass(::fwData::StructureTraits::LESION);
+    tumor->setColor(::fwData::Color::New(0.0f, 0.0f, 1.0f, 1.0f));
+    ::fwData::StructureTraits::CategoryContainer tumorCat(8);
+    tumorCat[0] = ::fwData::StructureTraits::BODY;
+    tumorCat[1] = ::fwData::StructureTraits::HEAD;
+    tumorCat[2] = ::fwData::StructureTraits::NECK;
+    tumorCat[3] = ::fwData::StructureTraits::THORAX;
+    tumorCat[4] = ::fwData::StructureTraits::ABDOMEN;
+    tumorCat[5] = ::fwData::StructureTraits::PELVIS;
+    tumorCat[6] = ::fwData::StructureTraits::ARM;
+    tumorCat[7] = ::fwData::StructureTraits::LEG;
+    tumor->setCategories(tumorCat);
+
+    return structDico;
+}
+
+//------------------------------------------------------------------------------
+
 ::fwData::StructureTraits::sptr ObjectGenerator::createStructureTraits()
 {
     ::fwData::StructureTraits::NewSptr pStructureTraits;
