@@ -20,16 +20,7 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 StructureTraitsDictionary::StructureTraitsDictionary ()
-{
-    ::fwData::StructureTraits::NewSptr world;
-    world->setType("World");
-    world->setClass(StructureTraits::NO_CONSTRAINT);
-    world->setColor(::fwData::Color::New(1.0, 1.0, 1.0, 1.0));
-    StructureTraits::CategoryContainer categories(1);
-    categories[0] = StructureTraits::BODY;
-    world->setCategories(categories);
-    this->addStructure(world);
-}
+{}
 
 
 //------------------------------------------------------------------------------

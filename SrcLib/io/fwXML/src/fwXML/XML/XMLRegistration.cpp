@@ -60,6 +60,7 @@
 #include "fwXML/XML/StructureTraitsXMLTranslator.hpp"
 #include "fwXML/XML/ROITraitsXMLTranslator.hpp"
 #include "fwXML/XML/ReconstructionTraitsXMLTranslator.hpp"
+#include "fwXML/XML/StructureTraitsDictionaryXMLTranslator.hpp"
 
 namespace fwXML
 {
@@ -106,6 +107,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator      
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsXMLTranslator                            ,  ::fwData::StructureTraits        );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ROITraitsXMLTranslator                                  ,  ::fwData::ROITraits              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionTraitsXMLTranslator                       ,  ::fwData::ReconstructionTraits   );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsDictionaryXMLTranslator                  ,  ::fwData::StructureTraitsDictionary);
 }
 
 
