@@ -23,7 +23,7 @@ namespace fwData
  *  - [required] a category (or more) : Body, Head, Neck, Thorax, Abdomen, Pelvis, Arm, Leg, Liver_segments, Other
  *  - [required] a class : Tool, Environment, Vessel, Lesion, Organ, Functional, No_constraint
  *  - [required] a color
- *  - [optional] an attachment if class is LESION or FUNCTIONAL
+ *  - [optional] an attachment only if class is LESION or FUNCTIONAL
  *  - [optional] a native ROI expression : ex. inter(world(type(Skin)),not(class(Organ)))
  *  - [optional] a native geometric ROI expression
  */

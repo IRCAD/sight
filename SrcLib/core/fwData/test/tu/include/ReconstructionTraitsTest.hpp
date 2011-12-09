@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_TU_STRUCTURETRAITSDICTIONARYTEST_HPP__
-#define __FWDATA_TU_STRUCTURETRAITSDICTIONARYTEST_HPP__
+#ifndef __FWDATA_TU_RECONSTRUCTIONTRAITSTEST_HPP__
+#define __FWDATA_TU_RECONSTRUCTIONTRAITSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class StructureTraitsDictionaryTest : public CPPUNIT_NS::TestFixture
+class ReconstructionTraitsTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( StructureTraitsDictionaryTest );
-    CPPUNIT_TEST( testAddingStructure );
+    CPPUNIT_TEST_SUITE( ReconstructionTraitsTest );
+    CPPUNIT_TEST( creation );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -21,7 +21,7 @@ public:
     void tearDown();
 
 
-    void testAddingStructure();
+    void creation();
 };
 
-#endif // __FWDATA_TU_STRUCTURETRAITSDICTIONARYTEST_HPP__
+#endif // __FWDATA_TU_RECONSTRUCTIONTRAITSTEST_HPP__

@@ -28,6 +28,8 @@ CLASSTEST=[
     'TransformationMatrix3DTest',
     'VideoTest',
     'StructureTraitsDictionaryTest',
+    'ROITraitsTest',
+    'ReconstructionTraitsTest',
 # TODO: 
 #    'DownCastIteratorTest',
 #    'GenericFieldTest',

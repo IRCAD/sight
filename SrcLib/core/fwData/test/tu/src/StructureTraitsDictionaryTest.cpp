@@ -23,16 +23,21 @@ void StructureTraitsDictionaryTest::tearDown()
     // Clean up after the test run.
 }
 
-void StructureTraitsDictionaryTest::test()
+void StructureTraitsDictionaryTest::testAddingStructure()
 {
     ::fwData::StructureTraitsDictionary::NewSptr structDico;
     ::fwData::StructureTraits::NewSptr skin;
-    skin->setType("Skin");
+    std::string skinType = "Skin";
+    skin->setType(skinType);
     skin->setClass(::fwData::StructureTraits::ENVIRONMENT);
-    skin->setColor(::fwData::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 1.0f));
+    ::fwData::Color::sptr skinColor = ::fwData::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 1.0f);
+    skin->setColor(skinColor);
     ::fwData::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = ::fwData::StructureTraits::BODY;
     skin->setCategories(skinCat);
+    CPPUNIT_ASSERT_EQUAL(skinType, skin->getType());
+    CPPUNIT_ASSERT_EQUAL(::fwData::StructureTraits::ENVIRONMENT, skin->getClass());
+    CPPUNIT_ASSERT(skinColor == skin->getColor());
     CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(skin));
 
     ::fwData::StructureTraits::NewSptr liver;
@@ -42,6 +47,9 @@ void StructureTraitsDictionaryTest::test()
     ::fwData::StructureTraits::CategoryContainer liverCat(1);
     liverCat[0] = ::fwData::StructureTraits::ABDOMEN;
     liver->setCategories(liverCat);
+    std::string nativeExp = "inter(world(type(Skin)),not(class(Organ)))";
+    liver->setNativeExp(nativeExp);
+    CPPUNIT_ASSERT_EQUAL(nativeExp, liver->getNativeExp());
     CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(liver));
 
     ::fwData::StructureTraits::NewSptr liverTumor;
@@ -94,6 +102,7 @@ void StructureTraitsDictionaryTest::test()
     badAttachmentStructure->setAttachmentType("Unknown");
     CPPUNIT_ASSERT_THROW(structDico->addStructure(badAttachmentStructure), ::fwCore::Exception);
 
+    // check exception is raised if structure already exist
     ::fwData::StructureTraits::NewSptr liver2;
     liver2->setType("Liver");
     liver2->setClass(::fwData::StructureTraits::ORGAN);
