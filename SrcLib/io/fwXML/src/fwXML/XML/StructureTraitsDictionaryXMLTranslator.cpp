@@ -75,10 +75,26 @@ void StructureTraitsDictionaryXMLTranslator::updateDataFromXML( ::fwTools::Objec
                 ::fwData::Composite::sptr compo = ::fwData::Composite::dynamicCast(valueObj);
                 SLM_ASSERT("composite not instanced", compo);
 
+                // Lesion and Functional structures can have attachment, so, it must be saved after attached organs
                 BOOST_FOREACH(::fwData::Composite::value_type item, *compo)
                 {
                     ::fwData::StructureTraits::sptr structure = ::fwData::StructureTraits::dynamicCast(item.second);
-                    structureDico->addStructure(structure);
+
+                    if (structure->getClass() != ::fwData::StructureTraits::LESION
+                        && structure->getClass() != ::fwData::StructureTraits::FUNCTIONAL)
+                    {
+                        structureDico->addStructure(structure);
+                    }
+                }
+                BOOST_FOREACH(::fwData::Composite::value_type item, *compo)
+                {
+                    ::fwData::StructureTraits::sptr structure = ::fwData::StructureTraits::dynamicCast(item.second);
+
+                    if (structure->getClass() == ::fwData::StructureTraits::LESION
+                            || structure->getClass() == ::fwData::StructureTraits::FUNCTIONAL)
+                    {
+                        structureDico->addStructure(structure);
+                    }
                 }
             }
             // Element ++

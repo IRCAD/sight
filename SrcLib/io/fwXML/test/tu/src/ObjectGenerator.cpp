@@ -66,6 +66,25 @@ using namespace boost::assign;
     tumorCat[7] = ::fwData::StructureTraits::LEG;
     tumor->setCategories(tumorCat);
 
+    ::fwData::StructureTraits::NewSptr colon;
+    colon->setType("Colon");
+    colon->setClass(::fwData::StructureTraits::ORGAN);
+    colon->setColor(::fwData::Color::New(1.0f, 179.0f/255.0f, 128.0f/255.0f, 1.0f));
+    ::fwData::StructureTraits::CategoryContainer colonCat(1);
+    colonCat[0] = ::fwData::StructureTraits::ABDOMEN;
+    colon->setCategories(colonCat);
+    structDico->addStructure(colon);
+
+    ::fwData::StructureTraits::NewSptr caecum;
+    caecum->setType("Caecum");
+    caecum->setClass(::fwData::StructureTraits::FUNCTIONAL);
+    caecum->setColor(::fwData::Color::New(1.0f, 179.0f/255.0f, 128.0f/255.0f, 1.0f));
+    ::fwData::StructureTraits::CategoryContainer caecumCat(1);
+    caecumCat[0] = ::fwData::StructureTraits::ABDOMEN;
+    caecum->setCategories(caecumCat);
+    caecum->setAttachmentType("Colon");
+    structDico->addStructure(caecum);
+
     return structDico;
 }
 
