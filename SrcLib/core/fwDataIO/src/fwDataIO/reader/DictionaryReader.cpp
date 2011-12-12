@@ -223,7 +223,7 @@ void DictionaryReader::read()
     ::boost::filesystem::path path = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
     OSLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
-    SLM_ASSERT("Empty path for TriangularMesh file", !path.empty());
+    SLM_ASSERT("Empty path for dictionary file", !path.empty());
 
     // Reading of the file
     size_t length;
