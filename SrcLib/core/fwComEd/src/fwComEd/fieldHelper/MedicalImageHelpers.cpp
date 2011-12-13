@@ -158,7 +158,7 @@ void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwD
 
 void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Image::sptr _pImg )
 {
-    assert( _pImg->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) );
+    SLM_ASSERT("Image must have a TF composite field", _pImg->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) );
 
     ::fwData::Composite::sptr cTransfertFunction = _pImg->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
     ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
@@ -182,12 +182,21 @@ void MedicalImageHelpers::updateTFFromMinMax( ::fwData::Image::sptr _pImg, ::fwD
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpers::setBWTF( ::fwData::Image::sptr _pImg )
+void MedicalImageHelpers::setBWTF( ::fwData::Image::sptr _pImg, std::string tfSelectionFieldId )
 {
     checkMinMaxTF( _pImg );
 
     ::fwData::Composite::sptr cTransfertFunction = _pImg->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
-    ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
+
+    if (tfSelectionFieldId.empty())
+    {
+        tfSelectionFieldId = ::fwComEd::Dictionary::m_transfertFunctionId;
+    }
+    else if (!_pImg->getFieldSize(tfSelectionFieldId))
+    {
+        _pImg->setFieldSingleElement(tfSelectionFieldId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
+    }
+    ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( tfSelectionFieldId );
 
     // If have not default Transfert Function (BW)
     if( cTransfertFunction->getRefMap().find( ::fwData::TransfertFunction::defaultTransfertFunctionName ) == cTransfertFunction->getRefMap().end() )
@@ -209,12 +218,21 @@ void MedicalImageHelpers::setBWTF( ::fwData::Image::sptr _pImg )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpers::setSquareTF( ::fwData::Image::sptr _pImg )
+void MedicalImageHelpers::setSquareTF( ::fwData::Image::sptr _pImg, std::string tfSelectionFieldId )
 {
     checkMinMaxTF( _pImg );
 
     ::fwData::Composite::sptr cTransfertFunction = _pImg->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
-    ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
+
+    if (tfSelectionFieldId.empty())
+    {
+        tfSelectionFieldId = ::fwComEd::Dictionary::m_transfertFunctionId;
+    }
+    else if (!_pImg->getFieldSize(tfSelectionFieldId))
+    {
+        _pImg->setFieldSingleElement(tfSelectionFieldId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
+    }
+    ::fwData::String::sptr sTransfertFunction = _pImg->getFieldSingleElement< ::fwData::String >( tfSelectionFieldId );
 
     ::fwData::TransfertFunction::sptr pTF;
     ::fwData::Composite::iterator iter = (*cTransfertFunction).find( ::fwData::TransfertFunction::squareTransfertFunctionName );
