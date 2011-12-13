@@ -6,13 +6,14 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwServices/Base.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransfertFunction.hpp>
 #include <fwData/Composite.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
@@ -130,6 +131,21 @@ void SSynchronizeWindowingTF::updateTFFromMinMax()
         {
             tfName = image->getFieldSingleElement< ::fwData::String >( fieldId );
         }
+
+        // If TF doesn't exist : set default BW TF
+        // This case can occur if the TF is deleted by TF editor
+        if (tfCompo->find(tfName->value()) == tfCompo->end())
+        {
+            OSLM_WARN("TF '" << *tfName << "' doesn't exist => set BW TF");
+            ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, fieldId);
+
+            ::fwComEd::ImageMsg::NewSptr msg;
+            msg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
+            ::fwServices::IEditionService::notify( this->getSptr(),  image, msg );
+
+            tfName = image->getFieldSingleElement< ::fwData::String >( fieldId );
+        }
+
         ::fwData::TransfertFunction::sptr pTF = ::fwData::TransfertFunction::dynamicCast( (*tfCompo)[tfName->value()] );
         ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(min, max, pTF);
     }

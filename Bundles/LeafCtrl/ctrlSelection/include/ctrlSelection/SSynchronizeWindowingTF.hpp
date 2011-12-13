@@ -23,9 +23,9 @@ namespace ctrlSelection
  * @date   2011.
  *
  * A selected TF name is stored in a field. There is a default selection fields (id = ::fwComEd::Dictionary::m_transfertFunctionId).
- * Specific selection fiels are given in service configuration.
+ * Specific selection fields are given in service configuration.
  *
- * @note This service must have a high communication channel priority, it must synchronize TF before visualisation.
+ * @note This service must have a high communication channel priority, it must synchronize TF before visualization.
  */
 class CTRLSELECTION_CLASS_API SSynchronizeWindowingTF : public ::fwServices::IController
 {
