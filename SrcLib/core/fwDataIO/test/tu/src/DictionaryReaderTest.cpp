@@ -80,32 +80,74 @@ void DictionaryReaderTest::test_1()
     CPPUNIT_ASSERT_EQUAL(struct1->getNativeExp(), expectedSkin->getNativeExp());
     CPPUNIT_ASSERT_EQUAL(struct1->getNativeGeometricExp(), expectedSkin->getNativeGeometricExp());
     CPPUNIT_ASSERT_EQUAL(struct1->getAttachmentType(), expectedSkin->getAttachmentType());    
-
-
-    // Set up context before running a test.
-    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "DictionaryWrong.dic";
-    this->generateWrongDictionaryFile(m_tmpDictionaryFilePath);
-    
-    ::fwData::StructureTraitsDictionary::NewSptr structDico2;
-    // Get data from file.
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader2;
-    dictionaryReader2->setObject(structDico2);
-    dictionaryReader2->setFile(m_tmpDictionaryFilePath);
-
-    CPPUNIT_ASSERT_THROW(dictionaryReader2->read(), ::fwCore::Exception);
-
-    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "NoDictionary.dic";
-    ::fwData::StructureTraitsDictionary::NewSptr structDico3;
-    // Get data from file.
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader3;
-    dictionaryReader3->setObject(structDico3);
-    dictionaryReader3->setFile(m_tmpDictionaryFilePath);
-
-    CPPUNIT_ASSERT_THROW(dictionaryReader3->read(), ::fwCore::Exception);
 }
 
 //------------------------------------------------------------------------------
 
+void DictionaryReaderTest::test_2()
+{   
+    // Set up context before running a test.
+    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    this->generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
+    
+    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    // Get data from file.
+    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    dictionaryReader->setObject(structDico);
+    dictionaryReader->setFile(m_tmpDictionaryFilePath);
+
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+}
+
+//------------------------------------------------------------------------------
+
+void DictionaryReaderTest::test_3()
+{
+    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "NoDictionary.dic";
+    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    // Get data from file.
+    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    dictionaryReader->setObject(structDico);
+    dictionaryReader->setFile(m_tmpDictionaryFilePath);
+
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+}
+
+//------------------------------------------------------------------------------
+
+void DictionaryReaderTest::test_4()
+{   
+    // Set up context before running a test.
+    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    this->generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
+    
+    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    // Get data from file.
+    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    dictionaryReader->setObject(structDico);
+    dictionaryReader->setFile(m_tmpDictionaryFilePath);
+
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+}
+
+//------------------------------------------------------------------------------
+
+void DictionaryReaderTest::test_5()
+{
+    
+    // Set up context before running a test.
+    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    this->generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
+    
+    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    // Get data from file.
+    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    dictionaryReader->setObject(structDico);
+    dictionaryReader->setFile(m_tmpDictionaryFilePath);
+
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+}
+//------------------------------------------------------------------------------
 void DictionaryReaderTest::generateDictionaryFile(::boost::filesystem::path dictionaryFile)
 {
     std::fstream file;
@@ -119,7 +161,7 @@ void DictionaryReaderTest::generateDictionaryFile(::boost::filesystem::path dict
 
 //------------------------------------------------------------------------------
 
-void DictionaryReaderTest::generateWrongDictionaryFile(::boost::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(::boost::filesystem::path dictionaryFile)
 {
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
@@ -128,5 +170,29 @@ void DictionaryReaderTest::generateWrongDictionaryFile(::boost::filesystem::path
     file<<"Skin(255,179,140,100);Body;Environment;;;" << std::endl;        
     file.close();
 }
+
 //------------------------------------------------------------------------------
 
+void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(::boost::filesystem::path dictionaryFile)
+{
+    std::fstream file;
+    file.open(dictionaryFile.string().c_str(), std::fstream::out);
+    CPPUNIT_ASSERT(file.is_open());
+    // Missing ";" after the type Skin.
+    file<<"Skin(255,179,140,100);Boy;Environment;;;" << std::endl;        
+    file.close();
+}
+
+//------------------------------------------------------------------------------
+
+void DictionaryReaderTest::generateDictionaryFileWithWrongClass(::boost::filesystem::path dictionaryFile)
+{
+    std::fstream file;
+    file.open(dictionaryFile.string().c_str(), std::fstream::out);
+    CPPUNIT_ASSERT(file.is_open());
+    // Missing ";" after the type Skin.
+    file<<"Skin(255,179,140,100);Body;Enironment;;;" << std::endl;        
+    file.close();
+}
+
+//------------------------------------------------------------------------------
