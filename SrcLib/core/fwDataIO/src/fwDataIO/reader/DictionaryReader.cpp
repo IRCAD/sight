@@ -13,8 +13,10 @@
 #include <vector>
 
 #include <boost/cstdint.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/detail/case_conv.hpp>
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_eol.hpp>
@@ -75,10 +77,42 @@ BOOST_FUSION_ADAPT_STRUCT(
     (std::string, nativeExpGeo)
 )
 
+//------------------------------------------------------------------------------
+
 inline std::string trim ( std::string &s )
 {
     return ::boost::algorithm::trim_copy(s);
 }
+
+//------------------------------------------------------------------------------
+
+/// Reformat string in the following way :first letter is uppercase and the rest is lowercase).
+std::string  reformatString(std::string& expr)
+{
+    std::string trimStr = ::boost::algorithm::trim_copy(expr);
+    std::string result =  ::boost::algorithm::to_upper_copy(trimStr.substr(0,1))
+                          + ::boost::algorithm::to_lower_copy(trimStr.substr(1));
+    return (result);
+}
+
+//------------------------------------------------------------------------------
+/// Return the list of availabe value for the key of the map m.
+
+template< typename MapType >
+std::string getValues(const MapType & m)
+{
+    std::stringstream str;
+    typedef typename MapType::const_iterator const_iterator;
+    const_iterator iter  = m.begin();
+    str << "( " << iter->first;
+    for(; iter != m.end(); ++iter )
+    {
+        str << ", " << iter->first;
+    }
+    str << ") ";
+    return str.str();
+}
+//------------------------------------------------------------------------------
 
 namespace fwDataIO
 {
@@ -205,7 +239,6 @@ std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& b
 
 DictionaryReader::DictionaryReader()
     : ::fwData::location::enableSingleFile< IObjectReader >(this)
-
 {
 }
 
@@ -260,8 +293,11 @@ void DictionaryReader::read()
         ::fwData::StructureTraits::NewSptr newOrgan;
         newOrgan->setType(line.type);
 
-        ::fwData::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter = ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(line.organClass);
-        SLM_ASSERT("Class "<<line.organClass<<" not found.", strClassIter != ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end());
+        std::string classReformated = reformatString(line.organClass);
+        ::fwData::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter = ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
+        std::string availableValues = getValues(::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
+        error = "Organ class " + classReformated + " isn't available. Authorized type are " + availableValues;
+        FW_RAISE_IF(error, !(strClassIter != ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
         newOrgan->setColor(::fwData::Color::New(line.red/255.0f, line.green/255.0f, line.blue/255.0f, line.alpha/100.0f));
@@ -270,9 +306,11 @@ void DictionaryReader::read()
         ::fwData::StructureTraits::CategoryContainer categories;
         BOOST_FOREACH(std::string category, categorylist)
         {
-            std::string cat = ::boost::algorithm::trim_copy(category);
-            ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter = ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(cat);
-            SLM_ASSERT("Category "<<cat <<" not found.", strCategoryIter != ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end());
+            std::string catReformated = reformatString(category);
+            ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter = ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(catReformated);
+            availableValues = getValues(::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right);
+            error = "Category " + catReformated + " isn't available. Authorized type are " + availableValues;
+            FW_RAISE_IF(error, !(strCategoryIter != ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
             categories.push_back(strCategoryIter->second);
         }
         newOrgan->setCategories(categories);

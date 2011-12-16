@@ -26,6 +26,7 @@ class FWDATA_CLASS_API StructureTraitsDictionary : public ::fwData::Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object), (()), ::fwTools::Factory::New< StructureTraitsDictionary >) ;
 
+    typedef std::vector<std::string> StructureTypeNameContainer;
 
     /**
      * @brief Add a structure in dictionary
@@ -44,7 +45,8 @@ public:
     FWDATA_API StructureTraits::sptr getStructure(std::string type);
 
     /// Return all array names stock in the structureTraits-map
-    FWDATA_API std::vector<std::string> getStructureTypeNames() const;
+    FWDATA_API StructureTypeNameContainer getStructureTypeNames() const;
+
 
 protected :
 
