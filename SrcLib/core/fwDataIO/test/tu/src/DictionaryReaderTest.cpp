@@ -179,7 +179,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(::boost::file
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     // Missing ";" after the type Skin.
-    file<<"Skin(255,179,140,100);Boy;Environment;;;" << std::endl;        
+    file<<"Skin;(255,179,140,100);Boy;Environment;;;" << std::endl;
     file.close();
 }
 
@@ -191,7 +191,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongClass(::boost::filesys
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     // Missing ";" after the type Skin.
-    file<<"Skin(255,179,140,100);Body;Enironment;;;" << std::endl;        
+    file<<"Skin;(255,179,140,100);Body;Enironment;;;" << std::endl;
     file.close();
 }
 
