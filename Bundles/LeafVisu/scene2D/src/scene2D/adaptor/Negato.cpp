@@ -239,7 +239,7 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     {
         m_layer->setScale(m_layer->scale() / m_scaleRatio);
     }
-    else if(_event->getButton() == ::scene2D::data::Event::MidButton)
+    else if(_event->getButton() == ::scene2D::data::Event::MidButton && _event->getModifier() == ::scene2D::data::Event::NoModifier)
     {
         if(_event->getType() == ::scene2D::data::Event::MouseButtonPress)
         {
