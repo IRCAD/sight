@@ -12,6 +12,8 @@
 
 #include <fwData/Object.hpp>
 
+#include <Qt>
+
 #include "scene2D/config.hpp"
 #include "scene2D/data/Coord.hpp"
 #include "scene2D/data/Size.hpp"
@@ -37,7 +39,9 @@ public:
       MouseButtonRelease,
       MouseMove,
       MouseWheelUp,
-      MouseWheelDown
+      MouseWheelDown,
+      KeyPress,
+      KeyRelease
     } Type;
 
     typedef enum
@@ -67,6 +71,7 @@ public:
     fwGettersSettersDocMacro(Button, button, Button, no comment);
     fwGettersSettersDocMacro(Accepted, accepted, bool, no comment);
     fwGettersSettersDocMacro(Modifier, modifier, Modifier, no comment);
+    fwGettersSettersDocMacro(Key, key, int, no comment);
 
 private:
 
@@ -77,6 +82,7 @@ private:
     Size m_size;
     Size m_oldSize;
     bool m_accepted;
+    int m_key;
 };
 
 

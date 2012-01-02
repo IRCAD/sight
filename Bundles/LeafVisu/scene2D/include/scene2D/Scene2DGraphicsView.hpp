@@ -31,6 +31,10 @@ public :
 
     /// Events
 
+    SCENE2D_API void keyPressEvent(QKeyEvent* _event);
+    
+    SCENE2D_API void keyReleaseEvent(QKeyEvent* _event);
+
     SCENE2D_API void resizeEvent(QResizeEvent *_event);
 
     SCENE2D_API void mouseReleaseEvent ( QMouseEvent * _event );
@@ -57,7 +61,7 @@ protected :
     WPTR(::scene2D::Render) m_scene2DRender;
 
     ::scene2D::data::Event::Button getScene2DButtonFromEvent( QMouseEvent* _event );
-    ::scene2D::data::Event::Modifier getScene2DModifierFromEvent( QMouseEvent* _event );
+    ::scene2D::data::Event::Modifier getScene2DModifierFromEvent( QInputEvent* _event );
 
     void paintEvent ( QPaintEvent * event );
 

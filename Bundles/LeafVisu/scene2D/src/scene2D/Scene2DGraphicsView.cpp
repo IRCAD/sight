@@ -52,6 +52,32 @@ void Scene2DGraphicsView::setSceneRender( SPTR(::scene2D::Render) sceneRender )
 
 //-----------------------------------------------------------------------------
 
+void Scene2DGraphicsView::keyPressEvent(QKeyEvent* _event)
+{
+    ::scene2D::data::Event::NewSptr sceneEvent;
+    sceneEvent->setType( ::scene2D::data::Event::KeyPress);
+    sceneEvent->setButton( ::scene2D::data::Event::NoButton);
+    sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
+    sceneEvent->setKey(_event->key());
+
+    m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene2DGraphicsView::keyReleaseEvent(QKeyEvent* _event)
+{
+    ::scene2D::data::Event::NewSptr sceneEvent;
+    sceneEvent->setType( ::scene2D::data::Event::KeyRelease);
+    sceneEvent->setButton( ::scene2D::data::Event::NoButton);
+    sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
+    sceneEvent->setKey(_event->key());
+
+    m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
+}
+
+//-----------------------------------------------------------------------------
+
 void Scene2DGraphicsView::resizeEvent(QResizeEvent *_event)
 {
     this->updateFromViewport();
@@ -85,7 +111,7 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Event::Modifier Scene2DGraphicsView::getScene2DModifierFromEvent( QMouseEvent* _event )
+::scene2D::data::Event::Modifier Scene2DGraphicsView::getScene2DModifierFromEvent( QInputEvent* _event )
 {
     ::scene2D::data::Event::Modifier modifier;
 
