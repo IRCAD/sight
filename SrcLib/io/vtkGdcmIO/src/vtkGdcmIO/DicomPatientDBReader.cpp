@@ -134,6 +134,8 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     const gdcm::Tag t13(0x0008,0x0031); // Series Time
     const gdcm::Tag t14(0x0008,0x0032); // Acquisition Time
 
+    const gdcm::Tag imageTypeTag(0x0008,0x0008); // ImageType
+
     scanner.AddTag( t1 );
     scanner.AddTag( t2 );
     scanner.AddTag( t3 );
@@ -148,6 +150,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     scanner.AddTag( t12 );
     scanner.AddTag( t13 );
     scanner.AddTag( t14 );
+    scanner.AddTag(imageTypeTag);
     //const gdcm::Tag &reftag = t2;
 
     try
@@ -164,11 +167,13 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
         gdcm::Directory::FilenamesType::const_iterator it = keys.begin();
 
         std::map< std::string, std::vector< std::string > > mapSeries;
+        int secondaryCaptureCounter = 0;
 
         for(; it != keys.end() /*&& i < 2*/; ++it)
         {
             const char *filename = it->c_str();
             assert( scanner.IsKey( filename ) );
+
             const char *value1 =  scanner.GetValue( filename, t2);
             const char *value2 =  scanner.GetValue( filename, t14);
             if (value1)
@@ -178,7 +183,30 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                 {
                     stdValue += value2;
                 }
+
+                // Treatment of secondary capture dicom file.
+                std::string imageType(scanner.GetValue(filename, imageTypeTag));
+                std::string::size_type idx  = imageType.find("DERIVED\\SECONDARY");
+
+                if( idx != std::string::npos)
+                {
+                    std::string::size_type endIdx  = imageType.find_first_not_of("DERIVED\\SECONDARY");
+                    std::string optionalInfo = imageType.substr(endIdx);
+                    std::ostringstream indice;
+                    if(!optionalInfo.empty())
+                    {
+                        indice << optionalInfo;
+                    }
+                    else
+                    {
+                        // Tag as Secondary Capture
+                        indice << "_SC_" << secondaryCaptureCounter;
+                        secondaryCaptureCounter++;
+                    }
+                    stdValue += indice.str();
+                }
                 mapSeries[stdValue.c_str()].push_back(filename);
+
             }
             else
             {
