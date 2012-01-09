@@ -153,6 +153,9 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     scanner.AddTag(imageTypeTag);
     //const gdcm::Tag &reftag = t2;
 
+    ::fwData::Patient::sptr patient;
+    ::fwData::Study::sptr study;
+
     try
     {
         std::string seriesInstanceUID("");
@@ -360,7 +363,9 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     std::string sexStr = medprop->GetPatientSex(); //"0010|0040"
                     bool sex = (sexStr[0] == 'F')?false:true;
                     std::string modality    = medprop->GetModality(); //"0008|0060"
-                    std::string zone = (std::string(medprop->GetStudyDescription()) + " - ") + medprop->GetSeriesDescription(); //"0008|1030"
+//                    std::string zone = (std::string(medprop->GetStudyDescription()) + " - ") + medprop->GetSeriesDescription(); //"0008|1030"
+                    std::string serieDescription = medprop->GetSeriesDescription();
+                    std::string zone = std::string(medprop->GetStudyDescription()) ; //"0008|1030"
                     std::string studyID = std::string(medprop->GetStudyID()); // "0020,0010"
                     std::string studyTime =  std::string(medprop->GetStudyTime());
                     std::string studyDate = std::string(medprop->GetStudyDate());
@@ -389,12 +394,58 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     nameStr = ::fwTools::toStringWithoutAccent(nameStr);
                     modality = ::fwTools::toStringWithoutAccent(modality);
                     zone = ::fwTools::toStringWithoutAccent(zone);
+                    serieDescription = ::fwTools::toStringWithoutAccent(serieDescription);
                     patientID = ::fwTools::toStringWithoutAccent(patientID);
                     hospital = ::fwTools::toStringWithoutAccent(hospital);
 
                     ::fwData::Acquisition::NewSptr acq;
-                    ::fwData::Study::NewSptr study;
-                    ::fwData::Patient::NewSptr patient;
+                    // Check the existence of the the study and the patient.
+                    bool bIsNewStudy =false;
+                    bool bIsNewPatient =false;
+                    if(patientDB->getPatientSize() !=0 )
+                    {
+                        //Looking for an existing patient.
+                        ::fwData::PatientDB::PatientIterator itrOnPatient;
+                        std::pair< ::fwData::PatientDB::PatientIterator, ::fwData::PatientDB::PatientIterator > patients = patientDB->getPatients();
+                        for(itrOnPatient = patients.first; itrOnPatient != patients.second; ++itrOnPatient)
+                        {
+                            std::string id = (*itrOnPatient)->getIDDicom();
+                            if (patientID == id)
+                            {
+                                patient =*itrOnPatient;
+                                std::pair< ::fwData::Patient::StudyIterator, ::fwData::Patient::StudyIterator > studies = patient->getStudies();
+                                // Looking for an existing study
+                                ::fwData::Patient::StudyIterator itrOnStudy;
+                                for(itrOnStudy = studies.first; itrOnStudy != studies.second; ++itrOnStudy)
+                                {
+                                    if((*itrOnStudy)->getUID() == studyInstanceUID)
+                                    {
+                                        study = *itrOnStudy;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        study = ::fwData::Study::New();
+                                        bIsNewStudy = true;
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                bIsNewPatient = true;
+                                patient = ::fwData::Patient::New();
+                                study = ::fwData::Study::New();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        bIsNewStudy = true;
+                        bIsNewPatient = true;
+                        patient = ::fwData::Patient::New();
+                        study = ::fwData::Study::New();
+                    }
 
                     std::vector< double > vPixelSpacing ( 3, 0 );
                     vPixelSpacing[0] = pDataImage->getCRefSpacing()[0];
@@ -411,45 +462,16 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     // Name & firstname
                     std::string name = "";
                     std::string firstname = "";
-                    std::string::size_type sizeBase = std::string::npos;
-                    std::string::size_type sizeIndex = nameStr.find('^');
-                    if (sizeIndex == sizeBase)
-                    {
-                        name = nameStr;
-                        firstname = "";
-                        assert( name.length() == nameStr.length() );
-                    }
-                    else
-                    {
-                        name = nameStr.substr(0, sizeIndex);
-                        firstname = nameStr.substr(sizeIndex+1, nameStr.size());
-                        assert( name.length() + firstname.length() + 1 == nameStr.length() );
-                    }
-                    //--
-
-                    OSLM_DEBUG( "Name       = " <<  name );
-                    OSLM_DEBUG( "Firstname  = " <<  firstname );
-                    OSLM_DEBUG( "IsMale     = " <<  sex );
-                    OSLM_DEBUG( "Modality   = " <<  modality );
-                    OSLM_DEBUG( "Zone       = " <<  zone );
-                    OSLM_DEBUG( "Patient ID = " <<  patientID );
-                    OSLM_DEBUG( "Birthdate  = " <<  birthdate);
-                    OSLM_DEBUG( "Hospital   = " <<  hospital);
-                    OSLM_DEBUG( "Acq. date  = " <<  acqDate);
-                    OSLM_DEBUG( "Spacing    = " <<  vPixelSpacing[0] << "x" << vPixelSpacing[1]);
-                    OSLM_DEBUG( "Slice spacing = " <<  vPixelSpacing[2]);
-                    OSLM_DEBUG( "Window center = " << center);
-                    OSLM_DEBUG( "Window width  = " << width);
-                    OSLM_DEBUG( "Rescale intercept = " << rescale);
-                    OSLM_DEBUG( "Size = " << pDataImage->getCRefSize()[0] << " / " << pDataImage->getCRefSize()[1] << " / " << pDataImage->getCRefSize()[2] );
-                    OSLM_DEBUG( "Image Type = " << pDataImage->getPixelType().string());
+                    this->extractIdentity(nameStr, name, firstname);
 
                     // Set field
                     pDataImage->setWindowCenter(center);
                     pDataImage->setWindowWidth(width);
                     pDataImage->setRescaleIntercept(/*rescale*/0.0);
+
                     acq->setUID(seriesInstanceUID);
                     acq->setCRefCreationDate(acqDate);
+                    acq->setDescription(serieDescription);
                     // Keep the path and file name fo the Dicom file associated with acquisition.
                     std::vector< std::string >::const_iterator itrOnfiles = iter->second.begin();
                     for( ; itrOnfiles != iter->second.end(); ++itrOnfiles)
@@ -457,24 +479,35 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         acq->addDicomFileUrl(*itrOnfiles);
                     }
                     //acq->setCRefImageType(imageTypeStr);
-                    study->setCRefModality(modality);
-                    study->setCRefHospital(hospital);
-                    study->setCRefAcquisitionZone(zone);
-                    study->setUID(studyInstanceUID);
-                    study->setTime(studyTime);
-                    study->setDate(studyDate);
-                    study->setDescription(studyDescription);
+                    if (bIsNewStudy)
+                    {
+                        study->setCRefModality(modality);
+                        study->setCRefHospital(hospital);
+                        study->setCRefAcquisitionZone(zone);
+                        study->setUID(studyInstanceUID);
+                        study->setTime(studyTime);
+                        study->setDate(studyDate);
+                        study->setDescription(studyDescription);
+                    }
+                    if(bIsNewPatient)
+                    {
 
-                    patient->setCRefFirstname(firstname);
-                    patient->setCRefName(name);
-                    patient->setCRefIDDicom(patientID);
-                    patient->setCRefBirthdate(birthdate);
-                    patient->setCRefIsMale(sex);
-                    //--
+                        patient->setCRefFirstname(firstname);
+                        patient->setCRefName(name);
+                        patient->setCRefIDDicom(patientID);
+                        patient->setCRefBirthdate(birthdate);
+                        patient->setCRefIsMale(sex);
+                    }                    //--
                     acq->setImage(pDataImage);
                     study->addAcquisition(acq);
-                    patient->addStudy(study);
-                    patientDB->addPatient( patient );
+                    if (bIsNewStudy)
+                    {
+                        patient->addStudy(study);
+                    }
+                    if(bIsNewPatient)
+                    {
+                        patientDB->addPatient( patient );
+                    }
                 } // if res == true
             } // if nb files > 0
             iter++;
@@ -488,6 +521,28 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
         {
             OSLM_ERROR ("file error : " << *it );
         }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void DicomPatientDBReader::extractIdentity(const std::string patientName, std::string& name, std::string& firstname)
+{
+    name = "";
+    firstname = "";
+    std::string::size_type sizeBase = std::string::npos;
+    std::string::size_type sizeIndex = patientName.find('^');
+    if (sizeIndex == sizeBase)
+    {
+        name = patientName;
+        firstname = "";
+        assert( name.length() == patientName.length() );
+    }
+    else
+    {
+        name = patientName.substr(0, sizeIndex);
+        firstname = patientName.substr(sizeIndex+1, patientName.size());
+        assert( name.length() + firstname.length() + 1 == patientName.length() );
     }
 }
 
