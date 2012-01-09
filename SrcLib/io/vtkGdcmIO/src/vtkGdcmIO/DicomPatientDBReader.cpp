@@ -187,26 +187,29 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     stdValue += value2;
                 }
 
-                // Treatment of secondary capture dicom file.
-                std::string imageType(scanner.GetValue(filename, imageTypeTag));
-                std::string::size_type idx  = imageType.find("DERIVED\\SECONDARY");
-
-                if( idx != std::string::npos)
+                if(scanner.GetValue(filename, imageTypeTag))
                 {
-                    std::string::size_type endIdx  = imageType.find_first_not_of("DERIVED\\SECONDARY");
-                    std::string optionalInfo = imageType.substr(endIdx);
-                    std::ostringstream indice;
-                    if(!optionalInfo.empty())
+                    // Treatment of secondary capture dicom file.
+                    std::string imageType(scanner.GetValue(filename, imageTypeTag));
+                    std::string::size_type idx  = imageType.find("DERIVED\\SECONDARY");
+
+                    if( idx != std::string::npos)
                     {
-                        indice << optionalInfo;
+                        std::string::size_type endIdx  = imageType.find_first_not_of("DERIVED\\SECONDARY");
+                        std::string optionalInfo = imageType.substr(endIdx);
+                        std::ostringstream indice;
+                        if(!optionalInfo.empty())
+                        {
+                            indice << optionalInfo;
+                        }
+                        else
+                        {
+                            // Tag as Secondary Capture
+                            indice << "_SC_" << secondaryCaptureCounter;
+                            secondaryCaptureCounter++;
+                        }
+                        stdValue += indice.str();
                     }
-                    else
-                    {
-                        // Tag as Secondary Capture
-                        indice << "_SC_" << secondaryCaptureCounter;
-                        secondaryCaptureCounter++;
-                    }
-                    stdValue += indice.str();
                 }
                 mapSeries[stdValue.c_str()].push_back(filename);
 
