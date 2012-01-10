@@ -12,7 +12,7 @@
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
-#include <fwData/patient.hpp>
+#include <fwData/Patient.hpp>
 #include <fwData/Study.hpp>
 
 #include "vtkGdcmIO/config.hpp"
