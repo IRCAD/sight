@@ -66,6 +66,10 @@
 #include "fwXML/XML/StringXMLTranslator.hpp"
 #include "fwXML/XML/TriangularMeshXMLTranslator.hpp"
 #include "fwXML/XML/VectorXMLTranslator.hpp"
+#include "fwXML/XML/StructureTraitsXMLTranslator.hpp"
+#include "fwXML/XML/ROITraitsXMLTranslator.hpp"
+#include "fwXML/XML/ReconstructionTraitsXMLTranslator.hpp"
+#include "fwXML/XML/StructureTraitsDictionaryXMLTranslator.hpp"
 
 INSTANTIATE_SERIALIZER(::fwTools::Object);
 INSTANTIATE_SERIALIZER(::fwData::Acquisition);
