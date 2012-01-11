@@ -141,22 +141,26 @@ public :
     FWCOMED_API static ::fwData::Point::sptr   getImageSliceIndices( ::fwData::Image::sptr _pImg );
 
     /**
-     * @brief       Set default transfer function (grey level).
+     * @brief       Set default transfer function (grey level) in the current selection.
      *
      * If the default transfer function doesn't exist, it is created.
      *
      * @param[in]   _pImg image which contains the transfer function field.
+     * @param[in]   _tfSelectionFieldId Identifier of the field containing the current selection of TransfertFunction,
+     *              if m_tfSelection is empty => use default selection
      */
-    FWCOMED_API static void setBWTF( ::fwData::Image::sptr _pImg );
+    FWCOMED_API static void setBWTF( ::fwData::Image::sptr _pImg, std::string _tfSelectionFieldId = "" );
 
     /**
-     * @brief       Set square transfer function (Black & White).
+     * @brief       Set square transfer function (Black & White) in the current selection.
      *
      * If the square transfer function doesn't exist, it is created.
      *
      * @param[in]   _pImg image which contains the transfer function field.
+     * @param[in]   _tfSelectionFieldId Identifier of the field containing the current selection of TransfertFunction,
+     *              if m_tfSelection is empty => use default selection
      */
-    FWCOMED_API static void setSquareTF( ::fwData::Image::sptr _pImg );
+    FWCOMED_API static void setSquareTF( ::fwData::Image::sptr _pImg, std::string _tfSelectionFieldId = "" );
 
     /**
      * @brief       Check if the image has a comment field.

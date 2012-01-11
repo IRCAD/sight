@@ -31,7 +31,9 @@ namespace helper
 //------------------------------------------------------------------------------
 
 MedicalImageAdaptor::MedicalImageAdaptor() : m_orientation(Z_AXIS)
-{}
+{
+    m_tfSelectionFieldId = ::fwComEd::Dictionary::m_transfertFunctionId;
+}
 
 //------------------------------------------------------------------------------
 
@@ -235,7 +237,7 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
     ::fwTools::getFieldFromObject(m_windowMin    , image, ::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
     ::fwTools::getFieldFromObject(m_windowMax    , image, ::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
 
-    ::fwTools::getFieldFromObject(m_transfertFunctionId, image, ::fwComEd::Dictionary::m_transfertFunctionId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
+    ::fwTools::getFieldFromObject(m_transfertFunctionId, image, m_tfSelectionFieldId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
 
     ::fwData::Composite::sptr cTF;
     if(!image->getField(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
@@ -267,6 +269,16 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 {
     SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
     return m_weakImage.lock();
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::setTFSelectionFieldId(std::string tfSelectionId)
+{
+    if (!tfSelectionId.empty())
+    {
+        m_tfSelectionFieldId = tfSelectionId;
+    }
 }
 
 //------------------------------------------------------------------------------

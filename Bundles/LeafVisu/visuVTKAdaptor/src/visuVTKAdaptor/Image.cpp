@@ -190,6 +190,12 @@ void Image::configuring() throw(fwTools::Failed)
     {
         this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
     }
+    if ( m_configuration->hasAttribute("tfSelection") )
+    {
+        std::string tfSelectionFieldId = m_configuration->getAttributeValue("tfSelection");
+        SLM_FATAL_IF("'tfSelectionFieldId' must not be empty", tfSelectionFieldId.empty());
+        this->setTFSelectionFieldId(tfSelectionFieldId);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -225,7 +231,26 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
 {
     SLM_TRACE_FUNC();
     ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
-    std::string tfName = m_transfertFunctionId->value();
+    std::string tfName;
+
+    this->updateImageInfos(image);
+
+    tfName = m_transfertFunctionId->value();
+
+    // If TF doesn't exist : set default BW TF
+    if (tfComposite->find(tfName) == tfComposite->end())
+    {
+        OSLM_WARN("TF '" << tfName << "' doesn't exist => set BW TF");
+        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelectionFieldId);
+
+        ::fwComEd::ImageMsg::NewSptr msg;
+        msg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
+        ::fwServices::IEditionService::notify( this->getSptr(),  image, msg );
+
+        this->updateImageInfos(image);
+        tfName = m_transfertFunctionId->value();
+    }
+
     ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
     if ( m_useImageTF )
     {
@@ -334,5 +359,8 @@ void Image::destroyPipeline( )
 
     this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
+
 
 } //namespace visuVTKAdaptor

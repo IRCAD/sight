@@ -34,7 +34,7 @@ namespace uiImage
  * @brief   WindowLevel service allows to change the min / max value of windowing.
  * @class   WindowLevel.
  * @author  IRCAD (Research and Development Team).
- * @date    2010.
+ * @date    2010-2011.
  *
  * This is represented by
  *  - two sliders to modify the min, max value of windowing
@@ -82,8 +82,14 @@ protected:
      *
      * Example of configuration
      * @verbatim
-         <service uid="windowLevel" implementation="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoComChannel="yes"/>
+         <service uid="windowLevel" implementation="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoComChannel="yes">
+             <config autoWindowing="yes" tfSelection="greyLevelTF" />
+         </service>
        @endverbatim
+     * With :
+     *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
+     *  intensity when this service receive BUFFER event
+     *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use default selection field.
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -141,6 +147,10 @@ private:
     int m_notifiedImageMax;
     bool m_isNotifying;
     bool m_autoWindowing;
+
+    /// Identifier of the field containing the specific selection of TransfertFunction
+    /// if m_tfSelection is empty => use default TF selection
+    std::string m_tfSelection;
 
 };
 

@@ -7,6 +7,7 @@
 #ifndef _SCENE2D_RENDER_HPP_
 #define _SCENE2D_RENDER_HPP_
 
+#include <Qt>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QResizeEvent>
@@ -72,6 +73,9 @@ public:
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
     SCENE2D_API ::scene2D::data::Coord mapToScene( const ::scene2D::data::Coord & coord ) const;
+
+    /// Returns what happens to scene's aspect ratio on view resize events
+    SCENE2D_API Qt::AspectRatioMode getAspectRatioMode();
 
 protected:
     /**
@@ -281,6 +285,8 @@ private:
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
     bool m_antialiasing;
 
+    /// How the scene should behave on view resize events
+    Qt::AspectRatioMode m_aspectRatioMode;
 };
 
 

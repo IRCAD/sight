@@ -276,6 +276,13 @@ void Render::stopContext()
 
 //-----------------------------------------------------------------------------
 
+Qt::AspectRatioMode Render::getAspectRatioMode()
+{
+    return m_aspectRatioMode;
+}
+
+//-----------------------------------------------------------------------------
+
 void Render::ensureUniqueZValue( SceneAdaptor2D _adaptee )
 {
     SLM_TRACE_FUNC();
@@ -359,6 +366,12 @@ void Render::configureScene( ConfigurationType _conf )
         {
             m_antialiasing = true;
         }
+    }
+
+    if( _conf->hasAttribute(("aspectRatioMode")))
+    {
+        m_aspectRatioMode = (_conf->getAttributeValue("aspectRatioMode") == "KeepAspectRatioByExpanding")
+            ? Qt::KeepAspectRatioByExpanding : Qt::IgnoreAspectRatio;
     }
 }
 

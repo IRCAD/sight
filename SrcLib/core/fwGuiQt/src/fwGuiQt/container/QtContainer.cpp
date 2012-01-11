@@ -50,6 +50,7 @@ void QtContainer::clean()
             w->deleteLater();
         }
     }
+    m_container->adjustSize();
     if (m_container->layout())
     {
         QLayout* layout = m_container->layout();

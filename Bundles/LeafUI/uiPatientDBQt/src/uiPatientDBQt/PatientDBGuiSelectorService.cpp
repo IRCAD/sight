@@ -233,7 +233,8 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                 ::fwData::Acquisition::sptr pAcquisition = *acquisition;
 
                 // Get Infos
-                std::string zone = (pStudy->getAcquisitionZone().length())?pStudy->getAcquisitionZone():"Unknown zone";
+                std::string zone = ((pStudy->getAcquisitionZone().length())?pStudy->getAcquisitionZone():"Unknown study description")
+                                 + "-" + pAcquisition->getDescription();
                 std::string voxelSize = "";
                 std::string origin = "";
                 std::string nbImages = "";

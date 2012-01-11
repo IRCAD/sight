@@ -53,6 +53,12 @@ public:
     /// Return the image orientation.
     FWCOMED_API Orientation getOrientation(){ return m_orientation; }
 
+    /**
+     * @brief Set the identifier of the field containing the current selection of TransfertFunction.
+     * By defaults use ::fwComEd::Dictionary::m_transfertFunctionId
+     */
+    FWCOMED_API void setTFSelectionFieldId(std::string tfSelectionId);
+
 protected:
 
     /// Constructor. Do nothing.
@@ -190,6 +196,10 @@ protected:
     ::fwData::Composite::sptr m_transfertFunctions;
     /// Name of the current transfert function
     ::fwData::String::sptr m_transfertFunctionId;
+
+    /// Identifier of the field containing the current selection of TransfertFunction.
+    /// by defaults use ::fwComEd::Dictionary::m_transfertFunctionId
+    std::string m_tfSelectionFieldId;
 };
 
 struct Image0 {} ;
