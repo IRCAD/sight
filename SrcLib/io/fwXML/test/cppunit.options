@@ -1,9 +1,10 @@
 CLASSTEST=[
+           'FwXMLTest',
            'ObjectTest',
            'ObjectGenerator',
            'ObjectComparator',
            ]
-           
+
 USE = ['boost']
 LIB = [
       'fwXML_0-1',

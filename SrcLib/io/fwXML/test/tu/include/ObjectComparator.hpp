@@ -20,6 +20,12 @@
 #include <fwData/Color.hpp>
 #include <fwData/TransfertFunction.hpp>
 #include <fwData/TransfertFunctionPoint.hpp>
+#include <fwData/StructureTraitsDictionary.hpp>
+#include <fwData/StructureTraits.hpp>
+#include <fwData/ROITraits.hpp>
+#include <fwData/ReconstructionTraits.hpp>
+#include <fwData/Node.hpp>
+#include <fwData/Port.hpp>
 
 class ObjectComparator
 {
@@ -38,6 +44,12 @@ public:
     static void compareColor(::fwData::Color::sptr col1, ::fwData::Color::sptr col2);
     static void compareTransfertFunction(::fwData::TransfertFunction::sptr tf1, ::fwData::TransfertFunction::sptr tf2);
     static void compareTransfertFunctionPoint(::fwData::TransfertFunctionPoint::sptr tfp1, ::fwData::TransfertFunctionPoint::sptr tfp2);
+    static void compareStructureTraitsDictionary(::fwData::StructureTraitsDictionary::sptr structureDico1, ::fwData::StructureTraitsDictionary::sptr structureDico2);
+    static void compareStructureTraits(::fwData::StructureTraits::sptr structure1, ::fwData::StructureTraits::sptr structure2);
+    static void compareROITraits(::fwData::ROITraits::sptr roi1, ::fwData::ROITraits::sptr roi2);
+    static void compareReconstructionTraits(::fwData::ReconstructionTraits::sptr rec1, ::fwData::ReconstructionTraits::sptr rec2);
+    static void compareNode(::fwData::Node::sptr node1, ::fwData::Node::sptr node2);
+    static void comparePort(::fwData::Port::sptr port1, ::fwData::Port::sptr port2);
 
 };
 

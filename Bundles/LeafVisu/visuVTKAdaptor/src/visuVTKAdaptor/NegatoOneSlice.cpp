@@ -159,6 +159,10 @@ void NegatoOneSlice::cleanImageSource()
         ::visuVTKAdaptor::Image::sptr IA;
         IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
         IA->setVtkImageRegister(this->getImageSource());
+        if (!m_tfSelection.empty())
+        {
+            IA->setTFSelectionFieldId( m_tfSelection );
+        }
         IA->setImageOpacity(1.);
         IA->setAllowAlphaInTF(m_allowAlphaInTF);
 
@@ -289,8 +293,12 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     {
         this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
     }
+    if ( m_configuration->hasAttribute("tfSelection") )
+    {
+        m_tfSelection = m_configuration->getAttributeValue("tfSelection");
+        SLM_FATAL_IF("'tfSelection' must not be empty", m_tfSelection.empty());
+    }
 }
-
 
 //------------------------------------------------------------------------------
 

@@ -110,6 +110,7 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
         ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID ) ;
         ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
         m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+        m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
     }
 }
 

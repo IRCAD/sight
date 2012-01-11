@@ -138,6 +138,10 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ArrayXMLTranslator                
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MeshXMLTranslator                                       ,  ::fwData::Mesh                   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MaterialXMLTranslator                                   ,  ::fwData::Material               );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionXMLTranslator                             ,  ::fwData::Reconstruction         );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsXMLTranslator                            ,  ::fwData::StructureTraits        );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ROITraitsXMLTranslator                                  ,  ::fwData::ROITraits              );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionTraitsXMLTranslator                       ,  ::fwData::ReconstructionTraits   );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsDictionaryXMLTranslator                  ,  ::fwData::StructureTraitsDictionary);
 }
 
 

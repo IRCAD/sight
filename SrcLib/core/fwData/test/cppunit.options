@@ -29,6 +29,9 @@ CLASSTEST=[
     'VideoTest',
     'ArrayTest',
     'MeshTest',
+    'StructureTraitsDictionaryTest',
+    'ROITraitsTest',
+    'ReconstructionTraitsTest',
 # TODO: 
 #    'DownCastIteratorTest',
 #    'GenericFieldTest',
