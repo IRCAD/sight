@@ -148,7 +148,7 @@ void ObjectTest::testTransfertFunction()
 void ObjectTest::testStructureTraitsDictionary()
 {
     ::fwData::StructureTraitsDictionary::sptr structureDico1 = ObjectGenerator::createStructureTraitsDictionary();
-    ::fwData::StructureTraitsDictionary::sptr structureDico2 = ::fwData::StructureTraitsDictionary::dynamicCast(ObjectTest::serializeOldVersion("StructureTraitsDictionary.xml", structureDico1));
+    ::fwData::StructureTraitsDictionary::sptr structureDico2 = ::fwData::StructureTraitsDictionary::dynamicCast(ObjectTest::serialize("StructureTraitsDictionary.xml", structureDico1));
     CPPUNIT_ASSERT(structureDico2);
     ObjectComparator::compareStructureTraitsDictionary(structureDico1, structureDico2);
 }
@@ -158,7 +158,7 @@ void ObjectTest::testStructureTraitsDictionary()
 void ObjectTest::testStructureTraits()
 {
     ::fwData::StructureTraits::sptr structure1 = ObjectGenerator::createStructureTraits();
-    ::fwData::StructureTraits::sptr structure2 = ::fwData::StructureTraits::dynamicCast(ObjectTest::serializeOldVersion("StructureTraits.xml", structure1));
+    ::fwData::StructureTraits::sptr structure2 = ::fwData::StructureTraits::dynamicCast(ObjectTest::serialize("StructureTraits.xml", structure1));
     CPPUNIT_ASSERT(structure2);
     ObjectComparator::compareStructureTraits(structure1, structure2);
 }
@@ -168,7 +168,7 @@ void ObjectTest::testStructureTraits()
 void ObjectTest::testROITraits()
 {
     ::fwData::Composite::sptr roiCompo1 = ObjectGenerator::createROITraits();
-    ::fwData::Composite::sptr roiCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serializeOldVersion("ROITraits.xml", roiCompo1));
+    ::fwData::Composite::sptr roiCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serialize("ROITraits.xml", roiCompo1));
     CPPUNIT_ASSERT(roiCompo2);
     CPPUNIT_ASSERT(roiCompo2->find("ROITraits") != roiCompo2->end());
     ::fwData::ROITraits::sptr roi1 = ::fwData::ROITraits::dynamicCast((*roiCompo1)["ROITraits"]);
@@ -181,7 +181,7 @@ void ObjectTest::testROITraits()
 void ObjectTest::testReconstructionTraits()
 {
     ::fwData::Composite::sptr recCompo1 = ObjectGenerator::createReconstructionTraits();
-    ::fwData::Composite::sptr recCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serializeOldVersion("ReconstructionTraits.xml", recCompo1));
+    ::fwData::Composite::sptr recCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serialize("ReconstructionTraits.xml", recCompo1));
     CPPUNIT_ASSERT(recCompo2);
     CPPUNIT_ASSERT(recCompo2->find("ReconstructionTraits") != recCompo2->end());
     ::fwData::ReconstructionTraits::sptr rec1 = ::fwData::ReconstructionTraits::dynamicCast((*recCompo1)["ReconstructionTraits"]);
