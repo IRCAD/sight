@@ -121,7 +121,7 @@ const bool DataFolderValidator::validateSingle( xmlNodePtr node )
     ::boost::filesystem::path xsdPath = m_schemaPath[key];
     bool result = true;
 
-    OSLM_DEBUG("key" << key << " - name : " << xsdPath.string());
+    OSLM_DEBUG("key " << key << " - Path: " << xsdPath.string());
 
 
     if ( !xsdPath.empty() )
@@ -175,8 +175,8 @@ void DataFolderValidator::copySchema(const ::boost::filesystem::path &dstFolder,
     }
 
     // copy all XSD file from srcFolder to dstFolder
-    assert( fs::is_directory(sourcePath) );
-    assert( fs::is_directory(dstFolder) );
+    SLM_ASSERT("Source path: "<<sourcePath<<", is not a directory.", fs::is_directory(sourcePath));
+    SLM_ASSERT("Dest folder: "<<dstFolder<<", is not a directory.", fs::is_directory(dstFolder));
 
     fs::directory_iterator end_iter;
     for ( fs::directory_iterator dir_itr( sourcePath );   dir_itr != end_iter;   ++dir_itr )

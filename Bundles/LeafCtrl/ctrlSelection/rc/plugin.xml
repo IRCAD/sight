@@ -154,6 +154,12 @@
         <service>::ctrlSelection::wrapper::ObjToCompositeMsgForwarderSrv</service>
         <object>::fwData::Composite</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ctrlSelection::SSynchronizeWindowingTF</service>
+        <object>::fwData::Image</object>
+    </extension>
 </plugin>
 
 

@@ -77,10 +77,10 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
 
         if( (*iter)->getName() == "selection" )
         {
-            assert( (*iter)->hasAttribute("mode")) ;
+            SLM_ASSERT( "Sorry, xml elemenet <selection> must have attribute 'mode'.", (*iter)->hasAttribute("mode")) ;
             std::string mode = (*iter)->getExistingAttributeValue("mode") ;
             m_servicesAreExcluded = ( mode == "exclude" );
-            assert( mode == "exclude" || mode == "include" );
+            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'exclude' or 'include'.", mode == "exclude" || mode == "include" );
             OSLM_DEBUG( "mode => " << mode );
         }
 
@@ -91,16 +91,16 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
                 vectorIsAlreadyCleared = true;
                 m_selectedServices.clear();
             }
-            assert( (*iter)->hasAttribute("service")) ;
+            SLM_ASSERT( "Sorry, xml elemenet <addSelection> must have attribute 'service'.", (*iter)->hasAttribute("service")) ;
             m_selectedServices.push_back( (*iter)->getExistingAttributeValue("service") ) ;
             OSLM_DEBUG( "add selection => " << (*iter)->getExistingAttributeValue("service") );
         }
 
         if( (*iter)->getName() == "type" )
         {
-            assert( (*iter)->hasAttribute("mode")) ;
+            SLM_ASSERT( "Sorry, xml elemenet <type> must have attribute 'mode'.", (*iter)->hasAttribute("mode")) ;
             std::string mode = (*iter)->getExistingAttributeValue("mode") ;
-            assert( mode == "writer" || mode == "reader" );
+            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'writer' or 'reader'.",  mode == "writer" || mode == "reader" );
             m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
             OSLM_DEBUG( "mode => " << mode );
         }

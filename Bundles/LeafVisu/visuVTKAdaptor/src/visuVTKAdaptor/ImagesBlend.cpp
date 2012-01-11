@@ -169,6 +169,11 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
         {
             info->m_useImageTF = element->getAttributeValue("useColorTF") == "yes";
         }
+        if ( element->hasAttribute("tfSelection") )
+        {
+            info->m_tfSelection = element->getAttributeValue("tfSelection");
+            SLM_FATAL_IF("'tfSelection' must not be empty", info->m_tfSelection.empty());
+        }
 
         typedef std::pair< std::string, std::string > ImagesIdPair;
         m_imageIds.push_back(objectId);
@@ -208,6 +213,7 @@ void ImagesBlend::addImageAdaptors()
                 IA->setVtkImageRegister(m_imageBlend);
                 IA->setImageOpacity(info->m_imageOpacity);
                 IA->setAllowAlphaInTF(info->m_useTFAlfa);
+                IA->setTFSelectionFieldId(info->m_tfSelection);
 
                 m_registeredImages[img->getID()] = imageAdaptor;
                 this->registerService(imageAdaptor);

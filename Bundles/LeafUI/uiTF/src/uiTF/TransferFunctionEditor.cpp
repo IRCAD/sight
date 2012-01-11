@@ -245,14 +245,9 @@ void TransferFunctionEditor::deleteTF()
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
             std::string defaultTFName = ::fwData::TransfertFunction::defaultTransfertFunctionName;
 
-            if ( tfc->find(defaultTFName) != tfc->end() )
-            {
-                m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->findText(QString(defaultTFName.c_str())));
-            }
-            else
-            {
-                m_pTransferFunctionPreset->setCurrentIndex(0);
-            }
+            int index = m_pTransferFunctionPreset->findText(QString(defaultTFName.c_str()));
+            index = (index < 0)? 0 : index;
+            m_pTransferFunctionPreset->setCurrentIndex(index);
 
             this->updateImageWithSeletedTransferFunction();
         }

@@ -22,6 +22,7 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
+#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 #include "visuVTKAdaptor/NegatoMPR.hpp"
 
@@ -292,6 +293,11 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         m_useImageTF = ( m_configuration->getAttributeValue("useColorTF") == "yes" );
     }
+    if ( m_configuration->hasAttribute("tfSelection") )
+    {
+        m_tfSelection = m_configuration->getAttributeValue("tfSelection");
+        SLM_FATAL_IF("'tfSelection' must not be empty", m_tfSelection.empty());
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -351,6 +357,9 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     ::visuVTKAdaptor::NegatoOneSlice::sptr negatoAdaptor;
     negatoAdaptor = ::visuVTKAdaptor::NegatoOneSlice::dynamicCast(service);
 
+    ::visuVTKAdaptor::NegatoWindowingInteractor::sptr negatoWindowingAdaptor;
+    negatoWindowingAdaptor = ::visuVTKAdaptor::NegatoWindowingInteractor::dynamicCast(service);
+
     if (negatoAdaptor)
     {
         negatoAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
@@ -360,6 +369,11 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
         {
             negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
         }
+        negatoAdaptor->setTFSelection(m_tfSelection);
+    }
+    else if (negatoWindowingAdaptor)
+    {
+        negatoWindowingAdaptor->setTFSelectionFieldId(m_tfSelection);
     }
 
     service->setRenderService(this->getRenderService());
