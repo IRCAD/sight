@@ -14,6 +14,7 @@
 
 #include "scene2D/config.hpp"
 #include "scene2D/data/Viewport.hpp"
+#include "scene2D/data/Event.hpp"
 
 namespace scene2D
 {
@@ -29,6 +30,10 @@ public :
     SCENE2D_API Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget);
 
     /// Events
+
+    SCENE2D_API void keyPressEvent(QKeyEvent* _event);
+    
+    SCENE2D_API void keyReleaseEvent(QKeyEvent* _event);
 
     SCENE2D_API void resizeEvent(QResizeEvent *_event);
 
@@ -54,6 +59,9 @@ protected :
 
     WPTR(::scene2D::data::Viewport) m_viewport;
     WPTR(::scene2D::Render) m_scene2DRender;
+
+    ::scene2D::data::Event::Button getScene2DButtonFromEvent( QMouseEvent* _event );
+    ::scene2D::data::Event::Modifier getScene2DModifierFromEvent( QInputEvent* _event );
 
     void paintEvent ( QPaintEvent * event );
 
