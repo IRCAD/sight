@@ -106,6 +106,14 @@ public :
      * Returns the updated vtkPolyPata
      */
     VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+
+
+    /*!
+     * @brief Compute the volume of the mesh using MassProperties vtk class
+     * @param[in]  current mesh
+     * @return volume of the mesh
+     */
+    VTKIO_API static double computeVolume( ::fwData::Mesh::sptr mesh );
 };
 
 } // namespace helper

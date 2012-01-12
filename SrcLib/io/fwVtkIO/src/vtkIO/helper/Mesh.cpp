@@ -10,6 +10,11 @@
 #include <vtkCellData.h>
 #include <vtkCell.h>
 #include <vtkFloatArray.h>
+#include <vtkSmartPointer.h>
+
+#include <vtkMassProperties.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkFillHolesFilter.h>
 
 #include <fwData/Array.hpp>
 
@@ -356,6 +361,46 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
     }
 
     return polyDataDst;
+}
+
+//-----------------------------------------------------------------------------
+
+double Mesh::computeVolume( ::fwData::Mesh::sptr mesh )
+{
+    //::fwData::Mesh::NewSptr closedMesh;
+    //closedMesh->deepCopy(mesh);
+    //::fwMath::closeSurface(closedMesh->points(), closedMesh->cells());
+
+    vtkSmartPointer< vtkPolyData > vtkMeshRaw = vtkSmartPointer< vtkPolyData >::New();
+    Mesh::toVTKMesh( mesh, vtkMeshRaw );
+
+    // identify and fill holes in meshes
+    vtkSmartPointer< vtkFillHolesFilter > holesFilter = vtkSmartPointer< vtkFillHolesFilter >::New();
+    holesFilter->SetInput(vtkMeshRaw);
+
+    // compute normals for polygonal mesh
+    vtkSmartPointer< vtkPolyDataNormals > filter = vtkSmartPointer< vtkPolyDataNormals >::New();
+    filter->SetInput(holesFilter->GetOutput());
+    filter->AutoOrientNormalsOn();
+    filter->FlipNormalsOff();
+
+    // estimate volume, area, shape index of triangle mesh
+    vtkSmartPointer< vtkMassProperties > calculator = vtkSmartPointer< vtkMassProperties >::New();
+    calculator->SetInput( filter->GetOutput() );
+    calculator->Update();
+    double volume =  calculator->GetVolume();
+    OSLM_DEBUG("GetVolume : " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected() );
+    OSLM_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
+    if ( (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000 > calculator->GetVolume() )
+    {
+        std::stringstream ss;
+        ss << "vtkMassProperties::GetVolume() - | vtkMassProperties::GetVolumeProjected() |";
+        ss << ">  vtkMassProperties::GetVolume()/10000.0" << std::endl;
+        ss << "vtkMassProperties::GetVolume() = " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected();
+        throw (std::out_of_range( ss.str() ));
+    }
+
+    return volume;
 }
 
 //------------------------------------------------------------------------------
