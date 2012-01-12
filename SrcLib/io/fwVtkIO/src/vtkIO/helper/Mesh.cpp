@@ -367,27 +367,24 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
 
 double Mesh::computeVolume( ::fwData::Mesh::sptr mesh )
 {
-    //::fwData::Mesh::NewSptr closedMesh;
-    //closedMesh->deepCopy(mesh);
-    //::fwMath::closeSurface(closedMesh->points(), closedMesh->cells());
-
     vtkSmartPointer< vtkPolyData > vtkMeshRaw = vtkSmartPointer< vtkPolyData >::New();
     Mesh::toVTKMesh( mesh, vtkMeshRaw );
 
-    // identify and fill holes in meshes
-    vtkSmartPointer< vtkFillHolesFilter > holesFilter = vtkSmartPointer< vtkFillHolesFilter >::New();
-    holesFilter->SetInput(vtkMeshRaw);
-
-    // compute normals for polygonal mesh
+     // compute normals for polygonal mesh
     vtkSmartPointer< vtkPolyDataNormals > filter = vtkSmartPointer< vtkPolyDataNormals >::New();
-    filter->SetInput(holesFilter->GetOutput());
+    filter->SetInput(vtkMeshRaw);
     filter->AutoOrientNormalsOn();
     filter->FlipNormalsOff();
 
+    // identify and fill holes in meshes
+     vtkSmartPointer< vtkFillHolesFilter > holesFilter = vtkSmartPointer< vtkFillHolesFilter >::New();
+     holesFilter->SetInputConnection(filter->GetOutputPort());
+
     // estimate volume, area, shape index of triangle mesh
     vtkSmartPointer< vtkMassProperties > calculator = vtkSmartPointer< vtkMassProperties >::New();
-    calculator->SetInput( filter->GetOutput() );
+    calculator->SetInput( holesFilter->GetOutput() );
     calculator->Update();
+
     double volume =  calculator->GetVolume();
     OSLM_DEBUG("GetVolume : " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected() );
     OSLM_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
