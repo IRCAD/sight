@@ -54,6 +54,13 @@ DarwinMemoryMonitorTools::~DarwinMemoryMonitorTools()
 
     freeMemory = getFreeSystemMemory();
 
+#ifndef __LP64__
+    // Hard coded 3Gb limit for 32bit process
+    const ::boost::uint64_t maxMemory = 3221225472LL; // 3 Go
+    const ::boost::uint64_t usedProcessMemory = getUsedProcessMemory();
+    freeMemory = std::min( maxMemory - usedProcessMemory, freeMemory);
+#endif
+
     return freeMemory;
 }
 
