@@ -171,7 +171,7 @@ public :
      * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
      * @param[in]  cell CellTypes to find in mesh.
      */
-    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell);
+    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell);
 
 protected:
 
