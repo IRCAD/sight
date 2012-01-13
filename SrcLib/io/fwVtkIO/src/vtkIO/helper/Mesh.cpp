@@ -391,9 +391,9 @@ double Mesh::computeVolume( ::fwData::Mesh::sptr mesh )
     if ( (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000 > calculator->GetVolume() )
     {
         std::stringstream ss;
-        ss << "vtkMassProperties::GetVolume() - | vtkMassProperties::GetVolumeProjected() |";
-        ss << ">  vtkMassProperties::GetVolume()/10000.0" << std::endl;
-        ss << "vtkMassProperties::GetVolume() = " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected();
+        ss << "volume - |volume projected| > volume/10000.0" << std::endl;
+        ss << "[volume = " << volume << "]" << std::endl;
+        ss << "[volume projected = " << calculator->GetVolumeProjected()<<"]";
         throw (std::out_of_range( ss.str() ));
     }
 
