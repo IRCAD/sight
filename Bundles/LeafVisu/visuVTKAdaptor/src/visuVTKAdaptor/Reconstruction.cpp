@@ -111,7 +111,7 @@ void Reconstruction::createMeshService()
 
         meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
         //meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
-        //meshAdaptor->setShowClippedPart ( true );
+        meshAdaptor->setShowClippedPart ( true );
         meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
         meshAdaptor->setAutoResetCamera ( m_autoResetCamera );
         meshService->start();
