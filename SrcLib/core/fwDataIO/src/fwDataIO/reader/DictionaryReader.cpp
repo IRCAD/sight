@@ -8,6 +8,8 @@
   #define BOOST_SPIRIT_DEBUG
 #endif
 
+#define FUSION_MAX_VECTOR_SIZE 20
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -30,6 +32,10 @@
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
+#include <boost/fusion/container.hpp>
+#include <boost/fusion/container/vector/vector.hpp>
+#include <boost/fusion/include/vector.hpp>
+
 #include <fwCore/exceptionmacros.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
@@ -46,8 +52,10 @@
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::DictionaryReader, ::fwDataIO::reader::DictionaryReader );
 
+
 namespace fwDataIO
 {
+
 struct line
 {
     std::string type;
@@ -60,6 +68,9 @@ struct line
     std::string attachment;
     std::string nativeExp;
     std::string nativeExpGeo;
+    std::string anatomicRegion;
+    std::string propertyCategory;
+    std::string propertyType;
 };
 }
 
@@ -75,6 +86,9 @@ BOOST_FUSION_ADAPT_STRUCT(
     (std::string, attachment)
     (std::string, nativeExp)
     (std::string, nativeExpGeo)
+    (std::string, anatomicRegion)
+    (std::string, propertyCategory)
+    (std::string, propertyType)
 )
 
 //------------------------------------------------------------------------------
@@ -156,7 +170,10 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
                 >>  trimmedString >> lit(';')
                 >>  trimmedString >> lit(';')
                 >>  trimmedStringExpr >> lit(';')
-                >>  trimmedStringExpr
+                >>  trimmedStringExpr >> lit(';')
+                >>  trimmedString >> lit(';')
+                >>  trimmedString >> lit(';')
+                >>  trimmedString
                 >> +qi::eol;
 
         trimmedString =   str[qi::_val = phx::bind(trim, qi::_1)] ;
@@ -317,6 +334,9 @@ void DictionaryReader::read()
         newOrgan->setAttachmentType(line.attachment);
         newOrgan->setNativeExp(line.nativeExp);
         newOrgan->setNativeGeometricExp(line.nativeExpGeo);
+        newOrgan->setAnatomicRegion(line.anatomicRegion);
+        newOrgan->setPropertyCategory(line.propertyCategory);
+        newOrgan->setPropertyType(line.propertyType);
         structDico->addStructure(newOrgan);
     }
 }

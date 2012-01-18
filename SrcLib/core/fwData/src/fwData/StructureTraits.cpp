@@ -17,7 +17,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-StructureTraits::StructureTraits ()
+StructureTraits::StructureTraits ():m_propertyCategory(""), m_propertyType(""), m_anatomicRegion("")
 {
     m_color = ::fwData::Color::New();
 }
