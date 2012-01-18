@@ -370,19 +370,25 @@ double Mesh::computeVolume( ::fwData::Mesh::sptr mesh )
     vtkSmartPointer< vtkPolyData > vtkMeshRaw = vtkSmartPointer< vtkPolyData >::New();
     Mesh::toVTKMesh( mesh, vtkMeshRaw );
 
-     // compute normals for polygonal mesh
+    // identify and fill holes in meshes
+    vtkSmartPointer< vtkFillHolesFilter > holesFilter = vtkSmartPointer< vtkFillHolesFilter >::New();
+    holesFilter->SetHoleSize(2000);
+    holesFilter->SetInput(vtkMeshRaw);
+    holesFilter->Update();
+    if (holesFilter->GetOutput()->GetNumberOfCells() > 0) // Filter return empty mesh when no topological holes are present
+    {
+        vtkMeshRaw = holesFilter->GetOutput();
+    }
+
+    // compute normals for polygonal mesh
     vtkSmartPointer< vtkPolyDataNormals > filter = vtkSmartPointer< vtkPolyDataNormals >::New();
     filter->SetInput(vtkMeshRaw);
     filter->AutoOrientNormalsOn();
     filter->FlipNormalsOff();
 
-    // identify and fill holes in meshes
-     vtkSmartPointer< vtkFillHolesFilter > holesFilter = vtkSmartPointer< vtkFillHolesFilter >::New();
-     holesFilter->SetInputConnection(filter->GetOutputPort());
-
     // estimate volume, area, shape index of triangle mesh
     vtkSmartPointer< vtkMassProperties > calculator = vtkSmartPointer< vtkMassProperties >::New();
-    calculator->SetInput( holesFilter->GetOutput() );
+    calculator->SetInput( filter->GetOutput() );
     calculator->Update();
 
     double volume =  calculator->GetVolume();
