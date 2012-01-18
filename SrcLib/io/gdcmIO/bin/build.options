@@ -1,0 +1,9 @@
+TYPE='shared'
+LIB = [
+       'fwDataIO_0-2',
+       'fwTools_0-1',
+       'fwComEd_0-1',
+       ]
+VERSION = '0-1'
+USE = ['boost', 'boostFilesystem', 'gdcmCommon', 'gdcmDSED', 'gdcmMSFF']
+#CXXFLAGS = ['-Wall', '-Wimplicit', '-Wunused', '-Wpointer-arith', '-Winvalid-pch', '-Wcast-align', '-Woverloaded-virtual', '-Wwrite-strings', '-Wstrict-null-sentinel']

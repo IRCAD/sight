@@ -1,0 +1,38 @@
+<plugin id="ioGdcm" class="ioGdcm::Plugin" >
+    <library name="ioGdcm" />
+
+    <requirement id="io" />
+
+    <!--    REGISTER_SERVICE( ::io::IReader , ::ioGdcm::DicomPatientDBReaderService , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioGdcm::DicomPatientDBReaderService</service>
+        <object>::fwData::PatientDB</object>
+        <desc>Dicom Reader (gdcm)</desc>
+    </extension>
+    
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioGdcm::DicomPatientDBWriterService , ::fwData::PatientDB ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioGdcm::DicomPatientDBWriterService</service>
+        <object>::fwData::PatientDB</object>
+        <desc>Dicom Writer (gdcm)</desc>
+    </extension>
+    
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioGdcm::DicomPatientWriterService , ::fwData::Patient ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioGdcm::DicomPatientWriterService</service>
+        <object>::fwData::Patient</object>
+        <desc>Dicom Writer (gdcm)</desc>
+    </extension>    
+
+    <!--    REGISTER_SERVICE( ::io::IWriter , ::ioGdcm::DicomImageWriterService , ::fwData::Image ) ;-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioGdcm::DicomImageWriterService</service>
+        <object>::fwData::Image</object>
+        <desc>Dicom Writer (gdcm)</desc>
+    </extension>    
+   
+</plugin>
