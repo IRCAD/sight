@@ -1,0 +1,13 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+USE     = ['boost','qtCore', 'qtGui']
+LIB     = [
+            'gdcmIO_0-1',
+            'fwGui_0-1',
+            'fwGuiQt_0-1',
+            'vtkGdcmIO_0-1',
+#            'fwItkIO_0-1'
+          ]
+BUNDLES = ['io_0-1', 'gui_0-1' ]
+
+
