@@ -213,7 +213,7 @@ void DicomdirPatientDBReaderService::updating() throw(::fwTools::Failed)
 template < typename READER> ::fwData::PatientDB::sptr DicomdirPatientDBReaderService::createPatientDB(const std::vector< ::boost::filesystem::path>& filenames)
 {
     SLM_TRACE_FUNC();
-    READER::NewSptr reader;
+    typename READER::NewSptr reader;
 
     ::fwData::PatientDB::NewSptr dummy;
     reader->setObject( dummy );

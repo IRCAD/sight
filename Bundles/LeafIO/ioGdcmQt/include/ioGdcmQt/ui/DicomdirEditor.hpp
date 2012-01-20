@@ -53,7 +53,7 @@ private :
     /**
      * @brief create the content of the dialog box (Add a tree widget and a combo box for reader).
      */
-    void createContent();
+    void createContent() throw(::fwTools::Failed);
     std::vector< ::boost::filesystem::path> getDicomFiles(QTreeWidgetItem *item);
 
 
