@@ -57,6 +57,9 @@ void DictionaryReaderTest::test_1()
     ::fwData::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = ::fwData::StructureTraits::BODY;
     expectedSkin->setCategories(skinCat);
+    expectedSkin->setAnatomicRegion("Entire_Body");
+    expectedSkin->setPropertyCategory("Anat_Struct");
+    expectedSkin->setPropertyType("Entire_Body");
     
     ::fwData::StructureTraitsDictionary::NewSptr structDico;
     // get data from file.
@@ -80,6 +83,11 @@ void DictionaryReaderTest::test_1()
     CPPUNIT_ASSERT_EQUAL(struct1->getNativeExp(), expectedSkin->getNativeExp());
     CPPUNIT_ASSERT_EQUAL(struct1->getNativeGeometricExp(), expectedSkin->getNativeGeometricExp());
     CPPUNIT_ASSERT_EQUAL(struct1->getAttachmentType(), expectedSkin->getAttachmentType());    
+
+    CPPUNIT_ASSERT_EQUAL(struct1->getAnatomicRegion(), expectedSkin->getAnatomicRegion());
+    CPPUNIT_ASSERT_EQUAL(struct1->getPropertyCategory(), expectedSkin->getPropertyCategory());
+    CPPUNIT_ASSERT_EQUAL(struct1->getPropertyType(), expectedSkin->getPropertyType());
+
 }
 
 //------------------------------------------------------------------------------
@@ -154,8 +162,8 @@ void DictionaryReaderTest::generateDictionaryFile(::boost::filesystem::path dict
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     
-    file<<"Skin;(255,179,140,100);Body;Environment;;;" << std::endl;    
-    
+    file<<"Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
+
     file.close();
 }
 
@@ -167,7 +175,7 @@ void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(::boost::f
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     // Missing ";" after the type Skin.
-    file<<"Skin(255,179,140,100);Body;Environment;;;" << std::endl;        
+    file<<"Skin(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
@@ -178,8 +186,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(::boost::file
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
-    // Missing ";" after the type Skin.
-    file<<"Skin;(255,179,140,100);Boy;Environment;;;" << std::endl;
+    file<<"Skin;(255,179,140,100);Boy;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
@@ -190,8 +197,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongClass(::boost::filesys
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
-    // Missing ";" after the type Skin.
-    file<<"Skin;(255,179,140,100);Body;Enironment;;;" << std::endl;
+    file<<"Skin;(255,179,140,100);Body;Enironment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
