@@ -13,7 +13,7 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/TransfertFunction.hpp>
 #include <fwData/TransfertFunctionPoint.hpp>
 
@@ -33,13 +33,17 @@ namespace scene2D
 namespace adaptor
 {
 
+typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
+
 //-----------------------------------------------------------------------------
 
 Negato::Negato() throw()
-: m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false)
+: m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false), m_orientation(MedicalImageAdaptor::Z_AXIS),
+    m_scale(1,1)
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
+    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //-----------------------------------------------------------------------------
@@ -72,59 +76,172 @@ void Negato::updateFromImage( QImage * qimg )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     std::vector< ::boost::int32_t > size = image->getSize();
 
-    ::fwData::Integer::sptr axialIndex;
-    ::fwTools::getFieldFromObject(axialIndex   , image, ::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0) );
+    const std::vector< double > spacing = image->getSpacing();
+    double qImageSpacing[2];
 
+    SLM_ASSERT("Negato orientation must be MedicalImageAdaptor::X_AXIS, MedicalImageAdaptor::Y_AXIS, or MedicalImageAdaptor::Z_AXIS",
+        m_orientation == MedicalImageAdaptor::X_AXIS
+        || m_orientation == MedicalImageAdaptor::Y_AXIS
+        || m_orientation == MedicalImageAdaptor::Z_AXIS);
+
+    ::fwData::Integer::sptr index;
+    switch (m_orientation)
+    {
+        case MedicalImageAdaptor::X_AXIS:
+            ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+            qImageSpacing[0] = spacing[1];
+            qImageSpacing[1] = spacing[2];
+            break;
+
+        case MedicalImageAdaptor::Y_AXIS:
+            ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_frontalSliceIndexId, ::fwData::Integer::New(0));
+            qImageSpacing[0] = spacing[0];
+            qImageSpacing[1] = spacing[2];
+            break;
+
+        case MedicalImageAdaptor::Z_AXIS:
+            ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_axialSliceIndexId, ::fwData::Integer::New(0));
+            qImageSpacing[0] = spacing[0];
+            qImageSpacing[1] = spacing[1];
+            break;
+
+        default:
+            SLM_FATAL("Unsupported value for m_orientation");
+            break;
+    }
+
+    // Window min
     ::fwData::Integer::sptr minInt;
-    ::fwTools::getFieldFromObject(minInt   , image, ::fwComEd::Dictionary::m_windowMinId   , ::fwData::Integer::New(0) );
-    double min = minInt->value();
+    ::fwTools::getFieldFromObject(minInt, image, ::fwComEd::Dictionary::m_windowMinId, ::fwData::Integer::New(0));
+    const double min = minInt->value();
 
+    // Window max
     ::fwData::Integer::sptr maxInt;
-    ::fwTools::getFieldFromObject(maxInt   , image, ::fwComEd::Dictionary::m_windowMaxId   , ::fwData::Integer::New(100) );
-    double max = maxInt->value();
+    ::fwTools::getFieldFromObject(maxInt, image, ::fwComEd::Dictionary::m_windowMaxId, ::fwData::Integer::New(100));
+    const double max = maxInt->value();
 
     signed short * imgBuff = (signed short *) ( image->getBuffer() );
-    double window = max - min;
+    const double window = max - min;
     signed short val16;
     unsigned char val;
-    unsigned int yoffset;
-    unsigned int zoffset = axialIndex->value() * size[0] * size[1];
+    const unsigned int imageZOffset = size[0] * size[1];
 
-    for( ::boost::int32_t y = 0; y < size[1]; y++ )
+
+    // Fill image according to current slice type:
+    if(m_orientation == MedicalImageAdaptor::X_AXIS)
     {
-        yoffset = y * size[0];
-
-        for( ::boost::int32_t x = 0; x < size[0]; x++ )
+        for( ::boost::int32_t z = 0; z < size[2]; ++z)
         {
-            val16 = imgBuff[ x + yoffset + zoffset ];
+            const unsigned int zOffset = z * imageZOffset;
+            const unsigned int zPos = size[2] - 1 - z;
+            const unsigned int zxOffset = zOffset + index->value();
 
-            if ( val16 <= min )
+            for( ::boost::int32_t y = 0; y < size[1]; y++ )
             {
-                val = 0;
+                const unsigned char val = getQImageVal(zxOffset + y * size[0], imgBuff, max, min, window);
+                qimg->setPixel(y, zPos, qRgb(val,val,val));
             }
-            else if ( val16 >= max )
-            {
-                val = 255;
-            }
-            else
-            {
-                val = ( ( val16 - min ) / window ) * 255;
-            }
-
-            qimg->setPixel(x,y,qRgb(val,val,val));
         }
     }
+    else if(m_orientation == MedicalImageAdaptor::Y_AXIS)
+    {
+        const double yOffset = index->value() * size[0];
+
+        for( ::boost::int32_t z = 0; z < size[2]; ++z)
+        {
+            const double zOffset = z * imageZOffset;
+            const double zPos = size[2] - 1 - z;
+            const double zyOffset = zOffset + yOffset;
+
+            for( ::boost::int32_t x = 0; x < size[0]; x++ )
+            {
+                const unsigned char val = getQImageVal(zyOffset + x, imgBuff, max, min, window);
+                qimg->setPixel(x, zPos, qRgb(val,val,val));
+            }
+        }
+    }
+    else if(m_orientation == MedicalImageAdaptor::Z_AXIS)
+    {
+        const double zOffset = index->value() * imageZOffset;
+
+        for( ::boost::int32_t y = 0; y < size[1]; y++ )
+        {
+            const unsigned int yOffset = y * size[0];
+            const unsigned int zyOffset = zOffset + yOffset;
+
+            for( ::boost::int32_t x = 0; x < size[0]; x++ )
+            {
+                const unsigned char val = getQImageVal(x + zyOffset, imgBuff, max, min, window);
+                qimg->setPixel(x,y,qRgb(val,val,val));
+            }
+        }
+    }
+
+    m_pixmapItem->scale(qImageSpacing[0] / m_scale.first, qImageSpacing[1] / m_scale.second);
+
+    m_scale.first = qImageSpacing[0];
+    m_scale.second = qImageSpacing[1];
 }
 
 //-----------------------------------------------------------------------------
 
+unsigned char Negato::getQImageVal(
+    const unsigned int _index, signed short* _buffer, const double _max, const double _min, const double _window)
+{
+    signed short val16 = _buffer[_index];
+    unsigned char val;
+
+    if ( val16 <= _min )
+    {
+        val = 0;
+    }
+    else if ( val16 >= _max )
+    {
+        val = 255;
+    }
+    else
+    {
+        val = ( ( val16 - _min ) / _window ) * 255;
+    }
+
+    return val;
+}
+
+//---------------------------------------------------------------------------
+
 QImage * Negato::createQImage()
 {
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-    std::vector< ::boost::int32_t > size = img->getSize();
-    QImage * qimage = new QImage(size[0],size[1],QImage::Format_RGB888);
-    return qimage;
+    SLM_TRACE_FUNC();
 
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    const std::vector< ::boost::int32_t > size = img->getSize();
+
+    ::boost::int32_t qImageSize[2];
+
+    switch(m_orientation)
+    {
+        case MedicalImageAdaptor::X_AXIS:
+            qImageSize[0] = size[1];
+            qImageSize[1] = size[2];
+            break;
+
+        case MedicalImageAdaptor::Y_AXIS:
+            qImageSize[0] = size[0];
+            qImageSize[1] = size[2];
+            break;
+
+        case MedicalImageAdaptor::Z_AXIS:
+            qImageSize[0] = size[0];
+            qImageSize[1] = size[1];
+            break;
+
+        default:
+            SLM_FATAL("Unsupported value for m_orientation");
+            break;
+    }
+
+    QImage * qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
+    return qimage;
 }
 
 //-----------------------------------------------------------------------------
@@ -132,14 +249,14 @@ QImage * Negato::createQImage()
 void Negato::doStart() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    m_qimg = this->createQImage();
-    this->updateFromImage( m_qimg );
-    QPixmap m_pixmap = QPixmap::fromImage( *m_qimg );
-    m_pixmapItem = new QGraphicsPixmapItem(m_pixmap);
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    std::vector< double > spacing = image->getSpacing();
-    m_pixmapItem->scale( spacing[0], spacing[1] );
+    m_pixmapItem = new QGraphicsPixmapItem();
+    m_qimg = this->createQImage();
+
+    this->updateFromImage( m_qimg );
+
+    QPixmap m_pixmap = QPixmap::fromImage( *m_qimg );
+    m_pixmapItem->setPixmap(m_pixmap);
 
     m_layer = new QGraphicsItemGroup();
     m_layer->addToGroup(m_pixmapItem);
@@ -171,10 +288,35 @@ void Negato::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
 
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
 
-    if(     imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ||
-            imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
+    if(imageMsg)
     {
-        this->doUpdate();
+        if(imageMsg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE))
+        {
+            ::fwData::Object::csptr cObjInfo = imageMsg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+            ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+            ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+
+            ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] );
+            ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] );
+
+            if( toSliceType->value() == static_cast< int > ( m_orientation ) )
+            {
+                m_orientation = static_cast< MedicalImageAdaptor::Orientation > ( fromSliceType->value() );
+            }
+            else if(fromSliceType->value() == static_cast<int>(m_orientation))
+            {
+                m_orientation = static_cast< MedicalImageAdaptor::Orientation >( toSliceType->value() );
+            }
+
+            m_qimg = this->createQImage();  // create image according to new orientation (handle size change)
+            this->doUpdate();
+        }
+
+        if(imageMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ||
+           imageMsg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
+        {
+            this->doUpdate();
+        }
     }
 }
 
@@ -239,7 +381,8 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     {
         m_layer->setScale(m_layer->scale() / m_scaleRatio);
     }
-    else if(_event->getButton() == ::scene2D::data::Event::MidButton && _event->getModifier() == ::scene2D::data::Event::NoModifier)
+    else if(_event->getButton() == ::scene2D::data::Event::MidButton
+            && _event->getModifier() == ::scene2D::data::Event::NoModifier)
     {
         if(_event->getType() == ::scene2D::data::Event::MouseButtonPress)
         {
