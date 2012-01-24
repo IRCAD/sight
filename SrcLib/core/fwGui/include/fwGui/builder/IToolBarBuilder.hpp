@@ -69,10 +69,11 @@ public:
      *
      * Example of configuration
      * @verbatim
-        <toolBar >
+        <toolBar align="top">
             <toolBitmapSize height= "50" width="50" />
         </toolBar>
        @endverbatim
+        - \b align : toolbar alignment (top, bottom, left, right)
      *  - <toolBitmapSize height= "50" width="50"/> : give the size of the icon.
      */
 

@@ -13,6 +13,7 @@
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
 #include "fwGui/config.hpp"
 
@@ -66,13 +67,19 @@ public:
                        <separator />
                        <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                        <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                       <separator />
+                       <menu name="My menu" />
+                       <separator />
+                       <editor />
                    </layout>
                </gui>
                <registry>
-                   <menuItem sid="item2" start="no" />
+                   <menuItem sid="item2" />
                    <menuItem sid="item3" />
                    <menuItem sid="item4" />
                    <menuItem sid="item5" />
+                   <menu sid="menu" />
+                   <editor sid="editor" />
                </registry>
            </service>
        @endverbatim
@@ -87,12 +94,12 @@ public:
     /**
      * @brief manages action service associated with menuItem of toolbar.
      *
-     * If the action manages by the menuItems has its attribut executable="false", the associated menuItems will be disabled.
-     * In ohter words, the start value is take into account only when executable attribut is setted to true in managed action
+     * Register the menuItem containers for the associated services. Start the services if start=yes.
      *
-     * If an action is managed by a menuItem in menu and in Toolbar, only start value of the Toolbar item will be take into account.
-     * It is due to the fact that the Toolbar is initialized after the menu bar.
+     * If the action manages by the menuItems has its attribute executable="false", the associated menuItems will be disabled.
+     * In other words, the start value is take into account only when executable attribute is set to true in managed action
      *
+     * @warning If the action is present in a toolbar and a menu it must be started only one time.
      * @see ::fwGui::registrar::MenuRegistrar for more information on interaction between menubar and toolbar.
      *
      * @pre ToolBarRegistrar must be initialized before.
@@ -100,7 +107,25 @@ public:
      */
     FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenuItem::sptr > toolBarItems );
 
+    /**
+     * @brief manages menu service associated with item of toolbar.
+     *
+     * Register the menu containers for the associated services. Start the services if start=yes.
+     *
+     * @pre ToolBarRegistrar must be initialized before.
+     * @pre sub toolBar items must be instanced before.
+     */
     FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwMenu::sptr > toolBarItems );
+
+    /**
+     * @brief manages editor service associated with item of toolbar.
+     *
+     * Register the containers for the associated services. Start the services if start=yes.
+     *
+     * @pre ToolBarRegistrar must be initialized before.
+     * @pre sub toolBar items must be instanced before.
+     */
+    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwContainer::sptr > toolBarItems );
 
     /**
      * @brief Stopping toolBar items manager.
@@ -131,9 +156,15 @@ protected:
 
     /**
      * @brief All toolBar services ID managed and associated with pair containing:
-     * action's index vector and boolean describing if is started by the manager.
+     * menus index vector and boolean describing if is started by the manager.
      */
     SIDToolBarMapType m_menuSids;
+
+    /**
+     * @brief All toolBar services ID managed and associated with pair containing:
+     * editors index vector and boolean describing if is started by the manager.
+     */
+    SIDToolBarMapType m_editorSids;
 
     /// Main service ID associate with this ToolBarRegistrar
     std::string m_sid;
