@@ -74,7 +74,6 @@ public:
       </service>
        @endverbatim
      * This method analyzes the gui section of the configuration.
-     *
      *  - <layout> (mandatory) : give the list of the menu that will appear in the menu bar.
      *  - <menu name="My Menu"/> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.

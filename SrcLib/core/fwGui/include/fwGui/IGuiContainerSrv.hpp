@@ -65,12 +65,15 @@ protected :
                     <view caption="view5" />
                 </layout>
                 <toolBar />
+                <menuBar />
             </gui>
             <registry>
                 <parent wid="myView" />
                 <toolBar sid="toolbar1" start="yes" />
+                <menuBar sid="menubar1" start="yes" />
                 <view sid="subView3" start="yes" />
                 <view wid="subView4" />
+                <view sid="subView5" />
             </registry>
         </service>
       @endverbatim
@@ -83,9 +86,13 @@ protected :
      *     - \b ::fwGui::TabLayoutManager : all views will be draw as tab.
      *           @see ::fwGui::layoutManager::TabLayoutManagerBase
      *  - The toolBar section isn't mandatory.
-     *   @warning
-     *   - The order of the menu in each section (gui and registry) must be the same.\n
-     *  For example: the view caption "view3" will be connected with the service which have the sid = "subView3" and so one (it also could be a wid).
+     *  - The menuBar section isn't mandatory.
+     *
+     * @note The layout and registry sections can be empty. In this case no subview will be created.
+     *
+     * @warning
+     * - The order of the view in each section (gui and registry) must be the same.\n
+     *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" and so one (it also could be a wid).
      *
      *  @see ::fwGui::registrar::ViewRegistrar::initialize(), ::fwGui::layoutManager::IViewLayoutManager::initialize(), ::fwGui::builder::IToolBarBuilder::initialize()
      */

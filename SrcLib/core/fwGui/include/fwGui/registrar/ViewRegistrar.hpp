@@ -59,12 +59,15 @@ public:
                     <view caption="view5" />
                 </layout>
                 <toolBar />
+                <menuBar />
             </gui>
             <registry>
                 <parent wid="myView" />
-                <toolBar sid="toolbar1" start="yes" />
+                <toolBar sid="toolbar" start="yes" />
+                <menuBar sid="menubar" start="yes" />
                 <view sid="subView3" start="yes" />
                 <view wid="subView4" />
+                <view wid="subView5" />
             </registry>
         </service>
       @endverbatim
@@ -82,10 +85,11 @@ public:
      * - <view wid="subView4" /> : reserve a sub container for the view in the parent container with the name "subView4". The service which want to use this sub container
      *   will have define a parent with <parent wid="subView4" />.
      *   - \b wid  (mandatory): the window identifier.
-     *   @warning
-     *   - The number of view item in the gui section must be equal or greater than in the registry section.
-     *   - The order of the menu in each section (gui and registry) must be the same.\n
-     *  For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It could also be a wid).
+     *
+     * @warning
+     * - The number of view item in the gui section must be equal or greater than in the registry section.
+     * - The order of the view in each section (gui and registry) must be the same.\n
+     *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It could also be a wid).
      *
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);

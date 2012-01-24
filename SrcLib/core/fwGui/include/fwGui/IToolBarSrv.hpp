@@ -86,7 +86,6 @@ protected :
        </service>
        @endverbatim
      *   - <gui> </gui> : (mandatory) describe the interface of the service.
-     *
      *   - <registry> </registry> : (mandatory) describe the service management.
      *     - <menuItem> represents IActionSrv
      *     - <menu> represents IMenuSrv

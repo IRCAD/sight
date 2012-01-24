@@ -125,8 +125,10 @@ public:
      */
     FWGUI_API virtual void destroyFrame() = 0;
 
+    /// Return the frame container
     FWGUI_API virtual ::fwGui::container::fwContainer::sptr getFrame(){ return m_frame;};
 
+    /// Return the first container into the frame
     FWGUI_API virtual ::fwGui::container::fwContainer::sptr getContainer(){ return m_container;};
 
 

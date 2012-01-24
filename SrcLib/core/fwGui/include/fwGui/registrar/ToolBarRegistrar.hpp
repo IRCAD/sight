@@ -48,11 +48,11 @@ public:
     FWGUI_API virtual ::fwGui::container::fwToolBar::sptr getParent();
 
     /**
-     * @brief Return the fwMenuItem associated with the toolBarSid.
+     * @brief Return the fwMenuItem associated with the actionSid.
      * @param actionSid sid of the action service
      * @param toolBarItems  vector containing the fwMenuItem manages by this registrar.
      */
-    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string toolBarSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
+    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
 
     /**
      * @brief Initialize registry managers.
@@ -96,8 +96,10 @@ public:
      *
      * Register the menuItem containers for the associated services. Start the services if start=yes.
      *
-     * If the action manages by the menuItems has its attribute executable="false", the associated menuItems will be disabled.
-     * In other words, the start value is take into account only when executable attribute is set to true in managed action
+     * If a menuItem has attribut start="no", the associated action won't be started and the menuItem will be disabled.
+     * If a menuItem has attribut start="yes", two possibilities: \n
+     *  - the associated action has attribut executable="false" then the menuItem will be disabled.\n
+     *  - the associated action has attribut executable="true" then the menuItem will be enabled.\n
      *
      * @warning If the action is present in a toolbar and a menu it must be started only one time.
      * @see ::fwGui::registrar::MenuRegistrar for more information on interaction between menubar and toolbar.
