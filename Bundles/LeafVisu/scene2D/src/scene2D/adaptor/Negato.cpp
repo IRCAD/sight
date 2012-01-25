@@ -38,8 +38,7 @@ typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
 //-----------------------------------------------------------------------------
 
 Negato::Negato() throw()
-: m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false), m_orientation(MedicalImageAdaptor::Z_AXIS),
-    m_scale(1,1)
+: m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false), m_orientation(MedicalImageAdaptor::Z_AXIS)
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
@@ -66,6 +65,24 @@ void Negato::configuring() throw ( ::fwTools::Failed )
     if( !m_configuration->getAttributeValue("scaleRatio").empty() )
     {
         m_scaleRatio = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("scaleRatio") );
+    }
+
+    if( !m_configuration->getAttributeValue("orientation").empty() )
+    {
+        std::string orientationValue = m_configuration->getAttributeValue("orientation");
+
+        if ( orientationValue == "axial" )
+        {
+            m_orientation = MedicalImageAdaptor::Z_AXIS;
+        }
+        else if ( orientationValue == "sagittal" )
+        {
+            m_orientation = MedicalImageAdaptor::X_AXIS;
+        }
+        else if ( orientationValue == "frontal" )
+        {
+            m_orientation = MedicalImageAdaptor::Y_AXIS;
+        }
     }
 }
 
@@ -122,8 +139,6 @@ void Negato::updateFromImage( QImage * qimg )
 
     signed short * imgBuff = (signed short *) ( image->getBuffer() );
     const double window = max - min;
-    signed short val16;
-    unsigned char val;
     const unsigned int imageZOffset = size[0] * size[1];
 
 
@@ -253,6 +268,9 @@ void Negato::doStart() throw ( ::fwTools::Failed )
     m_pixmapItem = new QGraphicsPixmapItem();
     m_qimg = this->createQImage();
 
+    m_scale.first = 1;
+    m_scale.second = 1;
+
     this->updateFromImage( m_qimg );
 
     QPixmap m_pixmap = QPixmap::fromImage( *m_qimg );
@@ -324,7 +342,9 @@ void Negato::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
 
 void Negato::doSwap() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
+    this->doStop();
+    this->doStart();
+    this->doUpdate();
 }
 
 //-----------------------------------------------------------------------------

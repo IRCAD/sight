@@ -198,6 +198,7 @@ void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
     {
+        this->swapAdaptorsFromComposite(compositeMsg->getSwappedNewFields());
         //SLM_FATAL("ToDo IM");
     }
 }
@@ -418,6 +419,32 @@ void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
             {
                 this->startAdaptor( adaptorId, elem.second );
                 OSLM_ASSERT("Service "<<adaptorId<<" is not started", m_adaptorID2SceneAdaptor2D[adaptorId].getService()->isStarted());
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
+{
+    SLM_TRACE_FUNC();
+    BOOST_FOREACH( ::fwData::Composite::value_type elem, (*_composite) )
+    {
+        std::string compositeKey = elem.first;
+        ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
+        if ( objectIter != m_objectsID2AdaptorIDVector.end() )
+        {
+            BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
+            {
+                ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+                for (iter = m_sceneConfiguration->begin() ; iter != m_sceneConfiguration->end() ; ++iter)
+                {
+                    if ((*iter)->getName() == "adaptor" && (*iter)->getAttributeValue("id") == adaptorId)
+                    {
+                        this->swapAdaptor( adaptorId, elem.second );
+                    }
+                }
             }
         }
     }
