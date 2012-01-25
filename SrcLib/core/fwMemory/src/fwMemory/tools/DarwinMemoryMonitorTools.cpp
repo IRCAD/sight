@@ -71,7 +71,7 @@ DarwinMemoryMonitorTools::~DarwinMemoryMonitorTools()
     const ::boost::uint64_t usedProcessMemory = getUsedProcessMemory();
     freeMemory = std::min( maxMemory - usedProcessMemory, freeMemory);
     const ::boost::uint64_t maxVMemory = 4294967296LL; // 4 Go
-    freeMemory = std::min( maxVMemory - t_info.virtual_size, freeMemory)
+    freeMemory = std::min( maxVMemory - t_info.virtual_size, freeMemory);
 #endif
 
     return freeMemory;
