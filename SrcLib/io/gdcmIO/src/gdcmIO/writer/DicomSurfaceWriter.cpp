@@ -237,7 +237,7 @@ void DicomSurfaceWriter::writeSurfaceMesh(const unsigned int a_idx)
             _bIsClosed = reconstruction->getCRefIsClosed();
         }
         surface->SetFiniteVolume( (_bIsClosed ? ::gdcm::Surface::YES : ::gdcm::Surface::NO) );
-        OSLM_TRACE("Finite Volume : " << (reconstruction->getIsClosed()?"YES":"NO"));
+        OSLM_TRACE("Finite Volume : " << (_bIsClosed?"YES":"NO"));
 
 //        helper::GdcmData::setTagValue<0x0066,0x0010>("NO",                                          gDsSurf);   // Manifold
         surface->SetManifold( ::gdcm::Surface::NO );
