@@ -25,6 +25,12 @@
         <service>::scene2D::adaptor::Line</service>
         <object>::fwData::Composite</object>
     </extension>
+   
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::RayCast</service>
+        <object>::fwData::Composite</object>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::scene2D::adaptor::IAdaptor</type>
