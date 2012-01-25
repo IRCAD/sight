@@ -55,10 +55,23 @@ DarwinMemoryMonitorTools::~DarwinMemoryMonitorTools()
     freeMemory = getFreeSystemMemory();
 
 #ifndef __LP64__
+    struct task_basic_info t_info;
+    mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
+
+    if (KERN_SUCCESS != task_info(mach_task_self(),
+                TASK_BASIC_INFO, (task_info_t)&t_info,
+                &t_info_count))
+    {
+        SLM_ASSERT("Failed to retrieve used process memory information", 0);
+        return 0;
+    }
+
     // Hard coded 3Gb limit for 32bit process
     const ::boost::uint64_t maxMemory = 3221225472LL; // 3 Go
     const ::boost::uint64_t usedProcessMemory = getUsedProcessMemory();
     freeMemory = std::min( maxMemory - usedProcessMemory, freeMemory);
+    const ::boost::uint64_t maxVMemory = 4294967296LL; // 4 Go
+    freeMemory = std::min( maxVMemory - t_info.virtual_size, freeMemory);
 #endif
 
     return freeMemory;
