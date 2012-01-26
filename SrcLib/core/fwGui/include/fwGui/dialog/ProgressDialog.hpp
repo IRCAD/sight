@@ -17,7 +17,7 @@ namespace fwGui
 namespace dialog
 {
 /**
- * @brief   Defines the generic file/folder dialog for IHM.
+ * @brief   Defines the generic progress dialog for IHM.
  * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry
  * The specific implementation are in fwWX and fwQT libraries
  * @class   ProgressDialog.
@@ -35,13 +35,13 @@ public:
     /// will instanciate the concrete implementation
     FWGUI_API ProgressDialog( const std::string &title = std::string() ,  const std::string &msg = std::string() );
 
-    /// override
+    ///set the title for the dialog
     FWGUI_API void setTitle(const std::string &title);
 
-    /// override
+    ///set the message for the dialog
     FWGUI_API void setMessage(const std::string &message);
 
-    /// override
+    /// action called by ::fwTools::ProgressAdviser
     FWGUI_API void operator()(float percent,std::string msg);
 
 

@@ -22,7 +22,7 @@ namespace fwGui
 namespace dialog
 {
 /**
- * @brief   Defines the generic file/folder dialog for IHM.
+ * @brief   Defines the generic file/folder selector dialog for IHM.
  * @class   LocationDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.

@@ -17,7 +17,7 @@ namespace fwGui
 namespace dialog
 {
 /**
- * @brief   Defines the generic file/folder dialog for IHM.
+ * @brief   Defines the generic pulse progress dialog for IHM.
  * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry
  * The specific implementation are in fwWX and fwQT libraries
  * @class   PulseProgressDialog.
@@ -40,10 +40,10 @@ public:
             const std::string &msg = std::string(),
             ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh = 100 );
 
-    /// override
+    ///set the title for the dialog
     FWGUI_API void setTitle(const std::string &title);
 
-    /// override
+    ///set the message for the dialog
     FWGUI_API void setMessage(const std::string &message);
 
     ///show the pulse progress dialog

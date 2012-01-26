@@ -77,27 +77,29 @@ public:
      * @verbatim
        <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
            <gui>
-              <layout type="::fwGui::ToolboxLayoutManager" >
-                    <orientation value="horizontal" />
-                    <view proportion="0" minWidth="30" />
-                    <view proportion="0" minWidth="50" />
+               <layout type="::fwGui::ToolboxLayoutManager">
+                   <view caption="My view 1" expanded="true" />
+                   <view caption="My view 2" expanded="true" />
+                   <view caption="My view 3" expanded="false" />
+                   <spacer />
                </layout>
            </gui>
            <registry>
                <view sid="view1" start="yes" />
-               <view sid="view2" start="yes" />
+               <view sid="view2" start="no" />
+               <view wid="view3WID" />
            </registry>
        </service>
       @endverbatim
-    *  - <layout type="::fwGui::ToolboxLayoutManager" > : define a cardinal layout.
-    *  - <view proportion="0" minWidth="30" /> : define a new view which can have the following attributes
-    *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizoontal.
-    *   - \b proportion : define if the sapce allocate in proportion of the pproportion factor (bigger it is, more space are used).
+    *  - <layout type="::fwGui::ToolboxLayoutManager" > : define a toolbox layout.
+    *  - <view caption="My view 1" expanded="true" minWidth="30" /> : define a new view which can have the following attributes
     *   - \b border : define the size of the border in the layout
     *   - \b caption : define the title to display.
     *   - \b minWidth  : minimal width of the view.
     *   - \b minHeight : minimal height of the view.
     *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
+    *   - \b expanded  {true | yes | false | no} : define if the view is expanded or not.
+    *   - \b useScrollBar  {true | yes | false | no} : define if the view use scrollbar or not.
     */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 

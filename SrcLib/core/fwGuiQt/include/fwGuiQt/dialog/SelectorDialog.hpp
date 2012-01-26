@@ -52,10 +52,10 @@ public:
 
     /**
      * @brief Show the selector and return the selection.
-     * @param[in] _parent Parent container for the selector.
      */
     FWGUIQT_API virtual std::string show();
 
+    /// Set the message
     FWGUIQT_API virtual void setMessage(const std::string &msg);
 
 private :

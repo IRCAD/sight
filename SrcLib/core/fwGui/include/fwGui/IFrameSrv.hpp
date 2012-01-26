@@ -21,7 +21,7 @@ namespace fwGui
 {
 
 /**
- * @brief   Defines the service interface managing the menu bar.
+ * @brief   Defines the service interface managing a frame.
  * @class   IFrameSrv.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
@@ -51,11 +51,45 @@ protected :
      */
     FWGUI_API virtual ~IFrameSrv() ;
 
-    /// Initialize the frame and registry manager.
+    /**
+     * @brief Initialize frame managers.
+     *
+     * Example of configuration
+     * @verbatim
+        <service uid="mainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>My App</name>
+                    <icon>Bundles/myApp_1-0/icon.ico</icon>
+                    <minSize width="800" height="600" />
+                </frame>
+                <toolBar />
+                <menuBar />
+            </gui>
+            <registry>
+                <toolBar sid="toolbar1" start="yes" />
+                <menuBar sid="menubar1" start="yes" />
+                <view sid="myView" start="yes" />
+            </registry>
+        </service>
+      @endverbatim
+     * - <window onclose="notify" /> : defines what to do when the frame is closed
+     *   - \b exit (by default) : the application is closed. Use it for the main frame.
+     *   - \b notify : notifies service's object with WINDOW_CLOSED event.
+     * - <frame> : defines the frame name, icon, size.
+     * - The toolBar section isn't mandatory.
+     * - The menuBar section isn't mandatory.
+     *
+     * @see ::fwGui::registrar::ViewRegistrar::initialize(), ::fwGui::layoutManager::IFrameLayoutManager::initialize(),
+     *      ::fwGui::builder::IToolBarBuilder::initialize(), ::fwGui::builder::IMenuBarBuilder::initialize()
+     */
     FWGUI_API void initialize();
 
+    /// Creates frame, sub-view, menubar and toolbar containers. Manages sub-view, menubar and toobar services.
     FWGUI_API void create();
 
+    /// Stops sub-view, menubar and toobar services. Destroys frame, sub-view, menubar and toolbar containers.
     FWGUI_API void destroy();
 
     FWGUI_API static const std::string CLOSE_POLICY_EXIT;

@@ -98,10 +98,10 @@ public:
            </registry>
        </service>
       @endverbatim
-     *  - <layout type="::fwGui::LineLayoutManager" > : define a cardinal layout.
+     *  - <layout type="::fwGui::LineLayoutManager" > : define a line layout.
      *  - <view proportion="0" minWidth="30" /> : define a new view which can have the following attributes
-     *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizoontal.
-     *   - \b proportion : define if the sapce allocate in proportion of the pproportion factor (bigger it is, more space are used).
+     *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizontal.
+     *   - \b proportion : define if the space allocate in proportion of the proportion factor (bigger it is, more space are used).
      *   - \b border : define the size of the border in the layout
      *   - \b caption : define the title to display.
      *   - \b minWidth  : minimal width of the view.

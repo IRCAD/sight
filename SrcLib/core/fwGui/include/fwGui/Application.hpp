@@ -36,7 +36,7 @@ public:
 protected:
 
 
-    /// Application factory, returning the registered intance of Application. Manage a Singleton.
+    /// Application factory, returning the registered instance of Application. Manage a Singleton.
     FWGUI_API static Application::sptr factory();
 
     FWGUI_API Application();
