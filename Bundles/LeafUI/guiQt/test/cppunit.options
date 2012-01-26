@@ -1,0 +1,12 @@
+CLASSTEST=[
+          'GuiQtTest',
+          ]
+
+USE = ['qtCore']
+LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1','fwDataTools_0-1','fwGuiQt_0-1']
+
+BUNDLES = []
+
+CONSOLE = 'yes'
+
+LOGLEVEL='trace'
