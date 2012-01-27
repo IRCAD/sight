@@ -6,6 +6,7 @@
 
 #ifndef FWRUNTIME_HELPER_HPP_
 #define FWRUNTIME_HELPER_HPP_
+
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
 #include "fwRuntime/operations.hpp"
@@ -22,7 +23,7 @@ namespace fwRuntime
  * @author  IRCAD (Research and Development Team).
 
  */
-FWRUNTIME_API std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_ptr< ::fwRuntime::io::Validator >   _validator , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _element ) ;
+FWRUNTIME_API std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_ptr< ::fwRuntime::io::Validator >   _validator , ::fwRuntime::ConfigurationElement::sptr _element ) ;
 
 /**
  * @brief   Update pNode content according to _cfgElement
@@ -32,7 +33,7 @@ FWRUNTIME_API std::pair< bool , std::string > validateConfigurationElement( ::bo
  * @author  IRCAD (Research and Development Team).
 
  */
-FWRUNTIME_API void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr pNode) ;
+FWRUNTIME_API void ConfigurationElement2XML(::fwRuntime::ConfigurationElement::sptr _cfgElement, xmlNodePtr pNode) ;
 
 /**
  * @brief       Returns the configuration element embedding the configuration to be considered for initializing an object or a service
@@ -40,14 +41,14 @@ FWRUNTIME_API void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::Co
  * @param[in]   _extension_pt : extension point to which the configuration should contribute with the name indicated by the previous "config" attribute value
  * @author  IRCAD (Research and Development Team).
  */
-FWRUNTIME_API ::boost::shared_ptr< ConfigurationElement > getCfgAsAnExtension( ::boost::shared_ptr< ConfigurationElement > _config , std::string _extension_pt ) ;
+FWRUNTIME_API ConfigurationElement::sptr getCfgAsAnExtension( ConfigurationElement::sptr _config , std::string _extension_pt ) ;
 
 /**
  * @brief   Returns configuration elements extending the _extension_pt extension point
  * @author  IRCAD (Research and Development Team).
 
  */
-FWRUNTIME_API std::vector< ::boost::shared_ptr< ConfigurationElement > > getAllCfgForPoint( std::string _extension_pt ) ;
+FWRUNTIME_API std::vector< ConfigurationElement::sptr > getAllCfgForPoint( std::string _extension_pt ) ;
 
 /**
  * @brief   Returns extensions extending the _extension_pt extension point
@@ -63,7 +64,7 @@ FWRUNTIME_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > getAl
  * @note        Configuration element identifiers are value of attributes "id".
  * @author  IRCAD (Research and Development Team).
  */
-FWRUNTIME_API std::map< std::string , ::boost::shared_ptr< ConfigurationElement > > getAllIdAndConfigurationElementsForPoint( std::string _extension_pt  ) ;
+FWRUNTIME_API std::map< std::string , ConfigurationElement::sptr > getAllIdAndConfigurationElementsForPoint( std::string _extension_pt  ) ;
 /**
  * @brief       Returns contribution ids to a given extension point
  * @param[in]   _extension_pt : identifier of the extension point to which configuration elements contribute

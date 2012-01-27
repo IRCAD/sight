@@ -131,21 +131,21 @@ namespace
     };
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<Runtime> Runtime::m_instance;
 
-
+//------------------------------------------------------------------------------
 
 Runtime::Runtime()
 {}
 
-
+//------------------------------------------------------------------------------
 
 Runtime::~Runtime()
 {}
 
-
+//------------------------------------------------------------------------------
 
 void Runtime::addBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeException)
 {
@@ -155,7 +155,7 @@ void Runtime::addBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeExc
     std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(), StoreExecutableFactory(this) );
 }
 
-
+//------------------------------------------------------------------------------
 
 void Runtime::addBundles( const ::boost::filesystem::path & repository ) throw(RuntimeException)
 {
@@ -172,21 +172,21 @@ void Runtime::addBundles( const ::boost::filesystem::path & repository ) throw(R
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 Runtime::BundleIterator Runtime::bundlesBegin()
 {
     return m_bundles.begin();
 }
 
-
+//------------------------------------------------------------------------------
 
 Runtime::BundleIterator Runtime::bundlesEnd()
 {
     return m_bundles.end();
 }
 
-
+//------------------------------------------------------------------------------
 
 void Runtime::addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException)
 {
@@ -201,7 +201,7 @@ void Runtime::addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > fac
     m_executableFactories.insert( factory );
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string & type ) const
 {
@@ -211,7 +211,7 @@ void Runtime::addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > fac
     return ( found == m_executableFactories.end() ) ? ::boost::shared_ptr< ExecutableFactory >() : *found;
 }
 
-
+//------------------------------------------------------------------------------
 
 void Runtime::addExtension( ::boost::shared_ptr<Extension> extension) throw(RuntimeException)
 {
@@ -226,21 +226,21 @@ void Runtime::addExtension( ::boost::shared_ptr<Extension> extension) throw(Runt
     m_extensions.insert( extension );
 }
 
-
+//------------------------------------------------------------------------------
 
 Runtime::ExtensionIterator Runtime::extensionsBegin()
 {
     return m_extensions.begin();
 }
 
-
+//------------------------------------------------------------------------------
 
 Runtime::ExtensionIterator Runtime::extensionsEnd()
 {
     return m_extensions.end();
 }
 
-
+//------------------------------------------------------------------------------
 
 void Runtime::addExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point) throw(RuntimeException)
 {
@@ -255,7 +255,7 @@ void Runtime::addExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point) thro
     m_extensionPoints.insert(point);
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr< Bundle > Runtime::findBundle( const std::string & identifier, const Version & version ) const
 {
@@ -272,6 +272,7 @@ void Runtime::addExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point) thro
     return it != end ? (*it) : ::boost::shared_ptr<Bundle>();
 }
 
+//------------------------------------------------------------------------------
 
 Runtime * Runtime::getDefault()
 {
@@ -282,6 +283,7 @@ Runtime * Runtime::getDefault()
     return m_instance.get();
 }
 
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<Extension> Runtime::findExtension( const std::string & identifier ) const
 {
@@ -292,6 +294,7 @@ Runtime * Runtime::getDefault()
 }
 
 
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string & identifier ) const
 {
@@ -301,8 +304,7 @@ Runtime * Runtime::getDefault()
     return (found != m_extensionPoints.end()) ? (*found) : ::boost::shared_ptr<ExtensionPoint>();
 }
 
-
-
+//------------------------------------------------------------------------------
 
 IExecutable * Runtime::createExecutableInstance( const std::string & type ) throw( RuntimeException )
 {
@@ -324,9 +326,9 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type ) thro
     return result;
 }
 
+//------------------------------------------------------------------------------
 
-
-IExecutable * Runtime::createExecutableInstance( const std::string & type, ::boost::shared_ptr< ConfigurationElement > configurationElement ) throw( RuntimeException )
+IExecutable * Runtime::createExecutableInstance( const std::string & type, ConfigurationElement::sptr configurationElement ) throw( RuntimeException )
 {
      ::boost::shared_ptr< ExecutableFactory > factory;
 
@@ -370,8 +372,6 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type, ::boo
     return result;
 }
 
-
-
-
+//------------------------------------------------------------------------------
 
 } // namespace fwRuntime

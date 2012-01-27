@@ -449,7 +449,7 @@ void Bundle::startPlugin() throw(RuntimeException)
     // plugin or attempt to instantiate a user defined plugin.
     SPTR( IPlugin ) plugin;
 
-    if( pluginType.empty() == true )
+    if( pluginType.empty() )
     {
         plugin = SPTR( IPlugin )( new EmptyPlugin() );
     }

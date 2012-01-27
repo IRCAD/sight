@@ -15,48 +15,47 @@
 namespace fwRuntime
 {
 
-
+//------------------------------------------------------------------------------
 
 BundleElement::BundleElement()
 :   m_bundle( Bundle::getLoadingBundle() ), m_enable(true)
 {
     // Post-condition
-    assert( m_bundle != 0 );
+    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
 }
 
-
+//------------------------------------------------------------------------------
 
 BundleElement::BundleElement( ::boost::shared_ptr< Bundle > bundle )
 :   m_bundle( bundle ), m_enable(true)
 {
     // Post-condition
-    assert( m_bundle != 0 );
+    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
 }
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<Bundle> BundleElement::getBundle() const
 {
     return m_bundle;
 }
 
-
+//------------------------------------------------------------------------------
 
 const bool BundleElement::isEnable() const
 {
     // Pre-condition.
-    assert( m_bundle != 0 );
-
+    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
     return m_bundle->isEnable() && m_enable;
 }
 
-
+//------------------------------------------------------------------------------
 
 void BundleElement::setEnable(const bool enable)
 {
     m_enable = enable;
 }
 
-
+//------------------------------------------------------------------------------
 
 } // namespace fwRuntime

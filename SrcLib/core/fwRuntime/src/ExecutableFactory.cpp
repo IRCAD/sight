@@ -6,30 +6,26 @@
 
 #include "fwRuntime/ExecutableFactory.hpp"
 
-
-
 namespace fwRuntime
 {
 
-
+//------------------------------------------------------------------------------
 
 ExecutableFactory::ExecutableFactory( const std::string & type )
 :   m_type( type )
 {}
 
-
+//------------------------------------------------------------------------------
 
 ExecutableFactory::~ExecutableFactory()
 {}
 
-
+//------------------------------------------------------------------------------
 
 const std::string ExecutableFactory::getType() const
 {
     return m_type;
 }
-
-
 
 
 } // namespace fwRuntime

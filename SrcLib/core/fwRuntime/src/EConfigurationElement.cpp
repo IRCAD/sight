@@ -21,14 +21,14 @@ EConfigurationElement::EConfigurationElement(const std::string& name) :
 EConfigurationElement::~EConfigurationElement()
 {}
 
-::boost::shared_ptr< EConfigurationElement > EConfigurationElement::addConfigurationElement( const std::string& name )
+EConfigurationElement::sptr EConfigurationElement::addConfigurationElement( const std::string& name )
 {
-    ::boost::shared_ptr< EConfigurationElement > cfg( new EConfigurationElement( name ) ) ;
+    EConfigurationElement::sptr cfg = EConfigurationElement::New(name) ;
     this->::fwRuntime::ConfigurationElement::addConfigurationElement( cfg );
     return cfg ;
 }
 
-void EConfigurationElement::addConfigurationElement( ::boost::shared_ptr< EConfigurationElement > element )
+void EConfigurationElement::addConfigurationElement( EConfigurationElement::sptr element )
 {
     this->::fwRuntime::ConfigurationElement::addConfigurationElement( element );
 }

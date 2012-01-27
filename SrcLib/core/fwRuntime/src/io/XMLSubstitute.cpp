@@ -189,7 +189,6 @@ std::list< ::fwRuntime::io::Substitute > XMLSubstitute::getSubstitutions( xmlNod
     xmlXPathFreeObject(xpathObj );
 
     return result;
-
 }
 
 

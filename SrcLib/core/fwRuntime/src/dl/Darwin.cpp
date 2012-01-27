@@ -21,34 +21,33 @@ Darwin::Darwin( const boost::filesystem::path & modulePath ) throw()
   m_handle      ( 0 )
 {}
 
-/*
-Darwin::Darwin(const boost::filesystem::path& modulePath, const bool partialName) throw()
-: Native(modulePath, partialName),
-  m_handle(0)
-{}
-*/
+//------------------------------------------------------------------------------
 
 Darwin::~Darwin() throw()
 {}
 
+//------------------------------------------------------------------------------
 
 const bool Darwin::isLoaded() const throw()
 {
     return m_handle != 0;
 }
 
+//------------------------------------------------------------------------------
 
 const std::string Darwin::getNativeFilePrefix() const throw()
 {
     return std::string("lib");
 }
 
+//------------------------------------------------------------------------------
 
 const std::string Darwin::getNativeFileSuffix() const throw()
 {
     return std::string(".dylib");
 }
 
+//------------------------------------------------------------------------------
 
 void* Darwin::getSymbol(const std::string& name) const throw(RuntimeException)
 {
@@ -69,6 +68,7 @@ void* Darwin::getSymbol(const std::string& name) const throw(RuntimeException)
     return result;
 }
 
+//------------------------------------------------------------------------------
 
 void Darwin::load() throw(RuntimeException)
 {
@@ -85,24 +85,10 @@ void Darwin::load() throw(RuntimeException)
             std::string message(dlerror());
             throw RuntimeException("Module load failed. " + message);
         }
-        else
-        {
-        /*  void (*pFunc)(void);
-            *(void **) (&pFunc) = dlsym(m_handle, "DylibInit");
-            // *(void **) (&pFunc) = dlsym(m_handle, "__initialize_Cplusplus");
-            if(pFunc == 0)// Check for possible errors
-            {
-                std::string message(dlerror());
-                if(message.empty() == false)
-                {
-                    throw RuntimeException("DylibInit : Symbol retrieval failed. " + message);
-                }
-            }
-            (*pFunc)();
-        */}
     }
 }
 
+//------------------------------------------------------------------------------
 
 void Darwin::unload() throw(RuntimeException)
 {

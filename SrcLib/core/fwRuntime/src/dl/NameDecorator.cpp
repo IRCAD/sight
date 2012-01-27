@@ -6,29 +6,27 @@
 
 #include "fwRuntime/dl/NameDecorator.hpp"
 
-
-
 namespace fwRuntime
 {
 
 namespace dl
 {
 
-
+//------------------------------------------------------------------------------
 
 const std::string NameDecorator::getNativeName( const std::string & abstractName ) const throw()
 {
     return getNativePrefix() + abstractName + ".*?" + getNativeSuffix() + "." + getNativeExtension();
 }
 
-
+//------------------------------------------------------------------------------
 
 const std::string NameDecorator::getNativePrefix() const throw()
 {
     return std::string();
 }
 
-
+//------------------------------------------------------------------------------
 
 const std::string NameDecorator::getNativeSuffix() const throw()
 {
@@ -39,13 +37,13 @@ const std::string NameDecorator::getNativeSuffix() const throw()
 #endif
 }
 
-
+//------------------------------------------------------------------------------
 
 const std::string NameDecorator::getNativeExtension() const throw()
 {
     return std::string();
 }
-
+//------------------------------------------------------------------------------
 
 
 } // namespace dl

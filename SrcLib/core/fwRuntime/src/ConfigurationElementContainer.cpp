@@ -4,11 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRuntime/ConfigurationElementContainer.hpp"
-
 #include <algorithm>
 
 #include "fwRuntime/ConfigurationElement.hpp"
+#include "fwRuntime/ConfigurationElementContainer.hpp"
 
 
 namespace fwRuntime
@@ -29,7 +28,7 @@ namespace
         :   m_name( name )
         {}
 
-        const bool operator() ( const ::boost::shared_ptr< ConfigurationElement > element ) const
+        const bool operator() ( ConfigurationElement::csptr element ) const
         {
             return element->getName() == m_name;
         }
@@ -41,23 +40,28 @@ namespace
 
 }
 
+//------------------------------------------------------------------------------
 
-void ConfigurationElementContainer::addConfigurationElement( ::boost::shared_ptr< ConfigurationElement > element )
+void ConfigurationElementContainer::addConfigurationElement( ConfigurationElement::sptr element )
 {
     m_elements.push_back( element );
 }
 
-
+//------------------------------------------------------------------------------
 
 ConfigurationElementContainer::Iterator ConfigurationElementContainer::begin()
 {
     return m_elements.begin();
 }
 
+//------------------------------------------------------------------------------
+
 ConfigurationElementContainer::Iterator ConfigurationElementContainer::end()
 {
     return m_elements.end();
 }
+
+//------------------------------------------------------------------------------
 
 const ConfigurationElementContainer::Container & ConfigurationElementContainer::getElements() const
 {
