@@ -9,6 +9,15 @@
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
+#include <QLineF>
+#include <QPointF>
+#include <QGraphicsLineItem>
+#include <QGraphicsItemGroup>
+
+#include <fwServices/Base.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/Vector.hpp>
+
 namespace scene2D
 {
 namespace adaptor
@@ -52,14 +61,43 @@ protected:
     /// Remove the layer from the scene.
     SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
 
+        /**
+     * @brief Implemented from ::scene2D::adaptor::IAdaptor.
+     *
+     * Catch mouse and keyboard events and process them.
+     *
+     * @param _event an event from the scene 2D (keyboard/mouse event)
+     */
+    SCENE2D_API void processInteraction( ::scene2D::data::Event::sptr _event );
+
+    SCENE2D_API void syncLines();
+
 private:
 
+    bool m_isMoving;
+
+    /**
+     * @brief Reference the start point of a drag and drop move.
+     */
+    QPointF m_pos;
+
+    /**
+     * @brief Zoom factor applied at each mouse scroll.
+     */
+    float m_scaleRatio;
 
     /// The pen.
     QPen m_pen;
 
     /// The layer.
     QGraphicsItemGroup* m_layer;
+
+    //vector de ligne
+    std::vector < QLineF > m_vecQLine;
+
+    std::pair<double, double> m_widgetOffset;
+
+    std::vector< QGraphicsLineItem* > m_graphicLines;
 };
 
 

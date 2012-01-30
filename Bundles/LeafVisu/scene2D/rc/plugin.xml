@@ -35,7 +35,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::scene2D::adaptor::IAdaptor</type>
         <service>::scene2D::adaptor::Segments</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Vector</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
