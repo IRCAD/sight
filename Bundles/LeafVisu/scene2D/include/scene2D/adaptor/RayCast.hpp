@@ -79,19 +79,21 @@ protected:
     /// Remove the layer from the scene.
     SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
 
+    /**
+     * @brief Implemented from ::scene2D::adaptor::IAdaptor.
+     *
+     * Catch mouse and keyboard events and process them.
+     *
+     * @param _event an event from the scene 2D (keyboard/mouse event)
+     */
+    SCENE2D_API void processInteraction( ::scene2D::data::Event::sptr _event );
+
+    SCENE2D_API void syncLines();
+    
+    SCENE2D_API void syncCrosses();
+
+
 private:
-
-    /// The pen.
-    QPen m_pen;
-
-    int m_nbRayon;
-
-    float m_crossSize;
-
-    std::string m_targetPointsKey;
-
-    /// The layer.
-    QGraphicsItemGroup* m_layer;
 
     void addCross(fwData::Point::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen _pen );
     void addCross(fwData::PointList::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen _pen );
@@ -108,6 +110,40 @@ private:
     fwData::Point::sptr axialToSagittal(fwData::Point::sptr _pointIn);
 
     void addLinesFromPoint(fwData::Point::NewSptr _point, fwData::PointList::NewSptr _pointList , QGraphicsItemGroup* _layer, QPen _pen );
+
+    
+    /// The pen.
+    QPen m_pen;
+
+    int m_nbRayon;
+
+    float m_crossSize;
+
+    // Related objects
+    std::string m_imageKey;
+    std::string m_targetPointsKey;
+
+    QGraphicsLineItem* m_baseLine;
+
+    /// The layer.
+    QGraphicsItemGroup* m_layer;
+
+    std::vector< QGraphicsLineItem* > m_lines;
+    std::vector< QGraphicsLineItem* > m_crosses;
+
+    bool m_isMoving;
+
+    /**
+     * @brief Reference the start point of a drag and drop move.
+     */
+    QPointF m_pos;
+
+    /**
+     * @brief Zoom factor applied at each mouse scroll.
+     */
+    float m_scaleRatio;
+
+    std::pair<double, double> m_widgetOffset;
 
 };
 
