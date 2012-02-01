@@ -6,14 +6,17 @@
 
 #include <fwComEd/CompositeMsg.hpp>
 #include "scene2D/adaptor/RayCast.hpp"
+#include "fwMath/VectorFunctions.hpp"
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
 
 REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::RayCast  , ::fwData::Composite ) ;
 
 
 namespace scene2D
 {
-namespace adaptor
-{
+namespace adaptor{
 
 RayCast::RayCast() throw() : m_nbRayon(12), m_crossSize(2.f)
 {
@@ -46,12 +49,12 @@ void RayCast::doStart() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    // Initialize the layer
-    m_layer = new QGraphicsItemGroup();
+    // Initialize the layer    m_layer = new QGraphicsItemGroup();
     m_layer->setPos( m_xAxis->getOrigin(), m_yAxis->getOrigin() );
     m_layer->setZValue( m_zValue );
 
     this->getScene2DRender()->getScene()->addItem(m_layer);
+
 
 }
 
@@ -81,8 +84,11 @@ void RayCast::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fa
 
             fwData::Point::NewSptr leftPoint, rightPoint, centerPoint;
 
-            leftPoint->deepCopy(pointListSegment->getRefPoints()[0]);
-            rightPoint->deepCopy(pointListSegment->getRefPoints()[1]);
+            leftPoint->deepCopy(pointListSegment->getRefPoints()[1]);
+            rightPoint->deepCopy(pointListSegment->getRefPoints()[0]);
+
+            leftPoint  = axialToSagittal(leftPoint);
+            rightPoint = axialToSagittal(rightPoint);
 
             addLine(leftPoint, rightPoint , m_layer, QPen(Qt::red ));
 
@@ -100,6 +106,9 @@ void RayCast::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fa
             fwData::PointList::NewSptr listPointRayon;
 
             listPointRayon->deepCopy( findPointRayon(leftPoint, rightPoint, centerPoint, m_nbRayon) );
+
+            addCross(listPointRayon, m_crossSize , m_layer , QPen(Qt::blue));
+
         }
     }
 }
@@ -201,8 +210,130 @@ fwData::PointList::sptr RayCast::findPointRayon(fwData::Point::sptr _leftPoint,
 }
 
 
-} // namespace adaptor
-} // namespace scene2D
+void RayCast::addLine(fwData::Point::NewSptr _point1, fwData::Point::NewSptr _point2 , QGraphicsItemGroup* _layer, QPen _pen )
+{
+    QGraphicsLineItem *myLine = new QGraphicsLineItem( 
+        _point1->getCRefCoord()[0], _point1->getCRefCoord()[1], 
+        _point2->getCRefCoord()[0], _point2->getCRefCoord()[1] );
+    
+    myLine->setPen(_pen);
+
+    _layer->addToGroup(myLine);
+}
+
+void RayCast::addCross(fwData::Point::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen _pen )
+{
+    QGraphicsLineItem *myLine1 = new QGraphicsLineItem( 
+        _point->getCRefCoord()[0]+_size, _point->getCRefCoord()[1], 
+        _point->getCRefCoord()[0]-_size, _point->getCRefCoord()[1] );
+
+    QGraphicsLineItem *myLine2 = new QGraphicsLineItem( 
+        _point->getCRefCoord()[0], _point->getCRefCoord()[1]+_size, 
+        _point->getCRefCoord()[0], _point->getCRefCoord()[1]-_size );
+    
+    myLine1->setPen(_pen);
+    myLine2->setPen(_pen);
+
+    _layer->addToGroup(myLine1);
+    _layer->addToGroup(myLine2);
+}
+
+void RayCast::addCross(fwData::PointList::NewSptr _pointList, float _size , QGraphicsItemGroup* _layer, QPen _pen )
+{
+    int nbrPoint = _pointList->getRefPoints().size();
+
+    for ( int numPoint = 0 ; numPoint < nbrPoint ; ++numPoint )
+    {
+        fwData::Point::sptr monPoint = _pointList->getRefPoints()[numPoint];
+        addCross(monPoint, _size , _layer, _pen );
+    }
+}
+
+fwData::Point::sptr RayCast::listPointAveragePosition(fwData::PointList::sptr _pointList)
+{
+    int nbrPoint = _pointList->getRefPoints().size();
+
+    SLM_ASSERT("nbrPoint must be > 0", nbrPoint > 0);
+
+    double posX = 0.f;
+    double posY = 0.f;
+    double posZ = 0.f;
+
+    for (int numPoint = 0 ; numPoint < nbrPoint ; ++numPoint )
+    {
+        fwData::Point::sptr monPoint = _pointList->getRefPoints()[numPoint];
+
+        posX += monPoint->getRefCoord()[0];
+        posY += monPoint->getRefCoord()[1];
+        posZ += monPoint->getRefCoord()[2];
+    }
+    posX /= (double) nbrPoint;
+    posY /= (double) nbrPoint;
+    posZ /= (double) nbrPoint;
+
+    fwData::Point::NewSptr pointAveragePosition(posX, posY, posZ);
+
+    return pointAveragePosition;
+
+}
+
+
+fwData::PointList::sptr RayCast::findPointRayon(fwData::Point::sptr _leftPoint, 
+    fwData::Point::sptr _rightPoint, fwData::Point::sptr _centerPoint, int _rayNbr )
+{
+    fwVec3d pointLeft  =  _leftPoint->getRefCoord();
+    fwVec3d pointRight = _rightPoint->getRefCoord();
+
+    fwVec3d pointCenter = 0.5f * (pointLeft + pointRight);
+
+    fwVec3d direction = pointRight - pointLeft;
+    fwVec3d directionNormalized = fwMath::normalized(direction);
+
+    //SLM_ASSERT("point left and right positions is inapropriate", pointLeftPosY < pointRightPosY );
+    double rayValue = (pointRight[1] - pointLeft[1] ) * 0.5f;
+
+    fwData::PointList::NewSptr pointListOut;
+
+    int nbrPortionAngle = _rayNbr +1;
+
+    float valeurDeltaAngle = M_PI / ((float)nbrPortionAngle);
+
+    for ( int numRay = 0 ; numRay < _rayNbr ; ++numRay )
+    {
+        fwVec3d directionLive = directionNormalized;
+
+        float angle = (numRay+1) * valeurDeltaAngle;
+        directionLive[0] = directionLive[0] * cos(angle);
+        directionLive[1] = directionLive[1] * sin(angle);
+
+        fwVec3d translationCentre = directionLive * rayValue;
+
+        fwVec3d positionLive = pointCenter + translationCentre;
+
+        fwData::Point::NewSptr pointLive(positionLive[0], positionLive[1], positionLive[2]);
+        pointListOut->getRefPoints().push_back(pointLive);
+    }
+
+    return pointListOut;
+}
+
+
+
+fwVec3d RayCast::axialToSagittal(fwVec3d _vecIn)
+{
+    fwVec3d vecOut;
+    vecOut[0] = _vecIn[1];
+    vecOut[1] = _vecIn[2];
+    vecOut[2] = _vecIn[0];
+    return vecOut;
+}
+
+fwData::Point::sptr RayCast::axialToSagittal(fwData::Point::sptr _pointIn)
+{
+    return fwData::Point::New( _pointIn->getRefCoord()[1], _pointIn->getRefCoord()[2], _pointIn->getRefCoord()[0] );
+}
+
+} // namespace adaptor} // namespace scene2D
 
 
 
