@@ -93,11 +93,20 @@ private:
     /// The layer.
     QGraphicsItemGroup* m_layer;
 
-    void addCross(fwData::Point::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen& _pen );
-    void addLine(fwData::Point::NewSptr _point1, fwData::Point::NewSptr _point2 , QGraphicsItemGroup* _layer, QPen& _pen );
+    void addCross(fwData::Point::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen _pen );
+    void addCross(fwData::PointList::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen _pen );
+
+    void addLine(fwData::Point::NewSptr _point1, fwData::Point::NewSptr _point2 , QGraphicsItemGroup* _layer, QPen _pen );
+
     fwData::Point::sptr listPointAveragePosition(fwData::PointList::sptr _listPoint);
+    
     fwData::PointList::sptr findPointRayon(
         fwData::Point::sptr _leftPoint, fwData::Point::sptr _rightPoint, fwData::Point::sptr _centerPoint, int _rayNbr );
+
+    fwVec3d axialToSagittal(fwVec3d _vecIn);
+    
+    fwData::Point::sptr axialToSagittal(fwData::Point::sptr _pointIn);
+
 };
 
 
