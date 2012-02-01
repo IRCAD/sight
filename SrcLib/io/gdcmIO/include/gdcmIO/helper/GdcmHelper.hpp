@@ -260,6 +260,30 @@ public:
     /**
      * @brief   Return the pixel type of a gdcm Image.
      *
+     * @param   s  string to convert
+     * @param   obj  the sontent of the sring converted in T type.
+     *
+     * @return  return true if the convertion is ok.
+     */
+
+    template<typename T> static bool valueOf(const std::string &s, T &obj)
+    {
+        std::istringstream is(s);
+        return is >> obj;
+    }
+
+    /**
+     * @brief   Return the pixel type from a gdcm pixel format.
+     *
+     * @param   gPixFormat : pixel format in gdcm.
+     *
+     * @return  The dynamic type of pixels (e.g: char, unsigned int, ...)
+     */
+    GDCMIO_API static const fwTools::DynamicType getPixelType(const ::gdcm::PixelFormat & gPixFormat);
+
+    /**
+     * @brief   Return the pixel type of a gdcm Image.
+     *
      * @param   a_gImg  Image of gdcm
      *
      * @return  The dynamic type of pixels (e.g: char, unsigned int, ...)
@@ -285,6 +309,18 @@ public:
      * @return  The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     GDCMIO_API static const gdcm::PhotometricInterpretation getPhotometricInterpretation(const ::fwData::Acquisition & a_serie);
+
+    /**
+     * @brief   compute the pixel type for a serie of files .
+     *
+     * compute the pixel type for a serie of files (usually it will be a dicom series) .
+     * If it is impossible to find the right pixel type, a assert is raised.
+     *
+     * @param  filenames list of files.
+     * @return the pixel type found.
+     */
+
+     GDCMIO_API static gdcm::PixelFormat::ScalarType findPixelTypeFromFiles(const std::vector< std::string > & filenames);
 
     /**
      * @brief   Convert a GDCM Image buffer to a fwData Image one.

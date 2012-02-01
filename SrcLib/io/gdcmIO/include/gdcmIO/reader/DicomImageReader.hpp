@@ -63,6 +63,15 @@ private :
      */
     void * read2DImages() throw(::fwTools::Failed);
 
+    /**
+     * @brief   Set the image data buffer .
+     *
+     * @note    This method doesn't manage any rescale of data buffer(for this see rescaleImageBuffer(...)).
+     */
+    void setImageBuffer(::gdcm::Image & gImg, ::fwData::Image::sptr img, ::boost::shared_ptr< DicomInstance > dicomInstance) throw(::fwTools::Failed);
+
+    void rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image::sptr img,
+                            const gdcm::PixelFormat::ScalarType& outputPixelType ) throw(::fwTools::Failed);
 
     float                                m_zSpacing;    ///< Spacing in depth of a 3D image
 

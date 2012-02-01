@@ -11,6 +11,8 @@
 #include <gdcmPhotometricInterpretation.h>
 #include <gdcmPixelFormat.h>
 #include <gdcmImageApplyLookupTable.h>
+#include <gdcmScanner.h>
+#include <gdcmRescaler.h>
 
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -89,6 +91,14 @@ void GdcmData::setSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems >    a_sq,
 
 //------------------------------------------------------------------------------
 
+const fwTools::DynamicType GdcmData::getPixelType(const ::gdcm::PixelFormat & gPixFormat)
+{
+    assert ( PixelTypeTranslation.right.find( gPixFormat.GetScalarType() )!= PixelTypeTranslation.right.end() );
+    return PixelTypeTranslation.right.at( gPixFormat.GetScalarType() );
+}
+
+//------------------------------------------------------------------------------
+
 const fwTools::DynamicType GdcmData::getPixelType(const ::gdcm::Image & a_gImg)
 {
     const ::gdcm::PixelFormat & gPixFormat = a_gImg.GetPixelFormat();
@@ -107,6 +117,84 @@ const gdcm::PixelFormat GdcmData::getPixelType(const ::fwData::Image & a_img)
     assert ( PixelTypeTranslation.right.find( st )!= PixelTypeTranslation.right.end() );
 
     return gdcm::PixelFormat(st);
+}
+
+
+//------------------------------------------------------------------------------
+gdcm::PixelFormat::ScalarType GdcmData::findPixelTypeFromFiles(const std::vector< std::string > & filenames)
+{
+    const ::gdcm::Tag rescaleInterceptTag(0x0028,0x1052);
+    const ::gdcm::Tag rescaleSlopeTag(0x0028,0x1053);
+    const ::gdcm::Tag samplesPerPixelTag(0x0028,0x0002);
+    const ::gdcm::Tag bitsAllocatedTag(0x0028,0x0100);
+    const ::gdcm::Tag bitsStoredTag(0x0028,0x0101);
+    const ::gdcm::Tag hightBitTag(0x0028,0x0102);
+    const ::gdcm::Tag pixelRepresentationTag(0x0028,0x0103);
+
+    double intercept;
+    double slope;
+
+    unsigned short samplesPerPixel;
+    unsigned short bitsAllocated;
+    unsigned short bitsStored;
+    unsigned short highBit;
+    unsigned short pixelRepresentation;
+    gdcm::PixelFormat::ScalarType outputPixelType = gdcm::PixelFormat::UNKNOWN;
+
+    std::set< gdcm::PixelFormat::ScalarType > pixelTypes;
+    gdcm::PixelFormat::ScalarType pixelType;
+    gdcm::Scanner gScanner;
+    gScanner.AddTag(rescaleSlopeTag);
+    gScanner.AddTag(rescaleInterceptTag);
+
+    gScanner.AddTag(samplesPerPixelTag);
+    gScanner.AddTag(bitsAllocatedTag);
+    gScanner.AddTag(bitsStoredTag);
+    gScanner.AddTag(hightBitTag);
+    gScanner.AddTag(pixelRepresentationTag);
+
+    bool scanOk = gScanner.Scan( filenames );
+    if(!scanOk)
+    {
+        SLM_ERROR("Scanner failed");
+        return outputPixelType;
+    }
+    gdcm::Directory::FilenamesType keys = gScanner.GetKeys();
+    gdcm::Directory::FilenamesType::const_iterator it = keys.begin();
+    for(; it != keys.end(); ++it)
+    {
+        const char *filename = it->c_str();
+        assert( gScanner.IsKey( filename ) );
+
+        valueOf(std::string(gScanner.GetValue( filename, rescaleInterceptTag)), intercept);
+        valueOf(std::string(gScanner.GetValue( filename, rescaleSlopeTag)), slope);
+        valueOf(std::string(gScanner.GetValue( filename, samplesPerPixelTag)),samplesPerPixel );
+        valueOf(std::string(gScanner.GetValue( filename, bitsAllocatedTag)), bitsAllocated);
+        valueOf(std::string(gScanner.GetValue( filename, bitsStoredTag)), bitsStored);
+        valueOf(std::string(gScanner.GetValue( filename, hightBitTag)), highBit);
+        valueOf(std::string(gScanner.GetValue( filename, pixelRepresentationTag)),pixelRepresentation );
+
+        gdcm::PixelFormat pixelFormat(samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation);
+        pixelType = pixelFormat.GetScalarType();
+
+        gdcm::Rescaler r;
+        r.SetIntercept( intercept );
+        r.SetSlope( slope );
+        r.SetPixelFormat( pixelType);
+        outputPixelType = r.ComputeInterceptSlopePixelType();
+        pixelTypes.insert(outputPixelType);
+    }
+
+    if( pixelTypes.size() == 1 )
+    {
+        outputPixelType = *pixelTypes.begin();
+    }
+    else
+    {
+        SLM_FATAL_IF("Sorry, The pixel type can't be deduced from series (various pixel type exist).", pixelTypes.count( gdcm::PixelFormat::FLOAT64 ) != 0 );
+        outputPixelType = gdcm::PixelFormat::FLOAT64;
+    }
+    return (outputPixelType);
 }
 
 //------------------------------------------------------------------------------

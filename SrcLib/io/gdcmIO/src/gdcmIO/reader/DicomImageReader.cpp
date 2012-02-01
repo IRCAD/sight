@@ -10,6 +10,9 @@
 
 #include <gdcmImageReader.h>
 #include <gdcmIPPSorter.h>
+#include <gdcmPixelFormat.h>
+#include <gdcmScanner.h>
+#include <gdcmRescaler.h>
 
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/fromIsoExtendedString.hpp>
@@ -177,6 +180,9 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
     ::fwData::Acquisition::sptr series  = this->getConcreteObject();
     ::gdcm::Image &             gImg    = ::boost::static_pointer_cast< ::gdcm::ImageReader >( this->getReader() )->GetImage();
     const ::gdcm::DataSet &     a_ds    = this->getDataSet();
+    //*****     Get all file names      *****//
+    std::vector< std::string > & imageFiles = this->getRefFileNames(); // files which define one image (2D or 3D)
+    OSLM_TRACE("Number of files for an image : " << imageFiles.size());
 
     // DicomInstance is necessary for SR reading
     ::boost::shared_ptr< DicomInstance > dicomInstance = this->getDicomInstance();
@@ -197,52 +203,31 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
         std::copy( gOrigin, gOrigin+3, img->getRefOrigin().begin() );
         OSLM_TRACE("Image's origin : "<<img->getRefOrigin()[0]<<"x"<<img->getRefOrigin()[1]<<"x"<<img->getRefOrigin()[2]);
     }
+    const bool  isMultiFrame = (this->getFileNames().size() > 1 ? false : true);
 
     // Image's pixel data
-    // WARNING : idea : image is multiframe if there is more than one file names here
-    void *      gdcmBuffer;
-    const bool  isMultiFrame = (this->getFileNames().size() > 1 ? false : true);
-    dicomInstance->setIsMultiFrame( isMultiFrame );
-    if ( !isMultiFrame )
-    {// Read one image from several files
-        // TODO : test if numberOfFrames == number of files
-        // (some files could be erased by an over series)
+    // compute the output pixel type for the current serie.
 
-        // Get raw buffer of 3D image even if it is encoded (JPEG, ...)
-        gdcmBuffer = this->read2DImages();  // NOTE : Can modify gdcm::Image attributes
+#ifndef DEBUG
+    // This part works only when double is defined in the IntrinsicTypes (see fw4spl\SrcLib\core\fwTools\include\fwTools\IntrinsicTypes.hpp)
+    // This is the case only on mode release
+    gdcm::PixelFormat::ScalarType outputPixelType = helper::GdcmData::findPixelTypeFromFiles(imageFiles);
 
-        // Complete fwData::Image
-        img->setDimension(3);
-        img->getRefSize()[2] = this->getFileNames().size();
+    if(outputPixelType  == ::gdcm::PixelFormat::FLOAT64 || outputPixelType == ::gdcm::PixelFormat::FLOAT32)
+    {
+        // Image buffer needs rescale.
+        this->rescaleImageBuffer(gImg, img, outputPixelType);              
     }
     else
-    {// Read 2D or 3D image from one file
-        // Allocate raw buffer
-        const unsigned long sizeOfImage = gImg.GetBufferLength();
-        try
-        {
-            gdcmBuffer = new char[sizeOfImage];
-            OSLM_TRACE("Global buffer size : " << sizeOfImage);
-        }
-        catch (...)
-        {
-            throw ::fwTools::Failed("Need more memory");
-        }
-
-        // Get raw buffer of image even if it is encoded (JPEG, ...)
-          if ( !gImg.GetBuffer( (char*) gdcmBuffer ) )
-              throw ::fwTools::Failed("Failed to get image buffer");
-    }
-
-    // Convert color image into grayscale one and set the fwData::Image buffer
-    try
     {
-        helper::GdcmData::convertGdcmToDataBuffer(gImg, img, gdcmBuffer);
+        // Image buffer can be treat directly.
+        this->setImageBuffer(gImg, img, dicomInstance);
     }
-    catch (::fwTools::Failed &e)
-    {
-        throw;
-    }
+#else
+    // Image buffer can be treat directly.
+    this->setImageBuffer(gImg, img, dicomInstance);
+#endif
+
 
     // Image's dimension
     const unsigned int dim = gImg.GetNumberOfDimensions();
@@ -324,7 +309,21 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
     OSLM_TRACE("Slice thickness : " << sliceThicknessStr);
 
     // Image's pixel type
+#ifndef DEBUG
+    // This part works only when double is defined in the IntrinsicTypes (see fw4spl\SrcLib\core\fwTools\include\fwTools\IntrinsicTypes.hpp)
+    // This is the case only on mode release
+    if(outputPixelType  == ::gdcm::PixelFormat::FLOAT64 || outputPixelType == ::gdcm::PixelFormat::FLOAT32)
+    {
+        img->setPixelType( helper::GdcmData::getPixelType(outputPixelType));
+    }
+    else
+    {
+        img->setPixelType( helper::GdcmData::getPixelType(gImg) );
+    }
+#else
     img->setPixelType( helper::GdcmData::getPixelType(gImg) );
+#endif
+
     OSLM_TRACE("Image's pixel type: "<<img->getCRefPixelType().string());
 
     //Image's window center (double)
@@ -358,6 +357,219 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
     OSLM_TRACE("Image path : " << path);
 }
 
+//------------------------------------------------------------------------------
+
+void DicomImageReader::setImageBuffer(::gdcm::Image & gImg, ::fwData::Image::sptr img, ::boost::shared_ptr< DicomInstance > dicomInstance) throw(::fwTools::Failed)
+{
+    // Image's pixel data
+    // WARNING : idea : image is multiframe if there is more than one file names here
+    void *      gdcmBuffer;
+    const bool  isMultiFrame = (this->getFileNames().size() > 1 ? false : true);
+    dicomInstance->setIsMultiFrame( isMultiFrame );
+    if ( !isMultiFrame )
+    {// Read one image from several files
+        // TODO : test if numberOfFrames == number of files
+        // (some files could be erased by an over series)
+
+        // Get raw buffer of 3D image even if it is encoded (JPEG, ...)
+        gdcmBuffer = this->read2DImages();  // NOTE : Can modify gdcm::Image attributes
+
+        // Complete fwData::Image
+        img->setDimension(3);
+        img->getRefSize()[2] = this->getFileNames().size();
+    }
+    else
+    {// Read 2D or 3D image from one file
+        // Allocate raw buffer
+        const unsigned long sizeOfImage = gImg.GetBufferLength();
+        try
+        {
+            gdcmBuffer = new char[sizeOfImage];
+            OSLM_TRACE("Global buffer size : " << sizeOfImage);
+        }
+        catch (...)
+        {
+            throw ::fwTools::Failed("Need more memory");
+        }
+
+        // Get raw buffer of image even if it is encoded (JPEG, ...)
+          if ( !gImg.GetBuffer( (char*) gdcmBuffer ) )
+              throw ::fwTools::Failed("Failed to get image buffer");
+    }
+
+    // Convert color image into grayscale one and set the fwData::Image buffer
+    try
+    {
+        helper::GdcmData::convertGdcmToDataBuffer(gImg, img, gdcmBuffer);
+    }
+    catch (::fwTools::Failed &e)
+    {
+        throw;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image::sptr img,
+                                          const gdcm::PixelFormat::ScalarType& outputPixelType ) throw(::fwTools::Failed)
+{
+    ::boost::shared_ptr< ::gdcm::ImageReader >  gImageReader    = ::boost::static_pointer_cast< ::gdcm::ImageReader >( this->getReader() );
+
+    gdcm::Scanner gScanner;
+    const ::gdcm::Tag rescaleInterceptTag(0x0028,0x1052);
+    const ::gdcm::Tag rescaleSlopeTag(0x0028,0x1053);
+
+    double intercept;
+    double slope;
+
+
+
+    void * gdcmGlobalBuffer;                           // Raw buffer for all frames
+    const unsigned long                         sizeOfFrame     = gImg.GetBufferLength();   // all frames have the same size as the first one
+    const std::vector< std::string > &          fileNames       = this->getCRefFileNames();
+    const unsigned int                          nbFrames        = fileNames.size();
+
+    const unsigned long allImagesSize = sizeOfFrame * nbFrames;
+
+    switch(outputPixelType)
+    {
+    case ::gdcm::PixelFormat::FLOAT64:
+        gdcmGlobalBuffer = new double[allImagesSize];
+        break;
+    case ::gdcm::PixelFormat::FLOAT32:
+        gdcmGlobalBuffer = new float[allImagesSize];
+        break;
+    }
+    OSLM_TRACE("Global buffer size : " << allImagesSize);
+
+    const bool  isMultiFrame = (this->getFileNames().size() > 1 ? true : false);
+    if ( isMultiFrame )
+    {
+        // Read one image from several files
+        // TODO : test if numberOfFrames == number of files
+        // (some files could be erased by an over series)
+        void * destBufferImg = NULL;
+
+        gScanner.AddTag(rescaleSlopeTag);
+        gScanner.AddTag(rescaleInterceptTag);
+        bool scanOk = gScanner.Scan( fileNames );
+        if(scanOk)
+        {
+            gdcm::Directory::FilenamesType keys = gScanner.GetKeys();
+            gdcm::Directory::FilenamesType::const_iterator it = keys.begin();
+            ::boost::shared_ptr< DicomInstance >    dicomInstance   = this->getDicomInstance();
+            ::gdcm::DataSet &                       gHeRoot         = gImageReader->GetFile().GetHeader();
+            ::gdcm::DataSet &                       gDsRoot         = gImageReader->GetFile().GetDataSet();
+
+            for(int  i= 0; it != keys.end(); ++it, i++)
+            {
+                // Clear data because GDCM reader does not read twice the same tag
+                gHeRoot.Clear();
+                gDsRoot.Clear();
+
+                const char *filename = it->c_str();
+                assert( gScanner.IsKey( filename ) );
+
+                ::gdcmIO::helper::GdcmData::valueOf(std::string(gScanner.GetValue( filename, rescaleInterceptTag)), intercept);
+                ::gdcmIO::helper::GdcmData::valueOf(std::string(gScanner.GetValue( filename, rescaleSlopeTag)), slope);
+
+                // reading of the input image
+                gImageReader->SetFileName( filename );
+                bool readOk = gImageReader->Read();
+                OSLM_ASSERT("ImageReader failed: " << filename, readOk );
+
+                const gdcm::Image &image = gImageReader->GetImage();
+
+                const gdcm::PixelFormat &pixelType = image.GetPixelFormat();
+                unsigned long size = image.GetBufferLength();
+                char * inBuffer = new char[size];
+                image.GetBuffer(inBuffer);
+                // Number of bytes requested to store pixel in image.
+                int nbOfBytes  = image.GetPixelFormat().GetBitsAllocated()/8;
+
+                gdcm::Rescaler r;
+                r.SetIntercept(intercept);
+                r.SetSlope(slope);
+                r.SetPixelFormat( pixelType);
+                gdcm::PixelFormat newPixelType;
+                newPixelType.SetScalarType(outputPixelType);
+                r.SetTargetPixelType(newPixelType);
+                r.SetUseTargetPixelType(true);
+
+                unsigned long bufferSize = 0;
+
+                switch(outputPixelType)
+                {
+                case ::gdcm::PixelFormat::FLOAT64:
+                    destBufferImg = new double[size];
+                    bufferSize = size*sizeof(double);
+                    break;
+
+                case ::gdcm::PixelFormat::FLOAT32:
+                    destBufferImg = new float[size];
+                    bufferSize = size*sizeof(float);
+                    break;
+                }
+                if(!r.Rescale((char*)destBufferImg, inBuffer, size))
+                {
+                     throw ::fwTools::Failed("Image could not be rescale.");
+                }
+                memcpy (((char*)gdcmGlobalBuffer + i*(bufferSize/nbOfBytes)), destBufferImg,bufferSize);
+                // Add a new referenced SOP Instance UID
+                dicomInstance->addReferencedSOPInstanceUID( helper::GdcmData::getTagValue<0x0008,0x0018>(gDsRoot) );
+
+            }
+        }
+        else
+        {
+            SLM_ERROR("Scanner failed");
+            return;
+        }
+        img->setBuffer(gdcmGlobalBuffer);
+        // Complete fwData::Image
+        img->setDimension(3);
+        img->getRefSize()[2] = this->getFileNames().size();
+        // Update gdcm::Image.
+        gImg.SetNumberOfDimensions(3);
+        gImg.SetDimension(2, nbFrames);
+    }
+    else
+    {
+        char * gdcmBuffer = new char[allImagesSize];
+        gImg.GetBuffer( (char*) gdcmBuffer);
+
+
+        gScanner.AddTag(rescaleSlopeTag);
+        gScanner.AddTag(rescaleInterceptTag);
+        bool scanOk = gScanner.Scan( fileNames );
+        if(scanOk)
+        {
+            // Read 2D or 3D image from one file
+            ::gdcmIO::helper::GdcmData::valueOf(std::string(gScanner.GetValue( fileNames[0].c_str(), rescaleInterceptTag)), intercept);
+            ::gdcmIO::helper::GdcmData::valueOf(std::string(gScanner.GetValue( fileNames[0].c_str(), rescaleSlopeTag)), slope);
+            // Rescale the image.
+            gdcm::Rescaler r;
+            r.SetIntercept( intercept );
+            r.SetSlope( slope );
+            r.SetPixelFormat(gImg.GetPixelFormat());
+            gdcm::PixelFormat newPixelType;
+            newPixelType.SetScalarType(outputPixelType);
+            r.SetTargetPixelType(newPixelType);
+            r.SetUseTargetPixelType(true);
+            if(!r.Rescale((char*)gdcmGlobalBuffer, gdcmBuffer, allImagesSize))
+            {
+                throw ::fwTools::Failed("Image could not be rescale.");
+            }
+            img->setBuffer(gdcmGlobalBuffer);
+        }
+        else
+        {
+            SLM_ERROR("Scanner failed");
+            return;
+        }
+
+    }
+}
 //------------------------------------------------------------------------------
 
 void * DicomImageReader::read2DImages() throw(::fwTools::Failed)
@@ -420,6 +632,7 @@ void * DicomImageReader::read2DImages() throw(::fwTools::Failed)
 
     return (void*)gdcmGlobalBuffer;
 }
+//------------------------------------------------------------------------------
 
 }  // namespace reader
 
