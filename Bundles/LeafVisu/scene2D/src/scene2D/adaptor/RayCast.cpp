@@ -17,17 +17,19 @@ REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::RayCast  , 
 namespace scene2D
 {
     namespace adaptor{
-
-        RayCast::RayCast() throw() : m_nbRayon(120), m_crossSize(2.f)
+//-------------------------------------------------------------------------------------------------------------------------------
+        RayCast::RayCast() throw() : m_nbRayon(12), m_crossSize(2.f)
         {
             addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS);
             addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS);
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         RayCast::~RayCast() throw()
         {
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::configuring() throw ( ::fwTools::Failed )
         {
             SLM_TRACE_FUNC();
@@ -45,6 +47,7 @@ namespace scene2D
         }
 
 
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::doStart() throw ( ::fwTools::Failed )
         {
             SLM_TRACE_FUNC();
@@ -58,12 +61,13 @@ namespace scene2D
 
 
         }
-
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::doUpdate() throw ( ::fwTools::Failed )
         {
             SLM_TRACE_FUNC();
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
         {
             SLM_TRACE_FUNC();
@@ -108,17 +112,21 @@ namespace scene2D
 
                     listPointRayon->deepCopy( findPointRayon(leftPoint, rightPoint, centerPoint, m_nbRayon) );
 
+                    addLinesFromPoint(centerPoint, listPointRayon , m_layer, QPen(Qt::gray) );
+
                     addCross(listPointRayon, m_crossSize , m_layer , QPen(Qt::blue));
 
                 }
             }
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::doSwap() throw ( ::fwTools::Failed )
         {
             SLM_TRACE_FUNC();
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::doStop() throw ( ::fwTools::Failed )
         {
             SLM_TRACE_FUNC();
@@ -127,6 +135,7 @@ namespace scene2D
             this->getScene2DRender()->getScene()->removeItem(m_layer);
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::addLine(fwData::Point::NewSptr _point1, fwData::Point::NewSptr _point2 , QGraphicsItemGroup* _layer, QPen _pen )
         {
             QGraphicsLineItem *myLine = new QGraphicsLineItem( 
@@ -138,6 +147,19 @@ namespace scene2D
             _layer->addToGroup(myLine);
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
+        void RayCast::addLinesFromPoint(fwData::Point::NewSptr _point, fwData::PointList::NewSptr _pointList , QGraphicsItemGroup* _layer, QPen _pen )
+        {
+            int nbrPoint = _pointList->getRefPoints().size();
+
+            for ( int numPoint = 0 ; numPoint < nbrPoint ; ++numPoint )
+            {
+                fwData::Point::sptr monPoint = _pointList->getRefPoints()[numPoint];
+                addLine(_point, monPoint, _layer, _pen );
+            }
+        }
+
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::addCross(fwData::Point::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen _pen )
         {
             QGraphicsLineItem *myLine1 = new QGraphicsLineItem( 
@@ -155,6 +177,7 @@ namespace scene2D
             _layer->addToGroup(myLine2);
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         fwData::Point::sptr RayCast::listPointAveragePosition(fwData::PointList::sptr _pointList)
         {
             int nbrPoint = _pointList->getRefPoints().size();
@@ -183,62 +206,7 @@ namespace scene2D
 
         }
 
-        //
-        //fwData::PointList::sptr RayCast::findPointRayon(fwData::Point::sptr _leftPoint, 
-        //    fwData::Point::sptr _rightPoint, fwData::Point::sptr _centerPoint, int _rayNbr )
-        //{
-        //
-        //    fwVec3d pointLeft =  _leftPoint->getRefCoord();
-        //    double pointLeftPosY  = _leftPoint->getRefCoord()[1];
-        //    double pointRightPosY = _rightPoint->getRefCoord()[1];
-        //
-        //    //SLM_ASSERT("point left and right positions is inapropriate", pointLeftPosY < pointRightPosY );
-        //
-        //    double rayValue = (pointRightPosY - pointLeftPosY ) * 0.5f;
-        //
-        //    
-        //
-        //    for ( int numRay = 0 ; numRay < _rayNbr ; ++numRay )
-        //    {
-        //
-        //    }
-        //
-        //    fwData::PointList::NewSptr ttu;
-        //
-        //    return ttu;
-        //
-        //
-        //}
-
-
-        //void RayCast::addLine(fwData::Point::NewSptr _point1, fwData::Point::NewSptr _point2 , QGraphicsItemGroup* _layer, QPen _pen )
-        //{
-        //    QGraphicsLineItem *myLine = new QGraphicsLineItem( 
-        //        _point1->getCRefCoord()[0], _point1->getCRefCoord()[1], 
-        //        _point2->getCRefCoord()[0], _point2->getCRefCoord()[1] );
-        //    
-        //    myLine->setPen(_pen);
-        //
-        //    _layer->addToGroup(myLine);
-        //}
-
-        //void RayCast::addCross(fwData::Point::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen _pen )
-        //{
-        //    QGraphicsLineItem *myLine1 = new QGraphicsLineItem( 
-        //        _point->getCRefCoord()[0]+_size, _point->getCRefCoord()[1], 
-        //        _point->getCRefCoord()[0]-_size, _point->getCRefCoord()[1] );
-        //
-        //    QGraphicsLineItem *myLine2 = new QGraphicsLineItem( 
-        //        _point->getCRefCoord()[0], _point->getCRefCoord()[1]+_size, 
-        //        _point->getCRefCoord()[0], _point->getCRefCoord()[1]-_size );
-        //    
-        //    myLine1->setPen(_pen);
-        //    myLine2->setPen(_pen);
-        //
-        //    _layer->addToGroup(myLine1);
-        //    _layer->addToGroup(myLine2);
-        //}
-
+//-------------------------------------------------------------------------------------------------------------------------------
         void RayCast::addCross(fwData::PointList::NewSptr _pointList, float _size , QGraphicsItemGroup* _layer, QPen _pen )
         {
             int nbrPoint = _pointList->getRefPoints().size();
@@ -250,35 +218,7 @@ namespace scene2D
             }
         }
 
-        //fwData::Point::sptr RayCast::listPointAveragePosition(fwData::PointList::sptr _pointList)
-        //{
-        //    int nbrPoint = _pointList->getRefPoints().size();
-        //
-        //    SLM_ASSERT("nbrPoint must be > 0", nbrPoint > 0);
-        //
-        //    double posX = 0.f;
-        //    double posY = 0.f;
-        //    double posZ = 0.f;
-        //
-        //    for (int numPoint = 0 ; numPoint < nbrPoint ; ++numPoint )
-        //    {
-        //        fwData::Point::sptr monPoint = _pointList->getRefPoints()[numPoint];
-        //
-        //        posX += monPoint->getRefCoord()[0];
-        //        posY += monPoint->getRefCoord()[1];
-        //        posZ += monPoint->getRefCoord()[2];
-        //    }
-        //    posX /= (double) nbrPoint;
-        //    posY /= (double) nbrPoint;
-        //    posZ /= (double) nbrPoint;
-        //
-        //    fwData::Point::NewSptr pointAveragePosition(posX, posY, posZ);
-        //
-        //    return pointAveragePosition;
-        //
-        //}
-
-
+//-------------------------------------------------------------------------------------------------------------------------------
         fwData::PointList::sptr RayCast::findPointRayon(fwData::Point::sptr _leftPoint, 
             fwData::Point::sptr _rightPoint, fwData::Point::sptr _centerPoint, int _rayNbr )
         {
@@ -287,11 +227,8 @@ namespace scene2D
 
             fwVec3d pointCenter = 0.5f * (pointLeft + pointRight);
 
-            fwVec3d direction = pointRight - pointLeft;
-            fwVec3d directionNormalized = fwMath::normalized(direction);
-
             //SLM_ASSERT("point left and right positions is inapropriate", pointLeftPosY < pointRightPosY );
-            double rayValue = (pointRight[1] - pointLeft[1] ) * 0.5f;
+            double rayValue = (pointRight[0] - pointLeft[0] ) * 0.5f;
 
             fwData::PointList::NewSptr pointListOut;
 
@@ -301,11 +238,14 @@ namespace scene2D
 
             for ( int numRay = 0 ; numRay < _rayNbr ; ++numRay )
             {
-                fwVec3d directionLive = directionNormalized;
-
                 float angle = (numRay+1) * valeurDeltaAngle;
-                directionLive[0] = directionLive[0] * cos(angle);
-                directionLive[1] = directionLive[1] * sin(angle);
+                float contribX = cos(angle);
+                float contribY = -sin(angle);
+
+                fwVec3d directionLive;
+                directionLive[0] = contribX;
+                directionLive[1] = contribY;
+                directionLive[2] = 0;
 
                 fwVec3d translationCentre = directionLive * rayValue;
 
@@ -320,6 +260,7 @@ namespace scene2D
 
 
 
+//-------------------------------------------------------------------------------------------------------------------------------
         fwVec3d RayCast::axialToSagittal(fwVec3d _vecIn)
         {
             fwVec3d vecOut;
@@ -329,10 +270,12 @@ namespace scene2D
             return vecOut;
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
         fwData::Point::sptr RayCast::axialToSagittal(fwData::Point::sptr _pointIn)
         {
             return fwData::Point::New( _pointIn->getRefCoord()[1], _pointIn->getRefCoord()[2], _pointIn->getRefCoord()[0] );
         }
 
+//-------------------------------------------------------------------------------------------------------------------------------
     } // namespace adaptor} // namespace scene2D
 }
