@@ -9,6 +9,33 @@
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Vector.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/PointList.hpp>
+
+#include <fwCore/macros.hpp>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/helper/Composite.hpp>
+#include <fwComEd/PointListMsg.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
+
+
+
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QString>
+#include <QGraphicsLineItem>
+#include <QGraphicsItemGroup>
+
+
 namespace scene2D
 {
 namespace adaptor
@@ -57,8 +84,20 @@ private:
     /// The pen.
     QPen m_pen;
 
+    int m_nbRayon;
+
+    float m_crossSize;
+
+    std::string m_targetPointsKey;
+
     /// The layer.
     QGraphicsItemGroup* m_layer;
+
+    void addCross(fwData::Point::NewSptr _point, float _size , QGraphicsItemGroup* _layer, QPen& _pen );
+    void addLine(fwData::Point::NewSptr _point1, fwData::Point::NewSptr _point2 , QGraphicsItemGroup* _layer, QPen& _pen );
+    fwData::Point::sptr listPointAveragePosition(fwData::PointList::sptr _listPoint);
+    fwData::PointList::sptr findPointRayon(
+        fwData::Point::sptr _leftPoint, fwData::Point::sptr _rightPoint, fwData::Point::sptr _centerPoint, int _rayNbr );
 };
 
 
