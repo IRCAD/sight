@@ -10,8 +10,12 @@
 #include <fwData/Object.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/Base.hpp>
+#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+
 #include <fwGuiQt/App.hpp>
 
 
@@ -39,7 +43,6 @@ void GuiQtTest::tearDown()
 void GuiQtTest::testDefaultFrame()
 {
     ::fwData::Object::NewSptr object;
-
 
     ::fwRuntime::EConfigurationElement::NewSptr frameCfg("service");
     ::fwRuntime::EConfigurationElement::NewSptr guiCfg("gui");
@@ -74,11 +77,30 @@ void GuiQtTest::testDefaultFrame()
     CPPUNIT_ASSERT(window);
     CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
 
-    // srv->stop();
-    // ::gui::frame::DefaultFrame
-
+    srv->stop();
+    ::fwServices::OSR::unregisterService( srv );
 }
 
 //------------------------------------------------------------------------------
+
+void GuiQtTest::testTuto01()
+{
+    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
+    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( "tutoBasicConfig" );
+    appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+    appConfigMng->launch();
+    appConfigMng->stopAndDestroy();
+}
+
+//------------------------------------------------------------------------------
+
+void GuiQtTest::testTuto02()
+{
+    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
+    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( "tutoDataServiceBasicConfig" );
+    appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+    appConfigMng->launch();
+    appConfigMng->stopAndDestroy();
+}
 
 //------------------------------------------------------------------------------

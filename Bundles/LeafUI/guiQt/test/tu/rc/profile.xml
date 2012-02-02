@@ -1,16 +1,22 @@
-<profile name="tutoBasicName" version="0.1">
+<profile name="GuiQtTest" version="0.1">
 
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
-    <activate id="gui" version="0-1" />
-    <!-- <activate id="Tuto01Basic" /> -->
-    <activate id="guiQt" version="0-1" />
-    
-    <!-- <activate id="appXml" version="0-1" > -->
-    <!--     <param id="config" value="tutoBasicConfig" /> -->
-    <!-- </activate> -->
 
-    <!-- <start id="appXml" /> -->
-    <start id="guiQt" />
+    <activate id="gui" version="0-1" />
+    <activate id="guiQt" version="0-1" />
+
+    <activate id="io" version="0-1" />
+    <activate id="ioVTK" version="0-1" />
+    
+    <activate id="visu" version="0-1" />
+    <activate id="visuVTKQt" version="0-1" />
+    <activate id="vtkSimpleNegato" version="0-1" />
+    
+    <activate id="Tuto01Basic" />
+    <activate id="Tuto02DataServiceBasic" />
+
+    <start id="visuVTKQt" />
+    <start id="guiQt" />  
     
 </profile>

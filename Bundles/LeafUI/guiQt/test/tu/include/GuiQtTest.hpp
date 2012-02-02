@@ -20,6 +20,8 @@ class GuiQtTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( GuiQtTest );
     CPPUNIT_TEST( testDefaultFrame );
+    CPPUNIT_TEST( testTuto01 );
+    CPPUNIT_TEST( testTuto02 );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -28,6 +30,8 @@ public:
     void tearDown();
 
     void testDefaultFrame();
+    void testTuto01();
+    void testTuto02();
 
 };
 
