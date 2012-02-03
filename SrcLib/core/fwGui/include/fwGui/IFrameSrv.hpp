@@ -34,7 +34,7 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (IFrameSrv)(::fwServices::IService) ) ;
 
-    /// Get widget defined for porgress bar
+    /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();
 
 protected :

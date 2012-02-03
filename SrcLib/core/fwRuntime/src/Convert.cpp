@@ -182,7 +182,7 @@ xmlNodePtr Convert::runningBundlesToXml( )
                 xmlFreeNode(bundleNode) ;
             }
             //end cleaning
-        }//boucle for, parcours des bundles
+        }//end bundles iterator
     } while ( enable_Value ) ;
 
     return node_root ;

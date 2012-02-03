@@ -114,6 +114,7 @@ void Profile::start()
 }
 
 //------------------------------------------------------------------------------
+
 int Profile::run()
 {
     SLM_ASSERT("the 'run' callback is missing", m_run);
@@ -148,6 +149,7 @@ void Profile::stop()
 
 
 //------------------------------------------------------------------------------
+
 void Profile::setup()
 {
     InitializerContainer initializers;
@@ -157,6 +159,7 @@ void Profile::setup()
 }
 
 //------------------------------------------------------------------------------
+
 void Profile::cleanup()
 {
     std::for_each( m_uninitializers.rbegin(), m_uninitializers.rend(), Apply< UninitializerContainer::value_type >() );

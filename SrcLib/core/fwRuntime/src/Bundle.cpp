@@ -10,7 +10,7 @@
 #include <exception>
 #include <memory>
 
-#include "fwCore/base.hpp"
+#include <fwCore/base.hpp>
 
 #include "fwRuntime/EmptyPlugin.hpp"
 #include "fwRuntime/IExecutable.hpp"
@@ -133,7 +133,6 @@ Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesEnd() const
 SPTR( ExecutableFactory ) Bundle::findExecutableFactory( const std::string & type ) const
 {
     ExecutableFactoryConstIterator  found = std::find_if( m_executableFactories.begin(), m_executableFactories.end(), IsOfType(type) );
-
     return found != m_executableFactories.end() ? *found : SPTR( ExecutableFactory )();
 }
 
@@ -501,20 +500,22 @@ void Bundle::stop() throw(RuntimeException)
     }
     catch( std::exception & e )
     {
-        throw RuntimeException( getIdentifier() + ": stop plugin error : " + e.what() );
+        throw RuntimeException( this->getIdentifier() + ": stop plugin error : " + e.what() );
     }
 
+    ::fwRuntime::Runtime::getDefault()->unregisterBundle(this->shared_from_this());
+
     //Unloads all libraries.
-    //LibraryContainer::iterator curEntry;
-    //LibraryContainer::iterator endEntry = m_libraries.end();
-    //for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
-    //{
-        //boost::shared_ptr<dl::Library> library(*curEntry);
-        //if(library->isLoaded() == true)
-        //{
-            //library->unload();
-        //}
-    //}
+//    LibraryContainer::iterator curEntry;
+//    LibraryContainer::iterator endEntry = m_libraries.end();
+//    for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
+//    {
+//        ::boost::shared_ptr<dl::Library> library(*curEntry);
+//        if(library->isLoaded() == true )
+//        {
+//            library->unload();
+//        }
+//    }
 }
 
 //------------------------------------------------------------------------------
