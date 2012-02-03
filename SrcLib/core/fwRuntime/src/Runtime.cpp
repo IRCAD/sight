@@ -78,7 +78,7 @@ void Runtime::addBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeExc
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeException)
+void Runtime::unregisterBundle( ::boost::shared_ptr< Bundle > bundle )
 {
 //    std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(), ::boost::bind(&Runtime::unregisterExtension, this, _1));
 //    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(), ::boost::bind(&Runtime::unregisterExtensionPoint, this, _1));
