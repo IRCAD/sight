@@ -3,6 +3,6 @@ CLASSTEST=[
           'MeshTrianTest',
           'DictionaryReaderTest',
           ]
-USE = ['boost']
-LIB = ['fwTools_0-1','fwCore_0-1','fwData_0-1','fwDataIO_0-2']
+USE = ['boost', 'boostRegex']
+LIB = ['fwTools_0-1','fwCore_0-1','fwData_0-1','fwDataIO_0-2','fwTest_0-1']
 CONSOLE='yes'

@@ -7,6 +7,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <boost/regex.hpp>
+
 #include <fwTools/System.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Mesh.hpp>
@@ -15,13 +17,16 @@
 #include <fwDataIO/writer/TriangularMeshWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
 
+#include <fwTest/Data.hpp>
+
+#include "FileNameParser.hpp"
 #include "TrianTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( TrianTest );
 
-const unsigned int NBPTS   = 100;
-const unsigned int NBCELLS = 100;
+static const unsigned int NBPTS   = 100;
+static const unsigned int NBCELLS = 100;
 
 //------------------------------------------------------------------------------
 
@@ -99,6 +104,64 @@ void TrianTest::test_2()
     CPPUNIT_ASSERT(trianMesh1->cells()  == trianMesh2->cells());
 }
 
+//------------------------------------------------------------------------------
+
+void TrianTest::file_load_test()
+{
+
+    // test parseMeshFileName
+    unsigned long long nbPts, nbCells;
+    std::string testFileName("Mesh-00-002502pts-005000cells.trian");
+    parseMeshFileName( testFileName, nbPts, nbCells );
+    CPPUNIT_ASSERT_EQUAL(nbPts, 2502ULL);
+    CPPUNIT_ASSERT_EQUAL(nbCells, 5000ULL);
+
+    const ::boost::filesystem::path trian_path( ::fwTest::Data::dir() / "fw4spl/trian/" );
+    const boost::regex fileNameFilter( "Mesh-\\d+-\\d+pts-\\d+cells\\.trian" );
+
+    typedef std::vector< ::boost::filesystem::path > FileVector;
+    FileVector files;
+
+    // find every files matching <fileNameFilter> pattern
+    boost::filesystem::directory_iterator iter( trian_path );
+    boost::filesystem::directory_iterator end_itr;
+    boost::smatch what;
+    for( ; iter != end_itr; ++iter )
+    {
+        if( !boost::filesystem::is_regular_file( iter->status() )
+                || !boost::regex_match( iter->path().filename().string(), what, fileNameFilter ) )
+        {
+            continue;
+        }
+        files.push_back( iter->path() );
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("Missing trian files", !files.empty() );
+
+    FileVector::const_iterator fIter = files.begin();
+    FileVector::const_iterator fEndIter = files.end();
+
+    for (; fIter != fEndIter; ++fIter)
+    {
+        ::boost::filesystem::path trianFile = *fIter;
+        OSLM_TRACE("Testing: " << trianFile);
+
+        CPPUNIT_ASSERT_MESSAGE(
+                "Failed parsing mesh filename" + trianFile.filename().string(),
+                parseMeshFileName( trianFile.filename().string(), nbPts, nbCells )
+                );
+
+        ::fwData::TriangularMesh::NewSptr trianMesh;
+        ::fwDataIO::reader::TriangularMeshReader::NewSptr reader;
+
+        reader->setObject(trianMesh);
+        reader->setFile(trianFile);
+        reader->read();
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(trianFile.string(), trianMesh->getNumPoints(), (int)nbPts);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("File : " +  trianFile.string(), trianMesh->getNumCells(),  (int)nbCells);
+    }
+}
 //------------------------------------------------------------------------------
 
 void TrianTest::generateTrian(::boost::filesystem::path trianFile)
