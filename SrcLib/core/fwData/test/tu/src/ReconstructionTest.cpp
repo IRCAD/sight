@@ -103,8 +103,6 @@ void ReconstructionTest::methode1() //test des setters et getters
     CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(),     CREFSTRUCTURETYPE);
 
     CPPUNIT_ASSERT_EQUAL(p1->getIsClosed(),     ISCLOSED);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsClosed(),     ISCLOSED);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsClosed(),      ISCLOSED);
 
     CPPUNIT_ASSERT_EQUAL(p1->getIsAutomatic(),              ISAUTOMATIC);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefIsAutomatic(),              ISAUTOMATIC);
@@ -190,7 +188,7 @@ void ReconstructionTest::methode2()
     p1->setCRefReconstructionFormat(                    CREFRECONSTRUCTIONFORMAT);
     p1->setCRefOrganName(                   CREFORGANNAME);
     p1->setCRefStructureType(                   CREFSTRUCTURETYPE);
-    p1->setCRefIsClosed(                ISCLOSED    );
+    p1->setIsClosed(                ISCLOSED    );
     p1->setCRefIsAutomatic(                 ISAUTOMATIC);
     p1->setCRefAvgVolume(                   AVGVOLUME);
     p1->setCRefVolStdDeviation(                 VOLSTDDEVIATION);
@@ -222,8 +220,6 @@ void ReconstructionTest::methode2()
     CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(),     CREFSTRUCTURETYPE);
 
     CPPUNIT_ASSERT_EQUAL(p1->getIsClosed(),     ISCLOSED);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsClosed(),     ISCLOSED);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsClosed(),      ISCLOSED);
 
     CPPUNIT_ASSERT_EQUAL(p1->getIsAutomatic(),              ISAUTOMATIC);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefIsAutomatic(),              ISAUTOMATIC);

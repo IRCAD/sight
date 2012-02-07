@@ -65,18 +65,12 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
 
     QVBoxLayout* layout = new QVBoxLayout(container);
 
-    QGroupBox* groupBox = new QGroupBox(tr("Organs"), container );
-    layout->addWidget( groupBox);
-
-    QVBoxLayout* layoutGroupBox = new QVBoxLayout(container);
-    groupBox->setLayout(layoutGroupBox);
-
-    m_showCheckBox = new QCheckBox( tr("Hide all organs"), groupBox);
+    m_showCheckBox = new QCheckBox( tr("Hide all organs"));
     m_showCheckBox->setToolTip(tr("Show or hide all organs"));
-    m_organChoice = new QListWidget( groupBox) ;
+    m_organChoice = new QListWidget() ;
 
-    layoutGroupBox->addWidget( m_showCheckBox, 0 );
-    layoutGroupBox->addWidget( m_organChoice, 1);
+    layout->addWidget( m_showCheckBox, 0 );
+    layout->addWidget( m_organChoice, 1);
 
     container->setLayout( layout );
 
@@ -150,6 +144,7 @@ void OrganListEditor::info( std::ostream &_sstream )
 
 void OrganListEditor::updateReconstructions()
 {
+    m_organChoice->blockSignals(true);
     m_organChoice->clear();
     m_map.clear();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -183,6 +178,7 @@ void OrganListEditor::updateReconstructions()
         m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
         m_organChoice->setEnabled(m_showCheckBox->checkState() == Qt::Unchecked);
     }
+    m_organChoice->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------

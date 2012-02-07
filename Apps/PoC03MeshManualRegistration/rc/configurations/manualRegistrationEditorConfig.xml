@@ -19,25 +19,8 @@
             </gui>
             <registry>
                 <view sid="listOrganTransformationEditor" />
-                <!--<view sid="multiViewManualRegistration" start="yes" />-->
             </registry>
         </service>
-
-        <!--<service uid="multiViewManualRegistration" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view minHeight="80" proportion="0" />
-                    <view minHeight="220" proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="listOrganTransformationEditor" />
-                <view wid="titi" />
-                <view wid="tutu" />
-            </registry>
-        </service>-->
 
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">

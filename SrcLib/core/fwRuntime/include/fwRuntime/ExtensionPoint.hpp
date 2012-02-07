@@ -85,23 +85,16 @@ struct ExtensionPoint : public BundleElement
 
         getAllExtensions( inserter );
 
-
         // Walk through the collected extensions to extract configuration elements.
         for( ExtensionContainer::const_iterator i = extensions.begin(); i != extensions.end(); ++i )
         {
-
-             ::boost::shared_ptr< Extension >   extension( *i );
-//          OSLM_TRACE("getAllConfigurationElements for point=" <<   extension->getPoint() << " extension" << extension->getIdentifier() <<   "info")
-
-
+            ::boost::shared_ptr< Extension >   extension( *i );
             if ( extension->isEnable() )
             {
                 std::copy( extension->begin(), extension->end(), output);
             }
-            else
-            {
-                OSLM_DEBUG("getAllConfigurationElements for point=" <<  extension->getPoint() << " extension" << extension->getIdentifier() << "extension disabled")
-            }
+            OSLM_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
+                    " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnable())
         }
     }
 
@@ -118,10 +111,10 @@ struct ExtensionPoint : public BundleElement
 
         for( Runtime::ExtensionIterator i = rntm->extensionsBegin(); i != rntm->extensionsEnd(); ++i )
         {
-             ::boost::shared_ptr< Extension >   extension( *i );
+            ::boost::shared_ptr< Extension >   extension( *i );
             if( extension->getPoint() == m_id && extension->isEnable() == true
-                && extension->validate() == Extension::Valid
-              )
+                    && extension->validate() == Extension::Valid
+            )
             {
                 *output = extension;
                 ++output;
@@ -166,7 +159,7 @@ protected:
 private:
 
     const std::string                               m_id;           ///< a string containing the extension point identifier
-    const boost::filesystem::path                   m_schema;       ///< a path to the XML schema used to validate contributed extensions
+    const ::boost::filesystem::path                 m_schema;       ///< a path to the XML schema used to validate contributed extensions
     mutable ::boost::shared_ptr< io::Validator >    m_validator;    ///< a shared pointer to the extension validator
 
     /**

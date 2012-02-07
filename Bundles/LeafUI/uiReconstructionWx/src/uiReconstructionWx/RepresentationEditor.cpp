@@ -290,7 +290,7 @@ void RepresentationEditor::onShowNormals(wxCommandEvent & event )
         m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
     }
 
-    this->notifyTriangularMesh();
+    this->notifyMesh();
 }
 
 //------------------------------------------------------------------------------
@@ -306,13 +306,13 @@ void RepresentationEditor::notifyMaterial()
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::notifyTriangularMesh()
+void RepresentationEditor::notifyMesh()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
 
     ::fwComEd::MaterialMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getTriangularMesh(), msg);
+    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), msg);
 }
 }
 

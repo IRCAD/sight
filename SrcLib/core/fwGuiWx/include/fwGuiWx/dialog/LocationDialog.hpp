@@ -36,13 +36,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::dialog::ILocationDialog), (()), new LocationDialog );
 
     LocationDialog();
-
-    void setTitle(const std::string &title);
-
+    
     ::fwData::location::ILocation::sptr show();
-
-    // FIXME ok with Folder but not singleFile
-    void setDefaultLocation( ::fwData::location::ILocation::csptr );
 
     ::fwGui::dialog::ILocationDialog& setOption( ::fwGui::dialog::ILocationDialog::Options option);
 
@@ -52,13 +47,7 @@ public:
     // exemple ( addFilter("images","*.png *.jpg");
     void addFilter(const std::string &filterName, const std::string &wildcardList );
 
-
-    //wxFileDialog m_fileDialog; // we can not change the style(OPEN/SAVE) of a wxFileDialog after its instanciation
-                               // so we have to keep all information
-
 protected:
-    std::string m_title;
-    ::boost::filesystem::path m_path;
     unsigned long m_style;
     std::multimap< std::string, std::string > m_filters;
     ::fwGui::dialog::ILocationDialog::Types m_type;

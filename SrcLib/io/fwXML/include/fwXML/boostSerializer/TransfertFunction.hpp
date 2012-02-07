@@ -59,7 +59,6 @@ void serialize(Archive & ar, ::fwData::TransfertFunction & _transfertFunction, c
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::TransfertFunction);
 
 #endif // _FWXML_BOOSTSERIALIZER_TRANSFERTFUNCTION_HPP_
 

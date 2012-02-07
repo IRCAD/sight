@@ -22,6 +22,7 @@ class TrianTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE( TrianTest );
     CPPUNIT_TEST( test_1 );
     CPPUNIT_TEST( test_2 );
+    CPPUNIT_TEST( file_load_test );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -32,6 +33,7 @@ public:
 
     void test_1();
     void test_2();
+    void file_load_test();
 
 protected:
 

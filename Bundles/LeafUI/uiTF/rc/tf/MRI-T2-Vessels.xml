@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="1.0" />
+  <protocol version="2" />
   <content>
     <TransfertFunction id="32d32b33-08ef-4be5-9b78-7a6b1f60d5d5" class="::fwData::TransfertFunction">
       <Name>MRI-T2-vessels</Name>

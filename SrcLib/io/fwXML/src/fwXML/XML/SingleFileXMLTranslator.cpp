@@ -26,7 +26,7 @@ SingleFileXMLTranslator::~SingleFileXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr SingleFileXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr SingleFileXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     ::fwData::location::SingleFile::sptr  path = ::fwData::location::SingleFile::dynamicCast(obj);
     SLM_ASSERT("path not instanced", path);

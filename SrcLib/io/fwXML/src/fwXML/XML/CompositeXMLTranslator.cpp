@@ -25,7 +25,7 @@ CompositeXMLTranslator::~CompositeXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     ::fwData::Composite::sptr  cmp= ::fwData::Composite::dynamicCast(obj);
     SLM_ASSERT("cmp not instanced", cmp);
@@ -61,7 +61,7 @@ void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
     //get its label
     ::fwData::Composite::sptr cmp= ::fwData::Composite::dynamicCast(toUpdate);
 
-    xmlNodePtr elementNode = xmlNextElementSibling(source->children);
+    xmlNodePtr elementNode = ::fwXML::XMLParser::getChildrenXMLElement(source);
     while (elementNode )
     {
         std::string nodeName = (const char *) elementNode->name;
@@ -75,20 +75,17 @@ void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
 
             std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
 
-            //xmlNodePtr ConcretevalueNode = XMLParser::nextXMLElement( valueNode->children );
-            xmlNodePtr ConcretevalueNode = xmlNextElementSibling( valueNode->children );
-            SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
+            xmlNodePtr concreteValueNode = ::fwXML::XMLParser::getChildrenXMLElement(valueNode);
+            SLM_ASSERT("concreteValueNode not instanced", concreteValueNode);
 
             ::fwTools::Object::sptr valueObj;
-            valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
+            valueObj = Serializer().ObjectsFromXml( concreteValueNode, true );
 
             SLM_ASSERT("valueObj not instanced", valueObj);
             assert( ::fwData::Object::dynamicCast( valueObj ));
             cmp->getRefMap()[key] = ::fwData::Object::dynamicCast( valueObj );
         }
-
-        //elementNode = XMLParser::nextXMLElement(elementNode->next);
-        elementNode = xmlNextElementSibling(elementNode->next);
+        elementNode = ::fwXML::XMLParser::nextXMLElement(elementNode->next);
     }
 }
 

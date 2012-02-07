@@ -28,6 +28,4 @@ void serialize(Archive & ar, fwTools::Object &_object, const unsigned int versio
 
 } }
 
-INSTANTIATE_SERIALIZER(fwTools::Object);
-
 #endif // _OBJECT_BOOST_SERIALISER_HPP

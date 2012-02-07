@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="1.0" />
+  <protocol version="2" />
   <content>
     <TransfertFunction id="85d3a44a-b048-4c23-b436-bcd036cf9024" class="::fwData::TransfertFunction">
       <Name>MRI-T2-Liver</Name>

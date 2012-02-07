@@ -67,7 +67,7 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
             else if ( nodeName == "points" )
             {
                 xmlNodePtr pointsNode = XMLParser::nextXMLElement( elementNode->children );
-                int p = 0;
+                unsigned int p = 0;
                 while ( pointsNode )
                 {
                     std::string pointName = (const char *) pointsNode->name;

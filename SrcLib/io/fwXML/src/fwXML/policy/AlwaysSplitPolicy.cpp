@@ -9,7 +9,7 @@
 namespace fwXML
 {
 
-bool AlwaysSplitPolicy::split(::boost::shared_ptr< ::fwTools::Object > obj)
+bool AlwaysSplitPolicy::split(::fwTools::Object::sptr obj)
 {
     return true;
 }

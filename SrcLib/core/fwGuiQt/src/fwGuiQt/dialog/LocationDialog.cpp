@@ -32,28 +32,22 @@ namespace fwGuiQt
 {
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 LocationDialog::LocationDialog() :
         m_style(::fwGui::dialog::ILocationDialog::NONE),
         m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::setTitle(const std::string &title)
-{
-    m_title = title;
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
     QWidget *parent = qApp->activeWindow();
-    QString caption = QString::fromStdString(m_title);
-    QString path = QString::fromStdString(m_path.string());
+    QString caption = QString::fromStdString(this->getTitle());
+    const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
+    QString path = QString::fromStdString(defaultPath.string());
     QString filter = this->fileFilters();
     ::fwData::location::ILocation::sptr location;
 
@@ -104,28 +98,6 @@ void LocationDialog::setTitle(const std::string &title)
         }
     }
     return location;
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr loc)
-{
-    ::fwData::location::SingleFile::csptr singleFile;
-    singleFile = ::fwData::location::SingleFile::dynamicConstCast(loc);
-    if (singleFile)
-    {
-        m_path = singleFile->getPath() ;
-    }
-
-    ::fwData::location::Folder::csptr folder;
-    folder = ::fwData::location::Folder::dynamicConstCast(loc);
-    if (folder)
-    {
-        m_path = folder->getFolder() ;
-    }
-
-    SLM_FATAL_IF( "unsupported location",  !singleFile && !folder );
-
 }
 
 //------------------------------------------------------------------------------

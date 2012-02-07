@@ -21,6 +21,7 @@
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 
@@ -216,6 +217,7 @@ std::string SnapshotEditor::requestFileName()
     if (result)
     {
         fileName = result->getPath().string();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(result->getPath().parent_path()) );
     }
 
     return fileName;

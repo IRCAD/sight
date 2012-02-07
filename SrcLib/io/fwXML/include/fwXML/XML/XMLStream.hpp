@@ -31,10 +31,6 @@ public:
      * @warning if os is a fstream instead an ofstream the file is not created and you get an I/O error !!!
      **/
     FWXML_API static void toStream( xmlDocPtr doc, std::ostream &os );
-
-
-
-
 };
 
 }

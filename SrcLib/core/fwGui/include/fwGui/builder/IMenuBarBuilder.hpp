@@ -4,13 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/IMenuBarBuilder.hpp
- * @brief This file defines the interface class  for the menubar builder.
- *
- * @author IRCAD (Research and Development Team).
- */
-
 #ifndef _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 #define _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 
@@ -27,7 +20,7 @@ namespace builder
 {
 
 /**
- * @brief   Defines the generic layout manager for IHM.
+ * @brief   Defines the interface class  for the menubar builder.
  * @class   IMenuBarBuilder.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.

@@ -88,8 +88,6 @@ void serialize(Archive & ar, ::fwData::Image &image, const unsigned int version)
 
 } }
 
-INSTANTIATE_SERIALIZER(::fwData::Image)
-
 #endif // _IMAGE_BOOST_SERIALISER_HPP
 
 

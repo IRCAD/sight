@@ -13,7 +13,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwCore/spyLog.hpp>
-#include <fwDataIO/writer/TriangularMeshWriter.hpp>
+#include <fwDataIO/writer/MeshWriter.hpp>
 #include "opSofa/SofaSceneWriterSrv.hpp"
 #include <QString>
 #include <QDir>
@@ -151,11 +151,11 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
         if (organVisible && organName != "mors2" && organName != "cam") {
             // Save mesh in filesystem
             if (writeTrian) {
-                ::fwData::TriangularMesh::sptr mesh = rec->getTriangularMesh();
+                ::fwData::Mesh::sptr mesh = rec->getMesh();
                 std::stringstream meshPath;
                 meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
                 filename = ::boost::filesystem::path(meshPath.str());
-                ::fwDataIO::writer::TriangularMeshWriter writer;
+                ::fwDataIO::writer::MeshWriter writer;
                 writer.setObject(mesh);
                 writer.setFile(filename);
                 writer.write();
@@ -166,12 +166,12 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
             nodeFile.replace("ORGAN_NAME", organName);
             nodeFile.replace("ORGAN_ID", organUid);
             nodeFile.replace("TRIAN_LOCATION", QString(filename.string().c_str()));
-            
+
             // Add node
             nodesData += nodeFile;
         }
-    }    
-    
+    }
+
     // Parse template
     templateFile.replace("AREMPLACER", nodesData);
 

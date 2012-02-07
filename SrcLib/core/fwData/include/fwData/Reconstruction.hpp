@@ -9,12 +9,13 @@
 
 #include <vector>
 
+#include <boost/logic/tribool.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/TriangularMesh.hpp"
+#include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Image.hpp"
 
@@ -27,7 +28,7 @@ namespace fwData
  *
  * A reconstruction is represented by a triangular mesh, a material and an image.
  *
- * @see ::fwData::Image, ::fwData::TriangularMesh, ::fwData::Material
+ * @see ::fwData::Image, ::fwData::Mesh, ::fwData::Material
  */
 
 class FWDATA_CLASS_API Reconstruction : public Object
@@ -35,6 +36,7 @@ class FWDATA_CLASS_API Reconstruction : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwTools::Factory::New< Reconstruction >) ;
 
+    fwCoreAllowSharedFromThis()
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -67,9 +69,9 @@ public:
     static const Object::FieldID ID_MESH;
     //@{
     /// Get/Set triangular mesh
-    FWDATA_API void setTriangularMesh( ::fwData::TriangularMesh::sptr _pTriangularMesh );
-    FWDATA_API ::fwData::TriangularMesh::csptr getTriangularMesh() const;
-    FWDATA_API ::fwData::TriangularMesh::sptr getTriangularMesh();
+    FWDATA_API void setMesh( ::fwData::Mesh::sptr _pMesh );
+    FWDATA_API ::fwData::Mesh::csptr getMesh() const;
+    FWDATA_API ::fwData::Mesh::sptr getMesh();
     //@}
 
     // Material -------------------------------------------------------------------
@@ -89,8 +91,6 @@ public:
     fwGettersSettersDocMacro(OrganName, sOrganName, std::string, organ name);
 
     fwGettersSettersDocMacro(StructureType, sStructureType, std::string, structure type);
-
-    fwGettersSettersDocMacro(IsClosed, bIsClosed, bool, if the reconstruction is closed);
 
     fwGettersSettersDocMacro(IsAutomatic, bIsAutomatic, bool, if the reconstruction is build automatically);
 
@@ -116,6 +116,23 @@ public:
 
     fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, the database indentifier);
 
+    /*!
+     * @brief Return true if the reconstruction is closed.
+     * The result is computed if m_bIsClosed is undefined
+     */
+    FWDATA_API bool getIsClosed();
+
+    /*!
+     * @brief Return true if the reconstruction is closed.
+     * The result is computed for each call.
+     */
+    static FWDATA_API bool isClosed(Reconstruction::csptr);
+
+    //! Get/Set if the reconstruction is closed
+    FWDATA_API ::boost::logic::tribool& getRefIsClosed();
+    FWDATA_API const ::boost::logic::tribool& getCRefIsClosed() const;
+    FWDATA_API void setIsClosed(::boost::logic::tribool isClosed);
+
 protected :
 
     /// Constructor
@@ -139,7 +156,7 @@ protected :
     std::string m_sStructureType;
 
     //! true if the reconstruction is closed
-    bool m_bIsClosed;
+    ::boost::logic::tribool m_bIsClosed;
 
     //! true if the reconstruction is build automatically
     bool m_bIsAutomatic;
@@ -170,6 +187,7 @@ protected :
 
     //! The 3D model type
     std::string m_sType3D;
+
 
     //--------------------------------------------------------------------------
 

@@ -18,7 +18,7 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic message box for IHM.
- * Use the Delegate design pattern
+ * Use the Delegate design pattern.
  * @class   MessageDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.

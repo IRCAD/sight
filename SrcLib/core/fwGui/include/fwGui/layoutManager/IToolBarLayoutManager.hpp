@@ -21,6 +21,7 @@
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/config.hpp"
 
@@ -53,11 +54,12 @@ public:
             m_name(""),
             m_shortcut(""),
             m_icon(""),
-            m_isSeparator(false),
-            m_isSpacer(false),
             m_isCheckable (false),
             m_isRadio(false),
+            m_isSeparator(false),
+            m_isSpacer(false),
             m_isMenu(false),
+            m_isEditor(false),
             m_size(0)
         {}
 
@@ -69,6 +71,7 @@ public:
         bool        m_isSeparator;
         bool        m_isSpacer;
         bool        m_isMenu;
+        bool        m_isEditor;
         int         m_size;
     };
 
@@ -91,6 +94,11 @@ public:
     FWGUI_API virtual std::vector< ::fwGui::container::fwMenu::sptr > getMenus();
 
     /**
+     * @brief Returns the vector of fwContainer managed by this layout.
+     */
+    FWGUI_API virtual std::vector< ::fwGui::container::fwContainer::sptr > getContainers();
+
+    /**
      * @brief Initialize layout managers.
      *
      * Example of configuration
@@ -103,6 +111,10 @@ public:
                    <separator />
                    <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                    <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   <separator />
+                   <menu name="My menu" />
+                   <separator />
+                   <editor />
                </layout>
            </gui>
            <registry>
@@ -110,6 +122,8 @@ public:
                <menuItem sid="item3" />
                <menuItem sid="item4" />
                <menuItem sid="item5" />
+               <menu sid="menu" />
+               <editor sid="editor" />
            </registry>
        </service>
        @endverbatim
@@ -120,6 +134,10 @@ public:
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file
+     *  - <menu name="My menu" /> :
+     *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
+     *   - \b icon : give the path of the icon file
+     *  - <editor> : to add an editor in the toolbar
      *  - <separator/> : allow to divide the toolbar by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
@@ -166,8 +184,11 @@ protected:
     /// All actions managed by this layout.
     std::vector< ::fwGui::container::fwMenuItem::sptr > m_menuItems;
 
-    /// All actions managed by this layout.
+    /// All menus managed by this layout.
     std::vector< ::fwGui::container::fwMenu::sptr > m_menus;
+
+    /// All editors managed by this layout.
+    std::vector< ::fwGui::container::fwContainer::sptr > m_containers;
 
     /// Save action informations from configuration.
     std::vector< ActionInfo > m_actionInfo;

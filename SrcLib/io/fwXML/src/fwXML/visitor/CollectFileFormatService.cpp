@@ -14,6 +14,7 @@
 #include <fwData/List.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Graph.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwServices/Base.hpp>
 
@@ -62,8 +63,9 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     ::fwData::Resection::sptr resection;
     ::fwData::Graph::sptr graph;
     ::fwData::Node::sptr node;
+    ::fwData::Mesh::sptr mesh;
 
-    if ( composite = ::fwData::Composite::dynamicCast( src ))
+    if ( (composite = ::fwData::Composite::dynamicCast( src )) )
     {
         ::fwData::Composite::Container::iterator i;
         for ( i = composite->getRefMap().begin(); i != composite->getRefMap().end(); ++i)
@@ -71,7 +73,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( i->second , this);
         }
     }
-    else if ( vector = ::fwData::Vector::dynamicCast( src ))
+    else if ( (vector = ::fwData::Vector::dynamicCast( src )))
     {
         ::fwData::Vector::Container::iterator i;
         for ( i = vector->getRefContainer().begin(); i != vector->getRefContainer().end(); ++i)
@@ -79,7 +81,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *i , this);
         }
     }
-    else if ( list  = ::fwData::List::dynamicCast( src ))
+    else if ( (list  = ::fwData::List::dynamicCast( src )))
     {
         ::fwData::List::Container::iterator i;
         for ( i = list->getRefContainer().begin(); i != list->getRefContainer().end(); ++i)
@@ -87,7 +89,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *i , this);
         }
     }
-    else if ( resection = ::fwData::Resection::dynamicCast( src ))
+    else if ( (resection = ::fwData::Resection::dynamicCast( src )))
     {
         ::fwData::Resection::ResectionInputs::const_iterator i;
         for ( i = resection->getCRefInputs().begin(); i != resection->getCRefInputs().end(); ++i)
@@ -100,7 +102,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::visitor::accept( *j , this);
         }
     }
-    else if ( graph  = ::fwData::Graph::dynamicCast( src ))
+    else if ( (graph  = ::fwData::Graph::dynamicCast( src )))
     {
         ::fwData::Graph::NodeContainer::iterator i;
         for ( i = graph->getRefNodes().begin(); i != graph->getRefNodes().end(); ++i)
@@ -111,6 +113,36 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     else if ( (node = ::fwData::Node::dynamicCast( src ) ) && node->getObject() )
     {
         ::fwData::visitor::accept( node->getObject() , this);
+    }
+    else if ( (mesh = ::fwData::Mesh::dynamicCast( src ) ))
+    {
+        ::fwData::visitor::accept( mesh->getPointsArray() , this);
+        ::fwData::visitor::accept( mesh->getCellTypesArray() , this);
+        ::fwData::visitor::accept( mesh->getCellDataArray() , this);
+        ::fwData::visitor::accept( mesh->getCellDataOffsetsArray() , this);
+        if(mesh->getPointColorsArray())
+        {
+            ::fwData::visitor::accept( mesh->getPointColorsArray() , this);
+        }
+        if(mesh->getCellColorsArray())
+        {
+            ::fwData::visitor::accept( mesh->getCellColorsArray() , this);
+        }
+        if(mesh->getPointNormalsArray())
+        {
+            ::fwData::visitor::accept( mesh->getPointNormalsArray() , this);
+        }
+        if(mesh->getCellNormalsArray())
+        {
+            ::fwData::visitor::accept( mesh->getCellNormalsArray() , this);
+        }
+        std::vector<std::string> vectNames = mesh->getDataArrayNames();
+        BOOST_FOREACH(std::string name, vectNames)
+        {
+            ::fwData::Array::sptr array = mesh->getDataArray(name);
+            OSLM_ASSERT("Array "<<name<<" not initialized in Mesh.",array);
+            ::fwData::visitor::accept( array, this);
+        }
     }
 }
 

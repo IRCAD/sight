@@ -16,11 +16,13 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkSmartPointer.h>
 
 #include <fwTools/ClassRegistrar.hpp>
 
 #include <fwCore/base.hpp>
 
+#include "vtkIO/helper/Mesh.hpp"
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/ReconstructionWriter.hpp"
 
@@ -89,23 +91,14 @@ vtkActor * ReconstructionWriter::createActor( ::fwData::Reconstruction::sptr pRe
 {
     vtkActor* actor = vtkActor::New();
 
-    ::fwData::TriangularMesh::sptr mesh = pReconstruction->getTriangularMesh();
+    ::fwData::Mesh::sptr mesh = pReconstruction->getMesh();
     ::fwData::Material::sptr material = pReconstruction->getMaterial();
 
-    vtkPolyData * polyData       = ::vtkIO::toVTKMesh(mesh);
-    vtkPolyDataMapper  * mapper  = vtkPolyDataMapper::New();
-    vtkPolyDataNormals* normals = vtkPolyDataNormals::New();
-    normals->SetInput(polyData);
-    normals->ComputePointNormalsOn ();
-    normals->ComputeCellNormalsOn ();
-    normals->ConsistencyOn ();
-    normals->SplittingOn ();
-    normals->SetFeatureAngle(180);
-    mapper->SetInputConnection(normals->GetOutputPort());
+    vtkSmartPointer< vtkPolyData > polyData = vtkSmartPointer< vtkPolyData >::New();
+    ::vtkIO::helper::Mesh::toVTKMesh( mesh, polyData);
+    vtkSmartPointer<vtkPolyDataMapper> mapper  = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInput(polyData);
     actor->SetMapper(mapper);
-    mapper->Delete();
-    polyData->Delete();
-    normals->Delete();
 
     ::fwData::Color::sptr color = material->ambient();
     vtkProperty *property = actor->GetProperty();

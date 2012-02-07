@@ -30,9 +30,9 @@ GraphXMLTranslator::~GraphXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr GraphXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
-    ::boost::shared_ptr< ::fwData::Graph> graph = ::boost::dynamic_pointer_cast< ::fwData::Graph>(obj);
+    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(obj);
     SLM_ASSERT("graph not instanced", graph);
 
     // create master node with className+id

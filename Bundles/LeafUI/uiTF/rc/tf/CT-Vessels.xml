@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="1.0" />
+  <protocol version="2" />
   <content>
     <TransfertFunction id="6081ec6d-6f13-4bcb-bfe7-2d713b3e7706" class="::fwData::TransfertFunction">
       <Name>CT-Vessels</Name>

@@ -4,18 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRuntime/helper.hpp"
-#include "fwRuntime/Convert.hpp"
 #include <iostream>
+#include <boost/foreach.hpp>
+
 #include <fwCore/base.hpp>
 
+#include "fwRuntime/helper.hpp"
+#include "fwRuntime/Convert.hpp"
 
 namespace fwRuntime
 {
 
 //------------------------------------------------------------------------------
 
-std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_ptr< ::fwRuntime::io::Validator > _validator , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _element )
+std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_ptr< ::fwRuntime::io::Validator > _validator , ::fwRuntime::ConfigurationElement::sptr _element )
 {
     SLM_ASSERT("_validator not instanced", _validator);
     SLM_ASSERT("_element not instanced", _element);
@@ -45,7 +47,7 @@ std::pair< bool , std::string > validateConfigurationElement( ::boost::shared_pt
 
 //------------------------------------------------------------------------------
 
-void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr pNode)
+void ConfigurationElement2XML(::fwRuntime::ConfigurationElement::sptr _cfgElement, xmlNodePtr pNode)
 {
     //ATTRIBUTES + VALUES
     std::map<std::string, std::string> attr = _cfgElement->getAttributes() ;
@@ -54,86 +56,67 @@ void ConfigurationElement2XML(::boost::shared_ptr< ::fwRuntime::ConfigurationEle
         xmlSetProp(pNode , xmlCharStrdup((iter_attr_cfe->first).c_str()), xmlCharStrdup((iter_attr_cfe->second).c_str()) ) ;
     }
     //ELEMENTS
-    for ( std::vector< ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > >::iterator iter = _cfgElement->begin() ; iter != _cfgElement->end() ; ++iter )
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, _cfgElement->getElements())
     {
-        xmlNodePtr child = xmlNewNode( NULL,  xmlCharStrdup( (*iter)->getName().c_str() ) );
+        xmlNodePtr child = xmlNewNode( NULL,  xmlCharStrdup( elt->getName().c_str() ) );
 
-        xmlAddChild(pNode, child ) ;
+        xmlAddChild(pNode, child) ;
         // If configuration element is a XML_TEXT_NODE : WARNING : even whitespace (non XML_TEXT_NODE) have been considered as valid XML_TEXT_NODE by BundleDescriptorReader!!!!
-        if( !(*iter)->getValue().empty() )
+        if( !elt->getValue().empty() )
         {
-            xmlNodeSetContent( child , xmlCharStrdup( (*iter)->getValue().c_str() ) ) ;
+            xmlNodeSetContent(child, xmlCharStrdup( elt->getValue().c_str() ));
         }
         // If configuration element is a XML_ELEMENT_NODE
         else
         {
-            ConfigurationElement2XML( (*iter), child) ;
+            ConfigurationElement2XML(elt, child);
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ConfigurationElement > getCfgAsAnExtension( ::boost::shared_ptr< ConfigurationElement > _config , std::string _extension_pt )
+ConfigurationElement::sptr getCfgAsAnExtension( ConfigurationElement::sptr config , std::string extension_pt )
 {
-    if( _config->hasAttribute("config") )
+    ConfigurationElement::sptr resultConfig;
+    if( config->hasAttribute("config") )
     {
-        std::string cfgContribution = _config->getExistingAttributeValue("config") ;
-        std::vector< ::boost::shared_ptr< ConfigurationElement > > cfgs = ::fwRuntime::getAllCfgForPoint( _extension_pt  ) ;
-        if( cfgs.empty() )
-        {
-            OSLM_FATAL( "No configuration contribution found for extension point " <<  _extension_pt);
-            return ::boost::shared_ptr< ConfigurationElement >() ;
-        }
+        std::string cfgContribution = config->getExistingAttributeValue("config") ;
+        std::vector< ConfigurationElement::sptr > cfgs = ::fwRuntime::getAllCfgForPoint( extension_pt  ) ;
+        OSLM_FATAL_IF( "No configuration contribution found for extension point " <<  extension_pt, cfgs.empty());
 
-        assert( !cfgs.empty() ) ; // the proposed configuration has not been found
-        std::vector< ::boost::shared_ptr< ConfigurationElement > >::iterator iter ;
         // Search for all matching contributions
-        std::vector< ::boost::shared_ptr< ConfigurationElement > > matchingCfg ;
-        for( iter = cfgs.begin() ; iter != cfgs.end() ; ++iter )
+        std::vector< ConfigurationElement::sptr > matchingCfg ;
+        BOOST_FOREACH(ConfigurationElement::sptr elt, cfgs)
         {
-            if( cfgContribution == (*iter)->getExistingAttributeValue("id") )
+            if( cfgContribution == elt->getExistingAttributeValue("id") )
             {
-                matchingCfg.push_back( *iter ) ;
+                matchingCfg.push_back( elt ) ;
             }
         }
-        // Normal case : only one matching contribution has been found
-        if( matchingCfg.size() == 1 )
-        {
-            return  *matchingCfg.begin() ;
-        }
-        // If several matching contributions
-        if( matchingCfg.size() > 1 )
-        {
-            std::stringstream msg;
-            msg << "Several contribution identified by " << cfgContribution << "( for cfg extension point " << _extension_pt << " )" << " has been found : the first one is returned";
-            OSLM_WARN( msg.str() );
 
-            return  *matchingCfg.begin() ;
-        }
         // If no contribution found
-        OSLM_FATAL( "No contribution matching the requested requirement (" << cfgContribution << " for extension point " << _extension_pt << " )" );
-        return ::boost::shared_ptr< ConfigurationElement >() ;
+        OSLM_FATAL_IF( "No contribution matching the requested requirement (" << cfgContribution
+                << " for extension point " << extension_pt << " )", matchingCfg.empty());
+
+        // Normal case : only one matching contribution has been found: matchingCfg.size == 1
+        resultConfig =  *matchingCfg.begin();
+
+        // If several matching contributions
+        OSLM_WARN_IF("Several contribution identified by " << cfgContribution << "( for cfg extension point " << extension_pt << " )"
+                << " has been found : the first one is returned", (matchingCfg.size() > 1));
     }
-    else
-    {
-        OSLM_WARN("Configuration has no config attribute" );
-        return ::boost::shared_ptr< ConfigurationElement >() ;
-    }
-    SLM_ASSERT("false not instanced", false);
-    return ::boost::shared_ptr< ConfigurationElement >() ;
+    SLM_WARN_IF("Configuration has no config attribute",  !config->hasAttribute("config"));
+    return resultConfig ;
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< ::boost::shared_ptr< ConfigurationElement > > getAllCfgForPoint( std::string _extension_pt )
+std::vector< ConfigurationElement::sptr > getAllCfgForPoint( std::string _extension_pt )
 {
-    std::vector< ::boost::shared_ptr< ConfigurationElement > > cfgElements ;
-
     using ::fwRuntime::ConfigurationElement;
 
-    typedef std::vector< ::boost::shared_ptr< ConfigurationElement > > ElementContainer;
+    typedef std::vector< ConfigurationElement::sptr > ElementContainer;
     typedef std::back_insert_iterator< ElementContainer > Inserter;
 
     ElementContainer    renderElements;
@@ -150,21 +133,18 @@ std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
     std::vector<std::string > ids ;
 
     using ::fwRuntime::ConfigurationElement;
-    typedef std::vector< ::boost::shared_ptr< ConfigurationElement > > ElementContainer;
+    typedef std::vector< ConfigurationElement::sptr > ElementContainer;
     typedef std::back_insert_iterator< ElementContainer > Inserter;
 
-    // Collects all contribued actions
+    // Collects all contributed actions
     ElementContainer    elements;
     Inserter            inserter(elements);
     ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt , inserter);
 
     // Creates all contributed action instances.
-    ElementContainer::const_iterator    iter;
-    for(iter = elements.begin(); iter != elements.end(); ++iter)
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, elements)
     {
-        std::string identifier = (*iter)->getAttributeValue("id");
-        ids.push_back(identifier) ;
-//      cfgElementMap[identifier]=*iter;
+        ids.push_back(elt->getAttributeValue("id")) ;
     }
     return ids ;
 }
@@ -173,55 +153,50 @@ std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
 
 std::string getInfoForPoint( std::string _extension_pt  )
 {
-    if( ! ::fwRuntime::findExtensionPoint( _extension_pt ) )
+    std::string info = "";
+    if(::fwRuntime::findExtensionPoint( _extension_pt ) )
     {
-        return "";
-    }
+        using ::fwRuntime::ConfigurationElement;
+        typedef std::vector< ConfigurationElement::sptr > ElementContainer;
+        typedef std::back_insert_iterator< ElementContainer > Inserter;
 
-    std::vector<std::string > ids ;
+        // Collects all contributed actions
+        ElementContainer    elements;
+        Inserter            inserter(elements);
+        ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
 
-    using ::fwRuntime::ConfigurationElement;
-    typedef std::vector< ::boost::shared_ptr< ConfigurationElement > > ElementContainer;
-    typedef std::back_insert_iterator< ElementContainer > Inserter;
-
-    // Collects all contribued actions
-    ElementContainer    elements;
-    Inserter            inserter(elements);
-    ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt , inserter);
-
-    // Creates all contributed action instances.
-    ElementContainer::const_iterator    iter;
-    for(iter = elements.begin(); iter != elements.end(); ++iter)
-    {
-        if( (*iter)->getName() == "info" && (*iter)->hasAttribute("text") )
+        // Creates all contributed action instances.
+        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, elements)
         {
-            return (*iter)->getAttributeValue("text");
+            if( elt->getName() == "info" && elt->hasAttribute("text") )
+            {
+                info = elt->getAttributeValue("text");
+                break;
+            }
         }
     }
-    return "" ;
+    return info;
 }
 
 //------------------------------------------------------------------------------
 
-std::map< std::string , ::boost::shared_ptr< ConfigurationElement > > getAllIdAndConfigurationElementsForPoint( std::string _extension_pt )
+std::map< std::string , ConfigurationElement::sptr > getAllIdAndConfigurationElementsForPoint( std::string _extension_pt )
 {
-    std::map<std::string, ::boost::shared_ptr< ConfigurationElement > > cfgElementMap ;
+    std::map<std::string, ConfigurationElement::sptr > cfgElementMap ;
 
     using ::fwRuntime::ConfigurationElement;
-    typedef std::vector< ::boost::shared_ptr< ConfigurationElement > > ElementContainer;
+    typedef std::vector< ConfigurationElement::sptr > ElementContainer;
     typedef std::back_insert_iterator< ElementContainer > Inserter;
 
-    // Collects all contribued actions
+    // Collects all contributed actions
     ElementContainer    elements;
     Inserter            inserter(elements);
-    ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt , inserter);
+    ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
 
     // Creates all contributed action instances.
-    ElementContainer::const_iterator    iter;
-    for(iter = elements.begin(); iter != elements.end(); ++iter)
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, elements)
     {
-        std::string identifier = (*iter)->getAttributeValue("id");
-        cfgElementMap[identifier]=*iter;
+        cfgElementMap[elt->getAttributeValue("id")]= elt;
     }
     return cfgElementMap ;
 }

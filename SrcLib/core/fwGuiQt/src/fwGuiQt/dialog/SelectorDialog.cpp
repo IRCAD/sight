@@ -29,7 +29,9 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog() : m_title(""), m_message("")
+SelectorDialog::SelectorDialog()
+    : m_message(""),
+    m_title("")
 {}
 
 //------------------------------------------------------------------------------

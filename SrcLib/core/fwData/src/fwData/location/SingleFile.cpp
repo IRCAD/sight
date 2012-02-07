@@ -40,6 +40,7 @@ void SingleFile::deepCopy( SingleFile::csptr _source )
     ::fwTools::Object::deepCopyOfChildren( _source );
     this->m_path = _source->m_path;
 }
+
 //------------------------------------------------------------------------------
 
 SingleFile::sptr SingleFile::SingleFileFactory(::boost::filesystem::path _path)

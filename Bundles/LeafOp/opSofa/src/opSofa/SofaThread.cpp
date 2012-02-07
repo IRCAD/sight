@@ -10,15 +10,16 @@
  * @param meshs : vector to the list of mesh
  * @param service : pointer to the SofaService object
  */
-SofaThread::SofaThread(SofaBusiness* sofa, std::vector<fwData::TriangularMesh::sptr> *meshs, ::fwServices::IService::sptr service)
+SofaThread::SofaThread(SofaBusiness* sofa, std::vector< ::fwData::Mesh::sptr > *meshs, ::fwServices::IService::sptr service)
 {
     // Update attributs
     this->sofa = sofa;
     this->meshs = meshs;
     this->service = service;
+    this->msg = ::fwComEd::MeshMsg::New();
 
     // Create message
-    msg->addEvent(::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED);
+    msg->addEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED);
 
     //To trigger refreshVtk from the separated thread in the run() method
     connect(this, SIGNAL(refreshVtkRequestSignal()), this, SLOT(refreshVtk()));
@@ -34,12 +35,12 @@ void SofaThread::run()
 {
     stopRun = false;
     QTime time;
-    
+
     unsigned int step = sofa->getTimeStepAnimation();
     while(!stopRun) {
         time.start();
 
-        // Locks the mutex 
+        // Locks the mutex
         mutex.lock();
 
         // Calculate deformation by sofa
@@ -48,7 +49,7 @@ void SofaThread::run()
         // Emit signal for refresh screen
         emit refreshVtkRequestSignal();
 
-        // Put the thread to sleep 
+        // Put the thread to sleep
         condition.wait(&mutex);
 
         // Unlocks the mutex
@@ -61,7 +62,7 @@ void SofaThread::run()
         } else {
             this->msleep(1);
         }
-    }    
+    }
 }
 
 /**

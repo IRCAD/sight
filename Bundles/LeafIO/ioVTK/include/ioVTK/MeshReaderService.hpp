@@ -10,15 +10,14 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 
+#include <fwServices/ObjectMsg.hpp>
+#include <fwData/Mesh.hpp>
+
 #include <io/IReader.hpp>
 
 
 #include "ioVTK/export.hpp"
 
-namespace fwData
-{
-    class TriangularMesh;
-}
 
 namespace ioVTK
 {
@@ -27,12 +26,12 @@ namespace ioVTK
  * @brief   Mesh reader service.
  * @class   MeshReaderService .
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
  * Service reading a VTK mesh using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::TriangularMesh )
+ * REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh )
  */
 class IOVTK_CLASS_API MeshReaderService : public ::io::IReader
 {
@@ -104,7 +103,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    IOVTK_API void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.
@@ -120,12 +119,12 @@ private :
     /**
     * @brief Load a VTK mesh.
     * @param[in] _vtkFile ::boost::filesystem::path.
-    * @param[out] _pTriangularMesh ::boost::shared_ptr< ::fwData::TriangularMesh >.
+    * @param[out] _pMesh ::boost::shared_ptr< ::fwData::Mesh >.
     * @return bool.
     *
     * This method is used to load a mesh using the file path.
     */
-    void loadMesh( const ::boost::filesystem::path _vtkFile, ::boost::shared_ptr< ::fwData::TriangularMesh > _pTriangularMesh );
+    void loadMesh( const ::boost::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
 
     /**
      * @brief Notification method.

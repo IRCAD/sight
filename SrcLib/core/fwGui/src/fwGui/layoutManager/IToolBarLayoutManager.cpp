@@ -77,7 +77,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
             }
             m_actionInfo.push_back(info);
         }
-        if( (*iter)->getName() == "separator" )
+        else if( (*iter)->getName() == "separator" )
         {
             ActionInfo info;
             info.m_isSeparator = true;
@@ -89,13 +89,13 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             m_actionInfo.push_back( info ) ;
         }
-        if( (*iter)->getName() == "spacer" )
+        else if( (*iter)->getName() == "spacer" )
         {
             ActionInfo info;
             info.m_isSpacer = true;
             m_actionInfo.push_back( info ) ;
         }
-        if( (*iter)->getName() == "menu" )
+        else if( (*iter)->getName() == "menu" )
         {
             ActionInfo info;
             info.m_isMenu = true;
@@ -110,7 +110,13 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
             }
             m_actionInfo.push_back( info ) ;
         }
+        else if( (*iter)->getName() == "editor" )
+        {
+            ActionInfo info;
+            info.m_isEditor = true;
 
+            m_actionInfo.push_back( info ) ;
+        }
     }
 }
 
@@ -128,6 +134,11 @@ void IToolBarLayoutManager::destroyActions()
         menu->destroyContainer();
     }
     m_menus.clear();
+    BOOST_FOREACH( ::fwGui::container::fwContainer::sptr container, m_containers)
+    {
+        container->destroyContainer();
+    }
+    m_containers.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -142,6 +153,13 @@ std::vector< ::fwGui::container::fwMenuItem::sptr > IToolBarLayoutManager::getMe
 std::vector< ::fwGui::container::fwMenu::sptr > IToolBarLayoutManager::getMenus()
 {
     return this->m_menus;
+}
+
+//-----------------------------------------------------------------------------
+
+std::vector< ::fwGui::container::fwContainer::sptr > IToolBarLayoutManager::getContainers()
+{
+    return this->m_containers;
 }
 
 //-----------------------------------------------------------------------------

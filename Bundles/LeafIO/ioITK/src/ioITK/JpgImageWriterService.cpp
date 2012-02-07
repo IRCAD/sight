@@ -73,6 +73,7 @@ void JpgImageWriterService::configureWithIHM()
         _sDefaultPath = result->getFolder();
         m_fsImagePath = result->getFolder();
         m_bServiceIsConfigured = true;
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
 }
 

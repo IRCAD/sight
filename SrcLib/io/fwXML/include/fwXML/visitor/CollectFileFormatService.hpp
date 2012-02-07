@@ -7,15 +7,13 @@
 #ifndef _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
 #define _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
 
-#include "fwXML/config.hpp"
 #include <fwData/visitor/BreathFirst.hpp>
 #include <fwXML/IFileFormatService.hpp>
 
+#include "fwXML/config.hpp"
 
 namespace visitor
 {
-
-
 
 /**
  * @brief visit all objects then store FileFormatService if any
@@ -29,7 +27,7 @@ public:
     FWXML_API virtual ~CollectFileFormatService();
 
     // override call CollectFileFormatService service for object
-    FWXML_API virtual void visit( ::boost::shared_ptr< ::fwTools::Object > obj);
+    FWXML_API virtual void visit( ::fwTools::Object::sptr obj);
 
     /// override the behavior when visiting composite by visit its fields *and* values in its map
     FWXML_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);

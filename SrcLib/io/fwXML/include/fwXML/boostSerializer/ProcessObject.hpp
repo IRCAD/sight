@@ -67,7 +67,5 @@ void serialize(Archive & ar, ::fwData::ProcessObject &_algo, const unsigned int 
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::ProcessObject);
-
 #endif // ALGO_SERIALIZER_HPP
 

@@ -30,11 +30,11 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (XMLPartitioner)(::fwCore::BaseObject), (()), new XMLPartitioner );
 
-    FWXML_API static ::boost::shared_ptr< XMLPartitioner > getDefault()
+    FWXML_API static XMLPartitioner::sptr getDefault()
     {
         if ( m_ClassInstance.get() == NULL )
         {
-            m_ClassInstance = ::boost::shared_ptr< XMLPartitioner >( new XMLPartitioner );
+            m_ClassInstance = XMLPartitioner::NewSptr();
         }
         return m_ClassInstance;
     }
@@ -43,31 +43,31 @@ public:
 
     /// manage the new object son
     /// return a xml pointer node on xml_unit (XMLAggregator) containing son ( not mandatory )
-    FWXML_API xmlNodePtr manage( ::boost::shared_ptr< fwTools::Object > father, ::boost::shared_ptr< fwTools::Object > son );
+    FWXML_API xmlNodePtr manage( ::fwTools::Object::sptr father, ::fwTools::Object::sptr son );
 
     /// allow to change Path policy
-    FWXML_API void setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy);
+    FWXML_API void setPathPolicy( IPathPolicy::sptr newPathPolicy);
 
     /// allow to change split policy
-    FWXML_API void setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSplitPolicy);
+    FWXML_API void setSplitPolicy( ISplitPolicy::sptr newSplitPolicy);
 
 protected :
 
     /// test if object contain extra data (IFileFormat Exist) : if yes update FileFormat.path/dir
-    void manageExtraData( ::boost::shared_ptr< fwTools::Object > obj );
+    void manageExtraData( ::fwTools::Object::sptr obj );
 
     FWXML_API XMLPartitioner();
 
-    std::list< ::boost::shared_ptr< XMLAggregator > > m_aggregators;
+    std::list< XMLAggregator::sptr > m_aggregators;
 
     //WINSUX
-    FWXML_API static ::boost::shared_ptr< XMLPartitioner > m_ClassInstance;
+    FWXML_API static XMLPartitioner::sptr m_ClassInstance;
 
     /// manage file name policy
-    ::boost::shared_ptr< IPathPolicy > m_pathPolicy;
+    IPathPolicy::sptr m_pathPolicy;
 
     /// manage file splitting policy
-    ::boost::shared_ptr< ISplitPolicy > m_splitPolicy;
+    ISplitPolicy::sptr m_splitPolicy;
 };
 
 }

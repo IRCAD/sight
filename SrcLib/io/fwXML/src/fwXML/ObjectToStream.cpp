@@ -29,8 +29,7 @@ const std::string ObjectToStream::toString( ::fwTools::Object::sptr object, unsi
 {
     std::stringstream os;
 
-    // FIXME ( for test )
-    ::fwXML::XMLPartitioner::getDefault()->setSplitPolicy( ::boost::shared_ptr< ::fwXML::ISplitPolicy > ( new ::fwXML::NeverSplitPolicy )  );
+    ::fwXML::XMLPartitioner::getDefault()->setSplitPolicy( ::fwXML::NeverSplitPolicy::New() );
 
     if ( option == 1 || option == 2 )
     {
@@ -79,7 +78,7 @@ const std::string ObjectToStream::toString( ::fwTools::Object::sptr object, unsi
 
         if ( translator == NULL )
         {
-            translator = ::boost::shared_ptr< ::fwXML::XMLTranslator >( new ::fwXML::TrivialXMLTranslator );
+            translator = ::fwXML::TrivialXMLTranslator::New();
             OSLM_WARN( "no XMLTranslator for" << object->className() << "(" << object.get() << ") use Trivial XML Translator");
         }
 

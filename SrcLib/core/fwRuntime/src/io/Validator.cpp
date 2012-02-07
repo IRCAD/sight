@@ -112,7 +112,7 @@ void Validator::initializeContext()
     }
 
     // Create XML schemas validation context
-    if ( m_schemaValidContext = SchemaValidCtxtSptr( xmlSchemaNewValidCtxt(m_schema.get()), xmlSchemaFreeValidCtxt) )
+    if ( (m_schemaValidContext = SchemaValidCtxtSptr( xmlSchemaNewValidCtxt(m_schema.get()), xmlSchemaFreeValidCtxt)) )
     {
         // Set the structured error callback
         xmlSchemaSetValidStructuredErrors( m_schemaValidContext.get(), Validator::ErrorHandler, this );

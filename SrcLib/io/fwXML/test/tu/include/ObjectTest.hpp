@@ -14,6 +14,13 @@
 class ObjectTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ObjectTest );
+    CPPUNIT_TEST( testColor );
+    CPPUNIT_TEST( testMaterial );
+    CPPUNIT_TEST( testArray );
+    CPPUNIT_TEST( testMesh );
+    CPPUNIT_TEST( testTriangularMesh );
+    CPPUNIT_TEST( testTransfertFunction );
+    CPPUNIT_TEST( testPatientDB );
     CPPUNIT_TEST( testStructureTraits );
     CPPUNIT_TEST( testROITraits );
     CPPUNIT_TEST( testReconstructionTraits );
@@ -25,8 +32,15 @@ public:
     void setUp();
     void tearDown();
 
-    static ::fwData::Object::sptr serializeOldVersion(std::string fileName, ::fwData::Object::sptr obj1);
+    static ::fwData::Object::sptr serialize(std::string fileName, ::fwData::Object::sptr obj1);
 
+    void testMaterial();
+    void testColor();
+    void testArray();
+    void testMesh();
+    void testTriangularMesh();
+    void testTransfertFunction();
+    void testPatientDB();
     void testStructureTraits();
     void testROITraits();
     void testReconstructionTraits();

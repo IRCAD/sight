@@ -25,7 +25,7 @@
 #include <vtkPlaneCollection.h>
 #include <vtkPolyDataNormals.h>
 
-#include "visuVTKAdaptor/TriangularMesh.hpp"
+#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/Reconstruction.hpp"
 
 //VAG DEBUG
@@ -91,7 +91,7 @@ void Reconstruction::createMeshService()
     ::fwData::Reconstruction::sptr reconstruction
         = this->getObject < ::fwData::Reconstruction >();
 
-    ::fwData::TriangularMesh::sptr mesh = reconstruction->getTriangularMesh();
+    ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
 
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
@@ -99,10 +99,10 @@ void Reconstruction::createMeshService()
         ::fwRenderVTK::IVtkAdaptorService::sptr meshService;
         meshService = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
                 mesh,
-                "::visuVTKAdaptor::TriangularMesh" );
+                "::visuVTKAdaptor::Mesh" );
         SLM_ASSERT("meshService not instanced", meshService);
-        ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor
-            = TriangularMesh::dynamicCast(meshService);
+        ::visuVTKAdaptor::Mesh::sptr meshAdaptor
+            = Mesh::dynamicCast(meshService);
 
         meshService->setRenderService( this->getRenderService() );
         meshService->setRenderId     ( this->getRenderId()      );
@@ -110,7 +110,7 @@ void Reconstruction::createMeshService()
         meshService->setTransformId  ( this->getTransformId() );
 
         meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
-        meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
+        //meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
         meshAdaptor->setShowClippedPart ( true );
         meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
         meshAdaptor->setAutoResetCamera ( m_autoResetCamera );
@@ -121,7 +121,7 @@ void Reconstruction::createMeshService()
         m_meshService = meshService;
         this->registerService(meshService);
         OSLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
-        OSLM_TRACE("Mesh nb points : "<< mesh->getNumPoints());
+        OSLM_TRACE("Mesh nb points : "<< mesh->getNumberOfPoints());
     }
 }
 
@@ -144,11 +144,11 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
         ::fwRenderVTK::IVtkAdaptorService::sptr meshService = m_meshService.lock();
 
         ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-        ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor = TriangularMesh::dynamicCast(meshService);
-        meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
+        ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
+        //meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
 
         meshAdaptor->setMaterial     ( reconstruction->getMaterial()       );
-        meshAdaptor->swap            ( reconstruction->getTriangularMesh() );
+        meshAdaptor->swap            ( reconstruction->getMesh() );
         meshAdaptor->updateVisibility( reconstruction->getIsVisible()      );
 
     }
@@ -177,7 +177,7 @@ void Reconstruction::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwT
 
         if (msg && msg->hasEvent(::fwComEd::ReconstructionMsg::MESH))
         {
-            //updateTriangulaMesh( reconstruction->getTriangularMesh() );
+            //updateTriangulaMesh( reconstruction->getMesh() );
             this->doUpdate();
         }
         else if (msg && msg->hasEvent(::fwComEd::ReconstructionMsg::VISIBILITY))
@@ -211,8 +211,8 @@ void Reconstruction::setForceHide(bool hide)
     if (!m_meshService.expired())
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr meshService = m_meshService.lock();
-        ::visuVTKAdaptor::TriangularMesh::sptr meshAdaptor
-            = TriangularMesh::dynamicCast(meshService);
+        ::visuVTKAdaptor::Mesh::sptr meshAdaptor
+            = Mesh::dynamicCast(meshService);
 
         if (meshAdaptor)
         {

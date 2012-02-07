@@ -32,9 +32,9 @@ void RuntimeTest::tearDown()
 void RuntimeTest::testRuntime()
 {
     // Bundles location
-    boost::filesystem::path location = boost::filesystem::current_path() / "Bundles/";
+    ::boost::filesystem::path location = ::boost::filesystem::current_path() / "Bundles/";
 
-    if (boost::filesystem::exists(location))
+    if (::boost::filesystem::exists(location))
     {
         ::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
 

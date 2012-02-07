@@ -275,8 +275,7 @@ void IAdaptor::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::F
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
-    this->stop();
-    this->start();
+    doSwap();
 }
 
 //-----------------------------------------------------------------------------

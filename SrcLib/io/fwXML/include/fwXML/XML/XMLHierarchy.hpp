@@ -31,22 +31,22 @@ namespace fwXML
  * aggregation unit for each XML class
  * @author IRCAD (Research and Development Team).
  */
-class FWXML_CLASS_API XMLHierarchy // WINSUW : public Singleton< XMLHierarchy >
+class FWXML_CLASS_API XMLHierarchy
 {
 public:
 
-    typedef std::map< ::boost::weak_ptr< fwTools::Object >, ::boost::weak_ptr< fwTools::Object > >                      ChildFatherMap;
-    typedef std::map< ::boost::weak_ptr< fwTools::Object >, std::set< ::boost::weak_ptr< fwTools::Object > >  >         FatherChildrenMap;
-    typedef std::map< ::boost::weak_ptr< fwTools::Object >, xmlNodePtr>                                     ObjectXMLNodeMap;
-    typedef std::map< ::boost::weak_ptr< fwTools::Object >, ::boost::shared_ptr<XMLAggregator>  >                   ObjectAggregatorMap;
+    typedef std::map< ::fwTools::Object::wptr, ::fwTools::Object::wptr >               ChildFatherMap;
+    typedef std::map< ::fwTools::Object::wptr, std::set< ::fwTools::Object::wptr >  >  FatherChildrenMap;
+    typedef std::map< ::fwTools::Object::wptr, xmlNodePtr>                             ObjectXMLNodeMap;
+    typedef std::map< ::fwTools::Object::wptr, XMLAggregator::sptr >                   ObjectAggregatorMap;
 
 
     // WINSUX friend class Singleton< XMLHierarchy >;
-        FWXML_API static ::boost::shared_ptr< XMLHierarchy > getDefault()
+    FWXML_API static SPTR(XMLHierarchy) getDefault()
     {
         if ( m_ClassInstance.get() == NULL )
         {
-            m_ClassInstance = ::boost::shared_ptr< XMLHierarchy >( new XMLHierarchy );
+            m_ClassInstance = SPTR(XMLHierarchy)( new XMLHierarchy );
         }
         return m_ClassInstance;
     }
@@ -115,8 +115,7 @@ protected :
     ObjectAggregatorMap m_mapObjectAggregator;
 
     //WINSUX
-    FWXML_API static ::boost::shared_ptr< XMLHierarchy > m_ClassInstance;
-
+    FWXML_API static SPTR(XMLHierarchy) m_ClassInstance;
 
 };
 

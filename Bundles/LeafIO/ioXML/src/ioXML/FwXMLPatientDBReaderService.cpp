@@ -95,8 +95,9 @@ void FwXMLPatientDBReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
+        _sDefaultPath = result->getPath().parent_path();
         m_fsPatientDBPath = result->getPath();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         m_bServiceIsConfigured = true;
     }
 }
@@ -148,19 +149,20 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwData::PatientDB::sptr FwXMLPatientDBReaderService::createPatientDB( const ::boost::filesystem::path inrFileDir )
+::fwData::PatientDB::sptr FwXMLPatientDBReaderService::createPatientDB( const ::boost::filesystem::path xmlFile )
 {
     SLM_TRACE_FUNC();
-    ::fwXML::reader::FwXMLObjectReader myLoader;
+    ::fwXML::reader::FwXMLObjectReader::NewSptr myLoader;
     ::fwData::PatientDB::sptr pPatientDB;
 
-    myLoader.setFile(inrFileDir);
+    myLoader->setFile(xmlFile);
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myLoader.addHandler( progressMeterGUI );
-        myLoader.read();
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading PatientDB");
+        myLoader->addHandler( progressMeterGUI );
+        myLoader->read();
+        pPatientDB = ::fwData::PatientDB::dynamicCast( myLoader->getObject() );
     }
     catch (const std::exception & e)
     {
@@ -168,15 +170,11 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
         ss << "Warning during loading : ";
         ss << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
-        return pPatientDB;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
-        return pPatientDB;
     }
-
-    pPatientDB = ::fwData::PatientDB::dynamicCast( myLoader.getObject() );
 
     return pPatientDB;
 }
@@ -185,22 +183,19 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 
 void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
-    OSLM_TRACE("FwXMLPatientDBReaderService::updating()  m_fsPatientDBPath:"<<  m_fsPatientDBPath);
-
     if( m_bServiceIsConfigured )
     {
-
         ::fwData::PatientDB::sptr patientDB;
-        if ( isAnFwxmlArchive( m_fsPatientDBPath ) )
+        if ( this->isAnFwxmlArchive( m_fsPatientDBPath ) )
         {
-            patientDB = manageZipAndCreatePatientDB( m_fsPatientDBPath );
+            patientDB = this->manageZipAndCreatePatientDB( m_fsPatientDBPath );
         }
         else
         {
-            patientDB = createPatientDB( m_fsPatientDBPath );
+            patientDB = this->createPatientDB( m_fsPatientDBPath );
         }
 
-        if ( patientDB != NULL )
+        if (patientDB)
         {
             if( patientDB->getPatientSize() > 0 )
             {
@@ -218,18 +213,10 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
             }
             else
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Image Reader",
-                        "File format unknown. Retry with another file reader.",
+                ::fwGui::dialog::MessageDialog::showMessageDialog("PatiendDB Reader",
+                        "Sorry, no Patient found in the file.",
                         ::fwGui::dialog::IMessageDialog::WARNING);
             }
-        }
-        else
-        {
-            std::stringstream xmlFile;
-            xmlFile << "Sorry, the xml file \""
-            << m_fsPatientDBPath.string()
-            << "\" does not content a PatientDB. This xml file has not been loaded.";
-            ::fwGui::dialog::MessageDialog::showMessageDialog("FwXML PatientDB Reader", xmlFile.str(), ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -273,12 +260,28 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
     zip->unpackFolder( _pArchivePath, destFolder );
 
     // Load
-    ::boost::filesystem::path xmlfile = destFolder / "patient.xml";
-    patientDB = createPatientDB( xmlfile );
-
+    ::boost::filesystem::path xmlFile;
+    if(::boost::filesystem::exists(destFolder/"patient.xml"))
+    {
+        xmlFile = destFolder / "patient.xml";
+        patientDB = this->createPatientDB( xmlFile );
+    }
+    else if(::boost::filesystem::exists(destFolder/"root.xml"))
+    {
+        xmlFile = destFolder / "root.xml";
+        patientDB = this->createPatientDB( xmlFile );
+    }
+    else
+    {
+        std::stringstream stream;
+        stream << "Sorry, "<<_pArchivePath<< " is not a valid fxz file."
+               << this->getObject< ::fwTools::Object >()->getRootedClassname();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                        stream.str(),
+                        ::fwGui::dialog::IMessageDialog::WARNING);
+    }
     // Remove temp folder
     ::boost::filesystem::remove_all( destFolder );
-
     return patientDB;
 }
 

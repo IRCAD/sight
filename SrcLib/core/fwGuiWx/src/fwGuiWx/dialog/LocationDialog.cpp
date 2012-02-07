@@ -33,62 +33,57 @@ namespace dialog
 LocationDialog::LocationDialog() :
         m_style(wxFD_DEFAULT_STYLE),
         m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::setTitle(const std::string &title)
-{
-    m_title = title;
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
     ::fwData::location::ILocation::sptr location;
+    const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
+    wxString path = ::fwWX::std2wx( defaultPath.parent_path().string() );
+    wxString title = ::fwWX::std2wx(this->getTitle());
 
     if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
     {
         wxString file = wxFileSelector(
-            ::fwWX::std2wx(m_title) ,
-            ::fwWX::std2wx( m_path.parent_path().string() ),
-            wxT(""),
-            wxT(""),
-            fileFilters(),
-            m_style,
-            wxTheApp->GetTopWindow() );
+                title,
+                path,
+                wxT(""),
+                wxT(""),
+                fileFilters(),
+                m_style,
+                wxTheApp->GetTopWindow() );
 
         if( file.IsEmpty() == false )
         {
-            ::boost::filesystem::path bpath( ::fwWX::wx2std(file)  );
+            ::boost::filesystem::path bpath( ::fwWX::wx2std(file) );
             location = ::fwData::location::SingleFile::New(bpath);
         }
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
     {
         wxString file = wxDirSelector(
-                ::fwWX::std2wx(m_title) ,
-                 ::fwWX::std2wx( m_path.parent_path().string() ),
-                  m_style,
-                  wxDefaultPosition,
-                  wxTheApp->GetTopWindow() );
+                title,
+                path,
+                m_style,
+                wxDefaultPosition,
+                wxTheApp->GetTopWindow() );
 
         if( file.IsEmpty() == false )
         {
-            ::boost::filesystem::path bpath( ::fwWX::wx2std(file)  );
+            ::boost::filesystem::path bpath( ::fwWX::wx2std(file) );
             location = ::fwData::location::Folder::New(bpath);
         }
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
     {
         wxFileDialog *fileDialog = new wxFileDialog(wxTheApp->GetTopWindow(),
-                                                   ::fwWX::std2wx(m_title),
-                                                   ::fwWX::std2wx( m_path.parent_path().string() ),
-                                                   "",
-                                                   fileFilters(),
-                                                   m_style | wxFD_MULTIPLE);
+                title,
+                path,
+                "",
+                fileFilters(),
+                m_style | wxFD_MULTIPLE);
 
         if (fileDialog->ShowModal() != wxID_CANCEL)
         {
@@ -105,31 +100,7 @@ void LocationDialog::setTitle(const std::string &title)
             location = multiFiles;
         }
     }
-
-
     return location;
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::setDefaultLocation( ::fwData::location::ILocation::csptr loc)
-{
-    ::fwData::location::SingleFile::csptr singleFile;
-    singleFile = ::fwData::location::SingleFile::dynamicConstCast(loc);
-    if (singleFile)
-    {
-        m_path = singleFile->getPath() ;
-    }
-
-    ::fwData::location::Folder::csptr folder;
-    folder = ::fwData::location::Folder::dynamicConstCast(loc);
-    if (folder)
-    {
-        m_path = folder->getFolder() ;
-    }
-
-    SLM_FATAL_IF( "unsupported location",  !singleFile && !folder );
-
 }
 
 //------------------------------------------------------------------------------

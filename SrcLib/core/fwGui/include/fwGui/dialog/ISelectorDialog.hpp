@@ -20,7 +20,7 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 /**
- * @brief   ISelectorDialog allowing the choice of an element among severals (_selections)
+ * @brief   ISelectorDialog allows the choice of an element among several (_selections)
  * @class   ISelectorDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
@@ -57,7 +57,6 @@ public:
 
     /**
      * @brief Show the selector and return the selection.
-     * @param[in] _parent Parent container for the selector.
      */
     FWGUI_API virtual std::string show() = 0;
 

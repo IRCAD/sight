@@ -38,6 +38,4 @@ void serialize(Archive & ar, ::fwTools::Field &_object, const unsigned int versi
 
 
 } }
-INSTANTIATE_SERIALIZER(fwTools::Field);
-
 #endif // _LABELEDOBJECT_SERIALIZER_HPP

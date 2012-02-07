@@ -27,11 +27,13 @@ class FWXML_CLASS_API UniquePathPolicy : public IPathPolicy
 
 public :
 
+    fwCoreClassDefinitionsWithFactoryMacro((UniquePathPolicy)(IPathPolicy), ( () ), new UniquePathPolicy );
+
     /**
      * @brief Constructor
      **/
     FWXML_API UniquePathPolicy();
-     
+
      /**
       * @brief extra constructor which set the unique path
       */
@@ -42,9 +44,9 @@ public :
      * @brief Destructor
      **/
     FWXML_API ~UniquePathPolicy();
-     
+
      /**
-      * @brief set the unique filename 
+      * @brief set the unique filename
       * @note do not not forget the .xml
       * @warning the path produced is always the same USE ONLY WE NeverSplitPolicy !!!!
      **/
@@ -60,13 +62,13 @@ public :
      *
      * @return path of the Object
      **/
-     FWXML_API virtual ::boost::filesystem::path getPath(::boost::shared_ptr < ::fwTools::Object > obj ) ;
-     
+     FWXML_API virtual ::boost::filesystem::path getPath(::fwTools::Object::sptr obj ) ;
+
 protected :
-    
+
     ::boost::filesystem::path m_uniquePath;
-    
-     
+
+
 
  }; //class UniquePathPolicy
 

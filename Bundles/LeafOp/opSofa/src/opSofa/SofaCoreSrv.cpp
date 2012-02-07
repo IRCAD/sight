@@ -7,7 +7,7 @@
 #include <fwData/Integer.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Vector.hpp>
-#include <fwDataIO/reader/TriangularMeshReader.hpp>
+#include <fwDataIO/reader/MeshReader.hpp>
 #include <QMessageBox>
 
 
@@ -43,7 +43,7 @@ void SofaCoreSrv::configuring() throw ( ::fwTools::Failed )
             this->addMesh("./Bundles/opSofa_0-1/mors2.trian", "mors2");
             this->addMesh("./Bundles/opSofa_0-1/cam.trian", "cam");
         }
-    } 
+    }
 }
 
 /**
@@ -70,7 +70,7 @@ void SofaCoreSrv::stopping() throw ( ::fwTools::Failed )
 void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
     if (msg->hasEvent("NEW_SOFA_SCENE")) {
-    
+
         // Delete object sofa
         delete sofa;
 
@@ -86,7 +86,7 @@ void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools
 
         // Apply at sofa the number of image by second
         sofa->setTimeStepAnimation(1000/50);
-        
+
         if (sofa) {
             // if animation is running
             if (sofa->isAnimate()) {
@@ -99,7 +99,7 @@ void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools
         } else {
             QMessageBox::warning(0, "Warning", "To launch animation you must first load scene file !");
         }
-        
+
     }
 
     else if (msg->hasEvent("START_STOP_SOFA")) {
@@ -167,7 +167,7 @@ void SofaCoreSrv::updating( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools
                     idTool2 = id->value();
                 }
                 stage++;
-            }  
+            }
         }
     }
 }
@@ -196,22 +196,22 @@ void SofaCoreSrv::info ( std::ostream &_sstream )
 void SofaCoreSrv::addMesh(std::string meshPath, std::string meshName)
 {
     // Create mesh
-    ::fwData::TriangularMesh::sptr mesh = ::boost::dynamic_pointer_cast< fwData::TriangularMesh >( ::fwTools::Factory::buildData("::fwData::TriangularMesh") );
+    ::fwData::Mesh::NewSptr mesh;
     mesh->setName(meshName);
-    ::fwDataIO::reader::TriangularMeshReader reader1;
+    ::fwDataIO::reader::MeshReader reader1;
     reader1.setObject(mesh);
     reader1.setFile(meshPath);
     reader1.read();
 
     // Create reconstruction
-    ::fwData::Reconstruction::sptr reconstruction = ::boost::dynamic_pointer_cast< fwData::Reconstruction >( ::fwTools::Factory::buildData("::fwData::Reconstruction") );
+    ::fwData::Reconstruction::NewSptr reconstruction;
     reconstruction->setCRefStructureType("OrganType");
     reconstruction->setIsVisible(true);
     reconstruction->setGenerated3D(true);
     reconstruction->setMaskGenerated(true);
     reconstruction->setIsAutomatic(true);
     reconstruction->setAvgVolume(-1);
-    reconstruction->setTriangularMesh(mesh);
+    reconstruction->setMesh(mesh);
     reconstruction->setOrganName(meshName);
 
     // add reconstruction to acquisition

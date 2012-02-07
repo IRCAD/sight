@@ -45,7 +45,7 @@ void XMLStream::toStream( xmlDocPtr doc, std::ostream &os )
 {
     void *IOContexte = &os;
 
-    char *encoding="UTF-8";
+    const char *encoding="UTF-8";
     int formatWithSpace=1;
     xmlCharEncodingHandlerPtr handler = xmlFindCharEncodingHandler(encoding);
     //xmlCharEncodingHandlerPtr handler = xmlGetCharEncodingHandler(XML_CHAR_ENCODING_UTF8); doesnt work :/

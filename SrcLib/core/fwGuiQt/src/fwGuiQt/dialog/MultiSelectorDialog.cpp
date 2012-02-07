@@ -29,7 +29,9 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-MultiSelectorDialog::MultiSelectorDialog() : m_title(""), m_message("")
+MultiSelectorDialog::MultiSelectorDialog() 
+    : m_message(""),
+    m_title("")
 {}
 
 //------------------------------------------------------------------------------

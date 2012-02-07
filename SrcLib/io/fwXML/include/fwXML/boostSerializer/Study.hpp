@@ -65,7 +65,5 @@ void serialize(Archive & ar, ::fwData::Study & _study, const unsigned int versio
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::Study);
-
 #endif // _FWXML_BOOSTSERIALIZER_STUDY_HPP_
 

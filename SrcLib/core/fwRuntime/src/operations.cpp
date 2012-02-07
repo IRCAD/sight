@@ -50,14 +50,17 @@ private:
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & identifier, const std::string & pointIdentifier )
+ConfigurationElement::sptr findConfigurationElement( const std::string & identifier, const std::string & pointIdentifier )
 {
-    typedef std::vector< ::boost::shared_ptr< ConfigurationElement > >  ElementContainer;
-
+    typedef std::vector< ConfigurationElement::sptr >  ElementContainer;
+    ConfigurationElement::sptr resultConfig;
     ElementContainer            elements = getAllConfigurationElementsForPoint< ElementContainer >( pointIdentifier );
     ElementContainer::iterator  foundElement = ::std::find_if( elements.begin(), elements.end(), ConfigurationElementIdentifierPredicate(identifier) );
-
-    return (foundElement != elements.end()) ? *foundElement : ::boost::shared_ptr< ConfigurationElement >();
+    if(foundElement != elements.end())
+    {
+        resultConfig = *foundElement;
+    }
+    return resultConfig;
 }
 
 //------------------------------------------------------------------------------
@@ -94,7 +97,7 @@ const ::boost::filesystem::path getBundleResourcePath( ::boost::shared_ptr<Bundl
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath( ::boost::shared_ptr<ConfigurationElement> element, const ::boost::filesystem::path &path) throw()
+const ::boost::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element, const ::boost::filesystem::path &path) throw()
 {
     return getBundleResourcePath(element->getBundle(), path);
 }
@@ -116,11 +119,11 @@ void addBundles( const ::boost::filesystem::path & directory) throw(RuntimeExcep
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwRuntime::profile::Profile > startProfile( const ::boost::filesystem::path & path )
+::fwRuntime::profile::Profile::sptr startProfile( const ::boost::filesystem::path & path )
 {
     try
     {
-        ::boost::shared_ptr< ::fwRuntime::profile::Profile >   profile = ::fwRuntime::io::ProfileReader::createProfile(path);
+        ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::io::ProfileReader::createProfile(path);
         profile->start();
         return profile;
     }

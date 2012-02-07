@@ -12,7 +12,7 @@
 
 #include <fwCore/base.hpp>
 
-#include "vtkIO/vtk.hpp"
+#include "vtkIO/helper/Mesh.hpp"
 #include "vtkIO/MeshWriter.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
@@ -43,26 +43,25 @@ void MeshWriter::write()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
+    ::fwData::Mesh::sptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
-    vtkPolyData* vtkMesh = ::vtkIO::toVTKMesh( pTriangularMesh );
+    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
+    ::vtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
     writer->SetInput( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary();
 
     //add progress observation
     Progressor progress(writer, this->getSptr(), this->getFile().string());
-
-    writer->Write();
-    vtkMesh->Delete();
+    writer->Update();
 }
 
 //------------------------------------------------------------------------------
 
 std::string  MeshWriter::extension()
 {
-   return ".trian";
+   return ".vtk";
 }
 
 } // namespace vtkIO

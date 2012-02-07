@@ -9,13 +9,8 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
-
-#include <io/IWriter.hpp>
-
 #include <fwCore/base.hpp>
 
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -32,7 +27,7 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::TriangularMesh ) ;
+REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh ) ;
 
 //------------------------------------------------------------------------------
 
@@ -79,6 +74,7 @@ void MeshWriterService::configureWithIHM()
         m_fsMeshPath = result->getPath();
         m_bServiceIsConfigured = true;
         _sDefaultPath = m_fsMeshPath.parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
 }
 
@@ -105,7 +101,7 @@ void MeshWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boost::shared_ptr< ::fwData::TriangularMesh > _pMesh )
+void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
     ::vtkIO::MeshWriter::NewSptr myWriter;
@@ -115,7 +111,7 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Meshs ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Mesh");
         myWriter->addHandler( progressMeterGUI );
         myWriter->write();
 
@@ -123,27 +119,19 @@ void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::boo
     catch (const std::exception & e)
     {
         std::stringstream ss;
-        ss << "Warning during loading : " << e.what();
+        ss << "Warning during saving : " << e.what();
 
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        std::stringstream ss;
-        ss << "Warning during loading : ";
-
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                "Warning during saving",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -156,13 +144,13 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
     if( m_bServiceIsConfigured )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
-        SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
+        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >() ;
+        SLM_ASSERT("pMesh not instanced", pMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        saveMesh(m_fsMeshPath,pTriangularMesh);
+        this->saveMesh(m_fsMeshPath,pMesh);
 
         cursor.setDefaultCursor();
 

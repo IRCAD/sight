@@ -18,12 +18,34 @@
 #include <fwData/Node.hpp>
 #include <fwData/Port.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/PatientDB.hpp>
+#include <fwData/Patient.hpp>
+#include <fwData/Study.hpp>
+#include <fwData/Acquisition.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Array.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Color.hpp>
+#include <fwData/TriangularMesh.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 class ObjectGenerator
 {
 public:
-
-
+    static ::fwData::PatientDB::sptr createPatientDB();
+    static ::fwData::Patient::sptr createPatient();
+    static ::fwData::Study::sptr createStudy();
+    static ::fwData::Acquisition::sptr createAcquisition();
+    static ::fwData::Reconstruction::sptr createReconstruction();
+    static ::fwData::Image::sptr createImage();
+    static ::fwData::Array::sptr createArray();
+    static ::fwData::Mesh::sptr createMesh();
+    static ::fwData::Material::sptr createMaterial();
+    static ::fwData::Color::sptr createColor();
+    static ::fwData::TriangularMesh::sptr createTriangularMesh();
+    static ::fwData::TransfertFunction::sptr createTransfertFunction();
     static ::fwData::StructureTraitsDictionary::sptr createStructureTraitsDictionary();
     static ::fwData::StructureTraits::sptr createStructureTraits();
 

@@ -16,6 +16,8 @@ BUNDLES = [
     'ioVTK_0-1'                ,
     'ioITK_0-1'                ,
     'ioVtkGdcm_0-1'            ,
+    'ioGdcm_0-1'               ,
+    'ioGdcmQt_0-1'               ,
     'ioXML_0-1'                ,
     'uiGenericQt_0-1'          ,
     'uiImageQt_0-1'            ,

@@ -6,6 +6,14 @@ CLASSTEST=[
            ]
 
 USE = ['boost']
-LIB = ['fwXML_0-1','fwTools_0-1','fwCore_0-1','fwRuntime_0-3','fwData_0-1','fwServices_0-1']
+LIB = [
+      'fwXML_0-1',
+      'fwTools_0-1',
+      'fwCore_0-1',
+      'fwRuntime_0-3',
+      'fwData_0-1',
+      'fwServices_0-1',
+      'fwDataTools_0-1',
+      ]
 CONSOLE='yes'
 

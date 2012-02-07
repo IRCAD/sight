@@ -111,7 +111,5 @@ void serialize(Archive & ar, ::fwData::DictionaryOrgan & _study, const unsigned 
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::DictionaryOrgan);
-
 #endif // _FWXML_BOOSTSERIALIZER_DICTIONARYORGAN_HPP_
 

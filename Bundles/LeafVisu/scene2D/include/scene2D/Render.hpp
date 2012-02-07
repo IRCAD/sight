@@ -238,6 +238,9 @@ private:
     /// Get all the objects of the render related composite, and stop all their related adaptors.
     void stopAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
 
+    /// Get all the objects of the render related composite, and swap all their related adaptors.
+    void swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
+
     /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
     //  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map,
     //  create the comChannel and start it.

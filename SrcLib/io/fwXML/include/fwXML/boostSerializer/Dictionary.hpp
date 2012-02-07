@@ -52,7 +52,5 @@ void serialize(Archive & ar, ::fwData::Dictionary & _study, const unsigned int v
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::Dictionary);
-
 #endif // _FWXML_BOOSTSERIALIZER_DICTIONARY_HPP_
 

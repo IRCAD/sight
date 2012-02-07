@@ -23,6 +23,9 @@ namespace fwXML
 class FWXML_CLASS_API DefaultPathPolicy : public IPathPolicy
 {
 public :
+
+    fwCoreClassDefinitionsWithFactoryMacro((DefaultPathPolicy)(IPathPolicy), ( () ), new DefaultPathPolicy );
+
      /**
       * @brief  defines a path to save an Object
      *
@@ -32,10 +35,10 @@ public :
      *
      * @return path of the Object
      **/
-     FWXML_API virtual  ::boost::filesystem::path getPath( ::boost::shared_ptr < ::fwTools::Object > obj ) ;
+     FWXML_API virtual  ::boost::filesystem::path getPath( ::fwTools::Object::sptr obj ) ;
 
  }; //class DefaultPathPolicy
- 
+
 }//namespace fwXML
 
 #endif // _FWXML_POLICY_DEFAULTPATHPOLICY_HPP_

@@ -23,7 +23,7 @@ namespace fwRuntime
 class FWRUNTIME_CLASS_API EConfigurationElement : public ::fwRuntime::ConfigurationElement
 {
     public :
-        fwCoreClassDefinitionsWithFactoryMacro( (EConfigurationElement)(ConfigurationElement), 
+        fwCoreClassDefinitionsWithFactoryMacro( (EConfigurationElement)(ConfigurationElement),
                                                 ((( const std::string& ))),
                                                 new EConfigurationElement
                                                 );
@@ -44,13 +44,13 @@ class FWRUNTIME_CLASS_API EConfigurationElement : public ::fwRuntime::Configurat
          * @param[in]   name name of the configuration element
          * @return      the created configuration element
          */
-        FWRUNTIME_API        ::boost::shared_ptr< EConfigurationElement > addConfigurationElement( const std::string& name ) ;
+        FWRUNTIME_API        EConfigurationElement::sptr addConfigurationElement( const std::string& name ) ;
 
         /**
          * @brief       Adds a new configuration element to the extension.
          * @param[in]   element     a shared pointer to the configuration element to add
          */
-        FWRUNTIME_API       void addConfigurationElement( ::boost::shared_ptr< EConfigurationElement > element ) ;
+        FWRUNTIME_API       void addConfigurationElement( EConfigurationElement::sptr element ) ;
 
         FWRUNTIME_API       void setAttributeValue(const std::string& name, const std::string& value) throw() ;
 

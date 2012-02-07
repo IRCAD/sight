@@ -23,10 +23,13 @@ namespace fwXML
 class FWXML_CLASS_API ListManagedPolicy : public ISplitPolicy
 {
 public:
+
+    fwCoreClassDefinitionsWithFactoryMacro((ListManagedPolicy)(ISplitPolicy), ( () ), new ListManagedPolicy );
+
     /**
      * @brief   true if the object should be spliten, false otherwise
      */
-    FWXML_API virtual bool split( ::boost::shared_ptr< ::fwTools::Object > obj) ;
+    FWXML_API virtual bool split( ::fwTools::Object::sptr obj) ;
 
     /**
      * @brief   add a class to ListManagedPolicy
@@ -38,10 +41,10 @@ public:
 private :
 
     typedef std::set< std::string > ClassNameContainer;
-    
+
     /**
      * @brief store class name which require a splitting.
-     * Bu default empty list 
+     * Bu default empty list
      */
     ClassNameContainer m_classNames;
 };

@@ -296,7 +296,8 @@ void ShowRevInfo::saveReport()
     {
         ::boost::filesystem::path filename = result->getPath();
         _sDefaultPath = filename.parent_path();
-
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        
         QTextDocument* document = this->generateReport();
 
         QTextDocumentWriter writer(QString::fromStdString(filename.string()));

@@ -79,7 +79,7 @@ public:
 
         static Version current()
         {
-            return Version(1);
+            return Version(2);
         }
 
         bool operator==(const Version& ver)

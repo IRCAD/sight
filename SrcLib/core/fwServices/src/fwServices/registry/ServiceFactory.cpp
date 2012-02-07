@@ -108,8 +108,10 @@ void ServiceFactory::parseBundleInformation()
         }
     }
 
+#if SPYLOG_LEVEL >= 5
     //Print information
     this->printInfoMap( bundleInfoMap );
+#endif
 
     // Merge data info
     BOOST_FOREACH(SrvRegContainer::value_type bundle, bundleInfoMap)
@@ -134,8 +136,10 @@ void ServiceFactory::parseBundleInformation()
 
     }
 
+#if SPYLOG_LEVEL >= 5
     //Print information
     this->printInfoMap( m_srvImplTosrvInfo );
+#endif
     this->checkServicesNotDeclaredInPluginXml();
 }
 

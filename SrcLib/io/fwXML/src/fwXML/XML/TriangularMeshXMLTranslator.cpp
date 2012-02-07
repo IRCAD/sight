@@ -40,7 +40,7 @@ void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer 
     ::fwXML::IFileFormatService::sptr binSaver;
     if( filesSrv.empty() )
     {
-        binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::MeshFileFormatService");
+        binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
     }
     else
     {
@@ -55,14 +55,14 @@ void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer 
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::boost::shared_ptr< ::fwData::TriangularMesh> mesh )
+void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr mesh )
 {
     // get XML node related to Buffer //FIXMEXPATH
     std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(mesh);
     ::fwXML::IFileFormatService::sptr binLoader;
     if( filesSrv.empty() )
     {
-        binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::MeshFileFormatService");
+        binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
     }
     else
     {
@@ -123,6 +123,5 @@ void TriangularMeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toU
 }
 
 //------------------------------------------------------------------------------
-
 
 }

@@ -9,12 +9,12 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <vtkActor.h>
+#include <fwTools/ProgressAdviser.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwTools/ProgressAdviser.hpp>
-#include <fwData/TriangularMesh.hpp>
+
+#include <fwData/Mesh.hpp>
 
 #include "vtkIO/config.hpp"
 
@@ -25,19 +25,19 @@ namespace vtkIO
  * @brief   Write a mesh.
  * @class   MeshWriter.
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
  * Write a VTK Mesh using the VTK lib
  */
 
-class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >,
+class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
                              public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
                              public ::fwTools::ProgressAdviser
 {
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >),
+    fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >),
                                            (()),
                                            new MeshWriter
                                           );
@@ -46,7 +46,7 @@ public :
     //! @brief Reading operator.
     VTKIO_API void write();
 
-    /// @return ".trian"
+    /// @return ".vtk"
     VTKIO_API  std::string extension();
 
 protected:

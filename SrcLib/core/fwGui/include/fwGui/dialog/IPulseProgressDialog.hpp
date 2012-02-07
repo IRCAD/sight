@@ -22,7 +22,7 @@ namespace dialog
 /**
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
- * @class   LocationDialog.
+ * @class   IPulseProgressDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *

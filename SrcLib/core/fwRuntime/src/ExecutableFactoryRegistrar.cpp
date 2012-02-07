@@ -6,8 +6,6 @@
 
 #include "fwRuntime/ExecutableFactoryRegistrar.hpp"
 
-#include <cassert>
-
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/Runtime.hpp"
 
@@ -21,11 +19,11 @@ namespace fwRuntime
 ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( ::boost::shared_ptr< ExecutableFactory > factory )
 {
     // Pre-condition
-    assert( Bundle::getLoadingBundle() != 0 );
+    SLM_ASSERT("No bundle bundle currently loaded", Bundle::getLoadingBundle() != 0 );
 
     // Retrieves the bundle that is currently loading.
-     ::boost::shared_ptr< Bundle >  loadingBundle   ( Bundle::getLoadingBundle()    );
-    Runtime                 * runtime       ( Runtime::getDefault()         );
+    ::boost::shared_ptr< Bundle >  loadingBundle( Bundle::getLoadingBundle() );
+    Runtime* runtime( Runtime::getDefault() );
 
     // Stores the factory into that bundle and the default runtime instance.
     loadingBundle->addExecutableFactory( factory );

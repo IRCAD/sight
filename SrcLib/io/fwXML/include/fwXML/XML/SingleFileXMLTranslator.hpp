@@ -7,18 +7,9 @@
 #ifndef SINGLEFILEXMLTRANSLATOR_HPP_
 #define SINGLEFILEXMLTRANSLATOR_HPP_
 
-#include <boost/lexical_cast.hpp>
-
-#include <fwCore/base.hpp>
-
-#include <iostream>
-#include <sstream>
-
 #include <fwData/location/SingleFile.hpp>
+
 #include "fwXML/XML/XMLTranslator.hpp"
-
-
-
 
 namespace fwXML
 {
@@ -34,13 +25,11 @@ public:
     FWXML_API virtual ~SingleFileXMLTranslator() ;
 
     /// get XML from current object
-    FWXML_API xmlNodePtr getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj );
+    FWXML_API xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj );
 
 
     /// get Object from an XML node
-    FWXML_API void updateDataFromXML( ::boost::shared_ptr<fwTools::Object> toUpdate,  xmlNodePtr source);
-
-protected :
+    FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
 
 };
 

@@ -8,13 +8,13 @@
 
 #include "fwXML/policy/ListManagedPolicy.hpp"
 
-namespace fwXML{
+namespace fwXML
+{
 
-bool ListManagedPolicy::split(::boost::shared_ptr< ::fwTools::Object > obj)
+bool ListManagedPolicy::split(::fwTools::Object::sptr obj)
 {
     std::string className = obj->getLeafClassname();
     return m_classNames.find( className )!= m_classNames.end();
-
 }
 
 void ListManagedPolicy::addSplitClass(const std::string &name)

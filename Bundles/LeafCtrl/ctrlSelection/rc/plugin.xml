@@ -156,6 +156,12 @@
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IWrapperSrv</type>
+        <service>::ctrlSelection::wrapper::MsgWrapperSrv</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::ctrlSelection::SSynchronizeWindowingTF</service>
         <object>::fwData::Image</object>

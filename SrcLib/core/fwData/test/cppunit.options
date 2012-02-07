@@ -27,6 +27,8 @@ CLASSTEST=[
     'TransfertFunctionTest',
     'TransformationMatrix3DTest',
     'VideoTest',
+    'ArrayTest',
+    'MeshTest',
     'StructureTraitsDictionaryTest',
     'ROITraitsTest',
     'ReconstructionTraitsTest',

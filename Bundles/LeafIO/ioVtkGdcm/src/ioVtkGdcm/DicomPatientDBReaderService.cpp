@@ -81,6 +81,7 @@ void DicomPatientDBReaderService::configureWithIHM()
     {
         _sDefaultPath = result->getFolder();
         m_fsPatientDBPath = result->getFolder();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         m_bServiceIsConfigured = true;
     }
 }

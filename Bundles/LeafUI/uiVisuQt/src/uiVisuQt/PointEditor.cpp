@@ -6,6 +6,8 @@
 
 #include <boost/foreach.hpp>
 
+#define QT_NO_KEYWORDS
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -19,8 +21,8 @@
 
 #include <fwTools/Object.hpp>
 
-#include "fwData/Composite.hpp"
-#include "fwData/String.hpp"
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -31,8 +33,9 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwMath/IntrasecTypes.hpp>
+
 #include "uiVisuQt/PointEditor.hpp"
-#include "fwMath/IntrasecTypes.hpp"
 
 namespace uiVisu
 {

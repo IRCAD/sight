@@ -10,16 +10,12 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 
+#include <fwServices/ObjectMsg.hpp>
+#include <fwData/Mesh.hpp>
+
 #include <io/IWriter.hpp>
 
-
 #include "ioVTK/export.hpp"
-
-namespace fwData
-{
-    class TringularMesh;
-}
-
 
 namespace ioVTK
 {
@@ -28,12 +24,12 @@ namespace ioVTK
  * @brief   VTK mesh writer service.
  * @class   MeshWriterService.
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
  * Service writing a VTK Mesh using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::TriangularMesh )
+ * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh )
  */
 class IOVTK_CLASS_API MeshWriterService : public ::io::IWriter
 {
@@ -101,11 +97,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    IOVTK_API void updating( ::fwServices::ObjectMsg::csptr ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.
@@ -121,11 +117,11 @@ private :
     /**
     * @brief Save a VTK image.
     * @param[in] _vtkFile \b const ::boost::filesystem::path.
-    * @param[out] _pTriangularMesh ::boost::shared_ptr< ::fwData::TriangularMesh >.
+    * @param[out] _pMesh ::boost::shared_ptr< ::fwData::Mesh >.
     *
     * This method is used to save an image using the file path.
     */
-    void saveMesh( const ::boost::filesystem::path _vtkFile, ::boost::shared_ptr< ::fwData::TriangularMesh > _pTriangularMesh );
+    void saveMesh( const ::boost::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
 
     /**
     * @brief the m_bServiceIsConfigured value is \b true

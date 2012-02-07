@@ -21,7 +21,9 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ViewRegistrar::ViewRegistrar(const std::string sid) : m_sid(sid), m_parentWid("")
+ViewRegistrar::ViewRegistrar(const std::string sid)
+    : m_parentWid(""),
+      m_sid(sid)
 {}
 
 //-----------------------------------------------------------------------------
@@ -70,7 +72,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     }
 
     // index represents associated container with position in subViews vector
-    int index = 0;
+    unsigned int index = 0;
     // initialize m_sids and m_wids map with configuration
     std::vector < ConfigurationType > vectViews = configuration->find("view");
     BOOST_FOREACH( ConfigurationType view, vectViews)
@@ -88,8 +90,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
                 start = (startValue=="yes");
             }
             std::string sid = view->getAttributeValue("sid");
-            std::pair<int, bool> indexStart =  std::make_pair( index, start);
-            m_sids[sid] = indexStart;
+            m_sids[sid] = SIDContainerMapType::mapped_type(index, start);
         }
         else if(view->hasAttribute("wid"))
         {

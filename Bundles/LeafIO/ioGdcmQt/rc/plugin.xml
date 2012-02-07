@@ -1,0 +1,14 @@
+<plugin id="ioGdcmQt" class="ioGdcmQt::Plugin" >
+    <library name="ioGdcmQt" />
+
+    <requirement id="io" />
+
+    <!--   REGISTER_SERVICE( ::io::IReader , ::ioGdcmQt::gdcmDICOMDIRPatientDBReaderService , ::fwData::PatientDB )-->
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioGdcm::DicomdirPatientDBReaderService</service>
+        <object>::fwData::PatientDB</object>
+        <desc>DICOMDIR Reader (GDCM)</desc>
+    </extension>
+
+</plugin>

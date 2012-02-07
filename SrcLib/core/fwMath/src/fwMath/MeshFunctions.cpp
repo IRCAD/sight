@@ -70,9 +70,9 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
     for ( unsigned int i = 0 ; i < ElementNbr ; ++i )
     {
         //recuperation des trois sommets du triangle
-        const fwVec3d P1 = {_vertex[ _vertexIndex[i][0] ][0], _vertex[ _vertexIndex[i][0] ][1], _vertex[ _vertexIndex[i][0] ][2]};
-        const fwVec3d P2 = {_vertex[ _vertexIndex[i][1] ][0], _vertex[ _vertexIndex[i][1] ][1], _vertex[ _vertexIndex[i][1] ][2]};
-        const fwVec3d P3 = {_vertex[ _vertexIndex[i][2] ][0], _vertex[ _vertexIndex[i][2] ][1], _vertex[ _vertexIndex[i][2] ][2]};
+        const fwVec3d P1 = {{_vertex[ _vertexIndex[i][0] ][0], _vertex[ _vertexIndex[i][0] ][1], _vertex[ _vertexIndex[i][0] ][2]}};
+        const fwVec3d P2 = {{_vertex[ _vertexIndex[i][1] ][0], _vertex[ _vertexIndex[i][1] ][1], _vertex[ _vertexIndex[i][1] ][2]}};
+        const fwVec3d P3 = {{_vertex[ _vertexIndex[i][2] ][0], _vertex[ _vertexIndex[i][2] ][1], _vertex[ _vertexIndex[i][2] ][2]}};
 
         //on enleve les triangles s'ils sont situes au dessus du point
         OSLM_TRACE("Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " << _P[Z] );
@@ -98,12 +98,12 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
             {
                 OSLM_TRACE("The face(" << i << ") is interesting to find a point in volume");
 
-                fwVec3d orig = {_P[0], _P[1], _P[2]};
+                fwVec3d orig = {{_P[0], _P[1], _P[2]}};
 
-                fwVec3d dir = { 0.f, 0.f, 1.f};
-                fwVec3d vert0 = { P1[0], P1[1], P1[2]};
-                fwVec3d vert1 = { P2[0], P2[1], P2[2]};
-                fwVec3d vert2 = { P3[0], P3[1], P3[2]};
+                fwVec3d dir = {{ 0.f, 0.f, 1.f}};
+                fwVec3d vert0 = {{ P1[0], P1[1], P1[2]}};
+                fwVec3d vert1 = {{ P2[0], P2[1], P2[2]}};
+                fwVec3d vert2 = {{ P3[0], P3[1], P3[2]}};
                 double t, u, v;
                 if ( intersect_triangle (orig, dir, vert0, vert1, vert2, t, u, v) )
                 {

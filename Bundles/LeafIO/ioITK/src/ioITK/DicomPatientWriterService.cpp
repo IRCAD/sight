@@ -70,6 +70,7 @@ void DicomPatientWriterService::configureWithIHM()
         _sDefaultPath = result->getFolder();
         m_fsPatientPath = result->getFolder();
         m_bServiceIsConfigured = true;
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
 }
 

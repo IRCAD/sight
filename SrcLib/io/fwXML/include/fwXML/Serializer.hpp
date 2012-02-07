@@ -32,6 +32,7 @@ namespace fwXML
 
 class FWXML_CLASS_API Serializer : public ::fwTools::ProgressAdviser
 {
+    friend class XMLPatch;
 public:
 
     FWXML_API Serializer();
@@ -43,25 +44,25 @@ public:
     static FWXML_API ::boost::filesystem::path &rootFolder() { return m_rootFolder;}
 
     /// serialize the given object in the given rootFolder(), saving schema is changeable
-    FWXML_API void serialize(::boost::shared_ptr< ::fwTools::Object> object,bool saveSchema = true) throw (::fwTools::Failed);
+    FWXML_API void serialize(::fwTools::Object::sptr object,bool saveSchema = true) throw (::fwTools::Failed);
 
     /// deserialize to the given object, UPDATE rootFolde static ivar
-    FWXML_API ::boost::shared_ptr< ::fwTools::Object> deSerialize(boost::filesystem::path filePath , bool loadExtraXml=false, bool validateWithSchema = true) throw (::fwTools::Failed);
+    FWXML_API ::fwTools::Object::sptr deSerialize(boost::filesystem::path filePath, bool loadExtraXml=false, bool validateWithSchema = true) throw (::fwTools::Failed);
 
     /// allow to change Path policy : by default use "ClassName-PTRADDR.xml"
-    FWXML_API void setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy);
+    FWXML_API void setPathPolicy( IPathPolicy::sptr newPathPolicy);
 
     /// allow to change split policy : by default always split
-    FWXML_API void setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSplitPolicy);
+    FWXML_API void setSplitPolicy( ISplitPolicy::sptr newSplitPolicy);
 
     // TODO move to XMLTranslatorHelper
     /**
      * @brief helper (factory which create a fwTools::Object form
-     * \li xmlNodePtr->name for classe
+     * \li xmlNodePtr->name for class
      * \li xmlNodePtr child for fwTools::Object information
      * @param loadExtraXML : if true extra XML information (exple image buffer are also loaded)
      */
-    ::boost::shared_ptr< ::fwTools::Object > ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML );
+    ::fwTools::Object::sptr ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML );
 
 protected :
 
@@ -72,10 +73,10 @@ protected :
     FWXML_API static std::string translateID( bool xmlid, bool generateNewUUID);
 
     // load/save extra xml information form obj and its children
-    void IOforExtraXML( ::boost::shared_ptr< ::fwTools::Object > object , bool savingMode);
+    void IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode);
 
     /// here rootFolder is mandatory *static* because sub classes processing serialization must k,ow the basename of patient Folder
-    FWXML_API static    ::boost::filesystem::path m_rootFolder;
+    FWXML_API static ::boost::filesystem::path m_rootFolder;
 
 };
 

@@ -15,11 +15,11 @@ namespace fwData
 {
 
 Material::Material() :
-    m_ambient( Color::New() ) ,
-    m_diffuse( Color::New() ),
     m_shadingMode(MODE_PHONG),
     m_representationMode(MODE_SURFACE),
-    m_optionsMode(MODE_STANDARD)
+    m_optionsMode(MODE_STANDARD),
+    m_ambient( Color::New() ),
+    m_diffuse( Color::New() )
 {
 }
 
@@ -71,6 +71,20 @@ Color::sptr Material::diffuse() const
     return m_diffuse ;
 }
 
+//------------------------------------------------------------------------------
 
+void Material::setAmbient(Color::sptr ambient)
+{
+    m_ambient = ambient;
+}
+
+//------------------------------------------------------------------------------
+
+void Material::setDiffuse(Color::sptr diffuse)
+{
+    m_diffuse = diffuse;
+}
+
+//------------------------------------------------------------------------------
 
 }

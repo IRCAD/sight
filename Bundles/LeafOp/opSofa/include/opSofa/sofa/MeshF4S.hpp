@@ -2,7 +2,7 @@
 #define OPSOFA_SOFA_MESHF4S_H
 
 #include <sofa/helper/io/Mesh.h>
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 
 /**
  * @brief Class inherited from Mesh and permitting the SOFA framework
@@ -12,7 +12,7 @@ class MeshF4S : public sofa::helper::io::Mesh
 {
 
 public:
-    void loadTriangularMesh(::fwData::TriangularMesh::sptr);
+    void loadMesh(::fwData::Mesh::sptr);
 
 };
 

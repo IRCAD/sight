@@ -578,9 +578,6 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
                     {
                         ::fwData::Image::sptr image;
                         (*reconstructionIter)->setImage( image );
-
-                        // Test if reconstruction mesh is closed
-                        (*reconstructionIter)->setIsClosed( ::fwMath::isBorderlessSurface((*reconstructionIter)->getTriangularMesh()->cells()));
                     }
                 }
             }
