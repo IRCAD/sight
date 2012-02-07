@@ -16,6 +16,12 @@
         <service>::uiVisu::action::CameraOrientationAction</service>
         <object>::fwData::Image</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiVisu::action::SSnapshot</service>
+        <object>::fwTools::Object</object>
+    </extension>
 
     
 </plugin>
