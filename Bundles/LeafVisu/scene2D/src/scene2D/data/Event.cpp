@@ -24,6 +24,7 @@ Event::Event() throw()
 :   m_type(NoType),
     m_button(NoButton),
     m_modifier(NoModifier),
+    m_key(Qt::Key_unknown),
     m_accepted(false)
 {}
 

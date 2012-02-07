@@ -11,6 +11,8 @@
 #include "scene2D/data/Coord.hpp"
 
 #include <QImage>
+#include <QGraphicsItemGroup>
+#include <QPointF>
 
 namespace scene2D
 {
@@ -45,6 +47,22 @@ private:
 
     QImage * m_qimg;
     QGraphicsPixmapItem * m_pixmapItem;
+    QGraphicsItemGroup* m_layer;
+
+    /**
+     * @brief Reference position when a drag and drop move is performed
+     */
+    QPointF m_pos;
+
+    /**
+     * @brief Zoom ratio applied at each mouse scroll
+     */
+    float m_scaleRatio;
+
+    /**
+     * @brief Indicate if the negato is being moved when pressing mouse's middle button
+     */
+    bool m_negatoIsBeingMoved;
 
     bool m_pointIsCaptured;
     scene2D::data::Coord m_oldCoord;

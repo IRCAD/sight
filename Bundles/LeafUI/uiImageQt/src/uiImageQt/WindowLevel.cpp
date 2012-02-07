@@ -193,6 +193,12 @@ void WindowLevel::configuring() throw(fwTools::Failed)
             SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!", autoWindowing == "yes" || autoWindowing == "no");
             m_autoWindowing = (autoWindowing == "yes");
         }
+
+        if ( config->hasAttribute("tfSelection") )
+        {
+            m_tfSelection = config->getAttributeValue("tfSelection");
+            SLM_FATAL_IF("'tfSelection' must not be empty", m_tfSelection.empty());
+        }
     }
 }
 
@@ -428,11 +434,11 @@ void  WindowLevel::onToggleTF(bool squareTF)
 
     if( squareTF )
     {
-        ::fwComEd::fieldHelper::MedicalImageHelpers::setSquareTF(image);
+        ::fwComEd::fieldHelper::MedicalImageHelpers::setSquareTF(image, m_tfSelection);
     }
     else
     {
-        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image);
+        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelection);
     }
 
     WindowLevelMinMaxType wl = getImageWindowMinMax();

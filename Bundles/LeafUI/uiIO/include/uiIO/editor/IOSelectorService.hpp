@@ -65,7 +65,28 @@ protected:
      *
      * The method verifies if the configuration is well written and retrieves user parameter values.
      * Thanks to this method, IOSelectorService::m_selectedServices value is up to date (cleared before reconfiguring).
-     */
+     *
+     * Sample of configuration :
+     * @verbatim
+          <service uid="GENERIC_UID_writerMedicalWorkspace" type="::gui::editor::IDialogEditor" implementation="::uiIO::editor::IOSelectorService" autoComChannel="no">
+              <type mode="writer" />
+              <selection mode="include" />
+              <addSelection service="::ioXML::FwXMLGenericWriterService" />
+              <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericWriterService" />
+          </service>
+     * @endverbatim
+     * With :
+     * None of these parameters are mandatory.
+     *  - \b type
+     *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).
+     *  - \b selection
+     *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the selection of the selector list).
+     *  - \b addSelection
+     *      - \b service (mandatory) : Name of the service to include/exclude to the choice list of the selector.
+     *  - \b config
+     *      - \b id (mandatory) : the id of the configuration to use.
+     *      - \b service (mandatory) :  the name of the service.
+    **/
     UIIO_API void configuring() throw( ::fwTools::Failed ) ;
 
     /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated objects. Then, the selected reader (writer) is executed.

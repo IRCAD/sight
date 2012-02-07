@@ -45,24 +45,67 @@ public:
     {
     public :
 
-        int m_major;
-        int m_minor;
+        unsigned int m_version;
 
-        Version() : m_major(0),m_minor(0) {};
+        Version() : m_version(0) {};
 
-        Version( int _major, int _minor ) : m_major(_major),m_minor(_minor) {};
+        Version( unsigned int _version ) : m_version(_version) {};
+
+        Version( std::string _version )
+        {
+            if(_version == "1.0")
+            {
+                m_version = 1;
+            }
+            else
+            {
+                m_version = ::boost::lexical_cast<unsigned int>(_version);
+            }
+        }
 
         std::string string()
         {
-            return ::boost::lexical_cast<std::string>(m_major) + "."
-                    + ::boost::lexical_cast<std::string>(m_minor);
+            std::string version;
+            if(m_version == 1)
+            {
+                version = "1.0";
+            }
+            else
+            {
+                version = ::boost::lexical_cast<std::string>(m_version);
+            }
+            return version;
         }
 
         static Version current()
         {
-            return Version(1,0);
+            return Version(1);
         }
 
+        bool operator==(const Version& ver)
+        {
+            return ( this->m_version == ver.m_version );
+        }
+        bool operator!=(const Version& ver)
+        {
+            return ( this->m_version != ver.m_version );
+        }
+        bool operator>=(const Version& ver)
+        {
+            return ( this->m_version >= ver.m_version );
+        }
+        bool operator<=(const Version& ver)
+        {
+            return ( this->m_version <= ver.m_version );
+        }
+        bool operator>(const Version& ver)
+        {
+            return ( this->m_version > ver.m_version );
+        }
+        bool operator<(const Version& ver)
+        {
+            return ( this->m_version < ver.m_version );
+        }
     };
 
     FWXML_API XMLAggregator();
