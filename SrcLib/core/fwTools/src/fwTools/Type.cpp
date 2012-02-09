@@ -16,8 +16,8 @@ const Type::TypeMapType Type::s_typeMap = ::boost::assign::map_list_of
     ("int16",  Type::create< ::boost::int16_t>())
     ("int32",  Type::create< ::boost::int32_t>())
     ("int64",  Type::create< ::boost::int64_t>())
-    ("float",  Type::create<float>())
-    ("double", Type::create<double>())
+    ("float",  Type::create< float >())
+    ("double", Type::create< double >())
     ;
 
 template<> const std::string Type::typeToString< ::boost::uint8_t  >() {return "uint8";}
@@ -108,5 +108,30 @@ Type Type::create(std::string name)
     return s_unspecifiedType;
 }
 
+
+std::string Type::toString(const void * value) const
+{
+    return m_tool.toString(value);
 }
+
+
+//-----------------------------------------------------------------------------
+
+std::string Type::ToolBase::toString(::boost::any value) const
+{
+    SLM_ASSERT("unable to convert an unspecified type value", 0);
+    return "";
+}
+
+//-----------------------------------------------------------------------------
+
+std::string Type::ToolBase::toString(const void *value) const
+{
+    SLM_ASSERT("unable to convert an unspecified type value", 0);
+    return "";
+}
+
+
+
+} // namespace fwTools
 

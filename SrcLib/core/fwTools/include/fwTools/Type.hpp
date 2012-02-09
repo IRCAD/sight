@@ -15,6 +15,9 @@
 
 #include <boost/type_traits/is_signed.hpp>
 #include <boost/any.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <fwCore/base.hpp>
 
 #include "fwTools/config.hpp"
 
@@ -30,6 +33,20 @@ namespace fwTools {
  **/
 class FWTOOLS_CLASS_API Type
 {
+
+    struct ToolBase
+    {
+        virtual std::string toString( ::boost::any value ) const;
+        virtual std::string toString( const void * ) const;
+    };
+
+    template<typename T>
+    struct Tool : public ToolBase
+    {
+        virtual std::string toString( ::boost::any value ) const;
+        virtual std::string toString( const void * ) const;
+    };
+
 public:
     typedef std::map<std::string, Type> TypeMapType;
     
@@ -90,6 +107,8 @@ public:
     /// return true iff the type is signed
     FWTOOLS_API bool isSigned() const;
 
+    std::string toString( const void * ) const;
+
     template <typename T>
     static const std::string typeToString();
 
@@ -107,6 +126,7 @@ protected :
     ::boost::any m_min;
     ::boost::any m_max;
 
+    ToolBase m_tool;
 
     /// Value for not specified type
     FWTOOLS_API static const std::string s_unspecifiedTypeName;
@@ -115,6 +135,22 @@ protected :
 
 };
 
+//-----------------------------------------------------------------------------
+
+template< typename T >
+std::string Type::Tool<T>::toString(::boost::any value) const
+{
+    return ::boost::lexical_cast < std::string, T > ( boost::any_cast<const T> (value));
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename T >
+std::string Type::Tool<T>::toString(const void *value) const
+{
+    const T &v = *(static_cast< const T* > (value));
+    return ::boost::lexical_cast < std::string, T > ( v );
+}
 
 //-----------------------------------------------------------------------------
 
@@ -143,6 +179,8 @@ void Type::setType()
     m_sizeof = sizeof(T);
     m_isSigned = ::boost::is_signed<T>::value;
     m_isFixedPrecision = ::boost::is_integral<T>::value;
+
+    m_tool = Type::Tool<T>();
 
     T min = static_cast< T >( std::numeric_limits< T >::min() );
     T max = static_cast< T >( std::numeric_limits< T >::max() );
