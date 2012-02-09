@@ -34,14 +34,14 @@ namespace fwTools {
 class FWTOOLS_CLASS_API Type
 {
 
-    struct ToolBase
+    struct FWTOOLS_CLASS_API ToolBase
     {
-        virtual std::string toString( ::boost::any value ) const;
-        virtual std::string toString( const void * ) const;
+        FWTOOLS_API  virtual std::string toString( ::boost::any value ) const;
+        FWTOOLS_API virtual std::string toString( const void * ) const;
     };
 
     template<typename T>
-    struct Tool : public ToolBase
+    struct  Tool : public ToolBase
     {
         virtual std::string toString( ::boost::any value ) const;
         virtual std::string toString( const void * ) const;
@@ -107,7 +107,7 @@ public:
     /// return true iff the type is signed
     FWTOOLS_API bool isSigned() const;
 
-    std::string toString( const void * ) const;
+    FWTOOLS_API std::string toString( const void * ) const;
 
     template <typename T>
     static const std::string typeToString();
