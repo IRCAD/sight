@@ -38,14 +38,24 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwTools::Factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
 
+    /**
+     * @brief Image size type
+     */
     typedef ::fwData::Array::SizeType SizeType;
+
+    /**
+     * @brief Image spacing type
+     */
     typedef std::vector< double > SpacingType;
+
+    /**
+     * @brief Image origin type
+     */
     typedef std::vector< double > OriginType;
 
     typedef SizeType::value_type IndexType;
     typedef size_t BufferIndexType;
     typedef ::boost::uint8_t BufferType;
-
     typedef ::boost::shared_array< BufferType > SharedArray;
 
     fwDataObjectMacro();
@@ -56,29 +66,39 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Image::csptr _source );
 
-    /// image get image information from source. Informations are spacing,origin,size ... expect Fields
+    /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     FWDATA_API void copyInformation( Image::csptr _source );
 
 
     /**
-     * @brief an R/W accessor to the buffer (can involve unserialization/restoration)
+     * @brief return a pointer to the buffer
      */
     FWDATA_API void * getBuffer() const;
 
     /// Number of dimension of the image (3 for 3D image)
     FWDATA_API size_t getNumberOfDimensions() const;
 
-    /// Image spacing
+    /** @{
+     * @brief get/set image spacing
+     */
+
     FWDATA_API const SpacingType &getSpacing() const;
     FWDATA_API void setSpacing(const SpacingType &spacing);
+    // @}
 
-    /// Image Origin
+    /** @{
+     * @brief get/set image origin
+     */
     FWDATA_API const OriginType &getOrigin() const;
     FWDATA_API void setOrigin(const OriginType &origin);
+    // @}
 
-    /// Image Size
+    /** @{
+     * @brief get/set image size
+     */
     FWDATA_API const SizeType &getSize() const;
     FWDATA_API void setSize(const SizeType &size);
+    // @}
 
 
     fwGettersSettersDocMacro(WindowCenter, dWindowCenter, double, window level);
@@ -99,26 +119,49 @@ public:
     FWDATA_API static void  setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, IndexType offset, ::boost::uint8_t imagePixelSize );
 
 
-
-    FWDATA_API ::fwData::Array::sptr getDataArray() const;
+    /**
+     * @brief set data array
+     *
+     * @param[in] array data array
+     * @param[in] copyArrayInfo if true, the image will copy the size and type information from the array
+     *
+     */
     FWDATA_API void setDataArray(::fwData::Array::sptr array, bool copyArrayInfo = true);
+    ///get data array
+    FWDATA_API ::fwData::Array::sptr getDataArray() const;
 
-    FWDATA_API ::fwTools::Type getType() const;
+    /** @{
+     * @brief get/set image type
+     */
     FWDATA_API void setType(::fwTools::Type type);
+    FWDATA_API ::fwTools::Type getType() const;
+    // @}
 
     /// get a DynamicType for retrocompatibility
     FWDATA_API ::fwTools::DynamicType getPixelType() const;
 
+    /** @{
+     * @brief Allocate image
+     *
+     * If the data array owns its buffer, these methods will always work (until it remain free memory)
+     * Otherwise an exeption is thrown :
+     *  - if m_dataArray does not own it buffer and image's size and type combination do not match anymore array's one
+     *  - if there is no memory left
+     *
+     * @return Allocated size in bytes
+     */
     FWDATA_API size_t allocate()
         throw(::fwData::Exception);
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z, const ::fwTools::Type &type)
         throw(::fwData::Exception);
     FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type)
         throw(::fwData::Exception);
+    // @}
 
 
-    /// @brief return image size in bytes
+     /// @brief return image size in bytes
     FWDATA_API size_t getSizeInBytes() const;
+     /// @brief return allocated image size in bytes
     size_t getAllocatedSizeInBytes() const;
 
     /**
@@ -143,9 +186,6 @@ protected :
      * @brief Destructor
      */
     FWDATA_API virtual ~Image() throw();
-
-
-    FWDATA_API void allocateData();
 
     //! Size of the image (in terms of points)
     SizeType m_size;
