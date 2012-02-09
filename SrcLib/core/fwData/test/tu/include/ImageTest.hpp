@@ -12,8 +12,9 @@
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ImageTest );
-    CPPUNIT_TEST( methode1 );
-    CPPUNIT_TEST( methode2 );
+    CPPUNIT_TEST( testGetterSetter );
+    CPPUNIT_TEST( testAllocation );
+    CPPUNIT_TEST( testReallocation );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -23,8 +24,9 @@ public:
     void setUp();
     void tearDown();
     // fonctions de tests
-    void methode1();
-    void methode2();
+    void testGetterSetter();
+    void testAllocation();
+    void testReallocation();
 };
 
 #endif

@@ -24,190 +24,132 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(ImageTest );
 
+//------------------------------------------------------------------------------
+
 void ImageTest::setUp()
 {
     // Set up context before running a test.
 }
+
+//------------------------------------------------------------------------------
 
 void ImageTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
 
-void ImageTest::methode1() //test des setters et getters
+void ImageTest::testGetterSetter()
 {
-    const ::boost::uint8_t DIMENSION = 2 ;
-    //const fwTools::DynamicType PIXELTYPE =  4 ;
-    const bool MANAGESBUFF= true ;
+    const size_t DIMENSION = 2 ;
+    ::fwTools::Type TYPE = ::fwTools::Type::create("int16")  ;
     double CREFSPACING = 2.5 ;
-    std::vector<double> VECTORCREFSPACING ;
-    VECTORCREFSPACING.push_back( CREFSPACING ) ;
+    std::vector<double> VECTORSPACING(DIMENSION, CREFSPACING) ;
     double CREFORIGIN = 2.7 ;
-    std::vector<double> VECTORCREFORIGIN     ;
-    VECTORCREFORIGIN.push_back( CREFORIGIN ) ;
+    std::vector<double> VECTORORIGIN(DIMENSION, CREFORIGIN)     ;
     ::boost::int32_t CREFSIZE = 42 ;
-    std::vector< ::boost::int32_t > VECTORCREFSIZE  ;
-    VECTORCREFSIZE.push_back( CREFSIZE ) ;
-    const ::boost::filesystem::path CREFFILENAME    = ::boost::filesystem::path("C:/TMP") ;
+    ::fwData::Image::SizeType VECTORSIZE(DIMENSION, CREFSIZE)  ;
     const double WINDOWCENTER = 10.10 ;
     const double WINDOWWIDTH = 11.34 ;
-    const double RESCALEINTERCEPT = 0.75 ;
 
 
 
     // process
-    ::fwData::Image::NewSptr p1;
+    ::fwData::Image::NewSptr img1;
 
-
-    p1->setDimension(DIMENSION);
-    //p1->setPixelType( PIXELTYPE);
-    p1->setManagesBuff( MANAGESBUFF);
-    p1->setCRefSpacing(VECTORCREFSPACING);
-    p1->setCRefOrigin(VECTORCREFORIGIN);
-    p1->setCRefSize(VECTORCREFSIZE);
-    p1->setCRefFilename(CREFFILENAME);
-    p1->setWindowCenter(WINDOWCENTER);
-    p1->setWindowWidth( WINDOWWIDTH );
-    p1->setRescaleIntercept(RESCALEINTERCEPT);
+    img1->setType( TYPE);
+    img1->setSpacing(VECTORSPACING);
+    img1->setOrigin(VECTORORIGIN);
+    img1->setSize(VECTORSIZE);
+    img1->setWindowCenter(WINDOWCENTER);
+    img1->setWindowWidth( WINDOWWIDTH );
 
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getDimension(),DIMENSION);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefDimension(),DIMENSION);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefDimension(),DIMENSION);
+    CPPUNIT_ASSERT_EQUAL(img1->getNumberOfDimensions(),DIMENSION);
 
-    /*
-        CPPUNIT_ASSERT_EQUAL(p1->getPixelType(),        PIXELTYPE);
-        CPPUNIT_ASSERT_EQUAL(p1->getCRefPixelType(),        PIXELTYPE);
-        CPPUNIT_ASSERT_EQUAL(p1->getRefPixelType(),     PIXELTYPE);
-     */
+    CPPUNIT_ASSERT(img1->getType() == TYPE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getManagesBuff(),MANAGESBUFF);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefManagesBuff(),MANAGESBUFF);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefManagesBuff(),MANAGESBUFF);
+    CPPUNIT_ASSERT(img1->getSpacing() == VECTORSPACING);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getSpacing().back(),CREFSPACING);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefSpacing().back(),CREFSPACING);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefSpacing().back(),CREFSPACING);
+    CPPUNIT_ASSERT(img1->getOrigin() == VECTORORIGIN);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getOrigin().back(),CREFORIGIN);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefOrigin().back(),CREFORIGIN);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefOrigin().back(),CREFORIGIN);
+    CPPUNIT_ASSERT(img1->getSize() == VECTORSIZE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getSize().back(),CREFSIZE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefSize().back(),CREFSIZE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefSize().back(),CREFSIZE);
+    CPPUNIT_ASSERT_EQUAL(img1->getWindowCenter(),WINDOWCENTER);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getFilename(),CREFFILENAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefFilename(),CREFFILENAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefFilename(),CREFFILENAME);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getWindowCenter(),WINDOWCENTER);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefWindowCenter(),WINDOWCENTER);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefWindowCenter(),WINDOWCENTER);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getWindowWidth(),WINDOWWIDTH);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefWindowWidth(),WINDOWWIDTH);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefWindowWidth(),WINDOWWIDTH);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getRescaleIntercept(),     RESCALEINTERCEPT);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefRescaleIntercept(),     RESCALEINTERCEPT);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefRescaleIntercept(),      RESCALEINTERCEPT);
+    CPPUNIT_ASSERT_EQUAL(img1->getWindowWidth(),WINDOWWIDTH);
 
 }
 
+//------------------------------------------------------------------------------
 
-void ImageTest::methode2()
+void ImageTest::testAllocation()
 {
-    const ::boost::uint8_t DIMENSION        = 2 ;
-    //const fwTools::DynamicType PIXELTYPE =  4 ;
-    const bool MANAGESBUFF  = false ;
-    double CREFSPACING = 2.5 ;
-    std::vector<double> VECTORCREFSPACING ;
-    VECTORCREFSPACING.push_back( CREFSPACING ) ;
-    double CREFORIGIN = 2.7 ;
-    std::vector<double> VECTORCREFORIGIN     ;
-    VECTORCREFORIGIN.push_back( CREFORIGIN ) ;
-    ::boost::int32_t CREFSIZE = 42 ;
-    std::vector< ::boost::int32_t > VECTORCREFSIZE  ;
-    VECTORCREFSIZE.push_back( CREFSIZE ) ;
-    const ::boost::filesystem::path CREFFILENAME = ::boost::filesystem::path("C:/TMP") ;
-    const double WINDOWCENTER = 10.10 ;
-    const double WINDOWWIDTH = 11.34 ;
-    const double RESCALEINTERCEPT = 0.75 ;
-
-
+    const ::boost::uint8_t DIMENSION = 3 ;
+    ::fwTools::Type TYPE = ::fwTools::Type::create("int16")  ;
+    ::fwData::Image::SizeType VECTORSIZE(DIMENSION)  ;
+    VECTORSIZE[0] = 14;
+    VECTORSIZE[1] = 15;
+    VECTORSIZE[2] = 26;
+    size_t SIZE = 14*15*26*TYPE.sizeOf();
 
     // process
-    ::fwData::Image::NewSptr p1;
+    ::fwData::Image::NewSptr img1;
+
+    img1->setType(TYPE);
+    img1->setSize(VECTORSIZE);
+
+    img1->allocate();
+
+    ::fwData::Array::sptr array = img1->getDataArray();
+    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
+    CPPUNIT_ASSERT(array->getType() == TYPE);
+    CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
 
 
-    p1->setCRefDimension(DIMENSION);
-    //p1->setCRefPixelType( PIXELTYPE);
-    p1->setCRefManagesBuff( MANAGESBUFF);
-    p1->setCRefSpacing(VECTORCREFSPACING);
-    p1->setCRefOrigin(VECTORCREFORIGIN);
-    p1->setCRefSize(VECTORCREFSIZE);
-    p1->setCRefFilename(CREFFILENAME);
-    p1->setCRefWindowCenter(WINDOWCENTER);
-    p1->setCRefWindowWidth( WINDOWWIDTH );
-    p1->setCRefRescaleIntercept(RESCALEINTERCEPT);
+
+    ::fwData::Image::NewSptr img2;
+    img2->allocate(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE);
+
+    array = img2->getDataArray();
+    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
+    CPPUNIT_ASSERT(array->getType() == TYPE);
+    CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE);
+    CPPUNIT_ASSERT(img2->getSizeInBytes() == SIZE);
 
 
-    // check
-    CPPUNIT_ASSERT_EQUAL(p1->getDimension(),DIMENSION);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefDimension(),DIMENSION);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefDimension(),DIMENSION);
+    ::fwData::Image::NewSptr img3;
+    img3->allocate(VECTORSIZE, TYPE);
 
-    /*
-        CPPUNIT_ASSERT_EQUAL(p1->getPixelType(),PIXELTYPE);
-        CPPUNIT_ASSERT_EQUAL(p1->getCRefPixelType(),PIXELTYPE);
-        CPPUNIT_ASSERT_EQUAL(p1->getRefPixelType(),PIXELTYPE);
-     */
-
-    CPPUNIT_ASSERT_EQUAL(p1->getManagesBuff(),MANAGESBUFF);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefManagesBuff(),MANAGESBUFF);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefManagesBuff(),MANAGESBUFF);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getSpacing().back(),CREFSPACING);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefSpacing().back(),CREFSPACING);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefSpacing().back(),CREFSPACING);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getOrigin().back(),CREFORIGIN);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefOrigin().back(),CREFORIGIN);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefOrigin().back(),CREFORIGIN);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getSize().back(),CREFSIZE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefSize().back(),CREFSIZE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefSize().back(),CREFSIZE);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getFilename(),CREFFILENAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefFilename(),CREFFILENAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefFilename(),CREFFILENAME);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getWindowCenter(),WINDOWCENTER);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefWindowCenter(),WINDOWCENTER);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefWindowCenter(),WINDOWCENTER);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getWindowWidth(),WINDOWWIDTH);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefWindowWidth(),WINDOWWIDTH);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefWindowWidth(),WINDOWWIDTH);
-
-    CPPUNIT_ASSERT_EQUAL(p1->getRescaleIntercept(),RESCALEINTERCEPT);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefRescaleIntercept(),RESCALEINTERCEPT);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefRescaleIntercept(),RESCALEINTERCEPT);
-
+    array = img3->getDataArray();
+    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
+    CPPUNIT_ASSERT(array->getType() == TYPE);
+    CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE);
+    CPPUNIT_ASSERT(img3->getSizeInBytes() == SIZE);
 }
 
-/*
-void ImageTest::Buffer()
+//------------------------------------------------------------------------------
+
+void ImageTest::testReallocation()
 {
-    ::boost::shared_ptr< ::fwData::Image> i1 (::fwData::Image::New());
+    const ::boost::uint8_t DIMENSION = 3 ;
+    ::fwTools::Type TYPE = ::fwTools::Type::create("int16")  ;
+    ::fwData::Image::SizeType VECTORSIZE(DIMENSION)  ;
+    VECTORSIZE[0] = 14;
+    VECTORSIZE[1] = 15;
+    VECTORSIZE[2] = 26;
+    size_t SIZE = 14*15*26*TYPE.sizeOf();
 
-    void * BUFFER = (void *)43 ;
+    // process
+    ::fwData::Image::NewSptr img1;
 
-    i1->setBuffer( BUFFER ) ;
-    CPPUNIT_ASSERT_EQUAL( i1->getBuffer(), BUFFER ) ;
+    img1->setType(TYPE);
+    img1->setSize(VECTORSIZE);
+
 }
- */
+
+//------------------------------------------------------------------------------
+
