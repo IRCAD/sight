@@ -1,5 +1,6 @@
 CLASSTEST=[
           'MeshGeneratorTest',
+          'ImageTest',
           ]
 
 USE = ['boost']
