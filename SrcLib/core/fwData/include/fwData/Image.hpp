@@ -9,13 +9,15 @@
 
 #include <vector>
 
+#include <boost/shared_array.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/cstdint.hpp>
 
+#include <fwTools/Type.hpp>
 #include <fwTools/DynamicType.hpp>
 
 #include "fwData/Object.hpp"
-#include "fwData/IBufferDelegate.hpp"
+#include "fwData/Array.hpp"
 
 
 namespace fwData
@@ -36,9 +38,15 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwTools::Factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
 
-    typedef ::boost::uint64_t VoxelIndexType;
-    typedef ::boost::uint64_t BufferIndexType;
-    typedef ::boost::uint8_t  BufferType;
+    typedef ::fwData::Array::SizeType SizeType;
+    typedef std::vector< double > SpacingType;
+    typedef std::vector< double > OriginType;
+
+    typedef SizeType::value_type IndexType;
+    typedef size_t BufferIndexType;
+    typedef ::boost::uint8_t BufferType;
+
+    typedef ::boost::shared_array< BufferType > SharedArray;
 
     fwDataObjectMacro();
 
@@ -48,8 +56,8 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Image::csptr _source );
 
-    /// image get image information from source. Informations are spacing,origin,size ... expect Fields and bufferDelegate
-    FWDATA_API void getInformation( Image::csptr _source );
+    /// image get image information from source. Informations are spacing,origin,size ... expect Fields
+    FWDATA_API void copyInformation( Image::csptr _source );
 
 
     /**
@@ -57,59 +65,71 @@ public:
      */
     FWDATA_API void * getBuffer() const;
 
-    /**
-     * @brief Essentially used by ImageIOInventory to restore the image buffer
-     * @note launch a imageModifiedEvent if _buffer is not NULL
-     */
-    FWDATA_API void setBuffer(void *_buffer);
+    /// Number of dimension of the image (3 for 3D image)
+    FWDATA_API size_t getNumberOfDimensions() const;
 
+    /// Image spacing
+    FWDATA_API const SpacingType &getSpacing() const;
+    FWDATA_API void setSpacing(const SpacingType &spacing);
 
-    // Generator result---------------------------------------------------------
+    /// Image Origin
+    FWDATA_API const OriginType &getOrigin() const;
+    FWDATA_API void setOrigin(const OriginType &origin);
 
-    /** @name ManagesBuff accessor */
-    /**
-     * @brief Get/Set if buffer is managed.
-     *
-     * True if buffer is managed.
-     * @{
-     */
-    FWDATA_API void setManagesBuff( const bool _bManagesBuff );
-    FWDATA_API void setCRefManagesBuff( const bool & _bManagesBuff );
-    FWDATA_API const bool getManagesBuff() const;
-    FWDATA_API const bool & getCRefManagesBuff() const;
-    FWDATA_API bool & getRefManagesBuff();
-    //@}
+    /// Image Size
+    FWDATA_API const SizeType &getSize() const;
+    FWDATA_API void setSize(const SizeType &size);
 
-    fwGettersSettersDocMacro(Dimension, ui8Dimension, ::boost::uint8_t, the image dimension (3 for 3D image));
-
-    fwGettersSettersDocMacro(PixelType, dtPixelType, ::fwTools::DynamicType, type of image pixel (float, short, ...));
-
-    fwGettersSettersDocMacro(Spacing, vSpacing, std::vector<double>, an array on the voxel size of the image);
-
-    fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the origin of the image in 3D repair);
-
-    fwGettersSettersDocMacro(Size, vSize, std::vector<boost::int32_t>, the size of the image (in terms of points));
-
-    fwGettersSettersDocMacro(Filename, fsFilename, ::boost::filesystem::path, the path to save/load this image);
 
     fwGettersSettersDocMacro(WindowCenter, dWindowCenter, double, window level);
 
     fwGettersSettersDocMacro(WindowWidth, dWindowWidth, double, window width);
 
-    fwGettersSettersDocMacro(RescaleIntercept, dRescaleIntercept, double, rescale intercept);
 
-    fwGettersSettersDocMacro(BufferDelegate, bufferDelegate, ::fwData::IBufferDelegate::sptr, by default use StandardBuffer);
+    /// Helpers for 3D images
+    FWDATA_API void* getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z ) const;
+    FWDATA_API void* getPixelBuffer( IndexType index ) const;
+    FWDATA_API SharedArray getPixelBufferCopy( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z ) const;
+    FWDATA_API SharedArray getPixelBufferCopy( IndexType index ) const;
 
-    FWDATA_API void* getPixelBuffer( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z );
-    FWDATA_API void* getPixelBuffer( VoxelIndexType index );
-    FWDATA_API ::boost::shared_ptr< BufferType > getPixelBufferCopy( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z );
-    FWDATA_API ::boost::shared_ptr< BufferType > getPixelBufferCopy( VoxelIndexType index );
+    FWDATA_API void setPixelBuffer( IndexType index , Image::BufferType * pixBuf);
 
-    FWDATA_API void setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf);
+    FWDATA_API static Image::BufferType* getPixelBuffer( Image::BufferType *buffer, IndexType offset, ::boost::uint8_t imagePixelSize );
+    FWDATA_API static SharedArray getPixelBufferCopy( Image::BufferType *buffer, IndexType offset, ::boost::uint8_t imagePixelSize );
+    FWDATA_API static void  setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, IndexType offset, ::boost::uint8_t imagePixelSize );
 
-    FWDATA_API static Image::BufferType* getPixelBuffer( Image::BufferType *buffer, ::boost::int32_t offset, const unsigned char imagePixelSize );
-    FWDATA_API static SPTR( Image::BufferType ) getPixelBufferCopy( Image::BufferType *buffer, ::boost::int32_t offset, const unsigned char imagePixelSize );
-    FWDATA_API static void  setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, const ::boost::int32_t offset, const unsigned char imagePixelSize );
+
+
+    FWDATA_API ::fwData::Array::sptr getDataArray() const;
+    FWDATA_API void setDataArray(::fwData::Array::sptr array, bool copyArrayInfo = true);
+
+    FWDATA_API ::fwTools::Type getType() const;
+    FWDATA_API void setType(::fwTools::Type type);
+
+    /// get a DynamicType for retrocompatibility
+    FWDATA_API ::fwTools::DynamicType getPixelType() const;
+
+    FWDATA_API size_t allocate()
+        throw(::fwData::Exception);
+    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z, const ::fwTools::Type &type)
+        throw(::fwData::Exception);
+    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type)
+        throw(::fwData::Exception);
+
+
+    /// @brief return image size in bytes
+    FWDATA_API size_t getSizeInBytes() const;
+
+    /**
+     * @brief Get a string containing pixel value
+     * @param[in] _image image containing the pixel
+     * @param[in] _x x coordinate of the pixel
+     * @param[in] _y y coordinate of the pixel
+     * @param[in] _z z coordinate of the pixel
+     *
+     * @return pixel value
+     */
+    FWDATA_API std::string  getPixelAsString( unsigned int _x, unsigned int _y, unsigned int _z ) const;
 
 protected :
 
@@ -123,52 +143,36 @@ protected :
      */
     FWDATA_API virtual ~Image() throw();
 
-    //! image dimension, ex : 3 for image 3D
-    ::boost::uint8_t  m_ui8Dimension;
 
-    //! type of image pixel
-    ::fwTools::DynamicType m_dtPixelType;
-
-    //! An array on the voxel size of the image
-    std::vector< double > m_vSpacing;
-
-    //! Origin of the image in 3D repair
-    std::vector< double > m_vOrigin;
+    FWDATA_API void allocateData();
 
     //! Size of the image (in terms of points)
-    std::vector< ::boost::int32_t >  m_vSize;
+    SizeType m_size;
 
-    //! the path to save/load this image
-    ::boost::filesystem::path m_fsFilename;
+    //! type of image pixel
+    ::fwTools::Type m_type;
+
+    //! An array on the voxel size of the image
+    SpacingType m_spacing;
+
+    //! Origin of the image in 3D repair
+    OriginType m_origin;
 
     /** @{
      * @brief Visu control to adjust contrast image (come from dicom image ?)
      */
     double m_dWindowCenter;
     double m_dWindowWidth;
-    double m_dRescaleIntercept;
     // @}
 
     //! image buffer
-    ::fwData::IBufferDelegate::sptr  m_bufferDelegate;
+    ::fwData::Array::sptr m_dataArray;
 
 };
 
-/// @brief return the size in bytes of the image
-FWDATA_API boost::int32_t  imageSizeInBytes( const ::fwData::Image &image);
 
-/**
- * @brief Get a string containing pixel value
- * @param[in] _image image containing the pixel
- * @param[in] _x x coordinate of the pixel
- * @param[in] _y y coordinate of the pixel
- * @param[in] _z z coordinate of the pixel
- *
- * @return pixel value
- */
-FWDATA_API std::string  getPixelAsString( ::fwData::Image::csptr _image, unsigned int _x, unsigned int _y, unsigned int _z );
+} // namespace fwData
 
-};
 
 #endif //_FWDATA_IMAGE_HPP_
 
