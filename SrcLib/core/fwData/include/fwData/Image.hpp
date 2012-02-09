@@ -119,6 +119,7 @@ public:
 
     /// @brief return image size in bytes
     FWDATA_API size_t getSizeInBytes() const;
+    size_t getAllocatedSizeInBytes() const;
 
     /**
      * @brief Get a string containing pixel value

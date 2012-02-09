@@ -343,7 +343,21 @@ size_t Image::getSizeInBytes() const
 {
     SLM_TRACE_FUNC();
 
-    size_t size = std::accumulate( m_size.begin() ,  m_size.end(), m_type.sizeOf(), std::multiplies< size_t > () );
+    size_t size = std::accumulate( m_size.begin(), m_size.end(), static_cast<size_t>(m_type.sizeOf()), std::multiplies< size_t > () );
+    return size;
+ }
+
+
+//------------------------------------------------------------------------------
+
+size_t Image::getAllocatedSizeInBytes() const
+{
+    SLM_TRACE_FUNC();
+    size_t size = 0;
+    if (m_dataArray)
+    {
+        size = m_dataArray->getSizeInBytes();
+    }
     return size;
  }
 
