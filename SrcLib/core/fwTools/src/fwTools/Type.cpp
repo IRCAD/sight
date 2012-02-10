@@ -47,6 +47,14 @@ Type::Type()
 
 //------------------------------------------------------------------------------
 
+
+Type::Type(const std::string &type)
+{
+    *this = Type::create(type);
+}
+
+//------------------------------------------------------------------------------
+
 bool Type::operator==(const Type &_other) const
 {
     return m_name == _other.m_name;

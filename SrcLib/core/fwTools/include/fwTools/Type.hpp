@@ -52,6 +52,7 @@ public:
     
     /// Default constructor
     FWTOOLS_API Type();
+    FWTOOLS_API Type(const std::string &type);
 
     /**
      * @brief comparison operator

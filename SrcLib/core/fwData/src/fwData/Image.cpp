@@ -189,6 +189,14 @@ void Image::setType(::fwTools::Type type)
     m_type = type;
 }
 
+
+//------------------------------------------------------------------------------
+
+void Image::setType(const std::string &type)
+{
+    m_type = ::fwTools::Type(type);
+}
+
 //------------------------------------------------------------------------------
 
 void * Image::getBuffer() const

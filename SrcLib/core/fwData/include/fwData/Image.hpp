@@ -134,6 +134,7 @@ public:
      * @brief get/set image type
      */
     FWDATA_API void setType(::fwTools::Type type);
+    FWDATA_API void setType(const std::string &type);
     FWDATA_API ::fwTools::Type getType() const;
     // @}
 
