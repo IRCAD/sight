@@ -47,9 +47,10 @@ void GzBufferImageReader::read()
     assert( file.empty() ==  false );
 
     ::fwData::Image::sptr image = getConcreteObject();
-    ::boost::uint32_t imageSizeInBytes = ::fwData::imageSizeInBytes(*image);
+    size_t imageSizeInBytes = image->getSizeInBytes();
 
-    char *ptr =new char[imageSizeInBytes];
+    image->allocate();
+    char *ptr = static_cast<char*>(image->getBuffer());
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
 
@@ -61,19 +62,22 @@ void GzBufferImageReader::read()
         throw std::ios_base::failure(str);
     }
 
-    unsigned int uncompressedbytesreaded=gzread(rawFile,ptr,imageSizeInBytes);
+    int uncompressedbytesreaded;
+    size_t readBytes = 0;
 
-    //assert(uncompressedbytesreaded==m_nbBytes);
-    if ( uncompressedbytesreaded!=imageSizeInBytes )
+    while ( (uncompressedbytesreaded = gzread(rawFile, ptr + readBytes, imageSizeInBytes - readBytes)) > 0 )
+    {
+        readBytes += uncompressedbytesreaded;
+    }
+
+    gzclose(rawFile);
+
+    if ( uncompressedbytesreaded == -1 )
     {
         std::string str = "Unable to read ";
         str+= file.string();
         throw std::ios_base::failure(str);
     }
-
-    image->setBuffer(ptr);
-
-    gzclose(rawFile);
 }
 
 //------------------------------------------------------------------------------

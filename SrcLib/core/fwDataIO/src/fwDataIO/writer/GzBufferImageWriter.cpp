@@ -58,20 +58,29 @@ void GzBufferImageWriter::write()
     }
 
     // file is OK : process now
-    ::boost::uint32_t imageSizeInBytes = ::fwData::imageSizeInBytes(*image);
+    size_t imageSizeInBytes = image->getSizeInBytes();
 
-    unsigned int uncompressedbyteswrited=gzwrite(rawFile,image->getBuffer(),imageSizeInBytes);
-    assert(uncompressedbyteswrited==imageSizeInBytes);
+    char *ptr = static_cast<char*>(image->getBuffer());
+    size_t writtenBytes = 0;
 
-    if ( uncompressedbyteswrited!=imageSizeInBytes )
+    int uncompressedbyteswrited;
+    
+    while ( writtenBytes < imageSizeInBytes
+           && (uncompressedbyteswrited = gzwrite(rawFile, ptr+writtenBytes, imageSizeInBytes-writtenBytes)) > 0 )
     {
-        std::string str = "GzBufferImageWriter::write unable to write ";
-        str+=  getFile().string();
-        gzclose(rawFile);
-        throw std::ios_base::failure(str);
+        writtenBytes += uncompressedbyteswrited;
     }
 
     gzclose(rawFile);
+
+    assert( uncompressedbyteswrited != 0 && writtenBytes==imageSizeInBytes);
+
+    if ( uncompressedbyteswrited != 0 && writtenBytes==imageSizeInBytes)
+    {
+        std::string str = "GzBufferImageWriter::write unable to write ";
+        str+=  getFile().string();
+        throw std::ios_base::failure(str);
+    }
 }
 
 //------------------------------------------------------------------------------
