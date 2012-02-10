@@ -310,9 +310,10 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
     // Test if the image is allocated
     bool dataImageIsAllocated = (_pImg != ::fwData::Image::sptr());
 
-    for ( int k = 0; dataImageIsAllocated && k < _pImg->getDimension(); k++ )
+    size_t nbDim = _pImg->getNumberOfDimensions();
+    for ( int k = 0; dataImageIsAllocated && k < nbDim; ++k )
     {
-        if(k == 2 && _pImg->getDimension() == 3) // special test for 2D jpeg image (size[2] == 1)
+        if(k == 2 && nbDim == 3) // special test for 2D jpeg image (size[2] == 1)
             dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
         else
             dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] != 0 && ( _pImg->getSize()[k] != 1 ) );
@@ -329,6 +330,8 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
     bool fieldIsModified = false;
 
+    size_t nbDim = _pImg->getNumberOfDimensions();
+
     // Manage image landmarks
     if (    ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_axialSliceIndexId ) ||
             ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_frontalSliceIndexId ) ||
@@ -337,7 +340,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
         // Get value
         std::vector< boost::int32_t > imageSize (3,0);
-        for ( int k = 0; k < _pImg->getDimension(); k++ )
+        for ( int k = 0; k < nbDim; ++k )
         {
             imageSize[k] = _pImg->getSize()[k];
         }
@@ -363,7 +366,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
     {
         // Get value
         std::vector< boost::int32_t > imageSize (3,0);
-        for ( int k = 0; k < _pImg->getDimension(); k++ )
+        for ( int k = 0; k < nbDim; ++k )
         {
             imageSize[k] = _pImg->getSize()[k];
         }
@@ -521,15 +524,14 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     {
         imgToInitialize = ::fwData::Image::New();
     }
-    ::fwData::IBufferDelegate::sptr buffImgSrc = imgSrc->getBufferDelegate();
-    imgSrc->setBufferDelegate( ::fwData::StandardBuffer::sptr() );
+    ::fwData::Array::sptr imgData = imgSrc->getDataArray();
+    imgSrc->setDataArray(::fwData::Array::sptr());
 
     imgToInitialize->deepCopy(imgSrc);
-    imgSrc->setBufferDelegate( buffImgSrc );
 
-    ::boost::int32_t size = ::fwData::imageSizeInBytes( *imgSrc );
-    char * dest = new char[size];
-    imgToInitialize->setBuffer( dest );
+    imgSrc->setDataArray(imgData);
+
+    imgToInitialize->allocate();
 
     return imgToInitialize;
 }
@@ -598,13 +600,13 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
                 mergeInformation((*oldPatient),(*patient));
                 break;
             }
-            index++;
+            ++index;
         }
         if ( !patientExist )
         {
             _patientDBTo->addPatient( *patient );
         }
-        patient++;
+        ++patient;
     }
 
     if( hasNewPatients )

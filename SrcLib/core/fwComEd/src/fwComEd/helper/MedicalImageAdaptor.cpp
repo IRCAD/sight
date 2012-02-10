@@ -46,7 +46,8 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3])
 {
     ::fwData::Image::sptr image = this->getImage();;
 
-    std::copy(image->getRefSpacing().begin(), image->getRefSpacing().end(), spacing);
+    const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
+    std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
 //------------------------------------------------------------------------------
@@ -55,7 +56,8 @@ void MedicalImageAdaptor::getImageDataSize(int size[3])
 {
     ::fwData::Image::sptr image = this->getImage();;
 
-    std::copy(image->getRefSize().begin(), image->getRefSize().end(), size);
+    const ::fwData::Image::SizeType imSize = image->getSize();
+    std::copy(imSize.begin(), imSize.end(), size);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +67,8 @@ void MedicalImageAdaptor::getImageSize(double size[3])
     ::fwData::Image::sptr image = this->getImage();;
     double spacing[3];
 
-    std::copy(image->getRefSize().begin(), image->getRefSize().end(), size);
+    const ::fwData::Image::SizeType imSize = image->getSize();
+    std::copy(imSize.begin(), imSize.end(), size);
     this->getImageSpacing(spacing);
 
     size[0] *= spacing[0];

@@ -219,7 +219,8 @@ void MedicalImageAdaptor::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
     ::fwData::Image::sptr image = this->getImage();;
 
-    std::copy(image->getRefSpacing().begin(), image->getRefSpacing().end(), spacing);
+    const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
+    std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
 //------------------------------------------------------------------------------
@@ -228,7 +229,8 @@ void MedicalImageAdaptor::getImageDataSize(INT_INDEX size)
 {
     ::fwData::Image::sptr image = this->getImage();
 
-    std::copy(image->getRefSize().begin(), image->getRefSize().end(), size);
+    const ::fwData::Image::SizeType imSize = image->getSize();
+    std::copy(imSize.begin(), imSize.end(), size);
 }
 
 //------------------------------------------------------------------------------
