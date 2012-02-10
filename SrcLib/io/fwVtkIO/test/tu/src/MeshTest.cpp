@@ -61,20 +61,20 @@ void MeshTest::testMeshToVtk()
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
 
-    vtkSmartPointer< vtkPolyData > mesh = vtkSmartPointer< vtkPolyData >::New();
-    ::vtkIO::helper::Mesh::toVTKMesh( mesh1, mesh);
-    CPPUNIT_ASSERT( mesh );
+    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
+    ::vtkIO::helper::Mesh::toVTKMesh( mesh1, vtkMesh);
+    CPPUNIT_ASSERT( vtkMesh );
 
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfVerts(), mesh->GetNumberOfVerts());
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfLines(), mesh->GetNumberOfLines());
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPolys(), mesh->GetNumberOfPolys());
-    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfStrips(), mesh->GetNumberOfStrips());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfVerts(), vtkMesh->GetNumberOfVerts());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfLines(), vtkMesh->GetNumberOfLines());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPolys(), vtkMesh->GetNumberOfPolys());
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfStrips(), vtkMesh->GetNumberOfStrips());
 
     ::fwData::Mesh::NewSptr mesh2;
     CPPUNIT_ASSERT( mesh2 );
-    ::vtkIO::helper::Mesh::fromVTKMesh(mesh, mesh2);
+    ::vtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh2);
 
-    this->compareMesh(mesh1, mesh2);
+    MeshTest::compareMesh(mesh1, mesh2);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void MeshTest::testSyntheticMesh()
     ::fwData::Mesh::NewSptr mesh2;
     ::vtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-    this->compareMesh(mesh1, mesh2);
+    MeshTest::compareMesh(mesh1, mesh2);
 }
 
 //------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ void MeshTest::testExportImportSyntheticMesh()
     reader->setFile(testFile);
     reader->read();
 
-    this->compareMesh(mesh1, mesh2);
+    MeshTest::compareMesh(mesh1, mesh2);
 
     bool suppr = ::boost::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);
@@ -138,14 +138,14 @@ void MeshTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells() , mesh2->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(mesh1->getCellDataSize()  , mesh2->getCellDataSize());
 
-    this->compareBuffer(mesh1->getPointsArray(), mesh2->getPointsArray());
-    this->compareBuffer(mesh1->getCellTypesArray(), mesh2->getCellTypesArray());
-    this->compareBuffer(mesh1->getCellDataOffsetsArray(), mesh2->getCellDataOffsetsArray());
-    this->compareBuffer(mesh1->getCellDataArray(), mesh2->getCellDataArray());
-    this->compareBuffer(mesh1->getPointColorsArray(), mesh2->getPointColorsArray());
-    this->compareBuffer(mesh1->getCellColorsArray(), mesh2->getCellColorsArray());
-    this->compareBuffer(mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray());
-    this->compareBuffer(mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray());
+    MeshTest::compareBuffer(mesh1->getPointsArray(), mesh2->getPointsArray());
+    MeshTest::compareBuffer(mesh1->getCellTypesArray(), mesh2->getCellTypesArray());
+    MeshTest::compareBuffer(mesh1->getCellDataOffsetsArray(), mesh2->getCellDataOffsetsArray());
+    MeshTest::compareBuffer(mesh1->getCellDataArray(), mesh2->getCellDataArray());
+    MeshTest::compareBuffer(mesh1->getPointColorsArray(), mesh2->getPointColorsArray());
+    MeshTest::compareBuffer(mesh1->getCellColorsArray(), mesh2->getCellColorsArray());
+    MeshTest::compareBuffer(mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray());
+    MeshTest::compareBuffer(mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray());
 }
 
 //------------------------------------------------------------------------------

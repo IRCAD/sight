@@ -33,16 +33,16 @@ void ImageTest::tearDown()
 void ImageTest::testGetterSetter3D()
 {
     ::fwData::Image::NewSptr image;
-    ::boost::uint8_t dim = 3;
-    ::fwData::Image::SizeType size(3);
+    const ::boost::uint8_t dim = 3;
+    ::fwData::Image::SizeType size(dim);
     size[0] = 10;
     size[1] = 15;
     size[2] = 23;
-    std::vector<double> spacing(3);
+    std::vector<double> spacing(dim);
     spacing[0] = 0.85;
     spacing[1] = 2.6;
     spacing[2] = 1.87;
-    std::vector<double> origin(3);
+    std::vector<double> origin(dim);
     origin[0] = -45.6;
     origin[1] = 25.97;
     origin[2] = -53.9;
@@ -57,14 +57,14 @@ void ImageTest::testGetterSetter3D()
 void ImageTest::testGetterSetter2D()
 {
     ::fwData::Image::NewSptr image;
-    ::boost::uint8_t dim = 2;
-    ::fwData::Image::SizeType size(2);
+    const ::boost::uint8_t dim = 2;
+    ::fwData::Image::SizeType size(dim);
     size[0] = 10;
     size[1] = 15;
-    std::vector<double> spacing(2);
+    std::vector<double> spacing(dim);
     spacing[0] = 0.85;
     spacing[1] = 2.6;
-    std::vector<double> origin(2);
+    std::vector<double> origin(dim);
     origin[0] = -45.6;
     origin[1] = 25.97;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
