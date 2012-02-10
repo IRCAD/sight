@@ -15,6 +15,8 @@ class ImageTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testGetterSetter );
     CPPUNIT_TEST( testAllocation );
     CPPUNIT_TEST( testReallocation );
+    CPPUNIT_TEST( testPixelType );
+    CPPUNIT_TEST( testSetGetPixel );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -27,6 +29,8 @@ public:
     void testGetterSetter();
     void testAllocation();
     void testReallocation();
+    void testPixelType();
+    void testSetGetPixel();
 };
 
 #endif

@@ -285,9 +285,9 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(2)(65))));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(6)(47), 0)));
 
-    unsigned int val;
+    ::boost::uint16_t val;
     array->getItem(list_of(2)(65), &val);
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, val);
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, val);
 
     char * charValue = array->getBufferPtr(list_of(6)(47), 0, array->getType().sizeOf());
     CPPUNIT_ASSERT_EQUAL( (unsigned int)238, *(reinterpret_cast<unsigned int*>(charValue)));
