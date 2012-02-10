@@ -108,10 +108,7 @@ public:
     /// return true iff the type is signed
     FWTOOLS_API bool isSigned();
 
-
-protected :
-
-    typedef boost::mpl::vector< 
+    typedef boost::mpl::vector<
         signed char,
         unsigned char,
         signed short,
@@ -123,6 +120,8 @@ protected :
         float,
         double
             >::type SupportedTypes;
+
+protected :
 
     std::string m_value; // aka key
     unsigned char m_sizeof;
