@@ -134,12 +134,9 @@ void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
                               data->getSpacing().at(2)
                             );
 
-    // !!!!!!!!!!!!!!!!
-    // FIX - ticket #1775 : All vtk adaptor don't support yet origin for image
-    // !!!!!!!!!!!!!!!!
-    importer->SetDataOrigin( 0.0, //data->getCRefOrigin().at(0),
-                             0.0, //data->getCRefOrigin().at(1),
-                             0.0  //data->getCRefOrigin().at(2)
+    importer->SetDataOrigin( data->getOrigin().at(0),
+                             data->getOrigin().at(1),
+                             data->getOrigin().at(2)
                             );
 
     const ::fwData::Image::SizeType imgSize = data->getSize();
@@ -262,6 +259,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             SLM_TRACE ("Luminance image");
             destination->setType( TypeTranslation.right.at( source->GetScalarType() ) );
             destination->allocate();
+            destBuffer = destination->getBuffer();
             size_t sizeInBytes = destination->getSizeInBytes();
             std::memcpy(destBuffer, input, sizeInBytes);
         }
@@ -271,17 +269,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         }
     }
 
-
-    ::fwData::Image::SizeType imgSize = destination->getSize();
-    ::fwData::Image::SpacingType spacing = destination->getSpacing();
-    ::fwData::Image::OriginType origin = destination->getOrigin();
-    for( ::boost::uint8_t d=0; d<dim; ++d)
-    {
-        OSLM_TRACE("Size["<< d << "]:" << imgSize[d]);
-        OSLM_TRACE("Origin["<< d << "]:" << origin[d]);
-        OSLM_TRACE("Spacing["<< d << "]:" << spacing[d]);
-        origin[d]=0.0; //FIXME !!! Hack because we currently don't support image origin (visu services)
-    }
 }
 
 //------------------------------------------------------------------------------
