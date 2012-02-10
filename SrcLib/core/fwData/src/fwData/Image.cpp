@@ -87,10 +87,11 @@ void Image::deepCopy( Image::csptr _source )
     // Assign
     copyInformation(_source );
 
-    m_dataArray = ::fwData::Array::New();
-
-    m_dataArray->deepCopy( _source->m_dataArray );
-
+    if( _source->m_dataArray )
+    {
+        m_dataArray = ::fwData::Array::New();
+        m_dataArray->deepCopy( _source->m_dataArray );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -105,7 +106,7 @@ void Image::deepCopy( Image::csptr _source )
 void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 {
     m_dataArray = array;
-    if (copyArrayInfo)
+    if (copyArrayInfo && array)
     {
         m_size = array->getSize();
         m_type = array->getType();
