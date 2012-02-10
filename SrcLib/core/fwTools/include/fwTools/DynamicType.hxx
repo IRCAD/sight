@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <limits>
-#include <boost/mpl/vector.hpp>
 #include <fwCore/base.hpp>
 
 #include "fwTools/StringKeyTypeMapping.hpp"
@@ -40,11 +39,10 @@ struct TypeSetter
 template<class KEYTYPE>
 DynamicType makeDynamicType(const KEYTYPE &keyType)
 {
-    typedef boost::mpl::vector< signed char, unsigned char, signed short, unsigned short,  signed int, unsigned int, float, double >:: type SupportedTypes;
 
     DynamicType d;
 
-    Dispatcher<SupportedTypes,TypeSetter >::invoke(keyType,d);
+    Dispatcher<DynamicType::SupportedTypes,TypeSetter >::invoke(keyType,d);
 
     assert ( d != DynamicType() ); // a type must be found !!
 
@@ -157,9 +155,8 @@ template<class T>
 std::pair<T,T> DynamicType::minMax()
 {
     SLM_ASSERT("Unable to have minMax for UnSpecifiedType", this->string() != DynamicType::m_unSpecifiedType);
-    typedef boost::mpl::vector< signed char, unsigned char, signed short, unsigned short,  signed int, unsigned int, float, double >:: type SupportedTypes;
     std::pair<T,T> minMax;
-    Dispatcher<SupportedTypes,MinMaxFunctor<T> >::invoke(*this,minMax);
+    Dispatcher<DynamicType::SupportedTypes,MinMaxFunctor<T> >::invoke(*this,minMax);
     return minMax;
 }
 

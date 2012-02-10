@@ -11,6 +11,8 @@
 #include <list>
 #include <stdexcept>
 
+#include <boost/mpl/vector.hpp>
+
 #include "fwTools/config.hpp"
 
 
@@ -108,6 +110,19 @@ public:
 
 
 protected :
+
+    typedef boost::mpl::vector< 
+        signed char,
+        unsigned char,
+        signed short,
+        unsigned short,
+        signed int,
+        unsigned int,
+        unsigned long,
+        signed long,
+        float,
+        double
+            >::type SupportedTypes;
 
     std::string m_value; // aka key
     unsigned char m_sizeof;
