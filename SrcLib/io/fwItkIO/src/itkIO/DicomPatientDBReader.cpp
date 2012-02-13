@@ -369,10 +369,9 @@ void DicomPatientDBReader::addPatients
                     OSLM_DEBUG( "Image Type = " << imageTypeStr);
 
                     // Set field
-                    img->setCRefSpacing(m_vPixelSpacing);
+                    img->setSpacing(m_vPixelSpacing);
                     img->setWindowCenter(center);
                     img->setWindowWidth(width);
-                    img->setRescaleIntercept(rescale);
 
                     acq->setCRefCreationDate(acqDate);
                     acq->setCRefImageType(imageTypeStr);

@@ -19,13 +19,13 @@ template< class ITKIMAGE>
 void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sptr _dataImage )
 {
     SLM_ASSERT("_dataImage not instanced", _dataImage);
-    assert( _dataImage->getDimension() == ITKIMAGE::ImageDimension ); // ::fwData::Image Dimension hard coded to 3 !!!!!!
+    assert( _dataImage->getNumberOfDimensions() == ITKIMAGE::ImageDimension ); // ::fwData::Image Dimension hard coded to 3 !!!!!!
 
     // Add by arnaud
     ::boost::uint8_t  dim = ITKIMAGE::ImageDimension;
-    std::vector<double> _vSpacing(dim,1);
-    std::vector<double> _vOrigin(dim,0);
-    std::vector< ::boost::int32_t >  _vSize(dim,0);
+    ::fwData::Image::SpacingType _vSpacing(dim,1);
+    ::fwData::Image::OriginType _vOrigin(dim,0);
+    ::fwData::Image::SizeType  _vSize(dim,0);
 
     for (boost::uint8_t  d=0; d<dim; ++d)
     {
@@ -35,9 +35,9 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
         _vSpacing[d] = itkImage->GetSpacing()[d];
     }
 
-    _dataImage->setCRefSize( _vSize );
-    _dataImage->setCRefOrigin( _vOrigin );
-    _dataImage->setCRefSpacing( _vSpacing );
+    _dataImage->setSize( _vSize );
+    _dataImage->setOrigin( _vOrigin );
+    _dataImage->setSpacing( _vSpacing );
 
     // Remove by Arnaud
     //for (boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension ; ++d)
@@ -49,14 +49,16 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
     //}
 
     typedef typename ITKIMAGE::PixelType PixelType;
-    _dataImage->setPixelType( fwTools::makeDynamicType<PixelType>() );
-    _dataImage->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()) );
+    _dataImage->setType( ::fwTools::Type::create<PixelType>() );
+    _dataImage->allocate();
+    ::fwData::Array::sptr array = _dataImage->getDataArray();
+    array->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), true );
 
     /// itk image release its management buffer. dataImage must now deal memory
     itkImage->GetPixelContainer()->SetContainerManageMemory( false );
 
     // Post Condition correct PixelType
-    assert( _dataImage->getPixelType()!= fwTools::DynamicType() );
+    assert( _dataImage->getType()!= fwTools::Type() );
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +85,7 @@ template< class ITKIMAGE>
 typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageData)
 {
     // Pre Condition
-    assert( imageData->getDimension() == ITKIMAGE::ImageDimension );
+    assert( imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
 
     typename ITKIMAGE::Pointer itkImage=ITKIMAGE::New();
 
@@ -91,13 +93,13 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
     typename ITKIMAGE::SpacingType spacing = itkImage->GetSpacing();
     for (boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension; ++d)
     {
-        spacing[d] = imageData->getRefSpacing()[d];
+        spacing[d] = imageData->getSpacing()[d];
     }
     itkImage->SetSpacing(spacing);
 
     // update origin information ; workaround due to GetOrigin const
-    std::copy(   imageData->getRefOrigin().begin(),
-                 imageData->getRefOrigin().end(),
+    std::copy(   imageData->getOrigin().begin(),
+                 imageData->getOrigin().end(),
                  const_cast< typename ITKIMAGE::PointType * >( &itkImage->GetOrigin())->Begin()
              );
 
@@ -107,7 +109,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
     for (::boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
-        itkRegion.SetSize( d,   imageData->getCRefSize()[d] );
+        itkRegion.SetSize( d,   imageData->getSize()[d] );
         nbpixels *= itkRegion.GetSize()[d];;
     }
 
