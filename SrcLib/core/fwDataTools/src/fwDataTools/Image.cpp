@@ -61,15 +61,15 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
     image->setType(type);
 
     ::fwData::Image::SizeType size(3);
-    size[0] = rand()%100;
-    size[1] = rand()%100;
-    size[2] = rand()%100;
+    size[0] = rand()%100 +1;
+    size[1] = rand()%100 +1;
+    size[2] = rand()%100 +1;
     image->setSize(size);
 
     std::vector< double > spacing(3);
-    spacing[0] = rand()%200 / 100.;
-    spacing[1] = rand()%200 / 100.;
-    spacing[2] = rand()%200 / 100.;
+    spacing[0] = (rand()%200 +1) / 100.;
+    spacing[1] = (rand()%200 +1) / 100.;
+    spacing[2] = (rand()%200 +1) / 100.;
     image->setSpacing(spacing);
 
     std::vector< double > origin(3);
