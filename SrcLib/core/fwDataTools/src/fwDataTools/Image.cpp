@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <map>
-
+#include <iomanip>
 #include <cstdlib>
 #include <ctime>
 
@@ -113,7 +113,7 @@ bool Image::compareImage(::fwData::Image::sptr image1, ::fwData::Image::sptr ima
             image1->getSize() != image2->getSize());
 
     compare &= image1->getSpacing() == image2->getSpacing();
-    OSLM_ERROR_IF("Images have not the same spacing : ( " <<
+    OSLM_ERROR_IF(std::setprecision(10) << "Images have not the same spacing : ( " <<
             image1->getSpacing()[0] << ", " << image1->getSpacing()[1] << ", " << image1->getSpacing()[2] << ") != (" <<
             image2->getSpacing()[0] << ", " << image2->getSpacing()[1] << ", " << image2->getSpacing()[2] << " )",
             image1->getSpacing() != image2->getSpacing());
@@ -193,7 +193,8 @@ bool Image::compareArray(::fwData::Array::sptr array1, ::fwData::Array::sptr arr
     SLM_ERROR_IF("Arrays have not same number of componnents", array1->getNumberOfComponents() !=  array2->getNumberOfComponents());
 
     compare &= array1->getIsBufferOwner() ==  array2->getIsBufferOwner();
-    SLM_ERROR_IF("Arrays have not same buffer owner", array1->getIsBufferOwner() !=  array2->getIsBufferOwner());
+    OSLM_ERROR_IF("Arrays have not same buffer owner : " << array1->getIsBufferOwner() << " != " << array2->getIsBufferOwner(),
+            array1->getIsBufferOwner() !=  array2->getIsBufferOwner());
 
     compare &= array1->getStrides() == array2->getStrides();
     SLM_ERROR_IF("Arrays have not same strides", array1->getStrides() != array2->getStrides());

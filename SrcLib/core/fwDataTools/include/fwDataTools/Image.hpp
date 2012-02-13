@@ -20,7 +20,7 @@ namespace fwDataTools
 
 
 /**
- * @brief   This helper generates a image.
+ * @brief   This class contains helper to generate and compare images.
  * @class   Image.
  * @author  IRCAD (Research and Development Team).
  * @date    2011.
