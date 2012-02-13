@@ -34,6 +34,18 @@ std::string getDateInXsdFormat( const boost::posix_time::ptime & dateAndTime )
 
 //------------------------------------------------------------------------------
 
+::boost::posix_time::ptime fromDateInXsdFormat(const std::string & date_string)
+{
+    std::stringstream ss;
+    ss << date_string << " 00:00:00";
+    std::string::size_type i = 0;
+
+    ::boost::posix_time::ptime  t = boost::posix_time::time_from_string(ss.str());
+    return t;
+}
+
+//------------------------------------------------------------------------------
+
 std::string toIsoExtendedString(boost::posix_time::ptime ptime)
 {
     return boost::posix_time::to_iso_extended_string(ptime) ;
