@@ -7,6 +7,8 @@
 #ifndef _IO_IREADER_HPP_
 #define _IO_IREADER_HPP_
 
+#include <boost/filesystem/path.hpp>
+
 #include <fwServices/IService.hpp>
 
 #include "io/config.hpp"
@@ -34,6 +36,15 @@ class IO_CLASS_API IReader : public fwServices::IService
 public :
     fwCoreServiceClassDefinitionsMacro ( (IReader)(::fwServices::IService) ) ;
 
+    typedef enum
+    {
+        FILE   = 1 << 0,
+        FILES  = 1 << 1,
+        FOLDER = 1 << 2
+    }IOPathType;
+
+    typedef std::vector< ::boost::filesystem::path > LocationsType;
+
     /**
      * @name    Specific service methods for reading
      */
@@ -56,6 +67,15 @@ public :
      * @brief   returns  the title of selector dialog box
      */
     IO_API virtual std::string getSelectorDialogTitle();
+
+    IO_API virtual IOPathType getIOPathType() const; //todo : virtual pure
+
+    IO_API ::boost::filesystem::path getFile() const;
+    IO_API void setFile(const ::boost::filesystem::path &file);
+    IO_API LocationsType getFiles() const;
+    IO_API void setFiles(const LocationsType &files);
+    IO_API ::boost::filesystem::path getFolder() const;
+    IO_API void setFolder(const ::boost::filesystem::path &folder);
     //@}
 
 protected:
@@ -70,6 +90,12 @@ protected:
      */
     IO_API virtual ~IReader() throw() ;
 
+    IO_API virtual void configuring();
+
+    bool m_locationIsDefined;
+
+private:
+    LocationsType m_locations;
 };
 
 }
