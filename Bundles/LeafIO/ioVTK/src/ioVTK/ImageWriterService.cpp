@@ -59,7 +59,10 @@ void ImageWriterService::configuring() throw(::fwTools::Failed)
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
         m_fsImgPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsImgPath);
+        std::string ext = ::boost::filesystem::extension(m_fsImgPath);
+        bool bIsAuthorizedExtension = (ext == ".vtk" || ext == ".vti" || ext ==".mhd");
+        OSLM_TRACE_IF("Extension not supported. File ignored." << ext,  !bIsAuthorizedExtension);
+        m_bServiceIsConfigured = ::boost::filesystem::is_regular_file(m_fsImgPath) && bIsAuthorizedExtension;
         OSLM_TRACE("Filename found" << filename ) ;
     }
 }
