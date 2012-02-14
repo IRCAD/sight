@@ -124,7 +124,7 @@ void IWriter::configuring() throw (fwTools::Failed)
 
 ::io::IOPathType IWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::io::TYPE_NOT_DEFINED;
 }
 
 //-----------------------------------------------------------------------------

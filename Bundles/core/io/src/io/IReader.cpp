@@ -142,7 +142,7 @@ void IReader::configuring() throw (fwTools::Failed)
 
 ::io::IOPathType IReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::io::TYPE_NOT_DEFINED;
 }
 
 //-----------------------------------------------------------------------------
