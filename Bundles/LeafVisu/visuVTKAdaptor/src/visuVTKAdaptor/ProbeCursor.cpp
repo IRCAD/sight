@@ -331,8 +331,8 @@ void ProbeCursor::updateView( double world[3] )
 
     std::string txt;
 
-    static const double epsilon = -0.00001;
-    if ( world[0]<epsilon  || world[1]<epsilon  || world[2]<epsilon  ||
+    static const double epsilon = 0.00001;
+    if ( abs(world[0])<epsilon  || abs(world[1])<epsilon  || abs(world[2])<epsilon  ||
          index[0]< 0 || index[1]< 0 || index[2]< 0 ||
          index[0]>= image->getSize()[0] ||
          index[1]>= image->getSize()[1] ||
@@ -385,7 +385,7 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
             //setOrientation( (dim==2?2:(dim+1)%2) ); // KEEP Z but swap X,Y
             this->setOrientation(dim);
         }
-        probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim];
+        probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
     }
 
     for ( int p=0; p<2; ++p )
@@ -396,10 +396,10 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
             worldCross[p+2][dim] = probeWorld[dim];
             if ( (dim + p + 1)%3 == m_orientation )
             {
-                worldCross[p][dim] = 0;
+                worldCross[p][dim] = image->getOrigin().at(dim);
                 ::boost::int32_t size = image->getSize().at(dim)-1;
                 double spacing = image->getSpacing().at(dim);
-                worldCross[p+2][dim] =  size * spacing;
+                worldCross[p+2][dim] =  size * spacing + image->getOrigin().at(dim);
             }
         }
     }

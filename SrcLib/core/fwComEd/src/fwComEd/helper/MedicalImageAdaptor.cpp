@@ -52,6 +52,15 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3])
 
 //------------------------------------------------------------------------------
 
+void MedicalImageAdaptor::getImageOrigin(double origin[3])
+{
+    ::fwData::Image::sptr image = this->getImage();;
+
+    std::copy(image->getOrigin().begin(), image->getOrigin().end(), origin);
+}
+
+//------------------------------------------------------------------------------
+
 void MedicalImageAdaptor::getImageDataSize(int size[3])
 {
     ::fwData::Image::sptr image = this->getImage();;
@@ -83,18 +92,20 @@ void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
     ::fwData::Image::sptr image = this->getImage();;
     double imageSize[3];
     this->getImageSize(imageSize);
+    double origin[3];
+    this->getImageOrigin(origin);
 
     ::fwData::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
     double index[3] = {sliceIndex[0]->value(), sliceIndex[1]->value(), sliceIndex[2]->value()};
 
-    center[0] = (imageSize[0]-1.) / 2. ;
-    center[1] = (imageSize[1]-1.) / 2. ;
-    center[2] = (imageSize[2]-1.) / 2. ;
+    center[0] = origin[0] + (imageSize[0]-1.)/ 2.;
+    center[1] = origin[1] + (imageSize[1]-1.)/ 2.;
+    center[2] = origin[2] + (imageSize[2]-1.)/ 2.;
 
     double spacing[3];
     this->getImageSpacing(spacing);
-    center[m_orientation] = index[m_orientation]*spacing[m_orientation];
+    center[m_orientation] = origin[m_orientation] + index[m_orientation]*spacing[m_orientation];
 }
 
 //------------------------------------------------------------------------------
@@ -153,9 +164,11 @@ void MedicalImageAdaptor::sliceIndexToWorld(const int index[3], double world[3] 
 {
     double spacing[3];
     this->getImageSpacing(spacing);
+    double origin[3];
+    this->getImageOrigin(origin);
     for ( int i=0 ; i<3 ; ++i )
     {
-        world[i] = static_cast<int>( (index[i]*spacing[i]) + 0.5*spacing[i] );
+        world[i] = static_cast<int>( (index[i]*spacing[i]) + 0.5*spacing[i] + origin[i] );
     }
 }
 
@@ -165,10 +178,12 @@ void MedicalImageAdaptor::worldToSliceIndex(const double world[3], int index[3] 
 {
     double spacing[3];
     this->getImageSpacing(spacing);
+    double origin[3];
+    this->getImageOrigin(origin);
     for ( int i=0 ; i<3 ; ++i )
     {
         // nearest integer
-        index[i] = static_cast<int>( (world[i]/spacing[i]) + ( (world[i]/spacing[i]) >= 0 ? 0.5 : -0.5 ) );
+        index[i] = static_cast<int>( ( (world[i]-origin[i])/spacing[i] ) + ( ( (world[i]-origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 
