@@ -344,7 +344,7 @@ void ProbeCursor::updateView( double world[3] )
     }
     else
     {
-        std::string greyLevel = ::fwData::getPixelAsString(image, index[0], index[1], index[2] );
+        std::string greyLevel = image->getPixelAsString(index[0], index[1], index[2] );
         txt = (::boost::format("(% 4li,% 4li, % 4li) : %s ") % index[0] % index[1] % index[2] % greyLevel ).str();
 
         m_textMapper->SetInput(txt.c_str());

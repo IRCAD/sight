@@ -469,7 +469,7 @@ public:
     void operator()( Param &param )
     {
         IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
-        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        const ::fwData::Image::SizeType &size = param.image->getSize();
         unsigned int len = size[0]*size[1]*size[2];
 
         T &min = param.min;

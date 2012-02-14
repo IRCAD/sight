@@ -338,7 +338,7 @@ void ImagesProbeCursor::updateView( double world[3] )
         }
         else
         {
-            std::string greyLevel = getPixelAsString(image, index[0], index[1], index[2] );
+            std::string greyLevel = image->getPixelAsString(index[0], index[1], index[2] );
             txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
 
             // update polyData

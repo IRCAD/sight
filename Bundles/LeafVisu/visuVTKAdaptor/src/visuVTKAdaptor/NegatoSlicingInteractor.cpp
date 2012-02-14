@@ -413,7 +413,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
     OSLM_TRACE("sliceIndex[2] "<< sliceIndex[2]->value()<< " index[2] " << index[2] << " pickedPt "<<pickedPoint[2]);
 
 #ifdef DEBUG
-    for ( int i = 0; i < image->getDimension(); i++ )
+    for ( int i = 0; i < image->getNumberOfDimensions(); i++ )
     {
         OSLM_ASSERT("index["<< i <<"] = " << index[i]
                 << " and image->getSize()[" << i << "] = " << image->getSize()[i],
