@@ -129,7 +129,7 @@ Type Type::create(std::string name)
 
 std::string Type::toString(const void * value) const
 {
-    return m_tool.toString(value);
+    return m_tool->toString(value);
 }
 
 

@@ -245,6 +245,10 @@ void ImageTest::testSetGetPixel()
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(img->getPixelBuffer(index)));
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(::fwData::Image::getPixelBuffer(reinterpret_cast< ::fwData::Image::BufferType* >(img->getBuffer()), index, img->getType().sizeOf())));
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(img->getPixelBufferCopy(index).get()));
+
+                std::stringstream ss;
+                ss << val;
+                CPPUNIT_ASSERT_EQUAL( ss.str(), img->getPixelAsString(x,y,z));
             }
         }
     }

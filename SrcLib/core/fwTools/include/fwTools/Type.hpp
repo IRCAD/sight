@@ -34,6 +34,7 @@ namespace fwTools {
 class FWTOOLS_CLASS_API Type
 {
 
+public:
     struct FWTOOLS_CLASS_API ToolBase
     {
         FWTOOLS_API  virtual std::string toString( ::boost::any value ) const;
@@ -47,7 +48,6 @@ class FWTOOLS_CLASS_API Type
         virtual std::string toString( const void * ) const;
     };
 
-public:
     typedef std::map<std::string, Type> TypeMapType;
     
     /// Default constructor
@@ -127,7 +127,7 @@ protected :
     ::boost::any m_min;
     ::boost::any m_max;
 
-    ToolBase m_tool;
+    SPTR(ToolBase) m_tool;
 
     /// Value for not specified type
     FWTOOLS_API static const std::string s_unspecifiedTypeName;
@@ -181,7 +181,7 @@ void Type::setType()
     m_isSigned = ::boost::is_signed<T>::value;
     m_isFixedPrecision = ::boost::is_integral<T>::value;
 
-    m_tool = Type::Tool<T>();
+    m_tool = SPTR(ToolBase)(new Type::Tool<T>());
 
     T min = static_cast< T >( std::numeric_limits< T >::min() );
     T max = static_cast< T >( std::numeric_limits< T >::max() );
