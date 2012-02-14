@@ -18,6 +18,7 @@ class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testVtkImageReader );
     CPPUNIT_TEST( testVtiImageReader );
     CPPUNIT_TEST( testMhdImageReader );
+    CPPUNIT_TEST( testImageReaderExtension);
     CPPUNIT_TEST( testVtkImageWriter );
     CPPUNIT_TEST( testVtiImageWriter );
     CPPUNIT_TEST( testMhdImageWriter );
@@ -32,10 +33,12 @@ public:
     void testVtkImageReader();
     void testVtiImageReader();
     void testMhdImageReader();
+    void testImageReaderExtension();
     void testVtkImageWriter();
     void testVtiImageWriter();
     void testMhdImageWriter();
     void testImageWriterExtension();
+
     
 private :
     void readImage(const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image);

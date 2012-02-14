@@ -197,6 +197,32 @@ void ImageReaderWriterTest::testMhdImageReader()
     CPPUNIT_ASSERT_EQUAL( static_cast<int>(image->getType().sizeOf()), sizeTypeExpected);
 
 }
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::testImageReaderExtension()
+{
+
+    const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.xxx";
+
+    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("filename");
+    readerCfg->setAttributeValue("id", file.string());
+    readerSrvCfg->addConfigurationElement(readerCfg);
+
+    ::fwData::Image::NewSptr image;
+
+    ::fwServices::IService::sptr ReaderSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVTK::ImageReaderService" );
+    CPPUNIT_ASSERT(ReaderSrv);
+
+    ::fwServices::OSR::registerService( image , ReaderSrv );
+    ReaderSrv->setConfiguration( readerSrvCfg );
+    ReaderSrv->configure();
+    ReaderSrv->start();
+    CPPUNIT_ASSERT_THROW(ReaderSrv->update(),::fwTools::Failed);
+    ReaderSrv->stop();
+    ::fwServices::OSR::unregisterService( ReaderSrv );
+
+}
 
 //------------------------------------------------------------------------------
 void ImageReaderWriterTest::testVtkImageWriter()
