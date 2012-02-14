@@ -7,9 +7,12 @@
 #ifndef _IO_IWRITER_HPP_
 #define _IO_IWRITER_HPP_
 
+#include <boost/filesystem/path.hpp>
+
 #include <fwServices/IService.hpp>
 
 #include "io/config.hpp"
+#include "io/ioTypes.hpp"
 
 namespace io
 {
@@ -47,6 +50,16 @@ public :
     IO_API virtual void configureWithIHM() = 0 ;
     ///@}
 
+    IO_API virtual ::io::IOPathType getIOPathType() const; //todo : virtual pure
+
+    IO_API ::boost::filesystem::path getFile() const;
+    IO_API void setFile(const ::boost::filesystem::path &file);
+    IO_API ::io::LocationsType getFiles() const;
+    IO_API void setFiles(const ::io::LocationsType &files);
+    IO_API ::boost::filesystem::path getFolder() const;
+    IO_API void setFolder(const ::boost::filesystem::path &folder);
+    IO_API bool hasLocationDefined() const;
+
 protected:
 
     /**
@@ -58,6 +71,12 @@ protected:
      * @brief   Destructor
      */
     IO_API virtual ~IWriter() throw() ;
+
+    IO_API virtual void configuring() throw (fwTools::Failed);
+
+private:
+
+    ::io::LocationsType m_locations;
 };
 
 }
