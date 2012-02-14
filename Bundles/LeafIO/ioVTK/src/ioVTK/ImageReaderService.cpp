@@ -138,10 +138,19 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        if ( this->loadImage( m_fsImgPath, pImage ) )
+        try
         {
-            notificationOfDBUpdate();
+            if ( this->loadImage( m_fsImgPath, pImage ) )
+            {
+                notificationOfDBUpdate();
+            }
         }
+        catch(::fwTools::Failed& e)
+        {
+            OSLM_TRACE("Error : " << e.what());
+            throw e;
+        }
+
         cursor.setDefaultCursor();
     }
 }
@@ -184,7 +193,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     }
     else
     {
-        OSLM_FATAL("Unknown extension for file "<< imgFile);
+        throw(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
     // Set the image (already created, but empty) that will be modified
@@ -245,8 +254,5 @@ void ImageReaderService::notificationOfDBUpdate()
     // Notify message to all service listeners
     ::fwServices::IEditionService::notify(this->getSptr(), pImage, msg);
 }
-
-//------------------------------------------------------------------------------
-
 
 } // namespace ioVtk
