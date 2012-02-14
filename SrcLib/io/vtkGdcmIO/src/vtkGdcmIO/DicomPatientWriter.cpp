@@ -199,7 +199,7 @@ struct VTKDicomSaverFunctor
 
                 // Spacing
                 // tagkey = "0028|0030";
-                std::vector<double> spacing = dataImage->getCRefSpacing();
+                std::vector<double> spacing = dataImage->getSpacing();
                 value = ::fwTools::getString< double >(spacing[0]);
                 value += '\\';
                 value += ::fwTools::getString< double >(spacing[1]);

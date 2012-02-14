@@ -88,16 +88,12 @@ void DicomTest::methode1()
 
     ::fwData::Image::sptr image = pAcq->getImage();
     ::fwData::Image::sptr image2 = pAcq2->getImage();
-    CPPUNIT_ASSERT_EQUAL(image->getDimension(), image2->getDimension());
-    CPPUNIT_ASSERT_EQUAL(image->getOrigin().back(), image2->getOrigin().back());
+    CPPUNIT_ASSERT_EQUAL(image->getNumberOfDimensions(), image2->getNumberOfDimensions());
+    CPPUNIT_ASSERT(image->getOrigin() == image2->getOrigin());
+    CPPUNIT_ASSERT(image->getSize() == image2->getSize());
+    CPPUNIT_ASSERT(image->getSpacing() == image2->getSpacing());
     CPPUNIT_ASSERT_EQUAL(image->getWindowCenter(), image2->getWindowCenter());
     CPPUNIT_ASSERT_EQUAL(image->getWindowWidth(), image2->getWindowWidth());
-    CPPUNIT_ASSERT_EQUAL(image->getSize()[0], image2->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize()[1], image2->getSize()[1]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize()[2], image2->getSize()[2]);
-    CPPUNIT_ASSERT_EQUAL(image->getSpacing()[0], image2->getSpacing()[0]);
-    CPPUNIT_ASSERT_EQUAL(image->getSpacing()[1], image2->getSpacing()[1]);
-    CPPUNIT_ASSERT_EQUAL(image->getSpacing()[2], image2->getSpacing()[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -119,17 +115,17 @@ void DicomTest::methode1()
 
     // image informations
     const ::boost::uint8_t IMG1_DIMENSION   = 3 ;
-    std::vector<double> IMG1_VSPACING (3,2);
+    ::fwData::Image::SpacingType IMG1_VSPACING(3,2);
     IMG1_VSPACING[0] = 0.1234;
     IMG1_VSPACING[1] = 0.246;
     IMG1_VSPACING[2] = 0.48;
 
-    std::vector<double> IMG1_ORIGIN (3,0);
+    ::fwData::Image::OriginType IMG1_ORIGIN (3,0);
 
     ::boost::int32_t IMG1_SIZEX = 10 ;
     ::boost::int32_t IMG1_SIZEY = 20;
     ::boost::int32_t IMG1_SIZEZ = 30 ;
-    std::vector< ::boost::int32_t > IMG1_VSIZE ;
+    ::fwData::Image::SizeType IMG1_VSIZE ;
     IMG1_VSIZE.push_back(IMG1_SIZEX);
     IMG1_VSIZE.push_back(IMG1_SIZEY);
     IMG1_VSIZE.push_back(IMG1_SIZEZ);
@@ -137,15 +133,8 @@ void DicomTest::methode1()
 
     const double IMG1_WINDOWCENTER = 86 ;
     const double IMG1_WINDOWWIDTH = 345 ;
-    const double IMG1_RESCALEINTERCEPT = 1 ;
 
-    ::fwTools::DynamicType IMG1_PIXELTYPE = ::fwTools::makeDynamicType<signed short>();
-    signed short * buffer1 = new signed short[size];
-    for (int i=0 ; i< size ; i++)
-    {
-        buffer1[i] = 100;
-    }
-
+    ::fwTools::Type IMG1_PIXELTYPE = ::fwTools::Type::create<signed short>();
     //create patientDB
     ::fwData::PatientDB::NewSptr pPatientDB;
     ::fwData::Patient::NewSptr pPatient;
@@ -172,17 +161,21 @@ void DicomTest::methode1()
     ::fwData::Image::NewSptr pImage1;
     pAcq1->setImage(pImage1);
 
-    pImage1->setDimension( IMG1_DIMENSION );
-    pImage1->setCRefSize( IMG1_VSIZE );
-    pImage1->setCRefOrigin( IMG1_ORIGIN );
-    pImage1->setCRefSpacing( IMG1_VSPACING );
+    pImage1->setSize( IMG1_VSIZE );
+    pImage1->setOrigin( IMG1_ORIGIN );
+    pImage1->setSpacing( IMG1_VSPACING );
 
-    pImage1->setPixelType(IMG1_PIXELTYPE);
-    pImage1->setBuffer( static_cast<void *>(buffer1) );
+    pImage1->setType(IMG1_PIXELTYPE);
+    pImage1->allocate();
+    signed short * buffer1 = static_cast<signed short*>(pImage1->getBuffer());
+    for (int i=0 ; i< size ; i++)
+    {
+        buffer1[i] = 100;
+    }
+
 
     pImage1->setWindowCenter(IMG1_WINDOWCENTER);
     pImage1->setWindowWidth(IMG1_WINDOWWIDTH    );
-    pImage1->setRescaleIntercept(IMG1_RESCALEINTERCEPT);
 
 
     return pPatientDB;
