@@ -6,6 +6,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -59,10 +61,7 @@ void ImageWriterService::configuring() throw(::fwTools::Failed)
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
         m_fsImgPath = ::boost::filesystem::path( filename ) ;
-        std::string ext = ::boost::filesystem::extension(m_fsImgPath);
-        bool bIsAuthorizedExtension = (ext == ".vtk" || ext == ".vti" || ext ==".mhd");
-        OSLM_TRACE_IF("Extension not supported. File ignored." << ext,  !bIsAuthorizedExtension);
-        m_bServiceIsConfigured = ::boost::filesystem::is_regular_file(m_fsImgPath) && bIsAuthorizedExtension;
+        m_bServiceIsConfigured = true;
         OSLM_TRACE("Filename found" << filename ) ;
     }
 }
@@ -150,7 +149,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path imgFile, ::b
     }
     else
     {
-        OSLM_FATAL("Unknown extension for file "<< imgFile);
+        throw(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
     myWriter->setObject(_pImg);
@@ -197,8 +196,15 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        this->saveImage(m_fsImgPath,pImage);
-
+        try
+        {
+            this->saveImage(m_fsImgPath,pImage);
+        }
+        catch(::fwTools::Failed& e)
+        {
+            OSLM_TRACE("Error : " << e.what());
+			throw e;
+        }
         cursor.setDefaultCursor();
     }
 }

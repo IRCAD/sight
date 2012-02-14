@@ -415,6 +415,48 @@ void ImageReaderWriterTest::testMhdImageWriter()
 
 }
 //------------------------------------------------------------------------------
+void ImageReaderWriterTest::testImageWriterExtension()
+{
+    // Data to write
+    const size_t dim = 3;
+    ::fwTools::Type type("uint8");
+    ::fwData::Image::SizeType sizeExpected(dim);
+    sizeExpected[0] = 10;
+    sizeExpected[1] = 20;
+    sizeExpected[2] = 30;
+    ::fwData::Image::SpacingType spacingExpected(dim);
+    spacingExpected[0] = 0.24;
+    spacingExpected[1] = 1.07;
+    spacingExpected[2] = 2.21;
+    ::fwData::Image::OriginType originExpected(dim);
+    originExpected[0] = -05.6;
+    originExpected[1] = 15.16;
+    originExpected[2] = 11.11;
+
+    ::fwData::Image::NewSptr image;
+    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+
+    // Write to vtk image.
+    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
+
+    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr cfg("filename");
+    cfg->setAttributeValue("id", file.string());
+    srvCfg->addConfigurationElement(cfg);
+
+    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVTK::ImageWriterService" );
+    CPPUNIT_ASSERT(srv);
+
+    ::fwServices::OSR::registerService( image , srv );
+
+    srv->setConfiguration( srvCfg );
+    srv->configure();
+    srv->start();
+    CPPUNIT_ASSERT_THROW(srv->update(),::fwTools::Failed);
+    srv->stop();
+    ::fwServices::OSR::unregisterService( srv );
+}
+//------------------------------------------------------------------------------
 void ImageReaderWriterTest::readImage(const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image)
 {
 
