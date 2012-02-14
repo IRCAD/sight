@@ -235,7 +235,7 @@ template<> FWTOOLS_API const std::string Type::typeToString< double >  ();
 
 namespace std
 {
-    std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type);
+    FWTOOLS_API std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type);
 } // namespace std
 
 
