@@ -46,6 +46,7 @@ public :
      * This method is used to find the file path using a file selector.
      */
     IOVTK_API virtual void configureWithIHM();
+//    IOVTK_API virtual void setFile(const ::boost::filesystem::path &file);
 
 
 protected:

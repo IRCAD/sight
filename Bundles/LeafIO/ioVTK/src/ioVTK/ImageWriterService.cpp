@@ -203,7 +203,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
         catch(::fwTools::Failed& e)
         {
             OSLM_TRACE("Error : " << e.what());
-			throw e;
+            throw e;
         }
         cursor.setDefaultCursor();
     }
