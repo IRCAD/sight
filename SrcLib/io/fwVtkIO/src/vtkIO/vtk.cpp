@@ -10,6 +10,7 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/bimap.hpp>
+#include <boost/bimap/multiset_of.hpp>
 #include <boost/cast.hpp>
 
 #include <vtkImageImport.h>
@@ -57,52 +58,48 @@ struct DynamicTypeOrderer
 };
 
 
-
-
 // BOOST 1.38 -> ::boost::bimaps::bimap<....>    note bimapS  ## BOOST 1.39 -> ::boost::bimap::bimap<....>
 typedef  ::boost::bimaps::bimap<
-                    ::boost::bimaps::set_of< fwTools::DynamicType , ::vtkIO::DynamicTypeOrderer  >
-                  , ::boost::bimaps::set_of< int >
-                   > DynamicTypeTranslator;
-
-DynamicTypeTranslator PixelTypeTranslation = boost::assign::list_of< DynamicTypeTranslator::relation >
-                                                                    ( fwTools::makeDynamicType<signed char>(),    VTK_CHAR )
-                                                                    ( fwTools::makeDynamicType<unsigned char>(),  VTK_UNSIGNED_CHAR )
-                                                                    ( fwTools::makeDynamicType<signed short>(),   VTK_SHORT )
-                                                                    ( fwTools::makeDynamicType<unsigned short>(), VTK_UNSIGNED_SHORT )
-                                                                    ( fwTools::makeDynamicType<signed int>(),     VTK_INT )
-                                                                    ( fwTools::makeDynamicType<unsigned int>(),   VTK_UNSIGNED_INT )
-                                                                    ( fwTools::makeDynamicType<signed long>(),    VTK_LONG )
-                                                                    ( fwTools::makeDynamicType<unsigned long>(),  VTK_UNSIGNED_LONG )
-                                                                    ( fwTools::makeDynamicType<float>(),          VTK_FLOAT )
-                                                                    ( fwTools::makeDynamicType<double>(),         VTK_DOUBLE );
-
-typedef  ::boost::bimaps::bimap<
-                    ::boost::bimaps::set_of< fwTools::Type >
-                  , ::boost::bimaps::set_of< int >
+                    ::boost::bimaps::multiset_of< fwTools::Type >,
+                    ::boost::bimaps::set_of< int >
                    > TypeTranslator;
 
+                   // vtk type <=> fwTools type translation bimap 
+                   // !!! Order matters  !!! : for a given fwTools::Type, the last entry will be used for VTK.
 TypeTranslator TypeTranslation = boost::assign::list_of< TypeTranslator::relation >
-                                                                    ( fwTools::Type::create("int8" ), VTK_CHAR )
-                                                                    ( fwTools::Type::create("int8" ), VTK_SIGNED_CHAR )
-                                                                    ( fwTools::Type::create("uint8" ), VTK_UNSIGNED_CHAR )
 
-                                                                    ( fwTools::Type::create("int16"), VTK_SHORT )
-                                                                    ( fwTools::Type::create("uint16"), VTK_UNSIGNED_SHORT )
+                                                                    // char and signed char are treated as the same type.
+                                                                    // and plain char is used when writing an int8 image
+                                                                    ( fwTools::Type::create("int8" )         , VTK_SIGNED_CHAR )
+                                                                    ( fwTools::Type::create("int8" )         , VTK_CHAR )
+                                                                    ( fwTools::Type::create("uint8" )        , VTK_UNSIGNED_CHAR )
 
-                                                                    ( fwTools::Type::create("int32"), VTK_INT )
-                                                                    ( fwTools::Type::create("uint32"), VTK_UNSIGNED_INT )
+                                                                    ( fwTools::Type::create("int16")         , VTK_SHORT )
+                                                                    ( fwTools::Type::create("uint16")        , VTK_UNSIGNED_SHORT )
 
-                                                                    ( fwTools::Type::create<long>(), VTK_LONG )
-                                                                    ( fwTools::Type::create<unsigned long>(), VTK_UNSIGNED_LONG )
+                                                                    ( fwTools::Type::create("int32")         , VTK_INT )
+                                                                    ( fwTools::Type::create("uint32")        , VTK_UNSIGNED_INT )
 
-                                                                    ( fwTools::Type::create("int64"), VTK___INT64 )
-                                                                    ( fwTools::Type::create("uint64"), VTK_UNSIGNED___INT64 )
-                                                                    ( fwTools::Type::create("int64"), VTK_LONG_LONG )
-                                                                    ( fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG_LONG )
+                                                                    // ( fwTools::Type::create<long>()          , VTK_LONG )
+                                                                    // ( fwTools::Type::create<unsigned long>() , VTK_UNSIGNED_LONG )
 
-                                                                    ( fwTools::Type::create("float" ), VTK_FLOAT )
-                                                                    ( fwTools::Type::create("double"), VTK_DOUBLE );
+                                                                    ( fwTools::Type::create("float" )        , VTK_FLOAT )
+                                                                    ( fwTools::Type::create("double")        , VTK_DOUBLE )
+
+#if ( INT_MAX < LONG_MAX )
+                                                                    ( fwTools::Type::create("int64")         , VTK_LONG )
+                                                                    ( fwTools::Type::create("uint64")        , VTK_UNSIGNED_LONG )
+
+                                                                    ( fwTools::Type::create("int64")         , VTK___INT64 )
+                                                                    ( fwTools::Type::create("int64")         , VTK_LONG_LONG )
+
+                                                                    ( fwTools::Type::create("uint64")        , VTK_UNSIGNED___INT64 )
+                                                                    ( fwTools::Type::create("uint64")        , VTK_UNSIGNED_LONG_LONG )
+#else
+                                                                    ( fwTools::Type::create("int32")         , VTK_LONG )
+                                                                    ( fwTools::Type::create("uint32")        , VTK_UNSIGNED_LONG )
+#endif
+                                                                    ;
 
 
 //-----------------------------------------------------------------------------
@@ -111,18 +108,9 @@ int getVtkScalarType(::fwData::Image::sptr image)
 {
     OSLM_ASSERT("Unknown Type "<<image->getType().string(),
             TypeTranslation.left.find( image->getType() ) != TypeTranslation.left.end() );
-    return TypeTranslation.left.at( image->getType() );
+    return TypeTranslation.left.find( image->getType() )->second;
 }
 
-//-----------------------------------------------------------------------------
-
-const char *myScalarTypeCallback(void *imageData)
-{
-    ::fwData::Image *trueImageData = static_cast< ::fwData::Image *>(imageData);
-    OSLM_ASSERT("Unknown Type "<<trueImageData->getType().string(),
-                TypeTranslation.left.find( trueImageData->getType() ) != TypeTranslation.left.end() );
-    return vtkImageScalarTypeNameMacro( TypeTranslation.left.at( trueImageData->getType() ) );
-}
 
 //-----------------------------------------------------------------------------
 

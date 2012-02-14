@@ -61,9 +61,9 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
     image->setType(type);
 
     ::fwData::Image::SizeType size(3);
-    size[0] = rand()%100 +1;
-    size[1] = rand()%100 +1;
-    size[2] = rand()%100 +1;
+    size[0] = rand()%100 + 2;
+    size[1] = rand()%100 + 2;
+    size[2] = rand()%100 + 2;
     image->setSize(size);
 
     std::vector< double > spacing(3);
@@ -129,7 +129,7 @@ bool Image::compareImage(::fwData::Image::sptr image1, ::fwData::Image::sptr ima
             image1->getType() != image2->getType());
 
     compare &= image1->getSizeInBytes() == image2->getSizeInBytes();
-    OSLM_ERROR_IF("Images have not the same type : " << image1->getSizeInBytes() << " != " << image2->getSizeInBytes(),
+    OSLM_ERROR_IF("Images have not the same size in bytes : " << image1->getSizeInBytes() << " != " << image2->getSizeInBytes(),
             image1->getSizeInBytes() != image2->getSizeInBytes());
 
 

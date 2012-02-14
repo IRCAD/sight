@@ -21,6 +21,13 @@ class ImageTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testImageToVtk );
     CPPUNIT_TEST( testFromVtk );
 
+    CPPUNIT_TEST( mhdReaderTest );
+    CPPUNIT_TEST( mhdWriterTest );
+    CPPUNIT_TEST( vtiReaderTest );
+    CPPUNIT_TEST( vtiWriterTest );
+    CPPUNIT_TEST( vtkReaderTest );
+    CPPUNIT_TEST( vtkWriterTest );
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -30,6 +37,14 @@ public:
 
     void testImageToVtk();
     void testFromVtk();
+
+    void mhdReaderTest();
+    void mhdWriterTest();
+    void vtiReaderTest();
+    void vtiWriterTest();
+    void vtkReaderTest();
+    void vtkWriterTest();
+
 };
 
 #endif //_FWVTKIO_TEST_TU_IMAGETEST_HPP_

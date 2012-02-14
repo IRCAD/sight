@@ -1,6 +1,16 @@
 #include <boost/assign/list_of.hpp>
 #include <fwTools/Type.hpp>
 
+
+namespace std
+{
+    std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type)
+    {
+        os << type.string();
+        return os;
+    }
+}
+
 namespace fwTools
 {
 
