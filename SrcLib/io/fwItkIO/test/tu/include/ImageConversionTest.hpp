@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWITKIO_TEST_TU_IMAGEREADERWRITERTEST_HPP_
-#define _FWITKIO_TEST_TU_IMAGEREADERWRITERTEST_HPP_
+#ifndef _FWITKIO_TEST_TU_IMAGECONVERSIONTEST_HPP_
+#define _FWITKIO_TEST_TU_IMAGECONVERSIONTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
@@ -13,11 +13,11 @@
 
 #include <fwData/Image.hpp>
 
-class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
+class ImageConversionTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ImageReaderWriterTest );
-    CPPUNIT_TEST( testSaveLoadInr );
-    CPPUNIT_TEST( stressTestInr );
+    CPPUNIT_TEST_SUITE( ImageConversionTest );
+    CPPUNIT_TEST( testConversion );
+    CPPUNIT_TEST( stressTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,14 +25,14 @@ public:
     void setUp();
     void tearDown();
     // fonctions de tests
-    void testSaveLoadInr();
-    void stressTestInr();
+    void testConversion();
+    void stressTest();
 
-private :
+    template< class TYPE >
+    void stressTestForAType();
 
-
-   void stressTestInrWithType(::fwTools::Type type, int nbTest);
-   void checkSaveLoadInr( ::fwData::Image::NewSptr image );
 };
 
-#endif // _FWITKIO_TEST_TU_IMAGEREADERWRITERTEST_HPP_
+#include "ImageConversionTest.hxx"
+
+#endif // _FWITKIO_TEST_TU_IMAGECONVERSIONTEST_HPP_

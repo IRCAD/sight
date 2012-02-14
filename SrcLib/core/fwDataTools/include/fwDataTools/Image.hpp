@@ -65,7 +65,10 @@ public :
      * @return true if the images are equal.
      * @note if false, the image difference is written in SLM log
      */
-    FWDATATOOLS_API static bool compareImage(::fwData::Image::sptr image1, ::fwData::Image::sptr image2);
+    FWDATATOOLS_API static bool compareImage(   ::fwData::Image::sptr image1,
+                                                ::fwData::Image::sptr image2,
+                                                 double spacingTolerance = 0,
+                                                 double originTolerance = 0);
 
     /**
      * @brief compare image information.

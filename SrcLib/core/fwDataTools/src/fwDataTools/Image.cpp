@@ -98,7 +98,7 @@ void Image::randomizeArray(::fwData::Array::sptr array)
 
 //------------------------------------------------------------------------------
 
-bool Image::compareImage(::fwData::Image::sptr image1, ::fwData::Image::sptr image2)
+bool Image::compareImage(::fwData::Image::sptr image1, ::fwData::Image::sptr image2, double spacingTolerance, double originTolerance)
 {
     bool compare = true;
 
@@ -106,23 +106,40 @@ bool Image::compareImage(::fwData::Image::sptr image1, ::fwData::Image::sptr ima
     OSLM_ERROR_IF("Images have not the same dimension : " << image1->getNumberOfDimensions() << " != " << image2->getNumberOfDimensions(),
             image1->getNumberOfDimensions() != image2->getNumberOfDimensions());
 
+
     compare &= image1->getSize() == image2->getSize();
-    OSLM_ERROR_IF("Images have not the same size : ( " <<
-            image1->getSize()[0] << ", " << image1->getSize()[1] << ", " << image1->getSize()[2] << ") != (" <<
-            image2->getSize()[0] << ", " << image2->getSize()[1] << ", " << image2->getSize()[2] << " )",
-            image1->getSize() != image2->getSize());
+    for( unsigned int k = 0; k < image1->getNumberOfDimensions(); ++k )
+    {
+        bool sizeAreEquals = image1->getSize()[k] == image2->getSize()[k];
 
-    compare &= image1->getSpacing() == image2->getSpacing();
-    OSLM_ERROR_IF(std::setprecision(10) << "Images have not the same spacing : ( " <<
-            image1->getSpacing()[0] << ", " << image1->getSpacing()[1] << ", " << image1->getSpacing()[2] << ") != (" <<
-            image2->getSpacing()[0] << ", " << image2->getSpacing()[1] << ", " << image2->getSpacing()[2] << " )",
-            image1->getSpacing() != image2->getSpacing());
+        OSLM_ERROR_IF("Images have not the same size : ( size[" << k << "] => " <<
+                    image1->getSize()[k] << " != " << image2->getSize()[k], ! sizeAreEquals );
 
-    compare &= image1->getOrigin() == image2->getOrigin();
-    OSLM_ERROR_IF("Images have not the same origin : ( " <<
-            image1->getOrigin()[0] << ", " << image1->getOrigin()[1] << ", " << image1->getOrigin()[2] << ") != (" <<
-            image2->getOrigin()[0] << ", " << image2->getOrigin()[1] << ", " << image2->getOrigin()[2] << " )",
-            image1->getOrigin() != image2->getOrigin());
+    }
+
+    for( unsigned int k = 0; k < image1->getNumberOfDimensions(); ++k )
+    {
+        bool spacingAreEquals =
+                image1->getSpacing()[k] - spacingTolerance <= image2->getSpacing()[k] &&
+                image1->getSpacing()[k] + spacingTolerance >= image2->getSpacing()[k];
+
+        OSLM_ERROR_IF("Images have not the same spacing : spacing[" << k << "] => " <<
+                    image1->getSpacing()[k] << " != " << image2->getSpacing()[k], ! spacingAreEquals );
+
+        compare &= spacingAreEquals;
+    }
+
+    for( unsigned int k = 0; k < image1->getNumberOfDimensions(); ++k )
+    {
+        bool originAreEquals =
+                image1->getOrigin()[k] - originTolerance <= image2->getOrigin()[k] &&
+                image1->getOrigin()[k] + originTolerance >= image2->getOrigin()[k];
+
+        OSLM_ERROR_IF("Images have not the same origin : origin[" << k << "] => " <<
+                    image1->getOrigin()[k] << " != " << image2->getOrigin()[k], ! originAreEquals );
+
+        compare &= originAreEquals;
+    }
 
     compare &= image1->getType() == image2->getType();
     OSLM_ERROR_IF("Images have not the same type : " << image1->getType().string() << " != " << image2->getType().string(),
