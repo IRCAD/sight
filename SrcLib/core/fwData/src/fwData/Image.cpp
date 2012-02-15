@@ -148,7 +148,7 @@ size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type) throw(
     typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
 
     static DynamicTypeMapType dynamicTypeMap = ::boost::assign::map_list_of
-        ("UNSPECIFIED TYPE" , ::fwTools::DynamicType()                       )
+        (::fwTools::Type().string() , ::fwTools::DynamicType() )
         ("uint8" , ::fwTools::makeDynamicType<std::string>("unsigned char")  )
         ("uint16", ::fwTools::makeDynamicType<std::string>("unsigned short") )
         ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned int")   )
@@ -163,8 +163,10 @@ size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type) throw(
         ("uint64", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
         ("int64",  ::fwTools::makeDynamicType<std::string>("signed long")    )
 #else
-        ("uint64", ::fwTools::DynamicType()                 )
-        ("int64",  ::fwTools::DynamicType()                 )
+        ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
+        ("int32",  ::fwTools::makeDynamicType<std::string>("signed long")    )
+        ("uint64", ::fwTools::DynamicType() )
+        ("int64",  ::fwTools::DynamicType() )
 #endif
         ;
 

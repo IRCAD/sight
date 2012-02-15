@@ -9,8 +9,6 @@
 #include <stdexcept>
 
 #include <boost/assign/list_of.hpp>
-#include <boost/bimap/bimap.hpp>
-#include <boost/bimap/multiset_of.hpp>
 #include <boost/cast.hpp>
 
 #include <vtkImageImport.h>
@@ -49,28 +47,37 @@
 namespace vtkIO
 {
 
-struct DynamicTypeOrderer
+struct TypeTranslator
 {
-  bool operator()(const fwTools::DynamicType & d1, const fwTools::DynamicType &d2) const
-  {
-    return d1.string() < d2.string();
-  }
+
+    typedef std::map< fwTools::Type, int> fwToolsToVtkMap;
+    typedef std::map< int, fwTools::Type> VtkTofwToolsMap;
+
+    static fwToolsToVtkMap::mapped_type translate( const fwToolsToVtkMap::key_type &key )
+    {
+        fwToolsToVtkMap::const_iterator it = s_toVtk.find( key );
+        FW_RAISE_IF("Unknown Type: " << key, it == s_toVtk.end() );
+        return it->second;
+    }
+
+    static VtkTofwToolsMap::mapped_type translate( const VtkTofwToolsMap::key_type &key )
+    {
+        VtkTofwToolsMap::const_iterator it = s_fromVtk.find( key );
+        FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
+        return it->second;
+    }
+
+
+    static const fwToolsToVtkMap s_toVtk;
+    static const VtkTofwToolsMap s_fromVtk;
 };
 
 
-// BOOST 1.38 -> ::boost::bimaps::bimap<....>    note bimapS  ## BOOST 1.39 -> ::boost::bimap::bimap<....>
-typedef  ::boost::bimaps::bimap<
-                    ::boost::bimaps::multiset_of< fwTools::Type >,
-                    ::boost::bimaps::set_of< int >
-                   > TypeTranslator;
 
-                   // vtk type <=> fwTools type translation bimap 
-                   // !!! Order matters  !!! : for a given fwTools::Type, the last entry will be used for VTK.
-TypeTranslator TypeTranslation = boost::assign::list_of< TypeTranslator::relation >
+const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = boost::assign::list_of< TypeTranslator::fwToolsToVtkMap::value_type >
 
                                                                     // char and signed char are treated as the same type.
                                                                     // and plain char is used when writing an int8 image
-                                                                    ( fwTools::Type::create("int8" )         , VTK_SIGNED_CHAR )
                                                                     ( fwTools::Type::create("int8" )         , VTK_CHAR )
                                                                     ( fwTools::Type::create("uint8" )        , VTK_UNSIGNED_CHAR )
 
@@ -80,36 +87,49 @@ TypeTranslator TypeTranslation = boost::assign::list_of< TypeTranslator::relatio
                                                                     ( fwTools::Type::create("int32")         , VTK_INT )
                                                                     ( fwTools::Type::create("uint32")        , VTK_UNSIGNED_INT )
 
-                                                                    // ( fwTools::Type::create<long>()          , VTK_LONG )
-                                                                    // ( fwTools::Type::create<unsigned long>() , VTK_UNSIGNED_LONG )
-
                                                                     ( fwTools::Type::create("float" )        , VTK_FLOAT )
                                                                     ( fwTools::Type::create("double")        , VTK_DOUBLE )
 
 #if ( INT_MAX < LONG_MAX )
                                                                     ( fwTools::Type::create("int64")         , VTK_LONG )
                                                                     ( fwTools::Type::create("uint64")        , VTK_UNSIGNED_LONG )
-
-                                                                    ( fwTools::Type::create("int64")         , VTK___INT64 )
-                                                                    ( fwTools::Type::create("int64")         , VTK_LONG_LONG )
-
-                                                                    ( fwTools::Type::create("uint64")        , VTK_UNSIGNED___INT64 )
-                                                                    ( fwTools::Type::create("uint64")        , VTK_UNSIGNED_LONG_LONG )
-#else
-                                                                    ( fwTools::Type::create("int32")         , VTK_LONG )
-                                                                    ( fwTools::Type::create("uint32")        , VTK_UNSIGNED_LONG )
 #endif
                                                                     ;
 
 
-//-----------------------------------------------------------------------------
 
-int getVtkScalarType(::fwData::Image::sptr image)
-{
-    OSLM_ASSERT("Unknown Type "<<image->getType().string(),
-            TypeTranslation.left.find( image->getType() ) != TypeTranslation.left.end() );
-    return TypeTranslation.left.find( image->getType() )->second;
-}
+
+const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = boost::assign::list_of< TypeTranslator::VtkTofwToolsMap::value_type >
+
+                                                                    // char and signed char are treated as the same type.
+                                                                    // and plain char is used when writing an int8 image
+                                                                    ( VTK_SIGNED_CHAR        , fwTools::Type::create("int8" )  )
+                                                                    ( VTK_CHAR               , fwTools::Type::create("int8" )  )
+                                                                    ( VTK_UNSIGNED_CHAR      , fwTools::Type::create("uint8" ) )
+
+                                                                    ( VTK_SHORT              , fwTools::Type::create("int16")  )
+                                                                    ( VTK_UNSIGNED_SHORT     , fwTools::Type::create("uint16") )
+
+                                                                    ( VTK_INT                , fwTools::Type::create("int32")  )
+                                                                    ( VTK_UNSIGNED_INT       , fwTools::Type::create("uint32") )
+
+                                                                    ( VTK_FLOAT              , fwTools::Type::create("float" ) )
+                                                                    ( VTK_DOUBLE             , fwTools::Type::create("double") )
+
+#if ( INT_MAX < LONG_MAX )
+                                                                    ( VTK_LONG               , fwTools::Type::create("int64")  )
+                                                                    ( VTK_UNSIGNED_LONG      , fwTools::Type::create("uint64") )
+
+                                                                    ( VTK___INT64            , fwTools::Type::create("int64")  )
+                                                                    ( VTK_LONG_LONG          , fwTools::Type::create("int64")  )
+
+                                                                    ( VTK_UNSIGNED___INT64   , fwTools::Type::create("uint64") )
+                                                                    ( VTK_UNSIGNED_LONG_LONG , fwTools::Type::create("uint64") )
+#else
+                                                                    ( VTK_LONG               , fwTools::Type::create("int32")  )
+                                                                    ( VTK_UNSIGNED_LONG l    , fwTools::Type::create("uint32") )
+#endif
+                                                                    ;
 
 
 //-----------------------------------------------------------------------------
@@ -140,7 +160,7 @@ void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
     importer->SetImportVoidPointer( data->getBuffer() );
     importer->SetCallbackUserData( data.get() );
     // used to set correct pixeltype to VtkImage
-    importer->SetDataScalarType( getVtkScalarType(data) );
+    importer->SetDataScalarType( TypeTranslator::translate(data->getType()) );
     importer->Update();
 
     dst->ShallowCopy(importer->GetOutput());
@@ -161,7 +181,7 @@ void *newBuffer(size_t size)
     {
         OSLM_ERROR ("No enough memory to allocate an image of type "
                 << fwTools::makeDynamicType<IMAGETYPE>().string()
-                << " and of size "<< size << "." << std::endl 
+                << " and of size "<< size << "." << std::endl
                 << e.what() );
         throw;
     }
@@ -245,7 +265,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         else if (nbComponents == 1)
         {
             SLM_TRACE ("Luminance image");
-            destination->setType( TypeTranslation.right.at( source->GetScalarType() ) );
+            destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
             destination->allocate();
             destBuffer = destination->getBuffer();
             size_t sizeInBytes = destination->getSizeInBytes();
@@ -285,7 +305,7 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
     _pImageImport->SetImportVoidPointer( _pDataImage->getBuffer() );
     _pImageImport->SetCallbackUserData( _pDataImage.get() );
     // used to set correct pixeltype to VtkImage
-    _pImageImport->SetDataScalarType( getVtkScalarType(_pDataImage) );
+    _pImageImport->SetDataScalarType( TypeTranslator::translate(_pDataImage->getType()) );
 }
 
 //-----------------------------------------------------------------------------
