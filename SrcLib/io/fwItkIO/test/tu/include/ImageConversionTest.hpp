@@ -18,6 +18,7 @@ class ImageConversionTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE( ImageConversionTest );
     CPPUNIT_TEST( testConversion );
     CPPUNIT_TEST( stressTest );
+    CPPUNIT_TEST( testConversion2D );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,6 +28,7 @@ public:
     // fonctions de tests
     void testConversion();
     void stressTest();
+    void testConversion2D();
 
     template< class TYPE >
     void stressTestForAType();

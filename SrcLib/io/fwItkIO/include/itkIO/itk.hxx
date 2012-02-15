@@ -19,7 +19,6 @@ template< class ITKIMAGE>
 void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sptr _dataImage )
 {
     SLM_ASSERT("_dataImage not instanced", _dataImage);
-    assert( _dataImage->getNumberOfDimensions() == ITKIMAGE::ImageDimension ); // ::fwData::Image Dimension hard coded to 3 !!!!!!
 
     // Add by arnaud
     ::boost::uint8_t  dim = ITKIMAGE::ImageDimension;
@@ -39,15 +38,6 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
     _dataImage->setOrigin( _vOrigin );
     _dataImage->setSpacing( _vSpacing );
 
-    // Remove by Arnaud
-    //for (boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension ; ++d)
-    //{
-    //  data->getRegion().getOrigin()[d]    = itkImage->GetOrigin()[d];// float
-    //  data->getSpacing()[d]               = itkImage->GetSpacing()[d]; // float
-    //  data->getRegion().getOrigin()[d]    = itkImage->GetBufferedRegion().GetIndex()[d];
-    //  data->getRegion().getSize()[d]      = itkImage->GetBufferedRegion().GetSize()[d];
-    //}
-
     typedef typename ITKIMAGE::PixelType PixelType;
     _dataImage->setType( ::fwTools::Type::create<PixelType>() );
     _dataImage->allocate();
@@ -58,7 +48,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
     itkImage->GetPixelContainer()->SetContainerManageMemory( false );
 
     // Post Condition correct PixelType
-    assert( _dataImage->getType()!= fwTools::Type() );
+    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType()!= fwTools::Type() );
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +75,7 @@ template< class ITKIMAGE>
 typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageData)
 {
     // Pre Condition
-    assert( imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
+    SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image", imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
 
     typename ITKIMAGE::Pointer itkImage=ITKIMAGE::New();
 
@@ -109,7 +99,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
     for (::boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
-        itkRegion.SetSize( d,   imageData->getSize()[d] );
+        itkRegion.SetSize( d,   static_cast<unsigned long>(imageData->getSize()[d]) );
         nbpixels *= itkRegion.GetSize()[d];;
     }
 
