@@ -80,6 +80,9 @@ private:
 
     /// Ref. position when changing image min/max
     scene2D::data::Coord m_oldCoord;
+
+    /// Specify if the negato allow slice type events
+    bool m_changeSliceTypeAllowed;
 };
 
 

@@ -38,7 +38,8 @@ typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
 //-----------------------------------------------------------------------------
 
 Negato::Negato() throw()
-: m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false), m_orientation(MedicalImageAdaptor::Z_AXIS)
+: m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false),
+    m_orientation(MedicalImageAdaptor::Z_AXIS), m_pos(0, 0), m_changeSliceTypeAllowed(true)
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
@@ -69,7 +70,7 @@ void Negato::configuring() throw ( ::fwTools::Failed )
 
     if( !m_configuration->getAttributeValue("orientation").empty() )
     {
-        std::string orientationValue = m_configuration->getAttributeValue("orientation");
+        const std::string orientationValue = m_configuration->getAttributeValue("orientation");
 
         if ( orientationValue == "axial" )
         {
@@ -82,6 +83,20 @@ void Negato::configuring() throw ( ::fwTools::Failed )
         else if ( orientationValue == "frontal" )
         {
             m_orientation = MedicalImageAdaptor::Y_AXIS;
+        }
+    }
+
+    if(!m_configuration->getAttributeValue("changeSliceType").empty())
+    {
+        const std::string changeValue = m_configuration->getAttributeValue(("changeSliceType"));
+
+        if(changeValue == "true" || changeValue == "yes")
+        {
+            m_changeSliceTypeAllowed = true;
+        }
+        else if(changeValue == "no" || changeValue == "false")
+        {
+            m_changeSliceTypeAllowed = false;
         }
     }
 }
@@ -108,24 +123,29 @@ void Negato::updateFromImage( QImage * qimg )
             ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[1];
             qImageSpacing[1] = spacing[2];
+            OSLM_TRACE("Orientation = X");
             break;
 
         case MedicalImageAdaptor::Y_AXIS:
             ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_frontalSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[2];
+            OSLM_TRACE("Orientation = Y");
             break;
 
         case MedicalImageAdaptor::Z_AXIS:
             ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_axialSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[1];
+            OSLM_TRACE("Orientation = Z");
             break;
 
         default:
             SLM_FATAL("Unsupported value for m_orientation");
             break;
     }
+
+    OSLM_TRACE("Updating from slice index " << index->value());
 
     // Window min
     ::fwData::Integer::sptr minInt;
@@ -278,9 +298,9 @@ void Negato::doStart() throw ( ::fwTools::Failed )
 
     m_layer = new QGraphicsItemGroup();
     m_layer->addToGroup(m_pixmapItem);
-    this->getScene2DRender()->getScene()->addItem( m_layer );
+    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
 
-    m_pos = m_pixmapItem->pos();
+    this->getScene2DRender()->getScene()->addItem( m_layer );
 }
 
 //-----------------------------------------------------------------------------
@@ -293,8 +313,6 @@ void Negato::doUpdate() throw ( ::fwTools::Failed )
     QPixmap m_pixmap = QPixmap::fromImage( *m_qimg );
     m_pixmapItem->setPixmap( m_pixmap );
 
-    // Adjust the layer's position and zValue depending on the associated axis
-    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
 }
 
@@ -308,7 +326,7 @@ void Negato::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
 
     if(imageMsg)
     {
-        if(imageMsg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE))
+        if(imageMsg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE) && m_changeSliceTypeAllowed)
         {
             ::fwData::Object::csptr cObjInfo = imageMsg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
             ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
@@ -342,9 +360,18 @@ void Negato::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
 
 void Negato::doSwap() throw ( ::fwTools::Failed )
 {
+    SLM_TRACE_FUNC();
+
+    const QPointF oldPos = m_pixmapItem->pos();
+    const float scale = m_layer->scale();
+
     this->doStop();
     this->doStart();
     this->doUpdate();
+
+    m_pixmapItem->setPos(oldPos);
+    m_layer->setScale(scale);
+    m_pos = oldPos;
 }
 
 //-----------------------------------------------------------------------------

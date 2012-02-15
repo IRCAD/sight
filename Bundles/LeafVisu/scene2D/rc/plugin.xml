@@ -28,18 +28,6 @@
    
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::scene2D::adaptor::IAdaptor</type>
-        <service>::scene2D::adaptor::RayCast</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::scene2D::adaptor::IAdaptor</type>
-        <service>::scene2D::adaptor::Segments</service>
-        <object>::fwData::Vector</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::scene2D::adaptor::IAdaptor</type>
         <service>::scene2D::adaptor::Square</service>
         <object>::fwData::Composite</object>
     </extension>
