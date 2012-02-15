@@ -92,11 +92,14 @@ struct JpgITKSaverFunctor
         typedef ::itk::IntensityWindowingImageFilter< itkImageType, itkImageType > RescaleFilterType;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
-        assert( param.m_dataImage->getFieldSize( ::fwComEd::Dictionary::m_windowMinId) &&
-                param.m_dataImage->getFieldSize( ::fwComEd::Dictionary::m_windowMaxId));
-
-        int min = param.m_dataImage->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId)->value();
-        int max = param.m_dataImage->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId)->value();
+        int min = std::numeric_limits< PIXELTYPE >::min();
+        int max = std::numeric_limits< PIXELTYPE >::max();
+        if( param.m_dataImage->getFieldSize( ::fwComEd::Dictionary::m_windowMinId) &&
+            param.m_dataImage->getFieldSize( ::fwComEd::Dictionary::m_windowMaxId) )
+        {
+            min = param.m_dataImage->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId)->value();
+            max = param.m_dataImage->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId)->value();
+        }
 
         rescaleFilter->SetWindowMinimum( min );
         rescaleFilter->SetWindowMaximum( max );

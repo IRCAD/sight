@@ -79,8 +79,8 @@ void ImageConversionTest::testConversion2D()
     ::fwData::Image::NewSptr image;
     const ::boost::uint8_t dim = 2;
     ::fwData::Image::SizeType size(dim);
-    size[0] = rand()/100 + 2;
-    size[1] = rand()/100 + 2;
+    size[0] = rand()%100 + 2;
+    size[1] = rand()%100 + 2;
     std::vector<double> spacing(dim);
     spacing[0] = (rand()%200 +1) / 100.;
     spacing[1] = (rand()%200 +1) / 100.;
