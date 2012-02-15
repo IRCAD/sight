@@ -50,10 +50,7 @@ T getPixel( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsign
 //------------------------------------------------------------------------------
 
 Image::Image() :
-        m_size(3,0),
         m_type(),
-        m_spacing(m_size.size(),1),
-        m_origin(m_size.size(),0),
         m_dWindowCenter(0),
         m_dWindowWidth(0),
         m_dataArray()
