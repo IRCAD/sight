@@ -19,6 +19,7 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
@@ -57,7 +58,7 @@ void FwXMLImageWriterService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setTitle( "Choose a " FWXML_ARCHIVE_EXTENSION " or a xml file" );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("fwXML archive","*.xml");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);

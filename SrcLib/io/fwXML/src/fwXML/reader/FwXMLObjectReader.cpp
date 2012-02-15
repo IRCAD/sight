@@ -20,6 +20,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include "fwXML/reader/FwXMLObjectReader.hpp"
+#include "fwXML/writer/fwxmlextension.hpp"
 #include "fwXML/Serializer.hpp"
 
 #include "fwXML/IFileFormatService.hpp"
@@ -77,7 +78,7 @@ void FwXMLObjectReader::read()
 
 std::string  FwXMLObjectReader::extension()
 {
-    return ".fxz";
+    return "." FWXML_ARCHIVE_EXTENSION;
 }
 
 } // namespace reader

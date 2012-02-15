@@ -23,6 +23,7 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -62,9 +63,9 @@ void FwXMLPatientDBWriterService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle( "Choose a fxz or a xml file" );
+    dialogFile.setTitle( "Choose a " FWXML_ARCHIVE_EXTENSION " or a xml file" );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*." FWXML_ARCHIVE_EXTENSION);
     dialogFile.addFilter("fwXML archive","*.xml");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
@@ -162,7 +163,7 @@ void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
 
 bool FwXMLPatientDBWriterService::isAnFwxmlArchive( const ::boost::filesystem::path filePath ) const
 {
-    return ( ::boost::filesystem::extension(filePath) == ".fxz" );
+    return ( ::boost::filesystem::extension(filePath) == ("." FWXML_ARCHIVE_EXTENSION) );
 }
 
 //------------------------------------------------------------------------------
@@ -171,9 +172,9 @@ bool FwXMLPatientDBWriterService::isAnFwxmlArchive( const ::boost::filesystem::p
 {
     ::boost::filesystem::path newPath = _filePath;
     OSLM_TRACE("Data saved in : " << _filePath.string());
-    if ( ::boost::filesystem::extension(_filePath) != ".fxz" && ::boost::filesystem::extension(_filePath) != ".xml" )
+    if ( ::boost::filesystem::extension(_filePath) != ("." FWXML_ARCHIVE_EXTENSION) && ::boost::filesystem::extension(_filePath) != ".xml" )
     {
-        newPath = _filePath.string() + ".fxz";
+        newPath = _filePath.string() + "." FWXML_ARCHIVE_EXTENSION;
         OSLM_TRACE("File renamed in : " << newPath.string());
     }
 

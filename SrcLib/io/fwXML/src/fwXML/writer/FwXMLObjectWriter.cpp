@@ -8,6 +8,7 @@
 #include <fwData/Object.hpp>
 
 #include "fwXML/writer/FwXMLObjectWriter.hpp"
+#include "fwXML/writer/fwxmlextension.hpp"
 #include "fwXML/Serializer.hpp"
 #include "fwXML/policy/NeverSplitPolicy.hpp"
 #include "fwXML/policy/UniquePathPolicy.hpp"
@@ -73,7 +74,7 @@ void FwXMLObjectWriter::write()
 
 std::string  FwXMLObjectWriter::extension()
 {
-    return ".fxz";
+    return "." FWXML_ARCHIVE_EXTENSION;
 }
 } // namespace writer
 

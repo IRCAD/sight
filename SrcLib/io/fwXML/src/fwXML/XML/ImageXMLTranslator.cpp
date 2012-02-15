@@ -12,6 +12,7 @@
 #include <fwServices/Base.hpp>
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
+#include <fwData/Composite.hpp>
 
 #include "fwXML/XML/ImageXMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
@@ -20,11 +21,10 @@
 #include "fwXML/boostSerializer/Image.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 #include "fwXML/IFileFormatService.hpp"
+#include "fwXML/Serializer.hpp"
 
 namespace fwXML
 {
-
-std::string ImageXMLTranslator::s_noFileProtocol = "NoFile";
 
 ImageXMLTranslator::ImageXMLTranslator() {};
 
@@ -34,97 +34,23 @@ ImageXMLTranslator::~ImageXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-void ImageXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::fwData::Image::sptr img )
-{
-    // get XML node related to Buffer //FIXMEXPATH
-    if ( img->getSize().size()!=0 && img->getSize().front()!=0  )
-    {
-        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(img);
-        ::fwXML::IFileFormatService::sptr binSaver;
-        if( filesSrv.empty() )
-        {
-            binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(img, "::fwXML::ImageFileFormatService");
-        }
-        else
-        {
-            binSaver = filesSrv.at(0);
-        }
-        std::string path;
-        path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
-        XMLTH::addProp( boostXMLBuffer, "filename",  path );
-        XMLTH::addProp( boostXMLBuffer, "protocol",  binSaver->getWriter()->getClassname() );
-        // to Implement in session information ?
-    }
-    else
-    {
-        XMLTH::addProp( boostXMLBuffer, "filename",  "" );
-        XMLTH::addProp( boostXMLBuffer, "protocol",  ImageXMLTranslator::s_noFileProtocol );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ImageXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::fwData::Image::sptr img )
-{
-    // find and update IO Protocol
-    std::string protocol = XMLTH::getProp<std::string>(boostXMLBuffer,"protocol");
-
-    if ( protocol != ImageXMLTranslator::s_noFileProtocol )
-    {
-        // get XML node related to Buffer //FIXMEXPATH
-        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(img);
-        ::fwXML::IFileFormatService::sptr binLoader;
-        if( filesSrv.empty() )
-        {
-            binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(img, "::fwXML::ImageFileFormatService");
-        }
-        else
-        {
-            binLoader = filesSrv.at(0);
-        }
-        OSLM_DEBUG( "ImageXMLTranslator::manageLoadingBuffer :: READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename") );
-        ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
-        binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
-        binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
-        binLoader->localFolder() = fileLocation.parent_path();
-
-        std::string pseudoReader = protocol;
-        if (  protocol.find("Writer") != std::string::npos )
-        {
-            pseudoReader.replace(  protocol.find("Writer"), strlen("Writer") ,"Reader");
-        }
-        if (  protocol.find("writer") != std::string::npos )
-        {
-            pseudoReader.replace(  protocol.find("writer"), strlen("writer") ,"reader");
-        }
-        assert( protocol != pseudoReader );
-
-        // get new reader
-        ::fwDataIO::reader::IObjectReader::sptr reader;
-        OSLM_DEBUG("ImageXMLTranslator::manageLoadingBuffer initial protocol="<< protocol << " final loading protocol=" << pseudoReader)
-        reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
-        FW_RAISE_IF("Reader "<<pseudoReader<<" not available.", !reader);
-
-        // assign to FileFormatService
-        binLoader->setReader( reader );
-    }
-}
-
-//------------------------------------------------------------------------------
-
 xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 {
     // call default xmtl representation
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
     xmlNodePtr node = img2xmlbase.getXMLFrom(obj);
-    SLM_ASSERT("node not instanced", node);
 
-    // search empty "<Buffer/>" node
-    xmlNodePtr bufferNode = XMLParser::findChildNamed( node, std::string("Buffer") );
-    SLM_ASSERT("bufferNode not instanced", bufferNode); // bufferNode must be found !!!
+    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast(obj);
+    SLM_ASSERT("Object is not an image", pImage);
 
-    // delegate process
-    manageSavingBuffer( bufferNode, ::fwData::Image::dynamicCast(obj) );
+    ::fwData::Composite::NewSptr arrays;
+    if(pImage->getDataArray())
+    {
+        (*arrays)["DataArray"]   = pImage->getDataArray();
+    }
+
+    xmlNodePtr arraysNode = XMLTH::toXMLRecursive(arrays);
+    xmlAddChild( node, arraysNode);
     return node;
 }
 
@@ -132,17 +58,26 @@ xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 void ImageXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
 {
-    // TODO assertion xmlNode.name() == RealData.className();
-    //return new ::fwData::Image();
+    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast(toUpdate);
+    SLM_ASSERT("Object is not an image", pImage);
 
     OSLM_DEBUG("ImageXMLTranslator::updateDataFromXML( obj " << toUpdate->className() << " XMLNode source " << source->name << "calling Generic" );
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
     img2xmlbase.updateDataFromXML(toUpdate,source);
 
-    // search empty "<Buffer/>" node
-    xmlNodePtr bufferNode = XMLParser::findChildNamed( source, std::string("Buffer") );
-    SLM_ASSERT("bufferNode not instanced", bufferNode); // bufferNode must be found !!!
-    manageLoadingBuffer( bufferNode , ::fwData::Image::dynamicCast(toUpdate) );
+    xmlNodePtr compositeNode = XMLParser::findChildNamed( source, std::string("Composite") );
+
+    ::fwTools::Object::sptr obj;
+    obj = Serializer().ObjectsFromXml( compositeNode, true );
+    SLM_ASSERT("obj not instanced", obj);
+    ::fwData::Composite::sptr arrays = ::fwData::Composite::dynamicCast(obj);
+    SLM_ASSERT("composite not instanced", arrays);
+
+    if(arrays->find("DataArray")!=arrays->end())
+    {
+        pImage->setDataArray(::fwData::Array::dynamicCast((*arrays)["DataArray"]));
+    }
+
 }
 
 //------------------------------------------------------------------------------

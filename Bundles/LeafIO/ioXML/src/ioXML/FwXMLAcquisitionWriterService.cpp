@@ -21,6 +21,7 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwZip/ZipFolder.hpp>
@@ -60,9 +61,9 @@ void FwXMLAcquisitionWriterService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a fxz or a xml file");
+    dialogFile.setTitle("Choose a " FWXML_ARCHIVE_EXTENSION " or a xml file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*." FWXML_ARCHIVE_EXTENSION);
     dialogFile.addFilter("fwXML archive","*.xml");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
@@ -161,9 +162,9 @@ void FwXMLAcquisitionWriterService::updating() throw(::fwTools::Failed)
 ::boost::filesystem::path FwXMLAcquisitionWriterService::correctFileFormat( const ::boost::filesystem::path _filePath ) const
 {
     ::boost::filesystem::path newPath = _filePath;
-    if ( ::boost::filesystem::extension(_filePath) != ".fxz" && ::boost::filesystem::extension(_filePath) != ".xml" )
+    if ( ::boost::filesystem::extension(_filePath) != ("." FWXML_ARCHIVE_EXTENSION) && ::boost::filesystem::extension(_filePath) != ".xml" )
     {
-        newPath = _filePath.string() + ".fxz";
+        newPath = _filePath.string() + "." FWXML_ARCHIVE_EXTENSION;
     }
 
     return newPath;
@@ -173,7 +174,7 @@ void FwXMLAcquisitionWriterService::updating() throw(::fwTools::Failed)
 
 bool FwXMLAcquisitionWriterService::isAnFwxmlArchive( const ::boost::filesystem::path filePath )
 {
-    return ( ::boost::filesystem::extension(filePath) == ".fxz" );
+    return ( ::boost::filesystem::extension(filePath) == "." FWXML_ARCHIVE_EXTENSION );
 }
 
 //------------------------------------------------------------------------------

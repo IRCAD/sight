@@ -26,6 +26,7 @@
 #include <fwTools/System.hpp>
 
 #include <fwXML/reader/FwXMLObjectReader.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -86,7 +87,7 @@ void FwXMLPatientDBReaderService::configureWithIHM()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle( this->getSelectorDialogTitle() );
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("fwXML archive","*.fxz");
+    dialogFile.addFilter("fwXML archive","*." FWXML_ARCHIVE_EXTENSION);
     dialogFile.addFilter("fwXML archive","*.xml");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
@@ -144,7 +145,7 @@ std::vector< std::string > FwXMLPatientDBReaderService::getSupportedExtensions()
 
 std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 {
-    return "Choose a fxz or a xml file";
+    return "Choose a " FWXML_ARCHIVE_EXTENSION " or a xml file";
 }
 
 //------------------------------------------------------------------------------
@@ -240,7 +241,7 @@ void FwXMLPatientDBReaderService::notificationOfDBUpdate()
 
 bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::path filePath )
 {
-    return ( ::boost::filesystem::extension(filePath) == ".fxz" );
+    return ( ::boost::filesystem::extension(filePath) == "." FWXML_ARCHIVE_EXTENSION );
 }
 
 //------------------------------------------------------------------------------
@@ -274,7 +275,7 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
     else
     {
         std::stringstream stream;
-        stream << "Sorry, "<<_pArchivePath<< " is not a valid fxz file."
+        stream << "Sorry, "<<_pArchivePath<< " is not a valid " FWXML_ARCHIVE_EXTENSION " file."
                << this->getObject< ::fwTools::Object >()->getRootedClassname();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                         stream.str(),

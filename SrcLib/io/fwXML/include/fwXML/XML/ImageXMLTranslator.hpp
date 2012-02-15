@@ -40,15 +40,6 @@ public:
     /// get Object from an XML node
     FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
 
-protected :
-
-    /// manage extra serialization : read image from path extracted from filename attribut in <Buffer> xml node
-    FWXML_API void manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::Image::sptr );
-
-    /// manage extra serialization : only inform <Buffer filename attribut />
-    FWXML_API void manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::Image::sptr );
-
-    static std::string s_noFileProtocol;
 };
 
 }

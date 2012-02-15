@@ -70,12 +70,6 @@
         <service>::fwXML::TriangularMeshFileFormatService</service>
         <object>::fwData::TriangularMesh</object>
     </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwXML::IFileFormatService</type>
-        <service>::fwXML::ImageFileFormatService</service>
-        <object>::fwData::Image</object>
-    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwXML::IFileFormatService</type>

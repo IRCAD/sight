@@ -21,6 +21,7 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -39,7 +40,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwTools
 //------------------------------------------------------------------------------
 
 FwXMLGenericWriterService::FwXMLGenericWriterService() throw()
-                : m_archiveExtenstion (".fxz")
+                : m_archiveExtenstion ("." FWXML_ARCHIVE_EXTENSION)
 {}
 
 //------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ FwXMLGenericWriterService::~FwXMLGenericWriterService() throw()
 
 void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
-    m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
+    m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH." FWXML_ARCHIVE_EXTENSION) );
 
     if( this->m_configuration->size() > 0 )
     {

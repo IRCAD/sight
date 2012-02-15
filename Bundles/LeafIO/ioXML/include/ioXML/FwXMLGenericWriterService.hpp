@@ -47,7 +47,7 @@ protected:
     /** Search if archive extension is changed
      * @verbatim
        <service ... >
-         <archiveExtension>.fxz</archiveExtension>
+         <archiveExtension>.yaf</archiveExtension>
        </service>
        @endverbatim
      */

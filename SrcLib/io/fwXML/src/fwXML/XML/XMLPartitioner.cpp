@@ -20,7 +20,7 @@
 
 #include <fwCore/base.hpp>
 
-#include "fwXML/ImageFileFormatService.hpp"
+#include "fwXML/IFileFormatService.hpp"
 #include "fwXML/XML/XMLPartitioner.hpp"
 #include "fwXML/XML/XMLHierarchy.hpp"
 #include "fwXML/XML/XMLTranslator.hpp"

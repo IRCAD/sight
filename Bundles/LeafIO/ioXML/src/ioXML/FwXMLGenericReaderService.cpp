@@ -27,6 +27,7 @@
 #include <fwTools/System.hpp>
 
 #include <ioXML/FwXMLGenericReaderService.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -48,7 +49,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwTools
 //------------------------------------------------------------------------------
 
 FwXMLGenericReaderService::FwXMLGenericReaderService() throw()
-        : m_archiveExtenstion (".fxz")
+        : m_archiveExtenstion ("." FWXML_ARCHIVE_EXTENSION)
 {}
 
 //------------------------------------------------------------------------------
@@ -152,7 +153,7 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 {
     std::vector< std::string > extensions ;
     extensions.push_back(".xml");
-    extensions.push_back(".fxz");
+    extensions.push_back("." FWXML_ARCHIVE_EXTENSION);
     return extensions ;
 }
 
@@ -287,7 +288,7 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     else
     {
         std::stringstream stream;
-        stream << "Sorry, "<<_pArchivePath<< " is not valid a valid fxz file."
+        stream << "Sorry, "<<_pArchivePath<< " is not valid a valid " FWXML_ARCHIVE_EXTENSION " file."
                << this->getObject< ::fwTools::Object >()->getRootedClassname();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                         stream.str(),
