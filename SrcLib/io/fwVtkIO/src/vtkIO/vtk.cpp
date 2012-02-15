@@ -74,7 +74,7 @@ struct TypeTranslator
 
 
 
-const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = boost::assign::list_of< TypeTranslator::fwToolsToVtkMap::value_type >
+const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = boost::assign::map_list_of
 
                                                                     // char and signed char are treated as the same type.
                                                                     // and plain char is used when writing an int8 image
@@ -99,7 +99,7 @@ const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = boost::assign::l
 
 
 
-const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = boost::assign::list_of< TypeTranslator::VtkTofwToolsMap::value_type >
+const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = boost::assign::map_list_of
 
                                                                     // char and signed char are treated as the same type.
                                                                     // and plain char is used when writing an int8 image
@@ -127,7 +127,7 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = boost::assign:
                                                                     ( VTK_UNSIGNED_LONG_LONG , fwTools::Type::create("uint64") )
 #else
                                                                     ( VTK_LONG               , fwTools::Type::create("int32")  )
-                                                                    ( VTK_UNSIGNED_LONG l    , fwTools::Type::create("uint32") )
+                                                                    ( VTK_UNSIGNED_LONG      , fwTools::Type::create("uint32") )
 #endif
                                                                     ;
 
