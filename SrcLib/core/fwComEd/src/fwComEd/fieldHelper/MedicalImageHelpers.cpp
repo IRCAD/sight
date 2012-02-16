@@ -311,6 +311,8 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
     bool dataImageIsAllocated = (_pImg != ::fwData::Image::sptr());
 
     size_t nbDim = _pImg->getNumberOfDimensions();
+    dataImageIsAllocated &= nbDim > 1;
+
     for ( int k = 0; dataImageIsAllocated && k < nbDim; ++k )
     {
         if(k == 2 && nbDim == 3) // special test for 2D jpeg image (size[2] == 1)
