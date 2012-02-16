@@ -4,7 +4,7 @@ CLASSTEST=[
 USE = []
 LIB = ['fwVtkIO_0-1', 'fwTest_0-1', 'fwData_0-1', 'fwTools_0-1', 'fwDataTools_0-1']
 
-BUNDLES = ['dataReg_0-1','servicesReg_0-1', 'io_0-1', 'ioVTK_0-1']
+REQUIREMENTS = ['dataReg_0-1','servicesReg_0-1', 'io_0-1', 'ioVTK_0-1']
 
 CONSOLE = 'yes'
 
