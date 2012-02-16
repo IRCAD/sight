@@ -4,8 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string/trim.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
+
+#include <fwTools/System.hpp>
+#include <fwDataTools/Patient.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
@@ -39,7 +45,7 @@ void IoVtkGdcmTest::tearDown()
 void IoVtkGdcmTest::testReader()
 {
 
-    ::boost::filesystem::path dicomDataPath = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433";
+    ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433");
 
     ::fwData::PatientDB::NewSptr patientDB;
     ::fwRuntime::EConfigurationElement::NewSptr readerCfg("service");
@@ -59,6 +65,8 @@ void IoVtkGdcmTest::testReader()
     srv->configure();
     srv->start();
     srv->update();
+    srv->stop();
+    ::fwServices::OSR::unregisterService( srv );
 
     // Patient expected
     std::string nameExpected("anonymous");
@@ -67,6 +75,24 @@ void IoVtkGdcmTest::testReader()
     ::boost::uint32_t nbPatientExpected = 1;
     ::boost::uint32_t nbStudyExpected = 1;
     ::boost::uint32_t nbSeriesExpected = 1;
+
+    //Info image expected.
+    const size_t imgDimensionExpected   = 3;
+    double imgSpacingX = 0.667969;
+    double imgSpacingY = 0.667969;
+    double imgSpacingZ = 1.5;
+
+    ::fwData::Image::OriginType imgOriginExpected (3,0);
+
+    size_t imgSizeX_Expected =  512;
+    size_t imgSizeY_Expected =  512;
+    size_t imgSizeZ_Expected =  166;
+    int imgSize = imgSizeX_Expected*imgSizeY_Expected*imgSizeZ_Expected;
+
+    const double imgWindowCenter = 50;
+    const double imgWindowWidth = 500;
+    ::fwTools::Type imgPixelType = ::fwTools::Type::create<signed int>();
+
 
     // Patient read.
     ::boost::uint32_t  nbPatient = patientDB->getPatientSize();
@@ -82,8 +108,104 @@ void IoVtkGdcmTest::testReader()
     CPPUNIT_ASSERT_EQUAL((*patientIter)->getStudySize(), nbStudyExpected);
     CPPUNIT_ASSERT_EQUAL((*studyIter)->getAcquisitionSize(), nbSeriesExpected);
 
-    srv->stop();
-    ::fwServices::OSR::unregisterService( srv );
+    ::fwData::Study::AcquisitionIterator acqIter;
+    acqIter = (*studyIter)->getAcquisitions().first;
+
+    ::fwData::Image::csptr fisrtImage = (*acqIter)->getImage();
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on image dimension.", fisrtImage->getNumberOfDimensions(), imgDimensionExpected);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on X ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[0]), imgOriginExpected[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Y ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[1]), imgOriginExpected[1]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Z ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[2]), imgOriginExpected[2]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window center ", fisrtImage->getWindowCenter(), imgWindowCenter);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window width ", fisrtImage->getWindowWidth(), imgWindowWidth);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size x ", static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[0]), static_cast< ::fwData::Image::SizeType::value_type > (imgSizeX_Expected));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size y ", static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[1]), static_cast< ::fwData::Image::SizeType::value_type > (imgSizeY_Expected));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size z ", static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[2]), static_cast< ::fwData::Image::SizeType::value_type > (imgSizeZ_Expected));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing x ", static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[0]), imgSpacingX);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing y ", static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[1]), imgSpacingY);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing z ", static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[2]), imgSpacingZ);
+
+}
+
+//------------------------------------------------------------------------------
+void IoVtkGdcmTest::testWriter()
+{
+    // create patientDB
+    const size_t nbPatientExpected = 1;
+    ::fwData::Patient::NewSptr pPatient;
+    ::fwDataTools::Patient::generatePatient(pPatient, 1, 1, 0);
+
+    ::fwData::PatientDB::NewSptr pPatientDB;
+    pPatientDB->addPatient(pPatient);
+
+    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "DicomWriterTest";
+
+    ::boost::filesystem::create_directories( PATH );
+
+    ::fwRuntime::EConfigurationElement::NewSptr writerCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr writerConfigCfg("config");
+
+    ::fwRuntime::EConfigurationElement::NewSptr writerIoVtkGdcmPathCfg("path");
+    writerIoVtkGdcmPathCfg->setAttributeValue("value", PATH.string());
+    writerConfigCfg->addConfigurationElement(writerIoVtkGdcmPathCfg);
+    writerCfg->addConfigurationElement(writerConfigCfg);
+
+    ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVtkGdcm::DicomPatientDBWriterService" );
+    CPPUNIT_ASSERT(writerSrv);
+
+    ::fwServices::OSR::registerService( pPatientDB, writerSrv );
+
+    writerSrv->setConfiguration( writerCfg );
+    writerSrv->configure();
+    writerSrv->start();
+    writerSrv->update();
+    writerSrv->stop();
+    ::fwServices::OSR::unregisterService( writerSrv );
+
+
+    // Load Dicom from disk
+    ::fwData::PatientDB::NewSptr pReadPatientDB;
+
+    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr readerConfigCfg("config");
+
+    ::fwRuntime::EConfigurationElement::NewSptr readerIoVtkGdcmPathCfg("path");
+    readerIoVtkGdcmPathCfg->setAttributeValue("value", PATH.string());
+    readerConfigCfg->addConfigurationElement(readerIoVtkGdcmPathCfg);
+    readerCfg->addConfigurationElement(readerConfigCfg);
+
+    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::DicomPatientDBReaderService" );
+    CPPUNIT_ASSERT(readerSrv);
+
+    ::fwServices::OSR::registerService( pReadPatientDB , readerSrv );
+
+    readerSrv->setConfiguration( readerCfg );
+    readerSrv->configure();
+    readerSrv->start();
+    readerSrv->update();
+    readerSrv->stop();
+    ::fwServices::OSR::unregisterService( readerSrv );
+
+    // Clean the written data
+    ::boost::filesystem::remove_all( PATH.string() );
+
+    size_t  nbPatient = pReadPatientDB->getPatientSize();
+    CPPUNIT_ASSERT_EQUAL(nbPatientExpected, nbPatient);
+
+    ::fwData::PatientDB::PatientIterator readPatientIter;
+    readPatientIter = pReadPatientDB->getPatients().first;
+    ::fwData::Patient::sptr pReadPatient = (*readPatientIter);
+    //
+    // Attribut BdID not a dicom field
+    pReadPatient->setDbID(pPatient->getDbID());
+
+    // Attribut ris ID is not supported by vtkMedicalImageProperties interface used to write the dicom file
+    ::fwData::Patient::StudyIterator pReadStudy = pReadPatient->getStudies().first;
+    ::fwData::Patient::StudyIterator pStudy = pPatient->getStudies().first;
+    (*pReadStudy)->setRISId((*pStudy)->getRISId());
+
+    // check patient
+    CPPUNIT_ASSERT(::fwDataTools::Patient::comparePatient(pPatient, pReadPatient));
 
 }
 
