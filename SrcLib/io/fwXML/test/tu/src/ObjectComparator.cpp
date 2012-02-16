@@ -13,6 +13,7 @@
 #include <fwData/StructureTraits.hpp>
 
 #include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Image.hpp>
 
 #include "ObjectComparator.hpp"
 
@@ -373,15 +374,7 @@ void ObjectComparator::compareImage(::fwData::Image::sptr image1, ::fwData::Imag
     CPPUNIT_ASSERT(image1);
     CPPUNIT_ASSERT(image2);
 
-    CPPUNIT_ASSERT_EQUAL(image1->getDimension(), image2->getDimension());
-    CPPUNIT_ASSERT_EQUAL(image1->getManagesBuff(), image2->getManagesBuff());
-    CPPUNIT_ASSERT_EQUAL(image1->getSpacing().back(), image2->getSpacing().back());
-    CPPUNIT_ASSERT_EQUAL(image1->getOrigin().back(), image2->getOrigin().back());
-    CPPUNIT_ASSERT_EQUAL(image1->getSize().back(), image2->getSize().back());
-    CPPUNIT_ASSERT_EQUAL(image1->getFilename(), image2->getFilename());
-    CPPUNIT_ASSERT_EQUAL(image1->getWindowCenter(), image2->getWindowCenter());
-    CPPUNIT_ASSERT_EQUAL(image1->getWindowWidth(), image2->getWindowWidth());
-    CPPUNIT_ASSERT_EQUAL(image1->getRescaleIntercept(), image2->getRescaleIntercept());
+    CPPUNIT_ASSERT( ::fwDataTools::Image::compareImage(image1, image2) );
 }
 
 //------------------------------------------------------------------------------

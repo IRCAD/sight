@@ -38,16 +38,16 @@ public:
     static ::fwData::Patient::sptr createPatient();
     static ::fwData::Study::sptr createStudy();
     static ::fwData::Acquisition::sptr createAcquisition();
-    static ::fwData::Reconstruction::sptr createReconstruction();
     static ::fwData::Image::sptr createImage();
     static ::fwData::Array::sptr createArray();
-    static ::fwData::Mesh::sptr createMesh();
-    static ::fwData::Material::sptr createMaterial();
     static ::fwData::Color::sptr createColor();
     static ::fwData::TriangularMesh::sptr createTriangularMesh();
     static ::fwData::TransfertFunction::sptr createTransfertFunction();
     static ::fwData::StructureTraitsDictionary::sptr createStructureTraitsDictionary();
     static ::fwData::StructureTraits::sptr createStructureTraits();
+    static ::fwData::Reconstruction::sptr createReconstruction();
+    static ::fwData::Mesh::sptr createMesh();
+    static ::fwData::Material::sptr createMaterial();
 
     /// Return a composite containing the ROITraits and a reference on its StructureTraits and mask node (because of weak ptr)
     static ::fwData::Composite::sptr createROITraits();
