@@ -32,9 +32,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioITK::JpgPatientDBReaderService , ::fwData:
 
 //------------------------------------------------------------------------------
 
-JpgPatientDBReaderService::JpgPatientDBReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientDBPath("")
+JpgPatientDBReaderService::JpgPatientDBReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -44,8 +42,10 @@ JpgPatientDBReaderService::~JpgPatientDBReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void JpgPatientDBReaderService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType JpgPatientDBReaderService::getIOPathType() const
+{
+    return ::io::FOLDER;
+}
 
 //------------------------------------------------------------------------------
 
@@ -65,9 +65,12 @@ void JpgPatientDBReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsPatientDBPath = result->getFolder();
-        m_bServiceIsConfigured = true;
+        this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -146,9 +149,9 @@ std::string JpgPatientDBReaderService::getSelectorDialogTitle()
 void JpgPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
-        ::fwData::PatientDB::sptr patientDB = createPatientDB( m_fsPatientDBPath );
+        ::fwData::PatientDB::sptr patientDB = createPatientDB( this->getFolder() );
 
         if( patientDB->getPatientSize() > 0 )
         {
