@@ -135,6 +135,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     const gdcm::Tag t14(0x0008,0x0032); // Acquisition Time
 
     const gdcm::Tag imageTypeTag(0x0008,0x0008); // ImageType
+    const gdcm::Tag bitsAllocatedTag(0x0028,0x0100); // BitsAllocated
 
     scanner.AddTag( t1 );
     scanner.AddTag( t2 );
@@ -149,8 +150,10 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     scanner.AddTag( t11 );
     scanner.AddTag( t12 );
     scanner.AddTag( t13 );
-    scanner.AddTag( t14 );
+    scanner.AddTag( t14 );    
     scanner.AddTag(imageTypeTag);
+    scanner.AddTag(bitsAllocatedTag);
+
     //const gdcm::Tag &reftag = t2;
 
     ::fwData::Patient::sptr patient;
@@ -479,6 +482,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     acq->setUID(seriesInstanceUID);
                     acq->setCRefCreationDate(acqDate);
                     acq->setDescription(serieDescription);
+                    acq->setSliceThickness(thickness);
                     // Keep the path and file name fo the Dicom file associated with acquisition.
                     std::vector< std::string >::const_iterator itrOnfiles = iter->second.begin();
                     for( ; itrOnfiles != iter->second.end(); ++itrOnfiles)
@@ -505,6 +509,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         patient->setCRefBirthdate(birthdate);
                         patient->setCRefIsMale(sex);
                     }                    //--
+
                     acq->setImage(pDataImage);
                     study->addAcquisition(acq);
                     if (bIsNewStudy)
