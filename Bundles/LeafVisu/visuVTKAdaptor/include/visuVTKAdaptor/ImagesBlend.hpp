@@ -80,6 +80,9 @@ protected :
     void addImageAdaptors();
     void removeImageAdaptors();
 
+    /// Return true if images to blend have the same spacing, origin and size. Else show a message dialog and return false
+    bool checkImageInformations();
+
     std::vector<std::string> m_imageIds;
     typedef std::map< std::string, SPTR(ImageInfo) > ImageInfoMap;
     ImageInfoMap m_imagesInfo;
