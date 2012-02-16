@@ -88,6 +88,11 @@ public :
     IO_API ::boost::filesystem::path getFolder() const;
 
     /**
+     * @brief Clear any location set by the setFile/setFiles/setFolder setter
+     */
+    IO_API void clearLocations() const;
+
+    /**
      * @brief Sets folder path
      * @pre exception if service not supported FOLDER management
      */

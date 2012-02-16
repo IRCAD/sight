@@ -75,6 +75,14 @@ void IWriter::setFolder(const ::boost::filesystem::path &folder)
     m_locations.push_back(folder);
 }
 
+
+//-----------------------------------------------------------------------------
+
+void IWriter::clearLocations() const
+{
+    m_locations.clear();
+}
+
 //-----------------------------------------------------------------------------
 
 void IWriter::configuring() throw (fwTools::Failed)

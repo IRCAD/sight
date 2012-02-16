@@ -93,6 +93,14 @@ void IReader::setFolder(const ::boost::filesystem::path &folder)
     m_locations.push_back(folder);
 }
 
+
+//-----------------------------------------------------------------------------
+
+void IReader::clearLocations() const
+{
+    m_locations.clear();
+}
+
 //-----------------------------------------------------------------------------
 
 void IReader::configuring() throw (fwTools::Failed)

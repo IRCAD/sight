@@ -95,13 +95,18 @@ public :
      * @pre exception if service not supported FILES management
      */
     IO_API void setFiles(const ::io::LocationsType &files);
-
+    
     /**
      * @brief Returns folder path setted by user or setted during service configuration
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service not supported FOLDER management
      */
     IO_API ::boost::filesystem::path getFolder() const;
+
+    /**
+     * @brief Clear any location set by the setFile/setFiles/setFolder setter
+     */
+    IO_API void clearLocations() const;
 
     /**
      * @brief Sets folder path
