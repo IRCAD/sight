@@ -217,15 +217,23 @@ void SliceIndexPositionEditor::info( std::ostream &_sstream )
 void SliceIndexPositionEditor::updateSliceIndex()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    // Get Index
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
-    unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
 
-    // Update QSlider
-    int max = image->getSize()[m_orientation]-1;
-    m_sliceSelectorPanel->setSliceRange( 0, max );
-    m_sliceSelectorPanel->setSliceValue( index );
+    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    {
+        // Get Index
+        std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+        OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
+        unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
+
+        // Update QSlider
+        int max = 0;
+        if(image->getNumberOfDimensions() > m_orientation)
+        {
+            max = static_cast<int>(image->getSize()[m_orientation]-1);
+        }
+        m_sliceSelectorPanel->setSliceRange( 0, max );
+        m_sliceSelectorPanel->setSliceValue( index );
+    }
 }
 
 //------------------------------------------------------------------------------
