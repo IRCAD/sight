@@ -49,7 +49,19 @@ DicomPatientDBWriterService::~DicomPatientDBWriterService() throw()
 //------------------------------------------------------------------------------
 
 void DicomPatientDBWriterService::configuring() throw(::fwTools::Failed)
-{}
+{
+    SLM_TRACE_FUNC();
+    std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
+    if(!vectConfig.empty())
+    {
+        std::vector < ConfigurationType > pathConfig = vectConfig.at(0)->find("path");
+        SLM_ASSERT("Missing <path> tag", !pathConfig.empty());
+        SLM_ASSERT("Missing path", pathConfig.at(0)->hasAttribute("value"));
+        m_fsPatientDBPath = pathConfig.at(0)->getAttributeValue("value");
+        m_bServiceIsConfigured = true;
+    }
+}
+
 
 //------------------------------------------------------------------------------
 
