@@ -1,0 +1,13 @@
+<profile name="IoMfoTest" version="0.1">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+
+    <activate id="gui" version="0-1" />
+
+    <activate id="io" version="0-1" />
+    <activate id="ioITK" version="0-1" />
+
+    <start id="ioITK" />
+
+</profile>
