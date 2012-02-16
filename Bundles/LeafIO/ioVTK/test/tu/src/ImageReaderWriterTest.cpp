@@ -226,7 +226,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
     ::fwServices::OSR::unregisterService( ReaderSrv );
 
 
-    ::boost::filesystem::remove(ofile);
+    ::boost::filesystem::remove(file);
 
 }
 
