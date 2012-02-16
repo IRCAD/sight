@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fstream>
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
@@ -121,7 +122,7 @@ void ImageReaderWriterTest::testVtiImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
 
-    int sizeTypeExpected=1; // Int8
+    ::fwTools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
@@ -140,8 +141,7 @@ void ImageReaderWriterTest::testVtiImageReader()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
     
-    CPPUNIT_ASSERT_EQUAL( static_cast<int>(image->getType().sizeOf()), sizeTypeExpected);
-       
+    CPPUNIT_ASSERT_EQUAL( expectedType, image->getType());
 }
 
 //------------------------------------------------------------------------------
@@ -175,7 +175,7 @@ void ImageReaderWriterTest::testMhdImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
     
-    int sizeTypeExpected=0; // MHD File image type : MET_CHAR
+    ::fwTools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
@@ -194,15 +194,18 @@ void ImageReaderWriterTest::testMhdImageReader()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<int>(image->getType().sizeOf()), sizeTypeExpected);
+    CPPUNIT_ASSERT_EQUAL( expectedType, image->getType());
 
 }
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterTest::testImageReaderExtension()
 {
+    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "img.xxx";
 
-    const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.xxx";
+    std::ofstream ofile;
+    ofile.open(file.string().c_str());
+    ofile.close();
 
     ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
     ::fwRuntime::EConfigurationElement::NewSptr readerCfg("filename");
@@ -221,6 +224,9 @@ void ImageReaderWriterTest::testImageReaderExtension()
     CPPUNIT_ASSERT_THROW(ReaderSrv->update(),::fwTools::Failed);
     ReaderSrv->stop();
     ::fwServices::OSR::unregisterService( ReaderSrv );
+
+
+    ::boost::filesystem::remove(ofile);
 
 }
 
@@ -264,6 +270,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
     srv->start();
     srv->update();
     srv->stop();
+
+    ::boost::filesystem::remove(file);
 
     ::fwServices::OSR::unregisterService( srv );
     
@@ -337,6 +345,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
     srv->update();
     srv->stop();
 
+    ::boost::filesystem::remove(file);
+
     ::fwServices::OSR::unregisterService( srv );
     
     // Read image from disk 
@@ -366,6 +376,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
 
     CPPUNIT_ASSERT_EQUAL( static_cast<int>(image->getType().sizeOf()), static_cast<int>(imageFromDisk->getType().sizeOf()));
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
+
 
 }
 //------------------------------------------------------------------------------
@@ -408,6 +419,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
     srv->start();
     srv->update();
     srv->stop();
+
+    ::boost::filesystem::remove(file);
 
     ::fwServices::OSR::unregisterService( srv );
     
