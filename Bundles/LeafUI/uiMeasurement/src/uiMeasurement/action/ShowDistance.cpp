@@ -26,7 +26,7 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include "uiMeasurement/action/ShowDistance.hpp"
 
@@ -65,7 +65,7 @@ void ShowDistance::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (image->getBuffer()==NULL || image->getCRefSize()[0]== 0 )
+    if ( !::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
         this->::fwGui::IActionSrv::setIsActive(false);
     }
