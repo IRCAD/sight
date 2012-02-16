@@ -142,11 +142,11 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
                 ::fwData::Point::sptr selectedPoint = name2Point[ selection ];
                 SLM_ASSERT("selectedPoint not instanced", selectedPoint);
                 ::fwData::Integer::NewSptr paramA;
-                paramA->value() = (selectedPoint->getRefCoord()[2] - pImage->getOrigin()[2])/  pImage->getSpacing()[2];
+                paramA->value() = static_cast<int>((selectedPoint->getRefCoord()[2] - pImage->getOrigin()[2] )/  pImage->getSpacing()[2] +0.5);
                 ::fwData::Integer::NewSptr paramF;
-                paramF->value() = (selectedPoint->getRefCoord()[1] -  pImage->getOrigin()[1])/  pImage->getSpacing()[1];
+                paramF->value() = static_cast<int>((selectedPoint->getRefCoord()[1] -  pImage->getOrigin()[1])/  pImage->getSpacing()[1] +0.5);
                 ::fwData::Integer::NewSptr paramS;
-                paramS->value() = (selectedPoint->getRefCoord()[0] -  pImage->getOrigin()[0])/  pImage->getSpacing()[0];
+                paramS->value() = static_cast<int>((selectedPoint->getRefCoord()[0] -  pImage->getOrigin()[0])/  pImage->getSpacing()[0] +0.5);
                 if( paramS->value() >= 0 &&
                         paramF->value() >= 0 &&
                         paramA->value() >= 0 &&
