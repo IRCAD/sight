@@ -3,7 +3,6 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 #include "io/IWriter.hpp"
 
 #include <fwCore/base.hpp>
@@ -75,6 +74,13 @@ void IWriter::setFolder(const ::boost::filesystem::path &folder)
     m_locations.push_back(folder);
 }
 
+//-----------------------------------------------------------------------------
+
+const ::io::LocationsType &IWriter::getLocations() const
+{
+    FW_RAISE_IF("Sorry, at least one pâth must be define in location", m_locations.empty() );
+    return m_locations;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -87,6 +93,15 @@ void IWriter::clearLocations()
 
 void IWriter::configuring() throw (fwTools::Failed)
 {
+    SLM_ASSERT("Generic configuring method is just available for io service that uses pathes.", ! ( this->getIOPathType() & ::io::TYPE_NOT_DEFINED ) );
+
+    SLM_ASSERT("Sorry, you not manage folder and a folder path is given in the configuration",
+            ( this->getIOPathType() & ::io::FOLDER ) ||
+            (! (this->getIOPathType() & ::io::FOLDER)) && (m_configuration->find("folder").size() == 0) );
+
+    SLM_ASSERT("Sorry, you not manage file and a file path is given in the configuration",
+            ( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES ) ||
+            (!( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES )) && (m_configuration->find("file").size() == 0) );
 
     if ( this->getIOPathType() & ::io::FILE )
     {

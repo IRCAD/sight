@@ -95,7 +95,7 @@ public :
      * @pre exception if service not supported FILES management
      */
     IO_API void setFiles(const ::io::LocationsType &files);
-    
+
     /**
      * @brief Returns folder path setted by user or setted during service configuration
      * @pre exception if a folder path is not defined ( m_locations.empty() )
@@ -107,6 +107,12 @@ public :
      * @brief Clear any location set by the setFile/setFiles/setFolder setter
      */
     IO_API void clearLocations();
+
+    /**
+     * @brief Returns file/files/folder paths setted by user or setted during service configuration
+     * @pre exception if a file path is not defined ( m_locations.empty() )
+     */
+    IO_API const ::io::LocationsType & getLocations() const;
 
     /**
      * @brief Sets folder path

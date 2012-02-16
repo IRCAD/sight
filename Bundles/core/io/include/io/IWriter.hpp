@@ -93,6 +93,12 @@ public :
     IO_API void clearLocations();
 
     /**
+     * @brief Returns file/files/folder paths setted by user or setted during service configuration
+     * @pre exception if a file path is not defined ( m_locations.empty() )
+     */
+    IO_API const ::io::LocationsType & getLocations() const;
+
+    /**
      * @brief Sets folder path
      * @pre exception if service not supported FOLDER management
      */
