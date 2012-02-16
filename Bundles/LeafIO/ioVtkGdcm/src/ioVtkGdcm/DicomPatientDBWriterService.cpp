@@ -36,32 +36,13 @@ REGISTER_SERVICE( ::io::IWriter , ::ioVtkGdcm::DicomPatientDBWriterService , ::f
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBWriterService::DicomPatientDBWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientDBPath("")
+DicomPatientDBWriterService::DicomPatientDBWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
 
 DicomPatientDBWriterService::~DicomPatientDBWriterService() throw()
 {}
-
-//------------------------------------------------------------------------------
-
-void DicomPatientDBWriterService::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
-    if(!vectConfig.empty())
-    {
-        std::vector < ConfigurationType > pathConfig = vectConfig.at(0)->find("path");
-        SLM_ASSERT("Missing <path> tag", !pathConfig.empty());
-        SLM_ASSERT("Missing path", pathConfig.at(0)->hasAttribute("value"));
-        m_fsPatientDBPath = pathConfig.at(0)->getAttributeValue("value");
-        m_bServiceIsConfigured = true;
-    }
-}
-
 
 //------------------------------------------------------------------------------
 
@@ -80,9 +61,8 @@ void DicomPatientDBWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsPatientDBPath = result->getFolder();
+        this->setFolder(result->getFolder());
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_bServiceIsConfigured = true;
     }
 }
 
@@ -127,7 +107,7 @@ std::string DicomPatientDBWriterService::getSelectorDialogTitle()
 void DicomPatientDBWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
@@ -135,7 +115,7 @@ void DicomPatientDBWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        savePatientDB(m_fsPatientDBPath, associatedPatientDB);
+        savePatientDB(this->getFolder(), associatedPatientDB);
         cursor.setDefaultCursor();
     }
 }
@@ -172,6 +152,13 @@ void DicomPatientDBWriterService::savePatientDB( const ::boost::filesystem::path
         ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+::io::IOPathType DicomPatientDBWriterService::getIOPathType() const
+{
+    return ::io::FOLDER;
 }
 
 //------------------------------------------------------------------------------

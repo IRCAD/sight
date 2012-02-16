@@ -43,9 +43,6 @@ public :
 protected:
 
     /// Override
-    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOVTKGDCM_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
@@ -69,14 +66,14 @@ protected:
     /// Override
     IOVTKGDCM_API virtual void configureWithIHM();
 
+    /// Return path type managed by the service, here FOLDER
+    IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void savePatientDB( const ::boost::filesystem::path patientDBPath,
             ::boost::shared_ptr< ::fwData::PatientDB > _pPatientDB );
 
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsPatientDBPath;
 
 };
 

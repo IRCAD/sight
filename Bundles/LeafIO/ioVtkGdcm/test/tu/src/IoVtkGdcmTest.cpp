@@ -49,12 +49,9 @@ void IoVtkGdcmTest::testReader()
 
     ::fwData::PatientDB::NewSptr patientDB;
     ::fwRuntime::EConfigurationElement::NewSptr readerCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr configCfg("config");
-
-    ::fwRuntime::EConfigurationElement::NewSptr ioVtkGdcmPathCfg("path");
-    ioVtkGdcmPathCfg->setAttributeValue("value", dicomDataPath.string());
-    configCfg->addConfigurationElement(ioVtkGdcmPathCfg);
-    readerCfg->addConfigurationElement(configCfg);
+    ::fwRuntime::EConfigurationElement::NewSptr folderCfg("folder");
+    folderCfg->setValue(dicomDataPath.string());
+    readerCfg->addConfigurationElement(folderCfg);
 
     ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::DicomPatientDBReaderService" );
     CPPUNIT_ASSERT(srv);
@@ -142,20 +139,17 @@ void IoVtkGdcmTest::testWriter()
 
     ::boost::filesystem::create_directories( PATH );
 
-    ::fwRuntime::EConfigurationElement::NewSptr writerCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr writerConfigCfg("config");
-
-    ::fwRuntime::EConfigurationElement::NewSptr writerIoVtkGdcmPathCfg("path");
-    writerIoVtkGdcmPathCfg->setAttributeValue("value", PATH.string());
-    writerConfigCfg->addConfigurationElement(writerIoVtkGdcmPathCfg);
-    writerCfg->addConfigurationElement(writerConfigCfg);
+    ::fwRuntime::EConfigurationElement::NewSptr srvConfig("service");
+    ::fwRuntime::EConfigurationElement::NewSptr folderCfg("folder");
+    folderCfg->setValue(PATH.string());
+    srvConfig->addConfigurationElement(folderCfg);
 
     ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVtkGdcm::DicomPatientDBWriterService" );
     CPPUNIT_ASSERT(writerSrv);
 
     ::fwServices::OSR::registerService( pPatientDB, writerSrv );
 
-    writerSrv->setConfiguration( writerCfg );
+    writerSrv->setConfiguration( srvConfig );
     writerSrv->configure();
     writerSrv->start();
     writerSrv->update();
@@ -166,20 +160,12 @@ void IoVtkGdcmTest::testWriter()
     // Load Dicom from disk
     ::fwData::PatientDB::NewSptr pReadPatientDB;
 
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr readerConfigCfg("config");
-
-    ::fwRuntime::EConfigurationElement::NewSptr readerIoVtkGdcmPathCfg("path");
-    readerIoVtkGdcmPathCfg->setAttributeValue("value", PATH.string());
-    readerConfigCfg->addConfigurationElement(readerIoVtkGdcmPathCfg);
-    readerCfg->addConfigurationElement(readerConfigCfg);
-
     ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::DicomPatientDBReaderService" );
     CPPUNIT_ASSERT(readerSrv);
 
     ::fwServices::OSR::registerService( pReadPatientDB , readerSrv );
 
-    readerSrv->setConfiguration( readerCfg );
+    readerSrv->setConfiguration( srvConfig ); // use same config as writer
     readerSrv->configure();
     readerSrv->start();
     readerSrv->update();

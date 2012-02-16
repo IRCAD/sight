@@ -37,31 +37,13 @@ REGISTER_SERVICE( ::io::IReader , ::ioVtkGdcm::DicomPatientDBReaderService , ::f
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReaderService::DicomPatientDBReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientDBPath("")
+DicomPatientDBReaderService::DicomPatientDBReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
 
 DicomPatientDBReaderService::~DicomPatientDBReaderService() throw()
 {}
-
-//------------------------------------------------------------------------------
-
-void DicomPatientDBReaderService::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
-    if(!vectConfig.empty())
-    {
-        std::vector < ConfigurationType > pathConfig = vectConfig.at(0)->find("path");
-        SLM_ASSERT("Missing <path> tag", !pathConfig.empty());
-        SLM_ASSERT("Missing path", pathConfig.at(0)->hasAttribute("value"));
-        m_fsPatientDBPath = pathConfig.at(0)->getAttributeValue("value");
-        m_bServiceIsConfigured = true;
-    }
-}
 
 //------------------------------------------------------------------------------
 
@@ -80,9 +62,8 @@ void DicomPatientDBReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsPatientDBPath = result->getFolder();
+        this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_bServiceIsConfigured = true;
     }
 }
 
@@ -160,9 +141,9 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
 void DicomPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
-        ::fwData::PatientDB::sptr patientDB = createPatientDB( m_fsPatientDBPath );
+        ::fwData::PatientDB::sptr patientDB = createPatientDB( this->getFolder() );
 
         if( patientDB->getPatientSize() > 0 )
         {
@@ -196,6 +177,13 @@ void DicomPatientDBReaderService::notificationOfDBUpdate()
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT );
 
     ::fwServices::IEditionService::notify(this->getSptr(),  pDPDB, msg);
+}
+
+//-----------------------------------------------------------------------------
+
+::io::IOPathType DicomPatientDBReaderService::getIOPathType() const
+{
+    return ::io::FOLDER;
 }
 
 //------------------------------------------------------------------------------
