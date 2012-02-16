@@ -10,8 +10,7 @@
 #include <ctime>
 
 #include <boost/foreach.hpp>
-
-
+#include <boost/algorithm/string/trim.hpp>
 
 #include "fwDataTools/Patient.hpp"
 #include "fwDataTools/Image.hpp"
@@ -82,9 +81,11 @@ bool Patient::comparePatient(::fwData::Patient::sptr patient1, ::fwData::Patient
     OSLM_ERROR_IF("Patient have not same birthdate : " << patient1->getBirthdate() << " != " << patient2->getBirthdate(),
             patient1->getBirthdate() != patient2->getBirthdate());
 
-    compare &= (patient1->getIDDicom() == patient2->getIDDicom());
+    std::string idDicom1 = ::boost::algorithm::trim_copy(patient1->getIDDicom());
+    std::string idDicom2 = ::boost::algorithm::trim_copy(patient2->getIDDicom());
+    compare &= (idDicom1 == idDicom2);
     OSLM_ERROR_IF("Patient have not same Dicom ID : " << patient1->getIDDicom() << " != " << patient2->getIDDicom(),
-            patient1->getIDDicom() != patient2->getIDDicom());
+                  idDicom1 != idDicom2);
 
     compare &= (patient1->getIsMale() == patient2->getIsMale());
     OSLM_ERROR_IF("Patient have not same sex : " << patient1->getIsMale() << " != " << patient2->getIsMale(),
@@ -121,7 +122,7 @@ void Patient::generateStudy(::fwData::Study::sptr study,
 {
     // studies informations
     const std::string STUDY_HOSPITAL       = "hopital" ;
-    const std::string STUDY_MODALITY       = "modality" ;
+    const std::string STUDY_MODALITY       = "CT";   // "modality" ;
     const std::string STUDY_ZONE           = "IDDICOM" ;
     const std::string STUDY_RISID          = "risid569" ;
     const std::string STUDY_UID            = "UID569" ;
@@ -153,9 +154,11 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
     compare &= (study1 && study2);
     OSLM_ERROR_IF("Studies not initialized", !study1 || !study2);
 
-    compare &= (study1->getHospital() == study2->getHospital());
+    std::string hospital1 = ::boost::algorithm::trim_copy(study1->getHospital());
+    std::string hospital2 = ::boost::algorithm::trim_copy(study2->getHospital());
+    compare &= (hospital1 == hospital2);
     OSLM_ERROR_IF("Studies have not same hopital  : " << study1->getHospital() << " != " << study2->getHospital(),
-            study1->getHospital() != study2->getHospital());
+                  hospital1 != hospital2);
 
 
     compare &= (study1->getModality() == study2->getModality());
@@ -282,7 +285,7 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
     OSLM_ERROR_IF("Acquisitions have not same slice thickness  : " << acquisition1->getSliceThickness() << " != " << acquisition2->getSliceThickness(),
             acquisition1->getSliceThickness() != acquisition2->getSliceThickness());
 
-    compare &= (acquisition1->getAxe() == acquisition2->getAxe());
+    compare &= (static_cast<int> (acquisition1->getAxe()) == static_cast<int> (acquisition2->getAxe()));
     OSLM_ERROR_IF("Acquisitions have not same axe  : " << acquisition1->getAxe() << " != " << acquisition2->getAxe(),
             acquisition1->getAxe() != acquisition2->getAxe());
 
