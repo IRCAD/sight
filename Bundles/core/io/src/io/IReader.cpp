@@ -42,7 +42,7 @@ std::vector< std::string > IReader::getSupportedExtensions()
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path IReader::getFile() const
+const ::boost::filesystem::path &IReader::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage file", !(this->getIOPathType() & ::io::FILE));
     FW_RAISE_IF("Sorry, one file must be define in location", m_locations.size() != 1);
@@ -60,7 +60,7 @@ void IReader::setFile( const ::boost::filesystem::path &file)
 
 //-----------------------------------------------------------------------------
 
-::io::LocationsType IReader::getFiles() const
+const ::io::LocationsType &IReader::getFiles() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILES));
     FW_RAISE_IF("Sorry, at least one file must be define in location", m_locations.empty() );
@@ -77,7 +77,7 @@ void IReader::setFiles(const ::io::LocationsType &files)
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path IReader::getFolder() const
+const ::boost::filesystem::path &IReader::getFolder() const
 {
     FW_RAISE_IF("This reader doesn't manage folder", !(this->getIOPathType() & ::io::FOLDER));
     FW_RAISE_IF("Sorry, one folder must be define in location", m_locations.size() !=1 );
@@ -96,7 +96,7 @@ void IReader::setFolder(const ::boost::filesystem::path &folder)
 
 //-----------------------------------------------------------------------------
 
-void IReader::clearLocations() const
+void IReader::clearLocations()
 {
     m_locations.clear();
 }

@@ -24,7 +24,7 @@ IWriter::~IWriter() throw()
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path IWriter::getFile() const
+const ::boost::filesystem::path &IWriter::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage file", !(this->getIOPathType() & ::io::FILE));
     FW_RAISE_IF("Sorry, one file must be define in location", m_locations.size() != 1);
@@ -42,7 +42,7 @@ void IWriter::setFile( const ::boost::filesystem::path &file)
 
 //-----------------------------------------------------------------------------
 
-::io::LocationsType IWriter::getFiles() const
+const ::io::LocationsType &IWriter::getFiles() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILES));
     FW_RAISE_IF("Sorry, at least one file must be define in location", m_locations.empty() );
@@ -59,7 +59,7 @@ void IWriter::setFiles(const ::io::LocationsType &files)
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path IWriter::getFolder() const
+const ::boost::filesystem::path &IWriter::getFolder() const
 {
     FW_RAISE_IF("This reader doesn't manage folder", !(this->getIOPathType() & ::io::FOLDER));
     FW_RAISE_IF("Sorry, one folder must be define in location", m_locations.size() !=1 );
@@ -78,7 +78,7 @@ void IWriter::setFolder(const ::boost::filesystem::path &folder)
 
 //-----------------------------------------------------------------------------
 
-void IWriter::clearLocations() const
+void IWriter::clearLocations()
 {
     m_locations.clear();
 }

@@ -75,7 +75,7 @@ public :
      * @pre exception if a file path is not defined  ( m_locations.empty() )
      * @pre exception if service not supported FILE management
      */
-    IO_API ::boost::filesystem::path getFile() const;
+    IO_API const ::boost::filesystem::path &getFile() const;
 
     /**
      * @brief Sets file path
@@ -88,7 +88,7 @@ public :
      * @pre exception if a file path is not defined ( m_locations.empty() )
      * @pre exception if service not supported FILES management
      */
-    IO_API ::io::LocationsType getFiles() const;
+    IO_API const ::io::LocationsType &getFiles() const;
 
     /**
      * @brief Sets file paths
@@ -101,12 +101,12 @@ public :
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service not supported FOLDER management
      */
-    IO_API ::boost::filesystem::path getFolder() const;
+    IO_API const ::boost::filesystem::path &getFolder() const;
 
     /**
      * @brief Clear any location set by the setFile/setFiles/setFolder setter
      */
-    IO_API void clearLocations() const;
+    IO_API void clearLocations();
 
     /**
      * @brief Sets folder path
