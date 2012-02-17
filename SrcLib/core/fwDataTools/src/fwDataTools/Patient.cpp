@@ -81,11 +81,9 @@ bool Patient::comparePatient(::fwData::Patient::sptr patient1, ::fwData::Patient
     OSLM_ERROR_IF("Patient have not same birthdate : " << patient1->getBirthdate() << " != " << patient2->getBirthdate(),
             patient1->getBirthdate() != patient2->getBirthdate());
 
-    std::string idDicom1 = ::boost::algorithm::trim_copy(patient1->getIDDicom());
-    std::string idDicom2 = ::boost::algorithm::trim_copy(patient2->getIDDicom());
-    compare &= (idDicom1 == idDicom2);
+    compare &= (patient1->getIDDicom() == patient2->getIDDicom());
     OSLM_ERROR_IF("Patient have not same Dicom ID : " << patient1->getIDDicom() << " != " << patient2->getIDDicom(),
-                  idDicom1 != idDicom2);
+                  patient1->getIDDicom() != patient2->getIDDicom());
 
     compare &= (patient1->getIsMale() == patient2->getIsMale());
     OSLM_ERROR_IF("Patient have not same sex : " << patient1->getIsMale() << " != " << patient2->getIsMale(),
@@ -154,11 +152,9 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
     compare &= (study1 && study2);
     OSLM_ERROR_IF("Studies not initialized", !study1 || !study2);
 
-    std::string hospital1 = ::boost::algorithm::trim_copy(study1->getHospital());
-    std::string hospital2 = ::boost::algorithm::trim_copy(study2->getHospital());
-    compare &= (hospital1 == hospital2);
+    compare &= (study1->getHospital() == study2->getHospital());
     OSLM_ERROR_IF("Studies have not same hopital  : " << study1->getHospital() << " != " << study2->getHospital(),
-                  hospital1 != hospital2);
+                  study1->getHospital() != study2->getHospital());
 
 
     compare &= (study1->getModality() == study2->getModality());
@@ -166,7 +162,7 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
             study1->getModality() != study2->getModality());
 
     compare &= (study1->getAcquisitionZone() == study2->getAcquisitionZone());
-    OSLM_ERROR_IF("Studies have not same acquisition zone  : " << study1->getAcquisitionZone() << " != " << study2->getAcquisitionZone(),
+    OSLM_ERROR_IF("Studies have not same acquisition zone  : '" << study1->getAcquisitionZone() << "' != '" << study2->getAcquisitionZone()<<"'",
             study1->getAcquisitionZone() != study2->getAcquisitionZone());
 
     compare &= (study1->getRefRISId() == study2->getRefRISId());
@@ -204,10 +200,9 @@ void Patient::generateAcquisition(::fwData::Acquisition::sptr acq,
                                   const unsigned char nbReconstruction)
 {
     // aquisitions informations
-    const float ACQ_SLICETHICKNESS             = rand()%100/100.f ;
-    const ::boost::uint8_t  ACQ_AXE            = rand()%256 ;
-    const bool ACQ_UNSIGNEDFLAG                = true ;
-    const ::boost::uint32_t ACQ_INDEX          = rand()%1000 ;
+    const ::boost::uint8_t  ACQ_AXE            = rand()%3 ;
+    const bool ACQ_UNSIGNEDFLAG                = false ;
+    const ::boost::uint32_t ACQ_INDEX          = 0 ;
     const std::string ACQ_IMAGETYPE            = "refimageType" ;
     const std::string ACQ_IMAGEFORMAT          = "refimageFormat" ;
     const std::string ACQ_CREATIONDATE         = "2007-Feb-26 15:00:00";
@@ -234,7 +229,7 @@ void Patient::generateAcquisition(::fwData::Acquisition::sptr acq,
     acq->setImage(img);
 
     acq->setBitsPerPixel(img->getType().sizeOf()*8);
-    acq->setSliceThickness(ACQ_SLICETHICKNESS);
+    acq->setSliceThickness(img->getSpacing()[2]);
     acq->setAxe(ACQ_AXE);
     acq->setUnsignedFlag(ACQ_UNSIGNEDFLAG);
     acq->setAcquisitionIndex(ACQ_INDEX);
@@ -285,8 +280,8 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
     OSLM_ERROR_IF("Acquisitions have not same slice thickness  : " << acquisition1->getSliceThickness() << " != " << acquisition2->getSliceThickness(),
             acquisition1->getSliceThickness() != acquisition2->getSliceThickness());
 
-    compare &= (static_cast<int> (acquisition1->getAxe()) == static_cast<int> (acquisition2->getAxe()));
-    OSLM_ERROR_IF("Acquisitions have not same axe  : " << acquisition1->getAxe() << " != " << acquisition2->getAxe(),
+    compare &= (acquisition1->getAxe() == acquisition2->getAxe());
+    OSLM_ERROR_IF("Acquisitions have not same axe  : " << static_cast<int> (acquisition1->getAxe()) << " != " << static_cast<int> (acquisition2->getAxe()),
             acquisition1->getAxe() != acquisition2->getAxe());
 
     compare &= (acquisition1->getUnsignedFlag() == acquisition2->getUnsignedFlag());
@@ -298,11 +293,11 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
             acquisition1->getAcquisitionIndex() != acquisition2->getAcquisitionIndex());
 
     compare &= (acquisition1->getImageType() == acquisition2->getImageType());
-    OSLM_ERROR_IF("Acquisitions have not same image type : " << acquisition1->getImageType() << " != " << acquisition2->getImageType(),
+    OSLM_ERROR_IF("Acquisitions have not same image type : '" << acquisition1->getImageType() << "' != '" << acquisition2->getImageType()<< "'",
             acquisition1->getImageType() != acquisition2->getImageType());
 
     compare &= (acquisition1->getImageFormat() == acquisition2->getImageFormat());
-    OSLM_ERROR_IF("Acquisitions have not same image format : " << acquisition1->getImageFormat() << " != " << acquisition2->getImageFormat(),
+    OSLM_ERROR_IF("Acquisitions have not same image format : '" << acquisition1->getImageFormat() << "' != '" << acquisition2->getImageFormat()<<"'",
             acquisition1->getImageFormat() != acquisition2->getImageFormat());
 
     compare &= (acquisition1->getIsMain() == acquisition2->getIsMain());
@@ -358,15 +353,15 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
             acquisition1->getRadiations() != acquisition2->getRadiations());
 
     compare &= (acquisition1->getMedicalPrinter() == acquisition2->getMedicalPrinter());
-    OSLM_ERROR_IF("Acquisitions have not same Medical Printer : " << acquisition1->getMedicalPrinter() << " != " << acquisition2->getMedicalPrinter(),
+    OSLM_ERROR_IF("Acquisitions have not same Medical Printer : '" << acquisition1->getMedicalPrinter() << "' != '" << acquisition2->getMedicalPrinter()<<"'",
             acquisition1->getMedicalPrinter() != acquisition2->getMedicalPrinter());
 
     compare &= (acquisition1->getMedicalPrinterCorp() == acquisition2->getMedicalPrinterCorp());
-    OSLM_ERROR_IF("Acquisitions have not same MedicalPrinterCorp : " << acquisition1->getMedicalPrinterCorp() << " != " << acquisition2->getMedicalPrinterCorp(),
+    OSLM_ERROR_IF("Acquisitions have not same MedicalPrinterCorp : '" << acquisition1->getMedicalPrinterCorp() << "' != '" << acquisition2->getMedicalPrinterCorp() <<"'",
             acquisition1->getMedicalPrinterCorp() != acquisition2->getMedicalPrinterCorp());
 
     compare &= (acquisition1->getPatientPosition() == acquisition2->getPatientPosition());
-    OSLM_ERROR_IF("Acquisitions have not same patient position : " << acquisition1->getPatientPosition() << " != " << acquisition2->getPatientPosition(),
+    OSLM_ERROR_IF("Acquisitions have not same patient position : '" << acquisition1->getPatientPosition() << "' != '" << acquisition2->getPatientPosition()<<"'",
             acquisition1->getPatientPosition() != acquisition2->getPatientPosition());
 
     compare &= (acquisition1->getReconstructionSize() == acquisition2->getReconstructionSize());

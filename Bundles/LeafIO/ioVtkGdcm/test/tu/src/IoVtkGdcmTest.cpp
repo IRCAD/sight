@@ -10,14 +10,16 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
+#include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
-#include <fwDataTools/Patient.hpp>
+
 
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwData/PatientDB.hpp>
+#include <fwDataTools/Patient.hpp>
 
 #include <fwTest/Data.hpp>
 
@@ -132,6 +134,15 @@ void IoVtkGdcmTest::testWriter()
     ::fwData::Patient::NewSptr pPatient;
     ::fwDataTools::Patient::generatePatient(pPatient, 1, 1, 0);
 
+    // vtkMedicalImageProperties doesn't allow to save birthTime so we keeep only the date.
+    boost::posix_time::ptime birthdate = boost::posix_time::ptime(pPatient->getBirthdate().date());
+    pPatient->setBirthdate(birthdate);
+
+    ::fwData::Patient::StudyIterator pStudy = pPatient->getStudies().first;
+    ::fwData::Study::AcquisitionIterator pAcq = (*pStudy)->getAcquisitions().first;
+
+    (*pStudy)->setModality("CT");
+
     ::fwData::PatientDB::NewSptr pPatientDB;
     pPatientDB->addPatient(pPatient);
 
@@ -184,11 +195,41 @@ void IoVtkGdcmTest::testWriter()
     //
     // Attribut BdID not a dicom field
     pReadPatient->setDbID(pPatient->getDbID());
+    // Manage space added
+    pReadPatient->setIDDicom(pReadPatient->getIDDicom());
 
-    // Attribut ris ID is not supported by vtkMedicalImageProperties interface used to write the dicom file
     ::fwData::Patient::StudyIterator pReadStudy = pReadPatient->getStudies().first;
-    ::fwData::Patient::StudyIterator pStudy = pPatient->getStudies().first;
+
+    // Manage space added
+    (*pReadStudy)->setHospital((*pReadStudy)->getHospital());
+    // Set a valid modality.
+    (*pReadStudy)->setModality("CT");
+    (*pReadStudy)->setUID((*pStudy)->getUID());
+
+    // Attribute ris ID is not supported by vtkMedicalImageProperties interface used to write the dicom file
     (*pReadStudy)->setRISId((*pStudy)->getRISId());
+    (*pReadStudy)->setDbID((*pStudy)->getDbID());
+    (*pReadStudy)->setRISId((*pStudy)->getRISId());
+    (*pReadStudy)->setDbID((*pStudy)->getDbID());
+
+    ::fwData::Study::AcquisitionIterator pReadAcq = (*pReadStudy)->getAcquisitions().first;
+    (*pReadAcq)->setDbID((*pAcq)->getDbID());
+    (*pReadAcq)->setLaboID((*pAcq)->getLaboID());
+    (*pReadAcq)->setNetID((*pAcq)->getNetID());
+    (*pReadAcq)->setPatientSize((*pAcq)->getPatientSize());
+    (*pReadAcq)->setPatientWeight((*pAcq)->getPatientWeight());
+    (*pReadAcq)->setRadiations((*pAcq)->getRadiations());
+    (*pReadAcq)->setMedicalPrinter((*pAcq)->getMedicalPrinter());
+    (*pReadAcq)->setMedicalPrinterCorp((*pAcq)->getMedicalPrinterCorp());
+    (*pReadAcq)->setPatientPosition((*pAcq)->getPatientPosition());
+    (*pReadAcq)->setDateSendToLaboAt((*pAcq)->getDateSendToLaboAt());
+    (*pReadAcq)->setDateReceiveFromLaboAt((*pAcq)->getDateReceiveFromLaboAt());
+    (*pReadAcq)->setDateSendToBDDAt((*pAcq)->getDateSendToBDDAt());
+    (*pReadAcq)->setDateDisponibilityAt((*pAcq)->getDateDisponibilityAt());
+    (*pReadAcq)->setImageType((*pAcq)->getImageType());
+    (*pReadAcq)->setImageFormat((*pAcq)->getImageFormat());
+    (*pReadAcq)->setUID((*pAcq)->getUID());
+    (*pReadAcq)->setAxe((*pAcq)->getAxe());
 
     // check patient
     CPPUNIT_ASSERT(::fwDataTools::Patient::comparePatient(pPatient, pReadPatient));

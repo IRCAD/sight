@@ -377,7 +377,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     std::string studyDate = std::string(medprop->GetStudyDate());
                     std::string studyDescription = std::string(medprop->GetStudyDescription());
                     std::string patientID  = medprop->GetPatientID();//"0010|0020"
-                    ::boost::algorithm::trim(patientID);
                     std::string birthdateStr= medprop->GetPatientBirthDate(); //"0010|0030"
                     ::boost::posix_time::ptime birthdate = ::fwTools::strToBoostDateAndTime(birthdateStr);
                     std::string hospital = medprop->GetInstitutionName(); //"0008|0080"
@@ -395,6 +394,11 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     double width=0.0;
                     if (medprop->GetNumberOfWindowLevelPresets())//FIXME : Multiple preset !!!
                         medprop->GetNthWindowLevelPreset(0,&width,&center); //0028|1050,1051
+
+                    ::boost::algorithm::trim(patientID);
+                    ::boost::algorithm::trim(hospital);
+                    ::boost::algorithm::trim(zone);
+                    ::boost::algorithm::trim(nameStr);
 
                     // remove accent
                     nameStr = ::fwTools::toStringWithoutAccent(nameStr);
@@ -483,6 +487,12 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     acq->setCRefCreationDate(acqDate);
                     acq->setDescription(serieDescription);
                     acq->setSliceThickness(thickness);
+                    acq->setBitsPerPixel(pDataImage->getType().sizeOf()*8);
+                    acq->setUnsignedFlag(!pDataImage->getType().isSigned());
+
+
+                    // acq->setAxe(medprop->GetOrientationType(0));
+
                     // Keep the path and file name fo the Dicom file associated with acquisition.
                     std::vector< std::string >::const_iterator itrOnfiles = iter->second.begin();
                     for( ; itrOnfiles != iter->second.end(); ++itrOnfiles)
