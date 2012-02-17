@@ -5,7 +5,7 @@ CLASSTEST=[
 USE = []
 LIB = ['vtkGdcmIO_0-1', 'fwTest_0-1' ]
 
-BUNDLES = ['io_0-1', 'ioVtkGdcm_0-1']
+REQUIREMENTS = ['io_0-1', 'ioVtkGdcm_0-1']
 
 CONSOLE = 'yes'
 
