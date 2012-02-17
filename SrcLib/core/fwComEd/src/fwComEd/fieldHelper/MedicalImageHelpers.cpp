@@ -310,15 +310,18 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
     // Test if the image is allocated
     bool dataImageIsAllocated = (_pImg != ::fwData::Image::sptr());
 
-    size_t nbDim = _pImg->getNumberOfDimensions();
-    dataImageIsAllocated &= nbDim > 1;
-
-    for ( int k = 0; dataImageIsAllocated && k < nbDim; ++k )
+    if (dataImageIsAllocated)
     {
-        if(k == 2 && nbDim == 3) // special test for 2D jpeg image (size[2] == 1)
-            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
-        else
-            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] != 0 && ( _pImg->getSize()[k] != 1 ) );
+        size_t nbDim = _pImg->getNumberOfDimensions();
+        dataImageIsAllocated &= nbDim > 1;
+
+        for ( int k = 0; dataImageIsAllocated && k < nbDim; ++k )
+        {
+            if(k == 2 && nbDim == 3) // special test for 2D jpeg image (size[2] == 1)
+                dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
+            else
+                dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] != 0 && ( _pImg->getSize()[k] != 1 ) );
+        }
     }
 
     return dataImageIsAllocated;

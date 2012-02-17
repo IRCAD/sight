@@ -353,7 +353,7 @@ public:
     {
         IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
         const INT_INDEX &p = param.point;
-        const std::vector<boost::int32_t> &size = param.image->getCRefSize();
+        const ::fwData::Image::SizeType &size = param.image->getSize();
         const int &sx = size[0];
         const int &sy = size[1];
         const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
