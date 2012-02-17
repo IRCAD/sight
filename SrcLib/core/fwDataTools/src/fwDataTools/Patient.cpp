@@ -122,7 +122,7 @@ void Patient::generateStudy(::fwData::Study::sptr study,
 {
     // studies informations
     const std::string STUDY_HOSPITAL       = "hopital" ;
-    const std::string STUDY_MODALITY       = "CT";   // "modality" ;
+    const std::string STUDY_MODALITY       = "modality" ;
     const std::string STUDY_ZONE           = "IDDICOM" ;
     const std::string STUDY_RISID          = "risid569" ;
     const std::string STUDY_UID            = "UID569" ;
