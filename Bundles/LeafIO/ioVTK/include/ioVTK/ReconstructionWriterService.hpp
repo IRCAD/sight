@@ -61,18 +61,8 @@ protected:
      */
     IOVTK_API virtual ~ReconstructionWriterService() throw();
 
-    /**
-     * @brief Configuring method.
-     *
-     * XML configuration sample:
-     * @verbatim
-     <service implementation="::ioVTK::ReconstructionWriterService" type="::io::IWriter">
-        <filename id=".../meshTest.obj"/>
-     </service>
-     @endverbatim
-     * This method is used to configure the service.
-     */
-    IOVTK_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOVTK_API virtual ::io::IOPathType getIOPathType() const;
+
 
     /**
     * @brief Starting method.

@@ -62,18 +62,8 @@ protected:
      */
     IOVTK_API virtual ~TriangularMeshReaderService() throw();
 
-    /**
-    * @brief Configuring method.
-    *
-    * XML configuration sample:
-    * @verbatim
-    <service implementation="::ioVTK::TriangularMeshReaderService" type="::io::IReader">
-        <filename id=".../meshTest.vtk"/>
-    </service>
-    @endverbatim
-    * This method is used to configure the service.
-    */
-    IOVTK_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOVTK_API virtual ::io::IOPathType getIOPathType() const;
+
 
     /**
     * @brief Starting method.

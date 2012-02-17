@@ -39,6 +39,18 @@ void ImageReaderWriterTest::tearDown()
     // Clean up after the test run.
 }
 
+
+::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path &file)
+{
+    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("file");
+    readerCfg->setValue(file.string());
+    readerSrvCfg->addConfigurationElement(readerCfg);
+
+    return readerSrvCfg;
+    
+}
+
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterTest::testVtkImageReader()
@@ -46,13 +58,7 @@ void ImageReaderWriterTest::testVtkImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
 
-    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("filename");
-    readerCfg->setAttributeValue("id", file.string());
-    readerSrvCfg->addConfigurationElement(readerCfg);
-
     ::fwData::Image::NewSptr image;
-    this->readImage(readerSrvCfg, image); 
     
     // Data expected
     const size_t dim = 3;
@@ -71,10 +77,16 @@ void ImageReaderWriterTest::testVtkImageReader()
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
     
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image); 
+
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
     ::fwData::Image::SpacingType originRead = image->getOrigin();
     ::fwData::Image::SizeType sizeRead = image->getSize();
+
+    CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
+    CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
+    CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
@@ -97,13 +109,8 @@ void ImageReaderWriterTest::testVtiImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/image/vti/BostonTeapot.vti";
 
-    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("filename");
-    readerCfg->setAttributeValue("id", file.string());
-    readerSrvCfg->addConfigurationElement(readerCfg);
-
     ::fwData::Image::NewSptr image;
-    this->readImage(readerSrvCfg, image); 
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image); 
     
     // Data expected
     const size_t dim = 3;
@@ -128,6 +135,11 @@ void ImageReaderWriterTest::testVtiImageReader()
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
     ::fwData::Image::SpacingType originRead = image->getOrigin();
     ::fwData::Image::SizeType sizeRead = image->getSize();
+
+    
+    CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
+    CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
+    CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
@@ -150,13 +162,8 @@ void ImageReaderWriterTest::testMhdImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd";
 
-    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("filename");
-    readerCfg->setAttributeValue("id", file.string());
-    readerSrvCfg->addConfigurationElement(readerCfg);
-
     ::fwData::Image::NewSptr image;
-    this->readImage(readerSrvCfg, image); 
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image); 
     
     // Data expected
     const size_t dim = 3;
@@ -181,6 +188,12 @@ void ImageReaderWriterTest::testMhdImageReader()
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
     ::fwData::Image::SpacingType originRead = image->getOrigin();
     ::fwData::Image::SizeType sizeRead = image->getSize();
+
+
+    
+    CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
+    CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
+    CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
@@ -207,24 +220,13 @@ void ImageReaderWriterTest::testImageReaderExtension()
     ofile.open(file.string().c_str());
     ofile.close();
 
-    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("filename");
-    readerCfg->setAttributeValue("id", file.string());
-    readerSrvCfg->addConfigurationElement(readerCfg);
-
     ::fwData::Image::NewSptr image;
 
-    ::fwServices::IService::sptr ReaderSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVTK::ImageReaderService" );
-    CPPUNIT_ASSERT(ReaderSrv);
 
-    ::fwServices::OSR::registerService( image , ReaderSrv );
-    ReaderSrv->setConfiguration( readerSrvCfg );
-    ReaderSrv->configure();
-    ReaderSrv->start();
-    CPPUNIT_ASSERT_THROW(ReaderSrv->update(),::fwTools::Failed);
-    ReaderSrv->stop();
-    ::fwServices::OSR::unregisterService( ReaderSrv );
-
+    CPPUNIT_ASSERT_THROW( 
+            this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image),
+            ::fwTools::Failed
+            );
 
     ::boost::filesystem::remove(file);
 
@@ -255,34 +257,24 @@ void ImageReaderWriterTest::testVtkImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
 
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr cfg("filename");
-    cfg->setAttributeValue("id", file.string());
-    srvCfg->addConfigurationElement(cfg);
+    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image); 
 
-    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVTK::ImageWriterService" );
-    CPPUNIT_ASSERT(srv);
 
-    ::fwServices::OSR::registerService( image , srv );
-
-    srv->setConfiguration( srvCfg );
-    srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
-
-    ::boost::filesystem::remove(file);
-
-    ::fwServices::OSR::unregisterService( srv );
-    
     // Read image from disk 
     ::fwData::Image::NewSptr imageFromDisk;
-    this->readImage(srvCfg, imageFromDisk); 
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk); 
     
+    ::boost::filesystem::remove(file);
+
     // Data read 
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
+
+    
+    CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
+    CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
+    CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
@@ -300,7 +292,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
     char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<int>(image->getType().sizeOf()), static_cast<int>(imageFromDisk->getType().sizeOf()));
+    CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
 
 }
@@ -329,34 +321,22 @@ void ImageReaderWriterTest::testVtiImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
 
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr cfg("filename");
-    cfg->setAttributeValue("id", file.string());
-    srvCfg->addConfigurationElement(cfg);
+    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image); 
 
-    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVTK::ImageWriterService" );
-    CPPUNIT_ASSERT(srv);
 
-    ::fwServices::OSR::registerService( image , srv );
-
-    srv->setConfiguration( srvCfg );
-    srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
-
-    ::boost::filesystem::remove(file);
-
-    ::fwServices::OSR::unregisterService( srv );
-    
     // Read image from disk 
     ::fwData::Image::NewSptr imageFromDisk;
-    this->readImage(srvCfg, imageFromDisk); 
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk); 
     
     // Data read 
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
+
+    
+    CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
+    CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
+    CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
@@ -374,7 +354,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
     char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<int>(image->getType().sizeOf()), static_cast<int>(imageFromDisk->getType().sizeOf()));
+    CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
 
 
@@ -404,34 +384,21 @@ void ImageReaderWriterTest::testMhdImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
 
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr cfg("filename");
-    cfg->setAttributeValue("id", file.string());
-    srvCfg->addConfigurationElement(cfg);
+    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image); 
 
-    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVTK::ImageWriterService" );
-    CPPUNIT_ASSERT(srv);
-
-    ::fwServices::OSR::registerService( image , srv );
-
-    srv->setConfiguration( srvCfg );
-    srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
-
-    ::boost::filesystem::remove(file);
-
-    ::fwServices::OSR::unregisterService( srv );
-    
     // Read image from disk 
     ::fwData::Image::NewSptr imageFromDisk;
-    this->readImage(srvCfg, imageFromDisk); 
-    
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk); 
+
     // Data read 
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
+
+    
+    CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
+    CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
+    CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
@@ -449,7 +416,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
     char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
     char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<int>(image->getType().sizeOf()), static_cast<int>(imageFromDisk->getType().sizeOf()));
+    CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
 
 }
@@ -478,37 +445,28 @@ void ImageReaderWriterTest::testImageWriterExtension()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
 
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr cfg("filename");
-    cfg->setAttributeValue("id", file.string());
-    srvCfg->addConfigurationElement(cfg);
 
-    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVTK::ImageWriterService" );
-    CPPUNIT_ASSERT(srv);
-
-    ::fwServices::OSR::registerService( image , srv );
-
-    srv->setConfiguration( srvCfg );
-    srv->configure();
-    srv->start();
-    CPPUNIT_ASSERT_THROW(srv->update(),::fwTools::Failed);
-    srv->stop();
-    ::fwServices::OSR::unregisterService( srv );
+    CPPUNIT_ASSERT_THROW(
+            this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image),
+            ::fwTools::Failed
+            );
 }
 //------------------------------------------------------------------------------
-void ImageReaderWriterTest::readImage(const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image)
+void ImageReaderWriterTest::runImageSrv(const std::string &srvtype, const std::string &srvname, const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image)
 {
 
-    ::fwServices::IService::sptr ReaderSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVTK::ImageReaderService" );
-    CPPUNIT_ASSERT(ReaderSrv);
+    ::fwServices::IService::sptr srv;
+    srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
 
-    ::fwServices::OSR::registerService( image , ReaderSrv );
-    ReaderSrv->setConfiguration( cfg );
-    ReaderSrv->configure();
-    ReaderSrv->start();
-    ReaderSrv->update();
-    ReaderSrv->stop();
-    ::fwServices::OSR::unregisterService( ReaderSrv );
+    CPPUNIT_ASSERT_MESSAGE(srvname,srv);
+
+    ::fwServices::OSR::registerService( image , srv );
+    srv->setConfiguration( cfg );
+    srv->configure();
+    srv->start();
+    srv->update();
+    srv->stop();
+    ::fwServices::OSR::unregisterService( srv );
 }
 
 //------------------------------------------------------------------------------

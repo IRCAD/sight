@@ -41,7 +41,7 @@ public:
 
     
 private :
-    void readImage(const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image);
+    void runImageSrv(const std::string &srvtype, const std::string &srv, const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image);
     
 
 };

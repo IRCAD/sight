@@ -42,9 +42,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image 
 
 //------------------------------------------------------------------------------
 
-ImageReaderService::ImageReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImgPath("")
+ImageReaderService::ImageReaderService() throw()
 {
     SLM_TRACE_FUNC();
 }
@@ -59,17 +57,9 @@ ImageReaderService::~ImageReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::configuring() throw ( ::fwTools::Failed )
+::io::IOPathType ImageReaderService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-    // Test if in the service configuration the tag filename is defined. If it is defined, the image path is initialized and we tag the service as configured.
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsImgPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsImgPath);
-        OSLM_TRACE("Filename found in service configuration : img path = " << filename ) ;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -93,9 +83,12 @@ void ImageReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        m_fsImgPath = result->getPath();
-        m_bServiceIsConfigured = true;
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -128,7 +121,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
@@ -140,7 +133,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
         cursor.setCursor(::fwGui::ICursor::BUSY);
         try
         {
-            if ( this->loadImage( m_fsImgPath, pImage ) )
+            if ( this->loadImage( this->getFile(), pImage ) )
             {
                 notificationOfDBUpdate();
             }

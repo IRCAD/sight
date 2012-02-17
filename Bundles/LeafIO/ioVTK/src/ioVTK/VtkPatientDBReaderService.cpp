@@ -44,9 +44,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData:
 
 //------------------------------------------------------------------------------
 
-VtkPatientDBReaderService::VtkPatientDBReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImagePath("")
+VtkPatientDBReaderService::VtkPatientDBReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -56,15 +54,10 @@ VtkPatientDBReaderService::~VtkPatientDBReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void VtkPatientDBReaderService::configuring() throw(::fwTools::Failed)
+
+::io::IOPathType VtkPatientDBReaderService::getIOPathType() const
 {
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsImagePath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = true ;
-        OSLM_TRACE("Filename found" << filename ) ;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -87,11 +80,15 @@ void VtkPatientDBReaderService::configureWithIHM()
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsImagePath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsImagePath.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
+    else
+    {
+        this->clearLocations();
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -176,10 +173,10 @@ bool VtkPatientDBReaderService::createImage( const ::boost::filesystem::path vtk
 void VtkPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         ::fwData::Image::NewSptr image;
-        bool res = createImage( m_fsImagePath, image );
+        bool res = createImage( this->getFile(), image );
 
         if (res && image != NULL )
         {
@@ -193,9 +190,9 @@ void VtkPatientDBReaderService::updating() throw(::fwTools::Failed)
             pNewStudy->addAcquisition(pNewAcquisition);
             pNewPatient->addStudy(pNewStudy);
 #if BOOST_FILESYSTEM_VERSION > 2
-            pNewPatient->setCRefName(m_fsImagePath.filename().string());
+            pNewPatient->setCRefName(this->getFile().filename().string());
 #else
-            pNewPatient->setCRefName(m_fsImagePath.filename());
+            pNewPatient->setCRefName(this->getFile().filename());
 #endif
             pNewPatientDB->addPatient(pNewPatient);
 

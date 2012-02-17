@@ -61,18 +61,7 @@ protected:
     /// Destructor, do nothing.
     IOVTK_API virtual ~ImageReaderService() throw();
 
-    /**
-     * @brief Configure the reader service.
-     *
-     * This method is used to configure the service. It search in a configure element
-     * the definition of image path. XML configuration sample:
-     * @verbatim
-     <service implementation="::ioVTK::ImageReaderService" type="::io::IReader">
-        <filename id=".../imageTest.vtk"/>
-     </service>
-     @endverbatim
-     */
-    IOVTK_API virtual void configuring() throw ( ::fwTools::Failed );
+    IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Method called when the service is started, does nothing.
     IOVTK_API virtual void starting() throw ( ::fwTools::Failed );
