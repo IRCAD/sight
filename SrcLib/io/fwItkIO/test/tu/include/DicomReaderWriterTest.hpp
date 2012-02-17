@@ -21,6 +21,7 @@ class DicomReaderWriterTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testWritePatientDB );
     CPPUNIT_TEST( testReadPatientDB );
     CPPUNIT_TEST( testReadWritePatientDB );
+    CPPUNIT_TEST( testReadPatientDBACHGenou );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -33,11 +34,11 @@ public:
     void testWritePatientDB();
     void testReadPatientDB();
     void testReadWritePatientDB();
+    void testReadPatientDBACHGenou();
 
 private :
 
     void writeImage( ::fwData::Image::sptr image );
-
 };
 
 #endif // _FWITKIO_TEST_TU_DICOMREADERWRITERTEST_HPP_
