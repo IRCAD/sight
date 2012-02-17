@@ -135,7 +135,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     const gdcm::Tag t14(0x0008,0x0032); // Acquisition Time
 
     const gdcm::Tag imageTypeTag(0x0008,0x0008); // ImageType
-    const gdcm::Tag bitsAllocatedTag(0x0028,0x0100); // BitsAllocated
 
     scanner.AddTag( t1 );
     scanner.AddTag( t2 );
@@ -152,7 +151,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     scanner.AddTag( t13 );
     scanner.AddTag( t14 );    
     scanner.AddTag(imageTypeTag);
-    scanner.AddTag(bitsAllocatedTag);
 
     //const gdcm::Tag &reftag = t2;
 
