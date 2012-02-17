@@ -47,9 +47,6 @@ protected:
     IOXML_API virtual ~FwXMLPatientDBReaderService() throw();
 
     /// Override
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
@@ -73,10 +70,8 @@ protected:
     /// Override
     IOXML_API virtual void configureWithIHM();
 
-private :
-
     /// Simple API to convert wxString to boost path and valid the configuration
-    void fixFilename(std::string _filename);
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     void notificationOfDBUpdate();
 
@@ -85,10 +80,6 @@ private :
     bool isAnFwxmlArchive( const ::boost::filesystem::path filePath );
 
     ::fwData::PatientDB::sptr manageZipAndCreatePatientDB( const ::boost::filesystem::path _pArchivePath );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsPatientDBPath;
 
 };
 

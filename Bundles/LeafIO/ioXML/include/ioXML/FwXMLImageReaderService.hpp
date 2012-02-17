@@ -46,7 +46,7 @@ protected:
     IOXML_API virtual ~FwXMLImageReaderService() throw();
 
     /// Override
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
@@ -58,7 +58,7 @@ protected:
     IOXML_API virtual void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOXML_API virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    IOXML_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOXML_API void info(std::ostream &_sstream ) ;
@@ -70,11 +70,7 @@ private :
 
     void notificationOfDBUpdate();
 
-    ::boost::shared_ptr< ::fwData::Image > createImage( const ::boost::filesystem::path inrFileDir );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsImagePath;
+    ::fwData::Image::sptr createImage( const ::boost::filesystem::path &file );
 
 };
 

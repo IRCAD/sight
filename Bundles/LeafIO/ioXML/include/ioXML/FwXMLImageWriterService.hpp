@@ -45,7 +45,7 @@ protected:
     IOXML_API virtual ~FwXMLImageWriterService() throw();
 
     /// Override
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
@@ -57,7 +57,7 @@ protected:
     IOXML_API virtual void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOXML_API virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    IOXML_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOXML_API void info(std::ostream &_sstream ) ;
@@ -67,14 +67,11 @@ protected:
 
 private :
 
-    void saveImage( const ::boost::filesystem::path inrFileDir, ::boost::shared_ptr< ::fwData::Image > _pImage );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsImagePath;
+    void saveImage( const ::boost::filesystem::path &file, ::boost::shared_ptr< ::fwData::Image > _pImage );
 
 };
 
 } // namespace ioXML
 
 #endif //_IOXML_FWXMLIMAGEWRITERSERVICE_HPP_
+

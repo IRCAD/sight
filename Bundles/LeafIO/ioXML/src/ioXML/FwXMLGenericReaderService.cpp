@@ -63,33 +63,31 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
+    ::io::IReader::configuring();
+
+
     typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
-    ConfigurationElementContainer filename  = m_configuration->find("filename");
     ConfigurationElementContainer extension = m_configuration->find("archiveExtension");
 
-    int elements = 0;
-
-    if( filename.size() > 0 )
-    {
-        ++elements;
-        ConfigurationElementContainer::iterator iter = filename.begin() ;
-        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", filename.size() == 1 );
-        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element value can not be empty.", !(*iter)->getValue().empty() );
-        ::boost::filesystem::path filePath((*iter)->getValue());
-        m_reader.setFile( filePath );
-    }
+    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() > 1 );
 
     if( extension.size() > 0 )
     {
-        ++elements;
         ConfigurationElementContainer::iterator iter = extension.begin() ;
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", extension.size() == 1 );
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element value can not be empty.", !(*iter)->getValue().empty() );
         m_archiveExtenstion =  (*iter)->getValue();
     }
 
-    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", elements <= 2 );
 }
+
+//------------------------------------------------------------------------------
+
+::io::IOPathType FwXMLGenericReaderService::getIOPathType() const
+{
+    return ::io::FILE;
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -115,7 +113,11 @@ void FwXMLGenericReaderService::configureWithIHM()
     {
         _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_reader.setFile( result->getPath() );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -195,8 +197,12 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( !m_reader.getFile().empty() )
+
+    if( this->hasLocationDefined() )
     {
+
+        m_reader.setFile( this->getFile() );
+
         ::fwTools::Object::sptr obj; // object loaded
 
         ::fwGui::Cursor cursor;
@@ -209,7 +215,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         }
         else
         {
-            obj = this->loadData(m_reader.getFile() );
+            obj = this->loadData(this->getFile() );
         }
 
         if (obj)

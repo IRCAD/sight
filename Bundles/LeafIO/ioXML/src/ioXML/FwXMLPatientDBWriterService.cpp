@@ -41,9 +41,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLPatientDBWriterService , ::fwDat
 
 //------------------------------------------------------------------------------
 
-FwXMLPatientDBWriterService::FwXMLPatientDBWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientDBPath("")
+FwXMLPatientDBWriterService::FwXMLPatientDBWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -53,8 +51,10 @@ FwXMLPatientDBWriterService::~FwXMLPatientDBWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void FwXMLPatientDBWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType FwXMLPatientDBWriterService::getIOPathType() const
+{
+    return ::io::FILE;
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,9 +74,12 @@ void FwXMLPatientDBWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path() ;
-        m_fsPatientDBPath = result->getPath() ;
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_bServiceIsConfigured = true;
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -137,7 +140,7 @@ void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
@@ -145,15 +148,15 @@ void FwXMLPatientDBWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        m_fsPatientDBPath = correctFileFormat( m_fsPatientDBPath );
+        boost::filesystem::path path = correctFileFormat( this->getFile() );
 
-        if ( isAnFwxmlArchive( m_fsPatientDBPath ) )
+        if ( isAnFwxmlArchive( path ) )
         {
-            manageZipAndSavePatientDB(m_fsPatientDBPath,associatedPatientDB);
+            manageZipAndSavePatientDB(path,associatedPatientDB);
         }
         else
         {
-            savePatientDB(m_fsPatientDBPath,associatedPatientDB);
+            savePatientDB(this->getFile(),associatedPatientDB);
         }
         cursor.setDefaultCursor();
     }

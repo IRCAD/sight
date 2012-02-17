@@ -39,9 +39,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLAcquisitionWriterService , ::fwD
 
 //------------------------------------------------------------------------------
 
-FwXMLAcquisitionWriterService::FwXMLAcquisitionWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsAcquisitionPath("")
+FwXMLAcquisitionWriterService::FwXMLAcquisitionWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -51,8 +49,10 @@ FwXMLAcquisitionWriterService::~FwXMLAcquisitionWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void FwXMLAcquisitionWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType FwXMLAcquisitionWriterService::getIOPathType() const
+{
+    return ::io::FILE;
+}
 
 //------------------------------------------------------------------------------
 
@@ -72,9 +72,12 @@ void FwXMLAcquisitionWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        m_fsAcquisitionPath = result->getPath();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_bServiceIsConfigured = true;
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -135,7 +138,7 @@ void FwXMLAcquisitionWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Acquisition::sptr acquisition = this->getObject< ::fwData::Acquisition >();
@@ -144,14 +147,14 @@ void FwXMLAcquisitionWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        m_fsAcquisitionPath = correctFileFormat( m_fsAcquisitionPath );
-        if ( isAnFwxmlArchive( m_fsAcquisitionPath ) )
+        ::boost::filesystem::path path = correctFileFormat( this->getFile() );
+        if ( isAnFwxmlArchive( path ) )
         {
-            manageZipAndSaveAcquisition(m_fsAcquisitionPath, acquisition);
+            manageZipAndSaveAcquisition(path, acquisition);
         }
         else
         {
-            saveAcquisition(m_fsAcquisitionPath, acquisition);
+            saveAcquisition(path, acquisition);
         }
         cursor.setDefaultCursor();
     }

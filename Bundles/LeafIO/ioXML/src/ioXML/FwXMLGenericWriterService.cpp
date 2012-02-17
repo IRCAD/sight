@@ -52,7 +52,7 @@ FwXMLGenericWriterService::~FwXMLGenericWriterService() throw()
 
 void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
-    m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH." FWXML_ARCHIVE_EXTENSION) );
+    ::io::IWriter::configuring();
 
     if( this->m_configuration->size() > 0 )
     {
@@ -61,6 +61,13 @@ void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
         SLM_ASSERT("Sorry, only xml element \"archiveExtension\" is empty.", ! (*iter)->getValue().empty() );
         m_archiveExtenstion =  (*iter)->getValue();
     }
+}
+
+//------------------------------------------------------------------------------
+
+::io::IOPathType FwXMLGenericWriterService::getIOPathType() const
+{
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -85,13 +92,12 @@ void FwXMLGenericWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        m_writer.setFile( result->getPath() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
     else
     {
-        ::boost::filesystem::path emptyPath;
-        m_writer.setFile(emptyPath);
+        this->clearLocations();
     }
 }
 
@@ -159,7 +165,7 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( !m_writer.getFile().empty() )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
@@ -168,14 +174,14 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        m_writer.setFile( correctFileFormat( m_writer.getFile() ));
+        m_writer.setFile( correctFileFormat( this->getFile() ));
         if ( isAnFwxmlArchive( m_writer.getFile() ) )
         {
             manageZipAndSaveData( m_writer.getFile(), obj);
         }
         else
         {
-            saveData(m_writer.getFile(), obj);
+            saveData(this->getFile(), obj);
         }
         cursor.setDefaultCursor();
     }

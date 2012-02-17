@@ -36,9 +36,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLImageReaderService , ::fwData::I
 
 //------------------------------------------------------------------------------
 
-FwXMLImageReaderService::FwXMLImageReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImagePath("")
+FwXMLImageReaderService::FwXMLImageReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -48,17 +46,9 @@ FwXMLImageReaderService::~FwXMLImageReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void FwXMLImageReaderService::configuring() throw(::fwTools::Failed)
+::io::IOPathType FwXMLImageReaderService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-    // Test if in the service configuration the tag filename is defined. If it is defined, the image path is initialized and we tag the service as configured.
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsImagePath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsImagePath);
-        OSLM_TRACE("Filename found in service configuration : img path = " << filename ) ;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -80,9 +70,12 @@ void FwXMLImageReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        m_fsImagePath = result->getPath();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_bServiceIsConfigured = true;
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -109,12 +102,12 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-::fwData::Image::sptr FwXMLImageReaderService::createImage( const ::boost::filesystem::path inrFileDir )
+::fwData::Image::sptr FwXMLImageReaderService::createImage( const ::boost::filesystem::path &file )
 {
     SLM_TRACE_FUNC();
     ::fwXML::reader::FwXMLObjectReader myLoader;
     ::fwData::Image::sptr pImage;
-    myLoader.setFile(inrFileDir);
+    myLoader.setFile(file);
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
@@ -132,7 +125,7 @@ void FwXMLImageReaderService::info(std::ostream &_sstream )
     {
         std::stringstream xmlFile;
         xmlFile << "Sorry, the xml file \""
-                << m_fsImagePath.string()
+                << file.string()
                 << "\" does not content a Image. This xml file has not been loaded.";
 
         ::fwGui::dialog::MessageDialog::showMessageDialog("FwXML Image Reader",
@@ -148,9 +141,9 @@ void FwXMLImageReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
-        ::fwData::Image::sptr image = createImage( m_fsImagePath );
+        ::fwData::Image::sptr image = createImage( this->getFile() );
 
         if ( image )
         {

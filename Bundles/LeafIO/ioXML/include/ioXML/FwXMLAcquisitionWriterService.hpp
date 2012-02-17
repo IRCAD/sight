@@ -44,13 +44,13 @@ protected:
     IOXML_API virtual ~FwXMLAcquisitionWriterService() throw();
 
     /// Override
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
     IOXML_API virtual void stopping() throw(::fwTools::Failed);
+
+
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API void updating() throw(::fwTools::Failed);
@@ -71,11 +71,6 @@ private :
     bool isAnFwxmlArchive( const ::boost::filesystem::path filePath );
     void manageZipAndSaveAcquisition( const ::boost::filesystem::path inrFileDir, ::fwData::Acquisition::sptr _pAcquisition );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsAcquisitionPath;
-
 };
 
 } // namespace ioXML

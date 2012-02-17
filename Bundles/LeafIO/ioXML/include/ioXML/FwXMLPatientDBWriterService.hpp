@@ -45,13 +45,13 @@ public :
 protected:
 
     /// Override
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
     IOXML_API virtual void stopping() throw(::fwTools::Failed);
+
+    /// Override
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API void updating() throw(::fwTools::Failed);

@@ -36,9 +36,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLImageWriterService , ::fwData::I
 
 //------------------------------------------------------------------------------
 
-FwXMLImageWriterService::FwXMLImageWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImagePath("")
+FwXMLImageWriterService::FwXMLImageWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -48,8 +46,10 @@ FwXMLImageWriterService::~FwXMLImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void FwXMLImageWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType FwXMLImageWriterService::getIOPathType() const
+{
+    return ::io::FILE;
+}
 
 //------------------------------------------------------------------------------
 
@@ -68,9 +68,12 @@ void FwXMLImageWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path() ;
-        m_fsImagePath = result->getPath() ;
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_bServiceIsConfigured = true;
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -97,13 +100,13 @@ void FwXMLImageWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr _pPatient )
+void FwXMLImageWriterService::saveImage( const ::boost::filesystem::path &file, ::fwData::Image::sptr _pImage )
 {
     SLM_TRACE_FUNC();
     ::fwXML::writer::FwXMLObjectWriter myWriter;
 
-    myWriter.setObject(_pPatient);
-    myWriter.setFile(inrFileDir);
+    myWriter.setObject(_pImage);
+    myWriter.setFile(file);
 
     try
     {
@@ -131,7 +134,7 @@ void FwXMLImageWriterService::updating() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
@@ -140,7 +143,7 @@ void FwXMLImageWriterService::updating() throw(fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        saveImage(m_fsImagePath,associatedImage);
+        saveImage(this->getFile(),associatedImage);
         cursor.setDefaultCursor();
     }
 }

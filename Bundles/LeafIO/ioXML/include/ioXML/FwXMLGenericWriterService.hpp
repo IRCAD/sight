@@ -51,7 +51,9 @@ protected:
        </service>
        @endverbatim
      */
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual void configuring() throw(::fwTools::Failed);
+
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);

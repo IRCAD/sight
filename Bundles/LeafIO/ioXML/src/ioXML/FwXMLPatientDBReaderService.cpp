@@ -46,37 +46,13 @@ REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLPatientDBReaderService , ::fwDat
 
 //------------------------------------------------------------------------------
 
-FwXMLPatientDBReaderService::FwXMLPatientDBReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientDBPath("")
+FwXMLPatientDBReaderService::FwXMLPatientDBReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
 
 FwXMLPatientDBReaderService::~FwXMLPatientDBReaderService() throw()
 {}
-
-//------------------------------------------------------------------------------
-
-void FwXMLPatientDBReaderService::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    // Test if in the service configuration the tag filename is defined. If it is defined, the image path is initialized and we tag the service as configured.
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsPatientDBPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsPatientDBPath);
-        if(m_bServiceIsConfigured)
-        {
-            OSLM_TRACE("Filename found in service configuration : patient path = " << filename ) ;
-        }
-        else
-        {
-            OSLM_WARN("filename not exist = " <<  filename ) ;
-        }
-    }
-}
 
 //------------------------------------------------------------------------------
 
@@ -97,18 +73,20 @@ void FwXMLPatientDBReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        m_fsPatientDBPath = result->getPath();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        m_bServiceIsConfigured = true;
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void FwXMLPatientDBReaderService::fixFilename(std::string _filename)
+::io::IOPathType FwXMLPatientDBReaderService::getIOPathType() const
 {
-    m_fsPatientDBPath = ::boost::filesystem::path( _filename );
-    m_bServiceIsConfigured = true;
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -184,16 +162,16 @@ std::string FwXMLPatientDBReaderService::getSelectorDialogTitle()
 
 void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         ::fwData::PatientDB::sptr patientDB;
-        if ( this->isAnFwxmlArchive( m_fsPatientDBPath ) )
+        if ( this->isAnFwxmlArchive( this->getFile() ) )
         {
-            patientDB = this->manageZipAndCreatePatientDB( m_fsPatientDBPath );
+            patientDB = this->manageZipAndCreatePatientDB( this->getFile() );
         }
         else
         {
-            patientDB = this->createPatientDB( m_fsPatientDBPath );
+            patientDB = this->createPatientDB( this->getFile() );
         }
 
         if (patientDB)
