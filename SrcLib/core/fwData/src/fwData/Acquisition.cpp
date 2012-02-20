@@ -164,7 +164,7 @@ void Acquisition::setImage( ::fwData::Image::sptr _pImage )
     }
     else
     {
-        SLM_WARN("Acquisition::getImage : return an image pointer is null.");
+        SLM_WARN("Acquisition::getImage : return a null pointer.");
     }
 
     return _pImage;
@@ -187,7 +187,7 @@ void Acquisition::setImage( ::fwData::Image::sptr _pImage )
     }
     else
     {
-        SLM_WARN("Acquisition::getImage : return an image pointer is null.");
+        SLM_WARN("Acquisition::getImage : return a null pointer.");
     }
 
     return _pImage;
@@ -225,7 +225,7 @@ void Acquisition::setStructAnat( ::fwData::Image::sptr _pStructAnat )
     }
     else
     {
-        SLM_WARN("Acquisition::getStructAnat : return an image pointer is null.");
+        SLM_WARN("Acquisition::getStructAnat : return a null pointer.");
     }
 
     return _pStructAnat;
@@ -248,7 +248,7 @@ void Acquisition::setStructAnat( ::fwData::Image::sptr _pStructAnat )
     }
     else
     {
-        SLM_WARN("Acquisition::getStructAnat : return an image pointer is null.");
+        SLM_WARN("Acquisition::getStructAnat : return a null pointer.");
     }
 
     return _pStructAnat;

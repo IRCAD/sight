@@ -35,6 +35,10 @@ void ArrayTest::tearDown()
 void ArrayTest::allocation()
 {
     ::fwData::Array::NewSptr array;
+
+    CPPUNIT_ASSERT(array->getSize().empty());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
+
     const size_t NB_COMPONENT = 2;
     ::fwData::Array::SizeType size;
     size += 10,100;
