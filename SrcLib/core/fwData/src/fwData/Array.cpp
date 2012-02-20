@@ -134,6 +134,23 @@ void Array::setBuffer(void *buf, bool takeOwnership)
 
 //------------------------------------------------------------------------------
 
+void Array::setBuffer(
+        void *buf,
+        bool takeOwnership,
+        const ::fwTools::Type &type,
+        const SizeType &size,
+        size_t nbOfComponents )
+{
+    nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
+    this->setBuffer( buf, takeOwnership);
+    m_strides = computeStrides(size, nbOfComponents, type.sizeOf());
+    m_type           = type;
+    m_size           = size;
+    m_nbOfComponents = nbOfComponents;
+}
+
+//------------------------------------------------------------------------------
+
 size_t Array::resize(
         const ::fwTools::Type &type,
         const SizeType &size,

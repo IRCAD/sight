@@ -61,7 +61,7 @@ public :
     FWDATA_API void deepCopy( Array::csptr _source );
 
 
-    
+
     /**
      * @brief Resizes and allocate (if needed) the array.
      *
@@ -70,7 +70,7 @@ public :
      *
      * If the combination of type, size and components parametters do not match
      * anymore the size of the previously allocated buffer, a reallocation is needed.
-     * In this case : 
+     * In this case :
      *  * if reallocate is true and if the Array do not own the buffer, an
      *  exception is thrown
      *  * else if reallocate is false, the array will update the view
@@ -165,6 +165,21 @@ public :
      * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
      */
     FWDATA_API virtual void setBuffer(void *buf, bool takeOwnership = false);
+
+    /**
+     * @brief Setter for the array buffer.
+     *
+     * An existing buffer will be released if the array own it.
+     *
+     * @param buf            Buffer to set as Array's buffer
+     * @param takeOwnership  if true, the Array will manage allocation and destroy the buffer when needed.
+     * @param type           Type of the array view
+     * @param size           Size of the array view
+     * @param nbOfComponents Number of components of the array view, Min value : 1
+     * @param reallocate     If true, allow buffer reallocation
+     */
+    FWDATA_API void setBuffer(  void *buf, bool takeOwnership,
+                                const ::fwTools::Type &type,const SizeType &size, size_t nbOfComponents );
 
     /// Returns the begining/end of the buffer interpreted as a char buffer
     virtual char* begin() const;
@@ -302,7 +317,7 @@ public :
      * @param nbOfComponents number of components
      * @param sizeOfType size of a component
      *
-     * @return 
+     * @return
      */
     static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
