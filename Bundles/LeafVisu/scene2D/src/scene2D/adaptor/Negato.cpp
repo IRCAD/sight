@@ -91,7 +91,7 @@ void Negato::configuring() throw ( ::fwTools::Failed )
 void Negato::updateFromImage( QImage * qimg )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    std::vector< ::boost::int32_t > size = image->getSize();
+    const ::fwData::Image::SizeType size = image->getSize();
 
     const std::vector< double > spacing = image->getSpacing();
     double qImageSpacing[2];
@@ -229,25 +229,27 @@ QImage * Negato::createQImage()
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-    const std::vector< ::boost::int32_t > size = img->getSize();
+    const ::fwData::Image::SizeType size = img->getSize();
 
     ::boost::int32_t qImageSize[2];
+    ::fwData::Image::SizeType::value_type width;
+    ::fwData::Image::SizeType::value_type height;
 
     switch(m_orientation)
     {
         case MedicalImageAdaptor::X_AXIS:
-            qImageSize[0] = size[1];
-            qImageSize[1] = size[2];
+            width  = size[1];
+            height = size[2];
             break;
 
         case MedicalImageAdaptor::Y_AXIS:
-            qImageSize[0] = size[0];
-            qImageSize[1] = size[2];
+            width   = size[0];
+            height  = size[2];
             break;
 
         case MedicalImageAdaptor::Z_AXIS:
-            qImageSize[0] = size[0];
-            qImageSize[1] = size[1];
+            width   = size[0];
+            height  = size[1];
             break;
 
         default:
@@ -255,6 +257,8 @@ QImage * Negato::createQImage()
             break;
     }
 
+    qImageSize[0] = static_cast<::boost::int32_t>(width);
+    qImageSize[1] = static_cast<::boost::int32_t>(height);
     QImage * qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
     return qimage;
 }
