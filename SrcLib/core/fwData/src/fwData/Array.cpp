@@ -260,14 +260,14 @@ size_t Array::getSizeInBytes() const
 //------------------------------------------------------------------------------
 
 
-::fwData::Array::SizeType   Array::getSize() const
+const ::fwData::Array::SizeType &Array::getSize() const
 {
     return m_size;
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Array::OffsetType Array::getStrides() const
+const ::fwData::Array::OffsetType &Array::getStrides() const
 {
     return m_strides;
 }

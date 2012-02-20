@@ -227,14 +227,14 @@ public :
      *
      * @return vector of size lengths in each dimension
      */
-    FWDATA_API virtual SizeType   getSize() const;
+    FWDATA_API virtual const SizeType &getSize() const;
 
     /**
      * @brief Getter for the array strides
      *
      * @return vector of steps in each dimension for array walking
      */
-    FWDATA_API virtual OffsetType getStrides() const;
+    FWDATA_API virtual const OffsetType &getStrides() const;
 
     /**
      * @brief Setter for array's number of components
