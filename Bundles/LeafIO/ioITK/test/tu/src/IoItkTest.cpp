@@ -9,13 +9,15 @@
 #include <fwData/PatientDB.hpp>
 #include <fwData/Study.hpp>
 
+#include <fwTest/Data.hpp>
+#include <fwTest/DicomReaderTest.hpp>
+
 #include <fwDataTools/Patient.hpp>
 #include <fwDataTools/Image.hpp>
 
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/Data.hpp>
 
 #include "IoItkTest.hpp"
 
@@ -130,7 +132,7 @@ void IoItkTest::testSaveLoadInr()
     ::fwData::Image::NewSptr image2;
     this->executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
 
-//    ::boost::filesystem::remove_all( PATH.parent_path().string() );
+    ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     // check Image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
@@ -187,6 +189,109 @@ void IoItkTest::testLoadInr()
     ::fwData::PatientDB::NewSptr patientDB3;
     this->executeService( patientDB3, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg3 );
     CPPUNIT_ASSERT_EQUAL(static_cast< ::boost::uint32_t >(2),patientDB3->getPatientSize());
+}
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::testPatientDBReaderDicom()
+{
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
+
+    // Create Config 1
+    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
+    fileCfg->setValue(path.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    // Create and execute service
+    ::fwData::PatientDB::NewSptr patientDB;
+    this->executeService( patientDB, "::io::IReader", "::ioITK::DicomPatientDBReaderService", srvCfg );
+
+    // Get patient
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::boost::uint32_t >( 1 ), patientDB->getPatientSize());
+    ::fwData::Patient::sptr patient = *patientDB->getPatients().first;
+
+    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkPatientACHGenou( patient ) );
+}
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::testDicomImageWriter()
+{
+    // Create path
+    const ::boost::filesystem::path path = "imageDicomTest";
+    ::boost::filesystem::create_directories( path );
+
+    // Create data
+    ::fwData::Image::NewSptr image;
+    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+
+    // Create Config
+    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
+    fileCfg->setValue(path.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    // Create and execute service
+    this->executeService( image, "::io::IWriter", "::ioITK::DicomImageWriterService", srvCfg );
+
+    // Remove path
+    ::boost::filesystem::remove_all( path.string() );
+}
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::testDicomPatientWriter()
+{
+    // Create path
+    const ::boost::filesystem::path path = "imageDicomTest";
+    ::boost::filesystem::create_directories( path );
+
+    // Create data
+    ::fwData::Patient::NewSptr patient;
+    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 0);
+
+    // Create Config
+    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
+    fileCfg->setValue(path.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    // Create and execute service
+    this->executeService( patient, "::io::IWriter", "::ioITK::DicomPatientWriterService", srvCfg );
+
+    // Remove path
+    ::boost::filesystem::remove_all( path.string() );
+}
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::testDicomPatientDBWriter()
+{
+    // Create path
+    const ::boost::filesystem::path path = "imageDicomTest";
+    ::boost::filesystem::create_directories( path );
+
+    // Create data
+    ::fwData::PatientDB::NewSptr patientDB;
+    ::fwData::Patient::NewSptr patient1;
+    ::fwDataTools::Patient::generatePatient(patient1, 2, 2, 0);
+    patientDB->addPatient( patient1 );
+    ::fwData::Patient::NewSptr patient2;
+    ::fwDataTools::Patient::generatePatient(patient2, 1, 3, 0);
+    patientDB->addPatient( patient2 );
+
+    // Create Config
+    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
+    fileCfg->setValue(path.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    // Create and execute service
+    this->executeService( patientDB, "::io::IWriter", "::ioITK::DicomPatientDBWriterService", srvCfg );
+
+    // Remove path
+    ::boost::filesystem::remove_all( path.string() );
 }
 
 //------------------------------------------------------------------------------

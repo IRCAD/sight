@@ -18,10 +18,10 @@ class IoItkTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testPatientDBReaderJPG );
     CPPUNIT_TEST( testSaveLoadInr );
     CPPUNIT_TEST( testLoadInr );
-//    CPPUNIT_TEST( testGeneratedPatient );
-//    CPPUNIT_TEST( testLoadingPatientDB );
-//    CPPUNIT_TEST( testLoadingMfoDB );
-//    CPPUNIT_TEST( testCompareMfoAndMfoDB );
+    CPPUNIT_TEST( testPatientDBReaderDicom );
+    CPPUNIT_TEST( testDicomImageWriter );
+    CPPUNIT_TEST( testDicomPatientWriter );
+    CPPUNIT_TEST( testDicomPatientDBWriter );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -34,10 +34,11 @@ public:
     void testPatientDBReaderJPG();
     void testSaveLoadInr();
     void testLoadInr();
+    void testPatientDBReaderDicom();
 
-//    void testLoadingPatientDB();
-//    void testLoadingMfoDB();
-//    void testCompareMfoAndMfoDB();
+    void testDicomImageWriter();
+    void testDicomPatientWriter();
+    void testDicomPatientDBWriter();
 
 private :
 
