@@ -37,32 +37,10 @@
 
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioXML::FwXMLImageReaderService</service>
-        <object>::fwData::Image</object>
-        <desc>fwXML Image Reader (Ircad)</desc>
-    </extension>
-
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioXML::FwXMLImageWriterService</service>
-        <object>::fwData::Image</object>
-        <desc>fwXML Image Writer (Ircad)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioXML::FwXMLPatient2PatientDBWriterService</service>
         <object>::fwData::Patient</object>
         <desc>fwXML Patient Writer (Ircad)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioXML::FwXMLAcquisitionWriterService</service>
-        <object>::fwData::Acquisition</object>
-        <desc>fwXML Acquisition Writer (Ircad)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

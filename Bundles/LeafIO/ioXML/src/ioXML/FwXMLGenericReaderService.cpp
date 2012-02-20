@@ -69,7 +69,7 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
     typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
     ConfigurationElementContainer extension = m_configuration->find("archiveExtension");
 
-    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() > 1 );
+    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() <= 1 );
 
     if( extension.size() > 0 )
     {
@@ -272,6 +272,8 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     // Unzip folder
     ::boost::filesystem::path destFolder = ::fwTools::System::getTemporaryFolder() / "fwxmlArchiveFolder";
 
+
+    FW_RAISE_IF( "<" << _pArchivePath << "> does not exist.", !::boost::filesystem::exists(_pArchivePath));
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
     ::fwZip::ZipFolder::NewSptr zip;

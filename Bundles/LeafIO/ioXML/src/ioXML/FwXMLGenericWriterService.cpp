@@ -54,13 +54,20 @@ void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
     ::io::IWriter::configuring();
 
-    if( this->m_configuration->size() > 0 )
+
+    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
+    ConfigurationElementContainer extension = m_configuration->find("archiveExtension");
+
+    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() <= 1 );
+
+    if( extension.size() > 0 )
     {
-        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
-        SLM_ASSERT("Sorry, only one xml element \"archiveExtension\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "archiveExtension" );
-        SLM_ASSERT("Sorry, only xml element \"archiveExtension\" is empty.", ! (*iter)->getValue().empty() );
+        ConfigurationElementContainer::iterator iter = extension.begin() ;
+        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", extension.size() == 1 );
+        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element value can not be empty.", !(*iter)->getValue().empty() );
         m_archiveExtenstion =  (*iter)->getValue();
     }
+
 }
 
 //------------------------------------------------------------------------------
