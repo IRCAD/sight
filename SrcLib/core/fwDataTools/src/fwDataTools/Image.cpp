@@ -209,9 +209,11 @@ bool Image::compareArray(::fwData::Array::sptr array1, ::fwData::Array::sptr arr
     compare &= array1->getNumberOfComponents() ==  array2->getNumberOfComponents();
     SLM_ERROR_IF("Arrays have not same number of componnents", array1->getNumberOfComponents() !=  array2->getNumberOfComponents());
 
+    /*
     compare &= array1->getIsBufferOwner() ==  array2->getIsBufferOwner();
     OSLM_ERROR_IF("Arrays have not same buffer owner : " << array1->getIsBufferOwner() << " != " << array2->getIsBufferOwner(),
             array1->getIsBufferOwner() !=  array2->getIsBufferOwner());
+     */
 
     compare &= array1->getStrides() == array2->getStrides();
     SLM_ERROR_IF("Arrays have not same strides", array1->getStrides() != array2->getStrides());

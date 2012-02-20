@@ -16,7 +16,7 @@ namespace itkIO
 {
 
 template< class ITKIMAGE>
-void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sptr _dataImage )
+void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sptr _dataImage, bool bufferManagerIsDataImage )
 {
     SLM_ASSERT("_dataImage not instanced", _dataImage);
 
@@ -40,12 +40,20 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
 
     typedef typename ITKIMAGE::PixelType PixelType;
     _dataImage->setType( ::fwTools::Type::create<PixelType>() );
-    _dataImage->allocate();
-    ::fwData::Array::sptr array = _dataImage->getDataArray();
-    array->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), true );
+    ::fwData::Array::NewSptr array;
+    if( bufferManagerIsDataImage )
+    {
+        SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",  itkImage->GetPixelContainer()->GetContainerManageMemory() );
+        array->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), true, _dataImage->getType(), _vSize, 1 );
+        /// itk image release its management buffer. dataImage must now deal memory
+        itkImage->GetPixelContainer()->SetContainerManageMemory( false );
+    }
+    else
+    {
+        array->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), false, _dataImage->getType(), _vSize, 1 );
+    }
+    _dataImage->setDataArray( array );
 
-    /// itk image release its management buffer. dataImage must now deal memory
-    itkImage->GetPixelContainer()->SetContainerManageMemory( false );
 
     // Post Condition correct PixelType
     SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType()!= fwTools::Type() );
@@ -54,10 +62,10 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage )
+::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage )
 {
     ::fwData::Image::NewSptr data;
-    ::itkIO::dataImageFactory< ITKIMAGE >(itkImage,data) ;
+    ::itkIO::dataImageFactory< ITKIMAGE >(itkImage,data, bufferManagerIsDataImage) ;
     return data;
 }
 
@@ -72,7 +80,7 @@ void itkImageToFwDataImage( ITKIMAGE_PTR itkImage , ::fwData::Image::sptr _dataI
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageData)
+typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageData, bool bufferManagerIsDataImage )
 {
     // Pre Condition
     SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image", imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
@@ -105,7 +113,16 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
 
     itkImage->SetRegions(itkRegion);
 
-    itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageData->getBuffer() ) , nbpixels , false );
+    if( bufferManagerIsDataImage )
+    {
+        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageData->getBuffer() ) , nbpixels , false );
+    }
+    else
+    {
+        SLM_ASSERT("Sorry, this method requires that imageData manages its buffer.",   imageData->getDataArray()->getIsBufferOwner() );
+        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageData->getBuffer() ) , nbpixels , true );
+        imageData->getDataArray()->setIsBufferOwner( false );
+    }
 
     return itkImage;
 }
@@ -113,9 +130,9 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData)
+typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData, bool bufferManagerIsDataImage )
 {
-    return fwDataImageToItkImage<ITKIMAGE>( imageData );
+    return fwDataImageToItkImage<ITKIMAGE>( imageData, bufferManagerIsDataImage );
 }
 
 //------------------------------------------------------------------------------

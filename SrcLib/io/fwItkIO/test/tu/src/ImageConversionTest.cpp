@@ -40,14 +40,13 @@ void ImageConversionTest::testConversion()
     ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
 
     ::fwData::Image::NewSptr image2;
-    ::itkIO::dataImageFactory< ImageType >( itkImage, image2 );
+    bool image2ManagesHisBuffer = false;
+    ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
     CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
 
-    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage );
+    bool image3ManagesHisBuffer = false;
+    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
     CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3));
-
-    image2->getDataArray()->setIsBufferOwner( false );
-    image3->getDataArray()->setIsBufferOwner( false );
 }
 
 
@@ -94,17 +93,17 @@ void ImageConversionTest::testConversion2D()
     ::fwDataTools::Image::randomizeArray(array);
 
     typedef itk::Image< ::boost::int16_t , 2 > ImageType;
+
     ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
 
     ::fwData::Image::NewSptr image2;
-    ::itkIO::dataImageFactory< ImageType >( itkImage, image2 );
+    bool image2ManagesHisBuffer = false;
+    ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
     CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
 
-    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3));
-
-    image2->getDataArray()->setIsBufferOwner( false );
-    image3->getDataArray()->setIsBufferOwner( false );
+    bool image3ManagesHisBuffer = false;
+    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3) );
 }
 
 //------------------------------------------------------------------------------
