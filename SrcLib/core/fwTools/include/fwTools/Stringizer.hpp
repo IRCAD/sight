@@ -102,10 +102,10 @@ inline std::string getString(ForwardIterator begin,ForwardIterator end)
     if (begin!=end)
     {
         result+= getString( *begin );
-    }
-    while (++begin!=end)
-    {
-        result+= "," + getString( *begin );
+        while (++begin!=end)
+        {
+            result+= "," + getString( *begin );
+        }
     }
     result += "]";
     return result;
