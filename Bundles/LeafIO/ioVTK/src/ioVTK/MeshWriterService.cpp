@@ -66,6 +66,8 @@ void MeshWriterService::configureWithIHM()
     {
         _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+
     }
     else
     {
