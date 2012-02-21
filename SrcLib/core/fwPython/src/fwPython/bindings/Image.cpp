@@ -36,28 +36,33 @@ namespace bindings
 ::boost::python::object getImageBuffer (::fwData::Image::sptr image)
 {
     using namespace ::boost::python;
-    Py_buffer *pybuf = new Py_buffer;
-    pybuf->obj = NULL;
-    pybuf->buf = image->getBuffer();
-    pybuf->readonly= 0;
-    pybuf->len = image->getSizeInBytes();
-    pybuf->format =  (char *)typeCPP2Python[ image->getType() ];
-    pybuf->itemsize =  image->getPixelType().sizeOf() ;
-    pybuf->ndim = image->getNumberOfDimensions();
-    pybuf->shape =  new Py_ssize_t[image->getNumberOfDimensions()];
-    pybuf->strides =  new Py_ssize_t[image->getNumberOfDimensions()];
-    pybuf->suboffsets =  new Py_ssize_t[image->getNumberOfDimensions()];
-    pybuf->internal = NULL;
+    if ( image->getBuffer() )
+    {
+        Py_buffer *pybuf = new Py_buffer;
+        pybuf->obj = NULL;
+        pybuf->buf = image->getBuffer();
+        pybuf->readonly= 0;
+        pybuf->len = image->getSizeInBytes();
+        pybuf->format =  (char *)typeCPP2Python[ image->getType() ];
+        pybuf->itemsize =  image->getType().sizeOf() ;
+        pybuf->ndim = image->getNumberOfDimensions();
+        pybuf->shape =  new Py_ssize_t[image->getNumberOfDimensions()];
+        pybuf->strides =  new Py_ssize_t[image->getNumberOfDimensions()];
+        pybuf->suboffsets =  new Py_ssize_t[image->getNumberOfDimensions()];
+        pybuf->internal = NULL;
 
-    std::copy(  image->getSize().rbegin(), image->getSize().rend(), pybuf->shape);
-    std::fill(pybuf->suboffsets, pybuf->suboffsets+3, -1);
+        std::copy(  image->getSize().rbegin(), image->getSize().rend(), pybuf->shape);
+        std::fill(pybuf->suboffsets, pybuf->suboffsets+3, -1);
 
-    PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'C');
+        PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'C');
 
-    handle<> bufHandle( PyMemoryView_FromBuffer( pybuf ) );
-    delete pybuf;
+        handle<> bufHandle( PyMemoryView_FromBuffer( pybuf ) );
+        delete pybuf;
 
-    return object( bufHandle );
+        return object( bufHandle );
+    }
+
+    return object();
 }
 
 //------------------------------------------------------------------------------
@@ -106,6 +111,7 @@ void export_image()
        .add_property("spacing", &getSpacing,  &::fwData::Image::setSpacing )
        .add_property("size", &getSize,  &::fwData::Image::setSize )
        .add_property("origin", &getOrigin,  &::fwData::Image::setOrigin )
+       .add_property("number_of_dimentions", &::fwData::Image::getNumberOfDimensions )
        ;
 }
 

@@ -18,23 +18,45 @@ template <class T>
 std::string getString(std::vector<T> &v)
 {
     std::string res;
-    res =  "std::vector< " + ::fwCore::Demangler(typeid(T)).getLeafClassname() +" > : ";
     res +=  fwTools::getString(v.begin(),v.end());
     return res;
 }
 
+
+template< typename T >
+void wrap_vector()
+{
+    using namespace boost::python;
+    std::string className = ::fwCore::Demangler(typeid(typename T::value_type)).getLeafClassname();
+    std::string docString = std::string( "binding of " ) + ::fwCore::Demangler(typeid(T)).getClassname();
+    class_< T >( className.c_str(), docString.c_str(), init< typename T::size_type > () )
+
+        // install wrapper to __len__, __getitem__, __setitem__, __delitem__, __iter__ and __contains.
+        .def(vector_indexing_suite< T >())
+
+        // allow a pretty print
+        .def("__str__", getString< typename T::value_type >)
+        ;
+}
 //------------------------------------------------------------------------------
 
 void export_STLContainers()
 {
     using namespace boost::python;
-    class_< std::vector<double> >( "vectorDouble" , "binding of std::vector<double>", init<std::vector<double>::size_type> () )
-       .def(vector_indexing_suite<std::vector<double> >()) // install wrapper to __len__, __getitem__, __setitem__, __delitem__, __iter__ and __contains.
-       .def("__str__",getString<double>);// allow a pretty print
+    wrap_vector< std::vector<boost::int8_t> >();
+    wrap_vector< std::vector<boost::int16_t> >();
+    wrap_vector< std::vector<boost::int32_t> >();
+    wrap_vector< std::vector<boost::int64_t> >();
 
-    class_< std::vector<boost::int32_t> >( "vectorint32" , "binding of std::vector<<boost::int32_t>", init<std::vector<boost::int32_t>::size_type> () )
-       .def(vector_indexing_suite<std::vector<boost::int32_t> >()) // install wrapper to __len__, __getitem__, __setitem__, __delitem__, __iter__ and __contains.
-       .def("__str__",getString<boost::int32_t>);// allow a pretty print
+    wrap_vector< std::vector<boost::uint8_t> >();
+    wrap_vector< std::vector<boost::uint16_t> >();
+    wrap_vector< std::vector<boost::uint32_t> >();
+    wrap_vector< std::vector<boost::uint64_t> >();
+
+    wrap_vector< std::vector<float> >();
+    wrap_vector< std::vector<double> >();
+
+    wrap_vector< std::vector<size_t> >();
 }
 
 } // end namespace bindings
