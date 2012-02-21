@@ -38,9 +38,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioGdcm::DicomPatientDBReaderService , ::fwDa
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReaderService::DicomPatientDBReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientDBPath("")
+DicomPatientDBReaderService::DicomPatientDBReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -50,18 +48,9 @@ DicomPatientDBReaderService::~DicomPatientDBReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReaderService::configuring() throw(::fwTools::Failed)
+::io::IOPathType DicomPatientDBReaderService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-    std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
-    if(!vectConfig.empty())
-    {
-        std::vector < ConfigurationType > pathConfig = vectConfig.at(0)->find("path");
-        SLM_ASSERT("Missing <path> tag", !pathConfig.empty());
-        SLM_ASSERT("Missing path", pathConfig.at(0)->hasAttribute("value"));
-        m_fsPatientDBPath = pathConfig.at(0)->getAttributeValue("value");
-        m_bServiceIsConfigured = true;
-    }
+    return ::io::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -80,9 +69,13 @@ void DicomPatientDBReaderService::configureWithIHM()
     result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath           = result->getFolder();
-        m_fsPatientDBPath       = _sDefaultPath;
-        m_bServiceIsConfigured  = true;
+        _sDefaultPath  = result->getFolder();
+        this->setFolder( _sDefaultPath );
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -167,9 +160,9 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
 void DicomPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
-        ::fwData::PatientDB::sptr patientDB = createPatientDB( m_fsPatientDBPath );
+        ::fwData::PatientDB::sptr patientDB = createPatientDB( this->getFolder() );
 
         if( patientDB->getPatientSize() > 0 )
         {
