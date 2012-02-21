@@ -81,7 +81,7 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     CHECK_VALUE(patientACHGenouIsOk,"Modality not correspond : ", "CT", study->getModality() );
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DE LA MODER ]                             # 20,1 Institution Name
-    CHECK_VALUE(patientACHGenouIsOk,"Institution Name not correspond : ", "SCANNER DE LA MODER ", study->getHospital() );
+    CHECK_VALUE(patientACHGenouIsOk,"Institution Name not correspond : ", "SCANNER DE LA MODER", study->getHospital() );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
     //(0008,1010) SH [00000000001 ]                                     # 12,1 Station Name
     //(0008,103e) LO [ OS 0.5   ]                                       # 10,1 Series Description
@@ -94,7 +94,7 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     // not the case here, well "CHARNOZ ARNAUD" is considered as a name
     CHECK_VALUE(patientACHGenouIsOk,"Patient's Firstname not correspond : ", "", patient->getFirstname() );
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
-    CHECK_VALUE(patientACHGenouIsOk,"Patient ID not correspond : ", "12592 ARTHRO GENOU  G ", patient->getIDDicom() );
+    CHECK_VALUE(patientACHGenouIsOk,"Patient ID not correspond : ", "12592 ARTHRO GENOU  G", patient->getIDDicom() );
     //(0010,0030) DA [19790618]                                         # 8,1 Patient's Birth Date
     CHECK_VALUE(patientACHGenouIsOk,"Patient's Birth Date not correspond : ", "19790618", ::fwTools::getDate(patient->getBirthdate()) );
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
