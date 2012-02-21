@@ -139,10 +139,10 @@ void DicomPatientDBWriterService::savePatientDB( const ::boost::filesystem::path
 {
     SLM_TRACE_FUNC();
 
-    ::gdcmIO::writer::DicomPatientDBWriterManager myWriter;
+    ::gdcmIO::writer::DicomPatientDBWriterManager::NewSptr myWriter;
 
-    myWriter.setObject(_pPatientDB);
-    myWriter.setFolder(_patientDBPath);
+    myWriter->setObject(_pPatientDB);
+    myWriter->setFolder(_patientDBPath);
 //    myWriter.setFile(_patientDBPath);
 
     try
@@ -151,14 +151,14 @@ void DicomPatientDBWriterService::savePatientDB( const ::boost::filesystem::path
 #ifndef __MACOSX__
         // NOTE: No exception can be caught
         ::fwTools::ProgressToLogger progressMeterText("Loading DicomPatientDBWriterService : ");
-        myWriter.addHandler( progressMeterText );
-        ::fwGui::dialog::PulseProgressDialog::Stuff stuff = ::boost::bind( &::gdcmIO::writer::DicomPatientDBWriterManager::write, &myWriter);
+        myWriter->addHandler( progressMeterText );
+        ::fwGui::dialog::PulseProgressDialog::Stuff stuff = ::boost::bind( &::gdcmIO::writer::DicomPatientDBWriterManager::write, myWriter);
         ::fwGui::dialog::PulseProgressDialog p2("Save Dicom Image",  stuff ,  "Operation in progress");
         p2.show();
 #else
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving PatientDB ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
 #endif
     }
     catch (const std::exception & e)

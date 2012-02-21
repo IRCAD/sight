@@ -52,7 +52,7 @@ void DicomPatientDBWriterManager::write()
     // Init
     unsigned int                patientID       = 1;    // Used to set name folder of the current patient.
     const std::string &         patientDBPath   = this->getFolder().string();
-    DicomGlobalWriterManager    myWriter;
+    DicomGlobalWriterManager::NewSptr    myWriter;
 
     // Write all patients
     std::pair< ::fwData::PatientDB::PatientIterator, ::fwData::PatientDB::PatientIterator > iterators = dataPatientDB->getPatients();
@@ -60,16 +60,16 @@ void DicomPatientDBWriterManager::write()
     ::fwData::PatientDB::PatientIterator patientItEnd   = iterators.second;
     for(; patientIt != patientItEnd ; patientIt++)
     {
-        myWriter.setObject( *patientIt );
-        myWriter.setFolder( patientDBPath );
-        myWriter.setPatientID( patientID++ );
+        myWriter->setObject( *patientIt );
+        myWriter->setFolder( patientDBPath );
+        myWriter->setPatientID( patientID++ );
 
         // forward event progress to its parents
         ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &DicomGlobalWriterManager::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
-        myWriter.addHandler ( handler );
+        myWriter->addHandler ( handler );
 
         // Write one patient
-        myWriter.write();
+        myWriter->write();
     }
 }
 

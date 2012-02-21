@@ -127,23 +127,23 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
 ::fwData::PatientDB::sptr DicomPatientDBReaderService::createPatientDB( const ::boost::filesystem::path & dicomFile)
 {
     SLM_TRACE_FUNC();
-    ::gdcmIO::reader::DicomPatientDBReader myLoader;
+    ::gdcmIO::reader::DicomPatientDBReader::NewSptr myLoader;
 
     ::fwData::PatientDB::NewSptr dummy;
-    myLoader.setObject( dummy );
-    myLoader.setFolder(dicomFile);
+    myLoader->setObject( dummy );
+    myLoader->setFolder(dicomFile);
 
     try
     {
 #ifndef __MACOSX__
         // NOTE: No exception can be caught
         ::fwTools::ProgressToLogger progressMeterText("Loading DicomPatientDBReaderService : ");
-        myLoader.addHandler( progressMeterText );
-        ::fwGui::dialog::PulseProgressDialog::Stuff stuff = ::boost::bind( &::gdcmIO::reader::DicomPatientDBReader::read, &myLoader);
+        myLoader->addHandler( progressMeterText );
+        ::fwGui::dialog::PulseProgressDialog::Stuff stuff = ::boost::bind( &::gdcmIO::reader::DicomPatientDBReader::read, myLoader);
         ::fwGui::dialog::PulseProgressDialog p2("Load Dicom Image",  stuff ,  "Operation in progress");
         p2.show();
 #else
-        myLoader.read();
+        myLoader->read();
 #endif
     }
     catch (const std::exception & e)
@@ -159,7 +159,7 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
                 "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
     SLM_TRACE("exit createPatientDB()");
-    return myLoader.getConcreteObject();
+    return myLoader->getConcreteObject();
 }
 
 //------------------------------------------------------------------------------

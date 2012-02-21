@@ -138,18 +138,16 @@ void DicomPatientWriterService::savePatient( const ::boost::filesystem::path _pa
 {
     SLM_TRACE_FUNC();
 
-    ::gdcmIO::writer::DicomGlobalWriterManager myWriter;
+    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
 
-    myWriter.setObject(_pPatient);
-    ::fwData::location::Folder::NewSptr loc;
-    loc->setFolder(_patientDBPath);
-    myWriter.setLocation(loc);
+    myWriter->setObject(_pPatient);
+    myWriter->setFolder(_patientDBPath);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Patient ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
     }
     catch (const std::exception & e)
     {

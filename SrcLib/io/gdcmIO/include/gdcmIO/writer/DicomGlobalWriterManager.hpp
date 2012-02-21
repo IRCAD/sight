@@ -44,9 +44,6 @@ public :
                                             new  DicomGlobalWriterManager
                                            );
 
-    GDCMIO_API DicomGlobalWriterManager();
-
-    GDCMIO_API ~DicomGlobalWriterManager();
 
     /**
      * @brief   Load and start appropriate writing tools.
@@ -68,6 +65,12 @@ public :
      * It will be used to set the name of patient folder.
      */
     GDCMIO_API void setPatientID(const unsigned int a_id);
+
+protected :
+
+    GDCMIO_API DicomGlobalWriterManager();
+
+    GDCMIO_API ~DicomGlobalWriterManager();
 
 private :
 
