@@ -162,24 +162,25 @@ void DicomImageReader::read() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Failed)
+void DicomImageReader::readImage( ::fwData::Image::sptr img ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     // List of tag use in this method
-//    const ::gdcm::Tag iSBSTag(0x0018,0x0088); // Spacing Between Slices
-////    const ::gdcm::Tag iDimTag(0x0028,0x0005); // Image Dimensions
-////    const ::gdcm::Tag iNbFTag(0x0028,0x0008); // Number of Frames
-////    const ::gdcm::Tag iRowTag(0x0028,0x0010); // Rows
-////    const ::gdcm::Tag iColTag(0x0028,0x0011); // Columns
-//    const ::gdcm::Tag iCenTag(0x0028,0x1050); // Window Center
-//    const ::gdcm::Tag iWidTag(0x0028,0x1051); // Window Width
-////    const ::gdcm::Tag iResTag(0x0028,0x1052); // Rescale Intercept
+    //    const ::gdcm::Tag iSBSTag(0x0018,0x0088); // Spacing Between Slices
+    //    const ::gdcm::Tag iDimTag(0x0028,0x0005); // Image Dimensions
+    //    const ::gdcm::Tag iNbFTag(0x0028,0x0008); // Number of Frames
+    //    const ::gdcm::Tag iRowTag(0x0028,0x0010); // Rows
+    //    const ::gdcm::Tag iColTag(0x0028,0x0011); // Columns
+    //    const ::gdcm::Tag iCenTag(0x0028,0x1050); // Window Center
+    //    const ::gdcm::Tag iWidTag(0x0028,0x1051); // Window Width
+    //    const ::gdcm::Tag iResTag(0x0028,0x1052); // Rescale Intercept
 
     // Init
     ::fwData::Acquisition::sptr series  = this->getConcreteObject();
     ::gdcm::Image &             gImg    = ::boost::static_pointer_cast< ::gdcm::ImageReader >( this->getReader() )->GetImage();
     const ::gdcm::DataSet &     a_ds    = this->getDataSet();
+
     //*****     Get all file names      *****//
     std::vector< std::string > & imageFiles = this->getRefFileNames(); // files which define one image (2D or 3D)
     OSLM_TRACE("Number of files for an image : " << imageFiles.size());
@@ -191,81 +192,53 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
     // Reference the first SOP Instance UID in dicomInstance for SR reading
     const std::string refSOPInstanceUID = helper::GdcmData::getTagValue<0x0008,0x0018>(a_ds);   // SOP Instance UID
     if ( !refSOPInstanceUID.empty() )
+    {
         dicomInstance->addReferencedSOPInstanceUID(refSOPInstanceUID);
+    }
     else
+    {
         OSLM_WARN("Empty SOP instance UID found");
+    }
+
 
     // Image's origin
-    //WARNING: NOT IMPLEMENTED IN VTK. So, if origin != (0,0,0) then there is a bad display.
     const double * gOrigin = gImg.GetOrigin();
+    ::fwData::Image::OriginType origin (3,0);
     if ( gOrigin != 0 )
     {
-        std::copy( gOrigin, gOrigin+3, img->getRefOrigin().begin() );
-        OSLM_TRACE("Image's origin : "<<img->getRefOrigin()[0]<<"x"<<img->getRefOrigin()[1]<<"x"<<img->getRefOrigin()[2]);
+        std::copy( gOrigin, gOrigin+3, origin.begin() ); // +3 because even if is an 2D Image, the origin is a 3D point
     }
-    const bool  isMultiFrame = (this->getFileNames().size() > 1 ? false : true);
+    OSLM_TRACE("Image's origin : "<<origin[0]<<" : "<<origin[1]<<" : "<<origin[2]);
+    img->setOrigin( origin );
 
-    // Image's pixel data
-    // compute the output pixel type for the current serie.
-
-#ifndef DEBUG
-    // This part works only when double is defined in the IntrinsicTypes (see fw4spl\SrcLib\core\fwTools\include\fwTools\IntrinsicTypes.hpp)
-    // This is the case only on mode release
-    gdcm::PixelFormat::ScalarType outputPixelType = helper::GdcmData::findPixelTypeFromFiles(imageFiles);
-
-    if(outputPixelType  == ::gdcm::PixelFormat::FLOAT64 || outputPixelType == ::gdcm::PixelFormat::FLOAT32)
-    {
-        // Image buffer needs rescale.
-        this->rescaleImageBuffer(gImg, img, outputPixelType);              
-    }
-    else
-    {
-        // Image buffer can be treat directly.
-        this->setImageBuffer(gImg, img, dicomInstance);
-    }
-#else
     // Image buffer can be treat directly.
     this->setImageBuffer(gImg, img, dicomInstance);
-#endif
 
 
     // Image's dimension
     const unsigned int dim = gImg.GetNumberOfDimensions();
-    img->setDimension(dim);
     OSLM_TRACE("Image's dim : "<<dim);
-
-    // Image's size
-    const unsigned int * gDim = gImg.GetDimensions();
-    if ( gDim != 0 )
-    {
-        std::copy( gDim, gDim+dim, img->getRefSize().begin() );
-    }
-    OSLM_TRACE("Image's size : "<<img->getRefSize()[0]<<"x"<<img->getRefSize()[1]<<"x"<<img->getRefSize()[2]);
 
 
     // Image's spacing
     const double * gSpacing = gImg.GetSpacing();
+    ::fwData::Image::SpacingType spacing (3,1);
     if ( gSpacing != 0 )
     {
-        std::copy( gSpacing, gSpacing+dim, img->getRefSpacing().begin() );
+        std::copy( gSpacing, gSpacing+dim, spacing.begin() );
     }
 
-    // Slice Thickness
+    // z image spacing when need extra information
+    const bool  isMultiFrame = ( this->getFileNames().size() > 1 ? false : true );
     std::string sliceThicknessStr = helper::GdcmData::getTagValue<0x0018,0x0050>(a_ds);
-
-    if (dim < 3)                // 2D image
-    {
-        img->getRefSpacing()[2] = 1;
-        img->getRefSize()[2]    = 1;
-    }
-    else if ( !isMultiFrame )   // 3D image from several files
+    if ( dim == 3 && !isMultiFrame )   // 3D image from several files
     {
         // Try to get z spacing
 
         //** From IPP **//
-        if (m_zSpacing != 0)
+        if ( m_zSpacing != 0 )
         {
-            img->getRefSpacing()[2] = m_zSpacing;
+            spacing[2] = m_zSpacing;
         }
         else
         {
@@ -275,8 +248,8 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
             if ( !spacingOnZstr.empty() )
             {
                 const float spacingOnZ = atof( spacingOnZstr.c_str() );
-                if (spacingOnZ != img->getCRefSpacing()[2])
-                    img->getRefSpacing()[2] = spacingOnZ;
+                if (spacingOnZ != spacing[2])
+                    spacing[2] = spacingOnZ;
             }
             else
             {
@@ -285,8 +258,8 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
                 if ( !sliceThicknessStr.empty() )
                 {
                     const float sliceThickness = atof( sliceThicknessStr.c_str() );
-                    if (sliceThickness != img->getCRefSpacing()[2])
-                        img->getRefSpacing()[2] = sliceThickness;
+                    if (sliceThickness != spacing[2])
+                        spacing[2] = sliceThickness;
                 }
                 else
                 {
@@ -296,35 +269,9 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
             }
         }
     }
-    OSLM_TRACE("Image's spacing : "<<img->getCRefSpacing()[0]<<"x"<<img->getCRefSpacing()[1]<<"x"<<img->getCRefSpacing()[2]);
+    OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
+    img->setSpacing( spacing );
 
-    // Slice Thickness
-    if (sliceThicknessStr.empty())
-    {
-        // Try to get slice thickness from z spacing
-        // WARNING: could be wrong (See C.7.6.2.1.1 and C.7.6.16.2.3.1)
-        sliceThicknessStr = ::fwTools::getString( img->getCRefSpacing()[2] );
-    }
-    series->setSliceThickness( atof( sliceThicknessStr.c_str() ) );
-    OSLM_TRACE("Slice thickness : " << sliceThicknessStr);
-
-    // Image's pixel type
-#ifndef DEBUG
-    // This part works only when double is defined in the IntrinsicTypes (see fw4spl\SrcLib\core\fwTools\include\fwTools\IntrinsicTypes.hpp)
-    // This is the case only on mode release
-    if(outputPixelType  == ::gdcm::PixelFormat::FLOAT64 || outputPixelType == ::gdcm::PixelFormat::FLOAT32)
-    {
-        img->setPixelType( helper::GdcmData::getPixelType(outputPixelType));
-    }
-    else
-    {
-        img->setPixelType( helper::GdcmData::getPixelType(gImg) );
-    }
-#else
-    img->setPixelType( helper::GdcmData::getPixelType(gImg) );
-#endif
-
-    OSLM_TRACE("Image's pixel type: "<<img->getCRefPixelType().string());
 
     //Image's window center (double)
     std::string                 windowCenter = helper::GdcmData::getTagValue<0x0028,0x1050>(a_ds);
@@ -346,15 +293,19 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img) throw(::fwTools::Fa
     OSLM_TRACE("Image's window width : "<<img->getWindowWidth());
 
     // Image's rescale intercept (double)    // NOT IMPLEMENTED IN VTK
-    img->setCRefRescaleIntercept(gImg.GetIntercept());
-    OSLM_TRACE("Image's rescale intercept : "<<img->getRescaleIntercept());
+    //img->setCRefRescaleIntercept(gImg.GetIntercept());
+    //OSLM_TRACE("Image's rescale intercept : "<<img->getRescaleIntercept());
+    SLM_WARN("Image's rescale intercept not managed");
 
-    // Image's path
-    std::string path = this->getFileNames()[0];
-    size_t      pos = path.find_last_of("/");
-    path = path.substr(0, pos);
-    img->setCRefFilename( path );
-    OSLM_TRACE("Image path : " << path);
+    // Slice Thickness
+    if (sliceThicknessStr.empty())
+    {
+        // Try to get slice thickness from z spacing
+        // WARNING: could be wrong (See C.7.6.2.1.1 and C.7.6.16.2.3.1)
+        sliceThicknessStr = ::fwTools::getString( spacing[2] );
+    }
+    series->setSliceThickness( atof( sliceThicknessStr.c_str() ) );
+    OSLM_TRACE("Slice thickness : " << sliceThicknessStr);
 }
 
 //------------------------------------------------------------------------------
@@ -373,10 +324,6 @@ void DicomImageReader::setImageBuffer(::gdcm::Image & gImg, ::fwData::Image::spt
 
         // Get raw buffer of 3D image even if it is encoded (JPEG, ...)
         gdcmBuffer = this->read2DImages();  // NOTE : Can modify gdcm::Image attributes
-
-        // Complete fwData::Image
-        img->setDimension(3);
-        img->getRefSize()[2] = this->getFileNames().size();
     }
     else
     {// Read 2D or 3D image from one file
@@ -525,10 +472,15 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
             SLM_ERROR("Scanner failed");
             return;
         }
-        img->setBuffer(gdcmGlobalBuffer);
-        // Complete fwData::Image
-        img->setDimension(3);
-        img->getRefSize()[2] = this->getFileNames().size();
+
+         ::fwData::Image::SizeType imgSize = img->getSize();
+         imgSize[2] = this->getFileNames().size();
+         img->setSize( imgSize );
+
+        ::fwData::Array::NewSptr array;
+        array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
+        img->setDataArray( array );
+
         // Update gdcm::Image.
         gImg.SetNumberOfDimensions(3);
         gImg.SetDimension(2, nbFrames);
@@ -560,7 +512,10 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
             {
                 throw ::fwTools::Failed("Image could not be rescale.");
             }
-            img->setBuffer(gdcmGlobalBuffer);
+
+           ::fwData::Array::NewSptr array;
+           array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
+           img->setDataArray( array );
         }
         else
         {

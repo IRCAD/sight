@@ -66,7 +66,7 @@ void DicomImageWriter::write() throw(::fwTools::Failed)
     equipmentWriter.setDicomInstance(dicomInstance);
 
     equipmentWriter.setInstanceHasImage(true);
-//    equipmentWriter.setImagePixelType( image->getPixelType() );   // TODO : hack this method
+//    equipmentWriter.setImagePixelType( image->getType() );   // TODO : hack this method
     if (this->isMultiFrame())
     {
         equipmentWriter.setIsEnhanced(true);
@@ -80,7 +80,7 @@ void DicomImageWriter::write() throw(::fwTools::Failed)
 
     this->writeImagePixel();
 
-    unsigned int dim = (unsigned int) image->getDimension();
+    unsigned int dim = (unsigned int) image->getNumberOfDimensions();
     if (!dicomInstance->getIsMultiFrame())  // if non multi-frame, each file will have 2D image
         dim = 2;
 
@@ -175,11 +175,11 @@ void DicomImageWriter::write2DImage()
 
     //*****     Complete the file      *****//
     // Image's pixel data
-    const std::vector<boost::int32_t> & size            = image->getCRefSize();
+    const ::fwData::Image::SizeType & size            = image->getSize();
     const unsigned int                  bufferLength    = size[0]*size[1] * gImg.GetPixelFormat().GetPixelSize();
     OSLM_TRACE("Frame's buffer size : "<<bufferLength);
 
-    const char *                        imageBuffer     = static_cast<char*>( image->getBufferDelegate()->getBuffer() );
+    const char *                        imageBuffer     = static_cast<char*>( image->getBuffer() );
     const unsigned int                  nbFrame         = size[2];
     const std::string &                 imagesPath      = this->getFile().string();
     const std::string                   fileName        = imagesPath + "/image_";
@@ -194,7 +194,7 @@ void DicomImageWriter::write2DImage()
         dicomInstance->setInstanceNumber(::fwTools::getString(1));   // Type 2
 
         // Slice origin
-        const std::vector< double > & origin = image->getCRefOrigin();
+        const std::vector< double > & origin = image->getOrigin();
         gImg.SetOrigin(2, origin[2]);
 
         // Slice Location
@@ -222,8 +222,8 @@ void DicomImageWriter::write2DImage()
         OSLM_TRACE("Instance number : " << i+1);
 
         // Compute the slice location on Z
-        const std::vector< double > &   origin  = image->getCRefOrigin();
-        const double                    posOnZ  = i * image->getCRefSpacing()[2] + origin[2];
+        const std::vector< double > &   origin  = image->getOrigin();
+        const double                    posOnZ  = i * image->getSpacing()[2] + origin[2];
         gImg.SetOrigin(2, posOnZ);  // Set IPP z coordinate
 
         // Slice Location
@@ -266,14 +266,14 @@ void DicomImageWriter::write3DImage()
 
     ::boost::shared_ptr< DicomInstance > dicomInstance = this->getDicomInstance();
 
-    const std::vector<boost::int32_t> & size            = image->getCRefSize();
+    const ::fwData::Image::SizeType & size            = image->getSize();
     const unsigned int                  bufferLength    = size[0]*size[1]*size[2] * gImg.GetPixelFormat().GetPixelSize();
     OSLM_TRACE("Image's buffer size : "<<bufferLength);
 
     //*****     Set buffer     *****//
     // Pixel Data
     ::gdcm::DataElement pixeldata( ::gdcm::Tag(0x7fe0,0x0010) );
-    pixeldata.SetByteValue( static_cast<char*>(image->getBufferDelegate()->getBuffer()), bufferLength );
+    pixeldata.SetByteValue( static_cast<char*>(image->getBuffer()), bufferLength );
     gImg.SetDataElement( pixeldata );
 
     //*****     Complete the file      *****//
@@ -364,11 +364,11 @@ void DicomImageWriter::writeImagePlane()
     ::fwData::Image::csptr  image           = series->getImage();
 
     //Image's number of dimension
-    const unsigned int      dim             = (unsigned int) image->getDimension();
+    const unsigned int      dim             = (unsigned int) image->getNumberOfDimensions();
 
     // Image's spacing
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY FW4SPL), but stuff like "Pixel Aspect Ratio"
-    const std::vector<double> & spacing     = image->getCRefSpacing();
+    const std::vector<double> & spacing     = image->getSpacing();
     for (unsigned int i = 0; i < dim; ++i)
         gImg.SetSpacing(i, spacing[i]);
     OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
@@ -388,14 +388,14 @@ void DicomImageWriter::writeImagePlane()
 
     // Image Position (Patient)   (See C.7.6.2.1.1)   // Will be modified for 2D images
     // It handles by GDCM ImageWriter throw origin
-    const std::vector< double > & origin = image->getCRefOrigin();
+    const std::vector< double > & origin = image->getOrigin();
     gImg.SetOrigin(0, origin[0]);   gImg.SetOrigin(1, origin[1]);   gImg.SetOrigin(2, origin[2]);
 
     // Image Orientation (Patient)  (See C.7.6.2.1.1)
     // It handles by GDCM ImageWriter
 
 //    // Slice Location                                   // Will be modified for 2D images
-//    ::gdcmIO::helper::GdcmData::setTagValue<0x0020,0x1041>( ::fwTools::getString( image->getCRefOrigin()[2] ), gDsRoot);    // Type 3
+//    ::gdcmIO::helper::GdcmData::setTagValue<0x0020,0x1041>( ::fwTools::getString( image->getOrigin()[2] ), gDsRoot);    // Type 3
 //    OSLM_TRACE("Slice location : " << "");
 }
 
@@ -411,7 +411,7 @@ void DicomImageWriter::writeMultiFrame()
     ::fwData::Image::csptr  image           = this->getConcreteObject()->getImage();
 
     // Image's number of frames
-    const std::vector< ::boost::int32_t > & size = image->getCRefSize();
+    const ::fwData::Image::SizeType & size = image->getSize();
     helper::GdcmData::setTagValue< ::boost::int32_t ,0x0028,0x0008>(size[2], gDsRoot);
     OSLM_TRACE("Image's number of frames : "<<::fwTools::getString(size[2]));
 
@@ -442,7 +442,7 @@ void DicomImageWriter::writeImagePixel()
     OSLM_TRACE("Image's pixel type : "<<helper::GdcmData::getPixelType(*image));
 
     //Image's number of dimension
-    unsigned int dim = (unsigned int) image->getDimension();
+    unsigned int dim = (unsigned int) image->getNumberOfDimensions();
     if ( !this->isMultiFrame() )
     {
         dim = 2;
@@ -451,9 +451,11 @@ void DicomImageWriter::writeImagePixel()
     OSLM_TRACE("Image's number of dimensions : "<<dim);
 
     // Image's dimension
-    const std::vector<boost::int32_t> & size = image->getCRefSize();
+    const ::fwData::Image::SizeType & size = image->getSize();
     for (unsigned int i = 0; i < dim; i++)
+    {
         gImg.SetDimension(i, size[i]);
+    }
     OSLM_TRACE("Image's dimensions : "<<size[0]<<"x"<<size[1]<<"x"<<size[2]);
 
 //    if ( color image )    // NOT SUPPORTED BY FW4SPL

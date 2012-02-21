@@ -166,9 +166,9 @@ void DicomLandmarkReader::readLandmark(const ::gdcm::DataSet & a_ds, const bool 
             refFrame = "1"; // First frame is referenced for 2D image
 
             ::fwData::Image::csptr image = this->getConcreteObject();
-            if (image->getDimension() > 2)
+            if (image->getNumberOfDimensions() > 2)
             {// All frames are referenced for 3D image
-                const unsigned int nbFrames = image->getCRefSize()[2];
+                const unsigned int nbFrames = image->getSize()[2];
                 for (unsigned int i = 2; i <= nbFrames; ++i)
                 {
                     refFrame += separator + ::fwTools::getString(i);

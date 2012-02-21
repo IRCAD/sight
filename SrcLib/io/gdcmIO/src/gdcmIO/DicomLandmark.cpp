@@ -56,7 +56,7 @@ void DicomLandmark::convertToData(::fwData::Image::sptr a_image)
         // Compute z spacing
         // NOTE : spacing between slice must be regular
         double spacingOnZ = 1;
-        if (a_image->getDimension() > 2)
+        if (a_image->getNumberOfDimensions() > 2)
             spacingOnZ = a_image->getSpacing()[2];
 
         for (unsigned int i = 0; i < nb_landmarks; ++i)
@@ -111,7 +111,7 @@ void DicomLandmark::setFromData(::fwData::Image::csptr a_image) throw (::fwTools
     unsigned int refFrameMax        = 1;    // Maximum required referenced frame number
     unsigned int refFrame;                  // Referenced frame number
     float        zSpacingInverse    = 1;
-    if (a_image->getDimension() > 2)
+    if (a_image->getNumberOfDimensions() > 2)
     {
         refFrameMax     = a_image->getSize()[2];
         zSpacingInverse = 1. / a_image->getSpacing()[2];

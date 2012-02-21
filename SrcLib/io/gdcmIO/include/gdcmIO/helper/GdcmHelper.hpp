@@ -279,7 +279,7 @@ public:
      *
      * @return  The dynamic type of pixels (e.g: char, unsigned int, ...)
      */
-    GDCMIO_API static const fwTools::DynamicType getPixelType(const ::gdcm::PixelFormat & gPixFormat);
+    GDCMIO_API static const ::fwTools::Type getPixelType(const ::gdcm::PixelFormat & gPixFormat);
 
     /**
      * @brief   Return the pixel type of a gdcm Image.
@@ -288,7 +288,7 @@ public:
      *
      * @return  The dynamic type of pixels (e.g: char, unsigned int, ...)
      */
-    GDCMIO_API static const fwTools::DynamicType getPixelType(const ::gdcm::Image & a_gImg);
+    GDCMIO_API static const ::fwTools::Type getPixelType(const ::gdcm::Image & a_gImg);
 
     /**
      * @brief   Return the pixel type of a fwData Image.
