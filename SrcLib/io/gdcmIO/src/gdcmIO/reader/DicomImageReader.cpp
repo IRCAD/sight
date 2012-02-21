@@ -89,7 +89,7 @@ void DicomImageReader::read() throw(::fwTools::Failed)
         // Sort files
         ::gdcm::IPPSorter gIPPSorter;           // Sort from Image Position Patient (IPP) and Image Orientation Patient (IOP)
         gIPPSorter.SetComputeZSpacing( true );  // In the same time, compute the spacing between each frame with the IPP
-        gIPPSorter.SetZSpacingTolerance( 1e-3 );
+        gIPPSorter.SetZSpacingTolerance( 1e-2 );
         if ( gIPPSorter.Sort( imageFiles ) )
         {
             SLM_TRACE ( "Success to IPPSort" );
