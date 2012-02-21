@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="2" />
+  <protocol version="3" />
   <content>
     <TransfertFunction id="65544add-c3f6-494b-9f7a-9095914f3164" class="::fwData::TransfertFunction">
       <Name>CT-Liver</Name>

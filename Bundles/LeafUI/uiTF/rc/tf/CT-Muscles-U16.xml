@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="2" />
+  <protocol version="3" />
   <content>
     <TransfertFunction id="077dcd94-05f5-4630-a8ff-8c7a021bf516" class="::fwData::TransfertFunction">
       <Name>CT-Muscles-U16</Name>
