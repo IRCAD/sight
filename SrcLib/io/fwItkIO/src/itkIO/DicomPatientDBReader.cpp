@@ -6,6 +6,8 @@
 
 #include <sstream>
 
+#include <boost/algorithm/string/trim.hpp>
+
 #include <itkOrientedImage.h>
 #include <itkGDCMImageIO.h>
 #include <itkGDCMSeriesFileNames.h>
@@ -133,7 +135,7 @@ std::string DicomPatientDBReader::getDicomValue( ::itk::GDCMImageIO::Pointer dic
         SLM_WARN( "Entry was not of string type" );
         return "";
     }
-
+    ::boost::algorithm::trim(value);
     return value;
 }
 
