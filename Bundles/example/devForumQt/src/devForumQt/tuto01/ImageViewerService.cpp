@@ -75,7 +75,7 @@ void ImageViewerService::starting() throw ( ::fwTools::Failed )
 
     // Initialize image associated to this service if it is not allocated.
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-    if ( associatedImage->getCRefSize().empty() || associatedImage->getCRefSize()[0] == 0 )
+    if ( associatedImage->getSize().empty() || associatedImage->getSize()[0] == 0 )
     {
         createSyntheticImage( associatedImage );
     }
@@ -180,8 +180,18 @@ void ImageViewerService::initVTKPipeline()
 
 void ImageViewerService::createSyntheticImage( ::fwData::Image::sptr _pImage )
 {
+    ::fwTools::Type pixelType("uint8");
+    _pImage->setType( pixelType );
+
+    _pImage->setSpacing( ::fwData::Image::SpacingType(3,1.0) );
+    _pImage->setOrigin( ::fwData::Image::OriginType(3,0) );
+    _pImage->setSize( ::fwData::Image::SizeType(3,100) );
+    _pImage->setWindowCenter(0);
+    _pImage->setWindowWidth(100);
+    _pImage->allocate();
+
     // Build the buffer of a synthetic image grey level which represents a sphere
-    unsigned char * buffer = new unsigned char[100*100*100];
+    unsigned char * buffer = static_cast< unsigned char* >(_pImage->getBuffer());
     for ( int z = 0; z < 100; z++ )
     {
         for ( int y = 0; y < 100; y++ )
@@ -193,20 +203,6 @@ void ImageViewerService::createSyntheticImage( ::fwData::Image::sptr _pImage )
             }
         }
     }
-
-    // Replace image by current buffer ( re initialization of image without modify image ptr )
-    ::fwTools::DynamicType pixelType;
-    pixelType.setType<unsigned char>();
-    _pImage->setDimension( 3 );
-    _pImage->setBuffer( buffer );
-    _pImage->setPixelType( pixelType );
-    _pImage->setManagesBuff( true );
-    _pImage->setCRefSpacing( std::vector<double>(3,1.0) );
-    _pImage->setCRefOrigin( std::vector<double>(3,0) );
-    _pImage->setCRefSize( std::vector< ::boost::int32_t >(3,100) );
-    _pImage->setWindowCenter(0);
-    _pImage->setWindowWidth(100);
-    _pImage->setRescaleIntercept(1);
 }
 
 //-----------------------------------------------------------------------------
