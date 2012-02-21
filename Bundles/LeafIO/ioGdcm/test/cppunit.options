@@ -1,0 +1,19 @@
+CLASSTEST=[
+          'IoGdcmTest',
+          ]
+
+USE = ['boost']
+LIB = ['fwData_0-1',
+       'fwTools_0-1',
+       'fwCore_0-1',
+       'fwDataTools_0-1',
+       'fwTest_0-1',
+       'gdcmIO_0-1',
+       ]
+
+BUNDLES = []
+REQUIREMENTS = ['ioGdcm_0-1']
+
+CONSOLE = 'yes'
+
+LOGLEVEL='trace'
