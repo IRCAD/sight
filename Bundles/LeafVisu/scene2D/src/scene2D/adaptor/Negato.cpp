@@ -257,8 +257,8 @@ QImage * Negato::createQImage()
             break;
     }
 
-    qImageSize[0] = static_cast<::boost::int32_t>(width);
-    qImageSize[1] = static_cast<::boost::int32_t>(height);
+    qImageSize[0] = static_cast< ::boost::int32_t >(width);
+    qImageSize[1] = static_cast< ::boost::int32_t >(height);
     QImage * qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
     return qimage;
 }
