@@ -56,7 +56,9 @@ void export_STLContainers()
     wrap_vector< std::vector<float> >();
     wrap_vector< std::vector<double> >();
 
+#ifndef WIN32
     wrap_vector< std::vector<size_t> >();
+#endif
 }
 
 } // end namespace bindings
