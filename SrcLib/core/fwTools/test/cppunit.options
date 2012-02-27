@@ -8,6 +8,7 @@ CLASSTEST=[
     'StringizerTest'          ,
     'UUIDTEST'                ,
     'MacrosTest'              ,
+    'RandomTest'              ,
     ]
 
 USE = ['boost']
