@@ -64,7 +64,7 @@ template <typename T, typename CONTAINER>
 void fillContainer(T min, T max, CONTAINER& randContainer, ::boost::uint32_t seedVal = std::time(NULL))
 {
     SLM_ASSERT("Wrong min/max value", min <= max);
-    SLM_ASSERT("Container type not same as T", (::boost::is_same< T, CONTAINER::value_type>::value) );
+    SLM_ASSERT("Container type not same as T", (::boost::is_same< T, typename CONTAINER::value_type>::value) );
     typedef typename ::boost::mpl::if_<
             ::boost::is_floating_point<T>,
             ::boost::uniform_real<>,
