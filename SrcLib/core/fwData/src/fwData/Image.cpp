@@ -30,25 +30,6 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-/**
- * @brief return the pixel value of the image in given coordinates
- */
-template < class T >
-T getPixel( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsigned int z )
-{
-    Image::SizeType size = image->getSize();
-    int offset = x + size[0]*y + z*size[0]*size[1];
-
-    T * buffer = static_cast < T* > (image->getBuffer());
-
-    return *(buffer+offset);
-}
-
-//------------------------------------------------------------------------------
-
-
-//------------------------------------------------------------------------------
-
 Image::Image() :
         m_type(),
         m_dWindowCenter(0),
