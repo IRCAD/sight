@@ -1,5 +1,6 @@
 #include <boost/assign/list_of.hpp>
-#include <fwTools/Type.hpp>
+
+#include "fwTools/Type.hpp"
 
 
 namespace std
@@ -44,7 +45,6 @@ template<> const std::string Type::typeToString< float  >  () {return "float";}
 template<> const std::string Type::typeToString< double >  () {return "double";}
 
 
-
 //------------------------------------------------------------------------------
 
 Type::Type()
@@ -56,7 +56,6 @@ Type::Type()
 }
 
 //------------------------------------------------------------------------------
-
 
 Type::Type(const std::string &type)
 {
@@ -79,7 +78,6 @@ bool Type::operator!=(const Type &_other) const
 
 //------------------------------------------------------------------------------
 
-
 bool Type::operator<( const Type& _other) const
 {
     return m_name < _other.m_name;
@@ -93,7 +91,6 @@ unsigned char Type::sizeOf() const
 }
 
 //------------------------------------------------------------------------------
-
 
 const std::string &Type::string() const
 {
@@ -126,12 +123,12 @@ Type Type::create(std::string name)
     return s_unspecifiedType;
 }
 
+//-----------------------------------------------------------------------------
 
 std::string Type::toString(const void * value) const
 {
     return m_tool->toString(value);
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -148,7 +145,6 @@ std::string Type::ToolBase::toString(const void *value) const
     SLM_ASSERT("unable to convert an unspecified type value", 0);
     return "";
 }
-
 
 
 } // namespace fwTools

@@ -9,7 +9,12 @@
 #include "StringizerTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( StringizerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::StringizerTest );
+
+namespace fwTools
+{
+namespace ut
+{
 
 void StringizerTest::setUp()
 {
@@ -21,9 +26,9 @@ void StringizerTest::tearDown()
     // Clean up after the test run.
 }
 
-void StringizerTest::methode1()
+void StringizerTest::convertTest()
 {
-    const std::string STR1 = "[1,2,3]" ;
+    const std::string STR1 = "[1,2,3]";
     const std::string STR2 = "6";
     const double D = 6.0;
     std::vector<int> vec;
@@ -34,8 +39,11 @@ void StringizerTest::methode1()
     std::string res1 = ::fwTools::getString(vec.begin(), vec.end());
     std::string res2 = ::fwTools::getString<double>(D);
 
-
     // check
     CPPUNIT_ASSERT_EQUAL(res1, STR1);
     CPPUNIT_ASSERT_EQUAL(res2, STR2);
 }
+
+} // namespace ut
+} // namespace fwTools
+

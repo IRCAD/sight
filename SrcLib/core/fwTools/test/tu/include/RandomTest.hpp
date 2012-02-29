@@ -22,8 +22,6 @@ class RandomTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( seedTest );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
     // interface
     void setUp();

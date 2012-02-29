@@ -4,30 +4,31 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWTOOLS_TU_CLASSFACTORYREGISTRYTEST_H
-#define FWTOOLS_TU_CLASSFACTORYREGISTRYTEST_H
+#ifndef __FWTOOLS_UT_CLASSFACTORYREGISTRYTEST_HPP_
+#define __FWTOOLS_UT_CLASSFACTORYREGISTRYTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwTools
 {
+namespace ut
+{
 
 class ClassFactoryRegistryTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ClassFactoryRegistryTest );
-    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( factoryRegistryTest );
     CPPUNIT_TEST_SUITE_END();
-
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
-    void methode1();
+
+    void factoryRegistryTest();
 };
 
-}
+} // namespace ut
+} // namespace fwTools
 
-#endif
+#endif //__FWTOOLS_UT_CLASSFACTORYREGISTRYTEST_HPP_

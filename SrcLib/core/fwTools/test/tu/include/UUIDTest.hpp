@@ -4,25 +4,31 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWTOOLS_TU_UUIDTEST_H
-#define FWTOOLS_TU_UUIDTEST_H
+#ifndef __FWTOOLS_UT_UUIDTEST_HPP__
+#define __FWTOOLS_UT_UUIDTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwTools
+{
+namespace ut
+{
 
 class UUIDTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( UUIDTest );
-    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( objectIDTest );
     CPPUNIT_TEST_SUITE_END();
-
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
-    void methode1();
+
+    void objectIDTest();
 };
 
-#endif
+} // namespace ut
+} // namespace fwTools
+
+#endif //__FWTOOLS_UT_UUIDTEST_HPP__

@@ -22,7 +22,8 @@
 #include "fwTools/config.hpp"
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
@@ -49,7 +50,7 @@ public:
     };
 
     typedef std::map<std::string, Type> TypeMapType;
-    
+
     /// Default constructor
     FWTOOLS_API Type();
     FWTOOLS_API Type(const std::string &type);
@@ -163,7 +164,6 @@ Type Type::create()
     return t;
 }
 
-
 //-----------------------------------------------------------------------------
 
 template <typename T>
@@ -171,6 +171,7 @@ bool Type::isOfType() const
 {
     return *this == create<T>();
 }
+
 //-----------------------------------------------------------------------------
 
 template <typename T>
