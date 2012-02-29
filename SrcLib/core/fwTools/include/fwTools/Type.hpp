@@ -20,6 +20,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwTools/config.hpp"
+#include "fwTools/Stringizer.hpp"
 
 
 namespace fwTools
@@ -142,7 +143,7 @@ protected :
 template< typename T >
 std::string Type::Tool<T>::toString(::boost::any value) const
 {
-    return ::boost::lexical_cast < std::string, T > ( boost::any_cast<const T> (value));
+    return ::fwTools::getString( boost::any_cast<const T> (value));
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +152,7 @@ template< typename T >
 std::string Type::Tool<T>::toString(const void *value) const
 {
     const T &v = *(static_cast< const T* > (value));
-    return ::boost::lexical_cast < std::string, T > ( v );
+    return ::fwTools::getString( v );
 }
 
 //-----------------------------------------------------------------------------
