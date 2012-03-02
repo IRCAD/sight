@@ -14,6 +14,7 @@
 #include <boost/mpl/pop_front.hpp>
 
 #include "fwTools/TypeMapping.hpp"
+#include "fwTools/Stringizer.hpp"
 
 
 namespace fwTools {
@@ -36,21 +37,24 @@ namespace fwTools {
     template< class KeyType>
     static void  invoke(const KeyType &keytype)
     {
-        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+        std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
+        throw std::invalid_argument(msg);
     }
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
     template< class KeyType,class Parameter>
     static void  invoke( const KeyType &keytype,const Parameter &param )
     {
-        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+        std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
+        throw std::invalid_argument(msg);
     }
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
     template< class BaseClass, class KeyType>
     static BaseClass  *instanciate(const KeyType &keytype)
     {
-        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+        std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
+        throw std::invalid_argument(msg);
         return NULL;
     }
 

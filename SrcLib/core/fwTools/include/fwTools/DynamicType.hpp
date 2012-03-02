@@ -9,10 +9,12 @@
 
 #include <string>
 #include <list>
+#include <vector>
 #include <stdexcept>
 
 #include <boost/mpl/vector.hpp>
 
+#include "fwTools/Stringizer.hpp"
 #include "fwTools/config.hpp"
 
 
@@ -152,6 +154,15 @@ DynamicType makeDynamicType();
 // #include "KEYTYPEMapping.hpp" is mandatory
 template<class KEYTYPE>
 DynamicType makeDynamicType(const  KEYTYPE &keyType);
+
+
+template<>
+FWTOOLS_API std::string getString(const DynamicType &dt);
+
+template<>
+FWTOOLS_API std::string getString(const std::vector<DynamicType> &dtv);
+
+
 
 
 } //end namespace fwTools {

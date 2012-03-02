@@ -136,6 +136,11 @@ FWTOOLS_API std::string getString(const char &c);
 template<>
 FWTOOLS_API std::string getString(const unsigned char &c);
 
+template<>
+FWTOOLS_API std::string getString(const std::string &aString);
+
+
+
 ///@}
 
 }
