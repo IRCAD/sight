@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_TU_RECONSTRUCTIONTEST_H
-#define DATA_TU_RECONSTRUCTIONTEST_H
+#ifndef __FWDATA_UT_RECONSTRUCTIONTEST_HPP__
+#define __FWDATA_UT_RECONSTRUCTIONTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class ReconstructionTest : public CPPUNIT_NS::TestFixture
 {
@@ -17,16 +22,16 @@ class ReconstructionTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( image );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
     void methode2();
     void image();
 };
 
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_RECONSTRUCTIONTEST_HPP__

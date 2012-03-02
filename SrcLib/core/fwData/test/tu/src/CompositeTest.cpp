@@ -16,7 +16,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( CompositeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CompositeTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void CompositeTest::setUp()
 {
@@ -79,5 +84,6 @@ void CompositeTest::methode1()
     CPPUNIT_ASSERT_EQUAL(composite->getRefMap()[STR], obj);
 }
 
-
+} //namespace ut
+} //namespace fwData
 

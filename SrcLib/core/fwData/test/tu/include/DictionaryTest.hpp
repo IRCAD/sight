@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_TU_DICTIONARYTEST_H
-#define DATA_TU_DICTIONARYTEST_H
+#ifndef __FWDATA_UT_DICTIONARYTEST_HPP__
+#define __FWDATA_UT_DICTIONARYTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class DictionaryTest : public CPPUNIT_NS::TestFixture
 {
@@ -15,16 +20,15 @@ class DictionaryTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
     // interface
     void setUp();
     void tearDown();
 
-    // fonctions de tests
     void methode1();
 
 };
 
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_DICTIONARYTEST_HPP__

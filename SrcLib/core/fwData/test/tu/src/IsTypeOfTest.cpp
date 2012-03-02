@@ -20,7 +20,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( IsTypeOfTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::IsTypeOfTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void IsTypeOfTest::setUp()
 {
@@ -93,8 +98,6 @@ void IsTypeOfTest::methode1()
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataTransfertFunction )->isA( "::fwData::TransfertFunction" ) ) ;
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataPatient           )->isA( "::fwData::Patient"           ) ) ;
 
-
-
     CPPUNIT_ASSERT( ! dataObject           ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataComposite        ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataBoolean          ->isA("::fwData::Image") );
@@ -103,8 +106,8 @@ void IsTypeOfTest::methode1()
     CPPUNIT_ASSERT( ! dataImage            ->isA("::fwData::Boolean") );
     CPPUNIT_ASSERT( ! dataTransfertFunction->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataPatient          ->isA("::fwData::Image") );
-
 }
 
-
+} //namespace ut
+} //namespace fwData
 

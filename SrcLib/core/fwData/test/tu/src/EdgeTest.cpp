@@ -16,7 +16,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( EdgeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::EdgeTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void EdgeTest::setUp()
 {
@@ -44,5 +49,6 @@ void EdgeTest::methode1()
     CPPUNIT_ASSERT_EQUAL(edge->getNature(), STR3);
 }
 
-
+} //namespace ut
+} //namespace fwData
 

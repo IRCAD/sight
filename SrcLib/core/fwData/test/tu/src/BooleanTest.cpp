@@ -10,7 +10,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( BooleanTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::BooleanTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void BooleanTest::setUp()
 {
@@ -38,3 +43,6 @@ void BooleanTest::methode1()
     CPPUNIT_ASSERT_EQUAL(FALSE_VALUE, p2->value());
 
 }
+
+} //namespace ut
+} //namespace fwData

@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_TU_IMAGETEST_H
-#define DATA_TU_IMAGETEST_H
+#ifndef __FWDATA_UT_IMAGETEST_HPP__
+#define __FWDATA_UT_IMAGETEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
@@ -19,13 +24,11 @@ class ImageTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testSetGetPixel );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void testGetterSetter();
     void testAllocation();
     void testReallocation();
@@ -33,4 +36,6 @@ public:
     void testSetGetPixel();
 };
 
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_IMAGETEST_HPP__

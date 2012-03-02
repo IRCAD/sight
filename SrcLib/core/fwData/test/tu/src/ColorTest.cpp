@@ -16,7 +16,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ColorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ColorTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void ColorTest::setUp()
 {
@@ -68,4 +73,5 @@ void ColorTest::methode2()
     //CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
 }
 
-
+} //namespace ut
+} //namespace fwData

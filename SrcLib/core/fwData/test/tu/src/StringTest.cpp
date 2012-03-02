@@ -11,7 +11,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( StringTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::StringTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void StringTest::setUp()
 {
@@ -38,3 +43,6 @@ void StringTest::methode1()
         CPPUNIT_ASSERT_EQUAL( VALUE , ::fwData::String::New( VALUE )->value() );
     }
 }
+
+} //namespace ut
+} //namespace fwData

@@ -17,7 +17,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( TransfertFunctionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransfertFunctionTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void TransfertFunctionTest::setUp()
 {
@@ -54,5 +59,6 @@ void TransfertFunctionTest::methode1()
     CPPUNIT_ASSERT_EQUAL(tf->getColor(INDEX1)->getRGBA()[1], C1->getRGBA()[1]);
 }
 
-
+} //namespace ut
+} //namespace fwData
 

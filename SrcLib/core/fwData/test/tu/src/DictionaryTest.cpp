@@ -10,7 +10,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DictionaryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::DictionaryTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void DictionaryTest::setUp()
 {
@@ -33,7 +38,6 @@ void DictionaryTest::methode1()
     ::fwData::DictionaryOrgan::sptr dictionaryOrgan(::fwData::DictionaryOrgan::New());
     dictionaryOrgan->setCRefStructureType(DICTIONARYORGANNAME) ;
 
-
     // check
     CPPUNIT_ASSERT_EQUAL(p1-> hasDictionaryOrgan(DICTIONARYORGANNAME),  false);
     CPPUNIT_ASSERT_EQUAL(p1-> getDictionaryOrgan(DICTIONARYORGANNAME), defaultOrgan);
@@ -44,7 +48,7 @@ void DictionaryTest::methode1()
     //re-check changes
     CPPUNIT_ASSERT_EQUAL(p1-> hasDictionaryOrgan(DICTIONARYORGANNAME),  true);
     CPPUNIT_ASSERT_EQUAL(p1-> getDictionaryOrgan(DICTIONARYORGANNAME),  dictionaryOrgan);
-
-
-
 }
+
+} //namespace ut
+} //namespace fwData

@@ -25,14 +25,31 @@ class FWTEST_CLASS_API DicomReaderTest
 
 public:
 
-    /**
-     * @brief Method used to verify if a specific dicom file (stored on the
-     * test database) is well read
-     *
-     * This file is located here on test database : "fw4spl/Patient/Dicom/ACHGenou",
-     * its represents a CT image of a knee ( 400 slices ).
-     */
-    FWTEST_API static bool checkPatientACHGenou( ::fwData::Patient::sptr patient );
+    DicomReaderTest(::fwData::Patient::sptr patient)
+    {
+        m_patient = patient;
+        m_patientACHGenouIsOk = true;
+        m_notReallyCheck = true;
+    }
+
+    class FWTEST_CLASS_API PatientACHGenou
+    {
+    public:
+
+        /**
+         * @brief Method used to verify if a specific dicom file (stored on the
+         * test database) is well read
+         *
+         * This file is located here on test database : "fw4spl/Patient/Dicom/ACHGenou",
+         * its represents a CT image of a knee ( 400 slices ).
+         */
+        FWTEST_API static bool check();
+    };
+
+protected:
+    ::fwData::Patient::sptr m_patient;
+    bool m_patientACHGenouIsOk;
+    bool m_notReallyCheck;
 };
 
 

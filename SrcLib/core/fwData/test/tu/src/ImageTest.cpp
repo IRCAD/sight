@@ -22,7 +22,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(ImageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ImageTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -53,8 +58,6 @@ void ImageTest::testGetterSetter()
     const double WINDOWCENTER = 10.10 ;
     const double WINDOWWIDTH = 11.34 ;
 
-
-
     // process
     ::fwData::Image::NewSptr img1;
 
@@ -80,7 +83,6 @@ void ImageTest::testGetterSetter()
     CPPUNIT_ASSERT_EQUAL(img1->getWindowCenter(),WINDOWCENTER);
 
     CPPUNIT_ASSERT_EQUAL(img1->getWindowWidth(),WINDOWWIDTH);
-
 }
 
 //------------------------------------------------------------------------------
@@ -108,8 +110,6 @@ void ImageTest::testAllocation()
     CPPUNIT_ASSERT(array->getType() == TYPE);
     CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
-
-
 
     ::fwData::Image::NewSptr img2;
     img2->allocate(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE);
@@ -286,3 +286,5 @@ void ImageTest::testSetGetPixel()
 
 //------------------------------------------------------------------------------
 
+} //namespace ut
+} //namespace fwData

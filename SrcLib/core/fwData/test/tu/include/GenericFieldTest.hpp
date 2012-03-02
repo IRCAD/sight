@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_TU_GENERICFIELDTEST_H
-#define DATA_TU_GENERICFIELDTEST_H
+#ifndef __FWDATA_UT_GENERICFIELDTEST_HPP__
+#define __FWDATA_UT_GENERICFIELDTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class GenericFieldTest : public CPPUNIT_NS::TestFixture
 {
@@ -15,14 +20,14 @@ class GenericFieldTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
 };
 
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_GENERICFIELDTEST_HPP__

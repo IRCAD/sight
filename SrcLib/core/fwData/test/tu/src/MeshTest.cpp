@@ -14,12 +14,16 @@
 using namespace boost::assign;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MeshTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::MeshTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void MeshTest::setUp()
 {
     // Set up context before running a test.
-
 }
 
 //-----------------------------------------------------------------------------
@@ -435,3 +439,7 @@ void MeshTest::copy()
     CPPUNIT_ASSERT_EQUAL(mesh->getCellColorsArray()     , shallowCopyMesh->getCellColorsArray());
     CPPUNIT_ASSERT_EQUAL(mesh->getCellNormalsArray()    , shallowCopyMesh->getCellNormalsArray());
 }
+
+} //namespace ut
+} //namespace fwData
+

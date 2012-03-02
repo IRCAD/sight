@@ -18,14 +18,18 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( PatientTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::PatientTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
 void PatientTest::setUp()
 {
     // Set up context before running a test.
-    //ptCubeDeTest =  new Cube();
 }
 
 //------------------------------------------------------------------------------
@@ -33,14 +37,12 @@ void PatientTest::setUp()
 void PatientTest::tearDown()
 {
     // Clean up after the test run.
-    //delete ptCubeDeTest;
 }
 
 //------------------------------------------------------------------------------
 
 void PatientTest::methodes1()
 {
-
     // set up
     const std::string NOM       ="NomPatient1" ;
     const std::string FIRSTNAME ="PrenomPatient1" ;
@@ -80,8 +82,6 @@ void PatientTest::methodes1()
     CPPUNIT_ASSERT_EQUAL(p1->getDbID(),     DBID ) ;
     CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID(), DBID ) ;
     CPPUNIT_ASSERT_EQUAL(p1->getRefDbID(),  DBID ) ;
-
-
 }
 
 //------------------------------------------------------------------------------
@@ -148,3 +148,6 @@ void PatientTest::addStudy()
     CPPUNIT_ASSERT_EQUAL(p1->getStudySize(),  NBSTUDIES );
     //end addStudy
 }
+
+} //namespace ut
+} //namespace fwData

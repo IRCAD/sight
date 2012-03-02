@@ -22,7 +22,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(ReconstructionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ReconstructionTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void ReconstructionTest::setUp()
 {
@@ -65,7 +70,6 @@ void ReconstructionTest::methode1() //test des setters et getters
 
     // process
     ::fwData::Reconstruction::NewSptr p1;
-
 
     p1->setIsVisible(                   ISVISIBLE);
     p1->setCRefReconstructionFormat(                    CREFRECONSTRUCTIONFORMAT);
@@ -184,90 +188,90 @@ void ReconstructionTest::methode2()
     ::fwData::Reconstruction::NewSptr p1;
 
 
-    p1->setCRefIsVisible(                   ISVISIBLE);
-    p1->setCRefReconstructionFormat(                    CREFRECONSTRUCTIONFORMAT);
-    p1->setCRefOrganName(                   CREFORGANNAME);
-    p1->setCRefStructureType(                   CREFSTRUCTURETYPE);
-    p1->setIsClosed(                ISCLOSED    );
-    p1->setCRefIsAutomatic(                 ISAUTOMATIC);
-    p1->setCRefAvgVolume(                   AVGVOLUME);
-    p1->setCRefVolStdDeviation(                 VOLSTDDEVIATION);
-    p1->setCRefVolPctConfidence(                    VOLPCTCONFIDENCE);
-    p1->setCRefReconstructionTime(                  CREFRECONSTRUCTIONTIME);
-    p1->setCRefMaskGenerated(                   MASKGENERATED);
-    p1->setCRefLevel(                   LEVEL);
-    p1->setCRefLabel(                   LABEL);
-    p1->setCRefGenerated3D(                 GENERATED3D);
-    p1->setCRefType3D(                  CREFTYPE3D);
-    p1->setCRefPath(                    CREFPATH);
-    p1->setCRefDbID(                    DBID);
+    p1->setCRefIsVisible( ISVISIBLE);
+    p1->setCRefReconstructionFormat(CREFRECONSTRUCTIONFORMAT);
+    p1->setCRefOrganName(CREFORGANNAME);
+    p1->setCRefStructureType( CREFSTRUCTURETYPE);
+    p1->setIsClosed(ISCLOSED );
+    p1->setCRefIsAutomatic(ISAUTOMATIC);
+    p1->setCRefAvgVolume( AVGVOLUME);
+    p1->setCRefVolStdDeviation( VOLSTDDEVIATION);
+    p1->setCRefVolPctConfidence(  VOLPCTCONFIDENCE);
+    p1->setCRefReconstructionTime(CREFRECONSTRUCTIONTIME);
+    p1->setCRefMaskGenerated( MASKGENERATED);
+    p1->setCRefLevel( LEVEL);
+    p1->setCRefLabel( LABEL);
+    p1->setCRefGenerated3D( GENERATED3D);
+    p1->setCRefType3D(CREFTYPE3D);
+    p1->setCRefPath(CREFPATH);
+    p1->setCRefDbID(DBID);
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(),            ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsVisible(),            ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsVisible(),         ISVISIBLE);
+    CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsVisible(), ISVISIBLE);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefIsVisible(), ISVISIBLE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getReconstructionFormat(),     CREFRECONSTRUCTIONFORMAT);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefReconstructionFormat(),     CREFRECONSTRUCTIONFORMAT);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefReconstructionFormat(),      CREFRECONSTRUCTIONFORMAT);
+    CPPUNIT_ASSERT_EQUAL(p1->getReconstructionFormat(), CREFRECONSTRUCTIONFORMAT);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefReconstructionFormat(), CREFRECONSTRUCTIONFORMAT);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefReconstructionFormat(), CREFRECONSTRUCTIONFORMAT);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(),        CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(),        CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefOrganName(),     CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefOrganName(), CREFORGANNAME);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(),        CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefStructureType(),        CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(),     CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(), CREFSTRUCTURETYPE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIsClosed(),     ISCLOSED);
+    CPPUNIT_ASSERT_EQUAL(p1->getIsClosed(), ISCLOSED);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIsAutomatic(),              ISAUTOMATIC);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsAutomatic(),              ISAUTOMATIC);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsAutomatic(),               ISAUTOMATIC);
+    CPPUNIT_ASSERT_EQUAL(p1->getIsAutomatic(), ISAUTOMATIC);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsAutomatic(), ISAUTOMATIC);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefIsAutomatic(), ISAUTOMATIC);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getAvgVolume(),            AVGVOLUME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefAvgVolume(),            AVGVOLUME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefAvgVolume(),         AVGVOLUME);
+    CPPUNIT_ASSERT_EQUAL(p1->getAvgVolume(), AVGVOLUME);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefAvgVolume(), AVGVOLUME);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefAvgVolume(), AVGVOLUME);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getVolStdDeviation(),              VOLSTDDEVIATION);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefVolStdDeviation(),              VOLSTDDEVIATION);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefVolStdDeviation(),               VOLSTDDEVIATION);
+    CPPUNIT_ASSERT_EQUAL(p1->getVolStdDeviation(), VOLSTDDEVIATION);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefVolStdDeviation(), VOLSTDDEVIATION);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefVolStdDeviation(), VOLSTDDEVIATION);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getVolPctConfidence(),     VOLPCTCONFIDENCE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefVolPctConfidence(),     VOLPCTCONFIDENCE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefVolPctConfidence(),      VOLPCTCONFIDENCE);
+    CPPUNIT_ASSERT_EQUAL(p1->getVolPctConfidence(), VOLPCTCONFIDENCE);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefVolPctConfidence(), VOLPCTCONFIDENCE);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefVolPctConfidence(), VOLPCTCONFIDENCE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getReconstructionTime(),       CREFRECONSTRUCTIONTIME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefReconstructionTime(),       CREFRECONSTRUCTIONTIME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefReconstructionTime(),        CREFRECONSTRUCTIONTIME);
+    CPPUNIT_ASSERT_EQUAL(p1->getReconstructionTime(), CREFRECONSTRUCTIONTIME);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefReconstructionTime(), CREFRECONSTRUCTIONTIME);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefReconstructionTime(), CREFRECONSTRUCTIONTIME);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getMaskGenerated(),        MASKGENERATED);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefMaskGenerated(),        MASKGENERATED);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefMaskGenerated(),     MASKGENERATED);
+    CPPUNIT_ASSERT_EQUAL(p1->getMaskGenerated(), MASKGENERATED);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefMaskGenerated(), MASKGENERATED);
+    CPPUNIT_ASSERT_EQUAL(p1->getRefMaskGenerated(), MASKGENERATED);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getLevel(),            LEVEL ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefLevel(),            LEVEL ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefLevel(),         LEVEL ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getLevel(), LEVEL) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefLevel(), LEVEL) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefLevel(), LEVEL) ;
 
-    CPPUNIT_ASSERT_EQUAL(p1->getLabel(),            LABEL ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefLabel(),            LABEL ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefLabel(),         LABEL ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getLabel(), LABEL) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefLabel(), LABEL) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefLabel(), LABEL) ;
 
-    CPPUNIT_ASSERT_EQUAL(p1->getGenerated3D(),          GENERATED3D ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefGenerated3D(),          GENERATED3D ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefGenerated3D(),           GENERATED3D ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getGenerated3D(), GENERATED3D) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefGenerated3D(), GENERATED3D) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefGenerated3D(), GENERATED3D) ;
 
-    CPPUNIT_ASSERT_EQUAL(p1->getType3D(),           CREFTYPE3D ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefType3D(),           CREFTYPE3D ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefType3D(),            CREFTYPE3D ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getType3D(), CREFTYPE3D) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefType3D(), CREFTYPE3D) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefType3D(), CREFTYPE3D) ;
 
-    CPPUNIT_ASSERT_EQUAL(p1->getPath(),         CREFPATH ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefPath(),         CREFPATH ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefPath(),          CREFPATH ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getPath(), CREFPATH) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefPath(), CREFPATH) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefPath(), CREFPATH) ;
 
-    CPPUNIT_ASSERT_EQUAL(p1->getDbID(),         DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID(),         DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID(),          DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getDbID(), DBID) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID(), DBID) ;
+    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID(), DBID) ;
 }
 
 //------------------------------------------------------------------------------
@@ -279,7 +283,8 @@ void ReconstructionTest::image()
 
     p1->setImage(i1) ;
     CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1 ) ;
-
 }
 
+} //namespace ut
+} //namespace fwData
 

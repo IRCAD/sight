@@ -4,6 +4,9 @@
 * published by the Free Software Foundation.
 * ****** END LICENSE BLOCK ****** */
 
+#include <boost/preprocessor/cat.hpp>
+#include <cppunit/TestAssert.h>
+
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/Type.hpp>
 
@@ -20,28 +23,43 @@ namespace fwTest
 #define CHECK_VALUE(check,message,val1,val2)                                \
 {                                                                           \
     check &= (val1 == val2);                                                \
-    OSLM_ERROR_IF(message << val1 << " != " << val2, val1 != val2 );        \
-}                                                                           \
-
-//------------------------------------------------------------------------------
-
-#define CHECK_VALUE_WITH_TOLERANCE(check,message,val1,val2,tol)                                 \
-{                                                                                               \
-    check &= ( val1 - tol <= val2 &&  val2 <= val1 + tol ) ;                                    \
-    OSLM_ERROR_IF(message << val1 << " != " << val2, val1 - tol > val2 ||  val2 > val1 + tol ); \
+    std::stringstream stream;                                               \
+    stream << message << val1 << " != " << val2;                            \
+    SLM_ERROR_IF(stream.str(), val1 != val2 );                              \
+    CPPUNIT_ASSERT_EQUAL_MESSAGE(stream.str() , val1, val2 );               \
 }
 
 //------------------------------------------------------------------------------
+#define CHECK_METHOD \
+        BOOST_PP_CAT(check, __LINE__ )
 
+#define CHECK_VALUE_WITH_TOLERANCE(check,message,val1,val2,tol)                                 \
+CHECK_METHOD()                                                                                  \
+{                                                                                               \
+    check &= ( val1 - tol <= val2 &&  val2 <= val1 + tol ) ;                                    \
+    std::stringstream stream;                                                                   \
+    stream << message << val1 << " != " << val2;                                                \
+    OSLM_ERROR_IF(stream.str(), val1 - tol > val2 ||  val2 > val1 + tol );                      \
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(stream.str(),val1, val2, tol );                        \
+}                                                                                               \
+CPPUNIT_TEST_SUITE_ADD_TEST(CHECK_METHOD) ;
+
+
+//------------------------------------------------------------------------------
+
+class DicomReaderTest::PatientACHGenou
+{
+    CHECK_VALUE_WITH_TOLERANCE()
+};
 bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
 {
     bool patientACHGenouIsOk = true;
     bool notReallyCheck = true;
 
     // Study, Acquisition
-    CHECK_VALUE(patientACHGenouIsOk, "Study size not correspond : ", 1, patient->getStudySize());
+    CHECK_VALUE(patientACHGenouIsOk, "Study size not correspond : ", ::boost::uint32_t(1), patient->getStudySize());
     ::fwData::Study::sptr study = *patient->getStudies().first;
-    CHECK_VALUE(patientACHGenouIsOk, "Acquisition size not correspond : ", 1, study->getAcquisitionSize());
+    CHECK_VALUE(patientACHGenouIsOk, "Acquisition size not correspond : ", ::boost::uint32_t(1), study->getAcquisitionSize());
     ::fwData::Acquisition::sptr acq = *study->getAcquisitions().first;
     ::fwData::Image::sptr img = acq->getImage();
 
@@ -65,23 +83,23 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     //(0008,0016) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 SOP Class UID
     //(0008,0018) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 SOP Instance UID
     //(0008,0020) DA [20081028]                                         # 8,1 Study Date
-    CHECK_VALUE(patientACHGenouIsOk,"Study Date not correspond : ", "20081028",study->getDate());
+    CHECK_VALUE(patientACHGenouIsOk,"Study Date not correspond : ", std::string("20081028"),study->getDate());
     //(0008,0021) DA [20081028]                                         # 8,1 Series Date
     //(0008,0022) DA [20081028]                                         # 8,1 Acquisition Date
-    CHECK_VALUE(patientACHGenouIsOk,"Acquisition Date not correspond : ", "20081028",::fwTools::getDate(acq->getCreationDate()));
+    CHECK_VALUE(patientACHGenouIsOk,"Acquisition Date not correspond : ", std::string("20081028"),::fwTools::getDate(acq->getCreationDate()));
     //(0008,0023) DA [20081028]                                         # 8,1 Content Date
     //(0008,0030) TM [174327.000]                                       # 10,1 Study Time
-    CHECK_VALUE(patientACHGenouIsOk,"Study Time not correspond : ", "174327.000", study->getTime() );
+    CHECK_VALUE(patientACHGenouIsOk,"Study Time not correspond : ", std::string("174327.000"), study->getTime() );
     //(0008,0031) TM [180156.734]                                       # 10,1 Series Time
     //(0008,0032) TM [174446.850]                                       # 10,1 Acquisition Time
-    CHECK_VALUE(patientACHGenouIsOk,"Acquisition Time not correspond : ", "174446",::fwTools::getTime(acq->getCreationDate()));
+    CHECK_VALUE(patientACHGenouIsOk,"Acquisition Time not correspond : ", std::string("174446"),::fwTools::getTime(acq->getCreationDate()));
     //(0008,0033) TM [174502.095]                                       # 10,1 Content Time
     //(0008,0050) SH [12514 ]                                           # 6,1 Accession Number
     //(0008,0060) CS [CT]                                               # 2,1 Modality
-    CHECK_VALUE(patientACHGenouIsOk,"Modality not correspond : ", "CT", study->getModality() );
+    CHECK_VALUE(patientACHGenouIsOk,"Modality not correspond : ", std::string("CT"), study->getModality() );
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DE LA MODER ]                             # 20,1 Institution Name
-    CHECK_VALUE(patientACHGenouIsOk,"Institution Name not correspond : ", "SCANNER DE LA MODER", study->getHospital() );
+    CHECK_VALUE(patientACHGenouIsOk,"Institution Name not correspond : ", std::string("SCANNER DE LA MODER"), study->getHospital() );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
     //(0008,1010) SH [00000000001 ]                                     # 12,1 Station Name
     //(0008,103e) LO [ OS 0.5   ]                                       # 10,1 Series Description
@@ -89,16 +107,16 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
     //(0010,0010) PN [CHARNOZ ARNAUD]                                   # 14,1 Patient's Name
-    CHECK_VALUE(patientACHGenouIsOk,"Patient's Name not correspond : ", "CHARNOZ ARNAUD", patient->getName() );
+    CHECK_VALUE(patientACHGenouIsOk,"Patient's Name not correspond : ", std::string("CHARNOZ ARNAUD"), patient->getName() );
     // Error here in dicom, normally Patient's Name must be equal = [CHARNOZ^ARNAUD],
     // not the case here, well "CHARNOZ ARNAUD" is considered as a name
-    CHECK_VALUE(patientACHGenouIsOk,"Patient's Firstname not correspond : ", "", patient->getFirstname() );
+    CHECK_VALUE(patientACHGenouIsOk,"Patient's Firstname not correspond : ", std::string(""), patient->getFirstname() );
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
-    CHECK_VALUE(patientACHGenouIsOk,"Patient ID not correspond : ", "12592 ARTHRO GENOU  G", patient->getIDDicom() );
+    CHECK_VALUE(patientACHGenouIsOk,"Patient ID not correspond : ", std::string("12592 ARTHRO GENOU  G"), patient->getIDDicom() );
     //(0010,0030) DA [19790618]                                         # 8,1 Patient's Birth Date
-    CHECK_VALUE(patientACHGenouIsOk,"Patient's Birth Date not correspond : ", "19790618", ::fwTools::getDate(patient->getBirthdate()) );
+    CHECK_VALUE(patientACHGenouIsOk,"Patient's Birth Date not correspond : ", std::string("19790618"), ::fwTools::getDate(patient->getBirthdate()) );
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
-    CHECK_VALUE(patientACHGenouIsOk,"Patient's Sex not correspond :", "M" , std::string(patient->getIsMale() ? "M" : "F" ) );
+    CHECK_VALUE(patientACHGenouIsOk,"Patient's Sex not correspond :", std::string("M"), std::string(patient->getIsMale() ? "M" : "F" ) );
     //(0010,1010) AS [029Y]                                             # 4,1 Patient's Age
     //(0010,4000) LT [ARTHRO]                                           # 6,1 Patient Comments
     //(0018,0000) UL 284                                                # 4,1 Generic Group Length
@@ -124,18 +142,18 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     //(0018,9345) UN (FD) 23.1                                          # 8,1 CTDIvol
     //(0020,0000) UL 370                                                # 4,1 Generic Group Length
     //(0020,000d) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775]         # 58,1 Study Instance UID
-    CHECK_VALUE(patientACHGenouIsOk,"Study Instance UID not correspond :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775" , study->getUID() );
+    CHECK_VALUE(patientACHGenouIsOk,"Study Instance UID not correspond :", std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775"), study->getUID() );
     //(0020,000e) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855]         # 58,1 Series Instance UID
-    CHECK_VALUE(patientACHGenouIsOk,"Series Instance UID not correspond :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855" , acq->getUID() );
+    CHECK_VALUE(patientACHGenouIsOk,"Series Instance UID not correspond :", std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855"), acq->getUID() );
     //(0020,0010) SH [12514 ]                                           # 6,1 Study ID
     //(0020,0011) IS [3 ]                                               # 2,1 Series Number
     //(0020,0012) IS [3 ]                                               # 2,1 Acquisition Number
     //(0020,0013) IS [404 ]                                             # 4,1 Instance Number
     //(0020,0020) CS [L\P ]                                             # 4,2 Patient Orientation
     //(0020,0032) DS [-36.71875\-88.28125\1350.300]                     # 28,3 Image Position (Patient)
-    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image x origin not correspond  :", -36.71875 , img->getOrigin()[0], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image y origin not correspond  :", -88.28125 , img->getOrigin()[1], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image z origin not correspond  :", 1350.300 , img->getOrigin()[2], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image x origin not correspond  :", ::fwData::Image::OriginType::value_type(-36.71875), img->getOrigin()[0], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image y origin not correspond  :", ::fwData::Image::OriginType::value_type(-88.28125), img->getOrigin()[1], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image z origin not correspond  :", ::fwData::Image::OriginType::value_type(1350.300), img->getOrigin()[2], 0.01);
     //(0020,0037) DS [1.00000\0.00000\0.00000\0.00000\1.00000\0.00000 ]         # 48,6 Image Orientation (Patient)
     //(0020,0052) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183409.15274]         # 56,1 Frame of Reference UID
     //(0020,1040) LO (no value)                                         # 0,1 Position Reference Indicator
@@ -145,13 +163,13 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     //(0028,0004) CS [MONOCHROME2 ]                                     # 12,1 Photometric Interpretation
     //(0028,0010) US 512                                                # 2,1 Rows
     //(0028,0011) US 512                                                # 2,1 Columns
-    CHECK_VALUE(patientACHGenouIsOk,"Image x size not correspond  :", 512 , img->getSize()[0] );
-    CHECK_VALUE(patientACHGenouIsOk,"Image y size not correspond  :", 512 , img->getSize()[1] );
-    CHECK_VALUE(patientACHGenouIsOk,"Image z size not correspond  :", 404 , img->getSize()[2] );
+    CHECK_VALUE(patientACHGenouIsOk,"Image x size not correspond  :", ::fwData::Image::SizeType::value_type(512), img->getSize()[0] );
+    CHECK_VALUE(patientACHGenouIsOk,"Image y size not correspond  :", ::fwData::Image::SizeType::value_type(512), img->getSize()[1] );
+    CHECK_VALUE(patientACHGenouIsOk,"Image z size not correspond  :", ::fwData::Image::SizeType::value_type(404), img->getSize()[2] );
     //(0028,0030) DS [0.384\0.384 ]                                     # 12,2 Pixel Spacing
-    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image x spacing not correspond  :", 0.384 , img->getSpacing()[0], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image y spacing not correspond  :", 0.384 , img->getSpacing()[1], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image z spacing not correspond  :", 0.399 , img->getSpacing()[2], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image x spacing not correspond  :", ::fwData::Image::SpacingType::value_type(10.384), img->getSpacing()[0], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image y spacing not correspond  :", ::fwData::Image::SpacingType::value_type(0.384), img->getSpacing()[1], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(patientACHGenouIsOk,"Image z spacing not correspond  :", ::fwData::Image::SpacingType::value_type(0.399), img->getSpacing()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
     CHECK_VALUE(notReallyCheck,"Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8 );
@@ -159,9 +177,9 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
     CHECK_VALUE(notReallyCheck,"Image Bits Allocated correspond  :", false, img->getType().isSigned() );
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    CHECK_VALUE(patientACHGenouIsOk,"Image Window Center correspond  :", 500, img->getCRefWindowCenter() );
+    CHECK_VALUE(patientACHGenouIsOk,"Image Window Center correspond  :", 500., img->getCRefWindowCenter() );
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    CHECK_VALUE(patientACHGenouIsOk,"Image Window Width correspond  :", 2500, img->getCRefWindowWidth() );
+    CHECK_VALUE(patientACHGenouIsOk,"Image Window Width correspond  :", 2500., img->getCRefWindowWidth() );
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length

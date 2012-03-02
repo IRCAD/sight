@@ -4,12 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_ACQUISITIONTEST_H
-#define DATA_ACQUISITIONTEST_H
+#ifndef __FWDATA_UT_ACQUISITIONTEST_HPP__
+#define __FWDATA_UT_ACQUISITIONTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class AcquisitionTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class AcquisitionTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( AcquisitionTest );
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST( methode2 );
@@ -17,17 +23,19 @@ class AcquisitionTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST( StructAnat ) ;
     CPPUNIT_TEST( Reconstruction ) ;
     CPPUNIT_TEST_SUITE_END();
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
     void methode2();
     void Image() ;
     void StructAnat();
     void Reconstruction();
 };
-#endif
+
+} //namespace ut
+} //namespace fwData
+#endif __FWDATA_UT_ACQUISITIONTEST_HPP__

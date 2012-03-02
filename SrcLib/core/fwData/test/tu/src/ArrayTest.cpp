@@ -13,7 +13,12 @@
 using namespace boost::assign;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ArrayTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ArrayTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 //-----------------------------------------------------------------------------
 
@@ -346,4 +351,5 @@ void ArrayTest::copy()
     CPPUNIT_ASSERT_EQUAL( false , shallowCopyArray->getIsBufferOwner());
 }
 
-
+} //namespace ut
+} //namespace fwData

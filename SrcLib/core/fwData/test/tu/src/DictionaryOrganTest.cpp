@@ -9,7 +9,12 @@
 #include "DictionaryOrganTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DictionaryOrganTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::DictionaryOrganTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void DictionaryOrganTest::setUp()
 {
@@ -100,6 +105,7 @@ void DictionaryOrganTest::methode1()
     CPPUNIT_ASSERT_EQUAL(p1->getInteriorRupture(), INTERIORRUPTURE);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefComment(),  CREFCOMMENT);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefBelongsTo().back(), CREFBELONGSTO);
-
-
 }
+
+} //namespace ut
+} //namespace fwData

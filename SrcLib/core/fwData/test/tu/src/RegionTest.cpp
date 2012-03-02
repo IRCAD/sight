@@ -8,7 +8,12 @@
 #include "RegionTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(RegionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::RegionTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void RegionTest::setUp()
 {
@@ -36,5 +41,8 @@ void RegionTest::methode1()
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getRefOrigin().back(), vOrigin.back());
-
 }
+
+} //namespace ut
+} //namespace fwData
+
