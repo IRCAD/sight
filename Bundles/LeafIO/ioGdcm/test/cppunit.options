@@ -12,7 +12,7 @@ LIB = ['fwData_0-1',
        ]
 
 BUNDLES = []
-REQUIREMENTS = ['ioGdcm_0-1']
+REQUIREMENTS = ['ioGdcm_0-1','dataReg_0-1','servicesReg_0-1']
 
 CONSOLE = 'yes'
 

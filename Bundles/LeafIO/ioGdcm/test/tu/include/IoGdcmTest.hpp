@@ -1,12 +1,16 @@
-
-#ifndef _IOITK_TEST_TU_IOITKTEST_HPP_
-#define _IOITK_TEST_TU_IOITKTEST_HPP_
+#ifndef __IOGDCM_UT_IOGDCMTEST_HPP__
+#define __IOGDCM_UT_IOGDCMTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwData/Patient.hpp>
+
+namespace ioGdcm
+{
+namespace ut
+{
 
 /**
  * @brief Test many methods to create mesh.
@@ -38,7 +42,9 @@ public:
 private :
 
     void executeService( ::fwTools::Object::sptr obj, std::string srvType, std::string srvImpl, ::fwRuntime::EConfigurationElement::sptr cfg );
-
 };
 
-#endif //_IOITK_TEST_TU_IOITKTEST_HPP_
+} // namespace ut
+} // namespace ioGdcm
+
+#endif //__IOGDCM_UT_IOGDCMTEST_HPP__

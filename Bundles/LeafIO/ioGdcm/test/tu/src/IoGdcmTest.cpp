@@ -1,4 +1,3 @@
-
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
@@ -23,7 +22,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( IoGdcmTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::ioGdcm::ut::IoGdcmTest );
+
+namespace ioGdcm
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -134,3 +138,5 @@ void IoGdcmTest::testDicomPatientDBWriter()
 
 //------------------------------------------------------------------------------
 
+} // namespace ut
+} // namespace ioGdcm
