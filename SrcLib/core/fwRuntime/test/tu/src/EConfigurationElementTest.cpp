@@ -9,7 +9,12 @@
 #include "EConfigurationElementTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( EConfigurationElementTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwRuntime::ut::EConfigurationElementTest );
+
+namespace fwRuntime
+{
+namespace ut
+{
 
 void EConfigurationElementTest::setUp()
 {
@@ -49,3 +54,6 @@ void EConfigurationElementTest::testConfiguration()
     CPPUNIT_ASSERT_EQUAL(config3, config1->findConfigurationElement(NAME2));
     CPPUNIT_ASSERT(config2->findConfigurationElement(NAME3) != NULL);
 }
+
+} // namespace ut
+} // namespace fwTools
