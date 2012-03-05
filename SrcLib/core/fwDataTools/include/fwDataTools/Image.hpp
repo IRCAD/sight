@@ -89,6 +89,21 @@ public :
     /// Fill array with random value
     FWDATATOOLS_API static void randomizeArray(::fwData::Array::sptr array);
 
+    /**
+     * @brief Apply roi to image
+     * 
+     * set input image voxel to zero where roi voxel value is zero
+     */
+    FWDATATOOLS_API static void applyRoi( ::fwData::Image::sptr image,
+                                          ::fwData::Image::sptr roi );
+
+    /**
+     * @brief Check if 'imgRoiApplyed' is the result of 'roi' applyed to 'image'
+     * 
+     */
+    FWDATATOOLS_API static bool isRoiApplyed( ::fwData::Image::sptr image,
+                                              ::fwData::Image::sptr imgRoiApplyed,
+                                              ::fwData::Image::sptr roi );
 protected:
 
 
