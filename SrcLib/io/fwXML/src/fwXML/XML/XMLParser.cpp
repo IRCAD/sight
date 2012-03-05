@@ -155,6 +155,7 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     if (xmlDoc == NULL)
     {
         xmlCleanupParser ();
+        chdir (workingDirectorySaved);
         throw ::fwTools::Failed("Unable to parse the XML file " + rootFile.string() );
     }
 
@@ -162,6 +163,7 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlRoot = xmlDocGetRootElement (xmlDoc);
     if (xmlXIncludeProcessTree (xmlRoot) == -1)
     {
+        chdir (workingDirectorySaved);
         throw ::fwTools::Failed(std::string ("Unable to manage xinclude !"));
     }
 

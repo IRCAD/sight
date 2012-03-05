@@ -66,6 +66,8 @@ public:
 
 protected :
 
+    std::string m_processedXMLFile;
+
     FWXML_API static std::string getIDFormXML( xmlNodePtr xmlNode );
 
     FWXML_API static std::string getClassNameFromXML( xmlNodePtr xmlNode);
