@@ -23,7 +23,12 @@
 #include "TrianTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( TrianTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataIO::ut::TrianTest );
+
+namespace fwDataIO
+{
+namespace ut
+{
 
 static const unsigned int NBPTS   = 100;
 static const unsigned int NBCELLS = 100;
@@ -188,3 +193,5 @@ void TrianTest::generateTrian(::boost::filesystem::path trianFile)
 
 //------------------------------------------------------------------------------
 
+} //namespace ut
+} //namespace fwDataIO

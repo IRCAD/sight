@@ -13,6 +13,10 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+namespace fwDataIO
+{
+namespace ut
+{
 
 /**
  * @brief Test many methods to read/create fw4spl trian mesh file.
@@ -37,5 +41,8 @@ public:
 
 
 };
+
+} //namespace ut
+} //namespace fwDataIO
 
 #endif //_FWDATAIO_TEST_TU_MESHTRIANTEST_HPP_
