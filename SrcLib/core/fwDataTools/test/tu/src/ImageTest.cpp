@@ -11,7 +11,12 @@
 #include "ImageTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::ImageTest );
+
+namespace fwDataTools
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -137,3 +142,6 @@ void ImageTest::stressTestWithType(::fwTools::Type type, int nbTest)
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwDataTools

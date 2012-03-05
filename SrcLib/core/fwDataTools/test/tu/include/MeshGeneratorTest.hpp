@@ -13,6 +13,11 @@
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Array.hpp>
 
+namespace fwDataTools
+{
+namespace ut
+{
+
 /**
  * @brief Test many methods to create mesh.
  */
@@ -33,5 +38,8 @@ public:
     void compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
 
 };
+
+} //namespace ut
+} //namespace fwDataTools
 
 #endif //_FWDATATOOLS_TEST_TU_MESHGENERATORTEST_HPP_

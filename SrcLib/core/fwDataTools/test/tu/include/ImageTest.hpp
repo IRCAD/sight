@@ -11,8 +11,14 @@
 
 #include <fwData/Image.hpp>
 
+
+namespace fwDataTools
+{
+namespace ut
+{
+
 /**
- * @brief Test many methods to create mesh.
+ * @brief Test many methods to create image.
  */
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
@@ -38,5 +44,8 @@ private:
 
 
 };
+
+} //namespace ut
+} //namespace fwDataTools
 
 #endif //_FWDATATOOLS_TEST_TU_IMAGETEST_HPP_
