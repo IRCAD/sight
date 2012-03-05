@@ -11,7 +11,7 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Camera.hpp"
+#include <fwData/Camera.hpp>
 #include "CameraTest.hpp"
 
 

@@ -7,13 +7,13 @@
 #include <utility>
 #include <boost/foreach.hpp>
 
-#include "fwData/Composite.hpp"
-#include "fwData/Boolean.hpp"
-#include "fwData/Float.hpp"
-#include "fwData/Integer.hpp"
-#include "fwData/Image.hpp"
-#include "fwData/TransfertFunction.hpp"
-#include "fwData/Patient.hpp"
+#include <fwData/Composite.hpp>
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/TransfertFunction.hpp>
+#include <fwData/Patient.hpp>
 
 
 #include "IsTypeOfTest.hpp"

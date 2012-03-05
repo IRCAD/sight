@@ -11,9 +11,9 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Acquisition.hpp"
-#include "fwData/Image.hpp"
-#include "fwData/Reconstruction.hpp"
+#include <fwData/Acquisition.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Reconstruction.hpp>
 #include "AcquisitionTest.h"
 
 

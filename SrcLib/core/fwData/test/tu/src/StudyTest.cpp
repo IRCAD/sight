@@ -10,9 +10,9 @@
 #include <ostream>
 #include <map>
 
-#include "fwData/Study.hpp"
-#include "fwData/Patient.hpp"
-#include "fwData/Acquisition.hpp"
+#include <fwData/Study.hpp>
+#include <fwData/Patient.hpp>
+#include <fwData/Acquisition.hpp>
 #include "StudyTest.h"
 
 // Registers the fixture into the 'registry'
@@ -130,7 +130,7 @@ void StudyTest::methode2()
 
 void StudyTest::addAcquisition()
 {
-    boost::uint32_t  NB = 0 ;
+    ::boost::uint32_t  NB = 0 ;
 
     ::fwData::Study::NewSptr s1;
     ::fwData::Acquisition::NewSptr a1;

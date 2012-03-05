@@ -7,10 +7,10 @@
 #include <utility>
 #include <boost/foreach.hpp>
 
-#include "fwData/Composite.hpp"
-#include "fwData/Boolean.hpp"
-#include "fwData/Float.hpp"
-#include "fwData/Integer.hpp"
+#include <fwData/Composite.hpp>
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
 
 #include "CompositeTest.hpp"
 
@@ -35,7 +35,6 @@ void CompositeTest::tearDown()
 
 void CompositeTest::methode1()
 {
-    //typedef std::pair<std::string, ::fwData::Object::sptr> pair_type;
     typedef ::fwData::Composite::value_type pair_type;
     const pair_type PAIRS[] = {
         std::make_pair( "object"       , ::fwData::Object::New()       ),

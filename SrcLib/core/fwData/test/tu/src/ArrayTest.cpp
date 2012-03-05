@@ -6,7 +6,7 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
-#include "fwData/Array.hpp"
+#include <fwData/Array.hpp>
 #include "ArrayTest.hpp"
 
 

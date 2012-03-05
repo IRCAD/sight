@@ -11,8 +11,8 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Material.hpp"
-#include "fwData/Color.hpp"
+#include <fwData/Material.hpp>
+#include <fwData/Color.hpp>
 #include "MaterialTest.hpp"
 
 

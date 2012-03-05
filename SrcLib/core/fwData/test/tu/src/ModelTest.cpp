@@ -11,9 +11,9 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Model.hpp"
-#include "fwData/TriangularMesh.hpp"
-#include "fwData/Material.hpp"
+#include <fwData/Model.hpp>
+#include <fwData/TriangularMesh.hpp>
+#include <fwData/Material.hpp>
 #include "ModelTest.hpp"
 
 

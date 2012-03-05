@@ -7,7 +7,7 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/cstdint.hpp>
-#include "fwData/Mesh.hpp"
+#include <fwData/Mesh.hpp>
 #include "MeshTest.hpp"
 
 

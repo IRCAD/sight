@@ -32,9 +32,7 @@ void RegionTest::tearDown()
 void RegionTest::methode1()
 {
     ::boost::uint8_t DIM    = 14 ;
-    std::vector<double> vOrigin;
-    vOrigin = std::vector<double>(DIM, 0) ;
-    //vOrigin.push_back( DIM ) ;
+    std::vector<double> vOrigin(DIM, 0);
 
     // process
     ::fwData::Region::NewSptr p1(DIM);

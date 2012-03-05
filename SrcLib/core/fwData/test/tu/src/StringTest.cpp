@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include "fwData/String.hpp"
+#include <fwData/String.hpp>
 #include "StringTest.hpp"
 
 

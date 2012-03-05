@@ -10,10 +10,10 @@
 #include <ostream>
 #include <map>
 
-#include "fwData/Graph.hpp"
-#include "fwData/Node.hpp"
-#include "fwData/Edge.hpp"
-#include "fwData/Port.hpp"
+#include <fwData/Graph.hpp>
+#include <fwData/Node.hpp>
+#include <fwData/Edge.hpp>
+#include <fwData/Port.hpp>
 #include "GraphTest.h"
 
 
@@ -46,7 +46,6 @@ void GraphTest::normalCase()
 {
     // G :
     // n1 --e--> n2
-    using namespace fwData;
     ::fwData::Graph::sptr g( ::fwData::Graph::New() );
 
     ::fwData::Node::sptr n1( ::fwData::Node::New() );
@@ -98,7 +97,6 @@ void GraphTest::limitCase1()
 {
     // G :
     // n1 --e1--> n2
-    using namespace fwData;
     ::fwData::Graph::sptr g( ::fwData::Graph::New() );
 
     ::fwData::Node::sptr n1( ::fwData::Node::New() );

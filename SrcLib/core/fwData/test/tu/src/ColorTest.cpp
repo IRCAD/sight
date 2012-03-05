@@ -11,7 +11,7 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Color.hpp"
+#include <fwData/Color.hpp>
 #include "ColorTest.hpp"
 
 
@@ -41,36 +41,36 @@ void ColorTest::methode1()
     const float B = 0.5f;
     const float A = 0.6f;
 
-    //::fwData::Color::sptr color = ::fwData::Color::New(R, G, B, A);
+    ::fwData::Color::sptr color = ::fwData::Color::New(R, G, B, A);
 
-    //CPPUNIT_ASSERT_EQUAL(color->red(), R);
-    //CPPUNIT_ASSERT_EQUAL(color->green(), G);
-    //CPPUNIT_ASSERT_EQUAL(color->blue(), B);
-    //CPPUNIT_ASSERT_EQUAL(color->alpha(), A);
+    CPPUNIT_ASSERT_EQUAL(color->red(), R);
+    CPPUNIT_ASSERT_EQUAL(color->green(), G);
+    CPPUNIT_ASSERT_EQUAL(color->blue(), B);
+    CPPUNIT_ASSERT_EQUAL(color->alpha(), A);
 }
 
 void ColorTest::methode2()
 {
     //-----------test values
-    //const float R = 0.2f;
-    //const float G = 0.8f;
-    //const float B = 0.5f;
-    //const float A = 0.6f;
+    const float R = 0.2f;
+    const float G = 0.8f;
+    const float B = 0.5f;
+    const float A = 0.6f;
 
-    //::fwData::Color::NewSptr color;
+    ::fwData::Color::NewSptr color;
 
-    //::fwData::Color::ColorArray array;
-    //array[0] = R;
-    //array[1] = G;
-    //array[2] = B;
-    //array[3] = A;
+    ::fwData::Color::ColorArray array;
+    array[0] = R;
+    array[1] = G;
+    array[2] = B;
+    array[3] = A;
 
-    //color->setCRefRGBA(array);
+    color->setCRefRGBA(array);
 
-    //CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
-    //CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);
-    //CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], B);
-    //CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], B);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
 }
 
 } //namespace ut

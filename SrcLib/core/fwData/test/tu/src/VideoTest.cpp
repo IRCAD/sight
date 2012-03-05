@@ -34,12 +34,12 @@ void VideoTest::methode1()
     ::boost::uint8_t VALUE1   = 1 ;
 
     // process
-    ::fwData::Video::NewSptr p1;
+    ::fwData::Video::NewSptr video;
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getXSize(),    VALUE);
-    CPPUNIT_ASSERT_EQUAL(p1->getYSize(),    VALUE);
-    CPPUNIT_ASSERT_EQUAL(p1->getBPP(),  VALUE1);
+    CPPUNIT_ASSERT_EQUAL(video->getXSize(), VALUE);
+    CPPUNIT_ASSERT_EQUAL(video->getYSize(), VALUE);
+    CPPUNIT_ASSERT_EQUAL(video->getBPP(),  VALUE1);
 }
 
 } //namespace ut

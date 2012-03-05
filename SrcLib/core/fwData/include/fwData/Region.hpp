@@ -33,7 +33,7 @@ public:
     typedef std::vector<double> OriginType;
     typedef std::vector<boost::int32_t> SizeType;
 
-    FWDATA_API static sptr RegionFactory(const boost::uint8_t _dim);
+    FWDATA_API static sptr RegionFactory(const ::boost::uint8_t _dim);
 
     fwGettersSettersDocMacro(Origin, vOrigin, std::vector<double>, the region origin);
 
