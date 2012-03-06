@@ -139,23 +139,18 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlNodePtr xmlRoot = NULL;
 
     // save previous workingDirectory
-    char workingDirectorySaved[1024];
-    getcwd (workingDirectorySaved, 1024);
+    // char workingDirectorySaved[1024];
+    // getcwd (workingDirectorySaved, 1024);
 
     // set new working directory
-    std::string rootFolder = rootFile.parent_path().string();
-    chdir (rootFolder.c_str ());
-    OSLM_DEBUG( "change working dir to " <<   rootFolder << "...." );
-    OSLM_DEBUG( "parsing XML file " <<   rootFile.string() << "...." );
 #if BOOST_FILESYSTEM_VERSION > 2
-    xmlDoc = xmlParseFile ( rootFile.filename().string().c_str () );
+    xmlDoc = xmlParseFile ( rootFile.string().c_str () );
 #else
-    xmlDoc = xmlParseFile ( rootFile.leaf().c_str () );
+    xmlDoc = xmlParseFile ( rootFile.c_str () );
 #endif
     if (xmlDoc == NULL)
     {
         xmlCleanupParser ();
-        chdir (workingDirectorySaved);
         throw ::fwTools::Failed("Unable to parse the XML file " + rootFile.string() );
     }
 
@@ -163,7 +158,6 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlRoot = xmlDocGetRootElement (xmlDoc);
     if (xmlXIncludeProcessTree (xmlRoot) == -1)
     {
-        chdir (workingDirectorySaved);
         throw ::fwTools::Failed(std::string ("Unable to manage xinclude !"));
     }
 
@@ -171,7 +165,6 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     //validateDoc(xmlDoc);
 
     // restore old working directory
-    chdir (workingDirectorySaved);
 
     // memory cleanup
     xmlCleanupParser();
