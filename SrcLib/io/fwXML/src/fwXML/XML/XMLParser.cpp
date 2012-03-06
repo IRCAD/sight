@@ -138,10 +138,6 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlDocPtr xmlDoc = NULL;
     xmlNodePtr xmlRoot = NULL;
 
-    // save previous workingDirectory
-    // char workingDirectorySaved[1024];
-    // getcwd (workingDirectorySaved, 1024);
-
     // set new working directory
 #if BOOST_FILESYSTEM_VERSION > 2
     xmlDoc = xmlParseFile ( rootFile.string().c_str () );
