@@ -130,7 +130,6 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
     xmlDocPtr xmlDoc = xmlParseFile ( xmlFile.string().c_str () );
     if (xmlDoc == NULL)
     {
-        xmlCleanupParser ();
         throw std::ios_base::failure("Unable to parse the XML file " + xmlFile.string() );
     }
     xmlNodePtr xmlRoot = xmlDocGetRootElement (xmlDoc);
