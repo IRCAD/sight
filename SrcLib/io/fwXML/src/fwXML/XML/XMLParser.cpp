@@ -14,14 +14,6 @@
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
 
-// chdir management
-#ifdef _MSC_VER
-#include <direct.h>
-#else
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
-
 #include <sstream>
 
 #include <boost/cstdint.hpp>
@@ -138,7 +130,6 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlDocPtr xmlDoc = NULL;
     xmlNodePtr xmlRoot = NULL;
 
-    // set new working directory
 #if BOOST_FILESYSTEM_VERSION > 2
     xmlDoc = xmlParseFile ( rootFile.string().c_str () );
 #else
@@ -149,17 +140,12 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
         throw ::fwTools::Failed("Unable to parse the XML file " + rootFile.string() );
     }
 
-    OSLM_DEBUG( "managing XInclude ...." );
+    SLM_DEBUG( "Managing XInclude" );
     xmlRoot = xmlDocGetRootElement (xmlDoc);
     if (xmlXIncludeProcessTree (xmlRoot) == -1)
     {
         throw ::fwTools::Failed(std::string ("Unable to manage xinclude !"));
     }
-
-    // check validation
-    //validateDoc(xmlDoc);
-
-    // restore old working directory
 
     // memory cleanup
 
