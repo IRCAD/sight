@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Edge.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Edge, ::fwData::Edge );
+REGISTER_DATA( ::fwData::Edge );
 namespace fwData {
 std::string Edge::NATURE_FLOW = "flow";
 std::string Edge::NATURE_DATA = "data";

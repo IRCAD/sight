@@ -6,13 +6,13 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Port.hpp"
 
 #include "fwData/Node.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Node, ::fwData::Node );
+REGISTER_DATA( ::fwData::Node );
 
 namespace fwData
 {
@@ -110,7 +110,7 @@ void Node::shallowCopy( Node::csptr _source )
 
     if( _source->getObject())
     {
-        ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
+        ::fwTools::Object::sptr object = ::fwData::Factory::New( _source->getObject()->getClassname() );
         OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
         this->m_object = ::fwData::Object::dynamicCast(object);
         this->m_object->shallowCopy( _source->m_object );
@@ -140,7 +140,7 @@ void Node::deepCopy( Node::csptr _source )
 
     if( _source->getObject())
     {
-        ::fwTools::Object::sptr object = ::fwTools::Factory::New( _source->getObject()->getClassname() );
+        ::fwTools::Object::sptr object = ::fwData::Factory::New( _source->getObject()->getClassname() );
         OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
         this->m_object = ::fwData::Object::dynamicCast(object);
         this->m_object->deepCopy(_source->m_object);

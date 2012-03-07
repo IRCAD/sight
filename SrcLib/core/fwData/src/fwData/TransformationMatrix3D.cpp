@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/TransformationMatrix3D.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::TransformationMatrix3D, ::fwData::TransformationMatrix3D );
+REGISTER_DATA( ::fwData::TransformationMatrix3D );
 
 namespace fwData
 {

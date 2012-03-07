@@ -12,6 +12,7 @@
 #include "fwData/Array.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/Mesh.hpp"
+#include "fwData/Factory.hpp"
 
 #include "fwData/config.hpp"
 
@@ -72,7 +73,7 @@ class FWDATA_CLASS_API Mesh : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwTools::Factory::New< Mesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::Factory::New< Mesh >) ;
 
     fwDataObjectMacro();
 

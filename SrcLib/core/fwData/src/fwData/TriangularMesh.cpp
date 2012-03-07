@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/TriangularMesh.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::TriangularMesh, ::fwData::TriangularMesh );
+REGISTER_DATA( ::fwData::TriangularMesh );
 namespace fwData
 {
 

@@ -18,7 +18,7 @@
 #include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Image.hpp"
-
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -34,7 +34,7 @@ namespace fwData
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwTools::Factory::New< Reconstruction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwData::Factory::New< Reconstruction >) ;
 
     fwCoreAllowSharedFromThis()
     fwDataObjectMacro();

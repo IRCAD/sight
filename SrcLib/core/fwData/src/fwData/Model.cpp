@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Model.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Model, ::fwData::Model );
+REGISTER_DATA( ::fwData::Model );
 namespace fwData
 {
 Model::Model()

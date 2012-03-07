@@ -14,6 +14,7 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include "fwData/registry/macros.hpp"
 #include "fwData/Mesh.hpp"
 
 using namespace boost::assign;
@@ -25,7 +26,8 @@ namespace fwData
 #define CELL_REALLOC_STEP 1000
 #define CELLDATA_REALLOC_STEP 1000
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Mesh, ::fwData::Mesh);
+
+REGISTER_DATA( ::fwData::Mesh );
 
 //------------------------------------------------------------------------------
 

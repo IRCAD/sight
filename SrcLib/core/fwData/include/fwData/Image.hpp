@@ -18,7 +18,7 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Array.hpp"
-
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -35,7 +35,7 @@ namespace fwData
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwTools::Factory::New< Image > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::Factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
 
     /**

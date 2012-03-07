@@ -7,15 +7,15 @@
 #include <utility>
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
+#include <fwData/Factory.hpp>
 
 #include "fwData/Edge.hpp"
 #include "fwData/Port.hpp"
 #include "fwData/Node.hpp"
 #include "fwData/Graph.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Graph,  ::fwData::Graph);
+REGISTER_DATA( ::fwData::Graph );
 
 namespace fwData
 {

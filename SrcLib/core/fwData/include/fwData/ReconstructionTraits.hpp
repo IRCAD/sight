@@ -30,7 +30,7 @@ namespace fwData
 class FWDATA_CLASS_API ReconstructionTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object), (()), ::fwTools::Factory::New< ReconstructionTraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object), (()), ::fwData::Factory::New< ReconstructionTraits >) ;
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 

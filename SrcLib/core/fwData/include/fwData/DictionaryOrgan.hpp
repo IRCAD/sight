@@ -29,7 +29,7 @@ class FWDATA_CLASS_API DictionaryOrgan : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwTools::Factory::New< DictionaryOrgan >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwData::Factory::New< DictionaryOrgan >) ;
 
     // Generator result---------------------------------------------------------
 

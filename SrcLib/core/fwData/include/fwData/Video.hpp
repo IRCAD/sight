@@ -15,6 +15,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/Camera.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -30,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API Video : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwTools::Factory::New< Video >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwData::Factory::New< Video >) ;
 
     typedef ::boost::uint8_t VideoType;
 

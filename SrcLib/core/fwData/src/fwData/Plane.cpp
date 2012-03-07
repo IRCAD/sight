@@ -5,15 +5,15 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
+#include <fwData/Factory.hpp>
 #include <fwMath/PlaneFunctions.hpp>
 
 #include "fwData/Plane.hpp"
 
 #define EPSILON 0.00000001
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Plane, ::fwData::Plane );
+REGISTER_DATA( ::fwData::Plane );
 
 namespace fwData
 {

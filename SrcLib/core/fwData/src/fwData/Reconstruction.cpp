@@ -6,8 +6,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
+#include <fwData/Factory.hpp>
 
 #include <fwMath/MeshFunctions.hpp>
 
@@ -17,7 +17,7 @@
 #include "fwData/Reconstruction.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Reconstruction, ::fwData::Reconstruction );
+REGISTER_DATA( ::fwData::Reconstruction );
 namespace fwData
 {
 
@@ -29,7 +29,7 @@ const Object::FieldID Reconstruction::ID_MESH = "ID_MESH";
 
 Reconstruction::Reconstruction() :
     m_bIsVisible(false),
-    m_pMaterial( ::fwTools::Factory::New< ::fwData::Material>() ),
+    m_pMaterial( ::fwData::Factory::New< ::fwData::Material>() ),
     m_sReconstructionFormat(""),
     m_sOrganName(""),
     m_sStructureType(""),

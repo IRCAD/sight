@@ -24,7 +24,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraitsDictionary : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object), (()), ::fwTools::Factory::New< StructureTraitsDictionary >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object), (()), ::fwData::Factory::New< StructureTraitsDictionary >) ;
 
     typedef std::vector<std::string> StructureTypeNameContainer;
 

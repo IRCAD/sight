@@ -4,16 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Object.hpp"
 #include "fwData/GenericField.hpp"
 #include "fwData/Boolean.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Boolean,::fwData::Boolean );
+REGISTER_DATA( ::fwData::Boolean );
+
 namespace fwData
 {
-
 
 //------------------------------------------------------------------------------
 

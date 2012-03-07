@@ -8,12 +8,12 @@
 #include <iostream>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 
 #include "fwData/ProcessObject.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::ProcessObject,  ::fwData::ProcessObject );
+REGISTER_DATA( ::fwData::ProcessObject );
 namespace fwData
 {
 const std::string ProcessObject::InputKey  = "Inputs";

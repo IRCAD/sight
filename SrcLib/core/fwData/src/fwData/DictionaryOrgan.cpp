@@ -6,11 +6,11 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/DictionaryOrgan.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::DictionaryOrgan,  ::fwData::DictionaryOrgan);
+REGISTER_DATA( ::fwData::DictionaryOrgan );
 namespace fwData
 {
 //------------------------------------------------------------------------------

@@ -18,6 +18,7 @@
 #include "fwData/Image.hpp"
 #include "fwData/Reconstruction.hpp"
 #include "fwData/DownCastIterator.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -37,7 +38,7 @@ namespace fwData
 class FWDATA_CLASS_API Acquisition : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object), (()), ::fwTools::Factory::New< Acquisition >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object), (()), ::fwData::Factory::New< Acquisition >) ;
 
     fwDataObjectMacro();
 

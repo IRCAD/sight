@@ -7,11 +7,12 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
+#include <fwData/Factory.hpp>
 
+#include "fwData/registry/macros.hpp"
 #include "fwData/ROITraits.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::ROITraits, ::fwData::ROITraits );
+REGISTER_DATA( ::fwData::ROITraits );
 
 namespace fwData
 {

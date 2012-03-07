@@ -34,7 +34,7 @@ namespace fwData
 class FWDATA_CLASS_API Model : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object), (()), ::fwTools::Factory::New< Model >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object), (()), ::fwData::Factory::New< Model >) ;
 
     /// mesh and material container
     typedef std::map< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr  > Container ;

@@ -5,11 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Video.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Video, ::fwData::Video  );
+REGISTER_DATA( ::fwData::Video );
 namespace fwData
 {
 //------------------------------------------------------------------------------

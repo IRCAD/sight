@@ -13,7 +13,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Factory.hpp>
+#include <fwData/Factory.hpp>
 #include "fwData/config.hpp"
 #include "fwData/GenericFieldBase.hpp"
 
@@ -37,7 +37,7 @@ class FWDATA_CLASS_API GenericField : public GenericFieldBase
 
 public:
     fwCoreClassDefinitionsWithNFactoriesMacro( (GenericField<T>)(::fwData::Object),
-       ((::fwTools::Factory::New< GenericField<T> > ,() ))
+       ((::fwData::Factory::New< GenericField<T> > ,() ))
        ((GenericFieldFactory  ,((const  T)) ))
        );
 
@@ -142,7 +142,7 @@ template< typename GT >
 typename GT::sptr GenericField<T>::GenericFieldFactory(const typename GT::ValueType value)
 {
     typename GT::sptr field;
-    field = ::fwTools::Factory::New< GT >();
+    field = ::fwData::Factory::New< GT >();
     field->value() = value;
     return field;
 }

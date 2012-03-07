@@ -7,14 +7,14 @@
 #include <cmath>
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
+#include <fwData/Factory.hpp>
 
 #include "fwData/Color.hpp"
 #include "fwData/TransfertFunctionPoint.hpp"
 #include "fwData/TransfertFunction.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::TransfertFunction, ::fwData::TransfertFunction );
+REGISTER_DATA( ::fwData::TransfertFunction );
 
 namespace fwData
 {

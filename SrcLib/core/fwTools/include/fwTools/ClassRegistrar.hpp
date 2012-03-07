@@ -37,11 +37,11 @@
     static const KeyType  BOOST_PP_CAT(registredKeyValue, id ) = keyvalue;                                                                         \
     static fwTools::ClassRegistrar< BaseClassType, SubClassType ,KeyType > BOOST_PP_CAT( registrar, id ) ( BOOST_PP_CAT(registredKeyValue, id ) );
 
-
 #define REGISTER_BINDING_BYCLASSNAME( BaseClassType , SubClassType, Key ) \
     REGISTER_BINDING_ID_CPY( BaseClassType , SubClassType , std::string , (::fwCore::TypeDemangler<Key>().getClassname()) , __LINE__ )
 
-
+#define REGISTER_BINDING_BYCLASSNAME_ID( BaseClassType , SubClassType, Key, id ) \
+    REGISTER_BINDING_ID_CPY( BaseClassType , SubClassType , std::string , (::fwCore::TypeDemangler<Key>().getClassname()) , id )
 
 namespace fwTools
 {

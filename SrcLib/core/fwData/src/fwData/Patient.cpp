@@ -6,12 +6,12 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Study.hpp"
 #include "fwData/Patient.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Patient, ::fwData::Patient );
+REGISTER_DATA( ::fwData::Patient );
 namespace fwData
 {
 const Object::FieldID Patient::ID_STUDIES = "ID_STUDIES";

@@ -12,6 +12,7 @@
 #include <boost/cstdint.hpp>
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -26,7 +27,7 @@ class FWDATA_CLASS_API Region : public Object
 {
 public:
     fwCoreClassDefinitionsWithNFactoriesMacro( (Region)(::fwData::Object),
-       ((::fwTools::Factory::New< Region > ,() ))
+       ((::fwData::Factory::New< Region > ,() ))
        ((RegionFactory ,((const boost::uint8_t)) ))
        );
 

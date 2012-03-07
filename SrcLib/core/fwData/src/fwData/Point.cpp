@@ -5,13 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
-#include <fwTools/Factory.hpp>
+#include <fwData/Factory.hpp>
 
 #include "fwData/Point.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Point, ::fwData::Point );
+REGISTER_DATA( ::fwData::Point );
 
 namespace fwData
 {

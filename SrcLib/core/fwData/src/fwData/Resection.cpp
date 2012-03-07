@@ -5,13 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
-#include <fwTools/Factory.hpp>
+#include <fwData/Factory.hpp>
 
+#include "fwData/Object.hpp"
 #include "fwData/Resection.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Resection, ::fwData::Resection );
+REGISTER_DATA( ::fwData::Resection );
 
 namespace fwData
 {

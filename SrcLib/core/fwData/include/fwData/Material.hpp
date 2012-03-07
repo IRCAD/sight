@@ -10,6 +10,7 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -27,7 +28,7 @@ class FWDATA_CLASS_API Material : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwTools::Factory::New< Material >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::Factory::New< Material >) ;
 
     fwDataObjectMacro();
 

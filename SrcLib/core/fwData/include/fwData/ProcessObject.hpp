@@ -10,6 +10,7 @@
 #include <map>
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 fwCorePredeclare( (fwData)(Field) );
 
@@ -24,7 +25,7 @@ namespace fwData
 class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwTools::Factory::New< ProcessObject >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwData::Factory::New< ProcessObject >) ;
 
     /// IO Container type
     static const std::string InputKey  ;

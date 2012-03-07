@@ -30,7 +30,7 @@ class FWDATA_CLASS_API ResectionDB : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwTools::Factory::New< ResectionDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwData::Factory::New< ResectionDB >) ;
 
     fwDataObjectMacro();
 

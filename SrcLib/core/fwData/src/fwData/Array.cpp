@@ -12,12 +12,14 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include "fwData/registry/macros.hpp"
+
 #include "fwData/Array.hpp"
 
 namespace fwData
 {
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Array, ::fwData::Array);
+REGISTER_DATA( ::fwData::Array );
 
 inline size_t computeSize(
         size_t elementSize,

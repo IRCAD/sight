@@ -9,11 +9,12 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
+#include <fwData/Factory.hpp>
 
+#include "fwData/registry/macros.hpp"
 #include "fwData/StructureTraitsDictionary.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::StructureTraitsDictionary, ::fwData::StructureTraitsDictionary );
+REGISTER_DATA( ::fwData::StructureTraitsDictionary );
 
 namespace fwData
 {

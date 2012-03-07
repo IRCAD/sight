@@ -29,7 +29,7 @@ class FWDATA_CLASS_API Histogram : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Histogram)(::fwData::Object), (()), ::fwTools::Factory::New< Histogram > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Histogram)(::fwData::Object), (()), ::fwData::Factory::New< Histogram > );
 
     typedef std::vector< long > fwHistogramValues;
 

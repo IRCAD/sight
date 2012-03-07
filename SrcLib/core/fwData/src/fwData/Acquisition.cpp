@@ -5,19 +5,24 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Image.hpp"
 #include "fwData/Pipeline.hpp"
 #include "fwData/Reconstruction.hpp"
 
-#include <fwTools/Factory.hpp>
-
 #include "fwData/Acquisition.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Acquisition, ::fwData::Acquisition);
+//------------------------------------------------------------------------------
+
+REGISTER_DATA( ::fwData::Acquisition );
+
+//------------------------------------------------------------------------------
+
 namespace fwData
 {
+
 //------------------------------------------------------------------------------
 
 const Object::FieldID Acquisition::ID_RECONSTRUCTIONS = "ID_RECONSTRUCTIONS";

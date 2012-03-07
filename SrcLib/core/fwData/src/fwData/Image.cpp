@@ -18,13 +18,20 @@
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
+#include <fwData/Factory.hpp>
+
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/StandardBuffer.hpp"
 #include "fwData/Image.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Image, ::fwData::Image );
+//------------------------------------------------------------------------------
+
+REGISTER_DATA( ::fwData::Image );
+
+//------------------------------------------------------------------------------
+
 namespace fwData
 {
 

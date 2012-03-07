@@ -6,14 +6,14 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
+#include <fwData/Factory.hpp>
 
 #include "fwData/TransfertFunctionPoint.hpp"
 #include "fwData/Color.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::TransfertFunctionPoint, ::fwData::TransfertFunctionPoint );
+REGISTER_DATA( ::fwData::TransfertFunctionPoint );
 namespace fwData
 {
 const Object::FieldID TransfertFunctionPoint::ID_COLOR = "ID_COLOR";
@@ -24,7 +24,7 @@ TransfertFunctionPoint::TransfertFunctionPoint () :
 m_i32Value(0)
 {
     SLM_TRACE_FUNC();
-    this->setFieldSingleElement( TransfertFunctionPoint::ID_COLOR, ::fwTools::Factory::New< Color >() );
+    this->setFieldSingleElement( TransfertFunctionPoint::ID_COLOR, ::fwData::Factory::New< Color >() );
 }
 
 //------------------------------------------------------------------------------

@@ -13,6 +13,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Acquisition.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -33,7 +34,7 @@ class FWDATA_CLASS_API Study : public Object
 
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwTools::Factory::New< Study >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwData::Factory::New< Study >) ;
 
     fwDataObjectMacro();
 

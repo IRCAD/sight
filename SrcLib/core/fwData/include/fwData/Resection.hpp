@@ -28,7 +28,7 @@ class FWDATA_CLASS_API Resection : public ::fwData::Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Resection)(::fwData::Object),
-        (()), ::fwTools::Factory::New< Resection >) ;
+        (()), ::fwData::Factory::New< Resection >) ;
 
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;

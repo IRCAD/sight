@@ -31,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwTools::Factory::New< ROITraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::Factory::New< ROITraits >) ;
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 

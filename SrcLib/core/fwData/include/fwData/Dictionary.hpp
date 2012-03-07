@@ -30,7 +30,7 @@ class FWDATA_CLASS_API Dictionary : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwTools::Factory::New< Dictionary >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwData::Factory::New< Dictionary >) ;
 
     //--------------------------------------------------------------------------
     /// Field identifier for organ dictionary

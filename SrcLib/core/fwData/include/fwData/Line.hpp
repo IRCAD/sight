@@ -29,7 +29,7 @@ class FWDATA_CLASS_API Line : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
-        (()), ::fwTools::Factory::New< Line >) ;
+        (()), ::fwData::Factory::New< Line >) ;
 
     fwDataObjectMacro();
 

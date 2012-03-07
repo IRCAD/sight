@@ -5,14 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Patient.hpp"
 
 
 #include "fwData/PatientDB.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::PatientDB, ::fwData::PatientDB );
+REGISTER_DATA( ::fwData::PatientDB );
 namespace fwData
 {
 

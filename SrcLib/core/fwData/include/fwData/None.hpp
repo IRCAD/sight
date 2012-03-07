@@ -11,7 +11,7 @@
 #include "fwData/config.hpp"
 
 #include "fwData/Object.hpp"
-
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -26,7 +26,7 @@ class FWDATA_CLASS_API None : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object), (()), ::fwTools::Factory::New< None >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object), (()), ::fwData::Factory::New< None >) ;
 
     FWDATA_API static bool isNone(::fwData::Object::sptr object);
 

@@ -15,6 +15,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -31,7 +32,7 @@ namespace fwData
 class FWDATA_CLASS_API TriangularMesh : public Object
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwTools::Factory::New< TriangularMesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::Factory::New< TriangularMesh >) ;
 
     /// 3D point container
     typedef std::vector< std::vector< float > >         PointContainer ;

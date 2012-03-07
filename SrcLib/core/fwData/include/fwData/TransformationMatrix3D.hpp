@@ -12,6 +12,7 @@
 #include <assert.h>
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -27,7 +28,7 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
-            (()), ::fwTools::Factory::New< TransformationMatrix3D >) ;
+            (()), ::fwData::Factory::New< TransformationMatrix3D >) ;
 
     typedef double TM3DType;
     typedef std::vector<TM3DType> TMCoefArray;

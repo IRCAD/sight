@@ -19,6 +19,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/Study.hpp"
 #include "fwData/Composite.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -41,7 +42,7 @@ class FWDATA_CLASS_API Patient : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwTools::Factory::New< Patient >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwData::Factory::New< Patient >) ;
 
     fwDataObjectMacro();
 

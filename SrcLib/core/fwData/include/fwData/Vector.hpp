@@ -9,9 +9,10 @@
 
 #include <map>
 #include <boost/shared_ptr.hpp>
-#include "fwData/config.hpp"
 
-#include <fwData/Object.hpp>
+#include "fwData/Object.hpp"
+#include "fwData/config.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -33,7 +34,7 @@ class FWDATA_CLASS_API Vector : public Object, private ObjectVectorType
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwTools::Factory::New< Vector >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::Factory::New< Vector >) ;
 
     typedef Vector Container;
     typedef ObjectVectorType ContainerType;

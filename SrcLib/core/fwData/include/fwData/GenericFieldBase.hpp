@@ -12,7 +12,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Factory.hpp>
+#include <fwData/Factory.hpp>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"

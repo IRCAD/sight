@@ -19,7 +19,8 @@
 
 #include "fwData/config.hpp"
 
-#include <fwData/Object.hpp>
+#include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -39,7 +40,7 @@ typedef std::map< std::string, ::fwData::Object::sptr > ObjectMapType;
 class FWDATA_CLASS_API Composite : public Object, private ObjectMapType
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwTools::Factory::New< Composite >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::Factory::New< Composite >) ;
 
     typedef Composite Container;
     typedef ObjectMapType ContainerType;

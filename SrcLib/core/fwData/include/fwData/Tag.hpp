@@ -28,7 +28,7 @@ class FWDATA_CLASS_API Tag : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwTools::Factory::New< Tag >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwData::Factory::New< Tag >) ;
 
     fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, the list of points )
 

@@ -13,6 +13,7 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -25,7 +26,7 @@ namespace fwData
 class FWDATA_CLASS_API Camera : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Camera)(::fwData::Object), (()), ::fwTools::Factory::New< Camera >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Camera)(::fwData::Object), (()), ::fwData::Factory::New< Camera >) ;
     typedef struct{ unsigned long Low; unsigned long High; }uint32HL;
 
     /// @brief set the extrinsic transformation matrix
