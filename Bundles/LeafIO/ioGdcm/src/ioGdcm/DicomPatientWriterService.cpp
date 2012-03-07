@@ -38,9 +38,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioGdcm::DicomPatientWriterService , ::fwData
 
 //------------------------------------------------------------------------------
 
-DicomPatientWriterService::DicomPatientWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientPath("")
+DicomPatientWriterService::DicomPatientWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -50,8 +48,10 @@ DicomPatientWriterService::~DicomPatientWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void DicomPatientWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType DicomPatientWriterService::getIOPathType() const
+{
+    return ::io::FOLDER;
+}
 
 //------------------------------------------------------------------------------
 
@@ -70,8 +70,12 @@ void DicomPatientWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsPatientPath = result->getFolder();
-        m_bServiceIsConfigured = true;
+        this->setFolder( _sDefaultPath );
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -117,7 +121,7 @@ std::string DicomPatientWriterService::getSelectorDialogTitle()
 void DicomPatientWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Patient::sptr associatedPatient = this->getObject< ::fwData::Patient >();
@@ -125,7 +129,7 @@ void DicomPatientWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        savePatient(m_fsPatientPath, associatedPatient);
+        savePatient(this->getFolder(), associatedPatient);
         cursor.setDefaultCursor();
     }
 }
@@ -138,18 +142,16 @@ void DicomPatientWriterService::savePatient( const ::boost::filesystem::path _pa
 {
     SLM_TRACE_FUNC();
 
-    ::gdcmIO::writer::DicomGlobalWriterManager myWriter;
+    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
 
-    myWriter.setObject(_pPatient);
-    ::fwData::location::Folder::NewSptr loc;
-    loc->setFolder(_patientDBPath);
-    myWriter.setLocation(loc);
+    myWriter->setObject(_pPatient);
+    myWriter->setFolder(_patientDBPath);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Patient ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
     }
     catch (const std::exception & e)
     {

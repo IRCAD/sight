@@ -7,8 +7,11 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
+#include <fwDataTools/Image.hpp>
+
 #include <itkIO/ImageWriter.hpp>
 #include <itkIO/ImageReader.hpp>
+
 
 #include "ImageReaderWriterTest.hpp"
 
@@ -20,6 +23,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ImageReaderWriterTest );
 void ImageReaderWriterTest::setUp()
 {
     // Set up context before running a test.
+    srand(time(NULL));
 }
 
 //------------------------------------------------------------------------------
@@ -31,14 +35,72 @@ void ImageReaderWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::methode1()
+void ImageReaderWriterTest::testSaveLoadInr()
 {
-    const ::boost::filesystem::path PATH = "imageInrTest/image.inr.gz";
-
     // create Image
-    ::fwData::Image::sptr image = createImage();
+    ::fwData::Image::NewSptr image;
+    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    this->checkSaveLoadInr( image );
+}
+
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::stressTestInr()
+{
+    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int8_t >();
+//    this->stressTestInrWithType(type, 5);
+
+    type = ::fwTools::Type::create< ::boost::uint8_t >();
+    this->stressTestInrWithType(type, 5);
+
+    type = ::fwTools::Type::create< ::boost::int16_t >();
+    this->stressTestInrWithType(type, 5);
+
+    type = ::fwTools::Type::create< ::boost::uint16_t >();
+    this->stressTestInrWithType(type, 5);
+
+    type = ::fwTools::Type::create< ::boost::int32_t >();
+    this->stressTestInrWithType(type, 5);
+
+    type = ::fwTools::Type::create< ::boost::uint32_t >();
+    this->stressTestInrWithType(type, 5);
+
+//    type = ::fwTools::Type::create< ::boost::int64_t >();
+//    this->stressTestInrWithType(type, 5);
+
+//    type = ::fwTools::Type::create< ::boost::uint64_t >();
+//    this->stressTestInrWithType(type, 5);
+
+    type = ::fwTools::Type::create< float >();
+    this->stressTestInrWithType(type, 5);
+
+//    type = ::fwTools::Type::create< double >();
+//    this->stressTestInrWithType(type, 5);
+}
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTest)
+{
+    for (int nb=0 ; nb < nbTest ; ++nb)
+    {
+        ::fwData::Image::NewSptr image;
+        ::fwDataTools::Image::generateRandomImage(image, type);
+        this->checkSaveLoadInr(image);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::NewSptr image )
+{
+    // inr only support image origin (0,0,0)
+    ::fwData::Image::OriginType origin(3,0);
+    image->setOrigin(origin);
 
     // save image in inr
+    const ::boost::filesystem::path PATH = "imageInrTest/image.inr.gz";
     ::boost::filesystem::create_directories( PATH.parent_path() );
     ::itkIO::ImageWriter::NewSptr myWriter;
     myWriter->setObject(image);
@@ -55,64 +117,8 @@ void ImageReaderWriterTest::methode1()
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     // check Image
-    CPPUNIT_ASSERT_EQUAL(image->getDimension(), image2->getDimension());
-    CPPUNIT_ASSERT_EQUAL(image->getManagesBuff(), image2->getManagesBuff());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[0], image2->getSpacing()[0], 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[1], image2->getSpacing()[1], 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2], image2->getSpacing()[2], 0.001);
-    CPPUNIT_ASSERT_EQUAL(image->getSize()[0], image2->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize()[1], image2->getSize()[1]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize()[2], image2->getSize()[2]);
-
-    // not save in inrimage
-//  CPPUNIT_ASSERT_EQUAL(image->getOrigin()[0], image2->getOrigin()[0]);
-//  CPPUNIT_ASSERT_EQUAL(image->getOrigin()[1], image2->getOrigin()[1]);
-//  CPPUNIT_ASSERT_EQUAL(image->getOrigin()[2], image2->getOrigin()[2]);
-//  CPPUNIT_ASSERT_EQUAL(image->getWindowCenter(), image2->getWindowCenter());
-//  CPPUNIT_ASSERT_EQUAL(image->getWindowWidth(), image2->getWindowWidth());
-//  CPPUNIT_ASSERT_EQUAL(image->getRescaleIntercept(), image2->getRescaleIntercept());
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::sptr ImageReaderWriterTest::createImage()
-{
-    // images informations
-    const ::boost::uint8_t IMG1_DIMENSION   = 3 ;
-    const bool IMG1_MANAGESBUFF             = true ;
-    std::vector<double> IMG1_VECTORCREFSPACING;
-    IMG1_VECTORCREFSPACING.push_back(1.2);
-    IMG1_VECTORCREFSPACING.push_back(0.866);
-    IMG1_VECTORCREFSPACING.push_back(0.456);
-    std::vector<double> IMG1_VECTORCREFORIGIN(3,78)  ;
-    std::vector< ::boost::int32_t > IMG1_VECTORCREFSIZE ;
-    int sizeX = 46;
-    IMG1_VECTORCREFSIZE.push_back(sizeX);
-    int sizeY = 53;
-    IMG1_VECTORCREFSIZE.push_back(sizeY);
-    int sizeZ = 27;
-    IMG1_VECTORCREFSIZE.push_back(sizeZ);
-    const double IMG1_WINDOWCENTER = 86 ;
-    const double IMG1_WINDOWWIDTH = 345 ;
-    const double IMG1_RESCALEINTERCEPT = 1 ;
-    ::fwTools::DynamicType IMG1_PIXELTYPE = ::fwTools::makeDynamicType<unsigned short>();
-    unsigned short *buffer = new unsigned short[sizeX*sizeY*sizeZ];
-
-    //create image
-    ::fwData::Image::NewSptr pImage;
-
-    pImage->setDimension(IMG1_DIMENSION);
-    pImage->setPixelType(IMG1_PIXELTYPE);
-    pImage->setManagesBuff(IMG1_MANAGESBUFF);
-    pImage->setCRefSpacing(IMG1_VECTORCREFSPACING);
-    pImage->setCRefOrigin(IMG1_VECTORCREFORIGIN);
-    pImage->setCRefSize(IMG1_VECTORCREFSIZE);
-    pImage->setWindowCenter(IMG1_WINDOWCENTER);
-    pImage->setWindowWidth(IMG1_WINDOWWIDTH );
-    pImage->setRescaleIntercept(IMG1_RESCALEINTERCEPT);
-    pImage->setBuffer(buffer);
-
-    return pImage;
+    // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
+    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2, 0.00001, 0.00001));
 }
 
 //------------------------------------------------------------------------------

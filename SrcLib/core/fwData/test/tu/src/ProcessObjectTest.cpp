@@ -9,7 +9,12 @@
 #include <fwData/ProcessObject.hpp>
 #include "ProcessObjectTest.hpp"
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ProcessObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ProcessObjectTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void ProcessObjectTest::constructeur()
 {
@@ -35,3 +40,6 @@ void ProcessObjectTest::constructeur()
     CPPUNIT_ASSERT_EQUAL(field2, po->getInput< ::fwData::Integer >(FIELDID2));
     CPPUNIT_ASSERT_EQUAL(image2, po->getOutput< ::fwData::Image >(IMAGEID2));
 }
+
+} //namespace ut
+} //namespace fwData

@@ -44,8 +44,8 @@ public:
     FWCOMMAND_API void paint( ::fwData::Image::BufferIndexType index, ::fwData::Image::BufferType oldValue, ::fwData::Image::BufferType newValue );
 
 
-    FWCOMMAND_API void prePaint( ::fwData::Image::VoxelIndexType x, ::fwData::Image::VoxelIndexType y, ::fwData::Image::VoxelIndexType z );
-    FWCOMMAND_API void prePaint( ::fwData::Image::VoxelIndexType index );
+    FWCOMMAND_API void prePaint( ::fwData::Image::IndexType x, ::fwData::Image::IndexType y, ::fwData::Image::IndexType z );
+    FWCOMMAND_API void prePaint( ::fwData::Image::IndexType index );
 
     FWCOMMAND_API void postPaint();
 
@@ -82,7 +82,7 @@ private :
     ::fwData::Image::wptr         m_image;
     ::fwData::Image::BufferType * m_buffer;
 
-    ::fwData::Image::VoxelIndexType m_currentPrepaintIndex;
+    ::fwData::Image::IndexType m_currentPrepaintIndex;
     std::vector< ::fwData::Image::BufferType > m_currentPrepaintBuff;
 
 };

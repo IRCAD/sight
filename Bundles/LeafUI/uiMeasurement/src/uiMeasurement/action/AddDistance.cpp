@@ -67,13 +67,19 @@ void AddDistance::updating() throw(::fwTools::Failed)
     if (!image) {return; }
 
     ::fwData::Point::NewSptr pt1;
+    std::copy( image->getOrigin().begin(),  image->getOrigin().begin() +3, pt1->getRefCoord().begin() );
+
     ::fwData::Point::NewSptr pt2;
-    std::copy( image->getCRefSize().begin(),  image->getCRefSize().begin() +3, pt2->getRefCoord().begin() );
+    std::copy( image->getSize().begin(),  image->getSize().begin() +3, pt2->getRefCoord().begin() );
 
     std::transform( pt2->getRefCoord().begin(),pt2->getRefCoord().end(),
-            image->getCRefSpacing().begin(),
+            image->getSpacing().begin(),
             pt2->getRefCoord().begin(),
             std::multiplies<double>() );
+    std::transform( pt2->getRefCoord().begin(),pt2->getRefCoord().end(),
+            image->getOrigin().begin(),
+            pt2->getRefCoord().begin(),
+            std::plus<double>() );
 
     ::fwData::PointList::NewSptr pl;
 

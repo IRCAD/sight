@@ -1,6 +1,7 @@
 CLASSTEST=[
           'TrianTest',
           'MeshTest',
+          'ImageTest',
           ]
 USE = ['boost']
 LIB = [
@@ -8,6 +9,7 @@ LIB = [
        'fwCore_0-1',
        'fwData_0-1',
        'fwVtkIO_0-1',
-       'fwDataTools_0-1'
+       'fwDataTools_0-1',
+       'fwTest_0-1',
        ]
 CONSOLE='yes'

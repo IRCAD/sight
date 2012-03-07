@@ -41,9 +41,6 @@ protected:
     IOITK_API virtual ~JpgPatientDBReaderService() throw();
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
@@ -67,15 +64,15 @@ protected:
     /// Override
     IOITK_API virtual void configureWithIHM();
 
+    /// Return managed file type, here FOLDER
+    IOITK_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void notificationOfDBUpdate();
 
     ::fwData::PatientDB::sptr createPatientDB( const ::boost::filesystem::path inrFileDir );
 
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsPatientDBPath;
 };
 
 } // namespace ioITK

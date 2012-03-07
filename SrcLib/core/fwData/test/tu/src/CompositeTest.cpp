@@ -7,16 +7,21 @@
 #include <utility>
 #include <boost/foreach.hpp>
 
-#include "fwData/Composite.hpp"
-#include "fwData/Boolean.hpp"
-#include "fwData/Float.hpp"
-#include "fwData/Integer.hpp"
+#include <fwData/Composite.hpp>
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
 
 #include "CompositeTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( CompositeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CompositeTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void CompositeTest::setUp()
 {
@@ -30,7 +35,6 @@ void CompositeTest::tearDown()
 
 void CompositeTest::methode1()
 {
-    //typedef std::pair<std::string, ::fwData::Object::sptr> pair_type;
     typedef ::fwData::Composite::value_type pair_type;
     const pair_type PAIRS[] = {
         std::make_pair( "object"       , ::fwData::Object::New()       ),
@@ -79,5 +83,6 @@ void CompositeTest::methode1()
     CPPUNIT_ASSERT_EQUAL(composite->getRefMap()[STR], obj);
 }
 
-
+} //namespace ut
+} //namespace fwData
 

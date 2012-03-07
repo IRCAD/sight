@@ -12,11 +12,13 @@
 
 #include "ClassFactoryRegistryTest.hpp"
 
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::ClassFactoryRegistryTest );
+
 // Registers the fixture into the 'registry'
 namespace fwTools
 {
-
-CPPUNIT_TEST_SUITE_REGISTRATION( ClassFactoryRegistryTest );
+namespace ut
+{
 
 void ClassFactoryRegistryTest::setUp()
 {
@@ -28,7 +30,7 @@ void ClassFactoryRegistryTest::tearDown()
     // Clean up after the test run.
 }
 
-void ClassFactoryRegistryTest::methode1()
+void ClassFactoryRegistryTest::factoryRegistryTest()
 {
     const std::string STR = "toto";
 
@@ -48,5 +50,6 @@ void ClassFactoryRegistryTest::methode1()
     CPPUNIT_ASSERT(field);
 }
 
+} // namespace ut
+} // namespace fwTools
 
-}

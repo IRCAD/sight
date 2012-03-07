@@ -13,7 +13,12 @@
 #include "FloatTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( FloatTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::FloatTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void FloatTest::setUp()
 {
@@ -64,3 +69,6 @@ void FloatTest::methode1()
         CPPUNIT_ASSERT( !( VALUE  > ::fwData::Float::New( VALUE )->value() ) );
     }
 }
+
+} //namespace ut
+} //namespace fwData

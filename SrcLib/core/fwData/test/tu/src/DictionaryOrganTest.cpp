@@ -9,7 +9,12 @@
 #include "DictionaryOrganTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DictionaryOrganTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::DictionaryOrganTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void DictionaryOrganTest::setUp()
 {
@@ -51,29 +56,29 @@ void DictionaryOrganTest::methode1()
 
     // process
     ::fwData::DictionaryOrgan::NewSptr p1;
-    p1->setCRefStructureType(                   CREFSTRUCTURETYPE);
-    p1->setCRefSALabel(             CREFSALABEL);
-    p1->setIsMedicalStructure(                  ISMEDICALSTRUCTURE);
-    p1->setAOColor(                 AOCOLOR);
-    p1->setAvgVolume(                   AVGVOLUME);
-    p1->setVolStdDeviation(                 VOLSTDDEVIATION);
-    p1->setNbExams(                 NBEXAMS);
-    p1->setCRefPosition(                    CREFPOSITION);
-    p1->setCRefIconPath(                    CREFICONPATH);
-    p1->setRed(                 RED);
-    p1->setGreen(                   GREEN);
-    p1->setBlue(                    BLUE);
-    p1->setAlpha(               ALPHA);
-    p1->setCRefTexturePath(             CREFTEXTUREPATH );
-    p1->setAvgTriangleNb(                   AVGTRIANGLENB);
-    p1->setSegMin(                  SEGMIN);
-    p1->setSegMax(                  SEGMAX);
-    p1->setCRefModality(                    CREFMODALITY);
-    p1->setSurfaceElasticity(                   SURFACEELASTICITY);
-    p1->setSurfaceRupture(                  SURFACERUPTURE);
-    p1->setInteriorRupture(                 INTERIORRUPTURE);
-    p1->setCRefComment(                 CREFCOMMENT);
-    p1->setCRefBelongsTo(                   VECTORCREFBELONGSTO);
+    p1->setCRefStructureType( CREFSTRUCTURETYPE );
+    p1->setCRefSALabel( CREFSALABEL );
+    p1->setIsMedicalStructure( ISMEDICALSTRUCTURE );
+    p1->setAOColor( AOCOLOR );
+    p1->setAvgVolume( AVGVOLUME );
+    p1->setVolStdDeviation( VOLSTDDEVIATION );
+    p1->setNbExams( NBEXAMS );
+    p1->setCRefPosition( CREFPOSITION );
+    p1->setCRefIconPath( CREFICONPATH );
+    p1->setRed( RED );
+    p1->setGreen( GREEN );
+    p1->setBlue( BLUE );
+    p1->setAlpha( ALPHA );
+    p1->setCRefTexturePath( CREFTEXTUREPATH );
+    p1->setAvgTriangleNb( AVGTRIANGLENB );
+    p1->setSegMin( SEGMIN );
+    p1->setSegMax( SEGMAX );
+    p1->setCRefModality( CREFMODALITY );
+    p1->setSurfaceElasticity( SURFACEELASTICITY );
+    p1->setSurfaceRupture( SURFACERUPTURE );
+    p1->setInteriorRupture( INTERIORRUPTURE );
+    p1->setCRefComment( CREFCOMMENT );
+    p1->setCRefBelongsTo( VECTORCREFBELONGSTO );
 
 
     // check
@@ -100,6 +105,7 @@ void DictionaryOrganTest::methode1()
     CPPUNIT_ASSERT_EQUAL(p1->getInteriorRupture(), INTERIORRUPTURE);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefComment(),  CREFCOMMENT);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefBelongsTo().back(), CREFBELONGSTO);
-
-
 }
+
+} //namespace ut
+} //namespace fwData

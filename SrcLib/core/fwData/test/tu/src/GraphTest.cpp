@@ -10,29 +10,34 @@
 #include <ostream>
 #include <map>
 
-#include "fwData/Graph.hpp"
-#include "fwData/Node.hpp"
-#include "fwData/Edge.hpp"
-#include "fwData/Port.hpp"
+#include <fwData/Graph.hpp>
+#include <fwData/Node.hpp>
+#include <fwData/Edge.hpp>
+#include <fwData/Port.hpp>
 #include "GraphTest.h"
 
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( GraphTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::GraphTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
 void GraphTest::setUp()
 {
-        // Set up context before running a test.
+    // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
 void GraphTest::tearDown()
 {
-        // Clean up after the test run.
+    // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
@@ -41,7 +46,6 @@ void GraphTest::normalCase()
 {
     // G :
     // n1 --e--> n2
-    using namespace fwData;
     ::fwData::Graph::sptr g( ::fwData::Graph::New() );
 
     ::fwData::Node::sptr n1( ::fwData::Node::New() );
@@ -93,7 +97,6 @@ void GraphTest::limitCase1()
 {
     // G :
     // n1 --e1--> n2
-    using namespace fwData;
     ::fwData::Graph::sptr g( ::fwData::Graph::New() );
 
     ::fwData::Node::sptr n1( ::fwData::Node::New() );
@@ -244,9 +247,9 @@ void GraphTest::limitCase2()
     ::fwData::Node::sptr nullNode;
     CPPUNIT_ASSERT_EQUAL( g->getSourceNode(e2), nullNode );
     CPPUNIT_ASSERT_EQUAL( g->getDestinationNode(e2), nullNode );
-
-
-
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwData

@@ -11,13 +11,18 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/TransfertFunctionPoint.hpp"
-#include "fwData/Color.hpp"
+#include <fwData/TransfertFunctionPoint.hpp>
+#include <fwData/Color.hpp>
 #include "TransfertFunctionPointTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( TransfertFunctionPointTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransfertFunctionPointTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void TransfertFunctionPointTest::setUp()
 {
@@ -40,11 +45,12 @@ void TransfertFunctionPointTest::methode1()
     tfp->setValue(INDEX);
     tfp->setColor(COLOR);
 
-
     CPPUNIT_ASSERT_EQUAL(tfp->getValue(), INDEX);
     CPPUNIT_ASSERT_EQUAL(tfp->getColor()->getRGBA()[0], COLOR->getRGBA()[0]);
     CPPUNIT_ASSERT_EQUAL(tfp->getColor()->getRGBA()[1], COLOR->getRGBA()[1]);
 }
 
 
+} //namespace ut
+} //namespace fwData
 

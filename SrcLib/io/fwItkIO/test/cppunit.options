@@ -1,5 +1,4 @@
-CLASSTEST=['ImageReaderWriterTest']
-
+CLASSTEST=['ImageReaderWriterTest','ImageConversionTest','ImageReaderWriterJPGTest','DicomReaderWriterTest']
 USE = ['boost']
-LIB = ['fwItkIO_0-1','fwTools_0-1','fwCore_0-1','fwData_0-1','fwDataIO_0-2']
+LIB = ['fwItkIO_0-1','fwTools_0-1','fwCore_0-1','fwData_0-1','fwDataIO_0-2','fwTest_0-1']
 CONSOLE='yes'

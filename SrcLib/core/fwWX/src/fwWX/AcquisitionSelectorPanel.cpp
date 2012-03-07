@@ -235,7 +235,7 @@ void AcquisitionSelectorPanel::updateData( ::boost::shared_ptr< ::fwData::Patien
                     acqDate     = boost::posix_time::to_iso_extended_string( (*acquisition)->getCreationDate() );
                     acqDate     =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
 
-                    if ( (*acquisition)->getImage()->getDimension() == 3 )
+                    if ( (*acquisition)->getImage()->getNumberOfDimensions() == 3 )
                     {
                         std::stringstream nbImagesStream;
                         nbImagesStream << (*acquisition)->getImage()->getSize()[2];

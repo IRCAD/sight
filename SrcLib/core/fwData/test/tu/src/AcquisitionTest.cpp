@@ -11,14 +11,19 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Acquisition.hpp"
-#include "fwData/Image.hpp"
-#include "fwData/Reconstruction.hpp"
+#include <fwData/Acquisition.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Reconstruction.hpp>
 #include "AcquisitionTest.h"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( AcquisitionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::AcquisitionTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void AcquisitionTest::setUp()
 {
@@ -341,8 +346,6 @@ void AcquisitionTest::methode2()
     CPPUNIT_ASSERT_EQUAL(a1->getPatientPosition(),  PATIENTPOSITION ) ;
     CPPUNIT_ASSERT_EQUAL(a1->getCRefPatientPosition(),  PATIENTPOSITION ) ;
     CPPUNIT_ASSERT_EQUAL(a1->getRefPatientPosition(),  PATIENTPOSITION ) ;
-
-
 }
 
 void AcquisitionTest::Image()
@@ -384,3 +387,5 @@ void AcquisitionTest::Reconstruction()
     CPPUNIT_ASSERT_EQUAL(a1->getReconstructionSize(),  NB);
 }
 
+} //namespace ut
+} //namespace fwData

@@ -37,7 +37,7 @@ public:
 
 private:
     ::fwData::PatientDB::sptr createPatientDB();
-    ::fwData::Mesh::sptr DicomTest::generateMesh();
+    ::fwData::Mesh::sptr generateMesh();
 
     ::fwData::PatientDB::sptr m_originalPatientDB;
     ::fwData::PatientDB::sptr m_readedPatientDB;

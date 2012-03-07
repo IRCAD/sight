@@ -44,8 +44,6 @@
 namespace fwXML
 {
 
-std::string ProcessedXMLFile = std::string();
-
 ::boost::filesystem::path Serializer::m_rootFolder(".");
 
 //------------------------------------------------------------------------------
@@ -171,7 +169,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     SLM_ASSERT("object not instanced", object); // check if object is well instanciated
     OSLM_INFO( "Serializing to " <<   m_rootFolder.string().c_str() << "...." );
-    ProcessedXMLFile =  m_rootFolder.string();
+    m_processedXMLFile =  m_rootFolder.string();
 
     //reset all hierarchy informations
     ::fwXML::XMLHierarchy::getDefault()->clearAll();
@@ -194,7 +192,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
             aggIter->second->rootFolder() = this->rootFolder();
             ::boost::filesystem::path filePath =  aggIter->second->getFullPath(); ;
             OSLM_DEBUG( "Saving XMLAggregator " << filePath.string() << "..." );
-            ProcessedXMLFile =  filePath.string();
+            m_processedXMLFile =  filePath.string();
             {
                 // create directory structure if needed
                 if ( filePath.parent_path().empty() == false )
@@ -212,7 +210,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     // save extra XML
     IOforExtraXML( object, true );
 
-     ProcessedXMLFile =  m_rootFolder.string();
+     m_processedXMLFile =  m_rootFolder.string();
 
     if (saveSchema)// save schema if needed
     {
@@ -237,7 +235,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     if ( className.empty() )
     {
         std::string mesg = "Serializer::ObjectsFromXml : missing class attribute for xml node " + std::string( (const char*)xmlNode->name);
-        mesg+= " from file " + ProcessedXMLFile;
+        mesg+= " from file " + m_processedXMLFile;
         throw ::fwTools::Failed(mesg);
     }
 
@@ -344,7 +342,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     // get XMLDOC & root PTR
     this->rootFolder() = filePath.parent_path();
-    ProcessedXMLFile = filePath.string();
+    m_processedXMLFile = filePath.string();
 
     xmlDoc = XMLParser::getXmlDocFromFile( filePath );
     xmlRoot = xmlDocGetRootElement (xmlDoc);
@@ -425,7 +423,8 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     ObjectTracker::clear();
 
-    ::fwTools::Object::sptr objRoot = this->ObjectsFromXml( rootObject, loadExtraXML );
+    ::fwTools::Object::sptr objRoot;
+    objRoot = this->ObjectsFromXml( rootObject, loadExtraXML );
 
     if (loadExtraXML)
     {

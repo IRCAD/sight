@@ -19,7 +19,12 @@
 #include "MeshTrianTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MeshTrianTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataIO::ut::MeshTrianTest );
+
+namespace fwDataIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -135,3 +140,5 @@ void MeshTrianTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr
 
 //------------------------------------------------------------------------------
 
+} //namespace ut
+} //namespace fwDataIO

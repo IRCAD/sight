@@ -4,24 +4,31 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_ColorTEST_H
-#define DATA_ColorTEST_H
+#ifndef __FWDATA_UT_ColorTEST_HPP__
+#define __FWDATA_UT_ColorTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class ColorTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class ColorTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( ColorTest );
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST( methode2 );
     CPPUNIT_TEST_SUITE_END();
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
     void methode2();
 };
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_ColorTEST_HPP__

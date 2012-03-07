@@ -8,7 +8,12 @@
 #include "RegionTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(RegionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::RegionTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void RegionTest::setUp()
 {
@@ -27,14 +32,15 @@ void RegionTest::tearDown()
 void RegionTest::methode1()
 {
     ::boost::uint8_t DIM    = 14 ;
-    std::vector<double> vOrigin;
-    vOrigin = std::vector<double>(DIM, 0) ;
-    //vOrigin.push_back( DIM ) ;
+    std::vector<double> vOrigin(DIM, 0);
 
     // process
     ::fwData::Region::NewSptr p1(DIM);
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getRefOrigin().back(), vOrigin.back());
-
 }
+
+} //namespace ut
+} //namespace fwData
+

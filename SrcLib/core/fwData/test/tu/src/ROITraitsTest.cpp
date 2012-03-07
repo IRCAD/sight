@@ -11,7 +11,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ROITraitsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ROITraitsTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void ROITraitsTest::setUp()
 {
@@ -40,3 +45,7 @@ void ROITraitsTest::creation()
     CPPUNIT_ASSERT(structure == roiTraits->getStructureTraits() );
     CPPUNIT_ASSERT(opNode == roiTraits->getMaskOpNode() );
 }
+
+} //namespace ut
+} //namespace fwData
+

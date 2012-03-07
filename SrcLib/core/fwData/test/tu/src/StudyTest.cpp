@@ -10,13 +10,18 @@
 #include <ostream>
 #include <map>
 
-#include "fwData/Study.hpp"
-#include "fwData/Patient.hpp"
-#include "fwData/Acquisition.hpp"
+#include <fwData/Study.hpp>
+#include <fwData/Patient.hpp>
+#include <fwData/Acquisition.hpp>
 #include "StudyTest.h"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( StudyTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::StudyTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void StudyTest::setUp()
 {
@@ -73,14 +78,13 @@ void StudyTest::methode1() //test des setters et getters
     CPPUNIT_ASSERT_EQUAL(p1->getDbID()               , DBID ) ;
     CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID()           , DBID ) ;
     CPPUNIT_ASSERT_EQUAL(p1->getRefDbID()            , DBID ) ;
-
 }
 
 //------------------------------------------------------------------------------
 
 void StudyTest::methode2()
 {
-    const std::string HOSPITAL      ="hopital" ;
+    const std::string HOSPITAL ="hopital" ;
     const std::string MODALITY ="modality" ;
     const std::string ZONE  ="IDDICOM" ;
     const std::string RISID ="risid569" ;
@@ -120,14 +124,13 @@ void StudyTest::methode2()
     CPPUNIT_ASSERT_EQUAL(p1->getDbID()               , DBID ) ;
     CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID()           , DBID ) ;
     CPPUNIT_ASSERT_EQUAL(p1->getRefDbID()            , DBID ) ;
-
 }
 
 //------------------------------------------------------------------------------
 
 void StudyTest::addAcquisition()
 {
-    boost::uint32_t  NB = 0 ;
+    ::boost::uint32_t  NB = 0 ;
 
     ::fwData::Study::NewSptr s1;
     ::fwData::Acquisition::NewSptr a1;
@@ -141,4 +144,5 @@ void StudyTest::addAcquisition()
     CPPUNIT_ASSERT_EQUAL(s1->getAcquisitionSize(),  NB);
 }
 
-
+} //namespace ut
+} //namespace fwData

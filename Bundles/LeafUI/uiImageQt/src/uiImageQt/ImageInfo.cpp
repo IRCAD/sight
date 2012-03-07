@@ -122,7 +122,7 @@ void ImageInfo::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools:
             {
                 fwVec3d  pointCoord = point->getCoord();
 
-                std::string intensity = ::fwData::getPixelAsString(image, pointCoord[0], pointCoord[1], pointCoord[2] );;
+                std::string intensity = image->getPixelAsString(pointCoord[0], pointCoord[1], pointCoord[2] );;
                 m_valueText->setText(QString::fromStdString(intensity));
             }
         }

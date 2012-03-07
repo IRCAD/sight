@@ -51,19 +51,19 @@ void PaintCommand::setImage( ::fwData::Image::sptr  image )
 
 //-----------------------------------------------------------------------------
 
-void PaintCommand::prePaint( ::fwData::Image::VoxelIndexType x, ::fwData::Image::VoxelIndexType y, ::fwData::Image::VoxelIndexType z )
+void PaintCommand::prePaint( ::fwData::Image::IndexType x, ::fwData::Image::IndexType y, ::fwData::Image::IndexType z )
 {
     ::fwData::Image::sptr image = m_image.lock();
-    const std::vector< ::boost::int32_t> &size = image->getCRefSize();
+    const ::fwData::Image::SizeType &size = image->getSize();
     const int &sx = size[0];
     const int &sy = size[1];
-    const ::fwData::Image::VoxelIndexType index = x + sx*y + z*sx*sy;
+    const ::fwData::Image::IndexType index = x + sx*y + z*sx*sy;
     prePaint(index);
 }
 
 //-----------------------------------------------------------------------------
 
-void PaintCommand::prePaint( ::fwData::Image::VoxelIndexType index )
+void PaintCommand::prePaint( ::fwData::Image::IndexType index )
 {
     ::fwData::Image::sptr image = m_image.lock();
     unsigned int imageTypeSize = image->getPixelType().sizeOf();

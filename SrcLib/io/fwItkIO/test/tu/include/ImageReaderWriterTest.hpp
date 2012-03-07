@@ -16,7 +16,8 @@
 class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ImageReaderWriterTest );
-    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( testSaveLoadInr );
+    CPPUNIT_TEST( stressTestInr );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -24,11 +25,14 @@ public:
     void setUp();
     void tearDown();
     // fonctions de tests
-    void methode1();
+    void testSaveLoadInr();
+    void stressTestInr();
 
-private:
-    ::fwData::Image::sptr createImage();
+private :
 
+
+   void stressTestInrWithType(::fwTools::Type type, int nbTest);
+   void checkSaveLoadInr( ::fwData::Image::NewSptr image );
 };
 
 #endif // _FWITKIO_TEST_TU_IMAGEREADERWRITERTEST_HPP_

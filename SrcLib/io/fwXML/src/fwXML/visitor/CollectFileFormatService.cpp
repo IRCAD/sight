@@ -64,6 +64,7 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
     ::fwData::Graph::sptr graph;
     ::fwData::Node::sptr node;
     ::fwData::Mesh::sptr mesh;
+    ::fwData::Image::sptr image;
 
     if ( (composite = ::fwData::Composite::dynamicCast( src )) )
     {
@@ -142,6 +143,14 @@ void CollectFileFormatService::next( ::fwTools::Object::sptr src, ::fwTools::Obj
             ::fwData::Array::sptr array = mesh->getDataArray(name);
             OSLM_ASSERT("Array "<<name<<" not initialized in Mesh.",array);
             ::fwData::visitor::accept( array, this);
+        }
+    }
+    else if ( (image = ::fwData::Image::dynamicCast( src ) ))
+    {
+
+        if(image->getDataArray())
+        {
+            ::fwData::visitor::accept( image->getDataArray() , this);
         }
     }
 }

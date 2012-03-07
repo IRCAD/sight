@@ -9,7 +9,12 @@
 #include "FieldTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( FieldTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::FieldTest );
+
+namespace fwTools
+{
+namespace ut
+{
 
 void FieldTest::setUp()
 {
@@ -21,14 +26,15 @@ void FieldTest::tearDown()
     // Clean up after the test run.
 }
 
-void FieldTest::methode1()
+void FieldTest::labelTest()
 {
     std::string LABEL   = "label" ;
-
     // process
     ::fwTools::Field::NewSptr p1(LABEL);
-
     // check
     CPPUNIT_ASSERT_EQUAL(p1->label(),   LABEL);
-
 }
+
+} // namespace ut
+} // namespace fwTools
+

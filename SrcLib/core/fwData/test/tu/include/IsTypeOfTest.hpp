@@ -4,22 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ISTYPEOFTEST_H
-#define ISTYPEOFTEST_H
+#ifndef __FWDATA_UT_ISTYPEOFTEST_HPP__
+#define __FWDATA_UT_ISTYPEOFTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class IsTypeOfTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class IsTypeOfTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( IsTypeOfTest );
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST_SUITE_END();
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
 };
-#endif //ISTYPEOFTEST_H
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_ISTYPEOFTEST_HPP__

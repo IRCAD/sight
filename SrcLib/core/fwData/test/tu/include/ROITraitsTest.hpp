@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_TU_ROITRAITSTEST_HPP__
-#define __FWDATA_TU_ROITRAITSTEST_HPP__
+#ifndef __FWDATA_UT_ROITRAITSTEST_HPP__
+#define __FWDATA_UT_ROITRAITSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class ROITraitsTest : public CPPUNIT_NS::TestFixture
 {
@@ -20,8 +25,9 @@ public:
     void setUp();
     void tearDown();
 
-
     void creation();
 };
 
-#endif // __FWDATA_TU_ROITRAITSTEST_HPP__
+} //namespace ut
+} //namespace fwData
+#endif // __FWDATA_UT_ROITRAITSTEST_HPP__

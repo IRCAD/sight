@@ -11,13 +11,18 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Material.hpp"
-#include "fwData/Color.hpp"
+#include <fwData/Material.hpp>
+#include <fwData/Color.hpp>
 #include "MaterialTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MaterialTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::MaterialTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void MaterialTest::setUp()
 {
@@ -47,5 +52,6 @@ void MaterialTest::methode1()
     CPPUNIT_ASSERT_EQUAL(material->diffuse()->getRGBA()[0], CDIFF->getRGBA()[0]);
 }
 
-
+} //namespace ut
+} //namespace fwData
 

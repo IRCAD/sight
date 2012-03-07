@@ -16,31 +16,51 @@ namespace dialog
 PulseProgressDialog::PulseProgressDialog( const std::string &title, ::fwGui::dialog::IPulseProgressDialog::Stuff stuff, const std::string &msg, ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
     m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IPulseProgressDialog>( ::fwGui::dialog::IPulseProgressDialog::REGISTRY_KEY);
-    m_implementation->setTitle(title);
-    m_implementation->setMessage(msg);
-    m_implementation->setStuff(stuff);
-    m_implementation->setFrequence(frequenceRefresh);
+    if (m_implementation)
+    {
+        m_implementation->setStuff(stuff);
+        m_implementation->setTitle(title);
+        m_implementation->setMessage(msg);
+        m_implementation->setFrequence(frequenceRefresh);
+    }
+    else
+    {
+        this->setStuff(stuff);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void PulseProgressDialog::setTitle(const std::string &title)
 {
-    m_implementation->setTitle(title);
+    if (m_implementation)
+    {
+        m_implementation->setTitle(title);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void PulseProgressDialog::setMessage(const std::string &msg)
 {
-    m_implementation->setMessage(msg);
+    if (m_implementation)
+    {
+        m_implementation->setMessage(msg);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void PulseProgressDialog::show()
 {
-    m_implementation->show();
+    if (m_implementation)
+    {
+        m_implementation->show();
+    }
+    else
+    {
+        m_stuff();
+    }
 }
 
 //-----------------------------------------------------------------------------

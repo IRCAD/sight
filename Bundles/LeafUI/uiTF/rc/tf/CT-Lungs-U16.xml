@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="2" />
+  <protocol version="3" />
   <content>
     <TransfertFunction id="4ac5e060-8713-446e-a224-faafcb4e94f2" class="::fwData::TransfertFunction">
       <Name>CT-Lungs-U16</Name>

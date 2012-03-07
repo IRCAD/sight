@@ -4,22 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_MaterialTEST_H
-#define DATA_MaterialTEST_H
+#ifndef __FWDATA_UT_MATERIALTEST_HPP__
+#define __FWDATA_UT_MATERIALTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class MaterialTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class MaterialTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( MaterialTest );
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST_SUITE_END();
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
 };
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_MATERIALTEST_HPP__

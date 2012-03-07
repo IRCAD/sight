@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_TU_TRANSFORMATION3DMATRIXTEST_H
-#define DATA_TU_TRANSFORMATION3DMATRIXTEST_H
+#ifndef __FWDATA_UT_TRANSFORMATION3DMATRIXTEST_HPP__
+#define __FWDATA_UT_TRANSFORMATION3DMATRIXTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
 {
@@ -16,15 +21,15 @@ class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( methode2 );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
     void methode2();
 };
 
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_TRANSFORMATION3DMATRIXTEST_HPP__

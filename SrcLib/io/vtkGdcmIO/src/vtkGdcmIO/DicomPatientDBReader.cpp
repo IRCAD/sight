@@ -149,8 +149,9 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     scanner.AddTag( t11 );
     scanner.AddTag( t12 );
     scanner.AddTag( t13 );
-    scanner.AddTag( t14 );
+    scanner.AddTag( t14 );    
     scanner.AddTag(imageTypeTag);
+
     //const gdcm::Tag &reftag = t2;
 
     ::fwData::Patient::sptr patient;
@@ -237,7 +238,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                 s.SetComputeZSpacing( true );
                 s.SetZSpacingTolerance( 1e-3 );
                 b = s.Sort( iter->second );
-                double spacing = 0;
+                double zspacing = 0;
                 int nbSorter = 0;
                 files->Initialize();
 
@@ -256,8 +257,8 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                 else
                 {
                     SLM_TRACE ( "Success to sort" );
-                    spacing = s.GetZSpacing();
-                    if (!spacing && s.GetFilenames().size() > 1)
+                    zspacing = s.GetZSpacing();
+                    if (!zspacing && s.GetFilenames().size() > 1)
                     {
                         SLM_TRACE ( "New sort (more soft)" );
                         const std::vector<std::string> & sorted = s.GetFilenames();
@@ -276,8 +277,8 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                             {
                                 std::vector<double> vOrigin1 = gdcm::ImageHelper::GetOriginValue(localReader1.GetFile());
                                 std::vector<double> vOrigin2 = gdcm::ImageHelper::GetOriginValue(localReader2.GetFile());
-                                spacing = vOrigin2[2] - vOrigin1[2];
-                                OSLM_TRACE ( "Found z-spacing:" << spacing << " from : << " << vOrigin2[2] << " | " << vOrigin1[2]);
+                                zspacing = vOrigin2[2] - vOrigin1[2];
+                                OSLM_TRACE ( "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " << vOrigin1[2]);
                             }
                             else
                             {
@@ -285,7 +286,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                             }
                         }
 
-                        if (!spacing)
+                        if (!zspacing)
                         {
                             OSLM_DEBUG ( "Failed to find z-spacing:" << s.GetZSpacing());
                         }
@@ -374,7 +375,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     std::string studyDate = std::string(medprop->GetStudyDate());
                     std::string studyDescription = std::string(medprop->GetStudyDescription());
                     std::string patientID  = medprop->GetPatientID();//"0010|0020"
-                    ::boost::algorithm::trim(patientID);
                     std::string birthdateStr= medprop->GetPatientBirthDate(); //"0010|0030"
                     ::boost::posix_time::ptime birthdate = ::fwTools::strToBoostDateAndTime(birthdateStr);
                     std::string hospital = medprop->GetInstitutionName(); //"0008|0080"
@@ -392,6 +392,11 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     double width=0.0;
                     if (medprop->GetNumberOfWindowLevelPresets())//FIXME : Multiple preset !!!
                         medprop->GetNthWindowLevelPreset(0,&width,&center); //0028|1050,1051
+
+                    ::boost::algorithm::trim(patientID);
+                    ::boost::algorithm::trim(hospital);
+                    ::boost::algorithm::trim(zone);
+                    ::boost::algorithm::trim(nameStr);
 
                     // remove accent
                     nameStr = ::fwTools::toStringWithoutAccent(nameStr);
@@ -450,17 +455,20 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         study = ::fwData::Study::New();
                     }
 
-                    std::vector< double > vPixelSpacing ( 3, 0 );
-                    vPixelSpacing[0] = pDataImage->getCRefSpacing()[0];
-                    vPixelSpacing[1] = pDataImage->getCRefSpacing()[1];
-                    vPixelSpacing[2] = (!spacing)  ? pDataImage->getCRefSpacing()[2] : spacing;
-                    pDataImage->setCRefSpacing(vPixelSpacing);
-                    int nbImg = pDataImage->getRefSize()[2];
-                    if (nbImg == 0)
+                    ::fwData::Image::SpacingType vPixelSpacing = pDataImage->getSpacing();
+                    if (zspacing > 0)
                     {
-                        pDataImage->getRefSize()[2] = 1;
+                        vPixelSpacing[2] = zspacing;
+                    }
+                    pDataImage->setSpacing(vPixelSpacing);
+
+                    ::fwData::Image::SizeType imgSize = pDataImage->getSize();
+                    if (imgSize[2] == 0.0)
+                    {
+                        imgSize[2] = 1.0;
                         width = 4096;
                     }
+
 
                     // Name & firstname
                     std::string name = "";
@@ -470,11 +478,19 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     // Set field
                     pDataImage->setWindowCenter(center);
                     pDataImage->setWindowWidth(width);
-                    pDataImage->setRescaleIntercept(/*rescale*/0.0);
+                    // Not managed by fwData::Image new API
+                    //  pDataImage->setRescaleIntercept(/*rescale*/0.0);
 
                     acq->setUID(seriesInstanceUID);
                     acq->setCRefCreationDate(acqDate);
                     acq->setDescription(serieDescription);
+                    acq->setSliceThickness(thickness);
+                    acq->setBitsPerPixel(pDataImage->getType().sizeOf()*8);
+                    acq->setUnsignedFlag(!pDataImage->getType().isSigned());
+
+
+                    // acq->setAxe(medprop->GetOrientationType(0));
+
                     // Keep the path and file name fo the Dicom file associated with acquisition.
                     std::vector< std::string >::const_iterator itrOnfiles = iter->second.begin();
                     for( ; itrOnfiles != iter->second.end(); ++itrOnfiles)
@@ -501,6 +517,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         patient->setCRefBirthdate(birthdate);
                         patient->setCRefIsMale(sex);
                     }                    //--
+
                     acq->setImage(pDataImage);
                     study->addAcquisition(acq);
                     if (bIsNewStudy)

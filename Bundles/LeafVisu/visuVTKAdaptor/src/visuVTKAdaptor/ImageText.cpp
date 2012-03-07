@@ -69,7 +69,7 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 
         ss <<  ( ::boost::format("[% 3li,% 3li]") % min % max ) << std::endl;
         ss <<  ( ::boost::format("W:% 3lg L:% 3lg") % window % level ) << std::endl;
-        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex % getPixelAsString(image, sagittalIndex, frontalIndex, axialIndex ));
+        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex % image->getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
     }
 
     setText(ss.str());

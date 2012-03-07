@@ -4,12 +4,10 @@ VERSION = '0-1'
 BUNDLES = [
     'io_0-1'                ,
     'gui_0-1'               ,
-    'guiWx_0-1'             ,
     'guiQt_0-1'             ,
     'dataReg_0-1'           ,
     'servicesReg_0-1'       ,
     'visu_0-1'              ,
-    'visuVTKWx_0-1'         ,
     'visuVTKQt_0-1'         ,
     'launcher_0-1'          ,
     'ioVTK_0-1'             ,
@@ -20,3 +18,10 @@ BUNDLES = [
     'ctrlSelection_0-1'     ,
     'appXml_0-1'            ,
  ]
+
+if not (PLATFORM, ARCH) == ('osx', '64'):
+    BUNDLES += [
+            'guiWx_0-1'    ,
+            'visuVTKWx_0-1',
+            ]
+

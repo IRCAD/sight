@@ -167,7 +167,7 @@ void DicomDistanceReader::readDistance(const ::gdcm::DataSet &  a_ds,
             refFrames = "1" + separator + "1";  // First frame is referenced for 2D image
 
             ::fwData::Image::csptr   image = this->getConcreteObject();
-            if (image->getDimension() > 2)
+            if (image->getNumberOfDimensions() > 2)
             {// All frames are referenced for 3D image
                 const unsigned int  nbFrames = image->getSize()[2];
                 std::string         numFrame("");

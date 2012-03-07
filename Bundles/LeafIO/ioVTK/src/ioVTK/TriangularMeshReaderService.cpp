@@ -41,9 +41,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwDat
 
 //------------------------------------------------------------------------------
 
-TriangularMeshReaderService::TriangularMeshReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsMeshPath("")
+TriangularMeshReaderService::TriangularMeshReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -53,15 +51,10 @@ TriangularMeshReaderService::~TriangularMeshReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::configuring() throw(::fwTools::Failed)
+
+::io::IOPathType TriangularMeshReaderService::getIOPathType() const
 {
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsMeshPath);
-        OSLM_TRACE("Filename found" << filename ) ;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -83,11 +76,15 @@ void TriangularMeshReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsMeshPath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsMeshPath.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
+    else
+    {
+        this->clearLocations();
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +151,7 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
@@ -163,7 +160,7 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        loadMesh(m_fsMeshPath, pTriangularMesh);
+        loadMesh( this->getFile(), pTriangularMesh);
         notificationOfUpdate();
 
         cursor.setDefaultCursor();

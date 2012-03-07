@@ -28,6 +28,9 @@ class IOGDCM_CLASS_API DicomPatientWriterService : public ::io::IWriter
 
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomPatientWriterService)( ::io::IWriter) ) ;
+
+protected:
+
     /**
      * @brief   constructor
      *
@@ -38,11 +41,6 @@ public :
      * @brief   destructor
      */
     IOGDCM_API virtual ~DicomPatientWriterService() throw();
-
-protected:
-
-    /// Override
-    IOGDCM_API virtual void configuring() throw(::fwTools::Failed) ;
 
     /// Override
     IOGDCM_API virtual void starting() throw(::fwTools::Failed);
@@ -68,14 +66,13 @@ protected:
     /// Override
     IOGDCM_API virtual void configureWithIHM();
 
+    /// Return managed file type, here FOLDER
+    IOGDCM_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void savePatient(   const ::boost::filesystem::path patientDBPath,
             ::boost::shared_ptr< ::fwData::Patient > _pPatient );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsPatientPath;
 
 };
 

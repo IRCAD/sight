@@ -4,24 +4,33 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_PATIENTTEST_H
-#define DATA_PATIENTTEST_H
+#ifndef __FWDATA_UT_PATIENTTEST_HPP__
+#define __FWDATA_UT_PATIENTTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class PatientTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class PatientTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( PatientTest );
     CPPUNIT_TEST( methodes1 );
     CPPUNIT_TEST( methodes2 );
     CPPUNIT_TEST( addStudy );
     CPPUNIT_TEST_SUITE_END();
+
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methodes1();
-    void methodes2(); //setters différents
+    void methodes2();
     void addStudy() ;
 };
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_PATIENTTEST_HPP__

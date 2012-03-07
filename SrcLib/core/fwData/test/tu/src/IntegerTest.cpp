@@ -13,7 +13,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(IntegerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::IntegerTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void IntegerTest::setUp()
 {
@@ -43,6 +48,7 @@ void IntegerTest::methode1()
         CPPUNIT_ASSERT_EQUAL( VALUE , i1->value() );
         CPPUNIT_ASSERT_EQUAL( VALUE , ::fwData::Integer::New( VALUE )->value() );
     }
-
-
 }
+
+} //namespace ut
+} //namespace fwData

@@ -32,8 +32,8 @@ public:
     void testSyntheticMesh();
     void testExportImportSyntheticMesh();
 
-    void compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
-    void compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
+    static void compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
+    static void compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
 };
 
 #endif //_FWVTKIO_TEST_TU_MESHTEST_HPP_

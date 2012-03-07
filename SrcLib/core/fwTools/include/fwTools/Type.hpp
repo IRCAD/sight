@@ -15,11 +15,16 @@
 
 #include <boost/type_traits/is_signed.hpp>
 #include <boost/any.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <fwCore/base.hpp>
 
 #include "fwTools/config.hpp"
+#include "fwTools/Stringizer.hpp"
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
@@ -30,11 +35,26 @@ namespace fwTools {
  **/
 class FWTOOLS_CLASS_API Type
 {
+
 public:
+    struct FWTOOLS_CLASS_API ToolBase
+    {
+        FWTOOLS_API  virtual std::string toString( ::boost::any value ) const;
+        FWTOOLS_API virtual std::string toString( const void * ) const;
+    };
+
+    template<typename T>
+    struct  Tool : public ToolBase
+    {
+        virtual std::string toString( ::boost::any value ) const;
+        virtual std::string toString( const void * ) const;
+    };
+
     typedef std::map<std::string, Type> TypeMapType;
-    
+
     /// Default constructor
     FWTOOLS_API Type();
+    FWTOOLS_API Type(const std::string &type);
 
     /**
      * @brief comparison operator
@@ -90,6 +110,8 @@ public:
     /// return true iff the type is signed
     FWTOOLS_API bool isSigned() const;
 
+    FWTOOLS_API std::string toString( const void * ) const;
+
     template <typename T>
     static const std::string typeToString();
 
@@ -107,6 +129,7 @@ protected :
     ::boost::any m_min;
     ::boost::any m_max;
 
+    SPTR(ToolBase) m_tool;
 
     /// Value for not specified type
     FWTOOLS_API static const std::string s_unspecifiedTypeName;
@@ -115,6 +138,22 @@ protected :
 
 };
 
+//-----------------------------------------------------------------------------
+
+template< typename T >
+std::string Type::Tool<T>::toString(::boost::any value) const
+{
+    return ::fwTools::getString( boost::any_cast<const T> (value));
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename T >
+std::string Type::Tool<T>::toString(const void *value) const
+{
+    const T &v = *(static_cast< const T* > (value));
+    return ::fwTools::getString( v );
+}
 
 //-----------------------------------------------------------------------------
 
@@ -126,7 +165,6 @@ Type Type::create()
     return t;
 }
 
-
 //-----------------------------------------------------------------------------
 
 template <typename T>
@@ -134,6 +172,7 @@ bool Type::isOfType() const
 {
     return *this == create<T>();
 }
+
 //-----------------------------------------------------------------------------
 
 template <typename T>
@@ -143,6 +182,8 @@ void Type::setType()
     m_sizeof = sizeof(T);
     m_isSigned = ::boost::is_signed<T>::value;
     m_isFixedPrecision = ::boost::is_integral<T>::value;
+
+    m_tool = SPTR(ToolBase)(new Type::Tool<T>());
 
     T min = static_cast< T >( std::numeric_limits< T >::min() );
     T max = static_cast< T >( std::numeric_limits< T >::max() );
@@ -193,6 +234,11 @@ template<> FWTOOLS_API const std::string Type::typeToString< float  >  ();
 template<> FWTOOLS_API const std::string Type::typeToString< double >  ();
 
 } //end namespace fwTools
+
+namespace std
+{
+    FWTOOLS_API std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type);
+} // namespace std
 
 
 #endif /*_FWTOOLS_TYPE_H_*/

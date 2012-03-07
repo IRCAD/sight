@@ -37,9 +37,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioITK::InrImageReaderService , ::fwData::Ima
 
 //------------------------------------------------------------------------------
 
-InrImageReaderService::InrImageReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImagePath("")
+InrImageReaderService::InrImageReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -47,17 +45,12 @@ InrImageReaderService::InrImageReaderService() throw() :
 InrImageReaderService::~InrImageReaderService() throw()
 {}
 
+
 //------------------------------------------------------------------------------
 
-void InrImageReaderService::configuring() throw(::fwTools::Failed)
+::io::IOPathType InrImageReaderService::getIOPathType() const
 {
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsImagePath = boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = true ;
-        OSLM_TRACE("Filename found" << filename ) ;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -79,9 +72,12 @@ void InrImageReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        m_fsImagePath = result->getPath();
-        m_bServiceIsConfigured = true;
+        this->setFile(result->getPath());
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -134,9 +130,9 @@ void InrImageReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
-        if ( this->createImage( m_fsImagePath, this->getObject< ::fwData::Image >() ) )
+        if ( this->createImage( this->getFile(), this->getObject< ::fwData::Image >() ) )
         {
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);

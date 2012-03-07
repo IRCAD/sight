@@ -36,9 +36,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioITK::DicomImageWriterService , ::fwData::I
 
 //------------------------------------------------------------------------------
 
-DicomImageWriterService::DicomImageWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImagePath("")
+DicomImageWriterService::DicomImageWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -48,8 +46,10 @@ DicomImageWriterService::~DicomImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void DicomImageWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType DicomImageWriterService::getIOPathType() const
+{
+    return ::io::FOLDER;
+}
 
 //------------------------------------------------------------------------------
 
@@ -68,9 +68,12 @@ void DicomImageWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsImagePath = result->getFolder();
-        m_bServiceIsConfigured = true;
+        this->setFolder(result->getFolder());
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -116,7 +119,7 @@ std::string DicomImageWriterService::getSelectorDialogTitle()
 void DicomImageWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
@@ -124,7 +127,7 @@ void DicomImageWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(m_fsImagePath, associatedImage);
+        saveImage( this->getFolder(), associatedImage );
         cursor.setDefaultCursor();
     }
 }

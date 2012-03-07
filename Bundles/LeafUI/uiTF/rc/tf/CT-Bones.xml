@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="2" />
+  <protocol version="3" />
   <content>
     <TransfertFunction id="126dd3b9-1d18-4f04-b20d-a35b20492082" class="::fwData::TransfertFunction">
       <Name>CT-Bones</Name>

@@ -6,14 +6,19 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
-#include "fwData/Array.hpp"
+#include <fwData/Array.hpp>
 #include "ArrayTest.hpp"
 
 
 using namespace boost::assign;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ArrayTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ArrayTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 //-----------------------------------------------------------------------------
 
@@ -35,6 +40,10 @@ void ArrayTest::tearDown()
 void ArrayTest::allocation()
 {
     ::fwData::Array::NewSptr array;
+
+    CPPUNIT_ASSERT(array->getSize().empty());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
+
     const size_t NB_COMPONENT = 2;
     ::fwData::Array::SizeType size;
     size += 10,100;
@@ -285,9 +294,9 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(2)(65))));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(6)(47), 0)));
 
-    unsigned int val;
+    ::boost::uint16_t val;
     array->getItem(list_of(2)(65), &val);
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, val);
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, val);
 
     char * charValue = array->getBufferPtr(list_of(6)(47), 0, array->getType().sizeOf());
     CPPUNIT_ASSERT_EQUAL( (unsigned int)238, *(reinterpret_cast<unsigned int*>(charValue)));
@@ -342,4 +351,5 @@ void ArrayTest::copy()
     CPPUNIT_ASSERT_EQUAL( false , shallowCopyArray->getIsBufferOwner());
 }
 
-
+} //namespace ut
+} //namespace fwData

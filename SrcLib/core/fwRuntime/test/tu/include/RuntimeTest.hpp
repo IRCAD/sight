@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWRUNTIME_TU_RUNTIMETEST_H
-#define FWRUNTIME_TU_RUNTIMETEST_H
+#ifndef __FWRUNTIME_UT_RUNTIMETEST_HPP__
+#define __FWRUNTIME_UT_RUNTIMETEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwRuntime
+{
+namespace ut
+{
 
 /**
  * @brief   Test Runtime : read the bundles in CommonLib
@@ -24,8 +29,11 @@ public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void testRuntime();
 };
 
-#endif
+} // namespace ut
+} // namespace fwTools
+
+#endif //__FWRUNTIME_UT_RUNTIMETEST_HPP__

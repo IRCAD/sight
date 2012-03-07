@@ -191,7 +191,9 @@ void SliceFollowerCamera::updateCamera(double distance, double size)
         getCurrentSliceCenter( center );
         std::copy(center, center+3, focalPoint);
 
-        focalPoint[m_orientation] = 0;
+        double origin[ 3 ];
+        getImageOrigin( origin );
+        focalPoint[m_orientation] = origin[m_orientation];
 
         distance = m_camera->GetDistance();
 

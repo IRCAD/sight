@@ -240,7 +240,7 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                 std::string nbImages = "";
                 std::string acqDate = ::boost::posix_time::to_iso_extended_string( pAcquisition->getCreationDate() );
                 acqDate =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
-                if ( pAcquisition->getImage()->getDimension() == 3 )
+                if ( pAcquisition->getImage()->getNumberOfDimensions() == 3 )
                 {
                     std::stringstream nbImagesStream;
                     nbImagesStream << pAcquisition->getImage()->getSize()[0] << "  x " << pAcquisition->getImage()->getSize()[1] << " x " << pAcquisition->getImage()->getSize()[2];

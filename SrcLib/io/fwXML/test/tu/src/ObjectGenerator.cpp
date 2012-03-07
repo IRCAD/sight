@@ -10,6 +10,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
+#include <fwDataTools/Image.hpp>
 #include <fwDataTools/MeshGenerator.hpp>
 
 #include "ObjectGenerator.hpp"
@@ -355,33 +356,19 @@ using namespace boost::assign;
     ::fwData::Image::NewSptr pImage;
 
     // images informations
-    const ::boost::uint8_t IMG_DIMENSION   = 3;
-    const bool IMG_MANAGESBUFF             = true ;
-    std::vector<double> IMG_VECTORCREFSPACING (3,2.5);
-    std::vector<double> IMG_VECTORCREFORIGIN  (3,12.3);
-    ::boost::int32_t IMG_CREFSIZE = 50 ;
-    std::vector< ::boost::int32_t > IMG_VECTORCREFSIZE (3,IMG_CREFSIZE);
-    const ::boost::filesystem::path IMG_CREFFILENAME   = ::boost::filesystem::path("D:/TMP") ;
+    ::fwData::Image::SpacingType IMG_SPACING (3,2.5);
+    ::fwData::Image::OriginType IMG_ORIGIN  (3,12.3);
+    ::fwData::Image::SizeType::value_type SIZE = 50 ;
+    ::fwData::Image::SizeType IMG_SIZE (3,SIZE);
+    ::fwTools::Type type("uint8");
+
+    ::fwDataTools::Image::generateImage(pImage, IMG_SIZE, IMG_SPACING, IMG_ORIGIN, type);
+
+
     const double IMG_WINDOWCENTER = 86 ;
     const double IMG_WINDOWWIDTH = 345 ;
-    const double IMG_RESCALEINTERCEPT = 1 ;
-
-    pImage->setDimension(IMG_DIMENSION);
-    pImage->setManagesBuff(IMG_MANAGESBUFF);
-    pImage->setCRefSpacing(IMG_VECTORCREFSPACING);
-    pImage->setCRefOrigin(IMG_VECTORCREFORIGIN);
-    pImage->setCRefSize(IMG_VECTORCREFSIZE);
-    pImage->setCRefFilename(IMG_CREFFILENAME);
     pImage->setWindowCenter(IMG_WINDOWCENTER);
     pImage->setWindowWidth(IMG_WINDOWWIDTH);
-    pImage->setRescaleIntercept(IMG_RESCALEINTERCEPT);
-
-    ::fwTools::DynamicType dtc;
-    dtc.setType<unsigned char>();
-    pImage->setPixelType(dtc);
-
-    unsigned char * buff = new unsigned char[IMG_CREFSIZE*IMG_CREFSIZE*IMG_CREFSIZE];
-    pImage->setBuffer(buff);
 
     return pImage;
 }

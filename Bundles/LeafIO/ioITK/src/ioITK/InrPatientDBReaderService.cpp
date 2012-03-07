@@ -37,7 +37,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioITK::InrPatientDBReaderService , ::fwData:
 //------------------------------------------------------------------------------
 
 InrPatientDBReaderService::InrPatientDBReaderService() throw() :
-    m_bServiceIsConfigured(false), m_isRecursive(false)
+        m_isRecursive(false)
 {}
 
 //------------------------------------------------------------------------------
@@ -47,8 +47,10 @@ InrPatientDBReaderService::~InrPatientDBReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void InrPatientDBReaderService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType InrPatientDBReaderService::getIOPathType() const
+{
+    return (::io::IOPathType)( ::io::FOLDER | ::io::FILES );
+}
 
 //------------------------------------------------------------------------------
 
@@ -86,9 +88,12 @@ void InrPatientDBReaderService::configureWithIHM()
             if (result)
             {
                 _sDefaultPath = result->getPaths()[0].parent_path();
-                m_files = result->getPaths();
-                m_bServiceIsConfigured = true;
+                this->setFiles(result->getPaths());
                 dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+            }
+            else
+            {
+                this->clearLocations();
             }
         }
         else
@@ -103,10 +108,13 @@ void InrPatientDBReaderService::configureWithIHM()
             if (result)
             {
                 _sDefaultPath = result->getFolder();
-                m_folder = result->getFolder();
+                this->setFile(result->getFolder());
                 m_isRecursive = (selection == choices[2]);
-                m_bServiceIsConfigured = true;
                 dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+            }
+            else
+            {
+                this->clearLocations();
             }
         }
     }
@@ -159,15 +167,16 @@ std::string InrPatientDBReaderService::getSelectorDialogTitle()
     ::fwData::PatientDB::NewSptr patientDDTMP;
     ::itkIO::InrPatientDBReader::NewSptr loader;
     loader->setObject(patientDDTMP);
-    if(!m_files.empty())
+    if( ::boost::filesystem::is_directory(this->getLocations().at(0)) )
     {
-        loader->setFiles(m_files);
+        loader->setFolder(this->getFolder());
+        loader->setRecursive(m_isRecursive);
     }
     else
     {
-        loader->setFolder(m_folder);
-        loader->setRecursive(m_isRecursive);
+        loader->setFiles(this->getFiles());
     }
+
     SLM_ASSERT("No location specified", loader->getLocation() );
     try
     {
@@ -198,7 +207,7 @@ std::string InrPatientDBReaderService::getSelectorDialogTitle()
 void InrPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         ::fwData::PatientDB::sptr patientDB = createPatientDB();
 

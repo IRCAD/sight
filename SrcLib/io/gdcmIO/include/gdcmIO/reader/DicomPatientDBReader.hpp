@@ -43,10 +43,6 @@ public :
                                             new  DicomPatientDBReader
                                              );
 
-    GDCMIO_API DicomPatientDBReader();
-
-    GDCMIO_API ~DicomPatientDBReader();
-
     /**
      * @brief   Launch patient(s) reading.
      * First, This method filters DICOM files.
@@ -55,6 +51,12 @@ public :
      * @note    setFolder() have to be called before this one.
      */
     GDCMIO_API void read() throw(::fwTools::Failed);
+
+protected :
+
+    GDCMIO_API DicomPatientDBReader();
+
+    GDCMIO_API ~DicomPatientDBReader();
 };
 
 }  // namespace reader

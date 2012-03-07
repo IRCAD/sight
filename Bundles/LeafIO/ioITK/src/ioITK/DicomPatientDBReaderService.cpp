@@ -36,9 +36,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioITK::DicomPatientDBReaderService , ::fwDat
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReaderService::DicomPatientDBReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientDBPath("")
+DicomPatientDBReaderService::DicomPatientDBReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -48,8 +46,10 @@ DicomPatientDBReaderService::~DicomPatientDBReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReaderService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType DicomPatientDBReaderService::getIOPathType() const
+{
+    return ::io::FOLDER;
+}
 
 //------------------------------------------------------------------------------
 
@@ -68,9 +68,12 @@ void DicomPatientDBReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsPatientDBPath = result->getFolder();
-        m_bServiceIsConfigured = true;
+        this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -154,9 +157,9 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
 void DicomPatientDBReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
-        ::fwData::PatientDB::sptr patientDB = createPatientDB( m_fsPatientDBPath );
+        ::fwData::PatientDB::sptr patientDB = createPatientDB( this->getFolder() );
 
         if( patientDB->getPatientSize() > 0 )
         {

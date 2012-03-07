@@ -26,6 +26,8 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <vtkIO/vtk.hpp>
 
 #include "visuVTKAdaptor/Image.hpp"
@@ -183,9 +185,61 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+bool ImagesBlend::checkImageInformations()
+{
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+    ::fwData::Image::SizeType size;
+    ::fwData::Image::SpacingType spacing;
+    ::fwData::Image::OriginType origin;
+
+    bool haveSameInfo = true;
+
+    BOOST_FOREACH(std::string id, m_imageIds)
+    {
+        if (composite->find(id) != composite->end())
+        {
+            ::fwData::Image::sptr img = ::fwData::Image::dynamicCast((*composite)[id]);
+
+            bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+            if (imageIsValid)
+            {
+                if (size.empty() && spacing.empty() && origin.empty())
+                {
+                    size = img->getSize();
+                    spacing = img->getSpacing();
+                    origin = img->getOrigin();
+                }
+                else
+                {
+                    if (size != img->getSize() || spacing != img->getSpacing() || origin != img->getOrigin())
+                    {
+                        haveSameInfo = false;
+                        std::string errorMsg = "Warning : images in blend have not the same";
+                        errorMsg += (size != img->getSize())?" size":"";
+                        errorMsg += (spacing != img->getSpacing())?" spacing":"";
+                        errorMsg += (origin != img->getOrigin())?" origin":"";
+                        errorMsg += ".\n Background image size, spacing and origin are use.";
+                        ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
+                                errorMsg,
+                                ::fwGui::dialog::MessageDialog::WARNING);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return haveSameInfo;
+}
+
+//------------------------------------------------------------------------------
+
 void ImagesBlend::addImageAdaptors()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+    this->checkImageInformations();
 
     BOOST_FOREACH(std::string id, m_imageIds)
     {

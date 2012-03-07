@@ -42,9 +42,6 @@ protected:
     IOITK_API virtual ~InrImageWriterService() throw();
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
@@ -62,13 +59,12 @@ protected:
     /// Override
     IOITK_API virtual void configureWithIHM();
 
+    /// Return managed file type, here FILE
+    IOITK_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void saveImage( const ::boost::filesystem::path inrFile, ::fwData::Image::sptr _pImage );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsImagePath;
 
 };
 

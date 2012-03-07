@@ -21,6 +21,7 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwXML/writer/FwXMLObjectWriter.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -39,7 +40,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwTools
 //------------------------------------------------------------------------------
 
 FwXMLGenericWriterService::FwXMLGenericWriterService() throw()
-                : m_archiveExtenstion (".fxz")
+                : m_archiveExtenstion ("." FWXML_ARCHIVE_EXTENSION)
 {}
 
 //------------------------------------------------------------------------------
@@ -51,15 +52,29 @@ FwXMLGenericWriterService::~FwXMLGenericWriterService() throw()
 
 void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 {
-    m_writer.setFile( ::boost::filesystem::path("SAVEDGRAPH.fxz") );
+    ::io::IWriter::configuring();
 
-    if( this->m_configuration->size() > 0 )
+
+    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
+    ConfigurationElementContainer extension = m_configuration->find("archiveExtension");
+
+    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() <= 1 );
+
+    if( extension.size() > 0 )
     {
-        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
-        SLM_ASSERT("Sorry, only one xml element \"archiveExtension\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "archiveExtension" );
-        SLM_ASSERT("Sorry, only xml element \"archiveExtension\" is empty.", ! (*iter)->getValue().empty() );
+        ConfigurationElementContainer::iterator iter = extension.begin() ;
+        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", extension.size() == 1 );
+        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element value can not be empty.", !(*iter)->getValue().empty() );
         m_archiveExtenstion =  (*iter)->getValue();
     }
+
+}
+
+//------------------------------------------------------------------------------
+
+::io::IOPathType FwXMLGenericWriterService::getIOPathType() const
+{
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -84,13 +99,12 @@ void FwXMLGenericWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        m_writer.setFile( result->getPath() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
     else
     {
-        ::boost::filesystem::path emptyPath;
-        m_writer.setFile(emptyPath);
+        this->clearLocations();
     }
 }
 
@@ -158,7 +172,7 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( !m_writer.getFile().empty() )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
@@ -167,14 +181,14 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        m_writer.setFile( correctFileFormat( m_writer.getFile() ));
+        m_writer.setFile( correctFileFormat( this->getFile() ));
         if ( isAnFwxmlArchive( m_writer.getFile() ) )
         {
             manageZipAndSaveData( m_writer.getFile(), obj);
         }
         else
         {
-            saveData(m_writer.getFile(), obj);
+            saveData(this->getFile(), obj);
         }
         cursor.setDefaultCursor();
     }

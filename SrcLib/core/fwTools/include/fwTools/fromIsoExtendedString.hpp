@@ -28,6 +28,13 @@ namespace fwTools
 FWTOOLS_API boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string );
 
 /**
+ * @brief   Construct a boost ptime from a string in xsd format (YYYY-MM-DD)
+ * @param   date_string date in the xsd format YYYY-MM-DD
+ * @return  Time in the boost format
+ */
+FWTOOLS_API ::boost::posix_time::ptime fromDateInXsdFormat(const std::string & date_string);
+
+/**
  * @brief       Construct a string in iso extended format from a boost ptime
  * @param[in]   ptime time in the boost format
  * @return      Time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )

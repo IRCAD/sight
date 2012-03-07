@@ -77,6 +77,12 @@ protected:
     FWCOMED_API void getImageSpacing(double spacing[3]);
 
     /**
+     * @brief Get the image origin.
+     * @param[out] origin : the image origin
+     */
+    FWCOMED_API void getImageOrigin(double origin[3]);
+
+    /**
      * @brief Get the image data size (number of slices).
      * @param[out] size : the image size
      */
@@ -219,7 +225,8 @@ void MedicalImageAdaptor::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
     ::fwData::Image::sptr image = this->getImage();;
 
-    std::copy(image->getRefSpacing().begin(), image->getRefSpacing().end(), spacing);
+    const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
+    std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
 //------------------------------------------------------------------------------
@@ -228,7 +235,8 @@ void MedicalImageAdaptor::getImageDataSize(INT_INDEX size)
 {
     ::fwData::Image::sptr image = this->getImage();
 
-    std::copy(image->getRefSize().begin(), image->getRefSize().end(), size);
+    const ::fwData::Image::SizeType imSize = image->getSize();
+    std::copy(imSize.begin(), imSize.end(), size);
 }
 
 //------------------------------------------------------------------------------
@@ -238,9 +246,11 @@ void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX index )
 {
     double spacing[3];
     this->getImageSpacing(spacing);
+    double origin[3];
+    this->getImageOrigin(origin);
     for ( int i=0 ; i<3 ; ++i )
     {
-        index[i] = static_cast< int >( (world[i]/spacing[i]) + ( (world[i]/spacing[i]) >= 0 ? 0.5 : -0.5 ) );
+        index[i] = static_cast< int >( ( (world[i] - origin[i])/spacing[i] ) + ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 

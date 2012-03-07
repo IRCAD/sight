@@ -13,6 +13,10 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+namespace fwDataIO
+{
+namespace ut
+{
 
 /**
  * @brief Test many methods to read/create fw4spl trian mesh file.
@@ -41,7 +45,9 @@ protected:
 
     ::boost::filesystem::path m_tmpTrianPath1;
     ::boost::filesystem::path m_tmpTrianPath2;
-
 };
+
+} //namespace ut
+} //namespace fwDataIO
 
 #endif //_FWDATAIO_TEST_TU_TRIANTEST_HPP_

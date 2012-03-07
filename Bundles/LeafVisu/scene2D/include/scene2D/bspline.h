@@ -12,7 +12,6 @@
 #include <list>
 #include <vector>
 
-//#include "SegmentationPeritoineSpline3D/bspline.hpp"
 #define BUFFER_SIZE 128
 #define DEFAULT_PRECISION 40
 
@@ -23,7 +22,6 @@ struct point
     float x;
     float y;
 
-    //float r,g,b;
     point(float _x = 0, float _y = 0): x(_x), y(_y) { }
     point(const point & _which)
     {
@@ -99,23 +97,23 @@ public:
         {
             i = (int)floor(t);
             ti = (float)i;
-            if (i!= this->nb_point-2)
+            if (i < this->nb_point-2)
             {
-                this->curve_point[k].x = 
+                this->curve_point[k].x =
                     (3.0f*this->plist->list[i]->x-3.0f*this->plist->list[i+1]->x+
                     this->plist->list[i+2]->x-this->plist->list[i-1]->x)*pow(t-ti,3)/2.0f+
-                    ( 2.0f*this->plist->list[i-1]->x - 5.0f*this->plist->list[i]->x + 
-                    4.0f*this->plist->list[i+1]->x - this->plist->list[i+2]->x)*pow(t-ti,2)/2.0f+ 
+                    ( 2.0f*this->plist->list[i-1]->x - 5.0f*this->plist->list[i]->x +
+                    4.0f*this->plist->list[i+1]->x - this->plist->list[i+2]->x)*pow(t-ti,2)/2.0f+
                     ( this->plist->list[i+1]->x - this->plist->list[i-1]->x ) *(t-ti)/2.0f + this->plist->list[i]->x;
 
-                this->curve_point[k].y = 
+                this->curve_point[k].y =
                     (3.0f*this->plist->list[i]->y-3.0f*this->plist->list[i+1]->y+
                     this->plist->list[i+2]->y-this->plist->list[i-1]->y)*pow(t-ti,3)/2.0f+
-                    ( 2.0f*this->plist->list[i-1]->y - 5.0f*this->plist->list[i]->y + 
+                    ( 2.0f*this->plist->list[i-1]->y - 5.0f*this->plist->list[i]->y +
                     4.0f*this->plist->list[i+1]->y - this->plist->list[i+2]->y)*pow(t-ti,2)/2.0f+
                     ( this->plist->list[i+1]->y - this->plist->list[i-1]->y ) *(t-ti)/2.0f + this->plist->list[i]->y;
             }
-            else
+            else if(i < this->nb_point)
             {
                 this->curve_point[k].x = this->plist->list[i]->x;
                 this->curve_point[k].y = this->plist->list[i]->y;
@@ -134,5 +132,5 @@ public:
     int precision;
     bool draw_number;
 };
-#endif 
+#endif
 

@@ -11,12 +11,16 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( GenericFieldTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::GenericFieldTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void GenericFieldTest::setUp()
 {
     // Set up context before running a test.
-
 }
 
 void GenericFieldTest::tearDown()
@@ -24,11 +28,9 @@ void GenericFieldTest::tearDown()
     // Clean up after the test run.
 }
 
-
 void GenericFieldTest::methode1()
 {
     typedef float TestType;
-
     const TestType VALUE = 13.456789 ;
 
     ::fwData::GenericField<TestType>::NewSptr p1( VALUE ) ;
@@ -37,3 +39,5 @@ void GenericFieldTest::methode1()
     CPPUNIT_ASSERT_EQUAL( p1->value(),   VALUE);
 }
 
+} //namespace ut
+} //namespace fwData

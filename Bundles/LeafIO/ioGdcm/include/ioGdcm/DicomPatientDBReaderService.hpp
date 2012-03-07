@@ -28,6 +28,9 @@ class IOGDCM_CLASS_API DicomPatientDBReaderService : public ::io::IReader
 
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomPatientDBReaderService)( ::io::IReader) ) ;
+
+protected:
+
     /**
      * @brief   constructor
      *
@@ -39,12 +42,8 @@ public :
      */
     IOGDCM_API virtual ~DicomPatientDBReaderService() throw();
 
-protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    /// Override
-    IOGDCM_API virtual void configuring() throw(::fwTools::Failed) ;
 
     /// Override
     IOGDCM_API virtual void starting() throw(::fwTools::Failed);
@@ -70,15 +69,14 @@ protected:
     /// Override
     IOGDCM_API virtual void configureWithIHM();
 
+    /// Return managed file type, here FOLDER
+    IOGDCM_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void notificationOfDBUpdate();
 
     ::boost::shared_ptr< ::fwData::PatientDB > createPatientDB( const ::boost::filesystem::path & dicomFile );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsPatientDBPath;
 
 };
 

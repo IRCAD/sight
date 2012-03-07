@@ -14,6 +14,7 @@ LIB = [
     'fwServices_0-1',
     'fwTools_0-1',
     'fwVtkIO_0-1',
+    'fwGui_0-1',
     ]
 
 DEF += [

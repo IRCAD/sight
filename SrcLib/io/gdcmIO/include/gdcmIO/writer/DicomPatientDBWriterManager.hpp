@@ -41,10 +41,6 @@ public :
                                             new  DicomPatientDBWriterManager
                                           );
 
-    GDCMIO_API DicomPatientDBWriterManager();
-
-    GDCMIO_API ~DicomPatientDBWriterManager();
-
     /**
      * @brief    Manage writing tools to save all patients.
      *
@@ -58,6 +54,12 @@ public :
      */
     GDCMIO_API std::string extension();
 
+
+protected :
+
+    GDCMIO_API DicomPatientDBWriterManager();
+
+    GDCMIO_API ~DicomPatientDBWriterManager();
 };
 
 }   // namespace writer

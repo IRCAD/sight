@@ -19,7 +19,7 @@
 #include "fwXML/boostSerializer/Color.hpp"
 #include "fwXML/boostSerializer/Dictionary.hpp"
 #include "fwXML/boostSerializer/DictionaryOrgan.hpp"
-#include "fwXML/boostSerializer/DynamicType.hpp"
+#include "fwXML/boostSerializer/Type.hpp"
 #include "fwXML/boostSerializer/Field.hpp"
 #include "fwXML/boostSerializer/Float.hpp"
 #include "fwXML/boostSerializer/Histogram.hpp"
@@ -95,7 +95,7 @@ INSTANTIATE_SERIALIZER(::fwData::Study);
 INSTANTIATE_SERIALIZER(::fwData::TransfertFunction);
 INSTANTIATE_SERIALIZER(::fwData::TransfertFunctionPoint);
 INSTANTIATE_SERIALIZER(::fwData::TransformationMatrix3D);
-INSTANTIATE_SERIALIZER(::fwTools::DynamicType);
+INSTANTIATE_SERIALIZER(::fwTools::Type);
 INSTANTIATE_SERIALIZER(::fwTools::Field);
 
 

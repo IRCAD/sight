@@ -84,7 +84,7 @@ wxVariant fwAcqNode::getCell(unsigned int _col)
     std::string nbImages = "";
     std::string acqDate = boost::posix_time::to_iso_extended_string( getAcq().lock()->getCreationDate() );
     acqDate =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
-    if ( getAcq().lock()->getImage()->getDimension() == 3 )
+    if ( getAcq().lock()->getImage()->getNumberOfDimensions() == 3 )
     {
         std::stringstream nbImagesStream;
         nbImagesStream << getAcq().lock()->getImage()->getSize()[0] << "  x " << getAcq().lock()->getImage()->getSize()[1] << " x " << getAcq().lock()->getImage()->getSize()[2];

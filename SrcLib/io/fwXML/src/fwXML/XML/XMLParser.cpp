@@ -14,14 +14,6 @@
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
 
-// chdir management
-#ifdef _MSC_VER
-#include <direct.h>
-#else
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
-
 #include <sstream>
 
 #include <boost/cstdint.hpp>
@@ -138,37 +130,22 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlDocPtr xmlDoc = NULL;
     xmlNodePtr xmlRoot = NULL;
 
-    // save previous workingDirectory
-    char workingDirectorySaved[1024];
-    getcwd (workingDirectorySaved, 1024);
-
-    // set new working directory
-    std::string rootFolder = rootFile.parent_path().string();
-    chdir (rootFolder.c_str ());
-    OSLM_DEBUG( "change working dir to " <<   rootFolder << "...." );
-    OSLM_DEBUG( "parsing XML file " <<   rootFile.string() << "...." );
 #if BOOST_FILESYSTEM_VERSION > 2
-    xmlDoc = xmlParseFile ( rootFile.filename().string().c_str () );
+    xmlDoc = xmlParseFile ( rootFile.string().c_str () );
 #else
-    xmlDoc = xmlParseFile ( rootFile.leaf().c_str () );
+    xmlDoc = xmlParseFile ( rootFile.c_str () );
 #endif
     if (xmlDoc == NULL)
     {
         throw ::fwTools::Failed("Unable to parse the XML file " + rootFile.string() );
     }
 
-    OSLM_DEBUG( "managing XInclude ...." );
+    SLM_DEBUG( "Managing XInclude" );
     xmlRoot = xmlDocGetRootElement (xmlDoc);
     if (xmlXIncludeProcessTree (xmlRoot) == -1)
     {
         throw ::fwTools::Failed(std::string ("Unable to manage xinclude !"));
     }
-
-    // check validation
-    //validateDoc(xmlDoc);
-
-    // restore old working directory
-    chdir (workingDirectorySaved);
 
     // memory cleanup
 

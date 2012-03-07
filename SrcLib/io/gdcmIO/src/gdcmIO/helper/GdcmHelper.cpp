@@ -39,11 +39,11 @@ namespace helper
 //                                  GdcmData
 //------------------------------------------------------------------------------
 
-struct DynamicTypeOrderer
+struct TypeOrderer
 {
-  bool operator()(const fwTools::DynamicType & d1, const fwTools::DynamicType &d2) const
+  bool operator()(const ::fwTools::Type & t1, const ::fwTools::Type & t2) const
   {
-    return d1.string() < d2.string();
+    return t1.string() < t2.string();
   }
 };
 
@@ -51,24 +51,24 @@ struct DynamicTypeOrderer
 
 // BOOST 1.38 -> ::boost::bimaps::bimap<....>    note bimapS  ## BOOST 1.39 -> ::boost::bimap::bimap<....>
 typedef  ::boost::bimaps::bimap<
-                    ::boost::bimaps::set_of< fwTools::DynamicType , DynamicTypeOrderer  >
+                    ::boost::bimaps::set_of< ::fwTools::Type , TypeOrderer  >
                   , ::boost::bimaps::set_of< gdcm::PixelFormat::ScalarType >
                    > TypeTranslator;
 
 //------------------------------------------------------------------------------
 
 TypeTranslator PixelTypeTranslation = boost::assign::list_of< TypeTranslator::relation >
-( fwTools::makeDynamicType<unsigned char>(),    ::gdcm::PixelFormat::UINT8 )
-( fwTools::makeDynamicType<signed char>(),      ::gdcm::PixelFormat::INT8 )
-//( fwTools::makeDynamicType<unsigned short>(), ::gdcm::PixelFormat::UINT12 )   // Unsupported by VTK Render
-//( fwTools::makeDynamicType<signed short>(),   ::gdcm::PixelFormat::INT12 )    // Unsupported by VTK Render
-( fwTools::makeDynamicType<unsigned short>(),   ::gdcm::PixelFormat::UINT16 )
-( fwTools::makeDynamicType<signed short>(),     ::gdcm::PixelFormat::INT16 )
-( fwTools::makeDynamicType<unsigned int>(),     ::gdcm::PixelFormat::UINT32 )
-( fwTools::makeDynamicType<signed int>(),       ::gdcm::PixelFormat::INT32 )
-//( fwTools::makeDynamicType<float>(),          ::gdcm::PixelFormat::FLOAT16 )  // Unsupported by VTK Render
-( fwTools::makeDynamicType<float>(),            ::gdcm::PixelFormat::FLOAT32 )
-( fwTools::makeDynamicType<double>(),           ::gdcm::PixelFormat::FLOAT64 );
+( ::fwTools::Type::create("uint8"),     ::gdcm::PixelFormat::UINT8 )
+( ::fwTools::Type::create("int8"),      ::gdcm::PixelFormat::INT8 )
+//( ::fwTools::Type::create("xxx"),     ::gdcm::PixelFormat::UINT12 )   // Unsupported by VTK Render
+//( ::fwTools::Type::create("xxx"),     ::gdcm::PixelFormat::INT12 )    // Unsupported by VTK Render
+( ::fwTools::Type::create("uint16"),    ::gdcm::PixelFormat::UINT16 )
+( ::fwTools::Type::create("int16"),     ::gdcm::PixelFormat::INT16 )
+( ::fwTools::Type::create("uint32"),    ::gdcm::PixelFormat::UINT32 )
+( ::fwTools::Type::create("int32"),     ::gdcm::PixelFormat::INT32 )
+//( ::fwTools::Type::create("xxx"),     ::gdcm::PixelFormat::FLOAT16 )  // Unsupported by VTK Render
+( ::fwTools::Type::create("float"),     ::gdcm::PixelFormat::FLOAT32 )
+( ::fwTools::Type::create("double"),    ::gdcm::PixelFormat::FLOAT64 );
 
 //------------------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ void GdcmData::setSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems >    a_sq,
 
 //------------------------------------------------------------------------------
 
-const fwTools::DynamicType GdcmData::getPixelType(const ::gdcm::PixelFormat & gPixFormat)
+const ::fwTools::Type GdcmData::getPixelType(const ::gdcm::PixelFormat & gPixFormat)
 {
     assert ( PixelTypeTranslation.right.find( gPixFormat.GetScalarType() )!= PixelTypeTranslation.right.end() );
     return PixelTypeTranslation.right.at( gPixFormat.GetScalarType() );
@@ -99,7 +99,7 @@ const fwTools::DynamicType GdcmData::getPixelType(const ::gdcm::PixelFormat & gP
 
 //------------------------------------------------------------------------------
 
-const fwTools::DynamicType GdcmData::getPixelType(const ::gdcm::Image & a_gImg)
+const ::fwTools::Type GdcmData::getPixelType(const ::gdcm::Image & a_gImg)
 {
     const ::gdcm::PixelFormat & gPixFormat = a_gImg.GetPixelFormat();
 
@@ -112,7 +112,7 @@ const fwTools::DynamicType GdcmData::getPixelType(const ::gdcm::Image & a_gImg)
 
 const gdcm::PixelFormat GdcmData::getPixelType(const ::fwData::Image & a_img)
 {
-    const ::gdcm::PixelFormat::ScalarType st = PixelTypeTranslation.left.at( a_img.getPixelType() );
+    const ::gdcm::PixelFormat::ScalarType st = PixelTypeTranslation.left.at( a_img.getType() );
 
     assert ( PixelTypeTranslation.right.find( st )!= PixelTypeTranslation.right.end() );
 
@@ -336,7 +336,10 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
     const unsigned int      components          = a_gImg.GetPixelFormat().GetSamplesPerPixel();
     const unsigned long     size                = a_gImg.GetBufferLength() / components;
 
-    ::fwTools::DynamicType  pixelType           = GdcmData::getPixelType(a_gImg);
+    // Set image type
+    ::fwTools::Type  pixelType           = GdcmData::getPixelType(a_gImg);
+    a_dest->setType( pixelType );
+
     const unsigned int      bytesPerComponent   = pixelType.sizeOf();
     if (bytesPerComponent > 4)
         throw ::fwTools::Failed("Pixel type not handled : " + pixelType.string());
@@ -371,7 +374,7 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
 
         try
         {
-            ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ColorToGrayFunctor >::invoke(pixelType, saverParam);
+            ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ColorToGrayFunctor >::invoke(a_dest->getPixelType(), saverParam);
         }
         catch (::fwTools::Failed & e)
         {
@@ -385,8 +388,24 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
 
     delete (char*) a_inBuffer;
 
-    // Set fwData::Image Buffer
-    a_dest->setBuffer(destBuffer);
+
+
+    /// Set Image
+
+    // Set size
+    const unsigned int dim = a_gImg.GetNumberOfDimensions();
+    const unsigned int * gDim = a_gImg.GetDimensions();
+    ::fwData::Image::SizeType dataSize (3,1);
+    if ( gDim != 0 )
+    {
+        std::copy( gDim, gDim+dim, dataSize.begin() );
+    }
+    a_dest->setSize( dataSize );
+
+    // Set Array
+    ::fwData::Array::NewSptr array;
+    array->setBuffer( destBuffer, true, a_dest->getType(), a_dest->getSize(), 1 );
+    a_dest->setDataArray( array );
 }
 
 //------------------------------------------------------------------------------

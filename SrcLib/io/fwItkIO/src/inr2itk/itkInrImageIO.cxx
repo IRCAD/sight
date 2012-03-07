@@ -791,7 +791,7 @@ void InrImageIO::Write(const void* buffer)
         }
         catch(::fwCore::Exception &e) // catch progress bar cancel exception
         {
-            gzclose(outputFile);
+            fclose(outputFile);
             throw e;
         }
         UpdateProgress( 1.0 );

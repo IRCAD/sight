@@ -4,28 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWDATA_TU_ARRAYTEST_H
-#define FWDATA_TU_ARRAYTEST_H
+#ifndef __FWDATA_UT_ARRAYTEST_HPP__
+#define __FWDATA_UT_ARRAYTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class ArrayTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class ArrayTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( ArrayTest );
     CPPUNIT_TEST( allocation );
     CPPUNIT_TEST( resize );
     CPPUNIT_TEST( reallocate );
     CPPUNIT_TEST( copy );
     CPPUNIT_TEST_SUITE_END();
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void allocation();
     void resize();
     void reallocate();
     void copy();
 };
-#endif // FWDATA_TU_ARRAYTEST_H
+} //namespace ut
+} //namespace fwData
+#endif // __FWDATA_UT_ARRAYTEST_HPP__

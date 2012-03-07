@@ -1,5 +1,16 @@
 #include <boost/assign/list_of.hpp>
-#include <fwTools/Type.hpp>
+
+#include "fwTools/Type.hpp"
+
+
+namespace std
+{
+    std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type)
+    {
+        os << type.string();
+        return os;
+    }
+}
 
 namespace fwTools
 {
@@ -16,8 +27,8 @@ const Type::TypeMapType Type::s_typeMap = ::boost::assign::map_list_of
     ("int16",  Type::create< ::boost::int16_t>())
     ("int32",  Type::create< ::boost::int32_t>())
     ("int64",  Type::create< ::boost::int64_t>())
-    ("float",  Type::create<float>())
-    ("double", Type::create<double>())
+    ("float",  Type::create< float >())
+    ("double", Type::create< double >())
     ;
 
 template<> const std::string Type::typeToString< ::boost::uint8_t  >() {return "uint8";}
@@ -34,7 +45,6 @@ template<> const std::string Type::typeToString< float  >  () {return "float";}
 template<> const std::string Type::typeToString< double >  () {return "double";}
 
 
-
 //------------------------------------------------------------------------------
 
 Type::Type()
@@ -43,6 +53,13 @@ Type::Type()
     m_sizeof = 0;
     m_isSigned = false;
     m_isFixedPrecision = false;
+}
+
+//------------------------------------------------------------------------------
+
+Type::Type(const std::string &type)
+{
+    *this = Type::create(type);
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +78,6 @@ bool Type::operator!=(const Type &_other) const
 
 //------------------------------------------------------------------------------
 
-
 bool Type::operator<( const Type& _other) const
 {
     return m_name < _other.m_name;
@@ -75,7 +91,6 @@ unsigned char Type::sizeOf() const
 }
 
 //------------------------------------------------------------------------------
-
 
 const std::string &Type::string() const
 {
@@ -108,5 +123,29 @@ Type Type::create(std::string name)
     return s_unspecifiedType;
 }
 
+//-----------------------------------------------------------------------------
+
+std::string Type::toString(const void * value) const
+{
+    return m_tool->toString(value);
 }
+
+//-----------------------------------------------------------------------------
+
+std::string Type::ToolBase::toString(::boost::any value) const
+{
+    SLM_ASSERT("unable to convert an unspecified type value", 0);
+    return "";
+}
+
+//-----------------------------------------------------------------------------
+
+std::string Type::ToolBase::toString(const void *value) const
+{
+    SLM_ASSERT("unable to convert an unspecified type value", 0);
+    return "";
+}
+
+
+} // namespace fwTools
 

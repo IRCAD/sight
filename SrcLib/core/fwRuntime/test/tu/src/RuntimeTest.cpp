@@ -17,7 +17,12 @@
 #include "RuntimeTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( RuntimeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwRuntime::ut::RuntimeTest );
+
+namespace fwRuntime
+{
+namespace ut
+{
 
 void RuntimeTest::setUp()
 {
@@ -57,5 +62,8 @@ void RuntimeTest::testRuntime()
         CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceConfig"));
         CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::AppConfig"));
     }
-
 }
+
+} // namespace ut
+} // namespace fwTools
+

@@ -9,8 +9,12 @@
 
 #include <string>
 #include <list>
+#include <vector>
 #include <stdexcept>
 
+#include <boost/mpl/vector.hpp>
+
+#include "fwTools/Stringizer.hpp"
 #include "fwTools/config.hpp"
 
 
@@ -106,6 +110,18 @@ public:
     /// return true iff the type is signed
     FWTOOLS_API bool isSigned();
 
+    typedef boost::mpl::vector<
+        signed char,
+        unsigned char,
+        signed short,
+        unsigned short,
+        signed int,
+        unsigned int,
+        unsigned long,
+        signed long,
+        float,
+        double
+            >::type SupportedTypes;
 
 protected :
 
@@ -138,6 +154,15 @@ DynamicType makeDynamicType();
 // #include "KEYTYPEMapping.hpp" is mandatory
 template<class KEYTYPE>
 DynamicType makeDynamicType(const  KEYTYPE &keyType);
+
+
+template<>
+FWTOOLS_API std::string getString(const DynamicType &dt);
+
+template<>
+FWTOOLS_API std::string getString(const std::vector<DynamicType> &dtv);
+
+
 
 
 } //end namespace fwTools {

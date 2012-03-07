@@ -9,7 +9,12 @@
 #include "MeshGeneratorTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MeshGeneratorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::MeshGeneratorTest );
+
+namespace fwDataTools
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -77,3 +82,6 @@ void MeshGeneratorTest::compareBuffer(::fwData::Array::sptr buff1, ::fwData::Arr
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwDataTools

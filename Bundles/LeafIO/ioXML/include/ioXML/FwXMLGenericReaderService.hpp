@@ -23,7 +23,7 @@ namespace ioXML
 
 /**
  * @class FwXMLGenericReaderService
- * @brief A generic reader which can load any kind of object in a fxz archive
+ * @brief A generic reader which can load any kind of object in a fwXML archive
  * after loading data are shallow copied then some notifications are send. configuration
  * of service allow to define what event are send
  * @example :
@@ -54,11 +54,13 @@ protected:
     /** Search if archive extension is changed
      * @verbatim
      <service ... >
-        <archiveExtension>.fxz</archiveExtension>
+        <archiveExtension>.yaf</archiveExtension>
      </service>
      @endverbatim
      */
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual void configuring() throw(::fwTools::Failed);
+
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);

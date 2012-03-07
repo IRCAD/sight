@@ -102,10 +102,10 @@ inline std::string getString(ForwardIterator begin,ForwardIterator end)
     if (begin!=end)
     {
         result+= getString( *begin );
-    }
-    while (++begin!=end)
-    {
-        result+= "," + getString( *begin );
+        while (++begin!=end)
+        {
+            result+= "," + getString( *begin );
+        }
     }
     result += "]";
     return result;
@@ -135,6 +135,11 @@ FWTOOLS_API std::string getString(const char &c);
 // char are numerically casted
 template<>
 FWTOOLS_API std::string getString(const unsigned char &c);
+
+template<>
+FWTOOLS_API std::string getString(const std::string &aString);
+
+
 
 ///@}
 

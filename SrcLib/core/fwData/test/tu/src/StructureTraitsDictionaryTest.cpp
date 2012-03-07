@@ -11,7 +11,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( StructureTraitsDictionaryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::StructureTraitsDictionaryTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void StructureTraitsDictionaryTest::setUp()
 {
@@ -111,5 +116,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     liver2Cat[0] = ::fwData::StructureTraits::ABDOMEN;
     liver2->setCategories(liver2Cat);
     CPPUNIT_ASSERT_THROW(structDico->addStructure(liver2), ::fwCore::Exception);
-
 }
+
+} //namespace ut
+} //namespace fwData

@@ -110,9 +110,13 @@ void AddLandmark::updating() throw(::fwTools::Failed)
         ::fwData::Point::sptr newPoint = ::fwComEd::fieldHelper::MedicalImageHelpers::getImageSliceIndices( image );
         // transform slice to mm
         std::transform( newPoint->getRefCoord().begin(),newPoint->getRefCoord().end(),
-                image->getCRefSpacing().begin(),
+                image->getSpacing().begin(),
                 newPoint->getRefCoord().begin(),
                 std::multiplies<double>() );
+        std::transform( newPoint->getRefCoord().begin(),newPoint->getRefCoord().end(),
+                image->getOrigin().begin(),
+                newPoint->getRefCoord().begin(),
+                std::plus<double>() );
         // append to landmark
         landmarks->getRefPoints().push_back( newPoint );
 

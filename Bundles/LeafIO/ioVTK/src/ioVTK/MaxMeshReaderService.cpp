@@ -52,8 +52,7 @@ static void *list_find (vtk3DSList **root, const char *name)
 namespace ioVTK
 {
 
-MaxMeshReaderService::MaxMeshReaderService() throw():
-    m_bServiceIsConfigured(false)
+MaxMeshReaderService::MaxMeshReaderService() throw()
 {
     SLM_TRACE_FUNC();
 }
@@ -101,32 +100,30 @@ void MaxMeshReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsMeshPath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsMeshPath.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
+    else
+    {
+        this->clearLocations();
+    }
+
 }
 
 //------------------------------------------------------------------------------
 
-void MaxMeshReaderService::configuring( ) throw(::fwTools::Failed)
+
+::io::IOPathType MaxMeshReaderService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        OSLM_ASSERT( "3ds file doesn't exist: " << filename, ::boost::filesystem::exists(filename) );
-        m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(filename);
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void MaxMeshReaderService::updating() throw(::fwTools::Failed)
 {
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         /// Retrieve object
         ::fwData::Model::sptr model = this->getObject< ::fwData::Model >( );
@@ -136,7 +133,7 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
         model->getRefMap().clear();
 
         vtk3DSImporter *importer1 = vtk3DSImporter::New();
-        importer1->SetFileName(m_fsMeshPath.string().c_str());
+        importer1->SetFileName(this->getFile().string().c_str());
         importer1->ComputeNormalsOn();
         importer1->Read();
 

@@ -47,11 +47,13 @@ protected:
     /** Search if archive extension is changed
      * @verbatim
        <service ... >
-         <archiveExtension>.fxz</archiveExtension>
+         <archiveExtension>.yaf</archiveExtension>
        </service>
        @endverbatim
      */
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual void configuring() throw(::fwTools::Failed);
+
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);

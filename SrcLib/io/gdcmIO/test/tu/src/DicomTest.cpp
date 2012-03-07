@@ -125,7 +125,7 @@ void DicomTest::checkImage()
     ::fwData::Image::sptr image2 = pAcq2->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT(image2);
-    CPPUNIT_ASSERT_EQUAL(image->getDimension(), image2->getDimension());
+    CPPUNIT_ASSERT_EQUAL(image->getNumberOfDimensions(), image2->getNumberOfDimensions());
     CPPUNIT_ASSERT_EQUAL(image->getOrigin().back(), image2->getOrigin().back());
     CPPUNIT_ASSERT_EQUAL(image->getWindowCenter(), image2->getWindowCenter());
     CPPUNIT_ASSERT_EQUAL(image->getWindowWidth(), image2->getWindowWidth());
@@ -283,7 +283,7 @@ void DicomTest::checkDistance()
     ::boost::int32_t IMG1_SIZEX = 10 ;
     ::boost::int32_t IMG1_SIZEY = 20;
     ::boost::int32_t IMG1_SIZEZ = 30 ;
-    std::vector< ::boost::int32_t > IMG1_VSIZE ;
+    ::fwData::Image::SizeType IMG1_VSIZE;
     IMG1_VSIZE.push_back(IMG1_SIZEX);
     IMG1_VSIZE.push_back(IMG1_SIZEY);
     IMG1_VSIZE.push_back(IMG1_SIZEZ);
@@ -294,7 +294,7 @@ void DicomTest::checkDistance()
     const double IMG1_RESCALEINTERCEPT = 1 ;
 
     ::boost::uint8_t IMG1_BITSPERPIXEL = 16 ;
-    ::fwTools::DynamicType IMG1_PIXELTYPE = ::fwTools::makeDynamicType<signed short>();
+    ::fwTools::Type IMG1_PIXELTYPE = ::fwTools::Type::create("int16");
     signed short * buffer1 = new signed short[size];
     for (int i=0 ; i< size ; i++)
     {
@@ -302,7 +302,7 @@ void DicomTest::checkDistance()
     }
 
     ::boost::uint8_t IMG2_BITSPERPIXEL = 8 ;
-    ::fwTools::DynamicType IMG2_PIXELTYPE = ::fwTools::makeDynamicType<unsigned char>();
+    ::fwTools::Type IMG2_PIXELTYPE = ::fwTools::Type::create("uint8");
     unsigned char * buffer2 = new unsigned char[size];
     for (int i=0 ; i< size ; i++)
     {
@@ -335,15 +335,15 @@ void DicomTest::checkDistance()
     ::fwData::Image::NewSptr pImage1;
     pAcq1->setImage(pImage1);
 
-    pImage1->setDimension( IMG1_DIMENSION );
-    pImage1->setCRefSize( IMG1_VSIZE );
-    pImage1->setCRefOrigin( IMG1_ORIGIN );
-    pImage1->setCRefSpacing( IMG1_VSPACING );
-    pImage1->setPixelType(IMG1_PIXELTYPE);
-    pImage1->setBuffer( static_cast<void *>(buffer1) );
+    pImage1->setSize( IMG1_VSIZE );
+    pImage1->setOrigin( IMG1_ORIGIN );
+    pImage1->setSpacing( IMG1_VSPACING );
+    pImage1->setType( IMG1_PIXELTYPE );
+    ::fwData::Array::NewSptr array1;
+    array1->setBuffer( static_cast<void *>(buffer1), true, IMG1_PIXELTYPE, IMG1_VSIZE, 1 );
+    pImage1->setDataArray( array1 );
     pImage1->setWindowCenter(IMG1_WINDOWCENTER);
-    pImage1->setWindowWidth(IMG1_WINDOWWIDTH    );
-    pImage1->setRescaleIntercept(IMG1_RESCALEINTERCEPT);
+    pImage1->setWindowWidth(IMG1_WINDOWWIDTH );
     ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(pImage1);
     ::fwData::PointList::sptr landmarks = pImage1->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
     ::fwData::Point::sptr point = ::fwData::Point::New(2.6f, 1.2f, 4.5f);
@@ -385,15 +385,16 @@ void DicomTest::checkDistance()
     ::fwData::Image::NewSptr pImage2;
     pAcq2->setImage(pImage2);
 
-    pImage2->setDimension( IMG1_DIMENSION );
-    pImage2->setCRefSize( IMG1_VSIZE );
-    pImage2->setCRefOrigin( IMG1_ORIGIN );
-    pImage2->setCRefSpacing( IMG1_VSPACING );
-    pImage2->setPixelType(IMG2_PIXELTYPE);
-    pImage2->setBuffer( static_cast<void *>(buffer2) );
+
+    pImage2->setSize( IMG1_VSIZE );
+    pImage2->setOrigin( IMG1_ORIGIN );
+    pImage2->setSpacing( IMG1_VSPACING );
+    pImage2->setType(IMG2_PIXELTYPE);
+    ::fwData::Array::NewSptr array2;
+    array2->setBuffer( static_cast<void *>(buffer2), true, IMG2_PIXELTYPE, IMG1_VSIZE, 1 );
+    pImage2->setDataArray( array2 );
     pImage2->setWindowCenter(IMG1_WINDOWCENTER);
-    pImage2->setWindowWidth(IMG1_WINDOWWIDTH    );
-    pImage2->setRescaleIntercept(IMG1_RESCALEINTERCEPT);
+    pImage2->setWindowWidth(IMG1_WINDOWWIDTH);
     ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(pImage2);
 
     return pPatientDB;

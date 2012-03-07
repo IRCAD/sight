@@ -77,18 +77,8 @@ protected:
      */
     IOVTK_API virtual void stopping() throw(::fwTools::Failed){};
 
-    /**
-    * @brief Configuring method.
-    *
-    * XML configuration sample:
-    * @verbatim
-    <service implementation="::ioVTK::ImageReaderService" type="::io::IReader">
-        <filename id=".../imageTest.vtk"/>
-    </service>
-    @endverbatim
-    * This method is used to configure the service.
-    */
-    IOVTK_API virtual void configuring( ) throw(::fwTools::Failed);
+    IOVTK_API virtual ::io::IOPathType getIOPathType() const;
+
     /**
     * @brief Info method.
     *

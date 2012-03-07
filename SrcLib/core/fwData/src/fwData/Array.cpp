@@ -24,8 +24,12 @@ inline size_t computeSize(
         const ::fwData::Array::SizeType &size,
         size_t nbOfComponents )
 {
-    size_t total = elementSize;
-    total *= std::accumulate (size.begin(), size.end(), nbOfComponents, std::multiplies< ::fwData::Array::SizeType::value_type >() );
+    size_t total = 0;
+    if (!size.empty())
+    {
+        total = elementSize;
+        total *= std::accumulate (size.begin(), size.end(), nbOfComponents, std::multiplies< ::fwData::Array::SizeType::value_type >() );
+    }
     return total;
 }
 
@@ -126,6 +130,23 @@ void Array::setBuffer(void *buf, bool takeOwnership)
     }
     m_buffer = buf;
     m_isBufferOwner = (buf != NULL) && takeOwnership;
+}
+
+//------------------------------------------------------------------------------
+
+void Array::setBuffer(
+        void *buf,
+        bool takeOwnership,
+        const ::fwTools::Type &type,
+        const SizeType &size,
+        size_t nbOfComponents )
+{
+    nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
+    this->setBuffer( buf, takeOwnership);
+    m_strides = computeStrides(size, nbOfComponents, type.sizeOf());
+    m_type           = type;
+    m_size           = size;
+    m_nbOfComponents = nbOfComponents;
 }
 
 //------------------------------------------------------------------------------
@@ -239,14 +260,14 @@ size_t Array::getSizeInBytes() const
 //------------------------------------------------------------------------------
 
 
-::fwData::Array::SizeType   Array::getSize() const
+const ::fwData::Array::SizeType &Array::getSize() const
 {
     return m_size;
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Array::OffsetType Array::getStrides() const
+const ::fwData::Array::OffsetType &Array::getStrides() const
 {
     return m_strides;
 }

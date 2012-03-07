@@ -44,7 +44,7 @@ protected:
     IOXML_API virtual ~FwXMLPatient2PatientDBWriterService() throw();
 
     /// Override
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
@@ -71,10 +71,6 @@ private :
     bool isAnFwxmlArchive( const ::boost::filesystem::path filePath );
     void manageZipAndSavePatientDB( const ::boost::filesystem::path inrFileDir, ::fwData::PatientDB::sptr _pPatient );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsPatientDBPath;
 
 };
 
