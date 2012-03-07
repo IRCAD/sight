@@ -83,7 +83,7 @@ public:
     /**
      * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
      */
-    FWDATA_API void Object::updateFields_NEWAPI( const FieldMapType & fieldMap );
+    FWDATA_API void updateFields_NEWAPI( const FieldMapType & fieldMap );
 
 protected:
 
