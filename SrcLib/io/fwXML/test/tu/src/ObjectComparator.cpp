@@ -297,9 +297,9 @@ void ObjectComparator::compareMaterial(::fwData::Material::sptr mat1, ::fwData::
 {
     CPPUNIT_ASSERT(mat1);
     CPPUNIT_ASSERT(mat2);
-    CPPUNIT_ASSERT_EQUAL(mat1->getShadingMode(), mat1->getShadingMode());
-    CPPUNIT_ASSERT_EQUAL(mat1->getRepresentationMode(), mat1->getRepresentationMode());
-    CPPUNIT_ASSERT_EQUAL(mat1->getOptionsMode(), mat1->getOptionsMode());
+    CPPUNIT_ASSERT_EQUAL(mat1->getShadingMode(), mat2->getShadingMode());
+    CPPUNIT_ASSERT_EQUAL(mat1->getRepresentationMode(), mat2->getRepresentationMode());
+    CPPUNIT_ASSERT_EQUAL(mat1->getOptionsMode(), mat2->getOptionsMode());
 
     ObjectComparator::compareColor(mat1->ambient(), mat2->ambient());
     ObjectComparator::compareColor(mat1->diffuse(), mat2->diffuse());

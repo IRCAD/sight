@@ -68,7 +68,8 @@ public :
     FWDATATOOLS_API static bool compareImage(   ::fwData::Image::sptr image1,
                                                 ::fwData::Image::sptr image2,
                                                  double spacingTolerance = 0,
-                                                 double originTolerance = 0);
+                                                 double originTolerance = 0,
+                                                 std::string errorPrefix = "");
 
     /**
      * @brief compare image information.
@@ -84,7 +85,7 @@ public :
      * @brief compare two arrays.
      * @return true if the arrays are equal.
      */
-    FWDATATOOLS_API static bool compareArray(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
+    FWDATATOOLS_API static bool compareArray(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2, std::string errorPrefix = "");
 
     /// Fill array with random value
     FWDATATOOLS_API static void randomizeArray(::fwData::Array::sptr array);

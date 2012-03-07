@@ -105,6 +105,40 @@ public :
      */
     FWDATATOOLS_API static bool compareReconstruction(::fwData::Reconstruction::sptr rec1, ::fwData::Reconstruction::sptr rec2);
 
+    /**
+     * @brief Generate a mesh.
+     * @param mesh mesh to generate
+     */
+    FWDATATOOLS_API static void generateMesh( ::fwData::Mesh::sptr mesh );
+
+    /**
+     * @brief compare two meshes.
+     * @return true if meshes are equal.
+     * @note if false, mesh differences are written in SLM log
+     */
+    FWDATATOOLS_API static bool compareMesh( ::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2, std::string errorPrefix = "" );
+
+    /**
+     * @brief compare two data array meshes.
+     * @return true if data array meshes are equal.
+     * @note if false, data array meshe differences are written in SLM log
+     */
+    FWDATATOOLS_API static bool compareDataArrayMesh( ::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2 );
+
+    /**
+     * @brief compare two materials.
+     * @return true if materials are equal.
+     * @note if false, material differences are written in SLM log
+     */
+    FWDATATOOLS_API static bool compareMaterial( ::fwData::Material::sptr mat1, ::fwData::Material::sptr mat2, std::string errorPrefix ="" );
+
+    /**
+     * @brief compare two colors.
+     * @return true if colors are equal.
+     * @note if false, color differences are written in SLM log
+     */
+    FWDATATOOLS_API static bool compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, std::string errorPrefix = "" );
+
 protected:
 
 

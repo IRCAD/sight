@@ -14,6 +14,7 @@
 
 #include "fwDataTools/Patient.hpp"
 #include "fwDataTools/Image.hpp"
+#include "fwDataTools/MeshGenerator.hpp"
 
 
 namespace fwDataTools
@@ -368,6 +369,8 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
     OSLM_ERROR_IF("Acquisitions have not same reconstruction size : " << acquisition1->getReconstructionSize() << " != " << acquisition2->getReconstructionSize(),
             acquisition1->getReconstructionSize() != acquisition2->getReconstructionSize());
 
+    compare &= Image::compareImage(acquisition1->getImage(), acquisition2->getImage());
+
     std::pair< ::fwData::Acquisition::ReconstructionIterator, ::fwData::Acquisition::ReconstructionIterator > pairAcquisition1 = acquisition1->getReconstructions();
     ::fwData::Acquisition::ReconstructionIterator iter1 = pairAcquisition1.first;
     ::fwData::Acquisition::ReconstructionIterator iter2 = acquisition2->getReconstructions().first;
@@ -378,8 +381,6 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
         iter2++;
     }
 
-    compare &= Image::compareImage(acquisition1->getImage(), acquisition2->getImage());
-
     return compare;
 }
 
@@ -387,14 +388,41 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
 
 void Patient::generateReconstruction(::fwData::Reconstruction::sptr rec)
 {
+    rec->setIsVisible(true);
+    rec->setOrganName("liver");
+    rec->setStructureType("LIVER");
+    rec->setIsClosed(true);
+    rec->setIsAutomatic(true);
+    rec->setAvgVolume(rand()%1000/100.0);
+    rec->setVolStdDeviation(rand()%1000/100.0);
+    rec->setVolPctConfidence(rand()%1000/100.0);
+    rec->setReconstructionTime("2007-Feb-24 18:55:00");
+    rec->setMaskGenerated(true);
+    rec->setLevel(rand()%255);
+    rec->setLabel(rand()%500);
+    rec->setGenerated3D(true);
+    rec->setType3D("recType3D");
+    rec->setPath("/tmp/myFile.trian");
+    rec->setDbID(rand()%1000);
+
     ::fwData::Image::NewSptr img;
     Image::generateRandomImage(img, ::fwTools::Type::create("uint16"));
     rec->setImage(img);
 
     ::fwData::Material::NewSptr material;
+    material->ambient()->red() = 0.75;
+    material->ambient()->green() = 0.10;
+    material->ambient()->blue() = 0.56;
+    material->ambient()->alpha() = 0.8;
+    material->diffuse()->red() = 0.85;
+    material->diffuse()->green() = 0.20;
+    material->diffuse()->blue() = 0.66;
+    material->diffuse()->alpha() = 0.9;
     rec->setMaterial(material);
 
     ::fwData::Mesh::NewSptr mesh;
+    Patient::generateMesh( mesh );
+
     rec->setMesh(mesh);
 }
 
@@ -419,9 +447,11 @@ bool Patient::compareReconstruction(::fwData::Reconstruction::sptr reconstructio
     OSLM_ERROR_IF("Reconstructions have not same structure type : " << reconstruction1->getStructureType() << " != " << reconstruction2->getStructureType(),
             reconstruction1->getStructureType() != reconstruction2->getStructureType());
 
+    /*
     compare &= (reconstruction1->getIsClosed() == reconstruction2->getIsClosed());
     OSLM_ERROR_IF("Reconstructions have not same closing : " << reconstruction1->getIsClosed() << " != " << reconstruction2->getIsClosed(),
             reconstruction1->getIsClosed() != reconstruction2->getIsClosed());
+     */
 
     compare &= (reconstruction1->getIsAutomatic() == reconstruction2->getIsAutomatic());
     OSLM_ERROR_IF("Reconstructions have not same IsAutomatic : " << reconstruction1->getIsAutomatic() << " != " << reconstruction2->getIsAutomatic(),
@@ -448,7 +478,7 @@ bool Patient::compareReconstruction(::fwData::Reconstruction::sptr reconstructio
             reconstruction1->getMaskGenerated() != reconstruction2->getMaskGenerated());
 
     compare &= (reconstruction1->getLevel() == reconstruction2->getLevel());
-    OSLM_ERROR_IF("Reconstructions have not same level : " << reconstruction1->getLevel() << " != " << reconstruction2->getLevel(),
+    OSLM_ERROR_IF("Reconstructions have not same level : " << (int)reconstruction1->getLevel() << " != " << (int)reconstruction2->getLevel(),
             reconstruction1->getLevel() != reconstruction2->getLevel());
 
     compare &= (reconstruction1->getLabel() == reconstruction2->getLabel());
@@ -471,10 +501,146 @@ bool Patient::compareReconstruction(::fwData::Reconstruction::sptr reconstructio
     OSLM_ERROR_IF("Reconstructions have not same dbID : " << reconstruction1->getDbID() << " != " << reconstruction2->getDbID(),
             reconstruction1->getDbID() != reconstruction2->getDbID());
 
-    compare &= Image::compareImage(reconstruction1->getImage(), reconstruction2->getImage());
-    //compareMaterial(reconstruction1->getMaterial(), reconstruction2->getMaterial());
-    //compareMesh(reconstruction1->getMesh(), reconstruction2->getMesh());
+    compare &= Image::compareImage(reconstruction1->getImage(), reconstruction2->getImage(), 0, 0, "Reconstruction mask : ");
 
+    compare &= Patient::compareMaterial(reconstruction1->getMaterial(), reconstruction2->getMaterial(), "Reconstruction material : ");
+
+    compare &= Patient::compareMesh(reconstruction1->getMesh(), reconstruction2->getMesh(), "Reconstruction mesh : ");
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::generateMesh( ::fwData::Mesh::sptr mesh )
+{
+    ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
+    ::fwDataTools::MeshGenerator::initRand();
+    ::fwDataTools::MeshGenerator::shakePoint(mesh);
+    ::fwDataTools::MeshGenerator::generateCellNormals(mesh);
+    ::fwDataTools::MeshGenerator::generatePointNormals(mesh);
+    ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh);
+    ::fwDataTools::MeshGenerator::colorizeMeshCells(mesh);
+    mesh->adjustAllocatedMemory();
+}
+
+//------------------------------------------------------------------------------
+
+bool Patient::compareMesh( ::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2, std::string  errorPrefix )
+{
+    bool compare = true;
+
+    if ( ! mesh1 && mesh2 || mesh1 && ! mesh2 )
+    {
+        compare &= false;
+        OSLM_ERROR( errorPrefix << "Meshes are not equivalent (one mesh has a null sptr)");
+    }
+    else if ( mesh1 && mesh2 )
+    {
+        compare &= ( mesh1->getNumberOfPoints() == mesh2->getNumberOfPoints() );
+        OSLM_ERROR_IF( errorPrefix << "Meshes have not same number of points : " << mesh1->getNumberOfPoints() << " != " << mesh2->getNumberOfPoints(),
+                mesh1->getNumberOfPoints() != mesh2->getNumberOfPoints());
+
+        compare &= ( mesh1->getNumberOfCells() == mesh2->getNumberOfCells() );
+        OSLM_ERROR_IF( errorPrefix << "Meshes have not same number of cells : " << mesh1->getNumberOfCells() << " != " << mesh2->getNumberOfCells(),
+                mesh1->getNumberOfCells() != mesh2->getNumberOfCells());
+
+        compare &= ( mesh1->getCellDataSize() == mesh2->getCellDataSize() );
+        OSLM_ERROR_IF( errorPrefix << "Meshes have not same cell data size : " << mesh1->getCellDataSize() << " != " << mesh2->getCellDataSize(),
+                mesh1->getCellDataSize() != mesh2->getCellDataSize());
+
+        compare &= Image::compareArray(mesh1->getPointsArray(), mesh2->getPointsArray(), "Mesh points : ");
+        compare &= Image::compareArray(mesh1->getCellTypesArray(), mesh2->getCellTypesArray(), "Mesh cell types : ");
+        compare &= Image::compareArray(mesh1->getCellDataOffsetsArray(), mesh2->getCellDataOffsetsArray(), "Mesh cell offsets : ");
+        compare &= Image::compareArray(mesh1->getCellDataArray(), mesh2->getCellDataArray(), "Mesh cell data : ");
+        compare &= Image::compareArray(mesh1->getPointColorsArray(), mesh2->getPointColorsArray(), "Mesh point colors : ");
+        compare &= Image::compareArray(mesh1->getCellColorsArray(), mesh2->getCellColorsArray(), "Mesh cell colors : ");
+        compare &= Image::compareArray(mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray(), "Mesh point normals : ");
+        compare &= Image::compareArray(mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray(), "Mesh cell normals : ");
+
+        compare &= Patient::compareDataArrayMesh(mesh1, mesh2);
+    }
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+bool Patient::compareDataArrayMesh( ::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2 )
+{
+    bool compare = true;
+
+    std::vector<std::string> vectNames = mesh1->getDataArrayNames();
+    BOOST_FOREACH(std::string name, vectNames)
+    {
+        ::fwData::Array::sptr array1 = mesh1->getDataArray(name);
+        ::fwData::Array::sptr array2 = mesh2->getDataArray(name);
+        compare &= Image::compareArray(array1, array2);
+    }
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+bool Patient::compareMaterial(::fwData::Material::sptr mat1, ::fwData::Material::sptr mat2, std::string errorPrefix )
+{
+    bool compare = true;
+
+    if ( ! mat1 && mat2 || mat1 && ! mat2 )
+    {
+        compare &= false;
+        OSLM_ERROR( errorPrefix << "Materials are not equivalent (one Material has a null sptr)");
+    }
+    else if ( mat1 && mat2 )
+    {
+        compare &= ( mat1->getShadingMode() == mat2->getShadingMode() );
+        OSLM_ERROR_IF( errorPrefix << "Materials have not same shading mode : " << mat1->getShadingMode() << " != " << mat2->getShadingMode(),
+                mat1->getShadingMode() != mat2->getShadingMode());
+
+        compare &= ( mat1->getRepresentationMode() == mat2->getRepresentationMode() );
+        OSLM_ERROR_IF( errorPrefix << "Materials have not same representation mode : " << mat1->getRepresentationMode() << " != " << mat2->getRepresentationMode(),
+                mat1->getRepresentationMode() != mat2->getRepresentationMode());
+
+        compare &= ( mat1->getOptionsMode() == mat2->getOptionsMode() );
+        OSLM_ERROR_IF( errorPrefix << "Materials have not same options mode : " << mat1->getOptionsMode() << " != " << mat2->getOptionsMode(),
+                mat1->getOptionsMode() != mat2->getOptionsMode());
+
+        compare &= Patient::compareColor( mat1->ambient(), mat2->ambient(), "Ambient color : ");
+        compare &= Patient::compareColor( mat1->diffuse(), mat2->diffuse(), "Diffuse color : ");
+    }
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, std::string errorPrefix )
+{
+    bool compare = true;
+
+    if ( ! col1 && col2 || col1 && ! col2 )
+    {
+        compare &= false;
+        OSLM_ERROR( errorPrefix << "Colors are not equivalent (one Color has a null sptr)");
+    }
+    else if ( col1 && col2 )
+    {
+        compare &= ( col1->red() == col2->red() );
+        OSLM_ERROR_IF( errorPrefix << "Materials have not same red : " << col1->red() << " != " << col2->red(),
+                col1->red() != col2->red());
+
+        compare &= ( col1->green() == col2->green() );
+        OSLM_ERROR_IF( errorPrefix << "Materials have not same green : " << col1->green() << " != " << col2->green(),
+                col1->green() != col2->green());
+
+        compare &= ( col1->blue() == col2->blue() );
+        OSLM_ERROR_IF( errorPrefix << "Materials have not same blue : " << col1->blue() << " != " << col2->blue(),
+                col1->blue() != col2->blue());
+
+        compare &= ( col1->alpha() == col2->alpha() );
+        OSLM_ERROR_IF( errorPrefix << "Materials have not same alpha : " << col1->alpha() << " != " << col2->alpha(),
+                col1->alpha() != col2->alpha());
+    }
     return compare;
 }
 
