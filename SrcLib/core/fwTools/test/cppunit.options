@@ -6,6 +6,7 @@ CLASSTEST=[
     'MacrosTest'              ,
     'ObjectTest'              ,
     'RandomTest'              ,
+    'TypeTest'                ,
     'StringizerTest'          ,
     'UUIDTEST'                ,
     ]

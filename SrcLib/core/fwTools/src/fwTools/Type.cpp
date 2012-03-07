@@ -15,44 +15,77 @@ namespace std
 namespace fwTools
 {
 
-const std::string Type::s_unspecifiedTypeName = "UNSPECIFIED TYPE";
-const Type Type::s_unspecifiedType;
+const std::string Type::s_UNSPECIFIED_TYPENAME("UNSPECIFIED TYPE");
 
-const Type::TypeMapType Type::s_typeMap = ::boost::assign::map_list_of
-    ("uint8" , Type::create< ::boost::uint8_t>())
-    ("uint16", Type::create< ::boost::uint16_t>())
-    ("uint32", Type::create< ::boost::uint32_t>())
-    ("uint64", Type::create< ::boost::uint64_t>())
-    ("int8" ,  Type::create< ::boost::int8_t>())
-    ("int16",  Type::create< ::boost::int16_t>())
-    ("int32",  Type::create< ::boost::int32_t>())
-    ("int64",  Type::create< ::boost::int64_t>())
-    ("float",  Type::create< float >())
-    ("double", Type::create< double >())
+const std::string Type::s_INT8_TYPENAME("int8");
+const std::string Type::s_INT16_TYPENAME("int16");
+const std::string Type::s_INT32_TYPENAME("int32");
+const std::string Type::s_INT64_TYPENAME("int64");
+
+const std::string Type::s_UINT8_TYPENAME("uint8");
+const std::string Type::s_UINT16_TYPENAME("uint16");
+const std::string Type::s_UINT32_TYPENAME("uint32");
+const std::string Type::s_UINT64_TYPENAME("uint64");
+
+const std::string Type::s_FLOAT_TYPENAME("float");
+const std::string Type::s_DOUBLE_TYPENAME("double");
+
+
+
+const Type::TypeMapType Type::s_TYPEMAP = ::boost::assign::map_list_of
+    (Type::s_INT8_TYPENAME  , Type::create< ::fwTools::Type::Int8Type >())
+    (Type::s_INT16_TYPENAME , Type::create< ::fwTools::Type::Int16Type >())
+    (Type::s_INT32_TYPENAME , Type::create< ::fwTools::Type::Int32Type >())
+    (Type::s_INT64_TYPENAME , Type::create< ::fwTools::Type::Int64Type >())
+
+    (Type::s_UINT8_TYPENAME , Type::create< ::fwTools::Type::UInt8Type >())
+    (Type::s_UINT16_TYPENAME, Type::create< ::fwTools::Type::UInt16Type >())
+    (Type::s_UINT32_TYPENAME, Type::create< ::fwTools::Type::UInt32Type >())
+    (Type::s_UINT64_TYPENAME, Type::create< ::fwTools::Type::UInt64Type >())
+
+    (Type::s_FLOAT_TYPENAME , Type::create< ::fwTools::Type::FloatType >())
+    (Type::s_DOUBLE_TYPENAME, Type::create< ::fwTools::Type::DoubleType >())
     ;
 
-template<> const std::string Type::typeToString< ::boost::uint8_t  >() {return "uint8";}
-template<> const std::string Type::typeToString< ::boost::uint16_t >() {return "uint16";}
-template<> const std::string Type::typeToString< ::boost::uint32_t >() {return "uint32";}
-template<> const std::string Type::typeToString< ::boost::uint64_t >() {return "uint64";}
 
-template<> const std::string Type::typeToString< ::boost::int8_t  > () {return "int8";}
-template<> const std::string Type::typeToString< ::boost::int16_t > () {return "int16";}
-template<> const std::string Type::typeToString< ::boost::int32_t > () {return "int32";}
-template<> const std::string Type::typeToString< ::boost::int64_t > () {return "int64";}
 
-template<> const std::string Type::typeToString< float  >  () {return "float";}
-template<> const std::string Type::typeToString< double >  () {return "double";}
+const Type Type::s_UNSPECIFIED_TYPE;
+
+const Type Type::s_INT8  = ::fwTools::Type::create< ::fwTools::Type::Int8Type  >();
+const Type Type::s_INT16 = ::fwTools::Type::create< ::fwTools::Type::Int16Type >();
+const Type Type::s_INT32 = ::fwTools::Type::create< ::fwTools::Type::Int32Type >();
+const Type Type::s_INT64 = ::fwTools::Type::create< ::fwTools::Type::Int64Type >();
+
+const Type Type::s_UINT8  = ::fwTools::Type::create< ::fwTools::Type::UInt8Type  >();
+const Type Type::s_UINT16 = ::fwTools::Type::create< ::fwTools::Type::UInt16Type >();
+const Type Type::s_UINT32 = ::fwTools::Type::create< ::fwTools::Type::UInt32Type >();
+const Type Type::s_UINT64 = ::fwTools::Type::create< ::fwTools::Type::UInt64Type >();
+
+const Type Type::s_FLOAT  = ::fwTools::Type::create< ::fwTools::Type::FloatType  >();
+const Type Type::s_DOUBLE = ::fwTools::Type::create< ::fwTools::Type::DoubleType >();
+
+
+
+
+template<> const std::string &Type::typeToString< ::fwTools::Type::Int8Type  > () {return Type::s_INT8_TYPENAME; }
+template<> const std::string &Type::typeToString< ::fwTools::Type::Int16Type > () {return Type::s_INT16_TYPENAME;}
+template<> const std::string &Type::typeToString< ::fwTools::Type::Int32Type > () {return Type::s_INT32_TYPENAME;}
+template<> const std::string &Type::typeToString< ::fwTools::Type::Int64Type > () {return Type::s_INT64_TYPENAME;}
+
+template<> const std::string &Type::typeToString< ::fwTools::Type::UInt8Type  >() {return Type::s_UINT8_TYPENAME; }
+template<> const std::string &Type::typeToString< ::fwTools::Type::UInt16Type >() {return Type::s_UINT16_TYPENAME;}
+template<> const std::string &Type::typeToString< ::fwTools::Type::UInt32Type >() {return Type::s_UINT32_TYPENAME;}
+template<> const std::string &Type::typeToString< ::fwTools::Type::UInt64Type >() {return Type::s_UINT64_TYPENAME;}
+
+template<> const std::string &Type::typeToString< ::fwTools::Type::FloatType  >() {return ::fwTools::Type::s_FLOAT_TYPENAME; }
+template<> const std::string &Type::typeToString< ::fwTools::Type::DoubleType >() {return ::fwTools::Type::s_DOUBLE_TYPENAME;}
 
 
 //------------------------------------------------------------------------------
 
 Type::Type()
 {
-    m_name = s_unspecifiedTypeName;
-    m_sizeof = 0;
-    m_isSigned = false;
-    m_isFixedPrecision = false;
+    Type::setType<void>();
 }
 
 //------------------------------------------------------------------------------
@@ -99,6 +132,13 @@ const std::string &Type::string() const
 
 //------------------------------------------------------------------------------
 
+const std::type_info &Type::typeId() const
+{
+    return m_tool->m_typeinfo;
+}
+
+//------------------------------------------------------------------------------
+
 bool Type::isFixedPrecision() const
 {
     return m_isFixedPrecision;
@@ -115,12 +155,12 @@ bool Type::isSigned() const
 
 Type Type::create(std::string name)
 {
-    TypeMapType::const_iterator iter = s_typeMap.find(name);
-    if (iter != s_typeMap.end())
+    TypeMapType::const_iterator iter = s_TYPEMAP.find(name);
+    if (iter != s_TYPEMAP.end())
     {
         return iter->second;
     }
-    return s_unspecifiedType;
+    return s_UNSPECIFIED_TYPE;
 }
 
 //-----------------------------------------------------------------------------
@@ -129,6 +169,16 @@ std::string Type::toString(const void * value) const
 {
     return m_tool->toString(value);
 }
+
+//-----------------------------------------------------------------------------
+
+Type::ToolBase::ToolBase() : m_typeinfo(typeid(void))
+{}
+
+//-----------------------------------------------------------------------------
+
+Type::ToolBase::ToolBase(const std::type_info &typeinfo) : m_typeinfo(typeinfo)
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -146,6 +196,29 @@ std::string Type::ToolBase::toString(const void *value) const
     return "";
 }
 
+//-----------------------------------------------------------------------------
+
+template <>
+void Type::setType<char>()
+{
+    this->setType<signed char>();
+}
+
+//-----------------------------------------------------------------------------
+
+template <>
+void Type::setType<void>()
+{
+    m_name = s_UNSPECIFIED_TYPENAME;
+    m_sizeof = 0;
+    m_isSigned = false;
+    m_isFixedPrecision = false;
+
+    m_tool = SPTR(ToolBase)(new Type::ToolBase());
+
+    m_min = 0;
+    m_max = 0;
+}
 
 } // namespace fwTools
 

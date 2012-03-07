@@ -10,6 +10,7 @@
 #include <limits>
 #include <map>
 #include <string>
+#include <typeinfo>
 
 #include <boost/cstdint.hpp>
 
@@ -39,13 +40,18 @@ class FWTOOLS_CLASS_API Type
 public:
     struct FWTOOLS_CLASS_API ToolBase
     {
+        FWTOOLS_API ToolBase();
+        FWTOOLS_API ToolBase(const std::type_info &typeinfo);
         FWTOOLS_API  virtual std::string toString( ::boost::any value ) const;
         FWTOOLS_API virtual std::string toString( const void * ) const;
+
+        const std::type_info &m_typeinfo;
     };
 
     template<typename T>
     struct  Tool : public ToolBase
     {
+        Tool();
         virtual std::string toString( ::boost::any value ) const;
         virtual std::string toString( const void * ) const;
     };
@@ -98,6 +104,9 @@ public:
     /// Return a human readable string
     FWTOOLS_API const std::string &string() const;
 
+    /// return type_info of represented type. If type is unspecified, return typeid(void)
+    FWTOOLS_API const std::type_info &typeId() const;
+
     /**
      * @brief return the min and max storable in the Type. take care that min/max value are casted into template T
      */
@@ -113,7 +122,7 @@ public:
     FWTOOLS_API std::string toString( const void * ) const;
 
     template <typename T>
-    static const std::string typeToString();
+    static const std::string &typeToString();
 
     template <typename T>
     static Type create();
@@ -132,9 +141,54 @@ protected :
     SPTR(ToolBase) m_tool;
 
     /// Value for not specified type
-    FWTOOLS_API static const std::string s_unspecifiedTypeName;
-    FWTOOLS_API static const Type s_unspecifiedType;
-    FWTOOLS_API static const TypeMapType s_typeMap;
+
+    FWTOOLS_API static const TypeMapType s_TYPEMAP;
+
+public :
+
+    FWTOOLS_API static const Type s_UNSPECIFIED_TYPE;
+
+    FWTOOLS_API static const Type s_INT8;
+    FWTOOLS_API static const Type s_INT16;
+    FWTOOLS_API static const Type s_INT32;
+    FWTOOLS_API static const Type s_INT64;
+
+    FWTOOLS_API static const Type s_UINT8;
+    FWTOOLS_API static const Type s_UINT16;
+    FWTOOLS_API static const Type s_UINT32;
+    FWTOOLS_API static const Type s_UINT64;
+
+    FWTOOLS_API static const Type s_FLOAT;
+    FWTOOLS_API static const Type s_DOUBLE;
+
+    FWTOOLS_API static const std::string s_UNSPECIFIED_TYPENAME;
+
+    FWTOOLS_API static const std::string s_INT8_TYPENAME;
+    FWTOOLS_API static const std::string s_INT16_TYPENAME;
+    FWTOOLS_API static const std::string s_INT32_TYPENAME;
+    FWTOOLS_API static const std::string s_INT64_TYPENAME;
+
+    FWTOOLS_API static const std::string s_UINT8_TYPENAME;
+    FWTOOLS_API static const std::string s_UINT16_TYPENAME;
+    FWTOOLS_API static const std::string s_UINT32_TYPENAME;
+    FWTOOLS_API static const std::string s_UINT64_TYPENAME;
+
+    FWTOOLS_API static const std::string s_FLOAT_TYPENAME;
+    FWTOOLS_API static const std::string s_DOUBLE_TYPENAME;
+
+    typedef ::boost::int8_t   Int8Type;
+    typedef ::boost::int16_t  Int16Type;
+    typedef ::boost::int32_t  Int32Type;
+    typedef ::boost::int64_t  Int64Type;
+
+    typedef ::boost::uint8_t  UInt8Type;
+    typedef ::boost::uint16_t UInt16Type;
+    typedef ::boost::uint32_t UInt32Type;
+    typedef ::boost::uint64_t UInt64Type;
+
+    typedef float             FloatType;
+    typedef double            DoubleType;
+
 
 };
 
@@ -154,6 +208,12 @@ std::string Type::Tool<T>::toString(const void *value) const
     const T &v = *(static_cast< const T* > (value));
     return ::fwTools::getString( v );
 }
+//-----------------------------------------------------------------------------
+
+template< typename T >
+Type::Tool<T>::Tool() : Type::ToolBase(typeid(T))
+{}
+
 
 //-----------------------------------------------------------------------------
 
@@ -200,10 +260,21 @@ void Type::setType()
 
 //-----------------------------------------------------------------------------
 
+template <>
+void Type::setType<void>();
+
+
+//-----------------------------------------------------------------------------
+
+template <>
+void Type::setType<char>();
+
+//-----------------------------------------------------------------------------
+
 template <typename T>
-const std::string Type::typeToString()
+const std::string &Type::typeToString()
 {
-    return Type::s_unspecifiedTypeName;
+    return Type::s_UNSPECIFIED_TYPENAME;
 }
 
 //-----------------------------------------------------------------------------
@@ -220,18 +291,18 @@ const std::pair<T,T> Type::minMax() const
 
 //-----------------------------------------------------------------------------
 
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint8_t  >();
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint16_t >();
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint32_t >();
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::uint64_t >();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int8Type  > ();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int16Type > ();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int32Type > ();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int64Type > ();
 
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int8_t  > ();
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int16_t > ();
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int32_t > ();
-template<> FWTOOLS_API const std::string Type::typeToString< ::boost::int64_t > ();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt8Type  >();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt16Type >();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt32Type >();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt64Type >();
 
-template<> FWTOOLS_API const std::string Type::typeToString< float  >  ();
-template<> FWTOOLS_API const std::string Type::typeToString< double >  ();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::FloatType  >  ();
+template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::DoubleType >  ();
 
 } //end namespace fwTools
 
