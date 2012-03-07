@@ -31,7 +31,7 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr Object::getField( const FieldNameType & name ) const
+::fwData::Object::sptr Object::getField_NEWAPI( const FieldNameType & name ) const
 {
     ::fwData::Object::sptr object;
     FieldMapType::const_iterator iter = m_fields.find(name);
@@ -44,21 +44,21 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::csptr Object::getConstField( const FieldNameType & name ) const
+::fwData::Object::csptr Object::getConstField_NEWAPI( const FieldNameType & name ) const
 {
-    return this->getField(name);
+    return this->getField_NEWAPI(name);
 }
 
 //------------------------------------------------------------------------------
 
-const Object::FieldMapType& Object::getFields() const
+const Object::FieldMapType& Object::getFields_NEWAPI() const
 {
     return m_fields;
 }
 
 //------------------------------------------------------------------------------
 
-Object::FieldNameVectorType Object::getFieldNames() const
+Object::FieldNameVectorType Object::getFieldNames_NEWAPI() const
 {
     FieldNameVectorType names;
     std::transform( m_fields.begin(), m_fields.end(),
@@ -69,21 +69,21 @@ Object::FieldNameVectorType Object::getFieldNames() const
 
 //------------------------------------------------------------------------------
 
-void Object::setField( const FieldNameType & name, ::fwData::Object::sptr obj)
+void Object::setField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr obj)
 {
     m_fields.insert(FieldMapType::value_type(name, obj));
 }
 
 //------------------------------------------------------------------------------
 
-void Object::setFields( const FieldMapType & fieldMap )
+void Object::setFields_NEWAPI( const FieldMapType & fieldMap )
 {
     m_fields = fieldMap;
 }
 
 //------------------------------------------------------------------------------
 
-void Object::updateFields( const FieldMapType & fieldMap )
+void Object::updateFields_NEWAPI( const FieldMapType & fieldMap )
 {
     m_fields.insert(fieldMap.begin(), fieldMap.end());
 }

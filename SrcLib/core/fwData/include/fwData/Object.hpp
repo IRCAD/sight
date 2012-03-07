@@ -44,48 +44,46 @@ public:
     typedef std::vector<FieldNameType> FieldNameVectorType;
     typedef ::boost::unordered_map< FieldNameType, ::fwData::Object::sptr > FieldMapType;
 
-    using fwTools::Object::setField;
+    /**
+     * @brief Returns a pointer of corresponding field (null if non exist).
+     * @param[in] name Field name
+     * @return null sptr if field is not found
+     */
+    FWDATA_API ::fwData::Object::sptr getField_NEWAPI( const FieldNameType & name ) const;
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
      * @param[in] name Field name
      * @return null sptr if field is not found
      */
-    FWDATA_API ::fwData::Object::sptr getField( const FieldNameType & name ) const;
-
-    /**
-     * @brief Returns a pointer of corresponding field (null if non exist).
-     * @param[in] name Field name
-     * @return null sptr if field is not found
-     */
-    FWDATA_API ::fwData::Object::csptr getConstField( const FieldNameType & name ) const;
+    FWDATA_API ::fwData::Object::csptr getConstField_NEWAPI( const FieldNameType & name ) const;
 
     /**
      * @brief Returns fields map.
      */
-    FWDATA_API const FieldMapType& getFields() const;
+    FWDATA_API const FieldMapType& getFields_NEWAPI() const;
 
     /**
      * @brief Returns vector of field names.
      */
-    FWDATA_API FieldNameVectorType getFieldNames() const;
+    FWDATA_API FieldNameVectorType getFieldNames_NEWAPI() const;
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
      * @param[in] name Field name
      * @param[in] obj  Field
      */
-    FWDATA_API void setField( const FieldNameType & name, ::fwData::Object::sptr obj );
+    FWDATA_API void setField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr obj );
 
     /**
      * @brief Replace the field map content.
      */
-    FWDATA_API void setFields( const FieldMapType & fieldMap );
+    FWDATA_API void setFields_NEWAPI( const FieldMapType & fieldMap );
 
     /**
      * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
      */
-    FWDATA_API void Object::updateFields( const FieldMapType & fieldMap );
+    FWDATA_API void Object::updateFields_NEWAPI( const FieldMapType & fieldMap );
 
 protected:
 
