@@ -71,7 +71,11 @@ Object::FieldNameVectorType Object::getFieldNames_NEWAPI() const
 
 void Object::setField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr obj)
 {
-    m_fields.insert(FieldMapType::value_type(name, obj));
+    std::pair<FieldMapType::iterator, bool> res = m_fields.insert(FieldMapType::value_type(name, obj));
+    if( !res.second )
+    {
+        res.first->second = obj;
+    }
 }
 
 //------------------------------------------------------------------------------
