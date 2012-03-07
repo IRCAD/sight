@@ -138,7 +138,6 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
 #endif
     if (xmlDoc == NULL)
     {
-        xmlCleanupParser ();
         throw ::fwTools::Failed("Unable to parse the XML file " + rootFile.string() );
     }
 
@@ -156,7 +155,6 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     chdir (workingDirectorySaved);
 
     // memory cleanup
-    xmlCleanupParser();
 
     return xmlDoc;
 }
