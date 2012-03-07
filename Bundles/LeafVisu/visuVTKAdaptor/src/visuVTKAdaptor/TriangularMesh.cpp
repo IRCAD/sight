@@ -532,6 +532,11 @@ void TriangularMesh::createTransformService()
 
     ::fwData::TriangularMesh::sptr triangularMesh = this->getObject < ::fwData::TriangularMesh >();
 
+    if(!this->getTransformId().empty())
+    {
+        m_transform->Concatenate(this->getTransform());
+    }
+
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
     if (triangularMesh->getFieldSize("TransformMatrix"))
     {
