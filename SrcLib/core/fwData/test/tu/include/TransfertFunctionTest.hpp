@@ -18,6 +18,10 @@ class TransfertFunctionTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( TransfertFunctionTest );
     CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( constructorTest );
+    CPPUNIT_TEST( defaultTfTest );
+    CPPUNIT_TEST( classicGetSetTest );
+    CPPUNIT_TEST( usingTfTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -26,6 +30,10 @@ public:
     void tearDown();
 
     void methode1();
+    void constructorTest();
+    void defaultTfTest();
+    void classicGetSetTest();
+    void usingTfTest();
 };
 } //namespace ut
 } //namespace fwData
