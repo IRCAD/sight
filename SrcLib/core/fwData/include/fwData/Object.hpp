@@ -38,7 +38,7 @@ namespace fwData
 class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwData::Factory::New< Object > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwTools::Factory::New< Object > );
     fwCoreAllowSharedFromThis();
 
     typedef std::string FieldNameType;
