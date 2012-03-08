@@ -13,14 +13,8 @@
 
 #include "fwData/config.hpp"
 #include "fwData/macros.hpp"
-
-//===================
-//#include <boost/cstdint.hpp>
-//#include "fwData/Object.hpp"
-////#include "fwData/Color.hpp"
-//#include "fwData/Image.hpp"
-////#include "fwData/TransfertFunctionPoint.hpp"
-//#include "fwData/DownCastIterator.hpp"
+#include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -146,10 +140,6 @@ public :
 
     fwGettersSettersDocMacro(Window, window, double, window);
 
-    fwGettersSettersDocMacro(RrefLevel, refLevel, double, reference level value);  // Change Rr by r with new macro
-
-    fwGettersSettersDocMacro(RrefWindow, refWindow, double, reference window value); // Change Rr by r with new macro
-
     fwGettersSettersDocMacro(Name, name, std::string, transfert function name);
 
     fwGettersSettersDocMacro(IsClamped, isClamped, bool,  is TF clamped);
@@ -175,12 +165,6 @@ private :
 
     /// Current visualisation window
     double m_window;
-
-    /// Reference visualisation level
-    double m_refLevel;
-
-    /// Reference visualisation window
-    double m_refWindow;
 
     ///  Funtion transfert name.
     std::string m_name;

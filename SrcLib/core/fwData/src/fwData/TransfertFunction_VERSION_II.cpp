@@ -4,21 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <cmath>
+//#include <cmath>
 #include <boost/bind.hpp>
 
 #include <fwCore/base.hpp>
-
 #include <fwTools/Type.hpp>
 
 #include "fwData/registry/macros.hpp"
-#include <fwData/Factory.hpp>
-
-#include "fwData/Color.hpp"
-#include "fwData/TransfertFunctionPoint.hpp"
 #include "fwData/TransfertFunction_VERSION_II.hpp"
 
-REGISTER_DATA( ::fwData::TransfertFunction_VERSION_II );
+
+fwDataRegisterMacro( ::fwData::TransfertFunction_VERSION_II );
 
 namespace fwData
 {
@@ -42,9 +38,6 @@ void TransfertFunction_VERSION_II::initTF()
 
     m_level = 0;
     m_window = 100;
-
-    m_refLevel = 0.5;
-    m_refWindow = 1;
 
     m_name = "";
 
@@ -71,7 +64,7 @@ fwData::TransfertFunction_VERSION_II::sptr TransfertFunction_VERSION_II::createD
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::~TransfertFunction_VERSION_II ()
+TransfertFunction_VERSION_II::~TransfertFunction_VERSION_II()
 {}
 
 //------------------------------------------------------------------------------
@@ -167,6 +160,7 @@ TransfertFunction_VERSION_II::TFColorVectorType TransfertFunction_VERSION_II::ge
 }
 
 //------------------------------------------------------------------------------
+
 TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestColor( const TFColor& _color) const
 {
     TFColor color;
@@ -204,11 +198,9 @@ const TransfertFunction_VERSION_II::TFColor& TransfertFunction_VERSION_II::getTF
 
 void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_level = _source->m_level;
     this->m_window = _source->m_window;
-    this->m_refLevel = _source->m_refLevel;
-    this->m_refWindow = _source->m_refWindow;
     this->m_name =_source->m_name;
     this->m_backgroundColor = _source->m_backgroundColor;
     this->m_tfData = _source->m_tfData;
@@ -220,11 +212,9 @@ void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::cs
 
 void TransfertFunction_VERSION_II::deepCopy( TransfertFunction_VERSION_II::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_level = _source->m_level;
     this->m_window = _source->m_window;
-    this->m_refLevel = _source->m_refLevel;
-    this->m_refWindow = _source->m_refWindow;
     this->m_name =_source->m_name;
     this->m_backgroundColor = _source->m_backgroundColor;
     this->m_tfData = _source->m_tfData;

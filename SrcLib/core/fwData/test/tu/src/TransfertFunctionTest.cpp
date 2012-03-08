@@ -69,8 +69,6 @@ void TransfertFunctionTest::constructorTest()
     // Expected value.
     double expectedLevel = 0.0;
     double expectedWindow = 100.0;
-    double expectedRefLevel = 0.5;
-    double expectedRefWindow = 1.0;
     std::string expectedName = "";
     TransfertFunction_VERSION_II::InterpolationMode expectedInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
     bool expectedIsClamped = true;
@@ -81,8 +79,7 @@ void TransfertFunctionTest::constructorTest()
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong reference level", expectedRefLevel, tf->getRrefLevel(), 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong reference window", expectedRefWindow, tf->getRrefWindow(), 0.0);
+
     CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
     CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
     CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->getIsClamped());
@@ -98,8 +95,7 @@ void TransfertFunctionTest::defaultTfTest()
     // Expected default value.
     double expectedLevel = 0.0;
     double expectedWindow = 100.0;
-    double expectedRefLevel = 0.5;
-    double expectedRefWindow = 1.0;
+
     std::string expectedName = TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
     TransfertFunction_VERSION_II::InterpolationMode expectedInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
     bool expectedIsClamped = true;
@@ -110,8 +106,7 @@ void TransfertFunctionTest::defaultTfTest()
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong reference level", expectedRefLevel, tf->getRrefLevel(), 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong reference window", expectedRefWindow, tf->getRrefWindow(), 0.0);
+
     CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
     CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
     CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->getIsClamped());
