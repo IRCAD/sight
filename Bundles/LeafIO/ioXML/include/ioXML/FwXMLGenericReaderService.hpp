@@ -91,7 +91,7 @@ private :
 
     void notificationOfUpdate();
 
-    ::fwTools::Object::sptr loadData( const ::boost::filesystem::path inrFileDir );
+    ::fwData::Object::sptr loadData( const ::boost::filesystem::path inrFileDir );
 
     bool isAnFwxmlArchive( const ::boost::filesystem::path filePath );
 
@@ -100,7 +100,7 @@ private :
 
     ::boost::filesystem::path m_fsObjectPath;
 
-    ::fwTools::Object::sptr manageZipAndLoadData( const ::boost::filesystem::path path );
+    ::fwData::Object::sptr manageZipAndLoadData( const ::boost::filesystem::path path );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
 
     ::fwXML::reader::FwXMLObjectReader m_reader;
