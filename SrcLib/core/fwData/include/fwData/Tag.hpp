@@ -13,6 +13,7 @@
 #include "fwData/config.hpp"
 #include "fwData/PointList.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {

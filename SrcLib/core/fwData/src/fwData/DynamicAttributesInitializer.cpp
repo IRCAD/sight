@@ -1,5 +1,5 @@
 #include <fwCore/base.hpp>
-#include <fwData/Factory.hpp>
+
 
 #include "fwData/DynamicAttributesInitializer.hpp"
 #include "fwData/Object.hpp"

@@ -9,6 +9,7 @@
 
 #include "fwData/Color.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {

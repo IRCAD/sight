@@ -11,6 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Reconstruction.hpp"
 #include "fwData/PlaneList.hpp"
 

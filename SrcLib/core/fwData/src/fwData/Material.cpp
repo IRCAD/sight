@@ -6,7 +6,6 @@
 
 #include "fwData/registry/macros.hpp"
 
-#include <fwData/Factory.hpp>
 #include "fwData/Material.hpp"
 
 fwDataRegisterMacro( ::fwData::Material );

@@ -11,8 +11,8 @@
 #include <boost/shared_ptr.hpp>
 
 #include "fwData/Object.hpp"
-#include "fwData/config.hpp"
 #include "fwData/Factory.hpp"
+#include "fwData/config.hpp"
 
 namespace fwData
 {

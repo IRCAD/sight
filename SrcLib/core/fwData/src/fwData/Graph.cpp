@@ -8,7 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "fwData/registry/macros.hpp"
-#include <fwData/Factory.hpp>
+
 
 #include "fwData/Edge.hpp"
 #include "fwData/Port.hpp"

@@ -15,10 +15,11 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Image.hpp"
 #include "fwData/Reconstruction.hpp"
 #include "fwData/DownCastIterator.hpp"
-#include "fwData/Factory.hpp"
+
 
 namespace fwData
 {

@@ -19,7 +19,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
 #include "fwData/registry/macros.hpp"
-#include <fwData/Factory.hpp>
+
 
 #include "fwData/registry/macros.hpp"
 

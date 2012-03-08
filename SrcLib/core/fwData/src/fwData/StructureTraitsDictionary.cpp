@@ -9,7 +9,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwData/Factory.hpp>
+
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/StructureTraitsDictionary.hpp"

@@ -6,7 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
-#include <fwData/Factory.hpp>
+
 #include <fwMath/PlaneFunctions.hpp>
 
 #include "fwData/Plane.hpp"

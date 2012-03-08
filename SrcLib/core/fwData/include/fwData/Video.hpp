@@ -13,9 +13,9 @@
 #include <boost/interprocess/sync/scoped_lock.hpp>
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Camera.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
-#include "fwData/Factory.hpp"
 
 namespace fwData
 {

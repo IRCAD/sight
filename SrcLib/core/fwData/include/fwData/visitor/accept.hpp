@@ -9,6 +9,7 @@
 
 #include "fwData/visitor/IVisitor.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {

@@ -12,8 +12,8 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Acquisition.hpp"
 #include "fwData/Factory.hpp"
+#include "fwData/Acquisition.hpp"
 
 namespace fwData
 {

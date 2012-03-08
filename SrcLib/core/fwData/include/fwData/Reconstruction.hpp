@@ -15,10 +15,10 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Image.hpp"
-#include "fwData/Factory.hpp"
 
 namespace fwData
 {
