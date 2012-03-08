@@ -7,8 +7,6 @@
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 
-#include <fwData/Factory.hpp>
-
 #include "fwData/Point.hpp"
 
 fwDataRegisterMacro( ::fwData::Point );

@@ -13,7 +13,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwData/Factory.hpp>
+#include "fwData/Factory.hpp"
 #include "fwData/config.hpp"
 #include "fwData/GenericFieldBase.hpp"
 
