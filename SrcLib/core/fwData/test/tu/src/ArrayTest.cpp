@@ -351,5 +351,7 @@ void ArrayTest::copy()
     CPPUNIT_ASSERT_EQUAL( false , shallowCopyArray->getIsBufferOwner());
 }
 
+//-----------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwData
