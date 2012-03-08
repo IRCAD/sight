@@ -13,7 +13,9 @@
 
 #include <fwData/TransfertFunction.hpp>
 #include <fwData/TransfertFunction_VERSION_II.hpp>
+#include <fwData/String.hpp>
 #include <fwData/Color.hpp>
+
 #include "TransfertFunctionTest.hpp"
 
 
@@ -158,6 +160,11 @@ void TransfertFunctionTest::classicGetSetTest()
     CPPUNIT_ASSERT(expectedColor1 == colors[0]);
     CPPUNIT_ASSERT(expectedColor2 ==  colors[1]);
 
+    // Test erase
+    tf->eraseTFValue( 1.0 );
+    CPPUNIT_ASSERT_EQUAL( (size_t)1, tf->getTFData().size() );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey1 , tf->getTFValues()[0], 0.0);
+
     // Test clear()
     tf->clear();
     size_t expectedClearedSize = 0;
@@ -169,8 +176,94 @@ void TransfertFunctionTest::classicGetSetTest()
 
 void TransfertFunctionTest::usingTfTest()
 {
+    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
 
+    // -40.33 / -0.2 / 3 / 150
+    CPPUNIT_ASSERT_EQUAL( -40.33, tf->getNearestValue( -140.33 ) );
+    CPPUNIT_ASSERT_EQUAL( -40.33, tf->getNearestValue( -40.33 ) );
+    CPPUNIT_ASSERT_EQUAL( -40.33, tf->getNearestValue( -25 ) );
+    CPPUNIT_ASSERT_EQUAL( -0.2, tf->getNearestValue( -10.8 ) );
+    CPPUNIT_ASSERT_EQUAL( -0.2, tf->getNearestValue( -0.2 ) );
+    CPPUNIT_ASSERT_EQUAL( -0.2, tf->getNearestValue( 1.0 ) );
+    CPPUNIT_ASSERT_EQUAL( 3.0, tf->getNearestValue( 50 ) );
+    CPPUNIT_ASSERT_EQUAL( 3.0, tf->getNearestValue( 3 ) );
+    CPPUNIT_ASSERT_EQUAL( 150.0, tf->getNearestValue( 150 ) );
+    CPPUNIT_ASSERT_EQUAL( 150.0, tf->getNearestValue( 1000 ) );
 }
+
+//------------------------------------------------------------------------------
+
+void TransfertFunctionTest::shallowAndDeepCopyTest()
+{
+    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+    this->checkTFColor(tf);
+
+    ::fwData::TransfertFunction_VERSION_II::NewSptr deepCopyTf;
+    deepCopyTf->deepCopy( tf );
+    this->checkTFColor(deepCopyTf);
+
+    ::fwData::TransfertFunction_VERSION_II::NewSptr shallowCopyTf;
+    shallowCopyTf->shallowCopy( tf );
+    this->checkTFColor(shallowCopyTf);
+}
+
+
+//------------------------------------------------------------------------------
+
+::fwData::TransfertFunction_VERSION_II::sptr TransfertFunctionTest::createTFColor()
+{
+    ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+
+    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0, 0.3, 0.6, 0.1) );
+    tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
+    tf->setIsClamped( false );
+    tf->setLevel( 900.6 );
+    tf->setName( "TFColor" );
+    tf->setWindow( -200.02 );
+
+    tf->addTFColor( -40.33, ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) );
+    tf->addTFColor( 3,      ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) ); // Invert point 3 <=> -0.2, for tests
+    tf->addTFColor( -0.2,   ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) );
+    tf->addTFColor( 150,    ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) );
+
+    ::fwData::String::NewSptr myString ("fieldStringValue");
+    tf->setField_NEWAPI( "fieldStringKey", myString );
+
+    return tf;
+}
+
+//------------------------------------------------------------------------------
+
+void TransfertFunctionTest::checkTFColor( ::fwData::TransfertFunction_VERSION_II::sptr tf )
+{
+
+    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0, 0.3, 0.6, 0.1) == tf->getBackgroundColor() );
+    CPPUNIT_ASSERT_EQUAL( ::fwData::TransfertFunction_VERSION_II::NEAREST, tf->getInterpolationMode() );
+    CPPUNIT_ASSERT_EQUAL( false, tf->getIsClamped() );
+    CPPUNIT_ASSERT_EQUAL( 900.6, tf->getLevel() );
+    CPPUNIT_ASSERT_EQUAL( std::string("TFColor"), tf->getName() );
+    CPPUNIT_ASSERT_EQUAL( -200.02, tf->getWindow() );
+
+    CPPUNIT_ASSERT_EQUAL( (size_t)4, tf->getTFData().size() );
+
+    const TransfertFunction_VERSION_II::TFValueVectorType & values = tf->getTFValues();
+    CPPUNIT_ASSERT_EQUAL( values[0] , -40.33  );
+    CPPUNIT_ASSERT_EQUAL( values[1] , -0.2    );
+    CPPUNIT_ASSERT_EQUAL( values[2] , 3.0      );
+    CPPUNIT_ASSERT_EQUAL( values[3] , 150.0     );
+
+    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getTFColor( -40.33 ) );
+    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getTFColor( -0.2   ) );
+    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getTFColor( 3      ) );
+    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getTFColor( 150    ) );
+
+
+
+    CPPUNIT_ASSERT_EQUAL( std::string("fieldStringValue"), ::fwData::String::dynamicCast( tf->getField_NEWAPI( "fieldStringKey" ) )->value() );
+}
+
+//------------------------------------------------------------------------------
+
 
 } //namespace ut
 } //namespace fwData

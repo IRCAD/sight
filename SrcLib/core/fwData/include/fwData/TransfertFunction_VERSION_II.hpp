@@ -123,10 +123,10 @@ public :
     FWDATA_API TFColorVectorType getTFColors() const;
 
     /// Get the nearest color of a value.
-    FWDATA_API TFColor getNearestColor( const TFColor& _color ) const;
+    FWDATA_API TFColor getNearestColor( TFValueType value ) const;
 
     /// Get the color for a value (the color is computed with a linear interpolation).
-    FWDATA_API TFColor getLinearColor( const TFColor & _color ) const;
+    FWDATA_API TFColor getLinearColor( TFValueType value ) const;
 
     /// Get the interpolated color of the TF for a value.The result depends of the current interpolation mode.
     FWDATA_API TFColor getInterpolatedColor( TFValueType value ) const;

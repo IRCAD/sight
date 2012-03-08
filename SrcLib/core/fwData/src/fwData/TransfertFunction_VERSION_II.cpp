@@ -161,7 +161,7 @@ TransfertFunction_VERSION_II::TFColorVectorType TransfertFunction_VERSION_II::ge
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestColor( const TFColor& _color) const
+TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestColor( TFValueType value ) const
 {
     TFColor color;
 
@@ -170,7 +170,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestCo
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearColor( const TFColor& _color ) const
+TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearColor( TFValueType value ) const
 {
     TFColor color;
 
