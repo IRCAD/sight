@@ -7,7 +7,9 @@
 #ifndef _FWDATA_HISTOGRAM_HPP_
 #define _FWDATA_HISTOGRAM_HPP_
 
-#include <fwData/Object.hpp>
+#include "fwData/Factory.hpp"
+#include "fwData/Object.hpp"
+
 #include "fwData/config.hpp"
 
 #include <boost/shared_ptr.hpp>
