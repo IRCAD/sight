@@ -13,7 +13,7 @@
 
 #define EPSILON 0.00000001
 
-REGISTER_DATA( ::fwData::Plane );
+fwDataRegisterMacro( ::fwData::Plane );
 
 namespace fwData
 {

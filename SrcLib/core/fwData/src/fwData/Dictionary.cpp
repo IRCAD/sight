@@ -13,7 +13,7 @@
 
 #include "fwData/Dictionary.hpp"
 
-REGISTER_DATA( ::fwData::Dictionary );
+fwDataRegisterMacro( ::fwData::Dictionary );
 namespace fwData
 {
 const Object::FieldID Dictionary::ID_DICTIONARY_ORGANS = "ID_DICTIONARY_ORGANS";

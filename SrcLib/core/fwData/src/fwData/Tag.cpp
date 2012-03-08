@@ -11,7 +11,7 @@
 
 #include "fwData/Tag.hpp"
 
-REGISTER_DATA( ::fwData::Tag );
+fwDataRegisterMacro( ::fwData::Tag );
 namespace fwData
 {
 //------------------------------------------------------------------------------

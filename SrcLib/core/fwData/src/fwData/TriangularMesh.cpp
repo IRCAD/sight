@@ -9,7 +9,7 @@
 #include "fwData/TriangularMesh.hpp"
 
 
-REGISTER_DATA( ::fwData::TriangularMesh );
+fwDataRegisterMacro( ::fwData::TriangularMesh );
 namespace fwData
 {
 

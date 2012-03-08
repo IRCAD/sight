@@ -8,7 +8,7 @@
 
 #include "fwData/Port.hpp"
 
-REGISTER_DATA( ::fwData::Port );
+fwDataRegisterMacro( ::fwData::Port );
 
 namespace fwData
 {

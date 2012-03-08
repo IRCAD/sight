@@ -15,7 +15,7 @@
 #include "fwData/Node.hpp"
 #include "fwData/Graph.hpp"
 
-REGISTER_DATA( ::fwData::Graph );
+fwDataRegisterMacro( ::fwData::Graph );
 
 namespace fwData
 {

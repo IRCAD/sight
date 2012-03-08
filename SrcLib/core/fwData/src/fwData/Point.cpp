@@ -11,7 +11,7 @@
 
 #include "fwData/Point.hpp"
 
-REGISTER_DATA( ::fwData::Point );
+fwDataRegisterMacro( ::fwData::Point );
 
 namespace fwData
 {

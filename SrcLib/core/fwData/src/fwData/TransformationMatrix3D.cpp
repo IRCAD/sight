@@ -8,7 +8,7 @@
 
 #include "fwData/TransformationMatrix3D.hpp"
 
-REGISTER_DATA( ::fwData::TransformationMatrix3D );
+fwDataRegisterMacro( ::fwData::TransformationMatrix3D );
 
 namespace fwData
 {

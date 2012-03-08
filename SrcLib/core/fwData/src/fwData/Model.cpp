@@ -8,7 +8,7 @@
 
 #include "fwData/Model.hpp"
 
-REGISTER_DATA( ::fwData::Model );
+fwDataRegisterMacro( ::fwData::Model );
 namespace fwData
 {
 Model::Model()

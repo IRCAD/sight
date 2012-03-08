@@ -12,7 +12,7 @@
 
 #include "fwData/Node.hpp"
 
-REGISTER_DATA( ::fwData::Node );
+fwDataRegisterMacro( ::fwData::Node );
 
 namespace fwData
 {

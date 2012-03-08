@@ -14,7 +14,7 @@
 #include "fwData/TransfertFunctionPoint.hpp"
 #include "fwData/TransfertFunction.hpp"
 
-REGISTER_DATA( ::fwData::TransfertFunction );
+fwDataRegisterMacro( ::fwData::TransfertFunction );
 
 namespace fwData
 {

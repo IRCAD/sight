@@ -11,7 +11,7 @@
 
 #include "fwData/Color.hpp"
 
-REGISTER_DATA( ::fwData::Color );
+fwDataRegisterMacro( ::fwData::Color );
 namespace fwData
 {
 //------------------------------------------------------------------------------

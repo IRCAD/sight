@@ -12,7 +12,7 @@
 #include "fwData/registry/macros.hpp"
 #include "fwData/StructureTraits.hpp"
 
-REGISTER_DATA( ::fwData::StructureTraits );
+fwDataRegisterMacro( ::fwData::StructureTraits );
 
 namespace fwData
 {

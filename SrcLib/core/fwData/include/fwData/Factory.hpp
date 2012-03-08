@@ -24,7 +24,7 @@ namespace fwData
  * Data can be initialized (typically install default service)
  * by install initializer functors (  specialization Factory::Initializer ). The installation is performed using Factory::addInitializer() method.
  *
- * To produce the data, this factory uses the ClassFactoryRegistry scheme, and needs to declare the data registration with REGISTER_DATA macro.
+ * To produce the data, this factory uses the ClassFactoryRegistry scheme, and needs to declare the data registration with fwDataRegisterMacro macro.
  */
 class FWDATA_CLASS_API Factory
 {

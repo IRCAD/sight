@@ -10,7 +10,7 @@
 #include "fwData/Resection.hpp"
 #include "fwData/ResectionDB.hpp"
 
-REGISTER_DATA( ::fwData::ResectionDB );
+fwDataRegisterMacro( ::fwData::ResectionDB );
 namespace fwData
 {
 

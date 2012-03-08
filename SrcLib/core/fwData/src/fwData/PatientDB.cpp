@@ -12,7 +12,7 @@
 
 #include "fwData/PatientDB.hpp"
 
-REGISTER_DATA( ::fwData::PatientDB );
+fwDataRegisterMacro( ::fwData::PatientDB );
 namespace fwData
 {
 

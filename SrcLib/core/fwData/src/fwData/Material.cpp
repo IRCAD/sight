@@ -9,7 +9,7 @@
 #include <fwData/Factory.hpp>
 #include "fwData/Material.hpp"
 
-REGISTER_DATA( ::fwData::Material );
+fwDataRegisterMacro( ::fwData::Material );
 
 namespace fwData
 {

@@ -11,7 +11,7 @@
 
 #include "fwData/PlaneList.hpp"
 
-REGISTER_DATA( ::fwData::PlaneList );
+fwDataRegisterMacro( ::fwData::PlaneList );
 
 namespace fwData
 {

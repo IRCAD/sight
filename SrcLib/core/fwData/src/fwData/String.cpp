@@ -9,7 +9,7 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/String.hpp"
 
-REGISTER_DATA( ::fwData::String );
+fwDataRegisterMacro( ::fwData::String );
 
 namespace fwData
 {

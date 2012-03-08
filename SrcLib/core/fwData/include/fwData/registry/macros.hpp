@@ -19,7 +19,7 @@ namespace fwData
 namespace registry
 {
 
-#define REGISTER_DATA( ObjectImpl )                                                                                               \
+#define fwDataRegisterMacro( ObjectImpl )                                                                                               \
     REGISTER_BINDING_BYCLASSNAME( ::fwData::Object, ObjectImpl, ObjectImpl );                                                     \
     REGISTER_BINDING_BYCLASSNAME_ID( ::fwTools::Object, ObjectImpl, ObjectImpl, BOOST_PP_CAT( fwToolObj,  __LINE__ )  );
 

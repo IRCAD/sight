@@ -11,7 +11,7 @@
 #include "fwData/Float.hpp"
 
 
-REGISTER_DATA( ::fwData::Float );
+fwDataRegisterMacro( ::fwData::Float );
 
 namespace fwData
 {

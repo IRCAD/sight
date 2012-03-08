@@ -13,7 +13,7 @@
 
 #include "fwData/Study.hpp"
 
-REGISTER_DATA( ::fwData::Study );
+fwDataRegisterMacro( ::fwData::Study );
 namespace fwData
 {
 const Object::FieldID Study::ID_ACQUISITIONS = "ID_ACQUISITIONS";

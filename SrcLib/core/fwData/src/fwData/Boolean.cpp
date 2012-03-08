@@ -10,7 +10,7 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/Boolean.hpp"
 
-REGISTER_DATA( ::fwData::Boolean );
+fwDataRegisterMacro( ::fwData::Boolean );
 
 namespace fwData
 {

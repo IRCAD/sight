@@ -9,7 +9,7 @@
 
 #include "fwData/Video.hpp"
 
-REGISTER_DATA( ::fwData::Video );
+fwDataRegisterMacro( ::fwData::Video );
 namespace fwData
 {
 //------------------------------------------------------------------------------

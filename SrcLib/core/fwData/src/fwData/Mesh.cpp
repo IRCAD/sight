@@ -27,7 +27,7 @@ namespace fwData
 #define CELLDATA_REALLOC_STEP 1000
 
 
-REGISTER_DATA( ::fwData::Mesh );
+fwDataRegisterMacro( ::fwData::Mesh );
 
 //------------------------------------------------------------------------------
 

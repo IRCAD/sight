@@ -11,7 +11,7 @@
 
 #include "fwData/Line.hpp"
 
-REGISTER_DATA( ::fwData::Line );
+fwDataRegisterMacro( ::fwData::Line );
 
 namespace fwData
 {

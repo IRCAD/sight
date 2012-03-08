@@ -11,7 +11,7 @@
 #include "fwData/Integer.hpp"
 
 
-REGISTER_DATA( ::fwData::Integer );
+fwDataRegisterMacro( ::fwData::Integer );
 
 namespace fwData
 {

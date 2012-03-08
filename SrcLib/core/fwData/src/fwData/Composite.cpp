@@ -10,7 +10,7 @@
 #include "fwData/Composite.hpp"
 
 
-REGISTER_DATA( ::fwData::Composite );
+fwDataRegisterMacro( ::fwData::Composite );
 
 namespace fwData
 {

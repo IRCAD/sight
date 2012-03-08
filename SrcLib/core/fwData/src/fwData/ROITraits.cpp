@@ -12,7 +12,7 @@
 #include "fwData/registry/macros.hpp"
 #include "fwData/ROITraits.hpp"
 
-REGISTER_DATA( ::fwData::ROITraits );
+fwDataRegisterMacro( ::fwData::ROITraits );
 
 namespace fwData
 {

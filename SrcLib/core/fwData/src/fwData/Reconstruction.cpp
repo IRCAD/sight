@@ -17,7 +17,7 @@
 #include "fwData/Reconstruction.hpp"
 
 
-REGISTER_DATA( ::fwData::Reconstruction );
+fwDataRegisterMacro( ::fwData::Reconstruction );
 namespace fwData
 {
 

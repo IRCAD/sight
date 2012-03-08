@@ -11,7 +11,7 @@
 
 #include "fwData/Camera.hpp"
 
-REGISTER_DATA( ::fwData::Camera );
+fwDataRegisterMacro( ::fwData::Camera );
 namespace fwData
 {
 //------------------------------------------------------------------------------

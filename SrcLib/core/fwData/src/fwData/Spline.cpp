@@ -8,7 +8,7 @@
 
 #include "fwData/Spline.hpp"
 
-REGISTER_DATA( ::fwData::Spline );
+fwDataRegisterMacro( ::fwData::Spline );
 namespace fwData
 {
 //------------------------------------------------------------------------------

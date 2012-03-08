@@ -9,7 +9,7 @@
 #include "fwData/Region.hpp"
 
 
-REGISTER_DATA( ::fwData::Region );
+fwDataRegisterMacro( ::fwData::Region );
 namespace fwData
 {
 Region::Region()

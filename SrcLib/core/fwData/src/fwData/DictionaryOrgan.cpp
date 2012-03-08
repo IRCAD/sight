@@ -10,7 +10,7 @@
 
 #include "fwData/DictionaryOrgan.hpp"
 
-REGISTER_DATA( ::fwData::DictionaryOrgan );
+fwDataRegisterMacro( ::fwData::DictionaryOrgan );
 namespace fwData
 {
 //------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 
 #include "fwData/Vector.hpp"
 
-REGISTER_DATA( ::fwData::Vector );
+fwDataRegisterMacro( ::fwData::Vector );
 
 namespace fwData
 {

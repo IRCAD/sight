@@ -13,7 +13,7 @@
 #include "fwData/Color.hpp"
 
 
-REGISTER_DATA( ::fwData::TransfertFunctionPoint );
+fwDataRegisterMacro( ::fwData::TransfertFunctionPoint );
 namespace fwData
 {
 const Object::FieldID TransfertFunctionPoint::ID_COLOR = "ID_COLOR";

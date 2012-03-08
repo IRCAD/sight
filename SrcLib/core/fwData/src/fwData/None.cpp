@@ -9,7 +9,7 @@
 
 #include "fwData/None.hpp"
 
-REGISTER_DATA( ::fwData::None );
+fwDataRegisterMacro( ::fwData::None );
 
 namespace fwData
 {

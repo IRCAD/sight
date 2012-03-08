@@ -13,7 +13,7 @@
 
 #include "fwData/registry/macros.hpp"
 
-REGISTER_DATA( ::fwData::ReconstructionTraits );
+fwDataRegisterMacro( ::fwData::ReconstructionTraits );
 
 namespace fwData
 {

@@ -11,7 +11,7 @@
 #include "fwData/Histogram.hpp"
 
 
-REGISTER_DATA( ::fwData::Histogram );
+fwDataRegisterMacro( ::fwData::Histogram );
 
 
 namespace fwData

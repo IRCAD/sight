@@ -8,7 +8,7 @@
 
 #include "fwData/Edge.hpp"
 
-REGISTER_DATA( ::fwData::Edge );
+fwDataRegisterMacro( ::fwData::Edge );
 namespace fwData {
 std::string Edge::NATURE_FLOW = "flow";
 std::string Edge::NATURE_DATA = "data";

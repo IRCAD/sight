@@ -12,7 +12,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/Resection.hpp"
 
-REGISTER_DATA( ::fwData::Resection );
+fwDataRegisterMacro( ::fwData::Resection );
 
 namespace fwData
 {

@@ -19,7 +19,7 @@
 namespace fwData
 {
 
-REGISTER_DATA( ::fwData::Array );
+fwDataRegisterMacro( ::fwData::Array );
 
 inline size_t computeSize(
         size_t elementSize,

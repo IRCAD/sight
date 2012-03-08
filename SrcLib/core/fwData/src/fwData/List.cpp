@@ -10,7 +10,7 @@
 #include "fwData/List.hpp"
 
 
-REGISTER_DATA( ::fwData::List );
+fwDataRegisterMacro( ::fwData::List );
 
 namespace fwData
 {

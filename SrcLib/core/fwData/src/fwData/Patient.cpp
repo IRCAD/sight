@@ -11,7 +11,7 @@
 #include "fwData/Study.hpp"
 #include "fwData/Patient.hpp"
 
-REGISTER_DATA( ::fwData::Patient );
+fwDataRegisterMacro( ::fwData::Patient );
 namespace fwData
 {
 const Object::FieldID Patient::ID_STUDIES = "ID_STUDIES";

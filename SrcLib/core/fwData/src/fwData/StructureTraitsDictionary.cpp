@@ -14,7 +14,7 @@
 #include "fwData/registry/macros.hpp"
 #include "fwData/StructureTraitsDictionary.hpp"
 
-REGISTER_DATA( ::fwData::StructureTraitsDictionary );
+fwDataRegisterMacro( ::fwData::StructureTraitsDictionary );
 
 namespace fwData
 {

@@ -13,7 +13,7 @@
 
 #include "fwData/ProcessObject.hpp"
 
-REGISTER_DATA( ::fwData::ProcessObject );
+fwDataRegisterMacro( ::fwData::ProcessObject );
 namespace fwData
 {
 const std::string ProcessObject::InputKey  = "Inputs";
