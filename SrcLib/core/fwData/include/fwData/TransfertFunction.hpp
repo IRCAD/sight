@@ -19,6 +19,8 @@
 #include "fwData/TransfertFunctionPoint.hpp"
 #include "fwData/DownCastIterator.hpp"
 
+#include "fwData/TransfertFunction_VERSION_II.hpp"
+
 namespace fwData
 {
 /**
