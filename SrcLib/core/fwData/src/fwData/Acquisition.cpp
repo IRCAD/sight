@@ -75,7 +75,7 @@ Acquisition::~Acquisition()
 
 void Acquisition::shallowCopy( Acquisition::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
     this->m_fSliceThickness = _source->m_fSliceThickness;
     this->m_ui8Axe = _source->m_ui8Axe;
@@ -107,7 +107,7 @@ void Acquisition::shallowCopy( Acquisition::csptr _source )
 
 void Acquisition::deepCopy( Acquisition::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
     this->m_fSliceThickness = _source->m_fSliceThickness;
     this->m_ui8Axe = _source->m_ui8Axe;

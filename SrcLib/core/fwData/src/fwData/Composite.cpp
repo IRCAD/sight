@@ -43,7 +43,7 @@ Composite const &Composite::getRefMap() const
 
 void Composite::shallowCopy( Composite::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->clear();
 
      for(    Composite::Container::const_iterator iter = _source->begin();
@@ -58,7 +58,7 @@ void Composite::shallowCopy( Composite::csptr _source )
 
 void Composite::deepCopy( Composite::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->clear();
 
@@ -66,9 +66,9 @@ void Composite::deepCopy( Composite::csptr _source )
             iter != _source->end();
             ++iter )
     {
-        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( iter->second->getClassname() );
+        ::fwData::Object::sptr newObj = ::fwData::Factory::New( iter->second->getClassname() );
         newObj->deepCopy( iter->second );
-        (*this)[ iter->first ] = ::fwData::Object::dynamicCast( newObj );
+        (*this)[ iter->first ] = newObj;
     }
 }
 

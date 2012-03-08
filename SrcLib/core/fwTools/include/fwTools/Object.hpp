@@ -219,33 +219,6 @@ public:
 
     FWTOOLS_API ::fwCore::LogicStamp::csptr getOSRKey() const { return m_OSRKey; }
 
-
-
-    /**
-     * @brief A shallow copy (also called "bitwise copy") simply copies chunks of memory from one location to another.
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API virtual void shallowCopy( Object::csptr _source );
-
-    /**
-     * @brief A deep copy clone all source object parameters (sub-ojects are duplcated in memory). For a sptr on sub-object, method allocates a new object.
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API virtual void deepCopy( Object::csptr _source );
-
-    /**
-     * @brief A shallow copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API void shallowCopyOfChildren( Object::csptr _source );
-
-    /**
-     * @brief A deep copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API void deepCopyOfChildren( Object::csptr _source );
-
-
 protected :
 
     ChildContainer m_children;
@@ -255,21 +228,6 @@ protected :
     ::fwCore::LogicStamp::sptr m_logicStamp;
 
     SPTR(::fwTools::UUID) m_uuid;
-
-    /**
-     * @brief A shallow copy of fields (objects in m_children), tests the classname and calls the specific method of the class.
-     * @param[in] _source source of the copy.
-     */
-    template< typename FWDATATYPE >
-    void shallowCopy( ::fwTools::Object::csptr _source );
-
-    /**
-     * @brief A deep copy of fields (objects in m_children), tests the classname and calls the specific method of the class.
-     * @param[in] _source source of the copy.
-     */
-    template< typename FWDATATYPE >
-    void deepCopy( ::fwTools::Object::csptr _source );
-
 
 private :
 

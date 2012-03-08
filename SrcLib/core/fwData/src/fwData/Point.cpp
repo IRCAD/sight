@@ -57,7 +57,7 @@ Point::~Point ()
 
 void Point::shallowCopy( Point::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_vCoord = _source->m_vCoord;
 }
 
@@ -65,7 +65,7 @@ void Point::shallowCopy( Point::csptr _source )
 
 void Point::deepCopy( Point::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_vCoord = _source->m_vCoord;
 }
 

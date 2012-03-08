@@ -47,7 +47,7 @@ List const &List::getRefContainer() const
 
 void List::shallowCopy( List::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     (ObjectListType)(*this) = (ObjectListType)(*(_source.get()));
 }
 
@@ -55,7 +55,7 @@ void List::shallowCopy( List::csptr _source )
 
 void List::deepCopy( List::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->clear();
 
@@ -63,9 +63,9 @@ void List::deepCopy( List::csptr _source )
             iter != _source->end();
             ++iter )
     {
-        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( (*iter)->getClassname() );
+        ::fwData::Object::sptr newObj = ::fwData::Factory::New( (*iter)->getClassname() );
         newObj->deepCopy( *iter );
-        this->push_back( ::fwData::Object::dynamicCast( newObj ) );
+        this->push_back( newObj );
     }
 }
 

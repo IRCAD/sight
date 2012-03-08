@@ -38,7 +38,7 @@ TransfertFunctionPoint::~TransfertFunctionPoint ()
 
 void TransfertFunctionPoint::shallowCopy( TransfertFunctionPoint::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_i32Value = _source->m_i32Value;
 }
 
@@ -46,7 +46,7 @@ void TransfertFunctionPoint::shallowCopy( TransfertFunctionPoint::csptr _source 
 
 void TransfertFunctionPoint::deepCopy( TransfertFunctionPoint::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_i32Value = _source->m_i32Value;
 }
 

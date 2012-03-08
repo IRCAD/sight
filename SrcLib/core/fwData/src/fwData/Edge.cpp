@@ -82,7 +82,7 @@ const std::string &Edge::getNature() const
 void Edge::shallowCopy( Edge::csptr _source )
 {
 
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
     this->m_toPortIdentifier = _source->m_toPortIdentifier;
     this->m_nature = _source->m_nature;
@@ -92,7 +92,7 @@ void Edge::shallowCopy( Edge::csptr _source )
 
 void Edge::deepCopy( Edge::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
     this->m_toPortIdentifier = _source->m_toPortIdentifier;
     this->m_nature = _source->m_nature;

@@ -29,7 +29,7 @@ SingleFile::~SingleFile()
 
 void SingleFile::shallowCopy( SingleFile::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_path = _source->m_path;
 }
 
@@ -37,7 +37,7 @@ void SingleFile::shallowCopy( SingleFile::csptr _source )
 
 void SingleFile::deepCopy( SingleFile::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_path = _source->m_path;
 }
 

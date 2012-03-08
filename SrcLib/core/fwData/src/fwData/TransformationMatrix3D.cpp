@@ -37,7 +37,7 @@ TransformationMatrix3D::~TransformationMatrix3D()
 
 void TransformationMatrix3D::shallowCopy( TransformationMatrix3D::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     m_vCoefficients = _source->m_vCoefficients;
 }
 
@@ -45,7 +45,7 @@ void TransformationMatrix3D::shallowCopy( TransformationMatrix3D::csptr _source 
 
 void TransformationMatrix3D::deepCopy( TransformationMatrix3D::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     m_vCoefficients = _source->m_vCoefficients;
 }
 

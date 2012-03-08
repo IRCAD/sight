@@ -103,7 +103,7 @@ Port::sptr Node::findPort(const std::string &identifier, /*const std::string &ty
 
 void Node::shallowCopy( Node::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
 
     this->m_inputs.clear();
     this->m_outputs.clear();
@@ -133,7 +133,7 @@ void Node::shallowCopy( Node::csptr _source )
 
 void Node::deepCopy( Node::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->m_inputs.clear();
     this->m_outputs.clear();

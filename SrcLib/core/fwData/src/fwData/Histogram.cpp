@@ -36,7 +36,7 @@ Histogram::~Histogram()
 
 void Histogram::shallowCopy( Histogram::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     m_values = _source->m_values;
     m_minValue = _source->m_minValue;
     m_maxValue = _source->m_maxValue;
@@ -47,7 +47,7 @@ void Histogram::shallowCopy( Histogram::csptr _source )
 
 void Histogram::deepCopy( Histogram::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     m_minValue = _source->m_minValue;
     m_maxValue = _source->m_maxValue;

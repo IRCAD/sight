@@ -37,14 +37,14 @@ ResectionDB::~ResectionDB ()
 
 void ResectionDB::shallowCopy( ResectionDB::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
 }
 
 //------------------------------------------------------------------------------
 
 void ResectionDB::deepCopy( ResectionDB::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 }
 
 //------------------------------------------------------------------------------

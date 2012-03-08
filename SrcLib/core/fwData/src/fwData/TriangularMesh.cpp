@@ -27,7 +27,7 @@ TriangularMesh::~TriangularMesh()
 
 void TriangularMesh::shallowCopy( TriangularMesh::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_points = _source->m_points;
     this->m_cells = _source->m_cells;
 }
@@ -36,7 +36,7 @@ void TriangularMesh::shallowCopy( TriangularMesh::csptr _source )
 
 void TriangularMesh::deepCopy( TriangularMesh::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_points = _source->m_points;
     this->m_cells = _source->m_cells;
 }

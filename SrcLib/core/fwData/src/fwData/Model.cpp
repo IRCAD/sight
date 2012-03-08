@@ -39,7 +39,7 @@ const Model::Container &Model::getCRefMap() const
 
 void Model::shallowCopy( Model::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
 
     this->m_map.clear();
     this->m_map = _source->m_map;
@@ -49,7 +49,7 @@ void Model::shallowCopy( Model::csptr _source )
 
 void Model::deepCopy( Model::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->m_map.clear();
     for(    Model::Container::const_iterator iter = _source->getCRefMap().begin();

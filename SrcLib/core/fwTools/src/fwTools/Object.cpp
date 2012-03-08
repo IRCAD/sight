@@ -156,7 +156,7 @@ void Object::removeField( const FieldID &fieldId )
     }
     else
     {
-        // field doesn no exist create it then append new element
+        // field doesn't no exist create it then append new element
         ::fwTools::Field::NewSptr newfield(fieldId);
         newfield->children().push_back(newSubObject);
         m_children.push_back( newfield);
@@ -208,59 +208,6 @@ int Object::getFieldSize( const FieldID& id ) const throw()
 {
     ::fwTools::Field::csptr field = ::fwTools::Field::dynamicConstCast( getField( id ) );
     return (field ? field->children().size() : 0 );
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::shallowCopy( Object::csptr _source )
-{
-    OSLM_FATAL("Method shallowCopy is not implemented for ::fwTools::Object of classname : " << this->getClassname() );
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::deepCopy( Object::csptr _source )
-{
-    OSLM_FATAL("Method deepCopy is not implemented for ::fwTools::Object of classname : " << this->getClassname() );
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::shallowCopyOfChildren( Object::csptr _source )
-{
-    m_children.clear();
-    for (   ChildContainer::const_iterator f = _source->m_children.begin() ;
-            f != _source->m_children.end();
-            ++f )
-    {
-        ::fwTools::Object::sptr sourceSubObject = *f;
-        if( ::fwTools::Field::dynamicCast( sourceSubObject ) )
-        {
-            ::fwTools::Field::NewSptr newField;
-            newField->shallowCopy( sourceSubObject );
-            m_children.push_back( newField );
-        }
-        else
-        {
-            m_children.push_back( sourceSubObject );
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::deepCopyOfChildren( Object::csptr _source )
-{
-    m_children.clear();
-    for (   ChildContainer::const_iterator f = _source->m_children.begin() ;
-            f != _source->m_children.end();
-            ++f )
-    {
-        ::fwTools::Object::sptr sourceSubObject = *f;
-        ::fwTools::Object::sptr newSubObject = ::fwTools::Factory::buildData( sourceSubObject->getClassname() );
-        newSubObject->deepCopy( sourceSubObject );
-        m_children.push_back( newSubObject );
-    }
 }
 
 //-----------------------------------------------------------------------------

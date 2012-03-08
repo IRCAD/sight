@@ -44,24 +44,6 @@ public:
 
     FWTOOLS_API virtual ~Field();
 
-    /**
-     * @brief A shallow copy (also called "bitwise copy") simply copies chunks of memory from one location to another.
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API void shallowCopy( ::fwTools::Field::csptr _source );
-    FWTOOLS_API void shallowCopy( ::fwTools::Field::sptr _source );
-
-    /**
-     * @brief A deep copy clone all source object parameters (sub-ojects are duplcated in memory). For a sptr on sub-object, method allocates a new object.
-     * @param[in] _source source of the copy.
-     */
-    FWTOOLS_API void deepCopy( ::fwTools::Field::csptr _source );
-    FWTOOLS_API void deepCopy( ::fwTools::Field::sptr _source );
-
-    FWTOOLS_API void shallowCopy( ::fwTools::Object::csptr _source );
-
-    FWTOOLS_API void deepCopy( ::fwTools::Object::csptr _source );
-
 protected :
 
     std::string m_label;

@@ -45,7 +45,7 @@ Vector const &Vector::getRefContainer() const
 
 void Vector::shallowCopy( Vector::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
     (ObjectVectorType)(*this) = (ObjectVectorType)(*(_source.get()));
 }
 
@@ -53,7 +53,7 @@ void Vector::shallowCopy( Vector::csptr _source )
 
 void Vector::deepCopy( Vector::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
     this->clear();
 
@@ -61,9 +61,9 @@ void Vector::deepCopy( Vector::csptr _source )
             iter != _source->end();
             ++iter )
     {
-        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( (*iter)->getClassname() );
+        ::fwData::Object::sptr newObj = ::fwData::Factory::New( (*iter)->getClassname() );
         newObj->deepCopy( *iter );
-        this->push_back( ::fwData::Object::dynamicCast( newObj ) );
+        this->push_back( newObj );
     }
 }
 

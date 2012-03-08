@@ -30,7 +30,7 @@ Port::~Port()
 
 void Port::shallowCopy( Port::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
 
     this->m_identifier = _source->m_identifier;
     this->m_type = _source->m_type;
@@ -40,7 +40,7 @@ void Port::shallowCopy( Port::csptr _source )
 
 void Port::deepCopy( Port::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->m_identifier = _source->m_identifier;
     this->m_type = _source->m_type;

@@ -53,28 +53,5 @@ typename FWDATATYPE::sptr Object::getFieldElement( const FieldID& id , unsigned 
 
 //-----------------------------------------------------------------------------
 
-template< typename FWDATATYPE >
-void Object::shallowCopy( ::fwTools::Object::csptr _source )
-{
-    typename FWDATATYPE::csptr castSource = FWDATATYPE::dynamicConstCast( _source );
-    SLM_FATAL_IF("Sorry, the classname of object source is different, shallowCopy is not possible.", castSource == 0 );
-    typename FWDATATYPE::sptr castDest = FWDATATYPE::dynamicCast( this->getSptr() );
-    castDest->FWDATATYPE::shallowCopy( castSource );
-
-}
-
-//-----------------------------------------------------------------------------
-
-template< typename FWDATATYPE >
-void Object::deepCopy( ::fwTools::Object::csptr _source )
-{
-    typename FWDATATYPE::csptr castSource = FWDATATYPE::dynamicConstCast( _source );
-    SLM_FATAL_IF("Sorry, the classname of object source is different, deepCopy is not possible.", castSource == 0 );
-    typename FWDATATYPE::sptr castDest = FWDATATYPE::dynamicCast( this->getSptr() );
-    castDest->FWDATATYPE::deepCopy( castSource );
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace fwTools
 

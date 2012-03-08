@@ -38,7 +38,8 @@ namespace fwData
 class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwTools::Factory::New< Object > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwData::Factory::New< Object > );
+    fwCoreAllowSharedFromThis();
 
     typedef std::string FieldNameType;
     typedef std::vector<FieldNameType> FieldNameVectorType;
@@ -84,6 +85,52 @@ public:
      * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
      */
     FWDATA_API void updateFields_NEWAPI( const FieldMapType & fieldMap );
+
+    /**
+     * @brief A shallow copy of fields (objects in m_children)
+     * @param[in] _source source of the copy.
+     */
+    FWDATA_API virtual void shallowCopy( ::fwData::Object::csptr source );
+
+    /**
+     * @brief A deep copy of fields (objects in m_children)
+     * @param[in] _source source of the copy.
+     */
+    FWDATA_API virtual void deepCopy( ::fwData::Object::csptr source );
+
+    /**
+     * @brief A shallow copy of fields (objects in m_children)
+     * @param[in] _source source of the copy.
+     */
+    FWDATA_API void fieldShallowCopy( ::fwData::Object::csptr source );
+
+    /**
+     * @brief A deep copy of fields (objects in m_children)
+     * @param[in] _source source of the copy.
+     */
+    FWDATA_API void fieldDeepCopy( ::fwData::Object::csptr source );
+
+    //-----------------------------------------------------------------------------
+
+    template< typename FWDATATYPE >
+    void shallowCopy( ::fwData::Object::csptr source )
+    {
+        typename FWDATATYPE::csptr castSource = FWDATATYPE::dynamicConstCast( source );
+        SLM_FATAL_IF("Sorry, the classname of object source is different, shallowCopy is not possible.", castSource == 0 );
+        typename FWDATATYPE::sptr castDest = FWDATATYPE::dynamicCast( this->getSptr() );
+        castDest->FWDATATYPE::shallowCopy( castSource );
+    }
+
+    //-----------------------------------------------------------------------------
+
+    template< typename FWDATATYPE >
+    void deepCopy( ::fwData::Object::csptr source )
+    {
+        typename FWDATATYPE::csptr castSource = FWDATATYPE::dynamicConstCast( source );
+        SLM_FATAL_IF("Sorry, the classname of object source is different, deepCopy is not possible.", castSource == 0 );
+        typename FWDATATYPE::sptr castDest = FWDATATYPE::dynamicCast( this->getSptr() );
+        castDest->FWDATATYPE::deepCopy( castSource );
+    }
 
 protected:
 

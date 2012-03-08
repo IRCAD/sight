@@ -39,7 +39,7 @@ Resection::~Resection ()
 
 void Resection::shallowCopy( Resection::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
 
     this->m_name = _source->m_name;
     this->m_isSafePart = _source->m_isSafePart;
@@ -54,7 +54,7 @@ void Resection::shallowCopy( Resection::csptr _source )
 
 void Resection::deepCopy( Resection::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->m_name = _source->m_name;
     this->m_isSafePart = _source->m_isSafePart;

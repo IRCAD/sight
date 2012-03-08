@@ -43,7 +43,7 @@ Line::~Line ()
 
 void Line::shallowCopy( Line::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_position = _source->m_position;
     this->m_direction = _source->m_direction;
 }
@@ -52,9 +52,31 @@ void Line::shallowCopy( Line::csptr _source )
 
 void Line::deepCopy( Line::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_position->deepCopy( _source->m_position );
-    this->m_direction->deepCopy( _source->m_direction );
+    this->::fwData::Object::fieldDeepCopy( _source );
+    if(_source->m_position)
+    {
+        if(!this->m_position)
+        {
+            this->m_position = ::fwData::Point::New();
+        }
+        this->m_position->deepCopy( _source->m_position );
+    }
+    else
+    {
+        this->m_position.reset();
+    }
+    if(_source->m_direction)
+    {
+        if(!this->m_direction)
+        {
+            this->m_direction = ::fwData::Point::New();
+        }
+        this->m_direction->deepCopy( _source->m_direction );
+    }
+    else
+    {
+        this->m_direction.reset();
+    }
 }
 
 //------------------------------------------------------------------------------

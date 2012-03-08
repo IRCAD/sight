@@ -4,10 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include "fwData/Factory.hpp"
 #include "fwData/Object.hpp"
 
 // ACH HACK, Force registration in factory
@@ -90,6 +92,42 @@ void Object::setFields_NEWAPI( const FieldMapType & fieldMap )
 void Object::updateFields_NEWAPI( const FieldMapType & fieldMap )
 {
     m_fields.insert(fieldMap.begin(), fieldMap.end());
+}
+
+
+//-----------------------------------------------------------------------------
+
+void Object::fieldShallowCopy( ::fwData::Object::csptr source )
+{
+    this->setFields_NEWAPI(source->getFields_NEWAPI());
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::fieldDeepCopy( ::fwData::Object::csptr source )
+{
+    m_fields.clear();
+    ::fwData::Object::FieldMapType sourceFields = source->getFields_NEWAPI();
+    BOOST_FOREACH(FieldMapType::value_type elt, sourceFields)
+    {
+        ::fwData::Object::sptr newObject = ::fwData::Factory::New( elt.second->getClassname() );
+        newObject->deepCopy(elt.second);
+        this->setField_NEWAPI(elt.first, newObject);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::shallowCopy( ::fwData::Object::csptr source )
+{
+    OSLM_FATAL("shallowCopy not implemented for : " << this->getClassname() );
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::deepCopy( ::fwData::Object::csptr source )
+{
+    OSLM_FATAL("deepCopy not implemented for : " << this->getClassname() );
 }
 
 } // namespace fwData

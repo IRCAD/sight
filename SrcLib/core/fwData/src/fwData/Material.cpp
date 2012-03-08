@@ -33,7 +33,7 @@ Material::~Material()
 
 void Material::shallowCopy( Material::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
 
     this->m_ambient = _source->m_ambient;
     this->m_diffuse = _source->m_diffuse;
@@ -47,7 +47,7 @@ void Material::shallowCopy( Material::csptr _source )
 
 void Material::deepCopy( Material::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->m_ambient->deepCopy( _source->m_ambient );
     this->m_diffuse->deepCopy( _source->m_diffuse );

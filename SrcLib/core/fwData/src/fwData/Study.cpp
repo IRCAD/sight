@@ -43,7 +43,7 @@ Study::~Study()
 
 void Study::shallowCopy( Study::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
     this->m_sHospital = _source->m_sHospital;
     this->m_sModality = _source->m_sModality;
     this->m_sAcquisitionZone = _source->m_sAcquisitionZone;
@@ -56,7 +56,7 @@ void Study::shallowCopy( Study::csptr _source )
 
 void Study::deepCopy( Study::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
     this->m_sHospital = _source->m_sHospital;
     this->m_sModality = _source->m_sModality;
     this->m_sAcquisitionZone = _source->m_sAcquisitionZone;

@@ -34,7 +34,7 @@ PointList::~PointList ()
 
 void PointList::shallowCopy( PointList::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->::fwData::Object::fieldShallowCopy( _source );
 
     this->m_vPoints = _source->m_vPoints;
 }
@@ -43,7 +43,7 @@ void PointList::shallowCopy( PointList::csptr _source )
 
 void PointList::deepCopy( PointList::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->::fwData::Object::fieldDeepCopy( _source );
 
     this->m_vPoints.clear();
     for (   PointList::PointListContainer::const_iterator iter = _source->m_vPoints.begin();
