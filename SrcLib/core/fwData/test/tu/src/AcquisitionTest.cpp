@@ -94,101 +94,101 @@ void AcquisitionTest::methode1() //test des attributs
 
 
     //-------------check
-    CPPUNIT_ASSERT_EQUAL(a1->getBitsPerPixel(),  BITSPERPIXEL ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefBitsPerPixel(),  BITSPERPIXEL ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefBitsPerPixel(),  BITSPERPIXEL ) ;
+    CPPUNIT_ASSERT_EQUAL(BITSPERPIXEL ,  a1->getBitsPerPixel()) ;
+    CPPUNIT_ASSERT_EQUAL(BITSPERPIXEL ,  a1->getCRefBitsPerPixel()) ;
+    CPPUNIT_ASSERT_EQUAL(BITSPERPIXEL ,  a1->getRefBitsPerPixel()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getSliceThickness(),  SLICETHICKNESS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefSliceThickness(),  SLICETHICKNESS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefSliceThickness(),  SLICETHICKNESS ) ;
+    CPPUNIT_ASSERT_EQUAL(SLICETHICKNESS ,  a1->getSliceThickness()) ;
+    CPPUNIT_ASSERT_EQUAL(SLICETHICKNESS ,  a1->getCRefSliceThickness()) ;
+    CPPUNIT_ASSERT_EQUAL(SLICETHICKNESS ,  a1->getRefSliceThickness()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getAxe(    ),  AXE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefAxe(    ),  AXE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefAxe( ),  AXE ) ;
+    CPPUNIT_ASSERT_EQUAL(AXE ,  a1->getAxe(    )) ;
+    CPPUNIT_ASSERT_EQUAL(AXE ,  a1->getCRefAxe(    )) ;
+    CPPUNIT_ASSERT_EQUAL(AXE ,  a1->getRefAxe( )) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getUnsignedFlag(), UNSIGNEDFLAG  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefUnsignedFlag(), UNSIGNEDFLAG  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefUnsignedFlag(), UNSIGNEDFLAG  ) ;
+    CPPUNIT_ASSERT_EQUAL(UNSIGNEDFLAG  , a1->getUnsignedFlag()) ;
+    CPPUNIT_ASSERT_EQUAL(UNSIGNEDFLAG  , a1->getCRefUnsignedFlag()) ;
+    CPPUNIT_ASSERT_EQUAL(UNSIGNEDFLAG  , a1->getRefUnsignedFlag()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getAcquisitionIndex(),  ACQUISITIONINDEX ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefAcquisitionIndex(),  ACQUISITIONINDEX ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefAcquisitionIndex(),  ACQUISITIONINDEX ) ;
+    CPPUNIT_ASSERT_EQUAL(ACQUISITIONINDEX ,  a1->getAcquisitionIndex()) ;
+    CPPUNIT_ASSERT_EQUAL(ACQUISITIONINDEX ,  a1->getCRefAcquisitionIndex()) ;
+    CPPUNIT_ASSERT_EQUAL(ACQUISITIONINDEX ,  a1->getRefAcquisitionIndex()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getImageType(), IMAGETYPE  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefImageType(), IMAGETYPE  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefImageType(), IMAGETYPE  ) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGETYPE  , a1->getImageType()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGETYPE  , a1->getCRefImageType()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGETYPE  , a1->getRefImageType()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getImageFormat(),  IMAGEFORMAT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefImageFormat(),  IMAGEFORMAT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefImageFormat(),  IMAGEFORMAT ) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGEFORMAT ,  a1->getImageFormat()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGEFORMAT ,  a1->getCRefImageFormat()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGEFORMAT ,  a1->getRefImageFormat()) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCreationDate()), CREATIONDATE  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefCreationDate()), CREATIONDATE  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefCreationDate()), CREATIONDATE  ) ;
+    CPPUNIT_ASSERT_EQUAL(CREATIONDATE  , ::boost::posix_time::to_simple_string(a1->getCreationDate())) ;
+    CPPUNIT_ASSERT_EQUAL(CREATIONDATE  , ::boost::posix_time::to_simple_string(a1->getCRefCreationDate())) ;
+    CPPUNIT_ASSERT_EQUAL(CREATIONDATE  , ::boost::posix_time::to_simple_string(a1->getRefCreationDate())) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getIsMain(), ISMAIN  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefIsMain(), ISMAIN  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefIsMain(), ISMAIN  ) ;
+    CPPUNIT_ASSERT_EQUAL(ISMAIN  , a1->getIsMain()) ;
+    CPPUNIT_ASSERT_EQUAL(ISMAIN  , a1->getCRefIsMain()) ;
+    CPPUNIT_ASSERT_EQUAL(ISMAIN  , a1->getRefIsMain()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getIsNormalDir(),  ISNORMALDIR ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefIsNormalDir(),  ISNORMALDIR ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefIsNormalDir(),  ISNORMALDIR ) ;
+    CPPUNIT_ASSERT_EQUAL(ISNORMALDIR ,  a1->getIsNormalDir()) ;
+    CPPUNIT_ASSERT_EQUAL(ISNORMALDIR ,  a1->getCRefIsNormalDir()) ;
+    CPPUNIT_ASSERT_EQUAL(ISNORMALDIR ,  a1->getRefIsNormalDir()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getUID(), UID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefUID(), UID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefUID(), UID  ) ;
+    CPPUNIT_ASSERT_EQUAL(UID  , a1->getUID()) ;
+    CPPUNIT_ASSERT_EQUAL(UID  , a1->getCRefUID()) ;
+    CPPUNIT_ASSERT_EQUAL(UID  , a1->getRefUID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getDbID(), DBID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefDbID(), DBID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefDbID(), DBID  ) ;
+    CPPUNIT_ASSERT_EQUAL(DBID  , a1->getDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID  , a1->getCRefDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID  , a1->getRefDbID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getLaboID(),  LABOID ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefLaboID(),  LABOID ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefLaboID(),  LABOID ) ;
+    CPPUNIT_ASSERT_EQUAL(LABOID ,  a1->getLaboID()) ;
+    CPPUNIT_ASSERT_EQUAL(LABOID ,  a1->getCRefLaboID()) ;
+    CPPUNIT_ASSERT_EQUAL(LABOID ,  a1->getRefLaboID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getNetID(), NETID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefNetID(), NETID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefNetID(), NETID  ) ;
+    CPPUNIT_ASSERT_EQUAL(NETID  , a1->getNetID()) ;
+    CPPUNIT_ASSERT_EQUAL(NETID  , a1->getCRefNetID()) ;
+    CPPUNIT_ASSERT_EQUAL(NETID  , a1->getRefNetID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateSendToLaboAt()),  DATESENDTOLABOAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateSendToLaboAt()),  DATESENDTOLABOAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateSendToLaboAt()),  DATESENDTOLABOAT ) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOLABOAT ,  ::boost::posix_time::to_simple_string(a1->getDateSendToLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOLABOAT ,  ::boost::posix_time::to_simple_string(a1->getCRefDateSendToLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOLABOAT ,  ::boost::posix_time::to_simple_string(a1->getRefDateSendToLaboAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateReceiveFromLaboAt()), DATERECEIVEFROMLABOAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateReceiveFromLaboAt()), DATERECEIVEFROMLABOAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateReceiveFromLaboAt()), DATERECEIVEFROMLABOAT  ) ;
+    CPPUNIT_ASSERT_EQUAL(DATERECEIVEFROMLABOAT  , ::boost::posix_time::to_simple_string(a1->getDateReceiveFromLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATERECEIVEFROMLABOAT  , ::boost::posix_time::to_simple_string(a1->getCRefDateReceiveFromLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATERECEIVEFROMLABOAT  , ::boost::posix_time::to_simple_string(a1->getRefDateReceiveFromLaboAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateSendToBDDAt()),  DATESENDTOBDDAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateSendToBDDAt()),  DATESENDTOBDDAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateSendToBDDAt()),  DATESENDTOBDDAT ) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOBDDAT ,  ::boost::posix_time::to_simple_string(a1->getDateSendToBDDAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOBDDAT ,  ::boost::posix_time::to_simple_string(a1->getCRefDateSendToBDDAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOBDDAT ,  ::boost::posix_time::to_simple_string(a1->getRefDateSendToBDDAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateDisponibilityAt()), DATEDISPONIBILITYAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateDisponibilityAt()), DATEDISPONIBILITYAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateDisponibilityAt()), DATEDISPONIBILITYAT  ) ;
+    CPPUNIT_ASSERT_EQUAL(DATEDISPONIBILITYAT  , ::boost::posix_time::to_simple_string(a1->getDateDisponibilityAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATEDISPONIBILITYAT  , ::boost::posix_time::to_simple_string(a1->getCRefDateDisponibilityAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATEDISPONIBILITYAT  , ::boost::posix_time::to_simple_string(a1->getRefDateDisponibilityAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getPatientSize(),  PATIENTSIZE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefPatientSize(),  PATIENTSIZE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefPatientSize(),  PATIENTSIZE ) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTSIZE ,  a1->getPatientSize()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTSIZE ,  a1->getCRefPatientSize()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTSIZE ,  a1->getRefPatientSize()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getPatientWeight(),  PATIENTWEIGHT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefPatientWeight(),  PATIENTWEIGHT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefPatientWeight(),  PATIENTWEIGHT ) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTWEIGHT ,  a1->getPatientWeight()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTWEIGHT ,  a1->getCRefPatientWeight()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTWEIGHT ,  a1->getRefPatientWeight()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getRadiations(),  RADIATIONS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefRadiations(),  RADIATIONS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefRadiations(),  RADIATIONS ) ;
+    CPPUNIT_ASSERT_EQUAL(RADIATIONS ,  a1->getRadiations()) ;
+    CPPUNIT_ASSERT_EQUAL(RADIATIONS ,  a1->getCRefRadiations()) ;
+    CPPUNIT_ASSERT_EQUAL(RADIATIONS ,  a1->getRefRadiations()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getMedicalPrinter(), MEDICALPRINTER  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefMedicalPrinter(), MEDICALPRINTER  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefMedicalPrinter(), MEDICALPRINTER  ) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTER  , a1->getMedicalPrinter()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTER  , a1->getCRefMedicalPrinter()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTER  , a1->getRefMedicalPrinter()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getMedicalPrinterCorp(),  MEDICALPRINTERCORP ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefMedicalPrinterCorp(),  MEDICALPRINTERCORP ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefMedicalPrinterCorp(),  MEDICALPRINTERCORP ) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTERCORP ,  a1->getMedicalPrinterCorp()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTERCORP ,  a1->getCRefMedicalPrinterCorp()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTERCORP ,  a1->getRefMedicalPrinterCorp()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getPatientPosition(),  PATIENTPOSITION ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefPatientPosition(),  PATIENTPOSITION ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefPatientPosition(),  PATIENTPOSITION ) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTPOSITION ,  a1->getPatientPosition()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTPOSITION ,  a1->getCRefPatientPosition()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTPOSITION ,  a1->getRefPatientPosition()) ;
 
 
 }
@@ -251,101 +251,101 @@ void AcquisitionTest::methode2()
 
 
     //-------------check
-    CPPUNIT_ASSERT_EQUAL(a1->getBitsPerPixel(),  BITSPERPIXEL ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefBitsPerPixel(),  BITSPERPIXEL ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefBitsPerPixel(),  BITSPERPIXEL ) ;
+    CPPUNIT_ASSERT_EQUAL(BITSPERPIXEL ,  a1->getBitsPerPixel()) ;
+    CPPUNIT_ASSERT_EQUAL(BITSPERPIXEL ,  a1->getCRefBitsPerPixel()) ;
+    CPPUNIT_ASSERT_EQUAL(BITSPERPIXEL ,  a1->getRefBitsPerPixel()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getSliceThickness(),  SLICETHICKNESS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefSliceThickness(),  SLICETHICKNESS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefSliceThickness(),  SLICETHICKNESS ) ;
+    CPPUNIT_ASSERT_EQUAL(SLICETHICKNESS ,  a1->getSliceThickness()) ;
+    CPPUNIT_ASSERT_EQUAL(SLICETHICKNESS ,  a1->getCRefSliceThickness()) ;
+    CPPUNIT_ASSERT_EQUAL(SLICETHICKNESS ,  a1->getRefSliceThickness()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getAxe(    ),  AXE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefAxe(    ),  AXE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefAxe( ),  AXE ) ;
+    CPPUNIT_ASSERT_EQUAL(AXE ,  a1->getAxe(    )) ;
+    CPPUNIT_ASSERT_EQUAL(AXE ,  a1->getCRefAxe(    )) ;
+    CPPUNIT_ASSERT_EQUAL(AXE ,  a1->getRefAxe( )) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getUnsignedFlag(), UNSIGNEDFLAG  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefUnsignedFlag(), UNSIGNEDFLAG  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefUnsignedFlag(), UNSIGNEDFLAG  ) ;
+    CPPUNIT_ASSERT_EQUAL(UNSIGNEDFLAG  , a1->getUnsignedFlag()) ;
+    CPPUNIT_ASSERT_EQUAL(UNSIGNEDFLAG  , a1->getCRefUnsignedFlag()) ;
+    CPPUNIT_ASSERT_EQUAL(UNSIGNEDFLAG  , a1->getRefUnsignedFlag()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getAcquisitionIndex(),  ACQUISITIONINDEX ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefAcquisitionIndex(),  ACQUISITIONINDEX ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefAcquisitionIndex(),  ACQUISITIONINDEX ) ;
+    CPPUNIT_ASSERT_EQUAL(ACQUISITIONINDEX ,  a1->getAcquisitionIndex()) ;
+    CPPUNIT_ASSERT_EQUAL(ACQUISITIONINDEX ,  a1->getCRefAcquisitionIndex()) ;
+    CPPUNIT_ASSERT_EQUAL(ACQUISITIONINDEX ,  a1->getRefAcquisitionIndex()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getImageType(), IMAGETYPE  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefImageType(), IMAGETYPE  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefImageType(), IMAGETYPE  ) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGETYPE  , a1->getImageType()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGETYPE  , a1->getCRefImageType()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGETYPE  , a1->getRefImageType()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getImageFormat(),  IMAGEFORMAT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefImageFormat(),  IMAGEFORMAT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefImageFormat(),  IMAGEFORMAT ) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGEFORMAT ,  a1->getImageFormat()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGEFORMAT ,  a1->getCRefImageFormat()) ;
+    CPPUNIT_ASSERT_EQUAL(IMAGEFORMAT ,  a1->getRefImageFormat()) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCreationDate()), CREATIONDATE  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefCreationDate()), CREATIONDATE  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefCreationDate()), CREATIONDATE  ) ;
+    CPPUNIT_ASSERT_EQUAL(CREATIONDATE  , ::boost::posix_time::to_simple_string(a1->getCreationDate())) ;
+    CPPUNIT_ASSERT_EQUAL(CREATIONDATE  , ::boost::posix_time::to_simple_string(a1->getCRefCreationDate())) ;
+    CPPUNIT_ASSERT_EQUAL(CREATIONDATE  , ::boost::posix_time::to_simple_string(a1->getRefCreationDate())) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getIsMain(), ISMAIN  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefIsMain(), ISMAIN  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefIsMain(), ISMAIN  ) ;
+    CPPUNIT_ASSERT_EQUAL(ISMAIN  , a1->getIsMain()) ;
+    CPPUNIT_ASSERT_EQUAL(ISMAIN  , a1->getCRefIsMain()) ;
+    CPPUNIT_ASSERT_EQUAL(ISMAIN  , a1->getRefIsMain()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getIsNormalDir(),  ISNORMALDIR ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefIsNormalDir(),  ISNORMALDIR ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefIsNormalDir(),  ISNORMALDIR ) ;
+    CPPUNIT_ASSERT_EQUAL(ISNORMALDIR ,  a1->getIsNormalDir()) ;
+    CPPUNIT_ASSERT_EQUAL(ISNORMALDIR ,  a1->getCRefIsNormalDir()) ;
+    CPPUNIT_ASSERT_EQUAL(ISNORMALDIR ,  a1->getRefIsNormalDir()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getUID(), UID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefUID(), UID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefUID(), UID  ) ;
+    CPPUNIT_ASSERT_EQUAL(UID  , a1->getUID()) ;
+    CPPUNIT_ASSERT_EQUAL(UID  , a1->getCRefUID()) ;
+    CPPUNIT_ASSERT_EQUAL(UID  , a1->getRefUID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getDbID(), DBID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefDbID(), DBID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefDbID(), DBID  ) ;
+    CPPUNIT_ASSERT_EQUAL(DBID  , a1->getDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID  , a1->getCRefDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID  , a1->getRefDbID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getLaboID(),  LABOID ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefLaboID(),  LABOID ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefLaboID(),  LABOID ) ;
+    CPPUNIT_ASSERT_EQUAL(LABOID ,  a1->getLaboID()) ;
+    CPPUNIT_ASSERT_EQUAL(LABOID ,  a1->getCRefLaboID()) ;
+    CPPUNIT_ASSERT_EQUAL(LABOID ,  a1->getRefLaboID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getNetID(), NETID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefNetID(), NETID  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefNetID(), NETID  ) ;
+    CPPUNIT_ASSERT_EQUAL(NETID  , a1->getNetID()) ;
+    CPPUNIT_ASSERT_EQUAL(NETID  , a1->getCRefNetID()) ;
+    CPPUNIT_ASSERT_EQUAL(NETID  , a1->getRefNetID()) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateSendToLaboAt()),  DATESENDTOLABOAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateSendToLaboAt()),  DATESENDTOLABOAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateSendToLaboAt()),  DATESENDTOLABOAT ) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOLABOAT ,  ::boost::posix_time::to_simple_string(a1->getDateSendToLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOLABOAT ,  ::boost::posix_time::to_simple_string(a1->getCRefDateSendToLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOLABOAT ,  ::boost::posix_time::to_simple_string(a1->getRefDateSendToLaboAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateReceiveFromLaboAt()), DATERECEIVEFROMLABOAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateReceiveFromLaboAt()), DATERECEIVEFROMLABOAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateReceiveFromLaboAt()), DATERECEIVEFROMLABOAT  ) ;
+    CPPUNIT_ASSERT_EQUAL(DATERECEIVEFROMLABOAT  , ::boost::posix_time::to_simple_string(a1->getDateReceiveFromLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATERECEIVEFROMLABOAT  , ::boost::posix_time::to_simple_string(a1->getCRefDateReceiveFromLaboAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATERECEIVEFROMLABOAT  , ::boost::posix_time::to_simple_string(a1->getRefDateReceiveFromLaboAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateSendToBDDAt()),  DATESENDTOBDDAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateSendToBDDAt()),  DATESENDTOBDDAT ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateSendToBDDAt()),  DATESENDTOBDDAT ) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOBDDAT ,  ::boost::posix_time::to_simple_string(a1->getDateSendToBDDAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOBDDAT ,  ::boost::posix_time::to_simple_string(a1->getCRefDateSendToBDDAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATESENDTOBDDAT ,  ::boost::posix_time::to_simple_string(a1->getRefDateSendToBDDAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getDateDisponibilityAt()), DATEDISPONIBILITYAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getCRefDateDisponibilityAt()), DATEDISPONIBILITYAT  ) ;
-    CPPUNIT_ASSERT_EQUAL(::boost::posix_time::to_simple_string(a1->getRefDateDisponibilityAt()), DATEDISPONIBILITYAT  ) ;
+    CPPUNIT_ASSERT_EQUAL(DATEDISPONIBILITYAT  , ::boost::posix_time::to_simple_string(a1->getDateDisponibilityAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATEDISPONIBILITYAT  , ::boost::posix_time::to_simple_string(a1->getCRefDateDisponibilityAt())) ;
+    CPPUNIT_ASSERT_EQUAL(DATEDISPONIBILITYAT  , ::boost::posix_time::to_simple_string(a1->getRefDateDisponibilityAt())) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getPatientSize(),  PATIENTSIZE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefPatientSize(),  PATIENTSIZE ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefPatientSize(),  PATIENTSIZE ) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTSIZE ,  a1->getPatientSize()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTSIZE ,  a1->getCRefPatientSize()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTSIZE ,  a1->getRefPatientSize()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getPatientWeight(),  PATIENTWEIGHT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefPatientWeight(),  PATIENTWEIGHT ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefPatientWeight(),  PATIENTWEIGHT ) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTWEIGHT ,  a1->getPatientWeight()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTWEIGHT ,  a1->getCRefPatientWeight()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTWEIGHT ,  a1->getRefPatientWeight()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getRadiations(),  RADIATIONS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefRadiations(),  RADIATIONS ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefRadiations(),  RADIATIONS ) ;
+    CPPUNIT_ASSERT_EQUAL(RADIATIONS ,  a1->getRadiations()) ;
+    CPPUNIT_ASSERT_EQUAL(RADIATIONS ,  a1->getCRefRadiations()) ;
+    CPPUNIT_ASSERT_EQUAL(RADIATIONS ,  a1->getRefRadiations()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getMedicalPrinter(), MEDICALPRINTER  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefMedicalPrinter(), MEDICALPRINTER  ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefMedicalPrinter(), MEDICALPRINTER  ) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTER  , a1->getMedicalPrinter()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTER  , a1->getCRefMedicalPrinter()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTER  , a1->getRefMedicalPrinter()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getMedicalPrinterCorp(),  MEDICALPRINTERCORP ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefMedicalPrinterCorp(),  MEDICALPRINTERCORP ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefMedicalPrinterCorp(),  MEDICALPRINTERCORP ) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTERCORP ,  a1->getMedicalPrinterCorp()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTERCORP ,  a1->getCRefMedicalPrinterCorp()) ;
+    CPPUNIT_ASSERT_EQUAL(MEDICALPRINTERCORP ,  a1->getRefMedicalPrinterCorp()) ;
 
-    CPPUNIT_ASSERT_EQUAL(a1->getPatientPosition(),  PATIENTPOSITION ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getCRefPatientPosition(),  PATIENTPOSITION ) ;
-    CPPUNIT_ASSERT_EQUAL(a1->getRefPatientPosition(),  PATIENTPOSITION ) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTPOSITION ,  a1->getPatientPosition()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTPOSITION ,  a1->getCRefPatientPosition()) ;
+    CPPUNIT_ASSERT_EQUAL(PATIENTPOSITION ,  a1->getRefPatientPosition()) ;
 }
 
 void AcquisitionTest::Image()
@@ -374,17 +374,17 @@ void AcquisitionTest::StructAnat()
 
 void AcquisitionTest::Reconstruction()
 {
-    ::boost::uint32_t  NB = 0 ;
+    ::fwData::Acquisition::ReconstructionContainerType::size_type  NB = 0 ;
     ::fwData::Acquisition::NewSptr a1;
     ::fwData::Reconstruction::NewSptr r1 ;
     //check
-    CPPUNIT_ASSERT_EQUAL(a1->getReconstructionSize(),  NB);
+    CPPUNIT_ASSERT_EQUAL(NB, a1->getNumberOfReconstructions());
 
     a1->addReconstruction(r1) ;
     NB = 1 ;
 
     //check
-    CPPUNIT_ASSERT_EQUAL(a1->getReconstructionSize(),  NB);
+    CPPUNIT_ASSERT_EQUAL(NB, a1->getNumberOfReconstructions());
 }
 
 } //namespace ut

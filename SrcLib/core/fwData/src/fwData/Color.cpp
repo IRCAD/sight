@@ -59,7 +59,7 @@ Color::~Color ()
 void Color::shallowCopy( Color::csptr _source )
 {
     this->fieldShallowCopy( _source );
-    this->m_vRGBA = _source->m_vRGBA;
+    m_vRGBA = _source->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void Color::shallowCopy( Color::csptr _source )
 void Color::deepCopy( Color::csptr _source )
 {
     this->fieldDeepCopy( _source );
-    this->m_vRGBA = _source->m_vRGBA;
+    m_vRGBA = _source->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------

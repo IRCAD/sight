@@ -105,31 +105,10 @@ void Mesh::deepCopy( Mesh::csptr _source )
     m_cellData->deepCopy(_source->m_cellData);
     m_cellDataOffsets->deepCopy(_source->m_cellDataOffsets);
 
-    m_pointColors.reset();
-    m_cellColors.reset();
-    m_pointNormals.reset();
-    m_cellNormals.reset();
-
-    if(_source->m_pointColors)
-    {
-        m_pointColors = ::fwData::Array::New();
-        m_pointColors->deepCopy(_source->m_pointColors);
-    }
-    if(_source->m_cellColors)
-    {
-        m_cellColors = ::fwData::Array::New();
-        m_cellColors->deepCopy(_source->m_cellColors);
-    }
-    if(_source->m_pointNormals)
-    {
-        m_pointNormals = ::fwData::Array::New();
-        m_pointNormals->deepCopy(_source->m_pointNormals);
-    }
-    if(_source->m_cellNormals)
-    {
-        m_cellNormals = ::fwData::Array::New();
-        m_cellNormals->deepCopy(_source->m_cellNormals);
-    }
+    m_pointColors  = ::fwData::Object::copy(_source->m_pointColors );
+    m_cellColors   = ::fwData::Object::copy(_source->m_cellColors  );
+    m_pointNormals = ::fwData::Object::copy(_source->m_pointNormals);
+    m_cellNormals  = ::fwData::Object::copy(_source->m_cellNormals );
 
     m_arrayMap.clear();
     BOOST_FOREACH(ArrayMapType::value_type element, _source->m_arrayMap)

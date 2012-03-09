@@ -60,7 +60,7 @@ void Image::shallowCopy( Image::csptr _source )
     // Assign
     copyInformation(_source );
 
-    this->m_dataArray  = _source->m_dataArray;
+    m_dataArray  = _source->m_dataArray;
 }
 
 //-----------------------------------------------------------------------------
@@ -199,19 +199,19 @@ void * Image::getBuffer() const
 
 void Image::copyInformation( Image::csptr _source )
 {
-    this->m_size                = _source->m_size;
-    this->m_type                = _source->m_type;
-    this->m_spacing             = _source->m_spacing;
-    this->m_origin             = _source->m_origin;
-    this->m_dWindowCenter       = _source->m_dWindowCenter;
-    this->m_dWindowWidth        = _source->m_dWindowWidth;
+    m_size                = _source->m_size;
+    m_type                = _source->m_type;
+    m_spacing             = _source->m_spacing;
+    m_origin             = _source->m_origin;
+    m_dWindowCenter       = _source->m_dWindowCenter;
+    m_dWindowWidth        = _source->m_dWindowWidth;
 }
 
 //------------------------------------------------------------------------------
 
 size_t Image::getNumberOfDimensions() const
 {
-    return this->m_size.size();
+    return m_size.size();
 }
 
 
@@ -219,7 +219,7 @@ size_t Image::getNumberOfDimensions() const
 
 const Image::SpacingType & Image::getSpacing() const
 {
-    return this->m_spacing;
+    return m_spacing;
 }
 
 
@@ -227,35 +227,35 @@ const Image::SpacingType & Image::getSpacing() const
 
 void Image::setSpacing(const SpacingType &spacing)
 {
-    this->m_spacing = spacing;
+    m_spacing = spacing;
 }
 
 //------------------------------------------------------------------------------
 
 const Image::OriginType & Image::getOrigin() const
 {
-    return this->m_origin;
+    return m_origin;
 }
 
 //------------------------------------------------------------------------------
 
 void Image::setOrigin(const OriginType &origin)
 {
-    this->m_origin = origin;
+    m_origin = origin;
 }
 
 //------------------------------------------------------------------------------
 
 const Image::SizeType & Image::getSize() const
 {
-    return this->m_size;
+    return m_size;
 }
 
 //------------------------------------------------------------------------------
 
 void Image::setSize(const SizeType &size)
 {
-    this->m_size = size;
+    m_size = size;
 }
 
 //------------------------------------------------------------------------------

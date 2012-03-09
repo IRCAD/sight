@@ -83,9 +83,9 @@ void Edge::shallowCopy( Edge::csptr _source )
 {
 
     this->fieldShallowCopy( _source );
-    this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
-    this->m_toPortIdentifier = _source->m_toPortIdentifier;
-    this->m_nature = _source->m_nature;
+    m_fromPortIdentifier = _source->m_fromPortIdentifier;
+    m_toPortIdentifier = _source->m_toPortIdentifier;
+    m_nature = _source->m_nature;
 }
 
 //------------------------------------------------------------------------------
@@ -93,9 +93,9 @@ void Edge::shallowCopy( Edge::csptr _source )
 void Edge::deepCopy( Edge::csptr _source )
 {
     this->fieldDeepCopy( _source );
-    this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
-    this->m_toPortIdentifier = _source->m_toPortIdentifier;
-    this->m_nature = _source->m_nature;
+    m_fromPortIdentifier = _source->m_fromPortIdentifier;
+    m_toPortIdentifier = _source->m_toPortIdentifier;
+    m_nature = _source->m_nature;
 
 }
 

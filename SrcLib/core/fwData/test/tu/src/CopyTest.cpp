@@ -31,7 +31,6 @@
 #include <fwData/Object.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/PatientDB.hpp>
-#include <fwData/Pipeline.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 #include <fwData/Point.hpp>
@@ -133,7 +132,6 @@ void CopyTest::fieldCopyTest()
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Node);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::None);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Object);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Pipeline);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Port);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ProcessObject);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ReconstructionTraits);

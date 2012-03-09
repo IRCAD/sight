@@ -41,8 +41,8 @@ void Model::shallowCopy( Model::csptr _source )
 {
     this->fieldShallowCopy( _source );
 
-    this->m_map.clear();
-    this->m_map = _source->m_map;
+    m_map.clear();
+    m_map = _source->m_map;
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ void Model::deepCopy( Model::csptr _source )
 {
     this->fieldDeepCopy( _source );
 
-    this->m_map.clear();
+    m_map.clear();
     for(    Model::Container::const_iterator iter = _source->getCRefMap().begin();
             iter != _source->getCRefMap().end();
             ++iter )
@@ -61,7 +61,7 @@ void Model::deepCopy( Model::csptr _source )
 
         newTrian->deepCopy( iter->first );
         newMaterial->deepCopy( iter->second );
-        this->m_map[newTrian] = newMaterial;
+        m_map[newTrian] = newMaterial;
     }
 }
 

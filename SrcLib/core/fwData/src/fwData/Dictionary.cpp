@@ -16,109 +16,81 @@
 fwDataRegisterMacro( ::fwData::Dictionary );
 namespace fwData
 {
-const Object::FieldID Dictionary::ID_DICTIONARY_ORGANS = "ID_DICTIONARY_ORGANS";
-
 //------------------------------------------------------------------------------
 
 Dictionary::Dictionary()
 {
-    SLM_WARN("HACK POUR LA SERIALISATION => Dictionary() is not a protected methode (problem with the singleton concept.)");
-    SLM_WARN("::fwData::Dictionary() : (ToDo) field default value");
-    setField( Dictionary::ID_DICTIONARY_ORGANS );
 }
 
 //------------------------------------------------------------------------------
 
 Dictionary::~Dictionary()
 {
-    SLM_WARN("::fwData::~Dictionary() : (ToDo)");
+}
+
+
+//------------------------------------------------------------------------------
+
+void Dictionary::shallowCopy( Dictionary::csptr _source )
+{
+    ::fwData::Object::fieldShallowCopy( _source );
+
+    m_attrDictionaryOrgans = _source->m_attrDictionaryOrgans;
 }
 
 //------------------------------------------------------------------------------
 
-bool Dictionary::hasDictionaryOrgan( const std::string & dictionaryOrganName ) const
+void Dictionary::deepCopy( Dictionary::csptr _source )
 {
-    const Object::ChildContainer m_vOrgans = this->getField( Dictionary::ID_DICTIONARY_ORGANS )->children();
-    for (   Object::ChildContainer::const_iterator organ = m_vOrgans.begin();
-            organ != m_vOrgans.end();
-            ++organ )
-    {
-        if( boost::dynamic_pointer_cast< ::fwData::DictionaryOrgan>(*organ)->getStructureType() == dictionaryOrganName )
-        {
-            return true;
-        }
-    }
+    ::fwData::Object::fieldDeepCopy( _source );
 
-    return false;
+    m_attrDictionaryOrgans.clear();
+    BOOST_FOREACH(DictionaryOrganContainerType::value_type element, _source->m_attrDictionaryOrgans)
+    {
+        m_attrDictionaryOrgans[element.first] = ::fwData::Object::copy(element.second);
+    }
+}
+
+
+
+//------------------------------------------------------------------------------
+
+bool Dictionary::hasDictionaryOrgan( const DictionaryOrganNameType & dictionaryOrganName ) const
+{
+    const DictionaryOrganContainerType &organs = this->getDictionaryOrgans();
+    return organs.find(dictionaryOrganName) != organs.end() ;
 }
 
 //------------------------------------------------------------------------------
 
 void Dictionary::setDictionaryOrgan( ::fwData::DictionaryOrgan::sptr _dictionaryOrgan )
 {
-    bool definitionFound = false;
-
-    Object::ChildContainer m_vOrgans = this->getField( Dictionary::ID_DICTIONARY_ORGANS )->children();
-
-    for (   Object::ChildContainer::iterator organ = m_vOrgans.begin();
-            organ != m_vOrgans.end() && !definitionFound;
-            ++organ )
+    SLM_ASSERT("Null _dictionaryOrgan pointer", _dictionaryOrgan);
+    DictionaryOrganContainerType::value_type newValue(_dictionaryOrgan->getStructureType(), _dictionaryOrgan);
+    std::pair<DictionaryOrganContainerType::iterator, bool> res;
+    res = m_attrDictionaryOrgans.insert(newValue);
+    if( !res.second )
     {
-        if( boost::dynamic_pointer_cast< ::fwData::DictionaryOrgan>(*organ)->getStructureType() == _dictionaryOrgan->getStructureType() )
-        {
-            *organ = _dictionaryOrgan;
-            definitionFound = true;
-            SLM_DEBUG("Dictionary::setDictionaryOrgan : Update a dictionary organ");
-        }
+        res.first->second = _dictionaryOrgan;
     }
-
-    // If it is a new defintion
-    if( !definitionFound )
-    {
-        this->addFieldElement( Dictionary::ID_DICTIONARY_ORGANS , _dictionaryOrgan );
-        SLM_DEBUG("Dictionary::setDictionaryOrgan : Add a dictionary organ");
-    }
-
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::DictionaryOrgan::sptr Dictionary::getDictionaryOrgan( const std::string & dictionaryOrganName )
 {
-    Object::ChildContainer m_vOrgans = this->getField( Dictionary::ID_DICTIONARY_ORGANS )->children();
-    for (   Object::ChildContainer::iterator organ = m_vOrgans.begin();
-            organ != m_vOrgans.end();
-            ++organ )
+    ::fwData::DictionaryOrgan::sptr organ;
+    DictionaryOrganContainerType::iterator iter;
+    iter = m_attrDictionaryOrgans.find(dictionaryOrganName);
+
+    if (iter != m_attrDictionaryOrgans.end())
     {
-        if( boost::dynamic_pointer_cast< ::fwData::DictionaryOrgan>(*organ)->getStructureType() == dictionaryOrganName )
-        {
-            return boost::dynamic_pointer_cast< ::fwData::DictionaryOrgan>(*organ);
-        }
+        organ = iter->second;
     }
 
-    // If not found build a null shared_ptr
-    ::fwData::DictionaryOrgan::sptr defaultOrgan;
-    return defaultOrgan;
+    return organ;
 }
 
 //------------------------------------------------------------------------------
-
-std::pair< Dictionary::DictionaryOrganIterator, Dictionary::DictionaryOrganIterator >
-Dictionary::getDictionaryOrgans()
-{
-    DictionaryOrganIterator begin(  getField( Dictionary::ID_DICTIONARY_ORGANS )->children().begin() );
-    DictionaryOrganIterator   end(  getField( Dictionary::ID_DICTIONARY_ORGANS )->children().end()   );
-    return std::make_pair( begin, end );
-}
-
-//------------------------------------------------------------------------------
-
-std::pair< Dictionary::DictionaryOrganConstIterator, Dictionary::DictionaryOrganConstIterator >
-Dictionary::getDictionaryOrgans() const
-{
-    DictionaryOrganConstIterator begin(  getField( Dictionary::ID_DICTIONARY_ORGANS )->children().begin()   );
-    DictionaryOrganConstIterator   end(  getField( Dictionary::ID_DICTIONARY_ORGANS )->children().end()   );
-    return std::make_pair( begin, end );
-}
 
 } // end namespace fwData

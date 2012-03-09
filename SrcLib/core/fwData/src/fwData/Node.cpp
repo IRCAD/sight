@@ -105,15 +105,15 @@ void Node::shallowCopy( Node::csptr _source )
 {
     this->fieldShallowCopy( _source );
 
-    this->m_inputs.clear();
-    this->m_outputs.clear();
+    m_inputs.clear();
+    m_outputs.clear();
 
     if( _source->getObject())
     {
         ::fwTools::Object::sptr object = ::fwData::Factory::New( _source->getObject()->getClassname() );
         OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
-        this->m_object = ::fwData::Object::dynamicCast(object);
-        this->m_object->shallowCopy( _source->m_object );
+        m_object = ::fwData::Object::dynamicCast(object);
+        m_object->shallowCopy( _source->m_object );
     }
     BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
     {
@@ -135,15 +135,15 @@ void Node::deepCopy( Node::csptr _source )
 {
     this->fieldDeepCopy( _source );
 
-    this->m_inputs.clear();
-    this->m_outputs.clear();
+    m_inputs.clear();
+    m_outputs.clear();
 
     if( _source->getObject())
     {
         ::fwTools::Object::sptr object = ::fwData::Factory::New( _source->getObject()->getClassname() );
         OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
-        this->m_object = ::fwData::Object::dynamicCast(object);
-        this->m_object->deepCopy(_source->m_object);
+        m_object = ::fwData::Object::dynamicCast(object);
+        m_object->deepCopy(_source->m_object);
     }
     BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
     {

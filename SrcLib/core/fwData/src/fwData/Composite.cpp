@@ -46,9 +46,9 @@ void Composite::shallowCopy( Composite::csptr _source )
     this->fieldShallowCopy( _source );
     this->clear();
 
-     for(    Composite::Container::const_iterator iter = _source->begin();
-             iter != _source->end();
-             ++iter )
+     for( Composite::Container::const_iterator iter = _source->begin();
+          iter != _source->end();
+          ++iter )
      {
          (*this)[ iter->first ] = iter->second;
      }

@@ -9,7 +9,6 @@
 #include "fwData/registry/macros.hpp"
 
 #include "fwData/Image.hpp"
-#include "fwData/Pipeline.hpp"
 #include "fwData/Reconstruction.hpp"
 
 #include "fwData/Acquisition.hpp"
@@ -24,10 +23,6 @@ namespace fwData
 {
 
 //------------------------------------------------------------------------------
-
-const Object::FieldID Acquisition::ID_RECONSTRUCTIONS = "ID_RECONSTRUCTIONS";
-const Object::FieldID Acquisition::ID_IMAGE = "ID_IMAGE";
-const Object::FieldID Acquisition::ID_STRUCTANAT = "ID_STRUCTANAT";
 
 //------------------------------------------------------------------------------
 
@@ -58,17 +53,12 @@ Acquisition::Acquisition() :
     m_sPatientPosition(""),
     m_pathToFiles("")
 {
-    SLM_WARN("::fwData::Acquisition() : (ToDo) field default value");
-    setField( Acquisition::ID_RECONSTRUCTIONS );
-    setField( Acquisition::ID_IMAGE);
-    setField( Acquisition::ID_STRUCTANAT );
 }
 
 //------------------------------------------------------------------------------
 
 Acquisition::~Acquisition()
 {
-    SLM_WARN("::fwData::~Acquisition() : (ToDo)");
 }
 
 //------------------------------------------------------------------------------
@@ -76,219 +66,91 @@ Acquisition::~Acquisition()
 void Acquisition::shallowCopy( Acquisition::csptr _source )
 {
     this->fieldShallowCopy( _source );
-    this->m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
-    this->m_fSliceThickness = _source->m_fSliceThickness;
-    this->m_ui8Axe = _source->m_ui8Axe;
-    this->m_bUnsignedFlag = _source->m_bUnsignedFlag;
-    this->m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
-    this->m_sImageType = _source->m_sImageType;
-    this->m_sImageFormat = _source->m_sImageFormat;
-    this->m_ptCreationDate = _source->m_ptCreationDate;
-    this->m_bIsMain = _source->m_bIsMain;
-    this->m_bIsNormalDir = _source->m_bIsNormalDir;
-    this->m_sUID = _source->m_sUID;
-    this->m_i32DbID = _source->m_i32DbID;
-    this->m_ui32LaboID = _source->m_ui32LaboID;
-    this->m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
-    this->m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
-    this->m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
-    this->m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
-    this->m_dPatientSize = _source->m_dPatientSize;
-    this->m_dPatientWeight = _source->m_dPatientWeight;
-    this->m_dRadiations = _source->m_dRadiations;
-    this->m_sMedicalPrinter = _source->m_sMedicalPrinter;
-    this->m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
-    this->m_sPatientPosition = _source->m_sPatientPosition;
-    this->m_dicomFileList = _source->m_dicomFileList;
+    m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
+    m_fSliceThickness = _source->m_fSliceThickness;
+    m_ui8Axe = _source->m_ui8Axe;
+    m_bUnsignedFlag = _source->m_bUnsignedFlag;
+    m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
+    m_sImageType = _source->m_sImageType;
+    m_sImageFormat = _source->m_sImageFormat;
+    m_ptCreationDate = _source->m_ptCreationDate;
+    m_bIsMain = _source->m_bIsMain;
+    m_bIsNormalDir = _source->m_bIsNormalDir;
+    m_sUID = _source->m_sUID;
+    m_i32DbID = _source->m_i32DbID;
+    m_ui32LaboID = _source->m_ui32LaboID;
+    m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
+    m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
+    m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
+    m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
+    m_dPatientSize = _source->m_dPatientSize;
+    m_dPatientWeight = _source->m_dPatientWeight;
+    m_dRadiations = _source->m_dRadiations;
+    m_sMedicalPrinter = _source->m_sMedicalPrinter;
+    m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
+    m_sPatientPosition = _source->m_sPatientPosition;
+    m_dicomFileList = _source->m_dicomFileList;
 
+    m_attrImage           = _source->m_attrImage;
+    m_attrStructAnat      = _source->m_attrStructAnat;
+    m_attrReconstructions = _source->m_attrReconstructions;
 }
 
 //------------------------------------------------------------------------------
 
 void Acquisition::deepCopy( Acquisition::csptr _source )
 {
+
     this->fieldDeepCopy( _source );
-    this->m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
-    this->m_fSliceThickness = _source->m_fSliceThickness;
-    this->m_ui8Axe = _source->m_ui8Axe;
-    this->m_bUnsignedFlag = _source->m_bUnsignedFlag;
-    this->m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
-    this->m_sImageType = _source->m_sImageType;
-    this->m_sImageFormat = _source->m_sImageFormat;
-    this->m_ptCreationDate = _source->m_ptCreationDate;
-    this->m_bIsMain = _source->m_bIsMain;
-    this->m_bIsNormalDir = _source->m_bIsNormalDir;
-    this->m_sUID = _source->m_sUID;
-    this->m_i32DbID = _source->m_i32DbID;
-    this->m_ui32LaboID = _source->m_ui32LaboID;
-    this->m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
-    this->m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
-    this->m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
-    this->m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
-    this->m_dPatientSize = _source->m_dPatientSize;
-    this->m_dPatientWeight = _source->m_dPatientWeight;
-    this->m_dRadiations = _source->m_dRadiations;
-    this->m_sMedicalPrinter = _source->m_sMedicalPrinter;
-    this->m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
-    this->m_sPatientPosition = _source->m_sPatientPosition;
+    m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
+    m_fSliceThickness = _source->m_fSliceThickness;
+    m_ui8Axe = _source->m_ui8Axe;
+    m_bUnsignedFlag = _source->m_bUnsignedFlag;
+    m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
+    m_sImageType = _source->m_sImageType;
+    m_sImageFormat = _source->m_sImageFormat;
+    m_ptCreationDate = _source->m_ptCreationDate;
+    m_bIsMain = _source->m_bIsMain;
+    m_bIsNormalDir = _source->m_bIsNormalDir;
+    m_sUID = _source->m_sUID;
+    m_i32DbID = _source->m_i32DbID;
+    m_ui32LaboID = _source->m_ui32LaboID;
+    m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
+    m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
+    m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
+    m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
+    m_dPatientSize = _source->m_dPatientSize;
+    m_dPatientWeight = _source->m_dPatientWeight;
+    m_dRadiations = _source->m_dRadiations;
+    m_sMedicalPrinter = _source->m_sMedicalPrinter;
+    m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
+    m_sPatientPosition = _source->m_sPatientPosition;
     BOOST_FOREACH( std::string dicomFile , _source->m_dicomFileList)
     {
-        this->m_dicomFileList.push_back(dicomFile);
+        m_dicomFileList.push_back(dicomFile);
     }
-}
 
+    m_attrImage           = ::fwData::Object::copy(_source->m_attrImage);
+    m_attrStructAnat      = ::fwData::Object::copy(_source->m_attrStructAnat);
+    m_attrReconstructions.clear();
+    std::transform(
+            _source->m_attrReconstructions.begin(), _source->m_attrReconstructions.end(),
+            std::back_inserter(m_attrReconstructions),
+            & ::fwData::Object::copy< ReconstructionContainerType::value_type::element_type >
+            );
+}
 //------------------------------------------------------------------------------
 
-void Acquisition::setImage( ::fwData::Image::sptr _pImage )
+Acquisition::ReconstructionContainerType::size_type Acquisition::getNumberOfReconstructions() const
 {
-    if ( _pImage == 0 )
-    {
-        SLM_WARN("Acquisition::setImage : the image pointer is null.");
-        this->setField( Acquisition::ID_IMAGE ); // the previous image is deleted
-    }
-    else
-    {
-        this->setFieldSingleElement( Acquisition::ID_IMAGE, _pImage );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::csptr Acquisition::getImage() const
-{
-    ::fwData::Image::csptr _pImage;
-
-    const unsigned int NbChildren = this->getField( Acquisition::ID_IMAGE )->children().size();
-
-    assert ( NbChildren <= 1 );
-
-    // Test if the image is allocated
-    if( NbChildren == 1 )
-    {
-        _pImage = ::fwData::Image::dynamicCast ( this->getField( Acquisition::ID_IMAGE )->children()[0] );
-    }
-    else
-    {
-        SLM_WARN("Acquisition::getImage : return a null pointer.");
-    }
-
-    return _pImage;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::sptr Acquisition::getImage()
-{
-    ::fwData::Image::sptr _pImage;
-
-    const unsigned int NbChildren = this->getField( Acquisition::ID_IMAGE )->children().size();
-
-    assert ( NbChildren <= 1 );
-
-    // Test if the image is allocated
-    if( NbChildren == 1 )
-    {
-        _pImage = ::fwData::Image::dynamicCast ( this->getField( Acquisition::ID_IMAGE )->children()[0] );
-    }
-    else
-    {
-        SLM_WARN("Acquisition::getImage : return a null pointer.");
-    }
-
-    return _pImage;
-}
-
-//------------------------------------------------------------------------------
-
-void Acquisition::setStructAnat( ::fwData::Image::sptr _pStructAnat )
-{
-    if ( _pStructAnat == 0 )
-    {
-        SLM_WARN("Acquisition::setStructAnat : the image pointer is null.");
-        this->setField( Acquisition::ID_STRUCTANAT ); // the previous image is deleted
-    }
-    else
-    {
-        this->setFieldSingleElement( Acquisition::ID_STRUCTANAT, _pStructAnat );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::csptr Acquisition::getStructAnat() const
-{
-    ::fwData::Image::csptr _pStructAnat;
-
-    const unsigned int NbChildren = this->getField( Acquisition::ID_STRUCTANAT )->children().size();
-
-    assert ( NbChildren <= 1 );
-
-    // Test if the image is allocated
-    if( NbChildren == 1 )
-    {
-        _pStructAnat = ::fwData::Image::dynamicCast ( this->getField( Acquisition::ID_STRUCTANAT )->children()[0] );
-    }
-    else
-    {
-        SLM_WARN("Acquisition::getStructAnat : return a null pointer.");
-    }
-
-    return _pStructAnat;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::sptr Acquisition::getStructAnat()
-{
-    ::fwData::Image::sptr _pStructAnat;
-
-    const unsigned int NbChildren = this->getField( Acquisition::ID_STRUCTANAT )->children().size();
-
-    assert ( NbChildren <= 1 );
-
-    // Test if the image is allocated
-    if( NbChildren == 1 )
-    {
-        _pStructAnat = ::fwData::Image::dynamicCast ( this->getField( Acquisition::ID_STRUCTANAT )->children()[0] );
-    }
-    else
-    {
-        SLM_WARN("Acquisition::getStructAnat : return a null pointer.");
-    }
-
-    return _pStructAnat;
-}
-
-//------------------------------------------------------------------------------
-
-boost::uint32_t  Acquisition::getReconstructionSize() const
-{
-    return this->getField( Acquisition::ID_RECONSTRUCTIONS )->children().size();
+    return this->getReconstructions().size();
 }
 
 //------------------------------------------------------------------------------
 
 void Acquisition::addReconstruction( ::fwData::Reconstruction::sptr _reconstruction )
 {
-    this->addFieldElement( Acquisition::ID_RECONSTRUCTIONS, _reconstruction );
-}
-
-//------------------------------------------------------------------------------
-
-std::pair< Acquisition::ReconstructionIterator, Acquisition::ReconstructionIterator > Acquisition::getReconstructions()
-{
-    ReconstructionIterator begin(  getField( Acquisition::ID_RECONSTRUCTIONS )->children().begin() );
-    ReconstructionIterator   end(  getField( Acquisition::ID_RECONSTRUCTIONS )->children().end()   );
-    return std::make_pair( begin, end );
-}
-
-//------------------------------------------------------------------------------
-
-std::pair< Acquisition::ReconstructionConstIterator, Acquisition::ReconstructionConstIterator > Acquisition::getReconstructions() const
-{
-    ReconstructionConstIterator begin(  getField( Acquisition::ID_RECONSTRUCTIONS )->children().begin()   );
-    ReconstructionConstIterator   end(  getField( Acquisition::ID_RECONSTRUCTIONS )->children().end()   );
-    return std::make_pair( begin, end );
+    m_attrReconstructions.push_back(_reconstruction);
 }
 
 //------------------------------------------------------------------------------

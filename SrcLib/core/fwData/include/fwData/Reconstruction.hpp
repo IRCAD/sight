@@ -45,43 +45,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Reconstruction::csptr _source );
 
-    // Image -------------------------------------------------------------------
-    /// @name Image accessor
-    /// Field identifier for image
-    static const Object::FieldID ID_IMAGE;
-
-    /**
-     * @brief Set the image associated with the mesh
-     */
-    FWDATA_API void setImage( ::fwData::Image::sptr _pImage );
-
-    /**
-     * @{
-     * @brief Get the image associated with the acquisition
-     */
-    FWDATA_API ::fwData::Image::csptr getImage() const;
-    FWDATA_API ::fwData::Image::sptr getImage();
-    //@}
-
-    // Mesh -------------------------------------------------------------------
-    /// @name Mesh accessor
-    /// Field identifier for mesh
-    static const Object::FieldID ID_MESH;
-    //@{
-    /// Get/Set triangular mesh
-    FWDATA_API void setMesh( ::fwData::Mesh::sptr _pMesh );
-    FWDATA_API ::fwData::Mesh::csptr getMesh() const;
-    FWDATA_API ::fwData::Mesh::sptr getMesh();
-    //@}
-
-    // Material -------------------------------------------------------------------
-    /// @name Material accessor
-    //@{
-    /// Get/Set material
-    FWDATA_API void setMaterial( ::fwData::Material::sptr _pMaterial );
-    FWDATA_API ::fwData::Material::csptr getMaterial() const;
-    FWDATA_API ::fwData::Material::sptr getMaterial();
-    //@}
 
     // Generator result---------------------------------------------------------
     fwGettersSettersDocMacro(IsVisible, bIsVisible, bool, the visibility of the reconstruction (true if visible));
@@ -119,6 +82,7 @@ public:
     /*!
      * @brief Return true if the reconstruction is closed.
      * The result is computed if m_bIsClosed is undefined
+     * This method will be removed, avoid using it.
      */
     FWDATA_API bool getIsClosed();
 
@@ -133,6 +97,22 @@ public:
     FWDATA_API const ::boost::logic::tribool& getCRefIsClosed() const;
     FWDATA_API void setIsClosed(::boost::logic::tribool isClosed);
 
+
+    /**
+     * @brief Get/Set the image associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Image, ::fwData::Image::sptr);
+
+    /**
+     * @brief Get/Set the mesh associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Mesh, ::fwData::Mesh::sptr);
+
+    /**
+     * @brief Get/Set the material associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Material, ::fwData::Material::sptr);
+
 protected :
 
     /// Constructor
@@ -143,8 +123,6 @@ protected :
     //! true if this reconstruction is visible
     bool m_bIsVisible;
 
-    //! Material of reconstruction
-    ::fwData::Material::sptr m_pMaterial;
 
     //! Reconstruction format. eg : TRIAN, TRIAN_GPG
     std::string m_sReconstructionFormat;
@@ -204,6 +182,14 @@ protected :
 
     //@}
 
+
+    //! Material of reconstruction
+    ::fwData::Material::sptr m_attrMaterial;
+
+    ::fwData::Image::sptr m_attrImage;
+    ::fwData::Mesh::sptr m_attrMesh;
+
+    ::fwData::Mesh::wptr m_meshForWhichISCompoutedIsClosed;
 };
 
 } // namespace fwData
