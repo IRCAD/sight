@@ -130,4 +130,17 @@ void Object::deepCopy( ::fwData::Object::csptr source )
     OSLM_FATAL("deepCopy not implemented for : " << this->getClassname() );
 }
 
+//-----------------------------------------------------------------------------
+
+::fwData::Object::sptr Object::copy(::fwData::Object::csptr source)
+{
+    ::fwData::Object::sptr newObj;
+    if( source )
+    {
+        newObj = ::fwData::Factory::New(source->className());
+        newObj->deepCopy(source);
+    }
+    return newObj;
+}
+
 } // namespace fwData

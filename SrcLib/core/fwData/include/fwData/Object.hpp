@@ -99,6 +99,15 @@ public:
     FWDATA_API virtual void deepCopy( ::fwData::Object::csptr source );
 
     /**
+     * @brief return a copy of the source. if source is a null pointer, return a null pointer.
+     * @{
+     */
+    FWDATA_API static ::fwData::Object::sptr copy(::fwData::Object::csptr source);
+    template <typename DATA_TYPE>
+    static SPTR(DATA_TYPE) copy(SPTR(DATA_TYPE) source);
+    /** @} */
+
+    /**
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] _source source of the copy.
      */
@@ -144,6 +153,13 @@ protected:
     FieldMapType m_fields;
 };
 
-} // fwData
+
+template <typename DATA_TYPE>
+SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
+{
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(source) );
+}
+
+} // namespace fwData
 
 #endif //_FWDATA_OBJECT_HPP_
