@@ -12,12 +12,8 @@
 #include <fwMath/IntrasecTypes.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
 #include "fwData/Point.hpp"
-#include "fwData/Line.hpp"
-#include "fwData/TransformationMatrix3D.hpp"
-
 
 namespace fwData
 {

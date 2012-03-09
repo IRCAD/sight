@@ -5,10 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include "fwData/registry/macros.hpp"
-
 #include <fwMath/PlaneFunctions.hpp>
 
+#include "fwData/registry/macros.hpp"
 #include "fwData/Plane.hpp"
 
 #define EPSILON 0.00000001
@@ -20,10 +19,8 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Plane::Plane ()
-: m_isIntersection(true)
+Plane::Plane () : m_isIntersection(true)
 {
-    SLM_TRACE_FUNC();
     m_vPoints[0] = ::fwData::Point::New();
     m_vPoints[1] = ::fwData::Point::New();
     m_vPoints[2] = ::fwData::Point::New();
@@ -36,37 +33,32 @@ Plane::Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwD
     m_vPoints[0] = _point1;
     m_vPoints[1] = _point2;
     m_vPoints[2] = _point3;
-    computePlaneFromPoints();
+    this->computePlaneFromPoints();
 }
 
 //------------------------------------------------------------------------------
 
 Plane::~Plane ()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void Plane::shallowCopy( Plane::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
-    //this->m_vPoints[0] = _source->m_vPoints[0];
-    //this->m_vPoints[1] = _source->m_vPoints[1];
-    //this->m_vPoints[2] = _source->m_vPoints[2];
-    this->m_vPoints = _source->m_vPoints;
-    this->m_plane = _source->m_plane;
+    this->fieldShallowCopy( _source );
+    m_vPoints = _source->m_vPoints;
+    m_plane = _source->m_plane;
 }
 
 //------------------------------------------------------------------------------
 
 void Plane::deepCopy( Plane::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
-    this->m_vPoints[0]->deepCopy( _source->m_vPoints[0] );
-    this->m_vPoints[1]->deepCopy( _source->m_vPoints[1] );
-    this->m_vPoints[2]->deepCopy( _source->m_vPoints[2] );
-    this->m_plane = _source->m_plane;
+    this->fieldDeepCopy( _source );
+    m_vPoints[0]->deepCopy( _source->m_vPoints[0] );
+    m_vPoints[1]->deepCopy( _source->m_vPoints[1] );
+    m_vPoints[2]->deepCopy( _source->m_vPoints[2] );
+    m_plane = _source->m_plane;
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +75,6 @@ bool Plane::operator==( const Plane & _plane )
     {
         result = true;
     }
-
     return result;
 }
 //------------------------------------------------------------------------------
@@ -93,9 +84,10 @@ void Plane::setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point
     m_vPoints[0] = _point1;
     m_vPoints[1] = _point2;
     m_vPoints[2] = _point3;
-    computePlaneFromPoints();
-
+    this->computePlaneFromPoints();
 }
+
+//------------------------------------------------------------------------------
 
 void Plane::computePlaneFromPoints()
 {

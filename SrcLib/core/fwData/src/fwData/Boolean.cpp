@@ -29,7 +29,7 @@ Boolean::~Boolean() throw()
 //------------------------------------------------------------------------------
 void Boolean::shallowCopy( Boolean::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_value = _source->m_value;
 }
 
@@ -37,7 +37,7 @@ void Boolean::shallowCopy( Boolean::csptr _source )
 
 void Boolean::deepCopy( Boolean::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     this->m_value = _source->m_value;
 }
 

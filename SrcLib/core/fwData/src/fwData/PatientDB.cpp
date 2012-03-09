@@ -39,14 +39,14 @@ PatientDB::~PatientDB ()
 
 void PatientDB::shallowCopy( PatientDB::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
 }
 
 //------------------------------------------------------------------------------
 
 void PatientDB::deepCopy( PatientDB::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 }
 
 //------------------------------------------------------------------------------

@@ -38,7 +38,7 @@ Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursi
 
 void Folder::shallowCopy( Folder::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_folder = _source->m_folder;
 }
 
@@ -46,7 +46,7 @@ void Folder::shallowCopy( Folder::csptr _source )
 
 void Folder::deepCopy( Folder::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     this->m_folder = _source->m_folder;
 }
 

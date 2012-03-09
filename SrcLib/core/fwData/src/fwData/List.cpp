@@ -47,7 +47,7 @@ List const &List::getRefContainer() const
 
 void List::shallowCopy( List::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     (ObjectListType)(*this) = (ObjectListType)(*(_source.get()));
 }
 
@@ -55,7 +55,7 @@ void List::shallowCopy( List::csptr _source )
 
 void List::deepCopy( List::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
     this->clear();
 

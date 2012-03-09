@@ -21,9 +21,9 @@ namespace fwData
 {
 
 /**
- * @brief   This class focusses on video
+ * @brief   This class focuses on video
  * @note    This version is done for test purposes (augmented reality and visualization) and will have to be accurately design
- * @note    Information to be stored here does not necessarly concern video buffer.
+ * @note    Information to be stored here does not necessarily concern video buffer.
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  * @todo    implement appropriate API
@@ -94,7 +94,7 @@ protected :
     /// Value of the last modification (incremented by Modified() method
     ::boost::uint64_t m_lastModified;
 
-    /// %Video mutex
+    /// Video mutex
     ::boost::interprocess::interprocess_mutex m_mutex;
 
     /// Camera

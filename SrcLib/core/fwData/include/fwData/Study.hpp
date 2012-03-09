@@ -11,7 +11,6 @@
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
 #include "fwData/Acquisition.hpp"
 
@@ -44,30 +43,20 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Study::csptr _source );
 
-    /// Field identifier for acquisitions
-    FWDATA_API static const Object::FieldID ID_ACQUISITIONS;
-
-    typedef ContainerCaster< Acquisition >::iterator         AcquisitionIterator;
-    typedef ContainerCaster< Acquisition >::const_iterator AcquisitionConstIterator;
+    typedef std::vector< ::fwData::Acquisition::sptr > AcquisitionContainerType;
 
     /**
      * @brief Get the number of acquisitions
      * @return acquisition number
      */
-    FWDATA_API ::boost::uint32_t  getAcquisitionSize() const;
+    FWDATA_API AcquisitionContainerType::size_type getNumberOfAcquisitions() const;
 
     /**
      * add Acquisition
      */
-    FWDATA_API void addAcquisition( ::fwData::Acquisition::sptr _acquisition );
+    FWDATA_API void addAcquisition( ::fwData::Acquisition::sptr acquisition );
 
-    /**@{
-     * Get iterator on the first and the last study. Use it to browse all acquisitons.
-     * @return std::pair( study.begin(), study.end() )
-     */
-    FWDATA_API std::pair< AcquisitionIterator, AcquisitionIterator > getAcquisitions();
-    FWDATA_API std::pair< AcquisitionConstIterator, AcquisitionConstIterator > getAcquisitions() const;
-    //@}
+    fwDataGetSetCRefMacro(Acquisitions, AcquisitionContainerType);
 
     // Generator result---------------------------------------------------------
     fwGettersSettersDocMacro(Hospital, sHospital, std::string, the name of the hospital where the study is made. \n (eg : RADIOLOGIE URGENCE CHUV LAUSANNE) );
@@ -90,6 +79,7 @@ protected :
 
     /// @brief Constructor
     FWDATA_API Study();
+
     /// @brief Destructor
     FWDATA_API virtual ~Study();
 
@@ -108,13 +98,14 @@ protected :
     /// Unique Identifier DICOM
     std::string m_sUID;
 
-    /// Database indentifier
+    /// Database identifier
     ::boost::int32_t  m_i32DbID;
 
     std::string m_date;
     std::string m_time;
     std::string m_description;
 
+    AcquisitionContainerType m_attrAcquisitions;
 };
 
 } // namespace fwData

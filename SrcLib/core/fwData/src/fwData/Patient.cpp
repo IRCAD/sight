@@ -40,7 +40,7 @@ Patient::~Patient ()
 
 void Patient::shallowCopy( Patient::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_sName       = _source->m_sName;
     this->m_sFirstname  = _source->m_sFirstname;
     this->m_sIDDicom    = _source->m_sIDDicom;
@@ -53,7 +53,7 @@ void Patient::shallowCopy( Patient::csptr _source )
 
 void Patient::deepCopy( Patient::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     this->m_sName       = _source->m_sName;
     this->m_sFirstname  = _source->m_sFirstname;
     this->m_sIDDicom    = _source->m_sIDDicom;

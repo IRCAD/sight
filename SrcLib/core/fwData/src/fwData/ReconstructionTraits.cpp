@@ -7,10 +7,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-
-
 #include "fwData/ReconstructionTraits.hpp"
-
 #include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::ReconstructionTraits );

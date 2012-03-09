@@ -11,7 +11,6 @@
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
 #include "fwData/Color.hpp"
 

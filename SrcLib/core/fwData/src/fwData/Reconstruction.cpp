@@ -64,7 +64,7 @@ Reconstruction::~Reconstruction()
 
 void Reconstruction::shallowCopy( Reconstruction::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
 
     this->m_bIsVisible = _source->m_bIsVisible;
     this->m_pMaterial = _source->m_pMaterial;
@@ -90,7 +90,7 @@ void Reconstruction::shallowCopy( Reconstruction::csptr _source )
 
 void Reconstruction::deepCopy( Reconstruction::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
     this->m_bIsVisible = _source->m_bIsVisible;
     this->m_pMaterial->deepCopy( Material::dynamicConstCast(_source->m_pMaterial) );

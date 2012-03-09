@@ -9,7 +9,6 @@
 
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
 
 namespace fwData
@@ -75,8 +74,6 @@ private:
 
     /// roi evaluated expression
     StructureTraits::ROIExpression m_evaluatedExp;
-
-
 };
 
 } // namespace fwData

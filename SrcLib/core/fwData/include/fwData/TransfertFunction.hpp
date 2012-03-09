@@ -38,7 +38,7 @@ class FWDATA_CLASS_API TransfertFunction : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction)(::fwData::Object), (()), ::fwData::Factory::New< TransfertFunction >) ;
 
-    /// Maccro for deep and shallow copies
+    /// Macro for deep and shallow copies
     fwDataObjectMacro();
 
     /// Shallow copy method

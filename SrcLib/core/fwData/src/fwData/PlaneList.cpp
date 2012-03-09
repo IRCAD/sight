@@ -5,10 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
+
 #include "fwData/registry/macros.hpp"
-
-
-
 #include "fwData/PlaneList.hpp"
 
 fwDataRegisterMacro( ::fwData::PlaneList );
@@ -34,7 +32,7 @@ PlaneList::~PlaneList ()
 
 void PlaneList::shallowCopy( PlaneList::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
 
     this->m_vPlanes = _source->m_vPlanes;
 }
@@ -43,7 +41,7 @@ void PlaneList::shallowCopy( PlaneList::csptr _source )
 
 void PlaneList::deepCopy( PlaneList::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
     this->m_vPlanes.clear();
     for (   PlaneList::PlaneListContainer::const_iterator iter = _source->m_vPlanes.begin();

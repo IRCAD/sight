@@ -20,14 +20,13 @@ TriangularMesh::~TriangularMesh()
 {
     m_points.clear();
     m_cells.clear();
-
 }
 
 //-----------------------------------------------------------------------------
 
 void TriangularMesh::shallowCopy( TriangularMesh::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_points = _source->m_points;
     this->m_cells = _source->m_cells;
 }
@@ -36,7 +35,7 @@ void TriangularMesh::shallowCopy( TriangularMesh::csptr _source )
 
 void TriangularMesh::deepCopy( TriangularMesh::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     this->m_points = _source->m_points;
     this->m_cells = _source->m_cells;
 }
@@ -124,7 +123,7 @@ void TriangularMesh::clearPoints()
 {
     PointContainer emptyVector; // Size=0 and capacity=0
     m_points.clear();
-    // The swap reinitiaize the size value and capacity to 0
+    // The swap reinitialize the size value and capacity to 0
     m_points.swap(emptyVector);
 }
 
@@ -132,7 +131,7 @@ void TriangularMesh::clearCells()
 {
     CellContainer emptyVector; //Size=0 and capacity=0
     m_cells.clear();
-    // The swap reinitiaize the size value and capacity to 0
+    // The swap reinitialize the size value and capacity to 0
     m_cells.swap(emptyVector);
 }
 

@@ -295,7 +295,7 @@ Graph::ConnectionContainer &Graph::getRefConnections()
 
 void Graph::shallowCopy( Graph::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     m_nodes = _source->m_nodes;
     m_connections = _source->m_connections;
 }
@@ -304,7 +304,7 @@ void Graph::shallowCopy( Graph::csptr _source )
 
 void Graph::deepCopy( Graph::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
     std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
     typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;

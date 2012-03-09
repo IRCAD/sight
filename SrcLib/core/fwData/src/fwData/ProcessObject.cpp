@@ -4,155 +4,156 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <exception>
-#include <iostream>
+#include <boost/foreach.hpp>
+#include <boost/bind.hpp>
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 
-
 #include "fwData/ProcessObject.hpp"
 
 fwDataRegisterMacro( ::fwData::ProcessObject );
+
 namespace fwData
 {
-const std::string ProcessObject::InputKey  = "Inputs";
-const std::string ProcessObject::OutputKey = "Outputs";
 
 //------------------------------------------------------------------------------
 
 ProcessObject::ProcessObject()
-{
-    ::fwTools::Field::sptr input( new ::fwTools::Field(InputKey) );
-    m_children.push_back( input );
-    ::fwTools::Field::sptr output( new ::fwTools::Field(OutputKey) );
-    m_children.push_back( output );
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ProcessObject::~ProcessObject()
-{
-    SLM_DEBUG("ProcessObject::~ProcessObject()");
-}
+{}
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr
-ProcessObject::getInputs()
+::fwData::Object::sptr ProcessObject::getValue(const ParamNameType& name, const ProcessObjectMapType& params)
 {
-    // FIXME set a more efficient way
-    assert( ::fwTools::Field::dynamicCast( m_children.at(0) ));
-//  return ::fwData::Object::dynamicCast( ::fwTools::Field::dynamicCast( m_children.at(0) ) );
-    return m_children.at(0) ;
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::Object::sptr
-ProcessObject::getOutputs(  )
-{
-     // FIXME set a more efficient way
-     assert( ::fwTools::Field::dynamicCast(m_children.at(1) ));
-//  return ::fwData::Object::dynamicCast( ::fwTools::Field::dynamicCast( m_children.at(1) ) );
-        return m_children.at(1) ;
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::Object::csptr
-ProcessObject::getInputs() const
-{
-    // FIXME set a more efficient way
-    assert( ::fwTools::Field::dynamicCast( m_children.at(0) ));
-//  return ::fwData::Object::dynamicCast( ::fwTools::Field::dynamicCast( m_children.at(0) ) );
-    return m_children.at(0) ;
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::Object::csptr
-ProcessObject::getOutputs(  ) const
-{
-     // FIXME set a more efficient way
-     assert( ::fwTools::Field::dynamicCast(m_children.at(1) ));
-//  return ::fwData::Object::dynamicCast( ::fwTools::Field::dynamicCast( m_children.at(1) ) );
-        return m_children.at(1) ;
-}
-//------------------------------------------------------------------------------
-
-::fwData::Object::sptr  ProcessObject::getInput( ProcessObject::MapKeyType _id  )
-{
-    return ::boost::dynamic_pointer_cast< ::fwData::Object >( this->getInputs()->getField( _id )->children().at(0) ) ;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Object::sptr ProcessObject::getOutput( ProcessObject::MapKeyType _id  )
-{
-    return ::boost::dynamic_pointer_cast< ::fwData::Object >( this->getOutputs()->getField( _id )->children().at(0) );
-}
-
-//------------------------------------------------------------------------------
-
-void ProcessObject::setInputValue(ProcessObject::MapKeyType _id, ::fwData::Object::sptr _object)
-{
-    getInputs()->setFieldSingleElement( _id, _object);
-}
-
-//------------------------------------------------------------------------------
-
-void ProcessObject::setOutputValue(ProcessObject::MapKeyType _id, ::fwData::Object::sptr _object)
-{
-    getOutputs()->setFieldSingleElement( _id, _object);
-}
-
-//------------------------------------------------------------------------------
-
-Object::ChildContainer ProcessObject::getIO()
-{
-    Object::ChildContainer inputContainer = this->getInputs()->children();
-    Object::ChildContainer outputContainer = this->getOutputs()->children();
-    Object::ChildContainer container;
-    for( Object::ChildContainer::iterator iter = this->getInputs()->children().begin() ; iter != this->getInputs()->children().end() ; ++iter )
+    ::fwData::Object::sptr object;
+    ProcessObjectMapType::const_iterator iter = params.find(name);
+    if(iter != params.end())
     {
-        container.push_back( *iter ) ;
+        object = iter->second;
     }
-    for( Object::ChildContainer::iterator iter = this->getOutputs()->children().begin() ; iter != this->getOutputs()->children().end() ; ++iter )
-    {
-        container.push_back( *iter ) ;
-    }
-    return container ;
+    return object;
 }
 
 //------------------------------------------------------------------------------
 
-ProcessObject::MapType ProcessObject::getInputMap()
+::fwData::Object::sptr ProcessObject::getInput(const ParamNameType& name)
 {
-    ::fwTools::Object::ChildContainer::iterator iter ;
-    ProcessObject::MapType myMap ;
-    for(iter = this->getInputs()->children().begin() ; iter != this->getInputs()->children().end() ; ++iter )
-    {
-        ProcessObject::MapKeyType id = ::fwTools::Field::dynamicCast(*iter)->label() ;
-        assert( myMap.find(id) == myMap.end() ) ;
-        myMap[ id ] = this->getInput( id ) ;
-    }
-    return myMap ;
+    return this->getValue(name, m_attrInputs);
 }
 
 //------------------------------------------------------------------------------
 
-ProcessObject::MapType ProcessObject::getOutputMap()
+::fwData::Object::sptr ProcessObject::getOutput(const ParamNameType& name)
 {
-    ::fwTools::Object::ChildContainer::iterator iter ;
-    ProcessObject::MapType myMap ;
-    for(iter = this->getOutputs()->children().begin() ; iter != this->getOutputs()->children().end() ; ++iter )
+    return this->getValue(name, m_attrOutputs);
+}
+
+//------------------------------------------------------------------------------
+
+void ProcessObject::setValue(const ParamNameType& name, ::fwData::Object::sptr object, ProcessObjectMapType& params)
+{
+    std::pair<ProcessObjectMapType::iterator, bool> res;
+    res = params.insert(ProcessObjectMapType::value_type(name, object));
+    if( !res.second )
     {
-        ProcessObject::MapKeyType id = ::fwTools::Field::dynamicCast(*iter)->label() ;
-        assert( myMap.find(id) == myMap.end() ) ;
-        myMap[ id ] = this->getOutput( id ) ;
+        res.first->second = object;
     }
-    return myMap ;
+}
+
+//------------------------------------------------------------------------------
+
+void ProcessObject::setInputValue(const ParamNameType& name, ::fwData::Object::sptr object)
+{
+    this->setValue(name, object, m_attrInputs);
+}
+
+//------------------------------------------------------------------------------
+
+void ProcessObject::setOutputValue(const ParamNameType& name, ::fwData::Object::sptr object)
+{
+    this->setValue(name, object, m_attrOutputs);
+}
+
+//------------------------------------------------------------------------------
+
+ProcessObject::ParamNameVectorType ProcessObject::getParamNames(const ProcessObjectMapType& params) const
+{
+    ParamNameVectorType names;
+    std::transform( params.begin(), params.end(),
+            std::back_inserter(names),
+            ::boost::bind(& ProcessObjectMapType::value_type::first, _1) );
+    return names;
+}
+
+//------------------------------------------------------------------------------
+
+ProcessObject::ParamNameVectorType ProcessObject::getInputsParamNames() const
+{
+    return this->getParamNames(m_attrInputs);
+}
+
+//------------------------------------------------------------------------------
+
+ProcessObject::ParamNameVectorType ProcessObject::getOutputsParamNames() const
+{
+    return this->getParamNames(m_attrOutputs);
+}
+
+//------------------------------------------------------------------------------
+
+void ProcessObject::clearInputs()
+{
+    this->clearParams(m_attrOutputs);
+}
+
+//------------------------------------------------------------------------------
+
+void ProcessObject::clearOutputs()
+{
+    this->clearParams(m_attrInputs);
+}
+
+//------------------------------------------------------------------------------
+
+void ProcessObject::clearParams(ProcessObjectMapType& params)
+{
+    params.clear();
+}
+
+//-----------------------------------------------------------------------------
+
+void ProcessObject::shallowCopy( ::fwData::ProcessObject::csptr source )
+{
+    this->fieldShallowCopy( source );
+
+    m_attrInputs = source->m_attrInputs;
+    m_attrOutputs = source->m_attrOutputs;
+}
+
+//-----------------------------------------------------------------------------
+
+void ProcessObject::deepCopy( ::fwData::ProcessObject::csptr source )
+{
+    this->fieldDeepCopy( source );
+
+    this->clearInputs();
+    this->clearOutputs();
+
+    BOOST_FOREACH(ProcessObjectMapType::value_type elt, source->m_attrInputs)
+    {
+        m_attrInputs[elt.first] = ::fwData::Object::copy(elt.second);
+    }
+
+    BOOST_FOREACH(ProcessObjectMapType::value_type elt, source->m_attrOutputs)
+    {
+        m_attrOutputs[elt.first] = ::fwData::Object::copy(elt.second);
+    }
 }
 
 //------------------------------------------------------------------------------

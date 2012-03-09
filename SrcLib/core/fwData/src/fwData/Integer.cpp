@@ -30,7 +30,7 @@ Integer::~Integer() throw()
 
 void Integer::shallowCopy( Integer::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_value = _source->m_value;
 }
 
@@ -38,7 +38,7 @@ void Integer::shallowCopy( Integer::csptr _source )
 
 void Integer::deepCopy( Integer::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     this->m_value = _source->m_value;
 }
 

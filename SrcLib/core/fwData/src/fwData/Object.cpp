@@ -108,11 +108,9 @@ void Object::fieldDeepCopy( ::fwData::Object::csptr source )
 {
     m_fields.clear();
     ::fwData::Object::FieldMapType sourceFields = source->getFields_NEWAPI();
-    BOOST_FOREACH(FieldMapType::value_type elt, sourceFields)
+    BOOST_FOREACH(::fwData::Object::FieldMapType::value_type elt, sourceFields)
     {
-        ::fwData::Object::sptr newObject = ::fwData::Factory::New( elt.second->getClassname() );
-        newObject->deepCopy(elt.second);
-        this->setField_NEWAPI(elt.first, newObject);
+        this->setField_NEWAPI(elt.first, ::fwData::Object::copy(elt.second));
     }
 }
 

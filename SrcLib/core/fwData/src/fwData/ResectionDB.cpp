@@ -7,76 +7,51 @@
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 
-#include "fwData/Resection.hpp"
 #include "fwData/ResectionDB.hpp"
 
 fwDataRegisterMacro( ::fwData::ResectionDB );
+
 namespace fwData
 {
 
 //------------------------------------------------------------------------------
 
-const Object::FieldID ResectionDB::ID_RESECTIONS = "ID_RESECTIONS";
-
-//------------------------------------------------------------------------------
-
 ResectionDB::ResectionDB ()
-{
-    SLM_TRACE_FUNC();
-    this->setField( ResectionDB::ID_RESECTIONS );
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ResectionDB::~ResectionDB ()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void ResectionDB::shallowCopy( ResectionDB::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
 }
 
 //------------------------------------------------------------------------------
 
 void ResectionDB::deepCopy( ResectionDB::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 }
 
 //------------------------------------------------------------------------------
 
-boost::uint32_t  ResectionDB::getResectionSize() const
+ResectionDB::ResectionContainerType::size_type ResectionDB::getNumberOfResections() const
 {
-    return this->getField( ResectionDB::ID_RESECTIONS )->children().size();
+    return m_attrResections.size();
 }
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::addResection( ::fwData::Resection::sptr _resection )
+void ResectionDB::addResection( ::fwData::Resection::sptr resection )
 {
-    this->addFieldElement(ResectionDB::ID_RESECTIONS, _resection);
+    m_attrResections.push_back( resection );
 }
 
 //------------------------------------------------------------------------------
-
-std::pair< ResectionDB::ResectionIterator, ResectionDB::ResectionIterator > ResectionDB::getResections()
-{
-    ResectionIterator begin(  getField( ResectionDB::ID_RESECTIONS )->children().begin() );
-    ResectionIterator   end(  getField( ResectionDB::ID_RESECTIONS )->children().end()   );
-    return std::make_pair( begin, end );
-}
-
-//------------------------------------------------------------------------------
-
-std::pair< ResectionDB::ResectionConstIterator, ResectionDB::ResectionConstIterator > ResectionDB::getResections() const
-{
-    ResectionConstIterator begin(  getField( ResectionDB::ID_RESECTIONS )->children().begin()   );
-    ResectionConstIterator   end(  getField( ResectionDB::ID_RESECTIONS )->children().end()   );
-    return std::make_pair( begin, end );
-}
 
 } // end namespace fwData

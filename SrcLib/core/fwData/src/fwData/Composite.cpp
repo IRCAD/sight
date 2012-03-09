@@ -43,7 +43,7 @@ Composite const &Composite::getRefMap() const
 
 void Composite::shallowCopy( Composite::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->clear();
 
      for(    Composite::Container::const_iterator iter = _source->begin();
@@ -58,7 +58,7 @@ void Composite::shallowCopy( Composite::csptr _source )
 
 void Composite::deepCopy( Composite::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
     this->clear();
 

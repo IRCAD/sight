@@ -4,12 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwCore/base.hpp>
+
 #include "fwData/registry/macros.hpp"
-
-
-
-#include "fwData/Object.hpp"
 #include "fwData/Resection.hpp"
 
 fwDataRegisterMacro( ::fwData::Resection );
@@ -24,62 +23,55 @@ Resection::Resection ()
   m_isValid(false),
   m_isVisible(true)
 {
-    SLM_TRACE_FUNC();
     m_planeList = ::fwData::PlaneList::New();
 }
 
 //------------------------------------------------------------------------------
 
 Resection::~Resection ()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void Resection::shallowCopy( Resection::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
 
-    this->m_name = _source->m_name;
-    this->m_isSafePart = _source->m_isSafePart;
-    this->m_isValid = _source->m_isValid;
-    this->m_isVisible = _source->m_isVisible;
-    this->m_planeList = _source->m_planeList;
-    this->m_vInputs = _source->m_vInputs;
-    this->m_vOutputs = _source->m_vOutputs;
+    m_name = _source->m_name;
+    m_isSafePart = _source->m_isSafePart;
+    m_isValid = _source->m_isValid;
+    m_isVisible = _source->m_isVisible;
+    m_planeList = _source->m_planeList;
+    m_vInputs = _source->m_vInputs;
+    m_vOutputs = _source->m_vOutputs;
 }
 
 //------------------------------------------------------------------------------
 
 void Resection::deepCopy( Resection::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
-    this->m_name = _source->m_name;
-    this->m_isSafePart = _source->m_isSafePart;
-    this->m_isValid = _source->m_isValid;
-    this->m_isVisible = _source->m_isVisible;
-    this->m_planeList->deepCopy( _source->m_planeList );
+    m_name = _source->m_name;
+    m_isSafePart = _source->m_isSafePart;
+    m_isValid = _source->m_isValid;
+    m_isVisible = _source->m_isVisible;
+    m_planeList->deepCopy( _source->m_planeList );
 
     this->m_vInputs.clear();
-    for (   Resection::ResectionInputs::const_iterator iter = _source->m_vInputs.begin();
-            iter != _source->m_vInputs.end();
-            ++iter )
+    BOOST_FOREACH(ResectionInputs::value_type resec, _source->m_vInputs)
     {
         Reconstruction::NewSptr newObj;
-        newObj->deepCopy( *iter );
-        this->m_vInputs.push_back( newObj );
+        newObj->deepCopy( resec );
+        m_vInputs.push_back( newObj );
     }
 
     this->m_vOutputs.clear();
-    for (   Resection::ResectionOutputs::const_iterator iter = _source->m_vOutputs.begin();
-            iter != _source->m_vOutputs.end();
-            ++iter )
+    BOOST_FOREACH(ResectionOutputs::value_type resec, _source->m_vOutputs)
     {
         Reconstruction::NewSptr newObj;
-        newObj->deepCopy( *iter );
-        this->m_vOutputs.push_back( newObj );
+        newObj->deepCopy( resec );
+        m_vOutputs.push_back( newObj );
     }
 }
 

@@ -88,7 +88,6 @@ INSTANTIATE_SERIALIZER(::fwData::PatientDB);
 INSTANTIATE_SERIALIZER(::fwData::Point);
 INSTANTIATE_SERIALIZER(::fwData::ProcessObject);
 INSTANTIATE_SERIALIZER(::fwData::Reconstruction);
-INSTANTIATE_SERIALIZER(::fwData::Region);
 INSTANTIATE_SERIALIZER(::fwData::ResectionDB);
 INSTANTIATE_SERIALIZER(::fwData::String);
 INSTANTIATE_SERIALIZER(::fwData::Study);
@@ -106,7 +105,6 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwTools::O
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ProcessObject>          ,  ::fwData::ProcessObject          );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Region>                 ,  ::fwData::Region                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::PatientDB>              ,  ::fwData::PatientDB              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Patient>                ,  ::fwData::Patient                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Study>                  ,  ::fwData::Study                  );

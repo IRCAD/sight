@@ -320,7 +320,7 @@ const TransfertFunction_VERSION_II::TFColor& TransfertFunction_VERSION_II::getTF
 
 void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_attrLevel = _source->m_attrLevel;
     this->m_attrWindow = _source->m_attrWindow;
     this->m_attrName =_source->m_attrName;
@@ -334,7 +334,7 @@ void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::cs
 
 void TransfertFunction_VERSION_II::deepCopy( TransfertFunction_VERSION_II::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     this->m_attrLevel = _source->m_attrLevel;
     this->m_attrWindow = _source->m_attrWindow;
     this->m_attrName =_source->m_attrName;

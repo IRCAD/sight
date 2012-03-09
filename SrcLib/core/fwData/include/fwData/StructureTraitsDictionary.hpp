@@ -31,7 +31,7 @@ public:
 
     /**
      * @brief Add a structure in dictionary
-     * @param [in] structureTraits a StructureTraits correctly initialised.
+     * @param [in] structureTraits a StructureTraits correctly initialized.
      * @pre A structure with the same type cannot exist in dictionary.
      * @pre Only structure of class 'Lesion' or 'Functional' can have attachment.
      * @pre Structure attachment must be of class 'Organ' and must exist in dictionary.
@@ -48,6 +48,11 @@ public:
     /// Return all array names stock in the structureTraits-map
     FWDATA_API StructureTypeNameContainer getStructureTypeNames() const;
 
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( StructureTraitsDictionary::csptr _source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( StructureTraitsDictionary::csptr _source );
 
 protected :
 
@@ -58,6 +63,7 @@ protected :
     FWDATA_API virtual ~StructureTraitsDictionary();
 
 private:
+
     typedef std::map< std::string, ::fwData::StructureTraits::sptr > StructureTraitsMapType;
 
     /// map to register structure traits. Map key is structure type.

@@ -43,7 +43,7 @@ Line::~Line ()
 
 void Line::shallowCopy( Line::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_position = _source->m_position;
     this->m_direction = _source->m_direction;
 }
@@ -52,7 +52,7 @@ void Line::shallowCopy( Line::csptr _source )
 
 void Line::deepCopy( Line::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     if(_source->m_position)
     {
         if(!this->m_position)

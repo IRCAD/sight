@@ -41,7 +41,7 @@ TransfertFunction::~TransfertFunction ()
 
 void TransfertFunction::shallowCopy( TransfertFunction::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
     this->m_sName = _source->m_sName;
     this->m_sEncoding = _source->m_sEncoding;
 }
@@ -50,7 +50,7 @@ void TransfertFunction::shallowCopy( TransfertFunction::csptr _source )
 
 void TransfertFunction::deepCopy( TransfertFunction::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
     this->m_sName = _source->m_sName;
     this->m_sEncoding = _source->m_sEncoding;
 }

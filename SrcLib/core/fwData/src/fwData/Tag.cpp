@@ -7,26 +7,21 @@
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 
-
-
 #include "fwData/Tag.hpp"
 
 fwDataRegisterMacro( ::fwData::Tag );
+
 namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Tag::Tag () :
-m_size(0.5)
-{
-    SLM_TRACE_FUNC();
-}
+Tag::Tag() : m_size(0.5)
+{}
 
 //------------------------------------------------------------------------------
 
 Tag::~Tag ()
 {
-    SLM_TRACE_FUNC();
     if(m_pointList)
     {
         m_pointList->getRefPoints().clear();
@@ -34,6 +29,25 @@ Tag::~Tag ()
 }
 
 //------------------------------------------------------------------------------
+
+void Tag::shallowCopy( Tag::csptr source )
+{
+    this->fieldShallowCopy( source );
+    m_sType = source->m_sType;
+    m_size = source->m_size;
+    m_pointList = source->m_pointList;
+
+}
+
+//------------------------------------------------------------------------------
+
+void Tag::deepCopy( Tag::csptr source )
+{
+    this->fieldDeepCopy( source );
+    m_sType = source->m_sType;
+    m_size = source->m_size;
+    m_pointList = ::fwData::Object::copy(source->m_pointList);
+}
 
 } // namespace fwData
 

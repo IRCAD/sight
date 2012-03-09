@@ -7,12 +7,11 @@
 #ifndef _FWDATA_POINT_HPP_
 #define _FWDATA_POINT_HPP_
 
-#include <boost/array.hpp>
+#include <fwMath/IntrasecTypes.hpp>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
-#include "fwMath/IntrasecTypes.hpp"
 
 
 namespace fwData
@@ -37,9 +36,7 @@ public :
        );
 
     typedef double PointCoordType;
-
     typedef fwVec3d PointCoordArrayType;
-    typedef PointCoordArrayType PointCoordArray; // Remove me
 
     fwDataObjectMacro();
 

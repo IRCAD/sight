@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwData/registry/macros.hpp"
+#include <boost/foreach.hpp>
 
+#include "fwData/registry/macros.hpp"
 #include "fwData/Vector.hpp"
 
 fwDataRegisterMacro( ::fwData::Vector );
@@ -16,16 +17,12 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Vector::Vector()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 Vector::~Vector()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -51,20 +48,14 @@ void Vector::shallowCopy( Vector::csptr _source )
 
 //------------------------------------------------------------------------------
 
-void Vector::deepCopy( Vector::csptr _source )
+void Vector::deepCopy( Vector::csptr source )
 {
-    this->fieldDeepCopy( _source );
-
+    this->fieldDeepCopy( source );
     this->clear();
-
-    for(    Vector::Container::const_iterator iter = _source->begin();
-            iter != _source->end();
-            ++iter )
-    {
-        ::fwData::Object::sptr newObj = ::fwData::Factory::New( (*iter)->getClassname() );
-        newObj->deepCopy( *iter );
-        this->push_back( newObj );
-    }
+    std::transform(source->begin(), source->end(),
+                       this->begin(),
+                       &::fwData::Object::copy< Vector::value_type::element_type >
+                      );
 }
 
 //------------------------------------------------------------------------------

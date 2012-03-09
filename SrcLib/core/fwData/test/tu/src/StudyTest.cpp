@@ -130,18 +130,18 @@ void StudyTest::methode2()
 
 void StudyTest::addAcquisition()
 {
-    ::boost::uint32_t  NB = 0 ;
+    Study::AcquisitionContainerType::size_type  NB = 0 ;
 
     ::fwData::Study::NewSptr s1;
     ::fwData::Acquisition::NewSptr a1;
 
     //check
-    CPPUNIT_ASSERT_EQUAL(s1->getAcquisitionSize(),  NB );
+    CPPUNIT_ASSERT_EQUAL(s1->getNumberOfAcquisitions(),  NB );
 
     s1->addAcquisition(a1) ;
     NB = 1;
     //check
-    CPPUNIT_ASSERT_EQUAL(s1->getAcquisitionSize(),  NB);
+    CPPUNIT_ASSERT_EQUAL(s1->getNumberOfAcquisitions(),  NB);
 }
 
 } //namespace ut

@@ -69,7 +69,7 @@ void Mesh::initArrays()
 
 void Mesh::shallowCopy( Mesh::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
 
     m_nbPoints        = _source->m_nbPoints;
     m_nbCells         = _source->m_nbCells;
@@ -92,7 +92,7 @@ void Mesh::shallowCopy( Mesh::csptr _source )
 
 void Mesh::deepCopy( Mesh::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
     m_nbPoints      = _source->m_nbPoints;
     m_nbCells       = _source->m_nbCells;

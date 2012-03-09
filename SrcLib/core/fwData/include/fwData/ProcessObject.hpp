@@ -8,6 +8,7 @@
 #define _FWDATA_PROCESSOBJECT_HPP_
 
 #include <map>
+#include <vector>
 
 #include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
@@ -27,71 +28,96 @@ class FWDATA_CLASS_API ProcessObject : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwData::Factory::New< ProcessObject >) ;
 
-    /// IO Container type
-    static const std::string InputKey  ;
-    /// IO Container type
-    static const std::string OutputKey ;
+    typedef std::string ParamNameType;
+    typedef std::vector<std::string> ParamNameVectorType;
+    typedef std::map< ParamNameType, ::fwData::Object::sptr > ProcessObjectMapType;
 
-    /// retrieve the input data associated with _id
-    FWDATA_API ::fwData::Object::sptr  getInput( std::string _id  );
+    /**
+     * @brief Retrieves the input data associated with specified name (null if non exist).
+     * @param[in] name Input name
+     * @return null sptr if input is not found
+     */
+    FWDATA_API ::fwData::Object::sptr getInput(const ParamNameType& name);
 
-    /// retrieve the input data associated with _id and type OBJECTTYPE
+    /**
+     * @brief Retrieves the input data associated with specified name type OBJECTTYPE (null if non exist).
+     * @param[in] name Input name
+     * @return null sptr if input is not found
+     */
     template< class OBJECTTYPE >
-    typename OBJECTTYPE::sptr  getInput( std::string _id  )
+    typename OBJECTTYPE::sptr getInput(const ParamNameType& name)
     {
-        return OBJECTTYPE::dynamicCast( this->getInput( _id ) ) ;
+        return OBJECTTYPE::dynamicCast( this->getInput( name ) ) ;
     }
 
-    /// retrieve the output data associated with _id
-    FWDATA_API ::fwData::Object::sptr getOutput( std::string _id  );
+    /**
+     * @brief Retrieves the output data associated with specified name (null if non exist).
+     * @param[in] name Output name
+     * @return null sptr if output is not found
+     */
+    FWDATA_API ::fwData::Object::sptr getOutput(const ParamNameType& name);
 
-    /// retrieve the output data associated with _id and type OBJECTTYPE
+    /**
+     * @brief Retrieves the output data associated with specified name type OBJECTTYPE (null if non exist).
+     * @param[in] name Output name
+     * @return null sptr if output is not found
+     */
     template< class OBJECTTYPE >
-    typename OBJECTTYPE::sptr getOutput( std::string _id  )
+    typename OBJECTTYPE::sptr getOutput(const ParamNameType& name)
     {
-        return OBJECTTYPE::dynamicCast( this->getOutput( _id ) ) ;
+        return OBJECTTYPE::dynamicCast( this->getOutput( name ) ) ;
     }
 
-    /// @{
-    /// retrieve the input data
-    FWDATA_API fwTools::Object::sptr  getInputs(  );
-    FWDATA_API fwTools::Object::csptr  getInputs(  ) const ;
-    ///@}
+    /// Retrieve the input data
+    fwDataGetSetCRefMacro(Inputs, ProcessObjectMapType);
 
-    ///@{
-    /// retrieve the output data
-    FWDATA_API fwTools::Object::sptr getOutputs(  );
-    FWDATA_API fwTools::Object::csptr getOutputs(  ) const ;
-    /// @}
-
-    /// Affect value to input
-    FWDATA_API void setInputValue(std::string _id, ::fwData::Object::sptr _object);
-    /// Affect value to output
-    FWDATA_API void setOutputValue(std::string _id, ::fwData::Object::sptr _object);
-
-    typedef std::string MapKeyType;
-    typedef ::fwData::Object::wptr MapValueType;
-    typedef std::map< MapKeyType, MapValueType > MapType;
-    /**
-     * @brief return a map where key is input id and value a weak pointer on associated object input
-     * @note this is not a reference: take care not to build iterator on return
-     */
-    FWDATA_API MapType getInputMap() ;
+    /// Retrieve the output data
+    fwDataGetSetCRefMacro(Outputs, ProcessObjectMapType);
 
     /**
-     * @brief return a map where key is output id and value a weak pointer on associated object output
-     * @note this is not a reference: take care not to build iterator on return
+     * @brief Register input value with specified name.
+     * If the name does already exist, the matching value will be replaced.
+     * @param[in] name Input name
+     * @param[in] object  Input value
      */
-    FWDATA_API MapType getOutputMap() ;
+    FWDATA_API void setInputValue(const ParamNameType& name, ::fwData::Object::sptr object);
 
     /**
-     * @brief build and return a container containing all inputs and ouputs (are Fields)
-     * @note required to scan all inputs and outputs without indifferently
-     * @note this is not a reference: take care not to build iterator on return
+     * @brief Register output value with specified name.
+     * If the name does already exist, the matching value will be replaced.
+     * @param[in] name Output name
+     * @param[in] object  Output value
      */
-    FWDATA_API    Object::ChildContainer getIO();
+    FWDATA_API void setOutputValue(const ParamNameType& name, ::fwData::Object::sptr object);
+
+    /**
+     * @brief Returns vector of input parameters names.
+     */
+    FWDATA_API ParamNameVectorType getInputsParamNames() const;
+
+    /**
+     * @brief Returns vector of output parameters names.
+     */
+    FWDATA_API ParamNameVectorType getOutputsParamNames() const;
+
+    /**
+     * @brief Unregister all inputs parameters.
+     */
+    FWDATA_API void clearInputs();
+
+    /**
+     * @brief Unregister all output parameters.
+     */
+    FWDATA_API void clearOutputs();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( ProcessObject::csptr source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( ProcessObject::csptr source );
 
 protected:
+
     /**
      * @brief   Constructor
      */
@@ -102,6 +128,36 @@ protected:
      */
     FWDATA_API virtual ~ProcessObject();
 
+    /**
+     * @brief Returns vector of parameters names from params map.
+     */
+    FWDATA_API ParamNameVectorType getParamNames(const ProcessObjectMapType& params) const;
+
+    /**
+     * @brief Register value with specified name in params map.
+     * If the name does already exist, the matching value will be replaced.
+     * @param[in] name Param name
+     * @param[in] object  Param
+     */
+    FWDATA_API void setValue(const ParamNameType& name, ::fwData::Object::sptr object, ProcessObjectMapType& params);
+
+    /**
+     * @brief Retrieves data associated with specified name in params map (null if non exist).
+     * @param[in] name Param name
+     * @return null sptr if param is not found
+     */
+    FWDATA_API ::fwData::Object::sptr getValue(const ParamNameType& name, const ProcessObjectMapType& params);
+
+    /**
+     * @brief Unregister all parameters in params map.
+     */
+    FWDATA_API void clearParams(ProcessObjectMapType& params);
+
+    /// Inputs values map
+    ProcessObjectMapType m_attrInputs;
+
+    /// Outputs values map
+    ProcessObjectMapType m_attrOutputs;
 };
 
 } // namespace fwData

@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
-
 #include "fwData/Spline.hpp"
 
 fwDataRegisterMacro( ::fwData::Spline );
+
 namespace fwData
 {
 //------------------------------------------------------------------------------

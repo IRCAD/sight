@@ -7,8 +7,6 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/ROITraits.hpp"
 
@@ -20,14 +18,12 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 ROITraits::ROITraits()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ROITraits::~ROITraits()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 

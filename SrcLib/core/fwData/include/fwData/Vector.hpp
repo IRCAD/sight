@@ -7,7 +7,7 @@
 #ifndef _FWDATA_VECTOR_HPP_
 #define _FWDATA_VECTOR_HPP_
 
-#include <map>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 
 #include "fwData/Object.hpp"
@@ -102,7 +102,7 @@ protected:
     FWDATA_API virtual ~Vector();
 
 };
-}
+} //namespace fwData
 
 #endif /* _FWDATA_VECTOR_HPP_ */
 

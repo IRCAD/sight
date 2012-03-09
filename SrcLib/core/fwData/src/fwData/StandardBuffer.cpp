@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-
 #include "fwData/StandardBuffer.hpp"
 
 namespace fwData

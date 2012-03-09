@@ -121,8 +121,8 @@ protected :
      */
     FWDATA_API virtual ~TriangularMesh() ;
 
-    PointContainer        m_points ;
-    CellContainer        m_cells ;
+    PointContainer m_points ;
+    CellContainer  m_cells ;
 
 } ;
 

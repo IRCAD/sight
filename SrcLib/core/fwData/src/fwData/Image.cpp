@@ -55,7 +55,7 @@ Image::~Image() throw()
 
 void Image::shallowCopy( Image::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
+    this->fieldShallowCopy( _source );
 
     // Assign
     copyInformation(_source );
@@ -67,7 +67,7 @@ void Image::shallowCopy( Image::csptr _source )
 
 void Image::deepCopy( Image::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source );
 
     // Assign
     copyInformation(_source );

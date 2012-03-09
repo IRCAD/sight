@@ -28,16 +28,16 @@ String::~String() throw()
 //------------------------------------------------------------------------------
 void String::shallowCopy( String::csptr _source )
 {
-    this->::fwData::Object::fieldShallowCopy( _source );
-    this->m_value = _source->m_value;
+    this->fieldShallowCopy( _source );
+    m_value = _source->m_value;
 }
 
 //------------------------------------------------------------------------------
 
 void String::deepCopy( String::csptr _source )
 {
-    this->::fwData::Object::fieldDeepCopy( _source );
-    this->m_value = _source->m_value;
+    this->fieldDeepCopy( _source );
+    m_value = _source->m_value;
 }
 
 } // namespace fwData
