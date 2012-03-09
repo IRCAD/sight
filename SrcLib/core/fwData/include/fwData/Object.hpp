@@ -157,7 +157,7 @@ protected:
 template <typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
 {
-    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(source) );
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy( ::fwData::Object::csptr(source)) );
 }
 
 } // namespace fwData
