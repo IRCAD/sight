@@ -18,6 +18,7 @@ CLASSTEST=[
     'IntegerTest',
     'IsTypeOfTest',
     'MaterialTest',
+    'MacrosTest',
     'MeshTest',
     'ModelTest',
     'ObjectTest',
