@@ -25,6 +25,8 @@ class TransfertFunctionTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( classicGetSetTest );
     CPPUNIT_TEST( usingTfTest );
     CPPUNIT_TEST( shallowAndDeepCopyTest );
+    CPPUNIT_TEST( linearColorTest );
+    CPPUNIT_TEST( nearestColorTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,6 +40,8 @@ public:
     void classicGetSetTest();
     void usingTfTest();
     void shallowAndDeepCopyTest();
+    void linearColorTest();
+    void nearestColorTest();
 
     ::fwData::TransfertFunction_VERSION_II::sptr createTFColor();
     void checkTFColor( ::fwData::TransfertFunction_VERSION_II::sptr tf );

@@ -163,7 +163,63 @@ TransfertFunction_VERSION_II::TFColorVectorType TransfertFunction_VERSION_II::ge
 
 TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestColor( TFValueType value ) const
 {
+    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
+    double previousValue = minMax.first;
+    double nextValue = minMax.second;
+
+    TFColor blackColor(0.0, 0.0, 0.0, 0.0);
     TFColor color;
+    TFColor previousColor = blackColor;
+    TFColor nextColor = blackColor;
+
+    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    {
+        if(value < data.first )
+        {
+            nextValue = data.first;
+            nextColor = data.second;
+            break;
+        }
+        else
+        {
+            previousValue = data.first;
+            previousColor = data.second;
+        }
+    }
+    if(previousValue == minMax.first)
+    {
+        if(m_isClamped)
+        {
+            color = blackColor;
+        }
+        else
+        {
+            color = nextColor;
+        }
+    }
+    else if(nextValue == minMax.second)
+    {
+        if(m_isClamped && (value != previousValue))
+        {
+            color = blackColor;
+        }
+        else
+        {
+            color = previousColor;
+        }
+    }
+    else
+    {
+        if((value - previousValue) < (nextValue - value))
+        {
+            color = previousColor;
+        }
+        else
+        {
+            color = nextColor;
+        }
+    }
 
     return color;
 }
@@ -172,8 +228,68 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestCo
 
 TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearColor( TFValueType value ) const
 {
-    TFColor color;
+    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
+    double previousValue = minMax.first;
+    double nextValue = minMax.second;
 
+    TFColor blackColor(0.0, 0.0, 0.0, 0.0);
+    TFColor color;
+    TFColor previousColor = blackColor;
+    TFColor nextColor = blackColor;
+
+    TFValueType val;
+    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    {
+        if(value < data.first )
+        {
+            nextValue = data.first;
+            nextColor = data.second;
+            break;
+        }
+        else
+        {
+            previousValue = data.first;
+            previousColor = data.second;
+        }
+    }
+    if(previousValue == minMax.first)
+    {
+        if(m_isClamped)
+        {
+            color = blackColor;
+        }
+        else
+        {
+            color = nextColor;
+        }
+    }
+    else if(nextValue == minMax.second)
+    {
+        if(m_isClamped && (value != previousValue))
+        {
+            color = blackColor;
+        }
+        else
+        {
+            color = previousColor;
+        }
+    }
+    else
+    {
+        // Interpolate the color.
+        double distanceToNextValue = nextValue - value;
+        double distanceToPreviousValue = value - previousValue;
+        double distance = nextValue - previousValue;
+        double coefPrevious = 1.0 - (distanceToPreviousValue/distance);
+        double coefNext = 1.0 - (distanceToNextValue/distance);
+
+        color.r =  coefPrevious*previousColor.r + coefNext*nextColor.r;
+        color.g =  coefPrevious*previousColor.g + coefNext*nextColor.g;
+        color.b =  coefPrevious*previousColor.b + coefNext*nextColor.b;
+        color.a =  coefPrevious*previousColor.a + coefNext*nextColor.a;
+        int toto=0;
+    }
     return color;
 }
 
@@ -183,6 +299,14 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getInterpola
 {
     TFColor color;
 
+    if(m_interpolationMode == LINEAR)
+    {
+        color = this->getLinearColor(value);
+    }
+    else if(m_interpolationMode == NEAREST)
+    {
+        color = this->getNearestColor(value);
+    }
     return color;
 }
 
