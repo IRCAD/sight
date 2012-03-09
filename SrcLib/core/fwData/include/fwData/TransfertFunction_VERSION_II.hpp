@@ -134,17 +134,23 @@ public :
     // Get the color associated to the value.
     FWDATA_API const TFColor& getTFColor( TFValueType value ) const;
 
-    fwGettersSettersDocMacro(InterpolationMode, interpolationMode, InterpolationMode, interpolation mode);
+    /// Interpolation mode
+    fwDataGetSetMacro(InterpolationMode, InterpolationMode);
 
-    fwGettersSettersDocMacro(Level, level, double, level);
+    /// Level
+    fwDataGetSetMacro(Level, double);
 
-    fwGettersSettersDocMacro(Window, window, double, window);
+    /// Window
+    fwDataGetSetMacro(Window, double);
 
-    fwGettersSettersDocMacro(Name, name, std::string, transfert function name);
+    /// Transfert function name
+    fwDataGetSetMacro(Name, std::string);
 
-    fwGettersSettersDocMacro(IsClamped, isClamped, bool,  is TF clamped);
+    /// is TF clamped
+    fwDataGetSetMacro(IsClamped, bool);
 
-    fwGettersSettersDocMacro(BackgroundColor, backgroundColor, TFColor,  set the color of the recommanded background for the TF );
+    /// set the color of the recommanded background for the TF
+    fwDataGetSetMacro(BackgroundColor, TFColor);
 
     /// Default transfert function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
@@ -161,22 +167,22 @@ protected :
 private :
 
     /// Current visualisation level
-    double m_level;
+    double m_attrLevel;
 
     /// Current visualisation window
-    double m_window;
+    double m_attrWindow;
 
     ///  Funtion transfert name.
-    std::string m_name;
+    std::string m_attrName;
 
     /// The recommended background color to use this TF.
-    TFColor m_backgroundColor;
+    TFColor m_attrBackgroundColor;
 
     /// The Transfert function data.
-    TFDataType m_tfData;
+    TFDataType m_attrTfData;
 
     /// The current interpolation mode.
-    InterpolationMode m_interpolationMode;
+    InterpolationMode m_attrInterpolationMode;
 
     /**
      *  @brief Defines interpolation mode on extremities
@@ -184,7 +190,7 @@ private :
      *  if m_isClamped == true then after extremity point, the returned TF color is TFColor(0,0,0,0).
      *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
     **/
-    bool m_isClamped;
+    bool m_attrIsClamped;
 
 }; // end class TransfertFunction_VERSION_II
 

@@ -36,17 +36,17 @@ TransfertFunction_VERSION_II::TransfertFunction_VERSION_II()
 void TransfertFunction_VERSION_II::initTF()
 {
 
-    m_level = 0;
-    m_window = 100;
+    m_attrLevel = 0;
+    m_attrWindow = 100;
 
-    m_name = "";
+    m_attrName = "";
 
-    m_interpolationMode = TransfertFunction_VERSION_II::LINEAR;
-    m_isClamped = true;
+    m_attrInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
+    m_attrIsClamped = true;
 
-    m_backgroundColor = TFColor();
+    m_attrBackgroundColor = TFColor();
 
-    m_tfData.clear();
+    m_attrTfData.clear();
 
 }
 
@@ -72,7 +72,7 @@ TransfertFunction_VERSION_II::~TransfertFunction_VERSION_II()
 TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::getTFValues() const
 {
     TFValueVectorType values;
-    std::transform( m_tfData.begin(), m_tfData.end(),
+    std::transform( m_attrTfData.begin(), m_attrTfData.end(),
             std::back_inserter(values),
             ::boost::bind(& TFDataType::value_type::first, _1) );
     return values;
@@ -83,13 +83,13 @@ TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::ge
 
 TransfertFunction_VERSION_II::TFValueType TransfertFunction_VERSION_II::getNearestValue( TFValueType value ) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    OSLM_ASSERT("It must have at least one value.", m_attrTfData.size()>= 1);
     std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
     double previousValue = minMax.first;
     double nextValue = minMax.second;
 
     TFValueType val;
-    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    BOOST_FOREACH(const TFDataType::value_type &data, m_attrTfData)
     {
         if(value < data.first )
         {
@@ -127,33 +127,33 @@ TransfertFunction_VERSION_II::TFValueType TransfertFunction_VERSION_II::getNeare
 
 const TransfertFunction_VERSION_II::TFDataType& TransfertFunction_VERSION_II::getTFData() const
 {
-    return m_tfData;
+    return m_attrTfData;
 }
 
 //------------------------------------------------------------------------------
 
 void TransfertFunction_VERSION_II::addTFColor( TFValueType value, const TFColor & color )
 {
-    m_tfData[value] = color;
+    m_attrTfData[value] = color;
 }
 
 //------------------------------------------------------------------------------
 void TransfertFunction_VERSION_II::eraseTFValue( TFValueType value)
 {
-    m_tfData.erase(value);
+    m_attrTfData.erase(value);
 }
 
 //------------------------------------------------------------------------------
 void TransfertFunction_VERSION_II::clear()
 {
-    m_tfData.clear();
+    m_attrTfData.clear();
 }
 //------------------------------------------------------------------------------
 
 TransfertFunction_VERSION_II::TFColorVectorType TransfertFunction_VERSION_II::getTFColors() const
 {
     TFColorVectorType colors;
-    std::transform( m_tfData.begin(), m_tfData.end(),
+    std::transform( m_attrTfData.begin(), m_attrTfData.end(),
             std::back_inserter(colors),
             ::boost::bind(& TFDataType::value_type::second, _1) );
     return colors;
@@ -163,7 +163,7 @@ TransfertFunction_VERSION_II::TFColorVectorType TransfertFunction_VERSION_II::ge
 
 TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestColor( TFValueType value ) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    OSLM_ASSERT("It must have at least one value.", m_attrTfData.size()>= 1);
     std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
     double previousValue = minMax.first;
     double nextValue = minMax.second;
@@ -173,7 +173,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestCo
     TFColor previousColor = blackColor;
     TFColor nextColor = blackColor;
 
-    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    BOOST_FOREACH(const TFDataType::value_type &data, m_attrTfData)
     {
         if(value < data.first )
         {
@@ -189,7 +189,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestCo
     }
     if(previousValue == minMax.first)
     {
-        if(m_isClamped)
+        if(m_attrIsClamped)
         {
             color = blackColor;
         }
@@ -200,7 +200,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestCo
     }
     else if(nextValue == minMax.second)
     {
-        if(m_isClamped && (value != previousValue))
+        if(m_attrIsClamped && (value != previousValue))
         {
             color = blackColor;
         }
@@ -228,7 +228,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestCo
 
 TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearColor( TFValueType value ) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    OSLM_ASSERT("It must have at least one value.", m_attrTfData.size()>= 1);
     std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
     double previousValue = minMax.first;
     double nextValue = minMax.second;
@@ -238,8 +238,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearCol
     TFColor previousColor = blackColor;
     TFColor nextColor = blackColor;
 
-    TFValueType val;
-    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    BOOST_FOREACH(const TFDataType::value_type &data, m_attrTfData)
     {
         if(value < data.first )
         {
@@ -255,7 +254,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearCol
     }
     if(previousValue == minMax.first)
     {
-        if(m_isClamped)
+        if(m_attrIsClamped)
         {
             color = blackColor;
         }
@@ -266,7 +265,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearCol
     }
     else if(nextValue == minMax.second)
     {
-        if(m_isClamped && (value != previousValue))
+        if(m_attrIsClamped && (value != previousValue))
         {
             color = blackColor;
         }
@@ -288,7 +287,6 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearCol
         color.g =  coefPrevious*previousColor.g + coefNext*nextColor.g;
         color.b =  coefPrevious*previousColor.b + coefNext*nextColor.b;
         color.a =  coefPrevious*previousColor.a + coefNext*nextColor.a;
-        int toto=0;
     }
     return color;
 }
@@ -299,11 +297,11 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getInterpola
 {
     TFColor color;
 
-    if(m_interpolationMode == LINEAR)
+    if(m_attrInterpolationMode == LINEAR)
     {
         color = this->getLinearColor(value);
     }
-    else if(m_interpolationMode == NEAREST)
+    else if(m_attrInterpolationMode == NEAREST)
     {
         color = this->getNearestColor(value);
     }
@@ -314,8 +312,8 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getInterpola
 
 const TransfertFunction_VERSION_II::TFColor& TransfertFunction_VERSION_II::getTFColor( TFValueType value ) const
 {
-    TFDataType::const_iterator itr = m_tfData.find(value);
-    SLM_ASSERT("Sorry not defined in th TF.", itr != m_tfData.end());
+    TFDataType::const_iterator itr = m_attrTfData.find(value);
+    SLM_ASSERT("Sorry not defined in th TF.", itr != m_attrTfData.end());
     return itr->second;
 }
 //------------------------------------------------------------------------------
@@ -323,13 +321,13 @@ const TransfertFunction_VERSION_II::TFColor& TransfertFunction_VERSION_II::getTF
 void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::csptr _source )
 {
     this->::fwData::Object::fieldShallowCopy( _source );
-    this->m_level = _source->m_level;
-    this->m_window = _source->m_window;
-    this->m_name =_source->m_name;
-    this->m_backgroundColor = _source->m_backgroundColor;
-    this->m_tfData = _source->m_tfData;
-    this->m_interpolationMode = _source->m_interpolationMode;
-    this->m_isClamped = _source->m_isClamped;
+    this->m_attrLevel = _source->m_attrLevel;
+    this->m_attrWindow = _source->m_attrWindow;
+    this->m_attrName =_source->m_attrName;
+    this->m_attrBackgroundColor = _source->m_attrBackgroundColor;
+    this->m_attrTfData = _source->m_attrTfData;
+    this->m_attrInterpolationMode = _source->m_attrInterpolationMode;
+    this->m_attrIsClamped = _source->m_attrIsClamped;
 }
 
 //------------------------------------------------------------------------------
@@ -337,13 +335,13 @@ void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::cs
 void TransfertFunction_VERSION_II::deepCopy( TransfertFunction_VERSION_II::csptr _source )
 {
     this->::fwData::Object::fieldDeepCopy( _source );
-    this->m_level = _source->m_level;
-    this->m_window = _source->m_window;
-    this->m_name =_source->m_name;
-    this->m_backgroundColor = _source->m_backgroundColor;
-    this->m_tfData = _source->m_tfData;
-    this->m_interpolationMode = _source->m_interpolationMode;
-    this->m_isClamped = _source->m_isClamped;
+    this->m_attrLevel = _source->m_attrLevel;
+    this->m_attrWindow = _source->m_attrWindow;
+    this->m_attrName =_source->m_attrName;
+    this->m_attrBackgroundColor = _source->m_attrBackgroundColor;
+    this->m_attrTfData = _source->m_attrTfData;
+    this->m_attrInterpolationMode = _source->m_attrInterpolationMode;
+    this->m_attrIsClamped = _source->m_attrIsClamped;
 }
 
 //------------------------------------------------------------------------------
