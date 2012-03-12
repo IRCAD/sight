@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_BREATH_FIRST_H
-#define _FWDATA_BREATH_FIRST_H
+#ifndef _FWXML_BREATH_FIRST_H
+#define _FWXML_BREATH_FIRST_H
 
-#include "fwData/config.hpp"
-#include "fwData/visitor/IVisitor.hpp"
+#include "fwXML/config.hpp"
+#include "fwXML/visitor/IVisitor.hpp"
 
 namespace fwData
 {
@@ -20,19 +20,19 @@ namespace visitor
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-class FWDATA_CLASS_API BreathFirst : public  IVisitor
+class FWXML_CLASS_API BreathFirst : public  IVisitor
 {
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (BreathFirst)(IVisitor) ) ;
 
-    FWDATA_API BreathFirst();
+    FWXML_API BreathFirst();
 
-    FWDATA_API virtual ~BreathFirst();
+    FWXML_API virtual ~BreathFirst();
 
-    FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
+    FWXML_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 
     /// override processing of childs : scan breath first ( aka fields[0] , fields[1] , ...)
-    FWDATA_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
+    FWXML_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
 
 protected :
 
@@ -47,4 +47,4 @@ protected :
 
 } // namespace fwData
 
-#endif //_FWDATA_BREATH_FIRST_H
+#endif //_FWXML_BREATH_FIRST_H

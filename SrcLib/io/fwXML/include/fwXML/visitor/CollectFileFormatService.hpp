@@ -7,7 +7,7 @@
 #ifndef _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
 #define _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
 
-#include <fwData/visitor/BreathFirst.hpp>
+#include <fwXML/visitor/BreathFirst.hpp>
 #include <fwXML/IFileFormatService.hpp>
 
 #include "fwXML/config.hpp"

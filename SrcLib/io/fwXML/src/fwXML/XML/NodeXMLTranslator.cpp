@@ -8,7 +8,7 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 
-#include <fwData/visitor/accept.hpp>
+#include <fwXML/visitor/accept.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Port.hpp>
 

@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwData/visitor/accept.hpp"
+#include "fwXML/visitor/accept.hpp"
 
-#include "fwData/visitor/DepthFirst.hpp"
+#include "fwXML/visitor/DepthFirst.hpp"
 
 namespace fwData
 {

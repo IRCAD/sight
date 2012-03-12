@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_VISITOR_DEPTHFIRST_HPP_
-#define _FWDATA_VISITOR_DEPTHFIRST_HPP_
+#ifndef _FWXML_VISITOR_DEPTHFIRST_HPP_
+#define _FWXML_VISITOR_DEPTHFIRST_HPP_
 
-#include "fwData/config.hpp"
-#include "fwData/visitor/IVisitor.hpp"
+#include "fwXML/config.hpp"
+#include "fwXML/visitor/IVisitor.hpp"
 
 namespace fwData
 {
@@ -20,15 +20,15 @@ namespace visitor
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-class FWDATA_CLASS_API DepthFirst : public  IVisitor
+class FWXML_CLASS_API DepthFirst : public  IVisitor
 {
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (DepthFirst)(IVisitor) ) ;
 
-    FWDATA_API virtual void visit( ::fwTools::Object::sptr obj)=0;
+    FWXML_API virtual void visit( ::fwTools::Object::sptr obj)=0;
 
     /// override processing of childs : scan in depth ( aka fields[0].fields[0].fields[0] , fields[0].fields[0].fields[1], ....)
-    FWDATA_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
+    FWXML_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
 
 };
 
@@ -36,4 +36,4 @@ public:
 
 } // namespace fwData
 
-#endif // _FWDATA_VISITOR_DEPTHFIRST_HPP_
+#endif // _FWXML_VISITOR_DEPTHFIRST_HPP_

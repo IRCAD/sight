@@ -7,8 +7,8 @@
 #include <list>
 #include <algorithm>
 
-#include "fwData/visitor/accept.hpp"
-#include "fwData/visitor/BreathFirst.hpp"
+#include "fwXML/visitor/accept.hpp"
+#include "fwXML/visitor/BreathFirst.hpp"
 
 namespace fwData
 {

@@ -7,7 +7,7 @@
 #ifndef _FWXML_VISITOR_SERIALIZE_HPP
 #define _FWXML_VISITOR_SERIALIZE_HPP
 
-#include <fwData/visitor/BreathFirst.hpp>
+#include <fwXML/visitor/BreathFirst.hpp>
 
 #include "fwXML/config.hpp"
 

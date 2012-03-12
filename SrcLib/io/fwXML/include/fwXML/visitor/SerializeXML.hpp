@@ -10,7 +10,7 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
-#include <fwData/visitor/BreathFirst.hpp>
+#include <fwXML/visitor/BreathFirst.hpp>
 #include <libxml/tree.h>
 
 #include "fwXML/config.hpp"

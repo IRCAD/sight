@@ -7,7 +7,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/UUID.hpp>
 
-#include <fwData/visitor/accept.hpp>
+#include <fwXML/visitor/accept.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Resection.hpp>
 #include <fwData/Vector.hpp>

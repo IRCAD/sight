@@ -7,7 +7,7 @@
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwCore/base.hpp>
 
-#include <fwData/visitor/accept.hpp>
+#include <fwXML/visitor/accept.hpp>
 
 #include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLHierarchy.hpp"

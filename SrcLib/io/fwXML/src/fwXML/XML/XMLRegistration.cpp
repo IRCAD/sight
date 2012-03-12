@@ -31,7 +31,6 @@
 #include "fwXML/boostSerializer/Point.hpp"
 #include "fwXML/boostSerializer/ProcessObject.hpp"
 #include "fwXML/boostSerializer/Reconstruction.hpp"
-#include "fwXML/boostSerializer/Region.hpp"
 #include "fwXML/boostSerializer/ResectionDB.hpp"
 #include "fwXML/boostSerializer/String.hpp"
 #include "fwXML/boostSerializer/Study.hpp"

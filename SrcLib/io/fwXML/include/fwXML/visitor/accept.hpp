@@ -4,10 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_VISITOR_ACCEPT_HPP_
-#define _FWDATA_VISITOR_ACCEPT_HPP_
+#ifndef _FWXML_VISITOR_ACCEPT_HPP_
+#define _FWXML_VISITOR_ACCEPT_HPP_
 
-#include "fwData/visitor/IVisitor.hpp"
+#include "fwXML/visitor/IVisitor.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
 
@@ -30,10 +30,10 @@ namespace visitor
  * @date    2007-2009.
  */
 
-FWDATA_API void accept( ::fwTools::Object::sptr object,  ::fwData::visitor::IVisitor *visitor );
+FWXML_API void accept( ::fwTools::Object::sptr object,  ::fwData::visitor::IVisitor *visitor );
 
 } // namespace visitor
 
 } // namespace fwData
 
-#endif // _FWDATA_VISITOR_ACCEPT_HPP_
+#endif // _FWXML_VISITOR_ACCEPT_HPP_

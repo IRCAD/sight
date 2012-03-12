@@ -4,17 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwData/visitor/Single.hpp"
+#include "fwXML/visitor/accept.hpp"
 
 namespace fwData
 {
 namespace visitor
 {
 
-void Single::next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
+void accept( ::fwTools::Object::sptr object,  ::fwData::visitor::IVisitor *visitor )
 {
-    m_source = src;
-    // perform nothing with child;
+    SLM_ASSERT("visitor not instanced", visitor);
+    visitor->visit(object);
+    visitor->next( object, object->children() );
 }
 
 } // namespace visitor

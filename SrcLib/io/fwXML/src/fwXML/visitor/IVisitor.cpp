@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwData/visitor/IVisitor.hpp"
+#include "fwXML/visitor/IVisitor.hpp"
 
 namespace fwData {
 

@@ -24,7 +24,7 @@
 #include <fwTools/Factory.hpp>
 #include <fwTools/Failed.hpp>
 #include <fwCore/Demangler.hpp>
-#include <fwData/visitor/accept.hpp>
+#include <fwXML/visitor/accept.hpp>
 
 #include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLAggregator.hpp"
