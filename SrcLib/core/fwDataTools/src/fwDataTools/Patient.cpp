@@ -94,18 +94,19 @@ bool Patient::comparePatient(::fwData::Patient::sptr patient1, ::fwData::Patient
     OSLM_ERROR_IF("Patient have not same DbID : " << patient1->getDbID() << " != " << patient2->getDbID(),
                 patient1->getDbID() != patient2->getDbID());
 
-    compare &= (patient1->getStudySize() == patient2->getStudySize());
-    OSLM_ERROR_IF("Patient have not same study size : " << patient1->getStudySize() << " != " << patient2->getStudySize(),
-                patient1->getStudySize() != patient2->getStudySize());
+    compare &= (patient1->getNumberOfStudies() == patient2->getNumberOfStudies());
+    OSLM_ERROR_IF("Patient have not same study size : " << patient1->getNumberOfStudies() << " != " << patient2->getNumberOfStudies(),
+                patient1->getNumberOfStudies() != patient2->getNumberOfStudies());
 
-    std::pair< ::fwData::Patient::StudyIterator, ::fwData::Patient::StudyIterator > pairPatient1 = patient1->getStudies();
-    ::fwData::Patient::StudyIterator iter1 = pairPatient1.first;
-    ::fwData::Patient::StudyIterator iter2 = patient2->getStudies().first;
-    while( iter1 != pairPatient1.second )
+    const ::fwData::Patient::StudyContainerType & studies1 = patient1->getStudies();
+    const ::fwData::Patient::StudyContainerType & studies2 = patient2->getStudies();
+    ::fwData::Patient::StudyContainerType::const_iterator iter1 = studies1.begin();
+    ::fwData::Patient::StudyContainerType::const_iterator end1  = studies1.end();
+    ::fwData::Patient::StudyContainerType::const_iterator iter2 = studies2.begin();
+
+    for ( ; compare && iter1 != end1; ++iter1, ++iter2)
     {
         compare &= Patient::compareStudy(*iter1, *iter2);
-        iter1++;
-        iter2++;
     }
 
 
@@ -178,19 +179,22 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
     OSLM_ERROR_IF("Studies have not same DbID  : " << study1->getDbID() << " != " << study2->getDbID(),
             study1->getDbID() != study2->getDbID());
 
-    compare &= (study1->getAcquisitionSize() == study2->getAcquisitionSize());
-    OSLM_ERROR_IF("Studies have not same size  : " << study1->getAcquisitionSize() << " != " << study2->getAcquisitionSize(),
-            study1->getAcquisitionSize() != study2->getAcquisitionSize());
+    compare &= (study1->getNumberOfAcquisitions() == study2->getNumberOfAcquisitions());
+    OSLM_ERROR_IF("Studies have not same size  : " << study1->getNumberOfAcquisitions() << " != " << study2->getNumberOfAcquisitions(),
+            study1->getNumberOfAcquisitions() != study2->getNumberOfAcquisitions());
 
-    std::pair< ::fwData::Study::AcquisitionIterator, ::fwData::Study::AcquisitionIterator > pairStudy1 = study1->getAcquisitions();
-    ::fwData::Study::AcquisitionIterator iter1 = pairStudy1.first;
-    ::fwData::Study::AcquisitionIterator iter2 = study2->getAcquisitions().first;
-    while( iter1 != pairStudy1.second )
+    const ::fwData::Study::AcquisitionContainerType & acquisitions1 = study1->getAcquisitions();
+    const ::fwData::Study::AcquisitionContainerType & acquisitions2 = study2->getAcquisitions();
+    ::fwData::Study::AcquisitionContainerType::const_iterator iter1 = acquisitions1.begin();
+    ::fwData::Study::AcquisitionContainerType::const_iterator end1  = acquisitions1.end();
+    ::fwData::Study::AcquisitionContainerType::const_iterator iter2 = acquisitions2.begin();
+
+    for ( ; compare && iter1 != end1; ++iter1, ++iter2)
     {
         compare &= Patient::compareAcquisition(*iter1, *iter2);
-        iter1++;
-        iter2++;
     }
+
+
 
     return compare;
 }
@@ -365,20 +369,22 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
     OSLM_ERROR_IF("Acquisitions have not same patient position : '" << acquisition1->getPatientPosition() << "' != '" << acquisition2->getPatientPosition()<<"'",
             acquisition1->getPatientPosition() != acquisition2->getPatientPosition());
 
-    compare &= (acquisition1->getReconstructionSize() == acquisition2->getReconstructionSize());
-    OSLM_ERROR_IF("Acquisitions have not same reconstruction size : " << acquisition1->getReconstructionSize() << " != " << acquisition2->getReconstructionSize(),
-            acquisition1->getReconstructionSize() != acquisition2->getReconstructionSize());
+    compare &= (acquisition1->getNumberOfReconstructions() == acquisition2->getNumberOfReconstructions());
+    OSLM_ERROR_IF("Acquisitions have not same reconstruction size : " << acquisition1->getNumberOfReconstructions() << " != " << acquisition2->getNumberOfReconstructions(),
+            acquisition1->getNumberOfReconstructions() != acquisition2->getNumberOfReconstructions());
 
     compare &= Image::compareImage(acquisition1->getImage(), acquisition2->getImage());
 
-    std::pair< ::fwData::Acquisition::ReconstructionIterator, ::fwData::Acquisition::ReconstructionIterator > pairAcquisition1 = acquisition1->getReconstructions();
-    ::fwData::Acquisition::ReconstructionIterator iter1 = pairAcquisition1.first;
-    ::fwData::Acquisition::ReconstructionIterator iter2 = acquisition2->getReconstructions().first;
-    while( iter1 != pairAcquisition1.second )
+
+    const ::fwData::Acquisition::ReconstructionContainerType & reconstructions1 = acquisition1->getReconstructions();
+    const ::fwData::Acquisition::ReconstructionContainerType & reconstructions2 = acquisition2->getReconstructions();
+    ::fwData::Acquisition::ReconstructionContainerType::const_iterator iter1 = reconstructions1.begin();
+    ::fwData::Acquisition::ReconstructionContainerType::const_iterator end1  = reconstructions1.end();
+    ::fwData::Acquisition::ReconstructionContainerType::const_iterator iter2 = reconstructions2.begin();
+
+    for ( ; compare && iter1 != end1; ++iter1, ++iter2)
     {
         compare &= Patient::compareReconstruction(*iter1, *iter2);
-        iter1++;
-        iter2++;
     }
 
     return compare;
