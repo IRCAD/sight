@@ -47,6 +47,7 @@ void GenericField::createConfig( ::fwTools::Object::sptr _obj )
     ::fwData::GenericFieldBase::sptr field = ::fwData::GenericFieldBase::dynamicCast( _obj );
     SLM_ASSERT("GenericField not instanced", field);
 
+    SLM_ASSERT("GenericField config must contain at most one tag <value>...</value>", m_cfg->getElements().size() <= 1);
     BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
     {
         if ( elem->getName() == "value" )

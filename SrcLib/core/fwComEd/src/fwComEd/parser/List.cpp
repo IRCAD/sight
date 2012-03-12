@@ -70,27 +70,27 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
             // Test build mode
             std::string buildMode = BUILD_OBJECT;
 
-            
+
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
                 OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
-          
+
             if( buildMode == BUILD_OBJECT )
             {
-                
+
                 // Create and manage object config
                 ::fwServices::AppConfigManager::NewSptr ctm;
                 ctm->setConfig( * ( elem->getElements().begin() ) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
-                ::fwTools::Object::sptr localObj = ctm->getConfigRoot();
+                ::fwData::Object::sptr localObj = ctm->getConfigRoot< ::fwData::Object >();
 
                 // Add object
-                SLM_ASSERT("Sorry an ::fwData::List can contain only ::fwData::Object", ::fwData::Object::dynamicCast( localObj ) );
-                dataList->push_back( ::fwData::Object::dynamicCast( localObj ));
-             
+                SLM_ASSERT("Sorry an ::fwData::List can contain only ::fwData::Object", localObj );
+                dataList->push_back( localObj );
+
             }
             else // if( buildMode == GET_OBJECT )
             {

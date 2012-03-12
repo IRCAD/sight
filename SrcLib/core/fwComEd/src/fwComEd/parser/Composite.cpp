@@ -91,11 +91,11 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
                 ctm->setConfig( * ( elem->getElements().begin() ) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
-                ::fwTools::Object::sptr localObj = ctm->getConfigRoot();
+                ::fwData::Object::sptr localObj = ctm->getConfigRoot< ::fwData::Object >();
 
                 // Add object
-                SLM_ASSERT("Sorry an ::fwData::Composite can contain only ::fwData::Object", ::fwData::Object::dynamicCast( localObj ) );
-                (*dataComposite)[ key ] = ::fwData::Object::dynamicCast( localObj );
+                SLM_ASSERT("Sorry an ::fwData::Composite can contain only ::fwData::Object", localObj );
+                (*dataComposite)[ key ] = localObj;
 
             }
             else // if( buildMode == GET_OBJECT )

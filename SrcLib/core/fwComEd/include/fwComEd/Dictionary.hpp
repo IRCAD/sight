@@ -44,7 +44,6 @@ struct FWCOMED_CLASS_API Dictionary
     FWCOMED_API static const std::string m_errorId;
     FWCOMED_API static const std::string m_imageLandmarksId;
     FWCOMED_API static const std::string m_imageDistancesId;
-    FWCOMED_API static const std::string m_imageSelectedId;
     FWCOMED_API static const std::string m_commentId;
     FWCOMED_API static const std::string m_colorId;
     FWCOMED_API static const std::string m_labelId;         ///< to assign a label

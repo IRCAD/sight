@@ -73,20 +73,6 @@ BackupHelper::SelectionIdType BackupHelper::getSelectedAcquisitionIdx(::fwData::
 
 //-----------------------------------------------------------------------------
 
-::fwData::Image::sptr BackupHelper::getSelectedImage(::fwData::PatientDB::sptr pPatientDB)
-{
-    ::fwData::Image::sptr pImage;
-
-    if(pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
-    {
-        pImage = BackupHelper::getSelectedAcquisition(pPatientDB)->getImage();
-    }
-
-    return pImage;
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwData::Patient::sptr BackupHelper::getSelectedPatient(::fwData::PatientDB::sptr pPatientDB)
 {
     ::fwData::Patient::sptr patient;
@@ -127,6 +113,21 @@ BackupHelper::SelectionIdType BackupHelper::getSelectedAcquisitionIdx(::fwData::
         acquisition = study->getAcquisitions().at(idx);
     }
     return acquisition;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::Image::sptr BackupHelper::getSelectedImage(::fwData::PatientDB::sptr pPatientDB)
+{
+    ::fwData::Image::sptr pImage;
+    ::fwData::Acquisition::sptr acquisition = BackupHelper::getSelectedAcquisition(pPatientDB);
+
+    if(acquisition)
+    {
+        pImage = acquisition->getImage();
+    }
+
+    return pImage;
 }
 
 //-----------------------------------------------------------------------------

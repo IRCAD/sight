@@ -29,7 +29,6 @@ const std::string Dictionary::m_transfertFunctionId ( "m_transfertFunctionId" );
 const std::string Dictionary::m_transfertFunctionCompositeId ( "m_transfertFunctionCompositeId" );
 const std::string Dictionary::m_imageLandmarksId    ("m_imageLandmarksId");
 const std::string Dictionary::m_imageDistancesId    ("m_imageDistancesId");
-const std::string Dictionary::m_imageSelectedId     ("m_imageSelectedId");
 const std::string Dictionary::m_commentId           ("m_commentId");
 const std::string Dictionary::m_labelId             ("m_labelId");
 const std::string Dictionary::m_colorId             ("m_colorId");
