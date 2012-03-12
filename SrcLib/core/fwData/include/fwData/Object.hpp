@@ -53,6 +53,24 @@ public:
     FWDATA_API ::fwData::Object::sptr getField_NEWAPI( const FieldNameType & name ) const;
 
     /**
+     * @brief Returns a pointer of corresponding field.
+     * @param[in] name Field name
+     * @return pointer to corresponding field, null if field is not found.
+     */
+    template< typename FWDATATYPE >
+    SPTR(FWDATATYPE) getField_NEWAPI( const FieldNameType& name );
+
+    /**
+     * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if defaultValue is not null.
+     * @param[in] name Field name
+     * @param[in] defaultValue default return value if field was not found
+     * @return pointer to corresponding field.
+     */
+    template< typename FWDATATYPE >
+    SPTR(FWDATATYPE) getDefaultField_NEWAPI( const FieldNameType& name, SPTR(FWDATATYPE) defaultValue );
+
+
+    /**
      * @brief Returns a pointer of corresponding field (null if non exist).
      * @param[in] name Field name
      * @return null sptr if field is not found
@@ -158,6 +176,30 @@ template <typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
 {
     return DATA_TYPE::dynamicCast( ::fwData::Object::copy( ::fwData::Object::csptr(source)) );
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename DATA_TYPE >
+SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name )
+{
+    ::fwData::Object::sptr field = this->getField_NEWAPI( name );
+    SPTR(DATA_TYPE) result  = DATA_TYPE::dynamicCast( field );
+    return result;
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename DATA_TYPE >
+SPTR(DATA_TYPE) Object::getDefaultField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue )
+{
+    SPTR(DATA_TYPE) result = getField_NEWAPI< DATA_TYPE >(name);
+    if( !result && defaultValue)
+    {
+        result = defaultValue;
+        this->setField_NEWAPI(name, defaultValue);
+    }
+    return result;
 }
 
 } // namespace fwData
