@@ -39,10 +39,10 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     bool notReallyCheck = true;
 
     // Study, Acquisition
-    CHECK_VALUE(patientACHGenouIsOk, "Study size not correspond : ", 1, patient->getStudySize());
-    ::fwData::Study::sptr study = *patient->getStudies().first;
-    CHECK_VALUE(patientACHGenouIsOk, "Acquisition size not correspond : ", 1, study->getAcquisitionSize());
-    ::fwData::Acquisition::sptr acq = *study->getAcquisitions().first;
+    CHECK_VALUE(patientACHGenouIsOk, "Study size not correspond : ", 1, patient->getNumberOfStudies());
+    ::fwData::Study::sptr study = patient->getStudies()[0];
+    CHECK_VALUE(patientACHGenouIsOk, "Acquisition size not correspond : ", 1, study->getNumberOfAcquisitions());
+    ::fwData::Acquisition::sptr acq = study->getAcquisitions()[0];
     ::fwData::Image::sptr img = acq->getImage();
 
     //# Dicom-File-Format
