@@ -70,15 +70,11 @@ void AcqFromPDBUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw
 
 ::fwData::Acquisition::sptr AcqFromPDBUpdaterSrv::getAcquisition(::fwData::PatientDB::sptr patientDB)
 {
-    // Patient selection
-    ::fwData::PatientDB::PatientIterator patientIter = patientDB->getPatients().first;
+    ::fwData::Patient::sptr patient = patientDB->getPatients()[ 0 ];
+    ::fwData::Study::sptr study = patient->getStudies()[ 0 ];
+    ::fwData::Acquisition::sptr acquisition = study->getAcquisitions()[ 0 ];
 
-    // Study selection
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-
-    // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
-    return *acquisitionIter;
+    return acquisition;
 }
 
 //-----------------------------------------------------------------------------

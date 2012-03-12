@@ -84,20 +84,13 @@ void ImageFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _m
     ::fwData::Integer::sptr myIntStu = ::fwData::Integer::dynamicCast( pDataInfo->children().at(1) );
     ::fwData::Integer::sptr myIntAcq = ::fwData::Integer::dynamicCast( pDataInfo->children().at(2) );
 
-    // Patient selection
-    ::fwData::PatientDB::PatientIterator patientIter = patientDB->getPatients().first;
-    patientIter += myIntPat->value();
-
-    // Study selection
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-    studyIter += myIntStu->value();
-
-    // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
-    acquisitionIter += myIntAcq->value();
+    // Get selection
+    ::fwData::Patient::sptr patient = patientDB->getPatients()[ myIntPat->value() ];
+    ::fwData::Study::sptr study = patient->getStudies()[ myIntStu->value() ];
+    ::fwData::Acquisition::sptr acquisition = study->getAcquisitions()[ myIntAcq->value() ];
 
     // Image selection
-    ::fwData::Image::sptr imageSelectedInDB =  (*acquisitionIter)->getImage();
+    ::fwData::Image::sptr imageSelectedInDB =  acquisition->getImage();
 
     return imageSelectedInDB;
 }
