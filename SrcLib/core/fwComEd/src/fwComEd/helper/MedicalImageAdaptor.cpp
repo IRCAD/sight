@@ -46,7 +46,7 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3])
 {
     ::fwData::Image::sptr image = this->getImage();;
 
-    const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
+    const ::fwData::Image::SpacingType& imSpacing = image->getSpacing();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
@@ -65,7 +65,7 @@ void MedicalImageAdaptor::getImageDataSize(int size[3])
 {
     ::fwData::Image::sptr image = this->getImage();;
 
-    const ::fwData::Image::SizeType imSize = image->getSize();
+    const ::fwData::Image::SizeType& imSize = image->getSize();
     std::copy(imSize.begin(), imSize.end(), size);
 }
 
@@ -76,7 +76,7 @@ void MedicalImageAdaptor::getImageSize(double size[3])
     ::fwData::Image::sptr image = this->getImage();;
     double spacing[3];
 
-    const ::fwData::Image::SizeType imSize = image->getSize();
+    const ::fwData::Image::SizeType& imSize = image->getSize();
     std::copy(imSize.begin(), imSize.end(), size);
     this->getImageSpacing(spacing);
 
@@ -150,13 +150,6 @@ void MedicalImageAdaptor::getPlane( double points[4][3] , int sliceNumber)
         }
     }
 }
-
-//------------------------------------------------------------------------------
-
-//float MedicalImageAdaptor::getPixelvalue( double worldPosition)
-//{
-//  assert(false); // TODO
-//}
 
 //------------------------------------------------------------------------------
 
@@ -248,17 +241,19 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 {
     m_weakImage = image;
+    m_axialIndex    = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
+    m_frontalIndex  = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
+    m_sagittalIndex = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+    m_windowMin     = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
+    m_windowMax     = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
 
-    ::fwTools::getFieldFromObject(m_axialIndex   , image, ::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
-    ::fwTools::getFieldFromObject(m_frontalIndex , image, ::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
-    ::fwTools::getFieldFromObject(m_sagittalIndex, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
-    ::fwTools::getFieldFromObject(m_windowMin    , image, ::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
-    ::fwTools::getFieldFromObject(m_windowMax    , image, ::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
-
-    ::fwTools::getFieldFromObject(m_transfertFunctionId, image, m_tfSelectionFieldId, ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName));
+    m_transfertFunctionId = image->getDefaultField_NEWAPI(
+                m_tfSelectionFieldId,
+                ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName )
+                );
 
     ::fwData::Composite::sptr cTF;
-    if(!image->getField(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
+    if(!image->getField_NEWAPI(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
     {
         ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(image);
         tf->setMinMax(m_windowMin->value(), m_windowMax->value());
@@ -267,11 +262,9 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
         tfId->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
         cTF = ::fwData::Composite::New();
 
-        cTF->operator[](tfId->value()) = tf;
         (*cTF)[tfId->value()] = tf;
-
     }
-    ::fwTools::getFieldFromObject(m_transfertFunctions, image, ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
+    m_transfertFunctions = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
 }
 
 //------------------------------------------------------------------------------

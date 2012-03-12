@@ -11,7 +11,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwComEd/TriangularMeshMsg.hpp>
 
 #include <fwServices/ObjectMsg.hpp>

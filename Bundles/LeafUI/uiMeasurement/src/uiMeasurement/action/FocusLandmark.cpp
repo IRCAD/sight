@@ -17,7 +17,6 @@
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>

@@ -22,7 +22,6 @@
 #include <fwComEd/PatientDBMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 
 
 #include "uiMeasurement/action/ShowLandmark.hpp"

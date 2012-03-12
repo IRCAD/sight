@@ -28,6 +28,49 @@ namespace fwComEd
 namespace fieldHelper
 {
 
+void BackupHelper::setSelection(::fwData::PatientDB::sptr patientDB,
+        SelectionIdType patientId, SelectionIdType studyId, SelectionIdType acquisitionId)
+{
+    SLM_ASSERT("PatientDB null pointer", patientDB);
+    patientDB->setField_NEWAPI("SELECTED_PATIENT", ::fwData::Integer::New(patientId));
+    patientDB->setField_NEWAPI("SELECTED_STUDY", ::fwData::Integer::New(studyId));
+    patientDB->setField_NEWAPI("SELECTED_ACQUISITION", ::fwData::Integer::New(acquisitionId));
+}
+
+//-----------------------------------------------------------------------------
+
+BackupHelper::SelectionIdType BackupHelper::getSelectedIdx(::fwData::Object::sptr data, ::fwData::Object::FieldNameType name)
+{
+    SelectionIdType index = -1;
+    ::fwData::Integer::sptr dataIdx = ::fwData::Integer::dynamicCast(data->getField_NEWAPI(name));
+    if(dataIdx)
+    {
+        index = dataIdx->value();
+    }
+    return index;
+}
+
+//-----------------------------------------------------------------------------
+
+BackupHelper::SelectionIdType BackupHelper::getSelectedPatientIdx(::fwData::PatientDB::sptr patientDB)
+{
+    return BackupHelper::getSelectedIdx(patientDB, "SELECTED_PATIENT");
+}
+
+//-----------------------------------------------------------------------------
+
+BackupHelper::SelectionIdType BackupHelper::getSelectedStudyIdx(::fwData::PatientDB::sptr patientDB)
+{
+    return BackupHelper::getSelectedIdx(patientDB, "SELECTED_STUDY");
+}
+
+//-----------------------------------------------------------------------------
+
+BackupHelper::SelectionIdType BackupHelper::getSelectedAcquisitionIdx(::fwData::PatientDB::sptr patientDB)
+{
+    return BackupHelper::getSelectedIdx(patientDB, "SELECTED_ACQUISITION");
+}
+
 //-----------------------------------------------------------------------------
 
 ::fwData::Image::sptr BackupHelper::getSelectedImage(::fwData::PatientDB::sptr pPatientDB)
@@ -36,7 +79,7 @@ namespace fieldHelper
 
     if(pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
     {
-        pImage = getSelectedAcquisition(pPatientDB)->getImage();
+        pImage = BackupHelper::getSelectedAcquisition(pPatientDB)->getImage();
     }
 
     return pImage;
@@ -44,84 +87,46 @@ namespace fieldHelper
 
 //-----------------------------------------------------------------------------
 
-::fwData::Acquisition::sptr BackupHelper::getSelectedAcquisition(::fwData::PatientDB::sptr pPatientDB)
+::fwData::Patient::sptr BackupHelper::getSelectedPatient(::fwData::PatientDB::sptr pPatientDB)
 {
-    ::fwData::Acquisition::sptr acquisition;
-
-    if(pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
+    ::fwData::Patient::sptr patient;
+    SelectionIdType idx = BackupHelper::getSelectedPatientIdx(pPatientDB);
+    if(idx >= 0)
     {
-        // Get Selection
-
-        ::fwTools::Field::sptr pDataInfo = pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
-
-        /*::fwData::Object::csptr const vSelection = mySpecificMsg->m_modifiedObject;*/
-        ::fwData::Integer::sptr patIdx = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(0) );
-        ::fwData::Integer::sptr stuIdx = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(1) );
-        ::fwData::Integer::sptr acqIdx = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(2) );
-
-        // Print the selection (debug)
-        OSLM_DEBUG( "patIdx->value : " << patIdx->value() );
-        OSLM_DEBUG( "stuIdx->value : " << stuIdx->value() );
-        OSLM_DEBUG( "acqIdx->value : " << acqIdx->value() );
-
-        ::fwData::Patient::sptr patient = pPatientDB->getPatients().at(patIdx->value());
-        ::fwData::Study::sptr study = patient->getStudies().at(stuIdx->value());
-        acquisition = study->getAcquisitions().at(acqIdx->value());
+        patient = pPatientDB->getPatients().at(idx);
     }
-
-    return acquisition;
+    return patient;
 }
 
 //-----------------------------------------------------------------------------
 
 ::fwData::Study::sptr BackupHelper::getSelectedStudy(::fwData::PatientDB::sptr pPatientDB)
 {
+    ::fwData::Patient::sptr patient = BackupHelper::getSelectedPatient(pPatientDB);
     ::fwData::Study::sptr study;
 
-    if(pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
+    SelectionIdType idx = BackupHelper::getSelectedStudyIdx(pPatientDB);
+    if(patient && idx >= 0)
     {
-        // Get Selection
-
-        ::fwTools::Field::sptr pDataInfo = pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
-
-        /*::fwData::Object::csptr const vSelection = mySpecificMsg->m_modifiedObject;*/
-        ::fwData::Integer::sptr patIdx = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(0) );
-        ::fwData::Integer::sptr stuIdx = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(1) );
-
-        // Print the selection (debug)
-        OSLM_DEBUG( "patIdx->value : " << patIdx->value() );
-        OSLM_DEBUG( "stuIdx->value : " << stuIdx->value() );
-
-        ::fwData::Patient::sptr patient = pPatientDB->getPatients().at(patIdx->value());
-        study = patient->getStudies().at(stuIdx->value());
-
+        study = patient->getStudies().at(idx);
     }
-
     return study;
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Patient::sptr BackupHelper::getSelectedPatient(::fwData::PatientDB::sptr pPatientDB)
+::fwData::Acquisition::sptr BackupHelper::getSelectedAcquisition(::fwData::PatientDB::sptr pPatientDB)
 {
-    ::fwData::Patient::sptr patient;
+    ::fwData::Patient::sptr patient = BackupHelper::getSelectedPatient(pPatientDB);
+    ::fwData::Study::sptr study = BackupHelper::getSelectedStudy(pPatientDB);
+    ::fwData::Acquisition::sptr acquisition;
 
-    if(pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
+    SelectionIdType idx = BackupHelper::getSelectedAcquisitionIdx(pPatientDB);
+    if(patient && study && idx >= 0)
     {
-        // Get Selection
-
-        ::fwTools::Field::sptr pDataInfo = pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
-
-        /*::fwData::Object::csptr const vSelection = mySpecificMsg->m_modifiedObject;*/
-        ::fwData::Integer::sptr patIdx = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(0) );
-
-        // Print the selection (debug)
-        OSLM_DEBUG( "patIdx->value : " << patIdx->value() );
-
-        patient = pPatientDB->getPatients().at(patIdx->value());
+        acquisition = study->getAcquisitions().at(idx);
     }
-
-    return patient;
+    return acquisition;
 }
 
 //-----------------------------------------------------------------------------
@@ -129,25 +134,21 @@ namespace fieldHelper
 ::fwData::Image::sptr BackupHelper::backupSelectedImage(::fwData::PatientDB::sptr _pPatientDB, ::fwServices::IService::sptr _MsgSource)
 {
     ::fwData::Image::sptr backupImage;
-    if( _pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId) )
+    SelectionIdType patIdx = BackupHelper::getSelectedPatientIdx(_pPatientDB);
+    ::fwData::Study::sptr study = BackupHelper::getSelectedStudy(_pPatientDB);
+    ::fwData::Acquisition::sptr acquisition = BackupHelper::getSelectedAcquisition(_pPatientDB);
+
+    if( patIdx >= 0 && study && acquisition )
     {
-        // Get Selection
-
-        ::fwData::Study::sptr study = getSelectedStudy(_pPatientDB);
-        ::fwData::Acquisition::sptr acquisition = getSelectedAcquisition(_pPatientDB);
-
         ::fwData::Acquisition::NewSptr pAquisitionCopy;
         pAquisitionCopy->deepCopy( acquisition );
         study->addAcquisition( pAquisitionCopy );
 
         backupImage = pAquisitionCopy->getImage();
 
-        ::fwTools::Field::sptr pDataInfo = _pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
-        ::fwData::Integer::sptr patIdx = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(0) );
         // Fire Event
         ::fwComEd::PatientDBMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::PatientDBMsg::ADD_PATIENT, ::fwData::Integer::New(patIdx->value()) );
-
+        msg->addEvent( ::fwComEd::PatientDBMsg::ADD_PATIENT, ::fwData::Integer::New(patIdx) );
         ::fwServices::IEditionService::notify(_MsgSource, _pPatientDB, msg);
     }
     return backupImage;

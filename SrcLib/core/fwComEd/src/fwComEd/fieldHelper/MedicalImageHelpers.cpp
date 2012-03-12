@@ -291,10 +291,10 @@ bool MedicalImageHelpers::checkLandmarks( ::fwData::Image::sptr _pImg )
     bool fieldIsModified = false;
 
     // Manage image landmarks
-    if ( ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_imageLandmarksId ) )
+    if ( ! _pImg->getField_NEWAPI( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
         ::fwData::PointList::NewSptr pl;
-        _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
+        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
         fieldIsModified = true;
     }
 
@@ -315,12 +315,16 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
         size_t nbDim = _pImg->getNumberOfDimensions();
         dataImageIsAllocated &= nbDim > 1;
 
-        for ( int k = 0; dataImageIsAllocated && k < nbDim; ++k )
+        for ( size_t k = 0; dataImageIsAllocated && k < nbDim; ++k )
         {
             if(k == 2 && nbDim == 3) // special test for 2D jpeg image (size[2] == 1)
+            {
                 dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
+            }
             else
+            {
                 dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] != 0 && ( _pImg->getSize()[k] != 1 ) );
+            }
         }
     }
 
@@ -331,79 +335,55 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
 
 bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 {
-    SLM_TRACE_FUNC();
+    SLM_ASSERT("_pImg pointer null", _pImg);
 
     bool fieldIsModified = false;
 
-    size_t nbDim = _pImg->getNumberOfDimensions();
+    const ::fwData::Image::SizeType &imageSize = _pImg->getSize();
+
+    ::fwData::Integer::sptr axialIdx    = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
+    ::fwData::Integer::sptr frontalIdx  = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId);
+    ::fwData::Integer::sptr sagittalIdx = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
 
     // Manage image landmarks
-    if (    ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_axialSliceIndexId ) ||
-            ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_frontalSliceIndexId ) ||
-            ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_sagittalSliceIndexId ) )
+    if ( ! (axialIdx && frontalIdx && sagittalIdx) )
     {
-
-        // Get value
-        std::vector< boost::int32_t > imageSize (3,0);
-        for ( int k = 0; k < nbDim; ++k )
-        {
-            imageSize[k] = _pImg->getSize()[k];
-        }
-
         // Set value
-        ::fwData::Integer::NewSptr paramA;
-        paramA->value() = imageSize[2] / 2;
-        _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
+        axialIdx = ::fwData::Integer::New(-1);
+        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_axialSliceIndexId, axialIdx );
 
-        ::fwData::Integer::NewSptr paramF;
-        paramF->value() = imageSize[1] / 2;
-        _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
+        frontalIdx = ::fwData::Integer::New(-1);
+        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_frontalSliceIndexId, frontalIdx );
 
-        ::fwData::Integer::NewSptr paramS;
-        paramS->value() = imageSize[0] / 2;
-        _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramS );
+        sagittalIdx = ::fwData::Integer::New(-1);
+        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_sagittalSliceIndexId, sagittalIdx );
 
         fieldIsModified = true;
     }
-    else if (   _pImg->getFieldSize( ::fwComEd::Dictionary::m_axialSliceIndexId ) > 0 &&
-                _pImg->getFieldSize( ::fwComEd::Dictionary::m_frontalSliceIndexId ) > 0 &&
-                _pImg->getFieldSize( ::fwComEd::Dictionary::m_sagittalSliceIndexId ) > 0 )
+
+
+    SLM_ASSERT (
+            "Information on image slice index is not correct, miss one of these fields : m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
+            axialIdx && frontalIdx && sagittalIdx
+            );
+
+    // Get value
+    if( axialIdx->value() < 0 ||  imageSize[2] < axialIdx->value() )
     {
-        // Get value
-        std::vector< boost::int32_t > imageSize (3,0);
-        for ( int k = 0; k < nbDim; ++k )
-        {
-            imageSize[k] = _pImg->getSize()[k];
-        }
-
-        // Get value
-        ::fwData::Integer::sptr paramA = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
-        if( paramA->value() < 0 ||  imageSize[2] < paramA->value() )
-        {
-            paramA->value() = imageSize[2] / 2;
-            _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
-            fieldIsModified = true;
-        }
-
-        ::fwData::Integer::sptr paramF = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId );
-        if( paramF->value() < 0 ||  imageSize[1] < paramF->value() )
-        {
-            paramF->value() = imageSize[1] / 2;
-            _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
-            fieldIsModified = true;
-        }
-
-        ::fwData::Integer::sptr paramS = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
-        if( paramS->value() < 0 ||  imageSize[0] < paramS->value() )
-        {
-            paramS->value() = imageSize[0] / 2;
-            _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramF );
-            fieldIsModified = true;
-        }
+        axialIdx->value() = imageSize[2] / 2;
+        fieldIsModified = true;
     }
-    else
+
+    if( frontalIdx->value() < 0 ||  imageSize[1] < frontalIdx->value() )
     {
-        SLM_FATAL("Information on image slice index is not correct, miss one of these fields : m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.");
+        frontalIdx->value() = imageSize[1] / 2;
+        fieldIsModified = true;
+    }
+
+    if( sagittalIdx->value() < 0 ||  imageSize[0] < sagittalIdx->value() )
+    {
+        sagittalIdx->value() = imageSize[0] / 2;
+        fieldIsModified = true;
     }
 
 
@@ -414,15 +394,15 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
 ::fwData::Point::sptr   MedicalImageHelpers::getImageSliceIndices( ::fwData::Image::sptr _pImg )
 {
-    SLM_ASSERT("_pImg not instanced", _pImg);
+    SLM_ASSERT("_pImg pointer null", _pImg);
 
     ::fwData::Point::NewSptr point;
 
     MedicalImageHelpers::checkImageSliceIndex(_pImg);
 
-    point->getRefCoord()[0] = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
-    point->getRefCoord()[1] = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId  )->value();
-    point->getRefCoord()[2] = _pImg->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId    )->value();
+    point->getRefCoord()[0] = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
+    point->getRefCoord()[1] = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId  )->value();
+    point->getRefCoord()[2] = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId    )->value();
 
     return point;
 }
@@ -431,17 +411,15 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
 bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 {
-    SLM_TRACE_FUNC();
+    SLM_ASSERT("_pImg pointer null", _pImg);
 
     bool fieldIsModified = false;
 
-    if ( ! _pImg->getFieldSize( ::fwComEd::Dictionary::m_commentId ) )
+    if ( ! _pImg->getField_NEWAPI( ::fwComEd::Dictionary::m_commentId ) )
     {
         // Set value
-        ::fwData::String::NewSptr param;
-        param->value() = "Original image";
-        _pImg->setFieldSingleElement( ::fwComEd::Dictionary::m_commentId, param );
-
+        ::fwData::String::NewSptr param("Original image");
+        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_commentId, param );
         fieldIsModified = true;
     }
 
@@ -490,23 +468,21 @@ std::pair<bool, bool> MedicalImageHelpers::checkMinMaxTFAndSetBWTF( ::fwData::Pa
 
 void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage)
 {
+    SLM_ASSERT("pPatient pointer null", pPatient);
+    SLM_ASSERT("pImage pointer null", pImage);
+
     std::stringstream label;
-    if ( ! pPatient->getFieldSize( ::fwComEd::Dictionary::m_acquisitionCountId ) )
+    ::fwData::Integer::sptr intField = pPatient->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_acquisitionCountId );
+    if(!intField)
     {
-        ::fwData::Integer::NewSptr intField;
-        pPatient->setFieldSingleElement( ::fwComEd::Dictionary::m_acquisitionCountId, intField  );
-        label << "I0";
-        pPatient->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_acquisitionCountId)->value()++;
+        intField = ::fwData::Integer::New(0);
+        pPatient->setField_NEWAPI( ::fwComEd::Dictionary::m_acquisitionCountId, intField  );
     }
-    else
-    {
-        int count = pPatient->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_acquisitionCountId)->value();
-        label << "I" << count;
-        pPatient->getFieldSingleElement< ::fwData::Integer >(::fwComEd::Dictionary::m_acquisitionCountId)->value()++;
-    }
-    ::fwData::String::NewSptr labelField;
-    labelField->value() = label.str();
-    pImage->setFieldSingleElement(::fwComEd::Dictionary::m_imageLabelId, labelField);
+    label << "I" << intField->value();
+    ++(intField->value());
+
+    ::fwData::String::NewSptr labelField(label.str());
+    pImage->setField_NEWAPI(::fwComEd::Dictionary::m_imageLabelId, labelField);
 }
 
 //------------------------------------------------------------------------------
@@ -569,7 +545,7 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
                     patient->getIsMale()    == oldPatient->getIsMale() )
             {
                 patientExist = true;
-                mergeInformation(oldPatient,patient);
+                MedicalImageHelpers::mergeInformation(oldPatient,patient);
                 break;
             }
             ++index;

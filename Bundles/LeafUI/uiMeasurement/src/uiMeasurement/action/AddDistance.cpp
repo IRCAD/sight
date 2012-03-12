@@ -24,7 +24,6 @@
 
 #include <fwComEd/PatientMsg.hpp>
 #include <fwComEd/ReconstructionMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
