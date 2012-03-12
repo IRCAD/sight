@@ -464,30 +464,21 @@ std::pair<bool, bool> MedicalImageHelpers::checkMinMaxTFAndSetBWTF( ::fwData::Pa
 {
     std::pair<bool,bool> fieldsAreModified (false,false);
 
-    ::fwData::PatientDB::PatientIterator patientIter;
-    for (   patientIter = _pPatientDB->getPatients().first ;
-            patientIter != _pPatientDB->getPatients().second ;
-            ++patientIter)
+    BOOST_FOREACH( ::fwData::Patient::sptr patient, _pPatientDB->getPatients() )
     {
-        // Study selection
-        ::fwData::Patient::StudyIterator studyIter;
-        for (   studyIter = (*patientIter)->getStudies().first ;
-                studyIter != (*patientIter)->getStudies().second ;
-                ++studyIter)
+        BOOST_FOREACH( ::fwData::Study::sptr study, patient->getStudies() )
         {
-            // Acquisition selection
-            ::fwData::Study::AcquisitionIterator acquisitionIter;
-            for (   acquisitionIter = (*studyIter)->getAcquisitions().first ;
-                    acquisitionIter != (*studyIter)->getAcquisitions().second ;
-                    ++acquisitionIter)
+            BOOST_FOREACH( ::fwData::Acquisition::sptr acq, study->getAcquisitions() )
             {
-                ::fwData::Image::sptr pImage = (*acquisitionIter)->getImage();
+
+                ::fwData::Image::sptr pImage = acq->getImage();
                 if ( pImage )
                 {
                     std::pair<bool, bool> minmaxIsModified = checkMinMaxTFAndSetBWTF(pImage);
                     fieldsAreModified.first = fieldsAreModified.first && minmaxIsModified.first;
                     fieldsAreModified.second = fieldsAreModified.second && minmaxIsModified.second;
                 }
+
             }
         }
     }
@@ -550,69 +541,46 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
     // Add new patient DB to patient DB container
 
     // Test if the patient db contain patient
-    bool hasOldPatients = ( _patientDBTo->getPatients().first   != _patientDBTo->getPatients().second );
-    bool hasNewPatients = ( _patientDBFrom->getPatients().first != _patientDBFrom->getPatients().second );
+    bool hasOldPatients = ! _patientDBTo->getPatients().empty();
+    bool hasNewPatients = ! _patientDBFrom->getPatients().empty();
 
-    // Add patient
-    ::fwData::PatientDB::PatientIterator patientBegin = _patientDBFrom->getPatients().first;
-    ::fwData::PatientDB::PatientIterator patientEnd     = _patientDBFrom->getPatients().second;
-    ::fwData::PatientDB::PatientIterator patient        = patientBegin;
     int index = 0;
-    while ( patient != patientEnd )
+
+    BOOST_FOREACH( ::fwData::Patient::sptr patient, _patientDBFrom->getPatients() )
     {
-        // remove reconstructions images
-        ::fwData::PatientDB::PatientIterator patientIter;
-        for (   patientIter = _patientDBFrom->getPatients().first ;
-                patientIter != _patientDBFrom->getPatients().second ;
-                ++patientIter)
+        BOOST_FOREACH( ::fwData::Study::sptr study, patient->getStudies() )
         {
-            // Study selection
-            ::fwData::Patient::StudyIterator studyIter;
-            for (   studyIter = (*patientIter)->getStudies().first ;
-                    studyIter != (*patientIter)->getStudies().second ;
-                    ++studyIter)
+            BOOST_FOREACH( ::fwData::Acquisition::sptr acq, study->getAcquisitions() )
             {
-                // Acquisition selection
-                ::fwData::Study::AcquisitionIterator acquisitionIter;
-                for (   acquisitionIter = (*studyIter)->getAcquisitions().first ;
-                        acquisitionIter != (*studyIter)->getAcquisitions().second ;
-                        ++acquisitionIter)
+                BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, acq->getReconstructions() )
                 {
-                    ::fwData::Acquisition::ReconstructionIterator reconstructionIter;
-                    for (   reconstructionIter = (*acquisitionIter)->getReconstructions().first ;
-                            reconstructionIter != (*acquisitionIter)->getReconstructions().second ;
-                            ++reconstructionIter)
-                    {
-                        ::fwData::Image::sptr image;
-                        (*reconstructionIter)->setImage( image );
-                    }
+                    ::fwData::Image::sptr image;
+                    reconstruction->setImage( image );
                 }
             }
         }
 
-        // if patient exist, merge patient
         bool patientExist = false;
-        ::fwData::PatientDB::PatientIterator oldPatient = _patientDBTo->getPatients().first;
-        ::fwData::PatientDB::PatientIterator oldPatientEnd  = _patientDBTo->getPatients().second;
         index = 0;
-        for ( ; oldPatient != oldPatientEnd ; ++oldPatient)
+        BOOST_FOREACH( ::fwData::Patient::sptr oldPatient, _patientDBTo->getPatients() )
         {
-            if (    (*patient)->getName() == (*oldPatient)->getName() &&
-                    (*patient)->getFirstname() == (*oldPatient)->getFirstname() &&
-                    (*patient)->getIsMale() == (*oldPatient)->getIsMale() )
+            if (    patient->getName()      == oldPatient->getName() &&
+                    patient->getFirstname() == oldPatient->getFirstname() &&
+                    patient->getIsMale()    == oldPatient->getIsMale() )
             {
                 patientExist = true;
-                mergeInformation((*oldPatient),(*patient));
+                mergeInformation(oldPatient,patient);
                 break;
             }
             ++index;
         }
         if ( !patientExist )
         {
-            _patientDBTo->addPatient( *patient );
+            _patientDBTo->addPatient( patient );
         }
-        ++patient;
+
     }
+
 
     if( hasNewPatients )
     {
@@ -636,16 +604,14 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
 
 void MedicalImageHelpers::mergeInformation(::fwData::Patient::sptr currentPatient, ::fwData::Patient::sptr importedPatient)
 {
-    ::fwData::Patient::StudyIterator studyIter;
-    for (   studyIter = importedPatient->getStudies().first ;
-            studyIter != importedPatient->getStudies().second ;
-            ++studyIter )
+
+    BOOST_FOREACH( ::fwData::Study::sptr study, importedPatient->getStudies() )
     {
-        currentPatient->addStudy(*studyIter);
+        currentPatient->addStudy(study);
     }
 
-    ::fwData::Composite::sptr itool = ::fwData::Composite::dynamicCast( importedPatient->getTool(::fwComEd::Dictionary::m_resectionId));
-    ::fwData::Composite::sptr ctool = ::fwData::Composite::dynamicCast(currentPatient->getTool(::fwComEd::Dictionary::m_resectionId));
+    ::fwData::Composite::sptr itool = ::fwData::Composite::dynamicCast(importedPatient->getTool(::fwComEd::Dictionary::m_resectionId));
+    ::fwData::Composite::sptr ctool = ::fwData::Composite::dynamicCast(currentPatient->getTool(::fwComEd::Dictionary::m_resectionId) );
 
     //merge toolbox
 

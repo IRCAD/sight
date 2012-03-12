@@ -47,14 +47,13 @@ ResectionDBMsg::~ResectionDBMsg() throw()
     ::fwData::PatientDB::sptr pPatientDB = ::fwData::PatientDB::dynamicCast(this->getSubject().lock());
     SLM_ASSERT("PatientDB Object needed", pPatientDB);
 
-    ::fwData::Patient::sptr pPatient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
-    ::fwTools::Field::sptr pResectionInfo = pPatient->getField( fwComEd::Dictionary::m_resectionSelectedId );
-    ::fwData::String::sptr pOpName = ::fwData::String::dynamicCast ( pResectionInfo->children().at(0) );
-    ::fwData::Integer::sptr pResectionIndex = ::fwData::Integer::dynamicCast( pResectionInfo->children().at(1) );
+    ::fwData::Patient::sptr pPatient         = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
+    ::fwTools::Field::sptr pResectionInfo    = pPatient->getField( fwComEd::Dictionary::m_resectionSelectedId );
+    ::fwData::String::sptr pOpName           = ::fwData::String::dynamicCast ( pResectionInfo->children().at(0) );
+    ::fwData::Integer::sptr pResectionIndex  = ::fwData::Integer::dynamicCast( pResectionInfo->children().at(1) );
     ::fwData::Composite::sptr compoResection = ::fwData::Composite::dynamicCast(pPatient->getTool(::fwComEd::Dictionary::m_resectionId));
     ::fwData::ResectionDB::sptr pResectionDB = ::fwData::ResectionDB::dynamicCast(compoResection->getRefMap()[pOpName->value()]);
-    ::fwData::ResectionDB::ResectionIterator resectionIter = pResectionDB->getResections().first;
-    ::fwData::Resection::sptr pResection = *(resectionIter + pResectionIndex->value());
+    ::fwData::Resection::sptr pResection     = pResectionDB->getResections().at(pResectionIndex->value());
 
     return pResection;
 }
