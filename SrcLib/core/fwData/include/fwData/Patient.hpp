@@ -57,7 +57,7 @@ public:
     /**
      * @brief Get/Set the study container
      */
-    fwDataGetSetSptrMacro(Studies, StudyContainerType);
+    fwDataGetSetCRefMacro(Studies, StudyContainerType);
 
     /**
      * @brief Get the number of studies

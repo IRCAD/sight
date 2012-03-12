@@ -7,7 +7,12 @@
 #ifndef __FWDATA_MACROS_HPP__
 #define __FWDATA_MACROS_HPP__
 
+#include <boost/mpl/assert.hpp>
+#include <boost/mpl/or.hpp>
 #include <boost/preprocessor/cat.hpp>
+#include <boost/type_traits/is_class.hpp>
+#include <boost/type_traits/is_enum.hpp>
+#include <boost/type_traits/is_fundamental.hpp>
 
 #include <fwCore/macros.hpp>
 /**
@@ -18,6 +23,18 @@
  */
 
 
+namespace fwData
+{
+template<typename T>
+struct is_smart_ptr : ::boost::mpl::false_ { };
+
+template<typename T>
+struct is_smart_ptr< SPTR(T) > : ::boost::mpl::true_ { };
+
+template<typename T>
+struct is_smart_ptr< WPTR(T) > : ::boost::mpl::true_ { };
+
+} //namespace fwData
 
 /*
  * macros used for getters/setters
@@ -27,9 +44,6 @@
  * type : type of the variable (float, std::string, ...)
  * text : comment used in doxygen
  */
-
-
-
 //-----------------------------------
 // Getter/Setter macros
 //-----------------------------------
@@ -38,27 +52,39 @@
 
 //-----------------------------------
 
-#define fwDataGetMacro(attrName, attrType)                                        \
-attrType get##attrName () const                                                   \
-{                                                                                 \
-    return BOOST_PP_CAT(                                                          \
-                       __FWDATA_CLASS_ATTRIBUTE_PREFIX,                           \
-                       BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX,attrName) \
-                       );                                                         \
+#define fwDataGetMacro(attrName, attrType)                                                    \
+attrType get##attrName () const                                                               \
+{                                                                                             \
+BOOST_MPL_ASSERT(                                                                             \
+        ( boost::mpl::or_< boost::is_fundamental< attrType > , boost::is_enum< attrType > > ) \
+        /* This macro is intended to be used with fundamental types. */                       \
+        );                                                                                    \
+    return BOOST_PP_CAT(                                                                      \
+                       __FWDATA_CLASS_ATTRIBUTE_PREFIX,                                       \
+                       BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX,attrName)             \
+                       );                                                                     \
 }
 
-#define fwDataSetMacro(attrName, attrType)                                 \
-void set##attrName (attrType val)                                          \
-{                                                                          \
-    BOOST_PP_CAT(                                                          \
-                __FWDATA_CLASS_ATTRIBUTE_PREFIX,                           \
-                BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX,attrName) \
-                ) = val;                                                   \
+#define fwDataSetMacro(attrName, attrType)                                                    \
+void set##attrName (attrType val)                                                             \
+{                                                                                             \
+BOOST_MPL_ASSERT(                                                                             \
+        ( boost::mpl::or_< boost::is_fundamental< attrType > , boost::is_enum< attrType > > ) \
+        /* This macro is intended to be used with fundamental types. */                       \
+        );                                                                                    \
+    BOOST_PP_CAT(                                                                             \
+                __FWDATA_CLASS_ATTRIBUTE_PREFIX,                                              \
+                BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX,attrName)                    \
+                ) = val;                                                                      \
 }
 
 #define fwDataGetSptrMacro(attrName, attrType)                                       \
 attrType get##attrName () const                                                      \
 {                                                                                    \
+BOOST_MPL_ASSERT(                                                                    \
+        ( ::fwData::is_smart_ptr< attrType > )                                       \
+        /* This macro is intended to be used with smart_ptr types. */                \
+        );                                                                           \
     return BOOST_PP_CAT(                                                             \
                         __FWDATA_CLASS_ATTRIBUTE_PREFIX,                             \
                         BOOST_PP_CAT( __FWDATA_GENERATED_ATTRIBUTE_PREFIX, attrName) \
@@ -68,6 +94,10 @@ attrType get##attrName () const                                                 
 #define fwDataSetSptrMacro(attrName, attrType)                               \
 void set##attrName (attrType val)                                            \
 {                                                                            \
+BOOST_MPL_ASSERT(                                                            \
+        ( ::fwData::is_smart_ptr< attrType > )                               \
+        /* This macro is intended to be used with smart_ptr types. */        \
+        );                                                                   \
     BOOST_PP_CAT(                                                            \
                 __FWDATA_CLASS_ATTRIBUTE_PREFIX,                             \
                 BOOST_PP_CAT( __FWDATA_GENERATED_ATTRIBUTE_PREFIX, attrName) \
@@ -76,22 +106,30 @@ void set##attrName (attrType val)                                            \
 
 //-----------------------------------
 
-#define fwDataGetCRefMacro(attrName, attrType)                                      \
-const attrType &get##attrName () const                                              \
-{                                                                                   \
-    return BOOST_PP_CAT(                                                            \
-                        __FWDATA_CLASS_ATTRIBUTE_PREFIX,                            \
-                        BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX, attrName) \
-                        );                                                          \
+#define fwDataGetCRefMacro(attrName, attrType)                                                     \
+const attrType &get##attrName () const                                                             \
+{                                                                                                  \
+BOOST_MPL_ASSERT(                                                                                  \
+        ( boost::is_class< attrType > )                                                            \
+        /* This macro is intended to be used with non fundamental types and non smart-pointers. */ \
+        );                                                                                         \
+    return BOOST_PP_CAT(                                                                           \
+                        __FWDATA_CLASS_ATTRIBUTE_PREFIX,                                           \
+                        BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX, attrName)                \
+                        );                                                                         \
 }
 
-#define fwDataSetCRefMacro(attrName, attrType)                              \
-void set##attrName (const attrType &val)                                    \
-{                                                                           \
-    BOOST_PP_CAT(                                                           \
-                __FWDATA_CLASS_ATTRIBUTE_PREFIX,                            \
-                BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX, attrName) \
-                ) = val;                                                    \
+#define fwDataSetCRefMacro(attrName, attrType)                                                     \
+void set##attrName (const attrType &val)                                                           \
+{                                                                                                  \
+BOOST_MPL_ASSERT(                                                                                  \
+        ( boost::is_class< attrType > )                                                            \
+        /* This macro is intended to be used with non fundamental types and non smart-pointers. */ \
+        );                                                                                         \
+    BOOST_PP_CAT(                                                                                  \
+                __FWDATA_CLASS_ATTRIBUTE_PREFIX,                                                   \
+                BOOST_PP_CAT(__FWDATA_GENERATED_ATTRIBUTE_PREFIX, attrName)                        \
+                ) = val;                                                                           \
 }
 
 //-----------------------------------

@@ -80,7 +80,7 @@ public :
     {
         LINEAR,
         NEAREST
-    }InterpolationMode;
+    } InterpolationMode;
 
     typedef double TFValueType;
     typedef std::vector<TFValueType> TFValueVectorType;
@@ -144,13 +144,13 @@ public :
     fwDataGetSetMacro(Window, double);
 
     /// Transfert function name
-    fwDataGetSetMacro(Name, std::string);
+    fwDataGetSetCRefMacro(Name, std::string);
 
     /// is TF clamped
     fwDataGetSetMacro(IsClamped, bool);
 
     /// set the color of the recommanded background for the TF
-    fwDataGetSetMacro(BackgroundColor, TFColor);
+    fwDataGetSetCRefMacro(BackgroundColor, TFColor);
 
     /// Default transfert function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;

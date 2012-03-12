@@ -46,7 +46,7 @@ public:
     /**
      * @brief Get/Set patients
      */
-    fwDataGetSetSptrMacro(Patients, PatientContainerType);
+    fwDataGetSetCRefMacro(Patients, PatientContainerType);
 
     /**
      * @brief Get the number of patients
