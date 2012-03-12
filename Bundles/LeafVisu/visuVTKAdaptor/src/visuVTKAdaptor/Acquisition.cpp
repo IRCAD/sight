@@ -92,13 +92,12 @@ void Acquisition::doUpdate() throw(fwTools::Failed)
     {
         showRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
     }
-    ::fwData::Acquisition::ReconstructionIterator iter;
 
-    for (iter = acq->getReconstructions().first; iter != acq->getReconstructions().second; ++iter)
+    BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, acq->getReconstructions() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( *iter, "::visuVTKAdaptor::Reconstruction" );
+        ( reconstruction, "::visuVTKAdaptor::Reconstruction" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
