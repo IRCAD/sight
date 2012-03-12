@@ -85,8 +85,8 @@ public:
      * @brief add/get a scenario
      * @{
      */
-    void addScenario( std::string _name, ::fwData::Object::sptr _scenario );
-    ::fwData::Object::sptr getScenario( std::string _name );
+    FWDATA_API void addScenario( std::string _name, ::fwData::Object::sptr _scenario );
+    FWDATA_API ::fwData::Object::sptr getScenario( std::string _name );
     /** @} */
 
     /**
