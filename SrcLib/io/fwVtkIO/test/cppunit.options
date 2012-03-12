@@ -2,6 +2,7 @@ CLASSTEST=[
           'TrianTest',
           'MeshTest',
           'ImageTest',
+          'TransfertFunctionTest',
           ]
 USE = ['boost']
 LIB = [

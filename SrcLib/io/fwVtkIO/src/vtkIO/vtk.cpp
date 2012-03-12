@@ -526,6 +526,7 @@ void convertTF2vtkTF(
         bool allow_transparency
         )
 {
+    SLM_FATAL("convertTF2vtkTF with old TF is depreciated");
     SLM_TRACE_FUNC();
     //vtkWindowLevelLookupTable * lookupTable = vtkWindowLevelLookupTable::New();
 
@@ -639,6 +640,7 @@ void convertTF2vtkTFBW(
         ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
         vtkLookupTable * lookupTableDst )
 {
+    SLM_FATAL("convertTF2vtkTFBW with old TF is depreciated");
     SLM_TRACE_FUNC();
 
     // Compute center and width
