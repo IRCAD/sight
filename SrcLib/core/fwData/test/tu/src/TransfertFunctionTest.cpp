@@ -39,33 +39,6 @@ void TransfertFunctionTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::methode1()
-{
-//    //-----------test values
-//    const ::fwData::Color::sptr C1 = ::fwData::Color::New(0.5f, 0.4f ,0.6f, 0.1f);
-//    const ::fwData::Color::sptr C2 = ::fwData::Color::New();
-//    const int INDEX1 = 2;
-//    const int INDEX2 = 5;
-//    const std::string NAME = "tfName";
-//    const std::string ENCODING = "tfencoding";
-//    const boost::uint32_t SIZE = 2;
-
-//    ::fwData::TransfertFunction::NewSptr tf;
-
-//    tf->setCRefEncoding(ENCODING);
-//    tf->setCRefName(NAME);
-//    tf->getColor(INDEX1)->deepCopy( C1 );
-//    tf->getColor(INDEX2)->deepCopy( C2 );
-
-//    CPPUNIT_ASSERT_EQUAL(tf->getTransfertFunctionPointSize(), SIZE);
-//    CPPUNIT_ASSERT_EQUAL(tf->getName(), NAME);
-//    CPPUNIT_ASSERT_EQUAL(tf->getEncoding(), ENCODING);
-//    CPPUNIT_ASSERT_EQUAL(tf->getColor(INDEX1)->getRGBA()[0], C1->getRGBA()[0]);
-//    CPPUNIT_ASSERT_EQUAL(tf->getColor(INDEX1)->getRGBA()[1], C1->getRGBA()[1]);
-}
-
-//------------------------------------------------------------------------------
-
 void TransfertFunctionTest::constructorTest()
 {
     // Expected value.
@@ -247,6 +220,8 @@ void TransfertFunctionTest::checkTFColor( ::fwData::TransfertFunction_VERSION_II
     CPPUNIT_ASSERT_EQUAL( -200.02, tf->getWindow() );
 
     CPPUNIT_ASSERT_EQUAL( (size_t)4, tf->getTFData().size() );
+    CPPUNIT_ASSERT_EQUAL( -40.33, tf->getMinMaxTFValues().first );
+    CPPUNIT_ASSERT_EQUAL( 150.0, tf->getMinMaxTFValues().second );
 
     const TransfertFunction_VERSION_II::TFValueVectorType & values = tf->getTFValues();
     CPPUNIT_ASSERT_EQUAL( values[0] , -40.33  );

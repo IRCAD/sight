@@ -81,6 +81,18 @@ TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::ge
 
 //------------------------------------------------------------------------------
 
+const std::pair< TransfertFunction_VERSION_II::TFValueType, TransfertFunction_VERSION_II::TFValueType >
+TransfertFunction_VERSION_II::getMinMaxTFValues() const
+{
+    OSLM_ASSERT("It must have at least one value.", m_attrTfData.size()>= 1);
+    std::pair< TFValueType, TFValueType > minMax;
+    minMax.first = m_attrTfData.begin()->first;
+    minMax.second = (--m_attrTfData.end())->first;
+    return minMax;
+}
+
+//------------------------------------------------------------------------------
+
 TransfertFunction_VERSION_II::TFValueType TransfertFunction_VERSION_II::getNearestValue( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_attrTfData.size()>= 1);

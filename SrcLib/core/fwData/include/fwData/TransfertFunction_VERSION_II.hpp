@@ -104,6 +104,9 @@ public :
     /// Get all the point values of the TF (keys of the map m_tfData)
     FWDATA_API TFValueVectorType getTFValues() const;
 
+    /// Get the first and last point values of the tf data
+    FWDATA_API const std::pair< TFValueType, TFValueType > getMinMaxTFValues() const;
+
     /// Return the nearest point value of a value.
     FWDATA_API TFValueType getNearestValue( TFValueType value ) const;
 
