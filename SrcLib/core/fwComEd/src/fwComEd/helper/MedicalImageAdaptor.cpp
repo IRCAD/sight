@@ -250,11 +250,34 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
     // Set TF data if not still set
     if ( m_tfPool.expired() )
     {
-        ::fwComEd::helper::Image helper ( image );
-        helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
+        if ( ! m_tfPoolFwID.empty() )
+        {
+            ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfPoolFwID ) );
+            OSLM_ASSERT( "Sorry, object with fwID " << m_tfPoolFwID << " doesn't exist.", pool );
+            OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
+            if ( pool->find( m_selectedTFKey ) == pool->end() )
+            {
+                ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+                tf->setLevel(0);
+                tf->setWindow(500);
+                tf->setName( m_selectedTFKey );
+                tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::LINEAR );
+                tf->setIsClamped(true);
+                tf->addTFColor(0.0, ::fwData::TransfertFunction_VERSION_II::TFColor(1.0,0.0,0.0,1.0));
+                tf->addTFColor(0.5, ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,1.0,0.0,1.0));
+                tf->addTFColor(1.0, ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,0.0,1.0,1.0));
+                (*pool)[m_selectedTFKey] = tf;
+            }
+            m_tfPool = pool;
+        }
+        else
+        {
+            ::fwComEd::helper::Image helper ( image );
+            helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
-        m_selectedTFKey = ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
-        m_tfPool = image->getField_NEWAPI< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+            m_selectedTFKey = ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
+            m_tfPool = image->getField_NEWAPI< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+        }
     }
 }
 
