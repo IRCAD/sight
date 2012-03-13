@@ -120,21 +120,21 @@ void Negato::updateFromImage( QImage * qimg )
     switch (m_orientation)
     {
         case MedicalImageAdaptor::X_AXIS:
-            ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+            index = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[1];
             qImageSpacing[1] = spacing[2];
             OSLM_TRACE("Orientation = X");
             break;
 
         case MedicalImageAdaptor::Y_AXIS:
-            ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_frontalSliceIndexId, ::fwData::Integer::New(0));
+            index = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_frontalSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[2];
             OSLM_TRACE("Orientation = Y");
             break;
 
         case MedicalImageAdaptor::Z_AXIS:
-            ::fwTools::getFieldFromObject(index, image, ::fwComEd::Dictionary::m_axialSliceIndexId, ::fwData::Integer::New(0));
+            index = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_axialSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[1];
             OSLM_TRACE("Orientation = Z");
@@ -149,12 +149,12 @@ void Negato::updateFromImage( QImage * qimg )
 
     // Window min
     ::fwData::Integer::sptr minInt;
-    ::fwTools::getFieldFromObject(minInt, image, ::fwComEd::Dictionary::m_windowMinId, ::fwData::Integer::New(0));
+    minInt = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMinId, ::fwData::Integer::New(0));
     const double min = minInt->value();
 
     // Window max
     ::fwData::Integer::sptr maxInt;
-    ::fwTools::getFieldFromObject(maxInt, image, ::fwComEd::Dictionary::m_windowMaxId, ::fwData::Integer::New(100));
+    maxInt = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMaxId, ::fwData::Integer::New(100));
     const double max = maxInt->value();
 
     signed short * imgBuff = (signed short *) ( image->getBuffer() );
@@ -467,11 +467,12 @@ void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::Integer::sptr minInt;
-    ::fwTools::getFieldFromObject(minInt, image, ::fwComEd::Dictionary::m_windowMinId, ::fwData::Integer::New(0));
+    minInt = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMinId, ::fwData::Integer::New(0));
     double min = minInt->value();
 
     ::fwData::Integer::sptr maxInt;
-    ::fwTools::getFieldFromObject(maxInt, image, ::fwComEd::Dictionary::m_windowMaxId, ::fwData::Integer::New(100));
+    maxInt = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMaxId, ::fwData::Integer::New(100));
+
     double max = maxInt->value();
 
     double window = newCoord.getX() - m_oldCoord.getX();
