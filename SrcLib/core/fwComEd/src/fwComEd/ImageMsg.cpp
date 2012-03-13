@@ -65,6 +65,14 @@ void ImageMsg::setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::s
     m_windowMax = max;
 }
 
+//-----------------------------------------------------------------------------
+
+void ImageMsg::setWindowLevel( double window, double level, ::fwData::Object::sptr _pDataInfo )
+{
+    this->addEvent( ::fwComEd::ImageMsg::WINDOWING, _pDataInfo);
+    m_level = level;
+    m_window = window;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -83,6 +91,22 @@ void ImageMsg::getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::s
     SLM_ASSERT( "WINDOWING Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
     min->deepCopy(m_windowMin);
     max->deepCopy(m_windowMax);
+}
+
+//-----------------------------------------------------------------------------
+
+double ImageMsg::getWindow() const
+{
+    SLM_ASSERT( "WINDOWING Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
+    return(m_window);
+}
+
+//-----------------------------------------------------------------------------
+
+double ImageMsg::getLevel() const
+{
+    SLM_ASSERT( "WINDOWING Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
+    return (m_level);
 }
 
 } // namespace fwComEd

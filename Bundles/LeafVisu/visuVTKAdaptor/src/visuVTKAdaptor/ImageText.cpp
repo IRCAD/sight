@@ -61,8 +61,8 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
         unsigned int frontalIndex  = m_frontalIndex->value();
         unsigned int sagittalIndex = m_sagittalIndex->value();
 
-        int min = m_windowMin->value();
-        int max = m_windowMax->value();
+        int min = this->getLevel() - this->getWindow()/2.0;
+        int max = this->getLevel() + this->getWindow()/2.0;
 
         double window = max - min;
         double level = min + window*0.5;

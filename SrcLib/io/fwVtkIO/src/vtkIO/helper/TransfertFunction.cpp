@@ -50,6 +50,8 @@ void TransfertFunction::toVtkLookupTable(
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, 1.0);
         }
     }
+
+    lt->Modified();
 }
 
 //------------------------------------------------------------------------------
@@ -74,6 +76,8 @@ void TransfertFunction::toBWVtkLookupTable(
     lt->SetValueRange( 0.0, 1.0 );
 
     lt->Build();
+
+    lt->Modified();
 }
 
 //------------------------------------------------------------------------------

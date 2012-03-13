@@ -86,6 +86,14 @@ public:
     FWCOMED_API void setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
 
     /**
+     * @brief Add a WINDOWING even with window and level.
+     * @param[in] level : level of the image tf
+     * @param[in] window : window of the image tf
+     * @param[in] _pDataInfo : message data info (optional)
+     */
+    FWCOMED_API void setWindowLevel( double window, double level, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+
+    /**
      * @brief Get the slice index position.
      * @pre   The message must have a SLICE_INDEX even
      * @param[out] a : axial position
@@ -102,6 +110,19 @@ public:
      */
     FWCOMED_API void getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max ) const;
 
+    /**
+     * @brief Get the window and level .
+     * @pre   The message must have a WINDOWING even
+     * @param[out] : the window of the image tf
+     */
+    double getWindow() const;
+    /**
+     * @brief Get the level .
+     * @pre   The message must have a WINDOWING even
+     * @param[out] : the level of the image tf
+     */
+    double getLevel() const;
+
 protected:
     /// Axial slice index
     ::fwData::Integer::sptr m_axialIndex;
@@ -115,6 +136,10 @@ protected:
     /// Windowing max
     ::fwData::Integer::sptr m_windowMax;
 
+    /// Windowing min
+    double m_level;
+    /// Windowing max
+    double m_window;
 
 };
 

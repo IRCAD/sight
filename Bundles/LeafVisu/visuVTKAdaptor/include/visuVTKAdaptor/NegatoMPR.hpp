@@ -68,10 +68,6 @@ private:
 
     std::string m_imageSourceId;
 
-    /// Identifier of the field containing the specific selection of TransfertFunction
-    /// if m_tfSelection is empty => use default TF selection
-    std::string m_tfSelection;
-
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;
     SliceMode m_backupedSliceMode;

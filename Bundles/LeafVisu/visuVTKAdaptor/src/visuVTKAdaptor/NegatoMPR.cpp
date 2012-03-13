@@ -293,11 +293,8 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         m_useImageTF = ( m_configuration->getAttributeValue("useColorTF") == "yes" );
     }
-    if ( m_configuration->hasAttribute("tfSelection") )
-    {
-        m_tfSelection = m_configuration->getAttributeValue("tfSelection");
-        SLM_FATAL_IF("'tfSelection' must not be empty", m_tfSelection.empty());
-    }
+
+    this->parseTFConfig( m_configuration );
 }
 
 //------------------------------------------------------------------------------
@@ -369,11 +366,13 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
         {
             negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
         }
-        negatoAdaptor->setTFSelection(m_tfSelection);
+        negatoAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
+        negatoAdaptor->setTFPoolFwID( this->getTFPoolFwID() );
     }
     else if (negatoWindowingAdaptor)
     {
-        negatoWindowingAdaptor->setTFSelectionFieldId(m_tfSelection);
+        negatoWindowingAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
+        negatoWindowingAdaptor->setTFPoolFwID( this->getTFPoolFwID() );
     }
 
     service->setRenderService(this->getRenderService());

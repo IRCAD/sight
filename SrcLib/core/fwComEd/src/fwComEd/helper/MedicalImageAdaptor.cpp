@@ -20,6 +20,7 @@
 #include <fwComEd/ImageMsg.hpp>
 
 #include "fwComEd/helper/MedicalImageAdaptor.hpp"
+#include "fwComEd/helper/Image.hpp"
 
 
 namespace fwComEd
@@ -30,10 +31,11 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-MedicalImageAdaptor::MedicalImageAdaptor() : m_orientation(Z_AXIS)
-{
-    m_tfSelectionFieldId = ::fwComEd::Dictionary::m_transfertFunctionId;
-}
+MedicalImageAdaptor::MedicalImageAdaptor()
+    : m_orientation(Z_AXIS),
+      m_tfPoolFwID(""),
+      m_selectedTFKey("")
+{}
 
 //------------------------------------------------------------------------------
 
@@ -244,34 +246,23 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
     m_axialIndex    = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
     m_frontalIndex  = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
     m_sagittalIndex = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
-    m_windowMin     = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
-    m_windowMax     = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
 
-    m_transfertFunctionId = image->setDefaultField_NEWAPI(
-                m_tfSelectionFieldId,
-                ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName )
-                );
-
-    ::fwData::Composite::sptr cTF;
-    if(!image->getField_NEWAPI(::fwComEd::Dictionary::m_transfertFunctionCompositeId))
+    // Set TF data if not still set
+    if ( m_tfPool.expired() )
     {
-        ::fwData::TransfertFunction::sptr tf = ::fwData::TransfertFunction::createDefaultTransfertFunction(image);
-        tf->setMinMax(m_windowMin->value(), m_windowMax->value());
+        ::fwComEd::helper::Image helper ( image );
+        helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
-        ::fwData::String::NewSptr tfId;
-        tfId->value() = ::fwData::TransfertFunction::defaultTransfertFunctionName;
-        cTF = ::fwData::Composite::New();
-
-        (*cTF)[tfId->value()] = tf;
+        m_selectedTFKey = ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
+        m_tfPool = image->getField_NEWAPI< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
     }
-    m_transfertFunctions = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::TransfertFunction::sptr MedicalImageAdaptor::getCurrentTransfertFunction()
+::fwData::TransfertFunction_VERSION_II::sptr MedicalImageAdaptor::getTransferFunction() const
 {
-    return ::fwData::TransfertFunction::dynamicCast((*m_transfertFunctions)[m_transfertFunctionId->value()]);
+    return ::fwData::TransfertFunction_VERSION_II::dynamicCast((*m_tfPool.lock())[m_selectedTFKey]);
 }
 
 //------------------------------------------------------------------------------
@@ -284,12 +275,86 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setTFSelectionFieldId(std::string tfSelectionId)
+void MedicalImageAdaptor::setTFParameters( ::fwData::Composite::sptr tfPool, std::string tfSelectionId )
 {
     if (!tfSelectionId.empty())
     {
-        m_tfSelectionFieldId = tfSelectionId;
+        m_selectedTFKey = tfSelectionId;
+        m_tfPool = tfPool;
     }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::setTFPoolFwID( const std::string & fwid )
+{
+    m_tfPoolFwID = fwid;
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::setSelectedTFKey( const std::string & key )
+{
+    m_selectedTFKey = key;
+}
+
+//------------------------------------------------------------------------------
+
+const std::string & MedicalImageAdaptor::getTFPoolFwID() const
+{
+    return m_tfPoolFwID;
+}
+
+//------------------------------------------------------------------------------
+
+const std::string & MedicalImageAdaptor::getSelectedTFKey() const
+{
+    return m_selectedTFKey;
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration )
+{
+   SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration->getName() == "config");
+   if ( configuration->hasAttribute("selectedTFKey") )
+   {
+       m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
+       SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
+   }
+   if ( configuration->hasAttribute("tfPoolFwID") )
+   {
+       m_tfPoolFwID = configuration->getAttributeValue("tfPoolFwID");
+       SLM_FATAL_IF("'tfPoolFwID' must not be empty", m_tfPoolFwID.empty());
+   }
+}
+
+//------------------------------------------------------------------------------
+
+double MedicalImageAdaptor::getWindow() const
+{
+    return this->getTransferFunction()->getWindow();
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::setWindow( double window )
+{
+    this->getTransferFunction()->setWindow( window );
+}
+
+//------------------------------------------------------------------------------
+
+double MedicalImageAdaptor::getLevel() const
+{
+    return this->getTransferFunction()->getLevel();
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::setLevel( double level )
+{
+    this->getTransferFunction()->setLevel( level );
 }
 
 //------------------------------------------------------------------------------

@@ -37,10 +37,6 @@ public:
     VISUVTKADAPTOR_API void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
     VISUVTKADAPTOR_API void setUseImageTF(bool use)             {m_useImageTF = use;};
 
-    /// Set the identifier of the field containing the specific selection of TransfertFunction
-    /// if m_tfSelection is empty => use default TF selection
-    VISUVTKADAPTOR_API void setTFSelection(std::string tfSelection){m_tfSelection = tfSelection;};
-
 protected :
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -58,10 +54,6 @@ protected :
     bool m_allowAlphaInTF;
     bool m_interpolation;
     bool m_useImageTF;
-
-    /// Identifier of the field containing the specific selection of TransfertFunction
-    /// if m_tfSelection is empty => use default TF selection
-    std::string m_tfSelection;
 
     vtkObject* getImageSource();
     void cleanImageSource();

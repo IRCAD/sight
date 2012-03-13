@@ -7,7 +7,11 @@
 #ifndef _VISUVTKADAPTOR_IMAGE_HPP_
 #define _VISUVTKADAPTOR_IMAGE_HPP_
 
+#include <vtkSmartPointer.h>
+
 #include <fwData/Image.hpp>
+
+
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
@@ -70,7 +74,7 @@ protected :
     bool   m_allowAlphaInTF;
     bool   m_useImageTF;
 
-    vtkLookupTable *m_lut;
+    vtkSmartPointer< vtkLookupTable > m_lut;
     vtkImageMapToColors *m_map2colors;
     vtkImageData *m_imageData;
 

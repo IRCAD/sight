@@ -21,6 +21,7 @@
 #include <fwData/TransfertFunction.hpp>
 
 #include <vtkIO/vtk.hpp>
+#include <vtkIO/helper/TransfertFunction.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
@@ -156,7 +157,8 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
         if ( msg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
         {
             ::fwComEd::ImageMsg::csptr imsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-            imsg->getWindowMinMax( m_windowMin, m_windowMax);
+            this->setWindow(imsg->getWindow());
+            this->setLevel(imsg->getLevel());
             updateWindowing(image);
         }
 
@@ -190,12 +192,8 @@ void Image::configuring() throw(fwTools::Failed)
     {
         this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
     }
-    if ( m_configuration->hasAttribute("tfSelection") )
-    {
-        std::string tfSelectionFieldId = m_configuration->getAttributeValue("tfSelection");
-        SLM_FATAL_IF("'tfSelectionFieldId' must not be empty", tfSelectionFieldId.empty());
-        this->setTFSelectionFieldId(tfSelectionFieldId);
-    }
+
+    this->parseTFConfig( m_configuration );
 }
 
 //------------------------------------------------------------------------------
@@ -207,7 +205,6 @@ void Image::updateImage( ::fwData::Image::sptr image  )
     ::vtkIO::toVTKImage(image,m_imageData);
 
     this->updateImageInfos(image);
-
     this->setVtkPipelineModified();
 }
 
@@ -216,11 +213,7 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 void Image::updateWindowing( ::fwData::Image::sptr image )
 {
     SLM_TRACE_FUNC();
-    //std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
-    // Temp test because theses cases are not manage ( need to notify if there are modifications of Min/Max/TF )
-    //assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
-
-    m_lut->SetTableRange( m_windowMin->value(), m_windowMax->value() );
+    m_lut->SetTableRange( this->getLevel() - this->getWindow() / 2.0,  this->getLevel() + this->getWindow() / 2.0 );
     m_lut->Modified();
     setVtkPipelineModified();
 }
@@ -230,37 +223,45 @@ void Image::updateWindowing( ::fwData::Image::sptr image )
 void Image::updateTransfertFunction( ::fwData::Image::sptr image )
 {
     SLM_TRACE_FUNC();
-    ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
-    std::string tfName;
 
-    this->updateImageInfos(image);
-
-    tfName = m_transfertFunctionId->value();
-
-    // If TF doesn't exist : set default BW TF
-    if (tfComposite->find(tfName) == tfComposite->end())
-    {
-        OSLM_WARN("TF '" << tfName << "' doesn't exist => set BW TF");
-        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelectionFieldId);
-
-        ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
-        ::fwServices::IEditionService::notify( this->getSptr(),  image, msg );
-
-        this->updateImageInfos(image);
-        tfName = m_transfertFunctionId->value();
-    }
-
-    ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
-    if ( m_useImageTF )
-    {
-        ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
-    }
-    else
-    {
-        ::vtkIO::convertTF2vtkTFBW( pTransfertFunction, m_lut);
-    }
+    ::vtkIO::helper::TransfertFunction::toVtkLookupTable(
+            this->getTransferFunction(),
+            m_lut,
+            m_allowAlphaInTF,
+            256 );
     setVtkPipelineModified();
+
+//    ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
+//    std::string tfName;
+//
+//    this->updateImageInfos(image);
+//
+//    tfName = m_transfertFunctionId->value();
+//
+//    // If TF doesn't exist : set default BW TF
+//    if (tfComposite->find(tfName) == tfComposite->end())
+//    {
+//        OSLM_WARN("TF '" << tfName << "' doesn't exist => set BW TF");
+//        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelectionFieldId);
+//
+//        ::fwComEd::ImageMsg::NewSptr msg;
+//        msg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
+//        ::fwServices::IEditionService::notify( this->getSptr(),  image, msg );
+//
+//        this->updateImageInfos(image);
+//        tfName = m_transfertFunctionId->value();
+//    }
+//
+//    ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
+//    if ( m_useImageTF )
+//    {
+//        ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
+//    }
+//    else
+//    {
+//        ::vtkIO::convertTF2vtkTFBW( pTransfertFunction, m_lut);
+//    }
+//    setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------

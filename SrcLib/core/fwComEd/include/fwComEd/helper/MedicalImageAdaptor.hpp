@@ -53,13 +53,43 @@ public:
     /// Return the image orientation.
     FWCOMED_API Orientation getOrientation(){ return m_orientation; }
 
+
+
     /**
-     * @brief Set the identifier of the field containing the current selection of TransfertFunction.
+     * @brief Set the tf pool and the key that represents the current selection of TransfertFunction.
      * By defaults use ::fwComEd::Dictionary::m_transfertFunctionId
      */
-    FWCOMED_API void setTFSelectionFieldId(std::string tfSelectionId);
+    FWCOMED_API void setTFParameters( ::fwData::Composite::sptr tfPool, std::string tfSelectionId );
+
+    /// Set TF Pool fwID
+    FWCOMED_API void setTFPoolFwID( const std::string & fwid );
+
+    /// Get TF Pool fwID
+    const std::string & getTFPoolFwID() const;
+
+    /// Set selected TF Key
+    FWCOMED_API void setSelectedTFKey( const std::string & key );
+
+    /// Get selected TF Key
+    const std::string & getSelectedTFKey() const;
+
+    /// Set selected TF Key and TF Pool fwID from config
+    FWCOMED_API void parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration );
+
+    /// Get the window of the selected tf
+    FWCOMED_API double getWindow() const;
+
+    /// Set the window of the selected tf
+    FWCOMED_API void setWindow( double window );
+
+    /// Get the level of the selected tf
+    FWCOMED_API double getLevel() const;
+
+    /// Set the level of the selected tf
+    FWCOMED_API void setLevel( double level );
 
 protected:
+
 
     /// Constructor. Do nothing.
     FWCOMED_API MedicalImageAdaptor(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
@@ -172,7 +202,7 @@ protected:
     FWCOMED_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
     /// Get the current transfert function
-    FWCOMED_API ::fwData::TransfertFunction::sptr getCurrentTransfertFunction();
+    FWCOMED_API ::fwData::TransfertFunction_VERSION_II::sptr getTransferFunction() const;
 
     /// Update the image information (slice index, min/max, TF,...)
     FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
@@ -193,19 +223,21 @@ protected:
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
-    /// Windowing minimum
-    ::fwData::Integer::sptr m_windowMin;
-    /// Windowing maximum
-    ::fwData::Integer::sptr m_windowMax;
 
-    /// Transfert function composite
-    ::fwData::Composite::sptr m_transfertFunctions;
-    /// Name of the current transfert function
-    ::fwData::String::sptr m_transfertFunctionId;
+private :
 
-    /// Identifier of the field containing the current selection of TransfertFunction.
-    /// by defaults use ::fwComEd::Dictionary::m_transfertFunctionId
-    std::string m_tfSelectionFieldId;
+    /// Transfer function pool
+    ::fwData::Composite::wptr m_tfPool;
+
+    /// fwID of tf pool ( used during configuration )
+    std::string m_tfPoolFwID;
+
+    /**
+     * @brief Identifier of the field containing the current selection of TransfertFunction.
+     * by defaults use ::fwComEd::Dictionary::m_transfertFunctionId
+     */
+    std::string m_selectedTFKey;
+
 };
 
 struct Image0 {} ;
