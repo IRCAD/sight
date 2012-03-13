@@ -48,17 +48,19 @@ public:
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
      * @param[in] name Field name
-     * @return null sptr if field is not found
+     * @param[in] defaultValue Default value
+     * @return defaultValue if field is not found
      */
-    FWDATA_API ::fwData::Object::sptr getField_NEWAPI( const FieldNameType & name ) const;
+    FWDATA_API ::fwData::Object::sptr getField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr defaultValue = ::fwData::Object::sptr() ) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
      * @param[in] name Field name
-     * @return pointer to corresponding field, null if field is not found.
+     * @param[in] defaultValue Default value
+     * @return pointer to corresponding field, defaultValue if field is not found.
      */
-    template< typename FWDATATYPE >
-    SPTR(FWDATATYPE) getField_NEWAPI( const FieldNameType& name );
+    template< typename DATA_TYPE >
+    SPTR(DATA_TYPE) getField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue = SPTR(DATA_TYPE)() ) const;
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if defaultValue is not null.
@@ -66,9 +68,8 @@ public:
      * @param[in] defaultValue default return value if field was not found
      * @return pointer to corresponding field.
      */
-    template< typename FWDATATYPE >
-    SPTR(FWDATATYPE) getDefaultField_NEWAPI( const FieldNameType& name, SPTR(FWDATATYPE) defaultValue );
-
+    template< typename DATA_TYPE >
+    SPTR(DATA_TYPE) setDefaultField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
@@ -139,24 +140,24 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    template< typename FWDATATYPE >
+    template< typename DATA_TYPE >
     void shallowCopy( ::fwData::Object::csptr source )
     {
-        typename FWDATATYPE::csptr castSource = FWDATATYPE::dynamicConstCast( source );
+        typename DATA_TYPE::csptr castSource = DATA_TYPE::dynamicConstCast( source );
         SLM_FATAL_IF("Sorry, the classname of object source is different, shallowCopy is not possible.", castSource == 0 );
-        typename FWDATATYPE::sptr castDest = FWDATATYPE::dynamicCast( this->getSptr() );
-        castDest->FWDATATYPE::shallowCopy( castSource );
+        typename DATA_TYPE::sptr castDest = DATA_TYPE::dynamicCast( this->getSptr() );
+        castDest->DATA_TYPE::shallowCopy( castSource );
     }
 
     //-----------------------------------------------------------------------------
 
-    template< typename FWDATATYPE >
+    template< typename DATA_TYPE >
     void deepCopy( ::fwData::Object::csptr source )
     {
-        typename FWDATATYPE::csptr castSource = FWDATATYPE::dynamicConstCast( source );
+        typename DATA_TYPE::csptr castSource = DATA_TYPE::dynamicConstCast( source );
         SLM_FATAL_IF("Sorry, the classname of object source is different, deepCopy is not possible.", castSource == 0 );
-        typename FWDATATYPE::sptr castDest = FWDATATYPE::dynamicCast( this->getSptr() );
-        castDest->FWDATATYPE::deepCopy( castSource );
+        typename DATA_TYPE::sptr castDest = DATA_TYPE::dynamicCast( this->getSptr() );
+        castDest->DATA_TYPE::deepCopy( castSource );
     }
 
 protected:
@@ -181,9 +182,10 @@ SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name )
+SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const
 {
-    ::fwData::Object::sptr field = this->getField_NEWAPI( name );
+    ::fwData::Object::sptr field = defaultValue;
+    field = this->getField_NEWAPI( name, field );
     SPTR(DATA_TYPE) result  = DATA_TYPE::dynamicCast( field );
     return result;
 }
@@ -191,7 +193,7 @@ SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name )
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getDefaultField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue )
+SPTR(DATA_TYPE) Object::setDefaultField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue )
 {
     SPTR(DATA_TYPE) result = getField_NEWAPI< DATA_TYPE >(name);
     if( !result && defaultValue)

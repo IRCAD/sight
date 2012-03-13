@@ -33,9 +33,9 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr Object::getField_NEWAPI( const FieldNameType & name ) const
+::fwData::Object::sptr Object::getField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr defaultValue ) const
 {
-    ::fwData::Object::sptr object;
+    ::fwData::Object::sptr object = defaultValue;
     FieldMapType::const_iterator iter = m_fields.find(name);
     if(iter != m_fields.end())
     {
