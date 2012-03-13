@@ -115,13 +115,13 @@ public:
      * @pre   The message must have a WINDOWING even
      * @param[out] : the window of the image tf
      */
-    double getWindow() const;
+    FWCOMED_API double getWindow() const;
     /**
      * @brief Get the level .
      * @pre   The message must have a WINDOWING even
      * @param[out] : the level of the image tf
      */
-    double getLevel() const;
+    FWCOMED_API double getLevel() const;
 
 protected:
     /// Axial slice index

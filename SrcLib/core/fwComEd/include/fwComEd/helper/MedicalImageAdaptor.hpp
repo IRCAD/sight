@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_IIMAGESADAPTOR_HPP_
-#define _FWCOMED_IIMAGESADAPTOR_HPP_
+#ifndef _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
+#define _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
 
 #include <vector>
 
@@ -65,13 +65,13 @@ public:
     FWCOMED_API void setTFPoolFwID( const std::string & fwid );
 
     /// Get TF Pool fwID
-    const std::string & getTFPoolFwID() const;
+    FWCOMED_API const std::string & getTFPoolFwID() const;
 
     /// Set selected TF Key
     FWCOMED_API void setSelectedTFKey( const std::string & key );
 
     /// Get selected TF Key
-    const std::string & getSelectedTFKey() const;
+    FWCOMED_API const std::string & getSelectedTFKey() const;
 
     /// Set selected TF Key and TF Pool fwID from config
     FWCOMED_API void parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration );
@@ -311,12 +311,9 @@ void MedicalImageAdaptor::worldToImageSliceIndex(const WORLD world, INT_INDEX in
     }
 }
 
-
-
-
 } //namespace helper
 
 } //namespace fwComEd
 
-#endif // _FWCOMED_IIMAGESADAPTOR_HPP_
+#endif // _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
 
