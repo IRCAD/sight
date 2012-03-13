@@ -241,13 +241,13 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 {
     m_weakImage = image;
-    m_axialIndex    = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
-    m_frontalIndex  = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
-    m_sagittalIndex = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
-    m_windowMin     = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
-    m_windowMax     = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
+    m_axialIndex    = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
+    m_frontalIndex  = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
+    m_sagittalIndex = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+    m_windowMin     = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMinId         , ::fwData::Integer::New(-200));
+    m_windowMax     = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_windowMaxId         , ::fwData::Integer::New(300));
 
-    m_transfertFunctionId = image->getDefaultField_NEWAPI(
+    m_transfertFunctionId = image->setDefaultField_NEWAPI(
                 m_tfSelectionFieldId,
                 ::fwData::String::New(::fwData::TransfertFunction::defaultTransfertFunctionName )
                 );
@@ -264,7 +264,7 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 
         (*cTF)[tfId->value()] = tf;
     }
-    m_transfertFunctions = image->getDefaultField_NEWAPI(::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
+    m_transfertFunctions = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
 }
 
 //------------------------------------------------------------------------------
