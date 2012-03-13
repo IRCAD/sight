@@ -138,9 +138,10 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
 
     if (_msg->hasEvent("NEW_CONFIGURATION_HELPER"))
     {
-        SLM_ASSERT("Missing field 'tabID' in message", _msg->getFieldSize("tabID"));
-        std::string tabID = _msg->getFieldSingleElement< ::fwData::String >("tabID")->value();
-        std::string title = ::fwData::String::dynamicConstCast( _msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) )->value();
+        ::fwData::String::csptr titleData = ::fwData::String::dynamicConstCast( _msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) );
+        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField_NEWAPI("tabID"));
+        std::string tabID = titleData->getField_NEWAPI< ::fwData::String >("tabID")->value();
+        std::string title = titleData->value();
         if(m_tabIDList.find(tabID) != m_tabIDList.end() )
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog("New tab",
@@ -148,18 +149,18 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
                     ::fwGui::dialog::IMessageDialog::WARNING);
             return;
         }
-        bool closable = _msg->getFieldSingleElement< ::fwData::Boolean >("closable")->value();
-        std::string icon = "";
-        std::string tooltip = "";
-        if(_msg->getFieldSize("icon"))
-        {
-            icon = _msg->getFieldSingleElement< ::fwData::String >("icon")->value();
-        }
-        if(_msg->getFieldSize("tooltip"))
-        {
-            tooltip = _msg->getFieldSingleElement< ::fwData::String >("tooltip")->value();
-        }
-        // Manage title count
+        bool closable;
+        std::string icon;
+        std::string tooltip;
+        std::string viewConfigID;
+        ::fwData::Composite::sptr fieldAdaptors;
+
+        closable      = titleData->getField_NEWAPI("closable", ::fwData::Boolean::New(true))->value();
+        icon          = titleData->getField_NEWAPI("icon", ::fwData::String::New(""))->value();
+        tooltip       = titleData->getField_NEWAPI("tooltip", ::fwData::String::New(""))->value();
+        viewConfigID  = titleData->getField_NEWAPI("viewConfigID", ::fwData::String::New(""))->value();
+        fieldAdaptors = titleData->getField_NEWAPI("::fwServices::registry::AppConfig", ::fwData::Composite::New());
+
         if ( m_titleToCount.find( title ) !=  m_titleToCount.end() )
         {
             m_titleToCount[ title ] ++;
@@ -178,11 +179,9 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         subContainer->setQtContainer(widget);
         ::fwGui::GuiRegistry::registerWIDContainer(wid, subContainer);
 
-        ::fwData::Composite::sptr fieldAdaptors = _msg->getFieldSingleElement< ::fwData::Composite >("::fwServices::registry::AppConfig");
         (*fieldAdaptors)[ "WID_PARENT" ] = fwData::String::New( wid );
 
 
-        std::string viewConfigID = _msg->getFieldSingleElement< ::fwData::String >("viewConfigID")->value();
         ::fwRuntime::ConfigurationElement::csptr config =
                 ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( viewConfigID, fieldAdaptors );
 

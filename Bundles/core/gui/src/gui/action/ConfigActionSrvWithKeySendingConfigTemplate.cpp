@@ -245,6 +245,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
         tabID = "TABID_" + ::fwTools::UUID::generateUUID();
     }
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
+    ::fwData::String::NewSptr title;
 
     std::stringstream ss;
     if (    ! m_viewConfigTitlePrefixKey.empty() &&
@@ -261,17 +262,16 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
             composite->find( m_tooltipConfigTitleKey ) != composite->end() )
     {
         ::fwData::String::sptr tooltip = ::fwData::String::dynamicCast( (*composite)[m_tooltipConfigTitleKey] );
-        msg->setFieldSingleElement( tooltipFieldID, tooltip );
+        title->setField_NEWAPI( tooltipFieldID, tooltip );
     }
 
-    ::fwData::String::NewSptr title;
     title->value() = ss.str();
     msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
-    msg->setFieldSingleElement( fieldID , finalMap );
-    msg->setFieldSingleElement( viewConfigID, ::fwData::String::New(m_viewConfigId) );
-    msg->setFieldSingleElement( closableFieldID, ::fwData::Boolean::New(m_closableConfig));
-    msg->setFieldSingleElement( tabIDFieldID, ::fwData::String::New(tabID));
-    msg->setFieldSingleElement( iconFieldID, ::fwData::String::New(m_iconConfigId) );
+    title->setField_NEWAPI( fieldID , finalMap );
+    title->setField_NEWAPI( viewConfigID, ::fwData::String::New(m_viewConfigId) );
+    title->setField_NEWAPI( closableFieldID, ::fwData::Boolean::New(m_closableConfig));
+    title->setField_NEWAPI( tabIDFieldID, ::fwData::String::New(tabID));
+    title->setField_NEWAPI( iconFieldID, ::fwData::String::New(m_iconConfigId) );
 
     ::fwServices::IEditionService::notify(this->getSptr(), composite, msg);
 }
