@@ -23,7 +23,6 @@ Patient::Patient () :
                     m_bIsMale (true),
                     m_i32DbID (-1)
 {
-    SLM_WARN("::fwData::Patient() : (ToDo) field default value");
 }
 
 //------------------------------------------------------------------------------
