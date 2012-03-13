@@ -70,11 +70,13 @@ void AcqFromPDBUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw
 
 ::fwData::Acquisition::sptr AcqFromPDBUpdaterSrv::getAcquisition(::fwData::PatientDB::sptr patientDB)
 {
-    ::fwData::Patient::sptr patient = patientDB->getPatients()[ 0 ];
-    ::fwData::Study::sptr study = patient->getStudies()[ 0 ];
-    ::fwData::Acquisition::sptr acquisition = study->getAcquisitions()[ 0 ];
-
-    return acquisition;
+    SLM_ASSERT("No patient in DB", patientDB->getNumberOfPatients());
+    ::fwData::Patient::sptr patient = patientDB->getPatients().front();
+    SLM_ASSERT("No study in patient", patient->getNumberOfStudies());
+    ::fwData::Study::sptr study     = patient->getStudies().front();
+    SLM_ASSERT("No acquisition in study", study->getNumberOfAcquisitions());
+    ::fwData::Acquisition::sptr acq = study->getAcquisitions().front();
+    return acq;
 }
 
 //-----------------------------------------------------------------------------

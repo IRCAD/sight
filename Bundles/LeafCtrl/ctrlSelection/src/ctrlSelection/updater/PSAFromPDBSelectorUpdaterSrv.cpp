@@ -10,6 +10,8 @@
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
+#include <fwComEd/fieldHelper/BackupHelper.hpp>
+
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
@@ -66,7 +68,10 @@ void PSAFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg
                 ::fwData::Acquisition::sptr acq;
                 if( it->get<7>() != REMOVE )
                 {
-                    this->getPSASelection( patientDB, _msg, pat, stu, acq );
+                    // Get selection
+                    pat = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(patientDB);
+                    stu = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudy(patientDB);
+                    acq = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(patientDB);
                     patientName = ::fwData::String::NewSptr( pat->getCRefName() );
                     std::string acqDate = ::boost::posix_time::to_iso_extended_string( acq->getCreationDate() );
                     acqDate =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
@@ -83,32 +88,6 @@ void PSAFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void PSAFromPDBSelectorUpdaterSrv::getPSASelection(
-        ::fwData::PatientDB::sptr patientDB,
-        ::fwServices::ObjectMsg::csptr _msg,
-        ::fwData::Patient::sptr & patient,
-        ::fwData::Study::sptr & study,
-        ::fwData::Acquisition::sptr & acquisition )
-{
-    OSLM_FATAL_IF("Sorry the message classname ( " << _msg->getClassname() << " ) is not supported by PSAFromPDBSelectorUpdaterSrv. This service only support PatientDBMsg.",::fwComEd::PatientDBMsg::dynamicConstCast(_msg) == 0 );
-    SLM_FATAL_IF("Sorry PSAFromPDBSelectorUpdaterSrv only support the ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED event", ! _msg->hasEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED ) );
-    ::fwComEd::PatientDBMsg::csptr pPatientDBMsg = ::fwComEd::PatientDBMsg::dynamicConstCast(_msg);
-
-    // Get Selection
-    ::fwData::Object::csptr pDataInfo = pPatientDBMsg->getDataInfo( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED );
-
-    ::fwData::Integer::sptr myIntPat = ::fwData::Integer::dynamicCast( pDataInfo->children().at(0) );
-    ::fwData::Integer::sptr myIntStu = ::fwData::Integer::dynamicCast( pDataInfo->children().at(1) );
-    ::fwData::Integer::sptr myIntAcq = ::fwData::Integer::dynamicCast( pDataInfo->children().at(2) );
-
-    // Get selection
-    patient = patientDB->getPatients()[ myIntPat->value() ];
-    study = patient->getStudies()[ myIntStu->value() ];
-    acquisition = study->getAcquisitions()[ myIntAcq->value() ];
 }
 
 //-----------------------------------------------------------------------------

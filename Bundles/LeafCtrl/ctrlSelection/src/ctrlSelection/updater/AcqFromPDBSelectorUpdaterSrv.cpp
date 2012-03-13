@@ -6,6 +6,8 @@
 
 #include <fwCore/spyLog.hpp>
 
+#include <fwComEd/fieldHelper/BackupHelper.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 
@@ -60,36 +62,13 @@ void AcqFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg
                 ::fwData::Acquisition::sptr acq;
                 if( it->get<3>() != REMOVE )
                 {
-                    acq = this->getAcquisition( patientDB, _msg );
+                    acq = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(patientDB);
                 }
                 // Udapte the composite object referenced by the composite key ( it->get<2>() )
                 this->updateComposite(composite, acq, it->get<2>(), it->get<3>() );
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-::fwData::Acquisition::sptr AcqFromPDBSelectorUpdaterSrv::getAcquisition( ::fwData::PatientDB::sptr patientDB, ::fwServices::ObjectMsg::csptr _msg )
-{
-    OSLM_FATAL_IF("Sorry the message classname ( " << _msg->getClassname() << " ) is not supported by AcqFromPDBSelectorUpdaterSrv. This service only support PatientDBMsg.",::fwComEd::PatientDBMsg::dynamicConstCast(_msg) == 0 );
-    SLM_FATAL_IF("Sorry AcqFromPDBSelectorUpdaterSrv only support the ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED event", ! _msg->hasEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED ) );
-    ::fwComEd::PatientDBMsg::csptr pPatientDBMsg = ::fwComEd::PatientDBMsg::dynamicConstCast(_msg);
-
-    // Get Selection
-    ::fwData::Object::csptr pDataInfo = pPatientDBMsg->getDataInfo( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED );
-
-    ::fwData::Integer::sptr myIntPat = ::fwData::Integer::dynamicCast( pDataInfo->children().at(0) );
-    ::fwData::Integer::sptr myIntStu = ::fwData::Integer::dynamicCast( pDataInfo->children().at(1) );
-    ::fwData::Integer::sptr myIntAcq = ::fwData::Integer::dynamicCast( pDataInfo->children().at(2) );
-
-    // Get selection
-    ::fwData::Patient::sptr patient = patientDB->getPatients()[ myIntPat->value() ];
-    ::fwData::Study::sptr study = patient->getStudies()[ myIntStu->value() ];
-    ::fwData::Acquisition::sptr acquisition = study->getAcquisitions()[ myIntAcq->value() ];
-
-    return acquisition;
 }
 
 //-----------------------------------------------------------------------------
