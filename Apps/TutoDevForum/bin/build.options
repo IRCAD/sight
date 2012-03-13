@@ -11,13 +11,12 @@ BUNDLES = [
     'visu_0-1'           ,
     'visuVTKQt_0-1'      ,
     'launcher_0-1'       ,
-    'devForumQt_0-1'     ,
+    'devForum_0-1'     ,
  ]
 
 
 if not (PLATFORM, ARCH) == ('osx', '64'):
     BUNDLES += [
-            'devForum_0-1' ,
             'guiWx_0-1'    ,
             'visuVTKWx_0-1',
             ]

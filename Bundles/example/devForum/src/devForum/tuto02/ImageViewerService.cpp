@@ -4,10 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// wxWidget
-#include <wx/panel.h>
-#include <wx/window.h>
-
 // vtk
 #include <vtkCellPicker.h>
 #include <vtkCommand.h>
@@ -86,14 +82,13 @@ void ImageViewerService::updateVTKPipeline()
     m_render->ResetCamera();
 
     // refresh vtk render
-    m_interactor->Render();
+    (m_interactorManager->getInteractor())->Render();
 }
 
 //-----------------------------------------------------------------------------
 void ImageViewerService::stopping() throw ( ::fwTools::Failed )
 {
     ::devForum::tuto01::ImageViewerService::stopping();
-    this->destroy();
 }
 //-----------------------------------------------------------------------------
 
