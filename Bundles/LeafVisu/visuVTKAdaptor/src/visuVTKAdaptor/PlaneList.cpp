@@ -212,7 +212,8 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
     ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
 
-    bool showPlanes = planeList->getFieldSize("ShowPlanes") ? planeList->getFieldSingleElement< ::fwData::Boolean >("ShowPlanes")->value() : true;
+    bool showPlanes;
+    showPlanes = planeList->getField_NEWAPI("ShowPlanes", ::fwData::Boolean::New(true))->value();
     if(showPlanes)
     {
         BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
@@ -256,7 +257,8 @@ void PlaneList::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
             ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
 
             this->doStop();
-            bool showPlanes = planeList->getFieldSize("ShowPlanes") ? planeList->getFieldSingleElement< ::fwData::Boolean >("ShowPlanes")->value() : true;
+            bool showPlanes;
+            showPlanes = planeList->getField_NEWAPI("ShowPlanes", ::fwData::Boolean::New(true))->value();
             OSLM_INFO( "Receive event ShowPlanes : " << showPlanes );
             if(showPlanes)
             {
@@ -274,7 +276,8 @@ void PlaneList::doSwap() throw(fwTools::Failed)
     this->doStop();
 
     ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
-    bool showPlanes = planeList->getFieldSize("ShowPlanes") ? planeList->getFieldSingleElement< ::fwData::Boolean >("ShowPlanes")->value() : true;
+    bool showPlanes;
+    showPlanes = planeList->getField_NEWAPI("ShowPlanes", ::fwData::Boolean::New(true))->value();
     if(showPlanes)
     {
         this->doStart();

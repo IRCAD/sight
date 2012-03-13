@@ -97,7 +97,7 @@ void Camera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed
     {
         vtkCamera* camera = this->getRenderer()->GetActiveCamera();
         ::fwData::TransformationMatrix3D::sptr transMat =
-            this->getObject()->getFieldSingleElement< ::fwData::TransformationMatrix3D>(fwComEd::Dictionary::position);
+            this->getObject< ::fwData::Object >()->getField_NEWAPI< ::fwData::TransformationMatrix3D>(fwComEd::Dictionary::position);
 
         vtkMatrix4x4* mat = vtkMatrix4x4::New();
 

@@ -116,10 +116,10 @@ void Distance::doStart()
     ::fwServices::registerCommunicationChannel(m_point2.lock(), this->getSptr() )->start();
 
     // set color to distance if Point List have Color Field
-    if ( ptList->getFieldSize( ::fwComEd::Dictionary::m_colorId ) )
+    if ( ptList->getField_NEWAPI( ::fwComEd::Dictionary::m_colorId ) )
     {
         ::fwData::Color::sptr color;
-        color = ptList->getFieldSingleElement< ::fwData::Color >( ::fwComEd::Dictionary::m_colorId );
+        color = ptList->getField_NEWAPI< ::fwData::Color >( ::fwComEd::Dictionary::m_colorId );
         this->setAxisColor( color );
     }
 
@@ -165,36 +165,6 @@ void Distance::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::
     {
         this->doUpdate();
     }
-
-
-
-
-
-/*
-    if ( _msg->hasEvent( ::fwServices::ObjectMsg::ALL_IS_MODIFIED ) )
-    {
-        ::fwTools::Object::csptr subject = _msg->getSubject().lock();
-        //::fwData::Point::csptr point = ::fwData::Point::dynamicConstCast( msg->m_modifiedObject );
-        ::fwData::Point::csptr point = ::fwData::Point::dynamicConstCast( subject );
-
-        if(point){
-            this->doUpdate();
-//          this->getRenderService()->update();
-        }
-        else
-        {
-            //::fwData::PointList::csptr pointList = ::fwData::PointList::dynamicConstCast( msg->m_modifiedObject );
-            ::fwData::PointList::csptr pointList = ::fwData::PointList::dynamicConstCast( subject );
-
-            if(this->getObject< ::fwData::PointList >() == pointList)
-            {
-                this->doStop();
-                this->doStart();
-                this->doUpdate();
-            }
-        }
-    }
-*/
 }
 
 //------------------------------------------------------------------------------

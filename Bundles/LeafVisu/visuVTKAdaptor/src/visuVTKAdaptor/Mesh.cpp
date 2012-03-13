@@ -574,22 +574,16 @@ void Mesh::createTransformService()
     }
 
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
-    if (mesh->getFieldSize("TransformMatrix"))
-    {
-        fieldTransform = mesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
-    }
-    else
-    {
-        fieldTransform = ::fwData::TransformationMatrix3D::New();
-        mesh->setFieldSingleElement("TransformMatrix", fieldTransform);
-    }
+    fieldTransform = mesh->setDefaultField_NEWAPI("TransformMatrix", ::fwData::TransformationMatrix3D::New());
 
     vtkTransform *vtkFieldTransform = vtkTransform::New();
     vtkFieldTransform->Identity();
     m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
         ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
                 fieldTransform,
-                "::visuVTKAdaptor::Transform" ));
+                "::visuVTKAdaptor::Transform" 
+                )
+        );
     assert(m_transformService.lock());
     ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
 

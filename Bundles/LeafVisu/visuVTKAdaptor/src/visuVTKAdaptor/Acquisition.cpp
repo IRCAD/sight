@@ -87,11 +87,8 @@ void Acquisition::doUpdate() throw(fwTools::Failed)
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
 
     doStop();
-    bool showRec = true;
-    if (acq->getFieldSize("ShowReconstructions"))
-    {
-        showRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
-    }
+    bool showRec;
+    showRec = acq->getField_NEWAPI("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
     BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, acq->getReconstructions() )
     {
@@ -139,11 +136,8 @@ void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
         if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) )
         {
             ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-            bool showRec = true;
-            if (acq->getFieldSize("ShowReconstructions"))
-            {
-                showRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
-            }
+            bool showRec;
+            showRec = acq->getField_NEWAPI("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
             BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
             {
