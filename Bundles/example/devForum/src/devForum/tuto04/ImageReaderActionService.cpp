@@ -6,7 +6,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include "devForum/tuto04/ImageReaderService.hpp"
@@ -70,11 +70,11 @@ void ImageReaderActionService::updating() throw ( ::fwTools::Failed )
     ImageReaderService::sptr readerSrv ( new ImageReaderService() );
 
     // Register this new service in Object Service Registry of the current application
-    ::fwServices::registry::ObjectService::registerService( associatedImage, readerSrv );
+    ::fwServices::OSR::registerService( associatedImage, readerSrv );
 
     // Start the service ( does nothing )
     readerSrv->start();
-    // configure the service ( open a dialog box to chosse vtk image file on filesystem )
+    // configure the service ( open a dialog box to choose vtk image file on filesystem )
     readerSrv->configureWithIHM();
     // Update service ( read file and notify listeners that we have new image laoded )
     readerSrv->update();
@@ -83,7 +83,7 @@ void ImageReaderActionService::updating() throw ( ::fwTools::Failed )
 
     // Before destruction of the reader service ( end of this method because it
     // is a shared ptr ), we unregister it of the Object Service Registry
-    ::fwServices::registry::ObjectService::unregisterService( readerSrv );
+    ::fwServices::OSR::unregisterService( readerSrv );
 }
 
 //-----------------------------------------------------------------------------

@@ -7,16 +7,10 @@
 #ifndef _DEVFORUM_TUTO2_IMAGEVIEWERSERVICE_HPP_
 #define _DEVFORUM_TUTO2_IMAGEVIEWERSERVICE_HPP_
 
-// Include wx to manage layout IHM
-#include <wx/wxprec.h>
-#include <wx/aui/aui.h>
 
 // Include vtk tools used to render an image with a negato
 #include  <vtkRenderer.h>
 #include  <vtkImagePlaneWidget.h>
-
-// Include vtkinria3d interactor
-#include <vtkinria3d/wxVTKRenderWindowInteractor.h>
 
 // Include abstract class
 #include <fwRender/IRender.hpp>

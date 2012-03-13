@@ -60,7 +60,6 @@ void ImageViewerService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(:
 void ImageViewerService::stopping() throw ( ::fwTools::Failed )
 {
     ::devForum::tuto02::ImageViewerService::stopping();
-    this->destroy();
 }
 //-----------------------------------------------------------------------------
 

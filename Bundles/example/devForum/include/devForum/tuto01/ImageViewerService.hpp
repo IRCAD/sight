@@ -7,16 +7,12 @@
 #ifndef _DEVFORUM_TUTO1_IMAGEVIEWERSERVICE_HPP_
 #define _DEVFORUM_TUTO1_IMAGEVIEWERSERVICE_HPP_
 
-// Include wx to manage layout IHM
-#include <wx/wxprec.h>
-#include <wx/aui/aui.h>
-
 // Include vtk tools used to render an image with a negato
 #include  <vtkRenderer.h>
 #include  <vtkImagePlaneWidget.h>
 
-// Include vtkinria3d interactor
-#include <vtkinria3d/wxVTKRenderWindowInteractor.h>
+// Include IVtkRenderWindowInteractorManager
+#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
 // Include abstract class
 #include <fwRender/IRender.hpp>
@@ -89,15 +85,10 @@ protected :
     DEVFORUM_API void initVTKPipeline();
 
 
-
-    /// Required to facilitate resize of an empty vtk rendering window : why ?
-    wxAuiManager* m_wxmanager;
+    ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
     /// @brief vtk renderer
     vtkRenderer * m_render ;
-
-    /// VTK Interactor window
-    ::wxVTKRenderWindowInteractor* m_interactor;
 
     /// vtk plane widget used in the negatoscope axial plane.
     vtkImagePlaneWidget* m_negatoAxial;
