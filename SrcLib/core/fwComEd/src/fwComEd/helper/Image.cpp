@@ -39,7 +39,7 @@ void Image::notify( ::fwServices::IService::sptr _serviceSource )
     {
         ::fwServices::IEditionService::notify( _serviceSource, m_image.lock(), m_imageMsg );
     }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",m_imageMsg->getEventIds().size() ==0 0);
+    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.", m_imageMsg->getEventIds().empty());
 }
 
 //------------------------------------------------------------------------------
