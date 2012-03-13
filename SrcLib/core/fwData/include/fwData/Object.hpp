@@ -56,11 +56,19 @@ public:
     /**
      * @brief Returns a pointer of corresponding field.
      * @param[in] name Field name
+     * @return pointer to corresponding field, nullptr if field is not found.
+     */
+    template< typename DATA_TYPE >
+    SPTR(DATA_TYPE) getField_NEWAPI( const FieldNameType& name ) const;
+
+    /**
+     * @brief Returns a pointer of corresponding field.
+     * @param[in] name Field name
      * @param[in] defaultValue Default value
      * @return pointer to corresponding field, defaultValue if field is not found.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) getField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue = SPTR(DATA_TYPE)() ) const;
+    SPTR(DATA_TYPE) getField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const;
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if defaultValue is not null.
@@ -177,6 +185,17 @@ template <typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
 {
     return DATA_TYPE::dynamicCast( ::fwData::Object::copy( ::fwData::Object::csptr(source)) );
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename DATA_TYPE >
+SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name ) const
+{
+    ::fwData::Object::sptr field;
+    field = this->getField_NEWAPI( name, field );
+    SPTR(DATA_TYPE) result  = DATA_TYPE::dynamicCast( field );
+    return result;
 }
 
 //-----------------------------------------------------------------------------
