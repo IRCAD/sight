@@ -105,8 +105,14 @@ public :
     /// Get all the point values of the TF (keys of the map m_tfData)
     FWDATA_API TFValueVectorType getTFValues() const;
 
+    /// Get all the point values of the TF scaled and shifted with the window level
+    FWDATA_API TFValueVectorType getScaledValues() const;
+
     /// Get the first and last point values of the tf data
     FWDATA_API TFValuePairType getMinMaxTFValues() const;
+
+    /// Get the min/max of the window level
+    FWDATA_API TFValuePairType getWLMinMax() const;
 
     /// Return the nearest point value of a value.
     FWDATA_API TFValueType getNearestValue( TFValueType value ) const;

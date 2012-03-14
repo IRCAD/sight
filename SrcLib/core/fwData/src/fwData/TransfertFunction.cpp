@@ -72,11 +72,31 @@ TransfertFunction_VERSION_II::~TransfertFunction_VERSION_II()
 TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::getTFValues() const
 {
     TFValueVectorType values;
+    values.reserve(m_attrTfData.size());
     std::transform( m_attrTfData.begin(), m_attrTfData.end(),
             std::back_inserter(values),
             ::boost::bind(& TFDataType::value_type::first, _1) );
     return values;
+}
 
+//------------------------------------------------------------------------------
+
+TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::getScaledValues() const
+{
+    TFValueVectorType values;
+    values.reserve(m_attrTfData.size());
+    TFValuePairType minMax = this->getMinMaxTFValues();
+    TFValuePairType windowMinMax = this->getWLMinMax();
+
+    const double shift =  windowMinMax.first - minMax.first;
+    const double scale = m_attrWindow / (minMax.second - minMax.first);
+
+    BOOST_FOREACH(const TFDataType::value_type &data, m_attrTfData)
+    {
+        values.push_back( (data.first * scale) + shift );
+    }
+
+    return values;
 }
 
 //------------------------------------------------------------------------------
@@ -88,6 +108,18 @@ TransfertFunction_VERSION_II::getMinMaxTFValues() const
     TFValuePairType minMax;
     minMax.first = m_attrTfData.begin()->first;
     minMax.second = (m_attrTfData.rbegin())->first;
+    return minMax;
+}
+
+//------------------------------------------------------------------------------
+
+TransfertFunction_VERSION_II::TFValuePairType
+TransfertFunction_VERSION_II::getWLMinMax() const
+{
+    TFValuePairType minMax;
+    double halfWindow = m_attrWindow/2.f;
+    minMax.first = m_attrLevel - halfWindow;
+    minMax.second = m_attrLevel + halfWindow;;
     return minMax;
 }
 
