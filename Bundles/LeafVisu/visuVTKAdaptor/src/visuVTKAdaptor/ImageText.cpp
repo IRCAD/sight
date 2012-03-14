@@ -47,10 +47,33 @@ ImageText::~ImageText() throw()
 
 void ImageText::doStart() throw(::fwTools::Failed)
 {
-    Text::doStart();
+    this->Text::doStart();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->installTFObserver( this->getSptr() );
 }
+
+//-----------------------------------------------------------------------------
+
+void ImageText::doStop() throw(fwTools::Failed)
+{
+    this->removeTFObserver();
+    this->Text::doStop();
+}
+
+//-----------------------------------------------------------------------------
+
+void ImageText::configuring() throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+
+    this->Text::configuring();
+
+    this->parseTFConfig( m_configuration );
+}
+
+
+//-----------------------------------------------------------------------------
 
 void ImageText::doUpdate() throw(::fwTools::Failed)
 {
@@ -85,12 +108,18 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
 {
     // update only if new LandMarks
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    ::fwComEd::TransferFunctionMsg::csptr tfMsg =  ::fwComEd::TransferFunctionMsg::dynamicConstCast( msg );
+
     if ( imgMsg )
     {
         if( imgMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ))
         {
             imgMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
         }
+        doUpdate();
+    }
+    else  if ( tfMsg )
+    {
         doUpdate();
     }
 }
@@ -100,8 +129,10 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
 void ImageText::doSwap() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->removeTFObserver();
     this->updateImageInfos(image);
     this->doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 
