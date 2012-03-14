@@ -57,9 +57,9 @@ Image::Image() throw()
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
     addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
     addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY               );
     addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY                 );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
     addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING       );
 }
 

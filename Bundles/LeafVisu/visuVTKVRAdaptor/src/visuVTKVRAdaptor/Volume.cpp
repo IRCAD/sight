@@ -240,13 +240,15 @@ void Volume::doStart() throw(fwTools::Failed)
     this->addToRenderer(m_volume);
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
-    doUpdate(); //TODO: remove me ?
+    this->doUpdate(); //TODO: remove me ?
+    this->installTFObserver( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
 
 void Volume::doStop() throw(fwTools::Failed)
 {
+    this->removeTFObserver();
     this->removeAllPropFromRenderer();
     this->getInteractor()->GetRenderWindow()->RemoveObserver(m_abortCommand);
 }
@@ -255,7 +257,9 @@ void Volume::doStop() throw(fwTools::Failed)
 
 void Volume::doSwap() throw(fwTools::Failed)
 {
+    this->removeTFObserver();
     doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
@@ -326,31 +330,31 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
             SLM_TRACE("ImageMsg Buffer || NEW_IMAGE");
-            doUpdate();
+            this->doUpdate();
         }
 
         if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
             SLM_TRACE("TransferFunctionMsg MODIFIED_POINTS");
-            updateTransfertFunction(image);
+            this->updateTransfertFunction(image);
         }
 
         if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
         {
             SLM_TRACE("TransferFunctionMsg WINDOWING");
-            updateTransfertFunction(image);
-            updateWindowing(image);
+            this->updateTransfertFunction(image);
+            this->updateWindowing(image);
         }
 
         if ( msg->hasEvent( "SHOWHIDE_BOX_WIDGET" ) )
         {
             m_bClippingBoxIsActivate = ! m_bClippingBoxIsActivate;
-            activateBoxClipping( m_bClippingBoxIsActivate );
+            this->activateBoxClipping( m_bClippingBoxIsActivate );
         }
 
         if ( msg->hasEvent( "RESET_BOX_WIDGET" ) )
         {
-            resetBoxWidget();
+            this->resetBoxWidget();
         }
 
     }
@@ -452,15 +456,19 @@ void Volume::updateTransfertFunction( ::fwData::Image::sptr image )
     m_colorTransferFunction->RemoveAllPoints();
     m_opacityTransferFunction->RemoveAllPoints();
 
+    const ::fwData::TransfertFunction_VERSION_II::TFValueVectorType values = pTF->getScaledValues();
+    ::fwData::TransfertFunction_VERSION_II::TFValueVectorType::const_iterator valueIter = values.begin();
     BOOST_FOREACH(const ::fwData::TransfertFunction_VERSION_II::TFDataType::value_type &tfPoint, pTF->getTFData())
     {
-        const ::fwData::TransfertFunction_VERSION_II::TFValueType &value = tfPoint.first;
+        const ::fwData::TransfertFunction_VERSION_II::TFValueType &value = *(valueIter++);
         const ::fwData::TransfertFunction_VERSION_II::TFColor &color = tfPoint.second;
 
         m_colorTransferFunction->AddRGBPoint( value , color.r, color.g, color.b );
         m_opacityTransferFunction->AddPoint(  value , color.a );
     }
+    ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = pTF->getMinMaxTFValues();
 
+    m_colorTransferFunction->SetClamping(pTF->getIsClamped());
     m_volumeProperty->SetColor(m_colorTransferFunction);
 
     setVtkPipelineModified();
