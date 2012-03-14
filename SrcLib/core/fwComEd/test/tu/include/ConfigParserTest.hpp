@@ -132,7 +132,7 @@ public :
     virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
-        if (imageMessage && imageMessage->hasEvent(::fwComEd::ImageMsg::WINDOWING))
+        if (imageMessage && imageMessage->hasEvent(::fwComEd::ImageMsg::SLICE_INDEX))
         {
             // if receiving a imageMsg : tag service is updated
             m_isUpdatedMessage = true;

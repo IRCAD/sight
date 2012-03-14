@@ -145,7 +145,7 @@ void CompositeMessageTest::testMessageNotification()
 
     // notify message
     ::fwComEd::ImageMsg::sptr imgMsg = ::fwComEd::ImageMsg::New();
-    imgMsg->addEvent(::fwComEd::ImageMsg::WINDOWING);
+    imgMsg->addEvent(::fwComEd::ImageMsg::SLICE_INDEX);
 
     ::fwServices::IEditionService::notify(serviceImage, image, imgMsg);
 
