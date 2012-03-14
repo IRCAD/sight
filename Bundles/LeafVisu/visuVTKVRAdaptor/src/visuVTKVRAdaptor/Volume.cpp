@@ -5,13 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransfertFunction_VERSION_II.hpp>
+#include <fwData/TransfertFunction.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/String.hpp>
 
@@ -179,8 +180,8 @@ Volume::Volume() throw() :
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
     addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
     addNewHandledEvent( "RESET_BOX_WIDGET" );
 
@@ -328,15 +329,15 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
             doUpdate();
         }
 
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
+        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
-            SLM_TRACE("ImageMsg TRANSFERTFUNCTION");
+            SLM_TRACE("TransferFunctionMsg MODIFIED_POINTS");
             updateTransfertFunction(image);
         }
 
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
+        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
         {
-            SLM_TRACE("ImageMsg WINDOWING");
+            SLM_TRACE("TransferFunctionMsg WINDOWING");
             updateTransfertFunction(image);
             updateWindowing(image);
         }
