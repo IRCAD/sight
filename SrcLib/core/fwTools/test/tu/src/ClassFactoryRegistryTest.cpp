@@ -34,7 +34,7 @@ void ClassFactoryRegistryTest::factoryRegistryTest()
 {
     const std::string STR = "toto";
 
-    ::boost::shared_ptr< ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Field, std::string > > cf(new ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Field, std::string >(STR));
+    ::boost::shared_ptr< ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Object, std::string > > cf(new ::fwTools::ClassFactory< ::fwTools::Object, ::fwTools::Object, std::string >(STR));
 
     ::fwTools::ClassFactoryRegistry::addFactory(cf);
 
@@ -45,9 +45,6 @@ void ClassFactoryRegistryTest::factoryRegistryTest()
 
     CPPUNIT_ASSERT(factory);
     CPPUNIT_ASSERT(obj);
-
-    ::fwTools::Field::sptr field = ::fwTools::Field::dynamicCast(obj);
-    CPPUNIT_ASSERT(field);
 }
 
 } // namespace ut

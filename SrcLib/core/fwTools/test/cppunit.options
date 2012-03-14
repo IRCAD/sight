@@ -2,7 +2,6 @@
 CLASSTEST=[ 
     'ClassFactoryRegistryTest',
     'DynamicTypeTest'         ,
-    'FieldTest'               ,
     'MacrosTest'              ,
     'ObjectTest'              ,
     'RandomTest'              ,
