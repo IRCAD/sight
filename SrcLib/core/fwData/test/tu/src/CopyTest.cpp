@@ -49,7 +49,6 @@
 #include <fwData/Study.hpp>
 #include <fwData/Tag.hpp>
 #include <fwData/TransfertFunction.hpp>
-#include <fwData/TransfertFunctionPoint.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Vector.hpp>
@@ -118,7 +117,6 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::String);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Study);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransfertFunction_VERSION_II);
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransfertFunctionPoint);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransformationMatrix3D);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TriangularMesh);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Vector);

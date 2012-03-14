@@ -30,7 +30,6 @@ CLASSTEST=[
     'StringTest',
     'StructureTraitsDictionaryTest',
     'StudyTest',
-    'TransfertFunctionPointTest',
     'TransfertFunctionTest',
     'TransformationMatrix3DTest',
     'VideoTest',

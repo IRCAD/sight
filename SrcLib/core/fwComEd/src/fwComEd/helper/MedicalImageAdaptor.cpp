@@ -6,8 +6,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/helpers.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/TransfertFunction.hpp>
 

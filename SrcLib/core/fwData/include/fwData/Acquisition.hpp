@@ -18,7 +18,6 @@
 #include "fwData/Factory.hpp"
 #include "fwData/Image.hpp"
 #include "fwData/Reconstruction.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 
 namespace fwData

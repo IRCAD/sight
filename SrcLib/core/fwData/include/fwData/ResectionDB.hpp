@@ -12,7 +12,6 @@
 #include "fwData/config.hpp"
 #include "fwData/Factory.hpp"
 #include "fwData/Resection.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {

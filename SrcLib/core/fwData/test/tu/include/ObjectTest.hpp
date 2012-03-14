@@ -17,9 +17,6 @@ namespace ut
 class ObjectTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ObjectTest );
-    CPPUNIT_TEST( methode1 );
-    CPPUNIT_TEST( methode2 );
-    CPPUNIT_TEST( methode3 );
     CPPUNIT_TEST( fieldTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -27,10 +24,6 @@ public:
     // interface
     void setUp();
     void tearDown();
-
-    void methode1();
-    void methode2();
-    void methode3();
 
     void fieldTest();
 };

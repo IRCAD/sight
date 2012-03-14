@@ -15,7 +15,6 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/Object.hpp>
-#include <fwTools/Field.hpp>
 #include <fwTools/DynamicAttributes.hxx>
 #include <fwTools/Factory.hpp>
 

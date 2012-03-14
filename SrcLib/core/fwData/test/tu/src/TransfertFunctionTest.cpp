@@ -12,7 +12,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <fwData/TransfertFunction.hpp>
-#include <fwData/TransfertFunction_VERSION_II.hpp>
+#include <fwData/TransfertFunction.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Color.hpp>
 

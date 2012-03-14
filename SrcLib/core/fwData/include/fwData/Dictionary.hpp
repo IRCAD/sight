@@ -15,7 +15,6 @@
 #include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
 #include "fwData/DictionaryOrgan.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {

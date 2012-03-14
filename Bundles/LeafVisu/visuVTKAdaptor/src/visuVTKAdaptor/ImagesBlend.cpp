@@ -9,8 +9,6 @@
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
 
-#include <fwTools/helpers.hpp>
-
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 

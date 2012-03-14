@@ -9,7 +9,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <fwData/TransfertFunction_VERSION_II.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 namespace fwData
 {
