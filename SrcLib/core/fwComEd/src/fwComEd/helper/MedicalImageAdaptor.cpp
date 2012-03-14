@@ -20,8 +20,6 @@
 
 #include "fwComEd/helper/MedicalImageAdaptor.hpp"
 #include "fwComEd/helper/Image.hpp"
-#include "fwComEd/TransferFunctionMsg.hpp"
-
 
 namespace fwComEd
 {
@@ -368,6 +366,16 @@ void MedicalImageAdaptor::setWindow( double window )
 
 //------------------------------------------------------------------------------
 
+void MedicalImageAdaptor::setWindowLevel( double windowMin, double windowMax )
+{
+    double window = windowMax - windowMin;
+    double level = windowMin + window/2.f;
+    this->setWindow( window );
+    this->setLevel( level );
+}
+
+//------------------------------------------------------------------------------
+
 double MedicalImageAdaptor::getLevel() const
 {
     return this->getTransferFunction()->getLevel();
@@ -409,7 +417,7 @@ void MedicalImageAdaptor::removeTFObserver()
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::notifyTFWindowing( ::fwServices::IService::sptr srv )
+::fwComEd::TransferFunctionMsg::sptr MedicalImageAdaptor::notifyTFWindowing( ::fwServices::IService::sptr srv )
 {
     ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getTransferFunction();
 
@@ -417,6 +425,7 @@ void MedicalImageAdaptor::notifyTFWindowing( ::fwServices::IService::sptr srv )
     ::fwComEd::TransferFunctionMsg::NewSptr msg;
     msg->setWindowLevel( tf->getWindow(), tf->getLevel() );
     ::fwServices::IEditionService::notify( srv, tf, msg );
+    return msg;
 }
 
 //------------------------------------------------------------------------------

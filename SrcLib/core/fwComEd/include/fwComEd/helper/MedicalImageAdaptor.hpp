@@ -14,6 +14,7 @@
 #include <fwData/String.hpp>
 #include <fwData/TransfertFunction.hpp>
 
+#include "fwComEd/TransferFunctionMsg.hpp"
 #include "fwComEd/helper/ImageGetter.hpp"
 #include "fwComEd/export.hpp"
 
@@ -81,6 +82,9 @@ public:
 
     /// Set the window of the selected tf
     FWCOMED_API void setWindow( double window );
+
+    /// Set the window level of the selected tf from window min/max
+    FWCOMED_API void setWindowLevel( double windowMin, double windowMax );
 
     /// Get the level of the selected tf
     FWCOMED_API double getLevel() const;
@@ -230,7 +234,7 @@ protected:
     FWCOMED_API void removeTFObserver();
 
     // Helper to send a windowing notification in the current tf
-    FWCOMED_API void notifyTFWindowing( ::fwServices::IService::sptr srv );
+    FWCOMED_API ::fwComEd::TransferFunctionMsg::sptr notifyTFWindowing( ::fwServices::IService::sptr srv );
 
 private :
 

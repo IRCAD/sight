@@ -14,6 +14,8 @@
 #include <fwData/Integer.hpp>
 #include <gui/editor/IEditor.hpp>
 
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
 #include "uiImageQt/config.hpp"
 
 class QAction;
@@ -39,7 +41,7 @@ namespace uiImage
  * This is represented by
  *  - two sliders to modify the min, max value of windowing
  */
-class UIIMAGEQT_CLASS_API WindowLevel : public QObject, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API WindowLevel : public QObject, public ::fwComEd::helper::MedicalImageAdaptor, public ::gui::editor::IEditor
 {
     Q_OBJECT
 
@@ -83,7 +85,7 @@ protected:
      * Example of configuration
      * @verbatim
          <service uid="windowLevel" implementation="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoComChannel="yes">
-             <config autoWindowing="yes" tfSelection="greyLevelTF" />
+             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfPoolFwID="myTFPool" />
          </service>
        @endverbatim
      * With :
@@ -109,23 +111,22 @@ protected slots :
     void onDynamicRangeSelectionChanged(QAction *action);
 
 protected:
-    typedef std::pair< ::fwData::Integer::ValueType, ::fwData::Integer::ValueType > WindowLevelMinMaxType;
+    typedef ::fwData::TransfertFunction_VERSION_II::TFValuePairType WindowLevelMinMaxType;
 
-    int toWindowLevel(double _val);
-    double fromWindowLevel(int _val);
+    double toWindowLevel(double _val);
+    double fromWindowLevel(double _val);
 
     WindowLevelMinMaxType getImageWindowMinMax();
 
-    void onImageWindowLevelChanged(int _imageMin, int _imageMax);
-    void notifyWindowLevel(int _imageMin, int _imageMax);
+    void onImageWindowLevelChanged(double _imageMin, double _imageMax);
+    void notifyWindowLevel(double _imageMin, double _imageMax);
 
-    void updateWidgetMinMax(int _imageMin, int _imageMax);
-    void updateImageWindowLevel(int _imageMin, int _imageMax);
-    void updateTextWindowLevel(int _imageMin, int _imageMax);
+    void updateWidgetMinMax(double _imageMin, double _imageMax);
+    void updateImageWindowLevel(double _imageMin, double _imageMax);
+    void updateTextWindowLevel(double _imageMin, double _imageMax);
 
     void setWidgetDynamicRange(double min, double max);
-    bool getWidgetIntValue(QLineEdit *widget, int &val);
-    bool checkMinMax(int &min, int &max);
+    bool getWidgetDoubleValue(QLineEdit *widget, double &val);
 
 private:
 
@@ -141,10 +142,10 @@ private:
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
-    int m_imageMin;
-    int m_imageMax;
-    int m_notifiedImageMin;
-    int m_notifiedImageMax;
+    double m_imageMin;
+    double m_imageMax;
+    double m_notifiedImageMin;
+    double m_notifiedImageMax;
     bool m_isNotifying;
     bool m_autoWindowing;
 

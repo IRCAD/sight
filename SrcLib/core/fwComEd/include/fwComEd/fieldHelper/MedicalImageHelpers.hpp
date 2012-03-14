@@ -367,7 +367,7 @@ public:
     {
         IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
         const ::fwData::Image::SizeType &size = param.image->getSize();
-        unsigned int len = size[0]*size[1]*size[2];
+        ::fwData::Image::SizeType::value_type len = size[0]*size[1]*size[2];
 
         T &min = param.min;
         T &max = param.max;

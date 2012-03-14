@@ -19,8 +19,10 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -56,8 +58,7 @@ WindowLevel::WindowLevel() throw()
     m_isNotifying = false;
 
     addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
-    addNewHandledEvent(::fwComEd::ImageMsg::WINDOWING);
-    addNewHandledEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
 }
 
 //------------------------------------------------------------------------------
@@ -70,9 +71,6 @@ WindowLevel::~WindowLevel() throw()
 void WindowLevel::starting() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
 
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -149,13 +147,14 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     QObject::connect(m_toggleAutoButton, SIGNAL(toggled( bool )), this, SLOT(onToggleAutoWL( bool )));
     QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
 
+    this->installTFObserver( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
 
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
-
+    this->removeTFObserver();
     QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
     QObject::disconnect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
     QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
@@ -184,22 +183,17 @@ void WindowLevel::configuring() throw(fwTools::Failed)
     this->initialize();
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("config");
-    if (!configs.empty())
-    {
-        ::fwRuntime::ConfigurationElement::sptr config = configs.front();
-        if (config->hasAttribute("autoWindowing"))
-        {
-            std::string autoWindowing = config->getExistingAttributeValue("autoWindowing");
-            SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!", autoWindowing == "yes" || autoWindowing == "no");
-            m_autoWindowing = (autoWindowing == "yes");
-        }
+    SLM_ASSERT("WindowLevel config is empty.", configs.size() == 1);
 
-        if ( config->hasAttribute("tfSelection") )
-        {
-            m_tfSelection = config->getAttributeValue("tfSelection");
-            SLM_FATAL_IF("'tfSelection' must not be empty", m_tfSelection.empty());
-        }
+    ::fwRuntime::ConfigurationElement::sptr config = configs.front();
+    if (config->hasAttribute("autoWindowing"))
+    {
+        std::string autoWindowing = config->getExistingAttributeValue("autoWindowing");
+        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!", autoWindowing == "yes" || autoWindowing == "no");
+        m_autoWindowing = (autoWindowing == "yes");
     }
+
+    this->parseTFConfig(config);
 }
 
 //------------------------------------------------------------------------------
@@ -212,18 +206,21 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
-    if(imageIsValid && m_autoWindowing)
+    if(imageIsValid)
     {
-        int min, max;
-        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-        this->checkMinMax(min, max);
-        this->updateImageWindowLevel(min, max);
+        this->updateImageInfos(image);
+        if(m_autoWindowing)
+        {
+            double min, max;
+            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            this->updateImageWindowLevel(min, max);
+        }
+
+        ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
+        SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
+        ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = pTF->getWLMinMax();
+        this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
-
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-
-    onImageWindowLevelChanged( *min, *max );
 }
 
 //------------------------------------------------------------------------------
@@ -231,30 +228,34 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 void WindowLevel::swapping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->removeTFObserver();
     this->updating();
+    this->installTFObserver( this->getSptr() );
 }
 //------------------------------------------------------------------------------
 
-void WindowLevel::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-    if (m_autoWindowing && imageIsValid && imageMessage->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
+    if (imageIsValid)
     {
-        int min, max;
-        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-        this->checkMinMax(min, max);
-        this->updateImageWindowLevel(min, max);
+        this->updateImageInfos(image);
+        if(m_autoWindowing && msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
+        {
+            double min, max;
+            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            this->updateImageWindowLevel(min, max);
+        }
+
+        ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
+        SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
+        ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = pTF->getWLMinMax();
+        this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
-
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-    onImageWindowLevelChanged(*min, *max);
-
     this->setEnabled(imageIsValid);
 }
 
@@ -266,23 +267,20 @@ void WindowLevel::info( std::ostream & _sstream )
 }
 
 //------------------------------------------------------------------------------
+
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-    ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
+     ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
+     SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
 
-    WindowLevelMinMaxType res(*min, *max);
-    return res;
+    return pTF->getWLMinMax();
 }
 
-
 //------------------------------------------------------------------------------
-void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
+void WindowLevel::updateWidgetMinMax(double _imageMin, double _imageMax)
 {
-    double rangeMin = fromWindowLevel(_imageMin);
-    double rangeMax = fromWindowLevel(_imageMax);
-
+    double rangeMin = this->fromWindowLevel(_imageMin);
+    double rangeMax = this->fromWindowLevel(_imageMax);
 
     //XXX : Hack because of f4s' TF management
     m_rangeSlider->setMinimumMinMaxDelta(10./m_widgetDynamicRangeWidth);
@@ -291,7 +289,8 @@ void WindowLevel::updateWidgetMinMax(int _imageMin, int _imageMax)
 }
 
 //------------------------------------------------------------------------------
-double WindowLevel::fromWindowLevel(int _val)
+
+double WindowLevel::fromWindowLevel(double _val)
 {
     double valMin = m_widgetDynamicRangeMin;
     double valMax = valMin + m_widgetDynamicRangeWidth;
@@ -300,56 +299,49 @@ double WindowLevel::fromWindowLevel(int _val)
     valMin = std::min(val, valMin);
     valMax = std::max(val, valMax);
 
-    setWidgetDynamicRange(valMin, valMax);
+    this->setWidgetDynamicRange(valMin, valMax);
 
     double res = (_val - m_widgetDynamicRangeMin) / m_widgetDynamicRangeWidth;
     return res;
 }
 
 //------------------------------------------------------------------------------
-int WindowLevel::toWindowLevel(double _val)
+
+double WindowLevel::toWindowLevel(double _val)
 {
     return m_widgetDynamicRangeMin + m_widgetDynamicRangeWidth * _val;
 }
 
 //------------------------------------------------------------------------------
-void  WindowLevel::updateImageWindowLevel(int _imageMin, int _imageMax)
+
+void  WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
     m_imageMin = _imageMin;
     m_imageMax = _imageMax;
 
     if (!m_isNotifying)
     {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-        ::fwData::Integer::sptr min = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-        ::fwData::Integer::sptr max = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-
-        min->value() = _imageMin;
-        max->value() = _imageMax;
-
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
-
-        notifyWindowLevel(_imageMin, _imageMax);
+        this->notifyWindowLevel(_imageMin, _imageMax);
     }
 }
 
-
 //------------------------------------------------------------------------------
+
 void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 {
-    int imageMin = toWindowLevel(_min);
-    int imageMax = toWindowLevel(_max);
-    updateImageWindowLevel(imageMin, imageMax);
-    updateTextWindowLevel (imageMin, imageMax);
+    double imageMin = this->toWindowLevel(_min);
+    double imageMax = this->toWindowLevel(_max);
+    this->updateImageWindowLevel(imageMin, imageMax);
+    this->updateTextWindowLevel (imageMin, imageMax);
 }
 
 //------------------------------------------------------------------------------
+
 void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 {
     WindowLevelMinMaxType wl    = getImageWindowMinMax();
-    int min = static_cast <int> (m_widgetDynamicRangeMin);
-    int max = static_cast <int> (m_widgetDynamicRangeWidth) + min;
+    double min = m_widgetDynamicRangeMin;
+    double max = m_widgetDynamicRangeWidth + min;
     int index = action->data().toInt();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -383,26 +375,23 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 }
 
 //------------------------------------------------------------------------------
-void  WindowLevel::onImageWindowLevelChanged(int _imageMin, int _imageMax)
+
+void  WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
 {
-    updateWidgetMinMax( _imageMin, _imageMax );
-    updateTextWindowLevel( _imageMin, _imageMax );
+    this->updateWidgetMinMax( _imageMin, _imageMax );
+    this->updateTextWindowLevel( _imageMin, _imageMax );
 }
 
 //------------------------------------------------------------------------------
-void  WindowLevel::notifyWindowLevel(int _imageMin, int _imageMax)
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::Integer::NewSptr min(static_cast < ::fwData::Integer::ValueType >(_imageMin));
-    ::fwData::Integer::NewSptr max(static_cast < ::fwData::Integer::ValueType >(_imageMax));
 
+void  WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
+{
     m_notifiedImageMin = _imageMin;
     m_notifiedImageMax = _imageMax;
 
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
-    imageMsg->setWindowMinMax(min, max, image);
-    imageMsg->setMessageCallback( ::boost::bind( &WindowLevel::notifyWindowLevelCallback, this ) );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+    this->setWindowLevel(m_imageMin, m_imageMax);
+    ::fwComEd::TransferFunctionMsg::sptr msg = this->notifyTFWindowing(this->getSptr());
+    msg->setMessageCallback(::boost::bind( &WindowLevel::notifyWindowLevelCallback, this ));
 
     m_isNotifying = true;
 }
@@ -420,7 +409,8 @@ void  WindowLevel::notifyWindowLevelCallback()
 }
 
 //------------------------------------------------------------------------------
-void  WindowLevel::updateTextWindowLevel(int _imageMin, int _imageMax)
+
+void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 {
 
     m_valueTextMin->setText(QString("%1").arg(_imageMin));
@@ -428,27 +418,28 @@ void  WindowLevel::updateTextWindowLevel(int _imageMin, int _imageMax)
 }
 
 //------------------------------------------------------------------------------
+
 void  WindowLevel::onToggleTF(bool squareTF)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-    if( squareTF )
-    {
-        ::fwComEd::fieldHelper::MedicalImageHelpers::setSquareTF(image, m_tfSelection);
-    }
-    else
-    {
-        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelection);
-    }
-
-    WindowLevelMinMaxType wl = getImageWindowMinMax();
-    this->updateWidgetMinMax(wl.first, wl.second);
-
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
-
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
-    imageMsg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
-    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+//    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+//
+//    if( squareTF )
+//    {
+//        ::fwComEd::fieldHelper::MedicalImageHelpers::setSquareTF(image, m_tfSelection);
+//    }
+//    else
+//    {
+//        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelection);
+//    }
+//
+//    WindowLevelMinMaxType wl = getImageWindowMinMax();
+//    this->updateWidgetMinMax(wl.first, wl.second);
+//
+//    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
+//
+//    ::fwComEd::ImageMsg::NewSptr imageMsg;
+//    imageMsg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
+//    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
 }
 
 //------------------------------------------------------------------------------
@@ -460,34 +451,31 @@ void  WindowLevel::onToggleAutoWL(bool autoWL)
      if (m_autoWindowing)
      {
          ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-         int min, max;
+         double min, max;
          ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-         this->checkMinMax(min, max);
          this->updateImageWindowLevel(min, max);
          this->onImageWindowLevelChanged(min, max);
      }
 }
 
 //------------------------------------------------------------------------------
+
 void  WindowLevel::onTextEditingFinished()
 {
-    int min, max;
-    if(this->getWidgetIntValue(m_valueTextMin, min) && this->getWidgetIntValue(m_valueTextMax, max))
+    double min, max;
+    if(this->getWidgetDoubleValue(m_valueTextMin, min) && this->getWidgetDoubleValue(m_valueTextMax, max))
     {
-        if ( ! this->checkMinMax( min, max ))
-        {
-            this->updateTextWindowLevel(min, max);
-        }
-        updateWidgetMinMax( min, max );
-        updateImageWindowLevel(min, max);
+        this->updateWidgetMinMax( min, max );
+        this->updateImageWindowLevel(min, max);
     }
 }
 
 //------------------------------------------------------------------------------
-bool WindowLevel::getWidgetIntValue(QLineEdit *widget, int &val)
+
+bool WindowLevel::getWidgetDoubleValue(QLineEdit *widget, double &val)
 {
     bool ok=false;
-    val = widget->text().toInt(&ok);
+    val = widget->text().toDouble(&ok);
 
     QPalette palette;
     if (!ok)
@@ -503,6 +491,7 @@ bool WindowLevel::getWidgetIntValue(QLineEdit *widget, int &val)
 }
 
 //------------------------------------------------------------------------------
+
 void WindowLevel::setEnabled(bool enable)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -512,6 +501,7 @@ void WindowLevel::setEnabled(bool enable)
 }
 
 //------------------------------------------------------------------------------
+
 void WindowLevel::setWidgetDynamicRange(double min, double max)
 {
     m_widgetDynamicRangeMin = min;
@@ -521,17 +511,6 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 }
 
 //------------------------------------------------------------------------------
-bool WindowLevel::checkMinMax(int &min, int &max)
-{
-    bool isOk = true;
-    if (max - min < 10)
-    {
-        max = min + 10;
-        isOk = false;
-    }
-    return isOk;
-}
-
 
 }
 

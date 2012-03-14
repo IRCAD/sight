@@ -235,7 +235,7 @@ QRangeSlider::QRangeSlider(QWidget *parent)
 {
     m_minValue = 0.;
     m_maxValue = 1.;
-    m_allowMinGreaterThanMax = false;
+    m_allowMinGreaterThanMax = true;
     m_minimumMinMaxDelta = 0.;
     m_handleSize = 11;
 
