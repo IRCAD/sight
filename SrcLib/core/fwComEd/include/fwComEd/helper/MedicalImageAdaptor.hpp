@@ -130,7 +130,7 @@ protected:
      */
     FWCOMED_API void getCurrentSliceCenter(double center[3]);
 
-    // retreive the grey level from an image from physicial world
+    // Retrieve the grey level from an image from physical world
     //float getPixelvalue( double worldPosition[3]);
 
     /**
@@ -201,7 +201,7 @@ protected:
     /// Get the slice index
     FWCOMED_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
-    /// Get the current transfert function
+    /// Get the current transfer function
     FWCOMED_API ::fwData::TransfertFunction_VERSION_II::sptr getTransferFunction() const;
 
     /// Update the image information (slice index, min/max, TF,...)

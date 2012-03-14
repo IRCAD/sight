@@ -26,8 +26,7 @@ void TransfertFunction::toVtkLookupTable(
     lt->SetScaleToLinear();
 
 
-    std::pair< ::fwData::TransfertFunction_VERSION_II::TFValueType, ::fwData::TransfertFunction_VERSION_II::TFValueType >
-    minMax = tf->getMinMaxTFValues();
+    ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = tf->getMinMaxTFValues();
 
     lt->SetTableRange( minMax.first, minMax.second );
 

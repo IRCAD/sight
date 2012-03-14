@@ -11,7 +11,7 @@
 #include <fwServices/macros.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransfertFunction_VERSION_II.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/String.hpp>
 
@@ -324,19 +324,19 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
-            SLM_TRACE("ImageMsg Buffer || NEW_IMAGE")
+            SLM_TRACE("ImageMsg Buffer || NEW_IMAGE");
             doUpdate();
         }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
         {
-            SLM_TRACE("ImageMsg TRANSFERTFUNCTION")
+            SLM_TRACE("ImageMsg TRANSFERTFUNCTION");
             updateTransfertFunction(image);
         }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
         {
-            SLM_TRACE("ImageMsg WINDOWING")
+            SLM_TRACE("ImageMsg WINDOWING");
             updateTransfertFunction(image);
             updateWindowing(image);
         }
@@ -372,6 +372,7 @@ void Volume::configuring() throw(fwTools::Failed)
         std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
         m_autoResetCamera = (autoresetcamera == "yes");
     }
+    this->parseTFConfig( m_configuration );
 }
 
 //------------------------------------------------------------------------------
@@ -411,7 +412,6 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
         m_volumeMapper->SetClippingPlanes(m_clippingPlanes);
     }
 
-
     //m_volumeMapper->SetInputConnection(shiftScale->GetOutputPort());
     m_volumeMapper->SetInputConnection(imageImport->GetOutputPort());
 
@@ -445,39 +445,21 @@ void Volume::updateWindowing( ::fwData::Image::sptr image )
 
 void Volume::updateTransfertFunction( ::fwData::Image::sptr image )
 {
-    std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
-
-    assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
-
-    ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
-    std::string tfName = m_transfertFunctionId->value();
-    ::fwData::TransfertFunction::sptr pTF = ::fwData::TransfertFunction::dynamicCast( (*tfComposite)[tfName] );
-
-
-//    ::fwData::Composite::sptr cTransfertFunction = image->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
-//    ::fwData::String::sptr    sTransfertFunction = image->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
-//    ::fwData::TransfertFunction::sptr pTF = ::fwData::TransfertFunction::dynamicCast( cTransfertFunction->getRefMap()[sTransfertFunction->value()] );
+    ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
+    SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
 
     m_colorTransferFunction->RemoveAllPoints();
     m_opacityTransferFunction->RemoveAllPoints();
 
-    typedef ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPCIterator;
-
-    std::pair<TFPCIterator,TFPCIterator> range = pTF->getTransfertFunctionPoints();
-    TFPCIterator iterTF = range.first;
-    TFPCIterator end = range.second;
-
-    while (iterTF != end)
+    BOOST_FOREACH(const ::fwData::TransfertFunction_VERSION_II::TFDataType::value_type &tfPoint, pTF->getTFData())
     {
-        const ::fwData::Color::ColorArray & vRGBA = (*iterTF)->getColor()->getCRefRGBA();
-        //m_colorTransferFunction->AddRGBPoint( (*iterTF)->getValue() + 32768, vRGBA[0], vRGBA[1], vRGBA[2] );
-        m_colorTransferFunction->AddRGBPoint( (*iterTF)->getValue() , vRGBA[0], vRGBA[1], vRGBA[2] );
-        //m_opacityTransferFunction->AddPoint(  (*iterTF)->getValue() + 32768, vRGBA[3] );
-        m_opacityTransferFunction->AddPoint(  (*iterTF)->getValue() , vRGBA[3] );
-        iterTF++;
+        const ::fwData::TransfertFunction_VERSION_II::TFValueType &value = tfPoint.first;
+        const ::fwData::TransfertFunction_VERSION_II::TFColor &color = tfPoint.second;
+
+        m_colorTransferFunction->AddRGBPoint( value , color.r, color.g, color.b );
+        m_opacityTransferFunction->AddPoint(  value , color.a );
     }
 
-    m_volumeProperty->SetScalarOpacity(m_opacityTransferFunction);
     m_volumeProperty->SetColor(m_colorTransferFunction);
 
     setVtkPipelineModified();

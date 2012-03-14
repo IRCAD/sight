@@ -88,6 +88,7 @@ public :
     typedef std::vector<TFColor> TFColorVectorType;
     typedef std::map< TFValueType, TFColor > TFDataType;
 
+    typedef std::pair< TFValueType, TFValueType > TFValuePairType;
 
     // Initialize a default TF.
     FWDATA_API void initTF();
@@ -105,7 +106,7 @@ public :
     FWDATA_API TFValueVectorType getTFValues() const;
 
     /// Get the first and last point values of the tf data
-    FWDATA_API const std::pair< TFValueType, TFValueType > getMinMaxTFValues() const;
+    FWDATA_API TFValuePairType getMinMaxTFValues() const;
 
     /// Return the nearest point value of a value.
     FWDATA_API TFValueType getNearestValue( TFValueType value ) const;
