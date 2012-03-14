@@ -26,7 +26,7 @@ SingleFileXMLTranslator::~SingleFileXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr SingleFileXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr SingleFileXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::location::SingleFile::sptr  path = ::fwData::location::SingleFile::dynamicCast(obj);
     SLM_ASSERT("path not instanced", path);
@@ -43,7 +43,7 @@ xmlNodePtr SingleFileXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void SingleFileXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void SingleFileXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label

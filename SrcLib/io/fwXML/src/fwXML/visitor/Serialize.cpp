@@ -19,7 +19,7 @@ Serialize::Serialize()
 Serialize::~Serialize()
 {}
 
-void Serialize::visit( ::fwTools::Object::sptr obj)
+void Serialize::visit( ::fwData::Object::sptr obj)
 {
     SLM_ASSERT("Object not instanced", obj);
     OSLM_TRACE( "Serialize Visitor Visiting : Class " << obj->className() <<

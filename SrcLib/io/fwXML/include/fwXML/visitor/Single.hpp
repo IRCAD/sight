@@ -25,10 +25,10 @@ class FWXML_CLASS_API Single : public  IVisitor
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (Single)(IVisitor) ) ;
     /// subclass should override the operation
-    FWXML_API virtual void visit( ::fwTools::Object::sptr obj)=0;
+    FWXML_API virtual void visit( ::fwData::Object::sptr obj)=0;
 
     /// override processing of childs : ignore them
-    FWXML_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
+    FWXML_API virtual void next( ::fwData::Object::sptr src, const ::fwData::Object::FieldMapType &fields);
 
 };
 

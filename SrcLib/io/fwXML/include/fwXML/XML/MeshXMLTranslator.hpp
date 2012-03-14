@@ -7,7 +7,7 @@
 #ifndef _FWXML_XML_MESHXMLTRANSLATOR_HPP_
 #define _FWXML_XML_MESHXMLTRANSLATOR_HPP_
 
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 
 #include "fwXML/XML/XMLTranslator.hpp"
 
@@ -25,10 +25,10 @@ public:
     FWXML_API virtual ~MeshXMLTranslator() ;
 
     /// get XML from current object
-    FWXML_API xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj );
+    FWXML_API xmlNodePtr getXMLFrom( ::fwData::Object::sptr obj );
 
     /// get Object from an XML node
-    FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
+    FWXML_API void updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source);
 
 };
 

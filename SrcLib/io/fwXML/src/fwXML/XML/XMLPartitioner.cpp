@@ -88,7 +88,7 @@ void XMLPartitioner::setSplitPolicy( ISplitPolicy::sptr newSplitPolicy)
 
 // saver->directory the same as the aggregator
 
-void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
+void XMLPartitioner::manageExtraData( ::fwData::Object::sptr obj )
 {
     if ( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService") )
     {
@@ -115,7 +115,7 @@ void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Object::sptr  son )
+xmlNodePtr XMLPartitioner::manage( ::fwData::Object::sptr father, ::fwData::Object::sptr  son )
 {
     XMLHierarchy::getDefault()->mapChildFather()[son]=father;
     XMLHierarchy::getDefault()->mapFatherChildren()[father].insert(son);

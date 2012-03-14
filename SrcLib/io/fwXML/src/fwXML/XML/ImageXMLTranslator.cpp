@@ -34,7 +34,7 @@ ImageXMLTranslator::~ImageXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     // call default xmtl representation
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
@@ -56,7 +56,7 @@ xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void ImageXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ImageXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast(toUpdate);
     SLM_ASSERT("Object is not an image", pImage);
@@ -67,7 +67,7 @@ void ImageXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
 
     xmlNodePtr compositeNode = XMLParser::findChildNamed( source, std::string("Composite") );
 
-    ::fwTools::Object::sptr obj;
+    ::fwData::Object::sptr obj;
     obj = Serializer().ObjectsFromXml( compositeNode, true );
     SLM_ASSERT("obj not instanced", obj);
     ::fwData::Composite::sptr arrays = ::fwData::Composite::dynamicCast(obj);

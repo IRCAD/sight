@@ -36,7 +36,7 @@ SerializeXML::~SerializeXML()
 
 //-----------------------------------------------------------------------------
 
-void SerializeXML::visit( ::fwTools::Object::sptr obj)
+void SerializeXML::visit( ::fwData::Object::sptr obj)
 {
     SLM_ASSERT("Object is null", obj);
     bool supportFileFormatSrv =  ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService");

@@ -7,7 +7,7 @@
 #ifndef _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
 #define _FWXML_VISITOR_COLLECTFILEFORMATSERVICE_HPP
 
-#include <fwXML/visitor/BreathFirst.hpp>
+#include <fwXML/visitor/IVisitor.hpp>
 #include <fwXML/IFileFormatService.hpp>
 
 #include "fwXML/config.hpp"
@@ -19,7 +19,7 @@ namespace visitor
  * @brief visit all objects then store FileFormatService if any
  * @author IRCAD (Research and Development Team).
  */
-class FWXML_CLASS_API CollectFileFormatService : public  ::fwData::visitor::BreathFirst // BreathFirst to prove genericity ,DepthFirst is Better
+class FWXML_CLASS_API CollectFileFormatService : public  ::fwData::visitor::IVisitor
 {
 public:
     FWXML_API CollectFileFormatService();
@@ -27,12 +27,9 @@ public:
     FWXML_API virtual ~CollectFileFormatService();
 
     // override call CollectFileFormatService service for object
-    FWXML_API virtual void visit( ::fwTools::Object::sptr obj);
+    FWXML_API virtual void visit( ::fwData::Object::sptr obj);
 
-    /// override the behavior when visiting composite by visit its fields *and* values in its map
-    FWXML_API virtual void next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields);
-
-    typedef  std::map< ::fwTools::Object::sptr , ::fwXML::IFileFormatService::sptr > MapObjectFileFormatService;
+    typedef  std::map< ::fwData::Object::sptr , ::fwXML::IFileFormatService::sptr > MapObjectFileFormatService;
     MapObjectFileFormatService m_objWithFileFormatService;
 
 

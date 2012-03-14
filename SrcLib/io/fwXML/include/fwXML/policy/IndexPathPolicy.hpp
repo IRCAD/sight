@@ -39,7 +39,7 @@ public :
       * @param obj object to save
       * @return path of the Object
       */
-    FWXML_API virtual ::boost::filesystem::path getPath(::fwTools::Object::sptr obj) ;
+    FWXML_API virtual ::boost::filesystem::path getPath(::fwData::Object::sptr obj) ;
 
 private :
 
@@ -47,7 +47,7 @@ private :
     std::map<std::string, int> m_lastIndexAvailable ;
 
     /// maintain object addr <-> index
-    std::map< ::fwTools::Object::wptr, int> m_index ;
+    std::map< ::fwData::Object::wptr, int> m_index ;
 
  }; //class IndexPathPolicy
 

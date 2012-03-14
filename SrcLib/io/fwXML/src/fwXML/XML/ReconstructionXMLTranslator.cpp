@@ -31,7 +31,7 @@ ReconstructionXMLTranslator::~ReconstructionXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ReconstructionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ReconstructionXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Reconstruction::sptr reconst = ::fwData::Reconstruction::dynamicCast(obj);
 
@@ -52,7 +52,7 @@ xmlNodePtr ReconstructionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj 
 
 //------------------------------------------------------------------------------
 
-void ReconstructionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ReconstructionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
     ::fwData::Reconstruction::sptr reconst = ::fwData::Reconstruction::dynamicCast(toUpdate);
@@ -66,7 +66,7 @@ void ReconstructionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toU
     xmlNodePtr cMaterialNode = ::fwXML::XMLParser::getChildrenXMLElement(materialNode );
     SLM_ASSERT("cMaterialNode not instanced", cMaterialNode);
 
-    ::fwTools::Object::sptr valueObj;
+    ::fwData::Object::sptr valueObj;
     valueObj = Serializer().ObjectsFromXml( cMaterialNode, true );
     reconst->setMaterial(::fwData::Material::dynamicCast(valueObj));
 }

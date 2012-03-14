@@ -27,7 +27,7 @@ StringXMLTranslator::~StringXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr StringXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr StringXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::String::sptr  str = ::fwData::String::dynamicCast(obj);
     SLM_ASSERT("::fwData::String dynamicCast failed", str );
@@ -44,7 +44,7 @@ xmlNodePtr StringXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void StringXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void StringXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("Object must exist", toUpdate );
     ::fwData::String::sptr str= ::fwData::String::dynamicCast(toUpdate);

@@ -29,7 +29,7 @@ MeshXMLTranslator::~MeshXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Mesh::sptr pMesh = ::fwData::Mesh::dynamicCast(obj);
     SLM_ASSERT("Mesh not instanced", pMesh);
@@ -87,7 +87,7 @@ xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void MeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void MeshXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
 
@@ -117,7 +117,7 @@ void MeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xm
             }
             else if ( nodeName == "Composite" )
             {
-                ::fwTools::Object::sptr valueObj;
+                ::fwData::Object::sptr valueObj;
                 valueObj = Serializer().ObjectsFromXml( elementNode, true );
                 SLM_ASSERT("valueObj not instanced", valueObj);
                 ::fwData::Composite::sptr meshArrays = ::fwData::Composite::dynamicCast(valueObj);

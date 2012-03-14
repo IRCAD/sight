@@ -25,7 +25,7 @@ namespace fwXML
 
 //------------------------------------------------------------------------------
 
-const std::string ObjectToStream::toString( ::fwTools::Object::sptr object, unsigned int option )
+const std::string ObjectToStream::toString( ::fwData::Object::sptr object, unsigned int option )
 {
     std::stringstream os;
 

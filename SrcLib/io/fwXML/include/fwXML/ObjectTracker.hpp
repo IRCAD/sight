@@ -46,7 +46,7 @@ public:
      * @param className the name of object to build
      * @param id the unique ID for an object : if no one specified the object is created via ObjectFactory
      */
-    FWXML_API static ::fwTools::Object::sptr buildObject( const std::string &className, const std::string &uniqueID  );
+    FWXML_API static ::fwData::Object::sptr buildObject( const std::string &className, const std::string &uniqueID  );
 
     /// return true if its already instanciated
     FWXML_API static bool isAlreadyInstanciated( const std::string &uniqueID  );

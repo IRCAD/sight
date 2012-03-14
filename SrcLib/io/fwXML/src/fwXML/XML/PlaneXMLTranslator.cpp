@@ -25,7 +25,7 @@ PlaneXMLTranslator::~PlaneXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
 
     ::fwData::Plane::sptr pPlane = ::fwData::Plane::dynamicCast(obj);
@@ -46,7 +46,7 @@ xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void PlaneXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
@@ -74,7 +74,7 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
                     if ( pointName == "Point" )
                     {
                         // Load Point
-                        ::fwTools::Object::sptr valueObj;
+                        ::fwData::Object::sptr valueObj;
                         valueObj = Serializer().ObjectsFromXml( pointsNode, true );
 
                         // Add point in the vector

@@ -28,7 +28,7 @@ VectorXMLTranslator::~VectorXMLTranslator()
 
 //-----------------------------------------------------------------------------
 
-xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(obj);
 
@@ -44,7 +44,7 @@ xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //-----------------------------------------------------------------------------
 
-void VectorXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void VectorXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
 
@@ -67,7 +67,7 @@ void VectorXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  
                     while ( containerNode )
                     {
                         // Load Object
-                        ::fwTools::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true  );
+                        ::fwData::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true  );
                         SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
                         myVector->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );

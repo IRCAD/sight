@@ -23,7 +23,7 @@ void UniquePathPolicy::setUniquePath(const std::string &filename)
     m_uniquePath = filename;
 }
 
-::boost::filesystem::path UniquePathPolicy::getPath(::fwTools::Object::sptr obj )
+::boost::filesystem::path UniquePathPolicy::getPath(::fwData::Object::sptr obj )
 {
      return m_uniquePath;
 }

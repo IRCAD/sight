@@ -11,7 +11,7 @@ namespace fwData
 namespace visitor
 {
 
-void Single::next( ::fwTools::Object::sptr src, ::fwTools::Object::ChildContainer &fields)
+void Single::next( ::fwData::Object::sptr src, const ::fwData::Object::FieldMapType &fields)
 {
     m_source = src;
     // perform nothing with child;

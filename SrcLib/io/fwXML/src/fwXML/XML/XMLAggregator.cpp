@@ -34,43 +34,43 @@ XMLAggregator::~XMLAggregator()
 
 //------------------------------------------------------------------------------
 
-void XMLAggregator::append( ::fwTools::Object::wptr  obj )
+void XMLAggregator::append( ::fwData::Object::wptr  obj )
 {
     m_objects.insert(obj);
 }
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::wptr XMLAggregator::getRootObject()
+::fwData::Object::wptr XMLAggregator::getRootObject()
 {
-    typedef std::list< ::fwTools::Object::sptr  >  CandidateRoots;
+    typedef std::list< ::fwData::Object::sptr  >  CandidateRoots;
     CandidateRoots m_roots; //( m_objects.begin(),  m_objects.end() );
     for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
     {
         m_roots.push_back( (*o).lock() );
     }
 
-    // for each object search if a child is in m_objects ==> TRUE : the child is not a root : FALSE => cannot conclude ( root or child of another parent)
-    for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
-    {
-        ::fwTools::Object::sptr  dobj = (*o).lock();
-        for ( fwTools::Object::ChildContainer::iterator c = dobj->children().begin() ; c !=  dobj->children().end(); ++c  )
-        {
-            ::fwTools::Object::sptr child = ::fwTools::Object::dynamicCast(*c);
-            SLM_ASSERT("fwTools::Object dynamicCast failed", child );
-            if ( m_objects.find( child ) != m_objects.end() ) // child is in m_objects => it is not a root
-            {
-                m_roots.remove(child);
-            }
-        }
-    }
+//    // for each object search if a child is in m_objects ==> TRUE : the child is not a root : FALSE => cannot conclude ( root or child of another parent)
+//    for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
+//    {
+//        ::fwData::Object::sptr  dobj = (*o).lock();
+//        for ( fwTools::Object::ChildContainer::iterator c = dobj->children().begin() ; c !=  dobj->children().end(); ++c  )
+//        {
+//            ::fwData::Object::sptr child = ::fwTools::Object::dynamicCast(*c);
+//            SLM_ASSERT("fwTools::Object dynamicCast failed", child );
+//            if ( m_objects.find( child ) != m_objects.end() ) // child is in m_objects => it is not a root
+//            {
+//                m_roots.remove(child);
+//            }
+//        }
+//    }
     assert ( m_roots.size() == 1 );
     return m_roots.front();
 }
 
 //------------------------------------------------------------------------------
 
-std::string XMLAggregator::getXMLIncludePathValue(::fwTools::Object::wptr obj)
+std::string XMLAggregator::getXMLIncludePathValue(::fwData::Object::wptr obj)
 {
     using ::boost::filesystem::path;
     path objFolderPath = XMLHierarchy::getDefault()->mapObjectAggregator()[obj]->localFolder();
@@ -83,7 +83,7 @@ std::string XMLAggregator::getXMLIncludePathValue(::fwTools::Object::wptr obj)
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLAggregator::getXMLInclude(::fwTools::Object::wptr obj)
+xmlNodePtr XMLAggregator::getXMLInclude(::fwData::Object::wptr obj)
 {
     assert( !obj.expired() );
     assert ( m_objects.find( obj) ==  m_objects.end() ); // " xi::include must be performed only if obj is not in the same aggregator
@@ -119,7 +119,7 @@ xmlDocPtr XMLAggregator::getXMLDoc()
     // Phase 1
     for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
     {
-        ::fwTools::Object::sptr dobj = (*o).lock();
+        ::fwData::Object::sptr dobj = (*o).lock();
         ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  dobj->getClassname()  );
         //SLM_ASSERT("translator not instanced", translator);
         if (translator==NULL)
@@ -132,33 +132,33 @@ xmlDocPtr XMLAggregator::getXMLDoc()
         XMLHierarchy::getDefault()->mapObjectXMLNode()[dobj] = nodeXML; // FIXME what to do with oldest ? perharps use a local info ?
     }
 
-    // Phase 2
-    for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
-    {
-        ::fwTools::Object::sptr dobj = (*o).lock() ;
-
-        for ( fwTools::Object::ChildContainer::iterator c = dobj->children().begin() ; c !=  dobj->children().end(); ++c  )
-        {
-            assert( ::boost::dynamic_pointer_cast< ::fwTools::Object >( *c ) );
-            ::fwTools::Object::wptr child = ::boost::dynamic_pointer_cast< ::fwTools::Object >( *c );
-            // in same aggregator ?
-            if ( m_objects.find( child ) != m_objects.end() )
-            {
-                xmlNodePtr parent = XMLHierarchy::getDefault()->mapObjectXMLNode()[dobj];
-                xmlNodePtr son    = XMLHierarchy::getDefault()->mapObjectXMLNode()[child];
-                xmlAddChild( parent , son );
-            }
-            else
-            {
-                //in another Aggregator !!!
-                xmlNodePtr parent = XMLHierarchy::getDefault()->mapObjectXMLNode()[dobj];
-                xmlAddChild( parent ,   getXMLInclude(child)   );
-            }
-        }
-    }
+//    // Phase 2
+//    for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
+//    {
+//        ::fwData::Object::sptr dobj = (*o).lock() ;
+//
+//        for ( fwTools::Object::ChildContainer::iterator c = dobj->children().begin() ; c !=  dobj->children().end(); ++c  )
+//        {
+//            assert( ::boost::dynamic_pointer_cast< ::fwTools::Object >( *c ) );
+//            ::fwData::Object::wptr child = ::boost::dynamic_pointer_cast< ::fwTools::Object >( *c );
+//            // in same aggregator ?
+//            if ( m_objects.find( child ) != m_objects.end() )
+//            {
+//                xmlNodePtr parent = XMLHierarchy::getDefault()->mapObjectXMLNode()[dobj];
+//                xmlNodePtr son    = XMLHierarchy::getDefault()->mapObjectXMLNode()[child];
+//                xmlAddChild( parent , son );
+//            }
+//            else
+//            {
+//                //in another Aggregator !!!
+//                xmlNodePtr parent = XMLHierarchy::getDefault()->mapObjectXMLNode()[dobj];
+//                xmlAddChild( parent ,   getXMLInclude(child)   );
+//            }
+//        }
+//    }
 
     // Phase 3;
-    ::fwTools::Object::wptr root = this->getRootObject();
+    ::fwData::Object::wptr root = this->getRootObject();
 
     // set nodes
     xmlDocPtr doc = xmlNewDoc(BAD_CAST XML_DEFAULT_VERSION);

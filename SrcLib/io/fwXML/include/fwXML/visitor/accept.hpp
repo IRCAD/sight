@@ -30,7 +30,7 @@ namespace visitor
  * @date    2007-2009.
  */
 
-FWXML_API void accept( ::fwTools::Object::sptr object,  ::fwData::visitor::IVisitor *visitor );
+FWXML_API void accept( ::fwData::Object::sptr object,  ::fwData::visitor::IVisitor *visitor );
 
 } // namespace visitor
 

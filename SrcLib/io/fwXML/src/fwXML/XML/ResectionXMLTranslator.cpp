@@ -26,7 +26,7 @@ ResectionXMLTranslator::~ResectionXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ResectionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ResectionXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
 
     ::fwData::Resection::sptr pResection = ::fwData::Resection::dynamicCast(obj);
@@ -60,7 +60,7 @@ xmlNodePtr ResectionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ResectionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
@@ -97,7 +97,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                     while ( inputsNode )
                     {
                         // Load Reconstruction
-                        ::fwTools::Object::sptr valueObj;
+                        ::fwData::Object::sptr valueObj;
                         valueObj = Serializer().ObjectsFromXml( inputsNode, true );
 
                         // Add reconstruction in the vector
@@ -117,7 +117,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                     while ( outputsNode )
                     {
                         // Load Reconstruction
-                        ::fwTools::Object::sptr valueObj;
+                        ::fwData::Object::sptr valueObj;
                         valueObj = Serializer().ObjectsFromXml( outputsNode, true );
 
                         // Add reconstruction in the vector
@@ -131,7 +131,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
             }
             else if ( nodeName == "PlaneList" )
             {
-                ::fwTools::Object::sptr valueObj;
+                ::fwData::Object::sptr valueObj;
                 valueObj = Serializer().ObjectsFromXml( elementNode, true );
 
                 // Add PlaneList in the vector

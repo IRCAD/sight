@@ -117,7 +117,7 @@ void ArrayXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwDat
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ArrayXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ArrayXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     // call default xmtl representation
     GenericXMLTranslator< ::fwData::Array > array2xmlbase;
@@ -135,7 +135,7 @@ xmlNodePtr ArrayXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void ArrayXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ArrayXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     GenericXMLTranslator< ::fwData::Array > array2xmlbase;
     array2xmlbase.updateDataFromXML(toUpdate,source);

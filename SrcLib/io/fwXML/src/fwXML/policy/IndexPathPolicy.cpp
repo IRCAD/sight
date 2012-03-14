@@ -11,7 +11,7 @@
 namespace fwXML
 {
 
-::boost::filesystem::path IndexPathPolicy::getPath(::fwTools::Object::sptr obj)
+::boost::filesystem::path IndexPathPolicy::getPath(::fwData::Object::sptr obj)
 {
     if ( m_index[obj] != 0 )
     {

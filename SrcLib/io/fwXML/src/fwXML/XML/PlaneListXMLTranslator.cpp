@@ -25,7 +25,7 @@ PlaneListXMLTranslator::~PlaneListXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr PlaneListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr PlaneListXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
 
     ::fwData::PlaneList::sptr pPlaneList = ::fwData::PlaneList::dynamicCast(obj);
@@ -47,7 +47,7 @@ xmlNodePtr PlaneListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void PlaneListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void PlaneListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     SLM_ASSERT("source not instanced", source);
@@ -68,7 +68,7 @@ void PlaneListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
             if ( nodeName == "Plane" ) // className
             {
                 // Load Plane
-                ::fwTools::Object::sptr valueObj;
+                ::fwData::Object::sptr valueObj;
                 valueObj = Serializer().ObjectsFromXml( planeNode, true );
 
                 // Add plane in the vector

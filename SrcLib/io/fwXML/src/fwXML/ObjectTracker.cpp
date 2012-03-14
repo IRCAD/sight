@@ -7,6 +7,7 @@
 #include <fwTools/UUID.hpp>
 #include <fwTools/Factory.hpp>
 #include <fwCore/base.hpp>
+#include <fwData/Factory.hpp>
 
 
 #include "fwXML/XML/XMLParser.hpp"
@@ -90,12 +91,12 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr ObjectTracker::buildObject( const std::string &className, const std::string &uniqueIDXML  )
+::fwData::Object::sptr ObjectTracker::buildObject( const std::string &className, const std::string &uniqueIDXML  )
 {
     if ( uniqueIDXML.empty() )
     {
         OSLM_DEBUG( className << " generated without id");
-        return ::boost::dynamic_pointer_cast< ::fwTools::Object >( ::fwTools::Factory::buildData( className ) ) ;
+        return ::fwData::Factory::New( className );
     }
 
     Registry::iterator i =  m_buildedObject.find( uniqueIDXML );
@@ -103,7 +104,7 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     if ( i == m_buildedObject.end() )
     {
         // not already registred : create it then register it
-        ::fwTools::Object::sptr newObject = ::fwTools::Object::dynamicCast( ::fwTools::Factory::buildData( className ) ) ;
+        ::fwData::Object::sptr newObject = ::fwData::Factory::New( className );
         m_buildedObject[uniqueIDXML] = newObject;
         OSLM_DEBUG(className<<"-"<<newObject.get() << " first instantiation");
 
@@ -116,7 +117,7 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     else
     {
         OSLM_DEBUG( className <<"-"<< uniqueIDXML << " previoulsy instantiated : use this one" );
-        return i->second; // object exist we return it
+        return ::fwData::Object::dynamicCast( i->second ); // object exist we return it
     }
 }
 

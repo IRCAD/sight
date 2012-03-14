@@ -34,11 +34,11 @@ public:
     FWXML_API virtual ~PointListXMLTranslator() ;
 
     /// get XML from current object
-    FWXML_API xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj );
+    FWXML_API xmlNodePtr getXMLFrom( ::fwData::Object::sptr obj );
 
 
     /// get Object from an XML node
-    FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
+    FWXML_API void updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source);
 
 protected :
 

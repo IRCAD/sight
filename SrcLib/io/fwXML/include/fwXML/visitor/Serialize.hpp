@@ -7,9 +7,8 @@
 #ifndef _FWXML_VISITOR_SERIALIZE_HPP
 #define _FWXML_VISITOR_SERIALIZE_HPP
 
-#include <fwXML/visitor/BreathFirst.hpp>
-
 #include "fwXML/config.hpp"
+#include "fwXML/visitor/IVisitor.hpp"
 
 namespace visitor
 {
@@ -20,7 +19,7 @@ namespace visitor
  * @brief visit all objects then call XMLpartionner on each visit
  * @author IRCAD (Research and Development Team).
  */
-class FWXML_CLASS_API Serialize : public  ::fwData::visitor::BreathFirst // BreathFirst to prove genericity ,DepthFirst is Better
+class FWXML_CLASS_API Serialize : public  ::fwData::visitor::IVisitor
 {
 public:
     FWXML_API Serialize();
@@ -28,7 +27,7 @@ public:
     FWXML_API virtual ~Serialize();
 
     // override call serialize service for object
-    FWXML_API virtual void visit( ::fwTools::Object::sptr obj);
+    FWXML_API virtual void visit( ::fwData::Object::sptr obj);
 };
 
 }

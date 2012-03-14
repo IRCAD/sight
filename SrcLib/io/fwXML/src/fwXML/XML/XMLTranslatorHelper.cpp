@@ -29,7 +29,7 @@ XMLTranslatorHelper::~XMLTranslatorHelper()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwTools::Object::sptr obj )
+xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwData::Object::sptr obj )
 {
     // create node with className
     xmlNodePtr node = xmlNewNode(NULL, xmlStrdup( BAD_CAST obj->getLeafClassname().c_str() ) );
@@ -45,7 +45,7 @@ xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLTranslatorHelper::toXML( ::fwTools::Object::sptr obj )
+xmlNodePtr XMLTranslatorHelper::toXML( ::fwData::Object::sptr obj )
 {
     ::fwXML::XMLTranslator::sptr translator;
     translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  obj->getRootedClassname() );
@@ -62,7 +62,7 @@ xmlNodePtr XMLTranslatorHelper::toXML( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLTranslatorHelper::toXMLRecursive( ::fwTools::Object::sptr obj )
+xmlNodePtr XMLTranslatorHelper::toXMLRecursive( ::fwData::Object::sptr obj )
 {
     ::visitor::SerializeXML visitor;
     ::fwData::visitor::accept( obj , &visitor );
@@ -71,7 +71,7 @@ xmlNodePtr XMLTranslatorHelper::toXMLRecursive( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr source )
+void XMLTranslatorHelper::fromXML( ::fwData::Object::sptr toUpdate, xmlNodePtr source )
 {
     const std::string nameInXML = (const char*)source->name;
     SLM_ASSERT("XML node not correspond to object classname", toUpdate->getLeafClassname() ==  nameInXML );
@@ -79,40 +79,49 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
     ::fwXML::XMLTranslator::sptr translator;
     translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  toUpdate->getRootedClassname() );
 
-    if (translator.get() )
+    if ( translator.get() )
     {
         translator->updateDataFromXML(toUpdate,source);
-        xmlNodePtr child = source->children;
-        bool classicObject = ( xmlStrcmp( source->name, BAD_CAST "Field" ) != 0 ) ;
-        while ( child!=NULL )
-        {
-            if ( child->type == XML_ELEMENT_NODE )
-            {
-                // normal parent object ignore children which are not Field
-                if ( classicObject &&  xmlStrcmp( child->name, BAD_CAST "Field" ) )
-                {
-                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " << source->name << " ignoring " << child->name );
-                }
-                else
-                {
-                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " <<  source->name << " accept " << child->name );
-                    ::fwTools::Object::sptr newChild = XMLTranslatorHelper::fromXML( child );
-                    assert (newChild);
-                    toUpdate->children().push_back( newChild );
-                }
-            }
-            child = child->next;
-        }
     }
     else
     {
         OSLM_WARN("No XML Translator for " << toUpdate->getLeafClassname() << " Object UnModified");
     }
+
+//    if (translator.get() )
+//    {
+//        translator->updateDataFromXML(toUpdate,source);
+//        xmlNodePtr child = source->children;
+//        bool classicObject = ( xmlStrcmp( source->name, BAD_CAST "Field" ) != 0 ) ;
+//        while ( child!=NULL )
+//        {
+//            if ( child->type == XML_ELEMENT_NODE )
+//            {
+//                // normal parent object ignore children which are not Field
+//                if ( classicObject &&  xmlStrcmp( child->name, BAD_CAST "Field" ) )
+//                {
+//                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " << source->name << " ignoring " << child->name );
+//                }
+//                else
+//                {
+//                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " <<  source->name << " accept " << child->name );
+//                    ::fwData::Object::sptr newChild = XMLTranslatorHelper::fromXML( child );
+//                    assert (newChild);
+//                    toUpdate->children().push_back( newChild );
+//                }
+//            }
+//            child = child->next;
+//        }
+//    }
+//    else
+//    {
+//        OSLM_WARN("No XML Translator for " << toUpdate->getLeafClassname() << " Object UnModified");
+//    }
 }
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr XMLTranslatorHelper::fromXML( xmlNodePtr source )
+::fwData::Object::sptr XMLTranslatorHelper::fromXML( xmlNodePtr source )
 {
     OSLM_TRACE(" fromXML(xmlNode) with xmlNode->name=" << (const char*)source->name << " addr=" << source );
 
@@ -122,7 +131,7 @@ void XMLTranslatorHelper::fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr 
     // !!! NOTE HERE WE DO NOT PERFORME TRANSLATION ID OLD -> NEW !!!
 
     // dot not create duplicate object
-    ::fwTools::Object::sptr obj;
+    ::fwData::Object::sptr obj;
     if ( ObjectTracker::isAlreadyInstanciated( id ) )
     {
         obj = ObjectTracker::buildObject( className, id ); // use previous one

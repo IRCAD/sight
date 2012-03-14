@@ -68,7 +68,7 @@ void FwXMLObjectReader::read()
     ::fwTools::ProgressAdviser::ProgessHandler handler = ::boost::bind( &FwXMLObjectReader::notifyProgress,this, ::boost::lambda::_1, ::boost::lambda::_2);
     serializer.addHandler ( handler );
 
-    ::fwTools::Object::sptr object = serializer.deSerialize( file, true, true );
+    ::fwData::Object::sptr object = serializer.deSerialize( file, true, true );
     OSLM_ASSERT("DeSerialization failed for file "<<file.string(), object);
     m_object = object;
     m_pObject = object; //FIXME hack to be FIXED in #739

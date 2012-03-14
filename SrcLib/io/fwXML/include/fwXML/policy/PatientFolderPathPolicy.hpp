@@ -38,7 +38,7 @@ public :
      * @return path of the Object
      *
      **/
-     FWXML_API virtual ::boost::filesystem::path getPath(::fwTools::Object::sptr obj ) ;
+     FWXML_API virtual ::boost::filesystem::path getPath(::fwData::Object::sptr obj ) ;
 
  };
 

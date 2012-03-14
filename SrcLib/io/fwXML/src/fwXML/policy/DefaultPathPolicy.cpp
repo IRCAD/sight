@@ -16,7 +16,7 @@
 namespace fwXML
 {
 
-::boost::filesystem::path DefaultPathPolicy::getPath(::fwTools::Object::sptr obj )
+::boost::filesystem::path DefaultPathPolicy::getPath(::fwData::Object::sptr obj )
 {
     std::stringstream ss ;
     ss << obj->getLeafClassname() << "_" << ::fwTools::UUID::get(obj) << ".xml";

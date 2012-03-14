@@ -28,7 +28,7 @@ ROITraitsXMLTranslator::~ROITraitsXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ROITraitsXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ROITraitsXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::ROITraits::sptr rec = ::fwData::ROITraits::dynamicCast(obj);
     SLM_ASSERT("ROITraits not instanced", rec);
@@ -59,7 +59,7 @@ xmlNodePtr ROITraitsXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void ROITraitsXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ROITraitsXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
 
@@ -82,7 +82,7 @@ void ROITraitsXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
             }
             else if ( nodeName == "Composite" )
             {
-                ::fwTools::Object::sptr valueObj;
+                ::fwData::Object::sptr valueObj;
                 valueObj = Serializer().ObjectsFromXml( elementNode, true );
                 SLM_ASSERT("valueObj not instanced", valueObj);
                 ::fwData::Composite::sptr compo = ::fwData::Composite::dynamicCast(valueObj);

@@ -25,7 +25,7 @@ PointListXMLTranslator::~PointListXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr PointListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr PointListXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
 
     ::fwData::PointList::sptr pPointList = ::fwData::PointList::dynamicCast(obj);
@@ -52,7 +52,7 @@ xmlNodePtr PointListXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void PointListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void PointListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
@@ -72,7 +72,7 @@ void PointListXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
                 SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
 
                 // Load Point
-                ::fwTools::Object::sptr valueObj;
+                ::fwData::Object::sptr valueObj;
                 valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
 
                 // Add point in the vector

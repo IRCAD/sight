@@ -24,7 +24,7 @@ EdgeXMLTranslator::~EdgeXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr EdgeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr EdgeXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast(obj);
     SLM_ASSERT("edge not instanced", edge);
@@ -42,7 +42,7 @@ xmlNodePtr EdgeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void EdgeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void EdgeXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     assert( XMLTH::check< ::fwData::Edge >(toUpdate,source) );
 

@@ -67,7 +67,7 @@ void FwXMLObjectWriter::write()
     serializer.addHandler ( handler );
 
     //do the serialization job
-    serializer.serialize( getObject(), m_saveSchema );
+    serializer.serialize( ::fwData::Object::dynamicCast( this->getObject() ), m_saveSchema );
 }
 
 //------------------------------------------------------------------------------

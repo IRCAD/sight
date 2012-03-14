@@ -25,7 +25,7 @@ CompositeXMLTranslator::~CompositeXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Composite::sptr  cmp= ::fwData::Composite::dynamicCast(obj);
     SLM_ASSERT("cmp not instanced", cmp);
@@ -55,7 +55,7 @@ xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void CompositeXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
@@ -78,7 +78,7 @@ void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
             xmlNodePtr concreteValueNode = ::fwXML::XMLParser::getChildrenXMLElement(valueNode);
             SLM_ASSERT("concreteValueNode not instanced", concreteValueNode);
 
-            ::fwTools::Object::sptr valueObj;
+            ::fwData::Object::sptr valueObj;
             valueObj = Serializer().ObjectsFromXml( concreteValueNode, true );
 
             SLM_ASSERT("valueObj not instanced", valueObj);

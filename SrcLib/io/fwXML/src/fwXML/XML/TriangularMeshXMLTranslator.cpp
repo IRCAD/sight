@@ -99,7 +99,7 @@ void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr TriangularMeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr TriangularMeshXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
     xmlNodePtr bufferNode = xmlAddChild( node, xmlNewNode(NULL, BAD_CAST "Buffer"));
@@ -112,7 +112,7 @@ xmlNodePtr TriangularMeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj 
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void TriangularMeshXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     assert( XMLTH::check< ::fwData::TriangularMesh >(toUpdate,source) );
 

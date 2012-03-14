@@ -23,7 +23,7 @@ IntegerXMLTranslator::~IntegerXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr IntegerXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr IntegerXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Integer::sptr  integer = ::fwData::Integer::dynamicCast(obj);
     SLM_ASSERT("::fwData::Integer dynamicCast failed", integer );
@@ -40,7 +40,7 @@ xmlNodePtr IntegerXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void IntegerXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void IntegerXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("Object must exist", toUpdate );
     ::fwData::Integer::sptr integer= ::fwData::Integer::dynamicCast(toUpdate);

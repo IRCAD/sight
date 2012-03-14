@@ -25,7 +25,7 @@ TrivialXMLTranslator::~TrivialXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr TrivialXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr TrivialXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
@@ -36,7 +36,7 @@ xmlNodePtr TrivialXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void TrivialXMLTranslator::updateDataFromXML(::fwTools::Object::sptr , xmlNode* )
+void TrivialXMLTranslator::updateDataFromXML(::fwData::Object::sptr , xmlNode* )
 {
     return;
 }

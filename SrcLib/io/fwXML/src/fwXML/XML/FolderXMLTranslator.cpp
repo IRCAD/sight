@@ -23,7 +23,7 @@ FolderXMLTranslator::~FolderXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr FolderXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr FolderXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::location::Folder::sptr  folder = ::fwData::location::Folder::dynamicCast(obj);
     SLM_ASSERT("path not instanced", folder);
@@ -40,7 +40,7 @@ xmlNodePtr FolderXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void FolderXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void FolderXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
