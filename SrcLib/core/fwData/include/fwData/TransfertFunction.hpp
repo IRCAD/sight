@@ -4,22 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_TRANSFERTFUNCTION_HPP_
-#define _FWDATA_TRANSFERTFUNCTION_HPP_
-
+#ifndef _FWDATA_TRANSFERTFUNCTION_VERSION_II_HPP_
+#define _FWDATA_TRANSFERTFUNCTION_VERSION_II_HPP_
 
 #include <vector>
-#include <boost/cstdint.hpp>
+#include <map>
+#include <limits>
 
 #include "fwData/config.hpp"
+#include "fwData/macros.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
-#include "fwData/Color.hpp"
-#include "fwData/Image.hpp"
-#include "fwData/TransfertFunctionPoint.hpp"
-#include "fwData/DownCastIterator.hpp"
-
-#include "fwData/TransfertFunction_VERSION_II.hpp"
 
 namespace fwData
 {
@@ -32,118 +27,176 @@ namespace fwData
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-class FWDATA_CLASS_API TransfertFunction : public Object
-{
 
+class FWDATA_CLASS_API TransfertFunction_VERSION_II : public Object
+{
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction)(::fwData::Object), (()), ::fwData::Factory::New< TransfertFunction >) ;
+
+    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction_VERSION_II)(::fwData::Object), (()), ::fwData::Factory::New< TransfertFunction_VERSION_II >) ;
 
     /// Macro for deep and shallow copies
     fwDataObjectMacro();
 
+
+    /// Defines color structure for TF
+    struct TFColor
+    {
+        /// red color (value [0,1])
+        float r;
+        /// green color (value [0,1])
+        float g;
+        /// blue color (value [0,1])
+        float b;
+        /// alpha (value [0,1])
+        float a;
+
+        // Default constructor
+        TFColor()
+        {
+            r = 0.0;
+            g = 0.0;
+            b = 0.0;
+            a = 0.0;
+        };
+
+        TFColor( float _r, float _g, float _b, float _a )
+        {
+            r = _r;
+            g = _g;
+            b = _b;
+            a = _a;
+        };
+
+        inline bool operator== (const TFColor& _color) const
+        {
+            return (r == _color.r && g == _color.g && b == _color.b && a == _color.a);
+        };
+
+    };
+
+    /// Defines the available modes {LINEAR, NEAREST} to interpolate color between two TF color points.
+
+    typedef enum
+    {
+        LINEAR,
+        NEAREST
+    } InterpolationMode;
+
+    typedef double TFValueType;
+    typedef std::vector<TFValueType> TFValueVectorType;
+
+    typedef std::vector<TFColor> TFColorVectorType;
+    typedef std::map< TFValueType, TFColor > TFDataType;
+
+
+    // Initialize a default TF.
+    FWDATA_API void initTF();
+
+    // Create a default TF
+    FWDATA_API static TransfertFunction_VERSION_II::sptr createDefaultTF();
+
     /// Shallow copy method
-    FWDATA_API void shallowCopy( TransfertFunction::csptr _source );
+    FWDATA_API void shallowCopy( TransfertFunction_VERSION_II::csptr _source );
 
     /// Deep copy method
-    FWDATA_API void deepCopy( TransfertFunction::csptr _source );
+    FWDATA_API void deepCopy( TransfertFunction_VERSION_II::csptr _source );
 
-    // TransfertFunctionPoints ---------------------------------------------------------------------
-    /// Field identifier for transfert function points
-    static const Object::FieldID ID_TRANSFERTFUNCTIONPOINTS;
+    /// Get all the point values of the TF (keys of the map m_tfData)
+    FWDATA_API TFValueVectorType getTFValues() const;
 
-    typedef ContainerCaster< TransfertFunctionPoint >::iterator      TransfertFunctionPointIterator;
-    typedef ContainerCaster< TransfertFunctionPoint >::const_iterator TransfertFunctionPointConstIterator;
+    /// Get the first and last point values of the tf data
+    FWDATA_API const std::pair< TFValueType, TFValueType > getMinMaxTFValues() const;
 
-    /**
-     * @brief Get the number of points in the transfert function
-     */
-    FWDATA_API boost::uint32_t  getTransfertFunctionPointSize() const;
+    /// Return the nearest point value of a value.
+    FWDATA_API TFValueType getNearestValue( TFValueType value ) const;
 
-    /**@{
-     * Get iterator on the first and the last points. Use to browse all points (::fwData::TransfertFunctionPoint)
-     * @return std::pair( TransfertFunctionPoint.begin(), TransfertFunctionPoint.end() )
-     */
-    FWDATA_API std::pair< TransfertFunctionPointIterator, TransfertFunctionPointIterator > getTransfertFunctionPoints();
-    FWDATA_API std::pair< TransfertFunctionPointConstIterator, TransfertFunctionPointConstIterator > getTransfertFunctionPoints() const;
-    // @}
+    /// Get all the TF data .
+    FWDATA_API const TFDataType& getTFData() const;
 
-    /// insert a new point in graph, remove previous entry if any
-    FWDATA_API void insert( ::fwData::TransfertFunctionPoint::sptr );
+    /// Add a new TF color point.
+    FWDATA_API void addTFColor( TFValueType value, const TFColor & color );
 
-    /**
-     * @brief Get the color of the point whith given value.
-     *
-     * @note if value doesn't exist a default point is created then its color is returned
-     * @param[in] _i32Value point value
-     * @return point color
-     */
-    FWDATA_API ::fwData::Color::sptr getColor( ::fwData::TransfertFunctionPoint::TFValueType  _i32Value );
+    /// Erase a TF color point.
+    FWDATA_API void eraseTFValue( TFValueType value);
 
-    /**
-     * @brief erase point
-     *
-     * @param[in] _i32Value value of the point to erase
-     */
-    FWDATA_API void erase( ::fwData::TransfertFunctionPoint::TFValueType  _i32Value );
-
-    /// @brief erase all points
+    /// Clear all the TF data.
     FWDATA_API void clear();
 
-    //  Encoding -----------------------------------------------------------------------------------------------
-    fwGettersSettersDocMacro(Encoding, sEncoding, std::string, the encoding)
+    /// Get all the colors of the TF
+    FWDATA_API TFColorVectorType getTFColors() const;
 
-    //  Name -----------------------------------------------------------------------------------------------
-    fwGettersSettersDocMacro(Name, sName, std::string, transfert function name)
+    /// Get the nearest color of a value.
+    FWDATA_API TFColor getNearestColor( TFValueType value ) const;
 
+    /// Get the color for a value (the color is computed with a linear interpolation).
+    FWDATA_API TFColor getLinearColor( TFValueType value ) const;
 
-    //  Helpers ----------------------------------------------------------------
+    /// Get the interpolated color of the TF for a value.The result depends of the current interpolation mode.
+    FWDATA_API TFColor getInterpolatedColor( TFValueType value ) const;
 
-    typedef std::pair< ::fwData::TransfertFunctionPoint::TFValueType, ::fwData::TransfertFunctionPoint::TFValueType > MinMaxType;
-    typedef std::pair< double, ::fwData::TransfertFunctionPoint::TFValueType > CenterWidthType;
+    // Get the color associated to the value.
+    FWDATA_API const TFColor& getTFColor( TFValueType value ) const;
+
+    /// Interpolation mode
+    fwDataGetSetMacro(InterpolationMode, InterpolationMode);
+
+    /// Level
+    fwDataGetSetMacro(Level, double);
+
+    /// Window
+    fwDataGetSetMacro(Window, double);
+
+    /// Transfert function name
+    fwDataGetSetCRefMacro(Name, std::string);
+
+    /// is TF clamped
+    fwDataGetSetMacro(IsClamped, bool);
+
+    /// set the color of the recommanded background for the TF
+    fwDataGetSetCRefMacro(BackgroundColor, TFColor);
 
     /// Default transfert function name
-    FWDATA_API static const std::string defaultTransfertFunctionName;
-    FWDATA_API static const std::string squareTransfertFunctionName;
-
-    /**
-     * @brief Create the default transfert function with two points
-     *
-     * Use the window and level of the image to calculate points values.
-     *
-     * @param[in] _pImage image used to create transfert function
-     */
-    FWDATA_API static TransfertFunction::sptr createDefaultTransfertFunction( ::fwData::Image::sptr _pImage );
-
-    /// @brief Get transfert function center-width
-    FWDATA_API CenterWidthType getCenterWidth() const;
-    /// @brief Get transfert function Min-Max
-    FWDATA_API MinMaxType getMinMax() const;
-
-    /**
-     * @brief Rescale transfert function with the given min and max
-     *
-     * The first and last points get min and max value, the other point value are calculate proportionately.
-     *
-     * @param[in] _min minimal value (first point value)
-     * @param[in] _max maximal value (last point value)
-     */
-    FWDATA_API void setMinMax( ::fwData::TransfertFunctionPoint::TFValueType _min, ::fwData::TransfertFunctionPoint::TFValueType _max );
+    FWDATA_API static const std::string s_DEFAULT_TF_NAME;
 
 protected :
 
     /// Constructor
-    FWDATA_API TransfertFunction();
+    FWDATA_API TransfertFunction_VERSION_II();
+
     /// Destructor
-    FWDATA_API virtual ~TransfertFunction();
+    FWDATA_API virtual ~TransfertFunction_VERSION_II();
 
-    //! Encoding
-    std::string m_sEncoding;
 
-    //! Name
-    std::string m_sName;
+private :
 
-}; // end class TransfertFunctionPoint
+    /// Current visualisation level
+    double m_attrLevel;
+
+    /// Current visualisation window
+    double m_attrWindow;
+
+    ///  Funtion transfert name.
+    std::string m_attrName;
+
+    /// The recommended background color to use this TF.
+    TFColor m_attrBackgroundColor;
+
+    /// The Transfert function data.
+    TFDataType m_attrTfData;
+
+    /// The current interpolation mode.
+    InterpolationMode m_attrInterpolationMode;
+
+    /**
+     *  @brief Defines interpolation mode on extremities
+     *
+     *  if m_isClamped == true then after extremity point, the returned TF color is TFColor(0,0,0,0).
+     *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
+    **/
+    bool m_attrIsClamped;
+
+}; // end class TransfertFunction_VERSION_II
 
 } // end namespace fwData
 
-#endif // _FWDATA_TRANSFERTFUNCTION_HPP_
+#endif // _FWDATA_TRANSFERTFUNCTION_VERSION_II_HPP_

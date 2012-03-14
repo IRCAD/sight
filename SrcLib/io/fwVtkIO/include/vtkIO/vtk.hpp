@@ -12,7 +12,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/TransfertFunction.hpp>
 
 #include "vtkIO/config.hpp"
 
@@ -135,35 +134,6 @@ VTKIO_API vtkMatrix4x4 *  toVTKMatrix(  ::fwData::TransformationMatrix3D::sptr _
  * Returns \b true if the conversion is a success and \b false if it fails
  */
 VTKIO_API  bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::fwData::TransformationMatrix3D::sptr _transfoMatrix);
-
-// not implemented since unused : perhaps when image edition using VTK is possible
-//void DATACONVERT_API ::fwData::Image::sptr toDataImage( vtkImageData *vtkIm  ) ;
-
-/*!
- * @brief Convert a ::fwData::TransfertFunction to a vtkLookupTable.
- *
- * @param[in] _pTransfertFunctionSrc ::fwData::TransfertFunction
- * @param[out] lookupTableDst vtkLookupTable
- * @param[in] allow_transparency Enable convertion of ::fwData::TransfertFunction alpha channel
- *
- */
-VTKIO_API void convertTF2vtkTF(
-        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
-        vtkLookupTable * lookupTableDst,
-        bool allow_transparency = false
-        );
-
-/*!
- * @brief Convert the range of ::fwData::TransfertFunction to a black and white vtkLookupTable.
- *
- * @param[in] _pTransfertFunctionSrc ::fwData::TransfertFunction
- * @param[out] lookupTableDst vtkLookupTable
- *
- */
-VTKIO_API void convertTF2vtkTFBW(
-        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
-        vtkLookupTable * lookupTableDst
-        );
 
 }
 

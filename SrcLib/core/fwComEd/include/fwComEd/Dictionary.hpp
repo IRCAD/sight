@@ -28,17 +28,12 @@ struct FWCOMED_CLASS_API Dictionary
     /// visualization oriented IDs
     /// @{
     FWCOMED_API static const std::string localGui;
-    FWCOMED_API static const std::string m_minValueId;
-    FWCOMED_API static const std::string m_maxValueId;
-    FWCOMED_API static const std::string m_windowMinId;
-    FWCOMED_API static const std::string m_windowMaxId;
     FWCOMED_API static const std::string m_axialSliceCountId;
     FWCOMED_API static const std::string m_frontalSliceCountId;
     FWCOMED_API static const std::string m_sagittalSliceCountId;
     FWCOMED_API static const std::string m_axialSliceIndexId;
     FWCOMED_API static const std::string m_frontalSliceIndexId;
     FWCOMED_API static const std::string m_sagittalSliceIndexId;
-    FWCOMED_API static const std::string m_transfertFunctionId;
     FWCOMED_API static const std::string m_transfertFunctionCompositeId;
     FWCOMED_API static const std::string m_globalMatrixId;
     FWCOMED_API static const std::string m_errorId;

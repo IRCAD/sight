@@ -16,7 +16,6 @@
 #include <fwData/Point.hpp>
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
-#include <fwData/TransfertFunction.hpp>
 
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
@@ -49,58 +48,6 @@ template <class T> struct bitwise_or : std::binary_function <T,T,T>
 class FWCOMED_CLASS_API MedicalImageHelpers
 {
 public :
-
-    /**
-     * @brief       Check transfer function and min/max fields
-     *
-     * If the image has not transfer function, window min and window max fields, they are added.
-     *
-     * If the transfer function min and max were not the same as window min and window max, they were modified.
-     *
-     * @param[in]   _pImg   image which must contain the fields.
-     *
-     * @return      Return.first == true if we add or modify Min/Max field
-     * @return      Return.second == true if we add or modify TF field
-     */
-    FWCOMED_API static std::pair<bool,bool> checkMinMaxTF( ::fwData::Image::sptr _pImg );
-
-
-    /**
-     * @brief       Update window min and max objects from transfer function.
-     * @param[in]   min min data object
-     * @param[in]   max max data object
-     * @param[in]   tF  Transfert function data object
-     */
-    FWCOMED_API static void updateMinMaxFromTF( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF);
-
-    /**
-     * @brief       Update window min and max fields from transfer function field.
-     * @param[in]   _pImg   image which contains the fields.
-     */
-    FWCOMED_API static void updateMinMaxFromTF( ::fwData::Image::sptr _pImg );
-
-
-    /**
-     * @brief       Update transfer function min/max from min/max objects.
-     * @param[in]   min min data object
-     * @param[in]   max max data object
-     * @param[in]   tF  Transfert function data object
-     */
-    FWCOMED_API static void updateTFFromMinMax( ::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::TransfertFunction::sptr tF);
-
-    /**
-     * @brief       Update current transfer function min/max from image window min/max fields.
-     * @param[in]   _pImg   image which contains the fields.
-     */
-    FWCOMED_API static void updateTFFromMinMax( ::fwData::Image::sptr _pImg );
-
-
-    /**
-     * @brief       Update specified transfer function min/max from image window min/max fields.
-     * @param[in]   _pImg   image which contains the fields.
-     * @param[in]   _pTf    Transfert function to update
-     */
-    FWCOMED_API static void updateTFFromMinMax( ::fwData::Image::sptr _pImg, ::fwData::TransfertFunction::sptr _pTf );
 
     /**
      * @brief       Check if the image has a landmark field.
@@ -141,28 +88,6 @@ public :
     FWCOMED_API static ::fwData::Point::sptr   getImageSliceIndices( ::fwData::Image::sptr _pImg );
 
     /**
-     * @brief       Set default transfer function (grey level) in the current selection.
-     *
-     * If the default transfer function doesn't exist, it is created.
-     *
-     * @param[in]   _pImg image which contains the transfer function field.
-     * @param[in]   _tfSelectionFieldId Identifier of the field containing the current selection of TransfertFunction,
-     *              if m_tfSelection is empty => use default selection
-     */
-    FWCOMED_API static void setBWTF( ::fwData::Image::sptr _pImg, std::string _tfSelectionFieldId = "" );
-
-    /**
-     * @brief       Set square transfer function (Black & White) in the current selection.
-     *
-     * If the square transfer function doesn't exist, it is created.
-     *
-     * @param[in]   _pImg image which contains the transfer function field.
-     * @param[in]   _tfSelectionFieldId Identifier of the field containing the current selection of TransfertFunction,
-     *              if m_tfSelection is empty => use default selection
-     */
-    FWCOMED_API static void setSquareTF( ::fwData::Image::sptr _pImg, std::string _tfSelectionFieldId = "" );
-
-    /**
      * @brief       Check if the image has a comment field.
      *
      * If the image has no comment field, this is added with default name ("Original image").
@@ -171,34 +96,6 @@ public :
      * @return      true if the comment field is added.
      */
     FWCOMED_API static bool checkComment( ::fwData::Image::sptr _pImg );
-
-    /**
-     * @brief       Check window min/max and transfer function field. And set default transfer function.
-     *
-     * Check if the transfer function min and max are the same has window min and window max. And modify it if necessary.
-     *
-     * Set the default transfer function (grey level).
-     *
-     * @param[in]   _pImg   image which must contain the fields.
-     *
-     * @return      Return.first == true if we add or modify Min/Max field
-     * @return      Return.second == true if we add or modify TF field
-     */
-    FWCOMED_API static std::pair<bool, bool> checkMinMaxTFAndSetBWTF( ::fwData::Image::sptr _pImg );
-
-    /**
-     * @brief       Check window min/max and transfer function field and set default transfer function for each image in the patientDB.
-     *
-     * Check if the transfer function min and max are the same has window min and window max. And modify it if necessary.
-     *
-     * Set the default transfer function (grey level).
-     *
-     * @param[in]   _pPatientDB     patientDB containing images.
-     *
-     * @return      Return.first == true if we add or modify Min/Max field
-     * @return      Return.second == true if we add or modify TF field
-     */
-    FWCOMED_API static std::pair<bool, bool> checkMinMaxTFAndSetBWTF( ::fwData::PatientDB::sptr _pPatientDB );
 
     /**
      * @brief       Set a label in a field of the image.

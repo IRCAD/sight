@@ -42,8 +42,6 @@ public:
     FWCOMED_API static std::string SPACING;
     FWCOMED_API static std::string REGION;
     FWCOMED_API static std::string PIXELTYPE;
-    FWCOMED_API static std::string TRANSFERTFUNCTION;
-    FWCOMED_API static std::string WINDOWING;
     FWCOMED_API static std::string LANDMARK;
     FWCOMED_API static std::string NEW_DISTANCE;
     FWCOMED_API static std::string DISTANCE;
@@ -76,22 +74,6 @@ public:
      * @param[in] _pDataInfo : message data info (optional)
      */
     FWCOMED_API void setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
-
-    /**
-     * @brief Add a WINDOWING even with the min and max.
-     * @param[in] min : window min
-     * @param[in] max : window max
-     * @param[in] _pDataInfo : message data info (optional)
-     */
-    FWCOMED_API void setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
-
-    /**
-     * @brief Add a WINDOWING even with window and level.
-     * @param[in] level : level of the image tf
-     * @param[in] window : window of the image tf
-     * @param[in] _pDataInfo : message data info (optional)
-     */
-    FWCOMED_API void setWindowLevel( double window, double level, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
 
     /**
      * @brief Get the slice index position.
@@ -130,16 +112,6 @@ protected:
     ::fwData::Integer::sptr m_frontalIndex;
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
-
-    /// Windowing min
-    ::fwData::Integer::sptr m_windowMin;
-    /// Windowing max
-    ::fwData::Integer::sptr m_windowMax;
-
-    /// Windowing min
-    double m_level;
-    /// Windowing max
-    double m_window;
 
 };
 

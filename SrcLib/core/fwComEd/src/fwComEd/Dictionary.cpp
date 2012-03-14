@@ -15,17 +15,12 @@ const std::string Dictionary::position( "position" );
 
 
 const std::string Dictionary::localGui              ( "Local GUI" );
-const std::string Dictionary::m_minValueId          ( "Minimum Value" );
-const std::string Dictionary::m_maxValueId          ( "Maximum Value" );
-const std::string Dictionary::m_windowMinId         ( "Window Minimum" );
-const std::string Dictionary::m_windowMaxId         ( "Window Maximum" );
 const std::string Dictionary::m_axialSliceCountId   ( "Axial Slice Count" );
 const std::string Dictionary::m_frontalSliceCountId ( "Frontal Slice Count" );
 const std::string Dictionary::m_sagittalSliceCountId( "Sagittal Slice Count" );
 const std::string Dictionary::m_axialSliceIndexId   ( "Axial Slice Index" );
 const std::string Dictionary::m_frontalSliceIndexId ( "Frontal Slice Index" );
 const std::string Dictionary::m_sagittalSliceIndexId( "Sagittal Slice Index" );
-const std::string Dictionary::m_transfertFunctionId ( "m_transfertFunctionId" );
 const std::string Dictionary::m_transfertFunctionCompositeId ( "m_transfertFunctionCompositeId" );
 const std::string Dictionary::m_imageLandmarksId    ("m_imageLandmarksId");
 const std::string Dictionary::m_imageDistancesId    ("m_imageDistancesId");

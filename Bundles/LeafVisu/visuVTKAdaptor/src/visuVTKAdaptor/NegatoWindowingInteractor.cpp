@@ -325,11 +325,7 @@ void NegatoWindowingInteractor::resetWindowing()
 
     this->setWindow( newWindow );
     this->setLevel( newLevel );
-
-    // Fire the message
-    ::fwComEd::ImageMsg::NewSptr msg;
-    msg->setWindowLevel( newWindow, newLevel );
-    ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
+    this->notifyTFWindowing( this->getSptr() );
 
     this->setVtkPipelineModified();
 

@@ -22,8 +22,6 @@ std::string ImageMsg::DIMENSION = "DIMENSION";
 std::string ImageMsg::SPACING = "SPACING";
 std::string ImageMsg::REGION = "REGION";
 std::string ImageMsg::PIXELTYPE = "PIXELTYPE";
-std::string ImageMsg::TRANSFERTFUNCTION = "TRANSFERTFUNCTION";
-std::string ImageMsg::WINDOWING = "WINDOWING";
 std::string ImageMsg::LANDMARK = "LANDMARK";
 std::string ImageMsg::DISTANCE = "DISTANCE";
 std::string ImageMsg::NEW_DISTANCE = "NEW_DISTANCE";
@@ -35,6 +33,7 @@ std::string ImageMsg::CHANGE_SLICE_TYPE = "CHANGE_SLICE_TYPE";
 std::string ImageMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 std::string ImageMsg::TRANSPARENCY = "TRANSPARENCY";
 std::string ImageMsg::VISIBILITY = "VISIBILITY";
+
 //-----------------------------------------------------------------------------
 
 ImageMsg::ImageMsg() throw()
@@ -58,24 +57,6 @@ void ImageMsg::setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
 
 //-----------------------------------------------------------------------------
 
-void ImageMsg::setWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max, ::fwData::Object::sptr _pDataInfo )
-{
-    this->addEvent( ::fwComEd::ImageMsg::WINDOWING, _pDataInfo);
-    m_windowMin = min;
-    m_windowMax = max;
-}
-
-//-----------------------------------------------------------------------------
-
-void ImageMsg::setWindowLevel( double window, double level, ::fwData::Object::sptr _pDataInfo )
-{
-    this->addEvent( ::fwComEd::ImageMsg::WINDOWING, _pDataInfo);
-    m_level = level;
-    m_window = window;
-}
-
-//-----------------------------------------------------------------------------
-
 void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s) const
 {
     SLM_ASSERT( "SLICE_INDEX Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ));
@@ -85,29 +66,6 @@ void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
 }
 
 //-----------------------------------------------------------------------------
-
-void ImageMsg::getWindowMinMax(::fwData::Integer::sptr min, ::fwData::Integer::sptr max) const
-{
-    SLM_ASSERT( "WINDOWING Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
-    min->deepCopy(m_windowMin);
-    max->deepCopy(m_windowMax);
-}
-
-//-----------------------------------------------------------------------------
-
-double ImageMsg::getWindow() const
-{
-    SLM_ASSERT( "WINDOWING Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
-    return(m_window);
-}
-
-//-----------------------------------------------------------------------------
-
-double ImageMsg::getLevel() const
-{
-    SLM_ASSERT( "WINDOWING Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::WINDOWING ));
-    return (m_level);
-}
 
 } // namespace fwComEd
 

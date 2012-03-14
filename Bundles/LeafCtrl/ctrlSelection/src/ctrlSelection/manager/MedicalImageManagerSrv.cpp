@@ -12,7 +12,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include "ctrlSelection/manager/MedicalImageManagerSrv.hpp"
 
@@ -74,9 +74,11 @@ void MedicalImageManagerSrv::convertImages( ::fwData::Composite::sptr _composite
             if( objectId->first == key )
             {
                 ::fwData::Image::sptr pImg = ::fwData::Image::dynamicCast( objectId->second );
-                std::pair<bool, bool> MinMaxTFAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( pImg );
-                bool landMarksAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks( pImg );
-                bool sliceIndexAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( pImg );
+
+                ::fwComEd::helper::Image helper ( pImg );
+                helper.createLandmarks();
+                helper.createTransferFunctionPool();
+                helper.createImageSliceIndex();
             }
         }
     }
