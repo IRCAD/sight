@@ -223,8 +223,18 @@ protected:
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
+    // Install TF Observer ( com channel )
+    FWCOMED_API void installTFObserver( ::fwServices::IService::sptr srv );
+
+    // Remove TF Observer ( com channel )
+    FWCOMED_API void removeTFObserver();
+
+    // Helper to send a windowing notification in the current tf
+    FWCOMED_API void notifyTFWindowing( ::fwServices::IService::sptr srv );
 
 private :
+
+    ::fwServices::IService::wptr m_tfComChannelSrv;
 
     /// Transfer function pool
     ::fwData::Composite::wptr m_tfPool;

@@ -10,8 +10,10 @@
 #include <fwServices/macros.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <vtkRenderer.h>
@@ -32,8 +34,8 @@ namespace visuVTKAdaptor
 ImageText::ImageText() throw()
 {
     addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
 }
 
 //-----------------------------------------------------------------------------

@@ -24,6 +24,7 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -47,16 +48,11 @@ ImagesBlend::ImagesBlend() throw()
     SLM_TRACE_FUNC();
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY      );
-    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY        );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING         );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS  );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS);
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS);
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS           );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS         );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS         );
 }
 
 //------------------------------------------------------------------------------
@@ -113,6 +109,7 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
+
     if (compositeMsg)
     {
         if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_FIELDS)

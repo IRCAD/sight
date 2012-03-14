@@ -11,6 +11,7 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -53,13 +54,13 @@ Image::Image() throw()
     m_useImageTF = true;
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY      );
-    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY        );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING         );
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY               );
+    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY                 );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING       );
 }
 
 //------------------------------------------------------------------------------
@@ -85,6 +86,7 @@ void Image::doStart() throw(fwTools::Failed)
     OSLM_TRACE("starting " << this->getName());
 
     this->doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
@@ -92,6 +94,8 @@ void Image::doStart() throw(fwTools::Failed)
 void Image::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
+    this->removeTFObserver();
     this->destroyPipeline();
 }
 
@@ -100,7 +104,9 @@ void Image::doStop() throw(fwTools::Failed)
 void Image::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    this->removeTFObserver();
     doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
@@ -149,16 +155,16 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             this->setVtkPipelineModified();
         }
 
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
+        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
             updateTransfertFunction(image);
         }
 
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
+        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
         {
-            ::fwComEd::ImageMsg::csptr imsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-            this->setWindow(imsg->getWindow());
-            this->setLevel(imsg->getLevel());
+            ::fwComEd::TransferFunctionMsg::csptr tfmsg = ::fwComEd::TransferFunctionMsg::dynamicConstCast(msg);
+            this->setWindow(tfmsg->getWindow());
+            this->setLevel(tfmsg->getLevel());
             updateWindowing(image);
         }
 

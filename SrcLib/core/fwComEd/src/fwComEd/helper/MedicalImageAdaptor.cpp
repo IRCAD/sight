@@ -14,6 +14,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
@@ -21,6 +22,7 @@
 
 #include "fwComEd/helper/MedicalImageAdaptor.hpp"
 #include "fwComEd/helper/Image.hpp"
+#include "fwComEd/TransferFunctionMsg.hpp"
 
 
 namespace fwComEd
@@ -378,6 +380,45 @@ double MedicalImageAdaptor::getLevel() const
 void MedicalImageAdaptor::setLevel( double level )
 {
     this->getTransferFunction()->setLevel( level );
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
+{
+   SLM_ASSERT( "Sorry TF observer already exist", m_tfComChannelSrv.expired() );
+
+   ::fwServices::IService::sptr service;
+   service = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
+
+   ::fwServices::ComChannelService::sptr communicationChannelService;
+   communicationChannelService = ::fwServices::ComChannelService::dynamicCast(service);
+   communicationChannelService->start();
+
+   m_tfComChannelSrv = communicationChannelService;
+
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::removeTFObserver()
+{
+   SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
+
+   m_tfComChannelSrv.lock()->stop();
+   ::fwServices::OSR::unregisterService( m_tfComChannelSrv.lock() );
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::notifyTFWindowing( ::fwServices::IService::sptr srv )
+{
+    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getTransferFunction();
+
+    // Fire the message
+    ::fwComEd::TransferFunctionMsg::NewSptr msg;
+    msg->setWindowLevel( tf->getWindow(), tf->getLevel() );
+    ::fwServices::IEditionService::notify( srv, tf, msg );
 }
 
 //------------------------------------------------------------------------------

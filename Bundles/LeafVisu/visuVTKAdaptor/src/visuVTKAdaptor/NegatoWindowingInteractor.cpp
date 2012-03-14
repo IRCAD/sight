@@ -16,6 +16,7 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -274,11 +275,7 @@ void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
 
     this->setWindow( newWindow );
     this->setLevel( newLevel );
-
-    // Fire the message
-    ::fwComEd::ImageMsg::NewSptr msg;
-    msg->setWindowLevel( newWindow, newLevel );
-    ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
+    this->notifyTFWindowing( this->getSptr() );
 
     this->setVtkPipelineModified();
 
