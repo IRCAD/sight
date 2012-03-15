@@ -17,6 +17,7 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/CompositeMsg.hpp>
 
 #include "fwComEd/helper/MedicalImageAdaptor.hpp"
 #include "fwComEd/helper/Image.hpp"
@@ -281,6 +282,13 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
+::fwData::Composite::sptr MedicalImageAdaptor::getTransferFunctionPool() const
+{
+    return m_tfPool.lock();
+}
+
+//------------------------------------------------------------------------------
+
 ::fwData::TransfertFunction_VERSION_II::sptr MedicalImageAdaptor::getTransferFunction() const
 {
     return ::fwData::TransfertFunction_VERSION_II::dynamicCast((*m_tfPool.lock())[m_selectedTFKey]);
@@ -390,29 +398,75 @@ void MedicalImageAdaptor::setLevel( double level )
 
 //------------------------------------------------------------------------------
 
+void MedicalImageAdaptor::installTFPoolEventHandler( ::fwServices::IService* srv )
+{
+   srv->addNewHandledEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS);
+   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_FIELDS);
+   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS);
+}
+
+//------------------------------------------------------------------------------
+
 void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
 {
+   SLM_ASSERT( "Sorry TF pool observer already exist", m_tfPoolComChannelSrv.expired() );
    SLM_ASSERT( "Sorry TF observer already exist", m_tfComChannelSrv.expired() );
 
-   ::fwServices::IService::sptr service;
-   service = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
 
-   ::fwServices::ComChannelService::sptr communicationChannelService;
-   communicationChannelService = ::fwServices::ComChannelService::dynamicCast(service);
-   communicationChannelService->start();
+   ::fwServices::IService::sptr comChannel;
+   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunctionPool(), srv );
+   comChannel->start();
+   m_tfPoolComChannelSrv = comChannel;
 
-   m_tfComChannelSrv = communicationChannelService;
-
+   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
+   comChannel->start();
+   m_tfComChannelSrv = comChannel;
 }
 
 //------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::removeTFObserver()
 {
+   SLM_ASSERT( "Sorry, TF pool observer must exist", ! m_tfPoolComChannelSrv.expired() );
    SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
+
+   m_tfPoolComChannelSrv.lock()->stop();
+   ::fwServices::OSR::unregisterService( m_tfPoolComChannelSrv.lock() );
 
    m_tfComChannelSrv.lock()->stop();
    ::fwServices::OSR::unregisterService( m_tfComChannelSrv.lock() );
+}
+
+//------------------------------------------------------------------------------
+
+bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg)
+{
+    bool needUpdate = false;
+    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
+    if(compositeMsg)
+    {
+//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+//        {
+//        }
+//
+//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+//        {
+//        }
+
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
+        {
+            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
+            ::fwData::Composite::sptr fields = compositeMsg->getSwappedNewFields();
+            ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
+            if( iter != fields->end())
+            {
+                ::fwServices::IService::sptr tfComChannel = m_tfComChannelSrv.lock();
+                tfComChannel->swap(iter->second);
+                needUpdate = true;
+            }
+        }
+    }
+    return needUpdate;
 }
 
 //------------------------------------------------------------------------------

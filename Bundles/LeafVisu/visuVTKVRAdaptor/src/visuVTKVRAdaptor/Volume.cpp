@@ -178,12 +178,13 @@ Volume::Volume() throw() :
     m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
-    addNewHandledEvent( "RESET_BOX_WIDGET" );
+    this->installTFPoolEventHandler(this);
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    this->addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
+    this->addNewHandledEvent( "RESET_BOX_WIDGET" );
 
 
     //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
@@ -214,7 +215,6 @@ Volume::~Volume() throw()
     m_boxWidget = NULL;
     m_croppingCommand->Delete();
     m_croppingCommand = NULL;
-
 }
 
 
@@ -333,7 +333,7 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
             this->doUpdate();
         }
 
-        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+        if (this->upadteTFObserver(msg) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
             SLM_TRACE("TransferFunctionMsg MODIFIED_POINTS");
             this->updateTransfertFunction(image);

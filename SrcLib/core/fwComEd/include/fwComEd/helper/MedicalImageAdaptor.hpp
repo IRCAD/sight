@@ -208,6 +208,9 @@ protected:
     /// Get the current transfer function
     FWCOMED_API ::fwData::TransfertFunction_VERSION_II::sptr getTransferFunction() const;
 
+    /// Get the current transfer function pool
+    FWCOMED_API ::fwData::Composite::sptr getTransferFunctionPool() const;
+
     /// Update the image information (slice index, min/max, TF,...)
     FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
 
@@ -227,17 +230,23 @@ protected:
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
+    // Install TF pool event handler (SWAPPED_FIELDS, ADDED_FIELDS and REMOVED_FIELDS)
+    FWCOMED_API void installTFPoolEventHandler( ::fwServices::IService* srv );
+
     // Install TF Observer ( com channel )
     FWCOMED_API void installTFObserver( ::fwServices::IService::sptr srv );
 
     // Remove TF Observer ( com channel )
     FWCOMED_API void removeTFObserver();
 
+    FWCOMED_API bool upadteTFObserver(::fwServices::ObjectMsg::csptr msg);
+
     // Helper to send a windowing notification in the current tf
     FWCOMED_API ::fwComEd::TransferFunctionMsg::sptr notifyTFWindowing( ::fwServices::IService::sptr srv );
 
 private :
 
+    ::fwServices::IService::wptr m_tfPoolComChannelSrv;
     ::fwServices::IService::wptr m_tfComChannelSrv;
 
     /// Transfer function pool

@@ -159,10 +159,10 @@ public :
     /// is TF clamped
     fwDataGetSetMacro(IsClamped, bool);
 
-    /// set the color of the recommanded background for the TF
+    /// set the TF background color when tf 'IsClamped' is true
     fwDataGetSetCRefMacro(BackgroundColor, TFColor);
 
-    /// Default transfert function name
+    /// Default transfer function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
 
 protected :

@@ -23,6 +23,7 @@
 
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>
+#include <fwComEd/helper/Composite.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -57,8 +58,9 @@ WindowLevel::WindowLevel() throw()
     m_imageMax = 300;
     m_isNotifying = false;
 
-    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    this->installTFPoolEventHandler(this);
+    this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
 }
 
 //------------------------------------------------------------------------------
@@ -243,6 +245,7 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     if (imageIsValid)
     {
+        this->upadteTFObserver(msg);
         this->updateImageInfos(image);
         if(m_autoWindowing && msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
         {
@@ -421,25 +424,33 @@ void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 void  WindowLevel::onToggleTF(bool squareTF)
 {
-//    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-//
-//    if( squareTF )
-//    {
-//        ::fwComEd::fieldHelper::MedicalImageHelpers::setSquareTF(image, m_tfSelection);
-//    }
-//    else
-//    {
-//        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelection);
-//    }
-//
-//    WindowLevelMinMaxType wl = getImageWindowMinMax();
-//    this->updateWidgetMinMax(wl.first, wl.second);
-//
-//    ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax(image);
-//
-//    ::fwComEd::ImageMsg::NewSptr imageMsg;
-//    imageMsg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION);
-//    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+    ::fwData::TransfertFunction_VERSION_II::sptr oldTF = this->getTransferFunction();
+    ::fwData::TransfertFunction_VERSION_II::sptr newTF;
+
+    if( squareTF )
+    {
+        newTF = ::fwData::TransfertFunction_VERSION_II::New();
+        ::fwData::TransfertFunction_VERSION_II::TFColor color(1.,1.,1.,1.);
+        newTF->setName("SquareTF");
+        newTF->addTFColor(0.0, color);
+        newTF->addTFColor(1.0, color);
+        newTF->setIsClamped(true);
+    }
+    else
+    {
+        newTF = ::fwData::TransfertFunction_VERSION_II::createDefaultTF();
+    }
+
+    newTF->setWindow(oldTF->getWindow());
+    newTF->setLevel(oldTF->getLevel());
+
+    std::string tfPoolFwID = this->getTFPoolFwID();
+    ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfPoolFwID ) );
+    OSLM_ASSERT( "Sorry, object with fwID " << tfPoolFwID << " doesn't exist.", pool );
+    ::fwComEd::helper::Composite compositeHelper( pool );
+
+    compositeHelper.swap(this->getSelectedTFKey(), newTF);
+    compositeHelper.notify(this->getSptr());
 }
 
 //------------------------------------------------------------------------------

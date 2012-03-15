@@ -397,8 +397,8 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
             if ( (dim + p + 1)%3 == m_orientation )
             {
                 worldCross[p][dim] = image->getOrigin().at(dim);
-                ::boost::int32_t size = image->getSize().at(dim)-1;
-                double spacing = image->getSpacing().at(dim);
+                ::fwData::Image::SizeType::value_type size = image->getSize().at(dim)-1;
+                ::fwData::Image::SpacingType::value_type spacing = image->getSpacing().at(dim);
                 worldCross[p+2][dim] =  size * spacing + image->getOrigin().at(dim);
             }
         }

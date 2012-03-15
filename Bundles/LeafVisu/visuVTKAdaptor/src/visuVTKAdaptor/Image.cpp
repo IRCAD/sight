@@ -52,6 +52,7 @@ Image::Image() throw()
     m_useImageTF = true;
 
     // Manage events
+    this->installTFPoolEventHandler(this);
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
     addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
@@ -117,11 +118,11 @@ void Image::doUpdate() throw(::fwTools::Failed)
 
     if (imageIsValid)
     {
-        updateImage(image);
-        buildPipeline();
-        updateTransfertFunction(image);
-        updateWindowing(image);
-        updateImageOpacity();
+        this->updateImage(image);
+        this->buildPipeline();
+        this->updateTransfertFunction(image);
+        this->updateWindowing(image);
+        this->updateImageOpacity();
     }
 }
 
@@ -130,6 +131,7 @@ void Image::doUpdate() throw(::fwTools::Failed)
 void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -138,7 +140,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
 //            this->destroyPipeline();
-            doUpdate();
+            this->doUpdate();
 
             // Hack to force imageSlice update until it is not able to detect a new image
             ::fwComEd::ImageMsg::NewSptr msg;
@@ -153,9 +155,9 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             this->setVtkPipelineModified();
         }
 
-        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+        if (this->upadteTFObserver(msg) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
-            updateTransfertFunction(image);
+            this->updateTransfertFunction(image);
         }
 
         if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )

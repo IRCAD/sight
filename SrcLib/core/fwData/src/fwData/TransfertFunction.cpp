@@ -44,8 +44,6 @@ void TransfertFunction_VERSION_II::initTF()
     m_attrInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
     m_attrIsClamped = true;
 
-    m_attrBackgroundColor = TFColor();
-
     m_attrTfData.clear();
 
 }
