@@ -20,7 +20,7 @@
         <xsd:element name="VolPctConfidence" type="xsd:double"/>
         <xsd:element name="ReconstructionTime" type="xsd:string"/>
         <xsd:element name="MaskGenerated" type="xsd:boolean"/>
-        <xsd:element name="Level" type="xsd:byte"/>
+        <xsd:element name="Level" type="xs:unsignedByte"/>
         <xsd:element name="Label" type="xsd:short"/>
         <xsd:element name="Generated3D" type="xsd:boolean"/>
         <xsd:element name="Type3D" type="xsd:string"/>
