@@ -22,7 +22,7 @@ void TransfertFunction::toVtkLookupTable(
     SLM_WARN_IF( "Sorry, This transfert function conversion not managed clamped TF.", tf->getIsClamped() );
 
     // Configures basic parameters
-    lt->Allocate( size, size );
+    lt->SetNumberOfTableValues( size );
     lt->SetScaleToLinear();
 
 

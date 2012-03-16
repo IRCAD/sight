@@ -468,7 +468,9 @@ void Volume::updateTransfertFunction( ::fwData::Image::sptr image )
     }
     ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = pTF->getMinMaxTFValues();
 
-    m_colorTransferFunction->SetClamping(pTF->getIsClamped());
+    m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
+    m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());
+
     m_volumeProperty->SetColor(m_colorTransferFunction);
 
     setVtkPipelineModified();

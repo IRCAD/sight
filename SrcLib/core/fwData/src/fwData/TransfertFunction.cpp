@@ -57,6 +57,7 @@ fwData::TransfertFunction_VERSION_II::sptr TransfertFunction_VERSION_II::createD
     tf->setName(TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME);
     tf->addTFColor(0.0, TFColor());
     tf->addTFColor(1.0, TFColor(1.0,1.0,1.0,1.0));
+    tf->setIsClamped(false);
     return tf;
 }
 
