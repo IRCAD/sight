@@ -25,7 +25,8 @@
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
-#include <vtkLookupTable.h>
+
+#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
 
 #include "visuVTKAdaptor/Image.hpp"
 
@@ -41,7 +42,7 @@ namespace visuVTKAdaptor
 Image::Image() throw()
 {
     SLM_TRACE_FUNC();
-    m_lut        = vtkLookupTable::New();
+    m_lut        = fwVtkWindowLevelLookupTable::New();
     m_map2colors = vtkImageMapToColors::New();
     m_imageData  = vtkImageData::New();
 
@@ -219,9 +220,10 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 void Image::updateWindowing( ::fwData::Image::sptr image )
 {
     SLM_TRACE_FUNC();
-    m_lut->SetTableRange( this->getLevel() - this->getWindow() / 2.0,  this->getLevel() + this->getWindow() / 2.0 );
+    m_lut->SetWindow(this->getWindow());
+    m_lut->SetLevel(this->getLevel());
     m_lut->Modified();
-    setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -230,44 +232,21 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
 {
     SLM_TRACE_FUNC();
 
-    ::vtkIO::helper::TransfertFunction::toVtkLookupTable(
-            this->getTransferFunction(),
-            m_lut,
-            m_allowAlphaInTF,
-            256 );
-    setVtkPipelineModified();
 
-//    ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
-//    std::string tfName;
-//
-//    this->updateImageInfos(image);
-//
-//    tfName = m_transfertFunctionId->value();
-//
-//    // If TF doesn't exist : set default BW TF
-//    if (tfComposite->find(tfName) == tfComposite->end())
-//    {
-//        OSLM_WARN("TF '" << tfName << "' doesn't exist => set BW TF");
-//        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelectionFieldId);
-//
-//        ::fwComEd::ImageMsg::NewSptr msg;
-//        msg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
-//        ::fwServices::IEditionService::notify( this->getSptr(),  image, msg );
-//
-//        this->updateImageInfos(image);
-//        tfName = m_transfertFunctionId->value();
-//    }
-//
-//    ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
-//    if ( m_useImageTF )
-//    {
-//        ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
-//    }
-//    else
-//    {
-//        ::vtkIO::convertTF2vtkTFBW( pTransfertFunction, m_lut);
-//    }
-//    setVtkPipelineModified();
+    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getTransferFunction();
+
+    ::vtkIO::helper::TransfertFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
+
+    m_lut->SetClamping( !tf->getIsClamped() );
+
+    this->setWindow(tf->getWindow());
+    this->setLevel(tf->getLevel());
+
+    this->updateWindowing(image);
+
+    this->setVtkPipelineModified();
+
+
 }
 
 //------------------------------------------------------------------------------

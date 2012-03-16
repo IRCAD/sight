@@ -19,7 +19,7 @@
 #include "visuVTKAdaptor/config.hpp"
 
 class vtkImageActor;
-class vtkLookupTable;
+class fwVtkWindowLevelLookupTable;
 class vtkImageMapToColors;
 class vtkImageData;
 class vtkPolyDataMapper;
@@ -74,7 +74,7 @@ protected :
     bool   m_allowAlphaInTF;
     bool   m_useImageTF;
 
-    vtkSmartPointer< vtkLookupTable > m_lut;
+    vtkSmartPointer< fwVtkWindowLevelLookupTable > m_lut;
     vtkImageMapToColors *m_map2colors;
     vtkImageData *m_imageData;
 
