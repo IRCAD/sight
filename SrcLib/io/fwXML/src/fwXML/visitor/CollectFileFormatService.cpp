@@ -15,6 +15,8 @@
 #include <fwData/Node.hpp>
 #include <fwData/Graph.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/Acquisition.hpp>
+#include <fwData/PatientDB.hpp>
 
 #include <fwServices/Base.hpp>
 
@@ -66,6 +68,11 @@ void CollectFileFormatService::visit( ::fwData::Object::sptr obj)
     ::fwData::Node::sptr node;
     ::fwData::Mesh::sptr mesh;
     ::fwData::Image::sptr image;
+    ::fwData::Reconstruction::sptr reconstruction;
+    ::fwData::Acquisition::sptr acquisition;
+    ::fwData::Study::sptr study;
+    ::fwData::Patient::sptr patient;
+    ::fwData::PatientDB::sptr patientDB;
 
     if ( (composite = ::fwData::Composite::dynamicCast( obj )) )
     {
@@ -148,11 +155,68 @@ void CollectFileFormatService::visit( ::fwData::Object::sptr obj)
     }
     else if ( (image = ::fwData::Image::dynamicCast( obj ) ))
     {
-
         if(image->getDataArray())
         {
             ::fwData::visitor::accept( image->getDataArray() , this);
         }
+    }
+    else if ( ( reconstruction = ::fwData::Reconstruction::dynamicCast( obj ) ) )
+    {
+        if( reconstruction->getImage() )
+        {
+            ::fwData::visitor::accept( reconstruction->getImage() , this);
+        }
+        if( reconstruction->getMesh() )
+        {
+            ::fwData::visitor::accept( reconstruction->getMesh() , this);
+        }
+    }
+    else if ( ( acquisition = ::fwData::Acquisition::dynamicCast( obj ) ) )
+    {
+        ::fwData::visitor::accept( acquisition->getImage() , this);
+
+        BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, acquisition->getReconstructions() )
+        {
+            ::fwData::visitor::accept( rec, this );
+        }
+
+        if( acquisition->getStructAnat() )
+        {
+            ::fwData::visitor::accept( acquisition->getStructAnat(), this );
+        }
+    }
+    else if ( ( study = ::fwData::Study::dynamicCast( obj ) ) )
+    {
+
+        BOOST_FOREACH( ::fwData::Acquisition::sptr acq, study->getAcquisitions() )
+        {
+            ::fwData::visitor::accept( acq, this );
+        }
+
+    }
+    else if ( ( patient = ::fwData::Patient::dynamicCast( obj ) ) )
+    {
+        BOOST_FOREACH( ::fwData::Study::sptr pStudy, patient->getStudies() )
+        {
+            ::fwData::visitor::accept( pStudy, this );
+        }
+        if(patient->getScenarios() )
+        {
+            ::fwData::visitor::accept( patient->getScenarios(), this );
+        }
+        if( patient->getToolBox() )
+        {
+            ::fwData::visitor::accept( patient->getToolBox(), this );
+        }
+    }
+    else if ( ( patientDB = ::fwData::PatientDB::dynamicCast( obj ) ) )
+    {
+
+        BOOST_FOREACH( ::fwData::Patient::sptr pPatient, patientDB->getPatients() )
+        {
+            ::fwData::visitor::accept( pPatient, this );
+        }
+
     }
 }
 

@@ -70,6 +70,7 @@ void VectorXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  x
                         ::fwData::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true  );
                         SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
+
                         myVector->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
 
                         containerNode = XMLParser::nextXMLElement( containerNode->next );

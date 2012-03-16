@@ -36,7 +36,7 @@ bool ObjectComparator::compareStructureTraitsDictionary(::fwData::StructureTrait
             {
                 ::fwData::StructureTraits::sptr structure1 = structureDico1->getStructure(type);
                 ::fwData::StructureTraits::sptr structure2 = structureDico2->getStructure(type);
-                ObjectComparator::compareStructureTraits(structure1, structure2);
+                compare &= ObjectComparator::compareStructureTraits(structure1, structure2);
             }
         }
         else
@@ -276,8 +276,11 @@ bool ObjectComparator::compareTransfertFunction(::fwData::TransfertFunction_VERS
     compare &= (tf1->getLevel() == tf2->getLevel());
     OSLM_ERROR_IF( "Level value are different.", tf1->getLevel() != tf2->getLevel());
 
-    compare &= (tf1->getMinMaxTFValues() == tf2->getMinMaxTFValues());
-    OSLM_ERROR_IF( "Min max TF values are different are different.", tf1->getMinMaxTFValues() != tf2->getMinMaxTFValues());
+    if( tf1->getTFData().size() > 0 && tf2->getTFData().size() > 0 )
+    {
+        compare &= (tf1->getMinMaxTFValues() == tf2->getMinMaxTFValues());
+        OSLM_ERROR_IF( "Min max TF values are different.", tf1->getMinMaxTFValues() != tf2->getMinMaxTFValues());
+    }
 
     return compare;
 }

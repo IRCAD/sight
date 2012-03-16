@@ -78,14 +78,14 @@ void ObjectTest::tearDown()
     // check object
     CPPUNIT_ASSERT(obj2);
 
-    ::boost::filesystem::remove_all( testFile.parent_path().string() );
+    //::boost::filesystem::remove_all( testFile.parent_path().string() );
 
     return obj2;
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testArray()
+void ObjectTest::arrayTest()
 {
 
     ::fwData::Array::SizeType arraySize;
@@ -98,12 +98,12 @@ void ObjectTest::testArray()
 
     ::fwData::Array::sptr array2 = ::fwData::Array::dynamicCast(ObjectTest::serialize("Array.xml", array1));
     CPPUNIT_ASSERT(array2);
-    ::fwDataTools::Image::compareArray(array1, array2);
+    CPPUNIT_ASSERT(::fwDataTools::Image::compareArray(array1, array2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testMesh()
+void ObjectTest::meshTest()
 {
     ::fwData::Mesh::NewSptr mesh1;
     ::fwDataTools::Patient::generateMesh( mesh1 );
@@ -116,12 +116,82 @@ void ObjectTest::testMesh()
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testPatientDB()
+void ObjectTest::imageTest()
+{
+    ::fwData::Image::NewSptr image1;
+    ::fwDataTools::Image::generateRandomImage( image1, ::fwTools::Type::create("int16") );
+
+    ::fwData::Image::sptr image2 = ::fwData::Image::dynamicCast( ObjectTest::serialize("Image.xml", image1) );
+
+    CPPUNIT_ASSERT(image2);
+    CPPUNIT_ASSERT( ::fwDataTools::Image::compareImage( image1, image2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::reconstructionTest()
+{
+    ::fwData::Reconstruction::NewSptr rec1;
+    ::fwDataTools::Patient::generateReconstruction(rec1);
+
+    ::fwData::Reconstruction::sptr rec2 = ::fwData::Reconstruction::dynamicCast( ObjectTest::serialize("Reconstruction.xml", rec1) );
+
+    CPPUNIT_ASSERT(rec2);
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareReconstruction( rec1, rec2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::acquisitionTest()
+{
+    ::fwData::Acquisition::NewSptr acq1;
+    ::fwDataTools::Patient::generateAcquisition( acq1, 1 );
+    ::fwData::Acquisition::sptr acq2 = ::fwData::Acquisition::dynamicCast( ObjectTest::serialize("Acquisition.xml", acq1) );
+    CPPUNIT_ASSERT(acq2);
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareAcquisition( acq1, acq2 ) );
+
+    ::fwData::Acquisition::NewSptr acq1bis;
+    ::fwDataTools::Patient::generateAcquisition( acq1bis, 0 );
+    acq2 = ::fwData::Acquisition::dynamicCast( ObjectTest::serialize("Acquisition.xml", acq1bis) );
+    CPPUNIT_ASSERT(acq2);
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareAcquisition( acq1bis, acq2 ) );
+}
+
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::studyTest()
+{
+    ::fwData::Study::NewSptr study;
+    ::fwDataTools::Patient::generateStudy(study, 2,2);
+
+    ::fwData::Study::sptr study2 = ::fwData::Study::dynamicCast(ObjectTest::serialize("Study.xml", study));
+    CPPUNIT_ASSERT(study2);
+
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareStudy( study, study2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::patientTest()
+{
+    ::fwData::Patient::NewSptr patient;
+    ::fwDataTools::Patient::generatePatient(patient,2,2,2);
+
+    ::fwData::Patient::sptr patient2 = ::fwData::Patient::dynamicCast(ObjectTest::serialize("Patient.xml", patient));
+    CPPUNIT_ASSERT(patient2);
+
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::comparePatient( patient, patient2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::patientDBTest()
 {
     ::fwData::PatientDB::NewSptr pdb1;
     ::fwData::Patient::NewSptr patient;
-    pdb1->addPatient( patient );
     ::fwDataTools::Patient::generatePatient(patient,2,2,2);
+    pdb1->addPatient( patient );
 
     ::fwData::PatientDB::sptr pdb2 = ::fwData::PatientDB::dynamicCast(ObjectTest::serialize("PatientDB.xml", pdb1));
     CPPUNIT_ASSERT(pdb2);
@@ -131,60 +201,58 @@ void ObjectTest::testPatientDB()
 }
 
 //------------------------------------------------------------------------------
-
-void ObjectTest::testColor()
+void ObjectTest::colorTest()
 {
     ::fwData::Color::sptr col1 = ::fwDataTools::ObjectGenerator::randomizeColor();
     ::fwData::Color::sptr col2 = ::fwData::Color::dynamicCast(ObjectTest::serialize("Color.xml", col1));
     CPPUNIT_ASSERT(col2);
-    ::fwDataTools::Patient::compareColor(col1, col2);
+    CPPUNIT_ASSERT(::fwDataTools::Patient::compareColor(col1, col2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testMaterial()
+void ObjectTest::materialTest()
 {
     ::fwData::Material::sptr mat1 = ::fwDataTools::ObjectGenerator::createMaterial();
     ::fwData::Material::sptr mat2 = ::fwData::Material::dynamicCast(ObjectTest::serialize("Material.xml", mat1));
     CPPUNIT_ASSERT(mat2);
-    ::fwDataTools::Patient::compareMaterial(mat1, mat2);
+    CPPUNIT_ASSERT(::fwDataTools::Patient::compareMaterial(mat1, mat2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testTransfertFunction()
+void ObjectTest::transfertFunctionTest()
 {
-//    ::fwData::TransfertFunction_VERSION_II::sptr tf1 = ::fwDataTools::ObjectGenerator::createTFColor(10, 100.0, 50.0);
     ::fwData::TransfertFunction_VERSION_II::sptr tf1 = ::fwDataTools::ObjectGenerator::createTFColor();
 
     ::fwData::TransfertFunction_VERSION_II::sptr tf2 = ::fwData::TransfertFunction_VERSION_II::dynamicCast(ObjectTest::serialize("TransfertFunction.xml", tf1));
     CPPUNIT_ASSERT(tf2);
-    ::fwDataTools::ObjectComparator::compareTransfertFunction(tf1, tf2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareTransfertFunction(tf1, tf2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testStructureTraitsDictionary()
+void ObjectTest::structureTraitsDictionaryTest()
 {
     ::fwData::StructureTraitsDictionary::sptr structureDico1 = ::fwDataTools::ObjectGenerator::createStructureTraitsDictionary();
     ::fwData::StructureTraitsDictionary::sptr structureDico2 = ::fwData::StructureTraitsDictionary::dynamicCast(ObjectTest::serialize("StructureTraitsDictionary.xml", structureDico1));
     CPPUNIT_ASSERT(structureDico2);
-    ::fwDataTools::ObjectComparator::compareStructureTraitsDictionary(structureDico1, structureDico2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareStructureTraitsDictionary(structureDico1, structureDico2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testStructureTraits()
+void ObjectTest::structureTraitsTest()
 {
     ::fwData::StructureTraits::sptr structure1 = ::fwDataTools::ObjectGenerator::createStructureTraits();
     ::fwData::StructureTraits::sptr structure2 = ::fwData::StructureTraits::dynamicCast(ObjectTest::serialize("StructureTraits.xml", structure1));
     CPPUNIT_ASSERT(structure2);
-    ::fwDataTools::ObjectComparator::compareStructureTraits(structure1, structure2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareStructureTraits(structure1, structure2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testROITraits()
+void ObjectTest::ROITraitsTest()
 {
     ::fwData::Composite::sptr roiCompo1 = ::fwDataTools::ObjectGenerator::createROITraits();
     ::fwData::Composite::sptr roiCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serialize("ROITraits.xml", roiCompo1));
@@ -192,12 +260,12 @@ void ObjectTest::testROITraits()
     CPPUNIT_ASSERT(roiCompo2->find("ROITraits") != roiCompo2->end());
     ::fwData::ROITraits::sptr roi1 = ::fwData::ROITraits::dynamicCast((*roiCompo1)["ROITraits"]);
     ::fwData::ROITraits::sptr roi2 = ::fwData::ROITraits::dynamicCast((*roiCompo2)["ROITraits"]);
-    ::fwDataTools::ObjectComparator::compareROITraits(roi1, roi2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareROITraits(roi1, roi2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testReconstructionTraits()
+void ObjectTest::reconstructionTraitsTest()
 {
     ::fwData::Composite::sptr recCompo1 = ::fwDataTools::ObjectGenerator::createReconstructionTraits();
     ::fwData::Composite::sptr recCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serialize("ReconstructionTraits.xml", recCompo1));
@@ -205,7 +273,7 @@ void ObjectTest::testReconstructionTraits()
     CPPUNIT_ASSERT(recCompo2->find("ReconstructionTraits") != recCompo2->end());
     ::fwData::ReconstructionTraits::sptr rec1 = ::fwData::ReconstructionTraits::dynamicCast((*recCompo1)["ReconstructionTraits"]);
     ::fwData::ReconstructionTraits::sptr rec2 = ::fwData::ReconstructionTraits::dynamicCast((*recCompo2)["ReconstructionTraits"]);
-    ::fwDataTools::ObjectComparator::compareReconstructionTraits(rec1, rec2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareReconstructionTraits(rec1, rec2));
 }
 
 //------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 <xsd:complexType name="PatientDBXSDType">
     
     <xsd:sequence>
-    <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="patients" type="xsd:anyType" />
     </xsd:sequence>
     
     <xsd:attribute name="id" type="xsd:string"/>

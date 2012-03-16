@@ -47,6 +47,9 @@
 #include "fwXML/XML/ImageXMLTranslator.hpp"
 #include "fwXML/XML/IntegerXMLTranslator.hpp"
 #include "fwXML/XML/ListXMLTranslator.hpp"
+#include "fwXML/XML/PatientDBXMLTranslator.hpp"
+#include "fwXML/XML/PatientXMLTranslator.hpp"
+#include "fwXML/XML/StudyXMLTranslator.hpp"
 #include "fwXML/XML/MaterialXMLTranslator.hpp"
 #include "fwXML/XML/MeshXMLTranslator.hpp"
 #include "fwXML/XML/NodeXMLTranslator.hpp"
@@ -55,6 +58,7 @@
 #include "fwXML/XML/PointListXMLTranslator.hpp"
 #include "fwXML/XML/PortXMLTranslator.hpp"
 #include "fwXML/XML/ReconstructionXMLTranslator.hpp"
+#include "fwXML/XML/AcquisitionXMLTranslator.hpp"
 #include "fwXML/XML/ResectionXMLTranslator.hpp"
 #include "fwXML/XML/SingleFileXMLTranslator.hpp"
 #include "fwXML/XML/FolderXMLTranslator.hpp"
@@ -96,11 +100,7 @@ namespace fwXML
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ProcessObject>          ,  ::fwData::ProcessObject          );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::PatientDB>              ,  ::fwData::PatientDB              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Patient>                ,  ::fwData::Patient                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Study>                  ,  ::fwData::Study                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Acquisition>            ,  ::fwData::Acquisition            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Dictionary>             ,  ::fwData::Dictionary             );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Color>                  ,  ::fwData::Color                  );
@@ -109,6 +109,9 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Po
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PatientDBXMLTranslator                                  ,  ::fwData::PatientDB              );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PatientXMLTranslator                                    ,  ::fwData::Patient                );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StudyXMLTranslator                                      ,  ::fwData::Study                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , NodeXMLTranslator                                       ,  ::fwData::Node                   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GraphXMLTranslator                                      ,  ::fwData::Graph                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PortXMLTranslator                                       ,  ::fwData::Port                   );
@@ -128,6 +131,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ArrayXMLTranslator                
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MeshXMLTranslator                                       ,  ::fwData::Mesh                   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MaterialXMLTranslator                                   ,  ::fwData::Material               );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionXMLTranslator                             ,  ::fwData::Reconstruction         );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , AcquisitionXMLTranslator                                ,  ::fwData::Acquisition            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsXMLTranslator                            ,  ::fwData::StructureTraits        );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ROITraitsXMLTranslator                                  ,  ::fwData::ROITraits              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionTraitsXMLTranslator                       ,  ::fwData::ReconstructionTraits   );

@@ -249,17 +249,9 @@ namespace fwDataTools
 {
     ::fwData::Array::NewSptr array;
 
-    array->resize(::fwTools::Type::create(type), sizes, sizes.size());
+    array->resize( ::fwTools::Type::create(type), sizes, 1, true );
 
-    int sum = std::accumulate(sizes.begin(), sizes.end(), 0);
-
-    char *buffer = new char[sum];
-
-    for (int i=0 ; i<sum; i++)
-    {
-        buffer[i] = rand()%sum;
-    }
-    array->setBuffer(buffer);
+    Image::randomizeArray( array );
 
     return array;
 }

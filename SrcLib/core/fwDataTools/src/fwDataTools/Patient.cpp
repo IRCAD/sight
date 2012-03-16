@@ -404,7 +404,7 @@ void Patient::generateReconstruction(::fwData::Reconstruction::sptr rec)
     rec->setVolPctConfidence(rand()%1000/100.0);
     rec->setReconstructionTime("2007-Feb-24 18:55:00");
     rec->setMaskGenerated(true);
-    rec->setLevel(rand()%255);
+    rec->setLevel(rand()%127);
     rec->setLabel(rand()%500);
     rec->setGenerated3D(true);
     rec->setType3D("recType3D");
@@ -632,19 +632,19 @@ bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr co
     else if ( col1 && col2 )
     {
         compare &= ( col1->red() == col2->red() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same red : " << col1->red() << " != " << col2->red(),
+        OSLM_ERROR_IF( errorPrefix << "colors have not same red : " << col1->red() << " != " << col2->red(),
                 col1->red() != col2->red());
 
         compare &= ( col1->green() == col2->green() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same green : " << col1->green() << " != " << col2->green(),
+        OSLM_ERROR_IF( errorPrefix << "colors have not same green : " << col1->green() << " != " << col2->green(),
                 col1->green() != col2->green());
 
         compare &= ( col1->blue() == col2->blue() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same blue : " << col1->blue() << " != " << col2->blue(),
+        OSLM_ERROR_IF( errorPrefix << "colors have not same blue : " << col1->blue() << " != " << col2->blue(),
                 col1->blue() != col2->blue());
 
         compare &= ( col1->alpha() == col2->alpha() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same alpha : " << col1->alpha() << " != " << col2->alpha(),
+        OSLM_ERROR_IF( errorPrefix << "colors have not same alpha : " << col1->alpha() << " != " << col2->alpha(),
                 col1->alpha() != col2->alpha());
     }
     return compare;

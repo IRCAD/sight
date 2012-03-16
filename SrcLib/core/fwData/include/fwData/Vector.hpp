@@ -94,6 +94,29 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Vector::csptr _source );
 
+    template< class DATATYPE >
+    FWDATA_API void setContainer( const std::vector< SPTR(DATATYPE) > & vec )
+    {
+        this->clear();
+        std::copy( vec.begin(), vec.end(), std::back_inserter(*this) );
+    }
+
+    template< class DATATYPE >
+    FWDATA_API std::vector< SPTR(DATATYPE) > getContainer() const
+    {
+        std::vector< SPTR(DATATYPE) > vec;
+        vec.reserve( this->size() );
+        SPTR(DATATYPE) castedData;
+        BOOST_FOREACH( ::fwData::Object::sptr data, *this )
+        {
+            castedData = ::boost::dynamic_pointer_cast<DATATYPE>( data );
+            OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
+            vec.push_back( castedData );
+        }
+
+        return vec;
+    }
+
 protected:
     /// Constructor
     FWDATA_API Vector();

@@ -164,4 +164,21 @@ bool XMLTranslatorHelper::getElement( xmlNodePtr node )
 
 //------------------------------------------------------------------------------
 
+void XMLTranslatorHelper::addAttribute( xmlNodePtr masterNode, const std::string & name, ::fwData::Object::sptr obj, bool isMandatory )
+{
+    if( obj )
+    {
+        xmlNodePtr node = XMLTH::toXMLRecursive( obj );
+        xmlNodePtr fatherNode = xmlNewNode(NULL, BAD_CAST name.c_str() );
+        xmlAddChild( fatherNode, node);
+        xmlAddChild( masterNode , fatherNode );
+    }
+    else if ( isMandatory )
+    {
+        FW_RAISE("Sorry, attribute " << name << " is mandatory.");
+    }
+}
+
+//------------------------------------------------------------------------------
+
 } // end namespace
