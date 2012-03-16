@@ -273,8 +273,8 @@ void WindowLevel::info( std::ostream & _sstream )
 
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
-     ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
-     SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
+    ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
+    SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
 
     return pTF->getWLMinMax();
 }
@@ -285,26 +285,22 @@ void WindowLevel::updateWidgetMinMax(double _imageMin, double _imageMax)
     double rangeMin = this->fromWindowLevel(_imageMin);
     double rangeMax = this->fromWindowLevel(_imageMax);
 
-    //XXX : Hack because of f4s' TF management
-    m_rangeSlider->setMinimumMinMaxDelta(10./m_widgetDynamicRangeWidth);
-
     m_rangeSlider->setPos(rangeMin, rangeMax);
 }
 
 //------------------------------------------------------------------------------
 
-double WindowLevel::fromWindowLevel(double _val)
+double WindowLevel::fromWindowLevel(double val)
 {
     double valMin = m_widgetDynamicRangeMin;
     double valMax = valMin + m_widgetDynamicRangeWidth;
 
-    double val = _val;
     valMin = std::min(val, valMin);
     valMax = std::max(val, valMax);
 
     this->setWidgetDynamicRange(valMin, valMax);
 
-    double res = (_val - m_widgetDynamicRangeMin) / m_widgetDynamicRangeWidth;
+    double res = (val - m_widgetDynamicRangeMin) / m_widgetDynamicRangeWidth;
     return res;
 }
 
@@ -361,8 +357,8 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
             max =  300;
             break;
         case 3: // Fit Window/Level
-            min = wl.first;
-            max = wl.second;
+            min = std::min(wl.first, wl.second);
+            max = std::max(wl.first, wl.second);
             break;
         case 4: // Fit Image Range
             ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
@@ -515,6 +511,10 @@ void WindowLevel::setEnabled(bool enable)
 
 void WindowLevel::setWidgetDynamicRange(double min, double max)
 {
+    if(abs(max - min) < 1.e-05)
+    {
+        max = min + 1.e-05;
+    }
     m_widgetDynamicRangeMin = min;
     m_widgetDynamicRangeWidth = max - min;
 
