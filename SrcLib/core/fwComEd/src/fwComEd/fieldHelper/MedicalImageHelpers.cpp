@@ -176,12 +176,7 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     SLM_ASSERT("pImage pointer null", pImage);
 
     std::stringstream label;
-    ::fwData::Integer::sptr intField = pPatient->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_acquisitionCountId );
-    if(!intField)
-    {
-        intField = ::fwData::Integer::New(0);
-        pPatient->setField_NEWAPI( ::fwComEd::Dictionary::m_acquisitionCountId, intField  );
-    }
+    ::fwData::Integer::sptr intField = pPatient->setDefaultField_NEWAPI( ::fwComEd::Dictionary::m_acquisitionCountId , ::fwData::Integer::New(0));
     label << "I" << intField->value();
     ++(intField->value());
 
