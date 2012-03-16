@@ -7,7 +7,7 @@
 #include <QApplication>
 #include <QComboBox>
 #include <QGridLayout>
-#include <QIntValidator>
+#include <QDoubleValidator>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
@@ -82,11 +82,11 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     QGridLayout* layout = new QGridLayout();
 
     m_valueTextMin = new QLineEdit( container );
-    QIntValidator *minValidator = new QIntValidator(m_valueTextMin);
+    QDoubleValidator *minValidator = new QDoubleValidator(m_valueTextMin);
     m_valueTextMin->setValidator(minValidator);
 
     m_valueTextMax = new QLineEdit( container );
-    QIntValidator*  maxValidator = new QIntValidator(m_valueTextMax);
+    QDoubleValidator*  maxValidator = new QDoubleValidator(m_valueTextMax);
     m_valueTextMax->setValidator(maxValidator);
 
     m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider(container);
