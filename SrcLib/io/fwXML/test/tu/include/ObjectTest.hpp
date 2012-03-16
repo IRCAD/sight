@@ -18,9 +18,8 @@ class ObjectTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testMaterial );
     CPPUNIT_TEST( testArray );
     CPPUNIT_TEST( testMesh );
-    CPPUNIT_TEST( testTriangularMesh );
-    CPPUNIT_TEST( testTransfertFunction );
-    CPPUNIT_TEST( testPatientDB );
+//    CPPUNIT_TEST( testTransfertFunction );
+//    CPPUNIT_TEST( testPatientDB );
     CPPUNIT_TEST( testStructureTraits );
     CPPUNIT_TEST( testROITraits );
     CPPUNIT_TEST( testReconstructionTraits );
