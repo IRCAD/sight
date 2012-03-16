@@ -54,18 +54,9 @@ void MsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw (
                 // Test if we manage this event from this object message uid ( it->get<1>() )
                 if( objMsg->getID() == fromUID || fromUID == "*")
                 {
-                    if(event == "*"  )
+                    if(event == "*" || message->hasEvent( event ) )
                     {
                         ::fwServices::IEditionService::notify( this->getSptr(), object, ::fwServices::ObjectMsg::constCast(message) );
-                    }
-                    else if(message->hasEvent( event ))
-                    {
-
-                        ::fwTools::Object::sptr msg = ::fwTools::Factory::New(msgType);
-                        OSLM_ASSERT(msgType << " creation failed", msg);
-                        ::fwServices::ObjectMsg::sptr forwardMsg = ::fwServices::ObjectMsg::dynamicCast(msg);
-                        forwardMsg->addEvent(event, message->getDataInfo(event));
-                        ::fwServices::IEditionService::notify( this->getSptr(), object, forwardMsg);
                     }
                 }
             }
