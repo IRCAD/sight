@@ -33,9 +33,10 @@ namespace visuVTKAdaptor
 
 ImageText::ImageText() throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    this->installTFPoolEventHandler(this);
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
 }
 
 //-----------------------------------------------------------------------------
@@ -116,11 +117,11 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
         {
             imgMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
         }
-        doUpdate();
+        this->doUpdate();
     }
-    else  if ( tfMsg )
+    else  if ( tfMsg || this->upadteTFObserver(msg))
     {
-        doUpdate();
+        this->doUpdate();
     }
 }
 
