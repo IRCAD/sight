@@ -71,6 +71,8 @@ void fwVtkWindowLevelLookupTable::BuildInvert()
         invertTableRgba2[3] = tableRgba[3];
     }
 
+    this->InvertTime.Modified();
+
 }
 
 
