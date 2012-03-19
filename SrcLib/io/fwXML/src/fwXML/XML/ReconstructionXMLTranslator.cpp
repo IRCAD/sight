@@ -42,7 +42,7 @@ xmlNodePtr ReconstructionXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
     SLM_ASSERT("node not instanced", masterNode);
 
     XMLTranslatorHelper::addAttribute( masterNode, "material", reconst->getMaterial() );
-    XMLTranslatorHelper::addAttribute( masterNode, "image", reconst->getImage() );
+    XMLTranslatorHelper::addAttribute( masterNode, "image", reconst->getImage(), false );
     XMLTranslatorHelper::addAttribute( masterNode, "mesh", reconst->getMesh() );
 
     return masterNode;
@@ -59,7 +59,7 @@ void ReconstructionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUp
     reconst2xmlbase.updateDataFromXML(toUpdate, source);
 
     reconst->setMaterial( XMLTranslatorHelper::getAttribute< ::fwData::Material >( source, "material" ) );
-    reconst->setImage( XMLTranslatorHelper::getAttribute< ::fwData::Image >( source, "image" ) );
+    reconst->setImage( XMLTranslatorHelper::getAttribute< ::fwData::Image >( source, "image", false ) );
     reconst->setMesh( XMLTranslatorHelper::getAttribute< ::fwData::Mesh >( source, "mesh" ) );
 }
 
