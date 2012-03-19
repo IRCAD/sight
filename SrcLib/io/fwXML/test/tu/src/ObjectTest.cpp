@@ -78,7 +78,7 @@ void ObjectTest::tearDown()
     // check object
     CPPUNIT_ASSERT(obj2);
 
-    //::boost::filesystem::remove_all( testFile.parent_path().string() );
+    ::boost::filesystem::remove_all( testFile.parent_path().string() );
 
     return obj2;
 }
@@ -221,7 +221,7 @@ void ObjectTest::materialTest()
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::transfertFunctionTest()
+void ObjectTest::transferFunctionTest()
 {
     ::fwData::TransfertFunction_VERSION_II::sptr tf1 = ::fwDataTools::ObjectGenerator::createTFColor();
 

@@ -34,6 +34,7 @@
 #include "fwXML/boostSerializer/String.hpp"
 #include "fwXML/boostSerializer/Study.hpp"
 #include "fwXML/boostSerializer/TransformationMatrix3D.hpp"
+#include "fwXML/boostSerializer/TransferFunction.hpp"
 
 // translator generic
 #include "fwXML/XML/GenericXMLTranslator.hpp"
@@ -69,6 +70,7 @@
 #include "fwXML/XML/ROITraitsXMLTranslator.hpp"
 #include "fwXML/XML/ReconstructionTraitsXMLTranslator.hpp"
 #include "fwXML/XML/StructureTraitsDictionaryXMLTranslator.hpp"
+
 
 INSTANTIATE_SERIALIZER(::fwTools::Object);
 INSTANTIATE_SERIALIZER(::fwData::Acquisition);
@@ -106,6 +108,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Tr
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Color>                  ,  ::fwData::Color                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ResectionDB>            ,  ::fwData::ResectionDB            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                  );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransfertFunction_VERSION_II >,  ::fwData::TransfertFunction_VERSION_II );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );

@@ -21,7 +21,7 @@ class ObjectTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( imageTest );
     CPPUNIT_TEST( reconstructionTest );
     CPPUNIT_TEST( acquisitionTest );
-    CPPUNIT_TEST( transfertFunctionTest );
+    CPPUNIT_TEST( transferFunctionTest );
     CPPUNIT_TEST( studyTest );
     CPPUNIT_TEST( patientTest );
     CPPUNIT_TEST( patientDBTest );
@@ -46,7 +46,7 @@ public:
     void reconstructionTest();
     void acquisitionTest();
     void triangularMeshTest();
-    void transfertFunctionTest();
+    void transferFunctionTest();
     void studyTest();
     void patientTest();
     void patientDBTest();

@@ -264,22 +264,47 @@ bool ObjectComparator::compareTransfertFunction(::fwData::TransfertFunction_VERS
     SLM_ASSERT( "Null tf2 pointers", tf2);
 
     bool compare = true;
-    compare &= (tf1->getTFData().size() == tf2->getTFData().size());
-    OSLM_ERROR_IF( "Number of points in each TF are different.", tf1->getTFData().size() != tf2->getTFData().size());
 
     compare &= (tf1->getName() == tf2->getName());
-    OSLM_ERROR_IF( "Transfert funtion are different.", tf1->getName() != tf2->getName());
+    OSLM_ERROR_IF( "Transfert funtion names are different.", tf1->getName() != tf2->getName());
 
     compare &= (tf1->getWindow() == tf2->getWindow());
-    OSLM_ERROR_IF( "Window value are different.", tf1->getWindow() != tf2->getWindow());
+    OSLM_ERROR_IF( "Window values are different.", tf1->getWindow() != tf2->getWindow());
 
     compare &= (tf1->getLevel() == tf2->getLevel());
-    OSLM_ERROR_IF( "Level value are different.", tf1->getLevel() != tf2->getLevel());
+    OSLM_ERROR_IF( "Level values are different.", tf1->getLevel() != tf2->getLevel());
+
+    compare &= (tf1->getIsClamped() == tf2->getIsClamped());
+    OSLM_ERROR_IF( "IsClamped values are different.", tf1->getIsClamped() != tf2->getIsClamped());
+
+    compare &= (tf1->getInterpolationMode() == tf2->getInterpolationMode());
+    OSLM_ERROR_IF( "InterpolationMode values are different.", tf1->getInterpolationMode() != tf2->getInterpolationMode());
+
+    compare &= (tf1->getBackgroundColor() == tf2->getBackgroundColor());
+    OSLM_ERROR_IF( "BackgroundColor values are different.", !(tf1->getBackgroundColor() == tf2->getBackgroundColor()) );
+
+    compare &= (tf1->getTFData().size() == tf2->getTFData().size());
+    OSLM_ERROR_IF( "Number of points in each TF are different.", tf1->getTFData().size() != tf2->getTFData().size());
 
     if( tf1->getTFData().size() > 0 && tf2->getTFData().size() > 0 )
     {
         compare &= (tf1->getMinMaxTFValues() == tf2->getMinMaxTFValues());
         OSLM_ERROR_IF( "Min max TF values are different.", tf1->getMinMaxTFValues() != tf2->getMinMaxTFValues());
+
+
+        ::fwData::TransfertFunction_VERSION_II::TFDataType::const_iterator it1 = tf1->getTFData().begin();
+        ::fwData::TransfertFunction_VERSION_II::TFDataType::const_iterator it2 = tf2->getTFData().begin();
+        while ( it1 != tf1->getTFData().end() )
+        {
+            compare &= ( it1->first == it2->first );
+            OSLM_ERROR_IF( "TFData key values are different.", it1->first != it2->first );
+
+            compare &= ( it1->second == it2->second );
+            OSLM_ERROR_IF( "TFData color values are different.", !(it1->second == it2->second) );
+
+            it1++;
+            it2++;
+        }
     }
 
     return compare;

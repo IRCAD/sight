@@ -120,6 +120,9 @@ public :
     /// Get all the TF data .
     FWDATA_API const TFDataType& getTFData() const;
 
+    /// Set all the TF data (clear previous tf data).
+    FWDATA_API void setTFData( const TFDataType & tfData );
+
     /// Add a new TF color point.
     FWDATA_API void addTFColor( TFValueType value, const TFColor & color );
 
@@ -189,7 +192,7 @@ private :
     TFColor m_attrBackgroundColor;
 
     /// The Transfert function data.
-    TFDataType m_attrTfData;
+    TFDataType m_tfData;
 
     /// The current interpolation mode.
     InterpolationMode m_attrInterpolationMode;

@@ -73,7 +73,7 @@ void TransfertFunctionTest::defaultTfTest()
 
     std::string expectedName = TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
     TransfertFunction_VERSION_II::InterpolationMode expectedInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
-    bool expectedIsClamped = true;
+    bool expectedIsClamped = false;
     TransfertFunction_VERSION_II::TFColor expectedBackgroundColor = TransfertFunction_VERSION_II::TFColor();
     size_t expectedSize = 2;
 
@@ -237,6 +237,23 @@ void TransfertFunctionTest::checkTFColor( ::fwData::TransfertFunction_VERSION_II
 
 
     CPPUNIT_ASSERT_EQUAL( std::string("fieldStringValue"), ::fwData::String::dynamicCast( tf->getField_NEWAPI( "fieldStringKey" ) )->value() );
+}
+
+//------------------------------------------------------------------------------
+
+void TransfertFunctionTest::setTFDataTest()
+{
+    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+
+    tf->clear();
+    ::fwData::TransfertFunction_VERSION_II::TFDataType tfData;
+    tfData[-40.33]  = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4 );
+    tfData[3]       = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4 );
+    tfData[-0.2]    = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4 );
+    tfData[150]     = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9 );
+    tf->setTFData( tfData );
+
+    this->checkTFColor(tf);
 }
 
 //------------------------------------------------------------------------------
