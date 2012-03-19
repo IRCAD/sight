@@ -218,18 +218,17 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
             obj = this->loadData(this->getFile() );
         }
 
-        ::fwData::Object::sptr dataObj; // object loaded
-        if (dataObj)
+        if (obj)
         {
             // Retrieve dataStruct associated with this service
             ::fwData::Object::sptr associatedObject = this->getObject< ::fwData::Object >();
             SLM_ASSERT("associatedObject not instanced", associatedObject);
 
-            if(dataObj->getClassname() != associatedObject->getClassname())
+            if(obj->getClassname() != associatedObject->getClassname())
             {
                 std::stringstream stream;
                 stream << "Sorry, the file "<<m_reader.getFile()<< " contains a "
-                        << dataObj->getRootedClassname() << ", and you need a "
+                        << obj->getRootedClassname() << ", and you need a "
                         << associatedObject->getRootedClassname();
                 ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                             stream.str(),
@@ -237,9 +236,17 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
             }
             else
             {
-                associatedObject->shallowCopy( dataObj );
+                associatedObject->shallowCopy( obj );
                 notificationOfUpdate();
             }
+        }
+        else
+        {
+            std::stringstream stream;
+            stream << "Sorry, reader failed to read the file "<<m_reader.getFile();
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                    stream.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
         }
         cursor.setDefaultCursor();
     }
