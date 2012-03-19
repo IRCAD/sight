@@ -137,7 +137,7 @@ public :
      * @return true if colors are equal.
      * @note if false, color differences are written in SLM log
      */
-    FWDATATOOLS_API static bool compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, std::string errorPrefix = "" );
+    FWDATATOOLS_API static bool compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, float colorTolerance = 1.f/255.f, std::string errorPrefix = "" );
 
 protected:
 

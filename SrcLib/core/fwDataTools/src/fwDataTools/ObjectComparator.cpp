@@ -77,7 +77,7 @@ bool ObjectComparator::compareStructureTraits(::fwData::StructureTraits::sptr st
 
     ::fwData::Color::sptr color1 = structure1->getColor();
     ::fwData::Color::sptr color2 = structure2->getColor();
-    compare &= Patient::compareColor( color1, color2, "Color : ");
+    compare &= Patient::compareColor( color1, color2, 1/255.f, "Color : ");
 
     ::fwData::StructureTraits::CategoryContainer categories1 = structure1->getCategories();
     ::fwData::StructureTraits::CategoryContainer categories2 = structure2->getCategories();

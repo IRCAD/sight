@@ -612,15 +612,15 @@ bool Patient::compareMaterial(::fwData::Material::sptr mat1, ::fwData::Material:
         OSLM_ERROR_IF( errorPrefix << "Materials have not same options mode : " << mat1->getOptionsMode() << " != " << mat2->getOptionsMode(),
                 mat1->getOptionsMode() != mat2->getOptionsMode());
 
-        compare &= Patient::compareColor( mat1->ambient(), mat2->ambient(), "Ambient color : ");
-        compare &= Patient::compareColor( mat1->diffuse(), mat2->diffuse(), "Diffuse color : ");
+        compare &= Patient::compareColor( mat1->ambient(), mat2->ambient(), 1/255.f, "Ambient color : ");
+        compare &= Patient::compareColor( mat1->diffuse(), mat2->diffuse(), 1/255.f, "Diffuse color : ");
     }
     return compare;
 }
 
 //------------------------------------------------------------------------------
 
-bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, std::string errorPrefix )
+bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, float colorTolerance, std::string errorPrefix )
 {
     bool compare = true;
 
@@ -631,21 +631,21 @@ bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr co
     }
     else if ( col1 && col2 )
     {
-        compare &= ( col1->red() == col2->red() );
+        compare &= ( fabs( col1->red() - col2->red() ) <= colorTolerance );
         OSLM_ERROR_IF( errorPrefix << "colors have not same red : " << col1->red() << " != " << col2->red(),
-                col1->red() != col2->red());
+                fabs( col1->red() - col2->red() ) > colorTolerance );
 
-        compare &= ( col1->green() == col2->green() );
+        compare &= ( fabs( col1->green() - col2->green() ) <= colorTolerance );
         OSLM_ERROR_IF( errorPrefix << "colors have not same green : " << col1->green() << " != " << col2->green(),
-                col1->green() != col2->green());
+                fabs( col1->green() - col2->green() ) > colorTolerance );
 
-        compare &= ( col1->blue() == col2->blue() );
+        compare &= ( fabs( col1->blue() - col2->blue() ) <= colorTolerance );
         OSLM_ERROR_IF( errorPrefix << "colors have not same blue : " << col1->blue() << " != " << col2->blue(),
-                col1->blue() != col2->blue());
+                fabs( col1->blue() - col2->blue() ) > colorTolerance );
 
-        compare &= ( col1->alpha() == col2->alpha() );
+        compare &= ( fabs( col1->alpha() - col2->alpha() ) <= colorTolerance );
         OSLM_ERROR_IF( errorPrefix << "colors have not same alpha : " << col1->alpha() << " != " << col2->alpha(),
-                col1->alpha() != col2->alpha());
+                fabs( col1->alpha() - col2->alpha() ) > colorTolerance);
     }
     return compare;
 }
