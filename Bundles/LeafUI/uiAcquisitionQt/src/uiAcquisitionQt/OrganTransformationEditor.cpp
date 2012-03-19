@@ -179,9 +179,11 @@ void OrganTransformationEditor::Refresh()
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
-    container->setEnabled( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second );
 
-    if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+    bool hasReconstructions = !pAcquisition->getReconstructions().empty();
+    container->setEnabled( hasReconstructions );
+
+    if(hasReconstructions)
     {
         ::fwData::Composite::sptr pComposite;
         if (::fwTools::fwID::exist(mTMSUid))
@@ -190,11 +192,9 @@ void OrganTransformationEditor::Refresh()
             SLM_ASSERT("Sorry, '"<< mTMSUid <<"' object is not a composite", pComposite);
         }
 
-        ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
-
-        for( ; it!= pAcquisition->getReconstructions().second; ++it )
+        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, pAcquisition->getReconstructions())
         {
-            mReconstructionMap[ (*it)->getOrganName() ] = (*it);
+            mReconstructionMap[ rec->getOrganName() ] = rec;
         }
 
         for( tReconstructionMap::iterator it = mReconstructionMap.begin(); it != mReconstructionMap.end(); ++it )
@@ -261,23 +261,23 @@ void OrganTransformationEditor::OnResetClick()
     ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
 
     //search the corresponding triangular mesh
-    if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+    if(!pAcquisition->getReconstructions().empty())
     {
-        ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
 
-        for( ; it!= pAcquisition->getReconstructions().second; ++it )
+        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, pAcquisition->getReconstructions())
         {
+            ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
-            ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
-
-            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
                 ::fwData::TransformationMatrix3D::NewSptr pIdentMat;
                 pTmpMat->deepCopy(pIdentMat);
                 NotitfyTransformationMatrix(pTmpMat);
             }
+
         }
+
     }
 }
 
@@ -289,15 +289,14 @@ void OrganTransformationEditor::OnSaveClick()
 
     ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
 
-    if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+    if(!pAcquisition->getReconstructions().empty())
     {
-        ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
 
-        for( ; it!= pAcquisition->getReconstructions().second; ++it )
+        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, pAcquisition->getReconstructions())
         {
 
-            ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
-            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
+            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
                 ::fwData::TransformationMatrix3D::NewSptr pCpyTmpMat;
@@ -327,17 +326,16 @@ void OrganTransformationEditor::OnLoadClick()
         ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
 
         //search the corresponding triangular mesh
-        if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+        if(!pAcquisition->getReconstructions().empty())
         {
-            ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
 
-            for( ; it!= pAcquisition->getReconstructions().second; ++it )
+            BOOST_FOREACH(::fwData::Reconstruction::sptr rec, pAcquisition->getReconstructions())
             {
 
-                ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
+                ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
                 if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
                 {
-                    ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+                    ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
                     if (pTmpMat)
                     {
                         pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
@@ -372,16 +370,13 @@ void OrganTransformationEditor::OnTestClick()
     ::fwData::Acquisition::sptr pAcquisition = getObject< ::fwData::Acquisition>();
 
     //search the corresponding triangular mesh
-    if( pAcquisition->getReconstructions().first != pAcquisition->getReconstructions().second )
+    if(!pAcquisition->getReconstructions().empty())
     {
-        ::fwData::Acquisition::ReconstructionIterator it = pAcquisition->getReconstructions().first;
-
-        for( ; it!= pAcquisition->getReconstructions().second; ++it )
+        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, pAcquisition->getReconstructions())
         {
+            ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
-            ::fwData::Mesh::sptr pTmpTrMesh = (*it)->getMesh();
-
-            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
                 pTmpMat->deepCopy(pRandTmpMat);
