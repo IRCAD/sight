@@ -52,7 +52,7 @@ namespace fwRenderVTK
 VtkRenderService::VtkRenderService() throw() :
      m_pendingRenderRequest(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -401,9 +401,9 @@ void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
 
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
+    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
     {
-        std::vector< std::string > objectIds = compositeMsg->getEventModifiedFields();
+        std::vector< std::string > objectIds = compositeMsg->getModifiedKeys();
         std::vector< std::string >::iterator iter;
 
         assert ( m_sceneConfiguration );

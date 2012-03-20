@@ -29,8 +29,8 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::PushObjectSrv, ::fwData::C
 
 PushObjectSrv::PushObjectSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
 }
 
 //------------------------------------------------------------------------------

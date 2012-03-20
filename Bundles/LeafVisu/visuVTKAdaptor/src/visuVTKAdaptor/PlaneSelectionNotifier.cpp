@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
 
 PlaneSelectionNotifier::PlaneSelectionNotifier() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
     addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
     addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE);
     addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY);
@@ -143,9 +143,9 @@ void PlaneSelectionNotifier::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw
 
     if ( compositeMsg )
     {
-        SLM_ASSERT( "The received message is not an MODIFIED_FIELDS event (CompositeMsg)", compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) );
+        SLM_ASSERT( "The received message is not an MODIFIED_KEYS event (CompositeMsg)", compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) );
 
-        std::vector< std::string > objectIds = compositeMsg->getEventModifiedFields();
+        std::vector< std::string > objectIds = compositeMsg->getModifiedKeys();
 
         if (std::find(objectIds.begin(), objectIds.end(), m_planeListId) != objectIds.end())
         {
@@ -225,7 +225,7 @@ void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
         oldObjects.push_back( oldPlane );
 
         ::fwComEd::CompositeMsg::NewSptr compositeMsg;
-        compositeMsg->addEventModifiedFields(modifiedFields,oldObjects);
+        compositeMsg->addModifiedKeysEvent(modifiedFields,oldObjects);
         composite->getRefMap()[m_planeSelectionId] = plane;
         ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
     }
@@ -248,7 +248,7 @@ void PlaneSelectionNotifier::deselectPlane()
         modifiedFields.push_back(m_planeSelectionId);
 
         ::fwComEd::CompositeMsg::NewSptr compositeMsg;
-        compositeMsg->addEventModifiedFields(modifiedFields,oldObjects);
+        compositeMsg->addModifiedKeysEvent(modifiedFields,oldObjects);
 
         ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
      }

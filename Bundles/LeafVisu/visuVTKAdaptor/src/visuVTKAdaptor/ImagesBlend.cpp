@@ -48,9 +48,9 @@ ImagesBlend::ImagesBlend() throw()
     // Manage events
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS           );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS         );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS         );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
 }
 
 //------------------------------------------------------------------------------
@@ -110,9 +110,9 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
 
     if (compositeMsg)
     {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_FIELDS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)
+                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
+                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
             doUpdate();
         }

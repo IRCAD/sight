@@ -32,9 +32,9 @@ REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::Simple
 
 SimpleSwapperSrv::SimpleSwapperSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -51,21 +51,21 @@ void SimpleSwapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
     SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg == 0 );
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
     {
-        ::fwData::Composite::sptr fields = compositeMsg->getAddedFields();
+        ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
         this->addedObjects( fields );
     }
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
     {
-        ::fwData::Composite::sptr fields = compositeMsg->getRemovedFields();
+        ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
         this->removedObjects( fields );
     }
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
     {
-        ::fwData::Composite::sptr fields = compositeMsg->getSwappedNewFields();
+        ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
         this->swappedObjects( fields );
     }
 }

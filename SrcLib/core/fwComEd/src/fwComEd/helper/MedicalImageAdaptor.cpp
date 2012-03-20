@@ -401,9 +401,9 @@ void MedicalImageAdaptor::setLevel( double level )
 
 void MedicalImageAdaptor::installTFPoolEventHandler( ::fwServices::IService* srv )
 {
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS);
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_FIELDS);
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS);
+   srv->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //------------------------------------------------------------------------------
@@ -446,18 +446,18 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg)
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
     if(compositeMsg)
     {
-//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
 //        {
 //        }
 //
-//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
 //        {
 //        }
 
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
         {
             SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
-            ::fwData::Composite::sptr fields = compositeMsg->getSwappedNewFields();
+            ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
             ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
             if( iter != fields->end())
             {

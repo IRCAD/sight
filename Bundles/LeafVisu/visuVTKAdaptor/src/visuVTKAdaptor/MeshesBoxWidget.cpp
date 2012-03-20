@@ -68,9 +68,9 @@ namespace visuVTKAdaptor
 
 MeshesBoxWidget::MeshesBoxWidget() throw()
 {
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_FIELDS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
     addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
 
     m_boxWidgetCommand = MeshesBoxClallback::New(this);
@@ -174,9 +174,9 @@ void MeshesBoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTool
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg ) ;
     if (compositeMsg)
     {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedFields())
+            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedKeys())
             {
                 ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
                 m_meshMap[elt.first]->Delete();
@@ -187,13 +187,13 @@ void MeshesBoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTool
                 ::fwServices::unregisterCommunicationChannel(fieldTransform, this->getSptr());
             }
         }
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
         {
-            this->updateMeshMapFromComposite(compositeMsg->getAddedFields());
+            this->updateMeshMapFromComposite(compositeMsg->getAddedKeys());
         }
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
-            this->updateMeshMapFromComposite(compositeMsg->getSwappedNewFields());
+            this->updateMeshMapFromComposite(compositeMsg->getNewChangedKeys());
         }
         this->updateMeshTransform();
         this->doUpdate();

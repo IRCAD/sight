@@ -35,7 +35,7 @@ ResetCamera::ResetCamera() throw()
 {
     bCameraReseted = false;
     m_comChannelPriority = 0.1;
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_FIELDS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void ResetCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg );
 
-    if ( compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS))
+    if ( compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS))
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
         if(!bCameraReseted)

@@ -28,9 +28,9 @@ Render::Render() throw()
           m_sceneWidth (200,200),
           m_antialiasing(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -186,19 +186,19 @@ void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(_msg);
 
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
     {
-        SPTR(::fwData::Composite) field = compositeMsg->getAddedFields();
+        SPTR(::fwData::Composite) field = compositeMsg->getAddedKeys();
         this->startAdaptorsFromComposite(field);
     }
-    else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+    else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
     {
-        SPTR(::fwData::Composite) field = compositeMsg->getAddedFields();
+        SPTR(::fwData::Composite) field = compositeMsg->getAddedKeys();
         this->stopAdaptorsFromComposite(field);
     }
-    else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
+    else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
     {
-        this->swapAdaptorsFromComposite(compositeMsg->getSwappedNewFields());
+        this->swapAdaptorsFromComposite(compositeMsg->getNewChangedKeys());
         //SLM_FATAL("ToDo IM");
     }
 }

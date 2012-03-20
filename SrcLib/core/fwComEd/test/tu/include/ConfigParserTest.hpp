@@ -105,7 +105,7 @@ public :
     virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::CompositeMsg::csptr compositeMessage = ::fwComEd::CompositeMsg::dynamicConstCast( _msg );
-        if (compositeMessage && compositeMessage->hasEvent(::fwComEd::CompositeMsg::MODIFIED_FIELDS))
+        if (compositeMessage && compositeMessage->hasEvent(::fwComEd::CompositeMsg::MODIFIED_KEYS))
         {
             // if receiving a compositeMsg : tag service is updated
             m_isUpdatedMessage = true;

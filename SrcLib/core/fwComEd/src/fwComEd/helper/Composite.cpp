@@ -31,7 +31,7 @@ void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObjec
     m_composite.lock()->getRefMap()[ _compositeKey ] = _newObject;
 
     // Modify message
-    m_compositeMsg->addAddedField( _compositeKey, _newObject );
+    m_compositeMsg->appendAddedKey( _compositeKey, _newObject );
 
 }
 
@@ -48,7 +48,7 @@ void Composite::remove( std::string _compositeKey )
     m_composite.lock()->getRefMap().erase( _compositeKey );
 
     // Modify message
-    m_compositeMsg->addRemovedField( _compositeKey, objBackup );
+    m_compositeMsg->appendRemovedKey( _compositeKey, objBackup );
 
 }
 
@@ -79,7 +79,7 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
         m_composite.lock()->getRefMap()[ _compositeKey ] = _newObject;
 
         // Modify message
-        m_compositeMsg->addSwappedField( _compositeKey, objBackup, _newObject );
+        m_compositeMsg->appendChangedKey( _compositeKey, objBackup, _newObject );
     }
     else
     {

@@ -50,7 +50,7 @@ public:
     typedef float AdaptorZValueType;
 
     /// Constructor, set coordinates m_sceneStart to (-100, -100), m_sceneWidth to (200, 200) and add new handle events
-    //  ADDED_FIELDS, REMOVED_FIELDS and SWAPPED_FIELDS.
+    //  ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS.
     SCENE2D_API Render() throw();
 
     /// Basic destructor, do nothing.
@@ -159,7 +159,7 @@ protected:
     /// Do nothing.
     SCENE2D_API void updating()    throw ( ::fwTools::Failed );
 
-    /// If the message is ADDED_FIELDS, call the startAdaptorsFromComposite function to start all the adaptors contained
+    /// If the message is ADDED_KEYS, call the startAdaptorsFromComposite function to start all the adaptors contained
     //  in the message composite.
     SCENE2D_API void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 

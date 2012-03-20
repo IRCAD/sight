@@ -26,8 +26,8 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKey, ::
 
 ConfigActionSrvWithKey::ConfigActionSrvWithKey() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
 }
 
 //------------------------------------------------------------------------------
@@ -102,14 +102,14 @@ void ConfigActionSrvWithKey::updating( ::fwServices::ObjectMsg::csptr _msg ) thr
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast (_msg);
     if(compositeMsg)
     {
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
         {
             for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
             {
                 executable &= (composite->find(itr->second)!= composite->end());
             }
         }
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
         {
             for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
             {

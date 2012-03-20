@@ -230,7 +230,7 @@ protected:
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
-    // Install TF pool event handler (SWAPPED_FIELDS, ADDED_FIELDS and REMOVED_FIELDS)
+    // Install TF pool event handler (CHANGED_KEYS, ADDED_KEYS and REMOVED_KEYS)
     FWCOMED_API void installTFPoolEventHandler( ::fwServices::IService* srv );
 
     // Install TF Observer ( com channel )

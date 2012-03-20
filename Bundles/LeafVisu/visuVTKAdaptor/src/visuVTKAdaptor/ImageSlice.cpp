@@ -61,7 +61,7 @@ ImageSlice::ImageSlice() throw()
     this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
-    this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
 }
 
 //------------------------------------------------------------------------------
@@ -169,9 +169,9 @@ void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
     ::fwData::Image::sptr image = m_ctrlImage.lock();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-    if ( msg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
+    if ( msg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
     {
-        SLM_TRACE("Has event MODIFIED_FIELDS");
+        SLM_TRACE("Has event MODIFIED_KEYS");
         doUpdate();
     }
 

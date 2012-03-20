@@ -81,7 +81,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Reacts on specifics event (ADDED_FIELDS, REMOVED_FIELDS and SWAPPED_FIELDS) and start, stop or swap the managed services
+    /// Reacts on specifics event (ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS) and start, stop or swap the managed services
     /// on the objects defined in the message or dummy objects
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
