@@ -97,12 +97,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IManagerSrv</type>
-        <service>::ctrlSelection::manager::SimpleSwapperSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IManagerSrv</type>
         <service>::ctrlSelection::manager::SField</service>
         <object>::fwData::Object</object>
     </extension>
