@@ -257,14 +257,15 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
             if ( pool->find( m_selectedTFKey ) == pool->end() )
             {
                 ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
-                tf->setLevel(0);
-                tf->setWindow(500);
+                tf->setLevel(100);
+                tf->setWindow(200);
                 tf->setName( m_selectedTFKey );
-                tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::LINEAR );
+                tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
                 tf->setIsClamped(true);
-                tf->addTFColor(0.0, ::fwData::TransfertFunction_VERSION_II::TFColor(1.0,0.0,0.0,0.0));
-                tf->addTFColor(0.5, ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,1.0,0.0,1.0));
-                tf->addTFColor(1.0, ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,0.0,1.0,1.0));
+                tf->addTFColor( 0   , ::fwData::TransfertFunction_VERSION_II::TFColor(1.0,0.0,0.0,0.0));
+                tf->addTFColor( 1   , ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,1.0,0.0,1.0));
+                tf->addTFColor( 2   , ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,0.0,1.0,1.0));
+                tf->addTFColor(200  , ::fwData::TransfertFunction_VERSION_II::TFColor(1.0,1.0,0.0,1.0));
                 (*pool)[m_selectedTFKey] = tf;
             }
             m_tfPool = pool;
