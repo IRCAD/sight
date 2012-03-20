@@ -149,7 +149,7 @@ public:
     FWSERVICES_API void appendAddedField( const FieldNameType &fieldName, ::fwData::Object::sptr object );
 
     /**
-     * @brief   Return the composite of the added fields.
+     * @brief   Return the map of the added fields.
      */
     FWSERVICES_API const ModifiedFieldsContainerType &getAddedFields() const;
 
@@ -161,7 +161,7 @@ public:
     FWSERVICES_API void appendRemovedField( const FieldNameType &fieldName, ::fwData::Object::sptr object );
 
     /**
-     * @brief   Return the composite of the removed fields.
+     * @brief   Return the map of the removed fields.
      */
     FWSERVICES_API const ModifiedFieldsContainerType &getRemovedFields() const;
 

@@ -76,7 +76,6 @@ public :
 private :
 
     ::fwComEd::CompositeMsg::sptr m_compositeMsg;
-
     ::fwData::Composite::wptr m_composite;
 };
 

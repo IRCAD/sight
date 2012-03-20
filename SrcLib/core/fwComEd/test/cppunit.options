@@ -1,6 +1,7 @@
 CLASSTEST=[
     'ConfigParserTest',
     'CompositeMessageTest',
+    'FieldHelperTest',
     'MessagesTest',
     ]
 
