@@ -55,6 +55,13 @@ public :
     FWCOMED_API void remove( std::string _compositeKey );
 
     /**
+     * @brief Clear all objects in the composite.
+     *
+     * Prepare the message to announce the modification.
+     */
+    FWCOMED_API void clear();
+
+    /**
      * @brief Replace an object in the composite.
      * @param[in] _compositeKey key of the object in the composite.
      * @param[in] _newObject    the new object to add in the composite.

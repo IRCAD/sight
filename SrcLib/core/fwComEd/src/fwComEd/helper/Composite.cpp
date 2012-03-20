@@ -54,6 +54,17 @@ void Composite::remove( std::string _compositeKey )
 
 //-----------------------------------------------------------------------------
 
+void Composite::clear()
+{
+    ::fwData::Composite::sptr composite = m_composite.lock();
+    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    {
+        this->remove(elt.first);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObject )
 {
     OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite." , m_composite.lock()->getRefMap().find(_compositeKey) == m_composite.lock()->getRefMap().end() );
