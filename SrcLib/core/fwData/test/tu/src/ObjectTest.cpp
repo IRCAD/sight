@@ -91,6 +91,14 @@ void ObjectTest::fieldTest()
     CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
     CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
 
+    obj->removeField(FIELD_ID1);
+    CPPUNIT_ASSERT(obj->getFields_NEWAPI().empty());
+
+    ::fwData::Object::sptr defaultField = obj->setDefaultField_NEWAPI(FIELD_ID1, fieldObj1);
+    CPPUNIT_ASSERT(defaultField == fieldObj1);
+
+    defaultField = obj->setDefaultField_NEWAPI(FIELD_ID1, fieldObj2);
+    CPPUNIT_ASSERT(defaultField != fieldObj2);
 }
 
 } //namespace ut
