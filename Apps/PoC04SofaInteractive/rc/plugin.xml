@@ -207,7 +207,7 @@
           <item key="tool1Mesh">
             <object uid="tool1Mesh" type="::fwData::Mesh">
               <service uid="tool1ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no" >
-                <filename>Bundles/opSofa_0-1/cam.trian</filename>
+                <file>Bundles/opSofa_0-1/cam.trian</file>
               </service>
             </object>
           </item>
@@ -215,7 +215,7 @@
           <item key="tool2Mesh">
             <object uid="tool2Mesh" type="::fwData::Mesh">
               <service uid="tool2ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no" >
-                <filename>Bundles/opSofa_0-1/mors2.trian</filename>
+                <file>Bundles/opSofa_0-1/mors2.trian</file>
               </service>
             </object>
           </item>
