@@ -43,6 +43,8 @@ void Field::setField(const fwData::Object::FieldNameType& name, fwData::Object::
     object->setField_NEWAPI(name, obj);
 }
 
+//-----------------------------------------------------------------------------
+
 void Field::setFields( const fwData::Object::FieldMapType& newFields)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
@@ -52,6 +54,8 @@ void Field::setFields( const fwData::Object::FieldMapType& newFields)
     object->setFields_NEWAPI(newFields);
 }
 
+//-----------------------------------------------------------------------------
+
 void Field::updateFields( const fwData::Object::FieldMapType& fieldMap)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
@@ -59,8 +63,9 @@ void Field::updateFields( const fwData::Object::FieldMapType& fieldMap)
     const ::fwData::Object::FieldMapType oldFields  = object->getFields_NEWAPI();
     this->buildMessage(fieldMap,oldFields);
     object->updateFields_NEWAPI(fieldMap);
-
 }
+
+//-----------------------------------------------------------------------------
 
 void Field::removeField(const fwData::Object::FieldNameType& name)
 {
@@ -75,6 +80,8 @@ void Field::removeField(const fwData::Object::FieldNameType& name)
     object->removeField(name);
 }
 
+//-----------------------------------------------------------------------------
+
 void Field::notify(fwServices::IService::sptr _serviceSource)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
@@ -82,15 +89,16 @@ void Field::notify(fwServices::IService::sptr _serviceSource)
     {
         ::fwServices::IEditionService::notify( _serviceSource, m_object.lock(), m_objectMsg , ::fwServices::ComChannelService::NOTIFY_SOURCE );
     }
-    SLM_INFO_IF("The message will not by notified because it has no event.", m_compositeMsg->getEventIds().size() == 0);
+    SLM_INFO_IF("The message will not by notified because it has no event.", m_objectMsg->getEventIds().size() == 0);
 }
+
+//-----------------------------------------------------------------------------
 
 void Field::buildMessage(
         const ::fwData::Object::FieldMapType &oldFields,
         const ::fwData::Object::FieldMapType &newFields
         )
 {
-
     ::fwData::Object::FieldNameVectorType oldFieldNames;
     ::fwData::Object::FieldNameVectorType newFieldNames;
 
