@@ -11,6 +11,7 @@
 #include <boost/filesystem/convenience.hpp>
 
 #include <fwData/String.hpp>
+#include <fwData/DictionaryOrgan.hpp>
 
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/MeshGenerator.hpp>
@@ -113,7 +114,7 @@ namespace fwDataTools
     pStructureTraits->setNativeGeometricExp(nativeGeoExp);
 
     ::fwData::Color::NewSptr color;
-    color->setRGBA(rand()%100 / 100., rand()%100 / 100., rand()%100 / 100., rand()%100 / 100.);
+    color->setRGBA(rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f);
     pStructureTraits->setColor(color);
 
     ::fwData::StructureTraits::CategoryContainer categories(2);
@@ -239,7 +240,7 @@ namespace fwDataTools
 ::fwData::Color::sptr ObjectGenerator::randomizeColor()
 {
     ::fwData::Color::NewSptr col;
-    col->setRGBA(rand()%100 / 100., rand()%100 / 100., rand()%100 / 100., rand()%100 / 100.);
+    col->setRGBA(rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f);
     return col;
 }
 
@@ -262,7 +263,7 @@ namespace fwDataTools
 {
     ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
 
-    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( rand()%100 / 100., rand()%100 / 100., rand()%100 / 100., rand()%100 / 100.) );
+    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f) );
     tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
     tf->setIsClamped( false );
     tf->setLevel(level);
@@ -271,8 +272,8 @@ namespace fwDataTools
 
     for (unsigned char nb=0 ; nb<nbPoints ; ++nb)
     {
-        int value = rand()%100 - level;
-        tf->addTFColor( value, ::fwData::TransfertFunction_VERSION_II::TFColor( rand()%100 / 100., rand()%100 / 100., rand()%100 / 100., rand()%100 / 100. ));
+        double value = rand()%100 - level;
+        tf->addTFColor( value, ::fwData::TransfertFunction_VERSION_II::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f ));
     }
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
@@ -288,17 +289,17 @@ namespace fwDataTools
 
     ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
 
-    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0, 0.3, 0.6, 0.1) );
+    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0f, 0.3f, 0.6f, 0.1f) );
     tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
     tf->setIsClamped( false );
     tf->setLevel( 900.6 );
     tf->setName( "TFColor" );
     tf->setWindow( -200.02 );
 
-    tf->addTFColor( -40.33, ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) );
-    tf->addTFColor( 3,      ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) ); // Invert point 3 <=> -0.2, for tests
-    tf->addTFColor( -0.2,   ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) );
-    tf->addTFColor( 150,    ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) );
+    tf->addTFColor( -40.33, ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9f, 0.2f, 0.3f, 0.4f) );
+    tf->addTFColor( 3,      ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1f, 0.2f, 0.9f, 0.4f) ); // Invert point 3 <=> -0.2, for tests
+    tf->addTFColor( -0.2,   ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1f, 0.9f, 0.3f, 0.4f) );
+    tf->addTFColor( 150,    ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1f, 0.2f, 0.3f, 0.9f) );
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
     tf->setField_NEWAPI( "fieldStringKey", myString );
