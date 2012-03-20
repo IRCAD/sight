@@ -99,8 +99,8 @@ void SSnapshot::updating() throw(::fwTools::Failed)
         filename->value() = this->requestFileName();
         if(!filename->value().empty())
         {
-            dataInfo->setFieldSingleElement("sceneID", sceneID);
-            dataInfo->setFieldSingleElement("filename", filename);
+            dataInfo->setField_NEWAPI("sceneID", sceneID);
+            dataInfo->setField_NEWAPI("filename", filename);
             ::fwComEd::CompositeMsg::NewSptr compositeMsg;
             compositeMsg->addEvent( "SNAP", dataInfo );
             ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
