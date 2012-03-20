@@ -78,6 +78,11 @@ void Field::removeField(const fwData::Object::FieldNameType& name)
 void Field::notify(fwServices::IService::sptr _serviceSource)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    if ( m_objectMsg->getEventIds().size() > 0 )
+    {
+        ::fwServices::IEditionService::notify( _serviceSource, m_object.lock(), m_objectMsg , ::fwServices::ComChannelService::NOTIFY_SOURCE );
+    }
+    SLM_INFO_IF("The message will not by notified because it has no event.", m_compositeMsg->getEventIds().size() == 0);
 }
 
 void Field::buildMessage(
