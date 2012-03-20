@@ -22,8 +22,11 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
+#include <fwDataTools/Patient.hpp>
+
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/PatientDBMsg.hpp>
+#include <fwComEd/fieldHelper/BackupHelper.hpp>
 
 #include "fwWX/AcquisitionSelectorPanel.hpp"
 #include "fwWX/PatientEditor.hpp"
@@ -64,16 +67,12 @@ m_serviceParent(_serviceParent)
 
 void AcquisitionSelectorPanel::itemSelectionNotification( long itemIndex )
 {
-    SLM_TRACE_FUNC();
+    ::fwComEd::fieldHelper::BackupHelper::setSelection(m_associatedPatientDB,
+            m_lineToAcq[itemIndex][0], m_lineToAcq[itemIndex][1], m_lineToAcq[itemIndex][2]);
 
-    ::fwData::Object::NewSptr acqSelected;
-    acqSelected->children().clear();
-    acqSelected->children().push_back( ::fwData::Integer::New(m_lineToAcq[itemIndex][0]) );
-    acqSelected->children().push_back( ::fwData::Integer::New(m_lineToAcq[itemIndex][1]) );
-    acqSelected->children().push_back( ::fwData::Integer::New(m_lineToAcq[itemIndex][2]) );
-
+    // notification
     ::fwComEd::PatientDBMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );
+    msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED );
     ::fwServices::IEditionService::notify( m_serviceParent.lock(), m_associatedPatientDB, msg);
 }
 
@@ -100,11 +99,12 @@ void AcquisitionSelectorPanel::onKeyDown( wxListEvent & event )
     if( WXK_BACK    == event.GetKeyCode()   ||
         WXK_DELETE  == event.GetKeyCode()   )
     {
+        SLM_ASSERT("No patient in selected PatientDB", !m_associatedPatientDB->getNumberOfPatients() > 0);
+        ::fwData::Patient::sptr patient = m_associatedPatientDB->getPatients().at(0);
+        SLM_ASSERT("No patient in selected patient", !patient->getNumberOfStudies() > 0);
+        ::fwData::Study::sptr study = patient->getStudies().at(0);
 
-        ::fwData::PatientDB::PatientIterator patient = m_associatedPatientDB->getPatients().first;
-        ::fwData::Patient::StudyIterator study = (*patient)->getStudies().first;
-
-        if ( m_associatedPatientDB->getPatientSize() > 1 || (*patient)->getStudySize() > 1 || (*study)->getAcquisitionSize() > 1 )
+        if ( m_associatedPatientDB->getNumberOfPatients() > 1 || patient->getNumberOfStudies() > 1 || study->getNumberOfAcquisitions() > 1 )
         {
             int answer = wxMessageBox( _("Are you sure to remove the patient of the list ?"), _("Patient delete"), wxYES_NO | wxICON_WARNING, this );
             if (answer == wxYES)
@@ -122,11 +122,11 @@ void AcquisitionSelectorPanel::onKeyDown( wxListEvent & event )
                 wxEndBusyCursor();
 
                 // Remove old selected item
-                eraseItemSelected( oldSelection );
+                this->eraseItemSelected( oldSelection );
 
                 // Update data
                 m_iSelectedItemIndex = 0;
-                updateData( m_associatedPatientDB, false );
+                this->updateData( m_associatedPatientDB, false );
             }
         }
         else
@@ -140,8 +140,6 @@ void AcquisitionSelectorPanel::onKeyDown( wxListEvent & event )
 
 void AcquisitionSelectorPanel::onItemActivated( wxListEvent & event )
 {
-    SLM_TRACE_FUNC();
-
     if ( m_iSelectedItemIndex != event.GetIndex() )
     {
         wxBeginBusyCursor();
@@ -151,43 +149,31 @@ void AcquisitionSelectorPanel::onItemActivated( wxListEvent & event )
     }
 
     // Patient selection
-    ::fwData::PatientDB::PatientIterator patientIter = m_associatedPatientDB->getPatients().first;
-    patientIter += m_lineToAcq[m_iSelectedItemIndex][0];
+    ::fwData::Patient::sptr patient = m_associatedPatientDB->getPatients().at(m_lineToAcq[m_iSelectedItemIndex][0]);
+    ::fwData::Study::sptr study = patient->getStudies().at(m_lineToAcq[m_iSelectedItemIndex][1]);
+    ::fwData::Acquisition::sptr acquisition = study->getAcquisitions().at(m_lineToAcq[m_iSelectedItemIndex][2]);
 
-    // Study selection
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-    studyIter += m_lineToAcq[m_iSelectedItemIndex][1];
-
-    // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
-    acquisitionIter += m_lineToAcq[m_iSelectedItemIndex][2];
-
-    wxWindow    * topWindow         ( wxTheApp->GetTopWindow()                      );
-    const bool  patientPropChanged  ( PatientEditor::showModalDialog( topWindow, *patientIter, *studyIter, *acquisitionIter)    );
+    wxWindow    * topWindow       ( wxTheApp->GetTopWindow()                      );
+    const bool  patientPropChanged( PatientEditor::showModalDialog( topWindow, patient, study, acquisition));
     if( patientPropChanged )
     {
-        updateData( m_associatedPatientDB, false );
+        this->updateData( m_associatedPatientDB, false );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void AcquisitionSelectorPanel::updateData( ::boost::shared_ptr< ::fwData::PatientDB > _associatedPatientDB, bool _bResetSelection )
+void AcquisitionSelectorPanel::updateData( ::fwData::PatientDB::sptr _associatedPatientDB, bool _bResetSelection )
 {
-    SLM_TRACE_FUNC();
     if (_associatedPatientDB)
     {
+        SLM_ERROR_IF("m_wxList is NULL", m_wxList==NULL);
         if (m_wxList != NULL)
         {
             m_wxList->DeleteAllItems();
         }
-        else
-        {
-            SLM_ERROR("m_wxList is NULL");
-        }
 
         m_lineToAcq.clear();
-
 
         // String value definition
         ::std::string   name        = "?";
@@ -203,55 +189,47 @@ void AcquisitionSelectorPanel::updateData( ::boost::shared_ptr< ::fwData::Patien
         // assign m_associatedPatientDB
         m_associatedPatientDB = _associatedPatientDB;
 
-        ::fwData::PatientDB::PatientIterator patientBegin = m_associatedPatientDB->getPatients().first;
-        ::fwData::PatientDB::PatientIterator patientEnd     = m_associatedPatientDB->getPatients().second;
-        ::fwData::PatientDB::PatientIterator patient        = patientBegin;
-
-        while ( patient != patientEnd )
+        BOOST_FOREACH(::fwData::Patient::sptr patient, m_associatedPatientDB->getPatients() )
         {
+            int indexP=0;
 
-            name        = (*patient)->getName() + " " + (*patient)->getFirstname();
-            birthdate   = boost::posix_time::to_iso_extended_string( (*patient)->getBirthdate() );
+            name        = patient->getName() + " " + patient->getFirstname();
+            birthdate   = boost::posix_time::to_iso_extended_string( patient->getBirthdate() );
             birthdate   =  birthdate.substr(0,10);
-            id          = (*patient)->getIDDicom();
+            id          = patient->getIDDicom();
 
-            ::fwData::Patient::StudyIterator studyBegin = (*patient)->getStudies().first;
-            ::fwData::Patient::StudyIterator studyEnd = (*patient)->getStudies().second;
-            ::fwData::Patient::StudyIterator study = studyBegin;
-
-            while ( study != studyEnd )
+            BOOST_FOREACH(::fwData::Study::sptr study, patient->getStudies() )
             {
-                hospital    = (*study)->getHospital();
-                modality    = (*study)->getModality();
-                zone        = (*study)->getAcquisitionZone();
+                int indexS=0;
 
-                ::fwData::Study::AcquisitionIterator acquisitionBegin = (*study)->getAcquisitions().first;
-                ::fwData::Study::AcquisitionIterator acquisitionEnd = (*study)->getAcquisitions().second;
-                ::fwData::Study::AcquisitionIterator acquisition = acquisitionBegin;
+                hospital    = study->getHospital();
+                modality    = study->getModality();
+                zone        = study->getAcquisitionZone();
 
-                while ( acquisition != acquisitionEnd )
+                BOOST_FOREACH(::fwData::Acquisition::sptr acquisition, study->getAcquisitions() )
                 {
+                    int indexA=0;
 
-                    acqDate     = boost::posix_time::to_iso_extended_string( (*acquisition)->getCreationDate() );
-                    acqDate     =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
+                    acqDate = ::boost::posix_time::to_iso_extended_string( acquisition->getCreationDate() );
+                    acqDate = acqDate.substr(0,10) + " " + acqDate.substr(11,5);
 
-                    if ( (*acquisition)->getImage()->getNumberOfDimensions() == 3 )
+                    if ( acquisition->getImage()->getNumberOfDimensions() == 3 )
                     {
                         std::stringstream nbImagesStream;
-                        nbImagesStream << (*acquisition)->getImage()->getSize()[2];
+                        nbImagesStream << acquisition->getImage()->getSize()[2];
                         nbImages    = nbImagesStream.str();
 
                         std::stringstream voxelSizeStream;
-                        voxelSizeStream << (*acquisition)->getImage()->getSpacing()[0] <<   " x " << (*acquisition)->getImage()->getSpacing()[1] << " x " << (*acquisition)->getImage()->getSpacing()[2];
+                        voxelSizeStream << acquisition->getImage()->getSpacing()[0] <<   " x " << acquisition->getImage()->getSpacing()[1] << " x " << acquisition->getImage()->getSpacing()[2];
                         voxelSize   = voxelSizeStream.str();
                     }
 
                     int itemCount = m_wxList->GetItemCount();
 
                     std::vector<int> vTriSelection;
-                    vTriSelection.push_back(patient     - patientBegin);
-                    vTriSelection.push_back(study       - studyBegin);
-                    vTriSelection.push_back(acquisition - acquisitionBegin);
+                    vTriSelection.push_back(indexP);
+                    vTriSelection.push_back(indexS);
+                    vTriSelection.push_back(indexA);
 
                     m_lineToAcq[itemCount] = vTriSelection;
 
@@ -283,23 +261,16 @@ void AcquisitionSelectorPanel::updateData( ::boost::shared_ptr< ::fwData::Patien
                     {
                         m_wxList->SetItemBackgroundColour(itemCount, wxColour(*wxLIGHT_GREY));
                     }
-
-                    SLM_TRACE("acquisition++")
-                    ++acquisition;
+                    ++indexA;
                 } // end acquisition
-
-                SLM_TRACE("study++")
-                ++study;
+                ++indexS;
             } // end study
-
-            SLM_TRACE("patient++")
-            ++patient;
+            ++indexP;
         } // end patient
     }
 
-
     // Select the first item in list
-    if ( _associatedPatientDB->getPatientSize() > 0 )
+    if ( _associatedPatientDB->getNumberOfPatients() > 0 )
     {
         if ( _bResetSelection )
         {
@@ -308,42 +279,39 @@ void AcquisitionSelectorPanel::updateData( ::boost::shared_ptr< ::fwData::Patien
         }
         m_wxList->SetItemState(m_iSelectedItemIndex, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED); // Normaly run  itemSelectionNotification(0) by the event mecanism
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 void AcquisitionSelectorPanel::eraseItemSelected( const std::vector<int> & _vItemSelected )
 {
-    SLM_TRACE_FUNC();
-
     // Patient selection
-    ::fwData::PatientDB::PatientIterator patientIter = m_associatedPatientDB->getPatients().first;
-    patientIter += _vItemSelected[0];
-
+    ::fwData::Patient::sptr patient = m_associatedPatientDB->getPatients().at(_vItemSelected[0]);
     // Study selection
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-    int nbStudies = (*patientIter)->getStudySize();
-    studyIter += _vItemSelected[1];
-
+    int nbStudies = patient->getNumberOfStudies();
+    ::fwData::Study::sptr study = patient->getStudies().at(_vItemSelected[1]);
     // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
-    int nbAcquisitions = (*studyIter)->getAcquisitionSize();
-    acquisitionIter += _vItemSelected[2];
+    int nbAcquisitions = study->getNumberOfAcquisitions();
+    ::fwData::Acquisition::sptr acquisition = study->getAcquisitions().at(_vItemSelected[2]);
 
-    (*studyIter)->getField( ::fwData::Study::ID_ACQUISITIONS )->children().erase( acquisitionIter.base() );
+    // Erase acquisition
+    ::fwDataTools::Patient::removeAcquisition(study, acquisition);
 
     if( nbAcquisitions == 1 )
     {
         // Erase study
-        (*patientIter)->getField( ::fwData::Patient::ID_STUDIES )->children().erase( studyIter.base() );
+        ::fwDataTools::Patient::removeStudy(patient, study);
 
         if ( nbStudies == 1 )
         {
             // Erase patient
-            m_associatedPatientDB->getField( ::fwData::PatientDB::ID_PATIENTS )->children().erase( patientIter.base() );
+            ::fwDataTools::Patient::removePatient(m_associatedPatientDB, patient);
         }
     }
+
+    ::fwComEd::PatientDBMsg::NewSptr msg;
+    msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
+    ::fwServices::IEditionService::notify(m_serviceParent.lock(), m_associatedPatientDB, msg);
 }
 
 //------------------------------------------------------------------------------

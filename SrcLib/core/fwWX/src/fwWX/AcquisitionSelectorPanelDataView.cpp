@@ -36,6 +36,7 @@
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/PatientDBMsg.hpp>
 #include <fwComEd/AcquisitionMsg.hpp>
+#include <fwComEd/fieldHelper/BackupHelper.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/Stringizer.hpp>
@@ -177,7 +178,6 @@ AcquisitionSelectorPanelDataView::~AcquisitionSelectorPanelDataView()
 
 void AcquisitionSelectorPanelDataView::itemSelectionNotification()
 {
-    SLM_TRACE_FUNC();
     fwDataNode *node = static_cast< fwDataNode* >(m_wxDataViewCtrl->GetSelection ().GetID());
     if(node)
     {
@@ -185,36 +185,22 @@ void AcquisitionSelectorPanelDataView::itemSelectionNotification()
         m_wxDataViewCtrl->Refresh();
     }
 
-    updatePropGrid();
+    this->updatePropGrid();
 
-    if(m_vSelectedItem[0] != getIndexOfSelectedItem()[0] ||
-            m_vSelectedItem[1] != getIndexOfSelectedItem()[1]||
-            m_vSelectedItem[2] != getIndexOfSelectedItem()[2])
+    if(m_vSelectedItem[0] != this->getIndexOfSelectedItem()[0] ||
+            m_vSelectedItem[1] != this->getIndexOfSelectedItem()[1]||
+            m_vSelectedItem[2] != this->getIndexOfSelectedItem()[2])
     {
-        m_vSelectedItem = getIndexOfSelectedItem();
-        ::fwData::Object::NewSptr acqSelected;
-        acqSelected->children().push_back( ::fwData::Integer::NewSptr(getIndexOfSelectedItem()[0]) );
-        acqSelected->children().push_back( ::fwData::Integer::NewSptr(getIndexOfSelectedItem()[1]) );
-        acqSelected->children().push_back( ::fwData::Integer::NewSptr(getIndexOfSelectedItem()[2]) );
+        m_vSelectedItem = this->getIndexOfSelectedItem();
 
-        // Add Field
-        m_associatedPatientDB.lock()->removeField( fwComEd::Dictionary::m_imageSelectedId );
-        m_associatedPatientDB.lock()->addFieldElement( fwComEd::Dictionary::m_imageSelectedId,
-                ::fwData::Integer::NewSptr(getIndexOfSelectedItem()[0]) );
-        m_associatedPatientDB.lock()->addFieldElement( fwComEd::Dictionary::m_imageSelectedId,
-                ::fwData::Integer::NewSptr(getIndexOfSelectedItem()[1]) );
-        m_associatedPatientDB.lock()->addFieldElement( fwComEd::Dictionary::m_imageSelectedId,
-                ::fwData::Integer::NewSptr(getIndexOfSelectedItem()[2]) );
+        ::fwData::PatientDB::sptr pdb = m_associatedPatientDB.lock();
+
+        ::fwComEd::fieldHelper::BackupHelper::setSelection(pdb, m_vSelectedItem[0], m_vSelectedItem[1], m_vSelectedItem[2]);
 
         // notification
         ::fwComEd::PatientDBMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );
-
-        ::fwServices::IEditionService::notify(m_serviceParent.lock(), m_associatedPatientDB.lock(), msg);
-    }
-    else
-    {
-        SLM_TRACE_FUNC();
+        msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, pdb );
+        ::fwServices::IEditionService::notify(m_serviceParent.lock(), pdb, msg);
     }
 }
 //------------------------------------------------------------------------------
@@ -269,11 +255,12 @@ void AcquisitionSelectorPanelDataView::SelectItem( std::vector<int> select)
             if (select[1] > 0)
             {
                 int i=0;
-                ::fwData::Patient::StudyIterator studyIter = patient->getPatient().lock()->getStudies().first;
-                ::fwData::Patient::StudyIterator end = patient->getPatient().lock()->getStudies().second;
+                ::fwData::Patient::sptr dataPatient = patient->getPatient().lock();
+                ::fwData::Patient::StudyContainerType::const_iterator studyIter = dataPatient->getStudies().begin();
+                ::fwData::Patient::StudyContainerType::const_iterator end = dataPatient->getStudies().end();
                 while (i < select[1] && studyIter!=end)
                 {
-                    count += (*studyIter)->getAcquisitionSize();
+                    count += (*studyIter)->getNumberOfAcquisitions();
                     i++;
                     ++studyIter;
                 }
@@ -284,7 +271,6 @@ void AcquisitionSelectorPanelDataView::SelectItem( std::vector<int> select)
                 OSLM_INFO("acq.GetChildCount: " << acq->GetChildCount());
                 wxDataViewItem item( acq );
                 m_wxDataViewCtrl->Select( item );
-//              m_patientDbTree_model->SelectNode(acq);
                 updatePropGrid();
                 itemSelectionNotification();
                 OSLM_INFO("select: "<< select[0]<<" - " << select[1]<<" - "<< select[2]<<" ")
@@ -373,68 +359,6 @@ void AcquisitionSelectorPanelDataView::updatePropGrid()
                 id = m_pg->Append( new wxIntProperty("Labo ID", wxPG_LABEL, acq->getAcq().lock()->getLaboID() ) );
                 m_pg->DisableProperty(id);
 #endif
-//              // reconstruction
-//              m_pg->Append( new wxPropertyCategory(wxT("Reconstructions"),wxPG_LABEL));
-//              ::fwData::Acquisition::ReconstructionIterator reconstructionBegin = acq->getAcq()->getReconstructions().first;
-//              ::fwData::Acquisition::ReconstructionIterator reconstructionEnd = acq->getAcq()->getReconstructions().second;
-//              ::fwData::Acquisition::ReconstructionIterator reconstruction = reconstructionBegin;
-//
-//              if ( reconstructionBegin != reconstructionEnd)
-//              {
-//                  bool showAllRec = acq->getAcq()->getFieldSize("ShowReconstructions") ? acq->getAcq()->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value() : true;
-//                  acq->getAcq()->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(showAllRec) );
-//                  m_showAllRecPGProperty.first = acq->getAcq();
-//                  m_showAllRecPGProperty.second = m_pg->Append(  new wxBoolProperty( "Show reconstructions", wxPG_LABEL, true ) );
-//                  m_pg->SetPropertyAttribute( m_showAllRecPGProperty.second , wxPG_BOOL_USE_CHECKBOX, showAllRec );
-//              }
-//
-//
-//              m_vObjectEditor.clear();
-//              while ( reconstruction != reconstructionEnd )
-//              {
-//                  wxString uid = wxConvertMB2WX((*reconstruction)->getID().c_str());
-//                  wxString name = wxConvertMB2WX((*reconstruction)->getOrganName().c_str());
-//                  wxPGProperty* pid = m_pg->Append( new wxStringProperty(name, uid ));
-//                  m_pg->DisableProperty(pid);
-//                  ::fwData::Material::sptr mat = (*reconstruction)->getMaterial();
-//                  wxColour wxMaterialColor = wxColour (
-//                          mat->ambient().red()*255,
-//                          mat->ambient().green()*255,
-//                          mat->ambient().blue()*255,
-//                          mat->ambient().alpha()*255
-//                          );
-//                  wxPGProperty* pid2 = m_pg->AppendIn(pid, new wxIntProperty (wxT("Transparent"),
-//                          wxPG_LABEL,
-//                          mat->ambient().alpha()*255 ) );
-//
-//                  std::vector<const wxPGProperty *> vEditors;
-//
-//                  wxPGEditor *pEditor1 = wxPG_EDITOR(SpinCtrl);
-//                  vEditors.push_back(pid2);
-//                  OSLM_TRACE("Prop1 : " << pid2);
-//
-//                  m_pg->SetPropertyEditor(pid2, pEditor1);
-//                  m_pg->SetPropertyAttribute(pid2, wxPG_ATTR_MIN, (long)0 );
-//                  m_pg->SetPropertyAttribute(pid2, wxPG_ATTR_MAX, (long)255 );
-//                  m_pg->SetPropertyAttribute(pid2, wxT("Step"), (long)2 );
-//                  m_pg->SetPropertyAttribute(pid2, wxT("MotionSpin"), true );
-//
-//                  pid2 = m_pg->AppendIn( pid, new wxColourProperty(wxT("ColorProperty"),wxPG_LABEL, wxMaterialColor) );
-//                  vEditors.push_back(pid2);
-//                  OSLM_TRACE("Prop2 : " << pid2);
-//
-//                  pid2 = m_pg->AppendIn(pid, new wxBoolProperty( "Visible", wxPG_LABEL, (*reconstruction)->getIsVisible() ) );
-//                  m_pg->SetPropertyAttribute(pid2, wxPG_BOOL_USE_CHECKBOX, (*reconstruction)->getIsVisible() );
-//                  vEditors.push_back(pid2);
-//                  OSLM_TRACE("Prop3 : " << pid2);
-//
-//                  std::pair < ::fwData::Object::sptr, std::vector< const wxPGProperty*> > mObjEdit;
-//                  mObjEdit = std::make_pair(*reconstruction, vEditors);
-//                  m_vObjectEditor.push_back(mObjEdit);
-//
-//                  ++reconstruction;
-//              }
-
             }
             else
             {
@@ -449,15 +373,12 @@ void AcquisitionSelectorPanelDataView::updatePropGrid()
 void AcquisitionSelectorPanelDataView::onItemSelected( wxDataViewEvent & event )
 {
     SLM_TRACE_FUNC();
-//  fwDataNode *node = (fwDataNode*) event.GetItem().GetID();
-    //fwDataNode* node = static_cast< fwDataNode * >( event.GetItem().GetID() );
     fwDataNode *node= static_cast< fwDataNode* >(m_wxDataViewCtrl->GetSelection ().GetID());
 
     // TODO if only image/acquisition without patient?
     if(node && (node->GetChildren().GetCount() > 0 || node->GetParent()))
     {
         wxBeginBusyCursor();
-//      m_patientDbTree_model->SelectNode(node);
         itemSelectionNotification();
         wxEndBusyCursor();
     }
@@ -470,19 +391,18 @@ void AcquisitionSelectorPanelDataView::updateData( ::fwData::PatientDB::sptr _as
     SLM_TRACE_FUNC();
 
     std::vector<int> oldSelection = getIndexOfSelectedItem();
-//  fwDataNode *oldSelectNode = (fwDataNode*) m_wxDataViewCtrl->GetSelection ().GetID();
     fwDataNode *oldSelectNode = static_cast< fwDataNode* >(m_wxDataViewCtrl->GetSelection ().GetID());
 
     if (_associatedPatientDB)
     {
         m_associatedPatientDB = _associatedPatientDB;
         m_wxDataViewCtrl->Freeze ();
-        m_patientDbTree_model->setPatientDB(m_associatedPatientDB);
+        m_patientDbTree_model->setPatientDB(_associatedPatientDB);
         m_wxDataViewCtrl->Thaw();
     }
 
 
-    if ( _associatedPatientDB->getPatientSize() <= 0 )
+    if ( _associatedPatientDB->getNumberOfPatients() <= 0 )
     {
         // reinit selecteditem
         m_vSelectedItem[0] = -1;
@@ -502,44 +422,6 @@ void AcquisitionSelectorPanelDataView::updateData( ::fwData::PatientDB::sptr _as
         SelectItem(oldSelection);
     }
 
-}
-
-//------------------------------------------------------------------------------
-
-void AcquisitionSelectorPanelDataView::eraseItemSelected( const std::vector<int> & _vItemSelected )
-{
-    SLM_TRACE_FUNC();
-
-    // Patient selection
-    ::fwData::PatientDB::PatientIterator patientIter = m_associatedPatientDB.lock()->getPatients().first;
-    patientIter += _vItemSelected[0];
-    OSLM_DEBUG("erase Patient: "<<_vItemSelected[0]);
-
-    // Study selection
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-    int nbStudies = (*patientIter)->getStudySize();
-    studyIter += _vItemSelected[1];
-    OSLM_DEBUG("erase Study: "<<_vItemSelected[1]);
-
-    // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
-    int nbAcquisitions = (*studyIter)->getAcquisitionSize();
-    acquisitionIter += _vItemSelected[2];
-    OSLM_DEBUG("erase Acquisition: "<<_vItemSelected[2]);
-
-    (*studyIter)->getField( ::fwData::Study::ID_ACQUISITIONS )->children().erase( acquisitionIter.base() );
-
-    if( nbAcquisitions == 1 )
-    {
-        // Erase study
-        (*patientIter)->getField( ::fwData::Patient::ID_STUDIES )->children().erase( studyIter.base() );
-
-        if ( nbStudies == 1 )
-        {
-            // Erase patient
-            m_associatedPatientDB.lock()->getField( ::fwData::PatientDB::ID_PATIENTS )->children().erase( patientIter.base() );
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -575,15 +457,11 @@ void AcquisitionSelectorPanelDataView::UpdateProperty(wxPropertyGridEvent& event
         if ( m_showAllRecPGProperty.second == property  )
         {
             bool showAllRecs = value.GetLong();
-            m_showAllRecPGProperty.first.lock()->setFieldSingleElement("ShowReconstructions", ::fwData::Boolean::NewSptr(showAllRecs) );
-//          ::boost::shared_ptr< ::fwServices::IEditionService > editor = ::fwServices::get< fwServices::IEditionService >(     m_showAllRecPGProperty.first.lock() ) ;
+            m_showAllRecPGProperty.first.lock()->setField_NEWAPI("ShowReconstructions", ::fwData::Boolean::NewSptr(showAllRecs) );
 
-            //::boost::shared_ptr< ::fwServices::ObjectMsg > msg( new ::fwServices::ObjectMsg(  m_showAllRecPGProperty.first.lock()) ) ;
-            //msg->addModif( "ShowReconstructions" ) ;
             ::fwComEd::AcquisitionMsg::NewSptr msg;
             msg->addEvent("ShowReconstructions");
 
-//          editor->notify( msg );
             ::fwServices::IEditionService::notify(m_serviceParent.lock(), m_showAllRecPGProperty.first.lock(), msg);
             return;
         }
