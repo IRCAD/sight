@@ -17,6 +17,9 @@
 #include <fwData/Array.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/ResectionDB.hpp>
+#include <fwData/Dictionary.hpp>
+#include <fwData/ProcessObject.hpp>
 
 #include <fwDataTools/Patient.hpp>
 #include <fwDataTools/Image.hpp>
@@ -329,7 +332,7 @@ void ObjectTest::imageFieldSerializationTest()
     std::string key = "image";
     patient->setField_NEWAPI( key, imgAcq );
 
-    ::fwData::Patient::sptr objReloaded = ::fwData::Patient::dynamicCast(ObjectTest::serialize("imageFieldSerializationSerialization.xml", patient));
+    ::fwData::Patient::sptr objReloaded = ::fwData::Patient::dynamicCast(ObjectTest::serialize("imageFieldSerialization.xml", patient));
     CPPUNIT_ASSERT( objReloaded );
     CPPUNIT_ASSERT( objReloaded->getStudies().size() == 1 );
     CPPUNIT_ASSERT( objReloaded->getStudies()[0]->getAcquisitions().size() == 1 );
@@ -337,6 +340,45 @@ void ObjectTest::imageFieldSerializationTest()
     CPPUNIT_ASSERT( imgAcqReloaded );
     CPPUNIT_ASSERT( objReloaded->getField_NEWAPI( key ) );
     CPPUNIT_ASSERT( objReloaded->getField_NEWAPI( key ) == imgAcqReloaded );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::resectionDBSerializationTest()
+{
+
+    ::fwData::ResectionDB::sptr resecDB1 = ::fwDataTools::ObjectGenerator::generateResectionDB();
+    ::fwData::ResectionDB::sptr resecDBReloaded = ::fwData::ResectionDB::dynamicCast(ObjectTest::serialize("resectionDBSerialization.xml", resecDB1));
+
+//    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDBReloaded, resecDB1));
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDB1, resecDB1));
+
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::dictionarySerializationTest()
+{
+
+    ::fwData::Dictionary::sptr dico1 = ::fwDataTools::ObjectGenerator::createDictionary();
+    ::fwData::Dictionary::sptr dicoReloaded = ::fwData::Dictionary::dynamicCast(ObjectTest::serialize("dictionarySerialization.xml", dico1));
+
+//    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareDictionary(dicoReloaded, dico1));
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareDictionary(dico1, dico1));
+
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::processObjectSerializationTest()
+{
+
+    ::fwData::ProcessObject::sptr po1 = ::fwDataTools::ObjectGenerator::createProcessObject();
+    ::fwData::ProcessObject::sptr poReloaded = ::fwData::ProcessObject::dynamicCast(ObjectTest::serialize("processObjectSerialization.xml", po1));
+
+//    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareProcessObject(poReloaded, po1));
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareProcessObject(po1, po1));
+
 }
 
 //------------------------------------------------------------------------------

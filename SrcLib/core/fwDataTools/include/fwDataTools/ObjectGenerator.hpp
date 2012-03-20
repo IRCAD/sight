@@ -21,6 +21,8 @@
 #include <fwData/Material.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/TransfertFunction.hpp>
+#include <fwData/Dictionary.hpp>
+#include <fwData/DictionaryOrgan.hpp>
 
 #include "fwDataTools/export.hpp"
 
@@ -49,6 +51,14 @@ public:
     FWDATATOOLS_API static ::fwData::Node::sptr createNode();
     FWDATATOOLS_API static ::fwData::Port::sptr createPort();
     FWDATATOOLS_API static ::fwData::Material::sptr createMaterial( );
+    FWDATATOOLS_API static ::fwData::ProcessObject::sptr createProcessObject();
+    FWDATATOOLS_API static ::fwData::ResectionDB::sptr generateResectionDB();
+    FWDATATOOLS_API static ::fwData::Resection::sptr generateResection();
+    FWDATATOOLS_API static ::fwData::Point::sptr generatePoint();
+    FWDATATOOLS_API static ::fwData::Plane::sptr generatePlane();
+    FWDATATOOLS_API static ::fwData::Dictionary::sptr createDictionary();
+    FWDATATOOLS_API static ::fwData::DictionaryOrgan::sptr createDictionaryOrgan();
+
 };
 
 } // namespace fwDataTools

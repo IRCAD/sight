@@ -10,13 +10,20 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
+#include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/DictionaryOrgan.hpp>
+#include <fwData/Resection.hpp>
+#include <fwData/ResectionDB.hpp>
+#include <fwData/Plane.hpp>
+#include <fwData/ProcessObject.hpp>
 
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/MeshGenerator.hpp>
 #include <fwDataTools/Patient.hpp>
 #include "fwDataTools/ObjectGenerator.hpp"
+
+#include <fwMath/IntrasecTypes.hpp>
 
 using namespace boost::assign;
 
@@ -329,4 +336,166 @@ namespace fwDataTools
 
 //------------------------------------------------------------------------------
 
+::fwData::ProcessObject::sptr ObjectGenerator::createProcessObject()
+{
+    const std::string IMAGEID1 = "myImage1";
+    const std::string IMAGEID2 = "myImage2";
+    const std::string FIELDID1 = "myField1";
+    const std::string FIELDID2 = "myField2";
+    ::fwData::Image::sptr image1 = ::fwData::Image::New();
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    ::fwData::Integer::sptr field1 = ::fwData::Integer::New(3);
+    ::fwData::Integer::sptr field2 = ::fwData::Integer::New(8);
+
+    // process
+    ::fwData::ProcessObject::NewSptr po;
+    po->setInputValue(IMAGEID1, image1);
+    po->setInputValue(FIELDID1, field1);
+    po->setInputValue(FIELDID2, field2);
+    po->setOutputValue(IMAGEID2, image2);
+    return po;
+}
+
+
+//------------------------------------------------------------------------------
+
+::fwData::Point::sptr ObjectGenerator::generatePoint()
+{
+    fwVec3d coord = {{rand()%300, rand()%300, rand()%300}};
+    ::fwData::Point::NewSptr point;
+    point->setCoord(coord);
+    return point;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Plane::sptr ObjectGenerator::generatePlane()
+{
+    ::fwData::Plane::NewSptr plane;
+    plane->setValue(generatePoint(), generatePoint(), generatePoint());
+    plane->setIsIntersection((rand()%1 ? true :false));
+    return plane;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Resection::sptr ObjectGenerator::generateResection()
+{
+
+    ::fwData::Resection::NewSptr resection;
+
+    resection->setName("Resection1");
+    resection->setIsSafePart((rand()%1 ? true : false));
+    resection->setIsValid((rand()%1 ? true : false));
+    resection->setIsVisible((rand()%1 ? true : false));
+    ::fwData::Reconstruction::NewSptr recInput;
+
+    ::fwDataTools::Patient::generateReconstruction(recInput);
+    ::fwData::Resection::ResectionInputs inputs;
+    inputs.push_back(recInput);
+    resection->setInputs(inputs);
+
+    ::fwData::Reconstruction::NewSptr recOutput;
+    ::fwDataTools::Patient::generateReconstruction(recOutput);
+    ::fwData::Resection::ResectionOutputs outputs;
+    outputs.push_back(recOutput);
+    resection->setOutputs(outputs);
+
+    ::fwData::PlaneList::PlaneListContainer planes;
+    planes.push_back(generatePlane());
+    planes.push_back(generatePlane());
+    ::fwData::PlaneList::NewSptr planeList;
+    planeList->setPlanes(planes);
+
+    return resection;
+
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::ResectionDB::sptr ObjectGenerator::generateResectionDB()
+{
+
+    ::fwData::ResectionDB::NewSptr resectionDB;
+    resectionDB->addResection(generateResection());
+    return resectionDB;
+
+}
+//------------------------------------------------------------------------------
+
+::fwData::DictionaryOrgan::sptr ObjectGenerator::createDictionaryOrgan()
+{
+    const std::string CREFSTRUCTURETYPE = "CRefStructureType" ;
+    const std::string CREFSALABEL   = "CRefSALabel" ;
+    const bool ISMEDICALSTRUCTURE   = true ;
+    const ::boost::uint32_t AOCOLOR = 10 ;
+    const double AVGVOLUME  = 12.23 ;
+    const double VOLSTDDEVIATION    = 21.01 ;
+    const ::boost::uint32_t  NBEXAMS    = 9 ;
+    const std::string CREFPOSITION  = "crefposition" ;
+    const ::boost::filesystem::path CREFICONPATH    = ::boost::filesystem::path("C:/TMP") ;
+    const double RED    = 23.17 ;
+    const double GREEN  = 12.88 ;
+    const double BLUE   = 4.002 ;
+    const double ALPHA  = 35.06 ;
+    const ::boost::filesystem::path CREFTEXTUREPATH = ::boost::filesystem::path("C:/TMP");
+    const ::boost::uint32_t AVGTRIANGLENB   = 5 ;
+    const double SEGMIN = 1.897 ;
+    const double SEGMAX = 2.144 ;
+    const std::string CREFMODALITY  = "crefmodality" ;
+    const double SURFACEELASTICITY  = 3.455 ;
+    const double SURFACERUPTURE = 3.33333 ;
+    const double INTERIORRUPTURE    = 2.22222 ;
+    const std::string CREFCOMMENT   = "crefcomment" ;
+    std::string CREFBELONGSTO = "crefbelongsto" ;
+    std::vector< std::string > VECTORCREFBELONGSTO ;
+    VECTORCREFBELONGSTO.push_back(CREFBELONGSTO);
+
+    // process
+    ::fwData::DictionaryOrgan::NewSptr organDico;
+    organDico->setCRefStructureType( CREFSTRUCTURETYPE );
+    organDico->setCRefSALabel( CREFSALABEL );
+    organDico->setIsMedicalStructure( ISMEDICALSTRUCTURE );
+    organDico->setAOColor( AOCOLOR );
+    organDico->setAvgVolume( AVGVOLUME );
+    organDico->setVolStdDeviation( VOLSTDDEVIATION );
+    organDico->setNbExams( NBEXAMS );
+    organDico->setCRefPosition( CREFPOSITION );
+    organDico->setCRefIconPath( CREFICONPATH );
+    organDico->setRed( RED );
+    organDico->setGreen( GREEN );
+    organDico->setBlue( BLUE );
+    organDico->setAlpha( ALPHA );
+    organDico->setCRefTexturePath( CREFTEXTUREPATH );
+    organDico->setAvgTriangleNb( AVGTRIANGLENB );
+    organDico->setSegMin( SEGMIN );
+    organDico->setSegMax( SEGMAX );
+    organDico->setCRefModality( CREFMODALITY );
+    organDico->setSurfaceElasticity( SURFACEELASTICITY );
+    organDico->setSurfaceRupture( SURFACERUPTURE );
+    organDico->setInteriorRupture( INTERIORRUPTURE );
+    organDico->setCRefComment( CREFCOMMENT );
+    organDico->setCRefBelongsTo( VECTORCREFBELONGSTO );
+    return organDico;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Dictionary::sptr ObjectGenerator::createDictionary()
+{
+    std::string DICTIONARYORGANNAME = "dictionaryOrgan";
+
+    ::fwData::Dictionary::NewSptr dico;
+
+    ::fwData::DictionaryOrgan::sptr dictionaryOrgan( ::fwDataTools::ObjectGenerator::createDictionaryOrgan());
+    dictionaryOrgan->setCRefStructureType(DICTIONARYORGANNAME) ;
+
+    dico->setDictionaryOrgan(dictionaryOrgan) ;
+
+    return dico;
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace fwDataTools
+

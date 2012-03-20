@@ -13,6 +13,9 @@
 #include <fwDataTools/MeshGenerator.hpp>
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/Patient.hpp>
+#include <fwData/ProcessObject.hpp>
+#include <fwData/ResectionDB.hpp>
+#include <fwData/Dictionary.hpp>
 
 #include "fwDataTools/ObjectComparator.hpp"
 
@@ -415,4 +418,145 @@ bool ObjectComparator::compareArray(::fwData::Array::sptr array1, ::fwData::Arra
 }
 
 //------------------------------------------------------------------------------
+
+bool ObjectComparator::compareDictionary(::fwData::Dictionary::sptr dico1, ::fwData::Dictionary::sptr dico2)
+{
+    SLM_ASSERT( "Null dico1 pointers", dico1);
+    SLM_ASSERT( "Null dico2 pointers", dico2);
+
+    bool compare = true;
+    return compare ;
+
+}
+
+//------------------------------------------------------------------------------
+
+bool ObjectComparator::compareProcessObject(::fwData::ProcessObject::sptr po1, ::fwData::ProcessObject::sptr po2)
+{
+    SLM_ASSERT( "Null po1 pointers", po1);
+    SLM_ASSERT( "Null po2 pointers", po2);
+
+    bool compare = true;
+    compare &= ( po1->getInputs().size() == po2->getInputs().size() );
+    OSLM_ERROR_IF( "Number of inputs are different.",
+                   po1->getInputs().size() != po2->getInputs().size());
+
+    compare &= ( po1->getInputsParamNames().size()== po2->getInputsParamNames().size());
+    OSLM_ERROR_IF( "Number of inputs param names are different.",
+                   po1->getInputsParamNames().size()!= po2->getInputsParamNames().size());
+
+    compare &= ( po1->getOutputs().size() == po2->getOutputs().size() );
+    OSLM_ERROR_IF( "Number of inputs are different.",
+                   po1->getOutputs().size() != po2->getOutputs().size());
+
+    compare &= ( po1->getOutputsParamNames().size()== po2->getOutputsParamNames().size());
+    OSLM_ERROR_IF( "Number of planet are different.",
+                   po1->getOutputsParamNames().size()!= po2->getOutputsParamNames().size());
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+bool ObjectComparator::comparePoint(::fwData::Point::sptr point1, ::fwData::Point::sptr point2)
+{
+    bool compare = true;
+    fwVec3d coordPt1 = point1->getCoord();
+    fwVec3d coordPt2 = point2->getCoord();
+    compare &= ( coordPt1[0] == coordPt2[0] );
+    OSLM_ERROR_IF("X coordinate of point are different.", coordPt1[0] != coordPt2[0]);
+    compare &= ( coordPt1[1] == coordPt2[1] );
+    OSLM_ERROR_IF("Y coordinate of point are different.", coordPt1[1] != coordPt2[1] );
+    compare &= ( coordPt1[2] == coordPt2[2] );
+    OSLM_ERROR_IF("Z coordinate of point are different.", coordPt1[2] != coordPt2[2]);
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+bool ObjectComparator::comparePlane(::fwData::Plane::sptr plane1, ::fwData::Plane::sptr plane2)
+{
+    SLM_ASSERT( "Null plane1 pointers", plane1);
+    SLM_ASSERT( "Null plane2 pointers", plane2);
+
+    bool compare = true;
+
+    compare &= ( plane1->getIsIntersection() == plane2->getIsIntersection() );
+    OSLM_ERROR_IF("Attribut IsIntersection are different.", plane1->getIsIntersection() != plane2->getIsIntersection());
+
+    compare &= (plane1->getPoints().size() == plane2->getPoints().size());
+    OSLM_ERROR_IF("Number of points are different.", plane1->getPoints().size() != plane2->getPoints().size());
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+bool ObjectComparator::comparePlaneList(::fwData::PlaneList::sptr planeList1, ::fwData::PlaneList::sptr planeList2)
+{
+    SLM_ASSERT( "Null planeList pointers", planeList1);
+    SLM_ASSERT( "Null planeList pointers", planeList2);
+    bool compare = true;
+    compare &= ( planeList1->getPlanes().size() == planeList1->getPlanes().size() );
+    OSLM_ERROR_IF("Number of planes are different.", planeList1->getPlanes().size() != planeList1->getPlanes().size());
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+bool ObjectComparator::compareResection(::fwData::Resection::sptr resec1, ::fwData::Resection::sptr resec2)
+{
+    SLM_ASSERT( "Null resec1 pointers", resec1);
+    SLM_ASSERT( "Null resec2 pointers", resec2);
+
+    bool compare = true;
+
+    SLM_ASSERT("Null plane list pointers on resec1.", resec1->getPlaneList());
+    SLM_ASSERT("Null plane list pointers on resec2.", resec2->getPlaneList())
+
+    compare &= (resec1->getPlaneList()->getPlanes().size() == resec2->getPlaneList()->getPlanes().size());
+    OSLM_ERROR_IF( "Number of planet are different.",
+                   resec1->getPlaneList()->getPlanes().size() != resec2->getPlaneList()->getPlanes().size());
+
+    compare &= (resec1->getInputs().size() == resec2->getInputs().size());
+    OSLM_ERROR_IF( "Number of inputs are different.", resec1->getInputs().size() != resec2->getInputs().size());
+
+    compare &= (resec1->getOutputs().size() == resec2->getOutputs().size());
+    OSLM_ERROR_IF( "Number of outputs are different.", resec1->getOutputs().size() != resec2->getOutputs().size());
+
+    compare &= (resec1->getIsSafePart() == resec2->getIsSafePart());
+    OSLM_ERROR_IF( "Attribute IsSafePart are different.", resec1->getIsSafePart() != resec2->getIsSafePart());
+
+    compare &= (resec1->getName() == resec2->getName());
+    OSLM_ERROR_IF( "Attribute resection name are different.", resec1->getName() != resec2->getName());
+
+    compare &= (resec1->getIsVisible() == resec2->getIsVisible());
+    OSLM_ERROR_IF( "Attribute isVisible are different.", resec1->getIsVisible() != resec2->getIsVisible());
+
+    compare &= (resec1->getIsValid() == resec2->getIsValid());
+    OSLM_ERROR_IF( "Attribute IsValid are different.", resec1->getIsValid() != resec2->getIsValid());
+
+    return compare;
+}
+
+//------------------------------------------------------------------------------
+
+bool ObjectComparator::compareResectionDB(::fwData::ResectionDB::sptr resecDB1, ::fwData::ResectionDB::sptr resecDB2)
+{
+    SLM_ASSERT("Null resecDB1 pointers", resecDB1);
+    SLM_ASSERT("Null resecDB2 pointers", resecDB2);
+
+    bool compare = true;
+
+    OSLM_ERROR_IF( "Number of resection are different.", resecDB1->getNumberOfResections()  != resecDB2->getNumberOfResections());
+
+    for(int i=0; i < resecDB1->getNumberOfResections(); ++i)
+    {
+        compare &= compareResection(resecDB1->getResections()[i], resecDB2->getResections()[i] );
+    }
+
+    return compare;
+}
+
 } // namespace fwDataTools

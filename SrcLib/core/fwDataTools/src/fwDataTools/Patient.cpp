@@ -458,14 +458,14 @@ void Patient::generateReconstruction(::fwData::Reconstruction::sptr rec)
     rec->setImage(img);
 
     ::fwData::Material::NewSptr material;
-    material->ambient()->red() = 0.75;
-    material->ambient()->green() = 0.10;
-    material->ambient()->blue() = 0.56;
-    material->ambient()->alpha() = 0.8;
-    material->diffuse()->red() = 0.85;
-    material->diffuse()->green() = 0.20;
-    material->diffuse()->blue() = 0.66;
-    material->diffuse()->alpha() = 0.9;
+    material->ambient()->red() = 0.75f;
+    material->ambient()->green() = 0.10f;
+    material->ambient()->blue() = 0.56f;
+    material->ambient()->alpha() = 0.8f;
+    material->diffuse()->red() = 0.85f;
+    material->diffuse()->green() = 0.20f;
+    material->diffuse()->blue() = 0.66f;
+    material->diffuse()->alpha() = 0.9f;
     rec->setMaterial(material);
 
     ::fwData::Mesh::NewSptr mesh;
