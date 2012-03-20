@@ -108,6 +108,12 @@ public:
     FWDATA_API void setFields_NEWAPI( const FieldMapType & fieldMap );
 
     /**
+     * @brief Removes field with specified name.
+     * @param[in] name Field name
+     */
+    FWDATA_API void removeField( const FieldNameType & name ) ;
+
+    /**
      * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
      */
     FWDATA_API void updateFields_NEWAPI( const FieldMapType & fieldMap );

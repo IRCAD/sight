@@ -87,6 +87,18 @@ void Object::setFields_NEWAPI( const FieldMapType & fieldMap )
 
 //------------------------------------------------------------------------------
 
+void Object::removeField( const FieldNameType & name )
+{
+    FieldMapType::const_iterator iter = m_fields.find(name);
+    OSLM_ASSERT("Field "<<name<<" not found.", iter != m_fields.end());
+    if(iter != m_fields.end())
+    {
+        m_fields.erase(iter);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Object::updateFields_NEWAPI( const FieldMapType & fieldMap )
 {
     m_fields.insert(fieldMap.begin(), fieldMap.end());
