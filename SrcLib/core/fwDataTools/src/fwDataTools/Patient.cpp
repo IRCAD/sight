@@ -32,6 +32,48 @@ Patient::~Patient()
 
 //------------------------------------------------------------------------------
 
+void Patient::removePatient(::fwData::PatientDB::sptr patientDB,
+                            ::fwData::Patient::sptr patient)
+{
+    ::fwData::PatientDB::PatientContainerType newPatients;
+    newPatients.reserve(patientDB->getNumberOfPatients());
+
+    const ::fwData::PatientDB::PatientContainerType oldPatients = patientDB->getPatients();
+
+    std::remove_copy(oldPatients.begin(), oldPatients.end(), newPatients.begin(), patient);
+    patientDB->setPatients( newPatients );
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::removeStudy(::fwData::Patient::sptr patient,
+                            ::fwData::Study::sptr study)
+{
+    ::fwData::Patient::StudyContainerType newStudies;
+    newStudies.reserve(patient->getNumberOfStudies());
+
+    const ::fwData::Patient::StudyContainerType oldStudies = patient->getStudies();
+
+    std::remove_copy(oldStudies.begin(), oldStudies.end(), newStudies.begin(), study);
+    patient->setStudies( newStudies );
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::removeAcquisition(::fwData::Study::sptr study,
+                                    ::fwData::Acquisition::sptr acq)
+{
+    ::fwData::Study::AcquisitionContainerType newAcq;
+    newAcq.reserve(study->getNumberOfAcquisitions());
+
+    const ::fwData::Study::AcquisitionContainerType oldAcq = study->getAcquisitions();
+
+    std::remove_copy(oldAcq.begin(), oldAcq.end(), newAcq.begin(), acq);
+    study->setAcquisitions( newAcq );
+}
+
+//------------------------------------------------------------------------------
+
 void Patient::generatePatient(::fwData::Patient::sptr patient,
                               const unsigned char nbStudy,
                               const unsigned char nbAcquisition,

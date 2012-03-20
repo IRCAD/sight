@@ -11,6 +11,7 @@
 
 #include <fwTools/Type.hpp>
 
+#include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/Study.hpp>
 #include <fwData/Acquisition.hpp>
@@ -39,6 +40,30 @@ public :
                                            new Patient
                                           );
     fwCoreAllowSharedFromThis();
+
+    /**
+     * @brief Removed specified patient in PatientDB.
+     * @param patientDB    PatientDB containing specified Patient to remove
+     * @param patient      patient to remove
+     */
+    FWDATATOOLS_API static void removePatient(::fwData::PatientDB::sptr patientDB,
+                                                ::fwData::Patient::sptr patient);
+
+    /**
+     * @brief Removed specified study in Patient.
+     * @param patient    Patient containing specified Study to remove
+     * @param study      study to remove
+     */
+    FWDATATOOLS_API static void removeStudy(::fwData::Patient::sptr patient,
+                                               ::fwData::Study::sptr study);
+
+    /**
+     * @brief Removed specified acquisition in Study.
+     * @param study    Study containing specified acquisition to remove
+     * @param acq      acquisition to remove
+     */
+    FWDATATOOLS_API static void removeAcquisition(::fwData::Study::sptr study,
+                                                  ::fwData::Acquisition::sptr acq);
 
     /**
      * @brief Generate a patient.
