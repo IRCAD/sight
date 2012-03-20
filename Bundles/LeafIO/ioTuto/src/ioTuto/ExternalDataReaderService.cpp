@@ -119,6 +119,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
             file >> imageName;
             dataComposite->getRefMap()["filename"] = ::fwData::String::NewSptr(imageName);
             // Clean all the field
+
             dataComposite->removeField("TF1");
             dataComposite->removeField("TF2");
             int readedValue = 0;
@@ -145,9 +146,9 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
                     readedValue++;
                 }
                 // TF1 contains the first and third tranformations
-                dataComposite->addFieldElement("TF1",transformation1);
+                dataComposite->setField_NEWAPI("TF1",transformation1);
                 // TF2 contains the first and third tranformations
-                dataComposite->addFieldElement("TF2",transformation2);
+                dataComposite->setField_NEWAPI("TF2",transformation2);
             }
             assert( readedValue==32 );
             file.close();
