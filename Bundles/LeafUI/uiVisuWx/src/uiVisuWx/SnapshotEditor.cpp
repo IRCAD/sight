@@ -175,8 +175,8 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
             filename->value() = this->requestFileName();
             if(!filename->value().empty())
             {
-                dataInfo->setFieldSingleElement("sceneID", sceneID);
-                dataInfo->setFieldSingleElement("filename", filename);
+                dataInfo->setField_NEWAPI("sceneID", sceneID);
+                dataInfo->setField_NEWAPI("filename", filename);
                 ::fwComEd::CompositeMsg::NewSptr compositeMsg;
                 compositeMsg->addEvent( "SNAP", dataInfo );
                 ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
@@ -185,13 +185,10 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
     }
     else
     {
-        std::string msgInfo("Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.");
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Negato view snapshot");
-        messageBox.setMessage( msgInfo );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Negato view snapshot",
+                "Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -203,7 +200,6 @@ std::string SnapshotEditor::requestFileName()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
-//    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Image file","*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.addFilter("jpeg","*.jpg *.jpeg");
     dialogFile.addFilter("bmp","*.bmp");
