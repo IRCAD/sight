@@ -48,11 +48,11 @@ public:
         return valid;
     }
 
-    /**
-     * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
-     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence
-     */
-    FWXML_API static xmlNodePtr toXML( ::fwData::Object::sptr obj );
+//    /**
+//     * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
+//     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence
+//     */
+//    FWXML_API static xmlNodePtr toXML( ::fwData::Object::sptr obj );
 
     /**
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object

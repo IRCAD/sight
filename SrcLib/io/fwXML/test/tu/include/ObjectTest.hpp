@@ -29,6 +29,8 @@ class ObjectTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( ROITraitsTest );
     CPPUNIT_TEST( reconstructionTraitsTest );
     CPPUNIT_TEST( structureTraitsDictionaryTest );
+    CPPUNIT_TEST( fieldSerializationTest );
+    CPPUNIT_TEST( imageFieldSerializationTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,6 +56,8 @@ public:
     void ROITraitsTest();
     void reconstructionTraitsTest();
     void structureTraitsDictionaryTest();
+    void fieldSerializationTest();
+    void imageFieldSerializationTest();
 };
 
 #endif // _FWXML_TEST_TU_OBJECTTEST_HPP_

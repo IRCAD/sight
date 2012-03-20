@@ -43,22 +43,22 @@ xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwData::Object::sptr obj )
     return node;
 }
 
-//------------------------------------------------------------------------------
-
-xmlNodePtr XMLTranslatorHelper::toXML( ::fwData::Object::sptr obj )
-{
-    ::fwXML::XMLTranslator::sptr translator;
-    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  obj->getRootedClassname() );
-
-    if (translator)
-    {
-        return translator->getXMLFrom(obj);
-    }
-    else
-    {
-        return TrivialXMLTranslator().getXMLFrom(obj);
-    }
-}
+////------------------------------------------------------------------------------
+//
+//xmlNodePtr XMLTranslatorHelper::toXML( ::fwData::Object::sptr obj )
+//{
+//    ::fwXML::XMLTranslator::sptr translator;
+//    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  obj->getRootedClassname() );
+//
+//    if (translator)
+//    {
+//        return translator->getXMLFrom(obj);
+//    }
+//    else
+//    {
+//        return TrivialXMLTranslator().getXMLFrom(obj);
+//    }
+//}
 
 //------------------------------------------------------------------------------
 

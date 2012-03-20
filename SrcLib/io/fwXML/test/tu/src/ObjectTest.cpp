@@ -15,6 +15,8 @@
 
 #include <fwData/PatientDB.hpp>
 #include <fwData/Array.hpp>
+#include <fwData/String.hpp>
+#include <fwData/Integer.hpp>
 
 #include <fwDataTools/Patient.hpp>
 #include <fwDataTools/Image.hpp>
@@ -274,6 +276,67 @@ void ObjectTest::reconstructionTraitsTest()
     ::fwData::ReconstructionTraits::sptr rec1 = ::fwData::ReconstructionTraits::dynamicCast((*recCompo1)["ReconstructionTraits"]);
     ::fwData::ReconstructionTraits::sptr rec2 = ::fwData::ReconstructionTraits::dynamicCast((*recCompo2)["ReconstructionTraits"]);
     CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareReconstructionTraits(rec1, rec2));
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::fieldSerializationTest()
+{
+    ::fwData::Color::sptr mainObj = ::fwDataTools::ObjectGenerator::randomizeColor();
+
+    ::fwData::String::NewSptr obj1 ("toto");
+    std::string key1 = "key1";
+    mainObj->setField_NEWAPI( key1, obj1 );
+
+    ::fwData::Integer::NewSptr obj2 (3);
+    std::string key2 = "key2";
+    mainObj->setField_NEWAPI( key2, obj2 );
+
+    ::fwData::String::NewSptr obj3 ("tutu");
+    std::string key3 = "key3";
+    mainObj->setField_NEWAPI( key3, obj3 );
+    obj1->setField_NEWAPI( key3, obj3 );
+
+    ::fwData::Color::sptr mainObjReloaded = ::fwData::Color::dynamicCast(ObjectTest::serialize("fieldSerialization.xml", mainObj));
+    CPPUNIT_ASSERT(mainObjReloaded);
+
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), mainObjReloaded->getFields_NEWAPI().size() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI( key1 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("toto"), mainObjReloaded->getField_NEWAPI< ::fwData::String >( key1 )->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI( key2 ) );
+    CPPUNIT_ASSERT_EQUAL( 3, mainObjReloaded->getField_NEWAPI< ::fwData::Integer >( key2 )->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI( key3 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField_NEWAPI< ::fwData::String >(key3)->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI< ::fwData::String >( key1 )->getField_NEWAPI( key3 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField_NEWAPI< ::fwData::String >( key1 )->getField_NEWAPI< ::fwData::String >(key3)->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI(key1)->getField_NEWAPI(key3) ==  mainObjReloaded->getField_NEWAPI(key3) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::imageFieldSerializationTest()
+{
+    ::fwData::Patient::NewSptr patient;
+    ::fwDataTools::Patient::generatePatient( patient, 1, 1, 0 );
+
+    ::fwData::Image::sptr imgAcq = patient->getStudies()[0]->getAcquisitions()[0]->getImage();
+
+    std::string key = "image";
+    patient->setField_NEWAPI( key, imgAcq );
+
+    ::fwData::Patient::sptr objReloaded = ::fwData::Patient::dynamicCast(ObjectTest::serialize("imageFieldSerializationSerialization.xml", patient));
+    CPPUNIT_ASSERT( objReloaded );
+    CPPUNIT_ASSERT( objReloaded->getStudies().size() == 1 );
+    CPPUNIT_ASSERT( objReloaded->getStudies()[0]->getAcquisitions().size() == 1 );
+    ::fwData::Image::sptr imgAcqReloaded = objReloaded->getStudies()[0]->getAcquisitions()[0]->getImage();
+    CPPUNIT_ASSERT( imgAcqReloaded );
+    CPPUNIT_ASSERT( objReloaded->getField_NEWAPI( key ) );
+    CPPUNIT_ASSERT( objReloaded->getField_NEWAPI( key ) == imgAcqReloaded );
 }
 
 //------------------------------------------------------------------------------

@@ -129,6 +129,34 @@ xmlDocPtr XMLAggregator::getXMLDoc()
         }
 
         xmlNodePtr nodeXML = translator->getXMLFrom(dobj);
+
+        // save fields
+        if( ! dobj->getFields_NEWAPI().empty() )
+        {
+            xmlNodePtr attributeNode = xmlNewNode( NULL, xmlStrdup( BAD_CAST "Attributes" )  );
+            xmlAddChild( nodeXML, attributeNode );
+
+            BOOST_FOREACH( ::fwData::Object::FieldNameType name, dobj->getFieldNames_NEWAPI() )
+            {
+                ::fwData::Object::sptr objAttribute = dobj->getField_NEWAPI(name);
+                if( objAttribute )
+                {
+                    // <element key="" value="" />
+                    xmlNodePtr elementNode = xmlNewNode(NULL, BAD_CAST "element");
+                    xmlAddChild(attributeNode, elementNode);
+
+                    xmlNodePtr keyNode = xmlNewNode(NULL, BAD_CAST "key");
+                    xmlNodeAddContent( keyNode,  xmlStrdup( BAD_CAST name.c_str() ) );
+                    xmlAddChild(elementNode, keyNode);
+
+                    xmlNodePtr valueNode = xmlNewNode(NULL, BAD_CAST "value");
+                    xmlNodePtr trueValueNode = ::fwXML::XMLTranslatorHelper::toXMLRecursive(objAttribute);
+                    xmlAddChild(elementNode, valueNode);
+                    xmlAddChild(valueNode, trueValueNode);
+                }
+            }
+        }
+
         XMLHierarchy::getDefault()->mapObjectXMLNode()[dobj] = nodeXML; // FIXME what to do with oldest ? perharps use a local info ?
     }
 

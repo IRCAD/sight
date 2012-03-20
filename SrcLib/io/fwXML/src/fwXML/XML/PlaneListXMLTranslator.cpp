@@ -55,7 +55,7 @@ void PlaneListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
     ::fwData::PlaneList::sptr pPlaneList = ::fwData::PlaneList::dynamicCast(toUpdate);
     pPlaneList->getRefPlanes().clear();
 
-    xmlNodePtr planesNode = xmlNextElementSibling(source->children);
+    xmlNodePtr planesNode = XMLParser::getChildrenXMLElement( source );
     // If the plane list is not empty
     if ( planesNode  )
     {

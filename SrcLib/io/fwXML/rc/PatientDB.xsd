@@ -8,6 +8,9 @@
     
     <xsd:sequence>
     <xsd:element name="patients" type="xsd:anyType" />
+        <xsd:element name="Attributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="DynamicAttributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    
     </xsd:sequence>
     
     <xsd:attribute name="id" type="xsd:string"/>

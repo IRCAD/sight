@@ -23,6 +23,8 @@
     <xsd:element name="UID" type="xsd:string"/>
     <xsd:element name="DbID" type="xsd:int"/>
     <xsd:element name="acquisitions" type="xsd:anyType" />
+        <xsd:element name="Attributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="DynamicAttributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
     
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:string"/>

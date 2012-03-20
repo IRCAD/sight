@@ -256,7 +256,7 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
     assert( newObject.get() );
 
     bool classicObject = ( xmlStrcmp( xmlNode->name, BAD_CAST "Field" ) != 0 ) ;
-    ::fwData::Object::sptr newDataObject = ::fwData::Object::dynamicCast( newObject );
+
     // classic object ignore all children expect Field
     // labeledObject manage all children
     while ( child!=NULL )
@@ -274,9 +274,9 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
 //                newObject->children().push_back( newChild );
 //            }
 
-            if ( nodeName == "DynamicAttributes" && newDataObject)
+            if ( nodeName == "Attributes" )
             {
-                xmlNodePtr elementNode = xmlNextElementSibling(child->children);
+                xmlNodePtr elementNode = XMLParser::getChildrenXMLElement( child );
                 while (elementNode)
                 {
                     std::string nodeName = (const char *) elementNode->name;
@@ -290,23 +290,52 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
 
                         std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
 
-                        xmlNodePtr ConcretevalueNode = xmlNextElementSibling( valueNode->children );
+                        xmlNodePtr ConcretevalueNode = XMLParser::getChildrenXMLElement( valueNode );
                         SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
 
                         ::fwData::Object::sptr valueObj;
                         valueObj = this->ObjectsFromXml( ConcretevalueNode, true );
-
                         SLM_ASSERT("valueObj not instanced", valueObj);
-                        assert( ::fwData::Object::dynamicCast( valueObj ));
 
-                        if(newDataObject->hasAttribute(key))
-                        {
-                            newDataObject->setAttribute(key, ::fwData::Object::dynamicCast( valueObj ));
-                        }
+                        OSLM_ASSERT("Sorry, attribute " << key << " already exists.", ! newObject->getField_NEWAPI(key) );
+                        newObject->setField_NEWAPI( key, valueObj );
                     }
-                    elementNode = xmlNextElementSibling(elementNode->next);
+                    elementNode = XMLParser::nextXMLElement( elementNode->next );
                 }
             }
+
+            if ( nodeName == "DynamicAttributes" )
+            {
+                xmlNodePtr elementNode = XMLParser::getChildrenXMLElement( child );
+                while (elementNode)
+                {
+                    std::string nodeName = (const char *) elementNode->name;
+                    if ( nodeName == "element" )
+                    {
+                        xmlNodePtr keyNode   = XMLParser::findChildNamed( elementNode, "key");
+                        xmlNodePtr valueNode = XMLParser::findChildNamed( elementNode, "value");
+                        SLM_ASSERT("keyNode not instanced", keyNode);
+                        SLM_ASSERT("valueNode not instanced", valueNode);
+                        OSLM_INFO( "CompositeXMLTranslator::updateDataFromXML"  << BAD_CAST xmlNodeGetContent(keyNode) );
+
+                        std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
+
+                        xmlNodePtr ConcretevalueNode = XMLParser::getChildrenXMLElement( valueNode );
+                        SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
+
+                        ::fwData::Object::sptr valueObj;
+                        valueObj = this->ObjectsFromXml( ConcretevalueNode, true );
+                        SLM_ASSERT("valueObj not instanced", valueObj);
+
+                        if(newObject->hasAttribute(key))
+                        {
+                            newObject->setAttribute( key, valueObj );
+                        }
+                    }
+                    elementNode = XMLParser::nextXMLElement( elementNode->next );
+                }
+            }
+
         }
         child = child->next;
     }
