@@ -90,7 +90,7 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
             if( buildMode == BUILD_OBJECT )
             {
                 // Test if key already exist in object
-                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", associatedObject->getField_NEWAPI( key ) );
+                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", !associatedObject->getField_NEWAPI( key ) );
 
                 // Create and manage object config
                 ::fwServices::AppConfigManager::NewSptr ctm;
