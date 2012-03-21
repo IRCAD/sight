@@ -14,7 +14,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 void TransfertFunction::toVtkLookupTable(
-        ::fwData::TransfertFunction_VERSION_II::sptr tf,
+        ::fwData::TransferFunction::sptr tf,
          vtkSmartPointer<vtkLookupTable> lt,
         bool allowTransparency,
         unsigned int size )
@@ -26,12 +26,12 @@ void TransfertFunction::toVtkLookupTable(
     lt->SetScaleToLinear();
 
 
-    ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = tf->getMinMaxTFValues();
+    ::fwData::TransferFunction::TFValuePairType minMax = tf->getMinMaxTFValues();
 
     lt->SetTableRange( minMax.first, minMax.second );
 
     double delta = ( minMax.second - minMax.first ) / (double) (size - 1);
-    ::fwData::TransfertFunction_VERSION_II::TFColor interpolatedColor;
+    ::fwData::TransferFunction::TFColor interpolatedColor;
 
     if ( allowTransparency )
     {

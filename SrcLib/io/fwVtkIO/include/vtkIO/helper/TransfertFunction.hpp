@@ -41,7 +41,7 @@ public :
      * @param[out] lt vtkLookupTable
      */
     VTKIO_API static void toVtkLookupTable(
-            ::fwData::TransfertFunction_VERSION_II::sptr tf,
+            ::fwData::TransferFunction::sptr tf,
              vtkSmartPointer<vtkLookupTable>  lt,
             bool allowTransparency = false,
             unsigned int size = 256 );

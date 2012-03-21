@@ -228,9 +228,9 @@ void ObjectTest::materialTest()
 
 void ObjectTest::transferFunctionTest()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf1 = ::fwDataTools::ObjectGenerator::createTFColor();
+    ::fwData::TransferFunction::sptr tf1 = ::fwDataTools::ObjectGenerator::createTFColor();
 
-    ::fwData::TransfertFunction_VERSION_II::sptr tf2 = ::fwData::TransfertFunction_VERSION_II::dynamicCast(ObjectTest::serialize("TransfertFunction.xml", tf1));
+    ::fwData::TransferFunction::sptr tf2 = ::fwData::TransferFunction::dynamicCast(ObjectTest::serialize("TransfertFunction.xml", tf1));
     CPPUNIT_ASSERT(tf2);
     CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareTransfertFunction(tf1, tf2));
 }

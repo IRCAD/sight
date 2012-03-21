@@ -28,11 +28,11 @@ namespace fwData
  * @date    2007-2009.
  */
 
-class FWDATA_CLASS_API TransfertFunction_VERSION_II : public Object
+class FWDATA_CLASS_API TransferFunction : public Object
 {
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TransfertFunction_VERSION_II)(::fwData::Object), (()), ::fwData::Factory::New< TransfertFunction_VERSION_II >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::Factory::New< TransferFunction >) ;
 
     /// Macro for deep and shallow copies
     fwDataObjectMacro();
@@ -94,13 +94,13 @@ public :
     FWDATA_API void initTF();
 
     // Create a default TF
-    FWDATA_API static TransfertFunction_VERSION_II::sptr createDefaultTF();
+    FWDATA_API static TransferFunction::sptr createDefaultTF();
 
     /// Shallow copy method
-    FWDATA_API void shallowCopy( TransfertFunction_VERSION_II::csptr _source );
+    FWDATA_API void shallowCopy( TransferFunction::csptr _source );
 
     /// Deep copy method
-    FWDATA_API void deepCopy( TransfertFunction_VERSION_II::csptr _source );
+    FWDATA_API void deepCopy( TransferFunction::csptr _source );
 
     /// Get all the point values of the TF (keys of the map m_tfData)
     FWDATA_API TFValueVectorType getTFValues() const;
@@ -171,10 +171,10 @@ public :
 protected :
 
     /// Constructor
-    FWDATA_API TransfertFunction_VERSION_II();
+    FWDATA_API TransferFunction();
 
     /// Destructor
-    FWDATA_API virtual ~TransfertFunction_VERSION_II();
+    FWDATA_API virtual ~TransferFunction();
 
 
 private :
@@ -205,7 +205,7 @@ private :
     **/
     bool m_attrIsClamped;
 
-}; // end class TransfertFunction_VERSION_II
+}; // end class TransferFunction
 
 } // end namespace fwData
 

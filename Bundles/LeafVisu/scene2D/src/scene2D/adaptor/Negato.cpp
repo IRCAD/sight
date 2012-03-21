@@ -148,7 +148,7 @@ void Negato::updateFromImage( QImage * qimg )
 
     OSLM_TRACE("Updating from slice index " << index->value());
 
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     // Window min
     ::fwData::Integer::sptr minInt;
@@ -458,7 +458,7 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double min = tf->getMinMaxTFValues().first;
     double max = tf->getMinMaxTFValues().second;

@@ -233,7 +233,7 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
     SLM_TRACE_FUNC();
 
 
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     ::vtkIO::helper::TransfertFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
 

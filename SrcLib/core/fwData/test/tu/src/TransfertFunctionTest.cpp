@@ -45,12 +45,12 @@ void TransfertFunctionTest::constructorTest()
     double expectedLevel = 0.0;
     double expectedWindow = 100.0;
     std::string expectedName = "";
-    TransfertFunction_VERSION_II::InterpolationMode expectedInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
+    TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
     bool expectedIsClamped = true;
-    TransfertFunction_VERSION_II::TFColor expectedBackgroundColor = TransfertFunction_VERSION_II::TFColor();
+    TransferFunction::TFColor expectedBackgroundColor = TransferFunction::TFColor();
     size_t expectedSize = 0;
 
-    ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+    ::fwData::TransferFunction::NewSptr tf;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
@@ -71,13 +71,13 @@ void TransfertFunctionTest::defaultTfTest()
     double expectedLevel = 0.0;
     double expectedWindow = 100.0;
 
-    std::string expectedName = TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
-    TransfertFunction_VERSION_II::InterpolationMode expectedInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
+    std::string expectedName = TransferFunction::s_DEFAULT_TF_NAME;
+    TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
     bool expectedIsClamped = false;
-    TransfertFunction_VERSION_II::TFColor expectedBackgroundColor = TransfertFunction_VERSION_II::TFColor();
+    TransferFunction::TFColor expectedBackgroundColor = TransferFunction::TFColor();
     size_t expectedSize = 2;
 
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = ::fwData::TransfertFunction_VERSION_II::createDefaultTF();
+    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
@@ -94,23 +94,23 @@ void TransfertFunctionTest::defaultTfTest()
 
 void TransfertFunctionTest::classicGetSetTest()
 {
-    TransfertFunction_VERSION_II::TFColor expectedColor1(0.0, 0.0, 0.0, 0.0);
-    TransfertFunction_VERSION_II::TFColor expectedColor2(1.0, 1.0, 1.0, 1.0);
-    TransfertFunction_VERSION_II::TFValueType expectedKey1(0.0);
-    TransfertFunction_VERSION_II::TFValueType expectedKey2(1.0);
+    TransferFunction::TFColor expectedColor1(0.0, 0.0, 0.0, 0.0);
+    TransferFunction::TFColor expectedColor2(1.0, 1.0, 1.0, 1.0);
+    TransferFunction::TFValueType expectedKey1(0.0);
+    TransferFunction::TFValueType expectedKey2(1.0);
 
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = ::fwData::TransfertFunction_VERSION_II::createDefaultTF();
+    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
 
     // Test getTFData()
-    const TransfertFunction_VERSION_II::TFDataType& data = tf->getTFData();
+    const TransferFunction::TFDataType& data = tf->getTFData();
 
-    TransfertFunction_VERSION_II::TFDataType::const_iterator itr = data.begin();
-    TransfertFunction_VERSION_II::TFValueType key1 =  itr->first;
-    TransfertFunction_VERSION_II::TFValueType key2 = (++itr)->first;
+    TransferFunction::TFDataType::const_iterator itr = data.begin();
+    TransferFunction::TFValueType key1 =  itr->first;
+    TransferFunction::TFValueType key2 = (++itr)->first;
 
-    TransfertFunction_VERSION_II::TFDataType::const_iterator itrColor = data.begin();
-    TransfertFunction_VERSION_II::TFColor color1 = itrColor->second;
-    TransfertFunction_VERSION_II::TFColor color2 = (++itrColor)->second;
+    TransferFunction::TFDataType::const_iterator itrColor = data.begin();
+    TransferFunction::TFColor color1 = itrColor->second;
+    TransferFunction::TFColor color2 = (++itrColor)->second;
 
     CPPUNIT_ASSERT(expectedKey1 == key1);
     CPPUNIT_ASSERT(expectedKey2 == key2);
@@ -122,13 +122,13 @@ void TransfertFunctionTest::classicGetSetTest()
     CPPUNIT_ASSERT(expectedColor1 == tf->getTFColor(key1));
 
     // Test getTFValues()
-    TransfertFunction_VERSION_II::TFValueVectorType values = tf->getTFValues();
+    TransferFunction::TFValueVectorType values = tf->getTFValues();
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey1 , values[0], 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey2 , values[1], 0.0);
 
     // Test getTFColors()
-    TransfertFunction_VERSION_II::TFColorVectorType colors = tf->getTFColors();
+    TransferFunction::TFColorVectorType colors = tf->getTFColors();
 
     CPPUNIT_ASSERT(expectedColor1 == colors[0]);
     CPPUNIT_ASSERT(expectedColor2 ==  colors[1]);
@@ -149,7 +149,7 @@ void TransfertFunctionTest::classicGetSetTest()
 
 void TransfertFunctionTest::usingTfTest()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+    ::fwData::TransferFunction::sptr tf = this->createTFColor();
 
     // -40.33 / -0.2 / 3 / 150
     CPPUNIT_ASSERT_EQUAL( -40.33, tf->getNearestValue( -140.33 ) );
@@ -170,14 +170,14 @@ void TransfertFunctionTest::usingTfTest()
 
 void TransfertFunctionTest::shallowAndDeepCopyTest()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+    ::fwData::TransferFunction::sptr tf = this->createTFColor();
     this->checkTFColor(tf);
 
-    ::fwData::TransfertFunction_VERSION_II::NewSptr deepCopyTf;
+    ::fwData::TransferFunction::NewSptr deepCopyTf;
     deepCopyTf->deepCopy( tf );
     this->checkTFColor(deepCopyTf);
 
-    ::fwData::TransfertFunction_VERSION_II::NewSptr shallowCopyTf;
+    ::fwData::TransferFunction::NewSptr shallowCopyTf;
     shallowCopyTf->shallowCopy( tf );
     this->checkTFColor(shallowCopyTf);
 }
@@ -185,21 +185,21 @@ void TransfertFunctionTest::shallowAndDeepCopyTest()
 
 //------------------------------------------------------------------------------
 
-::fwData::TransfertFunction_VERSION_II::sptr TransfertFunctionTest::createTFColor()
+::fwData::TransferFunction::sptr TransfertFunctionTest::createTFColor()
 {
-    ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+    ::fwData::TransferFunction::NewSptr tf;
 
-    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0, 0.3, 0.6, 0.1) );
-    tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
+    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) );
+    tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
     tf->setIsClamped( false );
     tf->setLevel( 900.6 );
     tf->setName( "TFColor" );
     tf->setWindow( -200.02 );
 
-    tf->addTFColor( -40.33, ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) );
-    tf->addTFColor( 3,      ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) ); // Invert point 3 <=> -0.2, for tests
-    tf->addTFColor( -0.2,   ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) );
-    tf->addTFColor( 150,    ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) );
+    tf->addTFColor( -40.33, ::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) );
+    tf->addTFColor( 3,      ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) ); // Invert point 3 <=> -0.2, for tests
+    tf->addTFColor( -0.2,   ::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) );
+    tf->addTFColor( 150,    ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) );
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
     tf->setField_NEWAPI( "fieldStringKey", myString );
@@ -209,11 +209,11 @@ void TransfertFunctionTest::shallowAndDeepCopyTest()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::checkTFColor( ::fwData::TransfertFunction_VERSION_II::sptr tf )
+void TransfertFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
 {
 
-    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0, 0.3, 0.6, 0.1) == tf->getBackgroundColor() );
-    CPPUNIT_ASSERT_EQUAL( ::fwData::TransfertFunction_VERSION_II::NEAREST, tf->getInterpolationMode() );
+    CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) == tf->getBackgroundColor() );
+    CPPUNIT_ASSERT_EQUAL( ::fwData::TransferFunction::NEAREST, tf->getInterpolationMode() );
     CPPUNIT_ASSERT_EQUAL( false, tf->getIsClamped() );
     CPPUNIT_ASSERT_EQUAL( 900.6, tf->getLevel() );
     CPPUNIT_ASSERT_EQUAL( std::string("TFColor"), tf->getName() );
@@ -223,16 +223,16 @@ void TransfertFunctionTest::checkTFColor( ::fwData::TransfertFunction_VERSION_II
     CPPUNIT_ASSERT_EQUAL( -40.33, tf->getMinMaxTFValues().first );
     CPPUNIT_ASSERT_EQUAL( 150.0, tf->getMinMaxTFValues().second );
 
-    const TransfertFunction_VERSION_II::TFValueVectorType & values = tf->getTFValues();
+    const TransferFunction::TFValueVectorType & values = tf->getTFValues();
     CPPUNIT_ASSERT_EQUAL( values[0] , -40.33  );
     CPPUNIT_ASSERT_EQUAL( values[1] , -0.2    );
     CPPUNIT_ASSERT_EQUAL( values[2] , 3.0      );
     CPPUNIT_ASSERT_EQUAL( values[3] , 150.0     );
 
-    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getTFColor( -40.33 ) );
-    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getTFColor( -0.2   ) );
-    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getTFColor( 3      ) );
-    CPPUNIT_ASSERT( ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getTFColor( 150    ) );
+    CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getTFColor( -40.33 ) );
+    CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getTFColor( -0.2   ) );
+    CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getTFColor( 3      ) );
+    CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getTFColor( 150    ) );
 
 
 
@@ -243,14 +243,14 @@ void TransfertFunctionTest::checkTFColor( ::fwData::TransfertFunction_VERSION_II
 
 void TransfertFunctionTest::setTFDataTest()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+    ::fwData::TransferFunction::sptr tf = this->createTFColor();
 
     tf->clear();
-    ::fwData::TransfertFunction_VERSION_II::TFDataType tfData;
-    tfData[-40.33]  = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4 );
-    tfData[3]       = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4 );
-    tfData[-0.2]    = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4 );
-    tfData[150]     = ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9 );
+    ::fwData::TransferFunction::TFDataType tfData;
+    tfData[-40.33]  = ::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4 );
+    tfData[3]       = ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4 );
+    tfData[-0.2]    = ::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4 );
+    tfData[150]     = ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9 );
     tf->setTFData( tfData );
 
     this->checkTFColor(tf);
@@ -260,7 +260,7 @@ void TransfertFunctionTest::setTFDataTest()
 
 void TransfertFunctionTest::linearColorTest()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+    ::fwData::TransferFunction::sptr tf = this->createTFColor();
 
     // Value = -40.33 => color : {0.9, 0.2, 0.3, 0.4}
     // Value = -0.2  => color : {0.1, 0.9, 0.3, 0.4}
@@ -268,34 +268,34 @@ void TransfertFunctionTest::linearColorTest()
     // Value = 150   => color : {0.1, 0.2, 0.3, 0.9}
 
     tf->setIsClamped(true);
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getLinearColor(-120) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getLinearColor(200) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-40.33) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(150) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.6, 0.65) == tf->getLinearColor(((150.0-3.0)/2.0)+3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getLinearColor(-0.2) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getLinearColor(3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.75, 0.525) == tf->getLinearColor(((150.0-3.0)/4.0)+3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getLinearColor(-120) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getLinearColor(200) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-40.33) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(150) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.6, 0.65) == tf->getLinearColor(((150.0-3.0)/2.0)+3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getLinearColor(-0.2) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getLinearColor(3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.75, 0.525) == tf->getLinearColor(((150.0-3.0)/4.0)+3) );
 
-    tf->setInterpolationMode(TransfertFunction_VERSION_II::LINEAR);
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(-120) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(200) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getInterpolatedColor(-40.33) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(150) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.6, 0.65) == tf->getInterpolatedColor(((150.0-3.0)/2.0)+3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getInterpolatedColor(-0.2) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.75, 0.525) == tf->getInterpolatedColor(((150.0-3.0)/4.0)+3) );
+    tf->setInterpolationMode(TransferFunction::LINEAR);
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(-120) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(200) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getInterpolatedColor(-40.33) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(150) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.6, 0.65) == tf->getInterpolatedColor(((150.0-3.0)/2.0)+3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getInterpolatedColor(-0.2) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.75, 0.525) == tf->getInterpolatedColor(((150.0-3.0)/4.0)+3) );
 
     tf->setIsClamped(false);
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-120) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(200) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-40.33) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(150) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.6, 0.65) == tf->getLinearColor(((150.0-3.0)/2.0)+3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getLinearColor(-0.2) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getLinearColor(3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.75, 0.525) == tf->getLinearColor(((150.0-3.0)/4.0)+3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-120) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(200) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getLinearColor(-40.33) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getLinearColor(150) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.6, 0.65) == tf->getLinearColor(((150.0-3.0)/2.0)+3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getLinearColor(-0.2) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getLinearColor(3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.75, 0.525) == tf->getLinearColor(((150.0-3.0)/4.0)+3) );
 
 
 }
@@ -304,7 +304,7 @@ void TransfertFunctionTest::linearColorTest()
 
 void TransfertFunctionTest::nearestColorTest()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+    ::fwData::TransferFunction::sptr tf = this->createTFColor();
 
     // Value = -40.33 => color : {0.9, 0.2, 0.3, 0.4}
     // Value = -0.2  => color : {0.1, 0.9, 0.3, 0.4}
@@ -312,34 +312,34 @@ void TransfertFunctionTest::nearestColorTest()
     // Value = 150   => color : {0.1, 0.2, 0.3, 0.9}
 
     tf->setIsClamped(true);
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getNearestColor(-120) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getNearestColor(200) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-40.33) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(150) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(((150.0-3.0)/2.0)+3 + 0.1) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getNearestColor(-0.2) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(((150.0-3.0)/4.0)+3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getNearestColor(-120) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getNearestColor(200) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-40.33) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(150) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(((150.0-3.0)/2.0)+3 + 0.1) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getNearestColor(-0.2) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(((150.0-3.0)/4.0)+3) );
 
-    tf->setInterpolationMode(TransfertFunction_VERSION_II::NEAREST);
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(-120) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(200) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getInterpolatedColor(-40.33) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(150) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(((150.0-3.0)/2.0)+3 + 0.1) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getInterpolatedColor(-0.2) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(((150.0-3.0)/4.0)+3) );
+    tf->setInterpolationMode(TransferFunction::NEAREST);
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(-120) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.0, 0.0, 0.0, 0.0) == tf->getInterpolatedColor(200) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getInterpolatedColor(-40.33) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(150) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getInterpolatedColor(((150.0-3.0)/2.0)+3 + 0.1) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getInterpolatedColor(-0.2) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getInterpolatedColor(((150.0-3.0)/4.0)+3) );
 
     tf->setIsClamped(false);
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-120) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(200) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-40.33) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(150) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(((150.0-3.0)/2.0)+3 + 0.1) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getNearestColor(-0.2) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(3) );
-    CPPUNIT_ASSERT(::fwData::TransfertFunction_VERSION_II::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(((150.0-3.0)/4.0)+3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-120) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(200) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) == tf->getNearestColor(-40.33) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(150) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getNearestColor(((150.0-3.0)/2.0)+3 + 0.1) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getNearestColor(-0.2) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(3) );
+    CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getNearestColor(((150.0-3.0)/4.0)+3) );
 
 }
 

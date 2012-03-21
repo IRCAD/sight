@@ -111,7 +111,7 @@ protected slots :
     void onDynamicRangeSelectionChanged(QAction *action);
 
 protected:
-    typedef ::fwData::TransfertFunction_VERSION_II::TFValuePairType WindowLevelMinMaxType;
+    typedef ::fwData::TransferFunction::TFValuePairType WindowLevelMinMaxType;
 
     double toWindowLevel(double _val);
     double fromWindowLevel(double _val);

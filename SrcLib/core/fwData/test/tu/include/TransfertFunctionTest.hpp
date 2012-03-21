@@ -44,8 +44,8 @@ public:
     void linearColorTest();
     void nearestColorTest();
 
-    ::fwData::TransfertFunction_VERSION_II::sptr createTFColor();
-    void checkTFColor( ::fwData::TransfertFunction_VERSION_II::sptr tf );
+    ::fwData::TransferFunction::sptr createTFColor();
+    void checkTFColor( ::fwData::TransferFunction::sptr tf );
 };
 } //namespace ut
 } //namespace fwData

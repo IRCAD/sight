@@ -206,7 +206,7 @@ protected:
     FWCOMED_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
     /// Get the current transfer function
-    FWCOMED_API ::fwData::TransfertFunction_VERSION_II::sptr getTransferFunction() const;
+    FWCOMED_API ::fwData::TransferFunction::sptr getTransferFunction() const;
 
     /// Get the current transfer function pool
     FWCOMED_API ::fwData::Composite::sptr getTransferFunctionPool() const;

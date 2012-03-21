@@ -74,7 +74,7 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
     // Transfer functions
     if ( ! img->getField_NEWAPI( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) )
     {
-        ::fwData::TransfertFunction_VERSION_II::sptr tf = ::fwData::TransfertFunction_VERSION_II::createDefaultTF();
+        ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
         tf->setWindow( img->getWindowWidth() );
         tf->setLevel( img->getWindowCenter() );
 

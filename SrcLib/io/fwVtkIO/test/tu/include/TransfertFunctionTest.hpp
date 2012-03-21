@@ -37,7 +37,7 @@ public:
 
 private :
 
-    ::fwData::TransfertFunction_VERSION_II::sptr createTFColor();
+    ::fwData::TransferFunction::sptr createTFColor();
 
 };
 

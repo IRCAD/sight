@@ -36,21 +36,21 @@ void TransfertFunctionTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-::fwData::TransfertFunction_VERSION_II::sptr TransfertFunctionTest::createTFColor()
+::fwData::TransferFunction::sptr TransfertFunctionTest::createTFColor()
 {
-    ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+    ::fwData::TransferFunction::NewSptr tf;
 
-    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0, 0.3, 0.6, 0.1) );
-    tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::LINEAR );
+    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) );
+    tf->setInterpolationMode( ::fwData::TransferFunction::LINEAR );
     tf->setIsClamped( false );
     tf->setLevel( 0.0 );
     tf->setName( "TFColor" );
     tf->setWindow( 400.0 );
 
-    tf->addTFColor( -200,   ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0, 0.0, 0.0, 0.0) );
-    tf->addTFColor( 0,      ::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 1.0, 0.0, 0.0) );
-    tf->addTFColor( 100,     ::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 0.0, 1.0, 0.5) );
-    tf->addTFColor( 200,    ::fwData::TransfertFunction_VERSION_II::TFColor( 0.0, 1.0, 1.0, 1.0) );
+    tf->addTFColor( -200,   ::fwData::TransferFunction::TFColor( 1.0, 0.0, 0.0, 0.0) );
+    tf->addTFColor( 0,      ::fwData::TransferFunction::TFColor( 0.0, 1.0, 0.0, 0.0) );
+    tf->addTFColor( 100,     ::fwData::TransferFunction::TFColor( 0.0, 0.0, 1.0, 0.5) );
+    tf->addTFColor( 200,    ::fwData::TransferFunction::TFColor( 0.0, 1.0, 1.0, 1.0) );
 
     return tf;
 }
@@ -59,7 +59,7 @@ void TransfertFunctionTest::tearDown()
 
 void TransfertFunctionTest::toVtkLookupTableTest()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->createTFColor();
+    ::fwData::TransferFunction::sptr tf = this->createTFColor();
     vtkSmartPointer<vtkLookupTable> lt = vtkSmartPointer<vtkLookupTable>::New();
 
     double color[3];
@@ -88,7 +88,7 @@ void TransfertFunctionTest::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2] , colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.75, opacity  , colorTolerance );
 
-    tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
+    tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
     ::vtkIO::helper::TransfertFunction::toVtkLookupTable( tf, lt, true, 4096 );
     lt->GetColor(120,color);
     opacity = lt->GetOpacity(120);

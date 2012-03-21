@@ -260,7 +260,7 @@ bool ObjectComparator::compareMaterial(::fwData::Material::sptr mat1, ::fwData::
 
 //------------------------------------------------------------------------------
 
-bool ObjectComparator::compareTransfertFunction(::fwData::TransfertFunction_VERSION_II::sptr tf1, ::fwData::TransfertFunction_VERSION_II::sptr tf2)
+bool ObjectComparator::compareTransfertFunction(::fwData::TransferFunction::sptr tf1, ::fwData::TransferFunction::sptr tf2)
 {
 
     SLM_ASSERT( "Null tf1 pointers", tf1);
@@ -295,8 +295,8 @@ bool ObjectComparator::compareTransfertFunction(::fwData::TransfertFunction_VERS
         OSLM_ERROR_IF( "Min max TF values are different.", tf1->getMinMaxTFValues() != tf2->getMinMaxTFValues());
 
 
-        ::fwData::TransfertFunction_VERSION_II::TFDataType::const_iterator it1 = tf1->getTFData().begin();
-        ::fwData::TransfertFunction_VERSION_II::TFDataType::const_iterator it2 = tf2->getTFData().begin();
+        ::fwData::TransferFunction::TFDataType::const_iterator it1 = tf1->getTFData().begin();
+        ::fwData::TransferFunction::TFDataType::const_iterator it2 = tf2->getTFData().begin();
         while ( it1 != tf1->getTFData().end() )
         {
             compare &= ( it1->first == it2->first );

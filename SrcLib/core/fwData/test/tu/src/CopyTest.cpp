@@ -116,7 +116,7 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ResectionDB);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::String);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Study);
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransfertFunction_VERSION_II);
+    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransferFunction);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransformationMatrix3D);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TriangularMesh);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Vector);

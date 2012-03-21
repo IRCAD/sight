@@ -14,18 +14,18 @@
 #include "fwData/TransfertFunction.hpp"
 
 
-fwDataRegisterMacro( ::fwData::TransfertFunction_VERSION_II );
+fwDataRegisterMacro( ::fwData::TransferFunction );
 
 namespace fwData
 {
 
 //------------------------------------------------------------------------------
 
-const std::string TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME = "CT-GreyLevel";
+const std::string TransferFunction::s_DEFAULT_TF_NAME = "CT-GreyLevel";
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TransfertFunction_VERSION_II()
+TransferFunction::TransferFunction()
 {
     SLM_TRACE_FUNC();
     this->initTF();
@@ -33,7 +33,7 @@ TransfertFunction_VERSION_II::TransfertFunction_VERSION_II()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunction_VERSION_II::initTF()
+void TransferFunction::initTF()
 {
 
     m_attrLevel = 0;
@@ -41,7 +41,7 @@ void TransfertFunction_VERSION_II::initTF()
 
     m_attrName = "";
 
-    m_attrInterpolationMode = TransfertFunction_VERSION_II::LINEAR;
+    m_attrInterpolationMode = TransferFunction::LINEAR;
     m_attrIsClamped = true;
 
     m_tfData.clear();
@@ -50,11 +50,11 @@ void TransfertFunction_VERSION_II::initTF()
 
 //------------------------------------------------------------------------------
 
-fwData::TransfertFunction_VERSION_II::sptr TransfertFunction_VERSION_II::createDefaultTF()
+fwData::TransferFunction::sptr TransferFunction::createDefaultTF()
 {
-    TransfertFunction_VERSION_II::NewSptr tf;
+    TransferFunction::NewSptr tf;
 
-    tf->setName(TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME);
+    tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
     tf->addTFColor(0.0, TFColor());
     tf->addTFColor(1.0, TFColor(1.0,1.0,1.0,1.0));
     tf->setIsClamped(false);
@@ -63,12 +63,12 @@ fwData::TransfertFunction_VERSION_II::sptr TransfertFunction_VERSION_II::createD
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::~TransfertFunction_VERSION_II()
+TransferFunction::~TransferFunction()
 {}
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::getTFValues() const
+TransferFunction::TFValueVectorType TransferFunction::getTFValues() const
 {
     TFValueVectorType values;
     values.reserve(m_tfData.size());
@@ -80,7 +80,7 @@ TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::ge
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::getScaledValues() const
+TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
 {
     TFValueVectorType values;
     values.reserve(m_tfData.size());
@@ -100,8 +100,8 @@ TransfertFunction_VERSION_II::TFValueVectorType TransfertFunction_VERSION_II::ge
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFValuePairType
-TransfertFunction_VERSION_II::getMinMaxTFValues() const
+TransferFunction::TFValuePairType
+TransferFunction::getMinMaxTFValues() const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
     TFValuePairType minMax;
@@ -112,8 +112,8 @@ TransfertFunction_VERSION_II::getMinMaxTFValues() const
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFValuePairType
-TransfertFunction_VERSION_II::getWLMinMax() const
+TransferFunction::TFValuePairType
+TransferFunction::getWLMinMax() const
 {
     TFValuePairType minMax;
     double halfWindow = m_attrWindow/2.f;
@@ -124,7 +124,7 @@ TransfertFunction_VERSION_II::getWLMinMax() const
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFValueType TransfertFunction_VERSION_II::getNearestValue( TFValueType value ) const
+TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
     std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
@@ -168,39 +168,39 @@ TransfertFunction_VERSION_II::TFValueType TransfertFunction_VERSION_II::getNeare
 
 //------------------------------------------------------------------------------
 
-const TransfertFunction_VERSION_II::TFDataType& TransfertFunction_VERSION_II::getTFData() const
+const TransferFunction::TFDataType& TransferFunction::getTFData() const
 {
     return m_tfData;
 }
 
 //------------------------------------------------------------------------------
 
-void TransfertFunction_VERSION_II::setTFData( const TFDataType & tfData )
+void TransferFunction::setTFData( const TFDataType & tfData )
 {
     m_tfData = tfData;
 }
 
 //------------------------------------------------------------------------------
 
-void TransfertFunction_VERSION_II::addTFColor( TFValueType value, const TFColor & color )
+void TransferFunction::addTFColor( TFValueType value, const TFColor & color )
 {
     m_tfData[value] = color;
 }
 
 //------------------------------------------------------------------------------
-void TransfertFunction_VERSION_II::eraseTFValue( TFValueType value)
+void TransferFunction::eraseTFValue( TFValueType value)
 {
     m_tfData.erase(value);
 }
 
 //------------------------------------------------------------------------------
-void TransfertFunction_VERSION_II::clear()
+void TransferFunction::clear()
 {
     m_tfData.clear();
 }
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFColorVectorType TransfertFunction_VERSION_II::getTFColors() const
+TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 {
     TFColorVectorType colors;
     std::transform( m_tfData.begin(), m_tfData.end(),
@@ -211,7 +211,7 @@ TransfertFunction_VERSION_II::TFColorVectorType TransfertFunction_VERSION_II::ge
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestColor( TFValueType value ) const
+TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
     std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
@@ -276,7 +276,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getNearestCo
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearColor( TFValueType value ) const
+TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
     std::pair<double, double> minMax  = ::fwTools::Type::s_DOUBLE.minMax<double>();
@@ -343,7 +343,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getLinearCol
 
 //------------------------------------------------------------------------------
 
-TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getInterpolatedColor( TFValueType value ) const
+TransferFunction::TFColor TransferFunction::getInterpolatedColor( TFValueType value ) const
 {
     TFColor color;
 
@@ -360,7 +360,7 @@ TransfertFunction_VERSION_II::TFColor TransfertFunction_VERSION_II::getInterpola
 
 //------------------------------------------------------------------------------
 
-const TransfertFunction_VERSION_II::TFColor& TransfertFunction_VERSION_II::getTFColor( TFValueType value ) const
+const TransferFunction::TFColor& TransferFunction::getTFColor( TFValueType value ) const
 {
     TFDataType::const_iterator itr = m_tfData.find(value);
     SLM_ASSERT("Sorry not defined in th TF.", itr != m_tfData.end());
@@ -368,7 +368,7 @@ const TransfertFunction_VERSION_II::TFColor& TransfertFunction_VERSION_II::getTF
 }
 //------------------------------------------------------------------------------
 
-void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::csptr _source )
+void TransferFunction::shallowCopy( TransferFunction::csptr _source )
 {
     this->fieldShallowCopy( _source );
     this->m_attrLevel = _source->m_attrLevel;
@@ -382,7 +382,7 @@ void TransfertFunction_VERSION_II::shallowCopy( TransfertFunction_VERSION_II::cs
 
 //------------------------------------------------------------------------------
 
-void TransfertFunction_VERSION_II::deepCopy( TransfertFunction_VERSION_II::csptr _source )
+void TransferFunction::deepCopy( TransferFunction::csptr _source )
 {
     this->fieldDeepCopy( _source );
     this->m_attrLevel = _source->m_attrLevel;

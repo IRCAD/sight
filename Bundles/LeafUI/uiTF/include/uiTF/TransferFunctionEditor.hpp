@@ -88,7 +88,7 @@ protected:
     UITF_API ::fwData::Composite::sptr getTFSelection() const;
 
     /// Get the current transfer function
-    UITF_API ::fwData::TransfertFunction_VERSION_II::sptr getSelectedTransferFunction() const;
+    UITF_API ::fwData::TransferFunction::sptr getSelectedTransferFunction() const;
 
 private slots:
 

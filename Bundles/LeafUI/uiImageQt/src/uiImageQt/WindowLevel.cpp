@@ -218,9 +218,9 @@ void WindowLevel::updating() throw(::fwTools::Failed)
             this->updateImageWindowLevel(min, max);
         }
 
-        ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
-        SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
-        ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = pTF->getWLMinMax();
+        ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
+        SLM_ASSERT("TransferFunction null pointer", pTF);
+        ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
         this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
 }
@@ -254,9 +254,9 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools
             this->updateImageWindowLevel(min, max);
         }
 
-        ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
-        SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
-        ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = pTF->getWLMinMax();
+        ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
+        SLM_ASSERT("TransferFunction null pointer", pTF);
+        ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
         this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
     this->setEnabled(imageIsValid);
@@ -273,8 +273,8 @@ void WindowLevel::info( std::ostream & _sstream )
 
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
-    SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
+    ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
+    SLM_ASSERT("TransferFunction null pointer", pTF);
 
     return pTF->getWLMinMax();
 }
@@ -420,13 +420,13 @@ void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 void  WindowLevel::onToggleTF(bool squareTF)
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr oldTF = this->getTransferFunction();
-    ::fwData::TransfertFunction_VERSION_II::sptr newTF;
+    ::fwData::TransferFunction::sptr oldTF = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr newTF;
 
     if( squareTF )
     {
-        newTF = ::fwData::TransfertFunction_VERSION_II::New();
-        ::fwData::TransfertFunction_VERSION_II::TFColor color(1.,1.,1.,1.);
+        newTF = ::fwData::TransferFunction::New();
+        ::fwData::TransferFunction::TFColor color(1.,1.,1.,1.);
         newTF->setName("SquareTF");
         newTF->addTFColor(0.0, color);
         newTF->addTFColor(1.0, color);
@@ -434,7 +434,7 @@ void  WindowLevel::onToggleTF(bool squareTF)
     }
     else
     {
-        newTF = ::fwData::TransfertFunction_VERSION_II::createDefaultTF();
+        newTF = ::fwData::TransferFunction::createDefaultTF();
     }
 
     newTF->setWindow(oldTF->getWindow());

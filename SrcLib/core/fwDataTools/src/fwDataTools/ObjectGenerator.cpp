@@ -266,12 +266,12 @@ namespace fwDataTools
 
 //------------------------------------------------------------------------------
 
-::fwData::TransfertFunction_VERSION_II::sptr ObjectGenerator::createTFColor(const unsigned char nbPoints, const double window, const double level)
+::fwData::TransferFunction::sptr ObjectGenerator::createTFColor(const unsigned char nbPoints, const double window, const double level)
 {
-    ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+    ::fwData::TransferFunction::NewSptr tf;
 
-    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f) );
-    tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
+    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f) );
+    tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
     tf->setIsClamped( false );
     tf->setLevel(level);
     tf->setName( "TFColor" );
@@ -280,7 +280,7 @@ namespace fwDataTools
     for (unsigned char nb=0 ; nb<nbPoints ; ++nb)
     {
         double value = rand()%100 - level;
-        tf->addTFColor( value, ::fwData::TransfertFunction_VERSION_II::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f ));
+        tf->addTFColor( value, ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f ));
     }
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
@@ -291,22 +291,22 @@ namespace fwDataTools
 
 //------------------------------------------------------------------------------
 
-::fwData::TransfertFunction_VERSION_II::sptr ObjectGenerator::createTFColor()
+::fwData::TransferFunction::sptr ObjectGenerator::createTFColor()
 {
 
-    ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+    ::fwData::TransferFunction::NewSptr tf;
 
-    tf->setBackgroundColor( ::fwData::TransfertFunction_VERSION_II::TFColor( 1.0f, 0.3f, 0.6f, 0.1f) );
-    tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
+    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( 1.0f, 0.3f, 0.6f, 0.1f) );
+    tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
     tf->setIsClamped( false );
     tf->setLevel( 900.6 );
     tf->setName( "TFColor" );
     tf->setWindow( -200.02 );
 
-    tf->addTFColor( -40.33, ::fwData::TransfertFunction_VERSION_II::TFColor( 0.9f, 0.2f, 0.3f, 0.4f) );
-    tf->addTFColor( 3,      ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1f, 0.2f, 0.9f, 0.4f) ); // Invert point 3 <=> -0.2, for tests
-    tf->addTFColor( -0.2,   ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1f, 0.9f, 0.3f, 0.4f) );
-    tf->addTFColor( 150,    ::fwData::TransfertFunction_VERSION_II::TFColor( 0.1f, 0.2f, 0.3f, 0.9f) );
+    tf->addTFColor( -40.33, ::fwData::TransferFunction::TFColor( 0.9f, 0.2f, 0.3f, 0.4f) );
+    tf->addTFColor( 3,      ::fwData::TransferFunction::TFColor( 0.1f, 0.2f, 0.9f, 0.4f) ); // Invert point 3 <=> -0.2, for tests
+    tf->addTFColor( -0.2,   ::fwData::TransferFunction::TFColor( 0.1f, 0.9f, 0.3f, 0.4f) );
+    tf->addTFColor( 150,    ::fwData::TransferFunction::TFColor( 0.1f, 0.2f, 0.3f, 0.9f) );
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
     tf->setField_NEWAPI( "fieldStringKey", myString );

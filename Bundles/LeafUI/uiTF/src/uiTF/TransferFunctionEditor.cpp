@@ -278,7 +278,7 @@ void TransferFunctionEditor::deleteTF()
             compositeHelper.notify(this->getSptr());
 
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
-            std::string defaultTFName = ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
+            std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
 
             int index = m_pTransferFunctionPreset->findText(QString(defaultTFName.c_str()));
             index = (index < 0)? 0 : index;
@@ -316,8 +316,8 @@ void TransferFunctionEditor::newTF()
     {
         if(!this->hasTransferFunctionName(newName))
         {
-            ::fwData::TransfertFunction_VERSION_II::NewSptr pNewTransferFunction ;
-            ::fwData::TransfertFunction_VERSION_II::sptr selectedTF = this->getSelectedTransferFunction();
+            ::fwData::TransferFunction::NewSptr pNewTransferFunction ;
+            ::fwData::TransferFunction::sptr selectedTF = this->getSelectedTransferFunction();
 
             pNewTransferFunction->deepCopy(selectedTF);
             pNewTransferFunction->setName(newName);
@@ -409,8 +409,8 @@ void TransferFunctionEditor::renameTF()
             std::string str = m_pTransferFunctionPreset->currentText().toStdString();
 
             ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
-            ::fwData::TransfertFunction_VERSION_II::sptr pTF;
-            pTF = ::fwData::TransfertFunction_VERSION_II::dynamicCast((*tfPool)[str]);
+            ::fwData::TransferFunction::sptr pTF;
+            pTF = ::fwData::TransferFunction::dynamicCast((*tfPool)[str]);
             pTF->setName(newName);
 
             ::fwComEd::helper::Composite compositeHelper(tfPool);
@@ -469,7 +469,7 @@ void TransferFunctionEditor::importTF()
         ::fwXML::Serializer serializer;
         ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new ::fwXML::NeverSplitPolicy);
         serializer.setSplitPolicy(spolicy);
-        ::fwData::TransfertFunction_VERSION_II::sptr  pTf;
+        ::fwData::TransferFunction::sptr  pTf;
 
         bool tfIsImported;
         BOOST_FOREACH( ::boost::filesystem::path tfPath, files->getPaths() )
@@ -489,7 +489,7 @@ void TransferFunctionEditor::importTF()
 
             if ( tfIsImported )
             {
-                pTf = ::fwData::TransfertFunction_VERSION_II::dynamicCast(pObject);
+                pTf = ::fwData::TransferFunction::dynamicCast(pObject);
                 if (pTf == 0)
                 {
                     SLM_DEBUG("This XML file is not a transfer function");
@@ -504,7 +504,7 @@ void TransferFunctionEditor::importTF()
                     pTf->setName( this->createTransferFunctionName( pTf->getName() ) );
                 }
 
-                ::fwData::TransfertFunction_VERSION_II::NewSptr  pNewTf;
+                ::fwData::TransferFunction::NewSptr  pNewTf;
                 pNewTf->deepCopy(pTf);
                 compositeHelper.add(pTf->getName(), pNewTf);
                 m_pTransferFunctionPreset->addItem(QString(pTf->getName().c_str()));
@@ -648,7 +648,7 @@ void TransferFunctionEditor::initTransferFunctions()
         BOOST_FOREACH( ::boost::filesystem::path file, paths )
         {
             ::fwTools::Object::sptr pObject = serializer.deSerialize( file, false , false /*NO schema verification*/ );
-            ::fwData::TransfertFunction_VERSION_II::sptr pTf =  ::fwData::TransfertFunction_VERSION_II::dynamicCast(pObject);
+            ::fwData::TransferFunction::sptr pTf =  ::fwData::TransferFunction::dynamicCast(pObject);
             SLM_ASSERT( "Sorry, loaded object is not a TF object.", pTf );
 
             if( this->hasTransferFunctionName( pTf->getName() ) )
@@ -659,9 +659,9 @@ void TransferFunctionEditor::initTransferFunctions()
         }
     }
 
-    if ( !this->hasTransferFunctionName(::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME) )
+    if ( !this->hasTransferFunctionName(::fwData::TransferFunction::s_DEFAULT_TF_NAME) )
     {
-        ::fwData::TransfertFunction_VERSION_II::sptr defaultTF = ::fwData::TransfertFunction_VERSION_II::createDefaultTF();
+        ::fwData::TransferFunction::sptr defaultTF = ::fwData::TransferFunction::createDefaultTF();
         compositeHelper.add(defaultTF->getName(), defaultTF);
     }
 
@@ -676,7 +676,7 @@ void TransferFunctionEditor::initTransferFunctions()
     }
 
     //TODO : change selection with current TF
-    int index = m_pTransferFunctionPreset->findText( QString( ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME.c_str() ) );
+    int index = m_pTransferFunctionPreset->findText( QString( ::fwData::TransferFunction::s_DEFAULT_TF_NAME.c_str() ) );
     m_pTransferFunctionPreset->setCurrentIndex(index);
     compositeHelper.notify(this->getSptr());
 }
@@ -735,10 +735,10 @@ void TransferFunctionEditor::updateTransferFunction()
 
 //------------------------------------------------------------------------------
 
-::fwData::TransfertFunction_VERSION_II::sptr TransferFunctionEditor::getSelectedTransferFunction() const
+::fwData::TransferFunction::sptr TransferFunctionEditor::getSelectedTransferFunction() const
 {
     ::fwData::Composite::sptr tfSelection = this->getTFSelection();
-    return ::fwData::TransfertFunction_VERSION_II::dynamicCast((*tfSelection)[m_selectedTFKey]);
+    return ::fwData::TransferFunction::dynamicCast((*tfSelection)[m_selectedTFKey]);
 }
 
 

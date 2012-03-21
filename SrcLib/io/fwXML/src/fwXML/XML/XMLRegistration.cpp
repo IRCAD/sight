@@ -108,7 +108,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Hi
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Color>                  ,  ::fwData::Color                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransfertFunction_VERSION_II >,  ::fwData::TransfertFunction_VERSION_II );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransferFunction >,  ::fwData::TransferFunction );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );

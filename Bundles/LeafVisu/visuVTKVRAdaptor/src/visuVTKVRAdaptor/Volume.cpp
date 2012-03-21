@@ -450,23 +450,23 @@ void Volume::updateWindowing( ::fwData::Image::sptr image )
 
 void Volume::updateTransfertFunction( ::fwData::Image::sptr image )
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr pTF = this->getTransferFunction();
-    SLM_ASSERT("TransfertFunction_VERSION_II null pointer", pTF);
+    ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
+    SLM_ASSERT("TransferFunction null pointer", pTF);
 
     m_colorTransferFunction->RemoveAllPoints();
     m_opacityTransferFunction->RemoveAllPoints();
 
-    const ::fwData::TransfertFunction_VERSION_II::TFValueVectorType values = pTF->getScaledValues();
-    ::fwData::TransfertFunction_VERSION_II::TFValueVectorType::const_iterator valueIter = values.begin();
-    BOOST_FOREACH(const ::fwData::TransfertFunction_VERSION_II::TFDataType::value_type &tfPoint, pTF->getTFData())
+    const ::fwData::TransferFunction::TFValueVectorType values = pTF->getScaledValues();
+    ::fwData::TransferFunction::TFValueVectorType::const_iterator valueIter = values.begin();
+    BOOST_FOREACH(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint, pTF->getTFData())
     {
-        const ::fwData::TransfertFunction_VERSION_II::TFValueType &value = *(valueIter++);
-        const ::fwData::TransfertFunction_VERSION_II::TFColor &color = tfPoint.second;
+        const ::fwData::TransferFunction::TFValueType &value = *(valueIter++);
+        const ::fwData::TransferFunction::TFColor &color = tfPoint.second;
 
         m_colorTransferFunction->AddRGBPoint( value , color.r, color.g, color.b );
         m_opacityTransferFunction->AddPoint(  value , color.a );
     }
-    ::fwData::TransfertFunction_VERSION_II::TFValuePairType minMax = pTF->getMinMaxTFValues();
+    ::fwData::TransferFunction::TFValuePairType minMax = pTF->getMinMaxTFValues();
 
     m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
     m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());

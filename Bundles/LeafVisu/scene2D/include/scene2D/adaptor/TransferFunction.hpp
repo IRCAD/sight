@@ -102,8 +102,8 @@ private:
 
     /// From an iterator on the m_TFPoints map, create a QGraphicsEllipseItem, give it the appropriated color
     //  and pen, and return it.
-    SCENE2D_API QGraphicsEllipseItem* buildCircle(::fwData::TransfertFunction_VERSION_II::TFValueType value,
-                                    ::fwData::TransfertFunction_VERSION_II::TFColor color);
+    SCENE2D_API QGraphicsEllipseItem* buildCircle(::fwData::TransferFunction::TFValueType value,
+                                    ::fwData::TransferFunction::TFColor color);
 
     /// Remove all line and polygon items from the scene, clear the m_linesAndPolygons vector, and push it back
     //  lines and gradient polygons generated from m_circles.
@@ -120,7 +120,7 @@ private:
     // Open a color dialog and change the selected tf point color
     SCENE2D_API void doubleClickEvent(
             std::vector< QGraphicsEllipseItem* >::iterator _circleIt,
-            ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator _TFPointIt);
+            ::fwData::TransferFunction::TFDataType::iterator _TFPointIt);
 
     // Store the circle selected and its coordinates, and set its outline yellow
     SCENE2D_API void leftButtonEvent(
@@ -131,7 +131,7 @@ private:
     // to 0-1 and update the image tf.
     SCENE2D_API void mouseMoveEvent(
             std::vector< QGraphicsEllipseItem* >::iterator _circleIt,
-            ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event);
+            ::fwData::TransferFunction::TFDataType::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event);
 
     // Reset the circle pen to the selected circle
     SCENE2D_API void mouseButtonReleaseEvent(
@@ -139,7 +139,7 @@ private:
 
     // Erase the selected point
     SCENE2D_API void rightButtonEvent(
-            ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event);
+            ::fwData::TransferFunction::TFDataType::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event);
 
     // Create a new point without modifying the TF (placed between the 2 encompassing points with linear
     // interpolation)
@@ -169,7 +169,7 @@ private:
     double m_level, m_window, m_circleWidth, m_circleHeight;
 
     /// The map associating a key representing the value of a tf point to the ::fwData::Color associated.
-    ::fwData::TransfertFunction_VERSION_II::TFDataType m_TFPoints;
+    ::fwData::TransferFunction::TFDataType m_TFPoints;
 
     /// Coordinates saved to calculate circles moves.
     ::scene2D::data::Coord m_oldCoord;

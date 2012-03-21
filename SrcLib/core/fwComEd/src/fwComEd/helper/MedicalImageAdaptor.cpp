@@ -256,16 +256,16 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
             OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
             if ( pool->find( m_selectedTFKey ) == pool->end() )
             {
-                ::fwData::TransfertFunction_VERSION_II::NewSptr tf;
+                ::fwData::TransferFunction::NewSptr tf;
                 tf->setLevel(100);
                 tf->setWindow(200);
                 tf->setName( m_selectedTFKey );
-                tf->setInterpolationMode( ::fwData::TransfertFunction_VERSION_II::NEAREST );
+                tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
                 tf->setIsClamped(true);
-                tf->addTFColor( 0   , ::fwData::TransfertFunction_VERSION_II::TFColor(1.0,0.0,0.0,0.0));
-                tf->addTFColor( 1   , ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,1.0,0.0,1.0));
-                tf->addTFColor( 2   , ::fwData::TransfertFunction_VERSION_II::TFColor(0.0,0.0,1.0,1.0));
-                tf->addTFColor(200  , ::fwData::TransfertFunction_VERSION_II::TFColor(1.0,1.0,0.0,1.0));
+                tf->addTFColor( 0   , ::fwData::TransferFunction::TFColor(1.0,0.0,0.0,0.0));
+                tf->addTFColor( 1   , ::fwData::TransferFunction::TFColor(0.0,1.0,0.0,1.0));
+                tf->addTFColor( 2   , ::fwData::TransferFunction::TFColor(0.0,0.0,1.0,1.0));
+                tf->addTFColor(200  , ::fwData::TransferFunction::TFColor(1.0,1.0,0.0,1.0));
                 (*pool)[m_selectedTFKey] = tf;
             }
             m_tfPool = pool;
@@ -275,7 +275,7 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
             ::fwComEd::helper::Image helper ( image );
             helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
-            m_selectedTFKey = ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
+            m_selectedTFKey = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
             m_tfPool = image->getField_NEWAPI< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
         }
     }
@@ -290,9 +290,9 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-::fwData::TransfertFunction_VERSION_II::sptr MedicalImageAdaptor::getTransferFunction() const
+::fwData::TransferFunction::sptr MedicalImageAdaptor::getTransferFunction() const
 {
-    return ::fwData::TransfertFunction_VERSION_II::dynamicCast((*m_tfPool.lock())[m_selectedTFKey]);
+    return ::fwData::TransferFunction::dynamicCast((*m_tfPool.lock())[m_selectedTFKey]);
 }
 
 //------------------------------------------------------------------------------
@@ -474,7 +474,7 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg)
 
 ::fwComEd::TransferFunctionMsg::sptr MedicalImageAdaptor::notifyTFWindowing( ::fwServices::IService::sptr srv )
 {
-    ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     // Fire the message
     ::fwComEd::TransferFunctionMsg::NewSptr msg;
