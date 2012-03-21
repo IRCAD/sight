@@ -98,7 +98,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IManagerSrv</type>
         <service>::ctrlSelection::manager::SField</service>
-        <object>::fwData::Object</object>
+        <object>::fwTools::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

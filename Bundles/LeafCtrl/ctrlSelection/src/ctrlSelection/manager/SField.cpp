@@ -23,7 +23,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwData::Object ) ;
+REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwTools::Object ) ;
 
 //-----------------------------------------------------------------------------
 
