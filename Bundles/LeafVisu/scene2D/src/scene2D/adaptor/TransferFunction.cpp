@@ -4,23 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwServices/Base.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-#include <fwData/TransfertFunction.hpp>
-#include <fwData/TransfertFunctionPoint.hpp>
+
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwData/DownCastIterator.hpp>
-#include <scene2D/data/Viewport.hpp>
+#include <fwComEd/helper/Image.hpp>
+
 #include <fwServices/IEditionService.hpp>
 
 #include <QGraphicsItemGroup>
 #include <QPoint>
 #include <QColorDialog>
 
+#include "scene2D/data/Viewport.hpp"
 #include "scene2D/adaptor/TransferFunction.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
@@ -36,16 +40,16 @@ namespace adaptor
 
 TransferFunction::TransferFunction() throw() : m_pointSize(10)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
+    this->installTFPoolEventHandler(this);
+    this->addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
 }
 
 //-----------------------------------------------------------------------------
 
 TransferFunction::~TransferFunction() throw()
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -81,6 +85,7 @@ void TransferFunction::configuring() throw ( ::fwTools::Failed )
         m_comChannel = ::fwServices::registerCommunicationChannel( m_viewport , this->getSptr());
         m_comChannel->start();
     }
+    this->parseTFConfig( m_configuration );
 }
 
 //-----------------------------------------------------------------------------
@@ -90,26 +95,25 @@ void TransferFunction::buildTFPoints()
     SLM_TRACE_FUNC();
 
     // Get the selected tf of the image
-    SPTR(::fwData::Composite) TFC =
-        this->getObject()->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
-
-    WPTR(::fwData::String) selectedTTID =
-        this->getObject()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
-
-    m_selectedTF = ::fwData::TransfertFunction::dynamicCast((*TFC)[selectedTTID.lock()->value()]);
+    ::fwData::TransfertFunction_VERSION_II::sptr selectedTF = this->getTransferFunction();
 
     // Get the window and the level from the selected tf
-    m_level = m_selectedTF->getCenterWidth().first;
-    m_window = m_selectedTF->getCenterWidth().second;
+    m_level = selectedTF->getLevel();
+    m_window = selectedTF->getWindow();
 
     // Clear the tf points map
     m_TFPoints.clear();
 
     // Iterate on the selected tf and fill the tf points map with key = value and T = Color(RGBA)
-    ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPointIt;
-    for( TFPointIt = m_selectedTF->getTransfertFunctionPoints().first ; TFPointIt != m_selectedTF->getTransfertFunctionPoints().second ; ++TFPointIt )
+//    ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPointIt;
+//    for( TFPointIt = m_selectedTF->getTransfertFunctionPoints().first ; TFPointIt != m_selectedTF->getTransfertFunctionPoints().second ; ++TFPointIt )
+//    {
+//        m_TFPoints[((*TFPointIt)->getValue() - (double)m_selectedTF->getMinMax().first) / m_window] = m_selectedTF->getColor((*TFPointIt)->getValue());
+//    }
+    ::fwData::TransfertFunction_VERSION_II::TFValueType wlMax = selectedTF->getWLMinMax().first;
+    BOOST_FOREACH(::fwData::TransfertFunction_VERSION_II::TFDataType::value_type elt, selectedTF->getTFData())
     {
-        m_TFPoints[((*TFPointIt)->getValue() - (double)m_selectedTF->getMinMax().first) / m_window] = m_selectedTF->getColor((*TFPointIt)->getValue());
+        m_TFPoints[(elt.first - wlMax) / m_window ] = elt.second;
     }
 }
 
@@ -154,30 +158,30 @@ void TransferFunction::buildCircles()
     m_circles.clear();
 
     // Iterate on the tf points map to add circle items to the circles vector
-    for( std::map< double , SPTR(::fwData::Color) >::iterator TFPointIt = m_TFPoints.begin() ; TFPointIt != m_TFPoints.end() ; ++TFPointIt )
+    BOOST_FOREACH(::fwData::TransfertFunction_VERSION_II::TFDataType::value_type elt,  m_TFPoints)
     {
         // Build circle corresponding to the tf point and push it back into the circles vector
-        m_circles.push_back(this->buildCircle(TFPointIt));
+        m_circles.push_back(this->buildCircle(elt.first, elt.second));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-QGraphicsEllipseItem* TransferFunction::buildCircle(std::map< double , SPTR(::fwData::Color) >::iterator _TFPoint)
+QGraphicsEllipseItem* TransferFunction::buildCircle(::fwData::TransfertFunction_VERSION_II::TFValueType value, ::fwData::TransfertFunction_VERSION_II::TFColor color)
 {
     SLM_TRACE_FUNC();
-
+    ::fwData::TransfertFunction_VERSION_II::sptr selectedTF = this->getTransferFunction();
     std::pair<double, double> coord =
-        this->mapAdaptorToScene(std::pair< double , double >( (*_TFPoint).first , (*_TFPoint).second->alpha() ) , m_xAxis, m_yAxis);
+        this->mapAdaptorToScene(std::pair< double , double >( value, color.a ) , m_xAxis, m_yAxis);
 
     // Build a circle item, set its color, pen and zValue
     QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(
-    coord.first * m_window + (double)m_selectedTF->getMinMax().first - m_circleWidth / 2,
+    coord.first * m_window + selectedTF->getWLMinMax().first - m_circleWidth / 2,
         coord.second - m_circleHeight / 2,
         m_circleWidth,
         m_circleHeight
         );
-    circle->setBrush(QBrush(QColor((*_TFPoint).second->red()*255, (*_TFPoint).second->green()*255, (*_TFPoint).second->blue()*255)));
+    circle->setBrush(QBrush(QColor(color.r*255, color.g*255, color.b*255)));
     circle->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
     circle->setPen(m_circlePen);
     circle->setZValue( 3 );
@@ -279,27 +283,19 @@ void TransferFunction::buildLayer()
 
 void TransferFunction::updateImageTF()
 {
-    SLM_TRACE_FUNC();
-
-    // Clear the selected tf
-    m_selectedTF->clear();
-
+    // Get the selected tf of the image
+    ::fwData::TransfertFunction_VERSION_II::sptr selectedTF = this->getTransferFunction();
+    ::fwData::TransfertFunction_VERSION_II::TFValueType val;
     // Rebuild the selected tf from the tf points map
-    for( std::map< double , SPTR(::fwData::Color) >::iterator TFPointIt = m_TFPoints.begin() ; TFPointIt != m_TFPoints.end() ; ++TFPointIt )
+    BOOST_FOREACH(::fwData::TransfertFunction_VERSION_II::TFDataType::value_type elt,  m_TFPoints)
     {
-        SPTR(::fwData::TransfertFunctionPoint) TFPoint = ::fwData::TransfertFunctionPoint::NewSptr();
-        TFPoint->setValue((*TFPointIt).first * m_window + (m_level - m_window/2));
-        TFPoint->setColor((*TFPointIt).second);
-        m_selectedTF->insert(TFPoint);
+        val = elt.first * m_window + (m_level - m_window/2);
+        selectedTF->addTFColor(val, elt.second);
     }
 
     // Update image window and level
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( ::fwData::Image::dynamicCast(this->getObject()) );
-
-    // Notify the image
-    ::fwComEd::ImageMsg::NewSptr imageModifiedMsg;
-    imageModifiedMsg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
-    ::fwServices::IEditionService::notify( this->getSptr(),  this->getObject< ::fwData::Image >(), imageModifiedMsg );
+    //::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( ::fwData::Image::dynamicCast(this->getObject()) );
+    this->notifyTFWindowing(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------
@@ -324,7 +320,8 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
 
 void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
 
     // Build the tf map points, the circles vector, the lines and polygons vector, add the items to the layer and add it to the scene
     this->buildTFPoints();
@@ -340,13 +337,9 @@ void TransferFunction::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fw
     SLM_TRACE_FUNC();
 
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
+    ::fwComEd::TransferFunctionMsg::csptr tfMsg = ::fwComEd::TransferFunctionMsg::dynamicConstCast(_msg);
 
-    if(imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
-    {
-        this->doUpdate();
-    }
-
-    if(imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
+    if(tfMsg && imageMsg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
     {
         this->doUpdate();
     }
@@ -362,6 +355,9 @@ void TransferFunction::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fw
 void TransferFunction::doSwap() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    this->removeTFObserver();
+    this->doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 //-----------------------------------------------------------------------------
@@ -369,7 +365,7 @@ void TransferFunction::doSwap() throw ( ::fwTools::Failed )
 void TransferFunction::doStop() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-
+    this->removeTFObserver();
     m_comChannel->stop();
     ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
 
@@ -391,14 +387,14 @@ void TransferFunction::doStop() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::processInteraction( SPTR(::scene2D::data::Event) _event )
+void TransferFunction::processInteraction( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
 
     SLM_ASSERT("Sizes of circles vector and tf points map are different", m_TFPoints.size() == m_circles.size());
 
     // Iterate parallely on the circles vector and the tf points map
-    std::map< double , SPTR(::fwData::Color) >::iterator TFPointIt = m_TFPoints.begin();
+    ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator TFPointIt = m_TFPoints.begin();
     for (std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin() ; circleIt != m_circles.end() ; ++circleIt, ++TFPointIt )
     {
         // If there is a double click
@@ -452,7 +448,7 @@ void TransferFunction::processInteraction( SPTR(::scene2D::data::Event) _event )
     // After iteration, due to return instruction in it, the events caught aren't on circles
     if ( _event->getType() == ::scene2D::data::Event::MouseButtonDoubleClick && _event->getButton() == ::scene2D::data::Event::LeftButton )
     {
-        // If no other event has been catched, a left clik means a point creation
+        // If no other event has been catched, a left click means a point creation
         this->doubleClickEvent(_event);
     }
 
@@ -477,7 +473,7 @@ void TransferFunction::processInteraction( SPTR(::scene2D::data::Event) _event )
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doubleClickEvent(std::vector< QGraphicsEllipseItem* >::iterator _circleIt, std::map< double , SPTR(::fwData::Color) >::iterator _TFPointIt)
+void TransferFunction::doubleClickEvent(std::vector< QGraphicsEllipseItem* >::iterator _circleIt, ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator _TFPointIt)
 {
     SLM_TRACE_FUNC();
 
@@ -486,12 +482,12 @@ void TransferFunction::doubleClickEvent(std::vector< QGraphicsEllipseItem* >::it
         ((QAbstractGraphicsShapeItem*)(*_circleIt))->brush().color().red(),
         ((QAbstractGraphicsShapeItem*)(*_circleIt))->brush().color().green(),
         ((QAbstractGraphicsShapeItem*)(*_circleIt))->brush().color().blue(),
-        (*_TFPointIt).second->alpha()*255
+        (*_TFPointIt).second.a*255
         ), this->getScene2DRender()->getView(), QString("Choose the point color"), QColorDialog::ShowAlphaChannel);
     if (circleColor.isValid())
     {
         // If the color is valid, modify the selected tf point color
-        (*_TFPointIt).second = ::fwData::Color::NewSptr(circleColor.redF(), circleColor.greenF(), circleColor.blueF(), circleColor.alphaF());
+        (*_TFPointIt).second = ::fwData::TransfertFunction_VERSION_II::TFColor(circleColor.redF(), circleColor.greenF(), circleColor.blueF(), circleColor.alphaF());
 
         // Build circles, lines and polygons cause they're modified by the new tf point color
         this->buildCircles();
@@ -525,8 +521,9 @@ void TransferFunction::leftButtonEvent(std::vector< QGraphicsEllipseItem* >::ite
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::mouseMoveEvent(std::vector< QGraphicsEllipseItem* >::iterator _circleIt, 
-        std::map< double , SPTR(::fwData::Color) >::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event)
+void TransferFunction::mouseMoveEvent(std::vector< QGraphicsEllipseItem* >::iterator _circleIt,
+        ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator _TFPointIt,
+         ::scene2D::data::Event::sptr _event)
 {
     SLM_TRACE_FUNC();
 
@@ -539,7 +536,7 @@ void TransferFunction::mouseMoveEvent(std::vector< QGraphicsEllipseItem* >::iter
     {
         --previousCircle;
     }
-    
+
     // Get the next circle
     std::vector< QGraphicsEllipseItem* >::iterator nextCircle = _circleIt;
     if (_circleIt != lastPoint)
@@ -553,37 +550,37 @@ void TransferFunction::mouseMoveEvent(std::vector< QGraphicsEllipseItem* >::iter
     // Calculate the real coordinates of the previous circle
     double previousXCircleRealPos = (*previousCircle)->rect().x() + (*previousCircle)->pos().x();
     double previousYRealNewPos = (*previousCircle)->rect().y() + (*previousCircle)->pos().y();
-    
-    std::pair< double , double > previousValues = 
+
+    std::pair< double , double > previousValues =
         this->mapSceneToAdaptor(std::pair< double , double >( previousXCircleRealPos , previousYRealNewPos ) , m_xAxis, m_yAxis);
 
 
     // Calculate the real coordinates of the next circle
     double nextXCircleRealPos = (*nextCircle)->rect().x() + (*nextCircle)->pos().x();
     double nextYRealNewPos = (*nextCircle)->rect().y() + (*nextCircle)->pos().y();
-    
-    std::pair< double , double > nextValues = 
+
+    std::pair< double , double > nextValues =
         this->mapSceneToAdaptor(std::pair< double , double >( nextXCircleRealPos , nextYRealNewPos ) , m_xAxis, m_yAxis);
-    
+
 
     // Calculate the real coordinates of the selected circle
     double circleXRealNewPos = (*_circleIt)->rect().x() + (*_circleIt)->pos().x() + newCoord.getX() - m_oldCoord.getX();
     double circleYRealNewPos = (*_circleIt)->rect().y() + (*_circleIt)->pos().y() + newCoord.getY() - m_oldCoord.getY();
-    
-    std::pair< double , double > realValues = 
+
+    std::pair< double , double > realValues =
         this->mapSceneToAdaptor(std::pair< double , double >( circleXRealNewPos , circleYRealNewPos ) , m_xAxis, m_yAxis);
-    
-    std::pair<double, double> oldCoordPair = 
+
+    std::pair<double, double> oldCoordPair =
         this->mapSceneToAdaptor(std::pair<double, double>( m_oldCoord.getX(), m_oldCoord.getY() ), m_xAxis, m_yAxis);
 
-    std::pair<double, double> newCoordPair = 
+    std::pair<double, double> newCoordPair =
         this->mapSceneToAdaptor(std::pair<double, double>( newCoord.getX(), newCoord.getY() ), m_xAxis, m_yAxis);
 
 
     // Check if the mouse isn't out of bounds vertically and horizontally
-    if (   (_circleIt == m_circles.begin() || realValues.first > previousValues.first) 
-        && (_circleIt == lastPoint || realValues.first < nextValues.first) 
-        && (realValues.second - m_circleHeight/2) >= 0 
+    if (   (_circleIt == m_circles.begin() || realValues.first > previousValues.first)
+        && (_circleIt == lastPoint || realValues.first < nextValues.first)
+        && (realValues.second - m_circleHeight/2) >= 0
         && (realValues.second - m_circleHeight/2) <= 1 )
     {
         // Move the selected tf point by the difference between the old coordinates and the new ones
@@ -592,12 +589,12 @@ void TransferFunction::mouseMoveEvent(std::vector< QGraphicsEllipseItem* >::iter
         // Set the actual coordinates as the old ones
         m_oldCoord = newCoord;
     }
-    else 
+    else
     {
         // Check if the mouse is out of bounds only horizontally
-        if (  ((_circleIt != m_circles.begin() && realValues.first < previousValues.first) 
-                    || (_circleIt != lastPoint && realValues.first > nextValues.first)) 
-                && (realValues.second - m_circleHeight/2) >= 0 
+        if (  ((_circleIt != m_circles.begin() && realValues.first < previousValues.first)
+                    || (_circleIt != lastPoint && realValues.first > nextValues.first))
+                && (realValues.second - m_circleHeight/2) >= 0
                 && (realValues.second - m_circleHeight/2) <= 1 )
         {
             // new abcissa of the moving TF point
@@ -617,8 +614,8 @@ void TransferFunction::mouseMoveEvent(std::vector< QGraphicsEllipseItem* >::iter
         }
 
         // Check if the mouse is out of bounds only vertically
-        if (  (_circleIt == m_circles.begin() || realValues.first > previousValues.first) 
-                && (_circleIt == lastPoint || realValues.first < nextValues.first) 
+        if (  (_circleIt == m_circles.begin() || realValues.first > previousValues.first)
+                && (_circleIt == lastPoint || realValues.first < nextValues.first)
                 && ((realValues.second - m_circleHeight/2) < 0 || (realValues.second - m_circleHeight/2) > 1) ) // opacity
         {
             // If the mouse is vertically out of bounds, the TF point is moved to fit the nearest vertical bound (0 or 1).
@@ -654,10 +651,10 @@ void TransferFunction::mouseMoveEvent(std::vector< QGraphicsEllipseItem* >::iter
 
     // Create a new tf point with the right value (key) and alpha
     std::pair<double, double> pair = this->mapSceneToAdaptor(
-            std::pair< double , double >( 
+            std::pair< double , double >(
                 this->pointValue(_circleIt) , (*_circleIt)->rect().y() + (*_circleIt)->pos().y() + m_circleHeight / 2 ) , m_xAxis, m_yAxis);
 
-    m_TFPoints[pair.first] = ::fwData::Color::NewSptr(
+    m_TFPoints[pair.first] = ::fwData::TransfertFunction_VERSION_II::TFColor(
         (*_circleIt)->brush().color().redF(),
         (*_circleIt)->brush().color().greenF(),
         (*_circleIt)->brush().color().blueF(),
@@ -682,10 +679,11 @@ void TransferFunction::mouseButtonReleaseEvent(std::vector< QGraphicsEllipseItem
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::rightButtonEvent(std::map< double , SPTR(::fwData::Color) >::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event)
+void TransferFunction::rightButtonEvent(::fwData::TransfertFunction_VERSION_II::TFDataType::iterator _TFPointIt,
+                                        ::scene2D::data::Event::sptr _event)
 {
     _event->setAccepted(true);
-    
+
     // Erase the selected tf point
     m_TFPoints.erase(_TFPointIt);
 
@@ -696,22 +694,25 @@ void TransferFunction::rightButtonEvent(std::map< double , SPTR(::fwData::Color)
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doubleClickEvent( SPTR(::scene2D::data::Event) _event)
+void TransferFunction::doubleClickEvent( ::scene2D::data::Event::sptr _event)
 {
+    ::fwData::TransfertFunction_VERSION_II::sptr selectedTF = this->getTransferFunction();
+
     // Get the x and y position in the scene coordinates
     double x = this->getScene2DRender()->mapToScene(_event->getCoord()).getX();
     double y = this->getScene2DRender()->mapToScene(_event->getCoord()).getY();
 
     // Transform the x and y coordinates with axis scaling and type
-    std::pair< double , double > values = this->mapSceneToAdaptor(
-            std::pair< double , double >( (x - (double)m_selectedTF->getMinMax().first) / m_window , y ) , m_xAxis, m_yAxis);
-    
-    std::map< double , SPTR(::fwData::Color) >::iterator nextTFPointIt = m_TFPoints.begin();
-    std::map< double , SPTR(::fwData::Color) >::reverse_iterator lastTFPointIt = m_TFPoints.rbegin();
+    std::pair< double , double > _xy((x - selectedTF->getWLMinMax().first) / m_window , y );
+    std::pair< double , double > values = this->mapSceneToAdaptor(_xy , m_xAxis, m_yAxis);
+
+    ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator nextTFPointIt = m_TFPoints.begin();
+    ::fwData::TransfertFunction_VERSION_II::TFDataType::reverse_iterator lastTFPointIt = m_TFPoints.rbegin();
 
     if (values.first < (*nextTFPointIt).first)
     {
-        m_TFPoints[values.first] = ::fwData::Color::NewSptr((*nextTFPointIt).second->red(), (*nextTFPointIt).second->green(), (*nextTFPointIt).second->blue(), values.second);
+        ::fwData::TransfertFunction_VERSION_II::TFColor color((*nextTFPointIt).second.r, (*nextTFPointIt).second.g, (*nextTFPointIt).second.b, values.second);
+        m_TFPoints[values.first] = color;
 
         this->rescaleTFPoints();
         this->updateImageTF();
@@ -719,7 +720,8 @@ void TransferFunction::doubleClickEvent( SPTR(::scene2D::data::Event) _event)
     }
     else if (values.first > (*lastTFPointIt).first)
     {
-        m_TFPoints[values.first] = ::fwData::Color::NewSptr((*lastTFPointIt).second->red(), (*lastTFPointIt).second->green(), (*lastTFPointIt).second->blue(), values.second);
+        ::fwData::TransfertFunction_VERSION_II::TFColor color((*lastTFPointIt).second.r, (*lastTFPointIt).second.g, (*lastTFPointIt).second.b, values.second);
+        m_TFPoints[values.first] = color;
 
         this->rescaleTFPoints();
         this->updateImageTF();
@@ -732,7 +734,7 @@ void TransferFunction::doubleClickEvent( SPTR(::scene2D::data::Event) _event)
         {
             ++nextTFPointIt;
         }
-        std::map< double , SPTR(::fwData::Color) >::iterator prevTFPointIt = nextTFPointIt;
+        ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator prevTFPointIt = nextTFPointIt;
         --prevTFPointIt;
 
         // Check if the new point is not placed on an already existing point
@@ -742,13 +744,13 @@ void TransferFunction::doubleClickEvent( SPTR(::scene2D::data::Event) _event)
             double coef = (values.first - (*prevTFPointIt).first) / ((*nextTFPointIt).first - (*prevTFPointIt).first);
 
             // Calculate the new red, green, blue and alpha by linear interpolation in RGBA
-            double newRed = coef * ((*nextTFPointIt).second->red() - (*prevTFPointIt).second->red()) + (*prevTFPointIt).second->red();
-            double newGreen = coef * ((*nextTFPointIt).second->green() - (*prevTFPointIt).second->green()) + (*prevTFPointIt).second->green();
-            double newBlue = coef * ((*nextTFPointIt).second->blue() - (*prevTFPointIt).second->blue()) + (*prevTFPointIt).second->blue();
-            double newAlpha = coef * ((*nextTFPointIt).second->alpha() - (*prevTFPointIt).second->alpha()) + (*prevTFPointIt).second->alpha();
+            double newRed = coef * ((*nextTFPointIt).second.r - (*prevTFPointIt).second.r) + (*prevTFPointIt).second.r;
+            double newGreen = coef * ((*nextTFPointIt).second.g - (*prevTFPointIt).second.g) + (*prevTFPointIt).second.g;
+            double newBlue = coef * ((*nextTFPointIt).second.b - (*prevTFPointIt).second.b) + (*prevTFPointIt).second.b;
+            double newAlpha = coef * ((*nextTFPointIt).second.a - (*prevTFPointIt).second.a) + (*prevTFPointIt).second.a;
 
             // Add a point with the right values to the tf points map
-            m_TFPoints[values.first] = ::fwData::Color::NewSptr(newRed, newGreen, newBlue, newAlpha);
+            m_TFPoints[values.first] = ::fwData::TransfertFunction_VERSION_II::TFColor(newRed, newGreen, newBlue, newAlpha);
 
             this->updateImageTF();
             this->doUpdate();
@@ -761,10 +763,11 @@ void TransferFunction::doubleClickEvent( SPTR(::scene2D::data::Event) _event)
 double TransferFunction::pointValue(std::vector< QGraphicsEllipseItem* >::iterator _circleIt)
 {
     SLM_TRACE_FUNC();
+    ::fwData::TransfertFunction_VERSION_II::sptr selectedTF = this->getTransferFunction();
 
     // Return the x coordinate of the center of a circle in a 0-1 scale
-    return (((*_circleIt)->rect().x() + (*_circleIt)->pos().x() + m_circleWidth / 2) 
-            - (double)m_selectedTF->getMinMax().first) / m_window;
+    return (((*_circleIt)->rect().x() + (*_circleIt)->pos().x() + m_circleWidth / 2)
+            - selectedTF->getWLMinMax().first) / m_window;
 }
 
 //-----------------------------------------------------------------------------
@@ -783,10 +786,10 @@ void TransferFunction::rescaleTFPoints()
         double realOldMin = m_level - m_window / 2;
         double realOldMax = m_level + m_window / 2;
 
-        // Calculate the real new values of the selected tf min and max points values 
+        // Calculate the real new values of the selected tf min and max points values
         double realNewMin = realOldMin + min * m_window;
         double realNewMax = realOldMax + (max - 1) * m_window;
-        
+
         // Update the window value
         m_window *= (max - min);
 
@@ -795,16 +798,16 @@ void TransferFunction::rescaleTFPoints()
 
         // Create a new map to store tf points map values in a 0-1 scale (mandatory cause if we use the same tf points map,
         // values like 0 or 1 could be overwrited)
-        std::map< double , SPTR(::fwData::Color) > newValues;
-        std::map< double , SPTR(::fwData::Color) >::iterator TFPointIt;
-        
+        ::fwData::TransfertFunction_VERSION_II::TFDataType newValues;
+        ::fwData::TransfertFunction_VERSION_II::TFDataType::iterator TFPointIt;
+
         for ( TFPointIt = m_TFPoints.begin() ; TFPointIt != m_TFPoints.end() ; ++TFPointIt )
         {
             newValues[((*TFPointIt).first - min) / (max - min)] = (*TFPointIt).second;
         }
 
         m_TFPoints.clear();
- 
+
         // Copy the new map
         m_TFPoints = newValues;
     }
