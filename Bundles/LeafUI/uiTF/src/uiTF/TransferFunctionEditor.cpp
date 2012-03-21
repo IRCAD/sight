@@ -21,8 +21,6 @@
 #include <QDir>
 #include <QFileDialog>
 
-//#include <vtkLookupTableManager.h>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
@@ -35,7 +33,8 @@
 #include <fwServices/macros.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/CompositeMsg.hpp>
+#include <fwComEd/helper/Composite.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -51,22 +50,21 @@ namespace uiTF
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor, ::fwData::Image );
+REGISTER_SERVICE( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-TransferFunctionEditor::TransferFunctionEditor() throw()
+TransferFunctionEditor::TransferFunctionEditor() : m_selectedTFKey("")
 {
-    SLM_TRACE_FUNC();
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
+    this->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+    this->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+    this->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-TransferFunctionEditor::~TransferFunctionEditor() throw()
-{
-    SLM_TRACE_FUNC();
-}
+TransferFunctionEditor::~TransferFunctionEditor()
+{}
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -74,6 +72,20 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->initialize();
+    ::fwRuntime::ConfigurationElement::sptr configuration = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration);
+
+    SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration->getName() == "config");
+    if ( configuration->hasAttribute("selectedTFKey") )
+    {
+        m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
+        SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
+    }
+    if ( configuration->hasAttribute("tfSelectionFwID") )
+    {
+        m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
+        SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
+    }
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -132,13 +144,13 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
     QObject::connect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT(presetChoice(int)));
     QObject::connect(m_deleteButton, SIGNAL(   pressed()), this, SLOT(deleteTF()));
     QObject::connect(m_newButton, SIGNAL(   pressed()), this, SLOT(newTF()));
-    QObject::connect(m_reinitializeButton, SIGNAL(   pressed()), this, SLOT(reinitializeTF()));
+    QObject::connect(m_reinitializeButton, SIGNAL(   pressed()), this, SLOT(reinitializeTFPool()));
     QObject::connect(m_renameButton, SIGNAL(   pressed()), this, SLOT(renameTF()));
     QObject::connect(m_importButton, SIGNAL(   pressed()), this, SLOT(importTF()));
     QObject::connect(m_exportButton, SIGNAL(   pressed()), this, SLOT(exportTF()));
 
     // preset initialization
-    initTransferFunctions();
+    this->initTransferFunctions();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -150,33 +162,52 @@ void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed )
+void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr msg) throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-
-    // Test if tf selection has changed
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
-    if(imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
+    bool needUpdate = false;
+    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
+    if(compositeMsg)
     {
-        std::string currentValInEditor = m_pTransferFunctionPreset->currentText().toStdString();
-        std::string currentVal = m_selectedTranferFunctionId.lock()->value();
+        //        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+        //        {
+        //        }
+        //
+        //        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+        //        {
+        //        }
 
-        if ( currentValInEditor != currentVal )
-        {
-            QString qval = currentVal.c_str();
-            int currentIndex = m_pTransferFunctionPreset->findText( qval );
-
-            if( currentIndex == -1 ) // item not found
-            {
-                m_pTransferFunctionPreset->addItem( qval );
-                m_pTransferFunctionPreset->setCurrentIndex( m_pTransferFunctionPreset->count() - 1 );
-            }
-            else
-            {
-                m_pTransferFunctionPreset->setCurrentIndex( currentIndex );
-            }
-        }
+        //        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
+        //        {
+        //
+        //        }
     }
+
+
+
+//
+//    // Test if tf selection has changed
+//    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
+//    if(imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
+//    {
+//        std::string currentValInEditor = m_pTransferFunctionPreset->currentText().toStdString();
+//        std::string currentVal = m_selectedTFKey;
+//
+//        if ( currentValInEditor != currentVal )
+//        {
+//            QString qval = currentVal.c_str();
+//            int currentIndex = m_pTransferFunctionPreset->findText( qval );
+//
+//            if( currentIndex == -1 ) // item not found
+//            {
+//                m_pTransferFunctionPreset->addItem( qval );
+//                m_pTransferFunctionPreset->setCurrentIndex( m_pTransferFunctionPreset->count() - 1 );
+//            }
+//            else
+//            {
+//                m_pTransferFunctionPreset->setCurrentIndex( currentIndex );
+//            }
+//        }
+//    }
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -189,7 +220,7 @@ void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
     QObject::disconnect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT(presetChoice(int)));
     QObject::disconnect(m_deleteButton, SIGNAL(   pressed()), this, SLOT(deleteTF()));
     QObject::disconnect(m_newButton, SIGNAL(   pressed()), this, SLOT(newTF()));
-    QObject::disconnect(m_reinitializeButton, SIGNAL(   pressed()), this, SLOT(reinitializeTF()));
+    QObject::disconnect(m_reinitializeButton, SIGNAL(   pressed()), this, SLOT(reinitializeTFPool()));
     QObject::disconnect(m_renameButton, SIGNAL(   pressed()), this, SLOT(renameTF()));
     QObject::disconnect(m_importButton, SIGNAL(   pressed()), this, SLOT(importTF()));
     QObject::disconnect(m_exportButton, SIGNAL(   pressed()), this, SLOT(exportTF()));
@@ -216,15 +247,13 @@ void TransferFunctionEditor::presetChoice(int index)
 {
     SLM_TRACE_FUNC();
     m_pTransferFunctionPreset->setCurrentIndex(index);
-    this->updateImageWithSeletedTransferFunction();
+    this->updateTransferFunction();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void TransferFunctionEditor::deleteTF()
 {
-    SLM_TRACE_FUNC();
-
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Deleting confirmation");
     messageBox.setMessage("Are you sure you want to delete this transfer function?");
@@ -235,30 +264,34 @@ void TransferFunctionEditor::deleteTF()
 
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        ::fwData::Composite::sptr tfc = m_tranferFunctionComposite.lock();
+        ::fwData::Composite::sptr tfc = this->getObject< ::fwData::Composite > ();
 
         if( tfc->size() > 1 )
         {
             int indexSelectedTF = m_pTransferFunctionPreset->currentIndex();
-            std::string selectedTF = m_selectedTranferFunctionId.lock()->value();
-            tfc->erase(selectedTF);
+
+            ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
+
+            ::fwComEd::helper::Composite compositeHelper(poolTF);
+            OSLM_ASSERT("TF "<< m_selectedTFKey <<" missing in pool", this->hasTransferFunctionName(m_selectedTFKey));
+            compositeHelper.remove(m_selectedTFKey);
+            compositeHelper.notify(this->getSptr());
+
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
-            std::string defaultTFName = ::fwData::TransfertFunction::defaultTransfertFunctionName;
+            std::string defaultTFName = ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME;
 
             int index = m_pTransferFunctionPreset->findText(QString(defaultTFName.c_str()));
             index = (index < 0)? 0 : index;
             m_pTransferFunctionPreset->setCurrentIndex(index);
 
-            this->updateImageWithSeletedTransferFunction();
+            this->updateTransferFunction();
         }
         else
         {
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage("You can not remove this transfer function because the program requires at least one.");
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "You can not remove this transfer function because the program requires at least one.",
+                    ::fwGui::dialog::IMessageDialog::WARNING );
         }
     }
 }
@@ -267,13 +300,10 @@ void TransferFunctionEditor::deleteTF()
 
 void TransferFunctionEditor::newTF()
 {
-    SLM_TRACE_FUNC();
-
-    std::string name (m_selectedTranferFunctionId.lock()->value());
-    std::string newName = name;
-    if( hasTransferFunctionName(newName) )
+    std::string newName = this->getSelectedTransferFunction()->getName();
+    if( this->hasTransferFunctionName(newName) )
     {
-        newName = createTransferFunctionName(newName);
+        newName = this->createTransferFunctionName(newName);
     }
 
     fwGui::dialog::InputDialog inputDialog;
@@ -286,25 +316,27 @@ void TransferFunctionEditor::newTF()
     {
         if(!this->hasTransferFunctionName(newName))
         {
-            ::fwData::TransfertFunction::NewSptr pNewTransferFunction ;
-            ::fwData::Object::sptr obj = (*m_tranferFunctionComposite.lock())[name];
+            ::fwData::TransfertFunction_VERSION_II::NewSptr pNewTransferFunction ;
+            ::fwData::TransfertFunction_VERSION_II::sptr selectedTF = this->getSelectedTransferFunction();
 
-            pNewTransferFunction->deepCopy(obj);
-            pNewTransferFunction->setCRefName(newName);
-            (*m_tranferFunctionComposite.lock())[newName] = pNewTransferFunction;
+            pNewTransferFunction->deepCopy(selectedTF);
+            pNewTransferFunction->setName(newName);
+            ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
+            ::fwComEd::helper::Composite compositeHelper(poolTF);
+            compositeHelper.add(newName, pNewTransferFunction);
+
             m_pTransferFunctionPreset->addItem(QString(newName.c_str()));
             m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->count()-1);
+            this->updateTransferFunction();
 
-            this->updateImageWithSeletedTransferFunction();
+            compositeHelper.notify(this->getSptr());
         }
         else
         {
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage("This transfer function name already exists so you can not overwrite it.");
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "This transfer function name already exists so you can not overwrite it.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
     else
@@ -320,7 +352,7 @@ void TransferFunctionEditor::newTF()
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::reinitializeTF()
+void TransferFunctionEditor::reinitializeTFPool()
 {
     SLM_TRACE_FUNC();
 
@@ -334,10 +366,15 @@ void TransferFunctionEditor::reinitializeTF()
 
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        (*m_tranferFunctionComposite.lock()).clear();
+        ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite > ();
+
+        ::fwComEd::helper::Composite compositeHelper(tfPool);
+        compositeHelper.clear();
+        compositeHelper.notify(this->getSptr());
+
         this->initTransferFunctions();
 
-        this->updateImageWithSeletedTransferFunction();
+        this->updateTransferFunction();
     }
 }
 
@@ -345,8 +382,7 @@ void TransferFunctionEditor::reinitializeTF()
 
 void TransferFunctionEditor::renameTF()
 {
-    SLM_TRACE_FUNC();
-    if ( m_selectedTranferFunctionId.lock()->value().find("STD") != std::string::npos )
+    if ( m_selectedTFKey.find("STD") != std::string::npos )
     {
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
@@ -357,7 +393,7 @@ void TransferFunctionEditor::renameTF()
         return;
     }
 
-    std::string newName (m_selectedTranferFunctionId.lock()->value());
+    std::string newName (m_selectedTFKey);
 
     fwGui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
@@ -366,21 +402,29 @@ void TransferFunctionEditor::renameTF()
     newName = inputDialog.getInput();
 
     if (    ! newName.empty() &&
-            newName != m_selectedTranferFunctionId.lock()->value())
+            newName != m_selectedTFKey)
     {
-        if( ! hasTransferFunctionName(newName) )
+        if( ! this->hasTransferFunctionName(newName) )
         {
             std::string str = m_pTransferFunctionPreset->currentText().toStdString();
-            ::fwData::TransfertFunction::sptr pTF = ::fwData::TransfertFunction::dynamicCast((*m_tranferFunctionComposite.lock())[str]);
-            pTF->setCRefName(newName);
 
-            (*m_tranferFunctionComposite.lock()).erase(str);
-            (*m_tranferFunctionComposite.lock())[newName] = pTF;
-            m_selectedTranferFunctionId.lock()->value() = newName;
+            ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
+            ::fwData::TransfertFunction_VERSION_II::sptr pTF;
+            pTF = ::fwData::TransfertFunction_VERSION_II::dynamicCast((*tfPool)[str]);
+            pTF->setName(newName);
+
+            ::fwComEd::helper::Composite compositeHelper(tfPool);
+            compositeHelper.remove(str);
+            compositeHelper.add(newName, pTF);
+            compositeHelper.swap(m_selectedTFKey, pTF);
+            compositeHelper.notify(this->getSptr());
+
+            //m_selectedTFKey = newName;
+
             m_pTransferFunctionPreset->setItemText(m_pTransferFunctionPreset->currentIndex(), QString(newName.c_str()));
             m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->findText(QString(newName.c_str())));
 
-            this->updateImageWithSeletedTransferFunction();
+            this->updateTransferFunction();
         }
         else
         {
@@ -407,7 +451,8 @@ void TransferFunctionEditor::renameTF()
 
 void TransferFunctionEditor::importTF()
 {
-    SLM_TRACE_FUNC();
+    ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
+    ::fwComEd::helper::Composite compositeHelper(tfPool);
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select one or more transfer functions to import");
@@ -422,9 +467,9 @@ void TransferFunctionEditor::importTF()
     if ( files )
     {
         ::fwXML::Serializer serializer;
-        ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new fwXML::NeverSplitPolicy);
+        ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new ::fwXML::NeverSplitPolicy);
         serializer.setSplitPolicy(spolicy);
-        ::fwData::TransfertFunction::sptr  pTf;
+        ::fwData::TransfertFunction_VERSION_II::sptr  pTf;
 
         bool tfIsImported;
         BOOST_FOREACH( ::boost::filesystem::path tfPath, files->getPaths() )
@@ -444,7 +489,7 @@ void TransferFunctionEditor::importTF()
 
             if ( tfIsImported )
             {
-                pTf = ::fwData::TransfertFunction::dynamicCast(pObject);
+                pTf = ::fwData::TransfertFunction_VERSION_II::dynamicCast(pObject);
                 if (pTf == 0)
                 {
                     SLM_DEBUG("This XML file is not a transfer function");
@@ -454,14 +499,14 @@ void TransferFunctionEditor::importTF()
 
             if ( tfIsImported )
             {
-                if( hasTransferFunctionName( pTf->getName() ) )
+                if( this->hasTransferFunctionName( pTf->getName() ) )
                 {
-                    pTf->setCRefName( createTransferFunctionName( pTf->getName() ) );
+                    pTf->setName( this->createTransferFunctionName( pTf->getName() ) );
                 }
 
-                ::fwData::TransfertFunction::NewSptr  pNewTf;
+                ::fwData::TransfertFunction_VERSION_II::NewSptr  pNewTf;
                 pNewTf->deepCopy(pTf);
-                (*m_tranferFunctionComposite.lock())[pTf->getName()] = pNewTf;
+                compositeHelper.add(pTf->getName(), pNewTf);
                 m_pTransferFunctionPreset->addItem(QString(pTf->getName().c_str()));
             }
             else
@@ -480,9 +525,10 @@ void TransferFunctionEditor::importTF()
 
     if( someTfHasBeenImported )
     {
-        m_pTransferFunctionPreset->setCurrentIndex((*m_tranferFunctionComposite.lock()).size()-1);
-        this->updateImageWithSeletedTransferFunction();
+        m_pTransferFunctionPreset->setCurrentIndex((*tfPool).size()-1);
+        this->updateTransferFunction();
     }
+    compositeHelper.notify(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -491,7 +537,7 @@ void TransferFunctionEditor::exportTF()
 {
     SLM_TRACE_FUNC();
 
-    if (m_selectedTranferFunctionId.lock()->value().find("STD")!=std::string::npos)
+    if (m_selectedTFKey.find("STD")!=std::string::npos)
     {
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
@@ -550,16 +596,14 @@ void TransferFunctionEditor::exportTF()
                 serializer.setPathPolicy(pPathPolicy);
                 ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > pSplitPolicy (new ::fwXML::NeverSplitPolicy());
                 serializer.setSplitPolicy(pSplitPolicy);
-
-                serializer.serialize( (*m_tranferFunctionComposite.lock())[m_selectedTranferFunctionId.lock()->value()] );
+                ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
+                serializer.serialize( (*tfPool)[m_selectedTFKey] );
 
                 if ( ! ::boost::filesystem::exists(tfPath) )
                 {
                     OSLM_ERROR("Input File \"" <<  tfPath.string() <<  "\" does not exist\n");
                 }
-
             }
-
         }
         catch(std::exception& e)
         {
@@ -572,30 +616,16 @@ void TransferFunctionEditor::exportTF()
 
 void TransferFunctionEditor::initTransferFunctions()
 {
-    SLM_TRACE_FUNC();
+    // Get transfer function composite and selected TF
+    ::fwData::Composite::sptr tfc = this->getObject< ::fwData::Composite >( );
 
-    SLM_ASSERT("Sorry, this image is not a medical image", this->getObject()->getFieldSize( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) );
+    ::fwComEd::helper::Composite compositeHelper(tfc);
 
-    // Get transfert function composite and selected TF
-    ::fwData::Composite::sptr tfc = this->getObject()->getFieldSingleElement< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
-    m_tranferFunctionComposite = tfc;
-    ::fwData::String::sptr selectedTfId = this->getObject()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_transfertFunctionId );
-    m_selectedTranferFunctionId = selectedTfId;
-    OSLM_TRACE("m_selectedTranferFunctionId : " <<  selectedTfId->value());
-
-
-    // Test if transfert function composite has few TF, if no then create default TF
-    std::string defaultTFName = ::fwData::TransfertFunction::defaultTransfertFunctionName;
-    if (    tfc->size() == 0 ||
-            tfc->find(defaultTFName) != tfc->end() && tfc->size() == 1 )
+    // Test if transfer function composite has few TF, if no then create default TF
+    if (    tfc->empty() ||
+            tfc->find(m_selectedTFKey) != tfc->end() && tfc->size() == 1 )
     {
-        if ( tfc->size() == 0 )
-        {
-            (*tfc)[defaultTFName] = ::fwData::TransfertFunction::createDefaultTransfertFunction(  this->getObject< ::fwData::Image >() );
-            selectedTfId->value() = defaultTFName;
-        }
-
-        // Parse all TF contained in uiTF Bundle's ressources
+        // Parse all TF contained in uiTF Bundle's resources
         std::vector< ::boost::filesystem::path > paths;
         ::boost::filesystem::path pathRoot ("Bundles/uiTF_" + std::string(UITF_VER) + "/tf");
         for(    ::boost::filesystem::directory_iterator it(pathRoot);
@@ -605,137 +635,64 @@ void TransferFunctionEditor::initTransferFunctions()
             if(     ! ::boost::filesystem::is_directory(*it) &&
                     ::boost::filesystem::extension(*it) == ".xml" )
             {
-                paths.push_back(*it);
-#if BOOST_FILESYSTEM_VERSION > 2
-                OSLM_DEBUG( "New TF xml parsed in bundle :" << it->path().string() );
-#else
-                OSLM_DEBUG( "New TF xml parsed in bundle :" << it->string() );
-#endif
+//                paths.push_back(*it);
             }
         }
+
 
         // Load TF parsed from xml file
         ::fwXML::Serializer serializer;
         ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new ::fwXML::NeverSplitPolicy);
         serializer.setSplitPolicy(spolicy);
-        ::fwData::TransfertFunction::sptr pTf;
 
         BOOST_FOREACH( ::boost::filesystem::path file, paths )
         {
             ::fwTools::Object::sptr pObject = serializer.deSerialize( file, false , false /*NO schema verification*/ );
-            pTf =  ::fwData::TransfertFunction::dynamicCast(pObject);
+            ::fwData::TransfertFunction_VERSION_II::sptr pTf =  ::fwData::TransfertFunction_VERSION_II::dynamicCast(pObject);
             SLM_ASSERT( "Sorry, loaded object is not a TF object.", pTf );
 
-            if( hasTransferFunctionName( pTf->getName() ) )
+            if( this->hasTransferFunctionName( pTf->getName() ) )
             {
-                pTf->setCRefName( createTransferFunctionName( pTf->getName() ) );
+                pTf->setName( this->createTransferFunctionName( pTf->getName() ) );
             }
-            ::fwData::TransfertFunction::NewSptr pNewTf;
-            pNewTf->deepCopy(pTf);
-            (*tfc)[ pTf->getName() ] = pNewTf;
-        }
-
-//        // Load TF from VTK
-//        ::fwData::Integer::sptr minField = this->getObject()->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMinId );
-//        ::fwData::Integer::sptr maxField = this->getObject()->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_windowMaxId );
-//
-//        int width  = maxField->value() - minField->value();
-//        SLM_ASSERT("Sorry, width is null." ,width != 0);
-//
-//        std::vector<std::string> lutNames = vtkLookupTableManager::GetAvailableLookupTables();
-//        for(    unsigned int i=0;
-//                i<lutNames.size();
-//                i++)
-//        {
-//            ::fwData::TransfertFunction::sptr  pTf = ::fwData::TransfertFunction::New();
-//            pTf->setCRefName( lutNames[i].c_str());
-//            ::boost::shared_ptr< ::fwData::Color > color;
-//
-//            vtkLookupTable* lut = vtkLookupTableManager::GetLookupTable(i);
-//            unsigned int nbValues = lut->GetNumberOfTableValues ();
-//            for(    unsigned int index=0;
-//                    index < nbValues;
-//                    index+=8)
-//            {
-//                int step = minField->value() + (width/nbValues) * index;
-//                vtkFloatingPointType rgba[ 4 ];
-//                lut->GetTableValue ( index, rgba );
-//                color = pTf->getColor( step );
-//                color->getRefRGBA()[0] = rgba[0];
-//                color->getRefRGBA()[1] = rgba[1];
-//                color->getRefRGBA()[2] = rgba[2];
-//                color->getRefRGBA()[3] = (float) index /(float) nbValues;
-//            }
-//
-//            (*tfc)[pTf->getName()] = pTf;
-//        }
-
-        // If no TF in the uiTF Bundle's ressources, create a Basic TF
-        if( paths.size() == 0 )
-        {
-            ::fwData::TransfertFunction::sptr  pTf = ::fwData::TransfertFunction::New();
-            pTf->setCRefName( "Basic TF" );
-            ::fwData::Color::sptr color;
-
-            color = pTf->getColor( 0 );
-            color->getRefRGBA()[0] = 0;
-            color->getRefRGBA()[1] = 0;
-            color->getRefRGBA()[2] = 0;
-            color->getRefRGBA()[3] = 0;
-
-            color = pTf->getColor( 100 );
-            color->getRefRGBA()[0] = 1;
-            color->getRefRGBA()[1] = 1;
-            color->getRefRGBA()[2] = 1;
-            color->getRefRGBA()[3] = 1;
-
-            (*tfc)[pTf->getName()] = pTf;
+            compositeHelper.add(pTf->getName(), pTf);
         }
     }
 
+    if ( !this->hasTransferFunctionName(::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME) )
+    {
+        ::fwData::TransfertFunction_VERSION_II::sptr defaultTF = ::fwData::TransfertFunction_VERSION_II::createDefaultTF();
+        compositeHelper.add(defaultTF->getName(), defaultTF);
+    }
 
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
-
-    for (   ::fwData::Composite::Container::iterator iterTF = tfc->begin();
-            iterTF != tfc->end();
-            ++iterTF )
+    BOOST_FOREACH(::fwData::Composite::value_type elt, *tfc)
     {
-        m_pTransferFunctionPreset->addItem( iterTF->first.c_str() );
+        if(m_selectedTFKey != elt.first)
+        {
+            m_pTransferFunctionPreset->addItem( elt.first.c_str() );
+        }
     }
 
-    SLM_ASSERT("Sorry, selected TF does not exist in tfc", tfc->find( selectedTfId->value() ) !=  tfc->end() );
-    int index = m_pTransferFunctionPreset->findText( QString( selectedTfId->value().c_str() ) );
+    //TODO : change selection with current TF
+    int index = m_pTransferFunctionPreset->findText( QString( ::fwData::TransfertFunction_VERSION_II::s_DEFAULT_TF_NAME.c_str() ) );
     m_pTransferFunctionPreset->setCurrentIndex(index);
-}
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-void TransferFunctionEditor::notification()
-{
-    SLM_TRACE_FUNC();
-
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( this->getObject< ::fwData::Image >() );
-
-    ::fwComEd::ImageMsg::NewSptr imageModifiedMsg;
-    imageModifiedMsg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
-    ::fwServices::IEditionService::notify( this->getSptr(),  this->getObject< ::fwData::Image >(), imageModifiedMsg );
+    compositeHelper.notify(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 bool TransferFunctionEditor::hasTransferFunctionName(const std::string & _sName)
 {
-    SLM_TRACE_FUNC();
-    return m_tranferFunctionComposite.lock()->find(_sName) != m_tranferFunctionComposite.lock()->end();
+    ::fwData::Composite::sptr poolTf = this->getObject< ::fwData::Composite >();
+    return poolTf->find(_sName) != poolTf->end();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 std::string TransferFunctionEditor::createTransferFunctionName(const std::string & _sBasename)
 {
-    SLM_TRACE_FUNC();
-
     bool bHasTransferFunctionName = true;
     std::string newName = _sBasename;
     int cpt = 1;
@@ -744,7 +701,7 @@ std::string TransferFunctionEditor::createTransferFunctionName(const std::string
         std::stringstream tmpStr;
         tmpStr <<  _sBasename <<  "_" <<  cpt;
         newName = tmpStr.str();
-        bHasTransferFunctionName = hasTransferFunctionName(newName);
+        bHasTransferFunctionName = this->hasTransferFunctionName(newName);
         cpt++;
     }
 
@@ -753,16 +710,37 @@ std::string TransferFunctionEditor::createTransferFunctionName(const std::string
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::updateImageWithSeletedTransferFunction()
+void TransferFunctionEditor::updateTransferFunction()
 {
-    SLM_TRACE_FUNC();
+    std::string newSelectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
+    OSLM_DEBUG("Transfer function selected : " <<  newSelectedTFKey);
 
-    std::string str = m_pTransferFunctionPreset->currentText().toStdString();
-    OSLM_DEBUG("Transfer function selected : " <<  str);
-    m_selectedTranferFunctionId.lock()->value() = str;
+    ::fwData::Composite::sptr tfSelection = this->getTFSelection();
+    ::fwComEd::helper::Composite compositeHelper(tfSelection);
 
-    this->notification();
+    OSLM_ASSERT("TF "<< newSelectedTFKey <<" missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
+    ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
+    ::fwData::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
+    compositeHelper.swap(m_selectedTFKey, newSelectedTF);
+    compositeHelper.notify(this->getSptr());
 }
+
+//------------------------------------------------------------------------------
+
+::fwData::Composite::sptr TransferFunctionEditor::getTFSelection() const
+{
+    ::fwData::Composite::sptr tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
+    return tfSelection;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::TransfertFunction_VERSION_II::sptr TransferFunctionEditor::getSelectedTransferFunction() const
+{
+    ::fwData::Composite::sptr tfSelection = this->getTFSelection();
+    return ::fwData::TransfertFunction_VERSION_II::dynamicCast((*tfSelection)[m_selectedTFKey]);
+}
+
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 

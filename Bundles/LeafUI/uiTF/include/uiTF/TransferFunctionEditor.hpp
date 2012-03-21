@@ -10,8 +10,7 @@
 #include <QObject>
 
 #include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/String.hpp>
+#include <fwData/TransfertFunction.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -39,10 +38,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (TransferFunctionEditor)(::gui::editor::IEditor) ) ;
 
     /// Basic constructor, do nothing.
-    UITF_API TransferFunctionEditor()  throw() ;
+    UITF_API TransferFunctionEditor();
 
     /// Basic destructor, do nothing.
-    UITF_API virtual ~TransferFunctionEditor()  throw() ;
+    UITF_API virtual ~TransferFunctionEditor();
 
 protected:
 
@@ -52,7 +51,7 @@ protected:
     * Example of configuration
     * @verbatim
     <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" >
-        <image id="myImage" />
+        <config selectedTFKey="SelectedTF" tfPoolFwID="TFSelections" />
     </service>
     @endverbatim
     * - <image id="myImage" /> : Set the link between the service and the associated image.
@@ -60,39 +59,42 @@ protected:
     * \b id : mandatory (no default value) : set the id of the associated image.
     */
     UITF_API virtual void configuring() throw( ::fwTools::Failed );
-    
+
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
     UITF_API virtual void starting() throw( ::fwTools::Failed );
 
     /// Update the TransferFunctionEditor, do nothing.
     UITF_API virtual void updating() throw( ::fwTools::Failed );
-    
+
     /// Update the TransferFunctionEditor when message, do nothing.
     UITF_API virtual void updating(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed );
-    
+
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping() throw( ::fwTools::Failed );
-    
+
     /// Initialize the transfer functions, get fields m_transfertFunctionCompositeId and m_transfertFunctionId associated to the related image, add their names to the ComboBox. If the image does not contain any TF, the create a few from the ressources of the Bundle.
     UITF_API void initTransferFunctions();
 
-    /// Send a ImageMsg::TRANSFERTFUNCTION to the image so that it update itself.
-    UITF_API void notification();
-
     /// Check if the image contain the specified TF.
     UITF_API bool hasTransferFunctionName(const std::string & _sName);
-    
+
     /// Create a string that represents a TF name not already present in the image. For example, if blabla is already used, it will return blabla_1.
     UITF_API std::string createTransferFunctionName( const std::string & _sBasename );
 
     /// Update the image with the selected TF in the ComboBox.
-    UITF_API void updateImageWithSeletedTransferFunction();
+    UITF_API void updateTransferFunction();
+
+    /// Get the current transfer function pool
+    UITF_API ::fwData::Composite::sptr getTFSelection() const;
+
+    /// Get the current transfer function
+    UITF_API ::fwData::TransfertFunction_VERSION_II::sptr getSelectedTransferFunction() const;
 
 private slots:
 
     void deleteTF();
     void newTF();
-    void reinitializeTF();
+    void reinitializeTFPool();
     void renameTF();
     void importTF();
     void exportTF();
@@ -109,8 +111,14 @@ private:
     QPushButton *m_exportButton;
     QWidget* m_container;
 
-    ::fwData::Composite::wptr m_tranferFunctionComposite;
-    ::fwData::String::wptr m_selectedTranferFunctionId;
+    /**
+     * @brief Identifier of the field containing the current selection of TransfertFunction.
+     * by defaults use ::fwComEd::Dictionary::m_transfertFunctionId
+     */
+    std::string m_selectedTFKey;
+
+    /// fwID of tf selection ( used during configuration )
+    std::string m_tfSelectionFwID;
 };
 
 }
