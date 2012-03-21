@@ -146,9 +146,9 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
                     readedValue++;
                 }
                 // TF1 contains the first and third tranformations
-                dataComposite->setField_NEWAPI("TF1",transformation1);
+                dataComposite->setField("TF1",transformation1);
                 // TF2 contains the first and third tranformations
-                dataComposite->setField_NEWAPI("TF2",transformation2);
+                dataComposite->setField("TF2",transformation2);
             }
             assert( readedValue==32 );
             file.close();

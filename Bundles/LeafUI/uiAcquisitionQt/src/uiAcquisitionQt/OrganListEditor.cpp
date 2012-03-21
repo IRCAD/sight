@@ -171,7 +171,7 @@ void OrganListEditor::updateReconstructions()
         }
 
         bool showAllRec;
-        showAllRec = acq->getField_NEWAPI("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+        showAllRec = acq->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
         m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
         m_organChoice->setEnabled(m_showCheckBox->checkState() == Qt::Unchecked);
@@ -228,7 +228,7 @@ void OrganListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
 void OrganListEditor::onShowReconstructions(int state )
 {
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    acq->setField_NEWAPI("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
+    acq->setField("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
 
     ::fwComEd::AcquisitionMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS );

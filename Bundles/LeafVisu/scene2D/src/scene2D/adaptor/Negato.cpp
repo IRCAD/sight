@@ -121,21 +121,21 @@ void Negato::updateFromImage( QImage * qimg )
     switch (m_orientation)
     {
         case MedicalImageAdaptor::X_AXIS:
-            index = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+            index = image->setDefaultField(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[1];
             qImageSpacing[1] = spacing[2];
             SLM_TRACE("Orientation = X");
             break;
 
         case MedicalImageAdaptor::Y_AXIS:
-            index = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_frontalSliceIndexId, ::fwData::Integer::New(0));
+            index = image->setDefaultField(::fwComEd::Dictionary::m_frontalSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[2];
             SLM_TRACE("Orientation = Y");
             break;
 
         case MedicalImageAdaptor::Z_AXIS:
-            index = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_axialSliceIndexId, ::fwData::Integer::New(0));
+            index = image->setDefaultField(::fwComEd::Dictionary::m_axialSliceIndexId, ::fwData::Integer::New(0));
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[1];
             SLM_TRACE("Orientation = Z");

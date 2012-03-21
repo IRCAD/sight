@@ -86,12 +86,12 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameTyp
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field = object->getField_NEWAPI(name);
+    ::fwData::Object::sptr field = object->getField(name);
     if (!field)
     {
         m_objectMsg->appendAddedField(name, defaultValue);
     }
-    return object->setDefaultField_NEWAPI(name, defaultValue);
+    return object->setDefaultField(name, defaultValue);
 }
 
 } // namespace helper

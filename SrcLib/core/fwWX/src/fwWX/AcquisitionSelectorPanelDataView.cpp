@@ -457,7 +457,7 @@ void AcquisitionSelectorPanelDataView::UpdateProperty(wxPropertyGridEvent& event
         if ( m_showAllRecPGProperty.second == property  )
         {
             bool showAllRecs = value.GetLong();
-            m_showAllRecPGProperty.first.lock()->setField_NEWAPI("ShowReconstructions", ::fwData::Boolean::NewSptr(showAllRecs) );
+            m_showAllRecPGProperty.first.lock()->setField("ShowReconstructions", ::fwData::Boolean::NewSptr(showAllRecs) );
 
             ::fwComEd::AcquisitionMsg::NewSptr msg;
             msg->addEvent("ShowReconstructions");

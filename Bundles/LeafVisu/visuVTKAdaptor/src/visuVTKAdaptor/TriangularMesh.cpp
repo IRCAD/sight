@@ -538,7 +538,7 @@ void TriangularMesh::createTransformService()
     }
 
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
-    fieldTransform = triangularMesh->setDefaultField_NEWAPI("TransformMatrix", ::fwData::TransformationMatrix3D::New());
+    fieldTransform = triangularMesh->setDefaultField("TransformMatrix", ::fwData::TransformationMatrix3D::New());
 
     vtkTransform *vtkFieldTransform = vtkTransform::New();
     vtkFieldTransform->Identity();

@@ -31,7 +31,7 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr Object::getField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr defaultValue ) const
+::fwData::Object::sptr Object::getField( const FieldNameType & name, ::fwData::Object::sptr defaultValue ) const
 {
     ::fwData::Object::sptr object = defaultValue;
     FieldMapType::const_iterator iter = m_fields.find(name);
@@ -44,21 +44,21 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::csptr Object::getConstField_NEWAPI( const FieldNameType & name ) const
+::fwData::Object::csptr Object::getConstField( const FieldNameType & name ) const
 {
-    return this->getField_NEWAPI(name);
+    return this->getField(name);
 }
 
 //------------------------------------------------------------------------------
 
-const Object::FieldMapType& Object::getFields_NEWAPI() const
+const Object::FieldMapType& Object::getFields() const
 {
     return m_fields;
 }
 
 //------------------------------------------------------------------------------
 
-Object::FieldNameVectorType Object::getFieldNames_NEWAPI() const
+Object::FieldNameVectorType Object::getFieldNames() const
 {
     FieldNameVectorType names;
     std::transform( m_fields.begin(), m_fields.end(),
@@ -69,7 +69,7 @@ Object::FieldNameVectorType Object::getFieldNames_NEWAPI() const
 
 //------------------------------------------------------------------------------
 
-void Object::setField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr obj)
+void Object::setField( const FieldNameType & name, ::fwData::Object::sptr obj)
 {
     std::pair<FieldMapType::iterator, bool> res = m_fields.insert(FieldMapType::value_type(name, obj));
     if( !res.second )
@@ -80,7 +80,7 @@ void Object::setField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr
 
 //------------------------------------------------------------------------------
 
-void Object::setFields_NEWAPI( const FieldMapType & fieldMap )
+void Object::setFields( const FieldMapType & fieldMap )
 {
     m_fields = fieldMap;
 }
@@ -99,7 +99,7 @@ void Object::removeField( const FieldNameType & name )
 
 //------------------------------------------------------------------------------
 
-void Object::updateFields_NEWAPI( const FieldMapType & fieldMap )
+void Object::updateFields( const FieldMapType & fieldMap )
 {
     m_fields.insert(fieldMap.begin(), fieldMap.end());
 }
@@ -109,7 +109,7 @@ void Object::updateFields_NEWAPI( const FieldMapType & fieldMap )
 
 void Object::fieldShallowCopy( ::fwData::Object::csptr source )
 {
-    this->setFields_NEWAPI(source->getFields_NEWAPI());
+    this->setFields(source->getFields());
 }
 
 //-----------------------------------------------------------------------------
@@ -117,10 +117,10 @@ void Object::fieldShallowCopy( ::fwData::Object::csptr source )
 void Object::fieldDeepCopy( ::fwData::Object::csptr source )
 {
     m_fields.clear();
-    ::fwData::Object::FieldMapType sourceFields = source->getFields_NEWAPI();
+    ::fwData::Object::FieldMapType sourceFields = source->getFields();
     BOOST_FOREACH(::fwData::Object::FieldMapType::value_type elt, sourceFields)
     {
-        this->setField_NEWAPI(elt.first, ::fwData::Object::copy(elt.second));
+        this->setField(elt.first, ::fwData::Object::copy(elt.second));
     }
 }
 

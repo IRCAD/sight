@@ -33,10 +33,10 @@ bool MedicalImageHelpers::checkLandmarks( ::fwData::Image::sptr _pImg )
     bool fieldIsModified = false;
 
     // Manage image landmarks
-    if ( ! _pImg->getField_NEWAPI( ::fwComEd::Dictionary::m_imageLandmarksId ) )
+    if ( ! _pImg->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
         ::fwData::PointList::NewSptr pl;
-        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
+        _pImg->setField( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
         fieldIsModified = true;
     }
 
@@ -83,22 +83,22 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
     const ::fwData::Image::SizeType &imageSize = _pImg->getSize();
 
-    ::fwData::Integer::sptr axialIdx    = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
-    ::fwData::Integer::sptr frontalIdx  = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId);
-    ::fwData::Integer::sptr sagittalIdx = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
+    ::fwData::Integer::sptr axialIdx    = _pImg->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
+    ::fwData::Integer::sptr frontalIdx  = _pImg->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId);
+    ::fwData::Integer::sptr sagittalIdx = _pImg->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
 
     // Manage image landmarks
     if ( ! (axialIdx && frontalIdx && sagittalIdx) )
     {
         // Set value
         axialIdx = ::fwData::Integer::New(-1);
-        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_axialSliceIndexId, axialIdx );
+        _pImg->setField( ::fwComEd::Dictionary::m_axialSliceIndexId, axialIdx );
 
         frontalIdx = ::fwData::Integer::New(-1);
-        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_frontalSliceIndexId, frontalIdx );
+        _pImg->setField( ::fwComEd::Dictionary::m_frontalSliceIndexId, frontalIdx );
 
         sagittalIdx = ::fwData::Integer::New(-1);
-        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_sagittalSliceIndexId, sagittalIdx );
+        _pImg->setField( ::fwComEd::Dictionary::m_sagittalSliceIndexId, sagittalIdx );
 
         fieldIsModified = true;
     }
@@ -142,9 +142,9 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
     MedicalImageHelpers::checkImageSliceIndex(_pImg);
 
-    point->getRefCoord()[0] = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
-    point->getRefCoord()[1] = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId  )->value();
-    point->getRefCoord()[2] = _pImg->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId    )->value();
+    point->getRefCoord()[0] = _pImg->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
+    point->getRefCoord()[1] = _pImg->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId  )->value();
+    point->getRefCoord()[2] = _pImg->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId    )->value();
 
     return point;
 }
@@ -157,11 +157,11 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 
     bool fieldIsModified = false;
 
-    if ( ! _pImg->getField_NEWAPI( ::fwComEd::Dictionary::m_commentId ) )
+    if ( ! _pImg->getField( ::fwComEd::Dictionary::m_commentId ) )
     {
         // Set value
         ::fwData::String::NewSptr param("Original image");
-        _pImg->setField_NEWAPI( ::fwComEd::Dictionary::m_commentId, param );
+        _pImg->setField( ::fwComEd::Dictionary::m_commentId, param );
         fieldIsModified = true;
     }
 
@@ -176,12 +176,12 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     SLM_ASSERT("pImage pointer null", pImage);
 
     std::stringstream label;
-    ::fwData::Integer::sptr intField = pPatient->setDefaultField_NEWAPI( ::fwComEd::Dictionary::m_acquisitionCountId , ::fwData::Integer::New(0));
+    ::fwData::Integer::sptr intField = pPatient->setDefaultField( ::fwComEd::Dictionary::m_acquisitionCountId , ::fwData::Integer::New(0));
     label << "I" << intField->value();
     ++(intField->value());
 
     ::fwData::String::NewSptr labelField(label.str());
-    pImage->setField_NEWAPI(::fwComEd::Dictionary::m_imageLabelId, labelField);
+    pImage->setField(::fwComEd::Dictionary::m_imageLabelId, labelField);
 }
 
 //------------------------------------------------------------------------------

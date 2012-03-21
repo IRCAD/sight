@@ -171,7 +171,7 @@ void OrganListEditor::updateReconstructions()
         m_organChoice->Append(organChoices);
 
         bool showAllRec;
-        showAllRec = acq->getField_NEWAPI("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+        showAllRec = acq->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
         m_showCheckBox->SetValue(!showAllRec);
         m_organChoice->Enable(!m_showCheckBox->IsChecked());
@@ -221,7 +221,7 @@ void OrganListEditor::onOrganChoiceVisibility(wxCommandEvent & event )
 void OrganListEditor::onShowReconstructions(wxCommandEvent & event )
 {
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    acq->setField_NEWAPI("ShowReconstructions",  ::fwData::Boolean::NewSptr(!m_showCheckBox->IsChecked()) );
+    acq->setField("ShowReconstructions",  ::fwData::Boolean::NewSptr(!m_showCheckBox->IsChecked()) );
 
     ::fwComEd::AcquisitionMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS );

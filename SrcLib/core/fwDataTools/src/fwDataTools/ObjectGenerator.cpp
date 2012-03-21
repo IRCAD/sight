@@ -284,7 +284,7 @@ namespace fwDataTools
     }
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
-    tf->setField_NEWAPI( "fieldStringKey", myString );
+    tf->setField( "fieldStringKey", myString );
 
     return tf;
 }
@@ -309,7 +309,7 @@ namespace fwDataTools
     tf->addTFColor( 150,    ::fwData::TransferFunction::TFColor( 0.1f, 0.2f, 0.3f, 0.9f) );
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
-    tf->setField_NEWAPI( "fieldStringKey", myString );
+    tf->setField( "fieldStringKey", myString );
 
     return tf;
 }

@@ -257,14 +257,14 @@ void Image::updateImageOpacity()
     if (m_imagePortId>= 0)
     {
         ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-        if(img->getField_NEWAPI( "TRANSPARENCY" ) )
+        if(img->getField( "TRANSPARENCY" ) )
         {
-            ::fwData::Integer::sptr transparency = img->getField_NEWAPI< ::fwData::Integer >( "TRANSPARENCY" );
+            ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
             m_imageOpacity = (100 - (*transparency) ) / 100.0 ;
         }
-        if(img->getField_NEWAPI( "VISIBILITY" ) )
+        if(img->getField( "VISIBILITY" ) )
         {
-            ::fwData::Boolean::sptr visible = img->getField_NEWAPI< ::fwData::Boolean >( "VISIBILITY" );
+            ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
             m_imageOpacity = (*visible)?m_imageOpacity:0.0;
         }
         vtkImageBlend *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);

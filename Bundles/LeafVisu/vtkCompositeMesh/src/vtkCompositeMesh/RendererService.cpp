@@ -232,7 +232,7 @@ void RendererService::createAndAddActorToRender()
 
 
             OSLM_INFO("Mesh found: " << it->first);
-            if (myMesh->getField_NEWAPI( "MaterialMesh" ))
+            if (myMesh->getField( "MaterialMesh" ))
             {
                 // No Material data then default
                 if(elementNumber == 0)
@@ -251,7 +251,7 @@ void RendererService::createAndAddActorToRender()
             else
             {
                 // Material exists
-                ::fwData::Material::sptr matObjPtr = myMesh->getField_NEWAPI< ::fwData::Material >( "MaterialMesh" );
+                ::fwData::Material::sptr matObjPtr = myMesh->getField< ::fwData::Material >( "MaterialMesh" );
                 actor->GetProperty()->SetColor (matObjPtr->ambient()->red(), matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
             }
             mapper->Delete();

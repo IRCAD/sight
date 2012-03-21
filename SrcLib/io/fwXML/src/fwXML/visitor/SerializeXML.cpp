@@ -76,14 +76,14 @@ void SerializeXML::visit( ::fwData::Object::sptr obj)
     xmlNodePtr objectXMLNode = translator->getXMLFrom(obj);
 
     // save fields
-    if( ! obj->getFields_NEWAPI().empty() )
+    if( ! obj->getFields().empty() )
     {
         xmlNodePtr attributeNode = xmlNewNode( NULL, xmlStrdup( BAD_CAST "Attributes" )  );
         xmlAddChild( objectXMLNode, attributeNode );
 
-        BOOST_FOREACH( ::fwData::Object::FieldNameType name, obj->getFieldNames_NEWAPI() )
+        BOOST_FOREACH( ::fwData::Object::FieldNameType name, obj->getFieldNames() )
         {
-            ::fwData::Object::sptr objAttribute = obj->getField_NEWAPI(name);
+            ::fwData::Object::sptr objAttribute = obj->getField(name);
             if( objAttribute )
             {
                 // <element key="" value="" />

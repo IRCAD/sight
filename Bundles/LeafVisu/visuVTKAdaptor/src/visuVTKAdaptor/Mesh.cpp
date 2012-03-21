@@ -574,7 +574,7 @@ void Mesh::createTransformService()
     }
 
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
-    fieldTransform = mesh->setDefaultField_NEWAPI("TransformMatrix", ::fwData::TransformationMatrix3D::New());
+    fieldTransform = mesh->setDefaultField("TransformMatrix", ::fwData::TransformationMatrix3D::New());
 
     vtkTransform *vtkFieldTransform = vtkTransform::New();
     vtkFieldTransform->Identity();

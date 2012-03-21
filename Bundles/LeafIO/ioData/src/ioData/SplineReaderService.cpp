@@ -128,7 +128,7 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
 
     if(isTransfo)
     {
-        spline->setField_NEWAPI( ::fwComEd::Dictionary::position, objectMatrix ) ;
+        spline->setField( ::fwComEd::Dictionary::position, objectMatrix ) ;
         msg->addEvent( ::fwComEd::Dictionary::position ) ;
     }
     ::fwServices::IEditionService::notify(this->getSptr(), spline, msg);

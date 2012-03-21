@@ -137,7 +137,7 @@ void SField::starting()  throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 
     ::fwData::Object::sptr object = this->getObject< ::fwData::Object >() ;
-    const ::fwData::Object::FieldMapType& fieldsMap = object->getFields_NEWAPI();
+    const ::fwData::Object::FieldMapType& fieldsMap = object->getFields();
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
     {
@@ -387,7 +387,7 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
     ::fwData::Object::sptr object = this->getObject< ::fwData::Object >() ;
 
     OSLM_ASSERT(fieldName << " not found in object.",
-            object->getFields_NEWAPI().find(fieldName) == object->getFields_NEWAPI().end());
+            object->getFields().find(fieldName) == object->getFields().end());
 
     ConfigurationType conf = m_managerConfiguration->find("field", "id", fieldName).at(0);
     const std::string fieldType    = conf->getAttributeValue("type");

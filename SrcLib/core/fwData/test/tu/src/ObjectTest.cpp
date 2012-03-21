@@ -45,59 +45,59 @@ void ObjectTest::fieldTest()
     ::fwData::Object::sptr fieldObj1 = ::fwData::Object::New();
     ::fwData::Object::sptr fieldObj2 = ::fwData::Object::New();
 
-    CPPUNIT_ASSERT(obj->getFields_NEWAPI().empty());
+    CPPUNIT_ASSERT(obj->getFields().empty());
 
-    obj->setField_NEWAPI(FIELD_ID1, fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+    obj->setField(FIELD_ID1, fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
-    ::fwData::Object::FieldMapType localFields = obj->getFields_NEWAPI();
-    ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields_NEWAPI();
+    ::fwData::Object::FieldMapType localFields = obj->getFields();
+    ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields();
     localFields.insert( ::fwData::Object::FieldMapType::value_type(FIELD_ID2,fieldObj2));
 
-    CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
-    obj->updateFields_NEWAPI(localFields);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(2));
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+    obj->updateFields(localFields);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(2));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), fieldObj2);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
     ::fwData::Object::FieldNameVectorType refFieldNames;
     refFieldNames.push_back(FIELD_ID1);
     refFieldNames.push_back(FIELD_ID2);
-    ::fwData::Object::FieldNameVectorType fieldNames = obj->getFieldNames_NEWAPI();
+    ::fwData::Object::FieldNameVectorType fieldNames = obj->getFieldNames();
     CPPUNIT_ASSERT(refFieldNames == fieldNames);
 
-    obj->setFields_NEWAPI(localFieldsBackup);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+    obj->setFields(localFieldsBackup);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
-    fieldNames = obj->getFieldNames_NEWAPI();
+    fieldNames = obj->getFieldNames();
     refFieldNames.clear();
     refFieldNames.push_back(FIELD_ID1);
     CPPUNIT_ASSERT(refFieldNames == fieldNames);
 
-    obj->setField_NEWAPI(FIELD_ID1, fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj2);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+    obj->setField(FIELD_ID1, fieldObj2);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj2);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
     obj->removeField(FIELD_ID1);
-    CPPUNIT_ASSERT(obj->getFields_NEWAPI().empty());
+    CPPUNIT_ASSERT(obj->getFields().empty());
 
-    ::fwData::Object::sptr defaultField = obj->setDefaultField_NEWAPI(FIELD_ID1, fieldObj1);
+    ::fwData::Object::sptr defaultField = obj->setDefaultField(FIELD_ID1, fieldObj1);
     CPPUNIT_ASSERT(defaultField == fieldObj1);
 
-    defaultField = obj->setDefaultField_NEWAPI(FIELD_ID1, fieldObj2);
+    defaultField = obj->setDefaultField(FIELD_ID1, fieldObj2);
     CPPUNIT_ASSERT(defaultField != fieldObj2);
 }
 

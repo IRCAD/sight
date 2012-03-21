@@ -213,7 +213,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
     ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
 
     bool showPlanes;
-    showPlanes = planeList->getField_NEWAPI("ShowPlanes", ::fwData::Boolean::New(true))->value();
+    showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
     if(showPlanes)
     {
         BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
@@ -258,7 +258,7 @@ void PlaneList::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
 
             this->doStop();
             bool showPlanes;
-            showPlanes = planeList->getField_NEWAPI("ShowPlanes", ::fwData::Boolean::New(true))->value();
+            showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
             OSLM_INFO( "Receive event ShowPlanes : " << showPlanes );
             if(showPlanes)
             {
@@ -277,7 +277,7 @@ void PlaneList::doSwap() throw(fwTools::Failed)
 
     ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
     bool showPlanes;
-    showPlanes = planeList->getField_NEWAPI("ShowPlanes", ::fwData::Boolean::New(true))->value();
+    showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
     if(showPlanes)
     {
         this->doStart();

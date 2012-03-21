@@ -297,8 +297,8 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
                         valueObj = this->ObjectsFromXml( ConcretevalueNode, true );
                         SLM_ASSERT("valueObj not instanced", valueObj);
 
-                        OSLM_ASSERT("Sorry, attribute " << key << " already exists.", ! newObject->getField_NEWAPI(key) );
-                        newObject->setField_NEWAPI( key, valueObj );
+                        OSLM_ASSERT("Sorry, attribute " << key << " already exists.", ! newObject->getField(key) );
+                        newObject->setField( key, valueObj );
                     }
                     elementNode = XMLParser::nextXMLElement( elementNode->next );
                 }

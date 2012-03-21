@@ -175,8 +175,8 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
             filename->value() = this->requestFileName();
             if(!filename->value().empty())
             {
-                dataInfo->setField_NEWAPI("sceneID", sceneID);
-                dataInfo->setField_NEWAPI("filename", filename);
+                dataInfo->setField("sceneID", sceneID);
+                dataInfo->setField("filename", filename);
                 ::fwComEd::CompositeMsg::NewSptr compositeMsg;
                 compositeMsg->addEvent( "SNAP", dataInfo );
                 ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);

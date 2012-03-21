@@ -20,27 +20,27 @@
     ObjType::sptr field2 = ObjType::New();                                                                                        \
     ObjType::sptr field3 = ObjType::New();                                                                                        \
                                                                                                                                   \
-    object->setField_NEWAPI("F1", field1);                                                                                        \
-    object->setField_NEWAPI("F2", field2);                                                                                        \
-    object->setField_NEWAPI("F3", field3);                                                                                        \
+    object->setField("F1", field1);                                                                                        \
+    object->setField("F2", field2);                                                                                        \
+    object->setField("F3", field3);                                                                                        \
                                                                                                                                   \
     deepCopyObject->deepCopy(object);                                                                                             \
     CPPUNIT_ASSERT_EQUAL( object->getClassname(), deepCopyObject->getClassname() );                                               \
-    CPPUNIT_ASSERT_EQUAL( object->getFields_NEWAPI().size(), deepCopyObject->getFields_NEWAPI().size() );                         \
-    CPPUNIT_ASSERT( object->getField_NEWAPI("F1") != deepCopyObject->getField_NEWAPI("F1") );                                     \
-    CPPUNIT_ASSERT( object->getField_NEWAPI("F2") != deepCopyObject->getField_NEWAPI("F2") );                                     \
-    CPPUNIT_ASSERT( object->getField_NEWAPI("F3") != deepCopyObject->getField_NEWAPI("F3") );                                     \
+    CPPUNIT_ASSERT_EQUAL( object->getFields().size(), deepCopyObject->getFields().size() );                         \
+    CPPUNIT_ASSERT( object->getField("F1") != deepCopyObject->getField("F1") );                                     \
+    CPPUNIT_ASSERT( object->getField("F2") != deepCopyObject->getField("F2") );                                     \
+    CPPUNIT_ASSERT( object->getField("F3") != deepCopyObject->getField("F3") );                                     \
                                                                                                                                   \
-    CPPUNIT_ASSERT_EQUAL( object->getField_NEWAPI("F1")->getClassname(), deepCopyObject->getField_NEWAPI("F1")->getClassname() ); \
-    CPPUNIT_ASSERT_EQUAL( object->getField_NEWAPI("F2")->getClassname(), deepCopyObject->getField_NEWAPI("F2")->getClassname() ); \
-    CPPUNIT_ASSERT_EQUAL( object->getField_NEWAPI("F3")->getClassname(), deepCopyObject->getField_NEWAPI("F3")->getClassname() ); \
+    CPPUNIT_ASSERT_EQUAL( object->getField("F1")->getClassname(), deepCopyObject->getField("F1")->getClassname() ); \
+    CPPUNIT_ASSERT_EQUAL( object->getField("F2")->getClassname(), deepCopyObject->getField("F2")->getClassname() ); \
+    CPPUNIT_ASSERT_EQUAL( object->getField("F3")->getClassname(), deepCopyObject->getField("F3")->getClassname() ); \
                                                                                                                                   \
     shallowCopyObject->shallowCopy(object);                                                                                       \
     CPPUNIT_ASSERT_EQUAL( object->getClassname(), shallowCopyObject->getClassname() );                                            \
-    CPPUNIT_ASSERT_EQUAL( object->getFields_NEWAPI().size(), shallowCopyObject->getFields_NEWAPI().size() );                      \
-    CPPUNIT_ASSERT_EQUAL( object->getField_NEWAPI("F1"), shallowCopyObject->getField_NEWAPI("F1") );                              \
-    CPPUNIT_ASSERT_EQUAL( object->getField_NEWAPI("F2"), shallowCopyObject->getField_NEWAPI("F2") );                              \
-    CPPUNIT_ASSERT_EQUAL( object->getField_NEWAPI("F3"), shallowCopyObject->getField_NEWAPI("F3") );                              \
+    CPPUNIT_ASSERT_EQUAL( object->getFields().size(), shallowCopyObject->getFields().size() );                      \
+    CPPUNIT_ASSERT_EQUAL( object->getField("F1"), shallowCopyObject->getField("F1") );                              \
+    CPPUNIT_ASSERT_EQUAL( object->getField("F2"), shallowCopyObject->getField("F2") );                              \
+    CPPUNIT_ASSERT_EQUAL( object->getField("F3"), shallowCopyObject->getField("F3") );                              \
     }
 
 

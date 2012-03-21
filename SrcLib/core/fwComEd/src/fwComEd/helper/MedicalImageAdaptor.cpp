@@ -242,9 +242,9 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
 {
     m_weakImage = image;
-    m_axialIndex    = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
-    m_frontalIndex  = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
-    m_sagittalIndex = image->setDefaultField_NEWAPI(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+    m_axialIndex    = image->setDefaultField(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
+    m_frontalIndex  = image->setDefaultField(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
+    m_sagittalIndex = image->setDefaultField(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
 
     // Set TF data if not still set
     if ( m_tfPool.expired() )
@@ -276,7 +276,7 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
             helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
             m_selectedTFKey = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
-            m_tfPool = image->getField_NEWAPI< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+            m_tfPool = image->getField< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
         }
     }
 }

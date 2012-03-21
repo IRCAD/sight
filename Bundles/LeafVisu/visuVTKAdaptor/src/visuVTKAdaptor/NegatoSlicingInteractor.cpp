@@ -387,7 +387,7 @@ void NegatoSlicingInteractor::stopSlicing( )
     ::fwData::Object::NewSptr dataInfo;
     ::fwData::String::NewSptr sliceMode;
     sliceMode->value() = "STOP_SLICING";
-    dataInfo->setField_NEWAPI("SLICE_MODE", sliceMode);
+    dataInfo->setField("SLICE_MODE", sliceMode);
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
@@ -426,7 +426,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
         ::fwData::Object::NewSptr dataInfo;
         ::fwData::String::NewSptr sliceMode;
         sliceMode->value() = "UPDATE_SLICING";
-        dataInfo->setField_NEWAPI("SLICE_MODE", sliceMode);
+        dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
@@ -467,7 +467,7 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
         ::fwData::Object::NewSptr dataInfo;
         ::fwData::String::NewSptr sliceMode;
         sliceMode->value() = "STOP_SLICING";
-        dataInfo->setField_NEWAPI("SLICE_MODE", sliceMode);
+        dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;

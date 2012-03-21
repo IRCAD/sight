@@ -289,35 +289,35 @@ void ObjectTest::fieldSerializationTest()
 
     ::fwData::String::NewSptr obj1 ("toto");
     std::string key1 = "key1";
-    mainObj->setField_NEWAPI( key1, obj1 );
+    mainObj->setField( key1, obj1 );
 
     ::fwData::Integer::NewSptr obj2 (3);
     std::string key2 = "key2";
-    mainObj->setField_NEWAPI( key2, obj2 );
+    mainObj->setField( key2, obj2 );
 
     ::fwData::String::NewSptr obj3 ("tutu");
     std::string key3 = "key3";
-    mainObj->setField_NEWAPI( key3, obj3 );
-    obj1->setField_NEWAPI( key3, obj3 );
+    mainObj->setField( key3, obj3 );
+    obj1->setField( key3, obj3 );
 
     ::fwData::Color::sptr mainObjReloaded = ::fwData::Color::dynamicCast(ObjectTest::serialize("fieldSerialization.xml", mainObj));
     CPPUNIT_ASSERT(mainObjReloaded);
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), mainObjReloaded->getFields_NEWAPI().size() );
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), mainObjReloaded->getFields().size() );
 
-    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI( key1 ) );
-    CPPUNIT_ASSERT_EQUAL( std::string("toto"), mainObjReloaded->getField_NEWAPI< ::fwData::String >( key1 )->value() );
+    CPPUNIT_ASSERT( mainObjReloaded->getField( key1 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("toto"), mainObjReloaded->getField< ::fwData::String >( key1 )->value() );
 
-    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI( key2 ) );
-    CPPUNIT_ASSERT_EQUAL( 3, mainObjReloaded->getField_NEWAPI< ::fwData::Integer >( key2 )->value() );
+    CPPUNIT_ASSERT( mainObjReloaded->getField( key2 ) );
+    CPPUNIT_ASSERT_EQUAL( 3, mainObjReloaded->getField< ::fwData::Integer >( key2 )->value() );
 
-    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI( key3 ) );
-    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField_NEWAPI< ::fwData::String >(key3)->value() );
+    CPPUNIT_ASSERT( mainObjReloaded->getField( key3 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField< ::fwData::String >(key3)->value() );
 
-    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI< ::fwData::String >( key1 )->getField_NEWAPI( key3 ) );
-    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField_NEWAPI< ::fwData::String >( key1 )->getField_NEWAPI< ::fwData::String >(key3)->value() );
+    CPPUNIT_ASSERT( mainObjReloaded->getField< ::fwData::String >( key1 )->getField( key3 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField< ::fwData::String >( key1 )->getField< ::fwData::String >(key3)->value() );
 
-    CPPUNIT_ASSERT( mainObjReloaded->getField_NEWAPI(key1)->getField_NEWAPI(key3) ==  mainObjReloaded->getField_NEWAPI(key3) );
+    CPPUNIT_ASSERT( mainObjReloaded->getField(key1)->getField(key3) ==  mainObjReloaded->getField(key3) );
 }
 
 //------------------------------------------------------------------------------
@@ -330,7 +330,7 @@ void ObjectTest::imageFieldSerializationTest()
     ::fwData::Image::sptr imgAcq = patient->getStudies()[0]->getAcquisitions()[0]->getImage();
 
     std::string key = "image";
-    patient->setField_NEWAPI( key, imgAcq );
+    patient->setField( key, imgAcq );
 
     ::fwData::Patient::sptr objReloaded = ::fwData::Patient::dynamicCast(ObjectTest::serialize("imageFieldSerialization.xml", patient));
     CPPUNIT_ASSERT( objReloaded );
@@ -338,8 +338,8 @@ void ObjectTest::imageFieldSerializationTest()
     CPPUNIT_ASSERT( objReloaded->getStudies()[0]->getAcquisitions().size() == 1 );
     ::fwData::Image::sptr imgAcqReloaded = objReloaded->getStudies()[0]->getAcquisitions()[0]->getImage();
     CPPUNIT_ASSERT( imgAcqReloaded );
-    CPPUNIT_ASSERT( objReloaded->getField_NEWAPI( key ) );
-    CPPUNIT_ASSERT( objReloaded->getField_NEWAPI( key ) == imgAcqReloaded );
+    CPPUNIT_ASSERT( objReloaded->getField( key ) );
+    CPPUNIT_ASSERT( objReloaded->getField( key ) == imgAcqReloaded );
 }
 
 //------------------------------------------------------------------------------

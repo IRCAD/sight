@@ -131,14 +131,14 @@ xmlDocPtr XMLAggregator::getXMLDoc()
         xmlNodePtr nodeXML = translator->getXMLFrom(dobj);
 
         // save fields
-        if( ! dobj->getFields_NEWAPI().empty() )
+        if( ! dobj->getFields().empty() )
         {
             xmlNodePtr attributeNode = xmlNewNode( NULL, xmlStrdup( BAD_CAST "Attributes" )  );
             xmlAddChild( nodeXML, attributeNode );
 
-            BOOST_FOREACH( ::fwData::Object::FieldNameType name, dobj->getFieldNames_NEWAPI() )
+            BOOST_FOREACH( ::fwData::Object::FieldNameType name, dobj->getFieldNames() )
             {
-                ::fwData::Object::sptr objAttribute = dobj->getField_NEWAPI(name);
+                ::fwData::Object::sptr objAttribute = dobj->getField(name);
                 if( objAttribute )
                 {
                     // <element key="" value="" />

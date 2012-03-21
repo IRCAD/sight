@@ -179,9 +179,9 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
         {
             imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
             ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-            image->setField_NEWAPI( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
-            image->setField_NEWAPI( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
-            image->setField_NEWAPI( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
+            image->setField( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
+            image->setField( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
+            image->setField( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
@@ -220,8 +220,8 @@ void SliceIndexPositionEditor::updateSliceIndex()
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Get Index
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField_NEWAPI( fieldID ) );
-    unsigned int index = image->getField_NEWAPI< ::fwData::Integer >( fieldID )->value();
+    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+    unsigned int index = image->getField< ::fwData::Integer >( fieldID )->value();
 
     // Update wxSlider
     int max = image->getSize()[m_orientation]-1;
@@ -239,8 +239,8 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Get Index
      std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField_NEWAPI( fieldID ));
-    unsigned int index = image->getField_NEWAPI< ::fwData::Integer >( fieldID )->value();
+     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
+    unsigned int index = image->getField< ::fwData::Integer >( fieldID )->value();
     int max = image->getSize()[m_orientation]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
     m_sliceSelectorPanel->setSliceValue( index );
@@ -258,8 +258,8 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 
     SliceIndexPositionEditor::SLICE_INDEX_FIELDID[m_orientation];
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField_NEWAPI( fieldID ) );
-    image->getField_NEWAPI< ::fwData::Integer >( fieldID )->value() = index;
+    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+    image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
     ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);
 }

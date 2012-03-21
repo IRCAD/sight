@@ -52,10 +52,10 @@ bool Image::createLandmarks()
     bool fieldIsCreated = false;
 
     // Manage image landmarks
-    if ( ! img->getField_NEWAPI( ::fwComEd::Dictionary::m_imageLandmarksId ) )
+    if ( ! img->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
         ::fwData::PointList::NewSptr pl;
-        img->setField_NEWAPI( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
+        img->setField( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
         fieldIsCreated = true;
     }
 
@@ -72,7 +72,7 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
     bool fieldIsCreated = false;
 
     // Transfer functions
-    if ( ! img->getField_NEWAPI( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) )
+    if ( ! img->getField( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) )
     {
         ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
         tf->setWindow( img->getWindowWidth() );
@@ -107,22 +107,22 @@ bool Image::createImageSliceIndex()
 
     const ::fwData::Image::SizeType &imageSize = img->getSize();
 
-    ::fwData::Integer::sptr axialIdx    = img->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
-    ::fwData::Integer::sptr frontalIdx  = img->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId);
-    ::fwData::Integer::sptr sagittalIdx = img->getField_NEWAPI< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
+    ::fwData::Integer::sptr axialIdx    = img->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
+    ::fwData::Integer::sptr frontalIdx  = img->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId);
+    ::fwData::Integer::sptr sagittalIdx = img->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
 
     // Manage image slice index
     if ( ! (axialIdx && frontalIdx && sagittalIdx) )
     {
         // Set value
         axialIdx = ::fwData::Integer::New(-1);
-        img->setField_NEWAPI( ::fwComEd::Dictionary::m_axialSliceIndexId, axialIdx );
+        img->setField( ::fwComEd::Dictionary::m_axialSliceIndexId, axialIdx );
 
         frontalIdx = ::fwData::Integer::New(-1);
-        img->setField_NEWAPI( ::fwComEd::Dictionary::m_frontalSliceIndexId, frontalIdx );
+        img->setField( ::fwComEd::Dictionary::m_frontalSliceIndexId, frontalIdx );
 
         sagittalIdx = ::fwData::Integer::New(-1);
-        img->setField_NEWAPI( ::fwComEd::Dictionary::m_sagittalSliceIndexId, sagittalIdx );
+        img->setField( ::fwComEd::Dictionary::m_sagittalSliceIndexId, sagittalIdx );
 
         fieldIsCreated = true;
     }

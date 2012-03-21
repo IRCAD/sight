@@ -159,8 +159,8 @@ void SliceListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
     {
         ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo("SCAN_SHOW");
         SLM_ASSERT("dataInfo is missing", dataInfo);
-        SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getField_NEWAPI( ::fwComEd::Dictionary::m_relatedServiceId ) );
-        std::string servId = dataInfo->getField_NEWAPI< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
+        SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getField( ::fwComEd::Dictionary::m_relatedServiceId ) );
+        std::string servId = dataInfo->getField< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
         if( servId ==  m_adaptorUID )
         {
             ::fwData::Boolean::csptr isShowScan = ::fwData::Boolean::dynamicConstCast(dataInfo);
@@ -206,7 +206,7 @@ void SliceListEditor::onChangeSliceMode( bool checked )
         {
             OSLM_FATAL("Unknown slice mode");
         }
-        dataInfo->setField_NEWAPI(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
+        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
         ::fwComEd::ImageMsg::NewSptr imageMsg;
         imageMsg->addEvent( "SLICE_MODE", dataInfo );
         ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);

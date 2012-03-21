@@ -91,10 +91,10 @@ void Image3DCursor::doStart() throw(fwTools::Failed)
 
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
-    if ( img->getField_NEWAPI("IMAGE3DCURSOR_RADIUS") && img->getField_NEWAPI("IMAGE3DCURSOR_COLOR") )
+    if ( img->getField("IMAGE3DCURSOR_RADIUS") && img->getField("IMAGE3DCURSOR_COLOR") )
     {
-        ::fwData::Float::sptr radius = img->getField_NEWAPI< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
-        ::fwData::Color::sptr color = img->getField_NEWAPI< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
+        ::fwData::Float::sptr radius = img->getField< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
+        ::fwData::Color::sptr color = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
 
         this->buildPolyData(radius->value());
         m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
@@ -173,8 +173,8 @@ void Image3DCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools:
     if ( msg->hasEvent( "NEW_SPHERE_CONFIG" ) )
     {
         ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-        ::fwData::Float::sptr radius = img->getField_NEWAPI< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
-        ::fwData::Color::sptr color = img->getField_NEWAPI< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
+        ::fwData::Float::sptr radius = img->getField< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
+        ::fwData::Color::sptr color = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
 
         m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
         buildPolyData(radius->value());

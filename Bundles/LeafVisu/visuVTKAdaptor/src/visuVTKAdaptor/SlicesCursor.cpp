@@ -382,9 +382,9 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
             ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo(::fwComEd::ImageMsg::SLICE_INDEX);
             imageMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
 
-            if(dataInfo && dataInfo->getField_NEWAPI("SLICE_MODE"))
+            if(dataInfo && dataInfo->getField("SLICE_MODE"))
             {
-                ::fwData::String::sptr sliceMode = dataInfo->getField_NEWAPI< ::fwData::String >("SLICE_MODE");
+                ::fwData::String::sptr sliceMode = dataInfo->getField< ::fwData::String >("SLICE_MODE");
                 SLM_ASSERT("sceneID empty!", sliceMode);
                 m_isSelected = ( sliceMode->value() == "UPDATE_SLICING" );
             }

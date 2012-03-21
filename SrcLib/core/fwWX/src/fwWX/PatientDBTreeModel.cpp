@@ -101,13 +101,13 @@ wxVariant fwAcqNode::getCell(unsigned int _col)
     }
 
     ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(getAcq().lock()->getImage());
-    if ( ! getAcq().lock()->getImage()->getField_NEWAPI( ::fwComEd::Dictionary::m_imageLabelId) )
+    if ( ! getAcq().lock()->getImage()->getField( ::fwComEd::Dictionary::m_imageLabelId) )
     {
         fwPatientNode *patientNode =  static_cast< fwPatientNode * >(GetParent());
         ::fwComEd::fieldHelper::MedicalImageHelpers::setImageLabel(patientNode->getPatient().lock(), getAcq().lock()->getImage());
     }
-    std::string comment = getAcq().lock()->getImage()->getField_NEWAPI< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
-    comment += " : " + getAcq().lock()->getImage()->getField_NEWAPI< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
+    std::string comment = getAcq().lock()->getImage()->getField< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
+    comment += " : " + getAcq().lock()->getImage()->getField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
 
     switch (_col)
     {

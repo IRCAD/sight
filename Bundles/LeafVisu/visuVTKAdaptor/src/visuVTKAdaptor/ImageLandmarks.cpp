@@ -49,7 +49,7 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
 
     ::fwComEd::PointListMsg::NewSptr msgPointList;
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
-    ::fwData::PointList::sptr pointList = image->getField_NEWAPI< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
+    ::fwData::PointList::sptr pointList = image->getField< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
     ::fwServices::IEditionService::notify( _service->getSptr(), pointList, msgPointList);
 
     ::fwComEd::ImageMsg::NewSptr msgLandmark;
@@ -232,8 +232,8 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
 
     ::fwData::PointList::sptr landmarks;
     bool isShown;
-    landmarks = image->getField_NEWAPI< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
-    isShown = image->getField_NEWAPI("ShowLandmarks", ::fwData::Boolean::New(true))->value();
+    landmarks = image->getField< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
+    isShown = image->getField("ShowLandmarks", ::fwData::Boolean::New(true))->value();
 
     if (!isShown || !landmarks || m_needSubservicesDeletion)
     {

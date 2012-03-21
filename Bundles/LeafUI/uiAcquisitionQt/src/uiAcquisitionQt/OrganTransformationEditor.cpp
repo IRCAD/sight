@@ -268,7 +268,7 @@ void OrganTransformationEditor::OnResetClick()
         {
             ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
-            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
                 ::fwData::TransformationMatrix3D::NewSptr pIdentMat;
@@ -296,7 +296,7 @@ void OrganTransformationEditor::OnSaveClick()
         {
 
             ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
-            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
                 ::fwData::TransformationMatrix3D::NewSptr pCpyTmpMat;
@@ -335,7 +335,7 @@ void OrganTransformationEditor::OnLoadClick()
                 ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
                 if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
                 {
-                    ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+                    ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
                     if (pTmpMat)
                     {
                         pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
@@ -376,7 +376,7 @@ void OrganTransformationEditor::OnTestClick()
         {
             ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
-            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField_NEWAPI< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
                 pTmpMat->deepCopy(pRandTmpMat);

@@ -130,24 +130,24 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
         QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
 
 
-        if(img->getField_NEWAPI( "TRANSPARENCY" ) )
+        if(img->getField( "TRANSPARENCY" ) )
         {
-            ::fwData::Integer::sptr transparency = img->getField_NEWAPI< ::fwData::Integer >( "TRANSPARENCY" );
+            ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
             m_valueSlider->setValue( *transparency );
         }
         else
         {
-            img->setField_NEWAPI( "TRANSPARENCY", ::fwData::Integer::New(0) );
+            img->setField( "TRANSPARENCY", ::fwData::Integer::New(0) );
             m_valueSlider->setValue( 0 );
         }
-        if(img->getField_NEWAPI( "VISIBILITY" ) )
+        if(img->getField( "VISIBILITY" ) )
         {
-            ::fwData::Boolean::sptr visible = img->getField_NEWAPI< ::fwData::Boolean >( "VISIBILITY" );
+            ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
             m_valueCheckBox->setChecked( *visible );
         }
         else
         {
-            img->setField_NEWAPI( "VISIBILITY", ::fwData::Boolean::New(true) );
+            img->setField( "VISIBILITY", ::fwData::Boolean::New(true) );
             m_valueCheckBox->setChecked( true );
         }
         QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
@@ -192,7 +192,7 @@ void ImageTransparency::onModifyTransparency(int value)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-    img->setField_NEWAPI( "TRANSPARENCY",  ::fwData::Integer::New(value) );
+    img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->addEvent( "TRANSPARENCY" );
     ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
@@ -204,7 +204,7 @@ void ImageTransparency::onModifyVisibility(int value)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-    img->setField_NEWAPI( "VISIBILITY",  ::fwData::Boolean::New(value != Qt::Unchecked) );
+    img->setField( "VISIBILITY",  ::fwData::Boolean::New(value != Qt::Unchecked) );
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->addEvent( "VISIBILITY" );
     ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);

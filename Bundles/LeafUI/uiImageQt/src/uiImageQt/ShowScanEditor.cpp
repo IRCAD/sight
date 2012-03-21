@@ -158,7 +158,7 @@ void ShowScanEditor::onChangeScanMode()
         ::fwData::Boolean::NewSptr dataInfo;
         dataInfo->value() = m_scanAreShown;
 
-        dataInfo->setField_NEWAPI(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
+        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
         ::fwComEd::ImageMsg::NewSptr imageMsg;
         imageMsg->addEvent( "SCAN_SHOW", dataInfo );
         ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);

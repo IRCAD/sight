@@ -31,7 +31,7 @@ void Field::setField(const fwData::Object::FieldNameType& name, fwData::Object::
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field = object->getField_NEWAPI(name);
+    ::fwData::Object::sptr field = object->getField(name);
     if (!field)
     {
         m_objectMsg->appendAddedField(name, obj);
@@ -40,7 +40,7 @@ void Field::setField(const fwData::Object::FieldNameType& name, fwData::Object::
     {
         m_objectMsg->appendChangedField(name, field, obj);
     }
-    object->setField_NEWAPI(name, obj);
+    object->setField(name, obj);
 }
 
 //-----------------------------------------------------------------------------
@@ -49,9 +49,9 @@ void Field::setFields( const fwData::Object::FieldMapType& newFields)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    const ::fwData::Object::FieldMapType oldFields  = object->getFields_NEWAPI();
+    const ::fwData::Object::FieldMapType oldFields  = object->getFields();
     this->buildMessage(newFields,oldFields);
-    object->setFields_NEWAPI(newFields);
+    object->setFields(newFields);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,9 +60,9 @@ void Field::updateFields( const fwData::Object::FieldMapType& fieldMap)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    const ::fwData::Object::FieldMapType oldFields  = object->getFields_NEWAPI();
+    const ::fwData::Object::FieldMapType oldFields  = object->getFields();
     this->buildMessage(fieldMap,oldFields);
-    object->updateFields_NEWAPI(fieldMap);
+    object->updateFields(fieldMap);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void Field::removeField(const fwData::Object::FieldNameType& name)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field = object->getField_NEWAPI(name);
+    ::fwData::Object::sptr field = object->getField(name);
 
     if (field)
     {

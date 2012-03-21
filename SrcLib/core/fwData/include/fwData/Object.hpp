@@ -50,7 +50,7 @@ public:
      * @param[in] defaultValue Default value
      * @return defaultValue if field is not found
      */
-    FWDATA_API ::fwData::Object::sptr getField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr defaultValue = ::fwData::Object::sptr() ) const;
+    FWDATA_API ::fwData::Object::sptr getField( const FieldNameType & name, ::fwData::Object::sptr defaultValue = ::fwData::Object::sptr() ) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
@@ -58,7 +58,7 @@ public:
      * @return pointer to corresponding field, nullptr if field is not found.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) getField_NEWAPI( const FieldNameType& name ) const;
+    SPTR(DATA_TYPE) getField( const FieldNameType& name ) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
@@ -67,7 +67,7 @@ public:
      * @return pointer to corresponding field, defaultValue if field is not found.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) getField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const;
+    SPTR(DATA_TYPE) getField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const;
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if defaultValue is not null.
@@ -76,36 +76,36 @@ public:
      * @return pointer to corresponding field.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) setDefaultField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
+    SPTR(DATA_TYPE) setDefaultField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
      * @param[in] name Field name
      * @return null sptr if field is not found
      */
-    FWDATA_API ::fwData::Object::csptr getConstField_NEWAPI( const FieldNameType & name ) const;
+    FWDATA_API ::fwData::Object::csptr getConstField( const FieldNameType & name ) const;
 
     /**
      * @brief Returns fields map.
      */
-    FWDATA_API const FieldMapType& getFields_NEWAPI() const;
+    FWDATA_API const FieldMapType& getFields() const;
 
     /**
      * @brief Returns vector of field names.
      */
-    FWDATA_API FieldNameVectorType getFieldNames_NEWAPI() const;
+    FWDATA_API FieldNameVectorType getFieldNames() const;
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
      * @param[in] name Field name
      * @param[in] obj  Field
      */
-    FWDATA_API void setField_NEWAPI( const FieldNameType & name, ::fwData::Object::sptr obj );
+    FWDATA_API void setField( const FieldNameType & name, ::fwData::Object::sptr obj );
 
     /**
      * @brief Replace the field map content.
      */
-    FWDATA_API void setFields_NEWAPI( const FieldMapType & fieldMap );
+    FWDATA_API void setFields( const FieldMapType & fieldMap );
 
     /**
      * @brief Removes field with specified name.
@@ -116,7 +116,7 @@ public:
     /**
      * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
      */
-    FWDATA_API void updateFields_NEWAPI( const FieldMapType & fieldMap );
+    FWDATA_API void updateFields( const FieldMapType & fieldMap );
 
     /**
      * @brief A shallow copy of fields (objects in m_children)
@@ -195,10 +195,10 @@ SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name ) const
+SPTR(DATA_TYPE) Object::getField( const FieldNameType& name ) const
 {
     ::fwData::Object::sptr field;
-    field = this->getField_NEWAPI( name, field );
+    field = this->getField( name, field );
     SPTR(DATA_TYPE) result  = DATA_TYPE::dynamicCast( field );
     return result;
 }
@@ -206,10 +206,10 @@ SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name ) const
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const
+SPTR(DATA_TYPE) Object::getField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const
 {
     ::fwData::Object::sptr field = defaultValue;
-    field = this->getField_NEWAPI( name, field );
+    field = this->getField( name, field );
     SPTR(DATA_TYPE) result  = DATA_TYPE::dynamicCast( field );
     return result;
 }
@@ -217,13 +217,13 @@ SPTR(DATA_TYPE) Object::getField_NEWAPI( const FieldNameType& name, SPTR(DATA_TY
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::setDefaultField_NEWAPI( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue )
+SPTR(DATA_TYPE) Object::setDefaultField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue )
 {
-    SPTR(DATA_TYPE) result = getField_NEWAPI< DATA_TYPE >(name);
+    SPTR(DATA_TYPE) result = getField< DATA_TYPE >(name);
     if( !result && defaultValue)
     {
         result = defaultValue;
-        this->setField_NEWAPI(name, defaultValue);
+        this->setField(name, defaultValue);
     }
     return result;
 }

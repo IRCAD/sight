@@ -116,10 +116,10 @@ void Distance::doStart()
     ::fwServices::registerCommunicationChannel(m_point2.lock(), this->getSptr() )->start();
 
     // set color to distance if Point List have Color Field
-    if ( ptList->getField_NEWAPI( ::fwComEd::Dictionary::m_colorId ) )
+    if ( ptList->getField( ::fwComEd::Dictionary::m_colorId ) )
     {
         ::fwData::Color::sptr color;
-        color = ptList->getField_NEWAPI< ::fwData::Color >( ::fwComEd::Dictionary::m_colorId );
+        color = ptList->getField< ::fwData::Color >( ::fwComEd::Dictionary::m_colorId );
         this->setAxisColor( color );
     }
 

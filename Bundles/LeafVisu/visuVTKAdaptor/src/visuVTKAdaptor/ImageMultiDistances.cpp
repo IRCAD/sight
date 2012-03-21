@@ -256,7 +256,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         SLM_ASSERT("serviceDistance not instanced", serviceDistance);
 
         // install  Color Field if none
-        pl->setDefaultField_NEWAPI( ::fwComEd::Dictionary::m_colorId, generateColor() );
+        pl->setDefaultField( ::fwComEd::Dictionary::m_colorId, generateColor() );
 
 
         // no mandatory to set picker id
@@ -328,10 +328,10 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->getField_NEWAPI< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
+    distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
 
     bool isShown;
-    isShown = image->getField_NEWAPI("ShowDistances", ::fwData::Boolean::New(true))->value();
+    isShown = image->getField("ShowDistances", ::fwData::Boolean::New(true))->value();
 
     if ( !isShown || !distanceField  )
     {
@@ -345,7 +345,7 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
         BOOST_FOREACH(::fwData::Object::sptr object, *distanceField)
         {
             ::fwData::PointList::sptr distance = ::fwData::PointList::dynamicCast(object);
-            ::fwData::String::sptr relatedService = distance->getField_NEWAPI< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId);
+            ::fwData::String::sptr relatedService = distance->getField< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId);
 
             if ( filtering && relatedService )
             {
@@ -372,7 +372,7 @@ void ImageMultiDistances::removeDistance(  ::fwData::PointList::sptr plToRemove 
     this->unregisterServices();
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->getField_NEWAPI< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
+    distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
 
     ::fwData::Vector::iterator iter = std::find(distanceField->begin(), distanceField->end(), plToRemove);
     if(iter != distanceField->end())
@@ -390,14 +390,14 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwData::PointList::NewSptr newPL;
 
-    newPL->setField_NEWAPI( ::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( sceneId ) );
+    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( sceneId ) );
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->getField_NEWAPI< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
+    distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
     distanceField->push_back(newPL);
 
     OSLM_INFO("distanceField->size() " << distanceField->size() );
-    assert( image->getField_NEWAPI( ::fwComEd::Dictionary::m_imageDistancesId ) );
+    assert( image->getField( ::fwComEd::Dictionary::m_imageDistancesId ) );
 
 
     int sizeX = this->getRenderer()->GetRenderWindow()->GetSize()[0];

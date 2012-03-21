@@ -32,9 +32,9 @@ void BackupHelper::setSelection(::fwData::PatientDB::sptr patientDB,
         SelectionIdType patientId, SelectionIdType studyId, SelectionIdType acquisitionId)
 {
     SLM_ASSERT("PatientDB null pointer", patientDB);
-    patientDB->setField_NEWAPI("SELECTED_PATIENT", ::fwData::Integer::New(patientId));
-    patientDB->setField_NEWAPI("SELECTED_STUDY", ::fwData::Integer::New(studyId));
-    patientDB->setField_NEWAPI("SELECTED_ACQUISITION", ::fwData::Integer::New(acquisitionId));
+    patientDB->setField("SELECTED_PATIENT", ::fwData::Integer::New(patientId));
+    patientDB->setField("SELECTED_STUDY", ::fwData::Integer::New(studyId));
+    patientDB->setField("SELECTED_ACQUISITION", ::fwData::Integer::New(acquisitionId));
 }
 
 //-----------------------------------------------------------------------------
@@ -42,7 +42,7 @@ void BackupHelper::setSelection(::fwData::PatientDB::sptr patientDB,
 BackupHelper::SelectionIdType BackupHelper::getSelectedIdx(::fwData::Object::sptr data, ::fwData::Object::FieldNameType name)
 {
     SelectionIdType index = -1;
-    ::fwData::Integer::sptr dataIdx = ::fwData::Integer::dynamicCast(data->getField_NEWAPI(name));
+    ::fwData::Integer::sptr dataIdx = ::fwData::Integer::dynamicCast(data->getField(name));
     if(dataIdx)
     {
         index = dataIdx->value();

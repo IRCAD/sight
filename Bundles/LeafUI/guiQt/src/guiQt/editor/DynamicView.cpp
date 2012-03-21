@@ -139,8 +139,8 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
     if (_msg->hasEvent("NEW_CONFIGURATION_HELPER"))
     {
         ::fwData::String::csptr titleData = ::fwData::String::dynamicConstCast( _msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) );
-        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField_NEWAPI("tabID"));
-        std::string tabID = titleData->getField_NEWAPI< ::fwData::String >("tabID")->value();
+        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField("tabID"));
+        std::string tabID = titleData->getField< ::fwData::String >("tabID")->value();
         std::string title = titleData->value();
         if(m_tabIDList.find(tabID) != m_tabIDList.end() )
         {
@@ -155,11 +155,11 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         std::string viewConfigID;
         ::fwData::Composite::sptr fieldAdaptors;
 
-        closable      = titleData->getField_NEWAPI("closable", ::fwData::Boolean::New(true))->value();
-        icon          = titleData->getField_NEWAPI("icon", ::fwData::String::New(""))->value();
-        tooltip       = titleData->getField_NEWAPI("tooltip", ::fwData::String::New(""))->value();
-        viewConfigID  = titleData->getField_NEWAPI("viewConfigID", ::fwData::String::New(""))->value();
-        fieldAdaptors = titleData->getField_NEWAPI("::fwServices::registry::AppConfig", ::fwData::Composite::New());
+        closable      = titleData->getField("closable", ::fwData::Boolean::New(true))->value();
+        icon          = titleData->getField("icon", ::fwData::String::New(""))->value();
+        tooltip       = titleData->getField("tooltip", ::fwData::String::New(""))->value();
+        viewConfigID  = titleData->getField("viewConfigID", ::fwData::String::New(""))->value();
+        fieldAdaptors = titleData->getField("::fwServices::registry::AppConfig", ::fwData::Composite::New());
 
         if ( m_titleToCount.find( title ) !=  m_titleToCount.end() )
         {

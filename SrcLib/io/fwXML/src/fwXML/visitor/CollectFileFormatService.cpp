@@ -54,7 +54,7 @@ void CollectFileFormatService::visit( ::fwData::Object::sptr obj)
 
 
     // VISIT FIELDS
-    BOOST_FOREACH( ::fwData::Object::FieldMapType::value_type item, obj->getFields_NEWAPI() )
+    BOOST_FOREACH( ::fwData::Object::FieldMapType::value_type item, obj->getFields() )
     {
         ::fwData::visitor::accept( item.second , this);
     }

@@ -202,7 +202,7 @@ void TransfertFunctionTest::shallowAndDeepCopyTest()
     tf->addTFColor( 150,    ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) );
 
     ::fwData::String::NewSptr myString ("fieldStringValue");
-    tf->setField_NEWAPI( "fieldStringKey", myString );
+    tf->setField( "fieldStringKey", myString );
 
     return tf;
 }
@@ -236,7 +236,7 @@ void TransfertFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
 
 
 
-    CPPUNIT_ASSERT_EQUAL( std::string("fieldStringValue"), ::fwData::String::dynamicCast( tf->getField_NEWAPI( "fieldStringKey" ) )->value() );
+    CPPUNIT_ASSERT_EQUAL( std::string("fieldStringValue"), ::fwData::String::dynamicCast( tf->getField( "fieldStringKey" ) )->value() );
 }
 
 //------------------------------------------------------------------------------

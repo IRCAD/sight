@@ -239,8 +239,8 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
 
                 ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(image);
                 ::fwComEd::fieldHelper::MedicalImageHelpers::setImageLabel(pPatient, image);
-                std::string comment = image->getField_NEWAPI< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
-                comment += " : " + image->getField_NEWAPI< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
+                std::string comment = image->getField< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
+                comment += " : " + image->getField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
 
                 QTreeWidgetItem* acquisitionItem = new QTreeWidgetItem();
                 acquisitionItem->setText(0, QString::fromStdString(zone));

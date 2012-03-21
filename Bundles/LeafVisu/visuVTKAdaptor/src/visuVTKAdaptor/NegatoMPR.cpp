@@ -149,8 +149,8 @@ void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fa
     {
         ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo("SLICE_MODE");
         SLM_ASSERT("dataInfo is missing", dataInfo);
-        SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getField_NEWAPI( ::fwComEd::Dictionary::m_relatedServiceId ) );
-        std::string servId = dataInfo->getField_NEWAPI< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
+        SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getField( ::fwComEd::Dictionary::m_relatedServiceId ) );
+        std::string servId = dataInfo->getField< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
         if( servId ==   this->getSptr()->getID() )
         {
             ::fwData::Integer::csptr integer = ::fwData::Integer::dynamicConstCast(dataInfo);
@@ -183,8 +183,8 @@ void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fa
     {
         ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo("SCAN_SHOW");
         SLM_ASSERT("dataInfo is missing", dataInfo);
-        SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getField_NEWAPI( ::fwComEd::Dictionary::m_relatedServiceId ) );
-        std::string servId = dataInfo->getField_NEWAPI< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
+        SLM_ASSERT("m_relatedServiceId is missing", dataInfo->getField( ::fwComEd::Dictionary::m_relatedServiceId ) );
+        std::string servId = dataInfo->getField< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId)->value();
         if( servId ==   this->getSptr()->getID() )
         {
             ::fwData::Boolean::csptr integer = ::fwData::Boolean::dynamicConstCast(dataInfo);

@@ -54,41 +54,41 @@ void FieldHelperTest::testHelper()
     {
         ::fwComEd::helper::Field fieldHelper(obj);
         fieldHelper.setField(FIELD_ID1, fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(1));
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+        CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
     }
 
-    ::fwData::Object::FieldMapType localFields = obj->getFields_NEWAPI();
-    ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields_NEWAPI();
+    ::fwData::Object::FieldMapType localFields = obj->getFields();
+    ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields();
     localFields.insert( ::fwData::Object::FieldMapType::value_type(FIELD_ID2,fieldObj2));
 
     {
         ::fwComEd::helper::Field fieldHelper(obj);
         fieldHelper.updateFields(localFields);
-        CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(2));
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), fieldObj2);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+        CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(2));
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), fieldObj2);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
     }
 
     {
         ::fwComEd::helper::Field fieldHelper(obj);
         fieldHelper.setFields(localFieldsBackup);
-        CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(1));
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj1);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+        CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
     }
 
     {
         ::fwComEd::helper::Field fieldHelper(obj);
         fieldHelper.setField(FIELD_ID1, fieldObj2);
-        CPPUNIT_ASSERT_EQUAL(obj->getFields_NEWAPI().size(), size_t(1));
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID1), fieldObj2);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID2), nullobj);
-        CPPUNIT_ASSERT_EQUAL(obj->getField_NEWAPI(FIELD_ID3), nullobj);
+        CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj2);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+        CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
     }
 }
 
