@@ -21,7 +21,7 @@ namespace scene2D
 namespace adaptor
 {
 
-class SCENE2D_CLASS_API Negato : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API Negato : public ::fwComEd::helper::MedicalImageAdaptor, public ::scene2D::adaptor::IAdaptor
 {
 
 public:
