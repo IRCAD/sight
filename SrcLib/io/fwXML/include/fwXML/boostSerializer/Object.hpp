@@ -19,7 +19,7 @@ namespace serialization {
  * @author IRCAD (Research and Development Team).
  */
 template<class Archive>
-void serialize(Archive & ar, fwTools::Object &_object, const unsigned int version)
+void serialize(Archive & ar, fwData::Object &_object, const unsigned int version)
 {
     // intrinsic data to be saved must be here
 }

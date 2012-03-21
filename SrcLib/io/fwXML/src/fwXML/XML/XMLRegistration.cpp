@@ -72,7 +72,7 @@
 #include "fwXML/XML/StructureTraitsDictionaryXMLTranslator.hpp"
 
 
-INSTANTIATE_SERIALIZER(::fwTools::Object);
+INSTANTIATE_SERIALIZER(::fwData::Object);
 INSTANTIATE_SERIALIZER(::fwData::Acquisition);
 INSTANTIATE_SERIALIZER(::fwData::Array);
 INSTANTIATE_SERIALIZER(::fwData::Boolean);
@@ -99,6 +99,7 @@ INSTANTIATE_SERIALIZER(::fwTools::Type);
 namespace fwXML
 {
 
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Object>                 ,  ::fwData::Object                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ProcessObject>          ,  ::fwData::ProcessObject          );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
