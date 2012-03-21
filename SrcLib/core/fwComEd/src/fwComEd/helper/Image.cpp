@@ -11,6 +11,7 @@
 #include <fwServices/IEditionService.hpp>
 
 #include "fwComEd/helper/Image.hpp"
+#include "fwComEd/helper/Field.hpp"
 #include "fwComEd/Dictionary.hpp"
 
 namespace fwComEd
@@ -64,7 +65,7 @@ bool Image::createLandmarks()
 
 //------------------------------------------------------------------------------
 
-bool Image::createTransferFunctionPool()
+bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSource)
 {
     ::fwData::Image::sptr img = m_image.lock();
 
@@ -81,7 +82,12 @@ bool Image::createTransferFunctionPool()
         cTF->getRefMap()[ tf->getName() ] = tf;
 
         // Set in selected image
-        img->setField_NEWAPI( ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
+        ::fwComEd::helper::Field fieldHelper(img);
+        fieldHelper.setField( ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
+        if(serviceSource)
+        {
+            fieldHelper.notify(serviceSource);
+        }
 
         // TF is modified
         fieldIsCreated = true;

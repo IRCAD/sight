@@ -52,7 +52,7 @@ public :
      * If the image has not transfer functions, the pool is
      * created and a grey level transfer function is added.
      */
-    FWCOMED_API bool createTransferFunctionPool();
+    FWCOMED_API bool createTransferFunctionPool(::fwServices::IService::sptr serviceSource = ::fwServices::IService::sptr() );
 
     /**
      * @brief Create slice index if indexes are not present, NOT GENERATE MESSAGE.
