@@ -350,8 +350,7 @@ void ObjectTest::resectionDBSerializationTest()
     ::fwData::ResectionDB::sptr resecDB1 = ::fwDataTools::ObjectGenerator::generateResectionDB();
     ::fwData::ResectionDB::sptr resecDBReloaded = ::fwData::ResectionDB::dynamicCast(ObjectTest::serialize("resectionDBSerialization.xml", resecDB1));
 
-//    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDBReloaded, resecDB1));
-    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDB1, resecDB1));
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDBReloaded, resecDB1));
 
 }
 
@@ -363,8 +362,7 @@ void ObjectTest::dictionarySerializationTest()
     ::fwData::Dictionary::sptr dico1 = ::fwDataTools::ObjectGenerator::createDictionary();
     ::fwData::Dictionary::sptr dicoReloaded = ::fwData::Dictionary::dynamicCast(ObjectTest::serialize("dictionarySerialization.xml", dico1));
 
-//    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareDictionary(dicoReloaded, dico1));
-    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareDictionary(dico1, dico1));
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareDictionary(dicoReloaded, dico1));
 
 }
 
@@ -376,8 +374,7 @@ void ObjectTest::processObjectSerializationTest()
     ::fwData::ProcessObject::sptr po1 = ::fwDataTools::ObjectGenerator::createProcessObject();
     ::fwData::ProcessObject::sptr poReloaded = ::fwData::ProcessObject::dynamicCast(ObjectTest::serialize("processObjectSerialization.xml", po1));
 
-//    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareProcessObject(poReloaded, po1));
-    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareProcessObject(po1, po1));
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareProcessObject(poReloaded, po1));
 
 }
 

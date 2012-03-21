@@ -425,8 +425,79 @@ bool ObjectComparator::compareDictionary(::fwData::Dictionary::sptr dico1, ::fwD
     SLM_ASSERT( "Null dico2 pointers", dico2);
 
     bool compare = true;
+
+    compare &= dico1->getDictionaryOrgans().size() ==  dico2->getDictionaryOrgans().size();
+    OSLM_ERROR_IF( "Number of dictionary are different.",
+                   dico1->getDictionaryOrgans().size() !=  dico2->getDictionaryOrgans().size());
+
+    for(::fwData::Dictionary::DictionaryOrganContainerType::const_iterator itr = dico1->getDictionaryOrgans().begin();
+        itr != dico1->getDictionaryOrgans().end(); ++itr)
+    {
+        compare &= (dico2->hasDictionaryOrgan(itr->first) == true);
+
+        OSLM_ERROR_IF( "dictionary hasn't the same name.",
+                       dico2->hasDictionaryOrgan(itr->first) != true);
+        ::fwData::DictionaryOrgan::sptr dico1Organ = itr->second;
+        ::fwData::DictionaryOrgan::sptr dico2Organ = dico2->getDictionaryOrgan(itr->first);
+    }
     return compare ;
 
+}
+
+//------------------------------------------------------------------------------
+bool ObjectComparator::compareDictionaryOrgan(::fwData::DictionaryOrgan::sptr dicoOrgan1, ::fwData::DictionaryOrgan::sptr dicoOrgan2)
+{
+    SLM_ASSERT( "Null dicoOrgan1 pointers", dicoOrgan1);
+    SLM_ASSERT( "Null dicoOrgan2 pointers", dicoOrgan2);
+
+     bool compare = true;
+     compare &= (dicoOrgan1->getCRefStructureType() == dicoOrgan2->getCRefStructureType());
+     OSLM_ERROR_IF("Attribute Structuretype are different.",(dicoOrgan1->getCRefStructureType() != dicoOrgan2->getCRefStructureType()));
+     compare &= (dicoOrgan1->getSALabel() == dicoOrgan2->getSALabel());
+     OSLM_ERROR_IF("Attribute SALLabel are different.", dicoOrgan1->getSALabel() != dicoOrgan2->getSALabel());
+     compare &= (dicoOrgan1->getIsMedicalStructure() == dicoOrgan2->getIsMedicalStructure());
+     OSLM_ERROR_IF("Attribute IsMedicalStructure are different.", dicoOrgan1->getIsMedicalStructure() != dicoOrgan2->getIsMedicalStructure());
+     compare &= (dicoOrgan1->getAOColor() == dicoOrgan2->getAOColor());
+     OSLM_ERROR_IF("Attribute AOColor are different.", dicoOrgan1->getAOColor() != dicoOrgan2->getAOColor());
+     compare &= (dicoOrgan1->getAvgVolume() == dicoOrgan2->getAvgVolume());
+     OSLM_ERROR_IF("Attribute AvgVolume are different.", dicoOrgan1->getAvgVolume() != dicoOrgan2->getAvgVolume());
+     compare &= (dicoOrgan1->getVolStdDeviation() == dicoOrgan2->getVolStdDeviation());
+     OSLM_ERROR_IF("Attribute VolStdDeviation are different.", dicoOrgan1->getVolStdDeviation() != dicoOrgan2->getVolStdDeviation());
+     compare &= (dicoOrgan1->getNbExams() == dicoOrgan2->getNbExams());
+     OSLM_ERROR_IF("Attribute NbExams are different.", dicoOrgan1->getNbExams() != dicoOrgan2->getNbExams());
+     compare &= (dicoOrgan1->getCRefPosition() == dicoOrgan2->getCRefPosition());
+     OSLM_ERROR_IF("Attribute position are different.", dicoOrgan1->getCRefPosition() != dicoOrgan2->getCRefPosition());
+     compare &= (dicoOrgan1->getCRefIconPath() == dicoOrgan2->getCRefIconPath());
+     OSLM_ERROR_IF("Attribute IconPath are different.", dicoOrgan1->getCRefIconPath() != dicoOrgan2->getCRefIconPath());
+     compare &= (dicoOrgan1->getRed() == dicoOrgan2->getRed());
+     OSLM_ERROR_IF("Attribute red are different.", dicoOrgan1->getRed() != dicoOrgan2->getRed());
+     compare &= (dicoOrgan1->getGreen() == dicoOrgan2->getGreen());
+     OSLM_ERROR_IF("Attribute green are different.", dicoOrgan1->getGreen() != dicoOrgan2->getGreen());
+     compare &= (dicoOrgan1->getBlue() == dicoOrgan2->getBlue());
+     OSLM_ERROR_IF("Attribute blue are different.", dicoOrgan1->getBlue() != dicoOrgan2->getBlue());
+     compare &= (dicoOrgan1->getAlpha() == dicoOrgan2->getAlpha());
+     OSLM_ERROR_IF("Attribute alpha are different.", dicoOrgan1->getAlpha() != dicoOrgan2->getAlpha());
+     compare &= (dicoOrgan1->getCRefTexturePath() ==  dicoOrgan2->getCRefTexturePath());
+     OSLM_ERROR_IF("Attribute TexturePath are different.", dicoOrgan1->getCRefTexturePath() !=  dicoOrgan2->getCRefTexturePath());
+     compare &= (dicoOrgan1->getAvgTriangleNb() == dicoOrgan2->getAvgTriangleNb());
+     OSLM_ERROR_IF("Attribute AvgTrianleNb are different.", dicoOrgan1->getAvgTriangleNb() != dicoOrgan2->getAvgTriangleNb());
+     compare &= (dicoOrgan1->getSegMin() == dicoOrgan2->getSegMin());
+     OSLM_ERROR_IF("Attribute SegMin are different.", dicoOrgan1->getSegMin() != dicoOrgan2->getSegMin());
+     compare &= (dicoOrgan1->getSegMax() == dicoOrgan2->getSegMax() );
+     OSLM_ERROR_IF("Attribute SegMax are different.", dicoOrgan1->getSegMax() != dicoOrgan2->getSegMax());
+     compare &= (dicoOrgan1->getCRefModality() == dicoOrgan2->getCRefModality());
+     OSLM_ERROR_IF("Attribute Modality are different.", dicoOrgan1->getCRefModality() != dicoOrgan2->getCRefModality());
+     compare &= (dicoOrgan1->getSurfaceElasticity() == dicoOrgan2->getSurfaceElasticity());
+     OSLM_ERROR_IF("Attribute surface elasticity are different.", dicoOrgan1->getSurfaceElasticity() != dicoOrgan2->getSurfaceElasticity());
+     compare &= (dicoOrgan1->getSurfaceRupture() == dicoOrgan2->getSurfaceRupture());
+     OSLM_ERROR_IF("Attribute surface rupture are different.", dicoOrgan1->getSurfaceRupture() != dicoOrgan2->getSurfaceRupture());
+     compare &= (dicoOrgan1->getInteriorRupture() == dicoOrgan2->getInteriorRupture());
+     OSLM_ERROR_IF("Attribute InteriorRupture are different.", dicoOrgan1->getInteriorRupture() != dicoOrgan2->getInteriorRupture());
+     compare &= (dicoOrgan1->getCRefComment() == dicoOrgan2->getCRefComment());
+     OSLM_ERROR_IF("Attribute comment are different.", dicoOrgan1->getCRefComment() != dicoOrgan2->getCRefComment());
+     compare &= (dicoOrgan1->getCRefBelongsTo().back() == dicoOrgan2->getCRefBelongsTo().back());
+     OSLM_ERROR_IF("Attribute BelongTo  are different.", dicoOrgan1->getCRefBelongsTo().back() != dicoOrgan2->getCRefBelongsTo().back());
+     return compare;
 }
 
 //------------------------------------------------------------------------------
@@ -446,11 +517,11 @@ bool ObjectComparator::compareProcessObject(::fwData::ProcessObject::sptr po1, :
                    po1->getInputsParamNames().size()!= po2->getInputsParamNames().size());
 
     compare &= ( po1->getOutputs().size() == po2->getOutputs().size() );
-    OSLM_ERROR_IF( "Number of inputs are different.",
+    OSLM_ERROR_IF( "Number of ouputs are different.",
                    po1->getOutputs().size() != po2->getOutputs().size());
 
     compare &= ( po1->getOutputsParamNames().size()== po2->getOutputsParamNames().size());
-    OSLM_ERROR_IF( "Number of planet are different.",
+    OSLM_ERROR_IF( "Number of OutputParamNames are different.",
                    po1->getOutputsParamNames().size()!= po2->getOutputsParamNames().size());
 
     return compare;
@@ -460,13 +531,19 @@ bool ObjectComparator::compareProcessObject(::fwData::ProcessObject::sptr po1, :
 
 bool ObjectComparator::comparePoint(::fwData::Point::sptr point1, ::fwData::Point::sptr point2)
 {
+    SLM_ASSERT( "Null point1 pointers", point1);
+    SLM_ASSERT( "Null point2 pointers", point2);
+
     bool compare = true;
     fwVec3d coordPt1 = point1->getCoord();
     fwVec3d coordPt2 = point2->getCoord();
+
     compare &= ( coordPt1[0] == coordPt2[0] );
     OSLM_ERROR_IF("X coordinate of point are different.", coordPt1[0] != coordPt2[0]);
+
     compare &= ( coordPt1[1] == coordPt2[1] );
     OSLM_ERROR_IF("Y coordinate of point are different.", coordPt1[1] != coordPt2[1] );
+
     compare &= ( coordPt1[2] == coordPt2[2] );
     OSLM_ERROR_IF("Z coordinate of point are different.", coordPt1[2] != coordPt2[2]);
 
@@ -487,6 +564,14 @@ bool ObjectComparator::comparePlane(::fwData::Plane::sptr plane1, ::fwData::Plan
     compare &= (plane1->getPoints().size() == plane2->getPoints().size());
     OSLM_ERROR_IF("Number of points are different.", plane1->getPoints().size() != plane2->getPoints().size());
 
+    compare &= (plane1->getPlane() == plane2->getPlane());
+    OSLM_ERROR_IF("Plane is different.", !(plane1->getPlane() == plane2->getPlane()));
+
+    ::fwData::Plane::PointContainer points = plane1->getPoints();
+    for(int i= 0; i < points.size(); ++i)
+    {
+        compare &= comparePoint(points[i], plane2->getPoints()[i]);
+    }
     return compare;
 }
 
@@ -496,10 +581,16 @@ bool ObjectComparator::comparePlaneList(::fwData::PlaneList::sptr planeList1, ::
 {
     SLM_ASSERT( "Null planeList pointers", planeList1);
     SLM_ASSERT( "Null planeList pointers", planeList2);
-    bool compare = true;
-    compare &= ( planeList1->getPlanes().size() == planeList1->getPlanes().size() );
-    OSLM_ERROR_IF("Number of planes are different.", planeList1->getPlanes().size() != planeList1->getPlanes().size());
 
+    bool compare = true;
+    compare &= ( planeList1->getPlanes().size() == planeList2->getPlanes().size() );
+    OSLM_ERROR_IF("Number of planes are different.", planeList1->getPlanes().size() != planeList2->getPlanes().size());
+
+    ::fwData::PlaneList::PlaneListContainer planes = planeList1->getPlanes();
+    for(int i = 0; i < planes.size(); ++i)
+    {
+        compare &= comparePlane(planes[i], planeList2->getPlanes()[i]);
+    }
     return compare;
 }
 
@@ -549,6 +640,7 @@ bool ObjectComparator::compareResectionDB(::fwData::ResectionDB::sptr resecDB1, 
 
     bool compare = true;
 
+    compare &= resecDB1->getNumberOfResections() == resecDB2->getNumberOfResections();
     OSLM_ERROR_IF( "Number of resection are different.", resecDB1->getNumberOfResections()  != resecDB2->getNumberOfResections());
 
     for(int i=0; i < resecDB1->getNumberOfResections(); ++i)

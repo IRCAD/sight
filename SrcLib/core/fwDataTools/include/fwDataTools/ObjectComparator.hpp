@@ -42,6 +42,7 @@ public:
     FWDATATOOLS_API static bool compareReconstructionTraits(::fwData::ReconstructionTraits::sptr rec1, ::fwData::ReconstructionTraits::sptr rec2);
     FWDATATOOLS_API static bool compareNode(::fwData::Node::sptr node1, ::fwData::Node::sptr node2);
     FWDATATOOLS_API static bool comparePort(::fwData::Port::sptr port1, ::fwData::Port::sptr port2);
+    FWDATATOOLS_API static bool compareDictionaryOrgan(::fwData::DictionaryOrgan::sptr dicoOrgan1, ::fwData::DictionaryOrgan::sptr dicoOrgan2);
     FWDATATOOLS_API static bool compareDictionary(::fwData::Dictionary::sptr dico1, ::fwData::Dictionary::sptr dico2);
     FWDATATOOLS_API static bool compareProcessObject(::fwData::ProcessObject::sptr po1, ::fwData::ProcessObject::sptr po2);
     FWDATATOOLS_API static bool comparePoint(::fwData::Point::sptr point1, ::fwData::Point::sptr point2);
