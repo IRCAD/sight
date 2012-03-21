@@ -1,3 +1,5 @@
+#include <boost/foreach.hpp>
+
 #include "opSofa/SofaBusiness.hpp"
 #include "opSofa/SofaThread.hpp"
 #include "opSofa/sofa/OglModelF4S.hpp"
@@ -341,15 +343,8 @@ void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, Stiff
  */
 void SofaBusiness::fillMeshVector(::fwData::Acquisition::sptr acquisition, std::vector<fwData::Mesh::sptr> *meshs)
 {
-     std::pair< ::fwData::Acquisition::ReconstructionIterator,
-                ::fwData::Acquisition::ReconstructionIterator >
-                reconstructionIters = acquisition->getReconstructions();
-
-    ::fwData::Acquisition::ReconstructionIterator reconstruction = reconstructionIters.first;
-    while( reconstruction != reconstructionIters.second )
+    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, acquisition->getReconstructions())
     {
-        ::fwData::Reconstruction::sptr rec = (*reconstruction);
-
         // Info
         std::string organName = rec->getOrganName();
         bool isVisible = rec->getIsVisible();
@@ -360,8 +355,6 @@ void SofaBusiness::fillMeshVector(::fwData::Acquisition::sptr acquisition, std::
         boost::filesystem::path path = rec->getPath();
         mesh->setName(organName);
         meshs->push_back(mesh);
-
-        reconstruction++;
     }
 }
 

@@ -1,17 +1,21 @@
 #include <sstream>
 #include <fstream>
+
+#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwData/Acquisition.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
-//#include <fwServices/helper.hpp>
+
 #include <fwServices/Base.hpp> // new
 #include <fwServices/IEditionService.hpp> // new
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
+
 #include <fwCore/spyLog.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
 #include "opSofa/SofaSceneWriterSrv.hpp"
@@ -137,20 +141,19 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     QString nodesData;
 
     // Travel each reconstructions
-    std::pair< ::fwData::Acquisition::ReconstructionIterator, ::fwData::Acquisition::ReconstructionIterator > reconstructionIters = acq->getReconstructions();
-    ::fwData::Acquisition::ReconstructionIterator reconstruction = reconstructionIters.first;
-    for(; reconstruction != reconstructionIters.second;  ++reconstruction) {
-        ::fwData::Reconstruction::sptr rec = (*reconstruction);
-
+    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, acq->getReconstructions())
+    {
         // Get info organ
         QString organName = QString(rec->getOrganName().c_str());
         bool organVisible = rec->getIsVisible();
         QString organUid = QString(rec->getID().c_str());
         ::boost::filesystem::path filename = "";
 
-        if (organVisible && organName != "mors2" && organName != "cam") {
+        if (organVisible && organName != "mors2" && organName != "cam")
+        {
             // Save mesh in filesystem
-            if (writeTrian) {
+            if (writeTrian)
+            {
                 ::fwData::Mesh::sptr mesh = rec->getMesh();
                 std::stringstream meshPath;
                 meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
