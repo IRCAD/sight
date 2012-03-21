@@ -586,7 +586,7 @@ void TransferFunctionEditor::exportTF()
 
             if ( exportFile )
             {
-                fwXML::Serializer serializer;
+                ::fwXML::Serializer serializer;
                 serializer.rootFolder() = tfPathRoot.string();
 #if BOOST_FILESYSTEM_VERSION > 2
                 ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.filename().string()));
@@ -596,8 +596,8 @@ void TransferFunctionEditor::exportTF()
                 serializer.setPathPolicy(pPathPolicy);
                 ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > pSplitPolicy (new ::fwXML::NeverSplitPolicy());
                 serializer.setSplitPolicy(pSplitPolicy);
-                ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
-                serializer.serialize( (*tfPool)[m_selectedTFKey] );
+                ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getSelectedTransferFunction();
+                serializer.serialize( tf );
 
                 if ( ! ::boost::filesystem::exists(tfPath) )
                 {
