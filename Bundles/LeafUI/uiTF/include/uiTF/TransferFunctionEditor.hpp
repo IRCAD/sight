@@ -41,7 +41,7 @@ public:
     UITF_API TransferFunctionEditor();
 
     /// Basic destructor, do nothing.
-    UITF_API virtual ~TransferFunctionEditor();
+    UITF_API virtual ~TransferFunctionEditor() throw ();
 
 protected:
 
