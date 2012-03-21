@@ -596,7 +596,7 @@ void TransferFunctionEditor::exportTF()
                 serializer.setPathPolicy(pPathPolicy);
                 ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > pSplitPolicy (new ::fwXML::NeverSplitPolicy());
                 serializer.setSplitPolicy(pSplitPolicy);
-                ::fwData::TransfertFunction_VERSION_II::sptr tf = this->getSelectedTransferFunction();
+                ::fwData::TransferFunction::sptr tf = this->getSelectedTransferFunction();
                 serializer.serialize( tf );
 
                 if ( ! ::boost::filesystem::exists(tfPath) )
