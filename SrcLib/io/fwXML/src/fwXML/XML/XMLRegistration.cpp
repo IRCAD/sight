@@ -70,7 +70,7 @@
 #include "fwXML/XML/ROITraitsXMLTranslator.hpp"
 #include "fwXML/XML/ReconstructionTraitsXMLTranslator.hpp"
 #include "fwXML/XML/StructureTraitsDictionaryXMLTranslator.hpp"
-
+#include "fwXML/XML/ResectionDBXMLTranslator.hpp"
 
 INSTANTIATE_SERIALIZER(::fwData::Object);
 INSTANTIATE_SERIALIZER(::fwData::Acquisition);
@@ -107,7 +107,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Hi
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Dictionary>             ,  ::fwData::Dictionary             );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Color>                  ,  ::fwData::Color                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ResectionDB>            ,  ::fwData::ResectionDB            );
+//REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ResectionDB>            ,  ::fwData::ResectionDB            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransfertFunction_VERSION_II >,  ::fwData::TransfertFunction_VERSION_II );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
@@ -125,6 +125,7 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , CompositeXMLTranslator            
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , VectorXMLTranslator                                     ,  ::fwData::Vector                 );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ListXMLTranslator                                       ,  ::fwData::List                   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PointListXMLTranslator                                  ,  ::fwData::PointList              );
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionDBXMLTranslator                                ,  ::fwData::ResectionDB            );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionXMLTranslator                                  ,  ::fwData::Resection              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                                      ,  ::fwData::Plane                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator                                  ,  ::fwData::PlaneList              );

@@ -356,6 +356,22 @@ void ObjectTest::resectionDBSerializationTest()
 
 //------------------------------------------------------------------------------
 
+void ObjectTest::resectionDBWithSafeResectionSerializationTest()
+{
+
+    ::fwData::ResectionDB::sptr resecDB1 = ::fwDataTools::ObjectGenerator::generateResectionDB();
+
+    ::fwData::Resection::sptr safeResection = ::fwDataTools::ObjectGenerator::generateResection();
+    resecDB1->setSafeResection(safeResection);
+
+    ::fwData::ResectionDB::sptr resecDBReloaded = ::fwData::ResectionDB::dynamicCast(ObjectTest::serialize("resectionDBSerialization.xml", resecDB1));
+
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDBReloaded, resecDB1));
+
+}
+
+//------------------------------------------------------------------------------
+
 void ObjectTest::dictionarySerializationTest()
 {
 

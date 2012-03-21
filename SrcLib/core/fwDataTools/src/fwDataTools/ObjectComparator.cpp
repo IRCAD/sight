@@ -640,12 +640,18 @@ bool ObjectComparator::compareResectionDB(::fwData::ResectionDB::sptr resecDB1, 
 
     bool compare = true;
 
+
     compare &= resecDB1->getNumberOfResections() == resecDB2->getNumberOfResections();
     OSLM_ERROR_IF( "Number of resection are different.", resecDB1->getNumberOfResections()  != resecDB2->getNumberOfResections());
 
     for(int i=0; i < resecDB1->getNumberOfResections(); ++i)
     {
         compare &= compareResection(resecDB1->getResections()[i], resecDB2->getResections()[i] );
+    }
+
+    if(resecDB1->getSafeResection())
+    {
+        compare &= compareResection (resecDB1->getSafeResection(), resecDB2->getSafeResection());
     }
 
     return compare;
