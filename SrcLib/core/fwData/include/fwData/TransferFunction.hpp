@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_TRANSFERTFUNCTION_VERSION_II_HPP_
-#define _FWDATA_TRANSFERTFUNCTION_VERSION_II_HPP_
+#ifndef _FWDATA_TRANSFERFUNCTION_HPP_
+#define _FWDATA_TRANSFERFUNCTION_HPP_
 
 #include <vector>
 #include <map>
@@ -209,4 +209,4 @@ private :
 
 } // end namespace fwData
 
-#endif // _FWDATA_TRANSFERTFUNCTION_VERSION_II_HPP_
+#endif // _FWDATA_TRANSFERFUNCTION_HPP_
