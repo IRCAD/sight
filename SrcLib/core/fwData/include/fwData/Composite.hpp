@@ -103,6 +103,30 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Composite::csptr _source );
 
+    /// Method to initialize a ::fwData::Composite from a std::map< string, X >
+    template< class DATATYPE >
+    void setContainer( const std::map< std::string, SPTR(DATATYPE) > & map )
+    {
+        this->clear();
+        this->insert( map.begin(), map.end() );
+    }
+
+    /// Method to get a std::map< string, X > from ::fwData::Vector
+    template< class DATATYPE >
+    std::map< std::string, SPTR(DATATYPE) > getContainer() const
+    {
+        std::map< std::string, SPTR(DATATYPE) > map;
+        SPTR(DATATYPE) castedData;
+        BOOST_FOREACH( ::fwData::Composite::value_type elem, *this )
+        {
+            castedData = ::boost::dynamic_pointer_cast<DATATYPE>( elem.second );
+            OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
+            map[elem.first] = castedData;
+        }
+
+        return map;
+    }
+
 protected:
     /// Constructor
     FWDATA_API Composite();

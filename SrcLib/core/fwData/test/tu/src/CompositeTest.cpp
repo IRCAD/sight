@@ -11,6 +11,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/String.hpp>
 
 #include "CompositeTest.hpp"
 
@@ -82,6 +83,25 @@ void CompositeTest::methode1()
     CPPUNIT_ASSERT(composite->getRefMap().find(STR) != composite->getRefMap().end());
     CPPUNIT_ASSERT_EQUAL(composite->getRefMap()[STR], obj);
 }
+
+void CompositeTest::setGetContainerTest()
+{
+    std::map< std::string, ::fwData::String::sptr > myStdMap;
+    std::string key1 = "toto";
+    std::string key2 = "tutu";
+    myStdMap[ key1 ] = ::fwData::String::New("lolo");
+    myStdMap[ key2 ] = ::fwData::String::New("lulu");
+
+    ::fwData::Composite::NewSptr myDataMap;
+    myDataMap->setContainer( myStdMap );
+    CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(2), myDataMap->size() );
+
+    std::map< std::string, ::fwData::String::sptr > myStdMap2;
+    myStdMap2 = myDataMap->getContainer< ::fwData::String >();
+    CPPUNIT_ASSERT( myStdMap2[key1] ==  myStdMap[key1] );
+    CPPUNIT_ASSERT( myStdMap2[key2] ==  myStdMap[key2] );
+}
+
 
 } //namespace ut
 } //namespace fwData

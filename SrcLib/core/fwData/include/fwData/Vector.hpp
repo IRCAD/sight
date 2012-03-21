@@ -94,6 +94,7 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Vector::csptr _source );
 
+    /// Method to initialize a ::fwData::Vector from a std::vector
     template< class DATATYPE >
     void setContainer( const std::vector< SPTR(DATATYPE) > & vec )
     {
@@ -101,6 +102,7 @@ public:
         std::copy( vec.begin(), vec.end(), std::back_inserter(*this) );
     }
 
+    /// Method to get a std::vector from ::fwData::Vector
     template< class DATATYPE >
     std::vector< SPTR(DATATYPE) > getContainer() const
     {
