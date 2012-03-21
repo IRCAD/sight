@@ -77,7 +77,7 @@ void MedicalImageManagerSrv::convertImages( ::fwData::Composite::sptr _composite
 
                 ::fwComEd::helper::Image helper ( pImg );
                 helper.createLandmarks();
-                helper.createTransferFunctionPool();
+                helper.createTransferFunctionPool(this->getSptr());
                 helper.createImageSliceIndex();
             }
         }

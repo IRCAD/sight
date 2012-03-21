@@ -50,7 +50,7 @@ void MedicalImageSrv::convertImage()
     ::fwComEd::helper::Image helper ( pImg );
 
     helper.createLandmarks();
-    helper.createTransferFunctionPool();
+    helper.createTransferFunctionPool(this->getSptr());
     helper.createImageSliceIndex();
 }
 
