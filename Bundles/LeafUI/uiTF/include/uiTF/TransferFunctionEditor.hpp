@@ -112,7 +112,7 @@ private:
     QWidget* m_container;
 
     /**
-     * @brief Identifier of the field containing the current selection of TransfertFunction.
+     * @brief Identifier of the field containing the current selection of TransferFunction.
      * by defaults use ::fwComEd::Dictionary::m_transfertFunctionId
      */
     std::string m_selectedTFKey;

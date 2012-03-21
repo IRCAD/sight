@@ -264,9 +264,9 @@ void TransferFunctionEditor::deleteTF()
 
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        ::fwData::Composite::sptr tfc = this->getObject< ::fwData::Composite > ();
+        ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite > ();
 
-        if( tfc->size() > 1 )
+        if( poolTF->size() > 1 )
         {
             int indexSelectedTF = m_pTransferFunctionPreset->currentIndex();
 
@@ -617,13 +617,13 @@ void TransferFunctionEditor::exportTF()
 void TransferFunctionEditor::initTransferFunctions()
 {
     // Get transfer function composite and selected TF
-    ::fwData::Composite::sptr tfc = this->getObject< ::fwData::Composite >( );
+    ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >( );
 
-    ::fwComEd::helper::Composite compositeHelper(tfc);
+    ::fwComEd::helper::Composite compositeHelper(poolTF);
 
     // Test if transfer function composite has few TF, if no then create default TF
-    if (    tfc->empty() ||
-            tfc->find(m_selectedTFKey) != tfc->end() && tfc->size() == 1 )
+    if (    poolTF->empty() ||
+            this->hasTransferFunctionName(::fwData::TransferFunction::s_DEFAULT_TF_NAME) && poolTF->size() == 1 )
     {
         // Parse all TF contained in uiTF Bundle's resources
         std::vector< ::boost::filesystem::path > paths;
@@ -635,7 +635,7 @@ void TransferFunctionEditor::initTransferFunctions()
             if(     ! ::boost::filesystem::is_directory(*it) &&
                     ::boost::filesystem::extension(*it) == ".xml" )
             {
-//                paths.push_back(*it);
+                paths.push_back(*it);
             }
         }
 
@@ -659,15 +659,9 @@ void TransferFunctionEditor::initTransferFunctions()
         }
     }
 
-    if ( !this->hasTransferFunctionName(::fwData::TransferFunction::s_DEFAULT_TF_NAME) )
-    {
-        ::fwData::TransferFunction::sptr defaultTF = ::fwData::TransferFunction::createDefaultTF();
-        compositeHelper.add(defaultTF->getName(), defaultTF);
-    }
-
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *tfc)
+    BOOST_FOREACH(::fwData::Composite::value_type elt, *poolTF)
     {
         if(m_selectedTFKey != elt.first)
         {
