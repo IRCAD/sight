@@ -11,8 +11,8 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include <fwData/TransfertFunction.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Color.hpp>
 

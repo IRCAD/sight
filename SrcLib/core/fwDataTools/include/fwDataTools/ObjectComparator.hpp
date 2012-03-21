@@ -13,7 +13,7 @@
 #include <fwData/Array.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Color.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/StructureTraits.hpp>
 #include <fwData/ROITraits.hpp>

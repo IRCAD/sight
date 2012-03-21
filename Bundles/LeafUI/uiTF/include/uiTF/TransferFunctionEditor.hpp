@@ -10,7 +10,7 @@
 #include <QObject>
 
 #include <fwData/Composite.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <gui/editor/IEditor.hpp>
 

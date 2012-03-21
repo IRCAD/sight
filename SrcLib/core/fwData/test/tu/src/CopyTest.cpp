@@ -48,7 +48,7 @@
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/Study.hpp>
 #include <fwData/Tag.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Vector.hpp>

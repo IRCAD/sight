@@ -10,7 +10,7 @@
 
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Color.hpp>
 

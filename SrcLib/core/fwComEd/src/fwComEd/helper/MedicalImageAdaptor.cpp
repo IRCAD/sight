@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>

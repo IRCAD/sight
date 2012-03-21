@@ -19,7 +19,7 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>

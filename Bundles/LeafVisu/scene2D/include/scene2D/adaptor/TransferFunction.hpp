@@ -7,7 +7,7 @@
 #ifndef _SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP_
 #define _SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP_
 
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 

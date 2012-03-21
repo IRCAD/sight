@@ -11,7 +11,7 @@
 #include <fwTools/Type.hpp>
 
 #include "fwData/registry/macros.hpp"
-#include "fwData/TransfertFunction.hpp"
+#include "fwData/TransferFunction.hpp"
 
 
 fwDataRegisterMacro( ::fwData::TransferFunction );

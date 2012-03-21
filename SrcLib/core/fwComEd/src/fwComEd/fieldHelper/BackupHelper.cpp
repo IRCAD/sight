@@ -9,7 +9,7 @@
 #include <fwData/Object.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include <fwData/String.hpp>
 
 #include <fwServices/Base.hpp>

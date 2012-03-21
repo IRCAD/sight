@@ -10,7 +10,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkLogLookupTable.h>
 
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include "vtkIO/config.hpp"
 

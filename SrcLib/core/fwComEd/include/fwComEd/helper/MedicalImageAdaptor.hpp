@@ -12,7 +12,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include "fwComEd/TransferFunctionMsg.hpp"
 #include "fwComEd/helper/ImageGetter.hpp"

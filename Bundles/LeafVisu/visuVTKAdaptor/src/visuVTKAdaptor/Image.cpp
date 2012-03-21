@@ -17,7 +17,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <vtkIO/vtk.hpp>
 #include <vtkIO/helper/TransfertFunction.hpp>

@@ -7,7 +7,7 @@
 #ifndef _FWXML_BOOSTSERIALIZER_TRANSFERFUNCTION_HPP_
 #define _FWXML_BOOSTSERIALIZER_TRANSFERFUNCTION_HPP_
 
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include "fwXML/boostSerializer/IFSBoostSerialize.hpp"
 
 #include <fwTools/fromIsoExtendedString.hpp>

@@ -17,7 +17,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
