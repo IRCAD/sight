@@ -32,6 +32,7 @@ class ObjectTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( fieldSerializationTest );
     CPPUNIT_TEST( imageFieldSerializationTest );
     CPPUNIT_TEST( resectionDBSerializationTest );
+    CPPUNIT_TEST( resectionDBWithSafeResectionSerializationTest );
     CPPUNIT_TEST( dictionarySerializationTest );
     CPPUNIT_TEST( processObjectSerializationTest );
     CPPUNIT_TEST_SUITE_END();
@@ -62,6 +63,7 @@ public:
     void fieldSerializationTest();
     void imageFieldSerializationTest();
     void resectionDBSerializationTest();
+    void resectionDBWithSafeResectionSerializationTest();
     void dictionarySerializationTest();
     void processObjectSerializationTest();
 };
