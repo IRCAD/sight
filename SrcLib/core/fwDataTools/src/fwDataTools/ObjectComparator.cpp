@@ -426,7 +426,7 @@ bool ObjectComparator::compareDictionary(::fwData::Dictionary::sptr dico1, ::fwD
 
     bool compare = true;
 
-    compare &= dico1->getDictionaryOrgans().size() ==  dico2->getDictionaryOrgans().size();
+    compare &= (dico1->getDictionaryOrgans().size() ==  dico2->getDictionaryOrgans().size());
     OSLM_ERROR_IF( "Number of dictionary are different.",
                    dico1->getDictionaryOrgans().size() !=  dico2->getDictionaryOrgans().size());
 

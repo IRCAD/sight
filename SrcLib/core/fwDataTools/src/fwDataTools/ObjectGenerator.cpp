@@ -483,7 +483,7 @@ namespace fwDataTools
 
 ::fwData::Dictionary::sptr ObjectGenerator::createDictionary()
 {
-    std::string DICTIONARYORGANNAME = "dictionaryOrgan";
+    std::string DICTIONARYORGANNAME = "myDictionary";
 
     ::fwData::Dictionary::NewSptr dico;
 

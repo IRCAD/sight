@@ -21,6 +21,7 @@
 #include <fwTools/ClassFactoryRegistry.hpp>
 
 #include <fwData/Vector.hpp>
+#include <fwData/Composite.hpp>
 
 namespace fwXML
 {
@@ -280,6 +281,14 @@ public:
         return dataVector->getContainer< DATATYPE >();
     }
 
+    //------------------------------------------------------------------------------
+
+    template< class DATATYPE >
+    static std::map< std::string, SPTR(DATATYPE) > getAttributeComposite( xmlNodePtr source, const std::string & name )
+    {
+        ::fwData::Composite::sptr dataComposite = XMLTranslatorHelper::getAttribute< ::fwData::Composite >( source, name );
+        return dataComposite->getContainer< DATATYPE >();
+    }
 
     //------------------------------------------------------------------------------
 
@@ -293,6 +302,16 @@ public:
         ::fwData::Vector::NewSptr dataVector;
         dataVector->setContainer< DATATYPE >( objVec );
         XMLTranslatorHelper::addAttribute( masterNode, name, dataVector );
+    }
+
+    //------------------------------------------------------------------------------
+
+    template< class DATATYPE >
+    static void addAttributeComposite( xmlNodePtr masterNode, const std::string & name, const std::map< std::string, SPTR(DATATYPE) > & objMap )
+    {
+        ::fwData::Composite::NewSptr dataComposite;
+        dataComposite->setContainer< DATATYPE >( objMap );
+        XMLTranslatorHelper::addAttribute( masterNode, name, dataComposite );
     }
 
 protected:
