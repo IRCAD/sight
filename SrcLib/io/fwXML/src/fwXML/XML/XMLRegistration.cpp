@@ -72,6 +72,7 @@
 #include "fwXML/XML/StructureTraitsDictionaryXMLTranslator.hpp"
 #include "fwXML/XML/ResectionDBXMLTranslator.hpp"
 #include "fwXML/XML/DictionaryXMLTranslator.hpp"
+#include "fwXML/XML/ProcessObjectXMLTranslator.hpp"
 
 INSTANTIATE_SERIALIZER(::fwData::Object);
 INSTANTIATE_SERIALIZER(::fwData::Acquisition);
@@ -102,7 +103,6 @@ namespace fwXML
 
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Object>                 ,  ::fwData::Object                );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::ProcessObject>          ,  ::fwData::ProcessObject          );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D );
@@ -141,6 +141,8 @@ REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsXMLTranslator      
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ROITraitsXMLTranslator                                  ,  ::fwData::ROITraits              );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionTraitsXMLTranslator                       ,  ::fwData::ReconstructionTraits   );
 REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsDictionaryXMLTranslator                  ,  ::fwData::StructureTraitsDictionary);
+REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ProcessObjectXMLTranslator                              ,  ::fwData::ProcessObject          );
+
 
 }
 
