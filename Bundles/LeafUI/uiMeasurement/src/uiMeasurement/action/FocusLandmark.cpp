@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwServices/macros.hpp>
@@ -11,7 +13,6 @@
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
-#include <fwData/PatientDB.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
@@ -102,10 +103,10 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
         // get landmarks
         namespace ns = ::fwComEd::fieldHelper;
         ns::MedicalImageHelpers::checkLandmarks(  pImage );
-        ::fwData::PointList::sptr landmarks =  pImage->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+        ::fwData::PointList::sptr landmarks =  pImage->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
-        if( landmarks->getCRefPoints().size() == 0 )
+        if( landmarks->getCRefPoints().empty() )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Focus landmarks");
@@ -116,19 +117,17 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
         }
         else
         {
-            // Retreive point names
+            // Retrieve point names
             std::vector< std::string > names;
             std::map< std::string, ::fwData::Point::sptr > name2Point;
 
             ::fwData::PointList::PointListContainer points = landmarks->getCRefPoints();
-            for(    ::fwData::PointList::PointListContainer::iterator itPoint = points.begin();
-                    itPoint != points.end();
-                    ++itPoint )
+            BOOST_FOREACH(::fwData::Point::sptr point, points)
             {
-                std::string name =  (*itPoint)->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_labelId )->value();
+                std::string name =  point->getField< ::fwData::String >( ::fwComEd::Dictionary::m_labelId )->value();
                 OSLM_DEBUG( "Point name " << name );
                 names.push_back( name );
-                name2Point[name] = (*itPoint);
+                name2Point[name] = point;
             }
 
             // Propose to user to choose a landmark
@@ -153,9 +152,9 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
                         pImage->getSize()[1] > paramF->value() &&
                         pImage->getSize()[2] > paramA->value() )
                 {
-                    pImage->setFieldSingleElement( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
-                    pImage->setFieldSingleElement( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
-                    pImage->setFieldSingleElement( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramS );
+                    pImage->setField( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
+                    pImage->setField( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
+                    pImage->setField( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramS );
 
                     // notify
                     ::fwComEd::ImageMsg::NewSptr msg;

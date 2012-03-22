@@ -87,10 +87,10 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
         ::boost::filesystem::path filename = result->getPath();
         _sDefaultPath = filename.parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        
+
         //get landmarks
         ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
-        ::fwData::PointList::sptr landmarks =  image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+        ::fwData::PointList::sptr landmarks =  image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
 
@@ -103,7 +103,7 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
         {
             ::fwData::Point::sptr newPoint = ::fwData::Point::New(point[0], point[1], point[2]);
             ::fwData::String::sptr label = ::fwData::String::New(vNames[index]);
-            newPoint->setFieldSingleElement( ::fwComEd::Dictionary::m_labelId , label );
+            newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
             landmarks->getRefPoints().push_back( newPoint );
             ++index;
         }
