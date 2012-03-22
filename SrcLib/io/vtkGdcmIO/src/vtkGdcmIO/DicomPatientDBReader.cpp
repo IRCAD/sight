@@ -457,19 +457,33 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         study = ::fwData::Study::New();
                     }
 
+                    // Image must be in 3D
+                    if(pDataImage->getNumberOfDimensions()  == 2)
+                    {
+                        ::fwData::Image::SizeType imgSize(3);
+                        std::copy(pDataImage->getSize().begin(), pDataImage->getSize().end(), imgSize.begin());
+                        imgSize[2] = 1;
+                        pDataImage->setSize(imgSize);
+
+                        ::fwData::Image::SpacingType imgSpacing(3);
+                        std::copy(pDataImage->getSpacing().begin(), pDataImage->getSpacing().end(), imgSpacing.begin());
+                        imgSpacing[2] = 1;
+                        pDataImage->setSpacing(imgSpacing);
+
+                        ::fwData::Image::OriginType imgOrigin(3);
+                        std::copy(pDataImage->getOrigin().begin(), pDataImage->getOrigin().end(), imgOrigin.begin());
+                        imgOrigin[2] = 1;
+                        pDataImage->setOrigin(imgOrigin);
+
+                        width = 4096;
+                    }
+
                     ::fwData::Image::SpacingType vPixelSpacing = pDataImage->getSpacing();
                     if (zspacing > 0)
                     {
                         vPixelSpacing[2] = zspacing;
                     }
                     pDataImage->setSpacing(vPixelSpacing);
-
-                    ::fwData::Image::SizeType imgSize = pDataImage->getSize();
-                    if (imgSize[2] == 0.0)
-                    {
-                        imgSize[2] = 1.0;
-                        width = 4096;
-                    }
 
 
                     // Name & firstname
