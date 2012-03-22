@@ -170,7 +170,7 @@ void DicomPatientReader::read() throw(::fwTools::Failed)
         itMap++;
     }
 
-    if(patient->getStudySize() == 0)
+    if(patient->getNumberOfStudies() == 0)
         throw ::fwTools::Failed("Patient has no study");
 
     //*****     Read patient      *****//

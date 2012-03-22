@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 // fwComEd
 #include <fwComEd/Dictionary.hpp>
 
@@ -81,18 +83,13 @@ void DicomGlobalWriterManager::write() throw(::fwTools::Failed)
     //*****     Handle studies      *****//
     studyPath = patientPath;  // Copy of the parent folder path
 
-    if (patient->getStudySize() > 1)
+    if (patient->getNumberOfStudies() > 1)
     {// If there are more than one study, one folder will be create for each study
         makeNewStudyDir = true;
     }
 
-    std::pair< ::fwData::Patient::StudyIterator, ::fwData::Patient::StudyIterator > studiesIts = patient->getStudies();
-    ::fwData::Patient::StudyIterator studyIt    = studiesIts.first;
-    ::fwData::Patient::StudyIterator studyItEnd = studiesIts.second;
-    for(; studyIt != studyItEnd ; studyIt++)
+    BOOST_FOREACH(::fwData::Study::sptr study, patient->getStudies())
     {
-        ::fwData::Study::sptr study = *studyIt;
-
         // In order to avoid to remove all study information in data set (with patient + study data),
         // we copy patient data set in the view to have a data set without study information.
         gDsStudy = gDsPatient;  // Copy of the parent data set
@@ -115,22 +112,18 @@ void DicomGlobalWriterManager::write() throw(::fwTools::Failed)
         //*****     Handle acquisitions      *****//
         seriesPath = studyPath;  // Copy of the parent folder path
 
-        if (study->getAcquisitionSize() > 1)
+        if (study->getNumberOfAcquisitions() > 1)
         {
             makeNewSeriesDir = true;
         }
 
-        std::pair< ::fwData::Study::AcquisitionIterator, ::fwData::Study::AcquisitionIterator > seriesIts = study->getAcquisitions();
-        ::fwData::Study::AcquisitionIterator seriesIt    = seriesIts.first;
-        ::fwData::Study::AcquisitionIterator seriesItEnd = seriesIts.second;
         // FIXME : If the user duplicate an acquisition, both will be written with the same series UID in two different folders.
         //         This is an issue for document SR which must infers from one series. In this case, if each copy has comment
         //         (landmark, distance), two documents SR will be generated for the same series.
         //         In addition, SR reader will just read the first document SR.
-        for(; seriesIt != seriesItEnd ; seriesIt++)
+        BOOST_FOREACH(::fwData::Acquisition::sptr series, study->getAcquisitions())
         {
             ::boost::shared_ptr< DicomInstance > dicomSerieInstance = ::boost::shared_ptr< DicomInstance >( new DicomInstance(*dicomInstance) );
-            ::fwData::Acquisition::sptr series = *seriesIt;
             gDsSeries = gDsStudy;  // Copy of the parent data set
 
             seriesWriter.setObject( series );
@@ -220,15 +213,11 @@ bool DicomGlobalWriterManager::hasDocumentSR( ::fwData::Acquisition::csptr a_ser
     fwData::Image::csptr image = a_series->getImage();
     assert(image != 0);
 
+    ::fwData::PointList::sptr pl;
+    pl = image->getField< ::fwData::PointList >( fwComEd::Dictionary::m_imageLandmarksId );
     // Check if image has landmark and distance
-    if ( (image->getFieldSize( fwComEd::Dictionary::m_imageLandmarksId ) > 0
-          && image->getFieldSingleElement< fwData::PointList >( fwComEd::Dictionary::m_imageLandmarksId )->getPoints().size() > 0)
-      || (image->getFieldSize( fwComEd::Dictionary::m_imageDistancesId ) > 0) )
-    {
-        return true;
-    }
-
-    return false;
+    return ( (pl  && pl->getPoints().size() > 0)
+            || image->getField( fwComEd::Dictionary::m_imageDistancesId ) );
 }
 
 //------------------------------------------------------------------------------
@@ -236,7 +225,7 @@ bool DicomGlobalWriterManager::hasDocumentSR( ::fwData::Acquisition::csptr a_ser
 bool DicomGlobalWriterManager::hasDocumentRT( ::fwData::Acquisition::csptr a_series ) const
 {
     // Check number of reconstruction
-    return ( (a_series->getReconstructionSize() > 0) ? true : false );
+    return (a_series->getNumberOfReconstructions() > 0);
 }
 
 //------------------------------------------------------------------------------

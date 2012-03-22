@@ -36,8 +36,8 @@ void DicomSegmentWriter::writeSurfaceSegmentation(const unsigned int idx, ::fwDa
     SLM_TRACE_FUNC();
 
     // get the 3D reconstruction
-    ::fwData::Reconstruction::csptr   reconstruction  =
-            ::fwData::Reconstruction::dynamicCast ( this->getConcreteObject()->getField( ::fwData::Acquisition::ID_RECONSTRUCTIONS )->children()[idx] );
+    ::fwData::Acquisition::sptr acq = this->getConcreteObject();
+    ::fwData::Reconstruction::csptr  reconstruction  = acq->getReconstructions()[idx];
 
     //*****     Identification of the segment       *****//
     const std::string & segmentLabel    = reconstruction->getStructureType();   //

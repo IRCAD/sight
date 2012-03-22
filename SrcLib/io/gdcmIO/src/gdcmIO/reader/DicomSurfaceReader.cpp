@@ -82,7 +82,7 @@ void DicomSurfaceReader::read() throw (::fwTools::Failed)
 
     OSLM_TRACE("series->getReconstructionSize() : "<<series->getReconstructionSize());
 
-    series->setFieldSingleElement("ShowReconstructions", ::fwData::Boolean::NewSptr(true));
+    series->setField("ShowReconstructions", ::fwData::Boolean::NewSptr(true));
 }
 
 //------------------------------------------------------------------------------

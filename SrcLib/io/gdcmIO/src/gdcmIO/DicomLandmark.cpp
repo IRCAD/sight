@@ -51,7 +51,7 @@ void DicomLandmark::convertToData(::fwData::Image::sptr a_image)
     {
         // Get landmarks
         ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks( a_image );
-        ::fwData::PointList::sptr landmarks = a_image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+        ::fwData::PointList::sptr landmarks = a_image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
 
         // Compute z spacing
         // NOTE : spacing between slice must be regular
@@ -77,11 +77,11 @@ void DicomLandmark::convertToData(::fwData::Image::sptr a_image)
             // append to point the label
             ::fwData::String::NewSptr label;
             label->value() = this->getLabels()[i];
-            newPoint->setFieldSingleElement( ::fwComEd::Dictionary::m_labelId , label );
+            newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
 
             OSLM_TRACE("new landmark : "<<label->value()<<" ( "<<newPoint->getRefCoord()[0]<<"x"<<newPoint->getRefCoord()[1]<<"x"<<newPoint->getRefCoord()[2]<<" )");
         }
-        a_image->setFieldSingleElement("ShowLandmarks", ::fwData::Boolean::NewSptr(true));
+        a_image->setField("ShowLandmarks", ::fwData::Boolean::NewSptr(true));
     }
     else
     {
@@ -96,9 +96,9 @@ void DicomLandmark::setFromData(::fwData::Image::csptr a_image) throw (::fwTools
     SLM_TRACE_FUNC();
 
     // Get landmarks
-    ::fwData::PointList::csptr landmarks =  a_image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+    ::fwData::PointList::csptr landmarks =  a_image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
 
-    std::vector< ::fwData::Point::sptr >    vLandmarks = landmarks->getPoints();
+    std::vector< ::fwData::Point::sptr > vLandmarks = landmarks->getPoints();
     SCoord              scoord;
     float               graphicData[2];
 
@@ -125,7 +125,7 @@ void DicomLandmark::setFromData(::fwData::Image::csptr a_image) throw (::fwTools
         if ( 0 < refFrame && refFrame <= refFrameMax )
         {
             // Set label
-            m_labels.push_back( (*iter)->getFieldSingleElement< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value() );
+            m_labels.push_back( (*iter)->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value() );
 
             // Set SCOORD
             graphicData[0] = (*iter)->getCoord()[0];    // x

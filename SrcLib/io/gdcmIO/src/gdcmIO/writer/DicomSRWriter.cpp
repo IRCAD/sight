@@ -61,8 +61,9 @@ void DicomSRWriter::write() throw (::fwTools::Failed)
     ::gdcm::DataSet & gDsRoot = this->getWriter()->GetFile().GetDataSet();
 
     //*****     Handled Landmarks      *****//
-    if (image->getFieldSize( fwComEd::Dictionary::m_imageLandmarksId ) > 0
-        && image->getFieldSingleElement< fwData::PointList >( fwComEd::Dictionary::m_imageLandmarksId )->getPoints().size() > 0)
+    ::fwData::PointList::sptr pl;
+    pl = image->getField< ::fwData::PointList >( fwComEd::Dictionary::m_imageLandmarksId );
+    if (pl && pl->getPoints().size() > 0)
     {
         DicomLandmarkWriter landmarkWriter;
 
@@ -82,7 +83,7 @@ void DicomSRWriter::write() throw (::fwTools::Failed)
     }
 
     //*****     Handled distances      *****//
-    if (image->getFieldSize( fwComEd::Dictionary::m_imageDistancesId ) > 0)
+    if (image->getField( fwComEd::Dictionary::m_imageDistancesId ))
     {
         DicomDistanceWriter distanceWriter;
 

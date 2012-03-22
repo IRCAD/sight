@@ -70,15 +70,14 @@ void DicomSurfaceWriter::write() throw (::fwTools::Failed)
 
     //*****     Write surface segmentations     *****//
     unsigned int    skippedSegment  = 0;    // Number of segmentation not written
-    const uint32_t  nbSegmentation  = series->getReconstructionSize();
+    const uint32_t  nbSegmentation  = series->getNumberOfReconstructions();
 
     for (unsigned int i = 0; i < nbSegmentation; ++i)
     {
         try
         {
             // Get the info of the struture type
-            ::fwData::Reconstruction::csptr   reconstruction  =
-                    ::fwData::Reconstruction::dynamicCast ( series->getField( ::fwData::Acquisition::ID_RECONSTRUCTIONS )->children()[i] );
+            ::fwData::Reconstruction::csptr reconstruction = series->getReconstructions()[i];
             const std::string & segmentLabel    = reconstruction->getStructureType();
             ::fwData::StructureTraitsDictionary::StructureTypeNameContainer segmentLabels = structDico->getStructureTypeNames();
             ::fwData::StructureTraitsDictionary::StructureTypeNameContainer::const_iterator itr = std::find(segmentLabels.begin(), segmentLabels.end(),segmentLabel);
@@ -168,20 +167,19 @@ void DicomSurfaceWriter::writeSurfaceMesh(const unsigned int a_idx)
 {
     SLM_TRACE_FUNC();
 
-    ::boost::shared_ptr< ::gdcm::SurfaceWriter >    gSurfaceWriter  = ::boost::static_pointer_cast< ::gdcm::SurfaceWriter >( this->getWriter() );
-    ::gdcm::DataSet &               gDsRoot         = this->getDataSet();
+    ::boost::shared_ptr< ::gdcm::SurfaceWriter > gSurfaceWriter = ::boost::static_pointer_cast< ::gdcm::SurfaceWriter >( this->getWriter() );
+    ::gdcm::DataSet & gDsRoot = this->getDataSet();
 
     // Get the last segment added in SegmentWriter::writeSurfaceSegmentation()
-    ::gdcm::SmartPointer< ::gdcm::Segment >         segment         = gSurfaceWriter->GetSegments().back();
+    ::gdcm::SmartPointer< ::gdcm::Segment > segment = gSurfaceWriter->GetSegments().back();
 
     // Add to it a surface
-    ::gdcm::SmartPointer< ::gdcm::Surface >         surface         = new ::gdcm::Surface;
+    ::gdcm::SmartPointer< ::gdcm::Surface > surface = new ::gdcm::Surface;
     segment->AddSurface(surface);
 
-    ::fwData::Reconstruction::csptr reconstruction = fwData::Reconstruction::dynamicCast (
-                                                     this->getConcreteObject()->getField( fwData::Acquisition::ID_RECONSTRUCTIONS )->children()[a_idx]
-                                                                                         );
-    ::fwData::Material::csptr       material       = reconstruction->getMaterial();
+    ::fwData::Acquisition::sptr acq = this->getConcreteObject();
+    ::fwData::Reconstruction::csptr reconstruction = acq->getReconstructions()[a_idx];
+    ::fwData::Material::csptr material = reconstruction->getMaterial();
 
     // Set DicomSurface data
     m_surface->setFromData(reconstruction);    // NOTE: must be called before points and primitives writing

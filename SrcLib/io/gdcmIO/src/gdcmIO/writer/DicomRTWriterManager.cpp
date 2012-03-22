@@ -68,13 +68,15 @@ void DicomRTWriterManager::write(::gdcm::DataSet &                  a_gDs,
 
 bool DicomRTWriterManager::hasSurface()
 {
+    bool hasSurface = false;
     ::fwData::Acquisition::sptr     series          = this->getConcreteObject();
-    ::fwData::Reconstruction::sptr  reconstruction  = *(series->getReconstructions().first);
+    ::fwData::Reconstruction::sptr  reconstruction  = series->getReconstructions().front();
 
     if (reconstruction)
-        return (reconstruction->getMesh() != 0 ? true : false);
-
-    return false;
+    {
+        hasSurface = (reconstruction->getMesh() != 0);
+    }
+    return hasSurface;
 }
 
 }   // namespace writer

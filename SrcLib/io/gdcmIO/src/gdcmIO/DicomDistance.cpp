@@ -13,9 +13,9 @@
 #include <fwComEd/Dictionary.hpp>
 
 // fwData
+#include <fwData/Vector.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Boolean.hpp>
-#include <fwData/DownCastIterator.hpp>
 
 #include "gdcmIO/DicomDistance.hpp"
 #include "gdcmIO/helper/GdcmHelper.hpp"
@@ -51,6 +51,9 @@ void DicomDistance::convertToData(::fwData::Image::sptr a_image)
 
     if (nb_distances > 0)
     {
+        ::fwData::Vector::sptr vectDist;
+        vectDist = a_image->setDefaultField(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
+
         const std::string separator = ",";  // Define separator between referenced frame numbers
 
         // Compute z spacing
@@ -89,14 +92,15 @@ void DicomDistance::convertToData(::fwData::Image::sptr a_image)
             pl->getRefPoints().push_back( pt2 );
 
             // Add the distance in the image
-            a_image->addFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , pl);
+
+            vectDist->push_back(pl);
 
             OSLM_TRACE("new distance : ( "<<pt1->getRefCoord()[0]<<"x"<<pt1->getRefCoord()[1]<<"x"<<pt1->getRefCoord()[2]<<" - " \
                                           <<pt2->getRefCoord()[0]<<"x"<<pt2->getRefCoord()[1]<<"x"<<pt2->getRefCoord()[2]<<" )");
         }
 
         // force distance to be shown
-        a_image->setFieldSingleElement("ShowDistances",  ::fwData::Boolean::NewSptr(true));
+        a_image->setField("ShowDistances",  ::fwData::Boolean::NewSptr(true));
     }
     else
     {
@@ -109,17 +113,13 @@ void DicomDistance::convertToData(::fwData::Image::sptr a_image)
 void DicomDistance::setFromData(::fwData::Image::csptr a_image) throw (::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
-    if (a_image->getFieldSize( ::fwComEd::Dictionary::m_imageDistancesId ) > 0)
+    ::fwData::Vector::sptr vectDist;
+    vectDist = a_image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+    if (vectDist)
     {
-        // Get distances
-        typedef ::fwData::ContainerCaster< ::fwData::PointList >::const_iterator Iterator;
-        Iterator plIter( a_image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().begin() );
-        Iterator end( a_image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().end() );
-
         // Init
         ::fwData::Point::csptr  pt1, pt2;           // Point of the distance
-        std::vector< ::fwData::Point::sptr > vDistance;
+        ::fwData::PointList::PointListContainer vDistance;
         float                   z1, z2;             // z coordinates of poinrts
         std::stringstream       strm;
         const std::string       separator = ",";    // Define separator between referenced frame numbers
@@ -136,9 +136,11 @@ void DicomDistance::setFromData(::fwData::Image::csptr a_image) throw (::fwTools
             zSpacingInverse = 1. / a_image->getSpacing()[2];
         }
 
-        for (; plIter != end; ++plIter )    // For each distance
+        BOOST_FOREACH(::fwData::Object::sptr obj, *vectDist)
         {
-            vDistance = (*plIter)->getPoints();
+            ::fwData::PointList::sptr pl = ::fwData::PointList::dynamicCast(obj);
+            SLM_ASSERT("PointList dynamicCast failed", pl);
+            vDistance = pl->getPoints();
 
             // Set each point
             pt1 = vDistance[0];

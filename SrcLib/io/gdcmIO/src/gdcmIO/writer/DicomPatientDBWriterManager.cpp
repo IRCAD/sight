@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
+#include <boost/foreach.hpp>
 #include <boost/bind.hpp>           // for ProgessHandler
 #include <boost/lambda/lambda.hpp>  // for ProgessHandler
 
@@ -55,12 +55,9 @@ void DicomPatientDBWriterManager::write()
     DicomGlobalWriterManager::NewSptr    myWriter;
 
     // Write all patients
-    std::pair< ::fwData::PatientDB::PatientIterator, ::fwData::PatientDB::PatientIterator > iterators = dataPatientDB->getPatients();
-    ::fwData::PatientDB::PatientIterator patientIt      = iterators.first;
-    ::fwData::PatientDB::PatientIterator patientItEnd   = iterators.second;
-    for(; patientIt != patientItEnd ; patientIt++)
+    BOOST_FOREACH( ::fwData::Patient::sptr patient, dataPatientDB->getPatients())
     {
-        myWriter->setObject( *patientIt );
+        myWriter->setObject( patient );
         myWriter->setFolder( patientDBPath );
         myWriter->setPatientID( patientID++ );
 
