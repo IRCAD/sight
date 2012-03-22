@@ -81,10 +81,13 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
 
         ::fwData::Composite::NewSptr cTF;
         cTF->getRefMap()[ tf->getName() ] = tf;
-        double min, max;
-        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(img, min, max);
-        ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
-        tf->setWLMinMax(wlMinMax);
+        if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(img))
+        {
+            double min, max;
+            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(img, min, max);
+            ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+            tf->setWLMinMax(wlMinMax);
+        }
         // Set in selected image
         ::fwComEd::helper::Field fieldHelper(img);
         fieldHelper.setField( ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
@@ -133,7 +136,8 @@ bool Image::createImageSliceIndex()
 
 
     SLM_ASSERT (
-            "Information on image slice index is not correct, miss one of these fields : m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
+            "Information on image slice index is not correct, miss one of these fields : "
+            "m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
             axialIdx && frontalIdx && sagittalIdx
             );
 
