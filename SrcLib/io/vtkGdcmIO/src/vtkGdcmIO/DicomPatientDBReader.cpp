@@ -419,18 +419,20 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                                 std::pair< ::fwData::Patient::StudyIterator, ::fwData::Patient::StudyIterator > studies = patient->getStudies();
                                 // Looking for an existing study
                                 ::fwData::Patient::StudyIterator itrOnStudy;
+                                bool studyExists = false;
                                 for(itrOnStudy = studies.first; itrOnStudy != studies.second; ++itrOnStudy)
                                 {
                                     if((*itrOnStudy)->getUID() == studyInstanceUID)
                                     {
                                         study = *itrOnStudy;
+                                        studyExists = true;
                                         break;
                                     }
-                                    else
-                                    {
-                                        study = ::fwData::Study::New();
-                                        bIsNewStudy = true;
-                                    }
+                                }
+                                if (!studyExists)
+                                {
+                                    study = ::fwData::Study::New();
+                                    bIsNewStudy = true;
                                 }
                                 break;
                             }
