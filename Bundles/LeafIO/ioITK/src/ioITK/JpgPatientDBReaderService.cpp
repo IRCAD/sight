@@ -153,13 +153,12 @@ void JpgPatientDBReaderService::updating() throw(::fwTools::Failed)
     {
         ::fwData::PatientDB::sptr patientDB = createPatientDB( this->getFolder() );
 
-        if( patientDB->getPatientSize() > 0 )
+        if( patientDB->getNumberOfPatients() > 0 )
         {
             // Retrieve dataStruct associated with this service
             ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
             SLM_ASSERT("associatedPatientDB not instanced", associatedPatientDB);
 
-            //( *( associatedPatientDB ) ) = ( *( patientDB.get() ) ) ;
             associatedPatientDB->shallowCopy( patientDB );
 
             ::fwGui::Cursor cursor;
