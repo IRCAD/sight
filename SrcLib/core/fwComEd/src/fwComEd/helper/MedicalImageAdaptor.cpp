@@ -377,10 +377,8 @@ void MedicalImageAdaptor::setWindow( double window )
 
 void MedicalImageAdaptor::setWindowLevel( double windowMin, double windowMax )
 {
-    double window = windowMax - windowMin;
-    double level = windowMin + window/2.f;
-    this->setWindow( window );
-    this->setLevel( level );
+    ::fwData::TransferFunction::TFValuePairType minMax(windowMin, windowMax);
+    this->getTransferFunction()->setWLMinMax( minMax );
 }
 
 //------------------------------------------------------------------------------
