@@ -149,7 +149,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     scanner.AddTag( t11 );
     scanner.AddTag( t12 );
     scanner.AddTag( t13 );
-    scanner.AddTag( t14 );    
+    scanner.AddTag( t14 );
     scanner.AddTag(imageTypeTag);
 
     //const gdcm::Tag &reftag = t2;
@@ -410,25 +410,19 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     // Check the existence of the the study and the patient.
                     bool bIsNewStudy =false;
                     bool bIsNewPatient =false;
-                    if(patientDB->getPatientSize() !=0 )
+                    if(patientDB->getNumberOfPatients() !=0 )
                     {
                         //Looking for an existing patient.
-                        ::fwData::PatientDB::PatientIterator itrOnPatient;
-                        std::pair< ::fwData::PatientDB::PatientIterator, ::fwData::PatientDB::PatientIterator > patients = patientDB->getPatients();
-                        for(itrOnPatient = patients.first; itrOnPatient != patients.second; ++itrOnPatient)
+                        BOOST_FOREACH(patient, patientDB->getPatients())
                         {
-                            std::string id = (*itrOnPatient)->getIDDicom();
+                            std::string id = patient->getIDDicom();
                             if (patientID == id)
                             {
-                                patient =*itrOnPatient;
-                                std::pair< ::fwData::Patient::StudyIterator, ::fwData::Patient::StudyIterator > studies = patient->getStudies();
                                 // Looking for an existing study
-                                ::fwData::Patient::StudyIterator itrOnStudy;
-                                for(itrOnStudy = studies.first; itrOnStudy != studies.second; ++itrOnStudy)
+                                BOOST_FOREACH(study, patient->getStudies())
                                 {
-                                    if((*itrOnStudy)->getUID() == studyInstanceUID)
+                                    if(study->getUID() == studyInstanceUID)
                                     {
-                                        study = *itrOnStudy;
                                         break;
                                     }
                                     else
