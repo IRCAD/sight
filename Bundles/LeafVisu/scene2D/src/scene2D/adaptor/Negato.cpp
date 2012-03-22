@@ -287,9 +287,6 @@ QImage * Negato::createQImage()
 
 void Negato::doStart() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-
-    this->installTFObserver( this->getSptr() );
     m_pixmapItem = new QGraphicsPixmapItem();
     m_qimg = this->createQImage();
 
@@ -306,6 +303,8 @@ void Negato::doStart() throw ( ::fwTools::Failed )
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
 
     this->getScene2DRender()->getScene()->addItem( m_layer );
+
+    this->installTFObserver( this->getSptr() );
 }
 
 //-----------------------------------------------------------------------------

@@ -105,11 +105,6 @@ void TransferFunction::buildTFPoints()
     m_TFPoints.clear();
 
     // Iterate on the selected tf and fill the tf points map with key = value and T = Color(RGBA)
-//    ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPointIt;
-//    for( TFPointIt = m_selectedTF->getTransfertFunctionPoints().first ; TFPointIt != m_selectedTF->getTransfertFunctionPoints().second ; ++TFPointIt )
-//    {
-//        m_TFPoints[((*TFPointIt)->getValue() - (double)m_selectedTF->getMinMax().first) / m_window] = m_selectedTF->getColor((*TFPointIt)->getValue());
-//    }
     ::fwData::TransferFunction::TFValueType wlMax = selectedTF->getWLMinMax().first;
     BOOST_FOREACH(::fwData::TransferFunction::TFDataType::value_type elt, selectedTF->getTFData())
     {
@@ -223,7 +218,7 @@ void TransferFunction::buildLinesAndPolygons()
 
         m_linesAndPolygons.push_back(line);
 
-        // Build the points vector defining the polygon and buil the polygon
+        // Build the points vector defining the polygon and build the polygon
         QVector<QPointF> vect;
         vect.append(QPointF(line->line().x1(), 0));
         vect.append(QPointF(line->line().x1(), line->line().y1()));
@@ -302,8 +297,6 @@ void TransferFunction::updateImageTF()
 
 void TransferFunction::doStart() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-
     // Initialize the layer and the circle height and width
     m_layer = new QGraphicsItemGroup();
 
@@ -314,6 +307,7 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
     m_circlePen.setWidthF( 1.2f );
 
     this->doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 //-----------------------------------------------------------------------------
@@ -332,19 +326,12 @@ void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void TransferFunction::doUpdate( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
-    ::fwComEd::TransferFunctionMsg::csptr tfMsg = ::fwComEd::TransferFunctionMsg::dynamicConstCast(_msg);
-
-    if(tfMsg && imageMsg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
-    {
-        this->doUpdate();
-    }
-
-    if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
+    if(msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
+            || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS )
+            || msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED)
+            || this->upadteTFObserver(msg) )
     {
         this->doUpdate();
     }
