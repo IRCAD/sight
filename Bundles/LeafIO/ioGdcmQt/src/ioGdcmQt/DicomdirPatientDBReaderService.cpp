@@ -38,8 +38,6 @@
 #include <QApplication>
 #include "ioGdcmQt/ui/DicomdirEditor.hpp"
 #include "ioGdcmQt/DicomdirPatientDBReaderService.hpp"
-//#include "ioDicom/DicomPatientDBReaderService.hpp"
-//#include "itkIO/DicomPatientDBReader.hpp"
 #include "vtkGdcmIO/DicomPatientDBReader.hpp"
 #ifdef QT_NO_KEYWORDS_FWDEF
 #undef QT_NO_KEYWORDS
@@ -187,7 +185,7 @@ void DicomdirPatientDBReaderService::updating() throw(::fwTools::Failed)
             break;
         }
 
-        if( patientDB->getPatientSize() > 0 )
+        if( patientDB->getNumberOfPatients() > 0 )
         {
             // Retrieve dataStruct associated with this service
             ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
