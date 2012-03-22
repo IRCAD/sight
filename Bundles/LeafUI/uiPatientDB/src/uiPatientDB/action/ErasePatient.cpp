@@ -84,35 +84,19 @@ void ErasePatient::updating( ) throw(::fwTools::Failed)
     myIntStu = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudyIdx(pPatientDB);
     myIntAcq = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisitionIdx(pPatientDB);
 
-    int nbStudies = patient->getNumberOfStudies();
-    int nbAcquisitions = study->getNumberOfAcquisitions();
-
+    // Erase acquisition
     ::fwDataTools::Patient::removeAcquisition(study, acquisition);
-
-    if( nbAcquisitions == 1 )
+    myIntAcq--;
+    if( study->getAcquisitions().empty() )
     {
         // Erase study
         ::fwDataTools::Patient::removeStudy(patient, study);
-        if ( nbStudies == 1 )
+        myIntStu--;
+        if ( patient->getStudies().empty() )
         {
             // Erase patient
             ::fwDataTools::Patient::removePatient(pPatientDB, patient);
-        }
-        else
-        {
-            // Select previous study
-            if (myIntStu > 0)
-            {
-                myIntStu--;
-            }
-        }
-    }
-    else
-    {
-        // Select previous acquisition
-        if (myIntAcq > 0)
-        {
-            myIntAcq--;
+            myIntPat--;
         }
     }
 
