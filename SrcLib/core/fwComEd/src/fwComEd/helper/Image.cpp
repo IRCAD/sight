@@ -13,6 +13,7 @@
 #include "fwComEd/helper/Image.hpp"
 #include "fwComEd/helper/Field.hpp"
 #include "fwComEd/Dictionary.hpp"
+#include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
 
 namespace fwComEd
 {
@@ -80,7 +81,10 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
 
         ::fwData::Composite::NewSptr cTF;
         cTF->getRefMap()[ tf->getName() ] = tf;
-
+        double min, max;
+        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(img, min, max);
+        ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+        tf->setWLMinMax(wlMinMax);
         // Set in selected image
         ::fwComEd::helper::Field fieldHelper(img);
         fieldHelper.setField( ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
