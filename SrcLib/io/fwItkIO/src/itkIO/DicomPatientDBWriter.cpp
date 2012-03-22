@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -49,12 +50,10 @@ void DicomPatientDBWriter::write()
 
     SLM_ASSERT("dataPatientDB not instanced", dataPatientDB);
     int iPatient = 0;
-    ::fwData::PatientDB::PatientIterator patientIter = dataPatientDB->getPatients().first;
-    for(patientIter = dataPatientDB->getPatients().first ; patientIter != dataPatientDB->getPatients().second ; patientIter++)
+    BOOST_FOREACH(::fwData::Patient::sptr pPatient, dataPatientDB->getPatients())
     {
         iPatient++;
         std::string tmp_path = patientDBPath;
-        ::fwData::Patient::sptr pPatient = (*patientIter);
 
         tmp_path += "/patient_" + ::fwTools::getString< int >(iPatient);
         ::itkIO::DicomPatientWriter::NewSptr myWriter;

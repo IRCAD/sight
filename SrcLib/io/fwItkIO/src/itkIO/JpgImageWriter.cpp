@@ -20,8 +20,12 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
 #include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Integer.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <itkIO/itk.hpp>
 
@@ -54,7 +58,6 @@ JpgImageWriter::~JpgImageWriter()
 
 struct JpgITKSaverFunctor
 {
-
     struct Parameter
     {
         std::string                   m_filename;
@@ -66,6 +69,8 @@ struct JpgITKSaverFunctor
     void operator()( const  Parameter &param )
     {
         OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
+
+        ::fwData::Image::sptr image = param.m_dataImage;
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader ne permet pas de l'atteindre
         // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
@@ -87,18 +92,28 @@ struct JpgITKSaverFunctor
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = ::itkIO::itkImageFactory<itkImageType>( param.m_dataImage );
+        typename itkImageType::Pointer itkImage = ::itkIO::itkImageFactory<itkImageType>( image );
 
         typedef ::itk::IntensityWindowingImageFilter< itkImageType, itkImageType > RescaleFilterType;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
-        int min = std::numeric_limits< PIXELTYPE >::min();
-        int max = std::numeric_limits< PIXELTYPE >::max();
-        if( param.m_dataImage->getFieldSize( ::fwComEd::Dictionary::m_windowMinId) &&
-            param.m_dataImage->getFieldSize( ::fwComEd::Dictionary::m_windowMaxId) )
+        double min, max;
+        ::fwData::Composite::sptr poolTF;
+        poolTF = image->getField< ::fwData::Composite>( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+        if(poolTF)
         {
-            min = param.m_dataImage->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMinId)->value();
-            max = param.m_dataImage->getFieldSingleElement< ::fwData::Integer >( fwComEd::Dictionary::m_windowMaxId)->value();
+            ::fwData::Composite::iterator iter = poolTF->find(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+            if(iter != poolTF->end())
+            {
+                ::fwData::TransferFunction::sptr tf;
+                tf = ::fwData::TransferFunction::dynamicCast(iter->second);
+                min = tf->getWLMinMax().first;
+                max = tf->getWLMinMax().second;
+            }
+        }
+        else
+        {
+            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         }
 
         rescaleFilter->SetWindowMinimum( min );
@@ -119,7 +134,7 @@ struct JpgITKSaverFunctor
         format += "/%04d.jpg";
         nameGenerator->SetSeriesFormat( format.c_str() );
         nameGenerator->SetStartIndex( 1 );
-        nameGenerator->SetEndIndex( param.m_dataImage->getSize()[2] );
+        nameGenerator->SetEndIndex( image->getSize()[2] );
         nameGenerator->SetIncrementIndex( 1 );
 
         writer->SetFileNames( nameGenerator->GetFileNames() );
