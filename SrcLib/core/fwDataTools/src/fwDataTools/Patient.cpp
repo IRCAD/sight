@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <algorithm>
 #include <map>
 #include <iomanip>
 #include <cstdlib>
@@ -35,12 +36,13 @@ Patient::~Patient()
 void Patient::removePatient(::fwData::PatientDB::sptr patientDB,
                             ::fwData::Patient::sptr patient)
 {
-    ::fwData::PatientDB::PatientContainerType newPatients;
-    newPatients.reserve(patientDB->getNumberOfPatients());
-
     const ::fwData::PatientDB::PatientContainerType oldPatients = patientDB->getPatients();
+    ::fwData::PatientDB::PatientContainerType newPatients(oldPatients.begin(), oldPatients.end());
 
-    std::remove_copy(oldPatients.begin(), oldPatients.end(), newPatients.begin(), patient);
+    ::fwData::PatientDB::PatientContainerType::iterator newEnd;
+    newEnd = std::remove(newPatients.begin(), newPatients.end(), patient);
+    newPatients.erase(newEnd, newPatients.end());
+
     patientDB->setPatients( newPatients );
 }
 
@@ -49,12 +51,13 @@ void Patient::removePatient(::fwData::PatientDB::sptr patientDB,
 void Patient::removeStudy(::fwData::Patient::sptr patient,
                             ::fwData::Study::sptr study)
 {
-    ::fwData::Patient::StudyContainerType newStudies;
-    newStudies.reserve(patient->getNumberOfStudies());
-
     const ::fwData::Patient::StudyContainerType oldStudies = patient->getStudies();
+    ::fwData::Patient::StudyContainerType newStudies(oldStudies.begin(), oldStudies.end());
 
-    std::remove_copy(oldStudies.begin(), oldStudies.end(), newStudies.begin(), study);
+    ::fwData::Patient::StudyContainerType::iterator newEnd;
+    newEnd = std::remove(newStudies.begin(), newStudies.end(), study);
+    newStudies.erase(newEnd, newStudies.end());
+
     patient->setStudies( newStudies );
 }
 
@@ -63,12 +66,13 @@ void Patient::removeStudy(::fwData::Patient::sptr patient,
 void Patient::removeAcquisition(::fwData::Study::sptr study,
                                     ::fwData::Acquisition::sptr acq)
 {
-    ::fwData::Study::AcquisitionContainerType newAcq;
-    newAcq.reserve(study->getNumberOfAcquisitions());
-
     const ::fwData::Study::AcquisitionContainerType oldAcq = study->getAcquisitions();
+    ::fwData::Study::AcquisitionContainerType newAcq(oldAcq.begin(), oldAcq.end());
 
-    std::remove_copy(oldAcq.begin(), oldAcq.end(), newAcq.begin(), acq);
+    ::fwData::Study::AcquisitionContainerType::iterator newEnd;
+    newEnd = std::remove(newAcq.begin(), newAcq.end(), acq);
+    newAcq.erase(newEnd, newAcq.end());
+
     study->setAcquisitions( newAcq );
 }
 
