@@ -114,6 +114,9 @@ public :
     /// Get the min/max of the window level
     FWDATA_API TFValuePairType getWLMinMax() const;
 
+    /// Set the min/max of the window level
+    FWDATA_API void setWLMinMax(const TFValuePairType& minMax);
+
     /// Return the nearest point value of a value.
     FWDATA_API TFValueType getNearestValue( TFValueType value ) const;
 

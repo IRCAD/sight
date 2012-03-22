@@ -124,6 +124,14 @@ TransferFunction::getWLMinMax() const
 
 //------------------------------------------------------------------------------
 
+void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
+{
+    m_attrWindow = minMax.second - minMax.first;
+    m_attrLevel = m_attrWindow/2.f;
+}
+
+//------------------------------------------------------------------------------
+
 TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
