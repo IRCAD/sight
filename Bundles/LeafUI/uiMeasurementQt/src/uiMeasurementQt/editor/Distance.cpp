@@ -140,7 +140,7 @@ void Distance::onDistanceButton()
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     // force distance to be shown
-    image->setFieldSingleElement("ShowDistances",  ::fwData::Boolean::NewSptr(true));
+    image->setField("ShowDistances",  ::fwData::Boolean::NewSptr(true));
 
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::ImageMsg::NEW_DISTANCE, ::fwData::String::NewSptr(m_scenesUID) );
