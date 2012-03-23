@@ -663,10 +663,7 @@ void TransferFunctionEditor::initTransferFunctions()
     m_pTransferFunctionPreset->clear();
     BOOST_FOREACH(::fwData::Composite::value_type elt, *poolTF)
     {
-        if(m_selectedTFKey != elt.first)
-        {
-            m_pTransferFunctionPreset->addItem( elt.first.c_str() );
-        }
+        m_pTransferFunctionPreset->addItem( elt.first.c_str() );
     }
 
     //TODO : change selection with current TF
