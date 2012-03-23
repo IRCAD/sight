@@ -183,7 +183,9 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
     BackupHelper::SelectionIdType selPatient = BackupHelper::getSelectedPatientIdx(pPatientDB);
     BackupHelper::SelectionIdType selStudy = BackupHelper::getSelectedStudyIdx(pPatientDB);
     BackupHelper::SelectionIdType selAcq = BackupHelper::getSelectedAcquisitionIdx(pPatientDB);
-
+    selPatient = std::max(0, selPatient);
+    selStudy = std::max(0, selStudy);
+    selAcq = std::max(0, selAcq);
 
     BackupHelper::SelectionIdType indexP = 0;
     BackupHelper::SelectionIdType indexS = 0;

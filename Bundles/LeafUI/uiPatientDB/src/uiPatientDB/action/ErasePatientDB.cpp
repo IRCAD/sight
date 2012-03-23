@@ -73,6 +73,10 @@ void ErasePatientDB::updating( ) throw(::fwTools::Failed)
         ::fwData::PatientDB::PatientContainerType emptyPatient;
         pPatientDB->setPatients(emptyPatient);
 
+        pPatientDB->removeField("SELECTED_PATIENT");
+        pPatientDB->removeField("SELECTED_STUDY");
+        pPatientDB->removeField("SELECTED_ACQUISITION");
+
         ::fwComEd::PatientDBMsg::NewSptr msg;
         msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
         ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
