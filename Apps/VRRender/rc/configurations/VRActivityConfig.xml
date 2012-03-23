@@ -20,7 +20,7 @@
                     <toolBar sid="GENERIC_UID_toolBar" start="yes" />
                     <view sid="GENERIC_UID_vr" start="yes" />
                     <view sid="GENERIC_UID_multiView_negato" start="yes" />
-                    <view sid="GENERIC_UID_tfm" start="yes" />
+                    <view sid="GENERIC_UID_tfm" start="no" />
                 </registry>
             </service>
            
@@ -109,7 +109,7 @@
                             </adaptor>
 
                             <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="myImage">
-                                <config renderer="default" />
+                                <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="GENERIC_UID_TFSelections" />
                             </adaptor>
 
                         </scene>
@@ -131,7 +131,8 @@
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
                             <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="frontal" />
+                                <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="frontal"
+                                        selectedTFKey="SelectedTF" tfSelectionFwID="GENERIC_UID_TFSelections" />
                             </adaptor>
                             <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
                                 <config renderer="default" picker="negato2default" text="" />
@@ -145,11 +146,12 @@
                         </scene>
                     </service>
 
+                    <item key="TFSelectionsKey">
+                        <object uid="GENERIC_UID_TFSelections" type="::fwData::Composite" />
+                    </item>
 
                     <item key="myImage">
                         <object uid="SELECTED_UID_myImage" src="ref" type="::fwData::Image">
-
-                            <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" />
                     
                             <service uid="GENERIC_UID_MedicalImageSrv" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="no" />
 
@@ -182,6 +184,17 @@
                                 <notify type="::fwServices::ObjectMsg" event="RESET_BOX_WIDGET" />
                             </service>
                             
+                            <service uid="GENERIC_UID_FieldManager" implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+                                <mode type="stop" />
+                                <config>
+                                    <field id="m_transfertFunctionCompositeId" type="::fwData::Composite">
+                                        <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes">
+                                            <config selectedTFKey="SelectedTF" tfSelectionFwID="GENERIC_UID_TFSelections" />
+                                        </service>
+                                    </field>
+                                </config>
+                            </service>
+                                
                         </object>
                     </item>
 
@@ -195,7 +208,7 @@
             <start uid="GENERIC_UID_ActionHideCross" />
             <start uid="GENERIC_UID_ActionShowNormalCross" />
             <start uid="GENERIC_UID_ActionShowFullCross" />
-            <update uid="GENERIC_UID_tfm" />
+            <start uid="GENERIC_UID_FieldManager" />
 
         </object>
 
