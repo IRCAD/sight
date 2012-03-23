@@ -39,7 +39,7 @@ Negato::Negato() throw()
 : m_pointIsCaptured (false), m_scaleRatio(1.1f), m_negatoIsBeingMoved(false),
     m_orientation(MedicalImageAdaptor::Z_AXIS), m_pos(0, 0), m_changeSliceTypeAllowed(true)
 {
-    this->installTFPoolEventHandler(this);
+    this->installTFSelectionEventHandler(this);
     this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );

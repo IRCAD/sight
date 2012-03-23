@@ -50,10 +50,9 @@ Image::Image() throw()
 
     m_imagePortId = -1;
     m_allowAlphaInTF = false;
-    m_useImageTF = true;
 
     // Manage events
-    this->installTFPoolEventHandler(this);
+    this->installTFSelectionEventHandler(this);
     addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
     addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
     addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
@@ -184,8 +183,6 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
 
 void Image::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("vtkimageregister") )
     {
@@ -208,7 +205,6 @@ void Image::configuring() throw(fwTools::Failed)
 
 void Image::updateImage( ::fwData::Image::sptr image  )
 {
-    SLM_TRACE_FUNC();
     ::vtkIO::toVTKImage(image,m_imageData);
 
     this->updateImageInfos(image);
@@ -219,7 +215,6 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 
 void Image::updateWindowing( ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
     m_lut->SetWindow(this->getWindow());
     m_lut->SetLevel(this->getLevel());
     m_lut->Modified();
@@ -230,9 +225,6 @@ void Image::updateWindowing( ::fwData::Image::sptr image )
 
 void Image::updateTransfertFunction( ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
-
-
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     ::vtkIO::helper::TransfertFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
@@ -245,8 +237,6 @@ void Image::updateTransfertFunction( ::fwData::Image::sptr image )
     this->updateWindowing(image);
 
     this->setVtkPipelineModified();
-
-
 }
 
 //------------------------------------------------------------------------------

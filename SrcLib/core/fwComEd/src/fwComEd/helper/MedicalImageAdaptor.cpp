@@ -32,7 +32,7 @@ namespace helper
 
 MedicalImageAdaptor::MedicalImageAdaptor()
     : m_orientation(Z_AXIS),
-      m_tfPoolFwID(""),
+      m_tfSelectionFwID(""),
       m_selectedTFKey("")
 {}
 
@@ -247,12 +247,12 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
     m_sagittalIndex = image->setDefaultField(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
 
     // Set TF data if not still set
-    if ( m_tfPool.expired() )
+    if ( m_tfSelection.expired() )
     {
-        if ( ! m_tfPoolFwID.empty() )
+        if ( ! m_tfSelectionFwID.empty() )
         {
-            ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfPoolFwID ) );
-            OSLM_ASSERT( "Sorry, object with fwID " << m_tfPoolFwID << " doesn't exist.", pool );
+            ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
+            OSLM_ASSERT( "Sorry, object with fwID " << m_tfSelectionFwID << " doesn't exist.", pool );
             OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
             if ( pool->find( m_selectedTFKey ) == pool->end() )
             {
@@ -268,7 +268,7 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
                 tf->addTFColor(200  , ::fwData::TransferFunction::TFColor(1.0,1.0,0.0,1.0));
                 (*pool)[m_selectedTFKey] = tf;
             }
-            m_tfPool = pool;
+            m_tfSelection = pool;
         }
         else
         {
@@ -276,23 +276,23 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
             helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
             m_selectedTFKey = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
-            m_tfPool = image->getField< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+            m_tfSelection = image->getField< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Composite::sptr MedicalImageAdaptor::getTransferFunctionPool() const
+::fwData::Composite::sptr MedicalImageAdaptor::getTransferFunctionSelection() const
 {
-    return m_tfPool.lock();
+    return m_tfSelection.lock();
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::TransferFunction::sptr MedicalImageAdaptor::getTransferFunction() const
 {
-    return ::fwData::TransferFunction::dynamicCast((*m_tfPool.lock())[m_selectedTFKey]);
+    return ::fwData::TransferFunction::dynamicCast((*m_tfSelection.lock())[m_selectedTFKey]);
 }
 
 //------------------------------------------------------------------------------
@@ -310,15 +310,15 @@ void MedicalImageAdaptor::setTFParameters( ::fwData::Composite::sptr tfPool, std
     if (!tfSelectionId.empty())
     {
         m_selectedTFKey = tfSelectionId;
-        m_tfPool = tfPool;
+        m_tfSelection = tfPool;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setTFPoolFwID( const std::string & fwid )
+void MedicalImageAdaptor::setTFSelectionFwID( const std::string & fwid )
 {
-    m_tfPoolFwID = fwid;
+    m_tfSelectionFwID = fwid;
 }
 
 //------------------------------------------------------------------------------
@@ -330,9 +330,9 @@ void MedicalImageAdaptor::setSelectedTFKey( const std::string & key )
 
 //------------------------------------------------------------------------------
 
-const std::string & MedicalImageAdaptor::getTFPoolFwID() const
+const std::string & MedicalImageAdaptor::getTFSelectionFwID() const
 {
-    return m_tfPoolFwID;
+    return m_tfSelectionFwID;
 }
 
 //------------------------------------------------------------------------------
@@ -352,10 +352,10 @@ void MedicalImageAdaptor::parseTFConfig( ::fwRuntime::ConfigurationElement::sptr
        m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
        SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
    }
-   if ( configuration->hasAttribute("tfPoolFwID") )
+   if ( configuration->hasAttribute("tfSelectionFwID") )
    {
-       m_tfPoolFwID = configuration->getAttributeValue("tfPoolFwID");
-       SLM_FATAL_IF("'tfPoolFwID' must not be empty", m_tfPoolFwID.empty());
+       m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
+       SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
    }
 }
 
@@ -397,7 +397,7 @@ void MedicalImageAdaptor::setLevel( double level )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::installTFPoolEventHandler( ::fwServices::IService* srv )
+void MedicalImageAdaptor::installTFSelectionEventHandler( ::fwServices::IService* srv )
 {
    srv->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
    srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
@@ -408,14 +408,14 @@ void MedicalImageAdaptor::installTFPoolEventHandler( ::fwServices::IService* srv
 
 void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
 {
-   SLM_ASSERT( "Sorry TF pool observer already exist", m_tfPoolComChannelSrv.expired() );
+   SLM_ASSERT( "Sorry TF pool observer already exist", m_tfSelectionComChannelSrv.expired() );
    SLM_ASSERT( "Sorry TF observer already exist", m_tfComChannelSrv.expired() );
 
 
    ::fwServices::IService::sptr comChannel;
-   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunctionPool(), srv );
+   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunctionSelection(), srv );
    comChannel->start();
-   m_tfPoolComChannelSrv = comChannel;
+   m_tfSelectionComChannelSrv = comChannel;
 
    comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
    comChannel->start();
@@ -426,11 +426,11 @@ void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
 
 void MedicalImageAdaptor::removeTFObserver()
 {
-   SLM_ASSERT( "Sorry, TF pool observer must exist", ! m_tfPoolComChannelSrv.expired() );
+   SLM_ASSERT( "Sorry, TF pool observer must exist", ! m_tfSelectionComChannelSrv.expired() );
    SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
 
-   m_tfPoolComChannelSrv.lock()->stop();
-   ::fwServices::OSR::unregisterService( m_tfPoolComChannelSrv.lock() );
+   m_tfSelectionComChannelSrv.lock()->stop();
+   ::fwServices::OSR::unregisterService( m_tfSelectionComChannelSrv.lock() );
 
    m_tfComChannelSrv.lock()->stop();
    ::fwServices::OSR::unregisterService( m_tfComChannelSrv.lock() );

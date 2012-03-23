@@ -85,7 +85,7 @@ protected:
      * Example of configuration
      * @verbatim
          <service uid="windowLevel" implementation="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoComChannel="yes">
-             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfPoolFwID="myTFPool" />
+             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" />
          </service>
        @endverbatim
      * With :

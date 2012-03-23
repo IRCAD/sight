@@ -53,12 +53,10 @@ protected :
     public:
         ImageInfo():
             m_useTFAlfa(false),
-            m_useImageTF(true),
             m_imageOpacity(1.0)
         {}
 
         bool   m_useTFAlfa;
-        bool   m_useImageTF;
         double m_imageOpacity;
 
         ::fwServices::IService::wptr m_comChannel;

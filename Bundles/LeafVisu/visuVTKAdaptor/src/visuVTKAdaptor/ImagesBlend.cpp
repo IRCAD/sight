@@ -137,8 +137,6 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
 
 void ImagesBlend::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
 
     if(m_configuration->hasAttribute("vtkimageregister") )
@@ -161,10 +159,6 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
         if(element->hasAttribute("tfalpha") )
         {
             info->m_useTFAlfa = element->getAttributeValue("tfalpha") == "yes";
-        }
-        if(element->hasAttribute("useColorTF") )
-        {
-            info->m_useImageTF = element->getAttributeValue("useColorTF") == "yes";
         }
 
         info->parseTFConfig( element );
@@ -255,12 +249,11 @@ void ImagesBlend::addImageAdaptors()
 
                 ::visuVTKAdaptor::Image::sptr IA;
                 IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
-                IA->setUseImageTF(info->m_useImageTF );
                 IA->setVtkImageRegister(m_imageBlend);
                 IA->setImageOpacity(info->m_imageOpacity);
                 IA->setAllowAlphaInTF(info->m_useTFAlfa);
                 IA->setSelectedTFKey( info->getSelectedTFKey() );
-                IA->setTFPoolFwID( info->getTFPoolFwID() );
+                IA->setTFSelectionFwID( info->getTFSelectionFwID() );
 
                 m_registeredImages[img->getID()] = imageAdaptor;
                 this->registerService(imageAdaptor);

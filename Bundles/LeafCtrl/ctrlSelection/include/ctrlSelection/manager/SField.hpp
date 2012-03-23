@@ -60,7 +60,7 @@ protected:
         <service uid="myFieldManager" implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
             <mode type="dummy" />
             <config>
-                <field id="TFPool" type="::fwData::TransferFunction" >
+                <field id="TFSelection" type="::fwData::TransferFunction" >
                     <service uid="myServices" implementation="..." type="..." autoComChannel="yes" />
                 </field>
                 <field id="AxialSliceIndex" type="::fwData::Integer" >

@@ -39,11 +39,8 @@ NegatoMPR::NegatoMPR() throw() :
         m_sliceMode(THREE_SLICES),
         m_backupedSliceMode(THREE_SLICES)
 {
-    SLM_TRACE_FUNC();
-
     m_allowAlphaInTF = false;
     m_interpolation  = true;
-    m_useImageTF = true;
 
     addNewHandledEvent("SLICE_MODE");
     addNewHandledEvent("SCAN_SHOW");
@@ -142,7 +139,6 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
 void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
 
     if ( imageMsg && imageMsg->hasEvent( "SLICE_MODE"))
@@ -224,8 +220,6 @@ void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fa
 
 void NegatoMPR::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
@@ -289,11 +283,6 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
     }
-    if ( m_configuration->hasAttribute("useColorTF") )
-    {
-        m_useImageTF = ( m_configuration->getAttributeValue("useColorTF") == "yes" );
-    }
-
     this->parseTFConfig( m_configuration );
 }
 
@@ -361,18 +350,17 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     {
         negatoAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
         negatoAdaptor->setInterpolation(m_interpolation);
-        negatoAdaptor->setUseImageTF(m_useImageTF);
         if (!m_imageSourceId.empty())
         {
             negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
         }
         negatoAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
-        negatoAdaptor->setTFPoolFwID( this->getTFPoolFwID() );
+        negatoAdaptor->setTFSelectionFwID( this->getTFSelectionFwID() );
     }
     else if (negatoWindowingAdaptor)
     {
         negatoWindowingAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
-        negatoWindowingAdaptor->setTFPoolFwID( this->getTFPoolFwID() );
+        negatoWindowingAdaptor->setTFSelectionFwID( this->getTFSelectionFwID() );
     }
 
     service->setRenderService(this->getRenderService());

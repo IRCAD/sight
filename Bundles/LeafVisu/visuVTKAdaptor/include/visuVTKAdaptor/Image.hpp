@@ -45,7 +45,6 @@ public:
     VISUVTKADAPTOR_API void setVtkImageRegister(vtkObject *obj)   {m_imageRegister = obj;};
     VISUVTKADAPTOR_API void setImageOpacity(double opacity)       {m_imageOpacity = opacity;};
     VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow)         {m_allowAlphaInTF = allow;};
-    VISUVTKADAPTOR_API void setUseImageTF(bool use)               {m_useImageTF = use;};
 
 protected :
 
@@ -72,7 +71,6 @@ protected :
     int    m_imagePortId;
     double m_imageOpacity;
     bool   m_allowAlphaInTF;
-    bool   m_useImageTF;
 
     vtkSmartPointer< fwVtkWindowLevelLookupTable > m_lut;
     vtkImageMapToColors *m_map2colors;

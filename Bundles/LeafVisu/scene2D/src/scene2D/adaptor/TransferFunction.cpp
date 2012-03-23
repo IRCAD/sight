@@ -40,7 +40,7 @@ namespace adaptor
 
 TransferFunction::TransferFunction() throw() : m_pointSize(10)
 {
-    this->installTFPoolEventHandler(this);
+    this->installTFSelectionEventHandler(this);
     this->addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );

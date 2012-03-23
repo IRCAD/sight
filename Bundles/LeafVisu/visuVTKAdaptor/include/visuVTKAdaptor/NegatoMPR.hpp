@@ -64,8 +64,6 @@ private:
     bool m_allowAlphaInTF;
     bool m_interpolation;
 
-    bool m_useImageTF;
-
     std::string m_imageSourceId;
 
     ::boost::logic::tribool m_3dModeEnabled;

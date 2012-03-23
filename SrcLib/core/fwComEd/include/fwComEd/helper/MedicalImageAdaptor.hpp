@@ -62,11 +62,11 @@ public:
      */
     FWCOMED_API void setTFParameters( ::fwData::Composite::sptr tfPool, std::string tfSelectionId );
 
-    /// Set TF Pool fwID
-    FWCOMED_API void setTFPoolFwID( const std::string & fwid );
+    /// Set TF Selection fwID
+    FWCOMED_API void setTFSelectionFwID( const std::string & fwid );
 
-    /// Get TF Pool fwID
-    FWCOMED_API const std::string & getTFPoolFwID() const;
+    /// Get TF Selection fwID
+    FWCOMED_API const std::string & getTFSelectionFwID() const;
 
     /// Set selected TF Key
     FWCOMED_API void setSelectedTFKey( const std::string & key );
@@ -74,7 +74,7 @@ public:
     /// Get selected TF Key
     FWCOMED_API const std::string & getSelectedTFKey() const;
 
-    /// Set selected TF Key and TF Pool fwID from config
+    /// Set selected TF Key and TF Selection fwID from config
     FWCOMED_API void parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration );
 
     /// Get the window of the selected tf
@@ -208,8 +208,8 @@ protected:
     /// Get the current transfer function
     FWCOMED_API ::fwData::TransferFunction::sptr getTransferFunction() const;
 
-    /// Get the current transfer function pool
-    FWCOMED_API ::fwData::Composite::sptr getTransferFunctionPool() const;
+    /// Get the current transfer function selection
+    FWCOMED_API ::fwData::Composite::sptr getTransferFunctionSelection() const;
 
     /// Update the image information (slice index, min/max, TF,...)
     FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
@@ -231,7 +231,7 @@ protected:
     ::fwData::Integer::sptr m_sagittalIndex;
 
     // Install TF pool event handler (CHANGED_KEYS, ADDED_KEYS and REMOVED_KEYS)
-    FWCOMED_API void installTFPoolEventHandler( ::fwServices::IService* srv );
+    FWCOMED_API void installTFSelectionEventHandler( ::fwServices::IService* srv );
 
     // Install TF Observer ( com channel )
     FWCOMED_API void installTFObserver( ::fwServices::IService::sptr srv );
@@ -246,19 +246,16 @@ protected:
 
 private :
 
-    ::fwServices::IService::wptr m_tfPoolComChannelSrv;
+    ::fwServices::IService::wptr m_tfSelectionComChannelSrv;
     ::fwServices::IService::wptr m_tfComChannelSrv;
 
-    /// Transfer function pool
-    ::fwData::Composite::wptr m_tfPool;
+    /// Transfer function selection
+    ::fwData::Composite::wptr m_tfSelection;
 
-    /// fwID of tf pool ( used during configuration )
-    std::string m_tfPoolFwID;
+    /// fwID of tf selections ( used during configuration )
+    std::string m_tfSelectionFwID;
 
-    /**
-     * @brief Identifier of the field containing the current selection of TransfertFunction.
-     * by defaults use ::fwComEd::Dictionary::m_transfertFunctionId
-     */
+    /// Identifier of the key containing the current selection of TransfertFunction in TFSelection
     std::string m_selectedTFKey;
 
 };

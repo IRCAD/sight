@@ -178,7 +178,7 @@ Volume::Volume() throw() :
     m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
 
     // Manage events
-    this->installTFPoolEventHandler(this);
+    this->installTFSelectionEventHandler(this);
     this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );

@@ -51,7 +51,7 @@ protected:
     * Example of configuration
     * @verbatim
     <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" >
-        <config selectedTFKey="SelectedTF" tfPoolFwID="TFSelections" />
+        <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </service>
     @endverbatim
     * - <image id="myImage" /> : Set the link between the service and the associated image.
@@ -111,14 +111,11 @@ private:
     QPushButton *m_exportButton;
     QWidget* m_container;
 
-    /**
-     * @brief Identifier of the field containing the current selection of TransferFunction.
-     * by defaults use ::fwComEd::Dictionary::m_transfertFunctionId
-     */
-    std::string m_selectedTFKey;
-
     /// fwID of tf selection ( used during configuration )
     std::string m_tfSelectionFwID;
+
+    /// Identifier of the key containing the current selection of TransferFunction in TFSelection.
+    std::string m_selectedTFKey;
 };
 
 }

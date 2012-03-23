@@ -58,7 +58,7 @@ WindowLevel::WindowLevel() throw()
     m_imageMax = 300;
     m_isNotifying = false;
 
-    this->installTFPoolEventHandler(this);
+    this->installTFSelectionEventHandler(this);
     this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
 }
@@ -440,9 +440,9 @@ void  WindowLevel::onToggleTF(bool squareTF)
     newTF->setWindow(oldTF->getWindow());
     newTF->setLevel(oldTF->getLevel());
 
-    std::string tfPoolFwID = this->getTFPoolFwID();
-    ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfPoolFwID ) );
-    OSLM_ASSERT( "Sorry, object with fwID " << tfPoolFwID << " doesn't exist.", pool );
+    std::string tfSelectionFwID = this->getTFSelectionFwID();
+    ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfSelectionFwID ) );
+    OSLM_ASSERT( "Sorry, object with fwID " << tfSelectionFwID << " doesn't exist.", pool );
     ::fwComEd::helper::Composite compositeHelper( pool );
 
     compositeHelper.swap(this->getSelectedTFKey(), newTF);

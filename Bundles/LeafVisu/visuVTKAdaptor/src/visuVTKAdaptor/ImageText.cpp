@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
 
 ImageText::ImageText() throw()
 {
-    this->installTFPoolEventHandler(this);
+    this->installTFSelectionEventHandler(this);
     this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
