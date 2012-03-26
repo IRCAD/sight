@@ -35,17 +35,17 @@ SStringReader::SStringReader()
     SLM_TRACE_FUNC();
 }
 
-SStringReader::~SStringReader()
+SStringReader::~SStringReader() throw()
 {
     SLM_TRACE_FUNC();
 }
-                                                                                                                
+
 void SStringReader::starting() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
-void SStringReader::stopping() throw ( ::fwTools::Failed ) 
+void SStringReader::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

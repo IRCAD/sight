@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _BEGINNERTRAINING_TUTO01_SSTRINGREADER_HPP_ 
+#ifndef _BEGINNERTRAINING_TUTO01_SSTRINGREADER_HPP_
 #define _BEGINNERTRAINING_TUTO01_SSTRINGREADER_HPP_
 
 #include <io/IReader.hpp>
@@ -25,19 +25,19 @@ public:
 
     /// Overrides
     BEGINNERTRAINING_API virtual void starting() throw ( ::fwTools::Failed );
-    
+
     /// Overrides
     BEGINNERTRAINING_API virtual void stopping() throw ( ::fwTools::Failed );
-    
+
     /// Overrides
     BEGINNERTRAINING_API virtual void updating() throw ( ::fwTools::Failed );
-    
+
     /// Overrides
     BEGINNERTRAINING_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Overrides
     BEGINNERTRAINING_API virtual void swapping() throw ( ::fwTools::Failed );
-    
+
     /// Overrides io method
     BEGINNERTRAINING_API virtual void configureWithIHM();
 
@@ -48,9 +48,9 @@ protected :
 
     /// Constructor
     BEGINNERTRAINING_API SStringReader();
-    
+
     /// Destructor
-    BEGINNERTRAINING_API virtual ~SStringReader();
+    BEGINNERTRAINING_API virtual ~SStringReader() throw();
 };
 
 
