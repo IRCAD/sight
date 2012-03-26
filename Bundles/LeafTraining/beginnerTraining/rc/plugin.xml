@@ -19,4 +19,16 @@
         <object>::fwData::String</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::beginnerTraining::tuto03::SStringReader</service>
+        <object>::fwData::String</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::beginnerTraining::tuto03::SStringEditor</service>
+        <object>::fwData::String</object>
+    </extension>
+    
 </plugin>
