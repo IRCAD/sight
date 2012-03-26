@@ -58,7 +58,7 @@
 #endif
 #define SPYLOG_ABORT() DEBUG_BREAK()
 
-#endif
+#endif // _DEBUG
 
 
 #include <cassert>
@@ -96,79 +96,147 @@
 
 //==============================================================================
 
-#if ( SPYLOG_LEVEL >= 6 )
-    #define  SL_TRACE(log, message) { log.trace(message, __FILE__, __LINE__); }
-    #define OSL_TRACE(log, message) OSL_LOG(log, TRACE, message)
-    #define  SL_TRACE_IF(log, message, cond) SL_IF(cond, SL_TRACE(log, message))
-    #define OSL_TRACE_IF(log, message, cond) SL_IF(cond, OSL_TRACE(log, message))
-#else
-    #define  SL_TRACE(log, message)
-    #define OSL_TRACE(log, message)
-    #define  SL_TRACE_IF(log, message, cond)
-    #define OSL_TRACE_IF(log, message, cond)
+#define SL_DISABLE if(0)
+
+#define SL_TRACE_DISABLE
+#define SL_DEBUG_DISABLE
+#define SL_INFO_DISABLE
+#define SL_WARN_DISABLE
+#define SL_ERROR_DISABLE
+#define SL_FATAL_DISABLE
+
+
+#if ( SPYLOG_LEVEL < 6 )
+#define __FWCORE_TRACE_DISABLED__
 #endif
 
-#if ( SPYLOG_LEVEL >= 5 )
-    #define  SL_DEBUG(log, message) { log.debug(message, __FILE__, __LINE__); }
-    #define OSL_DEBUG(log, message) OSL_LOG(log, DEBUG, message)
-    #define  SL_DEBUG_IF(log, message, cond) SL_IF(cond, SL_DEBUG(log, message))
-    #define OSL_DEBUG_IF(log, message, cond) SL_IF(cond, OSL_DEBUG(log, message))
-#else
-    #define  SL_DEBUG(log, message)
-    #define OSL_DEBUG(log, message)
-    #define  SL_DEBUG_IF(log, message, cond)
-    #define OSL_DEBUG_IF(log, message, cond)
+#if ( SPYLOG_LEVEL < 5 )
+#define __FWCORE_DEBUG_DISABLED__
 #endif
 
-#if ( SPYLOG_LEVEL >= 4 )
-    #define  SL_INFO(log, message) { log.info(message, __FILE__, __LINE__); }
-    #define OSL_INFO(log, message) OSL_LOG(log, INFO, message)
-    #define  SL_INFO_IF(log, message, cond) SL_IF(cond, SL_INFO(log, message))
-    #define OSL_INFO_IF(log, message, cond) SL_IF(cond, OSL_INFO(log, message))
-#else
-    #define  SL_INFO(log, message)
-    #define OSL_INFO(log, message)
-    #define  SL_INFO_IF(log, message, cond)
-    #define OSL_INFO_IF(log, message, cond)
+#if ( SPYLOG_LEVEL < 4 )
+#define __FWCORE_INFO_DISABLED__
 #endif
 
-#if ( SPYLOG_LEVEL >= 3 )
-    #define  SL_WARN(log, message) { log.warn(message, __FILE__, __LINE__); }
-    #define OSL_WARN(log, message) OSL_LOG(log, WARN, message)
-    #define  SL_WARN_IF(log, message, cond) SL_IF(cond, SL_WARN(log, message))
-    #define OSL_WARN_IF(log, message, cond) SL_IF(cond, OSL_WARN(log, message))
-#else
-    #define  SL_WARN(log, message)
-    #define OSL_WARN(log, message)
-    #define  SL_WARN_IF(log, message, cond)
-    #define OSL_WARN_IF(log, message, cond)
+#if ( SPYLOG_LEVEL < 3 )
+#define __FWCORE_WARN_DISABLED__
 #endif
 
-#if ( SPYLOG_LEVEL >= 2 )
-    #define  SL_ERROR(log, message) { log.error(message, __FILE__, __LINE__); }
-    #define OSL_ERROR(log, message) OSL_LOG(log, ERROR, message)
-    #define  SL_ERROR_IF(log, message, cond) SL_IF(cond, SL_ERROR(log, message))
-    #define OSL_ERROR_IF(log, message, cond) SL_IF(cond, OSL_ERROR(log, message))
-#else
-    #define  SL_ERROR(log, message)
-    #define OSL_ERROR(log, message)
-    #define  SL_ERROR_IF(log, message, cond)
-    #define OSL_ERROR_IF(log, message, cond)
+#if ( SPYLOG_LEVEL < 2 )
+#define __FWCORE_ERROR_DISABLED__
 #endif
 
-#if ( SPYLOG_LEVEL >= 1 )
-    #define  SL_FATAL(log, message) { log.fatal(message, __FILE__, __LINE__); SPYLOG_ABORT(); }
-    #define OSL_FATAL(log, message) OSL_LOG(log, FATAL, message)
-    #define  SL_FATAL_IF(log, message, cond) SL_IF(cond, SL_FATAL(log, message))
-    #define OSL_FATAL_IF(log, message, cond) SL_IF(cond, OSL_FATAL(log, message))
-#else
-    #define  SL_FATAL(log, message)
-    #define OSL_FATAL(log, message)
-    #define  SL_FATAL_IF(log, message, cond)
-    #define OSL_FATAL_IF(log, message, cond)
+#if ( SPYLOG_LEVEL < 1 )
+#define __FWCORE_FATAL_DISABLED__
 #endif
 
-#ifdef DEBUG
+
+#ifdef  __FWCORE_TRACE_DISABLED__
+#undef SL_TRACE_DISABLE
+#define SL_TRACE_DISABLE SL_DISABLE
+#endif
+
+#ifdef FWCORE_DEBUG_DISABLED__
+#undef SL_DEBUG_DISABLE
+#define SL_DEBUG_DISABLE SL_DISABLE
+#endif
+
+#ifdef FWCORE_INFO_DISABLED__
+#undef SL_INFO_DISABLE
+#define SL_INFO_DISABLE SL_DISABLE
+#endif
+
+#ifdef FWCORE_WARN_DISABLED__
+#undef SL_WARN_DISABLE
+#define SL_WARN_DISABLE SL_DISABLE
+#endif
+
+#ifdef FWCORE_ERROR_DISABLED__
+#undef SL_ERROR_DISABLE
+#define SL_ERROR_DISABLE SL_DISABLE
+#endif
+
+#ifdef FWCORE_FATAL_DISABLED__
+#undef SL_FATAL_DISABLE
+#define SL_FATAL_DISABLE SL_DISABLE
+#endif
+
+
+
+#if ( !defined(_DEBUG) && defined(__FWCORE_TRACE_DISABLED__)  )
+#define  SL_TRACE(log, message)
+#define OSL_TRACE(log, message)
+#define  SL_TRACE_IF(log, message, cond)
+#define OSL_TRACE_IF(log, message, cond)
+#else
+#define  SL_TRACE(log, message)          SL_TRACE_DISABLE { log.trace(message, __FILE__, __LINE__); }
+#define OSL_TRACE(log, message)          SL_TRACE_DISABLE { OSL_LOG(log, TRACE, message); }
+#define  SL_TRACE_IF(log, message, cond) SL_TRACE_DISABLE { SL_IF(cond, SL_TRACE(log, message)); }
+#define OSL_TRACE_IF(log, message, cond) SL_TRACE_DISABLE { SL_IF(cond, OSL_TRACE(log, message)); }
+#endif
+
+#if ( !defined(_DEBUG) && defined(__FWCORE_DEBUG_DISABLED__)  )
+#define  SL_DEBUG(log, message)
+#define OSL_DEBUG(log, message)
+#define  SL_DEBUG_IF(log, message, cond)
+#define OSL_DEBUG_IF(log, message, cond)
+#else
+#define  SL_DEBUG(log, message)          SL_DEBUG_DISABLE { log.debug(message, __FILE__, __LINE__); }
+#define OSL_DEBUG(log, message)          SL_DEBUG_DISABLE { OSL_LOG(log, DEBUG, message); }
+#define  SL_DEBUG_IF(log, message, cond) SL_DEBUG_DISABLE { SL_IF(cond, SL_DEBUG(log, message)); }
+#define OSL_DEBUG_IF(log, message, cond) SL_DEBUG_DISABLE { SL_IF(cond, OSL_DEBUG(log, message)); }
+#endif
+
+#if ( !defined(_DEBUG) && defined(__FWCORE_INFO_DISABLED__)  )
+#define  SL_INFO(log, message)
+#define OSL_INFO(log, message)
+#define  SL_INFO_IF(log, message, cond)
+#define OSL_INFO_IF(log, message, cond)
+#else
+#define  SL_INFO(log, message)           SL_INFO_DISABLE { log.info(message, __FILE__, __LINE__); }
+#define OSL_INFO(log, message)           SL_INFO_DISABLE { OSL_LOG(log, INFO, message); }
+#define  SL_INFO_IF(log, message, cond)  SL_INFO_DISABLE { SL_IF(cond, SL_INFO(log, message)); }
+#define OSL_INFO_IF(log, message, cond)  SL_INFO_DISABLE { SL_IF(cond, OSL_INFO(log, message)); }
+#endif
+
+#if ( !defined(_DEBUG) && defined(__FWCORE_WARN_DISABLED__)  )
+#define  SL_WARN(log, message)
+#define OSL_WARN(log, message)
+#define  SL_WARN_IF(log, message, cond)
+#define OSL_WARN_IF(log, message, cond)
+#else
+#define  SL_WARN(log, message)           SL_WARN_DISABLE { log.warn(message, __FILE__, __LINE__); }
+#define OSL_WARN(log, message)           SL_WARN_DISABLE { OSL_LOG(log, WARN, message); }
+#define  SL_WARN_IF(log, message, cond)  SL_WARN_DISABLE { SL_IF(cond, SL_WARN(log, message)); }
+#define OSL_WARN_IF(log, message, cond)  SL_WARN_DISABLE { SL_IF(cond, OSL_WARN(log, message)); }
+#endif
+
+#if ( !defined(_DEBUG) && defined(__FWCORE_ERROR_DISABLED__)  )
+#define  SL_ERROR(log, message)
+#define OSL_ERROR(log, message)
+#define  SL_ERROR_IF(log, message, cond)
+#define OSL_ERROR_IF(log, message, cond)
+#else
+#define  SL_ERROR(log, message)          SL_ERROR_DISABLE { log.error(message, __FILE__, __LINE__); }
+#define OSL_ERROR(log, message)          SL_ERROR_DISABLE { OSL_LOG(log, ERROR, message); }
+#define  SL_ERROR_IF(log, message, cond) SL_ERROR_DISABLE { SL_IF(cond, SL_ERROR(log, message)); }
+#define OSL_ERROR_IF(log, message, cond) SL_ERROR_DISABLE { SL_IF(cond, OSL_ERROR(log, message)); }
+#endif
+
+#if ( !defined(_DEBUG) && defined(__FWCORE_FATAL_DISABLED__)  )
+#define  SL_FATAL(log, message)
+#define OSL_FATAL(log, message)
+#define  SL_FATAL_IF(log, message, cond)
+#define OSL_FATAL_IF(log, message, cond)
+#else
+#define  SL_FATAL(log, message)          SL_FATAL_DISABLE { log.fatal(message, __FILE__, __LINE__); SPYLOG_ABORT(); }
+#define OSL_FATAL(log, message)          SL_FATAL_DISABLE { OSL_LOG(log, FATAL, message); }
+#define  SL_FATAL_IF(log, message, cond) SL_FATAL_DISABLE { SL_IF(cond, SL_FATAL(log, message)); }
+#define OSL_FATAL_IF(log, message, cond) SL_FATAL_DISABLE { SL_IF(cond, OSL_FATAL(log, message)); }
+#endif
+
+
+#ifdef _DEBUG
     #define SL_ASSERT(log, message, cond)                                   \
     {                                                                       \
         if( !(cond) )                                                       \
@@ -192,7 +260,7 @@
 #else
     #define SL_ASSERT(log, message, cond)
     #define OSL_ASSERT(log, message, cond)
-#endif
+#endif // _DEBUG
 
 
 
