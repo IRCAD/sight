@@ -1,0 +1,33 @@
+<plugin id="BeginnerTraining01">
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>BeginnerTraining01Config</id>
+        <type>standard</type>
+        <config>
+        
+            <object type="::fwData::String">
+
+                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                    <gui>
+                        <frame>
+                            <name>BeginnerTraining01 App</name>
+                            <minSize width="800" height="600" />
+                        </frame>
+                    </gui>
+                </service>
+
+                <service uid="myReader" type="::io::IReader" implementation="::beginnerTraining::tuto01::SStringReader" autoComChannel="no" >
+                    <file>Bundles/beginnerTraining_0-1/data.txt</file>
+                </service>
+                
+                <start uid="myFrame" />
+                <start uid="myReader" />
+                
+                <update uid="myReader" />
+                
+            </object>
+            
+        </config>
+    </extension>
+    
+</plugin>

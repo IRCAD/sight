@@ -1,0 +1,15 @@
+<plugin id="beginnerTraining" class="::beginnerTraining::Plugin">
+    
+    <library name="beginnerTraining" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="io"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::beginnerTraining::tuto01::SStringReader</service>
+        <object>::fwData::String</object>
+    </extension>
+
+</plugin>
