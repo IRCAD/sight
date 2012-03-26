@@ -19,8 +19,9 @@ namespace beginnerTraining
 namespace tuto03
 {
 
-class BEGINNERTRAINING_CLASS_API SStringEditor : public ::gui::editor::IEditor
+class BEGINNERTRAINING_CLASS_API SStringEditor : public  QObject, public ::gui::editor::IEditor
 {
+    Q_OBJECT
 
 public:
 
@@ -44,6 +45,10 @@ public:
     /// Overrides
     BEGINNERTRAINING_API virtual void swapping() throw ( ::fwTools::Failed );
 
+protected slots:
+
+    BEGINNERTRAINING_API void onTextChanged();
+
 protected :
 
     /// Constructor
@@ -51,6 +56,9 @@ protected :
 
     /// Destructor
     BEGINNERTRAINING_API virtual ~SStringEditor() throw();
+
+    /// Method to notify modification on data
+    BEGINNERTRAINING_API void notifyMessage();
 
     /// Text editor manage by the service
     QTextEdit * m_textEditor;
