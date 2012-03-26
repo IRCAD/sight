@@ -1,6 +1,3 @@
-
-
-
 /**
 * @brief
 * @namespace     TODO Doxygen documentation

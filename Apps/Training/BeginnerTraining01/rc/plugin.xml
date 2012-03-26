@@ -4,7 +4,7 @@
         <id>BeginnerTraining01Config</id>
         <type>standard</type>
         <config>
-        
+
             <object type="::fwData::String">
 
                 <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
@@ -26,7 +26,7 @@
                 <update uid="myReader" />
                 
             </object>
-            
+
         </config>
     </extension>
     

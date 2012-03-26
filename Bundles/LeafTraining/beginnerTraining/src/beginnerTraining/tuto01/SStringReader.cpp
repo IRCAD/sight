@@ -32,69 +32,69 @@ namespace tuto01
 
 SStringReader::SStringReader()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 SStringReader::~SStringReader()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
                                                                                                                 
 void SStringReader::starting() throw ( ::fwTools::Failed )
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 void SStringReader::stopping() throw ( ::fwTools::Failed ) 
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 void SStringReader::updating() throw ( ::fwTools::Failed )
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 
-	if ( this->hasLocationDefined() )
-	{
-		// Read data.txt
-		std::string line;
-		std::string data ("");
-		std::ifstream myfile ( this->getFile().string().c_str() );
-		if ( myfile.is_open() )
-		{
-			while ( myfile.good() )
-			{
-				getline( myfile, line );
-				OSLM_DEBUG("Read line : " << line );
-				data += line;
-			}
-			myfile.close();
-		}
-		else
-		{
-			OSLM_ERROR("Unable to open file : " << this->getFile() );
-		}
-		OSLM_DEBUG("Loaded data : " << data );
+    if ( this->hasLocationDefined() )
+    {
+        // Read data.txt
+        std::string line;
+        std::string data ("");
+        std::ifstream myfile ( this->getFile().string().c_str() );
+        if ( myfile.is_open() )
+        {
+            while ( myfile.good() )
+            {
+                getline( myfile, line );
+                OSLM_DEBUG("Read line : " << line );
+                data += line;
+            }
+            myfile.close();
+        }
+        else
+        {
+            OSLM_ERROR("Unable to open file : " << this->getFile() );
+        }
+        OSLM_DEBUG("Loaded data : " << data );
 
-		// Set new string value in your associated object
-		::fwData::String::sptr myAssociatedData = this->getObject< ::fwData::String >();
-		myAssociatedData->setValue( data );
-	}
-	else
-	{
-		OSLM_WARN("Be carefull, reader failed because no file location is defined." );
-	}
+        // Set new string value in your associated object
+        ::fwData::String::sptr myAssociatedData = this->getObject< ::fwData::String >();
+        myAssociatedData->setValue( data );
+    }
+    else
+    {
+        OSLM_WARN("Be carefull, reader failed because no file location is defined." );
+    }
 
 }
 
 void SStringReader::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 void SStringReader::swapping() throw ( ::fwTools::Failed )
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 
     // Classic default approach to update service when oject change
     this->stopping();
@@ -103,7 +103,7 @@ void SStringReader::swapping() throw ( ::fwTools::Failed )
 
 void SStringReader::configureWithIHM()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 ::io::IOPathType SStringReader::getIOPathType() const

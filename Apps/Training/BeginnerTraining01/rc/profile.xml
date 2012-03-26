@@ -5,14 +5,14 @@
     <activate id="gui" version="0-1" />
     <activate id="guiQt" version="0-1" />
     <activate id="io" version="0-1" />
-    <activate id="appXml" version="0-1" >
+    <activate id="appXml" version="0-1">
         <param id="config" value="BeginnerTraining01Config" />
     </activate>
     <activate id="beginnerTraining" version="0-1" />
     <activate id="BeginnerTraining01" version="0-1" />
-           
-    <start id="beginnerTraining" />        
+
+    <start id="beginnerTraining" />
     <start id="appXml" />
     <start id="guiQt" />
-    
+
 </profile>

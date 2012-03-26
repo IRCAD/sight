@@ -26,21 +26,21 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw( ::fwRuntime::RuntimeException )
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 
-//	std::string str (" with stream");
-//	bool condition = true;
-//	SLM_TRACE("Trace message");
-//	OSLM_TRACE("Trace message" << str );
-//	OSLM_TRACE_IF("Trace message" << str << " when condition = " << condition, condition );
+//    std::string str (" with stream");
+//    bool condition = true;
+//    SLM_TRACE("Trace message");
+//    OSLM_TRACE("Trace message" << str );
+//    OSLM_TRACE_IF("Trace message" << str << " when condition = " << condition, condition );
 //
-//	SLM_DEBUG("Debug message");
-//	SLM_INFO("Info message");
-//	SLM_WARN("Warning message");
-//	SLM_ERROR("Error message");
-//	SLM_FATAL("Fatal message");
+//    SLM_DEBUG("Debug message");
+//    SLM_INFO("Info message");
+//    SLM_WARN("Warning message");
+//    SLM_ERROR("Error message");
+//    SLM_FATAL("Fatal message");
 //
-//	SLM_ASSERT("Fatal message", condition); // only compile in debug
+//    SLM_ASSERT("Fatal message", condition); // only compile in debug
 
 }
 
@@ -48,7 +48,7 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
 
 void Plugin::stop() throw()
 {
-	SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
 BUNDLES = [
-	'beginnerTraining_0-1'  ,
-	'io_0-1'                ,
+    'beginnerTraining_0-1'  ,
+    'io_0-1'                ,
     'appXml_0-1'            ,
     'gui_0-1'               ,
     'guiQt_0-1'             ,
