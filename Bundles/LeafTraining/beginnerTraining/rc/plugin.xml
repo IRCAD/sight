@@ -5,10 +5,17 @@
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
     <requirement id="io"/>
+    <requirement id="gui"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::beginnerTraining::tuto01::SStringReader</service>
+        <object>::fwData::String</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::beginnerTraining::tuto02::SStringEditor</service>
         <object>::fwData::String</object>
     </extension>
 
