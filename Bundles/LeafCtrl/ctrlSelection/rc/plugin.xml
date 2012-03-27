@@ -37,18 +37,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::ResecFromPDBUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::ResecDBFromPDBUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
         <service>::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv</service>
         <object>::fwData::Composite</object>
     </extension>
@@ -56,12 +44,6 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IUpdaterSrv</type>
         <service>::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::PlaneListFromPDBUpdaterSrv</service>
         <object>::fwData::Composite</object>
     </extension>
 
