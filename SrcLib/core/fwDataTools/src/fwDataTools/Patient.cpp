@@ -78,6 +78,21 @@ void Patient::removeAcquisition(::fwData::Study::sptr study,
 
 //------------------------------------------------------------------------------
 
+void Patient::removeReconstruction(::fwData::Acquisition::sptr acq,
+                                    ::fwData::Reconstruction::sptr rec)
+{
+    const ::fwData::Acquisition::ReconstructionContainerType oldRec = acq->getReconstructions();
+    ::fwData::Acquisition::ReconstructionContainerType newRec(oldRec.begin(), oldRec.end());
+
+    ::fwData::Acquisition::ReconstructionContainerType::iterator newEnd;
+    newEnd = std::remove(newRec.begin(), newRec.end(), rec);
+    newRec.erase(newEnd, newRec.end());
+
+    acq->setReconstructions( newRec );
+}
+
+//------------------------------------------------------------------------------
+
 void Patient::generatePatient(::fwData::Patient::sptr patient,
                               const unsigned char nbStudy,
                               const unsigned char nbAcquisition,

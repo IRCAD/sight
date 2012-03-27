@@ -66,6 +66,14 @@ public :
                                                   ::fwData::Acquisition::sptr acq);
 
     /**
+      * @brief Removed specified reconstruction in Acquisition.
+      * @param acq    Acquisition containing specified reconstruction to remove
+      * @param rec    reconstruction to remove
+      */
+     FWDATATOOLS_API static void removeReconstruction(::fwData::Acquisition::sptr acq,
+                                                   ::fwData::Reconstruction::sptr rec);
+
+    /**
      * @brief Generate a patient.
      * @param patient           patient to generate
      * @param nbStudy           number of study to add in patient
