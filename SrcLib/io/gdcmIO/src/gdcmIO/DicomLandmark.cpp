@@ -138,7 +138,7 @@ void DicomLandmark::setFromData(::fwData::Image::csptr a_image) throw (::fwTools
             // Set referenced frame
             m_refFrames.push_back( refFrame );
 
-            OSLM_TRACE("landmark : "<<(*iter)->getFieldSingleElement< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value()<<" "<<strm.str());
+            OSLM_TRACE("landmark : "<<(*iter)->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value()<<" "<<strm.str());
         }
         else
         {
