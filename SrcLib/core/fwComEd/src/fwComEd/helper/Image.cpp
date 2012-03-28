@@ -80,7 +80,7 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
         tf->setLevel( img->getWindowCenter() );
 
         ::fwData::Composite::NewSptr cTF;
-        cTF->getRefMap()[ tf->getName() ] = tf;
+        cTF->getContainer()[ tf->getName() ] = tf;
         if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(img))
         {
             double min, max;

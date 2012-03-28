@@ -55,7 +55,7 @@ void CompositeMessageTest::testCompositeMessage()
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
+    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
 
     // get service 1
     ::TestService::sptr serviceCompo;
@@ -123,7 +123,7 @@ void CompositeMessageTest::testMessageNotification()
     serviceCompo = ::TestService::dynamicCast( ::fwServices::add(compo, "::TestService", "::TestServiceImplementationComposite") );
     CPPUNIT_ASSERT(serviceCompo);
 
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
+    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
     ::TestService::sptr serviceImage;
     serviceImage = ::TestService::dynamicCast( ::fwServices::add(image, "::TestService", "::TestServiceImplementationImage", ImageServiceUUID) );
     CPPUNIT_ASSERT(serviceImage);

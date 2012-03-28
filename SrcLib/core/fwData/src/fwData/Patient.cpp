@@ -92,7 +92,7 @@ void Patient::addTool( std::string _name, ::fwData::Object::sptr _tool )
         this->setToolBox(::fwData::Composite::New());
     }
 
-    this->getToolBox()->getRefMap()[_name] = _tool;
+    getToolBox()->getContainer()[_name] = _tool;
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void Patient::addTool( std::string _name, ::fwData::Object::sptr _tool )
     ::fwData::Composite::sptr tools = this->getToolBox();
     if (tools)
     {
-        ::fwData::Composite::iterator iter = tools->find(_name);
+        ::fwData::Composite::IteratorType iter = tools->find(_name);
         if(iter != tools->end())
         {
             tool = iter->second;
@@ -120,7 +120,7 @@ void Patient::addScenario( std::string _name, ::fwData::Object::sptr _scenario )
     {
         this->setScenarios(::fwData::Composite::New());
     }
-    this->getScenarios()->getRefMap()[_name] = _scenario;
+    this->getScenarios()->getContainer()[_name] = _scenario;
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ void Patient::addScenario( std::string _name, ::fwData::Object::sptr _scenario )
     ::fwData::Composite::sptr scenarios = this->getScenarios();
     if (scenarios)
     {
-        ::fwData::Composite::iterator iter = scenarios->find(_name);
+        ::fwData::Composite::IteratorType iter = scenarios->find(_name);
         if(iter != scenarios->end())
         {
             scenario = iter->second;

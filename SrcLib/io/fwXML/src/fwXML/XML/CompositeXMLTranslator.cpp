@@ -33,8 +33,8 @@ xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
 
-    ::fwData::Composite::Container::iterator iter;
-    for (iter = cmp->getRefMap().begin() ; iter != cmp->getRefMap().end() ; ++iter)
+    ::fwData::Composite::IteratorType iter;
+    for (iter = cmp->begin() ; iter != cmp->end() ; ++iter)
     {
         xmlNodePtr elementNode = xmlNewNode(NULL, BAD_CAST "element");
         xmlAddChild(node, elementNode);
@@ -83,7 +83,7 @@ void CompositeXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
 
             SLM_ASSERT("valueObj not instanced", valueObj);
             assert( ::fwData::Object::dynamicCast( valueObj ));
-            cmp->getRefMap()[key] = ::fwData::Object::dynamicCast( valueObj );
+            cmp->getContainer()[key] = ::fwData::Object::dynamicCast( valueObj );
         }
         elementNode = ::fwXML::XMLParser::nextXMLElement(elementNode->next);
     }

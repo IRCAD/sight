@@ -85,9 +85,9 @@ void CompositeMsg::appendAddedKey( std::string _compositeKey, ::fwData::Object::
         this->addEvent( ADDED_KEYS, m_addedKeys );
     }
 
-    SLM_ASSERT("This composite key is already register", m_addedKeys->getRefMap().find(_compositeKey) == m_addedKeys->getRefMap().end() );
+    SLM_ASSERT("This composite key is already register", m_addedKeys->find(_compositeKey) == m_addedKeys->end() );
 
-    m_addedKeys->getRefMap()[ _compositeKey ] = _pNewObject;
+    m_addedKeys->getContainer()[ _compositeKey ] = _pNewObject;
     addModifiedKeyEvent( _compositeKey );
 }
 
@@ -107,9 +107,9 @@ void CompositeMsg::appendRemovedKey( std::string _compositeKey, ::fwData::Object
         this->addEvent( REMOVED_KEYS, m_removedKeys );
     }
 
-    SLM_ASSERT("This composite key is already register", m_removedKeys->getRefMap().find(_compositeKey) == m_removedKeys->getRefMap().end() );
+    SLM_ASSERT("This composite key is already register", m_removedKeys->find(_compositeKey) == m_removedKeys->end() );
 
-    m_removedKeys->getRefMap()[ _compositeKey ] = _pOldObject;
+    m_removedKeys->getContainer()[ _compositeKey ] = _pOldObject;
     addModifiedKeyEvent( _compositeKey );
 }
 
@@ -129,10 +129,10 @@ void CompositeMsg::appendChangedKey( std::string _compositeKey, ::fwData::Object
         this->addEvent( CHANGED_KEYS, m_oldChangedKeys );
     }
 
-    SLM_ASSERT("This composite key is already register", m_oldChangedKeys->getRefMap().find(_compositeKey) == m_oldChangedKeys->getRefMap().end() );
+    SLM_ASSERT("This composite key is already register", m_oldChangedKeys->find(_compositeKey) == m_oldChangedKeys->end() );
 
-    m_oldChangedKeys->getRefMap()[ _compositeKey ] = _pOldObject;
-    m_newChangedKeys->getRefMap()[ _compositeKey ] = _pNewObject;
+    m_oldChangedKeys->getContainer()[ _compositeKey ] = _pOldObject;
+    m_newChangedKeys->getContainer()[ _compositeKey ] = _pNewObject;
 
     addModifiedKeyEvent( _compositeKey );
 }

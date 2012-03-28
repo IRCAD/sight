@@ -287,7 +287,7 @@ public:
     static std::map< std::string, SPTR(DATATYPE) > getAttributeComposite( xmlNodePtr source, const std::string & name )
     {
         ::fwData::Composite::sptr dataComposite = XMLTranslatorHelper::getAttribute< ::fwData::Composite >( source, name );
-        return dataComposite->getContainer< DATATYPE >();
+        return dataComposite->getDataContainer< DATATYPE >();
     }
 
     //------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ public:
     static void addAttributeComposite( xmlNodePtr masterNode, const std::string & name, const std::map< std::string, SPTR(DATATYPE) > & objMap )
     {
         ::fwData::Composite::NewSptr dataComposite;
-        dataComposite->setContainer< DATATYPE >( objMap );
+        dataComposite->setDataContainer< DATATYPE >( objMap );
         XMLTranslatorHelper::addAttribute( masterNode, name, dataComposite );
     }
 

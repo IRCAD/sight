@@ -168,7 +168,7 @@ void SwapperSrv::starting()  throw ( ::fwTools::Failed )
 
 void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 {
-    BOOST_FOREACH( ::fwData::Composite::Container::value_type  addedObjectId, _composite->getRefMap())
+    BOOST_FOREACH( ::fwData::Composite::ValueType addedObjectId, _composite->getContainer())
     {
         if(m_objectsSubServices.find(addedObjectId.first) != m_objectsSubServices.end())
         {
@@ -287,7 +287,7 @@ void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr 
 
 void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 {
-    BOOST_FOREACH( ::fwData::Composite::Container::value_type  swappedObjectId, _composite->getRefMap())
+    BOOST_FOREACH( ::fwData::Composite::ValueType swappedObjectId, _composite->getContainer())
     {
         this->swapObject(swappedObjectId.first, swappedObjectId.second);
     }
@@ -333,7 +333,7 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
 
 void SwapperSrv::removeObjects( ::fwData::Composite::sptr _composite )
 {
-    BOOST_FOREACH( ::fwData::Composite::Container::value_type  swappedObjectId, _composite->getRefMap())
+    BOOST_FOREACH( ::fwData::Composite::ValueType swappedObjectId, _composite->getContainer())
     {
         this->removeObject(swappedObjectId.first);
     }

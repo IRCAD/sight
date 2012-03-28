@@ -58,9 +58,9 @@ void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) t
     if ( _msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) || _msg->hasEvent( ::fwComEd::GraphMsg::UNSELECTED_NODE ) )
     {
         // remove previous data for SELECTED_NODE and UNSELECTED_NODE
-        while ( !composite->getRefMap().empty() )
+        while ( !composite->getContainer().empty() )
         {
-            compositeHelper.remove( composite->getRefMap().begin()->first );
+            compositeHelper.remove( composite->begin()->first );
         }
 
         if ( _msg->hasEvent( ::fwComEd::GraphMsg::SELECTED_NODE ) )

@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <algorithm>
+#include <boost/foreach.hpp>
+
 #include "fwData/registry/macros.hpp"
 
 
@@ -28,47 +31,27 @@ Composite::~Composite()
 }
 
 
-Composite &Composite::getRefMap()
-{
-    return *this;
-}
-
-
-Composite const &Composite::getRefMap() const
-{
-    return *this;
-}
-
 //------------------------------------------------------------------------------
 
 void Composite::shallowCopy( Composite::csptr _source )
 {
     this->fieldShallowCopy( _source );
-    this->clear();
+    m_attrContainer.clear();
 
-     for( Composite::Container::const_iterator iter = _source->begin();
-          iter != _source->end();
-          ++iter )
-     {
-         (*this)[ iter->first ] = iter->second;
-     }
+    m_attrContainer = _source->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
 
-void Composite::deepCopy( Composite::csptr _source )
+void Composite::deepCopy( Composite::csptr source )
 {
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( source );
 
-    this->clear();
+    m_attrContainer.clear();
 
-    for(    Composite::Container::const_iterator iter = _source->begin();
-            iter != _source->end();
-            ++iter )
+    BOOST_FOREACH(const ValueType &elem, *source)
     {
-        ::fwData::Object::sptr newObj = ::fwData::Factory::New( iter->second->getClassname() );
-        newObj->deepCopy( iter->second );
-        (*this)[ iter->first ] = newObj;
+        m_attrContainer.insert( ValueType(elem.first, ::fwData::Object::copy(elem.second) ) );
     }
 }
 

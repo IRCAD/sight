@@ -65,8 +65,8 @@ void MedicalImageManagerSrv::updating( ::fwServices::ObjectMsg::csptr message ) 
 
 void MedicalImageManagerSrv::convertImages( ::fwData::Composite::sptr _composite )
 {
-    for(    ::fwData::Composite::Container::iterator  objectId = _composite->getRefMap().begin();
-            objectId != _composite->getRefMap().end();
+    for(    ::fwData::Composite::IteratorType  objectId = _composite->begin();
+            objectId != _composite->end();
             ++objectId )
     {
         BOOST_FOREACH( std::string key, m_imageCompositeKeys )

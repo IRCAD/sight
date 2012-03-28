@@ -202,8 +202,8 @@ void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fa
         ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
         ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
 
-        int fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] )->value();
-        int toSliceType =   ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] )->value();
+        int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
+        int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
         if( toSliceType == static_cast<int>(m_orientation) )
         {

@@ -72,7 +72,7 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
 
     if (composite->find(m_planeListId) != composite->end())
     {
-        m_currentPlaneList = ::fwData::PlaneList::dynamicCast(composite->getRefMap()[m_planeListId]);
+        m_currentPlaneList = ::fwData::PlaneList::dynamicCast(composite->getContainer()[m_planeListId]);
     }
 
     ::fwData::PlaneList::sptr planeList = m_currentPlaneList.lock();
@@ -214,7 +214,7 @@ void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
     SLM_TRACE_FUNC();
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    ::fwData::Object::sptr oldPlane = composite->getRefMap()[m_planeSelectionId];
+    ::fwData::Object::sptr oldPlane = composite->getContainer()[m_planeSelectionId];
 
     if (plane && plane != oldPlane)
     {
@@ -226,7 +226,7 @@ void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
 
         ::fwComEd::CompositeMsg::NewSptr compositeMsg;
         compositeMsg->addModifiedKeysEvent(modifiedFields,oldObjects);
-        composite->getRefMap()[m_planeSelectionId] = plane;
+        composite->getContainer()[m_planeSelectionId] = plane;
         ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
     }
 }
@@ -235,14 +235,14 @@ void PlaneSelectionNotifier::deselectPlane()
 {
      SLM_TRACE_FUNC();
      ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-     if ( ! ::fwData::None::dynamicCast(composite->getRefMap()[m_planeSelectionId]))
+     if ( ! ::fwData::None::dynamicCast(composite->getContainer()[m_planeSelectionId]))
      {
         std::vector< ::fwData::Object::sptr > oldObjects;
 
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        oldObjects.push_back( composite->getRefMap()[m_planeSelectionId] );
-        composite->getRefMap()[m_planeSelectionId].reset();
-        composite->getRefMap()[m_planeSelectionId] = ::fwData::None::New();
+        oldObjects.push_back( composite->getContainer()[m_planeSelectionId] );
+        composite->getContainer()[m_planeSelectionId].reset();
+        composite->getContainer()[m_planeSelectionId] = ::fwData::None::New();
 
         std::vector< std::string > modifiedFields;
         modifiedFields.push_back(m_planeSelectionId);

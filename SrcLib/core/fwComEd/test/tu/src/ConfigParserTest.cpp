@@ -104,17 +104,17 @@ void ConfigParserTest::testBuildComposite()
     CPPUNIT_ASSERT_EQUAL(compositeUUID, compo->getID());
 
     // test composite objects
-    CPPUNIT_ASSERT(compo->getRefMap().size() > 0);
+    CPPUNIT_ASSERT(compo->getContainer().size() > 0);
 
-    CPPUNIT_ASSERT(compo->getRefMap().find(objAUUID) != compo->getRefMap().end());
+    CPPUNIT_ASSERT(compo->find(objAUUID) != compo->end());
 
-    CPPUNIT_ASSERT_EQUAL(objAType, compo->getRefMap()[objAUUID]->className());
+    CPPUNIT_ASSERT_EQUAL(objAType, compo->getContainer()[objAUUID]->className());
 
-    ::fwData::Video::sptr video = ::fwData::Video::dynamicCast(compo->getRefMap()[objBUUID]);
+    ::fwData::Video::sptr video = ::fwData::Video::dynamicCast(compo->getContainer()[objBUUID]);
     CPPUNIT_ASSERT_EQUAL(objBUUID, video->getID());
 
     // test composite services
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
+    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
     CPPUNIT_ASSERT_EQUAL(objAUUID, image->getID());
     CPPUNIT_ASSERT( ::fwServices::OSR::has(image, "::TestService"));
 

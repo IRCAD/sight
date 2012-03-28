@@ -118,10 +118,10 @@ void PushObjectSrv::updating() throw(::fwTools::Failed)
         OSLM_ASSERT( src_uid << " doesn't exist", ::fwTools::fwID::exist(src_uid) );
         ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( src_uid ) );
         OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
-        OSLM_ASSERT(src_key << " not found in composite "<<src_uid, composite_src->getRefMap().find(src_key) != composite_src->getRefMap().end());
-        ::fwData::Object::sptr obj = composite_src->getRefMap()[src_key];
+        OSLM_ASSERT(src_key << " not found in composite "<<src_uid, composite_src->find(src_key) != composite_src->end());
+        ::fwData::Object::sptr obj = composite_src->getContainer()[src_key];
 
-        if ( composite->getRefMap().find(key) != composite->getRefMap().end() )
+        if ( composite->find(key) != composite->end() )
         {
             compositeHelper->remove(key);
         }

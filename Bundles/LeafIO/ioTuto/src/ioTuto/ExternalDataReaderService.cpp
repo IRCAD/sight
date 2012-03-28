@@ -117,7 +117,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
                 throw std::ios_base::failure(str);
             }
             file >> imageName;
-            dataComposite->getRefMap()["filename"] = ::fwData::String::NewSptr(imageName);
+            dataComposite->getContainer()["filename"] = ::fwData::String::NewSptr(imageName);
             // Clean all the field
 
             dataComposite->removeField("TF1");

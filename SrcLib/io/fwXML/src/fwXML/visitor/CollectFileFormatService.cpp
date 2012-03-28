@@ -76,8 +76,8 @@ void CollectFileFormatService::visit( ::fwData::Object::sptr obj)
 
     if ( (composite = ::fwData::Composite::dynamicCast( obj )) )
     {
-        ::fwData::Composite::Container::iterator i;
-        for ( i = composite->getRefMap().begin(); i != composite->getRefMap().end(); ++i)
+        ::fwData::Composite::IteratorType i;
+        for ( i = composite->begin(); i != composite->end(); ++i)
         {
             ::fwData::visitor::accept( i->second , this);
         }

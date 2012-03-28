@@ -190,8 +190,8 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
             ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
 
-            ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] );
-            ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] );
+            ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );
+            ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
 
             if( toSliceType->value() == static_cast< int > ( m_orientation ) )
             {
@@ -279,8 +279,8 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     ::fwData::Integer::NewSptr toSliceType;
     fromSliceType->value() = static_cast< int > ( m_orientation ) ;
     toSliceType->value() = static_cast< int > ( type ) ;
-    info->getRefMap()["fromSliceType"] = fromSliceType;
-    info->getRefMap()["toSliceType"] = toSliceType;
+    info->getContainer()["fromSliceType"] = fromSliceType;
+    info->getContainer()["toSliceType"] = toSliceType;
 
     // Change slice type
     m_orientation = type;

@@ -147,7 +147,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
     SLM_ASSERT( "'adaptor' required attribute missing or empty" , !adaptor.empty() );
 
-    const unsigned int compositeObjectCount = composite->getRefMap().count(objectId);
+    const unsigned int compositeObjectCount = composite->getContainer().count(objectId);
 
     OSLM_TRACE_IF(objectId << " not found in composite. If it exist, associated Adaptor will be destroyed",
                   ! (compositeObjectCount == 1 || objectId == compositeName) );
@@ -156,7 +156,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     ::fwTools::Object::sptr object;
     if (compositeObjectCount)
     {
-        object = ::fwTools::Object::dynamicCast(composite->getRefMap()[objectId]);
+        object = ::fwTools::Object::dynamicCast(composite->getContainer()[objectId]);
     }
     else if (objectId == compositeName)
     {
