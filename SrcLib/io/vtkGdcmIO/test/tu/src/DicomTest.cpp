@@ -62,29 +62,29 @@ void DicomTest::methode1()
 
     // check patientDB
     CPPUNIT_ASSERT(pPatientDB2);
-    CPPUNIT_ASSERT_EQUAL(pPatientDB->getPatientSize(), pPatientDB2->getPatientSize());
+    CPPUNIT_ASSERT_EQUAL(pPatientDB->getNumberOfPatients(), pPatientDB2->getNumberOfPatients());
 
-    ::fwData::Patient::sptr pPatient = *pPatientDB->getPatients().first;
-    ::fwData::Patient::sptr pPatient2 = *pPatientDB2->getPatients().first;
+    ::fwData::Patient::sptr pPatient = pPatientDB->getPatients().front();
+    ::fwData::Patient::sptr pPatient2 = pPatientDB2->getPatients().front();
     CPPUNIT_ASSERT_EQUAL(pPatient->getName(), pPatient2->getName());
     CPPUNIT_ASSERT_EQUAL(pPatient->getFirstname(), pPatient2->getFirstname());
     CPPUNIT_ASSERT_EQUAL(pPatient->getBirthdate(), pPatient2->getBirthdate());
     CPPUNIT_ASSERT_EQUAL(pPatient->getIDDicom(), pPatient2->getIDDicom());
     CPPUNIT_ASSERT_EQUAL(pPatient->getIsMale(), pPatient2->getIsMale());
-    CPPUNIT_ASSERT_EQUAL(pPatient->getStudySize(), pPatient2->getStudySize());
+    CPPUNIT_ASSERT_EQUAL(pPatient->getNumberOfStudies(), pPatient2->getNumberOfStudies());
 
-    ::fwData::Study::sptr pStudy = *pPatient->getStudies().first;
-    ::fwData::Study::sptr pStudy2 = *pPatient2->getStudies().first;
+    ::fwData::Study::sptr pStudy = pPatient->getStudies().front();
+    ::fwData::Study::sptr pStudy2 = pPatient2->getStudies().front();
 
     std::string study2Hospital = pStudy2->getHospital();
     ::boost::algorithm::trim(study2Hospital);
     CPPUNIT_ASSERT_EQUAL(pStudy->getHospital(), study2Hospital);
     CPPUNIT_ASSERT_EQUAL(pStudy->getModality(), pStudy2->getModality());
 //  CPPUNIT_ASSERT_EQUAL(pStudy->getAcquisitionZone(), pStudy2->getAcquisitionZone());
-    CPPUNIT_ASSERT_EQUAL(pStudy->getAcquisitionSize(), pStudy2->getAcquisitionSize());
+    CPPUNIT_ASSERT_EQUAL(pStudy->getNumberOfAcquisitions(), pStudy2->getNumberOfAcquisitions());
 
-    ::fwData::Acquisition::sptr pAcq = *pStudy->getAcquisitions().first;
-    ::fwData::Acquisition::sptr pAcq2 = *pStudy2->getAcquisitions().first;
+    ::fwData::Acquisition::sptr pAcq = pStudy->getAcquisitions().front();
+    ::fwData::Acquisition::sptr pAcq2 = pStudy2->getAcquisitions().front();
 
     ::fwData::Image::sptr image = pAcq->getImage();
     ::fwData::Image::sptr image2 = pAcq2->getImage();
