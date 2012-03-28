@@ -204,7 +204,7 @@ void RendererService::createAndAddActorToRender()
     unsigned int elementNumber=0;
 
     //Loop through the composite objects, if it's a mesh, then render it:
-    for(::fwData::Composite::Container::const_iterator it = myComposite->begin(); it != myComposite->end(); ++it)
+    for(::fwData::Composite::ContainerType::const_iterator it = myComposite->begin(); it != myComposite->end(); ++it)
     {
         OSLM_INFO("ObjectName: " << it->first);
         OSLM_INFO("ObjectPointer: " << it->second);
