@@ -71,9 +71,9 @@ void IoVtkGdcmTest::testReader()
     std::string nameExpected("anonymous");
     std::string firstnameExpected("anonymous");
     bool isMaleExpected = false;
-    ::boost::uint32_t nbPatientExpected = 1;
-    ::boost::uint32_t nbStudyExpected = 1;
-    ::boost::uint32_t nbSeriesExpected = 1;
+    size_t nbPatientExpected = 1;
+    size_t nbStudyExpected = 1;
+    size_t nbSeriesExpected = 1;
 
     //Info image expected.
     const size_t imgDimensionExpected   = 3;
@@ -94,23 +94,23 @@ void IoVtkGdcmTest::testReader()
 
 
     // Patient read.
-    ::boost::uint32_t  nbPatient = patientDB->getPatientSize();
-    ::fwData::PatientDB::PatientIterator patientIter;
-    patientIter = patientDB->getPatients().first;
-    ::fwData::Patient::StudyIterator studyIter;
-    studyIter = (*patientIter)->getStudies().first;
+    size_t  nbPatient = patientDB->getNumberOfPatients();
+    ::fwData::Patient::sptr patient;
+    patient = patientDB->getPatients().front();
+    ::fwData::Study::sptr study;
+    study = patient->getStudies().front();
 
     CPPUNIT_ASSERT_EQUAL(nbPatient, nbPatientExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getName(), nameExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getFirstname(), firstnameExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getIsMale(), isMaleExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getStudySize(), nbStudyExpected);
-    CPPUNIT_ASSERT_EQUAL((*studyIter)->getAcquisitionSize(), nbSeriesExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getName(), nameExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getFirstname(), firstnameExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getIsMale(), isMaleExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getNumberOfStudies(), nbStudyExpected);
+    CPPUNIT_ASSERT_EQUAL(study->getNumberOfAcquisitions(), nbSeriesExpected);
 
-    ::fwData::Study::AcquisitionIterator acqIter;
-    acqIter = (*studyIter)->getAcquisitions().first;
+    ::fwData::Acquisition::sptr acq;
+    acq = study->getAcquisitions().front();
 
-    ::fwData::Image::csptr fisrtImage = (*acqIter)->getImage();
+    ::fwData::Image::csptr fisrtImage = acq->getImage();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on image dimension.", fisrtImage->getNumberOfDimensions(), imgDimensionExpected);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on X ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[0]), imgOriginExpected[0]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Y ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[1]), imgOriginExpected[1]);
@@ -138,10 +138,10 @@ void IoVtkGdcmTest::testWriter()
     boost::posix_time::ptime birthdate = boost::posix_time::ptime(pPatient->getBirthdate().date());
     pPatient->setBirthdate(birthdate);
 
-    ::fwData::Patient::StudyIterator pStudy = pPatient->getStudies().first;
-    ::fwData::Study::AcquisitionIterator pAcq = (*pStudy)->getAcquisitions().first;
+    ::fwData::Study::sptr pStudy = pPatient->getStudies().front();
+    ::fwData::Acquisition::sptr pAcq = pStudy->getAcquisitions().front();
 
-    (*pStudy)->setModality("CT");
+    pStudy->setModality("CT");
 
     ::fwData::PatientDB::NewSptr pPatientDB;
     pPatientDB->addPatient(pPatient);
@@ -186,50 +186,49 @@ void IoVtkGdcmTest::testWriter()
     // Clean the written data
     ::boost::filesystem::remove_all( PATH.string() );
 
-    size_t  nbPatient = pReadPatientDB->getPatientSize();
+    size_t  nbPatient = pReadPatientDB->getNumberOfPatients();
     CPPUNIT_ASSERT_EQUAL(nbPatientExpected, nbPatient);
 
-    ::fwData::PatientDB::PatientIterator readPatientIter;
-    readPatientIter = pReadPatientDB->getPatients().first;
-    ::fwData::Patient::sptr pReadPatient = (*readPatientIter);
-    //
+    ::fwData::Patient::sptr pReadPatient;
+    pReadPatient = pReadPatientDB->getPatients().front();
+
     // Attribut BdID not a dicom field
     pReadPatient->setDbID(pPatient->getDbID());
     // Manage space added
-    pReadPatient->setIDDicom(pReadPatient->getIDDicom());
+    pReadPatient->setIDDicom(pPatient->getIDDicom());
 
-    ::fwData::Patient::StudyIterator pReadStudy = pReadPatient->getStudies().first;
+    ::fwData::Study::sptr pReadStudy = pReadPatient->getStudies().front();
 
     // Manage space added
-    (*pReadStudy)->setHospital((*pReadStudy)->getHospital());
+    pReadStudy->setHospital(pStudy->getHospital());
     // Set a valid modality.
-    (*pReadStudy)->setModality("CT");
-    (*pReadStudy)->setUID((*pStudy)->getUID());
+    pReadStudy->setModality("CT");
+    pReadStudy->setUID(pStudy->getUID());
 
     // Attribute ris ID is not supported by vtkMedicalImageProperties interface used to write the dicom file
-    (*pReadStudy)->setRISId((*pStudy)->getRISId());
-    (*pReadStudy)->setDbID((*pStudy)->getDbID());
-    (*pReadStudy)->setRISId((*pStudy)->getRISId());
-    (*pReadStudy)->setDbID((*pStudy)->getDbID());
+    pReadStudy->setRISId(pStudy->getRISId());
+    pReadStudy->setDbID(pStudy->getDbID());
+    pReadStudy->setRISId(pStudy->getRISId());
+    pReadStudy->setDbID(pStudy->getDbID());
 
-    ::fwData::Study::AcquisitionIterator pReadAcq = (*pReadStudy)->getAcquisitions().first;
-    (*pReadAcq)->setDbID((*pAcq)->getDbID());
-    (*pReadAcq)->setLaboID((*pAcq)->getLaboID());
-    (*pReadAcq)->setNetID((*pAcq)->getNetID());
-    (*pReadAcq)->setPatientSize((*pAcq)->getPatientSize());
-    (*pReadAcq)->setPatientWeight((*pAcq)->getPatientWeight());
-    (*pReadAcq)->setRadiations((*pAcq)->getRadiations());
-    (*pReadAcq)->setMedicalPrinter((*pAcq)->getMedicalPrinter());
-    (*pReadAcq)->setMedicalPrinterCorp((*pAcq)->getMedicalPrinterCorp());
-    (*pReadAcq)->setPatientPosition((*pAcq)->getPatientPosition());
-    (*pReadAcq)->setDateSendToLaboAt((*pAcq)->getDateSendToLaboAt());
-    (*pReadAcq)->setDateReceiveFromLaboAt((*pAcq)->getDateReceiveFromLaboAt());
-    (*pReadAcq)->setDateSendToBDDAt((*pAcq)->getDateSendToBDDAt());
-    (*pReadAcq)->setDateDisponibilityAt((*pAcq)->getDateDisponibilityAt());
-    (*pReadAcq)->setImageType((*pAcq)->getImageType());
-    (*pReadAcq)->setImageFormat((*pAcq)->getImageFormat());
-    (*pReadAcq)->setUID((*pAcq)->getUID());
-    (*pReadAcq)->setAxe((*pAcq)->getAxe());
+    ::fwData::Acquisition::sptr pReadAcq = pReadStudy->getAcquisitions().front();
+    pReadAcq->setDbID(pAcq->getDbID());
+    pReadAcq->setLaboID(pAcq->getLaboID());
+    pReadAcq->setNetID(pAcq->getNetID());
+    pReadAcq->setPatientSize(pAcq->getPatientSize());
+    pReadAcq->setPatientWeight(pAcq->getPatientWeight());
+    pReadAcq->setRadiations(pAcq->getRadiations());
+    pReadAcq->setMedicalPrinter(pAcq->getMedicalPrinter());
+    pReadAcq->setMedicalPrinterCorp(pAcq->getMedicalPrinterCorp());
+    pReadAcq->setPatientPosition(pAcq->getPatientPosition());
+    pReadAcq->setDateSendToLaboAt(pAcq->getDateSendToLaboAt());
+    pReadAcq->setDateReceiveFromLaboAt(pAcq->getDateReceiveFromLaboAt());
+    pReadAcq->setDateSendToBDDAt(pAcq->getDateSendToBDDAt());
+    pReadAcq->setDateDisponibilityAt(pAcq->getDateDisponibilityAt());
+    pReadAcq->setImageType(pAcq->getImageType());
+    pReadAcq->setImageFormat(pAcq->getImageFormat());
+    pReadAcq->setUID(pAcq->getUID());
+    pReadAcq->setAxe(pAcq->getAxe());
 
     // check patient
     CPPUNIT_ASSERT(::fwDataTools::Patient::comparePatient(pPatient, pReadPatient));
