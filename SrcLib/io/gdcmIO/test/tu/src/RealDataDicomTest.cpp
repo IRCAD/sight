@@ -95,11 +95,11 @@ void RealDataDicomTest::writeImage( ::fwData::Image::sptr image )
     ::fwData::Patient::NewSptr patient;
     ::fwDataTools::Patient::generatePatient(patient, 1, 1, 0);
 
-    ::fwData::Patient::StudyIterator studyIter;
-    studyIter = patient->getStudies().first;
-    ::fwData::Study::AcquisitionIterator acqIter;
-    acqIter = (*studyIter)->getAcquisitions().first;
-    (*acqIter)->setImage( image );
+    ::fwData::Study::sptr study;
+    study = patient->getStudies().front();
+    ::fwData::Acquisition::sptr acq;
+    acq = study->getAcquisitions().front();
+    acq->setImage( image );
 
     ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
     myWriter->setObject(patient);
@@ -171,8 +171,8 @@ void RealDataDicomTest::testReadPatientDB()
     std::string firstnameExpected("anonymous");
     bool isMaleExpected = false;
     ::boost::uint32_t nbPatientExpected = 1;
-    ::boost::uint32_t nbStudyExpected = 1;
-    ::boost::uint32_t nbSeriesExpected = 1;
+    size_t nbStudyExpected = 1;
+    size_t nbSeriesExpected = 1;
 
     //Info image expected.
     const size_t imgDimensionExpected   = 3;
@@ -192,23 +192,23 @@ void RealDataDicomTest::testReadPatientDB()
 
 
     // Patient read.
-    ::boost::uint32_t  nbPatient = patientDB->getPatientSize();
-    ::fwData::PatientDB::PatientIterator patientIter;
-    patientIter = patientDB->getPatients().first;
-    ::fwData::Patient::StudyIterator studyIter;
-    studyIter = (*patientIter)->getStudies().first;
+    ::boost::uint32_t  nbPatient = patientDB->getNumberOfPatients();
+    ::fwData::Patient::sptr patient;
+    patient = patientDB->getPatients().front();
+    ::fwData::Study::sptr study;
+    study = patient->getStudies().front();
 
     CPPUNIT_ASSERT_EQUAL(nbPatient, nbPatientExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getName(), nameExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getFirstname(), firstnameExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getIsMale(), isMaleExpected);
-    CPPUNIT_ASSERT_EQUAL((*patientIter)->getStudySize(), nbStudyExpected);
-    CPPUNIT_ASSERT_EQUAL((*studyIter)->getAcquisitionSize(), nbSeriesExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getName(), nameExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getFirstname(), firstnameExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getIsMale(), isMaleExpected);
+    CPPUNIT_ASSERT_EQUAL(patient->getNumberOfStudies(), nbStudyExpected);
+    CPPUNIT_ASSERT_EQUAL(study->getNumberOfAcquisitions(), nbSeriesExpected);
 
-    ::fwData::Study::AcquisitionIterator acqIter;
-    acqIter = (*studyIter)->getAcquisitions().first;
+    ::fwData::Acquisition::sptr acq;
+    acq = study->getAcquisitions().front();
 
-    ::fwData::Image::csptr fisrtImage = (*acqIter)->getImage();
+    ::fwData::Image::csptr fisrtImage = acq->getImage();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on image dimension.", fisrtImage->getNumberOfDimensions(), imgDimensionExpected);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on X ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[0]), imgOriginExpected[0]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Y ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[1]), imgOriginExpected[1]);
@@ -238,8 +238,8 @@ void RealDataDicomTest::testReadPatientDBACHGenou()
     CPPUNIT_ASSERT_NO_THROW(myReader->read());
 
     // Get patient
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::boost::uint32_t >( 1 ), patientDB->getPatientSize());
-    ::fwData::Patient::sptr patient = *patientDB->getPatients().first;
+    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), patientDB->getNumberOfPatients());
+    ::fwData::Patient::sptr patient = patientDB->getPatients().front();
 
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkPatientACHGenou( patient ) );
 }
@@ -266,7 +266,7 @@ void RealDataDicomTest::testReadWritePatientDB()
     myReader->setObject(patientDB);
     myReader->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myReader->read());
-    ::fwData::Patient::sptr patient2 = *patientDB->getPatients().first;
+    ::fwData::Patient::sptr patient2 = patientDB->getPatients().front();
 
     // Remove folder
     ::boost::filesystem::remove_all( PATH.string() );

@@ -13,6 +13,7 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwDataTools/MeshGenerator.hpp>
 
@@ -76,29 +77,29 @@ void DicomTest::checkPatient()
     //------------------------------------------------------------------------------
     // check patientDB
     CPPUNIT_ASSERT(m_readedPatientDB);
-    CPPUNIT_ASSERT_EQUAL(m_originalPatientDB->getPatientSize(), m_readedPatientDB->getPatientSize());
+    CPPUNIT_ASSERT_EQUAL(m_originalPatientDB->getNumberOfPatients(), m_readedPatientDB->getNumberOfPatients());
 
-    ::fwData::Patient::sptr pPatient = *m_originalPatientDB->getPatients().first;
-    ::fwData::Patient::sptr pPatient2 = *m_readedPatientDB->getPatients().first;
+    ::fwData::Patient::sptr pPatient = m_originalPatientDB->getPatients().front();
+    ::fwData::Patient::sptr pPatient2 = m_readedPatientDB->getPatients().front();
     CPPUNIT_ASSERT_EQUAL(pPatient->getName(), pPatient2->getName());
     CPPUNIT_ASSERT_EQUAL(pPatient->getFirstname(), pPatient2->getFirstname());
     CPPUNIT_ASSERT_EQUAL(pPatient->getBirthdate(), pPatient2->getBirthdate());
     CPPUNIT_ASSERT_EQUAL(pPatient->getIDDicom(), pPatient2->getIDDicom());
     CPPUNIT_ASSERT_EQUAL(pPatient->getIsMale(), pPatient2->getIsMale());
-    CPPUNIT_ASSERT_EQUAL(pPatient->getStudySize(), pPatient2->getStudySize());
+    CPPUNIT_ASSERT_EQUAL(pPatient->getNumberOfStudies(), pPatient2->getNumberOfStudies());
 
     //------------------------------------------------------------------------------
     // check study
-    ::fwData::Study::sptr pStudy = *pPatient->getStudies().first;
-    ::fwData::Study::sptr pStudy2 = *pPatient2->getStudies().first;
+    ::fwData::Study::sptr pStudy = pPatient->getStudies().front();
+    ::fwData::Study::sptr pStudy2 = pPatient2->getStudies().front();
 
     std::string study2Hospital = pStudy2->getHospital();
     ::boost::algorithm::trim(study2Hospital);
     CPPUNIT_ASSERT_EQUAL(pStudy->getHospital(), study2Hospital);
     CPPUNIT_ASSERT_EQUAL(pStudy->getModality(), pStudy2->getModality());
     //CPPUNIT_ASSERT_EQUAL(pStudy->getAcquisitionZone(), pStudy2->getAcquisitionZone());
-    CPPUNIT_ASSERT_EQUAL(pStudy->getAcquisitionSize(), pStudy2->getAcquisitionSize());
-    CPPUNIT_ASSERT_EQUAL(pStudy2->getAcquisitionSize(), (::boost::uint32_t) 2);
+    CPPUNIT_ASSERT_EQUAL(pStudy->getNumberOfAcquisitions(), pStudy2->getNumberOfAcquisitions());
+    CPPUNIT_ASSERT_EQUAL(pStudy2->getNumberOfAcquisitions(), size_t(2));
 
 }
 
@@ -106,15 +107,15 @@ void DicomTest::checkPatient()
 
 void DicomTest::checkImage()
 {
-    ::fwData::Patient::sptr pPatient = *m_originalPatientDB->getPatients().first;
-    ::fwData::Patient::sptr pPatient2 = *m_readedPatientDB->getPatients().first;
-    ::fwData::Study::sptr pStudy = *pPatient->getStudies().first;
-    ::fwData::Study::sptr pStudy2 = *pPatient2->getStudies().first;
+    ::fwData::Patient::sptr pPatient = m_originalPatientDB->getPatients().front();
+    ::fwData::Patient::sptr pPatient2 = m_readedPatientDB->getPatients().front();
+    ::fwData::Study::sptr pStudy = pPatient->getStudies().front();
+    ::fwData::Study::sptr pStudy2 = pPatient2->getStudies().front();
 
     //------------------------------------------------------------------------------
     // check acquisition
-    ::fwData::Acquisition::sptr pAcq = *pStudy->getAcquisitions().first;
-    ::fwData::Acquisition::sptr pAcq2 = *pStudy2->getAcquisitions().first;
+    ::fwData::Acquisition::sptr pAcq = pStudy->getAcquisitions().front();
+    ::fwData::Acquisition::sptr pAcq2 = pStudy2->getAcquisitions().front();
     CPPUNIT_ASSERT(pAcq);
     CPPUNIT_ASSERT(pAcq2);
     CPPUNIT_ASSERT_EQUAL((int)pAcq->getBitsPerPixel(), (int)pAcq2->getBitsPerPixel());
@@ -135,24 +136,24 @@ void DicomTest::checkImage()
     CPPUNIT_ASSERT_EQUAL(image->getSpacing()[0], image2->getSpacing()[0]);
     CPPUNIT_ASSERT_EQUAL(image->getSpacing()[1], image2->getSpacing()[1]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2], image2->getSpacing()[2], 0.000001);
-    CPPUNIT_ASSERT_EQUAL(pAcq->getReconstructionSize(), pAcq2->getReconstructionSize());
+    CPPUNIT_ASSERT_EQUAL(pAcq->getNumberOfReconstructions(), pAcq2->getNumberOfReconstructions());
 }
 
 //------------------------------------------------------------------------------
 
 void DicomTest::checkReconstruction()
 {
-    ::fwData::Patient::sptr pPatient = *m_originalPatientDB->getPatients().first;
-    ::fwData::Patient::sptr pPatient2 = *m_readedPatientDB->getPatients().first;
-    ::fwData::Study::sptr pStudy = *pPatient->getStudies().first;
-    ::fwData::Study::sptr pStudy2 = *pPatient2->getStudies().first;
-    ::fwData::Acquisition::sptr pAcq = *pStudy->getAcquisitions().first;
-    ::fwData::Acquisition::sptr pAcq2 = *pStudy2->getAcquisitions().first;
+    ::fwData::Patient::sptr pPatient = m_originalPatientDB->getPatients().front();
+    ::fwData::Patient::sptr pPatient2 = m_readedPatientDB->getPatients().front();
+    ::fwData::Study::sptr pStudy = pPatient->getStudies().front();
+    ::fwData::Study::sptr pStudy2 = pPatient2->getStudies().front();
+    ::fwData::Acquisition::sptr pAcq = pStudy->getAcquisitions().front();
+    ::fwData::Acquisition::sptr pAcq2 = pStudy2->getAcquisitions().front();
 
     //------------------------------------------------------------------------------
     // check reconstruction
-    ::fwData::Reconstruction::sptr pRec  = *pAcq->getReconstructions().first;
-    ::fwData::Reconstruction::sptr pRec2 = *pAcq2->getReconstructions().first;
+    ::fwData::Reconstruction::sptr pRec  = pAcq->getReconstructions().front();
+    ::fwData::Reconstruction::sptr pRec2 = pAcq2->getReconstructions().front();
     CPPUNIT_ASSERT(pRec);
     CPPUNIT_ASSERT(pRec2);
     CPPUNIT_ASSERT_EQUAL(pRec->getIsVisible(), pRec2->getIsVisible());
@@ -187,20 +188,20 @@ void DicomTest::checkReconstruction()
 
 void DicomTest::checkLandmark()
 {
-    ::fwData::Patient::sptr pPatient = *m_originalPatientDB->getPatients().first;
-    ::fwData::Patient::sptr pPatient2 = *m_readedPatientDB->getPatients().first;
-    ::fwData::Study::sptr pStudy = *pPatient->getStudies().first;
-    ::fwData::Study::sptr pStudy2 = *pPatient2->getStudies().first;
-    ::fwData::Acquisition::sptr pAcq = *pStudy->getAcquisitions().first;
-    ::fwData::Acquisition::sptr pAcq2 = *pStudy2->getAcquisitions().first;
+    ::fwData::Patient::sptr pPatient = m_originalPatientDB->getPatients().front();
+    ::fwData::Patient::sptr pPatient2 = m_readedPatientDB->getPatients().front();
+    ::fwData::Study::sptr pStudy = pPatient->getStudies().front();
+    ::fwData::Study::sptr pStudy2 = pPatient2->getStudies().front();
+    ::fwData::Acquisition::sptr pAcq = pStudy->getAcquisitions().front();
+    ::fwData::Acquisition::sptr pAcq2 = pStudy2->getAcquisitions().front();
     ::fwData::Image::sptr image = pAcq->getImage();
     ::fwData::Image::sptr image2 = pAcq2->getImage();
 
     //------------------------------------------------------------------------------
     // check landmark
-    CPPUNIT_ASSERT(image2->getFieldSize( ::fwComEd::Dictionary::m_imageLandmarksId));
-    ::fwData::PointList::sptr landmarks1 = image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
-    ::fwData::PointList::sptr landmarks2 = image2->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+    CPPUNIT_ASSERT(image2->getField( ::fwComEd::Dictionary::m_imageLandmarksId));
+    ::fwData::PointList::sptr landmarks1 = image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+    ::fwData::PointList::sptr landmarks2 = image2->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
     CPPUNIT_ASSERT_EQUAL(landmarks1->getPoints().size(), landmarks2->getPoints().size());
     ::fwData::Point::sptr point1 = landmarks1->getPoints().front();
     ::fwData::Point::sptr point2 = landmarks2->getPoints().front();
@@ -211,8 +212,8 @@ void DicomTest::checkLandmark()
     // Landmarks z coordinates is repositioned on image slice
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], point2->getCoord()[2], image->getSpacing()[2]/2.);
 
-    std::string label1 = point1->getFieldSingleElement< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
-    std::string label2 = point2->getFieldSingleElement< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
+    std::string label1 = point1->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
+    std::string label2 = point2->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
     CPPUNIT_ASSERT_EQUAL(label1, label2);
 }
 
@@ -220,24 +221,32 @@ void DicomTest::checkLandmark()
 
 void DicomTest::checkDistance()
 {
-    ::fwData::Patient::sptr pPatient = *m_originalPatientDB->getPatients().first;
-    ::fwData::Patient::sptr pPatient2 = *m_readedPatientDB->getPatients().first;
-    ::fwData::Study::sptr pStudy = *pPatient->getStudies().first;
-    ::fwData::Study::sptr pStudy2 = *pPatient2->getStudies().first;
-    ::fwData::Acquisition::sptr pAcq = *pStudy->getAcquisitions().first;
-    ::fwData::Acquisition::sptr pAcq2 = *pStudy2->getAcquisitions().first;
+    ::fwData::Patient::sptr pPatient = m_originalPatientDB->getPatients().front();
+    ::fwData::Patient::sptr pPatient2 = m_readedPatientDB->getPatients().front();
+    ::fwData::Study::sptr pStudy = pPatient->getStudies().front();
+    ::fwData::Study::sptr pStudy2 = pPatient2->getStudies().front();
+    ::fwData::Acquisition::sptr pAcq = pStudy->getAcquisitions().front();
+    ::fwData::Acquisition::sptr pAcq2 = pStudy2->getAcquisitions().front();
     ::fwData::Image::sptr image = pAcq->getImage();
     ::fwData::Image::sptr image2 = pAcq2->getImage();
 
     //------------------------------------------------------------------------------
     // check distance
-    CPPUNIT_ASSERT_EQUAL(image->getFieldSize( ::fwComEd::Dictionary::m_imageDistancesId), image2->getFieldSize( ::fwComEd::Dictionary::m_imageDistancesId));
+    ::fwData::Vector::sptr vectDist1;
+    vectDist1 = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+    CPPUNIT_ASSERT(vectDist1);
 
-    ::fwData::PointList::sptr pl1 = ::fwData::PointList::dynamicCast(image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().front());
+    ::fwData::Vector::sptr vectDist2;
+    vectDist2 = image2->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+    CPPUNIT_ASSERT(vectDist2);
+
+    CPPUNIT_ASSERT_EQUAL(vectDist1->size(), vectDist2->size());
+
+    ::fwData::PointList::sptr pl1 = ::fwData::PointList::dynamicCast(vectDist2->front());
     ::fwData::Point::sptr pt11 = pl1->getPoints()[0];
     ::fwData::Point::sptr pt12 = pl1->getPoints()[1];
 
-    ::fwData::PointList::sptr pl2 = ::fwData::PointList::dynamicCast(image2->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().front());
+    ::fwData::PointList::sptr pl2 = ::fwData::PointList::dynamicCast(vectDist2->front());
     ::fwData::Point::sptr pt21 = pl2->getPoints()[0];
     ::fwData::Point::sptr pt22 = pl2->getPoints()[1];
 
@@ -345,15 +354,15 @@ void DicomTest::checkDistance()
     pImage1->setWindowCenter(IMG1_WINDOWCENTER);
     pImage1->setWindowWidth(IMG1_WINDOWWIDTH );
     ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(pImage1);
-    ::fwData::PointList::sptr landmarks = pImage1->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+    ::fwData::PointList::sptr landmarks = pImage1->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
     ::fwData::Point::sptr point = ::fwData::Point::New(2.6f, 1.2f, 4.5f);
-    point->setFieldSingleElement( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("Label1") );
+    point->setField( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("Label1") );
     landmarks->getRefPoints().push_back(point);
     ::fwData::Point::sptr point2 = ::fwData::Point::New(1.2f, 2.4f, 0.3f);
-    point2->setFieldSingleElement( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("Label2") );
+    point2->setField( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("Label2") );
     landmarks->getRefPoints().push_back(point2);
     ::fwData::Point::sptr point3 = ::fwData::Point::New(1.2f, 2.4f, (IMG1_VSIZE[2]-1) * IMG1_VSPACING[2]);
-    point3->setFieldSingleElement( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("toto") );
+    point3->setField( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("toto") );
     landmarks->getRefPoints().push_back(point3);
 
     // Add distance
@@ -362,7 +371,10 @@ void DicomTest::checkDistance()
     ::fwData::Point::sptr pt2 = ::fwData::Point::New((IMG1_VSIZE[0]-1) * IMG1_VSPACING[0], (IMG1_VSIZE[1]-1) * IMG1_VSPACING[1], (IMG1_VSIZE[2]-1) * IMG1_VSPACING[2]);
     pl->getRefPoints().push_back( pt1 );
     pl->getRefPoints().push_back( pt2 );
-    pImage1->addFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , pl);
+
+    ::fwData::Vector::sptr vectDist;
+    vectDist = pImage1->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
+    vectDist->push_back(pl);
 
 
     ::fwData::Mesh::sptr mesh = this->generateMesh();
