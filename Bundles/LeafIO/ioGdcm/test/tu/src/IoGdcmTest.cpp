@@ -75,8 +75,8 @@ void IoGdcmTest::testPatientDBReaderDicom()
     this->executeService( patientDB, "::io::IReader", "::ioGdcm::DicomPatientDBReaderService", srvCfg );
 
     // Get patient
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::boost::uint32_t >( 1 ), patientDB->getPatientSize());
-    ::fwData::Patient::sptr patient = *patientDB->getPatients().first;
+    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), patientDB->getNumberOfPatients());
+    ::fwData::Patient::sptr patient = patientDB->getPatients().front();
 
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkPatientACHGenou( patient ) );
 }
