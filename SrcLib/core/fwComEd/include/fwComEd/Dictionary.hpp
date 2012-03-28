@@ -47,13 +47,6 @@ struct FWCOMED_CLASS_API Dictionary
     FWCOMED_API static const std::string m_acquisitionCountId;
     /// @}
 
-    /// selection oriented IDs
-    /// @{
-    FWCOMED_API static const std::string m_acquisitionSelectedId;
-    FWCOMED_API static const std::string m_resectionId;
-    FWCOMED_API static const std::string m_resectionSelectedId;
-    /// @}
-
     /// processing oriented IDs
     /// @{
     FWCOMED_API static const std::string m_roi;

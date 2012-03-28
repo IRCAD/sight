@@ -14,13 +14,11 @@ namespace fwComEd
 namespace helper
 {
 
-
-
 template < typename SERVICE >
 ::fwData::Image::sptr ImageGetter< SERVICE >::getImage()
 {
     SERVICE *image = dynamic_cast< SERVICE* > (this);
-     return image->template getObject< ::fwData::Image >();
+    return image->template getObject< ::fwData::Image >();
 }
 
 } //namespace helper

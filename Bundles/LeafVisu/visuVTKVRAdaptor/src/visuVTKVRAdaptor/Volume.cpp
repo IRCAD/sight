@@ -70,7 +70,6 @@ vtkStandardNewMacro(vtkBoxRepresentationHack);
 
 
 
-
 class AbortCallback : public vtkCommand
 {
 
@@ -95,9 +94,7 @@ public :
                 win->SetAbortRender(1);
             }
         }
-
     }
-
 };
 
 //------------------------------------------------------------------------------
@@ -129,7 +126,6 @@ public :
 
 private:
     vtkVolumeMapper *mapper;
-
 };
 
 
@@ -146,21 +142,10 @@ Volume::Volume() throw() :
 
     m_volume = vtkVolume::New();
     m_volumeProperty = vtkVolumeProperty::New();
-    //m_volumeMapper = vtkVolumeTextureMapper2D::New();
-    //m_volumeMapper = vtkVolumeTextureMapper2D::New();
-
-    //m_volumeMapper = vtkFixedPointVolumeRayCastMapper::New();
-
     m_volumeMapper = vtkVolumeTextureMapper3D::New();
-    //vtkVolumeTextureMapper3D::SafeDownCast(m_volumeMapper)->SetPreferredMethodToNVidia();
+
     vtkVolumeTextureMapper3D::SafeDownCast(m_volumeMapper)->SetPreferredMethodToFragmentProgram();
     vtkVolumeTextureMapper3D::SafeDownCast(m_volumeMapper)->SetSampleDistance (.2);
-
-    //m_volumeMapper = vtkVolumeRayCastMapper::New();
-    //vtkVolumeRayCastMapper::SafeDownCast(m_volumeMapper)->SetVolumeRayCastFunction(vtkVolumeRayCastCompositeFunction::New());
-    //vtkVolumeRayCastMapper::SafeDownCast(m_volumeMapper)->SetVolumeRayCastFunction(vtkVolumeRayCastIsosurfaceFunction::New());
-    //vtkVolumeRayCastMapper::SafeDownCast(m_volumeMapper)->SetVolumeRayCastFunction(vtkVolumeRayCastMIPFunction::New());
-    //vtkVolumeRayCastMapper::SafeDownCast(m_volumeMapper)->SetSampleDistance (.2);
 
     m_abortCommand    = AbortCallback::New();
 
@@ -185,10 +170,6 @@ Volume::Volume() throw() :
     this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
     this->addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
     this->addNewHandledEvent( "RESET_BOX_WIDGET" );
-
-
-    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -217,7 +198,6 @@ Volume::~Volume() throw()
     m_croppingCommand = NULL;
 }
 
-
 //------------------------------------------------------------------------------
 
 void Volume::setClippingPlanesId(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
@@ -236,7 +216,6 @@ void Volume::setVtkClippingPlanes(vtkPlaneCollection *planes)
 
 void Volume::doStart() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->addToRenderer(m_volume);
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
@@ -258,7 +237,7 @@ void Volume::doStop() throw(fwTools::Failed)
 void Volume::doSwap() throw(fwTools::Failed)
 {
     this->removeTFObserver();
-    doUpdate();
+    this->doUpdate();
     this->installTFObserver( this->getSptr() );
 }
 
@@ -271,10 +250,10 @@ void Volume::doUpdate() throw(::fwTools::Failed)
 
     if (imageIsValid)
     {
-        buildPipeline();
-        updateImage(image);
-        updateTransfertFunction(image);
-        updateWindowing(image);
+        this->buildPipeline();
+        this->updateImage(image);
+        this->updateTransferFunction(image);
+        this->updateWindowing(image);
     }
 }
 
@@ -287,62 +266,19 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
 
     if (imageIsValid)
     {
-
-        // Synchronisation between cropping box (fence mode) and slice index
-//        if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-//        {
-//            unsigned int axialIndex = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId )->value();
-//            unsigned int frontalIndex = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId )->value();
-//            unsigned int sagittalIndex = image->getFieldSingleElement< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId )->value();
-//
-//            vtkVolumeMapper *mapper = vtkVolumeMapper::SafeDownCast(m_volumeMapper);
-//            double *bounds = m_boxWidget->GetRepresentation()->GetBounds();
-//            double spacing[3];
-//            double pos[3];
-//            double delta[3];
-//            double region[6];
-//
-//
-//            this->getImageSpacing(spacing);
-//
-//            pos[2] = axialIndex * spacing[2];
-//            pos[1] = frontalIndex * spacing[1];
-//            pos[0] = sagittalIndex * spacing[0];
-//
-//            delta[0] = (bounds[1] - bounds[0])/2.;
-//            delta[1] = (bounds[3] - bounds[2])/2.;
-//            delta[2] = (bounds[5] - bounds[4])/2.;
-//
-//            mapper->CroppingOn();
-//            mapper->SetCroppingRegionFlagsToFence();
-//
-//
-//            region[0] = pos[0] - delta[0];
-//            region[1] = pos[0] + delta[0];
-//            region[2] = pos[1] - delta[1];
-//            region[3] = pos[1] + delta[1];
-//            region[4] = pos[2] - delta[2];
-//            region[5] = pos[2] + delta[2];
-//
-//            mapper->SetCroppingRegionPlanes(region);
-//        }
-
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
-            SLM_TRACE("ImageMsg Buffer || NEW_IMAGE");
             this->doUpdate();
         }
 
         if (this->upadteTFObserver(msg) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
-            SLM_TRACE("TransferFunctionMsg MODIFIED_POINTS");
-            this->updateTransfertFunction(image);
+            this->updateTransferFunction(image);
         }
 
         if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
         {
-            SLM_TRACE("TransferFunctionMsg WINDOWING");
-            this->updateTransfertFunction(image);
+            this->updateTransferFunction(image);
             this->updateWindowing(image);
         }
 
@@ -356,7 +292,6 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
         {
             this->resetBoxWidget();
         }
-
     }
 }
 
@@ -369,8 +304,6 @@ void Volume::configuring() throw(fwTools::Failed)
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setClippingPlanesId( m_configuration->getAttributeValue("clippingplanes") );
-
-    //this->setPickerId( m_configuration->getAttributeValue("picker") );
 
     if (m_configuration->hasAttribute("autoresetcamera") )
     {
@@ -388,27 +321,6 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 
     vtkImageImport *imageImport = vtkImageImport::New();
     ::vtkIO::configureVTKImageImport( imageImport, image );
-
-    //vtkImageShiftScale *shiftScale = vtkImageShiftScale::New();
-    //shiftScale->SetInputConnection(imageImport->GetOutputPort());
-
-    //double inmin = -32768;
-    //double inmax =  32767;
-    //double outmin = 0;
-    //double outmax = 65535;
-
-    //double indelta  = inmax - inmin;
-    //double outdelta = outmax - outmin;
-
-    //double incenter = inmin + indelta/2.;
-    //double outcenter = outmin + outdelta/2.;
-
-    //static double shift = outcenter - incenter;
-    //static double scale = outdelta/indelta;
-
-    //shiftScale->SetShift(shift);
-    //shiftScale->SetScale(scale);
-    //shiftScale->SetOutputScalarTypeToUnsignedShort();
 
     m_volumeMapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)
@@ -443,12 +355,11 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 
 void Volume::updateWindowing( ::fwData::Image::sptr image )
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-void Volume::updateTransfertFunction( ::fwData::Image::sptr image )
+void Volume::updateTransferFunction( ::fwData::Image::sptr image )
 {
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", pTF);
@@ -471,9 +382,7 @@ void Volume::updateTransfertFunction( ::fwData::Image::sptr image )
     m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
     m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());
 
-    m_volumeProperty->SetColor(m_colorTransferFunction);
-
-    setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -501,7 +410,7 @@ void Volume::buildPipeline( )
     m_volume->SetMapper(m_volumeMapper);
     m_volume->SetProperty(m_volumeProperty);
 
-    setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -515,7 +424,7 @@ void Volume::resetBoxWidget()
     {
         this->getRenderer()->ResetCamera();
     }
-    setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------

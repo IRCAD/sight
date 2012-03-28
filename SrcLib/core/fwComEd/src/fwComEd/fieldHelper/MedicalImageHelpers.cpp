@@ -242,7 +242,10 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
                     patient->getIsMale()    == oldPatient->getIsMale() )
             {
                 patientExist = true;
-                MedicalImageHelpers::mergeInformation(oldPatient,patient);
+                BOOST_FOREACH( ::fwData::Study::sptr study, patient->getStudies() )
+                {
+                    oldPatient->addStudy(study);
+                }
                 break;
             }
             ++index;
@@ -251,9 +254,7 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
         {
             _patientDBTo->addPatient( patient );
         }
-
     }
-
 
     if( hasNewPatients )
     {
@@ -270,78 +271,6 @@ void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patient
             msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
         }
         ::fwServices::IEditionService::notify( _msgSender, _patientDBTo, msg);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageHelpers::mergeInformation(::fwData::Patient::sptr currentPatient, ::fwData::Patient::sptr importedPatient)
-{
-
-    BOOST_FOREACH( ::fwData::Study::sptr study, importedPatient->getStudies() )
-    {
-        currentPatient->addStudy(study);
-    }
-
-    ::fwData::Composite::sptr itool = ::fwData::Composite::dynamicCast(importedPatient->getTool(::fwComEd::Dictionary::m_resectionId));
-    ::fwData::Composite::sptr ctool = ::fwData::Composite::dynamicCast(currentPatient->getTool(::fwComEd::Dictionary::m_resectionId) );
-
-    //merge toolbox
-
-    // dictionary to maintain OperationName in case of duplicate name.
-    // these names are used in IDToolsBox::composite[m_resectionId] and in ID_SCENARIO::composite["ResectionAcquisitionPair"]
-    std::map< std::string , std::string > ResctionOpNameTranslate;
-
-    if ( itool )
-    {
-        if (!ctool )
-        {
-            currentPatient->addTool(::fwComEd::Dictionary::m_resectionId, itool );
-        }
-        else
-        {
-            // copy data of itool inside ctool map
-            ::fwData::Composite::Container::iterator itoolIter;
-            for (  itoolIter = itool->getRefMap().begin() ;  itoolIter != itool->getRefMap().end();  ++itoolIter )
-            {
-                std::string opName = itoolIter->first;
-                ::fwData::ResectionDB::sptr resectionDB = ::fwData::ResectionDB::dynamicCast( itoolIter->second );
-                SLM_ASSERT(" in Composite of Resection DB invalid Data Type", resectionDB );
-
-                std::string newOpName = opName;
-                while (  ctool->getRefMap().find( newOpName ) !=  ctool->getRefMap().end()  )
-                {
-                    newOpName += "BIS";
-                }
-                ctool->getRefMap()[newOpName] = resectionDB;
-                ResctionOpNameTranslate[ opName ] = newOpName;
-            }
-        }
-    }
-    // merge scenario
-    ::fwData::Composite::sptr iscenario = ::fwData::Composite::dynamicCast( importedPatient->getScenario("ResectionAcquisitionPair"));
-    ::fwData::Composite::sptr cscenario = ::fwData::Composite::dynamicCast( currentPatient->getScenario("ResectionAcquisitionPair"));
-
-    if ( iscenario )
-    {
-        if ( !cscenario )
-        {
-            currentPatient->addScenario("ResectionAcquisitionPair", iscenario );
-        }
-        else
-        {
-            // copy data of iscenario inside cscenario map
-            ::fwData::Composite::Container::iterator iscenarioIter;
-            for (  iscenarioIter = iscenario->getRefMap().begin() ;  iscenarioIter != iscenario->getRefMap().end();  ++iscenarioIter )
-            {
-                std::string opName = iscenarioIter->first;
-                ::fwData::Acquisition::sptr acquisition = ::fwData::Acquisition::dynamicCast( iscenarioIter->second );
-                SLM_ASSERT(" in Composite of Acquisition invalid Data Type", acquisition );
-
-                std::string newOpName = ResctionOpNameTranslate[ opName ];
-                cscenario->getRefMap()[newOpName] = acquisition;
-            }
-        }
     }
 }
 

@@ -178,13 +178,6 @@ public :
     template < typename MINMAXTYPE >
     static void getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE &_min, MINMAXTYPE &_max);
 
-protected:
-
-    /**
-     * @brief Merge data from two identical patients.
-     */
-    FWCOMED_API static void mergeInformation(::fwData::Patient::sptr currentPatient, ::fwData::Patient::sptr importedPatient);
-
 };
 
 
