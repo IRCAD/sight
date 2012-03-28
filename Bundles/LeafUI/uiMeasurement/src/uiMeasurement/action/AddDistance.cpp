@@ -84,7 +84,7 @@ void AddDistance::updating() throw(::fwTools::Failed)
     ::fwData::Vector::sptr vectDist;
     vectDist = image->setDefaultField(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
 
-    vectDist->push_back(pl);
+    vectDist->getContainer().push_back(pl);
 
     // force distance to be shown
     image->setField("ShowDistances",  ::fwData::Boolean::NewSptr(true));

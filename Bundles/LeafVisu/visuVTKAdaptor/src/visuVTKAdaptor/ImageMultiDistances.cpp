@@ -374,10 +374,10 @@ void ImageMultiDistances::removeDistance(  ::fwData::PointList::sptr plToRemove 
     ::fwData::Vector::sptr distanceField;
     distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
 
-    ::fwData::Vector::iterator iter = std::find(distanceField->begin(), distanceField->end(), plToRemove);
+    ::fwData::Vector::IteratorType iter = std::find(distanceField->begin(), distanceField->end(), plToRemove);
     if(iter != distanceField->end())
     {
-        distanceField->erase(iter);
+        distanceField->getContainer().erase(iter);
     }
 
     doUpdate();
@@ -394,7 +394,7 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
 
     ::fwData::Vector::sptr distanceField;
     distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
-    distanceField->push_back(newPL);
+    distanceField->getContainer().push_back(newPL);
 
     OSLM_INFO("distanceField->size() " << distanceField->size() );
     assert( image->getField( ::fwComEd::Dictionary::m_imageDistancesId ) );

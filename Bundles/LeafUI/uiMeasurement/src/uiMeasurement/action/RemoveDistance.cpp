@@ -153,8 +153,8 @@ void RemoveDistance::updating( ) throw(::fwTools::Failed)
         vectDist = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
         SLM_ASSERT("No Field ImageDistancesId",vectDist);
 
-        ::fwData::Vector::iterator newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
-        vectDist->erase(newEnd, vectDist->end());
+        ::fwData::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
+        vectDist->getContainer().erase(newEnd, vectDist->end());
 
         this->notifyNewDistance(image, distToRemove);
     }

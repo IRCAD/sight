@@ -36,7 +36,7 @@ xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
 
     // create node for container
-    xmlNodePtr containerNode = XMLTH::homogeneousContainerToXml("container", myVector->getRefContainer().begin(),  myVector->getRefContainer().end() );
+    xmlNodePtr containerNode = XMLTH::homogeneousContainerToXml("container", myVector->begin(),  myVector->end() );
     xmlAddChild( masterNode , containerNode);
 
     return masterNode;
@@ -50,7 +50,7 @@ void VectorXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  x
 
     //get its label
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(toUpdate);
-    myVector->getRefContainer().clear();
+    myVector->getContainer().clear();
 
     // If the point list is not empty
     if ( source->children != NULL )
@@ -71,7 +71,7 @@ void VectorXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  x
                         SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
 
-                        myVector->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
+                        myVector->getContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
 
                         containerNode = XMLParser::nextXMLElement( containerNode->next );
                     }

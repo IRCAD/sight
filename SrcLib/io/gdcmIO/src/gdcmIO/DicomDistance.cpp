@@ -93,7 +93,7 @@ void DicomDistance::convertToData(::fwData::Image::sptr a_image)
 
             // Add the distance in the image
 
-            vectDist->push_back(pl);
+            vectDist->getContainer().push_back(pl);
 
             OSLM_TRACE("new distance : ( "<<pt1->getRefCoord()[0]<<"x"<<pt1->getRefCoord()[1]<<"x"<<pt1->getRefCoord()[2]<<" - " \
                                           <<pt2->getRefCoord()[0]<<"x"<<pt2->getRefCoord()[1]<<"x"<<pt2->getRefCoord()[2]<<" )");

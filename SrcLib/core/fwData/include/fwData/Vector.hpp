@@ -17,8 +17,6 @@
 namespace fwData
 {
 
-typedef std::vector< Object::sptr > ObjectVectorType;
-
 /**
  * @class   Vector
  * @brief   This class defines a vector of objects.
@@ -29,62 +27,68 @@ typedef std::vector< Object::sptr > ObjectVectorType;
  * @date    2007-2009.
  */
 
-class FWDATA_CLASS_API Vector : public Object, private ObjectVectorType
+class FWDATA_CLASS_API Vector : public Object
 {
 
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::Factory::New< Vector >) ;
 
+
+
+    typedef std::vector< Object::sptr > ContainerType;
+
+    typedef ContainerType::value_type ValueType;
+    typedef ContainerType::reference ReferenceType;
+    typedef ContainerType::const_reference ConstReferenceType;
+    typedef ContainerType::iterator IteratorType;
+    typedef ContainerType::const_iterator ConstIteratorType;
+    typedef ContainerType::reverse_iterator ReverseIteratorType;
+    typedef ContainerType::const_reverse_iterator ConstReverseIteratorType;
+    typedef ContainerType::size_type SizeType;
+
+    /// boost_foreach/stl compatibility
+    /// @{
+    typedef ContainerType::value_type value_type;
+    typedef ContainerType::iterator iterator;
+    typedef ContainerType::const_iterator const_iterator;
+    typedef ContainerType::reverse_iterator reverse_iterator;
+    typedef ContainerType::const_reverse_iterator const_reverse_iterator;
+    typedef ContainerType::size_type size_type;
+
     typedef Vector Container;
-    typedef ObjectVectorType ContainerType;
 
+    IteratorType begin() { return m_attrContainer.begin(); }
+    IteratorType end()   { return m_attrContainer.end(); }
+    ConstIteratorType begin() const { return m_attrContainer.begin(); }
+    ConstIteratorType end()   const { return m_attrContainer.end(); }
 
-    using ObjectVectorType::reference;
-    using ObjectVectorType::const_reference;
-    using ObjectVectorType::iterator;
-    using ObjectVectorType::const_iterator;
-    using ObjectVectorType::size_type;
-    using ObjectVectorType::difference_type;
-    using ObjectVectorType::value_type;
-    using ObjectVectorType::allocator_type;
-    using ObjectVectorType::pointer;
-    using ObjectVectorType::const_pointer;
-    using ObjectVectorType::reverse_iterator;
-    using ObjectVectorType::const_reverse_iterator;
+    ReverseIteratorType rbegin() { return m_attrContainer.rbegin(); }
+    ReverseIteratorType rend()   { return m_attrContainer.rend(); }
+    ConstReverseIteratorType rbegin() const { return m_attrContainer.rbegin(); }
+    ConstReverseIteratorType rend()   const { return m_attrContainer.rend(); }
 
-    using ObjectVectorType::begin;
-    using ObjectVectorType::end;
-    using ObjectVectorType::rbegin;
-    using ObjectVectorType::rend;
+    bool empty() const { return m_attrContainer.empty(); }
+    SizeType size() const { return m_attrContainer.size(); }
 
-    using ObjectVectorType::size;
-    using ObjectVectorType::max_size;
-    using ObjectVectorType::resize;
-    using ObjectVectorType::capacity;
-    using ObjectVectorType::empty;
-    using ObjectVectorType::reserve;
+    ValueType front(){ return m_attrContainer.front(); }
+    ValueType back(){ return m_attrContainer.back(); }
 
-    using ObjectVectorType::operator[];
-    using ObjectVectorType::at;
-    using ObjectVectorType::front;
-    using ObjectVectorType::back;
+    ReferenceType operator[] ( size_type n )
+    {return this->m_attrContainer[n];}
+    ConstReferenceType operator[] ( size_type n ) const
+    {return this->m_attrContainer[n];}
 
-    using ObjectVectorType::assign;
-    using ObjectVectorType::push_back;
-    using ObjectVectorType::pop_back;
-    using ObjectVectorType::insert;
-    using ObjectVectorType::erase;
-    using ObjectVectorType::swap;
-    using ObjectVectorType::clear;
+    ReferenceType at ( SizeType n ) {return m_attrContainer.at(n);}
+    ConstReferenceType at ( SizeType n ) const {return m_attrContainer.at(n);}
+    /// @}
 
-    using ObjectVectorType::get_allocator;
+    /// @brief get/set the vector of ::fwData::Object
+    /// @{
+    ContainerType &getContainer(){ return m_attrContainer; };
+    fwDataGetSetCRefMacro(Container, ContainerType);
+    /// @}
 
-    /// @brief get the container of ::fwData::Object
-    FWDATA_API Vector &getRefContainer();
-
-    /// @brief get the container of ::fwData::Object
-    FWDATA_API Vector const &getRefContainer() const;
 
     fwDataObjectMacro();
 
@@ -96,20 +100,20 @@ public:
 
     /// Method to initialize a ::fwData::Vector from a std::vector
     template< class DATATYPE >
-    void setContainer( const std::vector< SPTR(DATATYPE) > & vec )
+    void setDataContainer( const std::vector< SPTR(DATATYPE) > & vec )
     {
-        this->clear();
-        std::copy( vec.begin(), vec.end(), std::back_inserter(*this) );
+        this->m_attrContainer.clear();
+        std::copy( vec.begin(), vec.end(), std::back_inserter(this->getContainer()) );
     }
 
     /// Method to get a std::vector from ::fwData::Vector
     template< class DATATYPE >
-    std::vector< SPTR(DATATYPE) > getContainer() const
+    std::vector< SPTR(DATATYPE) > getDataContainer() const
     {
         std::vector< SPTR(DATATYPE) > vec;
         vec.reserve( this->size() );
         SPTR(DATATYPE) castedData;
-        BOOST_FOREACH( ::fwData::Object::sptr data, *this )
+        BOOST_FOREACH( ::fwData::Object::sptr data, this->getContainer() )
         {
             castedData = ::boost::dynamic_pointer_cast<DATATYPE>( data );
             OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
@@ -126,6 +130,7 @@ protected:
     /// Destructor
     FWDATA_API virtual ~Vector();
 
+    ContainerType m_attrContainer;
 };
 } //namespace fwData
 

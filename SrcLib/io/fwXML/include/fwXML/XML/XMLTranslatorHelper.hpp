@@ -278,7 +278,7 @@ public:
     static std::vector< SPTR(DATATYPE) > getAttributeVector( xmlNodePtr source, const std::string & name )
     {
         ::fwData::Vector::sptr dataVector = XMLTranslatorHelper::getAttribute< ::fwData::Vector >( source, name );
-        return dataVector->getContainer< DATATYPE >();
+        return dataVector->getDataContainer< DATATYPE >();
     }
 
     //------------------------------------------------------------------------------
@@ -300,7 +300,7 @@ public:
     static void addAttributeVector( xmlNodePtr masterNode, const std::string & name, const std::vector< SPTR(DATATYPE) > & objVec )
     {
         ::fwData::Vector::NewSptr dataVector;
-        dataVector->setContainer< DATATYPE >( objVec );
+        dataVector->setDataContainer< DATATYPE >( objVec );
         XMLTranslatorHelper::addAttribute( masterNode, name, dataVector );
     }
 

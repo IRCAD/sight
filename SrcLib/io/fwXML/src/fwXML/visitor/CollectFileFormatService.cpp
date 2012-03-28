@@ -85,7 +85,7 @@ void CollectFileFormatService::visit( ::fwData::Object::sptr obj)
     else if ( (vector = ::fwData::Vector::dynamicCast( obj )))
     {
         ::fwData::Vector::Container::iterator i;
-        for ( i = vector->getRefContainer().begin(); i != vector->getRefContainer().end(); ++i)
+        for ( i = vector->begin(); i != vector->end(); ++i)
         {
             ::fwData::visitor::accept( *i , this);
         }
