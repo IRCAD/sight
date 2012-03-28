@@ -59,7 +59,7 @@ void Patient::deepCopy( Patient::csptr _source )
     m_i32DbID       = _source->m_i32DbID;
 
     m_attrStudies.clear();
-    std::transform( 
+    std::transform(
             _source->m_attrStudies.begin(), _source->m_attrStudies.end(),
             std::back_inserter(m_attrStudies),
             & ::fwData::Object::copy< StudyContainerType::value_type::element_type >
@@ -87,48 +87,56 @@ void Patient::addStudy( ::fwData::Study::sptr _study )
 
 void Patient::addTool( std::string _name, ::fwData::Object::sptr _tool )
 {
-    if ( !getToolBox() )
+    if ( !this->getToolBox() )
     {
-        setToolBox(::fwData::Composite::New());
+        this->setToolBox(::fwData::Composite::New());
     }
 
-    getToolBox()->getRefMap()[_name] = _tool;
+    this->getToolBox()->getRefMap()[_name] = _tool;
 }
+
 //------------------------------------------------------------------------------
 
 ::fwData::Object::sptr Patient::getTool( std::string _name )
 {
     ::fwData::Object::sptr tool;
-
-    if (getToolBox())
+    ::fwData::Composite::sptr tools = this->getToolBox();
+    if (tools)
     {
-        tool = getToolBox()->getRefMap()[_name];
+        ::fwData::Composite::iterator iter = tools->find(_name);
+        if(iter != tools->end())
+        {
+            tool = iter->second;
+        }
     }
-
     return tool;
 }
+
 //------------------------------------------------------------------------------
 
 void Patient::addScenario( std::string _name, ::fwData::Object::sptr _scenario )
 {
-    if ( !getScenarios() )
+    if ( !this->getScenarios() )
     {
-        setScenarios(::fwData::Composite::New());
+        this->setScenarios(::fwData::Composite::New());
     }
-
-    getScenarios()->getRefMap()[_name] = _scenario;
+    this->getScenarios()->getRefMap()[_name] = _scenario;
 }
+
 //------------------------------------------------------------------------------
 
 ::fwData::Object::sptr Patient::getScenario( std::string _name )
 {
     ::fwData::Object::sptr scenario;
-
-    if (getScenarios())
+    ::fwData::Composite::sptr scenarios = this->getScenarios();
+    if (scenarios)
     {
-        scenario = getScenarios()->getRefMap()[_name];
+        ::fwData::Composite::iterator iter = scenarios->find(_name);
+        if(iter != scenarios->end())
+        {
+            scenario = iter->second;
+        }
     }
-
     return scenario;
 }
 
