@@ -65,27 +65,27 @@ void TypeTest::typeTest()
     t.setType<void       >();
 
     t.setType<signed char       >();
-    CPPUNIT_ASSERT_EQUAL( INT8   , t ); 
+    CPPUNIT_ASSERT_EQUAL( INT8   , t );
     t.setType<char              >();
-    CPPUNIT_ASSERT_EQUAL( INT8   , t ); 
+    CPPUNIT_ASSERT_EQUAL( INT8   , t );
     t.setType<short             >();
-    CPPUNIT_ASSERT_EQUAL( INT16  , t ); 
+    CPPUNIT_ASSERT_EQUAL( INT16  , t );
     t.setType<int               >();
-    CPPUNIT_ASSERT_EQUAL( INT32  , t ); 
+    CPPUNIT_ASSERT_EQUAL( INT32  , t );
     t.setType<long long         >();
-    CPPUNIT_ASSERT_EQUAL( INT64  , t ); 
+    CPPUNIT_ASSERT_EQUAL( INT64  , t );
     t.setType<unsigned char     >();
-    CPPUNIT_ASSERT_EQUAL( UINT8  , t ); 
+    CPPUNIT_ASSERT_EQUAL( UINT8  , t );
     t.setType<unsigned short    >();
-    CPPUNIT_ASSERT_EQUAL( UINT16 , t ); 
+    CPPUNIT_ASSERT_EQUAL( UINT16 , t );
     t.setType<unsigned int      >();
-    CPPUNIT_ASSERT_EQUAL( UINT32 , t ); 
+    CPPUNIT_ASSERT_EQUAL( UINT32 , t );
     t.setType<unsigned long long>();
-    CPPUNIT_ASSERT_EQUAL( UINT64 , t ); 
+    CPPUNIT_ASSERT_EQUAL( UINT64 , t );
     t.setType<float             >();
-    CPPUNIT_ASSERT_EQUAL( FLOAT  , t ); 
+    CPPUNIT_ASSERT_EQUAL( FLOAT  , t );
     t.setType<double            >();
-    CPPUNIT_ASSERT_EQUAL( DOUBLE , t ); 
+    CPPUNIT_ASSERT_EQUAL( DOUBLE , t );
 
     CPPUNIT_ASSERT( typeid(void) == ::fwTools::Type::s_UNSPECIFIED_TYPE.typeId());
 

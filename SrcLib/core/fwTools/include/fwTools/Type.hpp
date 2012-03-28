@@ -97,10 +97,6 @@ public:
      */
     FWTOOLS_API unsigned char sizeOf() const;
 
-
-    /// Default destrucor : do nothing
-    //FWTOOLS_API virtual ~Type();
-
     /// Return a human readable string
     FWTOOLS_API const std::string &string() const;
 
@@ -261,13 +257,13 @@ void Type::setType()
 //-----------------------------------------------------------------------------
 
 template <>
-void Type::setType<void>();
+FWTOOLS_API void Type::setType< void >();
 
 
 //-----------------------------------------------------------------------------
 
 template <>
-void Type::setType<char>();
+FWTOOLS_API void Type::setType< char >();
 
 //-----------------------------------------------------------------------------
 
