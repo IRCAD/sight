@@ -33,7 +33,7 @@ xmlNodePtr ListXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
 
     // create node for container
-    xmlNodePtr containerNode = XMLTH::homogeneousContainerToXml("container", myList->getRefContainer().begin(),  myList->getRefContainer().end() );
+    xmlNodePtr containerNode = XMLTH::homogeneousContainerToXml("container", myList->begin(),  myList->end() );
     xmlAddChild( masterNode , containerNode);
 
     return masterNode;
@@ -47,7 +47,7 @@ void ListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xml
 
     //get its label
     ::fwData::List::sptr myList = ::fwData::List::dynamicCast(toUpdate);
-    myList->getRefContainer().clear();
+    myList->getContainer().clear();
 
     // If the point list is not empty
     if ( source->children != NULL )
@@ -67,7 +67,7 @@ void ListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xml
                         ::fwData::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true );
                         SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
-                        myList->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
+                        myList->getContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
 
                         containerNode = XMLParser::nextXMLElement( containerNode->next );
                     }

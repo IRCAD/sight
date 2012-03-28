@@ -89,7 +89,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
 
                 // Add object
                 SLM_ASSERT("Sorry an ::fwData::List can contain only ::fwData::Object", localObj );
-                dataList->push_back( localObj );
+                dataList->getContainer().push_back( localObj );
 
             }
             else // if( buildMode == GET_OBJECT )

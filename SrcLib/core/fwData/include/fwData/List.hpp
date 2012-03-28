@@ -7,7 +7,7 @@
 #ifndef _FWDATA_LIST_HPP_
 #define _FWDATA_LIST_HPP_
 
-#include <map>
+#include <list>
 #include <boost/shared_ptr.hpp>
 
 #include "fwData/Object.hpp"
@@ -17,7 +17,7 @@
 namespace fwData
 {
 
-typedef std::list< Object::sptr > ObjectListType;
+
 
 /**
  * @class   List
@@ -29,68 +29,59 @@ typedef std::list< Object::sptr > ObjectListType;
  * @date    2007-2009.
  */
 
-class FWDATA_CLASS_API List : public Object, private ObjectListType
+class FWDATA_CLASS_API List : public Object
 {
 
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::Factory::New< List >) ;
 
+    typedef std::list< Object::sptr > ContainerType;
+
+    typedef ContainerType::value_type ValueType;
+    typedef ContainerType::reference ReferenceType;
+    typedef ContainerType::const_reference ConstReferenceType;
+    typedef ContainerType::iterator IteratorType;
+    typedef ContainerType::const_iterator ConstIteratorType;
+    typedef ContainerType::reverse_iterator ReverseIteratorType;
+    typedef ContainerType::const_reverse_iterator ConstReverseIteratorType;
+    typedef ContainerType::size_type SizeType;
+
+    /// boost_foreach/stl compatibility
+    /// @{
+    typedef ContainerType::value_type value_type;
+    typedef ContainerType::iterator iterator;
+    typedef ContainerType::const_iterator const_iterator;
+    typedef ContainerType::reverse_iterator reverse_iterator;
+    typedef ContainerType::const_reverse_iterator const_reverse_iterator;
+    typedef ContainerType::size_type size_type;
+
     typedef List Container;
-    typedef ObjectListType ContainerType;
 
-    using ObjectListType::reference;
-    using ObjectListType::const_reference;
-    using ObjectListType::iterator;
-    using ObjectListType::const_iterator;
-    using ObjectListType::size_type;
-    using ObjectListType::difference_type;
-    using ObjectListType::value_type;
-    using ObjectListType::allocator_type;
-    using ObjectListType::pointer;
-    using ObjectListType::const_pointer;
-    using ObjectListType::reverse_iterator;
-    using ObjectListType::const_reverse_iterator;
+    IteratorType begin() { return m_attrContainer.begin(); }
+    IteratorType end()   { return m_attrContainer.end(); }
+    ConstIteratorType begin() const { return m_attrContainer.begin(); }
+    ConstIteratorType end()   const { return m_attrContainer.end(); }
 
-    using ObjectListType::begin;
-    using ObjectListType::end;
-    using ObjectListType::rbegin;
-    using ObjectListType::rend;
+    ReverseIteratorType rbegin() { return m_attrContainer.rbegin(); }
+    ReverseIteratorType rend()   { return m_attrContainer.rend(); }
+    ConstReverseIteratorType rbegin() const { return m_attrContainer.rbegin(); }
+    ConstReverseIteratorType rend()   const { return m_attrContainer.rend(); }
 
-    using ObjectListType::empty;
-    using ObjectListType::size;
-    using ObjectListType::max_size;
-    using ObjectListType::resize;
+    bool empty() const { return m_attrContainer.empty(); }
+    SizeType size() const { return m_attrContainer.size(); }
 
-    using ObjectListType::front;
-    using ObjectListType::back;
+    ReferenceType front(){ return m_attrContainer.front(); }
+    ReferenceType back(){ return m_attrContainer.back(); }
+    ConstReferenceType front() const{ return m_attrContainer.front(); }
+    ConstReferenceType back() const{ return m_attrContainer.back(); }
+    /// @}
 
-    using ObjectListType::assign;
-    using ObjectListType::push_front;
-    using ObjectListType::pop_front;
-    using ObjectListType::push_back;
-    using ObjectListType::pop_back;
-    using ObjectListType::insert;
-    using ObjectListType::erase;
-    using ObjectListType::swap;
-    using ObjectListType::clear;
-
-    using ObjectListType::splice;
-    using ObjectListType::remove;
-    using ObjectListType::remove_if;
-    using ObjectListType::unique;
-    using ObjectListType::merge;
-    using ObjectListType::sort;
-    using ObjectListType::reverse;
-
-    using ObjectListType::get_allocator;
-
-
-    /// @brief get the container of ::fwData::Object
-    FWDATA_API List &getRefContainer();
-
-    /// @brief get the container of ::fwData::Object
-    FWDATA_API List const &getRefContainer() const;
+    /// @brief get/set the list of ::fwData::Object
+    /// @{
+    ContainerType &getContainer(){ return m_attrContainer; };
+    fwDataGetSetCRefMacro(Container, ContainerType);
+    /// @}
 
     fwDataObjectMacro();
 
@@ -106,6 +97,8 @@ protected:
 
     /// Destructor
     FWDATA_API virtual ~List();
+
+    ContainerType m_attrContainer;
 };
 }
 

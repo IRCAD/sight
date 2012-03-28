@@ -31,24 +31,10 @@ List::~List()
 
 //------------------------------------------------------------------------------
 
-List &List::getRefContainer()
-{
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-List const &List::getRefContainer() const
-{
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
 void List::shallowCopy( List::csptr _source )
 {
     this->fieldShallowCopy( _source );
-    (ObjectListType)(*this) = (ObjectListType)(*(_source.get()));
+    m_attrContainer = _source->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
@@ -57,16 +43,21 @@ void List::deepCopy( List::csptr _source )
 {
     this->fieldDeepCopy( _source );
 
-    this->clear();
+    this->m_attrContainer.clear();
 
-    for(    List::Container::const_iterator iter = _source->begin();
+    for(    List::const_iterator iter = _source->begin();
             iter != _source->end();
             ++iter )
     {
         ::fwData::Object::sptr newObj = ::fwData::Factory::New( (*iter)->getClassname() );
         newObj->deepCopy( *iter );
-        this->push_back( newObj );
+        this->m_attrContainer.push_back( newObj );
     }
+    std::transform(
+            _source->begin(), _source->end(),
+            this->begin(),
+            &::fwData::Object::copy< ValueType::element_type >
+    );
 }
 
 //------------------------------------------------------------------------------
