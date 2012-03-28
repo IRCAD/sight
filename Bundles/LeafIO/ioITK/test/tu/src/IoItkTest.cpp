@@ -96,12 +96,12 @@ void IoItkTest::testPatientDBReaderJPG()
     // Create and execute service
     this->executeService( patientDB, "::io::IReader", "::ioITK::JpgPatientDBReaderService", srvCfg );
 
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::boost::uint32_t >(3),patientDB->getPatientSize());
-    ::fwData::Image::sptr image = (*(*(*patientDB->getPatients().first)->getStudies().first)->getAcquisitions().first)->getImage();
-    CPPUNIT_ASSERT_EQUAL(static_cast< size_t >(3),image->getNumberOfDimensions());
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(512),image->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(256),image->getSize()[1]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(1),image->getSize()[2]);
+    CPPUNIT_ASSERT_EQUAL(size_t(3),patientDB->getNumberOfPatients());
+    ::fwData::Image::sptr image = patientDB->getPatients().front()->getStudies().front()->getAcquisitions().front()->getImage();
+    CPPUNIT_ASSERT_EQUAL(size_t(3),image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(512), image->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(256), image->getSize()[1]);
+    CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(1), image->getSize()[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ void IoItkTest::testLoadInr()
     // Create and execute service
     ::fwData::PatientDB::NewSptr patientDB;
     this->executeService( patientDB, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg );
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::boost::uint32_t >(1),patientDB->getPatientSize());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), patientDB->getNumberOfPatients());
 
 
 
@@ -175,7 +175,7 @@ void IoItkTest::testLoadInr()
     // Create and execute service
     ::fwData::PatientDB::NewSptr patientDB2;
     this->executeService( patientDB2, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg2 );
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::boost::uint32_t >(2),patientDB2->getPatientSize());
+    CPPUNIT_ASSERT_EQUAL(size_t(2),patientDB2->getNumberOfPatients());
 
 
 
@@ -188,7 +188,7 @@ void IoItkTest::testLoadInr()
     // Create and execute service
     ::fwData::PatientDB::NewSptr patientDB3;
     this->executeService( patientDB3, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg3 );
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::boost::uint32_t >(2),patientDB3->getPatientSize());
+    CPPUNIT_ASSERT_EQUAL(size_t(2),patientDB3->getNumberOfPatients());
 }
 
 //------------------------------------------------------------------------------
@@ -208,8 +208,8 @@ void IoItkTest::testPatientDBReaderDicom()
     this->executeService( patientDB, "::io::IReader", "::ioITK::DicomPatientDBReaderService", srvCfg );
 
     // Get patient
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::boost::uint32_t >( 1 ), patientDB->getPatientSize());
-    ::fwData::Patient::sptr patient = *patientDB->getPatients().first;
+    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), patientDB->getNumberOfPatients());
+    ::fwData::Patient::sptr patient = patientDB->getPatients().front();
 
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkPatientACHGenou( patient ) );
 }
