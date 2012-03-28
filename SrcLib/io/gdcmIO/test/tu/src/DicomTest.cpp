@@ -374,7 +374,7 @@ void DicomTest::checkDistance()
 
     ::fwData::Vector::sptr vectDist;
     vectDist = pImage1->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
-    vectDist->push_back(pl);
+    vectDist->getContainer().push_back(pl);
 
 
     ::fwData::Mesh::sptr mesh = this->generateMesh();
