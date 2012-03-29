@@ -168,18 +168,20 @@ void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr msg) throw(
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
     if(compositeMsg)
     {
-        //        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
-        //        {
-        //        }
-        //
-        //        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
-        //        {
-        //        }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+        {
+        }
 
-        //        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ) )
-        //        {
-        //
-        //        }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
+        {
+        }
+
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
+        {
+        }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS) )
+        {
+        }
     }
 
 
@@ -665,11 +667,18 @@ void TransferFunctionEditor::initTransferFunctions()
     {
         m_pTransferFunctionPreset->addItem( elt.first.c_str() );
     }
-
     //TODO : change selection with current TF
     int index = m_pTransferFunctionPreset->findText( QString( ::fwData::TransferFunction::s_DEFAULT_TF_NAME.c_str() ) );
-    m_pTransferFunctionPreset->setCurrentIndex(index);
-    compositeHelper.notify(this->getSptr());
+    int selectedTF = m_pTransferFunctionPreset->findText(QString(m_selectedTFKey.c_str()));
+    if(selectedTF != -1)
+    {
+        this->presetChoice(selectedTF);
+    }
+    else
+    {
+        this->presetChoice(index);
+    }
+//    compositeHelper.notify(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -712,7 +721,14 @@ void TransferFunctionEditor::updateTransferFunction()
     OSLM_ASSERT("TF "<< newSelectedTFKey <<" missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
     ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
     ::fwData::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
-    compositeHelper.swap(m_selectedTFKey, newSelectedTF);
+    if((tfSelection->getContainer()).size() != 0)
+    {
+        compositeHelper.swap(m_selectedTFKey, newSelectedTF);
+    }
+    else
+    {
+        compositeHelper.add(m_selectedTFKey, newSelectedTF);
+    }
     compositeHelper.notify(this->getSptr());
 }
 

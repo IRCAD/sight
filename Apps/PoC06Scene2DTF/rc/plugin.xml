@@ -157,6 +157,12 @@
             </object>
         </item>
 
+        <item key="TFSelectionsKey">
+            <object uid="TFSelections" type="::fwData::Composite" >
+
+            </object>
+        </item>
+
         <!-- CompositeVisu description -->
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" type="::fwData::Composite">
@@ -327,7 +333,7 @@
                         <viewport id="view1" x="-10" y="-10" width="310" height="310" />
 
                         <adaptor id="negato" class="::scene2D::adaptor::Negato" objectId="myImage">
-                            <config zValue="0"/>
+                            <config zValue="0" selectedTFKey="SelectedTF" tfPoolFwID="TFSelections" />
                         </adaptor>
                         
                         <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
@@ -369,10 +375,17 @@
                                 <sliceIndex>axial</sliceIndex>
                             </service>
 
-                            <service uid="GENERIC_UID_TFEditor" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" >
-                                <image id="myImage" />
+                            <service implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+                                <mode type="stop" />
+                                <config>
+                                    <field id="m_transfertFunctionCompositeId" type="::fwData::Composite">
+                                        <service uid="GENERIC_UID_TFEditor" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes">
+                                            <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                        </service>
+                                    </field>
+                                </config>
                             </service>
-                          
+
                             <!-- Compute the histogram of 'myImage' and stores it into 'myHistogram'    -->
                             <!--
                             <service uid="computeHistogramSrv" type="::fwServices::IController" implementation="::scene2D::ComputeHistogramSrv" autoComChannel="yes">
@@ -399,7 +412,7 @@
                         </adaptor>
 
                         <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" selectedTFKey="SelectedTF" tfPoolFwID="TFSelections"/>
                         </adaptor>
                         
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
