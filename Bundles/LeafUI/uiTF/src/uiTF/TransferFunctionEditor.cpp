@@ -357,8 +357,6 @@ void TransferFunctionEditor::newTF()
 
 void TransferFunctionEditor::reinitializeTFPool()
 {
-    SLM_TRACE_FUNC();
-
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Reinitializing confirmation");
     messageBox.setMessage("Are you sure you want to reinitialize all transfer functions?");
@@ -616,14 +614,23 @@ void TransferFunctionEditor::exportTF()
 
 void TransferFunctionEditor::initTransferFunctions()
 {
-    // Get transfer function composite and selected TF
+    // Get transfer function composite (pool TF)
     ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >( );
 
     ::fwComEd::helper::Composite compositeHelper(poolTF);
 
-    // Test if transfer function composite has few TF, if no then create default TF
-    if (    poolTF->empty() ||
-            this->hasTransferFunctionName(::fwData::TransferFunction::s_DEFAULT_TF_NAME) && poolTF->size() == 1 )
+    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    if(!this->hasTransferFunctionName(defaultTFName))
+    {
+        ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
+        defaultTf->setWindow( 50. );
+        defaultTf->setLevel( 500. );
+        compositeHelper.add(defaultTFName, defaultTf);
+        compositeHelper.notify(this->getSptr());
+    }
+
+    // Test if transfer function composite has few TF
+    if( poolTF->size() <= 1 )
     {
         // Parse all TF contained in uiTF Bundle's resources
         std::vector< ::boost::filesystem::path > paths;
@@ -642,7 +649,7 @@ void TransferFunctionEditor::initTransferFunctions()
 
         // Load TF parsed from xml file
         ::fwXML::Serializer serializer;
-        ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new ::fwXML::NeverSplitPolicy);
+        ::fwXML::NeverSplitPolicy::NewSptr spolicy;
         serializer.setSplitPolicy(spolicy);
 
         BOOST_FOREACH( ::boost::filesystem::path file, paths )
@@ -668,7 +675,7 @@ void TransferFunctionEditor::initTransferFunctions()
         m_pTransferFunctionPreset->addItem( elt.first.c_str() );
     }
 
-    int index = m_pTransferFunctionPreset->findText( QString::fromStdString(::fwData::TransferFunction::s_DEFAULT_TF_NAME) );
+    int index = m_pTransferFunctionPreset->findText( QString::fromStdString(defaultTFName) );
     ::fwData::TransferFunction::sptr selectedTF = this->getSelectedTransferFunction();
     if(selectedTF)
     {
@@ -748,7 +755,6 @@ void TransferFunctionEditor::updateTransferFunction()
     ::fwData::Composite::sptr tfSelection = this->getTFSelection();
     return ::fwData::TransferFunction::dynamicCast((*tfSelection)[m_selectedTFKey]);
 }
-
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
