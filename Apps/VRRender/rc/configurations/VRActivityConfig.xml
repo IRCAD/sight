@@ -135,7 +135,8 @@
                                         selectedTFKey="SelectedTF" tfSelectionFwID="GENERIC_UID_TFSelections" />
                             </adaptor>
                             <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
-                                <config renderer="default" picker="negato2default" text="" />
+                                <config renderer="default" picker="negato2default" text=""
+                                        selectedTFKey="SelectedTF" tfSelectionFwID="GENERIC_UID_TFSelections" />
                             </adaptor>
                             <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="myImage">
                                 <config filter="true" renderer="default" picker="negato2default" />
