@@ -271,19 +271,20 @@ void TransferFunctionEditor::deleteTF()
         if( poolTF->size() > 1 )
         {
             int indexSelectedTF = m_pTransferFunctionPreset->currentIndex();
+            std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
 
             ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
 
             ::fwComEd::helper::Composite compositeHelper(poolTF);
-            OSLM_ASSERT("TF "<< m_selectedTFKey <<" missing in pool", this->hasTransferFunctionName(m_selectedTFKey));
-            compositeHelper.remove(m_selectedTFKey);
+            OSLM_ASSERT("TF "<< m_selectedTFKey <<" missing in pool", this->hasTransferFunctionName(selectedTFKey));
+            compositeHelper.remove(selectedTFKey);
             compositeHelper.notify(this->getSptr());
 
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
             std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
 
-            int index = m_pTransferFunctionPreset->findText(QString(defaultTFName.c_str()));
-            index = (index < 0)? 0 : index;
+            int index = m_pTransferFunctionPreset->findText(QString::fromStdString(defaultTFName));
+            index = std::max(index, 0);
             m_pTransferFunctionPreset->setCurrentIndex(index);
 
             this->updateTransferFunction();
