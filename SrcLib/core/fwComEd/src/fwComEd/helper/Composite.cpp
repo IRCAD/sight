@@ -1,3 +1,5 @@
+#include <boost/bind.hpp>
+
 #include <fwData/Composite.hpp>
 
 #include <fwServices/IEditionService.hpp>
@@ -57,9 +59,14 @@ void Composite::remove( std::string _compositeKey )
 void Composite::clear()
 {
     ::fwData::Composite::sptr composite = m_composite.lock();
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    std::vector<std::string> vectKey;
+    std::transform( composite->begin(), composite->end(),
+                std::back_inserter(vectKey),
+                ::boost::bind(& ::fwData::Composite::value_type::first,_1) );
+
+    BOOST_FOREACH(std::string key, vectKey)
     {
-        this->remove(elt.first);
+        this->remove(key);
     }
 }
 
