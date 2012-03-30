@@ -245,7 +245,7 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     if (imageIsValid)
     {
-        this->upadteTFObserver(msg);
+        this->upadteTFObserver(msg, this->getSptr());
         this->updateImageInfos(image);
         if(m_autoWindowing && msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
         {
