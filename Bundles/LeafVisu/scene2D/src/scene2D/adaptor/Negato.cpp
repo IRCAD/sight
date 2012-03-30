@@ -347,7 +347,7 @@ void Negato::doUpdate( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fail
         this->doUpdate();
     }
 
-    if(this->upadteTFObserver(msg) ||
+    if(this->upadteTFObserver(msg, this->getSptr()) ||
             msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ||
             msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
     {

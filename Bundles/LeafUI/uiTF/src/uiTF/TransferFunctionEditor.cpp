@@ -660,6 +660,8 @@ void TransferFunctionEditor::initTransferFunctions()
             compositeHelper.add(pTf->getName(), pTf);
         }
     }
+    compositeHelper.notify(this->getSptr());
+
 
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
@@ -678,7 +680,6 @@ void TransferFunctionEditor::initTransferFunctions()
     {
         this->presetChoice(index);
     }
-//    compositeHelper.notify(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------

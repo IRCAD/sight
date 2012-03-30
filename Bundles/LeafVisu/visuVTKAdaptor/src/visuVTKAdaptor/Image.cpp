@@ -155,7 +155,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             this->setVtkPipelineModified();
         }
 
-        if (this->upadteTFObserver(msg) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+        if (this->upadteTFObserver(msg, this->getSptr()) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
             this->updateTransfertFunction(image);
         }

@@ -331,7 +331,7 @@ void TransferFunction::doUpdate( fwServices::ObjectMsg::csptr msg) throw ( ::fwT
     if(msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
             || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS )
             || msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED)
-            || this->upadteTFObserver(msg) )
+            || this->upadteTFObserver(msg, this->getSptr()) )
     {
         this->doUpdate();
     }

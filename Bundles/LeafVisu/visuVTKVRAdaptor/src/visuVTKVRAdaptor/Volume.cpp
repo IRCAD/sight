@@ -271,7 +271,7 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
             this->doUpdate();
         }
 
-        if (this->upadteTFObserver(msg) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+        if (this->upadteTFObserver(msg, this->getSptr()) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
             this->updateTransferFunction(image);
         }

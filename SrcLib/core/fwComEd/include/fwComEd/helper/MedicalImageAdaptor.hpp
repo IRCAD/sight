@@ -239,7 +239,7 @@ protected:
     // Remove TF Observer ( com channel )
     FWCOMED_API void removeTFObserver();
 
-    FWCOMED_API bool upadteTFObserver(::fwServices::ObjectMsg::csptr msg);
+    FWCOMED_API bool upadteTFObserver(::fwServices::ObjectMsg::csptr msg, ::fwServices::IService::sptr srv);
 
     // Helper to send a windowing notification in the current tf
     FWCOMED_API ::fwComEd::TransferFunctionMsg::sptr notifyTFWindowing( ::fwServices::IService::sptr srv );

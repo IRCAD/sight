@@ -251,10 +251,10 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
     {
         if ( ! m_tfSelectionFwID.empty() )
         {
-            ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
-            OSLM_ASSERT( "Sorry, object with fwID " << m_tfSelectionFwID << " doesn't exist.", pool );
+            ::fwData::Composite::sptr tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
+            OSLM_ASSERT( "Sorry, object with fwID " << m_tfSelectionFwID << " doesn't exist.", tfSelection );
             OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
-            if ( pool->find( m_selectedTFKey ) == pool->end() )
+            if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
             {
                 ::fwData::TransferFunction::NewSptr tf;
                 tf->setLevel(100);
@@ -266,9 +266,10 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
                 tf->addTFColor( 1   , ::fwData::TransferFunction::TFColor(0.0,1.0,0.0,1.0));
                 tf->addTFColor( 2   , ::fwData::TransferFunction::TFColor(0.0,0.0,1.0,1.0));
                 tf->addTFColor(200  , ::fwData::TransferFunction::TFColor(1.0,1.0,0.0,1.0));
-                (*pool)[m_selectedTFKey] = tf;
+
+                (*tfSelection)[m_selectedTFKey] = tf;
             }
-            m_tfSelection = pool;
+            m_tfSelection = tfSelection;
         }
         else
         {
@@ -438,19 +439,41 @@ void MedicalImageAdaptor::removeTFObserver()
 
 //------------------------------------------------------------------------------
 
-bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg)
+bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, ::fwServices::IService::sptr srv)
 {
     bool needUpdate = false;
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
     if(compositeMsg)
     {
-//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
-//        {
-//        }
-//
-//        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-//        {
-//        }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+        {
+            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
+            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
+            ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
+            if( iter != fields->end())
+            {
+                ::fwServices::IService::sptr comChannel;
+                comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
+                comChannel->start();
+                m_tfComChannelSrv = comChannel;
+                needUpdate = true;
+            }
+        }
+
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
+        {
+            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
+            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
+            ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
+            if( iter != fields->end())
+            {
+                ::fwServices::IService::sptr tfComChannel = m_tfComChannelSrv.lock();
+                tfComChannel->stop();
+                ::fwServices::OSR::unregisterService(tfComChannel);
+                needUpdate = true;
+                m_tfComChannelSrv.reset();
+            }
+        }
 
         if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
         {
@@ -460,7 +483,12 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg)
             if( iter != fields->end())
             {
                 ::fwServices::IService::sptr tfComChannel = m_tfComChannelSrv.lock();
-                tfComChannel->swap(iter->second);
+                if (tfComChannel->getObject() != iter->second)
+                {
+                    tfComChannel->swap(iter->second);
+                }
+                OSLM_WARN_IF("Com channel is already on " << iter->second->getID(),
+                        tfComChannel->getObject() == iter->second)
                 needUpdate = true;
             }
         }

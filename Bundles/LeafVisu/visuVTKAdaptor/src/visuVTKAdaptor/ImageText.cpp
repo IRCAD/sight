@@ -119,7 +119,7 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
         }
         this->doUpdate();
     }
-    else  if ( tfMsg || this->upadteTFObserver(msg))
+    else  if ( tfMsg || this->upadteTFObserver(msg, this->getSptr()))
     {
         this->doUpdate();
     }
