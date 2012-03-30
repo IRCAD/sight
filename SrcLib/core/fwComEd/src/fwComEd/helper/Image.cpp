@@ -12,6 +12,7 @@
 
 #include "fwComEd/helper/Image.hpp"
 #include "fwComEd/helper/Field.hpp"
+#include "fwComEd/helper/Composite.hpp"
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
 
@@ -69,18 +70,33 @@ bool Image::createLandmarks()
 bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSource)
 {
     ::fwData::Image::sptr img = m_image.lock();
-
     bool fieldIsCreated = false;
+    const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
+    ::fwData::Composite::sptr tfPool;
 
+    tfPool = img->getField< ::fwData::Composite >(poolFieldName);
     // Transfer functions
-    if ( ! img->getField( ::fwComEd::Dictionary::m_transfertFunctionCompositeId ) )
+    if ( ! tfPool )
+    {
+        tfPool = ::fwData::Composite::New();
+
+        // Set in selected image
+        ::fwComEd::helper::Field fieldHelper(img);
+        fieldHelper.setField(poolFieldName, tfPool);
+        if(serviceSource)
+        {
+            fieldHelper.notify(serviceSource);
+        }
+        // TF pool is modified
+        fieldIsCreated = true;
+    }
+
+    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    if(tfPool->find(defaultTFName) == tfPool->end())
     {
         ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
         tf->setWindow( img->getWindowWidth() );
         tf->setLevel( img->getWindowCenter() );
-
-        ::fwData::Composite::NewSptr cTF;
-        cTF->getContainer()[ tf->getName() ] = tf;
         if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(img))
         {
             double min, max;
@@ -88,16 +104,13 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
             ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
             tf->setWLMinMax(wlMinMax);
         }
-        // Set in selected image
-        ::fwComEd::helper::Field fieldHelper(img);
-        fieldHelper.setField( ::fwComEd::Dictionary::m_transfertFunctionCompositeId, cTF);
+        // Set in TFPool
+        ::fwComEd::helper::Composite compositeHelper(tfPool);
+        compositeHelper.add(defaultTFName, tf);
         if(serviceSource)
         {
-            fieldHelper.notify(serviceSource);
+            compositeHelper.notify(serviceSource);
         }
-
-        // TF is modified
-        fieldIsCreated = true;
     }
 
     return fieldIsCreated;
