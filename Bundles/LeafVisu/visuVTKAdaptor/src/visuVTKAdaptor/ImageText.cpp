@@ -51,6 +51,7 @@ void ImageText::doStart() throw(::fwTools::Failed)
     this->Text::doStart();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
     this->installTFObserver( this->getSptr() );
 }
 
@@ -132,6 +133,7 @@ void ImageText::doSwap() throw(fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->removeTFObserver();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
     this->doUpdate();
     this->installTFObserver( this->getSptr() );
 }

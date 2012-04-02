@@ -316,6 +316,7 @@ void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
 
     // Build the tf map points, the circles vector, the lines and polygons vector, add the items to the layer and add it to the scene
     this->buildTFPoints();

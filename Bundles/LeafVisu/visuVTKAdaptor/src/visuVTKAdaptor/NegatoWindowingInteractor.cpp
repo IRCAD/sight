@@ -199,9 +199,9 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
 
 void NegatoWindowingInteractor::doUpdate() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
 }
 
 //------------------------------------------------------------------------------

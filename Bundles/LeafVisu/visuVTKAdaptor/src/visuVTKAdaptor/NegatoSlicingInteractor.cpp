@@ -19,6 +19,7 @@
 #include <fwServices/Factory.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCellPicker.h>
@@ -29,11 +30,10 @@
 #include <vtkAssemblyNode.h>
 #include <vtkCommand.h>
 
+#include <fwRenderVTK/vtk/Helpers.hpp>
+#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;
@@ -298,7 +298,6 @@ void NegatoSlicingInteractor::doUpdate() throw(fwTools::Failed)
 
 void NegatoSlicingInteractor::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
 }

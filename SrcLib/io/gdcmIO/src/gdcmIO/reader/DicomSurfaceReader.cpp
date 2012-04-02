@@ -80,7 +80,7 @@ void DicomSurfaceReader::read() throw (::fwTools::Failed)
         OSLM_ERROR("Surface segmentation reading error : "<<surfaceFiles[0]);
     }
 
-    OSLM_TRACE("series->getReconstructionSize() : "<<series->getNumberOfReconstructions());
+    OSLM_TRACE("series->getNumberOfReconstructions() : "<<series->getNumberOfReconstructions());
 
     series->setField("ShowReconstructions", ::fwData::Boolean::NewSptr(true));
 }

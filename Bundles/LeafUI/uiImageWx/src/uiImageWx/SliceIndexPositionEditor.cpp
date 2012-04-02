@@ -209,9 +209,7 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
 //------------------------------------------------------------------------------
 
 void SliceIndexPositionEditor::info( std::ostream &_sstream )
-{
-
-}
+{}
 
 //------------------------------------------------------------------------------
 

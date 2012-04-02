@@ -63,7 +63,7 @@ protected :
     void updateImage( ::fwData::Image::sptr image  );
     void updateImageOpacity();
     void updateWindowing( ::fwData::Image::sptr image );
-    void updateTransfertFunction( ::fwData::Image::sptr image );
+    void updateImageTransferFunction( ::fwData::Image::sptr image );
 
     std::string m_imageRegisterId;
     vtkObject  *m_imageRegister;

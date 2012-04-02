@@ -86,9 +86,9 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     layout->addWidget( m_sliceSelectorPanel );
     layout->setContentsMargins(0,0,0,0);
 
-    this->updateImageInfos(this->getObject< ::fwData::Image >());
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
     this->updateSliceType(m_orientation);
-
 
     container->setLayout( layout );
 
@@ -113,8 +113,6 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
 
 void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     this->initialize();
 
     if( this->m_configuration->size() > 0 )
@@ -208,9 +206,7 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
 //------------------------------------------------------------------------------
 
 void SliceIndexPositionEditor::info( std::ostream &_sstream )
-{
-
-}
+{}
 
 //------------------------------------------------------------------------------
 

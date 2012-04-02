@@ -252,7 +252,7 @@ void Volume::doUpdate() throw(::fwTools::Failed)
     {
         this->buildPipeline();
         this->updateImage(image);
-        this->updateTransferFunction(image);
+        this->updateVolumeTransferFunction(image);
         this->updateWindowing(image);
     }
 }
@@ -273,12 +273,12 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
 
         if (this->upadteTFObserver(msg, this->getSptr()) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
-            this->updateTransferFunction(image);
+            this->updateVolumeTransferFunction(image);
         }
 
         if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
         {
-            this->updateTransferFunction(image);
+            this->updateVolumeTransferFunction(image);
             this->updateWindowing(image);
         }
 
@@ -359,8 +359,9 @@ void Volume::updateWindowing( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void Volume::updateTransferFunction( ::fwData::Image::sptr image )
+void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 {
+    this->updateTransferFunction(image, this->getSptr());
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", pTF);
 

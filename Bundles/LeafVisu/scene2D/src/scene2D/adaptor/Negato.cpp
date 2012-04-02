@@ -107,6 +107,7 @@ void Negato::updateFromImage( QImage * qimg )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
     const ::fwData::Image::SizeType size = image->getSize();
 
     const std::vector< double > spacing = image->getSpacing();

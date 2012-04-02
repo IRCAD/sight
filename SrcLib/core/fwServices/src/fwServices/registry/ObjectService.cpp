@@ -141,15 +141,12 @@ const ObjectService::KSContainer  & ObjectService::getKSContainer()
 std::string ObjectService::getRegistryInformation()
 {
     std::stringstream info;
-    ::fwCore::LogicStamp::LogicStampType previousKey;
+    ::fwCore::LogicStamp::LogicStampType previousKey = -1;
 
     BOOST_FOREACH( KSContainer::left_map::value_type objSrvMap, getDefault()->m_container.left)
     {
         // TODO FIXME getObject() failed if there are expired object in OSR
-        //::fwTools::Object::sptr obj = objSrvMap.second->getObject();
         ::fwCore::LogicStamp::LogicStampType key = objSrvMap.first;
-
-        //info << "Object ( uid = "<< obj->getID() <<" , classname = "<< obj->getClassname() <<" ) has "
 
         if ( previousKey != key )
         {

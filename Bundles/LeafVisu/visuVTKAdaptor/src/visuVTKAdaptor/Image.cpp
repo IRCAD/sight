@@ -116,13 +116,11 @@ void Image::doUpdate() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-
-    this->updateImageInfos(image);
     if (imageIsValid)
     {
         this->updateImage(image);
         this->buildPipeline();
-        this->updateTransfertFunction(image);
+        this->updateImageTransferFunction(image);
         this->updateWindowing(image);
         this->updateImageOpacity();
     }
@@ -141,7 +139,6 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
     {
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
-//            this->destroyPipeline();
             this->doUpdate();
 
             // Hack to force imageSlice update until it is not able to detect a new image
@@ -159,7 +156,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
 
         if (this->upadteTFObserver(msg, this->getSptr()) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
-            this->updateTransfertFunction(image);
+            this->updateImageTransferFunction(image);
         }
 
         if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
@@ -209,6 +206,7 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 {
     ::vtkIO::toVTKImage(image,m_imageData);
 
+    this->updateImageInfos(image);
     this->setVtkPipelineModified();
 }
 
@@ -224,8 +222,9 @@ void Image::updateWindowing( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void Image::updateTransfertFunction( ::fwData::Image::sptr image )
+void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
 {
+    this->updateTransferFunction(image, this->getSptr());
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     ::vtkIO::helper::TransfertFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );

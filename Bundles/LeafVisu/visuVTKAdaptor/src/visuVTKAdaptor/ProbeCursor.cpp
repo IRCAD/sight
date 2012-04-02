@@ -239,10 +239,10 @@ void ProbeCursor::buildTextActor()
 
 void ProbeCursor::doStart() throw(fwTools::Failed)
 {
-    buildTextActor();
+    this->buildTextActor();
     this->addToRenderer(m_textActor );
 
-    buildPolyData();
+    this->buildPolyData();
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,0,0);
@@ -257,7 +257,6 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
     observer->setPicker(this->getPicker());
     observer->setPriority(  m_priority );
 
-
     m_vtkObserver = observer;
 
     this->getInteractor()->AddObserver(START_PROBE_EVENT, m_vtkObserver, m_priority);
@@ -265,8 +264,6 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
-
-
 }
 
 //------------------------------------------------------------------------------
@@ -279,7 +276,6 @@ void ProbeCursor::doUpdate() throw(fwTools::Failed)
 
 void ProbeCursor::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
 }
@@ -290,7 +286,6 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
-//  delete m_vtkObserver;
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }
@@ -299,8 +294,6 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
 
 void ProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -382,7 +375,6 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
     {
         if ( probeSlice[dim]==sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
         {
-            //setOrientation( (dim==2?2:(dim+1)%2) ); // KEEP Z but swap X,Y
             this->setOrientation(dim);
         }
         probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);

@@ -208,9 +208,10 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
-    this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
     if(imageIsValid)
     {
+        this->updateImageInfos(image);
         if(m_autoWindowing)
         {
             double min, max;
@@ -229,7 +230,6 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 
 void WindowLevel::swapping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->removeTFObserver();
     this->updating();
     this->installTFObserver( this->getSptr() );
@@ -246,6 +246,7 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools
     if (imageIsValid)
     {
         this->updateImageInfos(image);
+        this->updateTransferFunction(image, this->getSptr());
         this->upadteTFObserver(msg, this->getSptr());
         if(m_autoWindowing && msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
         {

@@ -41,7 +41,7 @@ void IXMLParser::updating() throw(::fwTools::Failed)
 //            assert( (*configEltIter)->hasAttribute("id") ) ;
 //            std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
 //            assert( !this->getObject()->getField(_id) );
-//            this->getObject()->setFieldSingleElement(_id,localObj);
+//            this->getObject()->setField(_id,localObj);
 //        }
     }
 }

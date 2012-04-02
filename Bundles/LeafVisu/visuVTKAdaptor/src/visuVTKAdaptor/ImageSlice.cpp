@@ -140,7 +140,7 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr         image = this->getCtrlImage();
+    ::fwData::Image::sptr image = this->getCtrlImage();
 
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -255,16 +255,12 @@ void ImageSlice::configuring() throw(fwTools::Failed)
     }
 }
 
-
 //------------------------------------------------------------------------------
-
 
 void ImageSlice::updateImage( ::fwData::Image::sptr image  )
 {
-    SLM_TRACE_FUNC();
     SLM_ASSERT("Null control image", !m_ctrlImage.expired());
-    this->updateImageInfos(m_ctrlImage.lock());
-
+    this->updateImageInfos(image);
     this->setVtkPipelineModified();
 }
 
@@ -272,7 +268,6 @@ void ImageSlice::updateImage( ::fwData::Image::sptr image  )
 
 void ImageSlice::updateSliceIndex( ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
     unsigned int axialIndex    = m_axialIndex->value();
     unsigned int frontalIndex  = m_frontalIndex->value();
     unsigned int sagittalIndex = m_sagittalIndex->value();

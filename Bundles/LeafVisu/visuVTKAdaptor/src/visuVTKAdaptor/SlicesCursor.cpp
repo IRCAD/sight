@@ -6,7 +6,6 @@
 
 #include <boost/assign/list_of.hpp>
 
-#include "visuVTKAdaptor/SlicesCursor.hpp"
 
 
 #include <fwServices/macros.hpp>
@@ -30,6 +29,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/String.hpp>
+
+#include "visuVTKAdaptor/SlicesCursor.hpp"
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image ) ;
 
@@ -100,11 +101,10 @@ void SlicesCursor::reconfiguring() throw(fwTools::Failed)
 void SlicesCursor::doStart() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    //setOrientation( static_cast< Orientation >( 0 ) );
-    buildPolyData();
-    buildColorAttribute();
+    this->buildPolyData();
+    this->buildColorAttribute();
     this->updateImageInfos(image);
-    updateColors();
+    this->updateColors();
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     if(!this->getTransformId().empty())
