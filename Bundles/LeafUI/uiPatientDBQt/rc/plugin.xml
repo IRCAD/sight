@@ -17,5 +17,11 @@
         <service>::uiPatientDB::PatientDBInfoEditor</service>
         <object>::fwData::PatientDB</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IDialogEditor</type>
+        <service>::uiPatientDBQt::SPatientDBInserter</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
         
 </plugin>
