@@ -211,11 +211,14 @@ protected:
     /// Get the current transfer function selection
     FWCOMED_API ::fwData::Composite::sptr getTransferFunctionSelection() const;
 
-    /// Update the image information (slice index, min/max, TF,...)
+    /// Update the image information (slice index, min/max,...)
     FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
 
+    /// Update the transfer function information
+    FWCOMED_API void updateTransferFunction( ::fwData::Image::sptr image, ::fwServices::IService::sptr srv );
+
     /// Return the image
-    ::fwData::Image::sptr getImage();
+    FWCOMED_API ::fwData::Image::sptr getImage();
 
     /// Image orientation
     Orientation m_orientation;

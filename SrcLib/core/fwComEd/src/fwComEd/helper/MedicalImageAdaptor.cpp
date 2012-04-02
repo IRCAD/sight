@@ -21,6 +21,7 @@
 
 #include "fwComEd/helper/MedicalImageAdaptor.hpp"
 #include "fwComEd/helper/Image.hpp"
+#include "fwComEd/helper/Composite.hpp"
 
 namespace fwComEd
 {
@@ -239,16 +240,27 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
+void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
 {
     m_weakImage = image;
     m_axialIndex    = image->setDefaultField(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
     m_frontalIndex  = image->setDefaultField(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
     m_sagittalIndex = image->setDefaultField(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
+}
 
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, ::fwServices::IService::sptr srv )
+{
     // Set TF data if not still set
     if ( m_tfSelection.expired() )
     {
+        const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
+        const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+
+        ::fwComEd::helper::Image helper(image);
+        helper.createTransferFunctionPool(srv); // do nothing if image tf pool already exist
+
         if ( ! m_tfSelectionFwID.empty() )
         {
             ::fwData::Composite::sptr tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
@@ -256,28 +268,22 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image  )
             OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
             if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
             {
-                ::fwData::TransferFunction::NewSptr tf;
-                tf->setLevel(100);
-                tf->setWindow(200);
-                tf->setName( m_selectedTFKey );
-                tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
-                tf->setIsClamped(true);
-                tf->addTFColor( 0   , ::fwData::TransferFunction::TFColor(1.0,0.0,0.0,0.0));
-                tf->addTFColor( 1   , ::fwData::TransferFunction::TFColor(0.0,1.0,0.0,1.0));
-                tf->addTFColor( 2   , ::fwData::TransferFunction::TFColor(0.0,0.0,1.0,1.0));
-                tf->addTFColor(200  , ::fwData::TransferFunction::TFColor(1.0,1.0,0.0,1.0));
+                ::fwData::Composite::sptr tfPool;
+                tfPool = image->getField< ::fwData::Composite >(poolFieldName);
 
-                (*tfSelection)[m_selectedTFKey] = tf;
+                ::fwData::TransferFunction::sptr defaultTF;
+                defaultTF = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer()[defaultTFName]);
+
+                ::fwComEd::helper::Composite compositeHelper(tfSelection);
+                compositeHelper.add(m_selectedTFKey, defaultTF);
+                compositeHelper.notify(srv);
             }
             m_tfSelection = tfSelection;
         }
         else
         {
-            ::fwComEd::helper::Image helper ( image );
-            helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
-
-            m_selectedTFKey = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
-            m_tfSelection = image->getField< ::fwData::Composite >( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+            m_selectedTFKey = defaultTFName;
+            m_tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
         }
     }
 }
