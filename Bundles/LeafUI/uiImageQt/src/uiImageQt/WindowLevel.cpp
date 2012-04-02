@@ -339,7 +339,7 @@ void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 
 void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 {
-    WindowLevelMinMaxType wl    = getImageWindowMinMax();
+    WindowLevelMinMaxType wl = this->getImageWindowMinMax();
     double min = m_widgetDynamicRangeMin;
     double max = m_widgetDynamicRangeWidth + min;
     int index = action->data().toInt();
@@ -412,7 +412,6 @@ void  WindowLevel::notifyWindowLevelCallback()
 
 void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 {
-
     m_valueTextMin->setText(QString("%1").arg(_imageMin));
     m_valueTextMax->setText(QString("%1").arg(_imageMax));
 }

@@ -35,7 +35,6 @@ TransferFunction::TransferFunction()
 
 void TransferFunction::initTF()
 {
-
     m_attrLevel = 0;
     m_attrWindow = 100;
 
@@ -45,7 +44,6 @@ void TransferFunction::initTF()
     m_attrIsClamped = true;
 
     m_tfData.clear();
-
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +125,8 @@ TransferFunction::getWLMinMax() const
 void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
 {
     m_attrWindow = minMax.second - minMax.first;
-    m_attrLevel = m_attrWindow/2.f;
+    double halfWindow = m_attrWindow/2.f;
+    m_attrLevel = halfWindow + minMax.first;
 }
 
 //------------------------------------------------------------------------------

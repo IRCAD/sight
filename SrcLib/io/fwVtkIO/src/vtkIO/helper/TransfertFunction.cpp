@@ -19,7 +19,7 @@ void TransfertFunction::toVtkLookupTable(
         bool allowTransparency,
         unsigned int size )
 {
-    SLM_WARN_IF( "Sorry, This transfert function conversion not managed clamped TF.", tf->getIsClamped() );
+    SLM_WARN_IF( "Sorry, This transfer function conversion not managed clamped TF.", tf->getIsClamped() );
 
     // Configures basic parameters
     lt->SetNumberOfTableValues( size );
