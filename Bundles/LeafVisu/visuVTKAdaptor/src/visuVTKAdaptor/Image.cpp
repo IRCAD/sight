@@ -116,6 +116,8 @@ void Image::doUpdate() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
+
+    this->updateImageInfos(image);
     if (imageIsValid)
     {
         this->updateImage(image);
@@ -207,7 +209,6 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 {
     ::vtkIO::toVTKImage(image,m_imageData);
 
-    this->updateImageInfos(image);
     this->setVtkPipelineModified();
 }
 

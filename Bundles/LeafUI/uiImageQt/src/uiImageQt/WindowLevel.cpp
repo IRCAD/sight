@@ -208,9 +208,9 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
+    this->updateImageInfos(image);
     if(imageIsValid)
     {
-        this->updateImageInfos(image);
         if(m_autoWindowing)
         {
             double min, max;
@@ -245,8 +245,8 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     if (imageIsValid)
     {
-        this->upadteTFObserver(msg, this->getSptr());
         this->updateImageInfos(image);
+        this->upadteTFObserver(msg, this->getSptr());
         if(m_autoWindowing && msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
         {
             double min, max;
