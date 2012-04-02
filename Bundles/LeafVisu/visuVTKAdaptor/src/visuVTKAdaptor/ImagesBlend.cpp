@@ -160,8 +160,14 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
         {
             info->m_useTFAlfa = element->getAttributeValue("tfalpha") == "yes";
         }
-
-        info->parseTFConfig( element );
+        if(element->hasAttribute("selectedTFKey") )
+        {
+            info->m_selectedTFKey = element->getAttributeValue("selectedTFKey");
+        }
+        if(element->hasAttribute("tfSelectionFwID") )
+        {
+            info->m_tfSelectionFwID = element->getAttributeValue("tfSelectionFwID");
+        }
 
         typedef std::pair< std::string, std::string > ImagesIdPair;
         m_imageIds.push_back(objectId);
@@ -252,8 +258,8 @@ void ImagesBlend::addImageAdaptors()
                 IA->setVtkImageRegister(m_imageBlend);
                 IA->setImageOpacity(info->m_imageOpacity);
                 IA->setAllowAlphaInTF(info->m_useTFAlfa);
-                IA->setSelectedTFKey( info->getSelectedTFKey() );
-                IA->setTFSelectionFwID( info->getTFSelectionFwID() );
+                IA->setSelectedTFKey( info->m_selectedTFKey );
+                IA->setTFSelectionFwID( info->m_tfSelectionFwID );
 
                 m_registeredImages[img->getID()] = imageAdaptor;
                 this->registerService(imageAdaptor);

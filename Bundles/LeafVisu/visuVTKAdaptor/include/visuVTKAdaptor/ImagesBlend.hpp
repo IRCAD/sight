@@ -47,7 +47,7 @@ public:
 
 protected :
 
-    class ImageInfo : public ::fwComEd::helper::MedicalImageAdaptor
+    class ImageInfo
     {
 
     public:
@@ -58,6 +58,8 @@ protected :
 
         bool   m_useTFAlfa;
         double m_imageOpacity;
+        std::string m_tfSelectionFwID;
+        std::string m_selectedTFKey;
 
         ::fwServices::IService::wptr m_comChannel;
     };
