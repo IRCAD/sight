@@ -212,7 +212,14 @@ bool ImagesBlend::checkImageInformations()
                 }
                 else
                 {
-                    if (size != img->getSize() || spacing != img->getSpacing() || origin != img->getOrigin())
+                    double epsilon = 0.00001;
+                    if (size != img->getSize() ||
+                          !((spacing[0] < img->getSpacing()[0] + epsilon && spacing[0] > img->getSpacing()[0] - epsilon) ||
+                            (spacing[1] < img->getSpacing()[1] + epsilon && spacing[1] > img->getSpacing()[1] - epsilon) ||
+                            (spacing[2] < img->getSpacing()[2] + epsilon && spacing[2] > img->getSpacing()[2] - epsilon) ||
+                            (origin[0] < img->getOrigin()[0] + epsilon && origin[0] > img->getOrigin()[0] - epsilon) ||
+                            (origin[1] < img->getOrigin()[1] + epsilon && origin[1] > img->getOrigin()[1] - epsilon) ||
+                            (origin[2] < img->getOrigin()[2] + epsilon && origin[2] > img->getOrigin()[2] - epsilon) ) )
                     {
                         OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
                         OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
