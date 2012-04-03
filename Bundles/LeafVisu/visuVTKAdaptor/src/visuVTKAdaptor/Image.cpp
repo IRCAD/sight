@@ -81,9 +81,6 @@ Image::~Image() throw()
 
 void Image::doStart() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    OSLM_TRACE("starting " << this->getName());
-
     this->doUpdate();
     this->installTFObserver( this->getSptr() );
 }
@@ -92,8 +89,6 @@ void Image::doStart() throw(fwTools::Failed)
 
 void Image::doStop() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     this->removeTFObserver();
     this->destroyPipeline();
 }
@@ -102,9 +97,8 @@ void Image::doStop() throw(fwTools::Failed)
 
 void Image::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->removeTFObserver();
-    doUpdate();
+    this->doUpdate();
     this->installTFObserver( this->getSptr() );
 }
 
@@ -112,7 +106,6 @@ void Image::doSwap() throw(fwTools::Failed)
 
 void Image::doUpdate() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -124,14 +117,16 @@ void Image::doUpdate() throw(::fwTools::Failed)
         this->updateWindowing(image);
         this->updateImageOpacity();
     }
+    else
+    {
+        this->updateTransferFunction(image, this->getSptr());
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -243,7 +238,6 @@ void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
 
 void Image::updateImageOpacity()
 {
-    SLM_TRACE_FUNC();
     if (m_imagePortId>= 0)
     {
         ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
