@@ -43,19 +43,10 @@ void List::deepCopy( List::csptr _source )
 {
     this->fieldDeepCopy( _source );
 
-    this->m_attrContainer.clear();
-
-    for(    List::const_iterator iter = _source->begin();
-            iter != _source->end();
-            ++iter )
-    {
-        ::fwData::Object::sptr newObj = ::fwData::Factory::New( (*iter)->getClassname() );
-        newObj->deepCopy( *iter );
-        this->m_attrContainer.push_back( newObj );
-    }
+    m_attrContainer.clear();
     std::transform(
             _source->begin(), _source->end(),
-            this->begin(),
+            std::back_inserter(m_attrContainer),
             &::fwData::Object::copy< ValueType::element_type >
     );
 }

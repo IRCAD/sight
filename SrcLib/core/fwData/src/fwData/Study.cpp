@@ -62,6 +62,7 @@ void Study::deepCopy( Study::csptr _source )
     m_time = _source->m_time;
     m_description = _source->m_description;
     m_attrAcquisitions.clear();
+    m_attrAcquisitions.resize(_source->m_attrAcquisitions.size());
     std::transform(_source->m_attrAcquisitions.begin(), _source->m_attrAcquisitions.end(),
                    m_attrAcquisitions.begin(),
                    &::fwData::Object::copy< AcquisitionContainerType::value_type::element_type >

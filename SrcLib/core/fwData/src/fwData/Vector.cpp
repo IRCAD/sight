@@ -35,8 +35,8 @@ void Vector::shallowCopy( Vector::csptr _source )
 void Vector::deepCopy( Vector::csptr source )
 {
     this->fieldDeepCopy( source );
-    this->m_attrContainer.clear();
-    this->m_attrContainer.reserve(source->m_attrContainer.size());
+    m_attrContainer.clear();
+    m_attrContainer.resize(source->m_attrContainer.size());
     std::transform(
             source->begin(), source->end(),
             this->begin(),
