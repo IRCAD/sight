@@ -214,6 +214,14 @@ bool ImagesBlend::checkImageInformations()
                 {
                     if (size != img->getSize() || spacing != img->getSpacing() || origin != img->getOrigin())
                     {
+                        OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
+                        OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
+                        OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
+
+                        OSLM_ERROR("imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<< img->getSize()[2] );
+                        OSLM_ERROR("imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<< img->getSpacing()[2] );
+                        OSLM_ERROR("imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<< img->getOrigin()[2] );
+
                         haveSameInfo = false;
                         std::string errorMsg = "Warning : images in blend have not the same";
                         errorMsg += (size != img->getSize())?" size":"";
