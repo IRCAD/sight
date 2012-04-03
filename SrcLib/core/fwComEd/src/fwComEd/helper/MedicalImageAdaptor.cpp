@@ -255,11 +255,6 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, :
     // Set TF data if not still set
     if ( m_tfSelection.expired() )
     {
-        const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
-        const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
-
-        ::fwComEd::helper::Image helper(image);
-        helper.createTransferFunctionPool(srv); // do nothing if image tf pool already exist
 
         if ( ! m_tfSelectionFwID.empty() )
         {
@@ -268,20 +263,29 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, :
             OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
             if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
             {
-                ::fwData::Composite::sptr tfPool;
-                tfPool = image->getField< ::fwData::Composite >(poolFieldName);
-
-                ::fwData::TransferFunction::sptr defaultTF;
-                defaultTF = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer()[defaultTFName]);
+                ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
+                if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+                {
+                    double min, max;
+                    ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+                    ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+                    tfGreyLevel->setWLMinMax(wlMinMax);
+                }
 
                 ::fwComEd::helper::Composite compositeHelper(tfSelection);
-                compositeHelper.add(m_selectedTFKey, defaultTF);
+                compositeHelper.add(m_selectedTFKey, tfGreyLevel);
                 compositeHelper.notify(srv);
             }
             m_tfSelection = tfSelection;
         }
         else
         {
+            const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
+            const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+
+            ::fwComEd::helper::Image helper(image);
+            helper.createTransferFunctionPool(srv); // do nothing if image tf pool already exist
+
             m_selectedTFKey = defaultTFName;
             m_tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
         }
