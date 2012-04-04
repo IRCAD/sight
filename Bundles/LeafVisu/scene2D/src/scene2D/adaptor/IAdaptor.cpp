@@ -19,14 +19,12 @@ namespace adaptor
 
 
 IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 
 IAdaptor::~IAdaptor() throw()
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -52,7 +50,7 @@ float IAdaptor::getZValue()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::setScene2DRender( SPTR(::scene2D::Render) _scene2DRender)
+void IAdaptor::setScene2DRender( ::scene2D::Render::sptr _scene2DRender)
 {
     SLM_ASSERT("Service not instanced", _scene2DRender);
     SLM_ASSERT("Adaptor is already started", this->isStopped() ) ;
@@ -61,7 +59,7 @@ void IAdaptor::setScene2DRender( SPTR(::scene2D::Render) _scene2DRender)
 
 //-----------------------------------------------------------------------------
 
-SPTR(::scene2D::Render) IAdaptor::getScene2DRender()
+::scene2D::Render::sptr IAdaptor::getScene2DRender()
 {
     return m_scene2DRender.lock();
 }
@@ -97,8 +95,7 @@ IAdaptor::Scene2DRatio IAdaptor::getRatio()
 
 //-----------------------------------------------------------------------------
 
-std::pair< double , double > IAdaptor::mapAdaptorToScene(
-        std::pair< double , double > _xy , SPTR(::scene2D::data::Axis) _xAxis, SPTR(::scene2D::data::Axis) _yAxis )
+IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis )
 {
     double x, y;
 
@@ -123,7 +120,7 @@ std::pair< double , double > IAdaptor::mapAdaptorToScene(
 
     if (_yAxis->getScaleType() == "LOG")
     {
-        // Logarithme 10 cannot get negative values
+        // Logarithm 10 cannot get negative values
         if (_xy.second <= 0)
         {
             y = 0;
@@ -140,15 +137,14 @@ std::pair< double , double > IAdaptor::mapAdaptorToScene(
         y = _yAxis->getScale() * _xy.second;
     }
 
-    return std::pair < double , double >( x , y );
+    return Point2DType( x , y );
 }
 
 //-----------------------------------------------------------------------------
 
-std::pair< double , double > IAdaptor::mapSceneToAdaptor(
-        std::pair< double , double > _xy , SPTR(::scene2D::data::Axis) _xAxis, SPTR(::scene2D::data::Axis) _yAxis )
+IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis )
 {
-    // Do the reverse opration of the mapAdaptorToScene function
+    // Do the reverse operation of the mapAdaptorToScene function
     double x, y;
 
     if (_xAxis->getScaleType() == "LOG")
@@ -169,7 +165,7 @@ std::pair< double , double > IAdaptor::mapSceneToAdaptor(
         y = _xy.second / _yAxis->getScale();
     }
 
-    return std::pair < double , double >( x , y );
+    return Point2DType( x , y );
 }
 
 //-----------------------------------------------------------------------------
@@ -286,14 +282,13 @@ void IAdaptor::stopping() throw ( ::fwTools::Failed )
 
     m_xAxis.reset();
     m_yAxis.reset();
-
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(::fwData::Object) IAdaptor::getRegisteredObject(::scene2D::Render::ObjectIDType _objectId)
+::fwData::Object::sptr IAdaptor::getRegisteredObject(::scene2D::Render::ObjectIDType _objectId)
 {
-    SPTR(::fwData::Object) obj;
+    ::fwData::Object::sptr obj;
     if (!_objectId.empty())
     {
         // Get an object from an id
@@ -305,7 +300,7 @@ SPTR(::fwData::Object) IAdaptor::getRegisteredObject(::scene2D::Render::ObjectID
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::processInteraction( SPTR(::scene2D::data::Event) _event )
+void IAdaptor::processInteraction( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
 }

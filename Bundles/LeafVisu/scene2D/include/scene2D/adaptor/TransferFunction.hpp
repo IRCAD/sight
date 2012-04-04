@@ -118,35 +118,29 @@ private:
     SCENE2D_API void updateImageTF();
 
     // Open a color dialog and change the selected tf point color
-    SCENE2D_API void doubleClickEvent(
-            std::vector< QGraphicsEllipseItem* >::iterator _circleIt,
-            ::fwData::TransferFunction::TFDataType::iterator _TFPointIt);
+    SCENE2D_API void doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor);
 
     // Store the circle selected and its coordinates, and set its outline yellow
-    SCENE2D_API void leftButtonEvent(
-            std::vector< QGraphicsEllipseItem* >::iterator _circleIt, SPTR(::scene2D::data::Event) _event);
+    SCENE2D_API void leftButtonEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event);
 
     // Check if the mouse is out of bounds, as the case, move the circle on x and y, x or y, destroy the related
     // point in the tf points map, create a new one with the new coord as key and alpha, rescale the tf map
     // to 0-1 and update the image tf.
-    SCENE2D_API void mouseMoveEvent(
-            std::vector< QGraphicsEllipseItem* >::iterator _circleIt,
-            ::fwData::TransferFunction::TFDataType::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event);
+    SCENE2D_API void mouseMoveEvent(QGraphicsEllipseItem* circle,
+            ::fwData::TransferFunction::TFValueType tfPoint, ::scene2D::data::Event::sptr _event);
 
     // Reset the circle pen to the selected circle
-    SCENE2D_API void mouseButtonReleaseEvent(
-            std::vector< QGraphicsEllipseItem* >::iterator _circleIt, SPTR(::scene2D::data::Event) _event);
+    SCENE2D_API void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event);
 
     // Erase the selected point
-    SCENE2D_API void rightButtonEvent(
-            ::fwData::TransferFunction::TFDataType::iterator _TFPointIt, SPTR(::scene2D::data::Event) _event);
+    SCENE2D_API void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint, ::scene2D::data::Event::sptr _event);
 
     // Create a new point without modifying the TF (placed between the 2 encompassing points with linear
     // interpolation)
-    SCENE2D_API void doubleClickEvent( SPTR(::scene2D::data::Event) _event);
+    SCENE2D_API void doubleClickEvent( ::scene2D::data::Event::sptr _event);
 
     /// Return the x coordinate of the center of the circle in a 0-1 scale (for storage in m_TFPoints).
-    SCENE2D_API double pointValue(std::vector< QGraphicsEllipseItem* >::iterator _circleIt);
+    SCENE2D_API double pointValue(QGraphicsEllipseItem* circle);
 
     /// If the min and max values in m_TFPoints are no longer 0 and 1, recalculate the window, the level
     //  and modify the values to get a 0-1 scale again.

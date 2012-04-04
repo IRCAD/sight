@@ -26,6 +26,9 @@ class SCENE2D_CLASS_API IAdaptor : public ::fwServices::IService
 
 public:
 
+    // Point2D coordinate <X, Y>
+    typedef std::pair< double, double > Point2DType;
+
     // <width, height>
     typedef std::pair<float, float> ViewSizeRatio;
 
@@ -34,9 +37,9 @@ public:
 
     // <width, height>
     typedef std::pair<float, float> Scene2DRatio;
- 
+
     fwCoreServiceClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) ) ;
-    
+
     /// Set the zValue.
     SCENE2D_API void setZValue(float _zValue);
 
@@ -44,16 +47,16 @@ public:
     SCENE2D_API float getZValue();
 
     /// Set the render that manage the IAdaptor.
-    SCENE2D_API void setScene2DRender( SPTR(::scene2D::Render) _scene2DRender);
+    SCENE2D_API void setScene2DRender( ::scene2D::Render::sptr _scene2DRender);
 
     /// Get the render that manage the IAdaptor.
     SCENE2D_API SPTR(::scene2D::Render) getScene2DRender();
 
     /// Get the object associated to the IAdaptor.
-    SCENE2D_API SPTR(::fwData::Object) getRegisteredObject(::scene2D::Render::ObjectIDType _objectId);
+    SCENE2D_API ::fwData::Object::sptr getRegisteredObject(::scene2D::Render::ObjectIDType _objectId);
 
-    /// Interact with the mouse events catched on the IAdaptor (virtual function, its behaviour is only defined in the specific adaptors).
-    SCENE2D_API virtual void processInteraction( SPTR(::scene2D::data::Event) _event );
+    /// Interact with the mouse events catched on the IAdaptor (virtual function, its behavior is only defined in the specific adaptors).
+    SCENE2D_API virtual void processInteraction( ::scene2D::data::Event::sptr _event );
 
 
 protected:
@@ -71,16 +74,16 @@ protected:
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 
     /// Call doStart() function.
-    SCENE2D_API void starting()    throw ( ::fwTools::Failed );
+    SCENE2D_API void starting() throw ( ::fwTools::Failed );
 
     /// Call DoUpdate() function.
-    SCENE2D_API void updating()    throw ( ::fwTools::Failed );
+    SCENE2D_API void updating() throw ( ::fwTools::Failed );
 
     /// Call DoUpdate(_msg) function.
     SCENE2D_API void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Start and stop the IAdaptor.
-    SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
+    SCENE2D_API void swapping() throw ( ::fwTools::Failed );
 
     /// Call doStop() function and reset the axis.
     SCENE2D_API void stopping()    throw ( ::fwTools::Failed );
@@ -102,13 +105,11 @@ protected:
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     //  coordinates to scene coordinates
-    SCENE2D_API std::pair< double , double > mapAdaptorToScene(
-            std::pair< double , double > _xy , SPTR(::scene2D::data::Axis) _xAxis, SPTR(::scene2D::data::Axis) _yAxis );
+    SCENE2D_API Point2DType mapAdaptorToScene(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis);
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from scene
     //  coordinates to adaptor coordinates
-    SCENE2D_API std::pair< double , double > mapSceneToAdaptor(
-            std::pair< double , double > _xy , SPTR(::scene2D::data::Axis) _xAxis, SPTR(::scene2D::data::Axis) _yAxis );
+    SCENE2D_API Point2DType mapSceneToAdaptor(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis);
 
     /// Return the ratio between view's initial size and its current size
     SCENE2D_API ViewSizeRatio getViewSizeRatio();
@@ -149,7 +150,7 @@ protected:
 private:
 
     /// The render that manage the IAdaptor.
-    WPTR(::scene2D::Render) m_scene2DRender;
+    ::scene2D::Render::wptr m_scene2DRender;
 
 };
 

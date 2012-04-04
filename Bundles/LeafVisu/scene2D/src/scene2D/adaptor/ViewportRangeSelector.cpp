@@ -321,11 +321,11 @@ void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, dou
 
     ::scene2D::data::Viewport::sptr viewport = this->getObject< ::scene2D::data::Viewport>();
 
-    std::pair< double, double > fromSceneCoord = this->mapSceneToAdaptor( std::pair< double, double >( _x, _y ), m_xAxis, m_yAxis );
+    Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), m_xAxis, m_yAxis );
     viewport->setX( fromSceneCoord.first );
     viewport->setY( fromSceneCoord.second );
 
-    std::pair<double, double> pair = this->mapSceneToAdaptor(std::pair<double, double>(_width, _height), m_xAxis, m_yAxis);
+    Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), m_xAxis, m_yAxis);
     viewport->setWidth( pair.first );
     viewport->setHeight( this->getScene2DRender()->getViewport()->getHeight() );
 }
@@ -334,8 +334,8 @@ void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, dou
 
 bool ViewportRangeSelector::mouseOnShutterMiddle( ::scene2D::data::Coord _coord)
 {
-    std::pair< double, double > shutterCoordPair;
-    shutterCoordPair = this->mapAdaptorToScene( std::pair< double, double >( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
+    Point2DType shutterCoordPair;
+    shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
 
     return ( _coord.getX() > m_shutter->rect().x() + m_clickCatchRange )
         && ( _coord.getX() < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange );
