@@ -254,7 +254,8 @@ void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr 
         OSLM_ASSERT("ObjectType "<<objectType<<" does not match ObjectType in Composite "<<object->getClassname(),
                 objectType == object->getClassname());
         SubServicesVecType subVecSrv;
-        BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+        std::vector< ConfigurationType > confVec = conf->find("service");
+        BOOST_FOREACH( ConfigurationType cfg, confVec )
         {
             ::fwServices::IService::sptr srv = this->add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
@@ -299,7 +300,8 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr 
 {
     if(m_objectsSubServices.find(objectId) != m_objectsSubServices.end())
     {
-        BOOST_FOREACH( ConfigurationType cfg, m_managerConfiguration->find("object", "id", objectId))
+        std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
+        BOOST_FOREACH( ConfigurationType cfg, confVec )
         {
             SubServicesVecType subServices = m_objectsSubServices[objectId];
             BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
@@ -404,7 +406,8 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
 
         ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
         SubServicesVecType subVecSrv;
-        BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+        std::vector < ConfigurationType > confVec = conf->find("service");
+        BOOST_FOREACH( ConfigurationType cfg, confVec )
         {
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
