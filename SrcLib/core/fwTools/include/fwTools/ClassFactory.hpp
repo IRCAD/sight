@@ -127,9 +127,9 @@ public:
                 const ConcreteFactory &concreteFactory =  dynamic_cast< const ConcreteFactory &>(other);
                 const Key &otherKey = concreteFactory.keyValue();
 #ifdef CLASSFACTORYORDERDEBUG
-                SLM_TRACE("keyLower" <<  isMyKeyLower(otherKey) );
+                SLM_TRACE("keyLower" <<  this->isMyKeyLower(otherKey) );
 #endif
-                return isMyKeyLower(otherKey);
+                return this->isMyKeyLower(otherKey);
             }
 #ifdef CLASSFACTORYORDERDEBUG
             OSLM_TRACE("return false");
