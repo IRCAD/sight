@@ -158,7 +158,8 @@ void SimpleSwapperSrv::configuring()  throw ( ::fwTools::Failed )
     SLM_ASSERT("Missing <config> tag!", !vectConfig.empty());
     m_managerConfiguration = vectConfig.at(0);
     m_objectsSubServices.clear();
-    BOOST_FOREACH( ConfigurationType conf, m_managerConfiguration->find("object"))
+    std::vector < ConfigurationType > convVec = m_managerConfiguration->find("object");
+    BOOST_FOREACH( ConfigurationType conf, convVec)
     {
         SLM_ASSERT("'dummyObjectUID' attribute required", conf->hasAttribute("dummyObjectUID"));
         const std::string objectId      = conf->getAttributeValue("id");
@@ -168,7 +169,8 @@ void SimpleSwapperSrv::configuring()  throw ( ::fwTools::Failed )
                 ::fwTools::fwID::exist(dummyObjectUID ));
 
         SubServicesVecType subVecSrv;
-        BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+        std::vector< ConfigurationType > confVec = conf->find("service");
+        BOOST_FOREACH( ConfigurationType cfg, confVec )
         {
             SPTR(SubService) subSrv = SPTR(SubService)( new SubService());
             subSrv->m_dummyObjectUID = dummyObjectUID;

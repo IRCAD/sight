@@ -13,6 +13,7 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
+#include <fwData/Composite.hpp>
 
 #include "fwServices/registry/AppConfig.hpp"
 
