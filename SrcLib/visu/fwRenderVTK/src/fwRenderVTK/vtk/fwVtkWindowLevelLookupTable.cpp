@@ -97,24 +97,24 @@ void fwVtkWindowLevelLookupTable::PrintSelf(ostream& os, vtkIndent indent)
 
     os << indent << "Window: " << this->Window << "\n";
     os << indent << "Level: " << this->Level << "\n";
-    os << indent << "InverseVideo: " 
+    os << indent << "InverseVideo: "
         << (this->InverseVideo ? "On\n" : "Off\n");
     os << indent << "LeftClampValue : ("
         << this->LeftClampValue[0] << ", "
         << this->LeftClampValue[1] << ", "
         << this->LeftClampValue[2] << ", "
-        << this->LeftClampValue[3] << ")\n";  
+        << this->LeftClampValue[3] << ")\n";
     os << indent << "RightClampValue : ("
         << this->RightClampValue[0] << ", "
         << this->RightClampValue[1] << ", "
         << this->RightClampValue[2] << ", "
-        << this->RightClampValue[3] << ")\n";  
+        << this->RightClampValue[3] << ")\n";
 }
 
 
 //----------------------------------------------------------------------------
 // Apply log to value, with appropriate constraints.
-inline double vtkApplyLogScale(double v, const double range[2], 
+inline double vtkApplyLogScale(double v, const double range[2],
         const double logRange[2])
 {
     // is the range set for negative numbers?
@@ -228,8 +228,8 @@ void fwVtkWindowLevelLookupTableLogRange(const double range[2], double logRange[
 // accelerate the mapping by copying the data in 32-bit chunks instead
 // of 8-bit chunks
     template<class T>
-void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *input, 
-        unsigned char *output, int length, 
+void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *input,
+        unsigned char *output, int length,
         int inIncr, int outFormat)
 {
     int i = length;
@@ -251,6 +251,7 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
         selfRightColor[c] = static_cast<unsigned char>(self->GetRightClampValue()[c]*255.0);
     }
 
+
     unsigned char *leftColor = selfLeftColor;
     unsigned char *rightColor = selfRightColor;
 
@@ -260,7 +261,7 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
         rightColor = &table[(self->GetNumberOfColors()-1) * 4];
     }
 
-    if ( (alpha=self->GetAlpha()) >= 1.0 ) //no blending required 
+    if ( (alpha=self->GetAlpha()) >= 1.0 ) //no blending required
     {
         if (self->GetScale() == VTK_SCALE_LOG10)
         {
@@ -276,24 +277,26 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             {
                 /* while this looks like the wrong scale, it is the correct scale
                  * taking into account the truncation to int that happens below. */
-                scale = (maxIndex + 1)/(logRange[1] - logRange[0]);
+                // scale = (maxIndex + 1)/(logRange[1] - logRange[0]);
+                // Fixed scale : finaly, no truncation happends below
+                scale = (maxIndex)/(logRange[1] - logRange[0]);
             }
             if (outFormat == VTK_RGBA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
                     *output++ = *cptr++;
                     *output++ = *cptr++;
                     *output++ = *cptr++;
-                    *output++ = *cptr++;     
+                    *output++ = *cptr++;
                     input += inIncr;
                 }
             }
             else if (outFormat == VTK_RGB)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
@@ -305,11 +308,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else if (outFormat == VTK_LUMINANCE_ALPHA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     *output++ = cptr[3];
                     input += inIncr;
@@ -317,11 +320,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else // outFormat == VTK_LUMINANCE
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     input += inIncr;
                 }
@@ -339,25 +342,27 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             {
                 /* while this looks like the wrong scale, it is the correct scale
                  * taking into account the truncation to int that happens below. */
-                scale = (maxIndex + 1)/(range[1] - range[0]);
+                // scale = (maxIndex + 1)/(range[1] - range[0]);
+                // Fixed scale : finaly, no truncation happends below
+                scale = (maxIndex)/(range[1] - range[0]);
             }
 
             if (outFormat == VTK_RGBA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
                     *output++ = *cptr++;
                     *output++ = *cptr++;
                     *output++ = *cptr++;
-                    *output++ = *cptr++;     
+                    *output++ = *cptr++;
                     input += inIncr;
                 }
             }
             else if (outFormat == VTK_RGB)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
@@ -369,11 +374,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else if (outFormat == VTK_LUMINANCE_ALPHA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     *output++ = cptr[3];
                     input += inIncr;
@@ -381,11 +386,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else // outFormat == VTK_LUMINANCE
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     input += inIncr;
                 }
@@ -409,11 +414,13 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             {
                 /* while this looks like the wrong scale, it is the correct scale
                  * taking into account the truncation to int that happens below. */
-                scale = (maxIndex + 1)/(logRange[1] - logRange[0]);
+                // scale = (maxIndex + 1)/(logRange[1] - logRange[0]);
+                // Fixed scale : finaly, no truncation happends below
+                scale = (maxIndex)/(logRange[1] - logRange[0]);
             }
             if (outFormat == VTK_RGBA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
@@ -426,7 +433,7 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else if (outFormat == VTK_RGB)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
@@ -438,11 +445,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else if (outFormat == VTK_LUMINANCE_ALPHA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     *output++ = static_cast<unsigned char>(alpha*cptr[3]);
                     input += inIncr;
@@ -450,11 +457,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else // outFormat == VTK_LUMINANCE
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     val = vtkApplyLogScale(*input, range, logRange);
                     cptr = vtkLinearLookup(val, table, maxIndex, shift, scale, nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     input += inIncr;
                 }
@@ -472,12 +479,14 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             {
                 /* while this looks like the wrong scale, it is the correct scale
                  * taking into account the truncation to int that happens below. */
-                scale = (maxIndex + 1)/(range[1] - range[0]);
+                // scale = (maxIndex + 1)/(range[1] - range[0]);
+                // Fixed scale : finaly, no truncation happends below
+                scale = (maxIndex)/(range[1] - range[0]);
             }
 
             if (outFormat == VTK_RGBA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
@@ -490,7 +499,7 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else if (outFormat == VTK_RGB)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
@@ -502,11 +511,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else if (outFormat == VTK_LUMINANCE_ALPHA)
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     *output++ = static_cast<unsigned char>(cptr[3]*alpha);
                     input += inIncr;
@@ -514,11 +523,11 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
             }
             else // outFormat == VTK_LUMINANCE
             {
-                while (--i >= 0) 
+                while (--i >= 0)
                 {
                     cptr = vtkLinearLookup(*input, table, maxIndex, shift, scale,
                             nanColor, leftColor, rightColor);
-                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 + 
+                    *output++ = static_cast<unsigned char>(cptr[0]*0.30 + cptr[1]*0.59 +
                             cptr[2]*0.11 + 0.5);
                     input += inIncr;
                 }
@@ -536,8 +545,8 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
 // it is only done on the first render. Colors are cached
 // for subsequent renders.
     template<class T>
-void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable *self, T *input, 
-        unsigned char *output, int length, 
+void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable *self, T *input,
+        unsigned char *output, int length,
         int inIncr, int outFormat)
 {
     double tmp, sum;
@@ -550,7 +559,7 @@ void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable *self, T *inp
         sum = 0;
         for (j = 0; j < inIncr; ++j)
         {
-            tmp = static_cast<double>(*input);  
+            tmp = static_cast<double>(*input);
             sum += (tmp * tmp);
             ++input;
         }
@@ -564,9 +573,9 @@ void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable *self, T *inp
 
 
 //----------------------------------------------------------------------------
-void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void *input, 
+void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void *input,
         unsigned char *output,
-        int inputDataType, 
+        int inputDataType,
         int numberOfValues,
         int inputIncrement,
         int outputFormat)
