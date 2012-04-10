@@ -33,9 +33,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioData::TriangularMeshReaderService , ::fwDa
 namespace ioData
 {
 
-TriangularMeshReaderService::TriangularMeshReaderService():
-        m_fsMeshPath (""),
-        m_bServiceIsConfigured(false)
+TriangularMeshReaderService::TriangularMeshReaderService()
 {
 }
 
@@ -64,16 +62,9 @@ TriangularMeshReaderService::~TriangularMeshReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshReaderService::configuring( ) throw(::fwTools::Failed)
+::io::IOPathType TriangularMeshReaderService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        OSLM_INFO( "TriangularMeshReaderService::configure filename: " << filename );
-        m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = true;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -93,10 +84,13 @@ void TriangularMeshReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsMeshPath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsMeshPath.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -105,7 +99,7 @@ void TriangularMeshReaderService::configureWithIHM()
 void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if(m_bServiceIsConfigured)
+    if(this->hasLocationDefined())
     {
         // Retrieve object
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
@@ -113,7 +107,7 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
 
         ::fwDataIO::reader::TriangularMeshReader reader;
         reader.setObject( mesh );
-        reader.setFile(m_fsMeshPath);
+        reader.setFile(this->getFile());
         reader.read();
 
         // Notify reading

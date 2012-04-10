@@ -1,0 +1,53 @@
+<plugin id="BeginnerTraining03">
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>BeginnerTraining03Config</id>
+        <type>standard</type>
+        <config>
+
+            <object type="::fwData::String">
+
+                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                    <gui>
+                        <frame>
+                            <name>BeginnerTraining03 App</name>
+                            <minSize width="800" height="600" />
+                        </frame>
+                    </gui>
+                    <registry>
+                        <view sid="view" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="horizontal" />
+                            <view />
+                            <view />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="myEditorA" start="yes" />
+                        <view sid="myEditorB" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="myEditorA" type="::gui::editor::IEditor" implementation="::beginnerTraining::tuto03::SStringEditor" autoComChannel="yes" />
+                <service uid="myEditorB" type="::gui::editor::IEditor" implementation="::beginnerTraining::tuto03::SStringEditor" autoComChannel="yes" />
+
+                <service uid="myReader" type="::io::IReader" implementation="::beginnerTraining::tuto03::SStringReader" autoComChannel="no">
+                    <file>Bundles/beginnerTraining_0-1/data.txt</file>
+                </service>
+
+                <start uid="myFrame" />
+                <start uid="myReader" />
+
+                <update uid="myReader" />
+
+            </object>
+
+        </config>
+    </extension>
+
+</plugin>

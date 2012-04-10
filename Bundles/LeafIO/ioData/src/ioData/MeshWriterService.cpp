@@ -27,9 +27,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh )
 namespace ioData
 {
 
-MeshWriterService::MeshWriterService():
-        m_filename (""),
-        m_bServiceIsConfigured(false)
+MeshWriterService::MeshWriterService()
 {
 }
 
@@ -57,17 +55,9 @@ MeshWriterService::~MeshWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::configuring( ) throw(::fwTools::Failed)
+::io::IOPathType MeshWriterService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        OSLM_INFO( "MeshWriterService::configure filename: " << filename );
-        m_filename = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = true;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -87,12 +77,14 @@ void MeshWriterService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_filename = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_filename.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
-
+    else
+    {
+        this->clearLocations();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +92,7 @@ void MeshWriterService::configureWithIHM()
 void MeshWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if(m_bServiceIsConfigured)
+    if(this->hasLocationDefined())
     {
         // Retrieve object
         ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
@@ -108,7 +100,7 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
 
         ::fwDataIO::writer::MeshWriter::NewSptr writer;
         writer->setObject( mesh );
-        writer->setFile(m_filename);
+        writer->setFile(this->getFile());
 
         try
         {

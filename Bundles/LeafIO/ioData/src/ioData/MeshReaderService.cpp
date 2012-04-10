@@ -33,9 +33,7 @@ REGISTER_SERVICE( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh )
 namespace ioData
 {
 
-MeshReaderService::MeshReaderService():
-        m_fsMeshPath (""),
-        m_bServiceIsConfigured(false)
+MeshReaderService::MeshReaderService()
 {
 }
 
@@ -64,16 +62,9 @@ MeshReaderService::~MeshReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::configuring( ) throw(::fwTools::Failed)
+::io::IOPathType MeshReaderService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        OSLM_INFO( "MeshReaderService::configure filename: " << filename );
-        m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = true;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -93,10 +84,13 @@ void MeshReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsMeshPath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsMeshPath.parent_path().parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -105,7 +99,7 @@ void MeshReaderService::configureWithIHM()
 void MeshReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if(m_bServiceIsConfigured)
+    if( this->hasLocationDefined() )
     {
         // Retrieve object
         ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
@@ -113,7 +107,7 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
 
         ::fwDataIO::reader::MeshReader reader;
         reader.setObject( mesh );
-        reader.setFile(m_fsMeshPath);
+        reader.setFile(this->getFile());
         reader.read();
 
         // Notify reading

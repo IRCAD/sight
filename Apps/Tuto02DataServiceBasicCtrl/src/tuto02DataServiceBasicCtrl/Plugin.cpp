@@ -45,8 +45,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     // Reader service
     m_readerSrv = ::fwServices::add(m_image, "::io::IReader", "::ioVTK::ImageReaderService");
     ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "service" );
-    ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "filename" );
-    readerFilenameCfg->setAttributeValue("id", "./TutoData/patient1.vtk");
+    ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "file" );
+    readerFilenameCfg->setValue("./TutoData/patient1.vtk");
     readerCfg->addConfigurationElement(readerFilenameCfg);
     m_readerSrv->setConfiguration( readerCfg ) ;
     m_readerSrv->configure();

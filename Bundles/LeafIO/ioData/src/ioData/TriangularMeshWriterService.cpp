@@ -31,9 +31,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwDa
 namespace ioData
 {
 
-TriangularMeshWriterService::TriangularMeshWriterService():
-        m_filename (""),
-        m_bServiceIsConfigured(false)
+TriangularMeshWriterService::TriangularMeshWriterService()
 {
 }
 
@@ -61,17 +59,9 @@ TriangularMeshWriterService::~TriangularMeshWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshWriterService::configuring( ) throw(::fwTools::Failed)
+::io::IOPathType TriangularMeshWriterService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        OSLM_INFO( "TriangularMeshWriterService::configure filename: " << filename );
-        m_filename = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = true;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -91,10 +81,13 @@ void TriangularMeshWriterService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_filename = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_filename.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 
 }
@@ -104,7 +97,7 @@ void TriangularMeshWriterService::configureWithIHM()
 void TriangularMeshWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if(m_bServiceIsConfigured)
+    if( this->hasLocationDefined() )
     {
         // Retrieve object
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
@@ -112,7 +105,7 @@ void TriangularMeshWriterService::updating() throw(::fwTools::Failed)
 
         ::fwDataIO::writer::TriangularMeshWriter writer;
         writer.setObject( mesh );
-        writer.setFile(m_filename);
+        writer.setFile(this->getFile());
         writer.write();
     }
 }

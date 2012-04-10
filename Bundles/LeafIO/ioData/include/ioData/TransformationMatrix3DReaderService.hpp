@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_TRANSFORMATIODATANMATRIX3DREADER_HPP_
-#define _IODATA_TRANSFORMATIODATANMATRIX3DREADER_HPP_
+#ifndef _IODATA_TRANSFORMATIONMATRIX3DREADER_HPP_
+#define _IODATA_TRANSFORMATIONMATRIX3DREADER_HPP_
 
 #include <boost/filesystem/path.hpp>
 
@@ -39,16 +39,6 @@ public:
     /// Super class of reader services
     typedef ::io::IReader   SuperClass;
 
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API TransformationMatrix3DReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~TransformationMatrix3DReaderService() throw() ;
-
     /** @name Specified reader service methods ( override from ::io::IReader )
      * @{
      */
@@ -67,25 +57,24 @@ public:
     IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
     /// @}
 
+    /// Return path type managed by the service, here FILE
+    IODATA_API virtual ::io::IOPathType getIOPathType() const;
+
 protected:
+
+    /**
+     * @brief   Constructor : does nothing
+     */
+    IODATA_API TransformationMatrix3DReaderService() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IODATA_API ~TransformationMatrix3DReaderService() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
      */
-
-    /**
-     * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
-     *
-     * XML configuration sample:
-     * @verbatim
-    <service type="::ioData::TransformationMatrix3DReaderService">
-        <filename>../matrix.trf</filename>
-    </service>
-     @endverbatim
-     *
-     * Configure transformation matrix filename.
-     */
-    IODATA_API virtual void configuring( ) throw(::fwTools::Failed) ;
 
     /**
      * @brief Starting method. This method is called by start() from base service ( ::fwServices::IService )
@@ -131,12 +120,8 @@ protected:
     IODATA_API virtual void info(std::ostream &_sstream ) ;
     /// @}
 
-private :
-
-    ::boost::filesystem::path m_filename;
-    bool m_bServiceIsConfigured;
 };
 
 } // namespace ioData
 
-#endif // _IODATA_TRANSFORMATIODATANMATRIX3DREADER_HPP_
+#endif // _IODATA_TRANSFORMATIONMATRIX3DREADER_HPP_

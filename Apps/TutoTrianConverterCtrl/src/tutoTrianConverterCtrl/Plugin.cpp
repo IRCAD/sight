@@ -54,7 +54,7 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
         m_mesh = ::fwData::Mesh::New();
         m_readerSrv = ::fwServices::add(m_mesh, "::io::IReader", "::ioData::MeshReaderService");
         ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "service" );
-        ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "filename" );
+        ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "file" );
         readerFilenameCfg->setValue(trianMeshPath);
         readerCfg->addConfigurationElement(readerFilenameCfg);
         m_readerSrv->setConfiguration( readerCfg ) ;
@@ -62,8 +62,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
         m_writerSrv = ::fwServices::add(m_mesh, "::io::IWriter", "::ioVTK::MeshWriterService");
         ::fwRuntime::EConfigurationElement::NewSptr writerCfg( "service" );
-        ::fwRuntime::EConfigurationElement::NewSptr writerFilenameCfg( "filename" );
-        writerFilenameCfg->setAttributeValue("id", vtkMeshPath);
+        ::fwRuntime::EConfigurationElement::NewSptr writerFilenameCfg( "file" );
+        writerFilenameCfg->setValue(vtkMeshPath);
         writerCfg->addConfigurationElement(writerFilenameCfg);
         m_writerSrv->setConfiguration( writerCfg ) ;
         m_writerSrv->configure();

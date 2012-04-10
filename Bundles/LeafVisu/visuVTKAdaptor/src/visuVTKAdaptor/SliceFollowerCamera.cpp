@@ -126,8 +126,8 @@ void SliceFollowerCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fw
     {
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
-            initializeCamera();
             this->updateImageInfos(image);
+            initializeCamera();
         }
         if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {
@@ -159,20 +159,27 @@ void SliceFollowerCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fw
 
 //------------------------------------------------------------------------------
 
-const int orientationToAxe[3] = { 2, 2, 1 };
 void SliceFollowerCamera::initializeCamera()
 {
-    double imageSize[3];
-    this->getImageSize(imageSize);
-    double size = imageSize[ orientationToAxe [m_orientation] ];
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-    double distance = (1.1 * size)
-            / ( std::tan( m_camera->GetViewAngle() * (vtkMath::DoublePi() / 180.0) ) );
+    if (imageIsValid)
+    {
+        const int orientationToAxe[3] = { 2, 2, 1 };
+        double imageSize[3];
+        this->getImageSize(imageSize);
+        int orientation = orientationToAxe [m_orientation];
+        double size = imageSize[ orientation ];
 
-    m_camera->ParallelProjectionOn();
-    setVtkPipelineModified();
+        double distance = (1.1 * size)
+                    / ( std::tan( m_camera->GetViewAngle() * (vtkMath::DoublePi() / 180.0) ) );
 
-    this->updateCamera(distance, size);
+        m_camera->ParallelProjectionOn();
+        setVtkPipelineModified();
+
+        this->updateCamera(distance, size);
+    }
 }
 
 //------------------------------------------------------------------------------

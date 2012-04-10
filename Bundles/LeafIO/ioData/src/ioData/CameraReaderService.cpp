@@ -51,21 +51,11 @@ std::vector< std::string > CameraReaderService::getSupportedExtensions()
 CameraReaderService::~CameraReaderService() throw()
 {}
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void CameraReaderService::configuring( ) throw(::fwTools::Failed)
+::io::IOPathType CameraReaderService::getIOPathType() const
 {
-    SLM_TRACE_FUNC();
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        m_fsCameraPath = ::boost::filesystem::path( filename ) ;
-    }
-//  if( m_configuration->hasAttribute("filename") )
-//  {
-//      boost::filesystem::path location = boost::filesystem::path( m_configuration->getExistingAttributeValue("filename") ) ;
-//      this->setLocation( location ) ;
-//  }
+    return ::io::FILE;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,18 +63,22 @@ void CameraReaderService::configuring( ) throw(::fwTools::Failed)
 void CameraReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    // Retrieve object
-    ::fwData::Camera::sptr cam = this->getObject< ::fwData::Camera>( );
-    SLM_ASSERT("cam not instanced", cam);
 
-    OSLM_INFO("path: " << m_fsCameraPath);
-    loadCalibration(m_fsCameraPath.string(), cam);
+    if( this->hasLocationDefined() )
+    {
+        // Retrieve object
+        ::fwData::Camera::sptr cam = this->getObject< ::fwData::Camera>( );
+        SLM_ASSERT("cam not instanced", cam);
 
-    // Notify reading
-    ::fwComEd::CameraMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::CameraMsg::NEW_CAMERA ) ;
+        OSLM_INFO("path: " << m_fsCameraPath);
+        loadCalibration(this->getFile().string(), cam);
 
-    ::fwServices::IEditionService::notify(this->getSptr(), cam, msg);
+        // Notify reading
+        ::fwComEd::CameraMsg::NewSptr msg;
+        msg->addEvent( ::fwComEd::CameraMsg::NEW_CAMERA ) ;
+
+        ::fwServices::IEditionService::notify(this->getSptr(), cam, msg);
+    }
 }
 
 //-----------------------------------------------------------------------------

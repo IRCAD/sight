@@ -175,7 +175,7 @@
 
                                 <service uid="myCamReaderFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
                                 <service uid="myCam2ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no">
-                                    <filename>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</filename>
+                                    <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
                                 </service>
                             </object>
                         </item>
@@ -183,7 +183,7 @@
                         <item key="myCam1Mesh">
                             <object uid="myCam1Mesh" type="::fwData::Mesh">
                                 <service uid="myCam1ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no">
-                                    <filename>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</filename>
+                                    <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
                                 </service>
                             </object>
                         </item>
