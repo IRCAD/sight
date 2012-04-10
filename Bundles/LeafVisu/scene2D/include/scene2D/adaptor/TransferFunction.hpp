@@ -63,11 +63,11 @@ protected:
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 
     /// Initialize the layer m_layer (QGraphicsGroupItem), m_circleWidth and m_circleHeight from the viewport
-    //  dimensions, and call DoUpdate().
+    ///  dimensions, and call DoUpdate().
     SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
 
     /// Call buildTFPoints(), buildCircles(), buildLinesAndPolygons() and buildLayer() to build the tf points map,
-    //  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
+    ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// If the message is TRANSFERTFUNCTION or WINDOWING, call DoUpdate().
@@ -77,11 +77,11 @@ protected:
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
 
     /// Clear the m_circles and m_linesAndPolygons vectors and remove the layer (and therefore all it's related
-    //  items) from the scene.
+    ///  items) from the scene.
     SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
 
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
-    //  to a specific event.
+    ///  to a specific event.
     SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
 
 private:
@@ -93,64 +93,60 @@ private:
     SCENE2D_API ::scene2D::data::Coord coordViewToCoordItem( const ::scene2D::data::Coord & _coord );
 
     /// Get the selected tf of the image, calculate the window and the level, clear the m_TFPoints map and fill
-    //  it with the tf points of the selected tf.
+    ///  it with the tf points of the selected tf.
     SCENE2D_API void buildTFPoints();
 
     /// Remove all circle items from the scene, clear the m_circles vector and push it back circles generated
-    //  from m_TFPoints.
+    ///  from m_TFPoints.
     SCENE2D_API void buildCircles();
 
     /// From an iterator on the m_TFPoints map, create a QGraphicsEllipseItem, give it the appropriated color
-    //  and pen, and return it.
+    ///  and pen, and return it.
     SCENE2D_API QGraphicsEllipseItem* buildCircle(::fwData::TransferFunction::TFValueType value,
                                     ::fwData::TransferFunction::TFColor color);
 
     /// Remove all line and polygon items from the scene, clear the m_linesAndPolygons vector, and push it back
-    //  lines and gradient polygons generated from m_circles.
+    ///  lines and gradient polygons generated from m_circles.
     SCENE2D_API void buildLinesAndPolygons();
 
     /// Add the items from m_circles and m_linesAndPolygons to m_layer, set its position and its zValue and add
-    // it to the scene.
+    /// it to the scene.
     SCENE2D_API void buildLayer();
 
     /// Clear the selected tf, rebuilt it from m_TFPoints (building TransfertFunctionPoints and inserting'em),
-    //  update image min and max, and notify the image with a TRANSFERTFUNCTION message.
+    ///  update image min and max, and notify the image with a TRANSFERTFUNCTION message.
     SCENE2D_API void updateImageTF();
 
-    // Open a color dialog and change the selected tf point color
+    /// Open a color dialog and change the selected tf point color
     SCENE2D_API void doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor);
 
-    // Store the circle selected and its coordinates, and set its outline yellow
+    /// Store the circle selected and its coordinates, and set its outline yellow
     SCENE2D_API void leftButtonEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event);
 
-    // Check if the mouse is out of bounds, as the case, move the circle on x and y, x or y, destroy the related
-    // point in the tf points map, create a new one with the new coord as key and alpha, rescale the tf map
-    // to 0-1 and update the image tf.
+    /// Check if the mouse is out of bounds, as the case, move the circle on x and y, x or y, destroy the related
+    /// point in the tf points map, create a new one with the new coord as key and alpha, rescale the tf map
+    /// to 0-1 and update the image tf.
     SCENE2D_API void mouseMoveEvent(QGraphicsEllipseItem* circle,
             ::fwData::TransferFunction::TFValueType tfPoint, ::scene2D::data::Event::sptr _event);
 
-    // Reset the circle pen to the selected circle
+    /// Reset the circle pen to the selected circle
     SCENE2D_API void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event);
 
-    // Erase the selected point
+    /// Erase the selected point
     SCENE2D_API void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint, ::scene2D::data::Event::sptr _event);
 
-    // Create a new point without modifying the TF (placed between the 2 encompassing points with linear
-    // interpolation)
+    /// Create a new point without modifying the TF (placed between the 2 encompassing points with linear
+    /// interpolation)
     SCENE2D_API void doubleClickEvent( ::scene2D::data::Event::sptr _event);
 
     /// Return the x coordinate of the center of the circle in a 0-1 scale (for storage in m_TFPoints).
     SCENE2D_API double pointValue(QGraphicsEllipseItem* circle);
 
-    /// If the min and max values in m_TFPoints are no longer 0 and 1, recalculate the window, the level
-    //  and modify the values to get a 0-1 scale again.
-    SCENE2D_API void rescaleTFPoints();
-
     /// The line pen (see "lineColor" config attribute) and circle pen (see "circleColor" config attribute).
     QPen m_linePen, m_circlePen;
 
     /// A vector containing QGraphicsItems representing the lines between tf points and the filling gradient
-    // polygons.
+    /// polygons.
     std::vector< QGraphicsItem* > m_linesAndPolygons;
 
     /// A vector containing QGraphicsEllipseItems representing the circles representing the tf points.
@@ -160,7 +156,7 @@ private:
     QGraphicsItemGroup* m_layer;
 
     /// The selected tf level and window, and width/height of the circles.
-    double m_level, m_window, m_circleWidth, m_circleHeight;
+    double m_circleWidth, m_circleHeight;
 
     /// The map associating a key representing the value of a tf point to the ::fwData::Color associated.
     ::fwData::TransferFunction::TFDataType m_TFPoints;
@@ -174,10 +170,8 @@ private:
     /// The captured circle.
     QGraphicsEllipseItem* m_capturedCircle;
 
-    ///
     ::fwServices::ComChannelService::sptr m_comChannel;
 
-    ///
     ::scene2D::data::Viewport::sptr m_viewport;
 
     float m_pointSize;

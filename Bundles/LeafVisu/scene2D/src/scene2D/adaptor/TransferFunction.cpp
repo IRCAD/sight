@@ -95,18 +95,21 @@ void TransferFunction::buildTFPoints()
     // Get the selected tf of the image
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
 
-    // Get the window and the level from the selected tf
-    m_level = selectedTF->getLevel();
-    m_window = selectedTF->getWindow();
-
     // Clear the tf points map
     m_TFPoints.clear();
 
     // Iterate on the selected tf and fill the tf points map with key = value and T = Color(RGBA)
-    ::fwData::TransferFunction::TFValueType wlMax = selectedTF->getWLMinMax().first;
+    ::fwData::TransferFunction::TFValuePairType minMax = selectedTF->getMinMaxTFValues();
+    ::fwData::TransferFunction::TFValueType wlMin = selectedTF->getWLMinMax().first;
+    ::fwData::TransferFunction::TFValueType window = selectedTF->getWindow();
+    ::fwData::TransferFunction::TFValueType width = minMax.second - minMax.first;
+
     BOOST_FOREACH(::fwData::TransferFunction::TFDataType::value_type elt, selectedTF->getTFData())
     {
-        m_TFPoints[(elt.first - wlMax) / m_window ] = elt.second;
+        ::fwData::TransferFunction::TFValueType val;
+        val = (elt.first - minMax.first) / width;
+        val = val * window + wlMin;
+        m_TFPoints[val] = elt.second;
     }
 }
 
@@ -166,7 +169,7 @@ QGraphicsEllipseItem* TransferFunction::buildCircle(::fwData::TransferFunction::
 
     // Build a circle item, set its color, pen and zValue
     QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(
-    coord.first * m_window + selectedTF->getWLMinMax().first - m_circleWidth / 2,
+    coord.first - m_circleWidth / 2,
         coord.second - m_circleHeight / 2,
         m_circleWidth,
         m_circleHeight
@@ -271,14 +274,24 @@ void TransferFunction::updateImageTF()
 {
     // Get the selected tf of the image
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
+    ::fwData::TransferFunction::TFValuePairType minMax = selectedTF->getMinMaxTFValues();
+    ::fwData::TransferFunction::TFValueType window = selectedTF->getWindow();
+    ::fwData::TransferFunction::TFValueType wlMin = selectedTF->getWLMinMax().first;
     ::fwData::TransferFunction::TFValueType val;
     selectedTF->clear();
+
     // Rebuild the selected tf from the tf points map
+    double width = minMax.second - minMax.first;
+    double min = m_TFPoints.begin()->first;
+    double max = m_TFPoints.rbegin()->first;
     BOOST_FOREACH(::fwData::TransferFunction::TFDataType::value_type elt,  m_TFPoints)
     {
-        val = elt.first * m_window + (m_level - m_window/2);
+        val = (elt.first - wlMin) / window;
+        val = val * width + minMax.first;
         selectedTF->addTFColor(val, elt.second);
     }
+
+    selectedTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
 
     ::fwComEd::TransferFunctionMsg::NewSptr msg;
     msg->addEvent(::fwComEd::TransferFunctionMsg::MODIFIED_POINTS);
@@ -644,9 +657,6 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
             circle->brush().color().blueF(),
         pair.second);
 
-    // Need to rescale if the tf point moved was the first or the last one
-    this->rescaleTFPoints();
-
     // Update the image tf
     this->updateImageTF();
 }
@@ -671,7 +681,6 @@ void TransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType 
     // Erase the selected tf point
     m_TFPoints.erase(tfPoint);
 
-    this->rescaleTFPoints();
     this->updateImageTF();
     this->doUpdate();
 }
@@ -686,8 +695,11 @@ void TransferFunction::doubleClickEvent( ::scene2D::data::Event::sptr _event)
     double x = this->getScene2DRender()->mapToScene(_event->getCoord()).getX();
     double y = this->getScene2DRender()->mapToScene(_event->getCoord()).getY();
 
+    double window = selectedTF->getWindow();
+    double wlMin = selectedTF->getWLMinMax().first;
+
     // Transform the x and y coordinates with axis scaling and type
-    Point2DType _xy((x - selectedTF->getWLMinMax().first) / m_window , y );
+    Point2DType _xy((x - wlMin) / window , y );
     Point2DType values = this->mapSceneToAdaptor(_xy , m_xAxis, m_yAxis);
 
     ::fwData::TransferFunction::TFDataType::iterator nextTFPointIt = m_TFPoints.begin();
@@ -698,7 +710,6 @@ void TransferFunction::doubleClickEvent( ::scene2D::data::Event::sptr _event)
         ::fwData::TransferFunction::TFColor color((*nextTFPointIt).second.r, (*nextTFPointIt).second.g, (*nextTFPointIt).second.b, values.second);
         m_TFPoints[values.first] = color;
 
-        this->rescaleTFPoints();
         this->updateImageTF();
         this->doUpdate();
     }
@@ -707,7 +718,6 @@ void TransferFunction::doubleClickEvent( ::scene2D::data::Event::sptr _event)
         ::fwData::TransferFunction::TFColor color((*lastTFPointIt).second.r, (*lastTFPointIt).second.g, (*lastTFPointIt).second.b, values.second);
         m_TFPoints[values.first] = color;
 
-        this->rescaleTFPoints();
         this->updateImageTF();
         this->doUpdate();
     }
@@ -746,51 +756,8 @@ void TransferFunction::doubleClickEvent( ::scene2D::data::Event::sptr _event)
 
 double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
 {
-    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
-    double wlMin = selectedTF->getWLMinMax().first;
     // Return the x coordinate of the center of a circle in a 0-1 scale
-    return ((circle->rect().x() + circle->pos().x() + m_circleWidth / 2) - wlMin) / m_window;
-}
-
-//-----------------------------------------------------------------------------
-
-void TransferFunction::rescaleTFPoints()
-{
-    double min = m_TFPoints.begin()->first;
-    double max = m_TFPoints.rbegin()->first;
-
-    // If min and max are respectively different to 0 and 1, we need to rescale to get a 0-1 scale
-    if ( !(min == 0 && max == 1))
-    {
-        // Calculate the real old values of the selected tf min and max points values
-        double realOldMin = m_level - m_window / 2;
-        double realOldMax = m_level + m_window / 2;
-
-        // Calculate the real new values of the selected tf min and max points values
-        double realNewMin = realOldMin + min * m_window;
-        double realNewMax = realOldMax + (max - 1) * m_window;
-
-        // Update the window value
-        m_window *= (max - min);
-
-        // Update the level value
-        m_level = realNewMin + (realNewMax - realNewMin) / 2;
-
-        // Create a new map to store tf points map values in a 0-1 scale (mandatory cause if we use the same tf points map,
-        // values like 0 or 1 could be overwrited)
-        ::fwData::TransferFunction::TFDataType newValues;
-        ::fwData::TransferFunction::TFDataType::iterator TFPointIt;
-
-        for ( TFPointIt = m_TFPoints.begin() ; TFPointIt != m_TFPoints.end() ; ++TFPointIt )
-        {
-            newValues[((*TFPointIt).first - min) / (max - min)] = (*TFPointIt).second;
-        }
-
-        m_TFPoints.clear();
-
-        // Copy the new map
-        m_TFPoints = newValues;
-    }
+    return (circle->rect().x() + circle->pos().x() + m_circleWidth / 2);
 }
 
 //-----------------------------------------------------------------------------
