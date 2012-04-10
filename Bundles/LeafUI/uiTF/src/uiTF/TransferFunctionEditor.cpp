@@ -142,12 +142,12 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
 
     // Qt signals management ( connection to buttons )
     QObject::connect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT(presetChoice(int)));
-    QObject::connect(m_deleteButton, SIGNAL(   pressed()), this, SLOT(deleteTF()));
-    QObject::connect(m_newButton, SIGNAL(   pressed()), this, SLOT(newTF()));
-    QObject::connect(m_reinitializeButton, SIGNAL(   pressed()), this, SLOT(reinitializeTFPool()));
-    QObject::connect(m_renameButton, SIGNAL(   pressed()), this, SLOT(renameTF()));
-    QObject::connect(m_importButton, SIGNAL(   pressed()), this, SLOT(importTF()));
-    QObject::connect(m_exportButton, SIGNAL(   pressed()), this, SLOT(exportTF()));
+    QObject::connect(m_deleteButton, SIGNAL(   clicked()), this, SLOT(deleteTF()));
+    QObject::connect(m_newButton, SIGNAL(   clicked()), this, SLOT(newTF()));
+    QObject::connect(m_reinitializeButton, SIGNAL(   clicked()), this, SLOT(reinitializeTFPool()));
+    QObject::connect(m_renameButton, SIGNAL(   clicked()), this, SLOT(renameTF()));
+    QObject::connect(m_importButton, SIGNAL(   clicked()), this, SLOT(importTF()));
+    QObject::connect(m_exportButton, SIGNAL(   clicked()), this, SLOT(exportTF()));
 
     // preset initialization
     this->initTransferFunctions();
@@ -168,48 +168,8 @@ void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr msg) throw(
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
     if(compositeMsg)
     {
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
-        {
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-        {
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-        {
-        }
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS) )
-        {
-        }
+        this->updateTransferFunctionPreset();
     }
-
-
-
-//
-//    // Test if tf selection has changed
-//    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
-//    if(imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
-//    {
-//        std::string currentValInEditor = m_pTransferFunctionPreset->currentText().toStdString();
-//        std::string currentVal = m_selectedTFKey;
-//
-//        if ( currentValInEditor != currentVal )
-//        {
-//            QString qval = currentVal.c_str();
-//            int currentIndex = m_pTransferFunctionPreset->findText( qval );
-//
-//            if( currentIndex == -1 ) // item not found
-//            {
-//                m_pTransferFunctionPreset->addItem( qval );
-//                m_pTransferFunctionPreset->setCurrentIndex( m_pTransferFunctionPreset->count() - 1 );
-//            }
-//            else
-//            {
-//                m_pTransferFunctionPreset->setCurrentIndex( currentIndex );
-//            }
-//        }
-//    }
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -220,12 +180,12 @@ void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
 
     // Qt signals management ( disconnection )
     QObject::disconnect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT(presetChoice(int)));
-    QObject::disconnect(m_deleteButton, SIGNAL(   pressed()), this, SLOT(deleteTF()));
-    QObject::disconnect(m_newButton, SIGNAL(   pressed()), this, SLOT(newTF()));
-    QObject::disconnect(m_reinitializeButton, SIGNAL(   pressed()), this, SLOT(reinitializeTFPool()));
-    QObject::disconnect(m_renameButton, SIGNAL(   pressed()), this, SLOT(renameTF()));
-    QObject::disconnect(m_importButton, SIGNAL(   pressed()), this, SLOT(importTF()));
-    QObject::disconnect(m_exportButton, SIGNAL(   pressed()), this, SLOT(exportTF()));
+    QObject::disconnect(m_deleteButton, SIGNAL(   clicked()), this, SLOT(deleteTF()));
+    QObject::disconnect(m_newButton, SIGNAL(   clicked()), this, SLOT(newTF()));
+    QObject::disconnect(m_reinitializeButton, SIGNAL(   clicked()), this, SLOT(reinitializeTFPool()));
+    QObject::disconnect(m_renameButton, SIGNAL(   clicked()), this, SLOT(renameTF()));
+    QObject::disconnect(m_importButton, SIGNAL(   clicked()), this, SLOT(importTF()));
+    QObject::disconnect(m_exportButton, SIGNAL(   clicked()), this, SLOT(exportTF()));
 
     // Buttons destruction
     m_pTransferFunctionPreset->deleteLater();
@@ -250,6 +210,12 @@ void TransferFunctionEditor::presetChoice(int index)
     SLM_TRACE_FUNC();
     m_pTransferFunctionPreset->setCurrentIndex(index);
     this->updateTransferFunction();
+
+    std::string tfName = m_pTransferFunctionPreset->currentText().toStdString();
+    bool isEnabled = (tfName != ::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+
+    m_renameButton->setEnabled(isEnabled);
+    m_deleteButton->setEnabled(isEnabled);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -285,9 +251,7 @@ void TransferFunctionEditor::deleteTF()
 
             int index = m_pTransferFunctionPreset->findText(QString::fromStdString(defaultTFName));
             index = std::max(index, 0);
-            m_pTransferFunctionPreset->setCurrentIndex(index);
-
-            this->updateTransferFunction();
+            this->presetChoice(index);
         }
         else
         {
@@ -342,15 +306,6 @@ void TransferFunctionEditor::newTF()
                     ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
-    else
-    {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage("You have to give a name to your transfer function.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-    }
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -394,7 +349,8 @@ void TransferFunctionEditor::renameTF()
         return;
     }
 
-    std::string newName (m_selectedTFKey);
+    std::string str = m_pTransferFunctionPreset->currentText().toStdString();
+    std::string newName (str);
 
     fwGui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
@@ -403,11 +359,10 @@ void TransferFunctionEditor::renameTF()
     newName = inputDialog.getInput();
 
     if (    ! newName.empty() &&
-            newName != m_selectedTFKey)
+            newName != str)
     {
         if( ! this->hasTransferFunctionName(newName) )
         {
-            std::string str = m_pTransferFunctionPreset->currentText().toStdString();
 
             ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
             ::fwData::TransferFunction::sptr pTF;
@@ -467,64 +422,56 @@ void TransferFunctionEditor::importTF()
         ::fwXML::Serializer serializer;
         ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new ::fwXML::NeverSplitPolicy);
         serializer.setSplitPolicy(spolicy);
-        ::fwData::TransferFunction::sptr  pTf;
 
-        bool tfIsImported;
         BOOST_FOREACH( ::boost::filesystem::path tfPath, files->getPaths() )
         {
-            tfIsImported = true;
             ::fwTools::Object::sptr  pObject;
+            ::fwData::TransferFunction::sptr pTf;
 
             try
             {
                 pObject = serializer.deSerialize(tfPath);
+                pTf = ::fwData::TransferFunction::dynamicCast(pObject);
+                if ( pTf )
+                {
+                    if( this->hasTransferFunctionName( pTf->getName() ) )
+                    {
+                        pTf->setName( this->createTransferFunctionName( pTf->getName() ) );
+                    }
+
+                    compositeHelper.add(pTf->getName(), pTf);
+                    m_pTransferFunctionPreset->addItem(QString(pTf->getName().c_str()));
+                    someTfHasBeenImported = true;
+                }
+                else
+                {
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Import TF",
+                        "Sorry, this file does not contain a transfer function",
+                        ::fwGui::dialog::MessageDialog::WARNING);
+                }
+            }
+            catch (::fwTools::Failed &e)
+            {
+                std::stringstream msg;
+                msg << "Sorry, TF cannot be loaded : " << e.what();
+                ::fwGui::dialog::MessageDialog::showMessageDialog("Import TF",
+                    msg.str(),
+                    ::fwGui::dialog::MessageDialog::WARNING);
             }
             catch (...)
             {
-                SLM_DEBUG("This XML file is not a data object");
-                tfIsImported = false;
+                ::fwGui::dialog::MessageDialog::showMessageDialog("Import TF",
+                    "This XML file is not a data object",
+                    ::fwGui::dialog::MessageDialog::WARNING);
             }
 
-            if ( tfIsImported )
-            {
-                pTf = ::fwData::TransferFunction::dynamicCast(pObject);
-                if (pTf == 0)
-                {
-                    SLM_DEBUG("This XML file is not a transfer function");
-                    tfIsImported = false;
-                }
-            }
 
-            if ( tfIsImported )
-            {
-                if( this->hasTransferFunctionName( pTf->getName() ) )
-                {
-                    pTf->setName( this->createTransferFunctionName( pTf->getName() ) );
-                }
-
-                ::fwData::TransferFunction::NewSptr  pNewTf;
-                pNewTf->deepCopy(pTf);
-                compositeHelper.add(pTf->getName(), pNewTf);
-                m_pTransferFunctionPreset->addItem(QString(pTf->getName().c_str()));
-            }
-            else
-            {
-                std::stringstream xmlFile;
-                xmlFile <<  "Sorry, the xml file \"" <<  tfPath.string() <<  "\" does not contain a transfer function. It has not been imported.";
-                ::fwGui::dialog::MessageDialog messageBox;
-                messageBox.setTitle("Warning");
-                messageBox.setMessage(xmlFile.str().c_str());
-                messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-                messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-                messageBox.show();
-            }
         }
     }
 
     if( someTfHasBeenImported )
     {
-        m_pTransferFunctionPreset->setCurrentIndex((*tfPool).size()-1);
-        this->updateTransferFunction();
+        this->presetChoice((*tfPool).size()-1);
     }
     compositeHelper.notify(this->getSptr());
 }
@@ -561,46 +508,22 @@ void TransferFunctionEditor::exportTF()
             ::boost::filesystem::path tfPath = fileName->getPath();
             ::boost::filesystem::path tfPathRoot = tfPath.parent_path();
 
-            bool exportFile = true;
-            if ( ::boost::filesystem::exists(tfPath) )
-            {
-                ::fwGui::dialog::MessageDialog messageBox;
-                messageBox.setTitle("Overwriting confirmation");
-                messageBox.setMessage("Are you sure you want to overwrite this transfer function?");
-                messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-                messageBox.addButton(::fwGui::dialog::IMessageDialog::YES);
-                messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-                ::fwGui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
-
-                if (answerCopy == ::fwGui::dialog::IMessageDialog::YES)
-                {
-                    ::boost::filesystem::remove(tfPath);
-                }
-                else
-                {
-                    exportFile = false;
-                }
-            }
-
-            if ( exportFile )
-            {
-                ::fwXML::Serializer serializer;
-                serializer.rootFolder() = tfPathRoot.string();
+            ::fwXML::Serializer serializer;
+            serializer.rootFolder() = tfPathRoot.string();
 #if BOOST_FILESYSTEM_VERSION > 2
-                ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.filename().string()));
+            ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.filename().string()));
 #else
-                ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.leaf()));
+            ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.leaf()));
 #endif
-                serializer.setPathPolicy(pPathPolicy);
-                ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > pSplitPolicy (new ::fwXML::NeverSplitPolicy());
-                serializer.setSplitPolicy(pSplitPolicy);
-                ::fwData::TransferFunction::sptr tf = this->getSelectedTransferFunction();
-                serializer.serialize( tf );
+            serializer.setPathPolicy(pPathPolicy);
+            ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > pSplitPolicy (new ::fwXML::NeverSplitPolicy());
+            serializer.setSplitPolicy(pSplitPolicy);
+            ::fwData::TransferFunction::sptr tf = this->getSelectedTransferFunction();
+            serializer.serialize( tf );
 
-                if ( ! ::boost::filesystem::exists(tfPath) )
-                {
-                    OSLM_ERROR("Input File \"" <<  tfPath.string() <<  "\" does not exist\n");
-                }
+            if ( ! ::boost::filesystem::exists(tfPath) )
+            {
+                OSLM_ERROR("Input File \"" <<  tfPath.string() <<  "\" does not exist\n");
             }
         }
         catch(std::exception& e)
@@ -667,7 +590,16 @@ void TransferFunctionEditor::initTransferFunctions()
     }
     compositeHelper.notify(this->getSptr());
 
+    this->updateTransferFunctionPreset();
+}
 
+//---------------------------------------------------------------------------------------------------------------------
+
+
+void TransferFunctionEditor::updateTransferFunctionPreset()
+{
+    ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >( );
+    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
     BOOST_FOREACH(::fwData::Composite::value_type elt, *poolTF)

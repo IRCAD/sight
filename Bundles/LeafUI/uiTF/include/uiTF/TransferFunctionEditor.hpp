@@ -84,6 +84,9 @@ protected:
     /// Update the image with the selected TF in the ComboBox.
     UITF_API void updateTransferFunction();
 
+    /// Update the TF preset from the TF pool
+    UITF_API void updateTransferFunctionPreset();
+
     /// Get the current transfer function pool
     UITF_API ::fwData::Composite::sptr getTFSelection() const;
 
