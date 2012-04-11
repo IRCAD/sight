@@ -384,6 +384,27 @@ void  WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
+// Check if service that registered the callback is still alive
+struct WLCallback
+{
+    typedef void result_type;
+
+    WLCallback(WindowLevel::sptr wl)
+    {
+        m_wl = wl;
+    }
+
+    void operator()()
+    {
+        if ( !m_wl.expired() )
+        {
+            m_wl.lock()->notifyWindowLevelCallback();
+        }
+    }
+
+    WindowLevel::wptr m_wl;
+};
+
 void  WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
 {
     m_notifiedImageMin = _imageMin;
@@ -391,7 +412,7 @@ void  WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
 
     this->setWindowLevel(m_imageMin, m_imageMax);
     ::fwComEd::TransferFunctionMsg::sptr msg = this->notifyTFWindowing(this->getSptr());
-    msg->setMessageCallback(::boost::bind( &WindowLevel::notifyWindowLevelCallback, this ));
+    msg->setMessageCallback(::boost::bind( WLCallback(WindowLevel::dynamicCast(this->getSptr())) ));
 
     m_isNotifying = true;
 }
