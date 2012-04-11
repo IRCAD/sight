@@ -152,15 +152,17 @@ void Negato::updateFromImage( QImage * qimg )
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     // Window min
-    ::fwData::Integer::sptr minInt;
-    const double min = tf->getWLMinMax().first;
+    const double wlMin = tf->getWLMinMax().first;
 
     // Window max
-    const double max = tf->getWLMinMax().second;
+    const double wlMax = tf->getWLMinMax().second;
 
     signed short * imgBuff = (signed short *) ( image->getBuffer() );
     const double window = tf->getWindow();
     const unsigned int imageZOffset = size[0] * size[1];
+
+    const double tfMin = tf->getMinMaxTFValues().first;
+    const double tfMax = tf->getMinMaxTFValues().second;
 
 
     // Fill image according to current slice type:
@@ -174,8 +176,8 @@ void Negato::updateFromImage( QImage * qimg )
 
             for( ::boost::int32_t y = 0; y < size[1]; y++ )
             {
-                const unsigned char val = this->getQImageVal(zxOffset + y * size[0], imgBuff, max, min, window);
-                qimg->setPixel(y, zPos, qRgb(val,val,val));
+                QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
+                qimg->setPixel(y, zPos, val);
             }
         }
     }
@@ -191,8 +193,8 @@ void Negato::updateFromImage( QImage * qimg )
 
             for( ::boost::int32_t x = 0; x < size[0]; x++ )
             {
-                const unsigned char val = this->getQImageVal(zyOffset + x, imgBuff, max, min, window);
-                qimg->setPixel(x, zPos, qRgb(val,val,val));
+                QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
+                qimg->setPixel(x, zPos, val);
             }
         }
     }
@@ -207,8 +209,8 @@ void Negato::updateFromImage( QImage * qimg )
 
             for( ::boost::int32_t x = 0; x < size[0]; x++ )
             {
-                const unsigned char val = this->getQImageVal(x + zyOffset, imgBuff, max, min, window);
-                qimg->setPixel(x,y,qRgb(val,val,val));
+                QRgb val = this->getQImageVal(x + zyOffset, imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
+                qimg->setPixel(x, y, val);
             }
         }
     }
@@ -221,44 +223,18 @@ void Negato::updateFromImage( QImage * qimg )
 
 //-----------------------------------------------------------------------------
 
-unsigned char Negato::getQImageVal(
-    const unsigned int _index, signed short* _buffer, const double _max, const double _min, const double _window)
+QRgb Negato::getQImageVal(
+    const unsigned int index, signed short* buffer, const double wlMin, const double wlMax, const double window,
+    const double tfMin, const double tfMax, ::fwData::TransferFunction::sptr tf)
 {
-    signed short val16 = _buffer[_index];
-    unsigned char val;
+    signed short val16 = buffer[index];
 
-    if (_min <= _max)
-    {
-        if ( val16 <= _min )
-        {
-            val = 0;
-        }
-        else if ( val16 >= _max )
-        {
-            val = 255;
-        }
-        else
-        {
-            val = ( ( val16 - _min ) / _window ) * 255;
-        }
-    }
-    else
-    {
-        if ( val16 >= _min )
-        {
-            val = 0;
-        }
-        else if ( val16 <= _max )
-        {
-            val = 255;
-        }
-        else
-        {
-            val = ( ( val16 - _min ) / _window ) * 255;
-        }
-    }
+    double value = (val16 - wlMin) / window;
+    value = value * (tfMax - tfMin) + tfMin;
 
-    return val;
+    ::fwData::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
+
+    return qRgba(color.r*255, color.g*255, color.b*255, color.a*255);
 }
 
 //---------------------------------------------------------------------------

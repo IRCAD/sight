@@ -47,8 +47,10 @@ private:
     void updateFromImage( QImage * qimg );
     void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
 
-    unsigned char getQImageVal(const unsigned int _index, signed short* _buffer,
-            const double _max, const double _min, const double _window);
+    QRgb getQImageVal(const unsigned int index, signed short* buffer,
+            const double wlMin, const double wlMax, const double window,
+            const double tfMin, const double tfMax,
+            ::fwData::TransferFunction::sptr tf);
 
     QImage * m_qimg;
     QGraphicsPixmapItem * m_pixmapItem;
