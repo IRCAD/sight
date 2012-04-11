@@ -440,7 +440,14 @@ void TransferFunction::updateImageTF()
         selectedTF->addTFColor(val, elt.second);
     }
 
-    selectedTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+    if (window >= 0)
+    {
+        selectedTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+    }
+    else
+    {
+        selectedTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(max, min));
+    }
 
     ::fwComEd::TransferFunctionMsg::NewSptr msg;
     msg->addEvent(::fwComEd::TransferFunctionMsg::MODIFIED_POINTS);

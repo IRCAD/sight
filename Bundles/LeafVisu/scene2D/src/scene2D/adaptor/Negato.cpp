@@ -153,13 +153,13 @@ void Negato::updateFromImage( QImage * qimg )
 
     // Window min
     ::fwData::Integer::sptr minInt;
-    const double min = tf->getMinMaxTFValues().first;
+    const double min = tf->getWLMinMax().first;
 
     // Window max
-    const double max = tf->getMinMaxTFValues().second;
+    const double max = tf->getWLMinMax().second;
 
     signed short * imgBuff = (signed short *) ( image->getBuffer() );
-    const double window = max - min;
+    const double window = tf->getWindow();
     const unsigned int imageZOffset = size[0] * size[1];
 
 
@@ -174,7 +174,7 @@ void Negato::updateFromImage( QImage * qimg )
 
             for( ::boost::int32_t y = 0; y < size[1]; y++ )
             {
-                const unsigned char val = getQImageVal(zxOffset + y * size[0], imgBuff, max, min, window);
+                const unsigned char val = this->getQImageVal(zxOffset + y * size[0], imgBuff, max, min, window);
                 qimg->setPixel(y, zPos, qRgb(val,val,val));
             }
         }
@@ -191,7 +191,7 @@ void Negato::updateFromImage( QImage * qimg )
 
             for( ::boost::int32_t x = 0; x < size[0]; x++ )
             {
-                const unsigned char val = getQImageVal(zyOffset + x, imgBuff, max, min, window);
+                const unsigned char val = this->getQImageVal(zyOffset + x, imgBuff, max, min, window);
                 qimg->setPixel(x, zPos, qRgb(val,val,val));
             }
         }
@@ -207,7 +207,7 @@ void Negato::updateFromImage( QImage * qimg )
 
             for( ::boost::int32_t x = 0; x < size[0]; x++ )
             {
-                const unsigned char val = getQImageVal(x + zyOffset, imgBuff, max, min, window);
+                const unsigned char val = this->getQImageVal(x + zyOffset, imgBuff, max, min, window);
                 qimg->setPixel(x,y,qRgb(val,val,val));
             }
         }
@@ -227,17 +227,35 @@ unsigned char Negato::getQImageVal(
     signed short val16 = _buffer[_index];
     unsigned char val;
 
-    if ( val16 <= _min )
+    if (_min <= _max)
     {
-        val = 0;
-    }
-    else if ( val16 >= _max )
-    {
-        val = 255;
+        if ( val16 <= _min )
+        {
+            val = 0;
+        }
+        else if ( val16 >= _max )
+        {
+            val = 255;
+        }
+        else
+        {
+            val = ( ( val16 - _min ) / _window ) * 255;
+        }
     }
     else
     {
-        val = ( ( val16 - _min ) / _window ) * 255;
+        if ( val16 >= _min )
+        {
+            val = 0;
+        }
+        else if ( val16 <= _max )
+        {
+            val = 255;
+        }
+        else
+        {
+            val = ( ( val16 - _min ) / _window ) * 255;
+        }
     }
 
     return val;
@@ -350,7 +368,8 @@ void Negato::doUpdate( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fail
 
     if(this->upadteTFObserver(msg, this->getSptr()) ||
             msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ||
-            msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
+            msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) ||
+            msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
     {
         this->doUpdate();
     }
@@ -460,8 +479,8 @@ void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    double min = tf->getMinMaxTFValues().first;
-    double max = tf->getMinMaxTFValues().second;
+    double min = tf->getWLMinMax().first;
+    double max = tf->getWLMinMax().second;
 
     double window = newCoord.getX() - m_oldCoord.getX();
     double level = newCoord.getY() - m_oldCoord.getY();
@@ -473,17 +492,14 @@ void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2
     double newImgLevel = imgLevel + level;
     double newImgWindow = imgWindow + imgWindow * window/100.0;
 
-    if ( newImgWindow > 10 ) // Hack ToDo
-    {
-        double newMin = newImgLevel - newImgWindow/2.0;
-        double newMax = newImgLevel + newImgWindow/2.0;
+    double newMin = newImgLevel - newImgWindow/2.0;
+    double newMax = newImgLevel + newImgWindow/2.0;
 
-        this->doUpdate();
+    this->doUpdate();
 
-        // Fire the message
-        this->setWindowLevel(newMin, newMax);
-        this->notifyTFWindowing(this->getSptr());
-    }
+    // Fire the message
+    this->setWindowLevel(newMin, newMax);
+    this->notifyTFWindowing(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------
