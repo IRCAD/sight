@@ -252,44 +252,46 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
 
 void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, ::fwServices::IService::sptr srv )
 {
-    // Set TF data if not still set
-    if ( m_tfSelection.expired() )
+
+    const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
+    ::fwData::Composite::sptr tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
+
+    if ( m_tfSelection.expired() && ! m_tfSelectionFwID.empty() )
+    {
+        tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
+        OSLM_ASSERT( "Sorry, object with fwID " << m_tfSelectionFwID << " doesn't exist.", tfSelection );
+        OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
+        if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
+        {
+            ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
+            if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+            {
+                double min, max;
+                ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+                ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+                tfGreyLevel->setWLMinMax(wlMinMax);
+            }
+
+            ::fwComEd::helper::Composite compositeHelper(tfSelection);
+            compositeHelper.add(m_selectedTFKey, tfGreyLevel);
+            compositeHelper.notify(srv);
+        }
+        m_tfSelection = tfSelection;
+    }
+    else if ( m_tfSelection.expired() || m_tfSelection.lock() != tfSelection )
     {
 
-        if ( ! m_tfSelectionFwID.empty() )
-        {
-            ::fwData::Composite::sptr tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
-            OSLM_ASSERT( "Sorry, object with fwID " << m_tfSelectionFwID << " doesn't exist.", tfSelection );
-            OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
-            if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
-            {
-                ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
-                if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
-                {
-                    double min, max;
-                    ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-                    ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
-                    tfGreyLevel->setWLMinMax(wlMinMax);
-                }
+        const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
 
-                ::fwComEd::helper::Composite compositeHelper(tfSelection);
-                compositeHelper.add(m_selectedTFKey, tfGreyLevel);
-                compositeHelper.notify(srv);
-            }
-            m_tfSelection = tfSelection;
-        }
-        else
-        {
-            const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
-            const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+        ::fwComEd::helper::Image helper(image);
+        helper.createTransferFunctionPool(srv); // do nothing if image tf pool already exist
 
-            ::fwComEd::helper::Image helper(image);
-            helper.createTransferFunctionPool(srv); // do nothing if image tf pool already exist
+        tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
 
-            m_selectedTFKey = defaultTFName;
-            m_tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
-        }
+        m_selectedTFKey = defaultTFName;
+        m_tfSelection = tfSelection;
     }
+
 }
 
 //------------------------------------------------------------------------------
