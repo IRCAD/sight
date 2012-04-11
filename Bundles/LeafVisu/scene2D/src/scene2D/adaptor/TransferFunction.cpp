@@ -206,6 +206,81 @@ void TransferFunction::buildLinesAndPolygons()
     {
         this->buildNearestLinesAndPolygons();
     }
+
+    if (!selectedTF->getIsClamped())
+    {
+        this->buildBounds();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void TransferFunction::buildBounds()
+{
+    ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+
+    QGraphicsEllipseItem* beginCircle = m_circles.front();
+    QGraphicsEllipseItem* endCircle = m_circles.back();
+
+    double x1 = viewport->getX() - 10;
+    double x2 = beginCircle->rect().x() + beginCircle->pos().x() + m_circleWidth /2;
+    double y = beginCircle->rect().y() + beginCircle->pos().y() + m_circleHeight / 2;
+    // Build the line between the actual and the next TF Point and push it back into the lines and polygons vector
+    QGraphicsLineItem* line = new QGraphicsLineItem(x1, y, x2, y);
+    line->setPen(m_linePen);
+    line->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    line->setZValue( 2 );
+
+    m_linesAndPolygons.push_back(line);
+
+    // Build the points vector defining the polygon and build the polygon
+    QVector<QPointF> vect;
+    vect.append(QPointF(line->line().x1(), 0));
+    vect.append(QPointF(line->line().x1(), line->line().y1()));
+    vect.append(QPointF(line->line().x2(), line->line().y2()));
+    vect.append(QPointF(line->line().x2(), 0));
+
+    QGraphicsPolygonItem* poly = new QGraphicsPolygonItem( QPolygonF( vect ) );
+
+    // Set gradient, opacity and pen to the polygon
+    poly->setBrush( beginCircle->brush() );
+    poly->setOpacity(0.8);
+    poly->setPen(QPen(Qt::NoPen));
+    poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    poly->setZValue( 1 );
+
+    // Push the polygon back into the lines and polygons vector
+    m_linesAndPolygons.push_back(poly);
+
+    x1 = endCircle->rect().x() + endCircle->pos().x() + m_circleWidth /2;
+    x2 = viewport->getX() + viewport->getWidth() + 10;
+    y = endCircle->rect().y() + endCircle->pos().y() + m_circleHeight / 2;
+    // Build the line between the actual and the next TF Point and push it back into the lines and polygons vector
+    QGraphicsLineItem* line2 = new QGraphicsLineItem(x1, y, x2, y);
+    line2->setPen(m_linePen);
+    line2->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    line2->setZValue( 2 );
+
+    m_linesAndPolygons.push_back(line2);
+
+    // Build the points vector defining the polygon and build the polygon
+    QVector<QPointF> vect2;
+    vect2.append(QPointF(line2->line().x1(), 0));
+    vect2.append(QPointF(line2->line().x1(), line2->line().y1()));
+    vect2.append(QPointF(line2->line().x2(), line2->line().y2()));
+    vect2.append(QPointF(line2->line().x2(), 0));
+
+    QGraphicsPolygonItem* poly2 = new QGraphicsPolygonItem( QPolygonF( vect2 ) );
+
+    // Set gradient, opacity and pen to the polygon
+    poly2->setBrush( endCircle->brush() );
+    poly2->setOpacity(0.8);
+    poly2->setPen(QPen(Qt::NoPen));
+    poly2->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    poly2->setZValue( 1 );
+
+    // Push the polygon back into the lines and polygons vector
+    m_linesAndPolygons.push_back(poly2);
 }
 
 //-----------------------------------------------------------------------------
