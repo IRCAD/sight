@@ -186,6 +186,8 @@ QGraphicsEllipseItem* TransferFunction::buildCircle(::fwData::TransferFunction::
 
 void TransferFunction::buildLinesAndPolygons()
 {
+    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
+
     // Remove line and polygon items from the scene and clear the lines and polygons vector
     std::vector< QGraphicsItem* >::iterator linesAndPolygonsIt;
     for( linesAndPolygonsIt = m_linesAndPolygons.begin() ; linesAndPolygonsIt != m_linesAndPolygons.end() ; ++linesAndPolygonsIt)
@@ -196,9 +198,20 @@ void TransferFunction::buildLinesAndPolygons()
 
     m_linesAndPolygons.clear();
 
-    // Ratio between the current size of the widget  and its initial size
-    ViewSizeRatio ratio = this->getViewSizeRatio();
+    if (selectedTF->getInterpolationMode() == ::fwData::TransferFunction::LINEAR)
+    {
+        this->buildLinearLinesAndPolygons();
+    }
+    else
+    {
+        this->buildNearestLinesAndPolygons();
+    }
+}
 
+//-----------------------------------------------------------------------------
+
+void TransferFunction::buildLinearLinesAndPolygons()
+{
     // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
     for ( std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin() ; circleIt != m_circles.end()-1 ; ++circleIt)
     {
@@ -235,6 +248,67 @@ void TransferFunction::buildLinesAndPolygons()
 
         // Set gradient, opacity and pen to the polygon
         poly->setBrush( QBrush( grad ) );
+        poly->setOpacity(0.8);
+        poly->setPen(QPen(Qt::NoPen));
+        poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+        poly->setZValue( 1 );
+
+        // Push the polygon back into the lines and polygons vector
+        m_linesAndPolygons.push_back(poly);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void TransferFunction::buildNearestLinesAndPolygons()
+{
+    // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
+    for ( std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin() ; circleIt != m_circles.end() ; ++circleIt)
+    {
+        QGraphicsEllipseItem* circle = *circleIt;
+        QGraphicsEllipseItem* previousCircle;
+        if (circleIt == m_circles.begin())
+        {
+            previousCircle = circle;
+        }
+        else
+        {
+            previousCircle = *(circleIt-1);
+        }
+        QGraphicsEllipseItem* nextCircle;
+        if (circleIt == m_circles.end()-1)
+        {
+            nextCircle = circle;
+        }
+        else
+        {
+            nextCircle = *(circleIt+1);
+        }
+
+        double x1 = previousCircle->rect().x() + previousCircle->pos().x() + (circle->pos().x() + circle->rect().x()
+                - (previousCircle->pos().x() + previousCircle->rect().x()))/2 + m_circleWidth /2;
+        double x2 = circle->rect().x() + circle->pos().x() + (nextCircle->pos().x() + nextCircle->rect().x()
+                - (circle->pos().x() + circle->rect().x()))/2 + m_circleWidth /2;
+        double y = circle->rect().y() + circle->pos().y() + m_circleHeight / 2;
+        // Build the line between the actual and the next TF Point and push it back into the lines and polygons vector
+        QGraphicsLineItem* line = new QGraphicsLineItem(x1, y, x2, y);
+        line->setPen(m_linePen);
+        line->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+        line->setZValue( 2 );
+
+        m_linesAndPolygons.push_back(line);
+
+        // Build the points vector defining the polygon and build the polygon
+        QVector<QPointF> vect;
+        vect.append(QPointF(line->line().x1(), 0));
+        vect.append(QPointF(line->line().x1(), line->line().y1()));
+        vect.append(QPointF(line->line().x2(), line->line().y2()));
+        vect.append(QPointF(line->line().x2(), 0));
+
+        QGraphicsPolygonItem* poly = new QGraphicsPolygonItem( QPolygonF( vect ) );
+
+        // Set gradient, opacity and pen to the polygon
+        poly->setBrush( circle->brush() );
         poly->setOpacity(0.8);
         poly->setPen(QPen(Qt::NoPen));
         poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
@@ -695,11 +769,8 @@ void TransferFunction::doubleClickEvent( ::scene2D::data::Event::sptr _event)
     double x = this->getScene2DRender()->mapToScene(_event->getCoord()).getX();
     double y = this->getScene2DRender()->mapToScene(_event->getCoord()).getY();
 
-    double window = selectedTF->getWindow();
-    double wlMin = selectedTF->getWLMinMax().first;
-
     // Transform the x and y coordinates with axis scaling and type
-    Point2DType _xy((x - wlMin) / window , y );
+    Point2DType _xy(x , y );
     Point2DType values = this->mapSceneToAdaptor(_xy , m_xAxis, m_yAxis);
 
     ::fwData::TransferFunction::TFDataType::iterator nextTFPointIt = m_TFPoints.begin();

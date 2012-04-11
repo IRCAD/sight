@@ -109,6 +109,12 @@ private:
     ///  lines and gradient polygons generated from m_circles.
     SCENE2D_API void buildLinesAndPolygons();
 
+    /// Create lines and gradient polygons generated from m_circles
+    SCENE2D_API void buildLinearLinesAndPolygons();
+
+    /// Create lines and polygons generated from m_circles
+    SCENE2D_API void buildNearestLinesAndPolygons();
+
     /// Add the items from m_circles and m_linesAndPolygons to m_layer, set its position and its zValue and add
     /// it to the scene.
     SCENE2D_API void buildLayer();
