@@ -208,6 +208,7 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
 
         BOOST_FOREACH(::fwData::Study::sptr pStudy, pPatient->getStudies() )
         {
+            indexA = 0;
             BOOST_FOREACH(::fwData::Acquisition::sptr pAcquisition, pStudy->getAcquisitions() )
             {
                 ::fwData::Image::sptr image = pAcquisition->getImage();
