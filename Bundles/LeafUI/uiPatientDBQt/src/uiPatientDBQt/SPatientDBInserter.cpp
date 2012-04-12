@@ -4,19 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// Service associated data
-#include <fwData/PatientDB.hpp>
-
 // Services tools
 #include <fwServices/Base.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include "uiPatientDBQt/SPatientDBInserter.hpp"
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IDialogEditor, ::uiPatientDBQt::SPatientDBInserter, ::fwData::PatientDB );
+REGISTER_SERVICE( ::io::IWriter, ::uiPatientDBQt::SPatientDBInserter, ::fwTools::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -25,7 +24,7 @@ namespace uiPatientDBQt
 
 //-----------------------------------------------------------------------------
 
-SPatientDBInserter::SPatientDBInserter()
+SPatientDBInserter::SPatientDBInserter() : m_patientDBfwID("")
 {
     this->handlingEventOff();
 }
@@ -39,12 +38,17 @@ SPatientDBInserter::~SPatientDBInserter() throw()
 
 void SPatientDBInserter::configuring() throw ( ::fwTools::Failed )
 {
-    ::fwRuntime::ConfigurationElement::sptr imgConfig = m_configuration->findConfigurationElement("image");
-    SLM_ASSERT("Sorry you must have an 'image' element to configure this service", imgConfig );
-    SLM_ASSERT("Sorry you must have a 'selectionUid' attribute for 'image' element to configure this service", imgConfig->hasAttribute("selectionUid") );
-    SLM_ASSERT("Sorry you must have a 'key' attribute for 'image' element to configure this service", imgConfig->hasAttribute("key") );
-    m_selectionUid = imgConfig->getAttributeValue("selectionUid");
-    m_selectionKey = imgConfig->getAttributeValue("key");
+    ::fwRuntime::ConfigurationElement::sptr patientDBConfig = m_configuration->findConfigurationElement("patientDB");
+    SLM_ASSERT("Sorry you must have an 'patientDB' element to configure this service", patientDBConfig );
+    SLM_ASSERT("Sorry you must have a 'fwID' attribute for 'patientDB' element to configure this service", patientDBConfig->hasAttribute("fwID") );
+    m_patientDBfwID = patientDBConfig->getAttributeValue("fwID");
+}
+
+//-----------------------------------------------------------------------------
+
+void SPatientDBInserter::configureWithIHM()
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -61,17 +65,60 @@ void SPatientDBInserter::stopping() throw ( ::fwTools::Failed )
 
 void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
 {
-    ::fwData::PatientDB::sptr pDocumentPDB = this->getObject< ::fwData::PatientDB >();
-    SLM_ASSERT("pDocumentPDB not instanced", pDocumentPDB);
-
-    // Load a new patient DB
-    ::fwData::PatientDB::sptr pPDB;
-    pPDB = this->createPDB();
-
-    // Merge document
-    if ( pPDB )
+    if(m_patientDBfwID.empty())
     {
-        ::fwComEd::fieldHelper::MedicalImageHelpers::mergePatientDBInfo( pPDB, pDocumentPDB, this->getSptr() );
+    ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "PatientDB Inserter",
+            "SPatientDBInserter is not properly configured.\nPatienDB is missing.",
+            ::fwGui::dialog::MessageDialog::WARNING);
+    }
+    else
+    {
+        ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
+
+        ::fwData::PatientDB::sptr pdb   = ::fwData::PatientDB::dynamicCast(object);
+        ::fwData::Patient::sptr patient = ::fwData::Patient::dynamicCast(object);
+        ::fwData::Study::sptr study     = ::fwData::Study::dynamicCast(object);
+        ::fwData::Acquisition::sptr acq = ::fwData::Acquisition::dynamicCast(object);
+        ::fwData::Image::sptr img       = ::fwData::Image::dynamicCast(object);
+
+        // Load a new patient DB
+        ::fwData::PatientDB::sptr pPDB;
+        if(pdb)
+        {
+            pPDB = pdb;
+        }
+        else if(patient)
+        {
+            pPDB = this->createPDB(patient);
+        }
+        else if(study)
+        {
+            pPDB = this->createPDB(study);
+        }
+        else if(acq)
+        {
+            pPDB = this->createPDB(acq);
+        }
+        else if(img)
+        {
+            pPDB = this->createPDB(img);
+        }
+        else
+        {
+            std::stringstream stream;
+            stream << " Sorry, object " << object->getLeafClassname() << " is not supported.";
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "PatientDB Inserter",
+                    stream.str(),
+                    ::fwGui::dialog::MessageDialog::WARNING);
+        }
+
+        // Merge document
+        if ( pPDB )
+        {
+            ::fwComEd::fieldHelper::MedicalImageHelpers::mergePatientDBInfo( pPDB, this->getPatientDB(), this->getSptr() );
+        }
     }
 }
 
@@ -91,46 +138,52 @@ void SPatientDBInserter::swapping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-::fwData::PatientDB::sptr SPatientDBInserter::createPDB() const
+::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Patient::sptr patient) const
 {
-    ::fwData::PatientDB::sptr patientDB;
-    ::fwData::Image::sptr img = this->getImageFromSelection();
-    if ( img )
-    {
-        patientDB = ::fwData::PatientDB::New();
-        ::fwData::Patient::NewSptr patient;
-        ::fwData::Study::NewSptr study;
-        ::fwData::Acquisition::NewSptr acquisition;
-
-        patientDB->addPatient( patient );
-        patient->addStudy( study );
-        patient->setName("anonymous");
-        patient->setFirstname("anonymous");
-        study->addAcquisition( acquisition );
-        study->setHospital("Ircad");
-        acquisition->setImage( img );
-    }
+    ::fwData::PatientDB::NewSptr patientDB;
+    patientDB->addPatient( patient );
     return patientDB;
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Image::sptr SPatientDBInserter::getImageFromSelection() const
+::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Study::sptr study) const
 {
-    ::fwData::Image::sptr img;
-    ::fwData::Composite::sptr composite =  ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_selectionUid ) );
-    OSLM_ASSERT( "Sorry, selection object (fwId="<< m_selectionUid<<") does not exist in the system or it is not a composite object", composite );
+    ::fwData::Patient::NewSptr patient;
+    patient->addStudy(study);
+    patient->setName("anonymous");
+    patient->setFirstname("anonymous");
+    return this->createPDB(patient);
+}
 
-    ::fwData::Composite::ContainerType::iterator it = composite->find( m_selectionKey );
-    if ( it != composite->end() )
-    {
-        ::fwData::Image::sptr imgTmp = ::fwData::Image::dynamicCast( it->second );
-        if( ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( imgTmp ) )
-        {
-            img = imgTmp;
-        }
-    }
-    return img;
+//-----------------------------------------------------------------------------
+
+::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Acquisition::sptr acq) const
+{
+    ::fwData::Study::NewSptr study;
+    study->setHospital("Ircad");
+    study->addAcquisition(acq);
+    return this->createPDB(study);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Image::sptr img) const
+{
+    ::fwData::Acquisition::NewSptr acquisition;
+    acquisition->setImage(img);
+    return this->createPDB(acquisition);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::PatientDB::sptr SPatientDBInserter::getPatientDB() const
+{
+    ::fwData::PatientDB::sptr pdb;
+    pdb =  ::fwData::PatientDB::dynamicCast( ::fwTools::fwID::getObject( m_patientDBfwID ) );
+    OSLM_ASSERT( "Sorry, selection object (fwId="<< m_patientDBfwID<<") does not exist in the system or it is not a PatientDB object", pdb );
+
+    return pdb;
 }
 
 //-----------------------------------------------------------------------------

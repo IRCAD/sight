@@ -19,9 +19,10 @@
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IDialogEditor</type>
+        <type>::io::IWriter</type>
         <service>::uiPatientDBQt::SPatientDBInserter</service>
-        <object>::fwData::PatientDB</object>
+        <object>::fwTools::Object</object>
+        <desc>Insert object in PatientDB</desc>
     </extension>
         
 </plugin>
