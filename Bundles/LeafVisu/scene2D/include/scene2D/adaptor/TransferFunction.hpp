@@ -86,9 +86,6 @@ protected:
 
 private:
 
-    /// Check if the item contains the coordinates.
-    SCENE2D_API bool coordViewIsInItem( const ::scene2D::data::Coord & _coord, QGraphicsItem * _item );
-
     /// Convert the view coordinates to item coordinates.
     SCENE2D_API ::scene2D::data::Coord coordViewToCoordItem( const ::scene2D::data::Coord & _coord );
 
