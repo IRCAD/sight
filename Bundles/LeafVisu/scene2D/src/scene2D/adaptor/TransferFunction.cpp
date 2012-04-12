@@ -585,13 +585,13 @@ void TransferFunction::processInteraction( ::scene2D::data::Event::sptr _event )
 
     QPoint scenePos = QPoint(_event->getCoord().getX(), _event->getCoord().getY());
 
-    QGraphicsItem* item = this->getScene2DRender()->getView()->itemAt(scenePos);
+    QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Iterate parallely on the circles vector and the tf points map
     ::fwData::TransferFunction::TFDataType::iterator TFPointIt = m_TFPoints.begin();
     BOOST_FOREACH(QGraphicsEllipseItem* circle, m_circles)
     {
-        if ( item == circle)
+        if ( items.indexOf(circle) >=0)
         {
             // If there is a double click
             if ( _event->getType() == ::scene2D::data::Event::MouseButtonDoubleClick )
