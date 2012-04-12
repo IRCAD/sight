@@ -205,12 +205,12 @@ void TransferFunction::buildLinesAndPolygons()
     else
     {
         this->buildNearestLinesAndPolygons();
+        if (!selectedTF->getIsClamped())
+        {
+            this->buildBounds();
+        }
     }
 
-    if (!selectedTF->getIsClamped())
-    {
-        this->buildBounds();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -287,50 +287,77 @@ void TransferFunction::buildBounds()
 
 void TransferFunction::buildLinearLinesAndPolygons()
 {
+    SLM_ASSERT("Circles must not be empty", !m_circles.empty());
+
+    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
+    ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+
+    QVector<QPointF> vect;
+    QLinearGradient grad;
+
+    QGraphicsEllipseItem* firtsCircle = m_circles.front();
+    QGraphicsEllipseItem* lastCircle = m_circles.back();
+
+
+    double xBegin;
+    double xEnd;
+    if (selectedTF->getIsClamped())
+    {
+        xBegin = firtsCircle->rect().x() + firtsCircle->pos().x() + m_circleWidth / 2;
+        xEnd = lastCircle->rect().x() + lastCircle->pos().x() + m_circleWidth / 2;
+        vect.append(QPointF(xBegin, 0));
+    }
+    else
+    {
+        xBegin = viewport->getX()-10;
+        xEnd = viewport->getX() + viewport->getWidth() +10 ;
+        vect.append(QPointF(xBegin, 0));
+        vect.append(QPointF(xBegin, firtsCircle->rect().y() + firtsCircle->pos().y() + m_circleHeight / 2));
+    }
+
+    grad.setColorAt(0 ,  firtsCircle->brush().color());
+
+    grad.setStart( xBegin, 0);
+    grad.setFinalStop( xEnd, 0 );
+
+    double distanceMax = xEnd - xBegin;
+
     // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
     for ( std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin() ; circleIt != m_circles.end()-1 ; ++circleIt)
     {
-        // Build the line between the actual and the next TF Point and push it back into the lines and polygons vector
-        QGraphicsLineItem* line = new QGraphicsLineItem(
-                (*circleIt)->rect().x() + (*circleIt)->pos().x() + m_circleWidth / 2,
-                (*circleIt)->rect().y() + (*circleIt)->pos().y() + m_circleHeight / 2,
-                (*(circleIt + 1))->rect().x() + (*(circleIt + 1))->pos().x() + m_circleWidth / 2,
-                (*(circleIt + 1))->rect().y() + (*(circleIt + 1))->pos().y() + m_circleHeight / 2 );
-        line->setPen(m_linePen);
-        line->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
-        line->setZValue( 2 );
+        QPointF p1((*circleIt)->rect().x() + (*circleIt)->pos().x() + m_circleWidth / 2,
+                   (*circleIt)->rect().y() + (*circleIt)->pos().y() + m_circleHeight / 2);
+        QPointF p2((*(circleIt + 1))->rect().x() + (*(circleIt + 1))->pos().x() + m_circleWidth / 2,
+                   (*(circleIt + 1))->rect().y() + (*(circleIt + 1))->pos().y() + m_circleHeight / 2);
 
-        m_linesAndPolygons.push_back(line);
-
-        // Build the points vector defining the polygon and build the polygon
-        QVector<QPointF> vect;
-        vect.append(QPointF(line->line().x1(), 0));
-        vect.append(QPointF(line->line().x1(), line->line().y1()));
-        vect.append(QPointF(line->line().x2(), line->line().y2()));
-        vect.append(QPointF(line->line().x2(), 0));
-
-        QGraphicsPolygonItem* poly = new QGraphicsPolygonItem( QPolygonF( vect ) );
-
-        QColor circle = (*circleIt)->brush().color();
-        QColor circleNext = (*(circleIt + 1))->brush().color();
+        vect.append(p1);
+        vect.append(p2);
 
         // Build the gradient
-        QLinearGradient grad;
-        grad.setStart( line->line().x1(), 0);
-        grad.setFinalStop( line->line().x2(), 0 );
-        grad.setColorAt(0 , QColor(circle.redF()*255, circle.greenF()*255, circle.blueF()*255));
-        grad.setColorAt(1 , QColor(circleNext.redF()*255, circleNext.greenF()*255, circleNext.blueF()*255));
-
-        // Set gradient, opacity and pen to the polygon
-        poly->setBrush( QBrush( grad ) );
-        poly->setOpacity(0.8);
-        poly->setPen(QPen(Qt::NoPen));
-        poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
-        poly->setZValue( 1 );
-
-        // Push the polygon back into the lines and polygons vector
-        m_linesAndPolygons.push_back(poly);
+        grad.setColorAt((p1.x() - xBegin)/distanceMax ,  (*circleIt)->brush().color());
     }
+
+    if (!selectedTF->getIsClamped())
+    {
+        vect.append(QPointF(xEnd, lastCircle->rect().y() + lastCircle->pos().y() + m_circleHeight / 2));
+        double lastCircleX = lastCircle->rect().x() + lastCircle->pos().x() + m_circleWidth / 2;
+        grad.setColorAt((lastCircleX-xBegin)/distanceMax , lastCircle->brush().color());
+    }
+    vect.append(QPointF(xEnd, 0));
+    grad.setColorAt(1 , lastCircle->brush().color());
+
+
+
+    QGraphicsPolygonItem* poly = new QGraphicsPolygonItem( QPolygonF( vect ) );
+    // Set gradient, opacity and pen to the polygon
+    poly->setBrush( QBrush( grad ) );
+    poly->setOpacity(0.8);
+    poly->setPen(m_linePen);
+    poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    poly->setZValue( 1 );
+
+    // Push the polygon back into the lines and polygons vector
+    m_linesAndPolygons.push_back(poly);
 }
 
 //-----------------------------------------------------------------------------
