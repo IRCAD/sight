@@ -795,6 +795,12 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
             double x = (newCoordPair.first > oldCoordPair.first) ? (nextValues.first - 1) : (previousValues.first + 1);
             x = this->mapAdaptorToScene(Point2DType( x, 0 ), m_xAxis, m_yAxis).first;
 
+            QRectF rect = circle->rect();
+            const double width = rect.width();
+            rect.setX( x );
+            rect.setWidth( width );
+            circle->setRect( rect );
+
             circle->setPos( 0, circle->pos().y() + (newCoord.getY() - m_oldCoord.getY()) );
 
             m_oldCoord.setX( x );
@@ -816,6 +822,12 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
                 // which is the highest value for opacity
                 y = this->mapAdaptorToScene(Point2DType( 0, 1 ), m_xAxis, m_yAxis).second;
             }
+
+            QRectF rect = circle->rect();
+            const double height = rect.height();
+            rect.setY( y - m_circleHeight / 2 );
+            rect.setHeight( height );
+            circle->setRect( rect );
 
             circle->setPos( circle->pos().x() + (newCoord.getX() - m_oldCoord.getX()), 0);  // position within item's rect
 
