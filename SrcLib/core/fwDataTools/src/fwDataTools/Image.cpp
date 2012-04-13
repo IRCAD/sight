@@ -16,7 +16,6 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
-
 #include "fwDataTools/Image.hpp"
 
 
