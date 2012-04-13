@@ -6,10 +6,12 @@
 
 // Services tools
 #include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
 
 #include "uiPatientDBQt/SPatientDBInserter.hpp"
 
@@ -48,7 +50,29 @@ void SPatientDBInserter::configuring() throw ( ::fwTools::Failed )
 
 void SPatientDBInserter::configureWithIHM()
 {
+    if(m_patientDBfwID.empty())
+    {
+        std::vector< std::string > availablePatientDB;
+        std::vector<  ::fwTools::Object::sptr > allObjs =  ::fwServices::OSR::getObjects();
+        BOOST_FOREACH(::fwTools::Object::sptr obj, allObjs)
+        {
+            ::fwData::PatientDB::sptr pdb = ::fwData::PatientDB::dynamicCast(obj);
+            if( pdb )
+            {
+                availablePatientDB.push_back(pdb->getID());
+            }
+        }
+        ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
 
+        ::fwGui::dialog::SelectorDialog::NewSptr selector;
+        selector->setSelections(availablePatientDB);
+        selector->setTitle("Select PatientDB");
+        std::stringstream stream;
+        stream << "Select a PatientDB to push specified "<< object->getLeafClassname() << " object";
+        selector->setMessage(stream.str());
+        std::string selection = selector->show();
+        m_patientDBfwID = selection;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +91,7 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
 {
     if(m_patientDBfwID.empty())
     {
-    ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
             "PatientDB Inserter",
             "SPatientDBInserter is not properly configured.\nPatienDB is missing.",
             ::fwGui::dialog::MessageDialog::WARNING);
@@ -86,23 +110,33 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
         ::fwData::PatientDB::sptr pPDB;
         if(pdb)
         {
-            pPDB = pdb;
+            ::fwData::PatientDB::NewSptr copy;
+            copy->deepCopy(pdb);
+            pPDB = copy;
         }
         else if(patient)
         {
-            pPDB = this->createPDB(patient);
+            ::fwData::Patient::NewSptr copy;
+            copy->deepCopy(patient);
+            pPDB = this->createPDB(copy);
         }
         else if(study)
         {
-            pPDB = this->createPDB(study);
+            ::fwData::Study::NewSptr copy;
+            copy->deepCopy(study);
+            pPDB = this->createPDB(copy);
         }
         else if(acq)
         {
-            pPDB = this->createPDB(acq);
+            ::fwData::Acquisition::NewSptr copy;
+            copy->deepCopy(acq);
+            pPDB = this->createPDB(copy);
         }
         else if(img)
         {
-            pPDB = this->createPDB(img);
+            ::fwData::Image::NewSptr copy;
+            copy->deepCopy(img);
+            pPDB = this->createPDB(copy);
         }
         else
         {
