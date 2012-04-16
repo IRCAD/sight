@@ -11,6 +11,19 @@ namespace fwMath
 {
 
 /**
+ * @brief Returns true iff a and b are equal with 'epsilon' error margin
+ * @param a value to compare
+ * @param b value to compare
+ * @param epsilon : error margin
+ * @return true iff a and b are equal with 'epsilon' error margin
+ */
+template < typename TYPE >
+bool isEqual(TYPE a, TYPE b, const float epsilon = 0.00001)
+{
+    return fabs(a - b) < epsilon;
+}
+
+/**
  * @brief Returns true iff container a and b are equal with 'epsilon' error margin
  * @param containerA container to compare
  * @param containerB container to compare
@@ -26,8 +39,8 @@ bool isContainerEqual(CONTAINER&  containerA, CONTAINER& containerB, const float
         return false;
     }
 
-    CONTAINER::const_iterator iterA = containerA.begin();
-    CONTAINER::const_iterator iterB = containerB.begin();
+    typename CONTAINER::const_iterator iterA = containerA.begin();
+    typename CONTAINER::const_iterator iterB = containerB.begin();
 
     while(isEqual && iterA != containerA.end())
     {
@@ -37,19 +50,6 @@ bool isContainerEqual(CONTAINER&  containerA, CONTAINER& containerB, const float
     }
 
     return isEqual;
-}
-
-/**
- * @brief Returns true iff a and b are equal with 'epsilon' error margin
- * @param a value to compare
- * @param b value to compare
- * @param epsilon : error margin
- * @return true iff a and b are equal with 'epsilon' error margin
- */
-template < typename TYPE >
-bool isEqual(TYPE a, TYPE b, const float epsilon = 0.00001)
-{
-    return fabs(a - b) < epsilon;
 }
 
 } // namespace fwMath
