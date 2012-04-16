@@ -41,6 +41,7 @@ void ArrayTest::allocation()
 {
     ::fwData::Array::NewSptr array;
 
+    CPPUNIT_ASSERT(array->getBuffer() == NULL);
     CPPUNIT_ASSERT(array->getSize().empty());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
 
@@ -49,6 +50,7 @@ void ArrayTest::allocation()
     size += 10,100;
 
     array->resize("uint32", size, NB_COMPONENT, true);
+    CPPUNIT_ASSERT(array->getBuffer() != NULL);
 
     CPPUNIT_ASSERT_EQUAL(size.size(), array->getNumberOfDimensions());
     CPPUNIT_ASSERT_EQUAL(size[0], array->getSize()[0]);
@@ -72,8 +74,11 @@ void ArrayTest::allocation()
         buffer[i] = i;
     }
 
-    array->resize(::fwTools::Type::create("uint8"), size, 1);
-    array->setBuffer(buffer);
+    // array->resize(::fwTools::Type::create("uint8"), size, 1);
+    // array->setBuffer(buffer);
+
+    array->setBuffer(buffer, false, ::fwTools::Type::create("uint8"), size, 1);
+
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getBufferOffset(list_of(1)(0), 0, 4));
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)1*10*100, array->getSizeInBytes());
@@ -103,8 +108,13 @@ void ArrayTest::resize()
 
     array->resize("uint32", size, NB_COMPONENT, true);
 
+    // CPPUNIT_ASSERT(array->getBuffer() != NULL);
+    // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
+
     unsigned int count = 0;
     unsigned int *iter = array->begin<unsigned int>();
+
+    // CPPUNIT_ASSERT(iter != NULL);
     for (; iter != array->end<unsigned int>() ; ++iter)
     {
         *iter = count++;
@@ -191,6 +201,8 @@ void ArrayTest::reallocate()
     size += 10,100;
 
     array->resize("uint32", size, NB_COMPONENT, true);
+    // CPPUNIT_ASSERT(array->getBuffer() != NULL);
+    // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
     unsigned int *iter = array->begin<unsigned int>();
@@ -317,6 +329,8 @@ void ArrayTest::copy()
     size += 10,100;
 
     array->resize("uint32", size, NB_COMPONENT, true);
+    CPPUNIT_ASSERT(array->getBuffer() != NULL);
+    CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
     unsigned int *iter = array->begin<unsigned int>();

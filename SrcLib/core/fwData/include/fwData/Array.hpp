@@ -8,6 +8,7 @@
 #define _FWDATA_ARRAY_HPP_
 
 #include <fwTools/Type.hpp>
+#include <fwTools/BufferObject.hpp>
 
 #include "fwData/Exception.hpp"
 
@@ -127,7 +128,7 @@ public :
      *
      * @return Pointer to the requested item in the buffer
      */
-    FWDATA_API virtual void* getItem(const IndexType &id, const size_t component = 0) const;
+    FWDATA_API virtual void* getItem(const IndexType &id, const size_t component = 0);
 
     /**
      * @brief Typed version of getItem
@@ -138,7 +139,7 @@ public :
      *
      * @return Array buffer pointer casted to T
      */
-    template< typename T > T* getItem(const IndexType &id, const size_t component = 0) const;
+    template< typename T > T* getItem(const IndexType &id, const size_t component = 0);
 
     /**
      * @brief Copies the data into the buffer pointed by <value>
@@ -154,17 +155,12 @@ public :
      * @brief Getter for the array buffer
      *
      * @return Array's buffer, if exists, else NULL
+     * @{
      */
-    FWDATA_API virtual void *getBuffer() const;
+    FWDATA_API virtual void *getBuffer();
+    FWDATA_API virtual const void *getBuffer() const;
+    ///@}
 
-    /**
-     * @brief Setter for the array buffer.
-     * An existing buffer will be released if the array own it.
-     *
-     * @param buf Buffer to set as Array's buffer
-     * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
-     */
-    FWDATA_API virtual void setBuffer(void *buf, bool takeOwnership = false);
 
     /**
      * @brief Setter for the array buffer.
@@ -182,14 +178,15 @@ public :
                                 const ::fwTools::Type &type,const SizeType &size, size_t nbOfComponents );
 
     /// Returns the begining/end of the buffer interpreted as a char buffer
-    virtual char* begin() const;
-    virtual char* end() const;
+    virtual char* begin();
+    virtual char* end();
+    virtual const char* begin() const;
+    virtual const char* end() const;
+
 
     /// Returns the begining/end of the buffer, casted to T
-    template< typename T > T* begin() const;
-    template< typename T > T* end() const;
-    template< typename T > const T* cbegin() const;
-    template< typename T > const T* cend() const;
+    template< typename T > T* begin();
+    template< typename T > T* end();
 
     /**
      * @brief Test whether array is empty
@@ -307,8 +304,11 @@ public :
      * @param sizeOfType size of a component
      *
      * @return buffer item pointer
+     * @{
      */
-    FWDATA_API char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+    FWDATA_API char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType );
+    FWDATA_API const char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+    ///@}
 
     /**
      * @brief Compute strides for given parameters
@@ -329,6 +329,15 @@ protected:
     Array( const Array& );
     const Array & operator= ( const Array& );
 
+    /**
+     * @brief Protected setter for the array buffer.
+     * An existing buffer will be released if the array own it.
+     *
+     * @param buf Buffer to set as Array's buffer
+     * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
+     */
+    FWDATA_API virtual void setBuffer(void *buf, bool takeOwnership = false);
+
     //-----------------------------------------------------------------------------
 
     OffsetType m_strides;
@@ -336,35 +345,28 @@ protected:
 
     //=============================================================================
     ::fwTools::Type m_type;
-    void * m_buffer;
+    // void * m_buffer;
+    ::fwTools::BufferObject::sptr m_buffer;
     SizeType  m_size;
     size_t m_nbOfComponents;
     bool   m_isBufferOwner;
 
 };
 
-template< typename T > T*       Array::begin() const
+template< typename T >
+T* Array::begin()
 {
-    return static_cast<T*>(m_buffer);
+    return static_cast<T*>(this->getBuffer());
 }
 
-template< typename T > T*       Array::end() const
+template< typename T >
+T* Array::end()
 {
-    //return reinterpret_cast<T*> (static_cast<char*>(m_buffer) + this->getSizeInBytes());
-    return reinterpret_cast<T*> (static_cast<char*>(m_buffer) + this->getSizeInBytes());
+    return reinterpret_cast<T*> (static_cast<char*>(this->getBuffer()) + this->getSizeInBytes());
 }
 
-template< typename T > const T* Array::cbegin() const
-{
-    return static_cast<const T*>(begin<T>());
-}
-
-template< typename T > const T* Array::cend() const
-{
-    return reinterpret_cast<const T*> (end<T>());
-}
-
-template< typename T > T* Array::getItem(const IndexType &id, const size_t component) const
+template< typename T >
+T* Array::getItem(const IndexType &id, const size_t component)
 {
     return static_cast<T*> (getItem(id, component));
 }
