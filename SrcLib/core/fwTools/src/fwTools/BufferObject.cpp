@@ -14,7 +14,7 @@ namespace fwTools
 BufferObject::BufferObject():
     m_buffer(0),
     m_size(0),
-    m_count((int*)NULL),
+    m_count(new long(0)),
     m_bufferManager(::fwTools::IBufferManager::getCurrent()),
     m_allocPolicy(::fwTools::BufferNoAllocPolicy::New())
 {
@@ -25,7 +25,9 @@ BufferObject::BufferObject():
 
 BufferObject::~BufferObject()
 {
+    OSLM_ASSERT("There is stil " << m_count << " locks on this BufferObject (" << this << ")", m_count > 0);
     m_bufferManager->unregisterBuffer(m_buffer);
+    delete m_count;
 }
 
 //------------------------------------------------------------------------------

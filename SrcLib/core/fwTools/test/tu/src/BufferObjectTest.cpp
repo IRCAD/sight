@@ -41,14 +41,14 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwTools::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
-    // CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->count() );
+    CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     {
         ::fwTools::BufferObject::Lock lock(bo->lock());
-        // CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->count() );
+        CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
         char *buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i; i<SIZE; ++i)
+        for (int i = 0; i<SIZE; ++i)
         {
             buf[i] = (i%256);
         }
@@ -58,14 +58,25 @@ void BufferObjectTest::allocateTest()
         ::fwTools::BufferObject::Lock lock(bo->lock());
         char *buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i; i<SIZE; ++i)
+        for (int i = 0; i<SIZE; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i%256), buf[i]);
         }
     }
 
+    CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
-    // CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->count() );
+    {
+        ::fwTools::BufferObject::Lock lock(bo->lock());
+        CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
+        ::fwTools::BufferObject::Lock lock2(bo->lock());
+        CPPUNIT_ASSERT_EQUAL( static_cast<long>(2), bo->lockCount() );
+        ::fwTools::BufferObject::csptr cbo = bo;
+        ::fwTools::BufferObject::ConstLock clock(cbo->lock());
+        CPPUNIT_ASSERT_EQUAL( static_cast<long>(3), bo->lockCount() );
+    }
+
+    CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     bo->destroy();
 
@@ -89,7 +100,7 @@ void BufferObjectTest::allocateTest()
         ::fwTools::BufferObject::Lock lock(bo->lock());
         char *buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i; i<SIZE; ++i)
+        for (int i = 0; i<SIZE; ++i)
         {
             buf[i] = (i%256);
         }
@@ -99,7 +110,7 @@ void BufferObjectTest::allocateTest()
         ::fwTools::BufferObject::Lock lock(bo->lock());
         char *buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i; i<SIZE; ++i)
+        for (int i = 0; i<SIZE; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i%256), buf[i]);
         }

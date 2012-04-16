@@ -41,31 +41,42 @@ public:
         typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
 
         LockBase( SPTR(T) bo ) :
-            m_bufferObject(bo)
+            m_bufferObject(bo),
+            m_count(0)
         {
-            if(bo)
-            {
-                m_count = bo->m_count;
-            }
+            SLM_ASSERT("Can't lock NULL object", bo);
+            m_count = bo->m_count;
+            SLM_ASSERT("Count pointer is NULL", m_count != 0);
+            ++(*m_count);
             this->lock();
         }
 
-        LockBase( const LockBase &other )
+        LockBase( const LockBase &other ):
+            m_count(0)
         {
+            SLM_ASSERT("Can't lock NULL object", other.m_bufferObject.lock());
             m_count = other.m_count;
+            SLM_ASSERT("Count pointer is NULL", m_count != 0);
+            ++(*m_count);
             m_bufferObject = other.m_bufferObject;
             this->lock();
         }
 
         ~LockBase()
         {
+            SLM_ASSERT("Count pointer is NULL", m_count != 0);
+            --(*m_count);
             this->unlock();
         }
 
         LockBase & operator= (const LockBase & other)
         {
             this->unlock();
+            SLM_ASSERT("Count pointer is NULL", m_count != 0);
+            --(*m_count);
             m_count = other.m_count;
+            SLM_ASSERT("Count pointer is NULL", m_count != 0);
+            ++(*m_count);
             m_bufferObject = other.m_bufferObject;
             this->lock();
         }
@@ -102,7 +113,7 @@ public:
             }
         }
 
-        ::boost::detail::shared_count m_count;
+        long *m_count;
         WPTR(T) m_bufferObject;
     };
 
@@ -133,15 +144,17 @@ public:
     FWTOOLS_API SizeType getSize() const { return m_size; };
     FWTOOLS_API bool isNull() const { return m_size == 0; };
 
-    FWTOOLS_API long count() const { return m_count.use_count(); };
+    FWTOOLS_API long lockCount() const { return *m_count; };
+    FWTOOLS_API long isLocked() const { return lockCount() != 0; };
 
 protected :
+
 
     void *m_buffer;
 
     SizeType m_size;
 
-    ::boost::detail::shared_count m_count;
+    long *m_count;
 
     ::fwTools::IBufferManager::sptr m_bufferManager;
 
