@@ -14,7 +14,9 @@ namespace fwTools
 BufferObject::BufferObject():
     m_buffer(0),
     m_size(0),
-    m_bufferManager(::fwTools::IBufferManager::getCurrent())
+    m_count((int*)NULL),
+    m_bufferManager(::fwTools::IBufferManager::getCurrent()),
+    m_allocPolicy(::fwTools::BufferNoAllocPolicy::New())
 {
     m_bufferManager->registerBuffer(m_buffer);
 }
@@ -57,6 +59,7 @@ void BufferObject::destroy()
     {
         m_allocPolicy->destroy(m_buffer);
     }
+    m_allocPolicy = ::fwTools::BufferNoAllocPolicy::New();
     m_size = 0;
 }
 

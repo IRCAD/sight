@@ -47,6 +47,17 @@ public:
     FWTOOLS_API static BufferAllocationPolicy::sptr New();
 };
 
+class FWTOOLS_CLASS_API BufferNoAllocPolicy : public BufferAllocationPolicy
+{
+public:
+    FWTOOLS_API void allocate(void *&buffer, BufferAllocationPolicy::SizeType size);
+    FWTOOLS_API void reallocate(void *&buffer, BufferAllocationPolicy::SizeType size);
+    FWTOOLS_API void destroy(void *&buffer);
+
+    FWTOOLS_API static BufferAllocationPolicy::sptr New();
+};
+
+
 }
 
 #endif /* _FWTOOLS_BUFFERALLOCATIONPOLICY_HPP_ */

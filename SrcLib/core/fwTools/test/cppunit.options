@@ -1,5 +1,5 @@
 
-CLASSTEST=[ 
+CLASSTEST=[
     'ClassFactoryRegistryTest',
     'DynamicTypeTest'         ,
     'MacrosTest'              ,
@@ -8,6 +8,7 @@ CLASSTEST=[
     'TypeTest'                ,
     'StringizerTest'          ,
     'UUIDTEST'                ,
+    'BufferObjectTest'        ,
     ]
 
 USE = ['boost']

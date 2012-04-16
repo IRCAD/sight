@@ -40,7 +40,8 @@ public:
 
         typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
 
-        LockBase( SPTR(T) bo ) : m_bufferObject(bo)
+        LockBase( SPTR(T) bo ) :
+            m_bufferObject(bo)
         {
             if(bo)
             {
@@ -72,7 +73,7 @@ public:
         BufferType getBuffer() const
         {
             SPTR(T) bufferObject = m_bufferObject.lock();
-            BufferType buffer = bufferObject.get();
+            BufferType buffer = bufferObject->m_buffer;
             return buffer;
         };
 
@@ -130,6 +131,9 @@ public:
     FWTOOLS_API virtual ConstLock lock() const;
 
     FWTOOLS_API SizeType getSize() const { return m_size; };
+    FWTOOLS_API bool isNull() const { return m_size == 0; };
+
+    FWTOOLS_API long count() const { return m_count.use_count(); };
 
 protected :
 

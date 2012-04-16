@@ -42,6 +42,8 @@ BufferAllocationPolicy::sptr BufferMallocPolicy::New()
 
 
 
+
+
 void BufferNewPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size)
 {
     buffer = new char[size];
@@ -59,6 +61,7 @@ void BufferNewPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType
 void BufferNewPolicy::destroy(void *&buffer)
 {
     delete[] static_cast<char*>(buffer);
+    buffer = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -70,6 +73,40 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 }
 
 //------------------------------------------------------------------------------
+
+
+
+
+
+void BufferNoAllocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+{
+    SLM_ASSERT("No Alloc Policy should not be called", 0);
+}
+
+//------------------------------------------------------------------------------
+
+void BufferNoAllocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+{
+    SLM_ASSERT("No Alloc Policy should not be called", 0);
+}
+
+//------------------------------------------------------------------------------
+
+void BufferNoAllocPolicy::destroy(void *&buffer)
+{
+    SLM_ASSERT("No Alloc Policy should not be called", 0);
+}
+
+//------------------------------------------------------------------------------
+
+
+BufferAllocationPolicy::sptr BufferNoAllocPolicy::New()
+{
+    return BufferAllocationPolicy::sptr(new BufferNoAllocPolicy);
+}
+
+//------------------------------------------------------------------------------
+
 
 
 
