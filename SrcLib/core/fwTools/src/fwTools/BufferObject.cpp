@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwTools/Exception.hpp"
 #include "fwTools/BufferObject.hpp"
 
 namespace fwTools
@@ -34,6 +35,7 @@ BufferObject::~BufferObject()
 
 void BufferObject::allocate(SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
+    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to allocate a locked BufferObject"), this->isLocked());
     m_allocPolicy = policy;
     m_size = size;
     if(m_bufferManager->allocateBuffer(m_buffer, size, policy))
@@ -46,6 +48,7 @@ void BufferObject::allocate(SizeType size, ::fwTools::BufferAllocationPolicy::sp
 
 void BufferObject::reallocate(SizeType size)
 {
+    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to reallocate a locked BufferObject"), this->isLocked());
     m_size = size;
     if(m_bufferManager->reallocateBuffer(m_buffer, size))
     {
@@ -57,6 +60,7 @@ void BufferObject::reallocate(SizeType size)
 
 void BufferObject::destroy()
 {
+    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to destroy a locked BufferObject"), this->isLocked());
     if(m_bufferManager->destroyBuffer(m_buffer))
     {
         m_allocPolicy->destroy(m_buffer);
@@ -69,6 +73,7 @@ void BufferObject::destroy()
 
 void BufferObject::setBuffer(void *buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
+    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to set buffer of a locked BufferObject"), this->isLocked());
     m_allocPolicy = policy;
     m_size   = size;
     m_buffer = buffer;

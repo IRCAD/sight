@@ -6,6 +6,7 @@
 
 #include <fwTools/BufferObject.hpp>
 #include <fwTools/BufferAllocationPolicy.hpp>
+#include <fwTools/Exception.hpp>
 
 #include "BufferObjectTest.hpp"
 
@@ -74,6 +75,12 @@ void BufferObjectTest::allocateTest()
         ::fwTools::BufferObject::csptr cbo = bo;
         ::fwTools::BufferObject::ConstLock clock(cbo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(3), bo->lockCount() );
+
+        CPPUNIT_ASSERT_THROW( bo->allocate(150), ::fwTools::Exception);
+        CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwTools::Exception);
+        CPPUNIT_ASSERT_THROW( bo->destroy(), ::fwTools::Exception);
+        CPPUNIT_ASSERT_THROW( bo->setBuffer(0,0), ::fwTools::Exception);
+
     }
 
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
