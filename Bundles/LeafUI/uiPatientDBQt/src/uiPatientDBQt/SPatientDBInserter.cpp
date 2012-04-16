@@ -134,9 +134,24 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
         }
         else if(img)
         {
-            ::fwData::Image::NewSptr copy;
-            copy->deepCopy(img);
-            pPDB = this->createPDB(copy);
+            bool exportImage = true;
+            if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(img))
+            {
+                ::fwGui::dialog::MessageDialog dialog;
+                dialog.setTitle("PatientDB Inserter");
+                dialog.setMessage("This image is not valid, would you really export it ?");
+                dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
+                dialog.addButton(::fwGui::dialog::MessageDialog::YES_NO);
+                ::fwGui::dialog::MessageDialog::Buttons result;
+                result = dialog.show();
+                exportImage = (result == ::fwGui::dialog::MessageDialog::YES);
+            }
+            if (exportImage)
+            {
+                ::fwData::Image::NewSptr copy;
+                copy->deepCopy(img);
+                pPDB = this->createPDB(copy);
+            }
         }
         else
         {
