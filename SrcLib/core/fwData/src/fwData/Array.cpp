@@ -184,7 +184,6 @@ size_t Array::resize(
 
     if(reallocate && (m_isBufferOwner || m_buffer->isNull()))
     {
-        ::fwTools::BufferObject::Lock lock(m_buffer->lock());
         if(m_buffer->isNull())
         {
             m_buffer->allocate(bufSize);
