@@ -140,6 +140,79 @@ void XMLTranslatorHelper::fromXML( ::fwData::Object::sptr toUpdate, xmlNodePtr s
     {
         obj = ObjectTracker::buildObject( className, id ); // create one with a new id
         fromXML(obj,source); //then fill with xml
+
+        // fill Attributes.
+        xmlNodePtr attributesNode   = XMLParser::findChildNamed( source, "Attributes");
+        if ( attributesNode )
+        {
+            xmlNodePtr elementNode = XMLParser::nextXMLElement(attributesNode->children);
+            while (elementNode)
+            {
+                std::string nodeName = (const char *) elementNode->name;
+                if ( nodeName == "element" )
+                {
+                    xmlNodePtr keyNode   = XMLParser::findChildNamed( elementNode, "key");
+                    xmlNodePtr valueNode = XMLParser::findChildNamed( elementNode, "value");
+                    SLM_ASSERT("keyNode not instanced", keyNode);
+                    SLM_ASSERT("valueNode not instanced", valueNode);
+                    OSLM_INFO( "CompositeXMLTranslator::updateDataFromXML"  << BAD_CAST xmlNodeGetContent(keyNode) );
+
+                    std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
+
+                    xmlNodePtr ConcretevalueNode = XMLParser::getChildrenXMLElement( valueNode );
+                    SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
+
+                    ::fwData::Object::sptr valueObj;
+                    std::string className = ObjectTracker::getClassname(ConcretevalueNode);
+                    std::string id        = ObjectTracker::getID(ConcretevalueNode);
+                    valueObj = ObjectTracker::buildObject( className, id ); // create one with a new id
+                    fromXML(valueObj, ConcretevalueNode);
+
+                    SLM_ASSERT("valueObj not instanced", valueObj);
+
+                    OSLM_ASSERT("Sorry, attribute " << key << " already exists.", ! obj->getField(key) );
+                    obj->setField( key, valueObj );
+                }
+                elementNode = XMLParser::nextXMLElement( elementNode->next );
+            }
+        }
+        // fill DynamicAttributes.
+        xmlNodePtr dynamicAttributesNode   = XMLParser::findChildNamed( source, "DynamicAttributes");
+        if (dynamicAttributesNode )
+        {
+            xmlNodePtr elementNode = XMLParser::nextXMLElement(attributesNode->children);
+            while (elementNode)
+            {
+                std::string nodeName = (const char *) source->name;
+                if ( nodeName == "element" )
+                {
+                    xmlNodePtr keyNode   = XMLParser::findChildNamed( elementNode, "key");
+                    xmlNodePtr valueNode = XMLParser::findChildNamed( elementNode, "value");
+                    SLM_ASSERT("keyNode not instanced", keyNode);
+                    SLM_ASSERT("valueNode not instanced", valueNode);
+                    OSLM_INFO( "CompositeXMLTranslator::updateDataFromXML"  << BAD_CAST xmlNodeGetContent(keyNode) );
+
+                    std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
+
+                    xmlNodePtr ConcretevalueNode = XMLParser::getChildrenXMLElement( valueNode );
+                    SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
+
+                    ::fwData::Object::sptr valueObj;
+                    std::string className = ObjectTracker::getClassname(ConcretevalueNode);
+                    std::string id        = ObjectTracker::getID(ConcretevalueNode);
+                    valueObj = ObjectTracker::buildObject( className, id ); // create one with a new id
+                    fromXML(valueObj, ConcretevalueNode);
+
+                    SLM_ASSERT("valueObj not instanced", valueObj);
+
+                    if(obj->hasAttribute(key))
+                    {
+                        obj->setAttribute( key, valueObj );
+                    }
+                }
+                elementNode = XMLParser::nextXMLElement( elementNode->next );
+            }
+        }
     }
     return obj;
 }
