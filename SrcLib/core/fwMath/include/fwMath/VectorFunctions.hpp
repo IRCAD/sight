@@ -119,7 +119,7 @@ FWMATH_API fwVec3d operator*(const double _val, const fwVec3d& _vec);
  */
 FWMATH_API fwVec3d operator/(const fwVec3d& _vec, double val);
 /**
- *  @brief operator + between tawo fwVec3d.
+ *  @brief operator + between two fwVec3d.
  *  @param [in] _vec1
  *  @param [in] _vec2
  *  @return the result of the operation _vec1 + _vec2

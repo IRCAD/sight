@@ -15,7 +15,7 @@
 namespace fwMath {
 
 /**
- * @brief Multiply amatrix by a vector
+ * @brief Multiply a matrix by a vector
  *  @param [in]  _matrix
  *  @param [in]  _source
  *  @param [out] _dest

@@ -4,11 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWMATH_TU_VECTORFUNCTIONSTEST_H
-#define FWMATH_TU_VECTORFUNCTIONSTEST_H
+#ifndef __FWMATH_TU_VECTORFUNCTIONSTEST_HPP__
+#define __FWMATH_TU_VECTORFUNCTIONSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
+
+namespace fwMath
+{
+namespace ut
+{
 
 class VectorFunctionsTest : public CPPUNIT_NS::TestFixture
 {
@@ -34,4 +39,7 @@ public:
     void checkNormalize();
 };
 
-#endif
+} //namespace ut
+} //namespace fwMath
+
+#endif //__FWMATH_TU_VECTORFUNCTIONSTEST_HPP__

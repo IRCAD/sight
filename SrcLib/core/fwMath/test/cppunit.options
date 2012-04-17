@@ -3,6 +3,7 @@ CLASSTEST=[
     'MatrixFunctionsTest',
     'PlaneFunctionsTest',
     'VectorFunctionsTest',
+    'CompareTest',
 ]
 
 USE = ['boost']

@@ -4,19 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWMATH_TU_MATRIXFUNCTIONSTEST_H
-#define FWMATH_TU_MATRIXFUNCTIONSTEST_H
+#ifndef __FWMATH_TU_MATRIXFUNCTIONSTEST_HPP__
+#define __FWMATH_TU_MATRIXFUNCTIONSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace fwMath
+{
+namespace ut
+{
 
 class MatrixFunctionsTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( MatrixFunctionsTest );
     CPPUNIT_TEST( checkMultVecMatrix);
     CPPUNIT_TEST_SUITE_END();
-
-protected:
 
 public:
     // interface
@@ -27,4 +29,7 @@ public:
     void checkRotationMatrix();
 };
 
-#endif
+} //namespace ut
+} //namespace fwMath
+
+#endif //__FWMATH_TU_MATRIXFUNCTIONSTEST_HPP__
