@@ -370,7 +370,13 @@ void SofaBusiness::translationPointer(OglModel *visual, ::fwData::Mesh::sptr pMe
     // Change pointer vertices
     float *verticesSofa = (float*) visual->getVertices()->getData()->data();
     ::fwData::Array::sptr pointArray = pMesh->getPointsArray();
-    pointArray->setBuffer(verticesSofa, false);
+    pointArray->setBuffer(
+            verticesSofa,
+            false,
+            pointArray->getType(),
+            pointArray->getSize(),
+            pointArray->getNumberOfComponents()
+            );
 }
 
 
