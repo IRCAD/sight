@@ -19,7 +19,7 @@ BufferObject::BufferObject():
     m_bufferManager(::fwTools::IBufferManager::getCurrent()),
     m_allocPolicy(::fwTools::BufferNoAllocPolicy::New())
 {
-    m_bufferManager->registerBuffer(m_buffer);
+    m_bufferManager->registerBuffer(&m_buffer, m_count);
 }
 
 //------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ BufferObject::BufferObject():
 BufferObject::~BufferObject()
 {
     OSLM_ASSERT("There is stil " << m_count << " locks on this BufferObject (" << this << ")", m_count > 0);
-    m_bufferManager->unregisterBuffer(m_buffer);
+    m_bufferManager->unregisterBuffer(&m_buffer);
     delete m_count;
 }
 
@@ -38,7 +38,7 @@ void BufferObject::allocate(SizeType size, ::fwTools::BufferAllocationPolicy::sp
     FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to allocate a locked BufferObject"), this->isLocked());
     m_allocPolicy = policy;
     m_size = size;
-    if(m_bufferManager->allocateBuffer(m_buffer, size, policy))
+    if(m_bufferManager->allocateBuffer(&m_buffer, size, policy))
     {
         policy->allocate(m_buffer, size);
     }
@@ -50,7 +50,7 @@ void BufferObject::reallocate(SizeType size)
 {
     FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to reallocate a locked BufferObject"), this->isLocked());
     m_size = size;
-    if(m_bufferManager->reallocateBuffer(m_buffer, size))
+    if(m_bufferManager->reallocateBuffer(&m_buffer, size))
     {
         m_allocPolicy->reallocate(m_buffer, size);
     }
@@ -61,7 +61,7 @@ void BufferObject::reallocate(SizeType size)
 void BufferObject::destroy()
 {
     FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to destroy a locked BufferObject"), this->isLocked());
-    if(m_bufferManager->destroyBuffer(m_buffer))
+    if(m_bufferManager->destroyBuffer(&m_buffer))
     {
         m_allocPolicy->destroy(m_buffer);
     }
@@ -78,7 +78,7 @@ void BufferObject::setBuffer(void *buffer, SizeType size, ::fwTools::BufferAlloc
     m_size   = size;
     m_buffer = buffer;
 
-    m_bufferManager->setBuffer(m_buffer, size, policy);
+    m_bufferManager->setBuffer(&m_buffer, size, policy);
 }
 
 //------------------------------------------------------------------------------

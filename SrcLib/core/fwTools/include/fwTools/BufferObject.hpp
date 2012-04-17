@@ -71,9 +71,9 @@ public:
 
         LockBase & operator= (const LockBase & other)
         {
-            this->unlock();
             SLM_ASSERT("Count pointer is NULL", m_count != 0);
             --(*m_count);
+            this->unlock();
             m_count = other.m_count;
             SLM_ASSERT("Count pointer is NULL", m_count != 0);
             ++(*m_count);
@@ -97,7 +97,7 @@ public:
             {
                 if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
                 {
-                    manager->lockBuffer(bufferObject->m_buffer);
+                    manager->lockBuffer(&(bufferObject->m_buffer));
                 }
             }
         }
@@ -108,7 +108,7 @@ public:
             {
                 if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
                 {
-                    manager->unlockBuffer(bufferObject->m_buffer);
+                    manager->unlockBuffer(&(bufferObject->m_buffer));
                 }
             }
         }
