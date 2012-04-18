@@ -54,7 +54,7 @@ inline size_t computeSize(
 Array::Array():
     m_strides(0),
     m_type(),
-    m_buffer(::fwTools::BufferObject::New()),
+    m_attrBufferObject(::fwTools::BufferObject::New()),
     m_size(0),
     m_nbOfComponents(0),
     m_isBufferOwner(false)
@@ -74,12 +74,12 @@ void Array::shallowCopy( Array::csptr _source )
 {
     this->fieldShallowCopy( _source );
 
-    m_strides        = _source->m_strides;
-    m_type           = _source->m_type;
-    m_buffer         = _source->m_buffer;
-    m_size           = _source->m_size;
-    m_nbOfComponents = _source->m_nbOfComponents;
-    m_isBufferOwner  = false;
+    m_strides          = _source->m_strides;
+    m_type             = _source->m_type;
+    m_attrBufferObject = _source->m_attrBufferObject;
+    m_size             = _source->m_size;
+    m_nbOfComponents   = _source->m_nbOfComponents;
+    m_isBufferOwner    = false;
 }
 
 //------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ void Array::deepCopy( Array::csptr _source )
 
     this->clear();
 
-    if( !_source->m_buffer->isNull() )
+    if( !_source->m_attrBufferObject->isEmpty() )
     {
         this->resize(_source->m_type, _source->m_size, _source->m_nbOfComponents, true);
         std::copy(_source->begin(), _source->end(), this->begin());
@@ -135,25 +135,25 @@ const char *Array::end() const
 
 void *Array::getBuffer()
 {
-    return m_buffer->lock().getBuffer();
+    return m_attrBufferObject->lock().getBuffer();
 }
 
 //------------------------------------------------------------------------------
 
 const void *Array::getBuffer() const
 {
-    return m_buffer->lock().getBuffer();
+    return m_attrBufferObject->lock().getBuffer();
 }
 
 //------------------------------------------------------------------------------
 void Array::setBuffer(void *buf, bool takeOwnership)
 {
-    if(!m_buffer->isNull() && m_isBufferOwner)
+    if(!m_attrBufferObject->isEmpty() && m_isBufferOwner)
     {
-        m_buffer->destroy();
+        m_attrBufferObject->destroy();
     }
-    m_buffer->setBuffer(buf, this->getSizeInBytes());
-    m_isBufferOwner = !m_buffer->isNull() && takeOwnership;
+    m_attrBufferObject->setBuffer(buf, this->getSizeInBytes());
+    m_isBufferOwner = !m_attrBufferObject->isEmpty() && takeOwnership;
 }
 
 //------------------------------------------------------------------------------
@@ -182,15 +182,15 @@ size_t Array::resize(
     size_t oldBufSize = this->getSizeInBytes();
     size_t bufSize = computeSize(type.sizeOf(), size, nbOfComponents);
 
-    if(reallocate && (m_isBufferOwner || m_buffer->isNull()))
+    if(reallocate && (m_isBufferOwner || m_attrBufferObject->isEmpty()))
     {
-        if(m_buffer->isNull())
+        if(m_attrBufferObject->isEmpty())
         {
-            m_buffer->allocate(bufSize);
+            m_attrBufferObject->allocate(bufSize);
         }
         else
         {
-            m_buffer->reallocate(bufSize);
+            m_attrBufferObject->reallocate(bufSize);
         }
         m_isBufferOwner = true;
     }
@@ -297,7 +297,7 @@ void Array::setNumberOfComponents(size_t nb)
             m_type,
             m_size,
             m_nbOfComponents,
-            (m_isBufferOwner && !m_buffer->isNull())
+            (m_isBufferOwner && !m_attrBufferObject->isEmpty())
             );
 }
 
@@ -344,7 +344,7 @@ void Array::setType(const ::fwTools::Type &type)
             m_type,
             m_size,
             m_nbOfComponents,
-            (m_isBufferOwner && !m_buffer->isNull())
+            (m_isBufferOwner && !m_attrBufferObject->isEmpty())
             );
 }
 

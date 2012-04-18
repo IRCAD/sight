@@ -321,6 +321,10 @@ public :
      */
     static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
+
+
+    fwDataGetSetSptrMacro(BufferObject, ::fwTools::BufferObject::sptr);
+
 protected:
     FWDATA_API Array();
     FWDATA_API virtual ~Array();
@@ -345,8 +349,7 @@ protected:
 
     //=============================================================================
     ::fwTools::Type m_type;
-    // void * m_buffer;
-    ::fwTools::BufferObject::sptr m_buffer;
+    ::fwTools::BufferObject::sptr m_attrBufferObject;
     SizeType  m_size;
     size_t m_nbOfComponents;
     bool   m_isBufferOwner;
