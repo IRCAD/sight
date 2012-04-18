@@ -164,12 +164,40 @@ bool BufferManager::lockBuffer(const void * const * buffer)
 
 //-----------------------------------------------------------------------------
 
+struct info_cmp
+{
+    template <typename T>
+    bool operator()(T a, T b)
+    {
+        return a.second.lastAccess > b.second.lastAccess;
+    }
+};
+
 bool BufferManager::unlockBuffer(const void * const * buffer)
 {
     SLM_TRACE_FUNC();
-    void **castedBuffer = const_cast<void **>(buffer);
-    bool dumped = this->dumpBuffer( castedBuffer );
-    OSLM_ASSERT( "Dump not OK ( "<< *castedBuffer <<" ).", !dumped || *castedBuffer == 0 );
+
+
+    int count = 10;
+    if(m_dumpedBufferInfos.size() > count)
+    {
+        typedef std::vector< std::pair<void **,  DumpedBufferInfo> > InfoVector;
+
+        InfoVector buffers(m_dumpedBufferInfos.begin(), m_dumpedBufferInfos.end());
+        std::sort(buffers.begin(), buffers.end(), info_cmp());
+        InfoVector::iterator iter = buffers.begin() + count;
+        for ( ; iter < buffers.end(); ++iter )
+        {
+            void **castedBuffer = const_cast<void **>(iter->first);
+            bool dumped = this->dumpBuffer( castedBuffer );
+        }
+
+        OSLM_WARN( ::fwTools::IBufferManager::getCurrent()->toString() );
+    }
+
+    // void **castedBuffer = const_cast<void **>(buffer);
+    // bool dumped = this->dumpBuffer( castedBuffer );
+    // OSLM_ASSERT( "Dump not OK ( "<< *castedBuffer <<" ).", !dumped || *castedBuffer == 0 );
     return true;
 }
 
