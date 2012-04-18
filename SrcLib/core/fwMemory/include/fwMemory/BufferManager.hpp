@@ -34,10 +34,8 @@ public:
             this->lockCount = NULL;
             this->isDumped = false;
             this->lastAccess.modified();
-            dumpbuf=0;
         }
 
-        void * dumpbuf;
         SizeType size;
         bool     isDumped;
         ::boost::filesystem::path dumpedFile;
@@ -63,10 +61,18 @@ public:
     FWMEMORY_API virtual bool lockBuffer(const void * const * buffer);
     FWMEMORY_API virtual bool unlockBuffer(const void * const * buffer);
 
-    FWMEMORY_API std::string toString() const;
+    FWMEMORY_API virtual std::string toString() const;
 
     FWMEMORY_API bool dumpBuffer(void ** buffer);
-    FWMEMORY_API bool loadBuffer(void ** buffer);
+    FWMEMORY_API bool restoreBuffer(void ** buffer, SizeType size = 0);
+
+    FWMEMORY_API bool writeBuffer(const void * buffer, SizeType size, ::boost::filesystem::path &path);
+    FWMEMORY_API bool readBuffer(void * buffer, SizeType size, ::boost::filesystem::path &path);
+
+
+
+
+    typedef std::map< void **,  DumpedBufferInfo > DumpedBufferInfoMapType;
 
     const DumpedBufferInfoMapType& getDumpedBufferInfoMap() const
     {
@@ -79,6 +85,7 @@ protected:
     FWMEMORY_API virtual ~BufferManager();
 
 
+    ::fwCore::LogicStamp m_lastAccess;
     DumpedBufferInfoMapType m_dumpedBufferInfos;
 };
 
