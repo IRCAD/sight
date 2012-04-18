@@ -18,7 +18,7 @@ class BufferManagerTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( BufferManagerTest );
     CPPUNIT_TEST( allocateTest );
-//    CPPUNIT_TEST( memoryInfoTest );
+    CPPUNIT_TEST( memoryInfoTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:

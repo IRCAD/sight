@@ -38,12 +38,12 @@ void BufferManagerTest::allocateTest()
     const int SIZE = 100000;
     ::fwTools::BufferObject::sptr bo = ::fwTools::BufferObject::New();
 
-    CPPUNIT_ASSERT( bo->isNull() );
+    CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
     bo->allocate(SIZE);
 
-    CPPUNIT_ASSERT( !bo->isNull() );
+    CPPUNIT_ASSERT( !bo->isEmpty() );
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwTools::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
@@ -80,33 +80,23 @@ void BufferManagerTest::allocateTest()
         ::fwTools::BufferObject::csptr cbo = bo;
         ::fwTools::BufferObject::ConstLock clock(cbo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(3), bo->lockCount() );
-
-        CPPUNIT_ASSERT_THROW( bo->allocate(150), ::fwTools::Exception);
-        CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwTools::Exception);
-        CPPUNIT_ASSERT_THROW( bo->destroy(), ::fwTools::Exception);
-        CPPUNIT_ASSERT_THROW( bo->setBuffer(0,0), ::fwTools::Exception);
-
     }
 
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     bo->destroy();
 
-    {
-        ::fwTools::BufferObject::Lock lock(bo->lock());
-        CPPUNIT_ASSERT( bo->isNull() );
-        CPPUNIT_ASSERT_EQUAL( (void *) NULL, bo->lock().getBuffer() );
-        CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
-    }
+    CPPUNIT_ASSERT( bo->isEmpty() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
 
 
-    CPPUNIT_ASSERT( bo->isNull() );
+    CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
     bo->allocate(SIZE, ::fwTools::BufferNewPolicy::New());
 
-    CPPUNIT_ASSERT( !bo->isNull() );
+    CPPUNIT_ASSERT( !bo->isEmpty() );
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwTools::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
@@ -135,7 +125,7 @@ void BufferManagerTest::allocateTest()
 
     bo->destroy();
 
-    CPPUNIT_ASSERT( bo->isNull() );
+    CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 }
 
@@ -170,6 +160,10 @@ void BufferManagerTest::memoryInfoTest()
         char * buff = new char[SIZE];
         bo->setBuffer( buff, SIZE, ::fwTools::BufferNewPolicy::New() );
         SLM_INFO(manager->toString());
+
+        { ::fwTools::BufferObject::Lock lock(bo->lock()); }
+        { ::fwTools::BufferObject::Lock lock(bo1->lock()); }
+        { ::fwTools::BufferObject::Lock lock(bo2->lock()); }
     }
     SLM_INFO(manager->toString());
 }
