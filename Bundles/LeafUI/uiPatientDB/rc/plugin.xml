@@ -48,5 +48,12 @@
         <service>::uiPatientDB::action::ExportImage</service>
         <object>::fwData::PatientDB</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::uiPatientDB::SPatientDBInserter</service>
+        <object>::fwTools::Object</object>
+        <desc>Insert object in PatientDB</desc>
+    </extension>
         
 </plugin>

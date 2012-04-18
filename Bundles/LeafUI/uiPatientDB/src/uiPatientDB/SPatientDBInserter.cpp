@@ -13,15 +13,15 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include "uiPatientDBQt/SPatientDBInserter.hpp"
+#include "uiPatientDB/SPatientDBInserter.hpp"
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::io::IWriter, ::uiPatientDBQt::SPatientDBInserter, ::fwTools::Object );
+REGISTER_SERVICE( ::io::IWriter, ::uiPatientDB::SPatientDBInserter, ::fwTools::Object );
 
 //-----------------------------------------------------------------------------
 
-namespace uiPatientDBQt
+namespace uiPatientDB
 {
 
 //-----------------------------------------------------------------------------
@@ -237,6 +237,6 @@ void SPatientDBInserter::swapping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-} // namespace uiPatientDBQt
+} // namespace uiPatientDB
 
 

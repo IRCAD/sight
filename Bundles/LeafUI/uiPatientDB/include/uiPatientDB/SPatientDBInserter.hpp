@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIPATIENTDBQT_SPATIENTDBINSERTER_HPP_
-#define _UIPATIENTDBQT_SPATIENTDBINSERTER_HPP_
+#ifndef _UIPATIENTDB_SPATIENTDBINSERTER_HPP_
+#define _UIPATIENTDB_SPATIENTDBINSERTER_HPP_
 
 // Service associated data
 #include <fwData/PatientDB.hpp>
@@ -16,9 +16,9 @@
 
 #include <io/IWriter.hpp>
 
-#include "uiPatientDBQt/config.hpp"
+#include "uiPatientDB/config.hpp"
 
-namespace uiPatientDBQt
+namespace uiPatientDB
 {
 
 /**
@@ -28,7 +28,7 @@ namespace uiPatientDBQt
  * @author  IRCAD (Research and Development Team).
  * @date    2012.
  */
-class UIPATIENTDBQT_CLASS_API SPatientDBInserter : public ::io::IWriter
+class UIPATIENTDB_CLASS_API SPatientDBInserter : public ::io::IWriter
 {
 
 public:
@@ -45,32 +45,32 @@ public:
      *
      * Set the object uid of PatientDB.
      */
-    UIPATIENTDBQT_API virtual void configuring() throw ( ::fwTools::Failed );
+    UIPATIENTDB_API virtual void configuring() throw ( ::fwTools::Failed );
 
-    UIPATIENTDBQT_API void configureWithIHM();
-
-    /// Overrides, does nothing
-    UIPATIENTDBQT_API virtual void starting() throw ( ::fwTools::Failed );
+    UIPATIENTDB_API void configureWithIHM();
 
     /// Overrides, does nothing
-    UIPATIENTDBQT_API virtual void stopping() throw ( ::fwTools::Failed );
+    UIPATIENTDB_API virtual void starting() throw ( ::fwTools::Failed );
+
+    /// Overrides, does nothing
+    UIPATIENTDB_API virtual void stopping() throw ( ::fwTools::Failed );
 
     /// Create a patient from associated object (patientDB, patient, study, acquisition or image), and push it in the patientDB
-    UIPATIENTDBQT_API virtual void updating() throw ( ::fwTools::Failed );
+    UIPATIENTDB_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Overrides, does nothing
-    UIPATIENTDBQT_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    UIPATIENTDB_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Just call stopping/starting
-    UIPATIENTDBQT_API virtual void swapping() throw ( ::fwTools::Failed );
+    UIPATIENTDB_API virtual void swapping() throw ( ::fwTools::Failed );
 
 protected :
 
     /// Constructor
-    UIPATIENTDBQT_API SPatientDBInserter();
+    UIPATIENTDB_API SPatientDBInserter();
 
     /// Destructor
-    UIPATIENTDBQT_API virtual ~SPatientDBInserter() throw();
+    UIPATIENTDB_API virtual ~SPatientDBInserter() throw();
 
 private :
 
@@ -93,7 +93,7 @@ private :
     std::string m_patientDBfwID;
 };
 
-} // namespace uiPatientDBQt
+} // namespace uiPatientDB
 
-#endif /*_UIPATIENTDBQT_SPATIENTDBINSERTER_HPP_*/
+#endif /*_UIPATIENTDB_SPATIENTDBINSERTER_HPP_*/
 
