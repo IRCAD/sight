@@ -72,8 +72,6 @@ public:
 
 
 
-    typedef std::map< void **,  DumpedBufferInfo > DumpedBufferInfoMapType;
-
     const DumpedBufferInfoMapType& getDumpedBufferInfoMap() const
     {
         return m_dumpedBufferInfos;
