@@ -165,7 +165,10 @@ bool BufferManager::lockBuffer(const void * const * buffer)
     bool restored = this->restoreBuffer( castedBuffer );
     OSLM_ASSERT( "restore not OK ( "<< *castedBuffer <<" ).", !restored || *castedBuffer != 0 );
     m_lastAccess.modified();
-    m_updated();
+    if(!restored)
+    {
+        m_updated();
+    }
     return true;
 }
 
@@ -184,6 +187,7 @@ bool BufferManager::unlockBuffer(const void * const * buffer)
 {
     SLM_TRACE_FUNC();
 
+    bool dumpedSomething;
 
     int count = 10;
     if(m_dumpedBufferInfos.size() > count)
@@ -196,14 +200,14 @@ bool BufferManager::unlockBuffer(const void * const * buffer)
         for ( ; iter < buffers.end(); ++iter )
         {
             void **castedBuffer = const_cast<void **>(iter->first);
-            bool dumped = this->dumpBuffer( castedBuffer );
+            dumpedSomething = this->dumpBuffer( castedBuffer ) && dumpedSomething;
         }
     }
 
-    // void **castedBuffer = const_cast<void **>(buffer);
-    // bool dumped = this->dumpBuffer( castedBuffer );
-    // OSLM_ASSERT( "Dump not OK ( "<< *castedBuffer <<" ).", !dumped || *castedBuffer == 0 );
-    m_updated();
+    if (!dumpedSomething)
+    {
+        m_updated();
+    }
     return true;
 }
 
@@ -230,6 +234,8 @@ bool BufferManager::dumpBuffer(void ** buffer)
         info.bufferPolicy->destroy(*buffer);
         *buffer = NULL;
         info.isDumped = true;
+
+        m_updated();
     }
 
     return info.isDumped;
@@ -257,6 +263,8 @@ bool BufferManager::restoreBuffer(void ** buffer, BufferManager::SizeType allocS
             ::boost::filesystem::remove( info.dumpedFile );
             info.dumpedFile = "";
             info.lastAccess.modified();
+
+            m_updated();
             return true;
         }
 
