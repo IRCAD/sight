@@ -76,7 +76,7 @@ int System::getPID() const
 
 //------------------------------------------------------------------------------
 
-std::string getPersonalizedTmp()
+std::string getUserTmp()
 {
 #ifdef WIN32
     char *userEnv = getenv("USERNAME"); // warning cygwin create USER env. var
@@ -120,7 +120,7 @@ std::string getPersonalizedTmp()
     }
     if( userEnvTmp )
     {
-        tmpdir = ::boost::filesystem::path(userEnvTmp) / getPersonalizedTmp() ;
+        tmpdir = ::boost::filesystem::path(userEnvTmp) / getUserTmp() ;
         OSLM_INFO("Temp Folder : " << tmpdir.string() );
         ::boost::filesystem::create_directories(tmpdir);
         return tmpdir ;
@@ -128,7 +128,7 @@ std::string getPersonalizedTmp()
 
     if( userEnvTemp )
     {
-        tmpdir = ::boost::filesystem::path(userEnvTemp) / getPersonalizedTmp() ;
+        tmpdir = ::boost::filesystem::path(userEnvTemp) / getUserTmp() ;
         OSLM_INFO("Temp Folder : " << tmpdir.string() );
         ::boost::filesystem::create_directories(tmpdir);
         return tmpdir ;
@@ -139,7 +139,7 @@ std::string getPersonalizedTmp()
 
     if ( ::boost::filesystem::exists( DriveD ) )
     {
-        tmpdir = DriveD / getPersonalizedTmp();
+        tmpdir = DriveD / getUserTmp();
 
         try
         {
@@ -155,10 +155,10 @@ std::string getPersonalizedTmp()
     }
 
     // default behavior
-    tmpdir = DriveC / ::boost::filesystem::path(getPersonalizedTmp());
+    tmpdir = DriveC / ::boost::filesystem::path(getUserTmp());
 
 #else
-    tmpdir = ::boost::filesystem::path("/tmp") /  ::boost::filesystem::path( getPersonalizedTmp() );
+    tmpdir = ::boost::filesystem::path("/tmp") /  ::boost::filesystem::path( getUserTmp() );
 #endif
 
     ::boost::filesystem::create_directories(tmpdir);
