@@ -362,7 +362,8 @@ size_t Image::getAllocatedSizeInBytes() const
 
 std::string  Image::getPixelAsString( unsigned int x, unsigned int y, unsigned int z ) const
 {
-    return this->getType().toString(getPixelBuffer(x,y,z));
+    ::fwTools::BufferObject::Lock lock = m_dataArray->getBufferObject()->lock();
+    return this->getType().toString(this->getPixelBuffer(x,y,z));
 }
 
 } // namespace fwData
