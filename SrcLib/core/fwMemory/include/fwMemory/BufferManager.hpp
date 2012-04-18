@@ -46,6 +46,7 @@ public:
         ::fwTools::BufferAllocationPolicy::sptr bufferPolicy;
     };
 
+    typedef std::map< void **,  DumpedBufferInfo > DumpedBufferInfoMapType;
 
     fwCoreClassDefinitionsWithFactoryMacro((BufferManager), (()), new BufferManager );
     fwCoreAllowSharedFromThis();
@@ -67,12 +68,16 @@ public:
     FWMEMORY_API bool dumpBuffer(void ** buffer);
     FWMEMORY_API bool loadBuffer(void ** buffer);
 
+    const DumpedBufferInfoMapType& getDumpedBufferInfoMap() const
+    {
+        return m_dumpedBufferInfos;
+    }
+
 protected:
 
     FWMEMORY_API BufferManager();
     FWMEMORY_API virtual ~BufferManager();
 
-    typedef std::map< void **,  DumpedBufferInfo > DumpedBufferInfoMapType;
 
     DumpedBufferInfoMapType m_dumpedBufferInfos;
 };
