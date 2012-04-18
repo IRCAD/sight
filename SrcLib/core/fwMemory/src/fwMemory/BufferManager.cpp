@@ -38,6 +38,7 @@ bool BufferManager::registerBuffer(void ** buffer, long * lockCount)
     SLM_TRACE_FUNC();
     DumpedBufferInfo & info = m_dumpedBufferInfos[buffer];
     info.lockCount = lockCount;
+    m_updated();
     return false;
 }
 
@@ -57,6 +58,7 @@ bool BufferManager::unregisterBuffer(void ** buffer)
     }
 
     m_dumpedBufferInfos.erase(buffer);
+    m_updated();
     return false;
 }
 
@@ -80,6 +82,7 @@ bool BufferManager::allocateBuffer(void ** buffer, SizeType size, ::fwTools::Buf
     info.lastAccess.modified();
     info.size = size;
     info.bufferPolicy = policy;
+    m_updated();
     return true;
 }
 
@@ -103,6 +106,7 @@ bool BufferManager::setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAl
     info.lastAccess.modified();
     info.size = size;
     info.bufferPolicy = policy;
+    m_updated();
     return true;
 }
 
@@ -125,6 +129,7 @@ bool BufferManager::reallocateBuffer(void ** buffer, SizeType newSize)
         return false;
     }
 
+    m_updated();
     return true;
 }
 
@@ -147,6 +152,7 @@ bool BufferManager::destroyBuffer(void ** buffer)
         return false;
     }
 
+    m_updated();
     return true;
 }
 
@@ -159,6 +165,7 @@ bool BufferManager::lockBuffer(const void * const * buffer)
     bool restored = this->restoreBuffer( castedBuffer );
     OSLM_ASSERT( "restore not OK ( "<< *castedBuffer <<" ).", !restored || *castedBuffer != 0 );
     m_lastAccess.modified();
+    m_updated();
     return true;
 }
 
@@ -191,13 +198,12 @@ bool BufferManager::unlockBuffer(const void * const * buffer)
             void **castedBuffer = const_cast<void **>(iter->first);
             bool dumped = this->dumpBuffer( castedBuffer );
         }
-
-        OSLM_WARN( ::fwTools::IBufferManager::getCurrent()->toString() );
     }
 
     // void **castedBuffer = const_cast<void **>(buffer);
     // bool dumped = this->dumpBuffer( castedBuffer );
     // OSLM_ASSERT( "Dump not OK ( "<< *castedBuffer <<" ).", !dumped || *castedBuffer == 0 );
+    m_updated();
     return true;
 }
 
