@@ -38,6 +38,9 @@ public:
     FWTOOLS_API static IBufferManager::sptr getCurrent(){ return s_currentManager; }
     FWTOOLS_API static void setCurrent( IBufferManager::sptr currentManager ){ s_currentManager = currentManager; }
 
+
+    FWTOOLS_API virtual std::string toString() const { return ""; };
+
 protected:
 
     FWTOOLS_API IBufferManager(){};
