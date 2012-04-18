@@ -26,7 +26,7 @@ BufferObject::BufferObject():
 
 BufferObject::~BufferObject()
 {
-    OSLM_ASSERT("There is stil " << m_count << " locks on this BufferObject (" << this << ")", m_count > 0);
+    OSLM_ASSERT("There is still " << m_count << " locks on this BufferObject (" << this << ")", m_count > 0);
     m_bufferManager->unregisterBuffer(&m_buffer);
     delete m_count;
 }
@@ -35,7 +35,6 @@ BufferObject::~BufferObject()
 
 void BufferObject::allocate(SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
-    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to allocate a locked BufferObject"), this->isLocked());
     m_allocPolicy = policy;
     m_size = size;
     if(m_bufferManager->allocateBuffer(&m_buffer, size, policy))
@@ -48,7 +47,6 @@ void BufferObject::allocate(SizeType size, ::fwTools::BufferAllocationPolicy::sp
 
 void BufferObject::reallocate(SizeType size)
 {
-    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to reallocate a locked BufferObject"), this->isLocked());
     m_size = size;
     if(m_bufferManager->reallocateBuffer(&m_buffer, size))
     {
@@ -60,7 +58,6 @@ void BufferObject::reallocate(SizeType size)
 
 void BufferObject::destroy()
 {
-    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to destroy a locked BufferObject"), this->isLocked());
     if(m_bufferManager->destroyBuffer(&m_buffer))
     {
         m_allocPolicy->destroy(m_buffer);
@@ -73,7 +70,6 @@ void BufferObject::destroy()
 
 void BufferObject::setBuffer(void *buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
-    FW_RAISE_EXCEPTION_IF( ::fwTools::Exception("Unable to set buffer of a locked BufferObject"), this->isLocked());
     m_allocPolicy = policy;
     m_size   = size;
     m_buffer = buffer;

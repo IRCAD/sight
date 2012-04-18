@@ -33,12 +33,12 @@ void BufferObjectTest::allocateTest()
     const int SIZE = 100000;
     ::fwTools::BufferObject::sptr bo = ::fwTools::BufferObject::New();
 
-    CPPUNIT_ASSERT( bo->isNull() );
+    CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
     bo->allocate(SIZE);
 
-    CPPUNIT_ASSERT( !bo->isNull() );
+    CPPUNIT_ASSERT( !bo->isEmpty() );
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwTools::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
@@ -87,18 +87,18 @@ void BufferObjectTest::allocateTest()
 
     bo->destroy();
 
-    CPPUNIT_ASSERT( bo->isNull() );
+    CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
 
 
 
-    CPPUNIT_ASSERT( bo->isNull() );
+    CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
     bo->allocate(SIZE, ::fwTools::BufferNewPolicy::New());
 
-    CPPUNIT_ASSERT( !bo->isNull() );
+    CPPUNIT_ASSERT( !bo->isEmpty() );
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwTools::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
@@ -127,7 +127,7 @@ void BufferObjectTest::allocateTest()
 
     bo->destroy();
 
-    CPPUNIT_ASSERT( bo->isNull() );
+    CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
 

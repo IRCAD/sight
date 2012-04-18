@@ -142,7 +142,7 @@ public:
     FWTOOLS_API virtual ConstLock lock() const;
 
     FWTOOLS_API SizeType getSize() const { return m_size; };
-    FWTOOLS_API bool isNull() const { return m_size == 0; };
+    FWTOOLS_API bool isEmpty() const { return m_size == 0; };
 
     FWTOOLS_API long lockCount() const { return *m_count; };
     FWTOOLS_API long isLocked() const { return lockCount() != 0; };
