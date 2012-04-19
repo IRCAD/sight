@@ -450,15 +450,14 @@ void vectorSum( std::vector< std::vector<T> > &vectors, size_t regionMin, size_t
 
 void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
 {
-    mesh->allocateCellNormals();
-
     const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+    if(numberOfCells > 0)
+    {
+        mesh->allocateCellNormals();
 
-    ::fwDataTools::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
-    rt( ::boost::bind(&generateRegionCellNormals, mesh, _1, _2), numberOfCells );
-
-    return;
-
+        ::fwDataTools::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
+        rt( ::boost::bind(&generateRegionCellNormals, mesh, _1, _2), numberOfCells );
+    }
 }
 
 
@@ -553,48 +552,50 @@ void normalizeRegionCellNormalsByPoints(FloatVectors::value_type &normalsData, C
 
 void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
 {
-    ::fwData::Array::sptr oldCellNormals = mesh->getCellNormalsArray();
-    mesh->clearCellNormals();
-
-    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
     const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
+    if(nbOfPoints > 0)
+    {
+        const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+        ::fwData::Array::sptr oldCellNormals = mesh->getCellNormalsArray();
+        mesh->clearCellNormals();
 
-    generateCellNormals(mesh);
+        generateCellNormals(mesh);
 
-    mesh->allocatePointNormals();
+        mesh->allocatePointNormals();
 
-    ::fwDataTools::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
-
-
-    FloatVectors normalsData(rt.numberOfThread());
-    CharVectors  normalCounts(rt.numberOfThread());
-
-    rt( ::boost::bind(&generateRegionCellNormalsByPoints,
-                        boost::ref(normalsData),
-                        boost::ref(normalCounts),
-                        _3, mesh, _1, _2),
-        numberOfCells);
-
-    rt( ::boost::bind(&vectorSum<FloatVectors::value_type::value_type>,
-                        boost::ref(normalsData),
-                        _1, _2),
-        nbOfPoints*3);
+        ::fwDataTools::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
 
-    rt( ::boost::bind(&vectorSum<CharVectors::value_type::value_type>,
-                        boost::ref(normalCounts),
-                        _1, _2),
-        nbOfPoints);
+        FloatVectors normalsData(rt.numberOfThread());
+        CharVectors  normalCounts(rt.numberOfThread());
+
+        rt( ::boost::bind(&generateRegionCellNormalsByPoints,
+                          boost::ref(normalsData),
+                          boost::ref(normalCounts),
+                          _3, mesh, _1, _2),
+                          numberOfCells);
+
+        rt( ::boost::bind(&vectorSum<FloatVectors::value_type::value_type>,
+                          boost::ref(normalsData),
+                          _1, _2),
+                          nbOfPoints*3);
 
 
-    rt( boost::bind( &normalizeRegionCellNormalsByPoints,
-                 boost::ref(normalsData[0]),
-                 boost::ref(normalCounts[0]),
-                 mesh, _1, _2),
-        nbOfPoints);
+        rt( ::boost::bind(&vectorSum<CharVectors::value_type::value_type>,
+                          boost::ref(normalCounts),
+                          _1, _2),
+                          nbOfPoints);
 
 
-    mesh->setCellNormalsArray(oldCellNormals);
+        rt( boost::bind( &normalizeRegionCellNormalsByPoints,
+                         boost::ref(normalsData[0]),
+                         boost::ref(normalCounts[0]),
+                         mesh, _1, _2),
+                         nbOfPoints);
+
+
+        mesh->setCellNormalsArray(oldCellNormals);
+    }
 }
 
 //------------------------------------------------------------------------------
