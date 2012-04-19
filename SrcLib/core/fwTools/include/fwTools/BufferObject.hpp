@@ -79,6 +79,7 @@ public:
             ++(*m_count);
             m_bufferObject = other.m_bufferObject;
             this->lock();
+            return *this;
         }
 
         BufferType getBuffer() const
